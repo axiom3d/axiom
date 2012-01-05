@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
@@ -31,16 +33,14 @@ using System.Text;
 
 namespace Axiom.Components.Paging
 {
-    public class PageID
-    {
-        private int mValue;
-        public int Value
-        {
-            get { return mValue; }
-        }
-        public PageID(int pageId)
-        {
-            mValue = pageId;
-        }
-    }
+	public class PageID
+	{
+		private int mValue;
+		public int Value { get { return mValue; } }
+
+		public PageID( int pageId )
+		{
+			mValue = pageId;
+		}
+	}
 }

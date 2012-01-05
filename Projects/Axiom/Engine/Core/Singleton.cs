@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: Singleton.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,6 @@ using System.Reflection;
 
 namespace Axiom.Core
 {
-
 	public interface ISingleton<T> where T : class
 	{
 		bool Initialize( params object[] args );
@@ -54,13 +57,14 @@ namespace Axiom.Core
 	/// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
 	/// </remarks>
 	/// <typeparam name="T">a class</typeparam>
-	public abstract class Singleton<T> : IDisposable where T : class, new()
+	abstract public class Singleton<T> : IDisposable where T : class, new()
 	{
-
 		public Singleton()
-		{		
-			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
+		{
+			if( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
+			{
 				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
+			}
 		}
 
 		~Singleton()
@@ -68,7 +72,7 @@ namespace Axiom.Core
 			dispose( false );
 		}
 
-		public virtual bool Initialize( params object[] args )
+		virtual public bool Initialize( params object[] args )
 		{
 			return true;
 		}
@@ -79,28 +83,28 @@ namespace Axiom.Core
 			{
 				try
 				{
-					if ( SingletonFactory.instance != null )
+					if( SingletonFactory.instance != null )
+					{
 						return SingletonFactory.instance;
-					lock ( SingletonFactory.singletonLock )
+					}
+					lock( SingletonFactory.singletonLock )
 					{
 						SingletonFactory.instance = new T();
 						return SingletonFactory.instance;
 					}
 				}
-				catch ( /*TypeInitialization*/Exception )
+				catch( /*TypeInitialization*/Exception )
 				{
 					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof( T ) ) );
 				}
 			}
 		}
 
-		class SingletonFactory
+		private class SingletonFactory
 		{
 			internal static object singletonLock = new object();
-			static SingletonFactory()
-			{
 
-			}
+			static SingletonFactory() {}
 
 			internal static T instance = new T();
 		}
@@ -110,29 +114,18 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
-		public static void Reinitialize()
-		{
-		}
-		#region IDisposable Implementation
+		public static void Reinitialize() {}
 
+		#region IDisposable Implementation
 
 		#region isDisposed Property
 
 		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -160,11 +153,11 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					Singleton<T>.Destroy();
 				}

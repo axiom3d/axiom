@@ -5,7 +5,5 @@ using System.Text;
 
 namespace Axiom.Core.InstanceGeometry
 {
-	class InstancedEntity
-	{
-	}
+	internal class InstancedEntity {}
 }

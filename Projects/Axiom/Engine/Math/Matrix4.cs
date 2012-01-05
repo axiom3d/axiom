@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -94,27 +98,28 @@ namespace Axiom.Math
 		public Real m20, m21, m22, m23;
 		public Real m30, m31, m32, m33;
 
-		private readonly static Matrix4 zeroMatrix = new Matrix4(
+		private static readonly Matrix4 zeroMatrix = new Matrix4(
 			0, 0, 0, 0,
 			0, 0, 0, 0,
 			0, 0, 0, 0,
 			0, 0, 0, 0 );
-		private readonly static Matrix4 identityMatrix = new Matrix4(
+
+		private static readonly Matrix4 identityMatrix = new Matrix4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1 );
 
 		// NOTE: This is different from what is in OGRE. Not sure why this is the case ATM, however, do not change it.
-		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
+		private static readonly Matrix4 clipSpace2dToImageSpace = new Matrix4(
 			//0.5f,  0.0f, 0.0f, -0.5f,
 			//0.0f, -0.5f, 0.0f, -0.5f,
 			//0.0f,  0.0f, 0.0f,  1.0f,
 			//0.0f,  0.0f, 0.0f,  1.0f );
-				0.5f, 0.0f, 0.0f, 0.5f,
-				0.0f, -0.5f, 0.0f, 0.5f,
-				0.0f, 0.0f, 1.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 1.0f );
+			0.5f, 0.0f, 0.0f, 0.5f,
+			0.0f, -0.5f, 0.0f, 0.5f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f );
 
 		#endregion
 
@@ -124,9 +129,9 @@ namespace Axiom.Math
 		///		Creates a new Matrix4 with all the specified parameters.
 		/// </summary>
 		public Matrix4( Real m00, Real m01, Real m02, Real m03,
-			Real m10, Real m11, Real m12, Real m13,
-			Real m20, Real m21, Real m22, Real m23,
-			Real m30, Real m31, Real m32, Real m33 )
+		                Real m10, Real m11, Real m12, Real m13,
+		                Real m20, Real m21, Real m22, Real m23,
+		                Real m30, Real m31, Real m32, Real m33 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -149,6 +154,7 @@ namespace Axiom.Math
 		#endregion
 
 		#region Static properties
+
 		/// <summary>
 		///    Returns a matrix with the following form:
 		///    | 1,0,0,0 |
@@ -156,32 +162,14 @@ namespace Axiom.Math
 		///    | 0,0,1,0 |
 		///    | 0,0,0,1 |
 		/// </summary>
-		public static Matrix4 Identity
-		{
-			get
-			{
-				return identityMatrix;
-			}
-		}
+		public static Matrix4 Identity { get { return identityMatrix; } }
 
 		/// <summary>
 		///    Returns a matrix with all elements set to 0.
 		/// </summary>
-		public static Matrix4 Zero
-		{
-			get
-			{
-				return zeroMatrix;
-			}
-		}
+		public static Matrix4 Zero { get { return zeroMatrix; } }
 
-		public static Matrix4 ClipSpace2DToImageSpace
-		{
-			get
-			{
-				return clipSpace2dToImageSpace;
-			}
-		}
+		public static Matrix4 ClipSpace2DToImageSpace { get { return clipSpace2dToImageSpace; } }
 
 		#endregion
 
@@ -196,10 +184,7 @@ namespace Axiom.Math
 		/// </summary>
 		public Vector3 Translation
 		{
-			get
-			{
-				return new Vector3( this.m03, this.m13, this.m23 );
-			}
+			get { return new Vector3( this.m03, this.m13, this.m23 ); }
 			set
 			{
 				this.m03 = value.x;
@@ -222,10 +207,7 @@ namespace Axiom.Math
 		/// </remarks>
 		public Vector3 Scale
 		{
-			get
-			{
-				return new Vector3( this.m00, this.m11, this.m22 );
-			}
+			get { return new Vector3( this.m00, this.m11, this.m22 ); }
 			set
 			{
 				this.m00 = value.x;
@@ -241,13 +223,7 @@ namespace Axiom.Math
 		/// An affine matrix is a 4x4 matrix with row 3 equal to (0, 0, 0, 1),
 		/// e.g. no projective coefficients.
 		/// </remarks>
-		public bool IsAffine
-		{
-			get
-			{
-				return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1;
-			}
-		}
+		public bool IsAffine { get { return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1; } }
 
 		/// <summary>
 		///    Gets the determinant of this matrix.
@@ -258,9 +234,9 @@ namespace Axiom.Math
 			{
 				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
 				Real result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
-					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
-					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
-					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+				              m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
+				              m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
+				              m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
 
 				return result;
 			}
@@ -410,8 +386,7 @@ namespace Axiom.Math
 				r00, r01, r02, r03,
 				r10, r11, r12, r13,
 				r20, r21, r22, r23,
-				  0, 0, 0, 1 );
-
+				0, 0, 0, 1 );
 		}
 
 		/// <summary>
@@ -421,9 +396,9 @@ namespace Axiom.Math
 		public Matrix4 Transpose()
 		{
 			return new Matrix4( this.m00, this.m10, this.m20, this.m30,
-				this.m01, this.m11, this.m21, this.m31,
-				this.m02, this.m12, this.m22, this.m32,
-				this.m03, this.m13, this.m23, this.m33 );
+			                    this.m01, this.m11, this.m21, this.m31,
+			                    this.m02, this.m12, this.m22, this.m32,
+			                    this.m03, this.m13, this.m23, this.m33 );
 		}
 
 		/// <summary>
@@ -441,9 +416,9 @@ namespace Axiom.Math
 			Debug.Assert( IsAffine );
 
 			return new Vector3(
-					m00 * v.x + m01 * v.y + m02 * v.z + m03,
-					m10 * v.x + m11 * v.y + m12 * v.z + m13,
-					m20 * v.x + m21 * v.y + m22 * v.z + m23 );
+				m00 * v.x + m01 * v.y + m02 * v.z + m03,
+				m10 * v.x + m11 * v.y + m12 * v.z + m13,
+				m20 * v.x + m21 * v.y + m22 * v.z + m23 );
 		}
 
 		/// <summary>
@@ -508,6 +483,7 @@ namespace Axiom.Math
 			floats[ 14 ] = this.m32;
 			floats[ 15 ] = this.m33;
 		}
+
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
@@ -895,12 +871,14 @@ namespace Axiom.Math
 		/// <returns>true if the Matrix 4 instances are equal, false otherwise.</returns>
 		public static bool operator ==( Matrix4 left, Matrix4 right )
 		{
-			if (
+			if(
 				left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m03 == right.m03 &&
 				left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m13 == right.m13 &&
 				left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 && left.m23 == right.m23 &&
 				left.m30 == right.m30 && left.m31 == right.m31 && left.m32 == right.m32 && left.m33 == right.m33 )
+			{
 				return true;
+			}
 
 			return false;
 		}
@@ -953,8 +931,10 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed( Real* pM = &m00 )
+					{
 						return *( pM + ( ( 4 * row ) + col ) );
+					}
 				}
 			}
 			set
@@ -963,8 +943,10 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed( Real* pM = &m00 )
+					{
 						*( pM + ( ( 4 * row ) + col ) ) = value;
+					}
 				}
 			}
 		}
@@ -984,7 +966,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed( Real* pMatrix = &this.m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -996,7 +978,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed( Real* pMatrix = &this.m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -1040,10 +1022,12 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed( Real* pM = &m00 )
 				{
-					for ( int i = 0; i < 16; i++ )
+					for( int i = 0; i < 16; i++ )
+					{
 						hashCode ^= (int)( *( pM + i ) );
+					}
 				}
 			}
 

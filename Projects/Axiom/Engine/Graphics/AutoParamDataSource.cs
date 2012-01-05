@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -67,65 +71,82 @@ namespace Axiom.Graphics
 		///    Current target renderable.
 		/// </summary>
 		protected IRenderable renderable;
+
 		/// <summary>
 		///    Current camera being used for rendering.
 		/// </summary>
 		protected Camera camera;
+
 		/// <summary>
 		///		Current frustum used for texture projection.
 		/// </summary>
 		protected Frustum currentTextureProjector;
+
 		/// <summary>
 		///		Current active render target.
 		/// </summary>
 		protected RenderTarget currentRenderTarget;
+
 		/// <summary>
 		///     The current viewport.  We don't really do anything with this,
 		///     but Ogre uses it to determine the width and height.
 		/// </summary>
 		protected Viewport currentViewport;
+
 		/// <summary>
 		///    Current view matrix;
 		/// </summary>
 		protected Matrix4 viewMatrix;
+
 		protected bool viewMatrixDirty;
+
 		/// <summary>
 		///    Current projection matrix.
 		/// </summary>
 		protected Matrix4 projectionMatrix;
+
 		protected bool projMatrixDirty;
+
 		/// <summary>
 		///    Current view and projection matrices concatenated.
 		/// </summary>
 		protected Matrix4 viewProjMatrix;
+
 		/// <summary>
 		///    Array of world matrices for the current renderable.
 		/// </summary>
-		protected Matrix4[] worldMatrix = new Matrix4[ 256 ];
+		protected Matrix4[] worldMatrix = new Matrix4[256];
+
 		/// <summary>
 		///		Current count of matrices in the world matrix array.
 		/// </summary>
 		protected int worldMatrixCount;
+
 		/// <summary>
 		///    Current concatenated world and view matrices.
 		/// </summary>
 		protected Matrix4 worldViewMatrix;
+
 		/// <summary>
 		///    Current concatenated world, view, and projection matrices.
 		/// </summary>
 		protected Matrix4 worldViewProjMatrix;
+
 		/// <summary>
 		///    Inverse of current world matrix.
 		/// </summary>
 		protected Matrix4 inverseWorldMatrix;
+
 		/// <summary>
 		///    Inverse of current concatenated world and view matrices.
 		/// </summary>
 		protected Matrix4 inverseWorldViewMatrix;
+
 		/// <summary>
 		///    Inverse of the current view matrix.
 		/// </summary>
 		protected Matrix4 inverseViewMatrix;
+
 		/// <summary>
 		///    Inverse Transpose of the current world view matrix.
 		/// </summary>
@@ -135,30 +156,37 @@ namespace Axiom.Graphics
 		///		Current texture view projection matrix.
 		/// </summary>
 		protected Matrix4 textureViewProjMatrix;
+
 		/// <summary>
 		///		Distance to extrude shadow volume vertices.
 		/// </summary>
 		protected float dirLightExtrusionDistance;
+
 		/// <summary>
 		///    Position of the current camera in object space relative to the current renderable.
 		/// </summary>
 		protected Vector4 cameraPositionObjectSpace;
+
 		/// <summary>
 		///    Current global ambient light color.
 		/// </summary>
 		protected ColorEx ambientLight;
+
 		/// <summary>
 		///    Parameters for GPU fog.  fogStart, fogEnd, and fogScale
 		/// </summary>
 		protected Vector4 fogParams;
+
 		/// <summary>
 		///   current time
 		/// </summary>
 		protected float time;
+
 		/// <summary>
 		///    List of lights that are in the scene and near the current renderable.
 		/// </summary>
 		protected LightList currentLightList = new LightList();
+
 		/// <summary>
 		///    Blank light to use when a higher index light is requested than is available.
 		/// </summary>
@@ -203,7 +231,7 @@ namespace Axiom.Graphics
 		///    Default constructor.
 		/// </summary>
 		public AutoParamDataSource()
-            : base()
+			: base()
 		{
 			worldMatrixDirty = true;
 			viewMatrixDirty = true;
@@ -232,48 +260,50 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( this.blankLight != null )
-                    {
-                        if ( !this.blankLight.IsDisposed )
-                            this.blankLight.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					if( this.blankLight != null )
+					{
+						if( !this.blankLight.IsDisposed )
+						{
+							this.blankLight.Dispose();
+						}
 
-                        this.blankLight = null;
-                    }
-                }
-            }
+						this.blankLight = null;
+					}
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		#region Lights
 
@@ -284,7 +314,7 @@ namespace Axiom.Graphics
 		/// <returns>A light located near the current renderable.</returns>
 		public Light GetLight( int index )
 		{
-			if ( currentLightList.Count <= index )
+			if( currentLightList.Count <= index )
 			{
 				return blankLight;
 			}
@@ -332,10 +362,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public IRenderable Renderable
 		{
-			get
-			{
-				return renderable;
-			}
+			get { return renderable; }
 			set
 			{
 				renderable = value;
@@ -363,10 +390,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public Camera Camera
 		{
-			get
-			{
-				return camera;
-			}
+			get { return camera; }
 			set
 			{
 				camera = value;
@@ -391,10 +415,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public Frustum TextureProjector
 		{
-			get
-			{
-				return currentTextureProjector;
-			}
+			get { return currentTextureProjector; }
 			set
 			{
 				currentTextureProjector = value;
@@ -405,62 +426,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Get/Set the current active render target in use.
 		/// </summary>
-		public RenderTarget RenderTarget
-		{
-			get
-			{
-				return currentRenderTarget;
-			}
-			set
-			{
-				currentRenderTarget = value;
-			}
-		}
+		public RenderTarget RenderTarget { get { return currentRenderTarget; } set { currentRenderTarget = value; } }
 
 		/// <summary>
 		///		Get/Set the current active viewport in use.
 		/// </summary>
-		public Viewport Viewport
-		{
-			get
-			{
-				return currentViewport;
-			}
-			set
-			{
-				currentViewport = value;
-			}
-		}
+		public Viewport Viewport { get { return currentViewport; } set { currentViewport = value; } }
 
 		/// <summary>
 		///    Gets/Sets the current global ambient light color.
 		/// </summary>
-		public ColorEx AmbientLight
-		{
-			get
-			{
-				return ambientLight;
-			}
-			set
-			{
-				ambientLight = value;
-			}
-		}
+		public ColorEx AmbientLight { get { return ambientLight; } set { ambientLight = value; } }
 
 		/// <summary>
 		///    Gets/Sets the current gpu fog parameters.
 		/// </summary>
-		public Vector4 FogParams
-		{
-			get
-			{
-				return fogParams;
-			}
-			set
-			{
-				fogParams = value;
-			}
-		}
+		public Vector4 FogParams { get { return fogParams; } set { fogParams = value; } }
 
 		/// <summary>
 		///    Gets the current world matrix.
@@ -469,7 +450,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( worldMatrixDirty )
+				if( worldMatrixDirty )
 				{
 					renderable.GetWorldTransforms( worldMatrix );
 					worldMatrixCount = renderable.NumWorldTransforms;
@@ -487,7 +468,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( worldMatrixDirty )
+				if( worldMatrixDirty )
 				{
 					renderable.GetWorldTransforms( worldMatrix );
 					worldMatrixCount = renderable.NumWorldTransforms;
@@ -505,7 +486,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( worldMatrixDirty )
+				if( worldMatrixDirty )
 				{
 					renderable.GetWorldTransforms( worldMatrix );
 					worldMatrixCount = renderable.NumWorldTransforms;
@@ -523,7 +504,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( worldViewMatrixDirty )
+				if( worldViewMatrixDirty )
 				{
 					worldViewMatrix = this.ViewMatrix * this.WorldMatrix;
 					worldViewMatrixDirty = false;
@@ -539,7 +520,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( worldViewProjMatrixDirty )
+				if( worldViewProjMatrixDirty )
 				{
 					worldViewProjMatrix = this.ProjectionMatrix * this.WorldViewMatrix;
 					worldViewProjMatrixDirty = false;
@@ -555,7 +536,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( inverseWorldMatrixDirty )
+				if( inverseWorldMatrixDirty )
 				{
 					inverseWorldMatrix = this.WorldMatrix.Inverse();
 					inverseWorldMatrixDirty = false;
@@ -571,7 +552,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( inverseWorldViewMatrixDirty )
+				if( inverseWorldViewMatrixDirty )
 				{
 					inverseWorldViewMatrix = this.WorldViewMatrix.Inverse();
 					inverseWorldViewMatrixDirty = false;
@@ -583,24 +564,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets/Sets the inverse of current concatenated view matrices.
 		/// </summary>
-		public Matrix4 InverseViewMatrix
-		{
-			get
-			{
-				return this.ViewMatrix.Inverse();
-			}
-		}
+		public Matrix4 InverseViewMatrix { get { return this.ViewMatrix.Inverse(); } }
 
 		/// <summary>
 		///    Gets/Sets the inverse, transpose of current concatenated view matrices.
 		/// </summary>
-		public Matrix4 InverseTransposeViewMatrix
-		{
-			get
-			{
-				return this.InverseViewMatrix.Transpose();
-			}
-		}
+		public Matrix4 InverseTransposeViewMatrix { get { return this.InverseViewMatrix.Transpose(); } }
 
 		/// <summary>
 		///    Gets/Sets the inverse of current concatenated world and view matrices.
@@ -609,7 +578,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( inverseTransposeWorldViewMatrixDirty )
+				if( inverseTransposeWorldViewMatrixDirty )
 				{
 					inverseTransposeWorldViewMatrix = this.InverseWorldViewMatrix.Transpose();
 					inverseTransposeWorldViewMatrixDirty = false;
@@ -625,7 +594,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( cameraPositionObjectSpaceDirty )
+				if( cameraPositionObjectSpaceDirty )
 				{
 					cameraPositionObjectSpace = (Vector4)( this.InverseWorldMatrix * camera.DerivedPosition );
 					cameraPositionObjectSpaceDirty = false;
@@ -637,13 +606,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the position of the current camera in world space.
 		/// </summary>
-		public Vector3 CameraPosition
-		{
-			get
-			{
-				return camera.DerivedPosition;
-			}
-		}
+		public Vector3 CameraPosition { get { return camera.DerivedPosition; } }
 
 		/// <summary>
 		///    Gets/Sets the current projection matrix.
@@ -652,11 +615,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( projMatrixDirty )
+				if( projMatrixDirty )
 				{
 					// NB use API-independent projection matrix since GPU programs
 					// bypass the API-specific handedness and use right-handed coords
-					if ( renderable != null && renderable.UseIdentityProjection )
+					if( renderable != null && renderable.UseIdentityProjection )
 					{
 						// Use identity projection matrix, still need to take RS depth into account
 						projectionMatrix =
@@ -666,7 +629,7 @@ namespace Axiom.Graphics
 					{
 						projectionMatrix = camera.ProjectionMatrixRSDepth;
 					}
-					if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
+					if( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
 					{
 						projectionMatrix.m10 = -projectionMatrix.m10;
 						projectionMatrix.m11 = -projectionMatrix.m11;
@@ -686,12 +649,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( viewMatrixDirty )
+				if( viewMatrixDirty )
 				{
-					if ( renderable != null && renderable.UseIdentityView )
+					if( renderable != null && renderable.UseIdentityView )
+					{
 						viewMatrix = Matrix4.Identity;
+					}
 					else
+					{
 						viewMatrix = camera.ViewMatrix;
+					}
 					viewMatrixDirty = false;
 				}
 				return viewMatrix;
@@ -705,7 +672,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( viewProjMatrixDirty )
+				if( viewProjMatrixDirty )
 				{
 					viewProjMatrix = this.ProjectionMatrix * this.ViewMatrix;
 					viewProjMatrixDirty = false;
@@ -722,7 +689,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( textureViewProjMatrixDirty )
+				if( textureViewProjMatrixDirty )
 				{
 					textureViewProjMatrix =
 						ProjectionClipSpace2DToImageSpacePerspective *
@@ -746,7 +713,7 @@ namespace Axiom.Graphics
 				// only ever applies to one light at once
 				Light light = GetLight( 0 );
 
-				if ( light.Type == LightType.Directional )
+				if( light.Type == LightType.Directional )
 				{
 					// use constant value
 					return dirLightExtrusionDistance;
@@ -764,86 +731,30 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Get the derived camera position (which includes any parent sceneNode transforms)
 		/// </summary>
-		public Vector3 ViewDirection
-		{
-			get
-			{
-				return camera.DerivedDirection;
-			}
-		}
+		public Vector3 ViewDirection { get { return camera.DerivedDirection; } }
 
 		/// <summary>
 		/// Get the derived camera right vector (which includes any parent sceneNode transforms)
 		/// </summary>
-		public Vector3 ViewSideVector
-		{
-			get
-			{
-				return camera.DerivedRight;
-			}
-		}
+		public Vector3 ViewSideVector { get { return camera.DerivedRight; } }
 
 		/// <summary>
 		/// Get the derived camera up vector (which includes any parent sceneNode transforms)
 		/// </summary>
-		public Vector3 ViewUpVector
-		{
-			get
-			{
-				return camera.DerivedUp;
-			}
-		}
+		public Vector3 ViewUpVector { get { return camera.DerivedUp; } }
 
-		public float NearClipDistance
-		{
-			get
-			{
-				return camera.Near;
-			}
-		}
+		public float NearClipDistance { get { return camera.Near; } }
 
-		public float FarClipDistance
-		{
-			get
-			{
-				return camera.Far;
-			}
-		}
+		public float FarClipDistance { get { return camera.Far; } }
 
-		public float Time
-		{
-			get
-			{
-				return ControllerManager.Instance.GetElapsedTime();
-			}
-		}
+		public float Time { get { return ControllerManager.Instance.GetElapsedTime(); } }
 
-		public Vector4 MVShadowTechnique
-		{
-			get
-			{
-				return mvShadowTechnique;
-			}
-			set
-			{
-				mvShadowTechnique = value;
-			}
-		}
+		public Vector4 MVShadowTechnique { get { return mvShadowTechnique; } set { mvShadowTechnique = value; } }
 
 		/// <summary>
 		/// The technique pass number
 		/// </summary>
-		public int PassNumber
-		{
-			get
-			{
-				return passNumber;
-			}
-			set
-			{
-				passNumber = value;
-			}
-		}
+		public int PassNumber { get { return passNumber; } set { passNumber = value; } }
 
 		#endregion
 	}

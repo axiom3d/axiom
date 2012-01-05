@@ -43,8 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
-
 #endregion Namespace Declarations
 
 using System.Runtime.InteropServices;
@@ -79,13 +77,7 @@ namespace Axiom.Math
 		public Vector3 Normal;
 
 		private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
-		public static Plane Null
-		{
-			get
-			{
-				return nullPlane;
-			}
-		}
+		public static Plane Null { get { return nullPlane; } }
 
 		#endregion Fields
 
@@ -148,12 +140,12 @@ namespace Axiom.Math
 		{
 			Real distance = this.GetDistance( point );
 
-			if ( distance < 0.0f )
+			if( distance < 0.0f )
 			{
 				return PlaneSide.Negative;
 			}
 
-			if ( distance > 0.0f )
+			if( distance > 0.0f )
 			{
 				return PlaneSide.Positive;
 			}
@@ -169,11 +161,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public PlaneSide GetSide( AxisAlignedBox box )
 		{
-			if ( box.IsNull )
+			if( box.IsNull )
 			{
 				return PlaneSide.None;
 			}
-			if ( box.IsInfinite )
+			if( box.IsInfinite )
 			{
 				return PlaneSide.Both;
 			}
@@ -201,12 +193,12 @@ namespace Axiom.Math
 			// the distance between box centre and plane
 			Real maxAbsDist = this.Normal.AbsDot( halfSize );
 
-			if ( dist < -maxAbsDist )
+			if( dist < -maxAbsDist )
 			{
 				return PlaneSide.Negative;
 			}
 
-			if ( dist > +maxAbsDist )
+			if( dist > +maxAbsDist )
 			{
 				return PlaneSide.Positive;
 			}
@@ -324,9 +316,9 @@ namespace Axiom.Math
 		{
 			object l = left;
 			object r = right;
-			if ( l == null || r == null )
+			if( l == null || r == null )
 			{
-				if ( l == null && r == null )
+				if( l == null && r == null )
 				{
 					return true;
 				}
@@ -347,9 +339,9 @@ namespace Axiom.Math
 		{
 			object l = left;
 			object r = right;
-			if ( l == null || r == null )
+			if( l == null || r == null )
 			{
-				if ( l == null && r == null )
+				if( l == null && r == null )
 				{
 					return false;
 				}

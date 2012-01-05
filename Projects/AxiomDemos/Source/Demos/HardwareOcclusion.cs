@@ -63,10 +63,13 @@ namespace Axiom.Demos
 
 		public override void Dispose()
 		{
-			if ( query != null )
+			if( query != null )
+			{
 				query.Dispose();
+			}
 			base.Dispose();
 		}
+
 		#endregion Methods
 
 		/// <summary>
@@ -77,14 +80,13 @@ namespace Axiom.Demos
 		private void scene_QueueStarted( object sender, SceneManager.BeginRenderQueueEventArgs e )
 		{
 			// begin the occlusion query
-			if ( e.RenderQueueId == RenderQueueGroupID.Six )
+			if( e.RenderQueueId == RenderQueueGroupID.Six )
 			{
 				query.Begin();
 			}
 
 			return;
 		}
-
 
 		/// <summary>
 		///		When RenderQueue 6 is ending, we will end the query and poll for the results.
@@ -94,7 +96,7 @@ namespace Axiom.Demos
 		private void scene_QueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
 		{
 			// end our occlusion query
-			if ( e.RenderQueueId == RenderQueueGroupID.Six )
+			if( e.RenderQueueId == RenderQueueGroupID.Six )
 			{
 				query.End();
 			}
@@ -103,7 +105,7 @@ namespace Axiom.Demos
 			int count = query.PullResults();
 
 			// report the results
-			if ( count <= 0 )
+			if( count <= 0 )
 			{
 				debugText = "Object is occluded. ";
 			}

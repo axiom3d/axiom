@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -83,26 +87,32 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		///     Token ID which is the index into the Token Type library.
 		/// </summary>
 		public Symbol ID;
+
 		/// <summary>
 		///     Data used by pass 2 to build native instructions.
 		/// </summary>
 		public int pass2Data;
+
 		/// <summary>
 		///     Context key to fit the Active Context.
 		/// </summary>
 		public uint contextKey;
+
 		/// <summary>
 		///     New pattern to set for Active Context bits.
 		/// </summary>
 		public uint contextPatternSet;
+
 		/// <summary>
 		///     Contexts bits to clear Active Context bits.
 		/// </summary>
 		public uint contextPatternClear;
+
 		/// <summary>
 		///     Index into text table for default name : set at runtime.
 		/// </summary>
 		public int defTextID;
+
 		/// <summary>
 		///     Index into Rule database for non-terminal toke rulepath.
 		///     Note: If RuleID is zero the token is terminal.
@@ -152,14 +162,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		///     Non-Terminal Token Rule ID that generated Token.
 		/// </summary>
 		public Symbol NTTRuleID;
+
 		/// <summary>
 		///     Token ID.
 		/// </summary>
 		public Symbol ID;
+
 		/// <summary>
 		///     Line number in source code where Token was found
 		/// </summary>
 		public int line;
+
 		/// <summary>
 		///     Character position in source where Token was found
 		/// </summary>
@@ -178,7 +191,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	{
 		public string Name;
 		public int ID;
-
 	}
 
 	public struct RegisterUsage
@@ -190,15 +202,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	/// <summary>
 	///     Structure used to keep track of arguments and instruction parameters.
 	/// </summary>
-	struct OpParam
+	internal struct OpParam
 	{
-		public int Arg;		// type of argument
-		public bool Filled;		// has it been filled yet
-		public uint MaskRep;	// Mask/Replicator flags
-		public int Mod;		// argument modifier
+		public int Arg; // type of argument
+		public bool Filled; // has it been filled yet
+		public uint MaskRep; // Mask/Replicator flags
+		public int Mod; // argument modifier
 	}
 
-	struct RegModOffset
+	internal struct RegModOffset
 	{
 		public int MacroOffset;
 		public int RegisterBase;
@@ -212,7 +224,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		}
 	}
 
-	struct MacroRegModify
+	internal struct MacroRegModify
 	{
 		public TokenInstruction[] Macro;
 		public int MacroSize;

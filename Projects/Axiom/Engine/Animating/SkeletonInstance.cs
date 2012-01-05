@@ -39,8 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+
 using Axiom.Collections;
 using Axiom.Math;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -96,24 +98,12 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Gets the animations associated with this skeleton
 		/// </summary>
-		public override ICollection<Animation> Animations
-		{
-			get
-			{
-				return skeleton.Animations;
-			}
-		}
+		public override ICollection<Animation> Animations { get { return skeleton.Animations; } }
 
 		/// <summary>
 		///     Gets the master skeleton
 		/// </summary>
-		public Skeleton MasterSkeleton
-		{
-			get
-			{
-				return skeleton;
-			}
-		}
+		public Skeleton MasterSkeleton { get { return skeleton; } }
 
 		#endregion Properties
 
@@ -129,7 +119,7 @@ namespace Axiom.Animating
 		{
 			Bone newBone;
 
-			if ( source.Name == "" )
+			if( source.Name == "" )
 			{
 				newBone = CreateBone( source.Handle );
 			}
@@ -142,7 +132,7 @@ namespace Axiom.Animating
 			newBone.Position = source.Position;
 			newBone.Scale = source.Scale;
 
-			if ( parent == null )
+			if( parent == null )
 			{
 				rootBones.Add( newBone );
 			}
@@ -152,7 +142,7 @@ namespace Axiom.Animating
 			}
 
 			// process children
-			foreach ( Bone child in source.Children )
+			foreach( Bone child in source.Children )
 			{
 				CloneBoneAndChildren( child, newBone );
 			}
@@ -183,9 +173,9 @@ namespace Axiom.Animating
 
 		public void FreeTagPoint( TagPoint tagPoint )
 		{
-			if ( tagPointList.ContainsValue( tagPoint ) )
+			if( tagPointList.ContainsValue( tagPoint ) )
 			{
-				if ( tagPoint.Parent != null )
+				if( tagPoint.Parent != null )
 				{
 					tagPoint.Parent.RemoveChild( tagPoint );
 				}
@@ -244,7 +234,7 @@ namespace Axiom.Animating
 			this.BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
-			for ( int i = 0; i < skeleton.RootBoneCount; i++ )
+			for( int i = 0; i < skeleton.RootBoneCount; i++ )
 			{
 				Bone rootBone = skeleton.GetRootBone( i );
 				CloneBoneAndChildren( rootBone, null );
@@ -254,7 +244,7 @@ namespace Axiom.Animating
 			SetBindingPose();
 
 			// Clone the attachment points
-			for ( int i = 0; i < skeleton.AttachmentPoints.Count; i++ )
+			for( int i = 0; i < skeleton.AttachmentPoints.Count; i++ )
 			{
 				AttachmentPoint ap = skeleton.AttachmentPoints[ i ];
 				Bone parentBone = this.GetBone( ap.ParentBone );

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -94,9 +98,7 @@ namespace Axiom.Input
 		/// <param name="y">Mouse Y position.</param>
 		/// <param name="z">Mouse Z position.</param>
 		public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z )
-			: this( button, modifiers, x, y, z, 0, 0, 0 )
-		{
-		}
+			: this( button, modifiers, x, y, z, 0, 0, 0 ) {}
 
 		/// <summary>
 		///		Constructor.
@@ -128,79 +130,37 @@ namespace Axiom.Input
 		/// <summary>
 		///		Mouse button pressed during this event.
 		/// </summary>
-		public MouseButtons Button
-		{
-			get
-			{
-				return button;
-			}
-		}
+		public MouseButtons Button { get { return button; } }
 
 		/// <summary>
 		///		Mouse X coordinate.
 		/// </summary>
-		public float X
-		{
-			get
-			{
-				return x;
-			}
-		}
+		public float X { get { return x; } }
 
 		/// <summary>
 		///		Mouse Y coordinate.
 		/// </summary>
-		public float Y
-		{
-			get
-			{
-				return y;
-			}
-		}
+		public float Y { get { return y; } }
 
 		/// <summary>
 		///		Mouse Z coordinate.
 		/// </summary>
-		public float Z
-		{
-			get
-			{
-				return z;
-			}
-		}
+		public float Z { get { return z; } }
 
 		/// <summary>
 		///		Relative mouse X coordinate.
 		/// </summary>
-		public float RelativeX
-		{
-			get
-			{
-				return relativeX;
-			}
-		}
+		public float RelativeX { get { return relativeX; } }
 
 		/// <summary>
 		///		Relative mouse Y coordinate.
 		/// </summary>
-		public float RelativeY
-		{
-			get
-			{
-				return relativeY;
-			}
-		}
+		public float RelativeY { get { return relativeY; } }
 
 		/// <summary>
 		///		Relative mouse Z coordinate.
 		/// </summary>
-		public float RelativeZ
-		{
-			get
-			{
-				return relativeZ;
-			}
-		}
+		public float RelativeZ { get { return relativeZ; } }
 
 		#endregion Properties
 	}

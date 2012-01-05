@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,7 +48,7 @@ namespace Axiom.Graphics
 	///		of fragments rendered by the last render operation.
 	/// </summary>
 	/// Original Author: Lee Sandberg.
-	public abstract class HardwareOcclusionQuery : IDisposable
+	abstract public class HardwareOcclusionQuery : IDisposable
 	{
 		/// <summary>
 		/// Let's you get the last pixel count with out doing the hardware occlusion test
@@ -52,21 +56,17 @@ namespace Axiom.Graphics
 		/// <remarks>
 		/// This function won't give you new values, just the old value.
 		/// </remarks>
-		public int LastFragmentCount
-		{
-			get;
-			protected set;
-		}
+		public int LastFragmentCount { get; protected set; }
 
 		/// <summary>
 		/// Starts the hardware occlusion query
 		/// </summary>
-		public abstract void Begin();
+		abstract public void Begin();
 
 		/// <summary>
 		/// Ends the hardware occlusion test
 		/// </summary>
-		public abstract void End();
+		abstract public void End();
 
 		/// <summary>
 		/// Pulls the hardware occlusion query.
@@ -76,13 +76,13 @@ namespace Axiom.Graphics
 		/// if just want to test if the result is available.
 		/// </remarks>
 		/// <returns>the resulting number of fragments.</returns>
-		public abstract int PullResults();
+		abstract public int PullResults();
 
 		/// <summary>
 		/// Lets you know when query is done, or still be processed by the Hardware
 		/// </summary>
 		/// <returns>true if query isn't finished.</returns>
-		public abstract bool IsStillOutstanding();
+		abstract public bool IsStillOutstanding();
 
 		#region IDisposable Implementation
 
@@ -94,20 +94,11 @@ namespace Axiom.Graphics
 		#region isDisposed Property
 
 		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -135,11 +126,11 @@ namespace Axiom.Graphics
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 				}

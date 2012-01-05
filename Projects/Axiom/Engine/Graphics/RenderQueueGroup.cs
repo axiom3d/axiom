@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,14 +44,15 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-
 	/// <summary>
 	///		A grouping level underneath RenderQueue which groups renderables
 	///		to be issued at coarsely the same time to the renderer.	
@@ -65,10 +70,12 @@ namespace Axiom.Graphics
 		///		Render queue that this queue group belongs to.
 		/// </summary>
 		protected RenderQueue parent;
+
 		/// <summary>
 		///		Should passes be split by their lighting stage?
 		/// </summary>
 		protected bool splitPassesByLightingType;
+
 		protected bool splitNoShadowPasses;
 		protected bool shadowCastersCannotBeReceivers;
 
@@ -76,6 +83,7 @@ namespace Axiom.Graphics
 		///		List of priority groups.
 		/// </summary>
 		private RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
+
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>
@@ -92,7 +100,7 @@ namespace Axiom.Graphics
 		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
 		/// <param name="splitNoShadowPasses"></param>
 		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType,
-								bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
+		                         bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
 			shadowsEnabled = true;
@@ -117,7 +125,7 @@ namespace Axiom.Graphics
 			RenderPriorityGroup group = null;
 
 			// see if there is a current queue group for this group id
-			if ( !PriorityGroups.ContainsKey( priority ) )
+			if( !PriorityGroups.ContainsKey( priority ) )
 			{
 				// create a new queue group for this group id
 				group = new RenderPriorityGroup( this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType );
@@ -150,13 +158,15 @@ namespace Axiom.Graphics
 		{
 			// loop through each priority group and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+			foreach( RenderPriorityGroup group in PriorityGroups.Values )
 			{
 				// clear the RenderPriorityGroup
 				group.Clear();
 			}
-			if ( dispose )
+			if( dispose )
+			{
 				PriorityGroups.Clear();
+			}
 		}
 
 		#endregion
@@ -166,24 +176,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the number of priority groups within this queue group.
 		/// </summary>
-		public int NumPriorityGroups
-		{
-			get
-			{
-				return PriorityGroups.Count;
-			}
-		}
+		public int NumPriorityGroups { get { return PriorityGroups.Count; } }
 
 		/// <summary>
 		/// List of priority groups.
 		/// </summary>
-		public RenderPriorityGroupList PriorityGroups
-		{
-			get
-			{
-				return priorityGroups;
-			}
-		}
+		public RenderPriorityGroupList PriorityGroups { get { return priorityGroups; } }
 
 		/// <summary>
 		///		Indicate whether a given queue group will be doing any shadow setup.
@@ -198,17 +196,7 @@ namespace Axiom.Graphics
 		///		should preregister the group using this method in order to improve
 		///		the performance.
 		/// </remarks>
-		public bool ShadowsEnabled
-		{
-			get
-			{
-				return shadowsEnabled;
-			}
-			set
-			{
-				shadowsEnabled = value;
-			}
-		}
+		public bool ShadowsEnabled { get { return shadowsEnabled; } set { shadowsEnabled = value; } }
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will split passes by their lighting type,
@@ -216,16 +204,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool SplitPassesByLightingType
 		{
-			get
-			{
-				return splitPassesByLightingType;
-			}
+			get { return splitPassesByLightingType; }
 			set
 			{
 				splitPassesByLightingType = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach( RenderPriorityGroup group in PriorityGroups.Values )
 				{
 					group.SplitPassesByLightingType = splitPassesByLightingType;
 				}
@@ -239,16 +224,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool SplitNoShadowPasses
 		{
-			get
-			{
-				return splitNoShadowPasses;
-			}
+			get { return splitNoShadowPasses; }
 			set
 			{
 				splitNoShadowPasses = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach( RenderPriorityGroup group in PriorityGroups.Values )
 				{
 					group.SplitNoShadowPasses = splitNoShadowPasses;
 				}
@@ -261,16 +243,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool ShadowCastersCannotBeReceivers
 		{
-			get
-			{
-				return shadowCastersCannotBeReceivers;
-			}
+			get { return shadowCastersCannotBeReceivers; }
 			set
 			{
 				shadowCastersCannotBeReceivers = value;
 
 				// set the value for all priority groups as well
-				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+				foreach( RenderPriorityGroup group in PriorityGroups.Values )
 				{
 					group.ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
 				}
@@ -279,5 +258,4 @@ namespace Axiom.Graphics
 
 		#endregion
 	}
-
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: WindowEventMonitor.cs 1617 2009-06-02 20:04:03Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -75,34 +79,22 @@ namespace Axiom.Core
 	{
 		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
 		private List<RenderWindow> _windows = new List<RenderWindow>();
-		public IEnumerable<RenderWindow> Windows
-		{
-			get
-			{
-				return _windows;
-			}
-		}
+		public IEnumerable<RenderWindow> Windows { get { return _windows; } }
 
-		private WindowEventMonitor()
-		{
-		}
+		private WindowEventMonitor() {}
 
 		private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
+
 		/// <summary>
 		/// Singleton Instance of the class
 		/// </summary>
-		public static WindowEventMonitor Instance
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+		public static WindowEventMonitor Instance { get { return _instance; } }
 
 		/// <summary>
 		///
 		/// </summary>
 		public delegate void MessagePumpDelegate();
+
 		public MessagePumpDelegate MessagePump;
 
 		/// <summary>
@@ -117,7 +109,7 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( !_listeners.ContainsKey( window ) )
+			if( !_listeners.ContainsKey( window ) )
 			{
 				_listeners.Add( window, new List<IWindowEventListener>() );
 			}
@@ -134,7 +126,7 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( _listeners.ContainsKey( window ) )
+			if( _listeners.ContainsKey( window ) )
 			{
 				_listeners[ window ].Remove( listener );
 			}
@@ -162,12 +154,12 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if( _windows.Contains( window ) )
 			{
 				_windows.Remove( window );
 			}
 
-			if ( _listeners.ContainsKey( window ) )
+			if( _listeners.ContainsKey( window ) )
 			{
 				_listeners[ window ].Clear();
 				_listeners.Remove( window );
@@ -183,13 +175,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if( _windows.Contains( window ) )
 			{
 				// Notify Window of focus change
 				window.IsActive = hasFocus;
 
 				// Notify listeners of focus change
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowFocusChange( window );
 				}
@@ -206,13 +198,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if( _windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowMoved( window );
 				}
@@ -228,13 +220,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if( _windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowResized( window );
 				}
@@ -250,10 +242,10 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if( _windows.Contains( window ) )
 			{
 				// Notify listeners of close
-				foreach ( IWindowEventListener listener in _listeners[ window ] )
+				foreach( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
@@ -269,7 +261,7 @@ namespace Axiom.Core
 
 		public void Dispose()
 		{
-			foreach ( List<IWindowEventListener> list in _listeners.Values )
+			foreach( List<IWindowEventListener> list in _listeners.Values )
 			{
 				list.Clear();
 			}
@@ -279,6 +271,7 @@ namespace Axiom.Core
 
 			//base.Dispose();
 		}
+
 		#endregion Singleton<WindowManager> Members
 	}
 }

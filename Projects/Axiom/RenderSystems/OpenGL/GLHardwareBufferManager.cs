@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,9 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareBufferManagerBase()
-		{
-		}
+		public GLHardwareBufferManagerBase() {}
 
 		#endregion
 
@@ -116,30 +118,24 @@ namespace Axiom.RenderSystems.OpenGL
 			return buffer;
 		}
 
-
 		#endregion
 	}
 
 	public class GLHardwareBufferManager : HardwareBufferManager
 	{
 		public GLHardwareBufferManager()
-			: base( new GLHardwareBufferManagerBase() )
-		{
-		}
+			: base( new GLHardwareBufferManagerBase() ) {}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
 				_baseInstance.Dispose();
 				_baseInstance = null;
 			}
 			base.dispose( disposeManagedResources );
 		}
-
 	}
 
-	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
-	{
-	}
+	public class GLSoftwareBufferManager : DefaultHardwareBufferManager {}
 }

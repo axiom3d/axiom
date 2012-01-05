@@ -45,7 +45,5 @@ namespace Axiom.Graphics.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="RenderWindow">RenderWindows</see> that are sorted by name.
 	/// </summary>
-	public class RenderWindowCollection : AxiomCollection<RenderWindow>
-	{
-	}
+	public class RenderWindowCollection : AxiomCollection<RenderWindow> {}
 }

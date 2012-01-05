@@ -44,7 +44,5 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Represents a collection of names and parameters.
 	/// </summary>
-	public class NamedParameterList : Dictionary<string, object>
-	{
-	}
+	public class NamedParameterList : Dictionary<string, object> {}
 }

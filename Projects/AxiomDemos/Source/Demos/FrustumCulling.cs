@@ -21,13 +21,12 @@ namespace Axiom.Demos
 	// TODO: Make sure recalculateView is being set properly for frustum updates.
 	public class FrustumCulling : TechDemo
 	{
-
-		EntityList entityList = new EntityList();
-		Frustum frustum;
-		SceneNode frustumNode;
-		Viewport viewport2;
-		Camera camera2;
-		int objectsVisible = 0;
+		private EntityList entityList = new EntityList();
+		private Frustum frustum;
+		private SceneNode frustumNode;
+		private Viewport viewport2;
+		private Camera camera2;
+		private int objectsVisible = 0;
 
 		public override void CreateScene()
 		{
@@ -76,7 +75,6 @@ namespace Axiom.Demos
 			camera2.Near = 1;
 		}
 
-
 		public override void CreateViewports()
 		{
 			base.CreateViewports();
@@ -86,62 +84,63 @@ namespace Axiom.Demos
 			viewport2.BackgroundColor = ColorEx.Blue;
 		}
 
-
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			objectsVisible = 0;
 
 			float speed = 35 * evt.TimeSinceLastFrame;
 			float change = 15 * evt.TimeSinceLastFrame;
 
-			if ( input.IsKeyPressed( KeyCodes.I ) )
+			if( input.IsKeyPressed( KeyCodes.I ) )
 			{
 				frustumNode.Translate( new Vector3( 0, 0, -speed ), TransformSpace.Local );
 			}
-			if ( input.IsKeyPressed( KeyCodes.K ) )
+			if( input.IsKeyPressed( KeyCodes.K ) )
 			{
 				frustumNode.Translate( new Vector3( 0, 0, speed ), TransformSpace.Local );
 			}
-			if ( input.IsKeyPressed( KeyCodes.J ) )
+			if( input.IsKeyPressed( KeyCodes.J ) )
 			{
 				frustumNode.Rotate( Vector3.UnitY, speed );
 			}
-			if ( input.IsKeyPressed( KeyCodes.L ) )
+			if( input.IsKeyPressed( KeyCodes.L ) )
 			{
 				frustumNode.Rotate( Vector3.UnitY, -speed );
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.D1 ) )
+			if( input.IsKeyPressed( KeyCodes.D1 ) )
 			{
-				if ( frustum.FieldOfView - change > 20 )
+				if( frustum.FieldOfView - change > 20 )
 				{
 					frustum.FieldOfView -= change;
 				}
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.D2 ) )
+			if( input.IsKeyPressed( KeyCodes.D2 ) )
 			{
-				if ( frustum.FieldOfView < 90 )
+				if( frustum.FieldOfView < 90 )
 				{
 					frustum.FieldOfView += change;
 				}
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.D3 ) )
+			if( input.IsKeyPressed( KeyCodes.D3 ) )
 			{
-				if ( frustum.Far - change > 20 )
+				if( frustum.Far - change > 20 )
 				{
 					frustum.Far -= change;
 				}
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.D4 ) )
+			if( input.IsKeyPressed( KeyCodes.D4 ) )
 			{
-				if ( frustum.Far + change < 500 )
+				if( frustum.Far + change < 500 )
 				{
 					frustum.Far += change;
 				}
@@ -149,9 +148,9 @@ namespace Axiom.Demos
 
 			// go through each entity in the scene.  if the entity is within
 			// the frustum, show its bounding box
-			foreach ( Entity entity in entityList )
+			foreach( Entity entity in entityList )
 			{
-				if ( frustum.IsObjectVisible( entity.GetWorldBoundingBox() ) )
+				if( frustum.IsObjectVisible( entity.GetWorldBoundingBox() ) )
 				{
 					entity.ShowBoundingBox = true;
 					objectsVisible++;
@@ -165,6 +164,5 @@ namespace Axiom.Demos
 			// report the number of objects within the frustum
 			debugText = string.Format( "Objects visible: {0}", objectsVisible );
 		}
-
 	}
 }

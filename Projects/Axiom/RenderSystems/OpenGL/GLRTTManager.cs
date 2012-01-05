@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLRTTManager.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,16 +53,10 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Abstract Factory for RenderTextures.
 	/// </summary>
-	internal abstract class GLRTTManager : IDisposable
+	abstract internal class GLRTTManager : IDisposable
 	{
 		private BaseGLSupport _glSupport;
-		public BaseGLSupport GLSupport
-		{
-			get
-			{
-				return _glSupport;
-			}
-		}
+		public BaseGLSupport GLSupport { get { return _glSupport; } }
 
 		#region Singleton Implementation
 
@@ -76,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </remarks>
 		protected internal GLRTTManager( BaseGLSupport glSupport )
 		{
-			if ( _instance == null )
+			if( _instance == null )
 			{
 				_instance = this;
 				_glSupport = glSupport;
@@ -86,13 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static GLRTTManager Instance
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+		public static GLRTTManager Instance { get { return _instance; } }
 
 		#endregion Singleton Implementation
 
@@ -104,20 +96,20 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="name"></param>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public abstract RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa );
+		abstract public RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa );
 
 		/// <summary>
 		/// Check if a certain format is usable as rendertexture format
 		/// </summary>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public abstract bool CheckFormat( PixelFormat format );
+		abstract public bool CheckFormat( PixelFormat format );
 
 		/// <summary>
 		/// Bind a certain render target.
 		/// </summary>
 		/// <param name="target"></param>
-		public abstract void Bind( RenderTarget target );
+		abstract public void Bind( RenderTarget target );
 
 		/// <summary>
 		/// Unbind a certain render target. This is called before binding another RenderTarget, and
@@ -125,14 +117,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// binding is used.
 		/// </summary>
 		/// <param name="target"></param>
-		public abstract void Unbind( RenderTarget target );
+		abstract public void Unbind( RenderTarget target );
 
 		/// <summary>
 		/// Create a multi render target
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public virtual MultiRenderTarget CreateMultiRenderTarget( string name )
+		virtual public MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
 			throw new NotSupportedException( "MultiRenderTarget can only be used with GL_EXT_framebuffer_object extension" );
 		}
@@ -142,13 +134,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="format"></param>
 		/// <returns></returns>
-		public virtual PixelFormat GetSupportedAlternative( PixelFormat format )
+		virtual public PixelFormat GetSupportedAlternative( PixelFormat format )
 		{
-			if ( CheckFormat( format ) )
+			if( CheckFormat( format ) )
+			{
 				return format;
+			}
 			/// Find first alternative
 			PixelComponentType pct = PixelUtil.GetComponentType( format );
-			switch ( pct )
+			switch( pct )
 			{
 				case PixelComponentType.Byte:
 					format = PixelFormat.A8R8G8B8;
@@ -163,36 +157,27 @@ namespace Axiom.RenderSystems.OpenGL
 					format = PixelFormat.FLOAT32_RGBA;
 					break;
 			}
-			if ( CheckFormat( format ) )
+			if( CheckFormat( format ) )
+			{
 				return format;
+			}
 
 			/// If none at all, return to default
 			return PixelFormat.A8R8G8B8;
-
 		}
 
 		#endregion Methods
 
 		#region IDisposable Implementation
 
-
 		#region isDisposed Property
 
 		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -220,15 +205,17 @@ namespace Axiom.RenderSystems.OpenGL
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this == GLRTTManager.Instance )
+					if( this == GLRTTManager.Instance )
+					{
 						_instance = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -244,6 +231,5 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

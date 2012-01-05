@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -73,24 +74,12 @@ namespace Axiom.Graphics
 		///		Gets an enumerator to iterate through the buffer bindings.
 		/// </summary>
 		/// TODO: Change this to strongly typed later on
-		public virtual Dictionary<short, HardwareVertexBuffer> Bindings
-		{
-			get
-			{
-				return bindingMap;
-			}
-		}
+		virtual public Dictionary<short, HardwareVertexBuffer> Bindings { get { return bindingMap; } }
 
 		/// <summary>
 		///		Gets the number of bindings.
 		/// </summary>
-		public int BindingCount
-		{
-			get
-			{
-				return bindingMap.Count;
-			}
-		}
+		public int BindingCount { get { return bindingMap.Count; } }
 
 		/// <summary>
 		///		The highest index in use for this binding.
@@ -104,13 +93,7 @@ namespace Axiom.Graphics
 		///		This is to assist in binding the vertex buffers such that there are
 		///		not gaps in the list.
 		/// </remarks>
-		public virtual short NextIndex
-		{
-			get
-			{
-				return highIndex++;
-			}
-		}
+		virtual public short NextIndex { get { return highIndex++; } }
 
 		#endregion Fields & Properties
 
@@ -132,7 +115,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="index">Index at which to bind the buffer.</param>
 		/// <param name="buffer">Vertex buffer to bind.</param>
-		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
+		virtual public void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
 			bindingMap[ index ] = buffer;
 			highIndex = (short)Utility.Max( highIndex, index + 1 );
@@ -142,7 +125,7 @@ namespace Axiom.Graphics
 		///		Removes an existing binding.
 		/// </summary>
 		/// <param name="index">Index of the buffer binding to remove.</param>
-		public virtual void UnsetBinding( short index )
+		virtual public void UnsetBinding( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
 
@@ -152,7 +135,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Removes all current buffer bindings.
 		/// </summary>
-		public virtual void UnsetAllBindings()
+		virtual public void UnsetAllBindings()
 		{
 			bindingMap.Clear();
 		}
@@ -162,7 +145,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="index">Index of the binding to retreive the buffer for.</param>
 		/// <returns>Buffer at the specified index.</returns>
-		public virtual HardwareVertexBuffer GetBuffer( short index )
+		virtual public HardwareVertexBuffer GetBuffer( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
@@ -177,16 +160,16 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
 				// If it is available, make the call to the
 				// base class's Dispose(Boolean) method
 				base.dispose( disposeManagedResources );
 
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.bindingMap != null )
+					if( this.bindingMap != null )
 					{
 						bindingMap.Clear();
 					}
@@ -197,7 +180,6 @@ namespace Axiom.Graphics
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-
 		}
 
 		#endregion IDisposable Implementation

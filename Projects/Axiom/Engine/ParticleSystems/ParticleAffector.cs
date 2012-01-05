@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Reflection;
+
 using Axiom.Collections;
 using Axiom.Scripting;
 
@@ -68,7 +69,7 @@ namespace Axiom.ParticleSystems
 	///		with literally infinite combinations of affector and affector types, and parameters within those
 	///		types.
 	/// </remarks>
-	public abstract class ParticleAffector
+	abstract public class ParticleAffector
 	{
 		#region Fields
 
@@ -96,17 +97,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Gets the type name of this affector.
 		/// </summary>
-		public string Type
-		{
-			get
-			{
-				return type;
-			}
-			set
-			{
-				type = value;
-			}
-		}
+		public string Type { get { return type; } set { type = value; } }
 
 		#endregion Properties
 
@@ -122,16 +113,16 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="system">Reference to a ParticleSystem to affect.</param>
 		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-		public abstract void AffectParticles( ParticleSystem system, float timeElapsed );
+		abstract public void AffectParticles( ParticleSystem system, float timeElapsed );
 
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="emitter"></param>
-		public virtual void CopyTo( ParticleAffector affector )
+		virtual public void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( string key in commandTable.Keys )
+			foreach( string key in commandTable.Keys )
 			{
 				// get the value of the param from this instance
 				string val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
@@ -151,7 +142,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="system">Reference to a ParticleSystem to affect.</param>
 		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-		public virtual void InitParticle( ref Particle particle )
+		virtual public void InitParticle( ref Particle particle )
 		{
 			// do nothing by default
 		}
@@ -167,7 +158,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="value"></param>
 		public bool SetParam( string name, string val )
 		{
-			if ( commandTable.ContainsKey( name ) )
+			if( commandTable.ContainsKey( name ) )
 			{
 				IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
 
@@ -194,7 +185,7 @@ namespace Axiom.ParticleSystems
 				Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
 
 				// loop through all methods and look for ones marked with attributes
-				for ( int i = 0; i < types.Length; i++ )
+				for( int i = 0; i < types.Length; i++ )
 				{
 					// get the current method in the loop
 					Type type = types[ i ];
@@ -204,7 +195,7 @@ namespace Axiom.ParticleSystems
 						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true );
 
 					// loop through each one we found and register its command
-					for ( int j = 0; j < commandAtts.Length; j++ )
+					for( int j = 0; j < commandAtts.Length; j++ )
 					{
 						ScriptablePropertyAttribute commandAtt = commandAtts[ j ];
 
@@ -215,7 +206,7 @@ namespace Axiom.ParticleSystems
 				// get the base type of the current type
 				baseType = baseType.BaseType;
 			}
-			while ( baseType != typeof( object ) );
+			while( baseType != typeof( object ) );
 		}
 
 		#endregion Script parser methods

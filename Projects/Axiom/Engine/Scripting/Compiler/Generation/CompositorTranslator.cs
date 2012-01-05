@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -64,9 +68,9 @@ namespace Axiom.Scripting.Compiler
 			{
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
-				if ( obj != null )
+				if( obj != null )
 				{
-					if ( string.IsNullOrEmpty( obj.Name ) )
+					if( string.IsNullOrEmpty( obj.Name ) )
 					{
 						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
 						return;
@@ -83,7 +87,7 @@ namespace Axiom.Scripting.Compiler
 				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
 				bool processed = compiler._fireEvent( ref evt, out compObject );
 
-				if ( !processed )
+				if( !processed )
 				{
 					//TODO
 					// The original translated implementation of this code block was simply the following:
@@ -94,15 +98,21 @@ namespace Axiom.Scripting.Compiler
 
 					Compositor checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
 
-					if ( checkForExistingComp == null )
+					if( checkForExistingComp == null )
+					{
 						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					}
 					else
+					{
 						_Compositor = checkForExistingComp;
+					}
 				}
 				else
+				{
 					_Compositor = (Compositor)compObject;
+				}
 
-				if ( _Compositor == null )
+				if( _Compositor == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
@@ -113,9 +123,9 @@ namespace Axiom.Scripting.Compiler
 				_Compositor.Origin = obj.File;
 				obj.Context = _Compositor;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
@@ -130,4 +140,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

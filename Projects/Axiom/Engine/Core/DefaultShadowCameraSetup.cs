@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -60,10 +64,9 @@ namespace Axiom.Core
 			textureCamera.SetCustomViewMatrix( false );
 			textureCamera.SetCustomProjectionMatrix( false );
 
-
 			// get the shadow frustum's far distance
 			float shadowDist = light.ShadowFarDistance;
-			if ( shadowDist == 0.0f )
+			if( shadowDist == 0.0f )
 			{
 				// need a shadow distance, make one up
 				shadowDist = camera.Near * 300;
@@ -71,7 +74,7 @@ namespace Axiom.Core
 			float shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
 
 			// Directional lights
-			if ( light.Type == LightType.Directional )
+			if( light.Type == LightType.Directional )
 			{
 				// set up the shadow texture
 				// Set ortho projection
@@ -106,7 +109,7 @@ namespace Axiom.Core
 
 				Vector3 up = Vector3.UnitY;
 				// Check it's not coincident with dir
-				if ( Utility.Abs( up.Dot( dir ) ) >= 1.0f )
+				if( Utility.Abs( up.Dot( dir ) ) >= 1.0f )
 				{
 					// Use camera up
 					up = Vector3.UnitZ;
@@ -128,10 +131,9 @@ namespace Axiom.Core
 
 				//convert back to world space
 				pos = q * lightSpacePos;
-
 			}
-			// Spotlight
-			else if ( light.Type == LightType.Spotlight )
+				// Spotlight
+			else if( light.Type == LightType.Spotlight )
 			{
 				// Set perspective projection
 				textureCamera.ProjectionType = Projection.Perspective;
@@ -139,8 +141,10 @@ namespace Axiom.Core
 				Radian fovy = light.SpotlightOuterAngle * 1.2f;
 
 				// limit angle
-				if ( fovy.InDegrees > 175 )
+				if( fovy.InDegrees > 175 )
+				{
 					fovy = (Degree)( 175 );
+				}
 				textureCamera.FieldOfView = (float)fovy;
 
 				// set near clip the same as main camera, since they are likely
@@ -154,7 +158,7 @@ namespace Axiom.Core
 				dir = -light.DerivedDirection; // backwards since point down -z
 				dir.Normalize();
 			}
-			// Point light
+				// Point light
 			else
 			{
 				// Set perspective projection
@@ -184,7 +188,7 @@ namespace Axiom.Core
 			Vector3 up2 = Vector3.UnitY;
 
 			// Check it's not coincident with dir
-			if ( Utility.Abs( up2.Dot( dir ) ) >= 1.0f )
+			if( Utility.Abs( up2.Dot( dir ) ) >= 1.0f )
 			{
 				// Use camera up
 				up2 = Vector3.UnitZ;

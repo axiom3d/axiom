@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,6 +47,7 @@ using Axiom.Graphics;
 using Axiom.Media;
 
 using Tao.OpenGl;
+
 using Axiom.Math;
 using Axiom.Graphics.Collections;
 
@@ -53,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for GLHelper.
 	/// </summary>
-	internal abstract class BaseGLSupport
+	abstract internal class BaseGLSupport
 	{
 		#region Fields and Properties
 
@@ -63,16 +68,11 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Collection of extensions supported by the current hardware.
 		/// </summary>
 		private static List<String> _extensionList;
+
 		/// <summary>
 		///		Gets a collection of strings listing all the available extensions.
 		/// </summary>
-		public List<String> Extensions
-		{
-			get
-			{
-				return _extensionList;
-			}
-		}
+		public List<String> Extensions { get { return _extensionList; } }
 
 		#endregion Extensions Property
 
@@ -82,16 +82,11 @@ namespace Axiom.RenderSystems.OpenGL
 		///		OpenGL version string.
 		/// </summary>
 		private static string _glVersion;
+
 		/// <summary>
 		///		Version string for the current OpenGL driver.
 		/// </summary>
-		public string Version
-		{
-			get
-			{
-				return _glVersion;
-			}
-		}
+		public string Version { get { return _glVersion; } }
 
 		#endregion Version Property
 
@@ -101,16 +96,11 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Vendor of the current hardware.
 		/// </summary>
 		private static string _vendor;
+
 		/// <summary>
 		///		Name of the vendor for the current video hardware.
 		/// </summary>
-		public string Vendor
-		{
-			get
-			{
-				return _vendor;
-			}
-		}
+		public string Vendor { get { return _vendor; } }
 
 		#endregion Vendor Property
 
@@ -120,16 +110,11 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Name of the video card in use.
 		/// </summary>
 		private static string _videoCard;
+
 		/// <summary>
 		///		Name/brand of the current video hardware.
 		/// </summary>
-		public string VideoCard
-		{
-			get
-			{
-				return _videoCard;
-			}
-		}
+		public string VideoCard { get { return _videoCard; } }
 
 		#endregion VideoCard Property
 
@@ -139,16 +124,11 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Config options.
 		/// </summary>
 		protected ConfigOptionCollection _engineConfig = new ConfigOptionCollection();
+
 		/// <summary>
 		///		Gets the options currently set by the current GL implementation.
 		/// </summary>
-		public ConfigOptionCollection ConfigOptions
-		{
-			get
-			{
-				return _engineConfig;
-			}
-		}
+		public ConfigOptionCollection ConfigOptions { get { return _engineConfig; } }
 
 		#endregion ConfigOptions Property
 
@@ -182,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public void InitializeExtensions()
 		{
-			if ( _extensionList == null )
+			if( _extensionList == null )
 			{
 				Gl.ReloadFunctions();
 
@@ -195,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGL
 				//_vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
 
 				// parse out the first piece of the vendor string if there are spaces in it
-				if ( _vendor.IndexOf( " " ) != -1 )
+				if( _vendor.IndexOf( " " ) != -1 )
 				{
 					_vendor = _vendor.Substring( 0, _vendor.IndexOf( " " ) );
 				}
@@ -208,22 +188,16 @@ namespace Axiom.RenderSystems.OpenGL
 				string[] splitExt = allExt.Split( Char.Parse( " " ) );
 
 				// store the parsed extension list
-				for ( int i = 0; i < splitExt.Length; i++ )
+				for( int i = 0; i < splitExt.Length; i++ )
 				{
 					_extensionList.Add( splitExt[ i ] );
 				}
 			}
 		}
 
-		public virtual bool SupportsPBuffers
-		{
-			get
-			{
-				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
-			}
-		}
+		virtual public bool SupportsPBuffers { get { return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" ); } }
 
-		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
+		virtual public GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
 		{
 			return null;
 		}
@@ -235,17 +209,17 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Start anything speciual
 		/// </summary>
-		public abstract void Start();
+		abstract public void Start();
 
 		/// <summary>
 		/// Stop anything special
 		/// </summary>
-		public abstract void Stop();
+		abstract public void Stop();
 
 		/// <summary>
 		///		Add any special config values to the system.
 		/// </summary>
-		public abstract void AddConfig();
+		abstract public void AddConfig();
 
 		/// <summary>
 		///
@@ -254,7 +228,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="renderSystem"></param>
 		/// <param name="windowTitle"></param>
 		/// <returns></returns>
-		public abstract RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle );
+		abstract public RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle );
 
 		/// <summary>
 		///		Subclasses need to implement a means to return the pointer to the extension function
@@ -262,7 +236,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		/// <param name="extension">Name of the extension to retreive the pointer for.</param>
 		/// <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
-		public abstract IntPtr GetProcAddress( string extension );
+		abstract public IntPtr GetProcAddress( string extension );
 
 		/// <summary>
 		///		Creates a specific instance of a render window.
@@ -278,9 +252,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="parent"></param>
 		/// <param name="vsync"></param>
 		/// <returns></returns>
-		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
+		abstract public RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
 
 		#endregion Abstract Members
-
 	}
 }

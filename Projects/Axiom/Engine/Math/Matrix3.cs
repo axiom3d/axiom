@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -75,16 +79,17 @@ namespace Axiom.Math
 		/// 
 		/// </summary>
 		public Real m00, m01, m02;
+
 		public Real m10, m11, m12;
 		public Real m20, m21, m22;
 
 		private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0,
-			0, 1, 0,
-			0, 0, 1 );
+		                                                              0, 1, 0,
+		                                                              0, 0, 1 );
 
 		private static readonly Matrix3 zeroMatrix = new Matrix3( 0, 0, 0,
-			0, 0, 0,
-			0, 0, 0 );
+		                                                          0, 0, 0,
+		                                                          0, 0, 0 );
 
 		#endregion
 
@@ -94,8 +99,8 @@ namespace Axiom.Math
 		///		Creates a new Matrix3 with all the specified parameters.
 		/// </summary>
 		public Matrix3( Real m00, Real m01, Real m02,
-			Real m10, Real m11, Real m12,
-			Real m20, Real m21, Real m22 )
+		                Real m10, Real m11, Real m12,
+		                Real m20, Real m21, Real m22 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -134,24 +139,12 @@ namespace Axiom.Math
 		/// <summary>
 		/// Identity Matrix
 		/// </summary>
-		public static Matrix3 Identity
-		{
-			get
-			{
-				return identityMatrix;
-			}
-		}
+		public static Matrix3 Identity { get { return identityMatrix; } }
 
 		/// <summary>
 		/// Zero matrix.
 		/// </summary>
-		public static Matrix3 Zero
-		{
-			get
-			{
-				return zeroMatrix;
-			}
-		}
+		public static Matrix3 Zero { get { return zeroMatrix; } }
 
 		#endregion
 
@@ -164,8 +157,8 @@ namespace Axiom.Math
 		public Matrix3 Transpose()
 		{
 			return new Matrix3( m00, m10, m20,
-				m01, m11, m21,
-				m02, m12, m22 );
+			                    m01, m11, m21,
+			                    m02, m12, m22 );
 		}
 
 		/// <summary>
@@ -179,10 +172,12 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
-					return new Vector3( *( pM + col ),        //m[0,col], 
-										*( pM + 3 + col ),    //m[1,col], 
-										*( pM + 6 + col ) );  //m[2,col]);
+				fixed( Real* pM = &m00 )
+				{
+					return new Vector3( *( pM + col ), //m[0,col], 
+					                    *( pM + 3 + col ), //m[1,col], 
+					                    *( pM + 6 + col ) ); //m[2,col]);
+				}
 			}
 		}
 
@@ -244,9 +239,9 @@ namespace Axiom.Math
 			Real pAngle;
 
 			pAngle = Utility.ASin( m01 );
-			if ( pAngle < Utility.PI / 2 )
+			if( pAngle < Utility.PI / 2 )
 			{
-				if ( pAngle > -Utility.PI / 2 )
+				if( pAngle > -Utility.PI / 2 )
 				{
 					yAngle = Utility.ATan2( m21, m11 );
 					rAngle = Utility.ATan2( m02, m00 );
@@ -293,7 +288,6 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator *( Matrix3 left, Matrix3 right )
 		{
-
 			Matrix3 result = new Matrix3();
 
 			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
@@ -456,9 +450,9 @@ namespace Axiom.Math
 		{
 			Matrix3 result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for( int row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for( int col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] + right[ row, col ];
 				}
@@ -488,9 +482,9 @@ namespace Axiom.Math
 		{
 			Matrix3 result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for( int row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for( int col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] - right[ row, col ];
 				}
@@ -539,12 +533,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static bool operator ==( Matrix3 left, Matrix3 right )
 		{
-			if (
+			if(
 				left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 &&
 				left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 &&
 				left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
 			{
-
 				return true;
 			}
 
@@ -567,8 +560,10 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed( Real* pM = &m00 )
+					{
 						return *( pM + ( ( 3 * row ) + col ) );
+					}
 				}
 			}
 			set
@@ -577,8 +572,10 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed( Real* pM = &m00 )
+					{
 						*( pM + ( ( 3 * row ) + col ) ) = value;
+					}
 				}
 			}
 		}
@@ -594,7 +591,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed( Real* pMatrix = &m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -606,7 +603,7 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed( Real* pMatrix = &m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -670,10 +667,12 @@ namespace Axiom.Math
 
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed( Real* pM = &m00 )
 				{
-					for ( int i = 0; i < 9; i++ )
+					for( int i = 0; i < 9; i++ )
+					{
 						hashCode ^= (int)( *( pM + i ) );
+					}
 				}
 
 				return hashCode;
@@ -692,6 +691,5 @@ namespace Axiom.Math
 		}
 
 		#endregion
-
 	}
 }

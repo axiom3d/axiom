@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -78,7 +79,7 @@ namespace Axiom.Overlays
 	/// 	in physical pixels 0.5 is wider than it is tall, so a 0.5x0.5 panel will not be
 	/// 	square on the screen (but it will take up exactly half the screen in both dimensions).
 	/// </remarks>
-	public abstract class OverlayElement : ScriptableObject, IRenderable
+	abstract public class OverlayElement : ScriptableObject, IRenderable
 	{
 		#region Member variables
 
@@ -119,7 +120,9 @@ namespace Axiom.Overlays
 		protected int zOrder;
 
 		// world transforms
-		protected Matrix4[] xform = new Matrix4[ 1 ] { Matrix4.Identity };
+		protected Matrix4[] xform = new Matrix4[1] {
+		                                           	Matrix4.Identity
+		                                           };
 
 		protected bool isEnabled;
 
@@ -141,7 +144,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="name"></param>
 		protected internal OverlayElement( string name )
-            : base()
+			: base()
 		{
 			this.name = name;
 			isVisible = true;
@@ -179,7 +182,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="template"></param>
 		/// <returns></returns>
-		public virtual void CopyFromTemplate( OverlayElement template )
+		virtual public void CopyFromTemplate( OverlayElement template )
 		{
 			template.CopyParametersTo( this );
 			sourceTemplate = template;
@@ -187,14 +190,14 @@ namespace Axiom.Overlays
 
 		public void CopyParametersTo( OverlayElement instance )
 		{
-			foreach ( IPropertyCommand command in Commands )
+			foreach( IPropertyCommand command in Commands )
 			{
 				string srcValue = command.Get( this );
 				command.Set( instance, srcValue );
 			}
 		}
 
-		public virtual OverlayElement Clone( string instanceName )
+		virtual public OverlayElement Clone( string instanceName )
 		{
 			OverlayElement newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
 			CopyParametersTo( newElement );
@@ -213,19 +216,19 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Initialize the OverlayElement.
 		/// </summary>
-		public abstract void Initialize();
+		abstract public void Initialize();
 
 		/// <summary>
 		///    Internal method for notifying the gui element of it's parent and ultimate overlay.
 		/// </summary>
 		/// <param name="parent">Parent of this element.</param>
 		/// <param name="overlay">Overlay this element belongs to.</param>
-		public virtual void NotifyParent( OverlayElementContainer parent, Overlay overlay )
+		virtual public void NotifyParent( OverlayElementContainer parent, Overlay overlay )
 		{
 			this.parent = parent;
 			this.overlay = overlay;
 
-			if ( overlay != null && overlay.IsInitialized && !this.isInitialized )
+			if( overlay != null && overlay.IsInitialized && !this.isInitialized )
 			{
 				Initialize();
 			}
@@ -250,7 +253,7 @@ namespace Axiom.Overlays
 		/// is simply zOrder + 1, but for containers, they increment it once for each
 		/// child (more if those children are also containers).
 		/// </returns>
-		public virtual int NotifyZOrder( int zOrder )
+		virtual public int NotifyZOrder( int zOrder )
 		{
 			this.zOrder = zOrder;
 			return this.zOrder + 1;
@@ -260,7 +263,7 @@ namespace Axiom.Overlays
 		/// Notifies the world transforms.
 		/// </summary>
 		/// <param name="xform">The xform.</param>
-		public virtual void NotifyWorldTransforms( Matrix4[] xform )
+		virtual public void NotifyWorldTransforms( Matrix4[] xform )
 		{
 			this.xform = xform;
 		}
@@ -268,38 +271,38 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// Notifies the viewport.
 		/// </summary>
-		public virtual void NotifyViewport()
+		virtual public void NotifyViewport()
 		{
-			switch ( metricsMode )
+			switch( metricsMode )
 			{
 				case MetricsMode.Pixels:
-					{
-						OverlayManager oMgr = OverlayManager.Instance;
-						float vpWidth = oMgr.ViewportWidth;
-						float vpHeight = oMgr.ViewportHeight;
+				{
+					OverlayManager oMgr = OverlayManager.Instance;
+					float vpWidth = oMgr.ViewportWidth;
+					float vpHeight = oMgr.ViewportHeight;
 
-						// cope with temporarily zero dimensions, avoid divide by zero
-						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
-						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
+					// cope with temporarily zero dimensions, avoid divide by zero
+					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / vpWidth;
-						pixelScaleY = 1.0f / vpHeight;
-					}
+					pixelScaleX = 1.0f / vpWidth;
+					pixelScaleY = 1.0f / vpHeight;
+				}
 					break;
 
 				case MetricsMode.Relative_Aspect_Adjusted:
-					{
-						OverlayManager oMgr = OverlayManager.Instance;
-						float vpWidth = oMgr.ViewportWidth;
-						float vpHeight = oMgr.ViewportHeight;
+				{
+					OverlayManager oMgr = OverlayManager.Instance;
+					float vpWidth = oMgr.ViewportWidth;
+					float vpHeight = oMgr.ViewportHeight;
 
-						// cope with temporarily zero dimensions, avoid divide by zero
-						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
-						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
+					// cope with temporarily zero dimensions, avoid divide by zero
+					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-						pixelScaleY = 1.0f / 10000.0f;
-					}
+					pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+					pixelScaleY = 1.0f / 10000.0f;
+				}
 					break;
 
 				case MetricsMode.Relative:
@@ -323,7 +326,7 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Tells this element to recaculate it's position.
 		/// </summary>
-		public virtual void PositionsOutOfDate()
+		virtual public void PositionsOutOfDate()
 		{
 			isGeomPositionsOutOfDate = true;
 		}
@@ -335,7 +338,7 @@ namespace Axiom.Overlays
 		/// <param name="height">The height.</param>
 		public void SetDimensions( float width, float height )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if( metricsMode != MetricsMode.Relative )
 			{
 				pixelWidth = (int)width;
 				pixelHeight = (int)height;
@@ -369,7 +372,7 @@ namespace Axiom.Overlays
 		/// <param name="top">The top.</param>
 		public void SetPosition( float left, float top )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if( metricsMode != MetricsMode.Relative )
 			{
 				pixelLeft = (int)left;
 				pixelTop = (int)top;
@@ -395,13 +398,13 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Internal method to update the element based on transforms applied.
 		/// </summary>
-		public virtual void Update()
+		virtual public void Update()
 		{
 			// Check size if pixel-based
-			switch ( this.metricsMode )
+			switch( this.metricsMode )
 			{
 				case MetricsMode.Pixels:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
 					{
 						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
@@ -422,7 +425,7 @@ namespace Axiom.Overlays
 					break;
 
 				case MetricsMode.Relative_Aspect_Adjusted:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
 					{
 						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
@@ -449,13 +452,13 @@ namespace Axiom.Overlays
 			UpdateFromParent();
 
 			// update our own position geometry
-			if ( isGeomPositionsOutOfDate && this.isInitialized )
+			if( isGeomPositionsOutOfDate && this.isInitialized )
 			{
 				UpdatePositionGeometry();
 				isGeomPositionsOutOfDate = false;
 			}
 			// Tell self to update own texture geometry
-			if ( isGeomUVsOutOfDate && this.isInitialized )
+			if( isGeomUVsOutOfDate && this.isInitialized )
 			{
 				UpdateTextureGeometry();
 				isGeomUVsOutOfDate = false;
@@ -468,7 +471,7 @@ namespace Axiom.Overlays
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public virtual bool Contains( float x, float y )
+		virtual public bool Contains( float x, float y )
 		{
 			return clippingRegion.Contains( (int)x, (int)y );
 		}
@@ -479,10 +482,10 @@ namespace Axiom.Overlays
 		/// <param name="x">The x.</param>
 		/// <param name="y">The y.</param>
 		/// <returns></returns>
-		public virtual OverlayElement FindElementAt( float x, float y )
+		virtual public OverlayElement FindElementAt( float x, float y )
 		{
 			OverlayElement ret = null;
-			if ( Contains( x, y ) )
+			if( Contains( x, y ) )
 			{
 				ret = this;
 			}
@@ -492,24 +495,24 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Updates this elements transform based on it's parent.
 		/// </summary>
-		public virtual void UpdateFromParent()
+		virtual public void UpdateFromParent()
 		{
 			float parentLeft, parentTop, parentBottom, parentRight;
 
 			parentLeft = parentTop = parentBottom = parentRight = 0;
 
-			if ( parent != null )
+			if( parent != null )
 			{
 				parentLeft = parent.DerivedLeft;
 				parentTop = parent.DerivedTop;
 
 				// derive right position
-				if ( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
+				if( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
 				{
 					parentRight = parentLeft + parent.width;
 				}
 				// derive bottom position
-				if ( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
+				if( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
 				{
 					parentBottom = parentTop + parent.height;
 				}
@@ -538,7 +541,7 @@ namespace Axiom.Overlays
 			// all we do is derived the origin, we don't automatically sort out the position
 			// This is more flexible than forcing absolute right & middle
 
-			switch ( horzAlign )
+			switch( horzAlign )
 			{
 				case HorizontalAlignment.Center:
 					derivedLeft = ( ( parentLeft + parentRight ) * 0.5f ) + left;
@@ -553,7 +556,7 @@ namespace Axiom.Overlays
 					break;
 			}
 
-			switch ( vertAlign )
+			switch( vertAlign )
 			{
 				case VerticalAlignment.Center:
 					derivedTop = ( ( parentTop + parentBottom ) * 0.5f ) + top;
@@ -569,7 +572,7 @@ namespace Axiom.Overlays
 			}
 
 			isDerivedOutOfDate = false;
-			if ( parent != null )
+			if( parent != null )
 			{
 				Rectangle parentRect;
 				Rectangle child;
@@ -627,6 +630,7 @@ namespace Axiom.Overlays
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
+
 		/// <summary>
 		/// Sets the height of this element in relation to the screen (where 1.0 = screen width)
 		/// </summary>
@@ -680,22 +684,22 @@ namespace Axiom.Overlays
 		///    meaning the element should be rebuilding it's mesh positions. Abstract since
 		///    subclasses must implement this.
 		/// </summary>
-		protected abstract void UpdatePositionGeometry();
+		abstract protected void UpdatePositionGeometry();
 
 		/// <summary>
 		/// Internal method which is triggered when the UVs of the element get updated,
 		/// meaning the element should be rebuilding it's mesh UVs. Abstract since
 		/// subclasses must implement this.
 		/// </summary>
-		protected abstract void UpdateTextureGeometry();
+		abstract protected void UpdateTextureGeometry();
 
 		/// <summary>
 		///    Internal method to put the contents onto the render queue.
 		/// </summary>
 		/// <param name="queue">Current render queue.</param>
-		public virtual void UpdateRenderQueue( RenderQueue queue )
+		virtual public void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( isVisible )
+			if( isVisible )
 			{
 				queue.AddRenderable( this, (ushort)zOrder, RenderQueueGroupID.Overlay );
 			}
@@ -708,21 +712,12 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// Usefuel to hold custom userdata.
 		/// </summary>
-		public object UserData
-		{
-			get;
-			set;
-		}
+		public object UserData { get; set; }
+
 		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>
-		public OverlayElement SourceTemplate
-		{
-			get
-			{
-				return this.sourceTemplate;
-			}
-		}
+		public OverlayElement SourceTemplate { get { return this.sourceTemplate; } }
 
 		/// <summary>
 		///    Sets the color on elements that support it.
@@ -730,26 +725,16 @@ namespace Axiom.Overlays
 		/// <remarks>
 		///    Note that not all elements support this, but it is still a relevant base class property.
 		/// </remarks>
-		public virtual ColorEx Color
-		{
-			get
-			{
-				return color;
-			}
-			set
-			{
-				color = value;
-			}
-		}
+		virtual public ColorEx Color { get { return color; } set { color = value; } }
 
 		/// <summary>
 		///    Gets the 'left' position as derived from own left and that of parents.
 		/// </summary>
-		public virtual float DerivedLeft
+		virtual public float DerivedLeft
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if( isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
@@ -760,11 +745,11 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets the 'top' position as derived from own top and that of parents.
 		/// </summary>
-		public virtual float DerivedTop
+		virtual public float DerivedTop
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if( isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
@@ -775,17 +760,7 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets/Sets whether or not this element is enabled.
 		/// </summary>
-		public bool Enabled
-		{
-			get
-			{
-				return isEnabled;
-			}
-			set
-			{
-				isEnabled = value;
-			}
-		}
+		public bool Enabled { get { return isEnabled; } set { isEnabled = value; } }
 
 		/// <summary>
 		///    Gets/Sets the height of this element.
@@ -794,7 +769,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					return pixelHeight;
 				}
@@ -805,7 +780,7 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelHeight = (int)value;
 				}
@@ -835,12 +810,9 @@ namespace Axiom.Overlays
 		///    does is establish the origin. This is because this way you can align multiple things
 		///    in the center and right with different 'left' offsets for maximum flexibility.
 		/// </remarks>
-		public virtual HorizontalAlignment HorizontalAlignment
+		virtual public HorizontalAlignment HorizontalAlignment
 		{
-			get
-			{
-				return horzAlign;
-			}
+			get { return horzAlign; }
 			set
 			{
 				horzAlign = value;
@@ -851,43 +823,17 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets whether or not this element is a container type.
 		/// </summary>
-		public virtual bool IsContainer
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool IsContainer { get { return false; } }
 
 		/// <summary>
 		///    Gets/Sets whether or not this element can be cloned.
 		/// </summary>
-		public virtual bool IsCloneable
-		{
-			get
-			{
-				return isCloneable;
-			}
-			set
-			{
-				isCloneable = value;
-			}
-		}
+		virtual public bool IsCloneable { get { return isCloneable; } set { isCloneable = value; } }
 
 		/// <summary>
 		///    Returns whether or not this element is currently visible.
 		/// </summary>
-		public bool IsVisible
-		{
-			get
-			{
-				return isVisible;
-			}
-			set
-			{
-				isVisible = value;
-			}
-		}
+		public bool IsVisible { get { return isVisible; } set { isVisible = value; } }
 
 		/// <summary>
 		///    Gets/Sets the left position of this element.
@@ -896,7 +842,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					return pixelLeft;
 				}
@@ -907,7 +853,7 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelLeft = (int)value;
 				}
@@ -924,24 +870,23 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets/Sets the name of the material in use by this element.
 		/// </summary>
-		public virtual string MaterialName
+		virtual public string MaterialName
 		{
-			get
-			{
-				return materialName;
-			}
+			get { return materialName; }
 			set
 			{
 				materialName = value;
 				material = (Material)MaterialManager.Instance[ materialName ];
 
-				if ( material == null )
+				if( material == null )
 				{
 					throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
 				}
 
-                if (!material.IsLoaded)
-				material.Load();
+				if( !material.IsLoaded )
+				{
+					material.Load();
+				}
 
 				// Set some prerequisites to be sure
 				material.Lighting = false;
@@ -961,63 +906,60 @@ namespace Axiom.Overlays
 		///    to place your element relative to the center, right or bottom of it's parent, you will
 		///    need to use the HorizontalAlignment and VerticalAlignment properties.
 		/// </remarks>
-		public virtual MetricsMode MetricsMode
+		virtual public MetricsMode MetricsMode
 		{
-			get
-			{
-				return metricsMode;
-			}
+			get { return metricsMode; }
 			set
 			{
 				MetricsMode localMetricsMode = value;
-				switch ( localMetricsMode )
+				switch( localMetricsMode )
 				{
 					case MetricsMode.Pixels:
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = oMgr.ViewportWidth;
+						vpHeight = oMgr.ViewportHeight;
+
+						// cope with temporarily zero dimensions, avoid divide by zero
+						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
+
+						pixelScaleX = 1.0f / vpWidth;
+						pixelScaleY = 1.0f / vpHeight;
+
+						if( metricsMode == MetricsMode.Relative )
 						{
-							float vpWidth, vpHeight;
-							OverlayManager oMgr = OverlayManager.Instance;
-							vpWidth = oMgr.ViewportWidth;
-							vpHeight = oMgr.ViewportHeight;
-
-							// cope with temporarily zero dimensions, avoid divide by zero
-							vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
-							vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
-
-							pixelScaleX = 1.0f / vpWidth;
-							pixelScaleY = 1.0f / vpHeight;
-
-							if ( metricsMode == MetricsMode.Relative )
-							{
-								pixelLeft = left;
-								pixelTop = top;
-								pixelWidth = width;
-								pixelHeight = height;
-							}
+							pixelLeft = left;
+							pixelTop = top;
+							pixelWidth = width;
+							pixelHeight = height;
 						}
+					}
 						break;
 
 					case MetricsMode.Relative_Aspect_Adjusted:
+					{
+						float vpWidth, vpHeight;
+						OverlayManager oMgr = OverlayManager.Instance;
+						vpWidth = oMgr.ViewportWidth;
+						vpHeight = oMgr.ViewportHeight;
+
+						// cope with temporarily zero dimensions, avoid divide by zero
+						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
+
+						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+						pixelScaleY = 1.0f / 10000.0f;
+
+						if( metricsMode == MetricsMode.Relative )
 						{
-							float vpWidth, vpHeight;
-							OverlayManager oMgr = OverlayManager.Instance;
-							vpWidth = oMgr.ViewportWidth;
-							vpHeight = oMgr.ViewportHeight;
-
-							// cope with temporarily zero dimensions, avoid divide by zero
-							vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
-							vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
-
-							pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-							pixelScaleY = 1.0f / 10000.0f;
-
-							if ( metricsMode == MetricsMode.Relative )
-							{
-								pixelLeft = left;
-								pixelTop = top;
-								pixelWidth = width;
-								pixelHeight = height;
-							}
+							pixelLeft = left;
+							pixelTop = top;
+							pixelWidth = width;
+							pixelHeight = height;
 						}
+					}
 						break;
 
 					case MetricsMode.Relative:
@@ -1044,22 +986,16 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets the name of this element.
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
+		public string Name { get { return name; } }
 
 		/// <summary>
 		/// Gets the clipping region of the element
 		/// </summary>
-		public virtual Rectangle ClippingRegion
+		virtual public Rectangle ClippingRegion
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if( isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
@@ -1070,17 +1006,7 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets the parent container of this element.
 		/// </summary>
-		public OverlayElementContainer Parent
-		{
-			get
-			{
-				return parent;
-			}
-			set
-			{
-				parent = value;
-			}
-		}
+		public OverlayElementContainer Parent { get { return parent; } set { parent = value; } }
 
 		/// <summary>
 		///    Sets the caption on elements that support it.
@@ -1089,12 +1015,9 @@ namespace Axiom.Overlays
 		///    Not all elements support this, but it is still a relevant base class property.
 		/// </remarks>
 		///<ogreequivilent>getCaption</ogreequivilent>
-		public virtual string Text
+		virtual public string Text
 		{
-			get
-			{
-				return text;
-			}
+			get { return text; }
 			set
 			{
 				text = value;
@@ -1109,7 +1032,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					return pixelTop;
 				}
@@ -1120,7 +1043,7 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelTop = (int)value;
 				}
@@ -1151,12 +1074,9 @@ namespace Axiom.Overlays
 		///    does is establish the origin. This is because this way you can align multiple things
 		///    in the center and bottom with different 'top' offsets for maximum flexibility.
 		/// </remarks>
-		public virtual VerticalAlignment VerticalAlignment
+		virtual public VerticalAlignment VerticalAlignment
 		{
-			get
-			{
-				return vertAlign;
-			}
+			get { return vertAlign; }
 			set
 			{
 				vertAlign = value;
@@ -1171,7 +1091,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					return pixelWidth;
 				}
@@ -1182,7 +1102,7 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelWidth = (int)value;
 				}
@@ -1198,62 +1118,27 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets the z ordering of this element.
 		/// </summary>
-		public int ZOrder
-		{
-			get
-			{
-				return zOrder;
-			}
-		}
+		public int ZOrder { get { return zOrder; } }
 
 		#endregion Properties
 
 		#region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastsShadows { get { return false; } }
 
-		public Material Material
-		{
-			get
-			{
-				return material;
-			}
-		}
+		public Material Material { get { return material; } }
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
-		public Technique Technique
-		{
-			get
-			{
-				return material.GetBestTechnique();
-			}
-		}
+		public Technique Technique { get { return material.GetBestTechnique(); } }
 
 		protected RenderOperation renderOperation = new RenderOperation();
+
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="value"></param>
-		public virtual RenderOperation RenderOperation
-		{
-			get
-			{
-				return renderOperation;
-			}
-		}
+		virtual public RenderOperation RenderOperation { get { return renderOperation; } }
 
 		/// <summary>
 		///
@@ -1277,46 +1162,23 @@ namespace Axiom.Overlays
 		{
 			return overlay.GetWorldPosition();
 		}
-		/// <summary>
-		///
-		/// </summary>
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public ushort NumWorldTransforms { get { return 1; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool UseIdentityView
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool UseIdentityProjection { get { return true; } }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return false;
-			}
-		}
+		/// <summary>
+		///
+		/// </summary>
+		public bool UseIdentityView { get { return true; } }
+
+		virtual public bool PolygonModeOverrideable { get { return false; } }
 
 		/// <summary>
 		///    Implementation of IRenderable.
@@ -1331,36 +1193,18 @@ namespace Axiom.Overlays
 		/// <summary>
 		///
 		/// </summary>
-		public Quaternion WorldOrientation
-		{
-			get
-			{
-				return overlay.DerivedOrientation;
-			}
-		}
+		public Quaternion WorldOrientation { get { return overlay.DerivedOrientation; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public Vector3 WorldPosition
-		{
-			get
-			{
-				return overlay.DerivedPosition;
-			}
-		}
+		public Vector3 WorldPosition { get { return overlay.DerivedPosition; } }
 
-		public LightList Lights
-		{
-			get
-			{
-				return emptyLightList;
-			}
-		}
+		public LightList Lights { get { return emptyLightList; } }
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
@@ -1372,14 +1216,16 @@ namespace Axiom.Overlays
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while( customParams.Count <= index )
+			{
 				customParams.Add( Vector4.Zero );
+			}
 			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if( customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
@@ -1415,25 +1261,27 @@ namespace Axiom.Overlays
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-                    if ( renderOperation != null )
-                    {
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+					if( renderOperation != null )
+					{
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
-                        renderOperation = null;
-                    }
+						renderOperation = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
@@ -1453,7 +1301,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return ScriptEnumAttribute.GetScriptAttribute( (int)element.MetricsMode, typeof( MetricsMode ) );
 				}
@@ -1471,7 +1319,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( val, typeof( MetricsMode ) );
 				}
@@ -1493,7 +1341,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return ScriptEnumAttribute.GetScriptAttribute( (int)element.HorizontalAlignment, typeof( HorizontalAlignment ) );
 				}
@@ -1511,7 +1359,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
 				}
@@ -1533,7 +1381,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return ScriptEnumAttribute.GetScriptAttribute( (int)element.VerticalAlignment, typeof( VerticalAlignment ) );
 				}
@@ -1551,7 +1399,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( val, typeof( VerticalAlignment ) );
 				}
@@ -1573,7 +1421,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.Top.ToString();
 				}
@@ -1591,7 +1439,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Top = StringConverter.ParseFloat( val );
 				}
@@ -1613,7 +1461,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.Left.ToString();
 				}
@@ -1631,7 +1479,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Left = StringConverter.ParseFloat( val );
 				}
@@ -1653,7 +1501,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.Width.ToString();
 				}
@@ -1671,7 +1519,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Width = StringConverter.ParseFloat( val );
 				}
@@ -1693,7 +1541,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.Height.ToString();
 				}
@@ -1711,7 +1559,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Height = StringConverter.ParseFloat( val );
 				}
@@ -1733,7 +1581,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.IsVisible.ToString();
 				}
@@ -1751,7 +1599,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.IsVisible = StringConverter.ParseBool( val );
 				}
@@ -1773,7 +1621,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.Text;
 				}
@@ -1791,7 +1639,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Text = val;
 				}
@@ -1813,7 +1661,7 @@ namespace Axiom.Overlays
 			public string Get( object target )
 			{
 				var element = target as OverlayElement;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.MaterialName;
 				}
@@ -1831,7 +1679,7 @@ namespace Axiom.Overlays
 			public void Set( object target, string val )
 			{
 				var element = target as OverlayElement;
-				if ( element != null && val != null )
+				if( element != null && val != null )
 				{
 					element.MaterialName = val;
 				}

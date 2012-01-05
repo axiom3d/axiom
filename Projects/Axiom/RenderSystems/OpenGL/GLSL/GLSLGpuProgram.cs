@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -64,6 +68,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		Keep track of the number of vertex shaders created.
 		/// </summary>
 		protected static int vertexShaderCount;
+
 		/// <summary>
 		///		Keep track of the number of fragment shaders created.
 		/// </summary>
@@ -82,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// store off the reference to the parent program
 			glslProgram = parent;
 
-			if ( parent.Type == GpuProgramType.Vertex )
+			if( parent.Type == GpuProgramType.Vertex )
 			{
 				programId = ++vertexShaderCount;
 			}
@@ -105,13 +110,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Gets the GLSLProgram for the shader object.
 		/// </summary>
-		public GLSLProgram GLSLProgram
-		{
-			get
-			{
-				return glslProgram;
-			}
-		}
+		public GLSLProgram GLSLProgram { get { return glslProgram; } }
 
 		#endregion Properties
 
@@ -134,7 +133,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override void Bind()
 		{
 			// tell the Link Program Manager what shader is to become active
-			if ( type == GpuProgramType.Vertex )
+			if( type == GpuProgramType.Vertex )
 			{
 				GLSLLinkProgramManager.Instance.SetActiveVertexShader( this );
 			}
@@ -164,7 +163,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override void Unbind()
 		{
 			// tell the Link Program Manager what shader is to become inactive
-			if ( type == GpuProgramType.Vertex )
+			if( type == GpuProgramType.Vertex )
 			{
 				GLSLLinkProgramManager.Instance.SetActiveVertexShader( null );
 			}

@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Renderbuffer surface.  Needs FBO extension.
 	/// </summary>
-	class GLRenderBuffer : GLHardwarePixelBuffer
+	internal class GLRenderBuffer : GLHardwarePixelBuffer
 	{
 		#region Fields and Properties
 
@@ -89,9 +89,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 				}

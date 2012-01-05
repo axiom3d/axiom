@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,8 +43,8 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
-using ResourceHandle = System.UInt64;
 
+using ResourceHandle = System.UInt64;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
@@ -51,7 +55,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// 	Xna implementation of a few things common to low-level vertex &amp; fragment programs
 	/// </summary>
-	public abstract class XnaGpuProgram : GpuProgram
+	abstract public class XnaGpuProgram : GpuProgram
 	{
 		#region Fields and Properties
 
@@ -61,13 +65,11 @@ namespace Axiom.RenderSystems.Xna
 		protected XFG.GraphicsDevice device;
 
 		#region ShaderCode Property
+
 		/// <summary>
 		///     ShaderCode set externally, most likely from the HLSL compiler.
 		/// </summary>
-
 		protected byte[] shaderCode;
-
-
 
 		/// <summary>
 		///     Gets/Sets a prepared chunk of ShaderCode to use during Load
@@ -78,18 +80,7 @@ namespace Axiom.RenderSystems.Xna
 		///     level shader code, which can then be loaded into a low level GPU
 		///     program.
 		/// </remarks
-		internal byte[] ShaderCode
-		{
-			get
-			{
-				return shaderCode;
-			}
-			set
-			{
-				shaderCode = value;
-			}
-		}
-
+		internal byte[] ShaderCode { get { return shaderCode; } set { shaderCode = value; } }
 
 		#endregion ShaderCode Property
 
@@ -111,7 +102,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Loads a shader object from the supplied shader code.
 		/// </summary>
-		protected abstract void LoadFromShaderCode();
+		abstract protected void LoadFromShaderCode();
 
 		#endregion Methods
 
@@ -122,14 +113,13 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		protected override void load()
 		{
-			if ( shaderCode != null && shaderCode.Length > 0 )
+			if( shaderCode != null && shaderCode.Length > 0 )
 			{
 				// unload if needed
-				if ( IsLoaded )
+				if( IsLoaded )
 				{
 					Unload();
 				}
-
 
 				// creates the shader from an external microcode source
 				// for example, a compiled HLSL program
@@ -153,6 +143,7 @@ namespace Axiom.RenderSystems.Xna
 		#endregion GpuProgram Members
 
 		#region Properties
+
 		public override int SamplerCount
 		{
 			get
@@ -177,8 +168,8 @@ namespace Axiom.RenderSystems.Xna
 				// return 0;
 			}
 		}
-		#endregion
 
+		#endregion
 	}
 
 	/// <summary>
@@ -194,16 +185,12 @@ namespace Axiom.RenderSystems.Xna
 		///    Reference to the current Xna VertexShader object.
 		/// </summary>
 		protected XFG.VertexShader vertexShader;
+
 		/// <summary>
 		///    Used internally by the XnaRenderSystem to get a reference to the underlying VertexShader object.
 		/// </summary>
-		internal XFG.VertexShader VertexShader
-		{
-			get
-			{
-				return vertexShader;
-			}
-		}
+		internal XFG.VertexShader VertexShader { get { return vertexShader; } }
+
 		#endregion VertexShader Property
 
 		#endregion Fields and Properties
@@ -211,9 +198,7 @@ namespace Axiom.RenderSystems.Xna
 		#region Constructor
 
 		internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
-			: base( parent, name, handle, group, isManual, loader, device )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader, device ) {}
 
 		#endregion Constructor
 
@@ -239,17 +224,18 @@ namespace Axiom.RenderSystems.Xna
 		{
 			base.Unload();
 
-			if ( vertexShader != null )
+			if( vertexShader != null )
 			{
-                if (!vertexShader.IsDisposed)
-				vertexShader.Dispose();
+				if( !vertexShader.IsDisposed )
+				{
+					vertexShader.Dispose();
+				}
 
-                vertexShader = null;
+				vertexShader = null;
 			}
 		}
 
 		#endregion GpuProgram Members
-
 	}
 
 	/// <summary>
@@ -265,17 +251,12 @@ namespace Axiom.RenderSystems.Xna
 		///    Reference to the current Xna PixelShader object.
 		/// </summary>
 		protected XFG.PixelShader pixelShader;
+
 		/// <summary>
 		///    Used internally by the XnaRenderSystem to get a reference to the underlying
 		///    PixelShader object.
 		/// </summary>
-		internal XFG.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
+		internal XFG.PixelShader PixelShader { get { return pixelShader; } }
 
 		#endregion PixelShader Property
 
@@ -284,9 +265,7 @@ namespace Axiom.RenderSystems.Xna
 		#region Constructors
 
 		internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
-			: base( parent, name, handle, group, isManual, loader, device )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader, device ) {}
 
 		#endregion Constructors
 
@@ -312,16 +291,17 @@ namespace Axiom.RenderSystems.Xna
 		{
 			base.Unload();
 
-			if ( pixelShader != null )
+			if( pixelShader != null )
 			{
-                if (!pixelShader.IsDisposed)
-				pixelShader.Dispose();
+				if( !pixelShader.IsDisposed )
+				{
+					pixelShader.Dispose();
+				}
 
-                pixelShader = null;
+				pixelShader = null;
 			}
 		}
 
 		#endregion GpuProgram Members
-
 	}
 }

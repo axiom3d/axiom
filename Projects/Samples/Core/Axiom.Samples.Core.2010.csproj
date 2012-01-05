@@ -78,9 +78,15 @@
     <Compile Include="Character\CharacterSample.cs" />
     <Compile Include="Character\SinbadCharacterController.cs" />
     <Compile Include="DynamicTexture.cs" />
-    <Compile Include="Ocean\MaterialControls.cs" />
-    <Compile Include="Ocean\OceanSample.cs" />
-    <Compile Include="Ocean\ShaderControl.cs" />
+    <Compile Include="Ocean\MaterialControls.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ocean\OceanSample.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Ocean\ShaderControl.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ParticleFXSample.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

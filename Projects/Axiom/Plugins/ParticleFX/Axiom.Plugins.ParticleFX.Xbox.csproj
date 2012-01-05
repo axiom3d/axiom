@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox\Debug\</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <DocumentationFile>
     </DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -51,8 +51,8 @@
     <BaseAddress>285212672</BaseAddress>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox\Release\</OutputPath>
-    <DocumentationFile>bin\Xbox\Release\Axiom.Plugins.ParticleFX.XML</DocumentationFile>
+    <OutputPath>bin\Xbox</OutputPath>
+    <DocumentationFile>bin\Xbox\Axiom.Plugins.ParticleFX.XML</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

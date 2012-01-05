@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -53,35 +57,43 @@ namespace Axiom.ParticleSystems
 	/// </summary>
 	public class Particle
 	{
-
 		#region Member variables
 
 		/// Does this particle have it's own dimensions?
 		public bool hasOwnDimensions;
+
 		/// Personal width if mOwnDimensions == true
 		public float width;
+
 		/// Personal height if mOwnDimensions == true
 		public float height;
+
 		/// Current rotation value
 		public float rotationInRadians;
+
 		// Note the intentional public access to internal variables
 		// Accessing via get/set would be too costly for 000's of particles
 		/// World position
 		public Vector3 Position = Vector3.Zero;
+
 		/// Direction (and speed) 
 		public Vector3 Direction = Vector3.Zero;
+
 		/// Current colour
 		public ColorEx Color = ColorEx.White;
 
 		/// <summary>Time (in seconds) before this particle is destroyed.</summary>
 		public float timeToLive;
+
 		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
 		public float totalTimeToLive;
+
 		/// <summary>Speed of rotation in radians</summary>
-		float rotationSpeed;
+		private float rotationSpeed;
 
 		/// Parent ParticleSystem
 		protected ParticleSystem parentSystem;
+
 		/// Additional visual data you might want to associate with the Particle
 		protected ParticleVisualData visual;
 
@@ -91,29 +103,10 @@ namespace Axiom.ParticleSystems
 
 		#region Properties
 
-		public float RotationSpeed
-		{
-			get
-			{
-				return rotationSpeed;
-			}
-			set
-			{
-				rotationSpeed = value;
-			}
-		}
+		public float RotationSpeed { get { return rotationSpeed; } set { rotationSpeed = value; } }
 
-		public ParticleType ParticleType
-		{
-			get
-			{
-				return particleType;
-			}
-			set
-			{
-				particleType = value;
-			}
-		}
+		public ParticleType ParticleType { get { return particleType; } set { particleType = value; } }
+
 		#endregion
 
 		/// <summary>
@@ -125,7 +118,6 @@ namespace Axiom.ParticleSystems
 			totalTimeToLive = 10;
 			rotationSpeed = 0;
 		}
-
 
 		public void NotifyVisualData( ParticleVisualData vdata )
 		{
@@ -150,62 +142,25 @@ namespace Axiom.ParticleSystems
 			hasOwnDimensions = false;
 		}
 
-		public bool HasOwnDimensions
-		{
-			get
-			{
-				return hasOwnDimensions;
-			}
-			set
-			{
-				hasOwnDimensions = value;
-			}
-		}
+		public bool HasOwnDimensions { get { return hasOwnDimensions; } set { hasOwnDimensions = value; } }
 
 		public float Rotation
 		{
-			get
-			{
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
-			}
+			get { return rotationInRadians * Utility.DEGREES_PER_RADIAN; }
 			set
 			{
 				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-				if ( rotationInRadians != 0 )
+				if( rotationInRadians != 0 )
+				{
 					parentSystem.NotifyParticleRotated();
+				}
 			}
 		}
 
-		public float Width
-		{
-			get
-			{
-				return width;
-			}
-			set
-			{
-				width = value;
-			}
-		}
+		public float Width { get { return width; } set { width = value; } }
 
-		public float Height
-		{
-			get
-			{
-				return height;
-			}
-			set
-			{
-				height = value;
-			}
-		}
+		public float Height { get { return height; } set { height = value; } }
 
-		public ParticleVisualData VisualData
-		{
-			get
-			{
-				return visual;
-			}
-		}
+		public ParticleVisualData VisualData { get { return visual; } }
 	}
 }

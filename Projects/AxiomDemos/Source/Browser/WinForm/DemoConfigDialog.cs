@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -28,6 +29,7 @@ namespace Axiom.Demos
 
 			public string Name;
 			public Type Demo;
+
 			public override string ToString()
 			{
 				return Name;
@@ -42,8 +44,10 @@ namespace Axiom.Demos
 
 		protected override void Dispose( bool disposing )
 		{
-			if ( image != null )
+			if( image != null )
+			{
 				image.Close();
+			}
 		}
 
 		private void InitializeComponent()
@@ -99,7 +103,6 @@ namespace Axiom.Demos
 			/// DemoConfigDialog
 			this.ClientSize = new System.Drawing.Size( 442, 564 );
 			this.Controls.Add( grpAvailableDemos );
-
 		}
 
 		private void picPreview_Click( object sender, EventArgs e )
@@ -118,32 +121,27 @@ namespace Axiom.Demos
 			//Stop the rotator
 			this.tmrRotator.Stop();
 
-			if ( image != null )
+			if( image != null )
+			{
 				image.Close();
+			}
 
 			try
 			{
 				image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
-			catch ( Exception )
+			catch( Exception )
 			{
 				image = ResourceGroupManager.Instance.OpenResource( "ImageNotAvailable.jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
 
-			if ( image != null )
+			if( image != null )
 			{
 				this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
 			}
-
 		}
 
-		public Type Demo
-		{
-			get
-			{
-				return lstDemos.SelectedIndex != -1 ? ( (DemoItem)lstDemos.SelectedItem ).Demo : null;
-			}
-		}
+		public Type Demo { get { return lstDemos.SelectedIndex != -1 ? ( (DemoItem)lstDemos.SelectedItem ).Demo : null; } }
 
 		public void LoadDemos( string DemoAssembly )
 		{
@@ -153,16 +151,15 @@ namespace Axiom.Demos
 			Type[] demoTypes = demos.GetTypes();
 			Type techDemo = demos.GetType( "Axiom.Demos.TechDemo" );
 
-			foreach ( Type demoType in demoTypes )
+			foreach( Type demoType in demoTypes )
 			{
-				if ( demoType.IsSubclassOf( techDemo ) )
+				if( demoType.IsSubclassOf( techDemo ) )
 				{
-
 					demoList.Add( demoType.Name, new DemoItem( demoType.Name, demoType ) );
 				}
 			}
 
-			foreach ( KeyValuePair<string, DemoItem> demoItem in demoList )
+			foreach( KeyValuePair<string, DemoItem> demoItem in demoList )
 			{
 				lstDemos.Items.Add( demoItem.Value );
 			}
@@ -170,11 +167,12 @@ namespace Axiom.Demos
 			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );
 			this.lstDemos.DoubleClick += new EventHandler( cmdOk_Click );
 
-			if ( lstDemos.Items.Count > 0 )
+			if( lstDemos.Items.Count > 0 )
+			{
 				lstDemos.SelectedIndex = 0;
+			}
 
 			this.tmrRotator.Start();
-
 		}
 	}
 }

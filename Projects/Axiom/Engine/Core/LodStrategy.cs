@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: GpuProgramParameters.cs 1747 2009-08-28 19:55:22Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,7 +58,7 @@ namespace Axiom.Core
 	/// need to be implemented: Value, BaseValue, TransformBias,
 	/// Index, Sort, and IsSorted.
 	/// In addition, TransformUserValue may be overridden.</remarks>
-	public abstract class LodStrategy
+	abstract public class LodStrategy
 	{
 		#region Fields and Properties
 
@@ -62,17 +66,8 @@ namespace Axiom.Core
 		/// Name of this strategy.
 		/// </summary>
 		private string _name;
-		public string Name
-		{
-			get
-			{
-				return this._name;
-			}
-			protected set
-			{
-				this._name = value;
-			}
-		}
+
+		public string Name { get { return this._name; } protected set { this._name = value; } }
 
 		#endregion Fields and Properties
 
@@ -99,7 +94,7 @@ namespace Axiom.Core
 		/// may be changed such that the values become valid.
 		/// <param name="userValue"></param>
 		/// <returns></returns>
-		public virtual Real TransformUserValue( Real userValue )
+		virtual public Real TransformUserValue( Real userValue )
 		{
 			// No transformation by default
 			return userValue;
@@ -124,13 +119,15 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedAscending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for( int i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
-				if ( i + 1 < values.Count )
+				if( i + 1 < values.Count )
 				{
-					if ( values[ i + 1 ] < prev )
+					if( values[ i + 1 ] < prev )
+					{
 						return false;
+					}
 				}
 			}
 			return true;
@@ -143,13 +140,15 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedDescending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for( int i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
-				if ( i + 1 < values.Count )
+				if( i + 1 < values.Count )
 				{
-					if ( values[ i + 1 ] > prev )
+					if( values[ i + 1 ] > prev )
+					{
 						return false;
+					}
 				}
 			}
 			return true;
@@ -182,10 +181,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for( int i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
-				if ( meshLodUsageList[ i ].Value > value )
+				if( meshLodUsageList[ i ].Value > value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( meshLodUsageList.Count - 1 );
 		}
@@ -199,10 +200,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for( int i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
-				if ( meshLodUsageList[ i ].Value < value )
+				if( meshLodUsageList[ i ].Value < value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( meshLodUsageList.Count - 1 );
 		}
@@ -216,10 +219,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for( int i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
-				if ( materialLodValueList[ i ] > value )
+				if( materialLodValueList[ i ] > value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( materialLodValueList.Count - 1 );
 		}
@@ -233,10 +238,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for( int i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
-				if ( materialLodValueList[ i ] < value )
+				if( materialLodValueList[ i ] < value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( materialLodValueList.Count - 1 );
 		}
@@ -248,25 +255,22 @@ namespace Axiom.Core
 		/// <summary>
 		/// Get the value of the first (highest) level of detail.
 		/// </summary>
-		public abstract Real BaseValue
-		{
-			get;
-		}
+		abstract public Real BaseValue { get; }
 
 		/// <summary>
 		/// Transform lod bias so it only needs to be multiplied by the lod value.
 		/// </summary>
 		/// <param name="factor"></param>
 		/// <returns></returns>
-		public abstract Real TransformBias( Real factor );
+		abstract public Real TransformBias( Real factor );
 
-		public abstract ushort GetIndex( Real value, MeshLodUsageList meshLodUsageList );
+		abstract public ushort GetIndex( Real value, MeshLodUsageList meshLodUsageList );
 
-		public abstract ushort GetIndex( Real value, LodValueList materialLodValueList );
+		abstract public ushort GetIndex( Real value, LodValueList materialLodValueList );
 
-		public abstract void Sort( MeshLodUsageList meshLodUsageList );
+		abstract public void Sort( MeshLodUsageList meshLodUsageList );
 
-		public abstract bool IsSorted( LodValueList values );
+		abstract public bool IsSorted( LodValueList values );
 
 		/// <summary>
 		/// Compute the lod value for a given movable object relative to a given camera.
@@ -274,7 +278,7 @@ namespace Axiom.Core
 		/// <param name="movableObject"></param>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		protected abstract Real getValue( MovableObject movableObject, Camera camera );
+		abstract protected Real getValue( MovableObject movableObject, Camera camera );
 
 		#endregion Abstract Definitions
 	}
@@ -286,12 +290,17 @@ namespace Axiom.Core
 	{
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
-			if ( mesh1.Value > mesh2.Value )
+			if( mesh1.Value > mesh2.Value )
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
 	}
+
 	/// <summary>
 	/// Small helper class to sort a MeshLodUsageList
 	/// </summary>
@@ -299,11 +308,14 @@ namespace Axiom.Core
 	{
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
-			if ( mesh1.Value < mesh2.Value )
+			if( mesh1.Value < mesh2.Value )
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
 	}
-
 }

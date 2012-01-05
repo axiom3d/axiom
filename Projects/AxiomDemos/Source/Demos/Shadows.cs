@@ -21,38 +21,38 @@ namespace Axiom.Demos
 	/// </summary>
 	public class Shadows : TechDemo
 	{
-		Entity athene;
-		AnimationState animState;
-		Light light;
-		Light sunLight;
-		SceneNode lightNode;
-		ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
-		ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
-		float minFlareSize = 40;
-		float maxFlareSize = 80;
+		private Entity athene;
+		private AnimationState animState;
+		private Light light;
+		private Light sunLight;
+		private SceneNode lightNode;
+		private ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
+		private ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
+		private float minFlareSize = 40;
+		private float maxFlareSize = 80;
 
-		string[] atheneMaterials = new string[] {
-			"Examples/Athene/NormalMapped",
-			"Examples/Athene/Basic"
-		};
+		private string[] atheneMaterials = new string[] {
+		                                                	"Examples/Athene/NormalMapped",
+		                                                	"Examples/Athene/Basic"
+		                                                };
 
-		string[] shadowTechniqueDescriptions = new string[] {
-			"Texture Shadows (Modulative)",
-			"Texture Shadows (Additive)",
-			"Stencil Shadows (Additive)",
-			"Stencil Shadows (Modulative)",
-			"None"
-		};
+		private string[] shadowTechniqueDescriptions = new string[] {
+		                                                            	"Texture Shadows (Modulative)",
+		                                                            	"Texture Shadows (Additive)",
+		                                                            	"Stencil Shadows (Additive)",
+		                                                            	"Stencil Shadows (Modulative)",
+		                                                            	"None"
+		                                                            };
 
-		ShadowTechnique[] shadowTechniques = new ShadowTechnique[] {
-			ShadowTechnique.TextureModulative,
-			ShadowTechnique.TextureAdditive,
-			ShadowTechnique.StencilAdditive,
-			ShadowTechnique.StencilModulative,
-			ShadowTechnique.None
-		};
+		private ShadowTechnique[] shadowTechniques = new ShadowTechnique[] {
+		                                                                   	ShadowTechnique.TextureModulative,
+		                                                                   	ShadowTechnique.TextureAdditive,
+		                                                                   	ShadowTechnique.StencilAdditive,
+		                                                                   	ShadowTechnique.StencilModulative,
+		                                                                   	ShadowTechnique.None
+		                                                                   };
 
-		int currentShadowTechnique = 3;
+		private int currentShadowTechnique = 3;
 
 		public override void CreateScene()
 		{
@@ -141,7 +141,7 @@ namespace Axiom.Demos
 			short srcIdx, destIdx;
 
 			// the athene mesh requires tangent vectors
-			if ( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
+			if( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
 			{
 				mesh.BuildTangentVectors( srcIdx, destIdx );
 			}
@@ -189,12 +189,12 @@ namespace Axiom.Demos
 			planeEnt.CastShadows = false;
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( planeEnt );
 
-			if ( Root.Instance.RenderSystem.Name.StartsWith( "Direct" ) )
+			if( Root.Instance.RenderSystem.Name.StartsWith( "Direct" ) )
 			{
 				// In D3D, use a 1024x1024 shadow texture
 				scene.SetShadowTextureSettings( 1024, 2 );
 			}
-			else if ( Root.Instance.RenderSystem.Name.StartsWith( "Axiom Xna" ) )
+			else if( Root.Instance.RenderSystem.Name.StartsWith( "Axiom Xna" ) )
 			{
 				// Use 512x512 texture in GL since we can't go higher than the window res
 				scene.SetShadowTextureSettings( 1024, 2 );
@@ -206,16 +206,17 @@ namespace Axiom.Demos
 			camera.Far = 100000;
 
 			ChangeShadowTechnique();
-
 		}
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
-			if ( input.IsKeyPressed( KeyCodes.O ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.O ) && keypressDelay < 0 )
 			{
 				ChangeShadowTechnique();
 
@@ -225,7 +226,7 @@ namespace Axiom.Demos
 				keypressDelay = 1;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.M ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.M ) && keypressDelay < 0 )
 			{
 				scene.ShowDebugShadows = !scene.ShowDebugShadows;
 				keypressDelay = 1;
@@ -251,7 +252,7 @@ namespace Axiom.Demos
 
 			Vector3 direction = new Vector3();
 
-			switch ( shadowTechniques[ currentShadowTechnique ] )
+			switch( shadowTechniques[ currentShadowTechnique ] )
 			{
 				case ShadowTechnique.StencilAdditive:
 					// fixed light, dim
@@ -299,7 +300,6 @@ namespace Axiom.Demos
 
 			// show briefly on the screen
 			this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
-
 		}
 	}
 
@@ -323,9 +323,8 @@ namespace Axiom.Demos
 		#region Constructor
 
 		public LightWibbler( Light light, Billboard billboard, ColorEx minColor,
-			ColorEx maxColor, float minSize, float maxSize )
+		                     ColorEx maxColor, float minSize, float maxSize )
 		{
-
 			this.light = light;
 			this.billboard = billboard;
 			this.minColor = minColor;
@@ -342,10 +341,7 @@ namespace Axiom.Demos
 
 		public float Value
 		{
-			get
-			{
-				return intensity;
-			}
+			get { return intensity; }
 			set
 			{
 				intensity = value;

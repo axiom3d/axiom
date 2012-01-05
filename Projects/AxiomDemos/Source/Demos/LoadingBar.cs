@@ -31,16 +31,18 @@ namespace Axiom.Demos
 			up by initialisation (ie script parsing etc). Defaults to 0.7 since
 			script parsing can often take the majority of the time.
 		*/
-		public virtual void Start( RenderWindow window )
+
+		virtual public void Start( RenderWindow window )
 		{
 			Start( window, 1, 1, 0.7f );
 		}
-		public virtual void Start( RenderWindow window, ushort numGroupsInit, ushort numGroupsLoad )
+
+		virtual public void Start( RenderWindow window, ushort numGroupsInit, ushort numGroupsLoad )
 		{
 			Start( window, numGroupsInit, numGroupsLoad, 0.7f );
 		}
 
-		public virtual void Start( RenderWindow window, ushort numGroupsInit, ushort numGroupsLoad, Real initProportion )
+		virtual public void Start( RenderWindow window, ushort numGroupsInit, ushort numGroupsLoad, Real initProportion )
 		{
 			mWindow = window;
 			mNumGroupsInit = numGroupsInit;
@@ -52,7 +54,7 @@ namespace Axiom.Demos
 
 			OverlayManager omgr = OverlayManager.Instance;
 			mLoadOverlay = omgr.GetByName( "Core/LoadOverlay" );
-			if ( mLoadOverlay == null )
+			if( mLoadOverlay == null )
 			{
 				throw new KeyNotFoundException( "Cannot find loading overlay" );
 			}
@@ -73,7 +75,8 @@ namespace Axiom.Demos
 
 		/** Hide the loading bar and stop listening.
 		*/
-		public virtual void Finish()
+
+		virtual public void Finish()
 		{
 			// hide loading screen
 			mLoadOverlay.Hide();
@@ -104,21 +107,19 @@ namespace Axiom.Demos
 			mWindow.Update();
 		}
 
-        public void ScriptParseStarted( string scriptName, ref bool skipThisScript )
-        {
-            mLoadingCommentElement.Text = scriptName;
-            mWindow.Update();
-        }
-
-        public void ScriptParseEnded( string scriptName, bool skipped )
-        {
-            mLoadingBarElement.Width += mProgressBarInc;
-            mWindow.Update();
-        }
-
-		public void ResourceGroupScriptingEnded( string groupName )
+		public void ScriptParseStarted( string scriptName, ref bool skipThisScript )
 		{
+			mLoadingCommentElement.Text = scriptName;
+			mWindow.Update();
 		}
+
+		public void ScriptParseEnded( string scriptName, bool skipped )
+		{
+			mLoadingBarElement.Width += mProgressBarInc;
+			mWindow.Update();
+		}
+
+		public void ResourceGroupScriptingEnded( string groupName ) {}
 
 		public void ResourceGroupLoadStarted( string groupName, int resourceCount )
 		{
@@ -135,9 +136,7 @@ namespace Axiom.Demos
 			mWindow.Update();
 		}
 
-		public void ResourceLoadEnded()
-		{
-		}
+		public void ResourceLoadEnded() {}
 
 		public void WorldGeometryStageStarted( string description )
 		{
@@ -151,26 +150,16 @@ namespace Axiom.Demos
 			mWindow.Update();
 		}
 
-		public void ResourceGroupLoadEnded( string groupName )
-		{
-		}
+		public void ResourceGroupLoadEnded( string groupName ) {}
 
-        public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
-        {
-        }
+		public void ResourceGroupPrepareStarted( string groupName, int resourceCount ) {}
 
-        public void ResourcePrepareStarted( Resource resource )
-        {
-        }
+		public void ResourcePrepareStarted( Resource resource ) {}
 
-        public void ResourcePrepareEnded()
-        {
-        }
+		public void ResourcePrepareEnded() {}
 
-        public void ResourceGroupPrepareEnded( string groupName )
-        {
-        }
+		public void ResourceGroupPrepareEnded( string groupName ) {}
 
 		#endregion IResourceGroupListener Members
-    }
+	}
 }

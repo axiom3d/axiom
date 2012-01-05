@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,6 +45,7 @@ using Axiom.Media;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -56,33 +61,33 @@ namespace Axiom.RenderSystems.Xna
 		private XFG.GraphicsDevice _device;
 
 		public XnaTextureManager( XFG.GraphicsDevice device )
-            : base()
+			: base()
 		{
 			this._device = device;
 
 			Is32Bit = true;
 		}
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    this._device = null;
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					this._device = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            // If it is available, make the call to the
-            // base class's Dispose(Boolean) method
-            base.dispose(disposeManagedResources);
-        }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
@@ -94,11 +99,10 @@ namespace Axiom.RenderSystems.Xna
 			return PixelFormat.X8R8G8B8;
 		}
 
-
 		public void ReleaseDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( XnaTexture tex in resources.Values )
+			foreach( XnaTexture tex in resources.Values )
 			{
 				//TODO : Implement XnaTexture.ReleaseIfDefaultPool()
 				//if ( tex.ReleaseIfDefaultPool() )
@@ -110,7 +114,7 @@ namespace Axiom.RenderSystems.Xna
 		public void RecreateDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( XnaTexture tex in resources.Values )
+			foreach( XnaTexture tex in resources.Values )
 			{
 				//TODO : Implement XnaTexture.RecreateIfDefaultPool()
 				//if ( tex.RecreateIfDefaultPool( device ) )
@@ -118,6 +122,5 @@ namespace Axiom.RenderSystems.Xna
 			}
 			LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
 		}
-
 	}
 }

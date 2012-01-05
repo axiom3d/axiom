@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -88,24 +90,12 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// 
 			/// </summary>
-			public bool IsFloat
-			{
-				get
-				{
-					return IsFloatConst( ConstantType );
-				}
-			}
+			public bool IsFloat { get { return IsFloatConst( ConstantType ); } }
 
 			/// <summary>
 			/// 
 			/// </summary>
-			public bool IsSampler
-			{
-				get
-				{
-					return IsSamplerConst( ConstantType );
-				}
-			}
+			public bool IsSampler { get { return IsSamplerConst( ConstantType ); } }
 
 			/// <summary>
 			/// 
@@ -126,7 +116,7 @@ namespace Axiom.Graphics
 			/// <returns></returns>
 			public static bool IsFloatConst( GpuConstantType c )
 			{
-				switch ( c )
+				switch( c )
 				{
 					case GpuConstantType.Int1:
 					case GpuConstantType.Int2:
@@ -151,7 +141,7 @@ namespace Axiom.Graphics
 			/// <returns></returns>
 			public bool IsSamplerConst( GpuConstantType c )
 			{
-				switch ( c )
+				switch( c )
 				{
 					case GpuConstantType.Sampler1D:
 					case GpuConstantType.Sampler2D:
@@ -173,9 +163,9 @@ namespace Axiom.Graphics
 			/// <returns></returns>
 			public static int GetElementSize( GpuConstantType ctype, bool padToMultiplesOf4 )
 			{
-				if ( padToMultiplesOf4 )
+				if( padToMultiplesOf4 )
 				{
-					switch ( ctype )
+					switch( ctype )
 					{
 						case GpuConstantType.Float1:
 						case GpuConstantType.Float2:
@@ -210,7 +200,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					switch ( ctype )
+					switch( ctype )
 					{
 						case GpuConstantType.Float1:
 						case GpuConstantType.Int1:

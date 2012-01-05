@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -63,7 +67,7 @@ namespace Axiom.Core
 			{
 				_assembly = Assembly.LoadFrom( assemblyFile );
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				_assembly = Assembly.GetExecutingAssembly();
 			}
@@ -86,8 +90,10 @@ namespace Axiom.Core
 		public string GetAssemblyTitle()
 		{
 			Attribute title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
-			if ( title == null )
+			if( title == null )
+			{
 				return _assembly.GetName().Name;
+			}
 			return ( (AssemblyTitleAttribute)title ).Title;
 		}
 
@@ -97,8 +103,8 @@ namespace Axiom.Core
 			Assembly assembly = _assembly;
 #if !( XBOX || XBOX360 || SILVERLIGHT )
 			// Check interfaces or Base type for casting purposes
-			if ( type.GetInterface( typeof( T ).Name ) != null
-				 || type.BaseType.Name == typeof( T ).Name )
+			if( type.GetInterface( typeof( T ).Name ) != null
+			    || type.BaseType.Name == typeof( T ).Name )
 			{
 #else
 			bool typeFound = false;
@@ -118,7 +124,7 @@ namespace Axiom.Core
 				{
 					return (T)Activator.CreateInstance( type );
 				}
-				catch ( Exception e )
+				catch( Exception e )
 				{
 					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
 					LogManager.Instance.Write( e.Message );
@@ -127,7 +133,6 @@ namespace Axiom.Core
 			return null;
 		}
 	}
-
 
 	internal class DynamicLoader
 	{
@@ -143,9 +148,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Creates a loader instance for the current executing assembly
 		/// </summary>
-		public DynamicLoader()
-		{
-		}
+		public DynamicLoader() {}
 
 		/// <summary>
 		/// Creates a loader instance for the specified assembly
@@ -160,14 +163,13 @@ namespace Axiom.Core
 
 		#region Methods
 
-
 		public Assembly GetAssembly()
 		{
-			if ( _assembly == null )
+			if( _assembly == null )
 			{
-				lock ( this )
+				lock( this )
 				{
-					if ( String.IsNullOrEmpty( _assemblyFilename ) )
+					if( String.IsNullOrEmpty( _assemblyFilename ) )
 					{
 						_assembly = Assembly.GetExecutingAssembly();
 					}
@@ -191,11 +193,11 @@ namespace Axiom.Core
 				assembly = GetAssembly();
 				assemblyTypes = assembly.GetTypes();
 
-				foreach ( Type type in assemblyTypes )
+				foreach( Type type in assemblyTypes )
 				{
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName ) != null ) ||
-						 ( !baseType.IsInterface && type.BaseType == baseType ) )
+					if( ( baseType.IsInterface && type.GetInterface( baseType.FullName ) != null ) ||
+					    ( !baseType.IsInterface && type.BaseType == baseType ) )
 					{
 						types.Add( new ObjectCreator( assembly, type ) );
 					}
@@ -213,16 +215,16 @@ namespace Axiom.Core
 			}
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-			catch ( ReflectionTypeLoadException ex )
+			catch( ReflectionTypeLoadException ex )
 			{
 				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				LogManager.Instance.Write( "Loader Exceptions:" );
-				foreach ( Exception lex in ex.LoaderExceptions )
+				foreach( Exception lex in ex.LoaderExceptions )
 				{
 					LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
 				}
 			}
-			catch ( BadImageFormatException ex )
+			catch( BadImageFormatException ex )
 			{
 				LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
 			}

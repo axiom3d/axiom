@@ -59,7 +59,7 @@ namespace Axiom.Animating.Collections
 		{
 			AnimationStateCollection newCol = new AnimationStateCollection();
 
-			foreach ( KeyValuePair<string, AnimationState> entry in this )
+			foreach( KeyValuePair<string, AnimationState> entry in this )
 			{
 				newCol.Add( entry.Key, entry.Value );
 			}

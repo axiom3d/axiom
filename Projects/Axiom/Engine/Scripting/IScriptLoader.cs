@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
 using System.IO;
+
 using Axiom.Math;
-
-
 
 #endregion Namespace Declarations
 
@@ -66,7 +69,6 @@ namespace Axiom.Scripting
 	/// </ogre>
 	public interface IScriptLoader
 	{
-
 		/// <summary>
 		/// Gets the file patterns which should be used to find scripts for this class.
 		/// </summary>
@@ -75,10 +77,7 @@ namespace Axiom.Scripting
 		/// ResourceGroupManager::registerScriptLoader. Returns a list of file
 		/// patterns, in the order they should be searched in.
 		/// </remarks>
-		List<string> ScriptPatterns
-		{
-			get;
-		}
+		List<string> ScriptPatterns { get; }
 
 		/// <summary>
 		/// Parse a script file.
@@ -99,10 +98,6 @@ namespace Axiom.Scripting
 		/// Returns a value representing the relative loading order of these scripts
 		/// compared to other script users, where higher values load later.
 		/// </remarks>
-		Real LoadingOrder
-		{
-			get;
-		}
-
+		Real LoadingOrder { get; }
 	};
 }

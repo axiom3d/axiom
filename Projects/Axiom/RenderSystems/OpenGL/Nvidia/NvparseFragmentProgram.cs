@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -60,7 +64,6 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public NvparseFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
 			// create a display list
 			programId = Gl.glGenLists( 1 );
 		}
@@ -80,11 +83,11 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 			int pos = source.IndexOf( "!!" );
 
-			while ( pos != -1 && pos != source.Length )
+			while( pos != -1 && pos != source.Length )
 			{
 				int newPos = source.IndexOf( "!!", pos + 1 );
 
-				if ( newPos == -1 )
+				if( newPos == -1 )
 				{
 					newPos = source.Length;
 				}
@@ -95,7 +98,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 				string error = nvparse_get_errors();
 
-				if ( error != null && error.Length > 0 )
+				if( error != null && error.Length > 0 )
 				{
 					LogManager.Instance.Write( "nvparse error: {0}", error );
 				}
@@ -148,13 +151,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		{
 			// Register combiners uses 2 constants per texture stage (0 and 1)
 			// We have stored these as (stage * 2) + const_index
-			if ( parms.HasFloatConstants )
+			if( parms.HasFloatConstants )
 			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				for( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
 					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-					if ( entry.isSet )
+					if( entry.isSet )
 					{
 						int combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
 						int pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
@@ -170,13 +173,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 		#region Nvparse externs
 
-		const string NATIVE_LIB = "nvparse.dll";
+		private const string NATIVE_LIB = "nvparse.dll";
 
 		[DllImport( NATIVE_LIB, CallingConvention = CallingConvention.Cdecl )]
 		private static extern void nvparse( string input );
 
 		[DllImport( NATIVE_LIB, CallingConvention = CallingConvention.Cdecl, EntryPoint = "nvparse_get_errors", CharSet = CharSet.Auto )]
-		private static unsafe extern byte** nvparse_get_errorsA();
+		unsafe private static extern byte** nvparse_get_errorsA();
 
 		/// <summary>
 		///     
@@ -190,12 +193,12 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 				byte** ret = nvparse_get_errorsA();
 				byte* bytes = ret[ 0 ];
 
-				if ( bytes != null )
+				if( bytes != null )
 				{
 					int i = 0;
 					string error = "";
 
-					while ( bytes[ i ] != '\0' )
+					while( bytes[ i ] != '\0' )
 					{
 						error += (char)bytes[ i ];
 						i++;
@@ -229,5 +232,4 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 		#endregion
 	}
-
 }

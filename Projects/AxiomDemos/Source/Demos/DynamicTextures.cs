@@ -1,38 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
 using Axiom.Overlays;
 using Axiom.Animating;
 using Axiom.Math;
+
 using System.Runtime.InteropServices;
 
 namespace Axiom.Demos
 {
 	public class DynamicTextures : TechDemo
 	{
-		Texture ptex;
-		HardwarePixelBuffer buffer;
-		Overlay overlay;
-		static readonly int reactorExtent = 130; // must be 2^N + 2
-		uint[] clut = new uint[ 1024 ];
-		AnimationState swim;
+		private Texture ptex;
+		private HardwarePixelBuffer buffer;
+		private Overlay overlay;
+		private static readonly int reactorExtent = 130; // must be 2^N + 2
+		private uint[] clut = new uint[1024];
+		private AnimationState swim;
 
-		static float fDefDim;
-		static float fDefVel;
-		float tim;
+		private static float fDefDim;
+		private static float fDefVel;
+		private float tim;
 
-		List<int[]> chemical = new List<int[]>();
-		List<int[]> delta = new List<int[]>();
-		int mSize;
-		int dt, hdiv0, hdiv1; // diffusion parameters
-		int F, k; // reaction parameters
+		private List<int[]> chemical = new List<int[]>();
+		private List<int[]> delta = new List<int[]>();
+		private int mSize;
+		private int dt, hdiv0, hdiv1; // diffusion parameters
+		private int F, k; // reaction parameters
 
-		bool rpressed;
+		private bool rpressed;
 
-		Random rand = new Random();
+		private Random rand = new Random();
 
 		public DynamicTextures()
 		{
@@ -40,24 +42,23 @@ namespace Axiom.Demos
 			chemical.Add( null );
 			delta.Add( null );
 			delta.Add( null );
-
 		}
 
 		protected override bool Setup()
 		{
-			if ( base.Setup() )
+			if( base.Setup() )
 			{
 				tim = 0;
 				rpressed = false;
 				// Create  colour lookup
-				for ( int col = 0; col < 1024; col++ )
+				for( int col = 0; col < 1024; col++ )
 				{
 					ColorEx c;
 					c = HSVtoRGB( ( 1.0f - col / 1024.0f ) * 90.0f + 225.0f, 0.9f, 0.75f + 0.25f * ( 1.0f - col / 1024.0f ) );
 					c.a = 1.0f - col / 1024.0f;
 					unsafe
 					{
-						fixed ( uint* dest = clut )
+						fixed( uint* dest = clut )
 						{
 							PixelConverter.PackColor( c, PixelFormat.A8R8G8B8, (IntPtr)( &dest[ col ] ) );
 						}
@@ -66,10 +67,10 @@ namespace Axiom.Demos
 				// Setup
 				LogManager.Instance.Write( "Creating chemical containment" );
 				mSize = reactorExtent * reactorExtent;
-				chemical[ 0 ] = new int[ mSize ];
-				chemical[ 1 ] = new int[ mSize ];
-				delta[ 0 ] = new int[ mSize ];
-				delta[ 1 ] = new int[ mSize ];
+				chemical[ 0 ] = new int[mSize];
+				chemical[ 1 ] = new int[mSize];
+				delta[ 0 ] = new int[mSize];
+				delta[ 1 ] = new int[mSize];
 
 				dt = FROMFLOAT( 2.0f );
 				hdiv0 = FROMFLOAT( 2.0E-5f / ( 2.0f * 0.01f * 0.01f ) ); // a / (2.0f*h*h); -- really diffusion rate
@@ -110,7 +111,6 @@ namespace Axiom.Demos
 			l.Specular = new ColorEx( 0.9F, 0.9F, 1F );
 			l.Position = new Vector3( -100, 80, 50 );
 			scene.RootSceneNode.AttachObject( l );
-
 
 			Entity planeEnt = scene.CreateEntity( "TexPlane1", PrefabEntity.Plane );
 			// Give the plane a texture
@@ -155,30 +155,32 @@ namespace Axiom.Demos
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			for ( int x = 0; x < 10; x++ )
+			for( int x = 0; x < 10; x++ )
+			{
 				runStep();
+			}
 			buildTexture();
 			swim.AddTime( evt.TimeSinceLastFrame );
 			base.OnFrameStarted( source, evt );
 		}
 
-		void resetReactor()
+		private void resetReactor()
 		{
 			LogManager.Instance.Write( "Facilitating neutral start up conditions" );
-			for ( int x = 0; x < mSize; x++ )
+			for( int x = 0; x < mSize; x++ )
 			{
 				chemical[ 0 ][ x ] = FROMFLOAT( 1.0f );
 				chemical[ 1 ][ x ] = FROMFLOAT( 0.0f );
 			}
 		}
 
-		void fireUpReactor()
+		private void fireUpReactor()
 		{
 			LogManager.Instance.Write( "Warning: reactor is being fired up" );
 			int center = reactorExtent / 2;
-			for ( int x = center - 10; x < center + 10; x++ )
+			for( int x = center - 10; x < center + 10; x++ )
 			{
-				for ( int y = center - 10; y < center + 10; y++ )
+				for( int y = center - 10; y < center + 10; y++ )
 				{
 					chemical[ 0 ][ y * reactorExtent + x ] = FROMFLOAT( 0.5f ) + rand.Next() % FROMFLOAT( 0.1f );
 					chemical[ 1 ][ y * reactorExtent + x ] = FROMFLOAT( 0.25f ) + rand.Next() % FROMFLOAT( 0.1f );
@@ -187,10 +189,10 @@ namespace Axiom.Demos
 			LogManager.Instance.Write( "Warning: reaction has begun" );
 		}
 
-		void runStep()
+		private void runStep()
 		{
 			int x, y;
-			for ( x = 0; x < mSize; x++ )
+			for( x = 0; x < mSize; x++ )
 			{
 				delta[ 0 ][ x ] = 0;
 				delta[ 1 ][ x ] = 0;
@@ -198,7 +200,7 @@ namespace Axiom.Demos
 			// Boundary conditions
 			int idx;
 			idx = 0;
-			for ( y = 0; y < reactorExtent; y++ )
+			for( y = 0; y < reactorExtent; y++ )
 			{
 				chemical[ 0 ][ idx ] = chemical[ 0 ][ idx + reactorExtent - 2 ];
 				chemical[ 0 ][ idx + reactorExtent - 1 ] = chemical[ 0 ][ idx + 1 ];
@@ -207,7 +209,7 @@ namespace Axiom.Demos
 				idx += reactorExtent;
 			}
 			int skip = reactorExtent * ( reactorExtent - 1 );
-			for ( y = 0; y < reactorExtent; y++ )
+			for( y = 0; y < reactorExtent; y++ )
 			{
 				chemical[ 0 ][ y ] = chemical[ 0 ][ y + skip - reactorExtent ];
 				chemical[ 0 ][ y + skip ] = chemical[ 0 ][ y + reactorExtent ];
@@ -216,16 +218,16 @@ namespace Axiom.Demos
 			}
 			// Diffusion
 			idx = reactorExtent + 1;
-			for ( y = 0; y < reactorExtent - 2; y++ )
+			for( y = 0; y < reactorExtent - 2; y++ )
 			{
-				for ( x = 0; x < reactorExtent - 2; x++ )
+				for( x = 0; x < reactorExtent - 2; x++ )
 				{
 					delta[ 0 ][ idx ] += MULT( chemical[ 0 ][ idx - reactorExtent ] + chemical[ 0 ][ idx - 1 ]
-									- 4 * chemical[ 0 ][ idx ] + chemical[ 0 ][ idx + 1 ]
-									+ chemical[ 0 ][ idx + reactorExtent ], hdiv0 );
+					                           - 4 * chemical[ 0 ][ idx ] + chemical[ 0 ][ idx + 1 ]
+					                           + chemical[ 0 ][ idx + reactorExtent ], hdiv0 );
 					delta[ 1 ][ idx ] += MULT( chemical[ 1 ][ idx - reactorExtent ] + chemical[ 1 ][ idx - 1 ]
-									- 4 * chemical[ 1 ][ idx ] + chemical[ 1 ][ idx + 1 ]
-									+ chemical[ 1 ][ idx + reactorExtent ], hdiv1 );
+					                           - 4 * chemical[ 1 ][ idx ] + chemical[ 1 ][ idx + 1 ]
+					                           + chemical[ 1 ][ idx + reactorExtent ], hdiv1 );
 					idx++;
 				}
 				idx += 2;
@@ -234,9 +236,9 @@ namespace Axiom.Demos
 			idx = reactorExtent + 1;
 			int U, V;
 
-			for ( y = 0; y < reactorExtent - 2; y++ )
+			for( y = 0; y < reactorExtent - 2; y++ )
 			{
-				for ( x = 0; x < reactorExtent - 2; x++ )
+				for( x = 0; x < reactorExtent - 2; x++ )
 				{
 					U = chemical[ 0 ][ idx ];
 					V = chemical[ 1 ][ idx ];
@@ -248,27 +250,27 @@ namespace Axiom.Demos
 				idx += 2;
 			}
 			// Update concentrations
-			for ( x = 0; x < mSize; x++ )
+			for( x = 0; x < mSize; x++ )
 			{
 				chemical[ 0 ][ x ] += MULT( delta[ 0 ][ x ], dt );
 				chemical[ 1 ][ x ] += MULT( delta[ 1 ][ x ], dt );
 			}
 		}
 
-		void buildTexture()
+		private void buildTexture()
 		{
 			buffer.Lock( BufferLocking.Discard );
 			PixelBox pb = buffer.CurrentLock;
 			int idx = reactorExtent + 1;
 			unsafe
 			{
-				fixed ( int* chem_0 = chemical[ 0 ] )
+				fixed( int* chem_0 = chemical[ 0 ] )
 				{
-					for ( int y = 0; y < ( reactorExtent - 2 ); y++ )
+					for( int y = 0; y < ( reactorExtent - 2 ); y++ )
 					{
 						uint* data = ( (uint*)pb.Data ) + y * pb.RowPitch;
 						int* chem = &chem_0[ idx ];
-						for ( int x = 0; x < ( reactorExtent - 2 ); x++ )
+						for( int x = 0; x < ( reactorExtent - 2 ); x++ )
 						{
 							data[ x ] = clut[ ( chem[ x ] >> 6 ) & 1023 ];
 						}
@@ -279,53 +281,59 @@ namespace Axiom.Demos
 			}
 			buffer.Unlock();
 		}
+
 		// GUI updaters
-		void updateInfoParamK()
+		private void updateInfoParamK()
 		{
 			OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_K" ).Text = String.Format( "[1/2]k: {0}", TOFLOAT( k ) );
 		}
-		void updateInfoParamF()
+
+		private void updateInfoParamF()
 		{
 			OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_F" ).Text = String.Format( "[3/4]F: {0}", TOFLOAT( F ) );
 		}
-		void updateInfoParamA0()
+
+		private void updateInfoParamA0()
 		{
 			// Diffusion rate for chemical 1
 			OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_A0" ).Text = String.Format( "[5/6]Diffusion 1: {0}", TOFLOAT( hdiv0 ) );
 		}
-		void updateInfoParamA1()
+
+		private void updateInfoParamA1()
 		{
 			// Diffusion rate for chemical 2
 			OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_A1" ).Text = String.Format( "[7/8]Diffusion 2: {0}", TOFLOAT( hdiv1 ) );
 		}
 
-
 		private int FROMFLOAT( float X )
 		{
 			return (int)( ( X ) * ( (float)( 1 << 16 ) ) );
 		}
+
 		private float TOFLOAT( int X )
 		{
 			return (float)( ( X ) / ( (float)( 1 << 16 ) ) );
 		}
+
 		private int MULT( int X, int Y )
 		{
 			return ( ( X ) * ( Y ) ) >> 16;
 		}
-		ColorEx HSVtoRGB( float h, float s, float v )
+
+		private ColorEx HSVtoRGB( float h, float s, float v )
 		{
 			int i;
 			ColorEx rv = new ColorEx( 0.0f, 0.0f, 0.0f, 1.0f );
 			float f, p, q, t;
 			h = (float)System.Math.IEEERemainder( h, 360.0f );
-			h /= 60.0f;			// sector 0 to 5
+			h /= 60.0f; // sector 0 to 5
 			i = (int)System.Math.Floor( h );
-			f = h - i;			// factorial part of h
+			f = h - i; // factorial part of h
 			p = v * ( 1.0f - s );
 			q = v * ( 1.0f - s * f );
 			t = v * ( 1.0f - s * ( 1.0f - f ) );
 
-			switch ( i )
+			switch( i )
 			{
 				case 0:
 					rv.r = v;
@@ -360,6 +368,5 @@ namespace Axiom.Demos
 			}
 			return rv;
 		}
-
 	}
 }

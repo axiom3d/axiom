@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -64,7 +68,7 @@ namespace Axiom.Media
 
 		public static int[] GetBitDepths( PixelFormat format )
 		{
-			int[] rgba = new int[ 4 ];
+			int[] rgba = new int[4];
 			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rbits;
 			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gbits;
 			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bbits;
@@ -74,7 +78,7 @@ namespace Axiom.Media
 
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
-			uint[] rgba = new uint[ 4 ];
+			uint[] rgba = new uint[4];
 			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rmask;
 			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gmask;
 			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bmask;
@@ -98,9 +102,9 @@ namespace Axiom.Media
 		///</remarks>
 		public static int GetMemorySize( int width, int height, int depth, PixelFormat format )
 		{
-			if ( IsCompressed( format ) )
+			if( IsCompressed( format ) )
 			{
-				switch ( format )
+				switch( format )
 				{
 					case PixelFormat.DXT1:
 						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 8 * depth;
@@ -121,8 +125,10 @@ namespace Axiom.Media
 
 		public static bool IsAccessible( PixelFormat format )
 		{
-			if ( format == PixelFormat.Unknown )
+			if( format == PixelFormat.Unknown )
+			{
 				return false;
+			}
 			PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
 			return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
 		}
@@ -162,17 +168,17 @@ namespace Axiom.Media
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
 
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name )
-        {
-            return GetFormatFromName( name, false, false );
-        }
+		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		public static PixelFormat GetFormatFromName( string name )
+		{
+			return GetFormatFromName( name, false, false );
+		}
 
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
-        {
-            return GetFormatFromName( name, accessibleOnly, false );
-        }
+		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
+		{
+			return GetFormatFromName( name, accessibleOnly, false );
+		}
 
 		/// <summary>
 		/// Gets the format from given name.
@@ -186,13 +192,15 @@ namespace Axiom.Media
 			// We are storing upper-case format names.
 			String tmp = caseSensitive ? name : name.ToUpper();
 
-			for ( int i = 0; i < (int)PixelFormat.Count; ++i )
+			for( int i = 0; i < (int)PixelFormat.Count; ++i )
 			{
 				PixelFormat pf = (PixelFormat)i;
-				if ( !accessibleOnly || IsAccessible( pf ) )
+				if( !accessibleOnly || IsAccessible( pf ) )
 				{
-					if ( tmp == GetFormatName( pf ) )
+					if( tmp == GetFormatName( pf ) )
+					{
 						return pf;
+					}
 				}
 			}
 			return PixelFormat.Unknown;
@@ -200,10 +208,10 @@ namespace Axiom.Media
 
 		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
 		{
-			switch ( integerBits )
+			switch( integerBits )
 			{
 				case 16:
-					switch ( format )
+					switch( format )
 					{
 						case PixelFormat.R8G8B8:
 						case PixelFormat.X8R8G8B8:
@@ -226,7 +234,7 @@ namespace Axiom.Media
 					break;
 
 				case 32:
-					switch ( format )
+					switch( format )
 					{
 						case PixelFormat.R5G6B5:
 							return PixelFormat.X8R8G8B8;
@@ -251,10 +259,10 @@ namespace Axiom.Media
 					break;
 			}
 
-			switch ( floatBits )
+			switch( floatBits )
 			{
 				case 16:
-					switch ( format )
+					switch( format )
 					{
 						case PixelFormat.FLOAT32_R:
 							return PixelFormat.FLOAT16_R;
@@ -272,7 +280,7 @@ namespace Axiom.Media
 					break;
 
 				case 32:
-					switch ( format )
+					switch( format )
 					{
 						case PixelFormat.FLOAT16_R:
 							return PixelFormat.FLOAT32_R;
@@ -292,7 +300,6 @@ namespace Axiom.Media
 				default:
 					// use original image format
 					break;
-
 			}
 
 			return format;

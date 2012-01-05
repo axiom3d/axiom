@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,20 +47,21 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Controllers;
 using Axiom.Graphics;
+
 using System.Reflection;
+
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-
 	/// <summary>
 	///     Particle system attribute method definition.
 	/// </summary>
 	/// <param name="values">Attribute values.</param>
 	/// <param name="system">Target particle system.</param>
-	delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
+	internal delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
 
 	/// <summary>
 	///		Class defining particle system based special effects.
@@ -79,26 +84,18 @@ namespace Axiom.ParticleSystems
 	{
 		#region Fields and Properties
 
-		const string PARTICLE = "Particle";
+		private const string PARTICLE = "Particle";
 
 		/// <summary>List of emitters for this system.</summary>
 		protected List<ParticleEmitter> emitterList = new List<ParticleEmitter>();
-		public List<ParticleEmitter> Emitters
-		{
-			get
-			{
-				return emitterList;
-			}
-		}
+
+		public List<ParticleEmitter> Emitters { get { return emitterList; } }
+
 		/// <summary>List of affectors for this system.</summary>
 		protected List<ParticleAffector> affectorList = new List<ParticleAffector>();
-		public List<ParticleAffector> Affectors
-		{
-			get
-			{
-				return affectorList;
-			}
-		}
+
+		public List<ParticleAffector> Affectors { get { return affectorList; } }
+
 		/// <summary>Cached for less memory usage during emitter processing.</summary>
 		/// <note>EmitterList is a list of _counts_, not a list of emitters</note>
 		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
@@ -131,6 +128,7 @@ namespace Axiom.ParticleSystems
 
 		/// World AABB, only used to compare world-space positions to calc bounds
 		protected AxisAlignedBox aab;
+
 		protected float boundingRadius;
 		protected bool boundsAutoUpdate = true;
 		protected float boundsUpdateTime = 10.0f;
@@ -138,34 +136,49 @@ namespace Axiom.ParticleSystems
 
 		/// Name of the resource group to use to load materials
 		protected string resourceGroupName;
+
 		/// Name of the material to use
 		protected string materialName = "BaseWhite";
+
 		/// Have we set the material etc on the renderer?
 		protected bool isRendererConfigured = false;
+
 		/// Pointer to the material to use
 		protected Material material;
+
 		/// Default width of each particle
 		protected float defaultWidth;
+
 		/// Default height of each particle
 		protected float defaultHeight;
+
 		/// Speed factor
 		protected float speedFactor = 1.0f;
+
 		/// Iteration interval
 		protected float iterationInterval = 0.0f;
+
 		/// Iteration interval set? Otherwise track default
 		protected bool iterationIntervalSet = false;
+
 		/// Particles sorted according to camera?
 		protected bool sorted = false;
+
 		/// Particles in local space?
 		protected bool localSpace = false;
+
 		/// Update timeout when nonvisible (0 for no timeout)
 		protected float nonvisibleTimeout = 0.0f;
+
 		/// Update timeout when nonvisible set? Otherwise track default
 		protected bool nonvisibleTimeoutSet = false;
+
 		/// Amount of time non-visible so far
 		protected float timeSinceLastVisible = 0;
+
 		/// Last frame in which known to be visible
 		protected ulong lastVisibleFrame = 0;
+
 		/// Controller for time update
 		protected Controller<float> timeController = null;
 
@@ -191,6 +204,7 @@ namespace Axiom.ParticleSystems
 
 		/// Default iteration interval
 		protected static float defaultIterationInterval;
+
 		/// Default nonvisible update timeout
 		protected static float defaultNonvisibleTimeout;
 
@@ -202,6 +216,7 @@ namespace Axiom.ParticleSystems
 		#endregion
 
 		#region Constructors
+
 		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
 		/// </summary>
@@ -210,10 +225,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="name"></param>
 		internal ParticleSystem( string name )
-			: this( name, ResourceGroupManager.DefaultResourceGroupName )
-		{
-
-		}
+			: this( name, ResourceGroupManager.DefaultResourceGroupName ) {}
 
 		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
@@ -234,37 +246,37 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( timeController != null )
+					if( timeController != null )
 					{
 						// timeController.Dispose();
 						timeController = null;
@@ -274,17 +286,19 @@ namespace Axiom.ParticleSystems
 
 					DestroyVisualParticles( 0, particlePool.Count );
 
-                    if ( renderer != null )
-                    {
-                        if ( !renderer.IsDisposed )
-                            renderer.Dispose();
+					if( renderer != null )
+					{
+						if( !renderer.IsDisposed )
+						{
+							renderer.Dispose();
+						}
 
-                        renderer = null;
-                    }
+						renderer = null;
+					}
 				}
 			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>
@@ -384,8 +398,6 @@ namespace Axiom.ParticleSystems
 
 		#region Methods
 
-
-
 		/// <summary>
 		///		Used to expire dead particles.
 		/// </summary>
@@ -393,18 +405,17 @@ namespace Axiom.ParticleSystems
 		protected void Expire( float timeElapsed )
 		{
 			List<Particle> expiredList = new List<Particle>();
-			for ( int index = 0; index < activeParticles.Count; index++ )
-			//foreach ( Particle particle in activeParticles )
+			for( int index = 0; index < activeParticles.Count; index++ ) //foreach ( Particle particle in activeParticles )
 			{
 				Particle particle = activeParticles[ index ];
 				// is this particle dead?
-				if ( particle.timeToLive < timeElapsed )
+				if( particle.timeToLive < timeElapsed )
 				{
 					// notify renderer
 					renderer.NotifyParticleExpired( particle );
 
 					// Identify the particle type
-					if ( particle.ParticleType == ParticleType.Emitter )
+					if( particle.ParticleType == ParticleType.Emitter )
 					{
 						// For now, it can only be an emitted emitter
 						ParticleEmitter pParticleEmitter = (ParticleEmitter)particle;
@@ -413,7 +424,6 @@ namespace Axiom.ParticleSystems
 
 						// Also erase from activeEmittedEmitters
 						removeFromActiveEmittedEmitters( pParticleEmitter );
-
 					}
 					else
 					{
@@ -429,8 +439,7 @@ namespace Axiom.ParticleSystems
 					particle.timeToLive -= timeElapsed;
 				}
 			}
-			for ( int index = 0; index < expiredList.Count; index++ )
-			//foreach ( Particle p in expiredList )
+			for( int index = 0; index < expiredList.Count; index++ ) //foreach ( Particle p in expiredList )
 			{
 				Particle p = expiredList[ index ];
 				activeParticles.Remove( p );
@@ -439,7 +448,7 @@ namespace Axiom.ParticleSystems
 
 		private void removeFromActiveEmittedEmitters( ParticleEmitter pParticleEmitter )
 		{
-			if ( activeEmittedEmitters.Contains( pParticleEmitter ) )
+			if( activeEmittedEmitters.Contains( pParticleEmitter ) )
 			{
 				activeEmittedEmitters.Remove( pParticleEmitter );
 			}
@@ -459,15 +468,15 @@ namespace Axiom.ParticleSystems
 
 			// Count up total requested emissions
 			//foreach ( ParticleEmitter emitter in emitterList )
-			for ( index = 0; index < emitterList.Count; index++ )
+			for( index = 0; index < emitterList.Count; index++ )
 			{
 				ParticleEmitter emitter = emitterList[ index ];
 
-				if ( !requested.ContainsKey( emitter ) )
+				if( !requested.ContainsKey( emitter ) )
 				{
 					requested.Add( emitter, 0 );
 				}
-				if ( !emitter.IsEmitted )
+				if( !emitter.IsEmitted )
 				{
 					requested[ emitter ] = emitter.GetEmissionCount( timeElapsed );
 					totalRequested += requested[ emitter ];
@@ -475,10 +484,10 @@ namespace Axiom.ParticleSystems
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
 				ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
-				if ( !requested.ContainsKey( activeEmitter ) )
+				if( !requested.ContainsKey( activeEmitter ) )
 				{
 					requested.Add( activeEmitter, 0 );
 				}
@@ -486,11 +495,11 @@ namespace Axiom.ParticleSystems
 			}
 			float ratio = 1.0f;
 			// Check if the quota will be exceeded, if so reduce demand
-			if ( totalRequested > emissionAllowed )
+			if( totalRequested > emissionAllowed )
 			{
 				// Apportion down requested values to allotted values
 				ratio = (float)emissionAllowed / (float)totalRequested;
-				foreach ( ParticleEmitter emitter in emitterList )
+				foreach( ParticleEmitter emitter in emitterList )
 				{
 					requested[ emitter ] = (int)( requested[ emitter ] * ratio );
 				}
@@ -501,19 +510,19 @@ namespace Axiom.ParticleSystems
 			// this ensures an even distribution of particles when many are
 			// emitted in a single frame
 			//foreach ( ParticleEmitter emitter in emitterList )
-			for ( index = 0; index < emitterList.Count; index++ )
+			for( index = 0; index < emitterList.Count; index++ )
 			{
 				ParticleEmitter emitter = emitterList[ index ];
 				// Trigger the emitters, but exclude the emitters that are already in the emitted emitters list; 
 				// they are handled in a separate loop
-				if ( !emitter.IsEmitted )
+				if( !emitter.IsEmitted )
 				{
 					executeTriggerEmitters( emitter, requested[ emitter ], timeElapsed );
 				}
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
 				ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
 				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
@@ -525,12 +534,12 @@ namespace Axiom.ParticleSystems
 			float timePoint = 0.0f;
 			float timeInc = timeElapsed / requested;
 
-			for ( int j = 0; j < requested; ++j )
+			for( int j = 0; j < requested; ++j )
 			{
 				// Create a new particle & init using emitter
 				Particle p = null;
 				string emitterName = emitter.EmittedEmitter;
-				if ( emitterName == string.Empty )
+				if( emitterName == string.Empty )
 				{
 					p = CreateParticle();
 				}
@@ -539,12 +548,14 @@ namespace Axiom.ParticleSystems
 					p = CreateEmitterParticle( emitterName );
 				}
 
-				if ( p == null )
+				if( p == null )
+				{
 					return;
+				}
 
 				emitter.InitParticle( p );
 
-				if ( !localSpace )
+				if( !localSpace )
 				{
 					p.Position = ( parentNode.DerivedOrientation * ( parentNode.DerivedScale * p.Position ) ) + parentNode.DerivedPosition;
 					p.Direction = ( parentNode.DerivedOrientation * p.Direction );
@@ -554,13 +565,15 @@ namespace Axiom.ParticleSystems
 				p.Position += ( p.Direction * timePoint );
 
 				// apply particle initialization by the affectors
-				foreach ( ParticleAffector affector in affectorList )
+				foreach( ParticleAffector affector in affectorList )
+				{
 					affector.InitParticle( ref p );
+				}
 
 				// Increment time fragment
 				timePoint += timeInc;
 
-				if ( p.ParticleType == ParticleType.Emitter )
+				if( p.ParticleType == ParticleType.Emitter )
 				{
 					// If the particle is an emitter, the position on the emitter side must also be initialised
 					// Note, that position of the emitter becomes a position in worldspace if mLocalSpace is set 
@@ -571,11 +584,8 @@ namespace Axiom.ParticleSystems
 
 				// Notify renderer
 				renderer.NotifyParticleEmitted( p );
-
 			}
 		}
-
-
 
 		/// <summary>
 		///		Updates existing particles based on their momentum.
@@ -583,11 +593,11 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void ApplyMotion( float timeElapsed )
 		{
-			foreach ( Particle p in activeParticles )
+			foreach( Particle p in activeParticles )
 			{
 				p.Position += p.Direction * timeElapsed;
 
-				if ( p.ParticleType == ParticleType.Emitter )
+				if( p.ParticleType == ParticleType.Emitter )
 				{
 					// If the particle is an emitter, the position on the emitter side must also be initialised
 					// Note, that position of the emitter becomes a position in worldspace if mLocalSpace is set 
@@ -607,8 +617,10 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void TriggerAffectors( float timeElapsed )
 		{
-			foreach ( ParticleAffector affector in affectorList )
+			foreach( ParticleAffector affector in affectorList )
+			{
 				affector.AffectParticles( this, timeElapsed );
+			}
 		}
 
 		/// <summary>
@@ -623,11 +635,15 @@ namespace Axiom.ParticleSystems
 			particlePool.Capacity = size;
 
 			// add fresh Billboard objects to the new slots
-			for ( int i = oldSize; i < size; i++ )
+			for( int i = oldSize; i < size; i++ )
+			{
 				particlePool.Add( new Particle() );
+			}
 
-			if ( isRendererConfigured )
+			if( isRendererConfigured )
+			{
 				CreateVisualParticles( oldSize, size );
+			}
 		}
 
 		public Particle GetParticle( int index )
@@ -638,7 +654,7 @@ namespace Axiom.ParticleSystems
 		private Particle CreateParticle()
 		{
 			Particle newParticle = null;
-			if ( freeParticles.Count != 0 )
+			if( freeParticles.Count != 0 )
 			{
 				// Fast creation (don't use superclass since emitter will init)
 				newParticle = freeParticles[ 0 ];
@@ -657,7 +673,7 @@ namespace Axiom.ParticleSystems
 			// Get the appropriate list and retrieve an emitter	
 			Particle p = null;
 			List<ParticleEmitter> fee = findFreeEmittedEmitter( emitterName );
-			if ( fee != null && fee.Count != 0 )
+			if( fee != null && fee.Count != 0 )
 			{
 				p = fee[ 0 ];
 				p.ParticleType = ParticleType.Emitter;
@@ -677,7 +693,7 @@ namespace Axiom.ParticleSystems
 
 		private List<ParticleEmitter> findFreeEmittedEmitter( string name )
 		{
-			if ( freeEmittedEmitters.ContainsKey( name ) )
+			if( freeEmittedEmitters.ContainsKey( name ) )
 			{
 				return freeEmittedEmitters[ name ];
 			}
@@ -685,11 +701,12 @@ namespace Axiom.ParticleSystems
 			return null;
 		}
 
-
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( renderer != null )
+			if( renderer != null )
+			{
 				renderer.UpdateRenderQueue( queue, activeParticles, cullIndividual );
+			}
 		}
 
 		protected void InitParameters()
@@ -700,11 +717,11 @@ namespace Axiom.ParticleSystems
 
 		protected void UpdateBounds()
 		{
-			if ( parentNode != null && ( boundsAutoUpdate || boundsUpdateTime > 0.0f ) )
+			if( parentNode != null && ( boundsAutoUpdate || boundsUpdateTime > 0.0f ) )
 			{
 				Vector3 min;
 				Vector3 max;
-				if ( !boundsAutoUpdate )
+				if( !boundsAutoUpdate )
 				{
 					// We're on a limit, grow rather than reset each time
 					// so that we pick up the worst case scenario
@@ -719,9 +736,9 @@ namespace Axiom.ParticleSystems
 				Vector3 halfScale = Vector3.UnitScale * 0.5f;
 				Vector3 defaultPadding =
 					halfScale * (float)Utility.Max( defaultHeight, defaultWidth );
-				foreach ( Particle p in activeParticles )
+				foreach( Particle p in activeParticles )
 				{
-					if ( p.HasOwnDimensions )
+					if( p.HasOwnDimensions )
 					{
 						Vector3 padding =
 							halfScale * (float)Utility.Max( p.Width, p.Height );
@@ -736,8 +753,7 @@ namespace Axiom.ParticleSystems
 				}
 				worldAABB.SetExtents( min, max );
 
-
-				if ( localSpace )
+				if( localSpace )
 				{
 					// Merge calculated box with current AABB to preserve any user-set AABB
 					aab.Merge( worldAABB );
@@ -757,7 +773,6 @@ namespace Axiom.ParticleSystems
 				parentNode.NeedUpdate();
 			}
 		}
-
 
 		/// <summary>
 		///		Overloaded method.
@@ -785,7 +800,7 @@ namespace Axiom.ParticleSystems
 		/// </param>
 		public void FastForward( float time, float interval )
 		{
-			for ( float t = 0.0f; t < time; t += interval )
+			for( float t = 0.0f; t < time; t += interval )
 			{
 				Update( interval );
 			}
@@ -793,22 +808,28 @@ namespace Axiom.ParticleSystems
 
 		public void NotifyParticleResized()
 		{
-			if ( renderer != null )
+			if( renderer != null )
+			{
 				renderer.NotifyParticleResized();
+			}
 		}
 
 		public void NotifyParticleRotated()
 		{
-			if ( renderer != null )
+			if( renderer != null )
+			{
 				renderer.NotifyParticleRotated();
+			}
 		}
 
 		protected void SetDefaultDimensions( float width, float height )
 		{
 			defaultWidth = width;
 			defaultHeight = height;
-			if ( renderer != null )
+			if( renderer != null )
+			{
 				renderer.NotifyDefaultDimensions( width, height );
+			}
 		}
 
 		public override void NotifyCurrentCamera( Camera cam )
@@ -825,10 +846,12 @@ namespace Axiom.ParticleSystems
 			//    SortParticles(cam);
 			//}
 
-			if ( renderer != null )
+			if( renderer != null )
 			{
-				if ( !isRendererConfigured )
+				if( !isRendererConfigured )
+				{
 					ConfigureRenderer();
+				}
 				renderer.NotifyCurrentCamera( cam );
 			}
 		}
@@ -836,12 +859,12 @@ namespace Axiom.ParticleSystems
 		public override void NotifyAttached( Node parent, bool isTagPoint )
 		{
 			base.NotifyAttached( parent, isTagPoint );
-			if ( renderer != null && isRendererConfigured )
+			if( renderer != null && isRendererConfigured )
 			{
 				renderer.NotifyAttached( parent, isTagPoint );
 			}
 
-			if ( parent != null && timeController == null )
+			if( parent != null && timeController == null )
 			{
 				// Assume visible
 				timeSinceLastVisible = 0;
@@ -852,7 +875,7 @@ namespace Axiom.ParticleSystems
 				IControllerValue<float> updValue = new ParticleSystemUpdateValue( this );
 				timeController = ControllerManager.Instance.CreateFrameTimePassthroughController( updValue );
 			}
-			else if ( parent == null && timeController != null )
+			else if( parent == null && timeController != null )
 			{
 				// Destroy controller
 				ControllerManager.Instance.DestroyController( timeController );
@@ -872,24 +895,24 @@ namespace Axiom.ParticleSystems
 			// Actual allocate particles
 			int currSize = particlePool.Count;
 			int size = poolSize;
-			if ( currSize < size )
+			if( currSize < size )
 			{
 				IncreasePool( size );
 
-				for ( int i = currSize; i < size; ++i )
+				for( int i = currSize; i < size; ++i )
 				{
 					// Add new items to the queue
 					freeParticles.Add( particlePool[ i ] );
 				}
 
 				// Tell the renderer, if already configured
-				if ( renderer != null && isRendererConfigured )
+				if( renderer != null && isRendererConfigured )
 				{
 					renderer.NotifyParticleQuota( size );
 				}
 			}
 
-			if ( renderer != null && !isRendererConfigured )
+			if( renderer != null && !isRendererConfigured )
 			{
 				renderer.NotifyParticleQuota( particlePool.Count );
 				renderer.NotifyAttached( parentNode, parentIsTagPoint );
@@ -897,8 +920,10 @@ namespace Axiom.ParticleSystems
 				CreateVisualParticles( 0, particlePool.Count );
 				Material mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
 				renderer.Material = mat;
-				if ( renderQueueIDSet )
+				if( renderQueueIDSet )
+				{
 					renderer.RenderQueueGroup = renderQueueID;
+				}
 				renderer.SetKeepParticlesInLocalSpace( localSpace );
 				isRendererConfigured = true;
 			}
@@ -906,7 +931,7 @@ namespace Axiom.ParticleSystems
 
 		protected void CreateVisualParticles( int poolstart, int poolend )
 		{
-			for ( int i = poolstart; i < poolend; ++i )
+			for( int i = poolstart; i < poolend; ++i )
 			{
 				particlePool[ i ].NotifyVisualData( renderer.CreateVisualData() );
 			}
@@ -915,7 +940,7 @@ namespace Axiom.ParticleSystems
 		//-----------------------------------------------------------------------
 		protected void DestroyVisualParticles( int poolstart, int poolend )
 		{
-			for ( int i = poolstart; i < poolend; ++i )
+			for( int i = poolstart; i < poolend; ++i )
 			{
 				renderer.DestroyVisualData( particlePool[ i ].VisualData );
 				particlePool[ i ].NotifyVisualData( null );
@@ -932,7 +957,7 @@ namespace Axiom.ParticleSystems
 		{
 			aab = (AxisAlignedBox)aabb.Clone();
 			float sqDist = (float)Utility.Max( aab.Minimum.LengthSquared,
-										   aab.Maximum.LengthSquared );
+			                                   aab.Maximum.LengthSquared );
 			boundingRadius = (float)Utility.Sqrt( sqDist );
 		}
 
@@ -942,20 +967,22 @@ namespace Axiom.ParticleSystems
 			boundsAutoUpdate = autoUpdate;
 			boundsUpdateTime = stopIn;
 		}
+
 		//-----------------------------------------------------------------------
 		protected void SetRenderQueueGroup( RenderQueueGroupID queueID )
 		{
 			base.RenderQueueGroup = queueID;
-			if ( renderer != null )
+			if( renderer != null )
 			{
 				renderer.RenderQueueGroup = queueID;
 			}
 		}
+
 		//-----------------------------------------------------------------------
 		protected void SetKeepParticlesInLocalSpace( bool keepLocal )
 		{
 			localSpace = keepLocal;
-			if ( renderer != null )
+			if( renderer != null )
 			{
 				renderer.SetKeepParticlesInLocalSpace( keepLocal );
 			}
@@ -964,7 +991,7 @@ namespace Axiom.ParticleSystems
 		public void ScaleVelocity( float velocityMultiplier )
 		{
 			int emitterCount = emitterList.Count;
-			for ( int i = 0; i < emitterCount; i++ )
+			for( int i = 0; i < emitterCount; i++ )
 			{
 				ParticleEmitter emitter = (ParticleEmitter)emitterList[ i ];
 				emitter.ScaleVelocity( velocityMultiplier );
@@ -973,9 +1000,9 @@ namespace Axiom.ParticleSystems
 
 		public bool SetParameter( string attr, string val )
 		{
-			if ( attribParsers.ContainsKey( attr ) )
+			if( attribParsers.ContainsKey( attr ) )
 			{
-				object[] args = new object[ 2 ];
+				object[] args = new object[2];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ attr ].Invoke( null, args );
@@ -1005,7 +1032,7 @@ namespace Axiom.ParticleSystems
 			MethodInfo[] methods = this.GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
-			for ( int i = 0; i < methods.Length; i++ )
+			for( int i = 0; i < methods.Length; i++ )
 			{
 				// get the current method in the loop
 				MethodInfo method = methods[ i ];
@@ -1015,17 +1042,16 @@ namespace Axiom.ParticleSystems
 					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
-				for ( int j = 0; j < parserAtts.Length; j++ )
+				for( int j = 0; j < parserAtts.Length; j++ )
 				{
 					ParserCommandAttribute parserAtt = parserAtts[ j ];
 
-					switch ( parserAtt.ParserType )
+					switch( parserAtt.ParserType )
 					{
-						// this method should parse a material attribute
+							// this method should parse a material attribute
 						case PARTICLE:
 							attribParsers.Add( parserAtt.Name, method );
 							break;
-
 					} // switch
 				} // for
 			} // for
@@ -1034,7 +1060,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "sorted", PARTICLE )]
 		public static void ParseSorted( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "sorted", system.Name, "Wrong number of parameters." );
 				return;
@@ -1046,7 +1072,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "emit_emitter_quota", PARTICLE )]
 		public static void ParseEmitEmitterQuota( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "emit_emitter_quota", system.Name, "Wrong number of parameters." );
 				return;
@@ -1055,11 +1081,10 @@ namespace Axiom.ParticleSystems
 			//system.CullIndividual = StringConverter.ParseBool( values[ 0 ] );
 		}
 
-
 		[ParserCommand( "cull_each", PARTICLE )]
 		public static void ParseCullEach( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "cull_each", system.Name, "Wrong number of parameters." );
 				return;
@@ -1071,7 +1096,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "particle_width", PARTICLE )]
 		public static void ParseWidth( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "particle_width", system.Name, "Wrong number of parameters." );
 				return;
@@ -1083,7 +1108,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "particle_height", PARTICLE )]
 		public static void ParseHeight( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "particle_height", system.Name, "Wrong number of parameters." );
 				return;
@@ -1095,7 +1120,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "material", PARTICLE )]
 		public static void ParseMaterial( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "material", system.Name, "Wrong number of parameters." );
 				return;
@@ -1107,7 +1132,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "quota", PARTICLE )]
 		public static void ParseQuota( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "quota", system.Name, "Wrong number of parameters." );
 				return;
@@ -1119,7 +1144,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "local_space", PARTICLE )]
 		public static void ParseLocalSpace( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "local_space", system.Name, "Wrong number of parameters." );
 				return;
@@ -1131,7 +1156,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "renderer", PARTICLE )]
 		public static void ParseRenderer( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "renderer", system.Name, "Wrong number of parameters." );
 				return;
@@ -1143,7 +1168,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "iteration_interval", PARTICLE )]
 		public static void ParseIterationInterval( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "iteration_interval", system.Name, "Wrong number of parameters." );
 				return;
@@ -1155,7 +1180,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "nonvisible_update_timeout", PARTICLE )]
 		public static void ParseNonvisibleUpdateTimeout( string[] values, ParticleSystem system )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "nonvisible_update_timeout", system.Name, "Wrong number of parameters." );
 				return;
@@ -1168,55 +1193,38 @@ namespace Axiom.ParticleSystems
 
 		#region Properties
 
-		public bool LocalSpace
-		{
-			get
-			{
-				return localSpace;
-			}
-			set
-			{
-				this.localSpace = value;
-			}
-		}
+		public bool LocalSpace { get { return localSpace; } set { this.localSpace = value; } }
 
 		public float DefaultWidth
 		{
-			get
-			{
-				return defaultWidth;
-			}
+			get { return defaultWidth; }
 			set
 			{
 				defaultWidth = value;
-				if ( renderer != null )
+				if( renderer != null )
+				{
 					renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
+				}
 			}
 		}
+
 		public float DefaultHeight
 		{
-			get
-			{
-				return defaultHeight;
-			}
+			get { return defaultHeight; }
 			set
 			{
 				defaultHeight = value;
-				if ( renderer != null )
+				if( renderer != null )
+				{
 					renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
+				}
 			}
 		}
 
 		/// <summary>
 		///		Gets the count of active particles currently in the system.
 		/// </summary>
-		public int ParticleCount
-		{
-			get
-			{
-				return activeParticles.Count;
-			}
-		}
+		public int ParticleCount { get { return activeParticles.Count; } }
 
 		/// <summary>
 		///		Returns the maximum number of particles this system is allowed to have active at once.
@@ -1231,38 +1239,28 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		public int ParticleQuota
 		{
-			get
-			{
-				return poolSize;
-			}
+			get { return poolSize; }
 			set
 			{
-				if ( poolSize < value )
+				if( poolSize < value )
+				{
 					poolSize = value;
+				}
 			}
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public List<Particle> Particles
-		{
-			get
-			{
-				return activeParticles;
-			}
-		}
+		public List<Particle> Particles { get { return activeParticles; } }
 
 		public string MaterialName
 		{
-			get
-			{
-				return materialName;
-			}
+			get { return materialName; }
 			set
 			{
 				materialName = value;
-				if ( isRendererConfigured )
+				if( isRendererConfigured )
 				{
 					Material mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
 					renderer.Material = mat;
@@ -1274,19 +1272,21 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				if ( renderer != null )
+				if( renderer != null )
+				{
 					return renderer.Type;
+				}
 				return string.Empty;
 			}
 			set
 			{
-				if ( renderer != null )
+				if( renderer != null )
 				{
 					DestroyVisualParticles( 0, particlePool.Count );
 					// ParticleSystemManager.Instance.DestroyRenderer(renderer);
 					renderer = null;
 				}
-				if ( value != null && value != "" )
+				if( value != null && value != "" )
 				{
 					renderer = ParticleSystemManager.Instance.CreateRenderer( value );
 					isRendererConfigured = false;
@@ -1294,48 +1294,15 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public bool CullIndividual
-		{
-			get
-			{
-				return cullIndividual;
-			}
-			set
-			{
-				cullIndividual = value;
-			}
-		}
+		public bool CullIndividual { get { return cullIndividual; } set { cullIndividual = value; } }
 
-		public bool Sorted
-		{
-			get
-			{
-				return sorted;
-			}
-			set
-			{
-				sorted = value;
-			}
-		}
+		public bool Sorted { get { return sorted; } set { sorted = value; } }
 
-		public float SpeedFactor
-		{
-			get
-			{
-				return speedFactor;
-			}
-			set
-			{
-				speedFactor = value;
-			}
-		}
+		public float SpeedFactor { get { return speedFactor; } set { speedFactor = value; } }
 
 		public float IterationInterval
 		{
-			get
-			{
-				return iterationInterval;
-			}
+			get { return iterationInterval; }
 			set
 			{
 				iterationInterval = value;
@@ -1343,24 +1310,11 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public static float DefaultIterationInterval
-		{
-			get
-			{
-				return defaultIterationInterval;
-			}
-			set
-			{
-				defaultIterationInterval = value;
-			}
-		}
+		public static float DefaultIterationInterval { get { return defaultIterationInterval; } set { defaultIterationInterval = value; } }
 
 		public float NonVisibleUpdateTimeout
 		{
-			get
-			{
-				return nonvisibleTimeout;
-			}
+			get { return nonvisibleTimeout; }
 			set
 			{
 				nonvisibleTimeout = value;
@@ -1368,29 +1322,9 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		public static float DefaultNonVisibleUpdateTimeout
-		{
-			get
-			{
-				return defaultNonvisibleTimeout;
-			}
-			set
-			{
-				defaultNonvisibleTimeout = value;
-			}
-		}
+		public static float DefaultNonVisibleUpdateTimeout { get { return defaultNonvisibleTimeout; } set { defaultNonvisibleTimeout = value; } }
 
-		public string Origin
-		{
-			get
-			{
-				return origin;
-			}
-            set
-            {
-                origin = value;
-            }
-		}
+		public string Origin { get { return origin; } set { origin = value; } }
 
 		#endregion
 
@@ -1406,13 +1340,13 @@ namespace Axiom.ParticleSystems
 			system.RemoveAllAffectors();
 
 			// loop through emitter and affector lists and copy them over
-			foreach ( ParticleEmitter emitter in emitterList )
+			foreach( ParticleEmitter emitter in emitterList )
 			{
 				ParticleEmitter newEmitter = system.AddEmitter( emitter.Type );
 				emitter.CopyTo( newEmitter );
 			}
 
-			foreach ( ParticleAffector affector in affectorList )
+			foreach( ParticleAffector affector in affectorList )
 			{
 				ParticleAffector newAffector = system.AddAffector( affector.Type );
 				affector.CopyTo( newAffector );
@@ -1430,7 +1364,7 @@ namespace Axiom.ParticleSystems
 			// last frame visible and time since last visible should be left default
 			system.RendererName = this.RendererName;
 			// FIXME
-			if ( system.renderer != null && renderer != null )
+			if( system.renderer != null && renderer != null )
 			{
 				renderer.CopyParametersTo( system.renderer );
 			}
@@ -1446,20 +1380,22 @@ namespace Axiom.ParticleSystems
 		internal void Update( float timeElapsed )
 		{
 			// Only update if attached to a node
-			if ( parentNode == null )
+			if( parentNode == null )
+			{
 				return;
+			}
 
 			float _nonvisibleTimeout = nonvisibleTimeoutSet ? nonvisibleTimeout : defaultNonvisibleTimeout;
 
-			if ( _nonvisibleTimeout > 0 )
+			if( _nonvisibleTimeout > 0 )
 			{
 				// Check whether it's been more than one frame (update is ahead of
 				// camera notification by one frame because of the ordering)
 				ulong frameDiff = Root.Instance.CurrentFrameCount - lastVisibleFrame;
-				if ( frameDiff > 1 || frameDiff < 0 ) // < 0 if wrap only
+				if( frameDiff > 1 || frameDiff < 0 ) // < 0 if wrap only
 				{
 					timeSinceLastVisible += timeElapsed;
-					if ( timeSinceLastVisible >= _nonvisibleTimeout )
+					if( timeSinceLastVisible >= _nonvisibleTimeout )
 					{
 						// No update
 						return;
@@ -1471,21 +1407,23 @@ namespace Axiom.ParticleSystems
 			timeElapsed *= speedFactor;
 
 			// Init renderer if not done already
-			if ( renderer != null )
+			if( renderer != null )
 			{
-				if ( !isRendererConfigured )
+				if( !isRendererConfigured )
+				{
 					ConfigureRenderer();
+				}
 			}
 
 			// Initialise emitted emitters list if not done already
 			initializeEmittedEmitters();
 
 			float _iterationInterval = iterationIntervalSet ? iterationInterval : defaultIterationInterval;
-			if ( _iterationInterval > 0 )
+			if( _iterationInterval > 0 )
 			{
 				updateRemainTime += timeElapsed;
 
-				while ( updateRemainTime >= _iterationInterval )
+				while( updateRemainTime >= _iterationInterval )
 				{
 					// Update existing particles
 					Expire( _iterationInterval );
@@ -1507,8 +1445,10 @@ namespace Axiom.ParticleSystems
 				TriggerEmitters( timeElapsed );
 			}
 
-			if ( !boundsAutoUpdate && boundsUpdateTime > 0.0f )
+			if( !boundsAutoUpdate && boundsUpdateTime > 0.0f )
+			{
 				boundsUpdateTime -= timeElapsed; // count down 
+			}
 			UpdateBounds();
 		}
 
@@ -1516,9 +1456,9 @@ namespace Axiom.ParticleSystems
 		{
 			// Initialise the pool if needed
 			int currSize = 0;
-			if ( emittedEmitterPool.Count == 0 )
+			if( emittedEmitterPool.Count == 0 )
 			{
-				if ( emittedEmitterPoolInitialized )
+				if( emittedEmitterPoolInitialized )
 				{
 					// It was already initialised, but apparently no emitted emitters were used
 					return;
@@ -1530,14 +1470,14 @@ namespace Axiom.ParticleSystems
 			}
 			else
 			{
-				foreach ( List<ParticleEmitter> peList in emittedEmitterPool.Values )
+				foreach( List<ParticleEmitter> peList in emittedEmitterPool.Values )
 				{
 					currSize += peList.Count;
 				}
 			}
 
 			int size = emittedEmitterPoolSize;
-			if ( currSize < size && emittedEmitterPool.Count != 0 )
+			if( currSize < size && emittedEmitterPool.Count != 0 )
 			{
 				// Increase the pool. Equally distribute over all vectors in the map
 				increaseEmittedEmitterPool( size );
@@ -1549,26 +1489,28 @@ namespace Axiom.ParticleSystems
 
 		private void initializeEmittedEmitterPool()
 		{
-			if ( emittedEmitterPoolInitialized )
+			if( emittedEmitterPoolInitialized )
+			{
 				return;
+			}
 
 			// Run through mEmitters and add keys to the pool
-			foreach ( ParticleEmitter emitter in emitterList )
+			foreach( ParticleEmitter emitter in emitterList )
 			{
 				// Determine the names of all emitters that are emitted
-				if ( emitter != null && emitter.EmittedEmitter != string.Empty )
+				if( emitter != null && emitter.EmittedEmitter != string.Empty )
 				{
 					// This one will be emitted, register its name and leave the vector empty!
 					emittedEmitterPool.Add( emitter.EmittedEmitter, new List<ParticleEmitter>() );
 				}
 
 				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
-				foreach ( ParticleEmitter emitterInner in emitterList )
+				foreach( ParticleEmitter emitterInner in emitterList )
 				{
-					if ( emitter != null &&
-						emitterInner != null &&
-						emitter.Name != string.Empty &&
-						emitter.Name == emitterInner.EmittedEmitter )
+					if( emitter != null &&
+					    emitterInner != null &&
+					    emitter.Name != string.Empty &&
+					    emitter.Name == emitterInner.EmittedEmitter )
 					{
 						emitter.IsEmitted = true;
 						break;
@@ -1587,8 +1529,10 @@ namespace Axiom.ParticleSystems
 		private void increaseEmittedEmitterPool( int size )
 		{
 			// Don't proceed if the pool doesn't contain any keys of emitted emitters
-			if ( emittedEmitterPool.Count == 0 )
+			if( emittedEmitterPool.Count == 0 )
+			{
 				return;
+			}
 
 			ParticleEmitter clonedEmitter = null;
 			string name = string.Empty;
@@ -1597,30 +1541,32 @@ namespace Axiom.ParticleSystems
 			int oldSize = 0;
 
 			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
-			foreach ( KeyValuePair<string, List<ParticleEmitter>> poolEntry in emittedEmitterPool )
+			foreach( KeyValuePair<string, List<ParticleEmitter>> poolEntry in emittedEmitterPool )
 			{
 				name = poolEntry.Key;
 				e = poolEntry.Value;
 
 				// Search the correct emitter in the mEmitters vector
-				foreach ( ParticleEmitter emitter in emitterList )
+				foreach( ParticleEmitter emitter in emitterList )
 				{
-					if ( emitter != null &&
-						name != string.Empty &&
-						name == emitter.Name )
+					if( emitter != null &&
+					    name != string.Empty &&
+					    name == emitter.Name )
 					{
 						// Found the right emitter, clone each emitter a number of times
 						oldSize = e.Count;
-						for ( int t = oldSize; t < maxNumberOfEmitters; ++t )
+						for( int t = oldSize; t < maxNumberOfEmitters; ++t )
 						{
 							clonedEmitter = ParticleSystemManager.Instance.CreateEmitter( emitter.Type, this );
 							emitter.CopyTo( clonedEmitter );
 							clonedEmitter.IsEmitted = emitter.IsEmitted; // is always 'true' by the way, but just in case
 
 							// Initially deactivate the emitted emitter if duration/repeat_delay are set
-							if ( clonedEmitter.Duration > 0.0f &&
-								( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
+							if( clonedEmitter.Duration > 0.0f &&
+							    ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
+							{
 								clonedEmitter.IsEnabled = false;
+							}
 
 							// Add cloned emitters to the pool
 							e.Add( clonedEmitter );
@@ -1633,8 +1579,10 @@ namespace Axiom.ParticleSystems
 		private void addFreeEmittedEmitters()
 		{
 			// Don't proceed if the EmittedEmitterPool is empty
-			if ( emittedEmitterPool.Count == 0 )
+			if( emittedEmitterPool.Count == 0 )
+			{
 				return;
+			}
 
 			// Copy all pooled emitters to the free list
 			List<ParticleEmitter> emittedEmitters = null;
@@ -1642,66 +1590,44 @@ namespace Axiom.ParticleSystems
 			String name = string.Empty;
 
 			// Run through the emittedEmitterPool map
-			foreach ( KeyValuePair<string, List<ParticleEmitter>> poolEntry in emittedEmitterPool )
+			foreach( KeyValuePair<string, List<ParticleEmitter>> poolEntry in emittedEmitterPool )
 			{
 				name = poolEntry.Key;
 				emittedEmitters = poolEntry.Value;
 				fee = findFreeEmittedEmitter( name );
 
 				// If it´s not in the map, create an empty one
-				if ( fee == null )
+				if( fee == null )
 				{
 					freeEmittedEmitters.Add( name, new List<ParticleEmitter>() );
 					fee = findFreeEmittedEmitter( name );
 				}
 
 				// Check anyway if it´s ok now
-				if ( fee == null )
+				if( fee == null )
+				{
 					return; // forget it!
+				}
 
 				// Add all emitted emitters from the pool to the free list
-				foreach ( ParticleEmitter emittedEmitter in emittedEmitters )
+				foreach( ParticleEmitter emittedEmitter in emittedEmitters )
 				{
 					fee.Add( emittedEmitter );
 				}
 			}
 		}
 
-		public override AxisAlignedBox BoundingBox
-		{
-			get
-			{
-				return aab;
-			}
-		}
+		public override AxisAlignedBox BoundingBox { get { return aab; } }
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return boundingRadius;
-			}
-		}
+		public override float BoundingRadius { get { return boundingRadius; } }
 
 		/// <summary>
 		/// Get the 'type flags' for this <see cref="ParticleSystem"/>.
 		/// </summary>
 		/// <seealso cref="MovableObject.TypeFlags"/>
-		public override uint TypeFlags
-		{
-			get
-			{
-				return (uint)SceneQueryTypeMask.Fx;
-			}
-		}
+		public override uint TypeFlags { get { return (uint)SceneQueryTypeMask.Fx; } }
 
-		internal ParticleSystemRenderer Renderer
-		{
-			get
-			{
-				return renderer;
-			}
-		}
+		internal ParticleSystemRenderer Renderer { get { return renderer; } }
 	}
 
 	public class ParticleSystemUpdateValue : IControllerValue<float>
@@ -1713,16 +1639,6 @@ namespace Axiom.ParticleSystems
 			this.target = target;
 		}
 
-		public float Value
-		{
-			get
-			{
-				return 0;
-			}
-			set
-			{
-				target.Update( value );
-			}
-		}
+		public float Value { get { return 0; } set { target.Update( value ); } }
 	}
 }

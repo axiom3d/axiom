@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -66,14 +70,17 @@ namespace Axiom.Graphics
 		///		Cached list of render groups, indexed by RenderQueueGroupID.
 		///	</summary>
 		protected SortedList renderGroups = new SortedList();
+
 		/// <summary>
 		///		Default render group for this queue.
 		///	</summary>
 		protected RenderQueueGroupID defaultGroup;
+
 		/// <summary>
 		///		Should passes be split by their lighting stage?
 		/// </summary>
 		protected bool splitPassesByLightingType;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -88,6 +95,7 @@ namespace Axiom.Graphics
 		///		Default priority of items added to the render queue.
 		///	</summary>
 		protected ushort defaultRenderablePriority = 100;
+
 		/// <summary>
 		///		Default priority of items added to the render queue.
 		///	</summary>
@@ -107,10 +115,10 @@ namespace Axiom.Graphics
 
 			// create the main queue group up front
 			renderGroups.Add(
-				RenderQueueGroupID.Main,
-				new RenderQueueGroup( this, splitPassesByLightingType,
-									 splitNoShadowPasses,
-									 shadowCastersCannotBeReceivers ) );
+			                 RenderQueueGroupID.Main,
+			                 new RenderQueueGroup( this, splitPassesByLightingType,
+			                                       splitNoShadowPasses,
+			                                       shadowCastersCannotBeReceivers ) );
 		}
 
 		#endregion
@@ -120,41 +128,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets/Sets the default priority for rendering objects in the queue.
 		/// </summary>
-		public RenderQueueGroupID DefaultRenderGroup
-		{
-			get
-			{
-				return defaultGroup;
-			}
-			set
-			{
-				defaultGroup = value;
-			}
-		}
+		public RenderQueueGroupID DefaultRenderGroup { get { return defaultGroup; } set { defaultGroup = value; } }
+
 		/// <summary>
 		///		Gets/Sets the default priority for rendering objects in the queue.
 		/// </summary>
-		public ushort DefaultRenderablePriority
-		{
-			get
-			{
-				return defaultRenderablePriority;
-			}
-			set
-			{
-				defaultRenderablePriority = value;
-			}
-		}
+		public ushort DefaultRenderablePriority { get { return defaultRenderablePriority; } set { defaultRenderablePriority = value; } }
+
 		/// <summary>
 		///    Gets the number of render queue groups contained within this queue.
 		/// </summary>
-		public int NumRenderQueueGroups
-		{
-			get
-			{
-				return renderGroups.Count;
-			}
-		}
+		public int NumRenderQueueGroups { get { return renderGroups.Count; } }
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will split passes by their lighting type,
@@ -162,16 +146,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool SplitPassesByLightingType
 		{
-			get
-			{
-				return splitPassesByLightingType;
-			}
+			get { return splitPassesByLightingType; }
 			set
 			{
 				splitPassesByLightingType = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for( int i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).SplitPassesByLightingType = splitPassesByLightingType;
 				}
@@ -185,16 +166,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool SplitNoShadowPasses
 		{
-			get
-			{
-				return splitNoShadowPasses;
-			}
+			get { return splitNoShadowPasses; }
 			set
 			{
 				splitNoShadowPasses = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for( int i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).SplitNoShadowPasses = splitNoShadowPasses;
 				}
@@ -208,16 +186,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool ShadowCastersCannotBeReceivers
 		{
-			get
-			{
-				return shadowCastersCannotBeReceivers;
-			}
+			get { return shadowCastersCannotBeReceivers; }
 			set
 			{
 				shadowCastersCannotBeReceivers = value;
 
 				// set the value for all render groups as well
-				for ( int i = 0; i < renderGroups.Count; i++ )
+				for( int i = 0; i < renderGroups.Count; i++ )
 				{
 					GetQueueGroupByIndex( i ).ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
 				}
@@ -240,14 +215,14 @@ namespace Axiom.Graphics
 			Technique t;
 
 			// let the material know it has been used, which also forces a recompile if required
-			if ( renderable.Material != null )
+			if( renderable.Material != null )
 			{
 				renderable.Material.Touch();
 			}
 
 			// Check material & technique supplied (the former since the default implementation
 			// of getTechnique is based on it for backwards compatibility
-			if ( renderable.Material == null || renderable.Technique == null )
+			if( renderable.Material == null || renderable.Technique == null )
 			{
 				// Use default base white
 				Material baseWhite = (Material)MaterialManager.Instance[ "BaseWhite" ];
@@ -282,7 +257,6 @@ namespace Axiom.Graphics
 			AddRenderable( item, priority, defaultGroup );
 		}
 
-
 		/// <summary>
 		///		Overloaded method.
 		/// </summary>
@@ -307,7 +281,7 @@ namespace Axiom.Graphics
 		{
 			// loop through each queue and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			for ( int i = 0; i < renderGroups.Count; i++ )
+			for( int i = 0; i < renderGroups.Count; i++ )
 			{
 				RenderQueueGroup group = (RenderQueueGroup)renderGroups.GetByIndex( i );
 
@@ -322,7 +296,6 @@ namespace Axiom.Graphics
 			// We're assuming that frame-by-frame, the same groups are likely to 
 			//  be used, so no point destroying the vectors and incurring the overhead
 			//  that would cause, let them be destroyed in the destructor.
-
 		}
 
 		/// <summary>
@@ -339,12 +312,12 @@ namespace Axiom.Graphics
 			RenderQueueGroup group = null;
 
 			// see if there is a current queue group for this group id
-			if ( renderGroups[ queueID ] == null )
+			if( renderGroups[ queueID ] == null )
 			{
 				// create a new queue group for this group id
 				group = new RenderQueueGroup( this, splitPassesByLightingType,
-											 splitNoShadowPasses,
-											 shadowCastersCannotBeReceivers );
+				                              splitNoShadowPasses,
+				                              shadowCastersCannotBeReceivers );
 
 				// add the new group to cached render group
 				renderGroups.Add( queueID, group );
@@ -379,7 +352,6 @@ namespace Axiom.Graphics
 
 		#endregion
 	}
-
 
 	/// <summary>
 	///    Internal structure reflecting a single Pass for a Renderable

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Core;
 
 #endregion Namepsace Declarations
@@ -52,13 +57,7 @@ namespace Axiom.Overlays.Elements
 			return new BorderPanel( name );
 		}
 
-		public string Type
-		{
-			get
-			{
-				return "BorderPanel";
-			}
-		}
+		public string Type { get { return "BorderPanel"; } }
 
 		#endregion
 	}
@@ -75,13 +74,7 @@ namespace Axiom.Overlays.Elements
 			return new Panel( name );
 		}
 
-		public string Type
-		{
-			get
-			{
-				return "Panel";
-			}
-		}
+		public string Type { get { return "Panel"; } }
 
 		#endregion
 	}
@@ -98,13 +91,7 @@ namespace Axiom.Overlays.Elements
 			return new TextArea( name );
 		}
 
-		public string Type
-		{
-			get
-			{
-				return "TextArea";
-			}
-		}
+		public string Type { get { return "TextArea"; } }
 
 		#endregion
 	}

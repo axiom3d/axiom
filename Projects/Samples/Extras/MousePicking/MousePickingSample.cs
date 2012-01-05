@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Animating;
@@ -30,9 +32,8 @@ namespace Axiom.Samples.Extras.MousePicking
 	/// <summary>
 	/// Sample of selecting objects with a mouse
 	/// </summary>
-	class MousePickingSample : SdkSample
+	internal class MousePickingSample : SdkSample
 	{
-
 		/// <summary>
 		/// safety check for mouse picking sample calls
 		/// </summary>
@@ -63,7 +64,6 @@ namespace Axiom.Samples.Extras.MousePicking
 			Metadata[ "Thumbnail" ] = "thumb_picking.png";
 			Metadata[ "Category" ] = "Interaction";
 			Metadata[ "Help" ] = "Proof that Axiom is just the hottest thing. Bleh. So there. ^_^";
-
 		}
 
 		/// <summary>
@@ -74,7 +74,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <returns>bool</returns>
 		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( initialized )
+			if( initialized )
 			{
 				_MouseSelector.MousePressed( evt, id );
 			}
@@ -88,7 +88,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <returns>bool</returns>
 		public override bool MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
-			if ( initialized )
+			if( initialized )
 			{
 				_MouseSelector.MouseMoved( evt );
 				MouseLocationLabel.Caption = "(x:y) " + ( evt.State.X.Absolute / (float)Camera.Viewport.ActualWidth ).ToString() + ":" + ( evt.State.Y.Absolute / (float)Camera.Viewport.ActualHeight ).ToString();
@@ -104,7 +104,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <returns>bool</returns>
 		public override bool MouseReleased( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( initialized )
+			if( initialized )
 			{
 				_MouseSelector.MouseReleased( evt, id );
 			}
@@ -119,9 +119,9 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <returns>bool</returns>
 		public override bool KeyPressed( SharpInputSystem.KeyEventArgs evt )
 		{
-			if ( initialized )
+			if( initialized )
 			{
-				if ( evt.Key == SharpInputSystem.KeyCode.Key_LCONTROL || evt.Key == SharpInputSystem.KeyCode.Key_RCONTROL )
+				if( evt.Key == SharpInputSystem.KeyCode.Key_LCONTROL || evt.Key == SharpInputSystem.KeyCode.Key_RCONTROL )
 				{
 					_MouseSelector.KeepPreviousSelection = true;
 				}
@@ -137,7 +137,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <returns>bool</returns>
 		public override bool KeyReleased( SharpInputSystem.KeyEventArgs evt )
 		{
-			if ( initialized )
+			if( initialized )
 			{
 				_MouseSelector.KeepPreviousSelection = false;
 			}
@@ -149,7 +149,6 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// </summary>
 		protected override void SetupContent()
 		{
-
 			// set some ambient light
 			SceneManager.AmbientLight = new ColorEx( 1.0f, 0.2f, 0.2f, 0.2f );
 
@@ -242,14 +241,13 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// </summary>
 		/// <param name="sender">SelectMenu object</param>
 		/// <param name="e">EventArgs</param>
-		void selectionModeMenu_SelectedIndexChanged( object sender, System.EventArgs e )
+		private void selectionModeMenu_SelectedIndexChanged( object sender, System.EventArgs e )
 		{
 			SelectMenu menu = sender as SelectMenu;
-			if ( menu != null )
+			if( menu != null )
 			{
 				_MouseSelector.SelectionMode = (MouseSelector.SelectionModeType)menu.SelectionIndex;
 			}
-
 		}
 	}
 }

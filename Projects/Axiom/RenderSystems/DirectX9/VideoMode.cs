@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,11 +55,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private D3D.DisplayMode displayMode;
 		private int modeNum;
-		static int modeCount = 0;
+		private static int modeCount = 0;
 
 		#endregion Member variables
 
 		#region Constructors
+
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
@@ -98,46 +103,22 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Width of this video mode.
 		/// </summary>
-		public int Width
-		{
-			get
-			{
-				return displayMode.Width;
-			}
-		}
+		public int Width { get { return displayMode.Width; } }
 
 		/// <summary>
 		///		Height of this video mode.
 		/// </summary>
-		public int Height
-		{
-			get
-			{
-				return displayMode.Height;
-			}
-		}
+		public int Height { get { return displayMode.Height; } }
 
 		/// <summary>
 		///		Format of this video mode.
 		/// </summary>
-		public D3D.Format Format
-		{
-			get
-			{
-				return displayMode.Format;
-			}
-		}
+		public D3D.Format Format { get { return displayMode.Format; } }
 
 		/// <summary>
 		///		Refresh rate of this video mode.
 		/// </summary>
-		public int RefreshRate
-		{
-			get
-			{
-				return displayMode.RefreshRate;
-			}
-		}
+		public int RefreshRate { get { return displayMode.RefreshRate; } }
 
 		/// <summary>
 		///		Color depth of this video mode.
@@ -146,9 +127,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				if ( displayMode.Format == D3D.Format.X8R8G8B8 ||
-					displayMode.Format == D3D.Format.A8R8G8B8 ||
-					displayMode.Format == D3D.Format.R8G8B8 )
+				if( displayMode.Format == D3D.Format.X8R8G8B8 ||
+				    displayMode.Format == D3D.Format.A8R8G8B8 ||
+				    displayMode.Format == D3D.Format.R8G8B8 )
 				{
 					return 32;
 				}
@@ -162,13 +143,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Gets the Direct3D.DisplayMode object associated with this video mode.
 		/// </summary>
-		public D3D.DisplayMode DisplayMode
-		{
-			get
-			{
-				return displayMode;
-			}
-		}
+		public D3D.DisplayMode DisplayMode { get { return displayMode; } }
 
 		/// <summary>
 		///		Returns a string representation of this video mode.

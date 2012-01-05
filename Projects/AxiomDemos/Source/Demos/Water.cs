@@ -13,16 +13,18 @@ using Axiom.Math;
 using Axiom.ParticleSystems;
 using Axiom.Overlays;
 using Axiom.Input;
+
 using MouseButtons = Axiom.Input.MouseButtons;
 
 #endregion Namespace Declarations
-
 
 namespace Axiom.Demos
 {
 	/// <summary>Demonstrates simulation of Water mesh</summary>
 	public class Water : TechDemo
-	{ //najak: Change this back to TechDemo, if new controls are accepted by Axiom
+	{
+		//najak: Change this back to TechDemo, if new controls are accepted by Axiom
+
 		#region Fields
 
 		// Demo Settings (tweak these and the recompile) - can't be adjusted run-time.
@@ -61,8 +63,8 @@ namespace Axiom.Demos
 		protected Random RAND; // random number generator
 
 		// fields used by AnimateHead function (najak: were local statics)
-		protected double[] adds = new double[ 4 ];
-		protected double[] sines = new double[ 4 ];
+		protected double[] adds = new double[4];
+		protected double[] sines = new double[4];
 		protected Vector3 oldPos = Vector3.UnitZ;
 
 		// Input/Update Intervals (note: prevents some math rounding errors from extremely high update rates)
@@ -129,6 +131,7 @@ namespace Axiom.Demos
 			SetLighting( "Ambient" ); // Add Lights - added by Najak to show lighted Water conditions - cool!
 
 			#region STUBBED LIGHT ANIMATION
+
 			// Create a new animation state to track this
 			// TODO: Light Animation not working.
 			//this.animState = scene.CreateAnimationState("WaterLight");
@@ -139,7 +142,7 @@ namespace Axiom.Demos
 			Animation anim = scene.CreateAnimation( "WaterLight", 20 );
 			AnimationTrack track = anim.CreateNodeTrack( 0, this.lightNode );
 			TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
-			for ( int ff = 1; ff <= 19; ff++ )
+			for( int ff = 1; ff <= 19; ff++ )
 			{
 				key = (TransformKeyFrame)track.CreateKeyFrame( ff );
 				Random rand = new Random( 0 );
@@ -150,6 +153,7 @@ namespace Axiom.Demos
 				key.Translate = lpos;
 			}
 			key = (TransformKeyFrame)track.CreateKeyFrame( 20 );
+
 			#endregion STUBBED LIGHT ANIMATION
 
 			// Initialize the Materials/Demo
@@ -174,8 +178,9 @@ namespace Axiom.Demos
 			sines[ 1 ] = 100;
 			sines[ 2 ] = 200;
 			sines[ 3 ] = 300;
+		}
 
-		} // end CreateScene()
+		// end CreateScene()
 
 		private void SetLighting( string mode )
 		{
@@ -184,26 +189,26 @@ namespace Axiom.Demos
 			//this.scene.ClearLights();
 			lightSet.Clear();
 
-
 			// Local Variable declarations
-			string[] modeList = new string[] { "Ambient", "SunLight", "Colors" }; // add "Motion"
+			string[] modeList = new string[] {
+			                                 	"Ambient", "SunLight", "Colors"
+			                                 }; // add "Motion"
 			Light l;
 			scene.AmbientLight = new ColorEx( 0.05f, 0.05f, 0.05f ); // default is low ambient light
 
-
 			// Set next Light Mode
-			if ( mode == "next" )
+			if( mode == "next" )
 			{
 				lightModeIndex = ( ++lightModeIndex ) % modeList.Length;
 			}
 			lightMode = modeList[ lightModeIndex % modeList.Length ];
 
-			switch ( lightMode )
+			switch( lightMode )
 			{
 				case "SunLight":
 					scene.RemoveAllLights();
 					// Add Sun - Up and to the Left
-					for ( int i = 0; i < 3; i++ )
+					for( int i = 0; i < 3; i++ )
 					{
 						l = AddLight( "DirLight" + i.ToString(), new Vector3( -PLANE_SIZE / 2f, PLANE_SIZE / 2f, PLANE_SIZE / 2f ), new ColorEx( 1f, 1f, 1f, 1f ), LightType.Directional );
 						l.Direction = new Vector3( 1f, -0.5f, 0f );
@@ -277,12 +282,14 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			// Limit user input update rate, to prevent math rounding errors from deltas too small
 			//   Note: Slowing down input queries will speed up Frame Rates, not slow them down.
-			if ( ( inputTimer += evt.TimeSinceLastFrame ) >= inputInterval )
+			if( ( inputTimer += evt.TimeSinceLastFrame ) >= inputInterval )
 			{
 				//e.TimeSinceLastFrame = this.inputTimer;
 				//base.OnFrameStarted(source, e); // do the normal demo frame processing first
@@ -290,7 +297,7 @@ namespace Axiom.Demos
 				RapidUpdate(); // Process rapid inputs, like camera motion or settings adjustments
 
 				// Process User Requested Mode Changes
-				if ( modeTimer > modeInterval )
+				if( modeTimer > modeInterval )
 				{
 					ModeUpdate();
 				}
@@ -300,7 +307,7 @@ namespace Axiom.Demos
 				} // only increment when below, to save CPU
 
 				// Update Performance Stats on Interval timer
-				if ( ( statsTimer += inputTimer ) > statsInterval )
+				if( ( statsTimer += inputTimer ) > statsInterval )
 				{
 					UpdateStats();
 				}
@@ -313,7 +320,7 @@ namespace Axiom.Demos
 		{
 			//animState.AddTime(timeSinceLastFrame);
 
-			for ( int i = 0; i < 4; i++ )
+			for( int i = 0; i < 4; i++ )
 			{
 				sines[ i ] += adds[ i ] * headSpeed * timeSinceLastFrame;
 			}
@@ -337,10 +344,10 @@ namespace Axiom.Demos
 
 		protected void ProcessRain()
 		{
-			foreach ( Particle p in particleSystem.Particles )
+			foreach( Particle p in particleSystem.Particles )
 			{
 				Vector3 ppos = p.Position;
-				if ( ppos.y <= 0 && p.timeToLive > 0 )
+				if( ppos.y <= 0 && p.timeToLive > 0 )
 				{
 					// hits the water!
 					p.timeToLive = 0.0f; // delete particle
@@ -348,14 +355,22 @@ namespace Axiom.Demos
 					float x = ppos.x / PLANE_SIZE * CMPLX;
 					float y = ppos.z / PLANE_SIZE * CMPLX;
 					float h = (float)RAND.NextDouble() % RAIN_HEIGHT_RANDOM + RAIN_HEIGHT_CONSTANT * 2;
-					if ( x < 1 )
+					if( x < 1 )
+					{
 						x = 1;
-					if ( x > CMPLX - 1 )
+					}
+					if( x > CMPLX - 1 )
+					{
 						x = CMPLX - 1;
-					if ( y < 1 )
+					}
+					if( y < 1 )
+					{
 						y = 1;
-					if ( y > CMPLX - 1 )
+					}
+					if( y > CMPLX - 1 )
+					{
 						y = CMPLX - 1;
+					}
 					waterMesh.PushDown( x, y, -h );
 					//TODO: to implement WaterCircles, this is where you would create each new WaterCircle
 				}
@@ -365,8 +380,10 @@ namespace Axiom.Demos
 		/// <summary>Handle Inputs that Move and Turn the Camera.  Fast Update Rate. </summary>
 		protected void RapidUpdate()
 		{
-			if ( !RapidUpdateCustom() )
+			if( !RapidUpdateCustom() )
+			{
 				return; // Give Demo first shot at making the update
+			}
 
 			camAccel = Vector3.Zero; // reset acceleration zero
 			float scaleMove = 200 * inputTimer; // motion scalar
@@ -376,27 +393,29 @@ namespace Axiom.Demos
 			bool mouseEn = ( !input.IsMousePressed( MouseButtons.Right ) );
 
 			// Keys that move camera.  Mouse-Wheel elevates camera
-			if ( input.IsKeyPressed( KeyCodes.Left ) )
+			if( input.IsKeyPressed( KeyCodes.Left ) )
 			{
 				camAccel.x = -0.5f;
 			} // move left
-			if ( input.IsKeyPressed( KeyCodes.Right ) )
+			if( input.IsKeyPressed( KeyCodes.Right ) )
 			{
 				camAccel.x = 0.5f;
 			} // move right
-			if ( input.IsKeyPressed( KeyCodes.Up ) )
+			if( input.IsKeyPressed( KeyCodes.Up ) )
 			{
 				camAccel.z = -1;
 			} // move forward
-			if ( input.IsKeyPressed( KeyCodes.Down ) )
+			if( input.IsKeyPressed( KeyCodes.Down ) )
 			{
 				camAccel.z = 1;
 			} // move backward
-			if ( mouseEn )
+			if( mouseEn )
+			{
 				camAccel.y += (float)( input.RelativeMouseZ * 0.1 ); // MouseWheel elevates camera
+			}
 
 			// When Mouse button pressed, Motion accelerates instead of turns camera
-			if ( mouseEn && input.IsMousePressed( MouseButtons.Left ) )
+			if( mouseEn && input.IsMousePressed( MouseButtons.Left ) )
 			{
 				camAccel.x += input.RelativeMouseX * 0.3f; // side motion
 				camAccel.z += input.RelativeMouseY * 0.5f; // forward motion
@@ -407,48 +426,51 @@ namespace Axiom.Demos
 			camera.MoveRelative( camVelocity * inputTimer );
 
 			// Now dampen the Velocity - only if user is not accelerating
-			if ( camAccel == Vector3.Zero )
+			if( camAccel == Vector3.Zero )
 			{
 				camVelocity *= ( 1 - ( 4 * inputTimer ) );
 			}
 
 			// Keyboard arrows change Yaw/Pitch of camera
-			if ( input.IsKeyPressed( KeyCodes.Left ) )
+			if( input.IsKeyPressed( KeyCodes.Left ) )
 			{
 				camera.Yaw( scaleTurn );
 			}
-			if ( input.IsKeyPressed( KeyCodes.Right ) )
+			if( input.IsKeyPressed( KeyCodes.Right ) )
 			{
 				camera.Yaw( -scaleTurn );
 			}
-			if ( input.IsKeyPressed( KeyCodes.Up ) )
+			if( input.IsKeyPressed( KeyCodes.Up ) )
 			{
 				camera.Pitch( scaleTurn );
 			}
-			if ( input.IsKeyPressed( KeyCodes.Down ) )
+			if( input.IsKeyPressed( KeyCodes.Down ) )
 			{
 				camera.Pitch( -scaleTurn );
 			}
 
 			// Mouse motion changes Yaw/Pitch of camera
-			if ( mouseEn && !input.IsMousePressed( MouseButtons.Left ) )
+			if( mouseEn && !input.IsMousePressed( MouseButtons.Left ) )
 			{
 				camera.Yaw( -input.RelativeMouseX * 0.13f );
 				camera.Pitch( -input.RelativeMouseY * 0.13f );
 			}
-		} // end ReadUserMotionInputs()
+		}
 
+		// end ReadUserMotionInputs()
 
 		/// <summary>Process User Inputs to change Axiom Render Mode or Print Screen.  Slow Update Rate.</summary>
 		protected void ModeUpdate()
 		{
-			if ( !ModeUpdateCustom() )
+			if( !ModeUpdateCustom() )
+			{
 				return; // Give Demo first shot at making the update
+			}
 
 			// 'R' Toggles Render Mode
-			if ( input.IsKeyPressed( KeyCodes.R ) )
+			if( input.IsKeyPressed( KeyCodes.R ) )
 			{
-				switch ( camera.PolygonMode )
+				switch( camera.PolygonMode )
 				{
 					case PolygonMode.Points:
 						camera.PolygonMode = PolygonMode.Solid;
@@ -464,9 +486,9 @@ namespace Axiom.Demos
 			}
 
 			// 'T' Toggles Texture Settings
-			if ( input.IsKeyPressed( KeyCodes.T ) )
+			if( input.IsKeyPressed( KeyCodes.T ) )
 			{
-				switch ( filtering )
+				switch( filtering )
 				{
 					case TextureFiltering.Bilinear:
 						filtering = TextureFiltering.Trilinear;
@@ -488,12 +510,12 @@ namespace Axiom.Demos
 			}
 
 			// Hide/Show Bounding Boxes and Overlays (besides debug overlay)
-			if ( input.IsKeyPressed( KeyCodes.B ) )
+			if( input.IsKeyPressed( KeyCodes.B ) )
 			{
 				scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
 				HandleUserModeInput( string.Format( "Show Bounding Boxes = {0}.", scene.ShowBoundingBoxes ) );
 			}
-			if ( input.IsKeyPressed( KeyCodes.F ) )
+			if( input.IsKeyPressed( KeyCodes.F ) )
 			{
 				viewport.ShowOverlays = !viewport.ShowOverlays;
 				HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.ShowOverlays ) );
@@ -501,7 +523,7 @@ namespace Axiom.Demos
 
 #if !(XBOX || XBOX360 )
 			// 'P' Captures Screenshot (like 'Print' command)
-			if ( input.IsKeyPressed( KeyCodes.P ) )
+			if( input.IsKeyPressed( KeyCodes.P ) )
 			{
 				// Save Screenshot to unique Filename (indexed)
 				string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
@@ -510,7 +532,9 @@ namespace Axiom.Demos
 				HandleUserModeInput( string.Format( "Wrote screenshot '{0}'.", fileName ) );
 			}
 #endif
-		} // end ReadUserModeInputs()
+		}
+
+		// end ReadUserModeInputs()
 
 		// Process Rapid Inputs (adjust Demo settings)
 		//protected override bool RapidUpdateCustom() {
@@ -523,49 +547,66 @@ namespace Axiom.Demos
 
 			// Press Left-SHIFT to speed up rate of change for adjust demo parameters
 			changeSpeed = (int)( inputTimer * 1000 ); // round to nearest millisecond, use bit shift for speed
-			if ( input.IsKeyPressed( KeyCodes.LeftShift ) )
+			if( input.IsKeyPressed( KeyCodes.LeftShift ) )
 			{
 				changeSpeed *= 10;
 			} // multiply by 8
 
 			// Adjust Demo settings (mostly WaterMesh attributes) - Head height, and Water Properties
-			if ( AdjustRange( ref headDepth, KeyCodes.J, KeyCodes.U, 0, 10, 0.0005f ) )
+			if( AdjustRange( ref headDepth, KeyCodes.J, KeyCodes.U, 0, 10, 0.0005f ) )
+			{
 				UpdateInfoHeadDepth();
-			if ( AdjustRange( ref waterMesh.PARAM_C, KeyCodes.D2, KeyCodes.D1, 0, 10, 0.0001f ) )
+			}
+			if( AdjustRange( ref waterMesh.PARAM_C, KeyCodes.D2, KeyCodes.D1, 0, 10, 0.0001f ) )
+			{
 				UpdateInfoParamC();
-			if ( AdjustRange( ref waterMesh.PARAM_D, KeyCodes.D4, KeyCodes.D3, 0.1f, 10, 0.0001f ) )
+			}
+			if( AdjustRange( ref waterMesh.PARAM_D, KeyCodes.D4, KeyCodes.D3, 0.1f, 10, 0.0001f ) )
+			{
 				UpdateInfoParamD();
-			if ( AdjustRange( ref waterMesh.PARAM_U, KeyCodes.D6, KeyCodes.D5, -2f, 10, 0.0001f ) )
+			}
+			if( AdjustRange( ref waterMesh.PARAM_U, KeyCodes.D6, KeyCodes.D5, -2f, 10, 0.0001f ) )
+			{
 				UpdateInfoParamU();
-			if ( AdjustRange( ref waterMesh.PARAM_T, KeyCodes.D8, KeyCodes.D7, 0, 10, 0.0001f ) )
+			}
+			if( AdjustRange( ref waterMesh.PARAM_T, KeyCodes.D8, KeyCodes.D7, 0, 10, 0.0001f ) )
+			{
 				UpdateInfoParamT();
-			if ( AdjustRange( ref headSpeed, KeyCodes.D0, KeyCodes.D9, 0, 3, 0.0001f ) )
+			}
+			if( AdjustRange( ref headSpeed, KeyCodes.D0, KeyCodes.D9, 0, 3, 0.0001f ) )
+			{
 				UpdateInfoHeadSpeed();
+			}
 			return true;
 		}
 
 		// GUI Updaters
-		void UpdateInfoHeadDepth()
+		private void UpdateInfoHeadDepth()
 		{
 			GuiMgr.GetElement( "Example/Water/Depth" ).Text = "[U/J]Head depth: " + headDepth.ToString();
 		}
-		void UpdateInfoParamC()
+
+		private void UpdateInfoParamC()
 		{
 			GuiMgr.GetElement( "Example/Water/Param_C" ).Text = "[1/2]Ripple speed: " + waterMesh.PARAM_C.ToString();
 		}
-		void UpdateInfoParamD()
+
+		private void UpdateInfoParamD()
 		{
 			GuiMgr.GetElement( "Example/Water/Param_D" ).Text = "[3/4]Distance: " + waterMesh.PARAM_D.ToString();
 		}
-		void UpdateInfoParamU()
+
+		private void UpdateInfoParamU()
 		{
 			GuiMgr.GetElement( "Example/Water/Param_U" ).Text = "[5/6]Viscosity: " + waterMesh.PARAM_U.ToString();
 		}
-		void UpdateInfoParamT()
+
+		private void UpdateInfoParamT()
 		{
 			GuiMgr.GetElement( "Example/Water/Param_T" ).Text = "[7/8]Frame time: " + waterMesh.PARAM_T.ToString();
 		}
-		void UpdateInfoHeadSpeed()
+
+		private void UpdateInfoHeadSpeed()
 		{
 			GuiMgr.GetElement( "Example/Water/HeadSpeed" ).Text = "[9/0]Head Speed: " + headSpeed.ToString();
 		}
@@ -573,51 +614,57 @@ namespace Axiom.Demos
 		// Adjust Demo parameter value ('val')
 		private bool AdjustRange( ref float val, KeyCodes plus, KeyCodes minus, float min, float max, float chg )
 		{
-			if ( input.IsKeyPressed( plus ) )
+			if( input.IsKeyPressed( plus ) )
 			{
 				val += ( chg * changeSpeed );
-				if ( val > max )
+				if( val > max )
+				{
 					val = max;
+				}
 				return true;
 			}
-			if ( input.IsKeyPressed( minus ) )
+			if( input.IsKeyPressed( minus ) )
 			{
 				val -= ( chg * changeSpeed );
-				if ( val < min )
+				if( val < min )
+				{
 					val = min;
+				}
 				return true;
 			}
 			return false;
 		}
+
 		#endregion RAPID UPDATE FUNCTIONS
 
 		#region MODE UPDATE LOGIC
+
 		// Mode Updates on Interval Timer
 		// protected override bool ModeUpdateCustom() {
 		protected bool ModeUpdateCustom()
 		{
 			// Process Mode Toggle Keys (use delay to avoid rapid flicker between modes)
-			if ( input.IsKeyPressed( KeyCodes.Space ) )
+			if( input.IsKeyPressed( KeyCodes.Space ) )
 			{
 				ToggleMode( "Rain" );
 			}
-			if ( input.IsKeyPressed( KeyCodes.N ) )
+			if( input.IsKeyPressed( KeyCodes.N ) )
 			{
 				ToggleMode( "Normals" );
 			}
-			if ( input.IsKeyPressed( KeyCodes.M ) )
+			if( input.IsKeyPressed( KeyCodes.M ) )
 			{
 				ToggleMode( "Material" );
 			}
-			if ( input.IsKeyPressed( KeyCodes.K ) )
+			if( input.IsKeyPressed( KeyCodes.K ) )
 			{
 				ToggleMode( "Skybox" );
 			}
-			if ( input.IsKeyPressed( KeyCodes.L ) )
+			if( input.IsKeyPressed( KeyCodes.L ) )
 			{
 				ToggleMode( "Lights" );
 			}
-			if ( input.IsKeyPressed( KeyCodes.X ) )
+			if( input.IsKeyPressed( KeyCodes.X ) )
 			{
 				ToggleMode( "Tracking" );
 			}
@@ -627,7 +674,7 @@ namespace Axiom.Demos
 		// Toggle Selected Mode and Reset the Timer
 		protected void ToggleMode( string mode )
 		{
-			switch ( mode )
+			switch( mode )
 			{
 				case "Rain":
 					rainOn = !rainOn;
@@ -666,36 +713,40 @@ namespace Axiom.Demos
 		}
 
 		// GUI updaters
-		void UpdateInfoLights()
+		private void UpdateInfoLights()
 		{
 			GuiMgr.GetElement( "Example/Water/Lights" ).Text = "[L]Lights: " + lightMode;
 		}
-		void UpdateInfoNormals()
+
+		private void UpdateInfoNormals()
 		{
 			GuiMgr.GetElement( "Example/Water/Normals" ).Text = "[N]Normals: " + ( ( waterMesh.useFakeNormals ) ? "Fake" : "Real" );
 		}
-		void UpdateInfoSkyBox()
+
+		private void UpdateInfoSkyBox()
 		{
 			GuiMgr.GetElement( "Example/Water/SkyBox" ).Text = "[K]SkyBox: " + skyBoxOn.ToString();
 		}
-		void UpdateInfoRain()
+
+		private void UpdateInfoRain()
 		{
 			GuiMgr.GetElement( "Example/Water/Rain" ).Text = "[SPACE]Rain: " + ( ( rainOn ) ? "On" : "Off" );
 		}
-		void UpdateInfoTracking()
+
+		private void UpdateInfoTracking()
 		{
 			GuiMgr.GetElement( "Example/Water/Tracking" ).Text = "[X]Tracking: " + ( ( trackingOn ) ? "On" : "Off" );
 		}
 
 		// Sets the WaterMesh Material and Updates the GUI
-		void UpdateMaterial()
+		private void UpdateMaterial()
 		{
 			String materialName = "Examples/Water" + materialNumber.ToString();
 			Material material = (Material)MaterialManager.Instance.GetByName( materialName );
 
-			if ( material == null )
+			if( material == null )
 			{
-				if ( materialNumber != 0 )
+				if( materialNumber != 0 )
 				{
 					materialNumber = 0;
 					UpdateMaterial();
@@ -723,8 +774,9 @@ namespace Axiom.Demos
 		}
 
 		#endregion Water Class EVENT HANDLERS - Custom Frame Update Functions
-	} // end Water class
+	}
 
+	// end Water class
 
 	/// <summary>WaterMesh implements the water simulation.</summary>
 	public class WaterMesh
@@ -740,10 +792,10 @@ namespace Axiom.Demos
 		protected static HardwareBufferManager HwBufMgr = HardwareBufferManager.Instance;
 		protected Mesh mesh;
 		protected SubMesh subMesh;
-		protected Vector3[][ , ] vBufs; // Vertex Buffers (current, plus last two frame snapshots)
-		protected Vector3[ , ] vBuf; // Current Vertex Buffer
-		protected Vector3[ , ] vNorms; // Vertex Normals
-		protected Vector3[ , , ] fNorms; // Face Normals (for each triangle)
+		protected Vector3[][,] vBufs; // Vertex Buffers (current, plus last two frame snapshots)
+		protected Vector3[,] vBuf; // Current Vertex Buffer
+		protected Vector3[,] vNorms; // Vertex Normals
+		protected Vector3[,,] fNorms; // Face Normals (for each triangle)
 		protected int curBufNum;
 		protected int cmplx;
 		protected float size;
@@ -764,18 +816,19 @@ namespace Axiom.Demos
 		#endregion Fields
 
 		public WaterMesh( String meshName, float planeSize, int cmplx )
-		{ // najak R-F
+		{
+			// najak R-F
 			// Assign Fields to the Initializer values
 			this.meshName = meshName;
 			this.size = planeSize;
-			this.cmplx = cmplx;  // Number of Rows/Columns in the Water Grid representation
+			this.cmplx = cmplx; // Number of Rows/Columns in the Water Grid representation
 			cmplxAdj = (float)System.Math.Pow( ( cmplx / 64f ), 1.4f ) * 2;
-			numFaces = 2 * (int)System.Math.Pow( cmplx, 2 );  // Each square is split into 2 triangles.
+			numFaces = 2 * (int)System.Math.Pow( cmplx, 2 ); // Each square is split into 2 triangles.
 			numVertices = (int)System.Math.Pow( ( cmplx + 1 ), 2 ); // Vertex grid is (Complexity+1) squared
 
 			// Allocate and initialize space for calculated Normals
-			vNorms = new Vector3[ cmplx + 1, cmplx + 1 ]; // vertex Normals for each grid point
-			fNorms = new Vector3[ cmplx, cmplx, 2 ]; // face Normals for each triangle
+			vNorms = new Vector3[cmplx + 1,cmplx + 1]; // vertex Normals for each grid point
+			fNorms = new Vector3[cmplx,cmplx,2]; // face Normals for each triangle
 
 			// Create mesh and submesh to represent the Water
 			mesh = (Mesh)MeshManager.Instance.CreateManual( meshName, ResourceGroupManager.DefaultResourceGroupName, null );
@@ -788,7 +841,7 @@ namespace Axiom.Demos
 			subMesh.vertexData.vertexCount = numVertices;
 
 			// Define local variables to point to the VertexData Properties
-			VertexDeclaration vdecl = subMesh.vertexData.vertexDeclaration;  // najak: seems like metadata
+			VertexDeclaration vdecl = subMesh.vertexData.vertexDeclaration; // najak: seems like metadata
 			VertexBufferBinding vbind = subMesh.vertexData.vertexBufferBinding; // najak: pointer to actual buffer
 
 			//najak: Set metadata to describe the three vertex buffers that will be accessed.
@@ -815,11 +868,11 @@ namespace Axiom.Demos
 			//    (0,0.00), (0.02, 0.00), (0.04, 0.00), ... (1.00,0.00)
 			// This construct is simple and is used to calculate the Texture map.
 			// Todo: Write directly to the buffer, when Axiom supports this in safe manner
-			float[ , , ] tcBufDat = new float[ cmplx + 1, cmplx + 1, 2 ];
-			for ( int i = 0; i <= cmplx; i++ )
+			float[,,] tcBufDat = new float[cmplx + 1,cmplx + 1,2];
+			for( int i = 0; i <= cmplx; i++ )
 			{
 				// 2D column iterator for texture map
-				for ( int j = 0; j <= cmplx; j++ )
+				for( int j = 0; j <= cmplx; j++ )
 				{
 					// 2D row iterator for texture map
 					// Define the normalized(0..1) X/Y-coordinates for this element of the 2D grid
@@ -838,11 +891,13 @@ namespace Axiom.Demos
 			//  Since the water grid consist of [Complexity x Complexity] squares, each square is
 			//  split into 2 right triangles 45-90-45.  That is how the water mesh is constructed.
 			//  Therefore the number of faces = 2 * Complexity * Complexity
-			ushort[ , , ] idxBuf = new ushort[ cmplx, cmplx, 6 ];
-			for ( int i = 0; i < cmplx; i++ )
-			{ // iterate the rows
-				for ( int j = 0; j < cmplx; j++ )
-				{ // iterate the columns
+			ushort[,,] idxBuf = new ushort[cmplx,cmplx,6];
+			for( int i = 0; i < cmplx; i++ )
+			{
+				// iterate the rows
+				for( int j = 0; j < cmplx; j++ )
+				{
+					// iterate the columns
 					// Define 4 corners of each grid
 					ushort p0 = (ushort)( i * ( cmplx + 1 ) + j ); // top left point on square
 					ushort p1 = (ushort)( i * ( cmplx + 1 ) + j + 1 ); // top right
@@ -868,13 +923,13 @@ namespace Axiom.Demos
 			subMesh.indexData.indexCount = 3 * numFaces;
 
 			//Prepare Vertex Position Buffers (Note: make 3, since each frame is function of previous two)
-			vBufs = new Vector3[ 3 ][ , ];
-			for ( int b = 0; b < 3; b++ )
+			vBufs = new Vector3[3][,];
+			for( int b = 0; b < 3; b++ )
 			{
-				vBufs[ b ] = new Vector3[ cmplx + 1, cmplx + 1 ];
-				for ( int y = 0; y <= cmplx; y++ )
+				vBufs[ b ] = new Vector3[cmplx + 1,cmplx + 1];
+				for( int y = 0; y <= cmplx; y++ )
 				{
-					for ( int x = 0; x <= cmplx; x++ )
+					for( int x = 0; x <= cmplx; x++ )
 					{
 						vBufs[ b ][ y, x ].x = (float)( x ) / (float)( cmplx ) * (float)size;
 						vBufs[ b ][ y, x ].y = 0;
@@ -888,12 +943,13 @@ namespace Axiom.Demos
 			posVBuf.WriteData( 0, posVBuf.Size, vBufs[ 0 ], true );
 
 			AxisAlignedBox meshBounds = new AxisAlignedBox( new Vector3( 0, 0, 0 ), new Vector3( size, 0, size ) );
-			mesh.BoundingBox = meshBounds;  //	mesh->_setBounds(meshBounds); // najak: can't find _setBounds()
+			mesh.BoundingBox = meshBounds; //	mesh->_setBounds(meshBounds); // najak: can't find _setBounds()
 
 			mesh.Load();
 			mesh.Touch();
+		}
 
-		} // end WaterMesh Constructor
+		// end WaterMesh Constructor
 
 		public void UpdateMesh( float timeSinceLastFrame )
 		{
@@ -901,13 +957,13 @@ namespace Axiom.Demos
 			lastTimeStamp += timeSinceLastFrame;
 
 			// do rendering to get ANIMATIONS_PER_SECOND
-			while ( lastAnimationTimeStamp <= lastTimeStamp )
+			while( lastAnimationTimeStamp <= lastTimeStamp )
 			{
 				// switch buffer numbers
 				curBufNum = ( curBufNum + 1 ) % 3;
-				Vector3[ , ] vbuf0 = vBufs[ curBufNum ]; // new frame
-				Vector3[ , ] vbuf1 = vBufs[ ( curBufNum + 2 ) % 3 ]; // 1-frame ago
-				Vector3[ , ] vbuf2 = vBufs[ ( curBufNum + 1 ) % 3 ]; // 2-frames ago
+				Vector3[,] vbuf0 = vBufs[ curBufNum ]; // new frame
+				Vector3[,] vbuf1 = vBufs[ ( curBufNum + 2 ) % 3 ]; // 1-frame ago
+				Vector3[,] vbuf2 = vBufs[ ( curBufNum + 1 ) % 3 ]; // 2-frames ago
 
 				// Algorithm from http://collective.valve-erc.com/index.php?go=water_simulation
 				double C = PARAM_C; // ripple speed
@@ -917,13 +973,13 @@ namespace Axiom.Demos
 				float TERM1 = (float)( ( 4.0f - 8.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
 				float TERM2 = (float)( ( U * T - 2.0f ) / ( U * T + 2.0f ) );
 				float TERM3 = (float)( ( 2.0f * C * C * T * T / ( D * D ) ) / ( U * T + 2 ) );
-				for ( int i = 1; i < cmplx; i++ )
+				for( int i = 1; i < cmplx; i++ )
 				{
 					// don't do anything with border values
-					for ( int j = 1; j < cmplx; j++ )
+					for( int j = 1; j < cmplx; j++ )
 					{
 						vbuf0[ i, j ].y = TERM1 * vbuf1[ i, j ].y + TERM2 * vbuf2[ i, j ].y +
-							TERM3 * ( vbuf1[ i, j - 1 ].y + vbuf1[ i, j + 1 ].y + vbuf1[ i - 1, j ].y + vbuf1[ i + 1, j ].y );
+						                  TERM3 * ( vbuf1[ i, j - 1 ].y + vbuf1[ i, j + 1 ].y + vbuf1[ i - 1, j ].y + vbuf1[ i + 1, j ].y );
 					}
 				}
 
@@ -932,7 +988,7 @@ namespace Axiom.Demos
 
 			vBuf = vBufs[ curBufNum ];
 
-			if ( useFakeNormals )
+			if( useFakeNormals )
 			{
 				CalculateFakeNormals();
 			}
@@ -945,25 +1001,24 @@ namespace Axiom.Demos
 			posVBuf.WriteData( 0, posVBuf.Size, vBufs[ curBufNum ], true );
 		}
 
-
 		/// <summary>Calculate WaterMesh precise Normals for each Vertex on Grid</summary>
 		public void CalculateNormals()
 		{
 			Vector3 p0, p1, p2, p3, fn1, fn2;
 
 			// Initialize Vertex Normals to ZERO
-			for ( int i = 0; i < cmplx + 1; i++ )
+			for( int i = 0; i < cmplx + 1; i++ )
 			{
-				for ( int j = 0; j < cmplx + 1; j++ )
+				for( int j = 0; j < cmplx + 1; j++ )
 				{
 					vNorms[ i, j ] = Vector3.Zero;
 				}
 			}
 
 			// Calculate Normal for each Face, and add it to the normal for each Vertex
-			for ( int i = 0; i < cmplx; i++ )
+			for( int i = 0; i < cmplx; i++ )
 			{
-				for ( int j = 0; j < cmplx; j++ )
+				for( int j = 0; j < cmplx; j++ )
 				{
 					// Define 4-points of this grid square (top-left, top-right, bottom-left, bottom-right)
 					p0 = vBuf[ i, j ];
@@ -983,9 +1038,9 @@ namespace Axiom.Demos
 				}
 			}
 			// Normalize the Vertex normals, and write it to the Normal Buffer
-			for ( int i = 0; i <= cmplx; i++ )
+			for( int i = 0; i <= cmplx; i++ )
 			{
-				for ( int j = 0; j <= cmplx; j++ )
+				for( int j = 0; j <= cmplx; j++ )
 				{
 					vNorms[ i, j ].Normalize();
 				}
@@ -1000,9 +1055,9 @@ namespace Axiom.Demos
 			float d1, d2; // diagonal slopes across 2 grid squares
 			float ycomp = 6f * size / cmplx; // Fixed y-component of each vertex normal
 
-			for ( int i = 1; i < cmplx; i++ )
+			for( int i = 1; i < cmplx; i++ )
 			{
-				for ( int j = 1; j < cmplx; j++ )
+				for( int j = 1; j < cmplx; j++ )
 				{
 					// Take average slopes across two grids
 					d1 = vBuf[ i - 1, j - 1 ].y - vBuf[ i + 1, j + 1 ].y;
@@ -1014,7 +1069,7 @@ namespace Axiom.Demos
 				}
 			}
 			// Create Unit-Y Normals for Water Edges (no angle for edges)
-			for ( int i = 0; i <= cmplx; i++ )
+			for( int i = 0; i <= cmplx; i++ )
 			{
 				vNorms[ i, 0 ] = vNorms[ i, cmplx ] = vNorms[ 0, i ] = vNorms[ cmplx, i ] = Vector3.UnitY;
 			}
@@ -1027,16 +1082,16 @@ namespace Axiom.Demos
 		public void PushDown( float fx, float fy, float depth )
 		{
 			// Ogre Wave Generation Logic - scale pressure according to time passed
-			for ( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
+			for( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
 			{
-				for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
+				for( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
 				{
 					float diffy = fy - (float)System.Math.Floor( fy + addy );
 					float diffx = fx - (float)System.Math.Floor( fx + addx );
 					float dist = (float)System.Math.Sqrt( diffy * diffy + diffx * diffx );
 					float power = 1 - dist;
 
-					if ( power < 0 )
+					if( power < 0 )
 					{
 						power = 0;
 					}
@@ -1050,21 +1105,21 @@ namespace Axiom.Demos
 		public void Push( float fx, float fy, float depth, float height, float speed, bool absolute )
 		{
 			// Ogre Wave Generation Logic - scale pressure according to time passed
-			for ( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
+			for( int addx = (int)fx; addx <= (int)fx + 1; addx++ )
 			{
-				for ( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
+				for( int addy = (int)fy; addy <= (int)fy + 1; addy++ )
 				{
 					float diffy = fy - (float)System.Math.Floor( (double)addy );
 					float diffx = fx - (float)System.Math.Floor( (double)addx );
 					float dist = (float)System.Math.Sqrt( diffy * diffy + diffx * diffx );
 					float power = ( 1 - dist ) * cmplxAdj * speed;
 
-					if ( power < 0 )
+					if( power < 0 )
 					{
 						power = 0;
 					}
 
-					if ( absolute )
+					if( absolute )
 					{
 						vBuf[ addy, addx ].y = depth * power;
 					}
@@ -1075,5 +1130,7 @@ namespace Axiom.Demos
 				}
 			}
 		}
-	} // WaterMesh class
+	}
+
+	// WaterMesh class
 }

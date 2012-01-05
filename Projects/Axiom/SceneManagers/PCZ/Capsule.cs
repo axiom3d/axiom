@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 // <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 // <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,84 +40,61 @@ using Axiom.Math;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
+	public class Capsule
+	{
+		// defining members
+		private Segment _segment = new Segment();
+		private Real _radius = 0;
 
-    public class Capsule
-    {
-        // defining members
-        private Segment _segment = new Segment();
-        private Real _radius = 0;
+		public Segment Segment { get { return _segment; } set { _segment = value; } }
 
-        public Segment Segment
-        {
-            get { return _segment; }
-            set { _segment = value; }
-        }
+		public Real Radius { get { return _radius; } set { _radius = value; } }
 
-        public Real Radius
-        {
-            get { return _radius; }
-            set { _radius = value; }
-        }
+		// construction
+		public Capsule()
+		{
+			// uninitialized
+		}
 
-        // construction
-        public Capsule()
-        {
-            // uninitialized
-        }
-        //----------------------------------------------------------------------------
-        public Capsule(Segment segment, Real radius)
-        {
-            Segment = segment;
-            Radius = radius;
-        }
+		//----------------------------------------------------------------------------
+		public Capsule( Segment segment, Real radius )
+		{
+			Segment = segment;
+			Radius = radius;
+		}
 
-        public void Set(Vector3 newOrigin, Vector3 newEnd, Real newRadius)
-        {
-            Segment.Set(newOrigin, newEnd);
-            Radius = newRadius;
-        }
+		public void Set( Vector3 newOrigin, Vector3 newEnd, Real newRadius )
+		{
+			Segment.Set( newOrigin, newEnd );
+			Radius = newRadius;
+		}
 
-        //// set values
-        //void @set(Vector3 newOrigin, Vector3 newEnd, float newRadius);
-        //----------------------------------------------------------------------------
-        public Vector3 Origin
-        {
-            get { return Segment.Origin; }
+		//// set values
+		//void @set(Vector3 newOrigin, Vector3 newEnd, float newRadius);
+		//----------------------------------------------------------------------------
+		public Vector3 Origin { get { return Segment.Origin; } set { Segment.Origin = value; } }
 
-            set
-            {
-                Segment.Origin = value;
-            }
-        }
+		/// <summary>
+		/// EndPoint
+		/// </summary>
+		public Vector3 EndPoint { set { Segment.EndPoint = value; } }
 
-        /// <summary>
-        /// EndPoint
-        /// </summary>
-        public Vector3 EndPoint
-        {
-            set
-            {
-                Segment.EndPoint = value;
-            }
-        }
+		// Intersection tests
+		//----------------------------------------------------------------------------
+		//ORIGINAL LINE: bool Intersects(const Capsule& otherCapsule) const
+		public bool Intersects( Capsule otherCapsule )
+		{
+			Real fDistance = Segment.Distance( otherCapsule.Segment );
+			Real fRSum = Radius + otherCapsule.Radius;
+			return fDistance <= fRSum;
+		}
 
-        // Intersection tests
-        //----------------------------------------------------------------------------
-        //ORIGINAL LINE: bool Intersects(const Capsule& otherCapsule) const
-        public bool Intersects(Capsule otherCapsule)
-        {
-            Real fDistance = Segment.Distance(otherCapsule.Segment);
-            Real fRSum = Radius + otherCapsule.Radius;
-            return fDistance <= fRSum;
-        }
-
-        //----------------------------------------------------------------------------
-        //ORIGINAL LINE: bool Intersects(const Segment& segment) const
-        public bool Intersects(Segment segment)
-        {
-            Real fDist = segment.Distance(Segment);
-            return fDist <= Radius;
-        }
-
-    }
+		//----------------------------------------------------------------------------
+		//ORIGINAL LINE: bool Intersects(const Segment& segment) const
+		public bool Intersects( Segment segment )
+		{
+			Real fDist = segment.Distance( Segment );
+			return fDist <= Radius;
+		}
+	}
 }

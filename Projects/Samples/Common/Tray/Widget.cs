@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -27,6 +29,7 @@ using Axiom.Fonts;
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
+
 using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
 
 namespace Axiom.Samples
@@ -37,18 +40,22 @@ namespace Axiom.Samples
 	public class Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement element;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TrayLocation trayLoc;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected ISdkTrayListener listener;
+
 		#endregion fields
 
 		#region properties
@@ -56,74 +63,32 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Gets or sets the tray location where this widget is assigned to
 		/// </summary>
-		public TrayLocation AssigendTray
-		{
-			set
-			{
-				trayLoc = value;
-			}
-			get
-			{
-				return trayLoc;
-			}
-		}
+		public TrayLocation AssigendTray { set { trayLoc = value; } get { return trayLoc; } }
 
 		/// <summary>
 		/// Gets or sets the assigned trayListener where this widget is assigned to
 		/// </summary>
-		public ISdkTrayListener AssignedTrayListener
-		{
-			get
-			{
-				return listener;
-			}
-			set
-			{
-				listener = value;
-			}
-		}
+		public ISdkTrayListener AssignedTrayListener { get { return listener; } set { listener = value; } }
+
 		/// <summary>
 		/// Gets the underlying overlay element
 		/// </summary>
-		public OverlayElement OverlayElement
-		{
-			get
-			{
-				return element;
-			}
-		}
+		public OverlayElement OverlayElement { get { return element; } }
+
 		/// <summary>
 		/// Gets the name of this widget.
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return element.Name;
-			}
-		}
+		public string Name { get { return element.Name; } }
 
 		/// <summary>
 		/// Gets the current tray location of this widget
 		/// </summary>
-		public TrayLocation TrayLocation
-		{
-			get
-			{
-				return this.trayLoc;
-			}
-		}
+		public TrayLocation TrayLocation { get { return this.trayLoc; } }
 
 		/// <summary>
 		/// Gets this widget is visible or not
 		/// </summary>
-		public bool IsVisible
-		{
-			get
-			{
-				return this.element.IsVisible;
-			}
-		}
+		public bool IsVisible { get { return this.element.IsVisible; } }
 
 		#endregion
 
@@ -151,24 +116,26 @@ namespace Axiom.Samples
 		public static void NukeOverlayElement( OverlayElement element )
 		{
 			OverlayElementContainer container = element as OverlayElementContainer;
-			if ( container != null )
+			if( container != null )
 			{
 				List<OverlayElement> toDelete = new List<OverlayElement>();
-				foreach ( OverlayElement child in container.Children.Values )
+				foreach( OverlayElement child in container.Children.Values )
 				{
 					toDelete.Add( child );
 				}
 
-				for ( int i = 0; i < toDelete.Count; i++ )
+				for( int i = 0; i < toDelete.Count; i++ )
 				{
 					NukeOverlayElement( toDelete[ i ] );
 				}
 			}
-			if ( element != null )
+			if( element != null )
 			{
 				OverlayElementContainer parent = element.Parent;
-				if ( parent != null )
+				if( parent != null )
+				{
 					parent.RemoveChild( element.Name );
+				}
 				OverlayManager.Instance.Elements.DestroyElement( element.Name );
 			}
 		}
@@ -200,7 +167,7 @@ namespace Axiom.Samples
 			int b = t + (int)element.Height;
 
 			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder &&
-					cursorPos.y >= t + voidBorder && cursorPos.y <= b - voidBorder );
+			         cursorPos.y >= t + voidBorder && cursorPos.y <= b - voidBorder );
 		}
 
 		/// <summary>
@@ -214,7 +181,7 @@ namespace Axiom.Samples
 		{
 			OverlayManager om = OverlayManager.Instance;
 			return new Vector2( cursorPos.x - ( element.DerivedLeft * om.ViewportWidth + element.Width / 2 ),
-							   cursorPos.y - ( element.DerivedTop * om.ViewportHeight + element.Height / 2 ) );
+			                    cursorPos.y - ( element.DerivedTop * om.ViewportHeight + element.Height / 2 ) );
 		}
 
 		/// <summary>
@@ -229,21 +196,29 @@ namespace Axiom.Samples
 			String current = caption;
 			Real lineWidth = 0;
 
-			for ( int i = 0; i < current.Length; i++ )
+			for( int i = 0; i < current.Length; i++ )
 			{
 				// be sure to provide a line width in the text area
-				if ( current[ i ] == ' ' )
+				if( current[ i ] == ' ' )
 				{
-					if ( area.SpaceWidth != 0 )
+					if( area.SpaceWidth != 0 )
+					{
 						lineWidth += area.SpaceWidth;
+					}
 					else
+					{
 						lineWidth += font.GetGlyphAspectRatio( ' ' ) * area.CharHeight;
+					}
 				}
-				else if ( current[ i ] == '\n' )
+				else if( current[ i ] == '\n' )
+				{
 					break;
-				// use glyph information to calculate line width
+				}
+					// use glyph information to calculate line width
 				else
+				{
 					lineWidth += font.GetGlyphAspectRatio( current[ i ] ) * area.CharHeight;
+				}
 			}
 
 			return lineWidth;
@@ -261,18 +236,24 @@ namespace Axiom.Samples
 			String s = caption;
 
 			int nl = s.IndexOf( '\n' );
-			if ( nl != -1 )
+			if( nl != -1 )
+			{
 				s = s.Substring( 0, nl );
+			}
 
 			Real width = 0;
 
-			for ( int i = 0; i < s.Length; i++ )
+			for( int i = 0; i < s.Length; i++ )
 			{
-				if ( s[ i ] == ' ' && area.SpaceWidth != 0 )
+				if( s[ i ] == ' ' && area.SpaceWidth != 0 )
+				{
 					width += area.SpaceWidth;
+				}
 				else
+				{
 					width += f.GetGlyphAspectRatio( s[ i ] ) * area.CharHeight;
-				if ( width > maxWidth )
+				}
+				if( width > maxWidth )
 				{
 					s = s.Substring( 0, i );
 					break;
@@ -291,8 +272,10 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Cleanup()
 		{
-			if ( this.element != null )
+			if( this.element != null )
+			{
 				NukeOverlayElement( this.element );
+			}
 			this.element = null;
 		}
 
@@ -311,6 +294,7 @@ namespace Axiom.Samples
 		{
 			this.element.Show();
 		}
+
 		#endregion
 
 		#region events
@@ -319,14 +303,17 @@ namespace Axiom.Samples
 		/// Occurs when the cursor pointer is moved over the widget.
 		/// </summary>
 		public event CursorMovedHandler CursorMoved;
+
 		/// <summary>
 		/// Occurs when the cursor pointer is over the widget and a mouse button is pressed.
 		/// </summary>
 		public event CursorPressedHandler CursorPressed;
+
 		/// <summary>
 		/// Occurs when the cursor pointer is over the widget and a mouse button is released.
 		/// </summary>
 		public event CursorReleasedHandler CursorReleased;
+
 		/// <summary>
 		/// Occours when the widget loses focus.
 		/// </summary>
@@ -336,55 +323,63 @@ namespace Axiom.Samples
 		/// Raises the CursorMoved event.
 		/// </summary>
 		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorMoved( Vector2 cursorPos )
+		virtual public void OnCursorMoved( Vector2 cursorPos )
 		{
 			// Make a temporary copy of the event to avoid possibility of
 			// a race condition if the last subscriber unsubscribes
 			// immediately after the null check and before the event is raised.
 			CursorMovedHandler handler = CursorMoved;
-			if ( handler != null )
+			if( handler != null )
+			{
 				handler( cursorPos );
+			}
 		}
 
 		/// <summary>
 		/// Raises the CursorPressed event.
 		/// </summary>
 		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorPressed( Vector2 cursorPos )
+		virtual public void OnCursorPressed( Vector2 cursorPos )
 		{
 			// Make a temporary copy of the event to avoid possibility of
 			// a race condition if the last subscriber unsubscribes
 			// immediately after the null check and before the event is raised.
 			CursorPressedHandler handler = CursorPressed;
-			if ( handler != null )
-				handler(this, cursorPos );
+			if( handler != null )
+			{
+				handler( this, cursorPos );
+			}
 		}
 
 		/// <summary>
 		/// Raises the CursorReleased event.
 		/// </summary>
 		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorReleased( Vector2 cursorPos )
+		virtual public void OnCursorReleased( Vector2 cursorPos )
 		{
 			// Make a temporary copy of the event to avoid possibility of
 			// a race condition if the last subscriber unsubscribes
 			// immediately after the null check and before the event is raised.
 			CursorReleasedHandler handler = CursorReleased;
-			if ( handler != null )
+			if( handler != null )
+			{
 				handler( cursorPos );
+			}
 		}
 
 		/// <summary>
 		/// Raises raises the LostFocus event.
 		/// </summary>
-		public virtual void OnLostFocus()
+		virtual public void OnLostFocus()
 		{
 			// Make a temporary copy of the event to avoid possibility of
 			// a race condition if the last subscriber unsubscribes
 			// immediately after the null check and before the event is raised.
 			LostFocusHandler handler = LostFocus;
-			if ( handler != null )
+			if( handler != null )
+			{
 				handler();
+			}
 		}
 
 		#endregion events

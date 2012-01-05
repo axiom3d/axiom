@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,8 +42,8 @@ using System;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
-using ResourceHandle = System.UInt64;
 
+using ResourceHandle = System.UInt64;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -72,7 +76,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
-			if ( type == GpuProgramType.Vertex )
+			if( type == GpuProgramType.Vertex )
 			{
 				return new D3DVertexProgram( this, name, handle, group, isManual, loader, device );
 			}
@@ -84,12 +88,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			if ( !createParams.ContainsKey( "type" ) )
+			if( !createParams.ContainsKey( "type" ) )
 			{
 				throw new Exception( "You must supply a 'type' parameter." );
 			}
 
-			if ( createParams[ "type" ] == "vertex_program" )
+			if( createParams[ "type" ] == "vertex_program" )
 			{
 				return new D3DVertexProgram( this, name, handle, group, isManual, loader, device );
 			}

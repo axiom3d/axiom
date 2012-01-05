@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Animating;
@@ -28,7 +30,7 @@ using Axiom.Media;
 
 namespace Axiom.Samples.Core
 {
-	class VolumeTextureSample : SdkSample
+	internal class VolumeTextureSample : SdkSample
 	{
 		protected Texture ptex;
 		protected SimpleRenderable vrend;
@@ -36,6 +38,7 @@ namespace Axiom.Samples.Core
 		protected SceneNode snode, fnode;
 		protected AnimationState animState;
 		protected float globalReal, globalImag, globalTheta, xtime;
+
 		public VolumeTextureSample()
 		{
 			Metadata[ "Title" ] = "Volume Textures";
@@ -46,8 +49,10 @@ namespace Axiom.Samples.Core
 
 		public override void TestCapabilities( RenderSystemCapabilities capabilities )
 		{
-			if ( !capabilities.HasCapability( Capabilities.Texture3D ) )
+			if( !capabilities.HasCapability( Capabilities.Texture3D ) )
+			{
 				throw new AxiomException( "Your card does not support 3D textures, so cannot run this demo. Sorry!" );
+			}
 		}
 
 		protected override void SetupView()
@@ -72,7 +77,7 @@ namespace Axiom.Samples.Core
 		protected override void SetupContent()
 		{
 			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName,
-				 TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8, TextureUsage.Default, null );
+			                                             TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8, TextureUsage.Default, null );
 
 			SceneManager.AmbientLight = new ColorEx( 0.6f, 0.6f, 0.6f );
 			SceneManager.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
@@ -124,23 +129,27 @@ namespace Axiom.Samples.Core
 
 		protected override void CleanupContent()
 		{
-			if ( vrend != null )
+			if( vrend != null )
 			{
-				if ( !vrend.IsDisposed )
+				if( !vrend.IsDisposed )
+				{
 					vrend.Dispose();
+				}
 
 				vrend = null;
 			}
 
-			if ( trend != null )
+			if( trend != null )
 			{
-				if ( !trend.IsDisposed )
+				if( !trend.IsDisposed )
+				{
 					trend.Dispose();
+				}
 
 				trend = null;
 			}
 
-			if ( ptex != null )
+			if( ptex != null )
 			{
 				TextureManager.Instance.Remove( "DynaTex" );
 				ptex = null;
@@ -165,9 +174,9 @@ namespace Axiom.Samples.Core
 			TrayManager.ShowCursor();
 		}
 
-		void sl_SliderMoved( object sender, Slider slider )
+		private void sl_SliderMoved( object sender, Slider slider )
 		{
-			switch ( slider.Name )
+			switch( slider.Name )
 			{
 				case "RealSlider":
 					globalReal = slider.Value;
@@ -201,26 +210,28 @@ namespace Axiom.Samples.Core
 			unsafe
 			{
 				uint* pbptr = (uint*)pb.Data;
-				for ( int z = pb.Front; z < pb.Back; z++ )
+				for( int z = pb.Front; z < pb.Back; z++ )
 				{
-					for ( int y = pb.Top; y < pb.Bottom; y++ )
+					for( int y = pb.Top; y < pb.Bottom; y++ )
 					{
-						for ( int x = pb.Left; x < pb.Right; x++ )
+						for( int x = pb.Left; x < pb.Right; x++ )
 						{
-							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) ||
-								x == pb.Left || x == ( pb.Right - 1 ) )
+							if( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) ||
+							    x == pb.Left || x == ( pb.Right - 1 ) )
 							{
 								pbptr[ x ] = 0;
 							}
 							else
 							{
 								float val = julia.Eval( ( (float)x / pb.Width - 0.5f ) * scale,
-								( (float)y / pb.Height - 0.5f ) * scale,
-								( (float)z / pb.Depth - 0.5f ) * scale );
-								if ( val > vcut )
+								                        ( (float)y / pb.Height - 0.5f ) * scale,
+								                        ( (float)z / pb.Depth - 0.5f ) * scale );
+								if( val > vcut )
+								{
 									val = vcut;
+								}
 
-								PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, (System.IntPtr)(&pbptr[ x ]) );
+								PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, (System.IntPtr)( &pbptr[ x ] ) );
 							}
 						}
 						pbptr += pb.RowPitch;

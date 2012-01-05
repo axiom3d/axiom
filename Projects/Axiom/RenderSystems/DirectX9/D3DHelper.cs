@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,6 +46,7 @@ using Axiom.Graphics;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
@@ -52,14 +57,12 @@ namespace Axiom.RenderSystems.DirectX9
 	/// </summary>
 	public class D3DHelper
 	{
-		public D3DHelper()
-		{
-		}
+		public D3DHelper() {}
 
 		public static System.Drawing.Rectangle ToRectangle( Rectangle rect )
 		{
 			return new System.Drawing.Rectangle( new System.Drawing.Point( (int)rect.Left, (int)rect.Top ),
-												 new System.Drawing.Size( (int)rect.Width, (int)rect.Height ) );
+			                                     new System.Drawing.Size( (int)rect.Width, (int)rect.Height ) );
 		}
 
 		public static System.Drawing.Color ToColor( ColorEx color )
@@ -90,7 +93,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			DriverCollection driverList = new DriverCollection();
 
-			foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
+			foreach( D3D.AdapterInformation adapterInfo in manager.Adapters )
 			{
 				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
 				Driver driver = new Driver( adapterInfo );
@@ -100,22 +103,22 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D.Format lastFormat = 0;
 
 				// 32bit Modes
-				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
+				foreach( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
 				{
 					displaymodeList.Add( mode );
 				}
 
 				// 16Bit modes
-				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
+				foreach( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
 				{
 					displaymodeList.Add( mode );
 				}
 
-				foreach ( D3D.DisplayMode mode in displaymodeList )
+				foreach( D3D.DisplayMode mode in displaymodeList )
 				{
 					// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-					if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+					if( ( mode.Width >= 640 && mode.Height >= 480 ) &&
+					    ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
 					{
 						// add the video mode to the list
 						driver.VideoModes.Add( new VideoMode( mode ) );
@@ -144,7 +147,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// setting a default val here to keep compiler from complaining about using unassigned value types
 			D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
 
-			switch ( texType )
+			switch( texType )
 			{
 				case D3DTextureType.Normal:
 					filterCaps = devCaps.TextureFilterCaps;
@@ -157,98 +160,98 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			}
 
-			switch ( type )
+			switch( type )
 			{
 				case FilterType.Min:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-								if ( ( filterCaps & D3D.FilterCaps.MinAnisotropic ) == D3D.FilterCaps.MinAnisotropic )
-								{
-									return D3D.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return D3D.TextureFilter.Linear;
-								}
+						case FilterOptions.Anisotropic:
+							if( ( filterCaps & D3D.FilterCaps.MinAnisotropic ) == D3D.FilterCaps.MinAnisotropic )
+							{
+								return D3D.TextureFilter.Anisotropic;
+							}
+							else
+							{
+								return D3D.TextureFilter.Linear;
+							}
 
-							case FilterOptions.Linear:
-								if ( ( filterCaps & D3D.FilterCaps.MinLinear ) == D3D.FilterCaps.MinLinear )
-								{
-									return D3D.TextureFilter.Linear;
-								}
-								else
-								{
-									return D3D.TextureFilter.Point;
-								}
-
-							case FilterOptions.Point:
-							case FilterOptions.None:
+						case FilterOptions.Linear:
+							if( ( filterCaps & D3D.FilterCaps.MinLinear ) == D3D.FilterCaps.MinLinear )
+							{
+								return D3D.TextureFilter.Linear;
+							}
+							else
+							{
 								return D3D.TextureFilter.Point;
-						}
-						break;
+							}
+
+						case FilterOptions.Point:
+						case FilterOptions.None:
+							return D3D.TextureFilter.Point;
 					}
+					break;
+				}
 				case FilterType.Mag:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-								if ( ( filterCaps & D3D.FilterCaps.MagAnisotropic ) == D3D.FilterCaps.MagAnisotropic )
-								{
-									return D3D.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return D3D.TextureFilter.Linear;
-								}
+						case FilterOptions.Anisotropic:
+							if( ( filterCaps & D3D.FilterCaps.MagAnisotropic ) == D3D.FilterCaps.MagAnisotropic )
+							{
+								return D3D.TextureFilter.Anisotropic;
+							}
+							else
+							{
+								return D3D.TextureFilter.Linear;
+							}
 
-							case FilterOptions.Linear:
-								if ( ( filterCaps & D3D.FilterCaps.MagLinear ) == D3D.FilterCaps.MagLinear )
-								{
-									return D3D.TextureFilter.Linear;
-								}
-								else
-								{
-									return D3D.TextureFilter.Point;
-								}
-
-							case FilterOptions.Point:
-							case FilterOptions.None:
+						case FilterOptions.Linear:
+							if( ( filterCaps & D3D.FilterCaps.MagLinear ) == D3D.FilterCaps.MagLinear )
+							{
+								return D3D.TextureFilter.Linear;
+							}
+							else
+							{
 								return D3D.TextureFilter.Point;
-						}
-						break;
+							}
+
+						case FilterOptions.Point:
+						case FilterOptions.None:
+							return D3D.TextureFilter.Point;
 					}
+					break;
+				}
 				case FilterType.Mip:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-							case FilterOptions.Linear:
-								if ( ( filterCaps & D3D.FilterCaps.MipLinear ) == D3D.FilterCaps.MipLinear )
-								{
-									return D3D.TextureFilter.Linear;
-								}
-								else
-								{
-									return D3D.TextureFilter.Point;
-								}
+						case FilterOptions.Anisotropic:
+						case FilterOptions.Linear:
+							if( ( filterCaps & D3D.FilterCaps.MipLinear ) == D3D.FilterCaps.MipLinear )
+							{
+								return D3D.TextureFilter.Linear;
+							}
+							else
+							{
+								return D3D.TextureFilter.Point;
+							}
 
-							case FilterOptions.Point:
-								if ( ( filterCaps & D3D.FilterCaps.MipPoint ) == D3D.FilterCaps.MipPoint )
-								{
-									return D3D.TextureFilter.Point;
-								}
-								else
-								{
-									return D3D.TextureFilter.None;
-								}
-
-							case FilterOptions.None:
+						case FilterOptions.Point:
+							if( ( filterCaps & D3D.FilterCaps.MipPoint ) == D3D.FilterCaps.MipPoint )
+							{
+								return D3D.TextureFilter.Point;
+							}
+							else
+							{
 								return D3D.TextureFilter.None;
-						}
-						break;
+							}
+
+						case FilterOptions.None:
+							return D3D.TextureFilter.None;
 					}
+					break;
+				}
 			}
 
 			// should never get here
@@ -266,7 +269,7 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D.TextureOperation d3dTexOp = 0;
 
 			// figure out what is what
-			switch ( blendop )
+			switch( blendop )
 			{
 				case LayerBlendOperationEx.Source1:
 					d3dTexOp = D3D.TextureOperation.SelectArg1;
@@ -321,7 +324,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 
 				case LayerBlendOperationEx.DotProduct:
-					if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.Dot3 ) )
+					if( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.Dot3 ) )
 					{
 						d3dTexOp = D3D.TextureOperation.DotProduct3;
 					}
@@ -339,7 +342,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			D3D.TextureArgument d3dTexArg = 0;
 
-			switch ( blendSource )
+			switch( blendSource )
 			{
 				case LayerBlendSource.Current:
 					d3dTexArg = D3D.TextureArgument.Current;
@@ -374,7 +377,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			D3D.Blend d3dBlend = 0;
 
-			switch ( factor )
+			switch( factor )
 			{
 				case SceneBlendFactor.One:
 					d3dBlend = D3D.Blend.One;
@@ -414,7 +417,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public static D3D.DeclarationType ConvertEnum( VertexElementType type )
 		{
 			// we only need to worry about a few types with D3D
-			switch ( type )
+			switch( type )
 			{
 				case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
@@ -441,7 +444,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 				case VertexElementType.UByte4:
 					return D3D.DeclarationType.Ubyte4;
-
 			} // switch
 
 			// keep the compiler happy
@@ -450,7 +452,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static D3D.DeclarationUsage ConvertEnum( VertexElementSemantic semantic )
 		{
-			switch ( semantic )
+			switch( semantic )
 			{
 				case VertexElementSemantic.BlendIndices:
 					return D3D.DeclarationUsage.BlendIndices;
@@ -505,18 +507,20 @@ namespace Axiom.RenderSystems.DirectX9
 #else
 			D3D.Usage ret = 0;
 
-			if ( ( usage & BufferUsage.Dynamic ) != 0 )
+			if( ( usage & BufferUsage.Dynamic ) != 0 )
 			{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 				// Only add the dynamic flag for the default pool, and
 				// we use default pool when buffer is discardable
-				if ( ( usage & BufferUsage.Discardable ) != 0 )
+				if( ( usage & BufferUsage.Discardable ) != 0 )
+				{
 					ret |= D3D.Usage.Dynamic;
+				}
 #else
 				ret |= D3D.Usage.Dynamic;
 #endif
 			}
-			if ( ( usage & BufferUsage.WriteOnly ) != 0 )
+			if( ( usage & BufferUsage.WriteOnly ) != 0 )
 			{
 				ret |= D3D.Usage.WriteOnly;
 			}
@@ -532,7 +536,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public static D3D.FogMode ConvertEnum( Axiom.Graphics.FogMode mode )
 		{
 			// convert the fog mode value
-			switch ( mode )
+			switch( mode )
 			{
 				case Axiom.Graphics.FogMode.Exp:
 					return D3D.FogMode.Exponential;
@@ -584,37 +588,42 @@ namespace Axiom.RenderSystems.DirectX9
 		public static D3D.LockFlags ConvertEnum( BufferLocking locking, BufferUsage usage )
 		{
 			D3D.LockFlags ret = 0;
-			if ( locking == BufferLocking.Discard )
+			if( locking == BufferLocking.Discard )
 			{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 				// Only add the discard flag for dynamic usgae and default pool
-				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
-					( usage & BufferUsage.Discardable ) != 0 )
+				if( ( usage & BufferUsage.Dynamic ) != 0 &&
+				    ( usage & BufferUsage.Discardable ) != 0 )
+				{
 					ret |= D3D.LockFlags.Discard;
+				}
 #else
-				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+	// D3D doesn't like discard or no_overwrite on non-dynamic buffers
 				if ((usage & BufferUsage.Dynamic) != 0)
 					ret |= D3D.LockFlags.Discard;
 #endif
 			}
-			if ( locking == BufferLocking.ReadOnly )
+			if( locking == BufferLocking.ReadOnly )
 			{
 				// D3D debug runtime doesn't like you locking managed buffers readonly
 				// when they were created with write-only (even though you CAN read
 				// from the software backed version)
-				if ( ( usage & BufferUsage.WriteOnly ) == 0 )
+				if( ( usage & BufferUsage.WriteOnly ) == 0 )
+				{
 					ret |= D3D.LockFlags.ReadOnly;
-
+				}
 			}
-			if ( locking == BufferLocking.NoOverwrite )
+			if( locking == BufferLocking.NoOverwrite )
 			{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 				// Only add the nooverwrite flag for dynamic usgae and default pool
-				if ( ( usage & BufferUsage.Dynamic ) != 0 &&
-					( usage & BufferUsage.Discardable ) != 0 )
+				if( ( usage & BufferUsage.Dynamic ) != 0 &&
+				    ( usage & BufferUsage.Discardable ) != 0 )
+				{
 					ret |= D3D.LockFlags.NoOverwrite;
+				}
 #else
-				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+	// D3D doesn't like discard or no_overwrite on non-dynamic buffers
 				if ((usage & BufferUsage.Dynamic) != 0)
 					ret |= D3D.LockFlags.NoOverwrite;
 #endif
@@ -626,7 +635,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static int ConvertEnum( TexCoordCalcMethod method, D3D.Capabilities caps )
 		{
-			switch ( method )
+			switch( method )
 			{
 				case TexCoordCalcMethod.None:
 					return (int)D3D.TextureCoordIndex.PassThru;
@@ -636,7 +645,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
 					//return (int)D3D.TextureCoordinateIndex.CameraSpacePosition;
-					if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
+					if( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
 					{
 						// use sphere map if available
 						return (int)D3D.TextureCoordIndex.SphereMap;
@@ -651,7 +660,7 @@ namespace Axiom.RenderSystems.DirectX9
 					return (int)D3D.TextureCoordIndex.CameraSpaceNormal;
 
 				case TexCoordCalcMethod.EnvironmentMap:
-					if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
+					if( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
 					{
 						return (int)D3D.TextureCoordIndex.SphereMap;
 					}
@@ -670,7 +679,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static D3DTextureType ConvertEnum( TextureType type )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case TextureType.OneD:
 				case TextureType.TwoD:
@@ -687,7 +696,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public static D3D.TextureAddress ConvertEnum( TextureAddressing type )
 		{
 			// convert from ours to D3D
-			switch ( type )
+			switch( type )
 			{
 				case TextureAddressing.Wrap:
 					return D3D.TextureAddress.Wrap;
@@ -712,7 +721,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		public static D3D.Compare ConvertEnum( CompareFunction func )
 		{
-			switch ( func )
+			switch( func )
 			{
 				case CompareFunction.AlwaysFail:
 					return D3D.Compare.Never;
@@ -749,18 +758,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		public static D3D.ShadeMode ConvertEnum( Shading shading )
 		{
-			switch ( shading )
+			switch( shading )
 			{
 				case Shading.Flat:
 					return D3D.ShadeMode.Flat;
 				case Shading.Gouraud:
 					return D3D.ShadeMode.Gouraud;
-				//case Shading.Phong:
-				//    return D3D.ShadeMode.Phong;
+					//case Shading.Phong:
+					//    return D3D.ShadeMode.Phong;
 			}
 
 			return 0;
 		}
+
 		/// <summary>
 		///    Converts the D3D ShadingMode to our Shading enum equivalent.
 		/// </summary>
@@ -768,14 +778,14 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		public static Shading ConvertEnum( D3D.ShadeMode shading )
 		{
-			switch ( shading )
+			switch( shading )
 			{
 				case D3D.ShadeMode.Flat:
 					return Shading.Flat;
 				case D3D.ShadeMode.Gouraud:
 					return Shading.Gouraud;
-				//case D3D.ShadeMode.Phong:
-				//    return Shading.Phong;
+					//case D3D.ShadeMode.Phong:
+					//    return Shading.Phong;
 			}
 
 			return 0;
@@ -793,7 +803,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		public static D3D.StencilOperation ConvertEnum( Axiom.Graphics.StencilOperation op, bool invert )
 		{
-			switch ( op )
+			switch( op )
 			{
 				case Axiom.Graphics.StencilOperation.Keep:
 					return D3D.StencilOperation.Keep;
@@ -806,19 +816,19 @@ namespace Axiom.RenderSystems.DirectX9
 
 				case Axiom.Graphics.StencilOperation.Increment:
 					return invert ?
-						D3D.StencilOperation.DecrementSaturate : D3D.StencilOperation.IncrementSaturate;
+					              	D3D.StencilOperation.DecrementSaturate : D3D.StencilOperation.IncrementSaturate;
 
 				case Axiom.Graphics.StencilOperation.Decrement:
 					return invert ?
-						D3D.StencilOperation.IncrementSaturate : D3D.StencilOperation.DecrementSaturate;
+					              	D3D.StencilOperation.IncrementSaturate : D3D.StencilOperation.DecrementSaturate;
 
 				case Axiom.Graphics.StencilOperation.IncrementWrap:
 					return invert ?
-						D3D.StencilOperation.Decrement : D3D.StencilOperation.Increment;
+					              	D3D.StencilOperation.Decrement : D3D.StencilOperation.Increment;
 
 				case Axiom.Graphics.StencilOperation.DecrementWrap:
 					return invert ?
-						D3D.StencilOperation.Increment : D3D.StencilOperation.Decrement;
+					              	D3D.StencilOperation.Increment : D3D.StencilOperation.Decrement;
 
 				case Axiom.Graphics.StencilOperation.Invert:
 					return D3D.StencilOperation.Invert;
@@ -829,7 +839,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static D3D.Cull ConvertEnum( Axiom.Graphics.CullingMode mode, bool flip )
 		{
-			switch ( mode )
+			switch( mode )
 			{
 				case CullingMode.None:
 					return D3D.Cull.None;
@@ -846,7 +856,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static D3D.Format ConvertEnum( Axiom.Media.PixelFormat format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case Axiom.Media.PixelFormat.A8:
 					return D3D.Format.A8;
@@ -857,7 +867,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case Axiom.Media.PixelFormat.A4L4:
 					return D3D.Format.A4L4;
 				case Axiom.Media.PixelFormat.A8L8:
-					return D3D.Format.A8L8;	// Assume little endian here
+					return D3D.Format.A8L8; // Assume little endian here
 				case Axiom.Media.PixelFormat.R3G3B2:
 					return D3D.Format.R3G3B2;
 				case Axiom.Media.PixelFormat.A1R5G5B5:
@@ -913,7 +923,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static Axiom.Media.PixelFormat ConvertEnum( D3D.Format format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case D3D.Format.A8:
 					return Axiom.Media.PixelFormat.A8;
@@ -923,7 +933,7 @@ namespace Axiom.RenderSystems.DirectX9
 					return Axiom.Media.PixelFormat.L16;
 				case D3D.Format.A4L4:
 					return Axiom.Media.PixelFormat.A4L4;
-				case D3D.Format.A8L8:	// Assume little endian here
+				case D3D.Format.A8L8: // Assume little endian here
 					return Axiom.Media.PixelFormat.A8L8;
 				case D3D.Format.R3G3B2:
 					return Axiom.Media.PixelFormat.R3G3B2;
@@ -983,24 +993,23 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		public static bool IsIdentity( ref DX.Matrix matrix )
 		{
-			if ( matrix.M11 == 1.0f &&
-				matrix.M12 == 0.0f &&
-				matrix.M13 == 0.0f &&
-				matrix.M14 == 0.0f &&
-				matrix.M21 == 0.0f &&
-				matrix.M22 == 1.0f &&
-				matrix.M23 == 0.0f &&
-				matrix.M24 == 0.0f &&
-				matrix.M31 == 0.0f &&
-				matrix.M32 == 0.0f &&
-				matrix.M33 == 1.0f &&
-				matrix.M34 == 0.0f &&
-				matrix.M41 == 0.0f &&
-				matrix.M42 == 0.0f &&
-				matrix.M43 == 0.0f &&
-				matrix.M44 == 1.0f )
+			if( matrix.M11 == 1.0f &&
+			    matrix.M12 == 0.0f &&
+			    matrix.M13 == 0.0f &&
+			    matrix.M14 == 0.0f &&
+			    matrix.M21 == 0.0f &&
+			    matrix.M22 == 1.0f &&
+			    matrix.M23 == 0.0f &&
+			    matrix.M24 == 0.0f &&
+			    matrix.M31 == 0.0f &&
+			    matrix.M32 == 0.0f &&
+			    matrix.M33 == 1.0f &&
+			    matrix.M34 == 0.0f &&
+			    matrix.M41 == 0.0f &&
+			    matrix.M42 == 0.0f &&
+			    matrix.M43 == 0.0f &&
+			    matrix.M44 == 1.0f )
 			{
-
 				return true;
 			}
 			else
@@ -1011,9 +1020,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
 		{
-			if ( ConvertEnum( format ) != D3D.Format.Unknown )
+			if( ConvertEnum( format ) != D3D.Format.Unknown )
+			{
 				return format;
-			switch ( format )
+			}
+			switch( format )
 			{
 				case Axiom.Media.PixelFormat.B5G6R5:
 					return Axiom.Media.PixelFormat.R5G6B5;

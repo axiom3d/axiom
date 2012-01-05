@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -75,7 +79,7 @@ namespace Axiom.Media
 			// note: ((stepz>>1) - 1) is an extra half-step increment to adjust
 			// for the center of the destination pixel, not the top-left corner
 			UInt64 sz_48 = ( stepz >> 1 ) - 1;
-			for ( int z = dst.Front; z < dst.Back; z++, sz_48 += stepz )
+			for( int z = dst.Front; z < dst.Back; z++, sz_48 += stepz )
 			{
 				temp = (uint)( sz_48 >> 32 );
 				temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
@@ -84,7 +88,7 @@ namespace Axiom.Media
 				float szf = ( temp & 0xFFFF ) / 65536f;
 
 				UInt64 sy_48 = ( stepy >> 1 ) - 1;
-				for ( int y = dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
+				for( int y = dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
 				{
 					temp = (uint)( sy_48 >> 32 );
 					temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
@@ -93,7 +97,7 @@ namespace Axiom.Media
 					float syf = ( temp & 0xFFFF ) / 65536f; // weight of #2
 
 					UInt64 sx_48 = ( stepx >> 1 ) - 1;
-					for ( int x = dst.Left; x < dst.Right; x++, sx_48 += stepx )
+					for( int x = dst.Left; x < dst.Right; x++, sx_48 += stepx )
 					{
 						temp = (uint)( sy_48 >> 32 );
 						temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
@@ -130,7 +134,7 @@ namespace Axiom.Media
 			}
 		}
 
-		void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, IntPtr src, PixelBox srcbox, int elemsize )
+		private void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, IntPtr src, PixelBox srcbox, int elemsize )
 		{
 			unsafe
 			{

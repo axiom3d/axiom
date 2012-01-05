@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Mesh.cs 1044 2007-05-05 21:01:55Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,7 +53,6 @@ namespace Axiom.Core
 	/// </remarks>
 	public class PrefabFactory
 	{
-
 		/// <summary>
 		/// If the given mesh has a known prefab resource name (e.g "Prefab_Plane")
 		/// then this prefab will be created as a submesh of the given mesh.
@@ -58,7 +61,7 @@ namespace Axiom.Core
 		/// <returns><c>true</c> if a prefab has been created, otherwise <c>false</c>.</returns>
 		public static bool Create( Mesh mesh )
 		{
-			switch ( mesh.Name )
+			switch( mesh.Name )
 			{
 				case "Prefab_Plane":
 					_createPlane( mesh );
@@ -79,22 +82,21 @@ namespace Axiom.Core
 		/// </summary>
 		private static void _createPlane( Mesh mesh )
 		{
-
 			SubMesh sub = mesh.CreateSubMesh();
-			float[] vertices = new float[ 32 ] {
-				-100, -100, 0,	// pos
-				0,0,1,			// normal
-				0,1,			// texcoord
-				100, -100, 0,
-				0,0,1,
-				1,1,
-				100,  100, 0,
-				0,0,1,
-				1,0,
-				-100,  100, 0 ,
-				0,0,1,
-				0,0
-			};
+			float[] vertices = new float[32] {
+			                                 	-100, -100, 0, // pos
+			                                 	0, 0, 1, // normal
+			                                 	0, 1, // texcoord
+			                                 	100, -100, 0,
+			                                 	0, 0, 1,
+			                                 	1, 1,
+			                                 	100, 100, 0,
+			                                 	0, 0, 1,
+			                                 	1, 0,
+			                                 	-100, 100, 0,
+			                                 	0, 0, 1,
+			                                 	0, 0
+			                                 };
 
 			mesh.SharedVertexData = new VertexData();
 			mesh.SharedVertexData.vertexCount = 4;
@@ -117,7 +119,9 @@ namespace Axiom.Core
 			sub.useSharedVertices = true;
 			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
 
-			short[] faces = new short[ 6 ] { 0, 1, 2, 0, 2, 3 };
+			short[] faces = new short[6] {
+			                             	0, 1, 2, 0, 2, 3
+			                             };
 			sub.IndexData.indexBuffer = ibuf;
 			sub.IndexData.indexCount = 6;
 			sub.IndexData.indexStart = 0;
@@ -145,91 +149,86 @@ namespace Axiom.Core
 			// Create 4 vertices per side instead of 6 that are shared for the whole cube.
 			// The reason for this is with only 6 vertices the normals will look bad
 			// since each vertex can "point" in a different direction depending on the face it is included in.
-			float[] vertices = new float[ NUM_VERTEX_ENTRIES ] {
-				// front side
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,	// pos
-				0,0,1,	// normal
-				0,1,	// texcoord
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,0,1,
-				1,1,
-				CUBE_HALF_SIZE,  CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,0,1,
-				1,0,
-				-CUBE_HALF_SIZE,  CUBE_HALF_SIZE, CUBE_HALF_SIZE ,
-				0,0,1,
-				0,0,
-
-				// back side
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,0,-1,
-				0,1,
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,0,-1,
-				1,1,
-				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,0,-1,
-				1,0,
-				CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,0,-1,
-				0,0,
-
-				// left side
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				-1,0,0,
-				0,1,
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				-1,0,0,
-				1,1,
-				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				-1,0,0,
-				1,0,
-				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				-1,0,0,
-				0,0,
-
-				// right side
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				1,0,0,
-				0,1,
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				1,0,0,
-				1,1,
-				CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				1,0,0,
-				1,0,
-				CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				1,0,0,
-				0,0,
-
-				// up side
-				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,1,0,
-				0,1,
-				CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,1,0,
-				1,1,
-				CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,1,0,
-				1,0,
-				-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,1,0,
-				0,0,
-
-				// down side
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,-1,0,
-				0,1,
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
-				0,-1,0,
-				1,1,
-				CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,-1,0,
-				1,0,
-				-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
-				0,-1,0,
-				0,0
-			};
+			float[] vertices = new float[NUM_VERTEX_ENTRIES] {
+			                                                 	// front side
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, // pos
+			                                                 	0, 0, 1, // normal
+			                                                 	0, 1, // texcoord
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, 0, 1,
+			                                                 	1, 1,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, 0, 1,
+			                                                 	1, 0,
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, 0, 1,
+			                                                 	0, 0,
+			                                                 	// back side
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 0, -1,
+			                                                 	0, 1,
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 0, -1,
+			                                                 	1, 1,
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 0, -1,
+			                                                 	1, 0,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 0, -1,
+			                                                 	0, 0,
+			                                                 	// left side
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	-1, 0, 0,
+			                                                 	0, 1,
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	-1, 0, 0,
+			                                                 	1, 1,
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	-1, 0, 0,
+			                                                 	1, 0,
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	-1, 0, 0,
+			                                                 	0, 0,
+			                                                 	// right side
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	1, 0, 0,
+			                                                 	0, 1,
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	1, 0, 0,
+			                                                 	1, 1,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	1, 0, 0,
+			                                                 	1, 0,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	1, 0, 0,
+			                                                 	0, 0,
+			                                                 	// up side
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, 1, 0,
+			                                                 	0, 1,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, 1, 0,
+			                                                 	1, 1,
+			                                                 	CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 1, 0,
+			                                                 	1, 0,
+			                                                 	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, 1, 0,
+			                                                 	0, 0,
+			                                                 	// down side
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, -1, 0,
+			                                                 	0, 1,
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			                                                 	0, -1, 0,
+			                                                 	1, 1,
+			                                                 	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, -1, 0,
+			                                                 	1, 0,
+			                                                 	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			                                                 	0, -1, 0,
+			                                                 	0, 0
+			                                                 };
 
 			mesh.SharedVertexData = new VertexData();
 			mesh.SharedVertexData.vertexCount = NUM_VERTICES;
@@ -246,7 +245,7 @@ namespace Axiom.Core
 
 			HardwareVertexBuffer vbuf =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-					offset, NUM_VERTICES, BufferUsage.StaticWriteOnly );
+				                                                  offset, NUM_VERTICES, BufferUsage.StaticWriteOnly );
 			bind.SetBinding( 0, vbuf );
 
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
@@ -254,35 +253,30 @@ namespace Axiom.Core
 			sub.useSharedVertices = true;
 			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.
 				CreateIndexBuffer(
-					IndexType.Size16,
-					NUM_INDICES,
-					BufferUsage.StaticWriteOnly );
+				                  IndexType.Size16,
+				                  NUM_INDICES,
+				                  BufferUsage.StaticWriteOnly );
 
-			short[] faces = new short[ NUM_INDICES ] {
-				// front
-				0,1,2,
-				0,2,3,
-
-				// back
-				4,5,6,
-				4,6,7,
-
-				// left
-				8,9,10,
-				8,10,11,
-
-				// right
-				12,13,14,
-				12,14,15,
-
-				// up
-				16,17,18,
-				16,18,19,
-
-				// down
-				20,21,22,
-				20,22,23
-			};
+			short[] faces = new short[NUM_INDICES] {
+			                                       	// front
+			                                       	0, 1, 2,
+			                                       	0, 2, 3,
+			                                       	// back
+			                                       	4, 5, 6,
+			                                       	4, 6, 7,
+			                                       	// left
+			                                       	8, 9, 10,
+			                                       	8, 10, 11,
+			                                       	// right
+			                                       	12, 13, 14,
+			                                       	12, 14, 15,
+			                                       	// up
+			                                       	16, 17, 18,
+			                                       	16, 18, 19,
+			                                       	// down
+			                                       	20, 21, 22,
+			                                       	20, 22, 23
+			                                       };
 
 			sub.IndexData.indexBuffer = ibuf;
 			sub.IndexData.indexCount = NUM_INDICES;
@@ -290,10 +284,9 @@ namespace Axiom.Core
 			ibuf.WriteData( 0, ibuf.Size, faces, true );
 
 			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE ),
-												   new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
+			                                       new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
 
 			mesh.BoundingSphereRadius = CUBE_HALF_SIZE;
-
 		}
 
 		/// <summary>
@@ -346,13 +339,13 @@ namespace Axiom.Core
 				ushort wVerticeIndex = 0;
 
 				// Generate the group of rings for the sphere
-				for ( int ring = 0; ring <= NUM_RINGS; ring++ )
+				for( int ring = 0; ring <= NUM_RINGS; ring++ )
 				{
 					float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
 					float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
 
 					// Generate the group of segments for the current ring
-					for ( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
+					for( int seg = 0; seg <= NUM_SEGMENTS; seg++ )
 					{
 						float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
 						float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
@@ -372,7 +365,7 @@ namespace Axiom.Core
 						*pVertex++ = (float)seg / (float)NUM_SEGMENTS;
 						*pVertex++ = (float)ring / (float)NUM_RINGS;
 
-						if ( ring != NUM_RINGS )
+						if( ring != NUM_RINGS )
 						{
 							// each vertex (except the last) has six indicies pointing to it
 							*pIndices++ = (ushort)( wVerticeIndex + NUM_SEGMENTS + 1 );
@@ -383,7 +376,8 @@ namespace Axiom.Core
 							*pIndices++ = (ushort)( wVerticeIndex );
 							wVerticeIndex++;
 						}
-					}; // end for seg
+					}
+					; // end for seg
 				} // end for ring
 			}
 			// Unlock
@@ -394,11 +388,9 @@ namespace Axiom.Core
 
 			// the original code was missing this line:
 			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS ),
-												   new Vector3( SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS ) );
+			                                       new Vector3( SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS ) );
 
 			mesh.BoundingSphereRadius = SPHERE_RADIUS;
-
 		}
-
 	}
 }

@@ -55,48 +55,20 @@ namespace Axiom.ParticleFX
 	/// </summary>
 	public class DeflectorPlaneAffector : ParticleAffector
 	{
-
 		/// deflector plane point
 		private Vector3 _planePoint;
-		public Vector3 PlanePoint
-		{
-			get
-			{
-				return _planePoint;
-			}
-			set
-			{
-				_planePoint = value;
-			}
-		}
+
+		public Vector3 PlanePoint { get { return _planePoint; } set { _planePoint = value; } }
 
 		/// deflector plane normal vector
 		private Vector3 _planeNormal;
-		public Vector3 PlaneNormal
-		{
-			get
-			{
-				return _planeNormal;
-			}
-			set
-			{
-				_planeNormal = value;
-			}
-		}
+
+		public Vector3 PlaneNormal { get { return _planeNormal; } set { _planeNormal = value; } }
 
 		/// bounce factor (0.5 means 50 percent)
 		private float _bounce;
-		public float Bounce
-		{
-			get
-			{
-				return _bounce;
-			}
-			set
-			{
-				_bounce = value;
-			}
-		}
+
+		public float Bounce { get { return _bounce; } set { _bounce = value; } }
 
 		/// <summary>
 		/// Default Costructor
@@ -117,13 +89,13 @@ namespace Axiom.ParticleFX
 			float planeDistance = -_planeNormal.Dot( _planePoint ) / Utility.Sqrt( _planeNormal.Dot( _planeNormal ) );
 			Vector3 directionPart;
 
-			foreach ( Particle pi in system.Particles )
+			foreach( Particle pi in system.Particles )
 			{
 				Vector3 direction = pi.Direction * timeElapsed;
-				if ( _planeNormal.Dot( pi.Position + direction ) + planeDistance <= 0.0f )
+				if( _planeNormal.Dot( pi.Position + direction ) + planeDistance <= 0.0f )
 				{
 					float a = _planeNormal.Dot( pi.Position ) + planeDistance;
-					if ( a > 0.0 )
+					if( a > 0.0 )
 					{
 						// for intersection point
 						directionPart = direction * ( -a / direction.Dot( _planeNormal ) );

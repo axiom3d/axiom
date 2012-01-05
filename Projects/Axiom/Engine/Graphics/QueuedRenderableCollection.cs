@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,7 +41,9 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -87,10 +93,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="renderable"></param>
 		void Visit( IRenderable renderable );
-
-
 	};
-
 
 	///<summary>Lowest level collection of renderables.</summary>
 	///<remarks>
@@ -120,8 +123,10 @@ namespace Axiom.Graphics
 		{
 			/// Group by pass
 			GroupByPass = 1,
+
 			/// Sort descending camera distance
 			Descending = 2,
+
 			/// <summary>
 			/// Sort ascending camera distance 
 			/// </summary>
@@ -135,28 +140,30 @@ namespace Axiom.Graphics
 
 		#region Classes and Structures
 
-		class PassGroupComparer : IComparer<Pass>
+		private class PassGroupComparer : IComparer<Pass>
 		{
 			#region IComparer<Pass> Members
 
 			public int Compare( Pass a, Pass b )
 			{
-				if ( a == b )
+				if( a == b )
+				{
 					return 0;
+				}
 
 				// sorting by pass hash
-				if ( a.GetHashCode() == b.GetHashCode() )
+				if( a.GetHashCode() == b.GetHashCode() )
+				{
 					return ( a.passId < b.passId ) ? -1 : 1;
+				}
 				return ( a.GetHashCode() < b.GetHashCode() ) ? -1 : 1;
 			}
 
 			#endregion
-
 		}
 
-		class DepthSortDescendingComparer : IComparer<RenderablePass>
+		private class DepthSortDescendingComparer : IComparer<RenderablePass>
 		{
-
 			#region Fields and Properties
 
 			public Camera Camera;
@@ -165,9 +172,7 @@ namespace Axiom.Graphics
 
 			#region Construction and Destruction
 
-			public DepthSortDescendingComparer()
-			{
-			}
+			public DepthSortDescendingComparer() {}
 
 			#endregion Construction and Destruction
 
@@ -175,17 +180,21 @@ namespace Axiom.Graphics
 
 			public int Compare( RenderablePass x, RenderablePass y )
 			{
-				if ( x == null || y == null )
+				if( x == null || y == null )
+				{
 					return 0;
+				}
 
 				// if they are the same, return 0
-				if ( x == y )
+				if( x == y )
+				{
 					return 0;
+				}
 
 				float adepth = x.renderable.GetSquaredViewDepth( Camera );
 				float bdepth = y.renderable.GetSquaredViewDepth( Camera );
 
-				if ( adepth == bdepth )
+				if( adepth == bdepth )
 				{
 					return ( x.pass.GetHashCode() < y.pass.GetHashCode() ) ? 1 : -1;
 				}
@@ -205,27 +214,26 @@ namespace Axiom.Graphics
 
 		/// Radix sorter for accessing sort value 1 (Pass)
 		private static RadixSortUInt32<List<RenderablePass>, RenderablePass> _radixSorter1 = new RadixSortUInt32<List<RenderablePass>, RenderablePass>();
+
 		/// Radix sorter for sort value 2 (distance)
 		private static RadixSortSingle<List<RenderablePass>, RenderablePass> _radixSorter2 = new RadixSortSingle<List<RenderablePass>, RenderablePass>();
 
 		/// Bitmask of the organization modes requested
-		OrganizationMode _organizationMode;
+		private OrganizationMode _organizationMode;
 
 		/// Grouped 
-		AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
+		private AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
 
 		/// Sorted descending (can iterate backwards to get ascending)
-		List<RenderablePass> _sortedDescending = new List<RenderablePass>();
-		DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
+		private List<RenderablePass> _sortedDescending = new List<RenderablePass>();
+
+		private DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
-		public QueuedRenderableCollection()
-		{
-
-		}
+		public QueuedRenderableCollection() {}
 
 		#endregion Construction and Destruction
 
@@ -236,7 +244,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Clear()
 		{
-			foreach ( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
+			foreach( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
 			{
 				// Clear the list associated with this pass, but leave the pass entry
 				item.Value.Clear();
@@ -255,7 +263,7 @@ namespace Axiom.Graphics
 		/// <param name="pass"></param>
 		public void RemovePassGroup( Pass pass )
 		{
-			if ( _grouped.ContainsKey( pass ) )
+			if( _grouped.ContainsKey( pass ) )
 			{
 				_grouped[ pass ].Clear();
 				_grouped.Remove( pass );
@@ -293,14 +301,14 @@ namespace Axiom.Graphics
 		public void AddRenderable( Pass pass, IRenderable rend )
 		{
 			// ascending and descending sort both set bit 1
-			if ( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
+			if( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
 			{
 				_sortedDescending.Add( new RenderablePass( rend, pass ) );
 			}
 
-			if ( (int)( _organizationMode & OrganizationMode.GroupByPass ) != 0 )
+			if( (int)( _organizationMode & OrganizationMode.GroupByPass ) != 0 )
 			{
-				if ( !_grouped.ContainsKey( pass ) )
+				if( !_grouped.ContainsKey( pass ) )
 				{
 					// Create new pass entry, build a new list
 					// Note that this pass and list are never destroyed until the 
@@ -319,9 +327,8 @@ namespace Axiom.Graphics
 		public void Sort( Camera camera )
 		{
 			// ascending and descending sort both set bit 1
-			if ( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
+			if( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
 			{
-
 				// We can either use a built-in_sort and the 'less' implementation,
 				// or a 2-pass radix sort (once by pass, then by distance, since
 				// radix sorting is inherently stable this will work)
@@ -333,19 +340,16 @@ namespace Axiom.Graphics
 				// built-in_sorts best-case scenario O(NlogN) it would be much higher.
 				// Take a stab at 2000 items.
 
-				if ( _sortedDescending.Count > 2000 )
+				if( _sortedDescending.Count > 2000 )
 				{
 					// sort by pass
-					_radixSorter1.Sort( _sortedDescending, delegate( RenderablePass value )
-														   {
-															   return (uint)value.pass.GetHashCode();
-														   } );
+					_radixSorter1.Sort( _sortedDescending, delegate( RenderablePass value ) { return (uint)value.pass.GetHashCode(); } );
 					// sort by depth
 					_radixSorter2.Sort( _sortedDescending, delegate( RenderablePass value )
-														   {
-															   // negated to force descending order
-															   return -value.renderable.GetSquaredViewDepth( camera );
-														   } );
+					                                       {
+					                                       	// negated to force descending order
+					                                       	return -value.renderable.GetSquaredViewDepth( camera );
+					                                       } );
 				}
 				else
 				{
@@ -368,13 +372,13 @@ namespace Axiom.Graphics
 		/// </param>
 		public void AcceptVisitor( IQueuedRenderableVisitor visitor, OrganizationMode organizationMode )
 		{
-			if ( (int)( organizationMode & _organizationMode ) == 0 )
+			if( (int)( organizationMode & _organizationMode ) == 0 )
 			{
 				throw new ArgumentException( "Organization mode requested in AcceptVistor was not notified " +
-											 "to this class ahead of time, therefore may not be supported.", "organizationMode" );
+				                             "to this class ahead of time, therefore may not be supported.", "organizationMode" );
 			}
 
-			switch ( organizationMode )
+			switch( organizationMode )
 			{
 				case OrganizationMode.GroupByPass:
 					acceptVisitorGrouped( visitor );
@@ -386,36 +390,38 @@ namespace Axiom.Graphics
 					acceptVisitorAscending( visitor );
 					break;
 			}
-
 		}
 
 		/// Internal visitor implementation
 		private void acceptVisitorGrouped( IQueuedRenderableVisitor visitor )
 		{
-			foreach ( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
+			foreach( KeyValuePair<Pass, List<IRenderable>> item in _grouped )
 			{
 				// Fast bypass if this group is now empty
-				if ( item.Value.Count == 0 )
+				if( item.Value.Count == 0 )
+				{
 					continue;
+				}
 
 				// Visit Pass - allow skip
-				if ( !visitor.Visit( item.Key ) )
+				if( !visitor.Visit( item.Key ) )
+				{
 					continue;
+				}
 
-				foreach ( IRenderable renderable in item.Value )
+				foreach( IRenderable renderable in item.Value )
 				{
 					// Visit Renderable
 					visitor.Visit( renderable );
 				}
 			}
-
 		}
 
 		/// Internal visitor implementation
 		private void acceptVisitorDescending( IQueuedRenderableVisitor visitor )
 		{
 			// List is already in descending order, so iterate forward
-			foreach ( RenderablePass renderablePass in _sortedDescending )
+			foreach( RenderablePass renderablePass in _sortedDescending )
 			{
 				visitor.Visit( renderablePass );
 			}
@@ -425,13 +431,12 @@ namespace Axiom.Graphics
 		private void acceptVisitorAscending( IQueuedRenderableVisitor visitor )
 		{
 			// List is in descending order, so iterate in reverse
-			for ( int index = _sortedDescending.Count - 1; index >= 0; ++index )
+			for( int index = _sortedDescending.Count - 1; index >= 0; ++index )
 			{
 				visitor.Visit( _sortedDescending[ index ] );
 			}
 		}
 
 		#endregion Methods
-
 	}
 }

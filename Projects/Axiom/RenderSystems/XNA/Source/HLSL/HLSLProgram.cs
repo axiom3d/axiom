@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,9 +45,9 @@ using Axiom.Graphics;
 using Axiom.RenderSystems.Xna.Content;
 
 using ResourceHandle = System.UInt64;
-
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -61,14 +65,17 @@ namespace Axiom.RenderSystems.Xna.HLSL
 		///     Shader profile to target for the compile (i.e. vs1.1, etc).
 		/// </summary>
 		protected string target;
+
 		/// <summary>
 		///     Entry point to compile from the program.
 		/// </summary>
 		protected string entry;
+
 		/// <summary>
 		/// preprocessor defines used to compile the program.
 		/// </summary>
 		protected string preprocessorDefines;
+
 		/// <summary>
 		///     Holds the low level program instructions after the compile.
 		/// </summary>
@@ -111,7 +118,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
 			// set the microcode for this program
 #if !( XBOX || XBOX360 )
-			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
+			if( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value != "Yes" )
 			{
 				( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
 			}
@@ -140,16 +147,16 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			// Populate preprocessor defines
 			string stringBuffer = string.Empty;
 			List<XFG.CompilerMacro> defines = new List<XFG.CompilerMacro>();
-			if ( preprocessorDefines != string.Empty )
+			if( preprocessorDefines != string.Empty )
 			{
 				stringBuffer = preprocessorDefines;
 
 				// Split preprocessor defines and build up macro array
 
-				if ( stringBuffer.Contains( "," ) )
+				if( stringBuffer.Contains( "," ) )
 				{
 					string[] definesArr = stringBuffer.Split( ',' );
-					foreach ( string def in definesArr )
+					foreach( string def in definesArr )
 					{
 						XFG.CompilerMacro macro = new XFG.CompilerMacro();
 						macro.Definition = "1\0";
@@ -161,7 +168,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
 			string errors = null;
 
-			switch ( type )
+			switch( type )
 			{
 				case GpuProgramType.Vertex:
 					target = "vs_3_0";
@@ -174,15 +181,17 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			// compile the high level shader to low level microcode
 			// note, we need to pack matrices in row-major format for HLSL
 			microcode = XFG.ShaderCompiler.CompileFromSource( source, defines.ToArray(), _includeHandler, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
-			if ( microcode.Success )
+			if( microcode.Success )
 			{
 				constantTable = new XFG.ShaderConstantTable( microcode.GetShaderCode() );
 			}
 			else
+			{
 				errors = microcode.ErrorsAndWarnings;
+			}
 
 			// check for errors
-			if ( !string.IsNullOrEmpty( errors ) )
+			if( !string.IsNullOrEmpty( errors ) )
 			{
 				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", entry, errors );
 			}
@@ -193,17 +202,17 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
 		protected override void LoadHighLevelImpl()
 		{
-			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" && !String.IsNullOrEmpty( fileName ) )
+			if( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" && !String.IsNullOrEmpty( fileName ) )
 			{
-				if ( !isHighLevelLoaded )
+				if( !isHighLevelLoaded )
 				{
 					//get the CompiledShader from ContentManager
 					AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
 					HlslCompiledShaders compiledShaders = acm.Load<HlslCompiledShaders>( fileName );
 					//find compiled shader with matching entry point
-					for ( int i = 0; i < compiledShaders.Count; ++i )
+					for( int i = 0; i < compiledShaders.Count; ++i )
 					{
-						if ( compiledShaders[ i ].EntryPoint == entry )
+						if( compiledShaders[ i ].EntryPoint == entry )
 						{
 							compiledShader = compiledShaders[ i ];
 							break;
@@ -230,7 +239,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			XFG.ShaderConstantTable desc = constantTable;
 
 			// iterate over the constants
-			for ( int i = 0; i < constantTable.Constants.Count; i++ )
+			for( int i = 0; i < constantTable.Constants.Count; i++ )
 			{
 				// Recursively descend through the structure levels
 				// Since XNA has no nice 'leaf' method like Cg (sigh)
@@ -251,17 +260,15 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			get
 			{
 				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				if( this.IsSkeletalAnimationIncluded &&
+				    !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
-
 					return false;
 				}
 
 				return GpuProgramManager.Instance.IsSyntaxSupported( target );
 			}
 		}
-
 
 		#endregion GpuProgram Members
 
@@ -281,19 +288,19 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			string paramName = constant.Name;
 
 			// trim the odd '$' which appears at the start of the names in HLSL
-			if ( paramName.StartsWith( "$" ) )
+			if( paramName.StartsWith( "$" ) )
 			{
 				paramName = paramName.Remove( 0, 1 );
 			}
 
 			// If it's an array, elements will be > 1
-			for ( int e = 0; e < constant.ElementCount; e++ )
+			for( int e = 0; e < constant.ElementCount; e++ )
 			{
-				if ( constant.ParameterClass == XFG.EffectParameterClass.Struct )
+				if( constant.ParameterClass == XFG.EffectParameterClass.Struct )
 				{
 					// work out a new prefix for the nextest members
 					// if its an array, we need the index
-					if ( constant.ElementCount > 1 )
+					if( constant.ElementCount > 1 )
 					{
 						prefix += string.Format( "{0}[{1}].", paramName, e );
 					}
@@ -303,7 +310,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 					}
 
 					// cascade into the struct members
-					for ( int i = 0; i < constant.StructureMemberCount; i++ )
+					for( int i = 0; i < constant.StructureMemberCount; i++ )
 					{
 						ProcessParamElement( constant, prefix, i, parms );
 					}
@@ -311,16 +318,15 @@ namespace Axiom.RenderSystems.Xna.HLSL
 				else
 				{
 					// process params
-					if ( constant.ParameterType == XFG.EffectParameterType.Single ||
-						 constant.ParameterType == XFG.EffectParameterType.Int32 ||
-						 constant.ParameterType == XFG.EffectParameterType.Bool )
+					if( constant.ParameterType == XFG.EffectParameterType.Single ||
+					    constant.ParameterType == XFG.EffectParameterType.Int32 ||
+					    constant.ParameterType == XFG.EffectParameterType.Bool )
 					{
-
 						int paramIndex = constant.RegisterIndex;
 						string newName = prefix + paramName;
 
 						// if this is an array, we need to appent the element index
-						if ( constant.ElementCount > 1 )
+						if( constant.ElementCount > 1 )
 						{
 							newName += string.Format( "[{0}]", e );
 						}
@@ -334,7 +340,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
 		private XFG.ShaderProfile _convertTarget( string target )
 		{
-			switch ( target.ToLower() )
+			switch( target.ToLower() )
 			{
 				case "vs_1_1":
 					return XFG.ShaderProfile.VS_1_1;
@@ -375,11 +381,12 @@ namespace Axiom.RenderSystems.Xna.HLSL
 		#endregion Methods
 
 		#region Properties
+
 		public override int SamplerCount
 		{
 			get
 			{
-				switch ( target )
+				switch( target )
 				{
 					case "ps_1_1":
 					case "ps_1_2":
@@ -399,6 +406,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 				// return 0;
 			}
 		}
+
 		#endregion
 
 		#region IConfigurable Members
@@ -413,7 +421,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 		{
 			bool handled = true;
 
-			switch ( name )
+			switch( name )
 			{
 				case "entry_point":
 					entry = val;

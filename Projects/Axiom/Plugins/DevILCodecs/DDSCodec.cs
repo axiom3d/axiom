@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: DDSCodec.cs 1333 2008-07-28 18:51:56Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,9 +54,7 @@ namespace Axiom.Plugins.DevILCodecs
 	/// </summary>
 	public class DDSCodec : ILImageCodec
 	{
-		public DDSCodec()
-		{
-		}
+		public DDSCodec() {}
 
 		#region ILImageCodec Implementation
 
@@ -70,25 +72,12 @@ namespace Axiom.Plugins.DevILCodecs
 		/// <summary>
 		///    DDS enum value.
 		/// </summary>
-		public override int ILType
-		{
-			get
-			{
-				return Il.IL_DDS;
-			}
-		}
+		public override int ILType { get { return Il.IL_DDS; } }
 
 		/// <summary>
 		///    Returns that this codec handles dds files.
 		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return "dds";
-			}
-		}
-
+		public override String Type { get { return "dds"; } }
 
 		#endregion ILImageCodec Implementation
 	}

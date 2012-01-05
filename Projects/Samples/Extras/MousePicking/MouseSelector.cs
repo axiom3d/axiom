@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -36,7 +38,7 @@ namespace Axiom.Samples.Extras.MousePicking
 	/// <summary>
 	/// Object to assist in selecting and manipulating in game objects
 	/// </summary>
-	class MouseSelector
+	internal class MouseSelector
 	{
 		#region Public Properties and Enums
 
@@ -93,6 +95,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// Private variable for the name of the object's selection box and scenenode
 		/// </summary>
 		private static NameGenerator<MouseSelector> _nameGenerator = new NameGenerator<MouseSelector>( "MouseSelector" );
+
 		private string _name;
 
 		/// <summary>
@@ -122,9 +125,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="camera">Camera</param>
 		/// <param name="window">RenderWindow</param>
 		public MouseSelector( Camera camera, RenderWindow window )
-			: this( _nameGenerator.GetNextUniqueName(), camera, window )
-		{
-		}
+			: this( _nameGenerator.GetNextUniqueName(), camera, window ) {}
 
 		/// <summary>
 		/// This is the Constructor for the MouseSelection object, scene must be fully initialized and 
@@ -141,7 +142,6 @@ namespace Axiom.Samples.Extras.MousePicking
 			_rect = new SelectionRectangle( _name );
 			_Camera.ParentSceneNode.CreateChildSceneNode( _name + "_node" ).AttachObject( _rect );
 			Log( _name + " created, and attached to " + _name + "_node." );
-
 		}
 
 		/// <summary>
@@ -164,7 +164,7 @@ namespace Axiom.Samples.Extras.MousePicking
 			Ray mouseRay = _Camera.GetCameraToViewportRay( _start.x, _start.y );
 			RaySceneQuery RayScnQuery = Root.Instance.SceneManager.CreateRayQuery( mouseRay );
 			RayScnQuery.SortByDistance = true;
-			foreach ( RaySceneQueryResultEntry re in RayScnQuery.Execute() )
+			foreach( RaySceneQueryResultEntry re in RayScnQuery.Execute() )
 			{
 				SelectObject( re.SceneObject );
 			}
@@ -180,16 +180,22 @@ namespace Axiom.Samples.Extras.MousePicking
 			Log( "MouseSelector: " + _name + " performing selection." );
 
 			float left = first.x, right = second.x,
-			top = first.y, bottom = second.y;
+			      top = first.y, bottom = second.y;
 
-			if ( left > right )
+			if( left > right )
+			{
 				Utility.Swap( ref left, ref right );
+			}
 
-			if ( top > bottom )
+			if( top > bottom )
+			{
 				Utility.Swap( ref top, ref bottom );
+			}
 
-			if ( ( right - left ) * ( bottom - top ) < 0.0001 )
+			if( ( right - left ) * ( bottom - top ) < 0.0001 )
+			{
 				return;
+			}
 
 			Ray topLeft = _Camera.GetCameraToViewportRay( left, top );
 			Ray topRight = _Camera.GetCameraToViewportRay( right, top );
@@ -197,11 +203,11 @@ namespace Axiom.Samples.Extras.MousePicking
 			Ray bottomRight = _Camera.GetCameraToViewportRay( right, bottom );
 
 			Math.PlaneBoundedVolume vol = new PlaneBoundedVolume();
-			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) );         // front plane
-			vol.planes.Add( new Math.Plane( topLeft.Origin, topLeft.GetPoint( 100 ), topRight.GetPoint( 100 ) ) );         // top plane
-			vol.planes.Add( new Math.Plane( topLeft.Origin, bottomLeft.GetPoint( 100 ), topLeft.GetPoint( 100 ) ) );       // left plane
-			vol.planes.Add( new Math.Plane( bottomLeft.Origin, bottomRight.GetPoint( 100 ), bottomLeft.GetPoint( 100 ) ) );   // bottom plane
-			vol.planes.Add( new Math.Plane( topRight.Origin, topRight.GetPoint( 100 ), bottomRight.GetPoint( 100 ) ) );     // right plane
+			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) ); // front plane
+			vol.planes.Add( new Math.Plane( topLeft.Origin, topLeft.GetPoint( 100 ), topRight.GetPoint( 100 ) ) ); // top plane
+			vol.planes.Add( new Math.Plane( topLeft.Origin, bottomLeft.GetPoint( 100 ), topLeft.GetPoint( 100 ) ) ); // left plane
+			vol.planes.Add( new Math.Plane( bottomLeft.Origin, bottomRight.GetPoint( 100 ), bottomLeft.GetPoint( 100 ) ) ); // bottom plane
+			vol.planes.Add( new Math.Plane( topRight.Origin, topRight.GetPoint( 100 ), bottomRight.GetPoint( 100 ) ) ); // right plane
 
 			PlaneBoundedVolumeList volList = new PlaneBoundedVolumeList();
 			volList.Add( vol );
@@ -212,7 +218,7 @@ namespace Axiom.Samples.Extras.MousePicking
 			volQuery.Volumes = volList;
 			SceneQueryResult result = volQuery.Execute();
 
-			foreach ( MovableObject obj in result.objects )
+			foreach( MovableObject obj in result.objects )
 			{
 				SelectObject( obj );
 			}
@@ -224,9 +230,9 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// </summary>
 		public void DeselectObjects()
 		{
-			if ( !KeepPreviousSelection )
+			if( !KeepPreviousSelection )
 			{
-				foreach ( MovableObject iter in Selection )
+				foreach( MovableObject iter in Selection )
 				{
 					iter.ParentSceneNode.ShowBoundingBox = false;
 				}
@@ -240,9 +246,8 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="obj">MovableObject</param>
 		private void SelectObject( MovableObject obj )
 		{
-			if ( !Selection.Contains( obj ) )
+			if( !Selection.Contains( obj ) )
 			{
-
 				Log( "MouseSelector: " + _name + " selecting object " + obj.Name );
 				obj.ParentSceneNode.ShowBoundingBox = true;
 				Selection.Add( obj );
@@ -256,12 +261,11 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="id">MouseButtonID</param>
 		public void MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-
-			if ( id == SharpInputSystem.MouseButtonID.Left )
+			if( id == SharpInputSystem.MouseButtonID.Left )
 			{
 				Selecting = true;
 				Clear();
-				switch ( SelectionMode )
+				switch( SelectionMode )
 				{
 					case SelectionModeType.SelectionBox:
 						Log( "MouseSelector: Selection starting for " + _name );
@@ -276,7 +280,6 @@ namespace Axiom.Samples.Extras.MousePicking
 					case SelectionModeType.MouseClick:
 						_start = new Vector2( evt.State.X.Absolute / (float)_Camera.Viewport.ActualWidth, evt.State.Y.Absolute / (float)_Camera.Viewport.ActualHeight );
 						break;
-
 				}
 			}
 		}
@@ -287,12 +290,11 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="evt"></param>
 		public void MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
-			if ( ( SelectionMode == SelectionModeType.SelectionBox ) && Selecting == true )
+			if( ( SelectionMode == SelectionModeType.SelectionBox ) && Selecting == true )
 			{
 				_stop = new Vector2( evt.State.X.Absolute / (float)_Camera.Viewport.ActualWidth, evt.State.Y.Absolute / (float)_Camera.Viewport.ActualHeight );
 				_rect.SetCorners( _start, _stop );
 			}
-
 		}
 
 		/// <summary>
@@ -302,9 +304,9 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="id"></param>
 		public void MouseReleased( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( id == SharpInputSystem.MouseButtonID.Left && Selecting == true )
+			if( id == SharpInputSystem.MouseButtonID.Left && Selecting == true )
 			{
-				switch ( SelectionMode )
+				switch( SelectionMode )
 				{
 					case SelectionModeType.SelectionBox:
 						Log( "MouseSelector: " + _name + " selecting to bottom(" + _stop.x.ToString() + ";" + _stop.y.ToString() + ")" );
@@ -317,7 +319,6 @@ namespace Axiom.Samples.Extras.MousePicking
 					case SelectionModeType.MouseClick:
 						PerformSelectionWithMouseClick();
 						break;
-
 				}
 				Selecting = false;
 			}
@@ -338,7 +339,7 @@ namespace Axiom.Samples.Extras.MousePicking
 		/// <param name="message">string</param>
 		private void Log( string message )
 		{
-			if ( VerboseLogging == true )
+			if( VerboseLogging == true )
 			{
 				LogManager.Instance.Write( message );
 			}

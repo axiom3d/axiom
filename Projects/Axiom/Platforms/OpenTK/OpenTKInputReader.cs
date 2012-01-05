@@ -2,10 +2,13 @@
 
 using System.Threading;
 using System.Drawing;
+
 using Axiom.Input;
 using Axiom.Utilities;
+
 using OpenTK.Input;
 using OpenTK;
+
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -19,11 +22,11 @@ namespace Axiom.Platforms.OpenTK
 	{
 		#region Fields
 
-		RenderWindow parent;
-		Point center;
-		bool ownMouse = false;
-		KeyboardDevice keyboard = null;
-		MouseDevice mouse = null;
+		private RenderWindow parent;
+		private Point center;
+		private bool ownMouse = false;
+		private KeyboardDevice keyboard = null;
+		private MouseDevice mouse = null;
 
 		/// <summary>
 		///		Is the opentk window currently visible?
@@ -74,53 +77,17 @@ namespace Axiom.Platforms.OpenTK
 
 		#region Properties
 
-		public override int AbsoluteMouseX
-		{
-			get
-			{
-				return mouseX;
-			}
-		}
+		public override int AbsoluteMouseX { get { return mouseX; } }
 
-		public override int AbsoluteMouseY
-		{
-			get
-			{
-				return mouseY;
-			}
-		}
+		public override int AbsoluteMouseY { get { return mouseY; } }
 
-		public override int AbsoluteMouseZ
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override int AbsoluteMouseZ { get { return 0; } }
 
-		public override int RelativeMouseX
-		{
-			get
-			{
-				return relMouseX;
-			}
-		}
+		public override int RelativeMouseX { get { return relMouseX; } }
 
-		public override int RelativeMouseY
-		{
-			get
-			{
-				return relMouseY;
-			}
-		}
+		public override int RelativeMouseY { get { return relMouseY; } }
 
-		public override int RelativeMouseZ
-		{
-			get
-			{
-				return relMouseZ;
-			}
-		}
+		public override int RelativeMouseZ { get { return relMouseZ; } }
 
 		#endregion Properties
 
@@ -131,21 +98,23 @@ namespace Axiom.Platforms.OpenTK
 		/// </summary>
 		public override void Capture()
 		{
-			if ( mouse == null )
+			if( mouse == null )
+			{
 				return;
+			}
 
 			NativeWindow window = (NativeWindow)parent[ "nativewindow" ];
 
 			isVisible = window.WindowState != WindowState.Minimized && window.Focused;
 
 			// if we aren't active, wait
-			if ( window == null || !isVisible )
+			if( window == null || !isVisible )
 			{
 				Thread.Sleep( 100 );
 				return;
 			}
 
-			if ( !useMouseEvents )
+			if( !useMouseEvents )
 			{
 				relMouseZ = mouse.Wheel - oldZ;
 				oldZ = mouse.Wheel;
@@ -153,7 +122,7 @@ namespace Axiom.Platforms.OpenTK
 				mouseButtons = mouse[ MouseButton.Right ] == true ? MouseButtons.Right : 0;
 				mouseButtons = mouse[ MouseButton.Middle ] == true ? MouseButtons.Middle : 0;
 			}
-			if ( ownMouse )
+			if( ownMouse )
 			{
 				int mx = System.Windows.Forms.Cursor.Position.X;
 				int my = System.Windows.Forms.Cursor.Position.Y;
@@ -193,16 +162,18 @@ namespace Axiom.Platforms.OpenTK
 
 			INativeWindow window = (INativeWindow)parent[ "nativewindow" ];
 
-			if ( window == null )
+			if( window == null )
+			{
 				return;
+			}
 
 			keyboard = window.InputDriver.Keyboard[ 0 ];
 			//keyboard = window.Keyboard;
 
-			if ( useMouse )
+			if( useMouse )
 			{
 				mouse = window.InputDriver.Mouse[ 0 ];
-				if ( ownMouse )
+				if( ownMouse )
 				{
 					this.ownMouse = true;
 					System.Windows.Forms.Cursor.Hide();
@@ -211,7 +182,7 @@ namespace Axiom.Platforms.OpenTK
 				center.X = parent.Width / 2;
 				center.Y = parent.Height / 2;
 
-				if ( ownMouse )
+				if( ownMouse )
 				{
 					center = window.PointToScreen( center );
 					System.Windows.Forms.Cursor.Position = center;
@@ -235,8 +206,10 @@ namespace Axiom.Platforms.OpenTK
 		/// <returns>true if the key is down, false otherwise.</returns>
 		public override bool IsKeyPressed( KeyCodes key )
 		{
-			if ( keyboard == null )
+			if( keyboard == null )
+			{
 				return false;
+			}
 			return keyboard[ ConvertKeyEnum( key ) ] == true;
 		}
 
@@ -245,33 +218,11 @@ namespace Axiom.Platforms.OpenTK
 			return ( mouseButtons & button ) != 0;
 		}
 
-		public override bool UseKeyboardEvents
-		{
-			get
-			{
-				return useKeyboardEvents;
-			}
-			set
-			{
-				useKeyboardEvents = value;
-			}
-		}
+		public override bool UseKeyboardEvents { get { return useKeyboardEvents; } set { useKeyboardEvents = value; } }
 
-		public override bool UseMouseEvents
-		{
-			get
-			{
-				return useMouseEvents;
-			}
-			set
-			{
-				useMouseEvents = value;
-			}
-		}
+		public override bool UseMouseEvents { get { return useMouseEvents; } set { useMouseEvents = value; } }
 
-		public override void Dispose()
-		{
-		}
+		public override void Dispose() {}
 
 		#endregion Methods
 
@@ -288,7 +239,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			Key k = 0;
 
-			switch ( key )
+			switch( key )
 			{
 				case KeyCodes.A:
 					k = Key.A;

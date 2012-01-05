@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
@@ -88,27 +93,33 @@ namespace Axiom.Graphics
 		///    Packed list of integer constants
 		/// </summary>
 		protected IntConstantEntryList intConstants = new IntConstantEntryList();
+
 		/// <summary>
 		///    Table of Vector4 constants by index.
 		/// </summary>
 		protected FloatConstantEntryList floatConstants = new FloatConstantEntryList();
+
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
 		protected AutoConstantEntryList autoConstantList = new AutoConstantEntryList();
+
 		/// <summary>
 		///    Lookup of constant indicies for named parameters.
 		/// </summary>
 		protected AxiomCollection<int> namedParams = new AxiomCollection<int>();
+
 		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
 		/// </summary>
 		protected bool transposeMatrices;
+
 		/// <summary>
 		///		Temp array for use when passing constants around.
 		/// </summary>
-		protected float[] tmpVals = new float[ 4 ];
+		protected float[] tmpVals = new float[4];
+
 		/// <summary>
 		///		Flag to indicate if names not found will be automatically added.
 		/// </summary>
@@ -156,42 +167,40 @@ namespace Axiom.Graphics
 			GpuProgramParameters p = new GpuProgramParameters();
 
 			// copy int constants
-			for ( int i = 0; i < intConstants.Count; i++ )
+			for( int i = 0; i < intConstants.Count; i++ )
 			{
 				IntConstantEntry e = intConstants[ i ] as IntConstantEntry;
-				if ( e.isSet )
+				if( e.isSet )
 				{
 					p.SetConstant( i, e.val );
 				}
 			}
 
 			// copy float constants
-			for ( int i = 0; i < floatConstants.Count; i++ )
+			for( int i = 0; i < floatConstants.Count; i++ )
 			{
 				FloatConstantEntry e = floatConstants[ i ] as FloatConstantEntry;
-				if ( e.isSet )
+				if( e.isSet )
 				{
 					p.SetConstant( i, e.val );
 				}
 			}
 
 			// copy auto constants
-			for ( int i = 0; i < autoConstantList.Count; i++ )
+			for( int i = 0; i < autoConstantList.Count; i++ )
 			{
 				AutoConstantEntry entry = autoConstantList[ i ] as AutoConstantEntry;
 				p.SetAutoConstant( entry.Clone() );
 			}
 
 			// copy named params
-			foreach ( string key in namedParams.Keys )
+			foreach( string key in namedParams.Keys )
 			{
 				p.MapParamNameToIndex( key, namedParams[ key ] );
 			}
 
-			for ( int i = 0; i < paramTypeList.Count; i++ )
-			{
-			}
-			foreach ( ParameterEntry pEntry in paramTypeList )
+			for( int i = 0; i < paramTypeList.Count; i++ ) {}
+			foreach( ParameterEntry pEntry in paramTypeList )
 			{
 				p.AddParameterToDefaultsList( pEntry.ParameterType, pEntry.ParameterName );
 			}
@@ -211,8 +220,8 @@ namespace Axiom.Graphics
 		{
 			int i = 0;
 
-			FloatConstantEntry[] floatEntries = new FloatConstantEntry[ source.floatConstants.Count ];
-			IntConstantEntry[] intEntries = new IntConstantEntry[ source.intConstants.Count ];
+			FloatConstantEntry[] floatEntries = new FloatConstantEntry[source.floatConstants.Count];
+			IntConstantEntry[] intEntries = new IntConstantEntry[source.intConstants.Count];
 
 			// copy those float and int constants right on in
 			source.floatConstants.CopyTo( floatEntries );
@@ -225,7 +234,7 @@ namespace Axiom.Graphics
 			// Clear existing auto constants
 			ClearAutoConstantType();
 
-			for ( i = 0; i < source.autoConstantList.Count; i++ )
+			for( i = 0; i < source.autoConstantList.Count; i++ )
 			{
 				AutoConstantEntry entry = (AutoConstantEntry)source.autoConstantList[ i ];
 				SetAutoConstant( entry.Clone() );
@@ -242,7 +251,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public FloatConstantEntry GetFloatConstant( int i )
 		{
-			if ( i < floatConstants.Count )
+			if( i < floatConstants.Count )
 			{
 				return (FloatConstantEntry)floatConstants[ i ];
 			}
@@ -257,7 +266,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public IntConstantEntry GetIntConstant( int i )
 		{
-			if ( i < intConstants.Count )
+			if( i < intConstants.Count )
 			{
 				return (IntConstantEntry)intConstants[ i ];
 			}
@@ -276,10 +285,10 @@ namespace Axiom.Graphics
 		/// </returns>
 		public int GetParamIndex( string name )
 		{
-			if ( !namedParams.ContainsKey( name ) )
+			if( !namedParams.ContainsKey( name ) )
 			{
 				// name not found in map, should it be added to the map?
-				if ( autoAddParamName )
+				if( autoAddParamName )
 				{
 					// determine index
 					// don't know which Constants list the name is for
@@ -293,7 +302,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					if ( this.ignoreMissingParameters )
+					if( this.ignoreMissingParameters )
 					{
 						return -1;
 					}
@@ -311,9 +320,9 @@ namespace Axiom.Graphics
 		/// <returns>Name of the param at the specified index.</returns>
 		public string GetNameByIndex( int index )
 		{
-			foreach ( DictionaryEntry entry in namedParams )
+			foreach( DictionaryEntry entry in namedParams )
 			{
-				if ( (int)entry.Value == index )
+				if( (int)entry.Value == index )
 				{
 					return (string)entry.Key;
 				}
@@ -329,7 +338,7 @@ namespace Axiom.Graphics
 		/// <returns>A reference to the float constant entry with the specified name, else null if not found.</returns>
 		public FloatConstantEntry GetNamedFloatConstant( string name )
 		{
-			if ( namedParams[ name ] != null )
+			if( namedParams[ name ] != null )
 			{
 				int index = (int)namedParams[ name ];
 
@@ -346,7 +355,7 @@ namespace Axiom.Graphics
 		/// <returns>A reference to the int constant entry with the specified name, else null if not found.</returns>
 		public IntConstantEntry GetNamedIntConstant( string name )
 		{
-			if ( namedParams[ name ] != null )
+			if( namedParams[ name ] != null )
 			{
 				int index = (int)namedParams[ name ];
 
@@ -463,9 +472,11 @@ namespace Axiom.Graphics
 		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
 		public void SetConstant( int index, ColorEx color )
 		{
-			if ( color != null )
+			if( color != null )
+			{
 				// verify order of color components
 				SetConstant( index++, color.r, color.g, color.b, color.a );
+			}
 		}
 
 		/// <summary>
@@ -484,7 +495,7 @@ namespace Axiom.Graphics
 			Matrix4 mat;
 
 			// transpose the matrix if need be
-			if ( transposeMatrices )
+			if( transposeMatrices )
 			{
 				mat = val.Transpose();
 			}
@@ -506,7 +517,7 @@ namespace Axiom.Graphics
 		/// <param name="val">Structure containing 3 packed float values.</param>
 		public void SetConstant( int index, Matrix4[] matrices, int count )
 		{
-			for ( int i = 0; i < count; i++ )
+			for( int i = 0; i < count; i++ )
 			{
 				SetConstant( index++, matrices[ i ] );
 			}
@@ -526,7 +537,7 @@ namespace Axiom.Graphics
 			intConstants.Resize( index + count );
 
 			// copy in chunks of 4
-			while ( count-- > 0 )
+			while( count-- > 0 )
 			{
 				IntConstantEntry entry = (IntConstantEntry)intConstants[ index++ ];
 				entry.isSet = true;
@@ -588,7 +599,7 @@ namespace Axiom.Graphics
 			floatConstants.Resize( index + count );
 
 			// copy in chunks of 4
-			while ( count-- > 0 )
+			while( count-- > 0 )
 			{
 				FloatConstantEntry entry = floatConstants[ index++ ];
 				entry.isSet = true;
@@ -609,11 +620,11 @@ namespace Axiom.Graphics
 
 		#region Named parameters
 
-        /// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
-        public void SetNamedAutoConstant( string name, AutoConstantType type )
-        {
-            SetNamedAutoConstant( name, type, 0 );
-        }
+		/// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
+		public void SetNamedAutoConstant( string name, AutoConstantType type )
+		{
+			SetNamedAutoConstant( name, type, 0 );
+		}
 
 		/// <summary>
 		///    Sets up a constant which will automatically be updated by the engine.
@@ -637,22 +648,28 @@ namespace Axiom.Graphics
 		public void SetNamedAutoConstant( string name, AutoConstantType type, int extraInfo )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetAutoConstant( GetParamIndex( name ), type, extraInfo );
+			}
 		}
 
 		public void SetNamedConstant( string name, float val )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val, 0f, 0f, 0f );
+			}
 		}
 
 		public void SetNamedConstant( string name, float[] val )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val );
+			}
 		}
 
 		public void SetNamedConstant( string name, int[] val )
@@ -668,8 +685,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Vector4 val )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, val.w );
+			}
 		}
 
 		/// <summary>
@@ -680,8 +699,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Vector3 val )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val.x, val.y, val.z, 1f );
+			}
 		}
 
 		/// <summary>
@@ -692,8 +713,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, ColorEx color )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), color.r, color.g, color.b, color.a );
+			}
 		}
 
 		/// <summary>
@@ -704,8 +727,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Matrix4 val )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), val );
+			}
 		}
 
 		/// <summary>
@@ -716,8 +741,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstant( GetParamIndex( name ), matrices, count );
+			}
 		}
 
 		/// <summary>
@@ -728,8 +755,10 @@ namespace Axiom.Graphics
 		public void SetNamedConstantFromTime( string name, float factor )
 		{
 			int index = GetParamIndex( name );
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				SetConstantFromTime( GetParamIndex( name ), factor );
+			}
 		}
 
 		#endregion Named parameters
@@ -744,13 +773,13 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
 		{
 			// return if no constants
-			if ( !this.HasAutoConstantType )
+			if( !this.HasAutoConstantType )
 			{
 				return;
 			}
 
 			// loop through and update all constants based on their type
-			for ( int i = 0; i < autoConstantList.Count; i++ )
+			for( int i = 0; i < autoConstantList.Count; i++ )
 			{
 				AutoConstantEntry entry = autoConstantList[ i ];
 
@@ -758,7 +787,7 @@ namespace Axiom.Graphics
 				int numMatrices = 0;
 				int index = 0;
 
-				switch ( entry.Type )
+				switch( entry.Type )
 				{
 					case AutoConstantType.WorldMatrix:
 						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
@@ -773,7 +802,7 @@ namespace Axiom.Graphics
 						numMatrices = source.WorldMatrixCount;
 						index = entry.PhysicalIndex;
 
-						for ( int j = 0; j < numMatrices; j++ )
+						for( int j = 0; j < numMatrices; j++ )
 						{
 							Matrix4 m = matrices[ j ];
 							SetConstant( index++, m.m00, m.m01, m.m02, m.m03 );
@@ -896,19 +925,19 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
 		{
 			// return if no constants
-			if ( !this.HasAutoConstantType )
+			if( !this.HasAutoConstantType )
 			{
 				return;
 			}
 
 			// loop through and update all constants based on their type
-			for ( int i = 0; i < autoConstantList.Count; i++ )
+			for( int i = 0; i < autoConstantList.Count; i++ )
 			{
 				AutoConstantEntry entry = autoConstantList[ i ];
 
 				Vector3 vec3;
 
-				switch ( entry.Type )
+				switch( entry.Type )
 				{
 					case AutoConstantType.LightDiffuseColor:
 						SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).Diffuse );
@@ -957,9 +986,9 @@ namespace Axiom.Graphics
 					case AutoConstantType.WorldMatrix:
 						SetConstant( entry.PhysicalIndex, source.WorldMatrix );
 						break;
-					//case AutoConstantType.ViewProjMatrix:
-					//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
-					//    break;
+						//case AutoConstantType.ViewProjMatrix:
+						//    SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
+						//    break;
 				}
 			}
 		}
@@ -979,58 +1008,24 @@ namespace Axiom.Graphics
 		///		in the map added to the map.
 		///		The index of the parameter name will be set to the end of the Float Constant List.
 		/// </remarks>
-		public bool AutoAddParamName
-		{
-			get
-			{
-				return autoAddParamName;
-			}
-			set
-			{
-				autoAddParamName = value;
-			}
-		}
+		public bool AutoAddParamName { get { return autoAddParamName; } set { autoAddParamName = value; } }
 
-		public List<ParameterEntry> ParameterInfo
-		{
-			get
-			{
-				return this.paramTypeList;
-			}
-		}
+		public List<ParameterEntry> ParameterInfo { get { return this.paramTypeList; } }
 
 		/// <summary>
 		///    Returns true if this instance contains any automatic constants.
 		/// </summary>
-		public bool HasAutoConstantType
-		{
-			get
-			{
-				return autoConstantList.Count > 0;
-			}
-		}
+		public bool HasAutoConstantType { get { return autoConstantList.Count > 0; } }
 
 		/// <summary>
 		///    Returns true if int constants have been set.
 		/// </summary>
-		public bool HasIntConstants
-		{
-			get
-			{
-				return intConstants.Count > 0;
-			}
-		}
+		public bool HasIntConstants { get { return intConstants.Count > 0; } }
 
 		/// <summary>
 		///    Returns true if floating-point constants have been set.
 		/// </summary>
-		public bool HasFloatConstants
-		{
-			get
-			{
-				return floatConstants.Count > 0;
-			}
-		}
+		public bool HasFloatConstants { get { return floatConstants.Count > 0; } }
 
 		/// <summary>
 		///    Gets a packed array of all current integer contants.
@@ -1039,7 +1034,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				IntConstantEntry[] ints = new IntConstantEntry[ intConstants.Count ];
+				IntConstantEntry[] ints = new IntConstantEntry[intConstants.Count];
 				intConstants.CopyTo( ints );
 				return ints;
 			}
@@ -1048,74 +1043,30 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the number of int contants values currently set.
 		/// </summary>
-		public int IntConstantCount
-		{
-			get
-			{
-				return intConstants.Count;
-			}
-		}
+		public int IntConstantCount { get { return intConstants.Count; } }
 
 		/// <summary>
 		///    Gets the number of floating-point contant values currently set.
 		/// </summary>
-		public int FloatConstantCount
-		{
-			get
-			{
-				return floatConstants.Count;
-			}
-		}
+		public int FloatConstantCount { get { return floatConstants.Count; } }
 
 		/// <summary>
 		///		Gets the number of named parameters in this param set.
 		/// </summary>
-		public int NamedParamCount
-		{
-			get
-			{
-				return this.namedParams.Count;
-			}
-		}
+		public int NamedParamCount { get { return this.namedParams.Count; } }
 
 		/// <summary>
 		///     Specifies whether matrices need to be transposed prior to
 		///     being sent to the hardware.
 		/// </summary>
-		public bool TransposeMatrices
-		{
-			get
-			{
-				return transposeMatrices;
-			}
-			set
-			{
-				transposeMatrices = value;
-			}
-		}
+		public bool TransposeMatrices { get { return transposeMatrices; } set { transposeMatrices = value; } }
 
 		/// <summary>
 		///    List of automatically updated parameters.
 		/// </summary>
-		public AutoConstantEntryList AutoConstantList
-		{
-			get
-			{
-				return autoConstantList;
-			}
-		}
+		public AutoConstantEntryList AutoConstantList { get { return autoConstantList; } }
 
-		public bool IgnoreMissingParameters
-		{
-			get
-			{
-				return ignoreMissingParameters;
-			}
-			set
-			{
-				ignoreMissingParameters = value;
-			}
-		}
+		public bool IgnoreMissingParameters { get { return ignoreMissingParameters; } set { ignoreMissingParameters = value; } }
 
 		#endregion Properties
 	}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,7 +50,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// 	Summary description for GpuProgramManager.
 	/// </summary>
-	public abstract class GpuProgramManager : ResourceManager
+	abstract public class GpuProgramManager : ResourceManager
 	{
 		#region Singleton implementation
 
@@ -65,7 +69,7 @@ namespace Axiom.Graphics
 		protected internal GpuProgramManager()
 			: base()
 		{
-			if ( _instance == null )
+			if( _instance == null )
 			{
 				_instance = this;
 
@@ -75,7 +79,9 @@ namespace Axiom.Graphics
 				ResourceType = "GpuProgram";
 			}
 			else
+			{
 				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			}
 
 			// subclasses should register with resource group manager
 		}
@@ -83,13 +89,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static GpuProgramManager Instance
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+		public static GpuProgramManager Instance { get { return _instance; } }
 
 		#endregion Singleton implementation
 
@@ -100,13 +100,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected List<string> syntaxCodes = new List<string>();
 
-		public ICollection<string> SupportedSyntaxes
-		{
-			get
-			{
-				return syntaxCodes;
-			}
-		}
+		public ICollection<string> SupportedSyntaxes { get { return syntaxCodes; } }
 
 		#endregion
 
@@ -149,7 +143,7 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    A new instance of GpuProgram.
 		/// </returns>
-		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+		virtual public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
 		{
 			// Call creation implementation
 			GpuProgram ret = (GpuProgram)_create( name, nextHandle, group, isManual, loader, type, syntaxCode );
@@ -171,7 +165,7 @@ namespace Axiom.Graphics
 		/// <param name="type">Type of the program to create, i.e. vertex or fragment.</param>
 		/// <param name="syntaxCode">Syntax of the program, i.e. vs_1_1, arbvp1, etc.</param>
 		/// <returns>A new instance of GpuProgram.</returns>
-		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
+		abstract protected Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
 		/// <summary>
 		///    Create a new, unloaded GpuProgram from a file of assembly.
@@ -192,7 +186,7 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    An unloaded GpuProgram instance.
 		/// </returns>
-		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
+		virtual public GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
@@ -220,7 +214,7 @@ namespace Axiom.Graphics
 		///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
 		/// <returns>An unloaded GpuProgram instance.</returns>
-		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		virtual public GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
@@ -239,7 +233,7 @@ namespace Axiom.Graphics
 		///    Program parameters can be shared between multiple programs if you wish.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual GpuProgramParameters CreateParameters()
+		virtual public GpuProgramParameters CreateParameters()
 		{
 			return new GpuProgramParameters();
 		}
@@ -274,11 +268,11 @@ namespace Axiom.Graphics
 		/// <param name="syntaxCode">
 		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
-		public virtual GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
+		virtual public GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = GetByName( name );
 
-			if ( program == null )
+			if( program == null )
 			{
 				program = CreateProgram( name, group, fileName, type, syntaxCode );
 			}
@@ -307,11 +301,11 @@ namespace Axiom.Graphics
 		/// <param name="syntaxCode">
 		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
-		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		virtual public GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
 			GpuProgram program = GetByName( name );
 
-			if ( program == null )
+			if( program == null )
 			{
 				program = CreateProgramFromString( name, group, source, type, syntaxCode );
 			}
@@ -338,13 +332,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public new GpuProgram GetByName( string name )
+		new public GpuProgram GetByName( string name )
 		{
 			// look for a high level program first
 			GpuProgram program = HighLevelGpuProgramManager.Instance[ name ];
 
 			// return if found
-			if ( program != null )
+			if( program != null )
 			{
 				return program;
 			}
@@ -358,9 +352,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					_instance = null;
 				}
@@ -373,22 +367,19 @@ namespace Axiom.Graphics
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion  ResourceManager Implementation
 
-        public bool SaveMicrocodesToCache 
-        {
-            get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
-        }
+		public bool SaveMicrocodesToCache { get { throw new System.NotImplementedException(); } set { throw new System.NotImplementedException(); } }
 
-        public void LoadMicrocodeCache(System.IO.Stream stream)
-        {
-            throw new System.NotImplementedException();
-        }
+		public void LoadMicrocodeCache( System.IO.Stream stream )
+		{
+			throw new System.NotImplementedException();
+		}
 
-        public void SaveMicrocodeCache(System.IO.Stream stream)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
+		public void SaveMicrocodeCache( System.IO.Stream stream )
+		{
+			throw new System.NotImplementedException();
+		}
+	}
 }

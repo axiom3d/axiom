@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections;
+
 using Axiom.ParticleSystems.Collections;
 
 #endregion Namespace Declarations
@@ -54,7 +59,7 @@ namespace Axiom.ParticleSystems
 	///		a name which identifies them, examples might be 'ForceVector', 'Attractor', or 'Fader', and these can be 
 	///		also be used from particle system scripts.
 	/// </remarks>
-	public abstract class ParticleAffectorFactory
+	abstract public class ParticleAffectorFactory
 	{
 		#region Member variables
 
@@ -67,9 +72,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-		public ParticleAffectorFactory()
-		{
-		}
+		public ParticleAffectorFactory() {}
 
 		#endregion
 
@@ -78,10 +81,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Returns the name of the factory, which identifies the affector type this factory creates.
 		/// </summary>
-		public abstract string Name
-		{
-			get;
-		}
+		abstract public string Name { get; }
 
 		/// <summary>
 		///		Creates a new affector instance.
@@ -90,13 +90,13 @@ namespace Axiom.ParticleSystems
 		///		Subclasses MUST add a reference to the affectorList.
 		/// </remarks>
 		/// <returns></returns>
-		public abstract ParticleAffector Create();
+		abstract public ParticleAffector Create();
 
 		/// <summary>
 		///		Destroys the affector referenced by the parameter.
 		/// </summary>
 		/// <param name="e">The Affector to destroy.</param>
-		public virtual void Destroy( ParticleAffector e )
+		virtual public void Destroy( ParticleAffector e )
 		{
 			// remove the affector from the list
 			affectorList.Remove( e );

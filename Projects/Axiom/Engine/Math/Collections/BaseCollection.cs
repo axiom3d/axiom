@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,13 +56,14 @@ namespace Axiom.Math.Collections
 	/// <remarks>
 	///		Can't wait for Generics in .Net Framework 2.0!   
 	/// </remarks>
-	public abstract class BaseCollection : ICollection, IEnumerable, IEnumerator
+	abstract public class BaseCollection : ICollection, IEnumerable, IEnumerator
 	{
 		/// <summary></summary>
 		protected ArrayList objectList;
+
 		//		protected int nextUniqueKeyCounter;
 
-		const int INITIAL_CAPACITY = 50;
+		private const int INITIAL_CAPACITY = 50;
 
 		#region Constructors
 
@@ -75,17 +80,7 @@ namespace Axiom.Math.Collections
 		/// <summary>
 		///		
 		/// </summary>
-		public object this[ int index ]
-		{
-			get
-			{
-				return objectList[ index ];
-			}
-			set
-			{
-				objectList[ index ] = value;
-			}
-		}
+		public object this[ int index ] { get { return objectList[ index ]; } set { objectList[ index ] = value; } }
 
 		/// <summary>
 		///		Adds an item to the collection.
@@ -112,8 +107,10 @@ namespace Axiom.Math.Collections
 		{
 			int index = objectList.IndexOf( item );
 
-			if ( index != -1 )
+			if( index != -1 )
+			{
 				objectList.RemoveAt( index );
+			}
 		}
 
 		#region Implementation of ICollection
@@ -131,35 +128,17 @@ namespace Axiom.Math.Collections
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsSynchronized
-		{
-			get
-			{
-				return objectList.IsSynchronized;
-			}
-		}
+		public bool IsSynchronized { get { return objectList.IsSynchronized; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public int Count
-		{
-			get
-			{
-				return objectList.Count;
-			}
-		}
+		public int Count { get { return objectList.Count; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public object SyncRoot
-		{
-			get
-			{
-				return objectList.SyncRoot;
-			}
-		}
+		public object SyncRoot { get { return objectList.SyncRoot; } }
 
 		#endregion
 
@@ -193,22 +172,21 @@ namespace Axiom.Math.Collections
 		{
 			position += 1;
 
-			if ( position >= objectList.Count )
+			if( position >= objectList.Count )
+			{
 				return false;
+			}
 			else
+			{
 				return true;
+			}
 		}
 
 		/// <summary>
 		///		Returns the current object in the enumeration.
 		/// </summary>
-		public object Current
-		{
-			get
-			{
-				return objectList[ position ];
-			}
-		}
+		public object Current { get { return objectList[ position ]; } }
+
 		#endregion
 	}
 }

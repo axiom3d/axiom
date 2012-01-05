@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -61,10 +65,7 @@ namespace Axiom.ParticleFX
 
 		public float InnerX
 		{
-			get
-			{
-				return innerX;
-			}
+			get { return innerX; }
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
@@ -74,10 +75,7 @@ namespace Axiom.ParticleFX
 
 		public float InnerY
 		{
-			get
-			{
-				return innerY;
-			}
+			get { return innerY; }
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
@@ -113,7 +111,7 @@ namespace Axiom.ParticleFX
 			x = a * Utility.Sin( alpha );
 			y = b * Utility.Cos( alpha );
 			// the height is simple running from 0 to 1
-			z = Utility.UnitRandom();     // 0..1
+			z = Utility.UnitRandom(); // 0..1
 
 			// scale the found point to the ring's size and move it
 			// relatively to the center of the emitter point
@@ -135,13 +133,14 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "width", "Width of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class WidthCommand : IPropertyCommand
+		private class WidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
 				RingEmitter emitter = target as RingEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
 				RingEmitter emitter = target as RingEmitter;
@@ -153,13 +152,14 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "height", "Height of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class HeightCommand : IPropertyCommand
+		private class HeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
 				RingEmitter emitter = target as RingEmitter;
 				emitter.Height = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
 				RingEmitter emitter = target as RingEmitter;
@@ -171,13 +171,14 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "depth", "Depth of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		class DepthCommand : IPropertyCommand
+		private class DepthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
 				RingEmitter emitter = target as RingEmitter;
 				emitter.Depth = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
 				RingEmitter emitter = target as RingEmitter;
@@ -189,13 +190,14 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		class InnerWidthCommand : IPropertyCommand
+		private class InnerWidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
 				RingEmitter emitter = target as RingEmitter;
 				emitter.InnerX = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
 				RingEmitter emitter = target as RingEmitter;
@@ -207,13 +209,14 @@ namespace Axiom.ParticleFX
 		///
 		/// </summary>
 		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		class InnerHeightCommand : IPropertyCommand
+		private class InnerHeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
 				RingEmitter emitter = target as RingEmitter;
 				emitter.InnerY = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
 				RingEmitter emitter = target as RingEmitter;

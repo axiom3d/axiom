@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,28 +58,18 @@ namespace Axiom.ParticleFX
 		protected String colorImageName;
 		protected bool colorImageLoaded;
 
-		const float div_255 = 1.0f / 255.0f;
+		private const float div_255 = 1.0f / 255.0f;
 
 		public ColorImageAffector()
 		{
 			this.type = "ColourImage";
 		}
 
-		public String ColorImageName
-		{
-			get
-			{
-				return colorImageName;
-			}
-			set
-			{
-				colorImageName = value;
-			}
-		}
+		public String ColorImageName { get { return colorImageName; } set { colorImageName = value; } }
 
 		public override void InitParticle( ref Particle particle )
 		{
-			if ( !colorImageLoaded )
+			if( !colorImageLoaded )
 			{
 				loadImage();
 			}
@@ -85,7 +79,7 @@ namespace Axiom.ParticleFX
 
 		public override void AffectParticles( ParticleSystem system, float timeElapsed )
 		{
-			if ( !colorImageLoaded )
+			if( !colorImageLoaded )
 			{
 				loadImage();
 			}
@@ -94,7 +88,7 @@ namespace Axiom.ParticleFX
 			float height = colorImage.Height - 1;
 
 			// loop through the particles
-			for ( int i = 0; i < system.Particles.Count; i++ )
+			for( int i = 0; i < system.Particles.Count; i++ )
 			{
 				Particle p = (Particle)system.Particles[ i ];
 
@@ -104,11 +98,11 @@ namespace Axiom.ParticleFX
 				float life_time = p.totalTimeToLive;
 				float particle_time = 1.0f - ( p.timeToLive / life_time );
 
-				if ( particle_time > 1.0f )
+				if( particle_time > 1.0f )
 				{
 					particle_time = 1.0f;
 				}
-				if ( particle_time < 0.0f )
+				if( particle_time < 0.0f )
 				{
 					particle_time = 0.0f;
 				}
@@ -117,11 +111,11 @@ namespace Axiom.ParticleFX
 				int index = (int)float_index;
 				int position = index * 4;
 
-				if ( index <= 0 )
+				if( index <= 0 )
 				{
 					p.Color = colorImage.GetColorAt( 0, 0, 0 );
 				}
-					else if ( index >= width )
+				else if( index >= width )
 				{
 					p.Color = colorImage.GetColorAt( width, 0, 0 );
 				}
@@ -130,10 +124,10 @@ namespace Axiom.ParticleFX
 					// fract, to_color and from_color are CONST in OGRE, but errors here
 					float fract = float_index - (float)index;
 					float toColor = fract;
-					float fromColor = (1 - toColor );
+					float fromColor = ( 1 - toColor );
 
 					ColorEx from = colorImage.GetColorAt( index, 0, 0 ),
-							to = colorImage.GetColorAt( index + 1, 0, 0 );
+					        to = colorImage.GetColorAt( index + 1, 0, 0 );
 
 					p.Color.r = ( from.r * fromColor ) + ( to.r * toColor );
 					p.Color.g = ( from.g * fromColor ) + ( to.g * toColor );
@@ -141,7 +135,6 @@ namespace Axiom.ParticleFX
 					p.Color.a = ( from.a * fromColor ) + ( to.a * toColor );
 				}
 			}
-
 		}
 
 		private void loadImage()
@@ -150,7 +143,7 @@ namespace Axiom.ParticleFX
 
 			PixelFormat format = colorImage.Format;
 
-			if ( !PixelUtil.IsAccessible( format ) )
+			if( !PixelUtil.IsAccessible( format ) )
 			{
 				throw new NotSupportedException( "Error: Image is not accessible (rgba) image." );
 			}
@@ -161,7 +154,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "image", "Image for color alterations.", typeof( ParticleAffector ) )]
-		class ImageCommand : IPropertyCommand
+		private class ImageCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -170,6 +163,7 @@ namespace Axiom.ParticleFX
 				ColorImageAffector affector = target as ColorImageAffector;
 				return affector.ColorImageName;
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorImageAffector affector = target as ColorImageAffector;

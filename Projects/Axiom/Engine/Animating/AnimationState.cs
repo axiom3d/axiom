@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,10 +45,12 @@ using Axiom.Collections;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="AnimationState.h"   revision="1.16" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="AnimationState.cpp" revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
@@ -64,16 +70,22 @@ namespace Axiom.Animating
 
 		/// <summary>Name of this animation track.</summary>
 		protected string animationName;
+
 		/// <summary></summary>
 		protected float time;
+
 		/// <summary></summary>
 		protected float length;
+
 		/// <summary></summary>
 		protected float inverseLength;
+
 		/// <summary></summary>
 		protected float weight;
+
 		/// <summary></summary>
 		protected bool isEnabled;
+
 		/// <summary></summary>
 		protected AnimationStateSet parent;
 
@@ -117,9 +129,7 @@ namespace Axiom.Animating
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
-			: this( animationName, animationStates, time, length, 1.0f, false )
-		{
-		}
+			: this( animationName, animationStates, time, length, 1.0f, false ) {}
 
 		/// <summary>
 		///     The moral equivalent of a copy constructor
@@ -141,44 +151,37 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Gets the name of the animation to which this state applies
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return animationName;
-			}
-			set
-			{
-				animationName = value;
-			}
-		}
+		public string Name { get { return animationName; } set { animationName = value; } }
 
 		/// <summary>
 		///		Gets/Sets the time position for this animation.
 		/// </summary>
 		public float Time
 		{
-			get
-			{
-				return time;
-			}
+			get { return time; }
 			set
 			{
 				time = value;
-				if ( loop )
+				if( loop )
 				{
 					// Wrap
 					time = (float)System.Math.IEEERemainder( time, length );
-					if ( time < 0 )
+					if( time < 0 )
+					{
 						time += length;
+					}
 				}
 				else
 				{
 					// Clamp
-					if ( time < 0 )
+					if( time < 0 )
+					{
 						time = 0;
-					else if ( time > length )
+					}
+					else if( time > length )
+					{
 						time = length;
+					}
 				}
 			}
 		}
@@ -188,78 +191,47 @@ namespace Axiom.Animating
 		/// </summary>
 		public float Length
 		{
-			get
-			{
-				return length;
-			}
+			get { return length; }
 			set
 			{
 				length = value;
 
 				// update the inverse length of the animation
-				if ( length != 0 )
+				if( length != 0 )
+				{
 					inverseLength = 1.0f / length;
+				}
 				else
+				{
 					inverseLength = 0.0f;
+				}
 			}
 		}
 
 		/// <summary>
 		/// Gets/Sets the weight (influence) of this animation
 		/// </summary>
-		public float Weight
-		{
-			get
-			{
-				return weight;
-			}
-			set
-			{
-				weight = value;
-			}
-		}
+		public float Weight { get { return weight; } set { weight = value; } }
 
 		/// <summary>
 		///		Gets/Sets whether this animation is enabled or not.
 		/// </summary>
 		public bool IsEnabled
 		{
-			get
-			{
-				return isEnabled;
-			}
+			get { return isEnabled; }
 			set
 			{
 				isEnabled = value;
 				parent.NotifyAnimationStateEnabled( this, isEnabled );
 			}
 		}
-		public bool Loop
-		{
-			get
-			{
-				return loop;
-			}
-			set
-			{
-				loop = value;
-			}
-		}
+
+		public bool Loop { get { return loop; } set { loop = value; } }
 
 		/// <summary>
 		///		Gets/Sets the animation state set owning this animation
 		/// </summary>
-		public AnimationStateSet Parent
-		{
-			get
-			{
-				return parent;
-			}
-			set
-			{
-				parent = value;
-			}
-		}
+		public AnimationStateSet Parent { get { return parent; } set { parent = value; } }
 
 		#endregion
 
@@ -297,40 +269,38 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Gets/Sets the value to be used in a ControllerFunction.
 		/// </summary>
-		public float Value
-		{
-			get
-			{
-				return time * inverseLength;
-			}
-			set
-			{
-				time = value * length;
-			}
-		}
+		public float Value { get { return time * inverseLength; } set { time = value * length; } }
+
 		#endregion
 
 		#region Object overloads
+
 		public static bool operator !=( AnimationState left, AnimationState right )
 		{
 			return !( left == right );
 		}
+
 		public override bool Equals( object obj )
 		{
 			return obj is AnimationState && this == (AnimationState)obj;
 		}
+
 		public static bool operator ==( AnimationState left, AnimationState right )
 		{
-			if ( object.ReferenceEquals( left, null ) && object.ReferenceEquals( right, null ) )
+			if( object.ReferenceEquals( left, null ) && object.ReferenceEquals( right, null ) )
+			{
 				return true;
-			if ( object.ReferenceEquals( left, null ) || object.ReferenceEquals( right, null ) )
+			}
+			if( object.ReferenceEquals( left, null ) || object.ReferenceEquals( right, null ) )
+			{
 				return false;
-			if ( left.animationName == right.animationName &&
-				left.isEnabled == right.isEnabled &&
-				left.time == right.time &&
-				left.weight == right.weight &&
-				left.length == right.length &&
-				left.loop == right.loop )
+			}
+			if( left.animationName == right.animationName &&
+			    left.isEnabled == right.isEnabled &&
+			    left.time == right.time &&
+			    left.weight == right.weight &&
+			    left.length == right.length &&
+			    left.loop == right.loop )
 			{
 				return true;
 			}
@@ -339,6 +309,7 @@ namespace Axiom.Animating
 				return false;
 			}
 		}
+
 		/// <summary>
 		///    Override GetHashCode.
 		/// </summary>
@@ -364,13 +335,12 @@ namespace Axiom.Animating
 		{
 			AnimationState other = obj as AnimationState;
 
-			if ( animationName == other.animationName &&
-				isEnabled == other.isEnabled &&
-				time == other.time &&
-				weight == other.weight &&
-				length == other.length )
+			if( animationName == other.animationName &&
+			    isEnabled == other.isEnabled &&
+			    time == other.time &&
+			    weight == other.weight &&
+			    length == other.length )
 			{
-
 				return 0;
 			}
 			else

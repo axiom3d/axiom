@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -68,18 +72,18 @@ namespace Axiom.RenderSystems.Xna
 		{
 			DriverCollection driverList = new DriverCollection();
 
-			foreach ( XFG.GraphicsAdapter adapterInfo in XFG.GraphicsAdapter.Adapters )
+			foreach( XFG.GraphicsAdapter adapterInfo in XFG.GraphicsAdapter.Adapters )
 			{
 				Driver driver = new Driver( adapterInfo );
 
 				int lastWidth = 0, lastHeight = 0;
 				XFG.SurfaceFormat lastFormat = 0;
 
-				foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
+				foreach( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
 				{
 					// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-					if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+					if( ( mode.Width >= 640 && mode.Height >= 480 ) &&
+					    ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
 					{
 						// add the video mode to the list
 						driver.VideoModes.Add( new VideoMode( mode ) );
@@ -144,7 +148,7 @@ namespace Axiom.RenderSystems.Xna
 			// setting a default val here to keep compiler from complaining about using unassigned value types
 			XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps = devCaps.TextureFilterCapabilities;
 
-			switch ( texType )
+			switch( texType )
 			{
 				case XnaTextureType.Normal:
 					filterCaps = devCaps.TextureFilterCapabilities;
@@ -157,98 +161,98 @@ namespace Axiom.RenderSystems.Xna
 					break;
 			}
 
-			switch ( type )
+			switch( type )
 			{
 				case FilterType.Min:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-								if ( filterCaps.SupportsMinifyAnisotropic )
-								{
-									return XFG.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return XFG.TextureFilter.Linear;
-								}
+						case FilterOptions.Anisotropic:
+							if( filterCaps.SupportsMinifyAnisotropic )
+							{
+								return XFG.TextureFilter.Anisotropic;
+							}
+							else
+							{
+								return XFG.TextureFilter.Linear;
+							}
 
-							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMinifyLinear )
-								{
-									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
-
-							case FilterOptions.Point:
-							case FilterOptions.None:
+						case FilterOptions.Linear:
+							if( filterCaps.SupportsMinifyLinear )
+							{
+								return XFG.TextureFilter.Linear;
+							}
+							else
+							{
 								return XFG.TextureFilter.Point;
-						}
-						break;
+							}
+
+						case FilterOptions.Point:
+						case FilterOptions.None:
+							return XFG.TextureFilter.Point;
 					}
+					break;
+				}
 				case FilterType.Mag:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-								if ( filterCaps.SupportsMagnifyAnisotropic )
-								{
-									return XFG.TextureFilter.Anisotropic;
-								}
-								else
-								{
-									return XFG.TextureFilter.Linear;
-								}
+						case FilterOptions.Anisotropic:
+							if( filterCaps.SupportsMagnifyAnisotropic )
+							{
+								return XFG.TextureFilter.Anisotropic;
+							}
+							else
+							{
+								return XFG.TextureFilter.Linear;
+							}
 
-							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMagnifyLinear )
-								{
-									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
-
-							case FilterOptions.Point:
-							case FilterOptions.None:
+						case FilterOptions.Linear:
+							if( filterCaps.SupportsMagnifyLinear )
+							{
+								return XFG.TextureFilter.Linear;
+							}
+							else
+							{
 								return XFG.TextureFilter.Point;
-						}
-						break;
+							}
+
+						case FilterOptions.Point:
+						case FilterOptions.None:
+							return XFG.TextureFilter.Point;
 					}
+					break;
+				}
 				case FilterType.Mip:
+				{
+					switch( options )
 					{
-						switch ( options )
-						{
-							case FilterOptions.Anisotropic:
-							case FilterOptions.Linear:
-								if ( filterCaps.SupportsMipMapLinear )
-								{
-									return XFG.TextureFilter.Linear;
-								}
-								else
-								{
-									return XFG.TextureFilter.Point;
-								}
+						case FilterOptions.Anisotropic:
+						case FilterOptions.Linear:
+							if( filterCaps.SupportsMipMapLinear )
+							{
+								return XFG.TextureFilter.Linear;
+							}
+							else
+							{
+								return XFG.TextureFilter.Point;
+							}
 
-							case FilterOptions.Point:
-								if ( filterCaps.SupportsMipMapPoint )
-								{
-									return XFG.TextureFilter.Point;
-								}
-								else
-								{
-									return XFG.TextureFilter.None;
-								}
-
-							case FilterOptions.None:
+						case FilterOptions.Point:
+							if( filterCaps.SupportsMipMapPoint )
+							{
+								return XFG.TextureFilter.Point;
+							}
+							else
+							{
 								return XFG.TextureFilter.None;
-						}
-						break;
+							}
+
+						case FilterOptions.None:
+							return XFG.TextureFilter.None;
 					}
+					break;
+				}
 			}
 
 			// should never get here
@@ -265,12 +269,10 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XFG.BlendFunction xnaTexOp = 0;
 
-
 			// figure out what is what
-			switch ( blendop )
+			switch( blendop )
 			{
-
-				/*case LayerBlendOperationEx.Source1:
+					/*case LayerBlendOperationEx.Source1:
 					d3dTexOp = XFG.Blend.BlendFunction.SelectArg1;
 					break;
 
@@ -309,7 +311,7 @@ namespace Axiom.RenderSystems.Xna
 					xnaTexOp = XFG.BlendFunction.Add;
 					break;
 
-				/*  case LayerBlendOperationEx.BlendDiffuseAlpha:
+					/*  case LayerBlendOperationEx.BlendDiffuseAlpha:
 					  d3dTexOp = XFG.BlendFunction..BlendDiffuseAlpha;
 					  break;
 
@@ -379,7 +381,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XFG.Blend xnaBlend = 0;
 
-			switch ( factor )
+			switch( factor )
 			{
 				case SceneBlendFactor.One:
 					xnaBlend = XFG.Blend.One;
@@ -418,7 +420,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public static XFG.ShaderProfile Convert( string shaderVersion )
 		{
-			switch ( shaderVersion )
+			switch( shaderVersion )
 			{
 				case "PS_1_1":
 					return XFG.ShaderProfile.PS_1_1;
@@ -464,7 +466,7 @@ namespace Axiom.RenderSystems.Xna
 			//   return XFG.Graphics.VertexElementFormat.Unused;
 
 			// we only need to worry about a few types with Xna
-			switch ( type )
+			switch( type )
 			{
 				case VertexElementType.Color:
 					return XFG.VertexElementFormat.Color;
@@ -483,24 +485,23 @@ namespace Axiom.RenderSystems.Xna
 
 				case VertexElementType.Short2:
 					return XFG.VertexElementFormat.Short2;
-				//case VertexElementType.Short3:
-				//return XFG.VertexElementFormat.Short2;
+					//case VertexElementType.Short3:
+					//return XFG.VertexElementFormat.Short2;
 
 				case VertexElementType.Short4:
 					return XFG.VertexElementFormat.Short4;
 
 				case VertexElementType.UByte4:
 					return XFG.VertexElementFormat.Byte4;
-
 			} // switch
 
 			// keep the compiler happy
-			return XFG.VertexElementFormat.Vector3;// Float3;
+			return XFG.VertexElementFormat.Vector3; // Float3;
 		}
 
 		public static XFG.VertexElementUsage Convert( VertexElementSemantic semantic )
 		{
-			switch ( semantic )
+			switch( semantic )
 			{
 				case VertexElementSemantic.BlendIndices:
 					return XFG.VertexElementUsage.BlendIndices;
@@ -539,16 +540,18 @@ namespace Axiom.RenderSystems.Xna
 		public static XFG.BufferUsage Convert( BufferUsage usage )
 		{
 			XFG.BufferUsage xnaUsage = 0;
-			if ( usage == BufferUsage.Dynamic ||
-				 usage == BufferUsage.DynamicWriteOnly )
-
+			if( usage == BufferUsage.Dynamic ||
+			    usage == BufferUsage.DynamicWriteOnly )
+			{
 				xnaUsage |= XFG.BufferUsage.WriteOnly;
+			}
 
-			if ( usage == BufferUsage.WriteOnly ||
-				 usage == BufferUsage.StaticWriteOnly ||
-				 usage == BufferUsage.DynamicWriteOnly )
-
+			if( usage == BufferUsage.WriteOnly ||
+			    usage == BufferUsage.StaticWriteOnly ||
+			    usage == BufferUsage.DynamicWriteOnly )
+			{
 				xnaUsage |= XFG.BufferUsage.WriteOnly;
+			}
 
 			return xnaUsage;
 		}
@@ -562,7 +565,7 @@ namespace Axiom.RenderSystems.Xna
 		public static XFG.FogMode Convert( Axiom.Graphics.FogMode mode )
 		{
 			// convert the fog mode value
-			switch ( mode )
+			switch( mode )
 			{
 				case Axiom.Graphics.FogMode.Exp:
 					return XFG.FogMode.Exponent;
@@ -640,7 +643,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public static XnaTextureType Convert( TextureType type )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case TextureType.OneD:
 				case TextureType.TwoD:
@@ -657,7 +660,7 @@ namespace Axiom.RenderSystems.Xna
 		public static XFG.TextureAddressMode Convert( TextureAddressing type )
 		{
 			// convert from ours to Xna
-			switch ( type )
+			switch( type )
 			{
 				case TextureAddressing.Wrap:
 					return XFG.TextureAddressMode.Wrap;
@@ -679,7 +682,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static XFG.CompareFunction Convert( CompareFunction func )
 		{
-			switch ( func )
+			switch( func )
 			{
 				case CompareFunction.AlwaysFail:
 					return XFG.CompareFunction.Never;
@@ -747,7 +750,6 @@ namespace Axiom.RenderSystems.Xna
 
 			return 0;
 		}*/
-
 		public static XFG.StencilOperation Convert( Axiom.Graphics.StencilOperation op )
 		{
 			return Convert( op, false );
@@ -760,7 +762,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static XFG.StencilOperation Convert( Axiom.Graphics.StencilOperation op, bool invert )
 		{
-			switch ( op )
+			switch( op )
 			{
 				case Axiom.Graphics.StencilOperation.Keep:
 					return XFG.StencilOperation.Keep;
@@ -773,19 +775,19 @@ namespace Axiom.RenderSystems.Xna
 
 				case Axiom.Graphics.StencilOperation.Increment:
 					return invert ?
-						XFG.StencilOperation.DecrementSaturation : XFG.StencilOperation.IncrementSaturation;
+					              	XFG.StencilOperation.DecrementSaturation : XFG.StencilOperation.IncrementSaturation;
 
 				case Axiom.Graphics.StencilOperation.Decrement:
 					return invert ?
-						XFG.StencilOperation.IncrementSaturation : XFG.StencilOperation.DecrementSaturation;
+					              	XFG.StencilOperation.IncrementSaturation : XFG.StencilOperation.DecrementSaturation;
 
 				case Axiom.Graphics.StencilOperation.IncrementWrap:
 					return invert ?
-						XFG.StencilOperation.Decrement : XFG.StencilOperation.Increment;
+					              	XFG.StencilOperation.Decrement : XFG.StencilOperation.Increment;
 
 				case Axiom.Graphics.StencilOperation.DecrementWrap:
 					return invert ?
-						XFG.StencilOperation.Increment : XFG.StencilOperation.Decrement;
+					              	XFG.StencilOperation.Increment : XFG.StencilOperation.Decrement;
 
 				case Axiom.Graphics.StencilOperation.Invert:
 					return XFG.StencilOperation.Invert;
@@ -796,7 +798,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public static XFG.CullMode Convert( Axiom.Graphics.CullingMode mode, bool flip )
 		{
-			switch ( mode )
+			switch( mode )
 			{
 				case CullingMode.None:
 					return XFG.CullMode.None;
@@ -822,24 +824,23 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static bool IsIdentity( XNA.Matrix matrix )
 		{
-			if ( matrix.M11 == 1.0f &&
-				matrix.M12 == 0.0f &&
-				matrix.M13 == 0.0f &&
-				matrix.M14 == 0.0f &&
-				matrix.M21 == 0.0f &&
-				matrix.M22 == 1.0f &&
-				matrix.M23 == 0.0f &&
-				matrix.M24 == 0.0f &&
-				matrix.M31 == 0.0f &&
-				matrix.M32 == 0.0f &&
-				matrix.M33 == 1.0f &&
-				matrix.M34 == 0.0f &&
-				matrix.M41 == 0.0f &&
-				matrix.M42 == 0.0f &&
-				matrix.M43 == 0.0f &&
-				matrix.M44 == 1.0f )
+			if( matrix.M11 == 1.0f &&
+			    matrix.M12 == 0.0f &&
+			    matrix.M13 == 0.0f &&
+			    matrix.M14 == 0.0f &&
+			    matrix.M21 == 0.0f &&
+			    matrix.M22 == 1.0f &&
+			    matrix.M23 == 0.0f &&
+			    matrix.M24 == 0.0f &&
+			    matrix.M31 == 0.0f &&
+			    matrix.M32 == 0.0f &&
+			    matrix.M33 == 1.0f &&
+			    matrix.M34 == 0.0f &&
+			    matrix.M41 == 0.0f &&
+			    matrix.M42 == 0.0f &&
+			    matrix.M43 == 0.0f &&
+			    matrix.M44 == 1.0f )
 			{
-
 				return true;
 			}
 			else
@@ -870,7 +871,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public static PixelFormat Convert( SurfaceFormat semantic )
 		{
-			switch ( semantic )
+			switch( semantic )
 			{
 				case SurfaceFormat.Alpha8:
 					return Axiom.Media.PixelFormat.A8;
@@ -880,7 +881,7 @@ namespace Axiom.RenderSystems.Xna
 					return Axiom.Media.PixelFormat.L16;
 				case SurfaceFormat.LuminanceAlpha8:
 					return Axiom.Media.PixelFormat.A4L4;
-				case SurfaceFormat.LuminanceAlpha16:	// Assume little endian here
+				case SurfaceFormat.LuminanceAlpha16: // Assume little endian here
 					return Axiom.Media.PixelFormat.A8L8;
 				case SurfaceFormat.Bgra5551:
 					return Axiom.Media.PixelFormat.A1R5G5B5;
@@ -919,7 +920,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static XFG.SurfaceFormat Convert( PixelFormat format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case PixelFormat.BYTE_LA:
 					return XFG.SurfaceFormat.LuminanceAlpha16;
@@ -933,10 +934,10 @@ namespace Axiom.RenderSystems.Xna
 					return XFG.SurfaceFormat.Bgra4444;
 				case PixelFormat.A8R8G8B8:
 					return XFG.SurfaceFormat.Color;
-				//case PixelFormat.L4A4:
+					//case PixelFormat.L4A4:
 				case PixelFormat.A4L4:
 					return XFG.SurfaceFormat.LuminanceAlpha8;
-				//case PixelFormat.B10G10R10A2:
+					//case PixelFormat.B10G10R10A2:
 				case PixelFormat.A2R10G10B10:
 					return XFG.SurfaceFormat.Bgra1010102;
 			}
@@ -944,12 +945,13 @@ namespace Axiom.RenderSystems.Xna
 			return XFG.SurfaceFormat.Unknown;
 		}
 
-
 		public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
 		{
-			if ( Convert( format ) != XFG.SurfaceFormat.Unknown )
+			if( Convert( format ) != XFG.SurfaceFormat.Unknown )
+			{
 				return format;
-			switch ( format )
+			}
+			switch( format )
 			{
 				case Axiom.Media.PixelFormat.B5G6R5:
 					return Axiom.Media.PixelFormat.R5G6B5;

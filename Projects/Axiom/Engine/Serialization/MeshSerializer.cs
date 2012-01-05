@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.IO;
+
 using Axiom.Collections;
 using Axiom.Core;
 
@@ -43,7 +48,6 @@ using Axiom.Core;
 
 namespace Axiom.Serialization
 {
-
 	/// <summary>
 	///		Class for serialising mesh data to/from an OGRE .mesh file.
 	/// </summary>
@@ -116,7 +120,7 @@ namespace Axiom.Serialization
 			// read the header ID
 			ushort headerID = ReadUShort( reader );
 
-			if ( headerID != (ushort)MeshChunkID.Header )
+			if( headerID != (ushort)MeshChunkID.Header )
 			{
 				throw new AxiomException( "File header not found." );
 			}
@@ -128,7 +132,7 @@ namespace Axiom.Serialization
 			Seek( reader, 0, SeekOrigin.Begin );
 
 			// barf if there specified version is not supported
-			if ( !implementations.ContainsKey( fileVersion ) )
+			if( !implementations.ContainsKey( fileVersion ) )
 			{
 				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
 			}
@@ -140,7 +144,7 @@ namespace Axiom.Serialization
 			serializer.ImportMesh( stream, mesh );
 
 			// warn on old version of mesh
-			if ( fileVersion != currentVersion )
+			if( fileVersion != currentVersion )
 			{
 				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
 			}
@@ -153,7 +157,7 @@ namespace Axiom.Serialization
 			// read the header ID
 			ushort headerID = ReadUShort( reader );
 
-			if ( headerID != (ushort)MeshChunkID.Header )
+			if( headerID != (ushort)MeshChunkID.Header )
 			{
 				throw new AxiomException( "File header not found." );
 			}
@@ -165,7 +169,7 @@ namespace Axiom.Serialization
 			Seek( reader, 0, SeekOrigin.Begin );
 
 			// barf if there specified version is not supported
-			if ( !implementations.ContainsKey( fileVersion ) )
+			if( !implementations.ContainsKey( fileVersion ) )
 			{
 				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
 			}
@@ -177,7 +181,7 @@ namespace Axiom.Serialization
 			DependencyInfo rv = serializer.GetDependencyInfo( stream, mesh );
 
 			// warn on old version of mesh
-			if ( fileVersion != currentVersion )
+			if( fileVersion != currentVersion )
 			{
 				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
 			}

@@ -67,18 +67,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets whether this renderable would normally cast a shadow.
 		/// </summary>
-		bool CastsShadows
-		{
-			get;
-		}
+		bool CastsShadows { get; }
 
 		/// <summary>
 		///    Get the material associated with this renderable object.
 		/// </summary>
-		Material Material
-		{
-			get;
-		}
+		Material Material { get; }
 
 		/// <summary>
 		///    Technique being used to render this object according to the current hardware.
@@ -87,18 +81,12 @@ namespace Axiom.Graphics
 		///    This is to allow Renderables to use a chosen Technique if they wish, otherwise
 		///    they will use the best Technique available for the Material they are using.
 		/// </remarks>
-		Technique Technique
-		{
-			get;
-		}
+		Technique Technique { get; }
 
 		/// <summary>
 		///    Gets the render operation required to send this object to the frame buffer.
 		/// </summary>
-		RenderOperation RenderOperation
-		{
-			get;
-		}
+		RenderOperation RenderOperation { get; }
 
 		/// <summary>
 		///    Gets the world transform matrix / matrices for this renderable object.
@@ -119,18 +107,12 @@ namespace Axiom.Graphics
 		/// <remarks>
 		///    Directional lights, which have no position, will always be first on this list.
 		/// </remarks>
-		LightList Lights
-		{
-			get;
-		}
+		LightList Lights { get; }
 
 		/// <summary>
 		///    Returns whether or not this Renderable wishes the hardware to normalize normals.
 		/// </summary>
-		bool NormalizeNormals
-		{
-			get;
-		}
+		bool NormalizeNormals { get; }
 
 		/// <summary>
 		///    Gets the number of world transformations that will be used for this object.
@@ -142,11 +124,7 @@ namespace Axiom.Graphics
 		///    If a renderable does not use vertex blending this method returns 1, which is the default for
 		///    simplicity.
 		/// </remarks>
-
-		ushort NumWorldTransforms
-		{
-			get;
-		}
+		ushort NumWorldTransforms { get; }
 
 		/// <summary>
 		///    Returns whether or not to use an 'identity' projection.
@@ -158,10 +136,7 @@ namespace Axiom.Graphics
 		///    a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
 		///    not override this.
 		/// </remarks>
-		bool UseIdentityProjection
-		{
-			get;
-		}
+		bool UseIdentityProjection { get; }
 
 		/// <summary>
 		///    Returns whether or not to use an 'identity' projection.
@@ -173,10 +148,7 @@ namespace Axiom.Graphics
 		///    to be relative to camera space already. Useful for overlay rendering.
 		///    Normal renderables need not override this.
 		/// </remarks>
-		bool UseIdentityView
-		{
-			get;
-		}
+		bool UseIdentityView { get; }
 
 		/// <summary>
 		/// Gets whether this renderable's chosen detail level can be
@@ -184,11 +156,7 @@ namespace Axiom.Graphics
 		/// override true means that a lower camera detail will override this
 		/// renderables detail level, false means it won't.
 		/// </summary>
-
-		bool PolygonModeOverrideable
-		{
-			get;
-		}
+		bool PolygonModeOverrideable { get; }
 
 		/// <summary>
 		///    Gets the worldspace orientation of this renderable; this is used in order to
@@ -197,10 +165,7 @@ namespace Axiom.Graphics
 		///    lights is much more efficient than inverting a complete 4x4 matrix, and also
 		///    eliminates problems introduced by scaling.
 		/// </summary>
-		Quaternion WorldOrientation
-		{
-			get;
-		}
+		Quaternion WorldOrientation { get; }
 
 		/// <summary>
 		///    Gets the worldspace position of this renderable; this is used in order to
@@ -209,10 +174,7 @@ namespace Axiom.Graphics
 		///    lights is much more efficient than inverting a complete 4x4 matrix, and also
 		///    eliminates problems introduced by scaling.
 		/// </summary>
-		Vector3 WorldPosition
-		{
-			get;
-		}
+		Vector3 WorldPosition { get; }
 
 		#endregion Properties
 

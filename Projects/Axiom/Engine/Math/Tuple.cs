@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region Namespace Declarations
@@ -42,17 +44,20 @@ namespace Axiom.Math
 
 		/// <summary></summary>
 		public readonly A First;
+
 		/// <summary></summary>
 		public readonly B Second;
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		public Tuple( A first, B second )
 		{
 			this.First = first;
 			this.Second = second;
 		}
+
 		#endregion Construction and Destruction
 
 		#region IEquatable<Tuple<A,B>> Implementation
@@ -60,13 +65,12 @@ namespace Axiom.Math
 		public bool Equals( Tuple<A, B> other )
 		{
 			return First.Equals( other.First ) &&
-				   Second.Equals( other.Second );
-
+			       Second.Equals( other.Second );
 		}
 
 		public override bool Equals( object other )
 		{
-			if ( other is Tuple<A, B> )
+			if( other is Tuple<A, B> )
 			{
 				return this.Equals( (Tuple<A, B>)other );
 			}
@@ -88,20 +92,24 @@ namespace Axiom.Math
 
 		/// <summary></summary>
 		public readonly A First;
+
 		/// <summary></summary>
 		public readonly B Second;
+
 		/// <summary></summary>
 		public readonly C Third;
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		public Tuple( A first, B second, C Third )
 		{
 			this.First = first;
 			this.Second = second;
 			this.Third = Third;
 		}
+
 		#endregion Construction and Destruction
 
 		#region IEquatable<Tuple<A,B,C>> Implementation
@@ -109,14 +117,13 @@ namespace Axiom.Math
 		public bool Equals( Tuple<A, B, C> other )
 		{
 			return First.Equals( other.First )
-					&& Second.Equals( other.Second )
-					&& Third.Equals( other.Third );
-
+			       && Second.Equals( other.Second )
+			       && Third.Equals( other.Third );
 		}
 
 		public override bool Equals( object other )
 		{
-			if ( other is Tuple<A, B, C> )
+			if( other is Tuple<A, B, C> )
 			{
 				return this.Equals( (Tuple<A, B, C>)other );
 			}
@@ -139,16 +146,20 @@ namespace Axiom.Math
 
 		/// <summary></summary>
 		public readonly A First;
+
 		/// <summary></summary>
 		public readonly B Second;
+
 		/// <summary></summary>
 		public readonly C Third;
+
 		/// <summary></summary>
 		public readonly D Fourth;
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		public Tuple( A first, B second, C third, D fourth )
 		{
 			this.First = first;
@@ -156,6 +167,7 @@ namespace Axiom.Math
 			this.Third = third;
 			this.Fourth = fourth;
 		}
+
 		#endregion Construction and Destruction
 
 		#region IEquatable<Tuple<A,B,C,D>> Implementation
@@ -163,14 +175,13 @@ namespace Axiom.Math
 		public bool Equals( Tuple<A, B, C, D> other )
 		{
 			return First.Equals( other.First )
-					&& Second.Equals( other.Second )
-					&& Third.Equals( other.Third );
-
+			       && Second.Equals( other.Second )
+			       && Third.Equals( other.Third );
 		}
 
 		public bool Equals( object other )
 		{
-			if ( other is Tuple<A, B, C, D> )
+			if( other is Tuple<A, B, C, D> )
 			{
 				return this.Equals( (Tuple<A, B, C, D>)other );
 			}

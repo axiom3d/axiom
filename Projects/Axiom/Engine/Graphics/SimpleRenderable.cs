@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -51,7 +52,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Summary description for SimpleRenderable.
 	/// </summary>
-	public abstract class SimpleRenderable : MovableObject, IRenderable
+	abstract public class SimpleRenderable : MovableObject, IRenderable
 	{
 		#region Fields
 
@@ -62,7 +63,7 @@ namespace Axiom.Graphics
 		protected Material material;
 		protected SceneManager sceneMgr;
 		protected Camera camera;
-		static protected long nextAutoGenName;
+		protected static long nextAutoGenName;
 
 		protected VertexData vertexData;
 		protected IndexData indexData;
@@ -82,9 +83,7 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public SimpleRenderable()
-			: this( "SimpleRenderable" + nextAutoGenName++ )
-		{
-		}
+			: this( "SimpleRenderable" + nextAutoGenName++ ) {}
 
 		/// <summary>
 		///		Default constructor.
@@ -112,13 +111,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///
 		/// </summary>
-		public override AxisAlignedBox BoundingBox
-		{
-			get
-			{
-				return (AxisAlignedBox)box.Clone();
-			}
-		}
+		public override AxisAlignedBox BoundingBox { get { return (AxisAlignedBox)box.Clone(); } }
 
 		/// <summary>
 		///
@@ -143,143 +136,67 @@ namespace Axiom.Graphics
 
 		#region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return CastShadows;
-			}
-		}
+		public bool CastsShadows { get { return CastShadows; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual Material Material
-		{
-			get
-			{
-				return material;
-			}
-			set
-			{
-				material = value;
-			}
-		}
+		virtual public Material Material { get { return material; } set { material = value; } }
 
-		public virtual Technique Technique
-		{
-			get
-			{
-				return material.GetBestTechnique();
-			}
-		}
+		virtual public Technique Technique { get { return material.GetBestTechnique(); } }
 
-		public virtual RenderOperation RenderOperation
-		{
-			get
-			{
-				return renderOperation;
-			}
-		}
+		virtual public RenderOperation RenderOperation { get { return renderOperation; } }
 
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="matrices"></param>
-		public virtual void GetWorldTransforms( Matrix4[] matrices )
+		virtual public void GetWorldTransforms( Matrix4[] matrices )
 		{
 			matrices[ 0 ] = worldTransform * parentNode.FullTransform;
 		}
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		public ushort NumWorldTransforms { get { return 1; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool UseIdentityProjection { get { return false; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool UseIdentityView { get { return false; } }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		virtual public bool PolygonModeOverrideable { get { return true; } }
 
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public abstract float GetSquaredViewDepth( Camera camera );
+		abstract public float GetSquaredViewDepth( Camera camera );
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual Quaternion WorldOrientation
-		{
-			get
-			{
-				return parentNode.DerivedOrientation;
-			}
-		}
+		virtual public Quaternion WorldOrientation { get { return parentNode.DerivedOrientation; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual Vector3 WorldPosition
-		{
-			get
-			{
-				return parentNode.DerivedPosition;
-			}
-		}
+		virtual public Vector3 WorldPosition { get { return parentNode.DerivedPosition; } }
 
-		public LightList Lights
-		{
-			get
-			{
-				return QueryLights();
-			}
-		}
+		public LightList Lights { get { return QueryLights(); } }
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
@@ -291,14 +208,16 @@ namespace Axiom.Graphics
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while( customParams.Count <= index )
+			{
 				customParams.Add( Vector4.Zero );
+			}
 			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams.Count >= entry.Data && customParams[ entry.Data ] != null )
+			if( customParams.Count >= entry.Data && customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
@@ -334,41 +253,47 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if( renderOperation != null )
 					{
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
 						renderOperation = null;
 					}
 
-                    if ( indexData != null )
-                    {
-                        if ( !indexData.IsDisposed )
-                            indexData.Dispose();
+					if( indexData != null )
+					{
+						if( !indexData.IsDisposed )
+						{
+							indexData.Dispose();
+						}
 
-                        indexData = null;
-                    }
+						indexData = null;
+					}
 
-                    if ( vertexData != null )
-                    {
-                        if ( !vertexData.IsDisposed )
-                            vertexData.Dispose();
+					if( vertexData != null )
+					{
+						if( !vertexData.IsDisposed )
+						{
+							vertexData.Dispose();
+						}
 
-                        vertexData = null;
-                    }
+						vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

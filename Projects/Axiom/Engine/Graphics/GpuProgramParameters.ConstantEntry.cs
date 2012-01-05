@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,14 +58,17 @@ namespace Axiom.Graphics
 			///    The type of the parameter.
 			/// </summary>
 			public AutoConstantType Type;
+
 			/// <summary>
 			///    The target index.
 			/// </summary>
 			public int PhysicalIndex;
+
 			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
 			public int Data;
+
 			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
@@ -101,7 +108,6 @@ namespace Axiom.Graphics
 				this.PhysicalIndex = index;
 				this.FData = fdata;
 				this.Variability = variability;
-
 			}
 
 			public AutoConstantEntry Clone()
@@ -115,9 +121,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Generics: List<AutoConstantEntry>
 		/// </summary>
-		public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
-		{
-		}
+		public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry> {}
 
 		/// <summary>
 		///		Float parameter entry; contains both a group of 4 values and 
@@ -127,7 +131,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public class FloatConstantEntry
 		{
-			public float[] val = new float[ 4 ];
+			public float[] val = new float[4];
 			public bool isSet = false;
 		}
 
@@ -138,7 +142,7 @@ namespace Axiom.Graphics
 		{
 			public void Resize( int size )
 			{
-				while ( this.Count < size )
+				while( this.Count < size )
 				{
 					Add( new GpuProgramParameters.FloatConstantEntry() );
 				}
@@ -153,7 +157,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public class IntConstantEntry
 		{
-			public int[] val = new int[ 4 ];
+			public int[] val = new int[4];
 			public bool isSet = false;
 		}
 
@@ -164,7 +168,7 @@ namespace Axiom.Graphics
 		{
 			public void Resize( int size )
 			{
-				while ( this.Count < size )
+				while( this.Count < size )
 				{
 					Add( new GpuProgramParameters.IntConstantEntry() );
 				}

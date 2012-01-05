@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,15 +19,18 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
+
 using Axiom.Core;
+
 using Math = Axiom.Math;
 
 namespace Axiom.Samples.Extras.MousePicking
 {
-	class SelectionRectangle : ManualObject
+	internal class SelectionRectangle : ManualObject
 	{
 		/// <summary>
 		/// There are two ways to create your own mesh within Axiom.
@@ -139,6 +143,7 @@ namespace Axiom.Samples.Extras.MousePicking
 			 */
 			BoundingBox.IsInfinite = true;
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>

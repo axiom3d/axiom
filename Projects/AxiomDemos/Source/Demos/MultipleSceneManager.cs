@@ -10,12 +10,12 @@ using Axiom.Math;
 
 namespace Axiom.Demos
 {
-	class MultipleSceneManager : TechDemo
+	internal class MultipleSceneManager : TechDemo
 	{
-		const string CAMERA_NAME = "Camera";
+		private const string CAMERA_NAME = "Camera";
 
-		SceneManager[] _sceneManagers = new SceneManager[ 3 ];
-		Camera[] _cameras = new Camera[ 3 ];
+		private SceneManager[] _sceneManagers = new SceneManager[3];
+		private Camera[] _cameras = new Camera[3];
 
 		private string bspPath;
 		private string bspMap;
@@ -65,6 +65,7 @@ namespace Axiom.Demos
 		public override void CreateScene()
 		{
 			#region Primary Scene
+
 			// set some ambient light
 			scene.AmbientLight = new ColorEx( 1.0f, 0.2f, 0.2f, 0.2f );
 
@@ -141,7 +142,7 @@ namespace Axiom.Demos
 
 			_sceneManagers[ 1 ].SetWorldGeometry( "terrain.xml" );
 			// Infinite far plane?
-			if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) )
+			if( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) )
 			{
 				_cameras[ 1 ].Far = 0;
 			}
@@ -217,7 +218,6 @@ namespace Axiom.Demos
 
 			#endregion Tertiary ViewPort
 		}
-
 	}
 }
 

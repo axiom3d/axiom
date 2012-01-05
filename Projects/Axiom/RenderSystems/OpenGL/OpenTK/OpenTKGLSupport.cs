@@ -59,9 +59,7 @@ namespace Axiom.RenderSystems.OpenGL
 		private List<int> _fsaaLevels = new List<int>();
 
 		public GLSupport()
-			: base()
-		{
-		}
+			: base() {}
 
 		#region BaseGLSupport Members
 
@@ -86,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 			return IntPtr.Zero;
 		}
 
-		void GetFSAALevels()
+		private void GetFSAALevels()
 		{
 			//TODO: add only supported fsaa levels
 			_fsaaLevels.Add( 2 );
@@ -119,24 +117,24 @@ namespace Axiom.RenderSystems.OpenGL
 			DisplayDevice dev = DisplayDevice.Default;
 
 			// add the resolutions to the config
-			for ( int q = 0; q < dev.AvailableResolutions.Count; q++ )
+			for( int q = 0; q < dev.AvailableResolutions.Count; q++ )
 			{
-				if ( dev.AvailableResolutions[ q ].BitsPerPixel >= 16 )
+				if( dev.AvailableResolutions[ q ].BitsPerPixel >= 16 )
 				{
 					int width = dev.AvailableResolutions[ q ].Width;
 					int height = dev.AvailableResolutions[ q ].Height;
 
 					// filter out the lower resolutions and dupe frequencies
-					if ( width >= 640 && height >= 480 )
+					if( width >= 640 && height >= 480 )
 					{
 						string query = string.Format( "{0} x {1}", width, height );
 
-						if ( !optVideoMode.PossibleValues.Values.Contains( query ) )
+						if( !optVideoMode.PossibleValues.Values.Contains( query ) )
 						{
 							// add a new row to the display settings table
 							optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, query );
 						}
-						if ( optVideoMode.PossibleValues.Count == 1 && String.IsNullOrEmpty( optVideoMode.Value ) )
+						if( optVideoMode.PossibleValues.Count == 1 && String.IsNullOrEmpty( optVideoMode.Value ) )
 						{
 							optVideoMode.Value = query;
 						}
@@ -148,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// FSAA
 			GetFSAALevels();
-			foreach ( int level in _fsaaLevels )
+			foreach( int level in _fsaaLevels )
 			{
 				optFSAA.PossibleValues.Add( level, level.ToString() );
 			}
@@ -212,7 +210,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			RenderWindow autoWindow = null;
 
-			if ( autoCreateWindow )
+			if( autoCreateWindow )
 			{
 				int width = 800;
 				int height = 600;
@@ -222,8 +220,10 @@ namespace Axiom.RenderSystems.OpenGL
 				ConfigOption optVM = ConfigOptions[ "Video Mode" ];
 				string vm = optVM.Value;
 				int pos = vm.IndexOf( 'x' );
-				if ( pos == -1 )
+				if( pos == -1 )
+				{
 					throw new Exception( "Invalid Video Mode provided" );
+				}
 				width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
 				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1 ) );
 
@@ -233,19 +233,23 @@ namespace Axiom.RenderSystems.OpenGL
 				ConfigOption opt;
 
 				opt = ConfigOptions[ "Color Depth" ];
-				if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
+				if( opt != null && opt.Value != null && opt.Value.Length > 0 )
+				{
 					miscParams.Add( "colorDepth", opt.Value );
+				}
 
 				opt = ConfigOptions[ "VSync" ];
-				if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
+				if( opt != null && opt.Value != null && opt.Value.Length > 0 )
 				{
 					miscParams.Add( "vsync", opt.Value );
 					//TODO : renderSystem.WaitForVerticalBlank = (bool)opt.Value;
 				}
 
 				opt = ConfigOptions[ "FSAA" ];
-				if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
+				if( opt != null && opt.Value != null && opt.Value.Length > 0 )
+				{
 					miscParams.Add( "fsaa", opt.Value );
+				}
 
 				miscParams.Add( "title", windowTitle );
 
@@ -264,13 +268,15 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			LogManager.Instance.Write( "OpenGL : RenderSystem Option: {0} = {1}", name, value );
 
-			if ( name == "Video Mode" )
+			if( name == "Video Mode" )
+			{
 				_refreshConfig();
+			}
 
-			if ( name == "Full Screen" )
+			if( name == "Full Screen" )
 			{
 				ConfigOption opt = ConfigOptions[ "Display Frequency" ];
-				if ( value == "No" )
+				if( value == "No" )
 				{
 					opt.Value = "N/A";
 					opt.Immutable = true;
@@ -293,31 +299,33 @@ namespace Axiom.RenderSystems.OpenGL
 			string val = optVideoMode.Value;
 
 			int pos = val.IndexOf( 'x' );
-			if ( pos == -1 )
+			if( pos == -1 )
+			{
 				throw new Exception( "Invalid Video Mode provided" );
+			}
 			int width = Int32.Parse( val.Substring( 0, pos ) );
 			int height = Int32.Parse( val.Substring( pos + 1 ) );
 
 			DisplayDevice dev = DisplayDevice.Default;
 			optColorDepth.PossibleValues.Clear();
-			for ( int q = 0; q < dev.AvailableResolutions.Count; q++ )
+			for( int q = 0; q < dev.AvailableResolutions.Count; q++ )
 			{
 				DisplayResolution item = dev.AvailableResolutions[ q ];
-				if ( item.Width == width &&
-					 item.Height == height && item.BitsPerPixel >= 16 )
+				if( item.Width == width &&
+				    item.Height == height && item.BitsPerPixel >= 16 )
 				{
-					if ( !optColorDepth.PossibleValues.ContainsValue( item.BitsPerPixel.ToString() ) )
+					if( !optColorDepth.PossibleValues.ContainsValue( item.BitsPerPixel.ToString() ) )
 					{
 						optColorDepth.PossibleValues.Add( optColorDepth.PossibleValues.Values.Count, item.BitsPerPixel.ToString() );
 					}
-					if ( !optDisplayFrequency.PossibleValues.ContainsValue( item.RefreshRate.ToString() ) )
+					if( !optDisplayFrequency.PossibleValues.ContainsValue( item.RefreshRate.ToString() ) )
 					{
 						optDisplayFrequency.PossibleValues.Add( optDisplayFrequency.PossibleValues.Values.Count, item.RefreshRate.ToString() );
 					}
 				}
 			}
 
-			if ( optFullScreen.Value == "No" )
+			if( optFullScreen.Value == "No" )
 			{
 				optDisplayFrequency.Value = "N/A";
 				optDisplayFrequency.Immutable = true;
@@ -327,10 +335,14 @@ namespace Axiom.RenderSystems.OpenGL
 				optDisplayFrequency.Immutable = false;
 				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
-			if ( optColorDepth.PossibleValues.Values.Count > 0 )
+			if( optColorDepth.PossibleValues.Values.Count > 0 )
+			{
 				optColorDepth.Value = optColorDepth.PossibleValues.Values[ 0 ];
-			if ( optDisplayFrequency.Value != "N/A" )
+			}
+			if( optDisplayFrequency.Value != "N/A" )
+			{
 				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+			}
 		}
 
 		#endregion Methods

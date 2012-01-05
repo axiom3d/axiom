@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -30,7 +32,7 @@ using Axiom.Graphics;
 
 namespace Axiom.Samples.Extras.Primitives
 {
-	class PrimitivesSample : SdkSample
+	internal class PrimitivesSample : SdkSample
 	{
 		private Vector4 color = new Vector4( 1, 0, 0, 1 );
 		private Line3d line;
@@ -54,20 +56,28 @@ namespace Axiom.Samples.Extras.Primitives
 		/// <returns></returns>
 		public override bool FrameStarted( FrameEventArgs evt )
 		{
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return false;
+			}
 
 			color.x += evt.TimeSinceLastFrame * .6f;
-			if ( color.x > 1 )
+			if( color.x > 1 )
+			{
 				color.x = 0;
+			}
 
 			color.y += evt.TimeSinceLastFrame * .6f;
-			if ( color.y > 1 )
+			if( color.y > 1 )
+			{
 				color.y = 0;
+			}
 
 			color.z += evt.TimeSinceLastFrame * .6f;
-			if ( color.z > 1 )
+			if( color.z > 1 )
+			{
 				color.z = 0;
+			}
 			return base.FrameStarted( evt );
 		}
 
@@ -132,9 +142,9 @@ namespace Axiom.Samples.Extras.Primitives
 	public class Line3d : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
-		HardwareVertexBuffer posBuffer, colorBuffer;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
+		private HardwareVertexBuffer posBuffer, colorBuffer;
 
 		/// <summary>
 		///
@@ -169,7 +179,9 @@ namespace Axiom.Samples.Extras.Primitives
 			// create a vertex buffer for the position
 			posBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			Vector3[] pos = new Vector3[] { startPoint, endPoint };
+			Vector3[] pos = new Vector3[] {
+			                              	startPoint, endPoint
+			                              };
 
 			// write the data to the position buffer
 			posBuffer.WriteData( 0, posBuffer.Size, pos, true );
@@ -182,7 +194,9 @@ namespace Axiom.Samples.Extras.Primitives
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
-			int[] colors = new int[] { colorValue, colorValue };
+			int[] colors = new int[] {
+			                         	colorValue, colorValue
+			                         };
 
 			// write the data to the position buffer
 			colorBuffer.WriteData( 0, colorBuffer.Size, colors, true );
@@ -221,19 +235,13 @@ namespace Axiom.Samples.Extras.Primitives
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override float BoundingRadius { get { return 0; } }
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					MaterialManager.Instance.Remove( "LineMat" );
 					colorBuffer.Dispose();
@@ -244,16 +252,15 @@ namespace Axiom.Samples.Extras.Primitives
 		}
 	}
 
-
 	/// <summary>
 	///		A class for rendering a simple triangle with colored vertices.
 	/// </summary>
 	public class Triangle : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
-		HardwareVertexBuffer posBuffer, colorBuffer;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
+		private HardwareVertexBuffer posBuffer, colorBuffer;
 
 		/// <summary>
 		///
@@ -280,9 +287,11 @@ namespace Axiom.Samples.Extras.Primitives
 
 			// POSITIONS
 			// create a vertex buffer for the position
-			posBuffer =	HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			posBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			Vector3[] positions = new Vector3[] { v1, v2, v3 };
+			Vector3[] positions = new Vector3[] {
+			                                    	v1, v2, v3
+			                                    };
 
 			// write the positions to the buffer
 			posBuffer.WriteData( 0, posBuffer.Size, positions, true );
@@ -298,10 +307,10 @@ namespace Axiom.Samples.Extras.Primitives
 			// note: these must be converted to the current API's
 			// preferred packed int format
 			int[] colors = new int[] {
-				Root.Instance.RenderSystem.ConvertColor(c1),
-				Root.Instance.RenderSystem.ConvertColor(c2),
-				Root.Instance.RenderSystem.ConvertColor(c3)
-			};
+			                         	Root.Instance.RenderSystem.ConvertColor( c1 ),
+			                         	Root.Instance.RenderSystem.ConvertColor( c2 ),
+			                         	Root.Instance.RenderSystem.ConvertColor( c3 )
+			                         };
 
 			// write the colors to the color buffer
 			colorBuffer.WriteData( 0, colorBuffer.Size, colors, true );
@@ -344,19 +353,13 @@ namespace Axiom.Samples.Extras.Primitives
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override float BoundingRadius { get { return 0; } }
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					MaterialManager.Instance.Remove( "TriMat" );
 					colorBuffer.Dispose();
@@ -365,6 +368,5 @@ namespace Axiom.Samples.Extras.Primitives
 			}
 			base.dispose( disposeManagedResources );
 		}
-
 	}
 }

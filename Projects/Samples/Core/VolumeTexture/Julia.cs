@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Math;
@@ -27,7 +29,7 @@ namespace Axiom.Samples.Core
 	/// <summaRy>
 	/// 
 	/// </summaRy>
-	class Julia
+	internal class Julia
 	{
 		/// <summaRy>
 		/// 
@@ -45,7 +47,7 @@ namespace Axiom.Samples.Core
 		/// </summaRy>
 		/// <paRam name="a"></paRam>
 		/// <paRam name="b"></paRam>
-		public void QAdd(ref Quat a, Quat b )
+		public void QAdd( ref Quat a, Quat b )
 		{
 			a.R += b.R;
 			a.I += b.I;
@@ -79,7 +81,6 @@ namespace Axiom.Samples.Core
 			b.J = 2.0f * a.R * a.J;
 			b.K = 2.0f * a.R * a.K;
 		}
-
 
 		protected float globalReal;
 		protected float globalImag;
@@ -130,14 +131,16 @@ namespace Axiom.Samples.Core
 			q.J = z;
 			q.K = 0;
 
-			for (i = 30; i > 0; i-- )
+			for( i = 30; i > 0; i-- )
 			{
 				QSqr( ref tmp, q );
 				QMult( ref q, emio, tmp );
 				QAdd( ref q, c );
 
-				if ( q.R * q.R + q.I * q.I + q.J * q.J + q.K * q.K > 8.0 )
+				if( q.R * q.R + q.I * q.I + q.J * q.J + q.K * q.K > 8.0 )
+				{
 					break;
+				}
 			}
 
 			return (float)i;

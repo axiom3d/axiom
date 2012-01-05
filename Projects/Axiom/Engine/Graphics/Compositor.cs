@@ -71,19 +71,15 @@ namespace Axiom.Graphics
 
 		protected List<CompositionTechnique> techniques;
 		private ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
+
 		/// <summary>
 		/// List of all techniques
 		/// </summary>
-		public IList<CompositionTechnique> Techniques
-		{
-			get
-			{
-				return readOnlyTechniques;
-			}
-		}
+		public IList<CompositionTechnique> Techniques { get { return readOnlyTechniques; } }
 
 		protected List<CompositionTechnique> supportedTechniques;
 		private ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
+
 		/// <summary>
 		/// List of supported techniques
 		/// </summary>
@@ -92,13 +88,7 @@ namespace Axiom.Graphics
 		///    which typically happens on loading it. Therefore, if this method returns
 		///    an empty list, try calling <see>Compositor.Load</see>.
 		///</remarks>
-		public IList<CompositionTechnique> SupportedTechniques
-		{
-			get
-			{
-				return readOnlySupportedTechniques;
-			}
-		}
+		public IList<CompositionTechnique> SupportedTechniques { get { return readOnlySupportedTechniques; } }
 
 		///<summary>
 		///     This is set if the techniques change and the supportedness of techniques has to be
@@ -152,10 +142,10 @@ namespace Axiom.Graphics
 		/// </remarks>
 		protected override void load()
 		{
-			if ( !IsLoaded )
+			if( !IsLoaded )
 			{
 				// compile if needed
-				if ( compilationRequired )
+				if( compilationRequired )
 				{
 					Compile();
 				}
@@ -166,32 +156,29 @@ namespace Axiom.Graphics
 		///		Unloads the material, frees resources etc.
 		///		<see cref="Resource"/>
 		/// </summary>
-		protected override void unload()
-		{
-		}
+		protected override void unload() {}
 
 		/// <summary>
 		///	    Disposes of any resources used by this object.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					this.RemoveAllTechniques();
 
-					foreach ( KeyValuePair<string, MultiRenderTarget> item in globalMRTs )
+					foreach( KeyValuePair<string, MultiRenderTarget> item in globalMRTs )
 					{
 						item.Value.Dispose();
 					}
 					globalMRTs.Clear();
 
-					foreach ( KeyValuePair<string, Texture> item in globalTextures )
+					foreach( KeyValuePair<string, Texture> item in globalTextures )
 					{
 						item.Value.Dispose();
 					}
-
 				}
 
 				// There are no unmanaged resources to release, but
@@ -208,7 +195,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public override void Touch()
 		{
-			if ( compilationRequired )
+			if( compilationRequired )
 			{
 				Compile();
 			}
@@ -274,17 +261,17 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public CompositionTechnique GetSupportedTechniqueByScheme( string schemeName )
 		{
-			foreach ( CompositionTechnique t in supportedTechniques )
+			foreach( CompositionTechnique t in supportedTechniques )
 			{
-				if ( t.SchemeName == schemeName )
+				if( t.SchemeName == schemeName )
 				{
 					return t;
 				}
 			}
 			// didn't find a matching one
-			foreach ( CompositionTechnique t in supportedTechniques )
+			foreach( CompositionTechnique t in supportedTechniques )
 			{
-				if ( String.IsNullOrEmpty( t.SchemeName ) )
+				if( String.IsNullOrEmpty( t.SchemeName ) )
 				{
 					return t;
 				}
@@ -302,13 +289,17 @@ namespace Axiom.Graphics
 		{
 			//Try simple texture
 			Texture ret = null;
-			if ( globalTextures.TryGetValue( name, out ret ) )
+			if( globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret;
+			}
 
 			//Try MRT
 			string mrtName = GetMRTLocalName( name, mrtIndex );
-			if ( !globalTextures.TryGetValue( name, out ret ) )
+			if( !globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret;
+			}
 
 			throw new AxiomException( "Non-existent global texture name." );
 		}
@@ -327,13 +318,17 @@ namespace Axiom.Graphics
 		{
 			//Try simple texture
 			Texture ret = null;
-			if ( globalTextures.TryGetValue( name, out ret ) )
+			if( globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret.GetBuffer().GetRenderTarget();
+			}
 
 			//Try MRT
 			MultiRenderTarget mrt = null;
-			if ( globalMRTs.TryGetValue( name, out mrt ) )
+			if( globalMRTs.TryGetValue( name, out mrt ) )
+			{
 				return mrt;
+			}
 
 			throw new AxiomException( "Non-existent global texture name." );
 		}
@@ -357,22 +352,22 @@ namespace Axiom.Graphics
 			// Sift out supported techniques
 			supportedTechniques.Clear();
 			// Try looking for exact technique support with no texture fallback
-			foreach ( CompositionTechnique t in techniques )
+			foreach( CompositionTechnique t in techniques )
 			{
 				// Look for exact texture support first
-				if ( t.IsSupported( false ) )
+				if( t.IsSupported( false ) )
 				{
 					supportedTechniques.Add( t );
 				}
 			}
 
-			if ( supportedTechniques.Count == 0 )
+			if( supportedTechniques.Count == 0 )
 			{
 				// Check again, being more lenient with textures
-				foreach ( CompositionTechnique t in techniques )
+				foreach( CompositionTechnique t in techniques )
 				{
 					// Allow texture support with degraded pixel format
-					if ( t.IsSupported( true ) )
+					if( t.IsSupported( true ) )
 					{
 						supportedTechniques.Add( t );
 					}
@@ -386,7 +381,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void CreateGlobalTextures()
 		{
-			if ( supportedTechniques.Count == 0 )
+			if( supportedTechniques.Count == 0 )
 			{
 				return;
 			}
@@ -398,20 +393,20 @@ namespace Axiom.Graphics
 			//Initialize global textures from first supported technique
 			CompositionTechnique firstTechnique = supportedTechniques[ 0 ];
 
-			foreach ( CompositionTechnique.TextureDefinition def in firstTechnique.TextureDefinitions )
+			foreach( CompositionTechnique.TextureDefinition def in firstTechnique.TextureDefinitions )
 			{
-				if ( def.Scope == CompositionTechnique.TextureScope.Global )
+				if( def.Scope == CompositionTechnique.TextureScope.Global )
 				{
 					//Check that this is a legit global texture
-					if ( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
+					if( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
 					{
 						throw new AxiomException( "Global compositor texture definition can not be a reference." );
 					}
-					if ( def.Width == 0 || def.Height == 0 )
+					if( def.Width == 0 || def.Height == 0 )
 					{
 						throw new AxiomException( "Global compositor texture definition must have absolute size." );
 					}
-					if ( def.Pooled )
+					if( def.Pooled )
 					{
 						LogManager.Instance.Write( "Pooling global compositor textures has no effect", null );
 					}
@@ -420,7 +415,7 @@ namespace Axiom.Graphics
 					//TODO GSOC : Heavy copy-pasting from CompositorInstance. How to we solve it?
 					// Make the tetxure
 					RenderTarget renderTarget = null;
-					if ( def.PixelFormats.Count > 1 )
+					if( def.PixelFormats.Count > 1 )
 					{
 						string MRTBaseName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
 						MultiRenderTarget mrt =
@@ -429,13 +424,13 @@ namespace Axiom.Graphics
 
 						// create and bind individual surfaces
 						int atch = 0;
-						foreach ( PixelFormat p in def.PixelFormats )
+						foreach( PixelFormat p in def.PixelFormats )
 						{
 							string texName = MRTBaseName + "/" + atch.ToString();
 							Texture tex =
 								TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-																	 TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null,
-																	 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
+								                                      TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null,
+								                                      def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
 
 							RenderTexture rt = tex.GetBuffer().GetRenderTarget();
 							rt.IsAutoUpdated = false;
@@ -454,8 +449,8 @@ namespace Axiom.Graphics
 						texName = texName.Replace( " ", "_" );
 						Texture tex =
 							TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-																 TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null,
-																 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
+							                                      TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null,
+							                                      def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
 
 						renderTarget = tex.GetBuffer().GetRenderTarget();
 						globalTextures.Add( def.Name, tex );
@@ -464,15 +459,15 @@ namespace Axiom.Graphics
 			}
 
 			//Validate that all other supported techniques expose the same set of global textures.
-			foreach ( CompositionTechnique technique in supportedTechniques )
+			foreach( CompositionTechnique technique in supportedTechniques )
 			{
 				bool isConsistent = true;
 				int numGlobals = 0;
-				foreach ( CompositionTechnique.TextureDefinition texDef in technique.TextureDefinitions )
+				foreach( CompositionTechnique.TextureDefinition texDef in technique.TextureDefinitions )
 				{
-					if ( texDef.Scope == CompositionTechnique.TextureScope.Global )
+					if( texDef.Scope == CompositionTechnique.TextureScope.Global )
 					{
-						if ( !globalTextureNames.Contains( texDef.Name ) )
+						if( !globalTextureNames.Contains( texDef.Name ) )
 						{
 							isConsistent = false;
 							break;
@@ -480,11 +475,11 @@ namespace Axiom.Graphics
 						numGlobals++;
 					}
 				}
-				if ( numGlobals != globalTextureNames.Count )
+				if( numGlobals != globalTextureNames.Count )
 				{
 					isConsistent = false;
 				}
-				if ( !isConsistent )
+				if( !isConsistent )
 				{
 					throw new AxiomException( "Different composition techniques define different global textures." );
 				}
@@ -496,13 +491,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void FreeGlobalTextures()
 		{
-			foreach ( Texture tex in globalTextures.Values )
+			foreach( Texture tex in globalTextures.Values )
 			{
 				TextureManager.Instance.Remove( tex.Name );
 			}
 			globalTextures.Clear();
 
-			foreach ( MultiRenderTarget mrt in globalMRTs.Values )
+			foreach( MultiRenderTarget mrt in globalMRTs.Values )
 			{
 				Root.Instance.RenderSystem.DestroyRenderTarget( mrt.Name );
 			}

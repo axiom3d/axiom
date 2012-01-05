@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -115,8 +119,10 @@ namespace Axiom.Controllers
 		{
 			// if we are enabled, set the destination value based on the return value of the
 			// controller function ran using the source value
-			if ( isEnabled )
+			if( isEnabled )
+			{
 				destination.Value = function.Execute( source.Value );
+			}
 		}
 
 		#endregion
@@ -126,62 +132,22 @@ namespace Axiom.Controllers
 		/// <summary>
 		///		The value that returns the source data for this controller.
 		/// </summary>
-		public IControllerValue<T> Source
-		{
-			get
-			{
-				return source;
-			}
-			set
-			{
-				source = value;
-			}
-		}
+		public IControllerValue<T> Source { get { return source; } set { source = value; } }
 
 		/// <summary>
 		///		The object the sets the destination objects value.
 		/// </summary>
-		public IControllerValue<T> Destination
-		{
-			get
-			{
-				return destination;
-			}
-			set
-			{
-				destination = value;
-			}
-		}
+		public IControllerValue<T> Destination { get { return destination; } set { destination = value; } }
 
 		/// <summary>
 		///		Gets/Sets the eference to the function to be used for this controller.
 		/// </summary>
-		public IControllerFunction<T> Function
-		{
-			get
-			{
-				return function;
-			}
-			set
-			{
-				function = value;
-			}
-		}
+		public IControllerFunction<T> Function { get { return function; } set { function = value; } }
 
 		/// <summary>
 		///		Gets/Sets whether this controller is active or not.
 		/// </summary>
-		public bool IsEnabled
-		{
-			get
-			{
-				return isEnabled;
-			}
-			set
-			{
-				isEnabled = value;
-			}
-		}
+		public bool IsEnabled { get { return isEnabled; } set { isEnabled = value; } }
 
 		#endregion
 	}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,11 +50,9 @@ namespace Axiom.ParticleFX
 {
 	public enum ForceApplication
 	{
-		[ScriptEnum( "average" )]
-		Average,
+		[ScriptEnum( "average" )] Average,
 
-		[ScriptEnum( "add" )]
-		Add
+		[ScriptEnum( "add" )] Add
 	}
 
 	/// <summary>
@@ -71,56 +73,37 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 scaledVector = Vector3.Zero;
 
-			if ( forceApp == ForceApplication.Add )
+			if( forceApp == ForceApplication.Add )
 			{
 				// scale force by time
 				scaledVector = forceVector * timeElapsed;
 			}
 
 			// affect each particle
-			for ( int i = 0; i < system.Particles.Count; i++ )
+			for( int i = 0; i < system.Particles.Count; i++ )
 			{
 				Particle p = (Particle)system.Particles[ i ];
 
-				if ( forceApp == ForceApplication.Add )
+				if( forceApp == ForceApplication.Add )
 				{
 					p.Direction += scaledVector;
 				}
 				else
-				{ // Average
+				{
+					// Average
 					p.Direction = ( p.Direction + forceVector ) / 2;
 				}
 			}
 		}
 
-		public Vector3 Force
-		{
-			get
-			{
-				return forceVector;
-			}
-			set
-			{
-				forceVector = value;
-			}
-		}
+		public Vector3 Force { get { return forceVector; } set { forceVector = value; } }
 
-		public ForceApplication ForceApplication
-		{
-			get
-			{
-				return forceApp;
-			}
-			set
-			{
-				forceApp = value;
-			}
-		}
+		public ForceApplication ForceApplication { get { return forceApp; } set { forceApp = value; } }
 
 		#region Command definition classes
 
 		[ScriptableProperty( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
-		class ForceVectorCommand : IPropertyCommand
+		private class ForceVectorCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -133,6 +116,7 @@ namespace Axiom.ParticleFX
 				// TODO: Common way for vector string rep, maybe modify ToString
 				return string.Format( "{0}, {1}, {2}", vec.x, vec.y, vec.z );
 			}
+
 			public void Set( object target, string val )
 			{
 				LinearForceAffector affector = target as LinearForceAffector;
@@ -144,7 +128,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "force_application", "Type of force to apply to this particle.", typeof( ParticleAffector ) )]
-		class ForceApplicationCommand : IPropertyCommand
+		private class ForceApplicationCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -155,6 +139,7 @@ namespace Axiom.ParticleFX
 				// TODO: Reverse lookup the enum attribute
 				return affector.ForceApplication.ToString().ToLower();
 			}
+
 			public void Set( object target, string val )
 			{
 				LinearForceAffector affector = target as LinearForceAffector;
@@ -163,7 +148,7 @@ namespace Axiom.ParticleFX
 				object enumVal = ScriptEnumAttribute.Lookup( val, typeof( ForceApplication ) );
 
 				// if a value was found, assign it
-				if ( enumVal != null )
+				if( enumVal != null )
 				{
 					affector.ForceApplication = ( (ForceApplication)enumVal );
 				}

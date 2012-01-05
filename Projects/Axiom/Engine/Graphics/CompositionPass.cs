@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -25,14 +26,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /*
  * Many thanks to the folks at Multiverse for providing the initial port for this class
  */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,13 +48,13 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.Configuration;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-
 	///<summary>
 	///    Object representing one pass or operation in a composition sequence. This provides a 
 	///    method to conviently interleave RenderSystem commands between Render Queues.
@@ -97,73 +101,41 @@ namespace Axiom.Graphics
 		///    Parent technique
 		///</summary>
 		protected CompositionTargetPass parent;
+
 		///<summary>
 		///    Parent technique
 		///</summary>
-		public CompositionTargetPass Parent
-		{
-			get
-			{
-				return parent;
-			}
-		}
+		public CompositionTargetPass Parent { get { return parent; } }
 
 		///<summary>
 		///    Type of composition pass
 		///</summary>
 		protected CompositorPassType type;
+
 		///<summary>
 		///    Type of composition pass
 		///</summary>
-		public CompositorPassType Type
-		{
-			get
-			{
-				return type;
-			}
-			set
-			{
-				type = value;
-			}
-		}
+		public CompositorPassType Type { get { return type; } set { type = value; } }
 
 		///<summary>
 		///    Identifier for this pass
 		///</summary>
 		protected uint identifier;
+
 		///<summary>
 		///    Identifier for this pass
 		///</summary>
-		public uint Identifier
-		{
-			get
-			{
-				return identifier;
-			}
-			set
-			{
-				identifier = value;
-			}
-		}
+		public uint Identifier { get { return identifier; } set { identifier = value; } }
 
 		///<summary>
 		///    Material used for rendering
 		///</summary>
 		protected Material material;
+
 		///<summary>
 		///    Material used for rendering
 		///</summary>
-		public Material Material
-		{
-			get
-			{
-				return material;
-			}
-			set
-			{
-				material = value;
-			}
-		}
+		public Material Material { get { return material; } set { material = value; } }
 
 		///<summary>
 		///    Material name to use for rendering
@@ -172,22 +144,20 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( material != null )
+				if( material != null )
 				{
 					return material.Name;
 				}
 				return string.Empty;
 			}
-			set
-			{
-				material = (Material)MaterialManager.Instance[ value ];
-			}
+			set { material = (Material)MaterialManager.Instance[ value ]; }
 		}
 
 		/// <summary>
 		/// Material scheme name
 		/// </summary>
 		protected string materialSchemeName;
+
 		/// <summary>
 		/// Get's or set's the material scheme used by this pass
 		/// </summary>
@@ -195,255 +165,107 @@ namespace Axiom.Graphics
 		/// Only applicable to passes that render the scene.
 		/// <see cref="Technique.Scheme"/>
 		/// </remarks>
-		public string MaterialScheme
-		{
-			get
-			{
-				return materialSchemeName;
-			}
-			set
-			{
-				materialSchemeName = value;
-			}
-		}
+		public string MaterialScheme { get { return materialSchemeName; } set { materialSchemeName = value; } }
 
 		///<summary>
 		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		protected RenderQueueGroupID firstRenderQueue;
+
 		///<summary>
 		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
-		public RenderQueueGroupID FirstRenderQueue
-		{
-			get
-			{
-				return firstRenderQueue;
-			}
-			set
-			{
-				firstRenderQueue = value;
-			}
-		}
+		public RenderQueueGroupID FirstRenderQueue { get { return firstRenderQueue; } set { firstRenderQueue = value; } }
 
 		///<summary>
 		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		protected RenderQueueGroupID lastRenderQueue;
+
 		///<summary>
 		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
-		public RenderQueueGroupID LastRenderQueue
-		{
-			get
-			{
-				return lastRenderQueue;
-			}
-			set
-			{
-				lastRenderQueue = value;
-			}
-		}
+		public RenderQueueGroupID LastRenderQueue { get { return lastRenderQueue; } set { lastRenderQueue = value; } }
 
 		///<summary>
 		///    Clear buffers (in case of CompositorPassType.Clear)
 		///</summary>
 		protected FrameBufferType clearBuffers;
+
 		///<summary>
 		///    Clear buffers (in case of CompositorPassType.Clear)
 		///</summary>
-		public FrameBufferType ClearBuffers
-		{
-			get
-			{
-				return clearBuffers;
-			}
-			set
-			{
-				clearBuffers = value;
-			}
-		}
+		public FrameBufferType ClearBuffers { get { return clearBuffers; } set { clearBuffers = value; } }
 
 		///<summary>
 		///    Clear colour (in case of CompositorPassType.Clear)
 		///</summary>
 		protected ColorEx clearColor;
+
 		///<summary>
 		///    Clear colour (in case of CompositorPassType.Clear)
 		///</summary>
-		public ColorEx ClearColor
-		{
-			get
-			{
-				return clearColor;
-			}
-			set
-			{
-				clearColor = value;
-			}
-		}
+		public ColorEx ClearColor { get { return clearColor; } set { clearColor = value; } }
 
 		///<summary>
 		///    Clear depth (in case of CompositorPassType.Clear)
 		///</summary>
 		protected float clearDepth;
+
 		///<summary>
 		///    Clear depth (in case of CompositorPassType.Clear)
 		///</summary>
-		public float ClearDepth
-		{
-			get
-			{
-				return clearDepth;
-			}
-			set
-			{
-				clearDepth = value;
-			}
-		}
+		public float ClearDepth { get { return clearDepth; } set { clearDepth = value; } }
 
 		///<summary>
 		///    Clear stencil value (in case of CompositorPassType.Clear)
 		///</summary>
 		protected int clearStencil;
+
 		///<summary>
 		///    Clear stencil value (in case of CompositorPassType.Clear)
 		///</summary>
-		public int ClearStencil
-		{
-			get
-			{
-				return clearStencil;
-			}
-			set
-			{
-				clearStencil = value;
-			}
-		}
+		public int ClearStencil { get { return clearStencil; } set { clearStencil = value; } }
 
 		///<summary>
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
 		///</summary>
-		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
+		protected InputTexture[] inputs = new InputTexture[Config.MaxTextureLayers];
+
 		///<summary>
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
 		///</summary>
-		public InputTexture[] Inputs
-		{
-			get
-			{
-				return inputs;
-			}
-		}
+		public InputTexture[] Inputs { get { return inputs; } }
 
 		///<summary>
 		///    Stencil operation parameters
 		///</summary>
 		protected bool stencilCheck;
-		public bool StencilCheck
-		{
-			get
-			{
-				return stencilCheck;
-			}
-			set
-			{
-				stencilCheck = value;
-			}
-		}
+
+		public bool StencilCheck { get { return stencilCheck; } set { stencilCheck = value; } }
 
 		protected CompareFunction stencilFunc;
-		public CompareFunction StencilFunc
-		{
-			get
-			{
-				return stencilFunc;
-			}
-			set
-			{
-				stencilFunc = value;
-			}
-		}
+		public CompareFunction StencilFunc { get { return stencilFunc; } set { stencilFunc = value; } }
 
 		protected int stencilRefValue;
-		public int StencilRefValue
-		{
-			get
-			{
-				return stencilRefValue;
-			}
-			set
-			{
-				stencilRefValue = value;
-			}
-		}
+		public int StencilRefValue { get { return stencilRefValue; } set { stencilRefValue = value; } }
 
 		protected int stencilMask;
-		public int StencilMask
-		{
-			get
-			{
-				return stencilMask;
-			}
-			set
-			{
-				stencilMask = value;
-			}
-		}
+		public int StencilMask { get { return stencilMask; } set { stencilMask = value; } }
 
 		protected StencilOperation stencilFailOp;
-		public StencilOperation StencilFailOp
-		{
-			get
-			{
-				return stencilFailOp;
-			}
-			set
-			{
-				stencilFailOp = value;
-			}
-		}
+		public StencilOperation StencilFailOp { get { return stencilFailOp; } set { stencilFailOp = value; } }
 
 		protected StencilOperation stencilDepthFailOp;
-		public StencilOperation StencilDepthFailOp
-		{
-			get
-			{
-				return stencilDepthFailOp;
-			}
-			set
-			{
-				stencilDepthFailOp = value;
-			}
-		}
+		public StencilOperation StencilDepthFailOp { get { return stencilDepthFailOp; } set { stencilDepthFailOp = value; } }
 
 		protected StencilOperation stencilPassOp;
-		public StencilOperation StencilPassOp
-		{
-			get
-			{
-				return stencilPassOp;
-			}
-			set
-			{
-				stencilPassOp = value;
-			}
-		}
+		public StencilOperation StencilPassOp { get { return stencilPassOp; } set { stencilPassOp = value; } }
 
 		protected bool stencilTwoSidedOperation;
-		public bool StencilTwoSidedOperation
-		{
-			get
-			{
-				return stencilTwoSidedOperation;
-			}
-			set
-			{
-				stencilTwoSidedOperation = value;
-			}
-		}
+		public bool StencilTwoSidedOperation { get { return stencilTwoSidedOperation; } set { stencilTwoSidedOperation = value; } }
 
 		/// <summary>
 		/// true if quad should not cover whole screen
@@ -474,33 +296,24 @@ namespace Axiom.Graphics
 		/// 
 		/// </summary>
 		protected bool quadFarCorners;
+
 		/// <summary>
 		/// Returns true if camera frustum far corners are provided in the quad.
 		/// </summary>
-		public bool QuadFarCorners
-		{
-			get
-			{
-				return quadFarCorners;
-			}
-		}
+		public bool QuadFarCorners { get { return quadFarCorners; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool quadFarCornersViewSpace;
+
 		/// <summary>
 		/// Returns true if the far corners provided in the quad are in view space
 		/// </summary>
-		public bool QuadFarCornersViewSpace
-		{
-			get
-			{
-				return quadFarCornersViewSpace;
-			}
-		}
+		public bool QuadFarCornersViewSpace { get { return quadFarCornersViewSpace; } }
 
 		protected string customType;
+
 		/// <summary>
 		/// Get's or set's the type name of this custom composition pass.
 		/// </summary>
@@ -508,29 +321,23 @@ namespace Axiom.Graphics
 		/// applies when PassType is RenderCustom
 		/// </note>
 		/// <see cref="CompositorManager.RegisterCustomCompositionPass"/>
-		public string CustomType
-		{
-			get
-			{
-				return customType;
-			}
-			set
-			{
-				customType = value;
-			}
-		}
+		public string CustomType { get { return customType; } set { customType = value; } }
 
 		public bool IsSupported
 		{
 			get
 			{
-				if ( type == CompositorPassType.RenderQuad )
+				if( type == CompositorPassType.RenderQuad )
 				{
-					if ( material == null )
+					if( material == null )
+					{
 						return false;
+					}
 					material.Compile();
-					if ( material.SupportedTechniques.Count == 0 )
+					if( material.SupportedTechniques.Count == 0 )
+					{
 						return false;
+					}
 				}
 				return true;
 			}
@@ -574,6 +381,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		#region InputTexture Management
+
 		///<summary>
 		///    Set an input local texture. An empty string clears the input.
 		///</summary>
@@ -622,10 +430,12 @@ namespace Axiom.Graphics
 			get
 			{
 				int count = 0;
-				for ( int i = 0; i < inputs.Length; ++i )
+				for( int i = 0; i < inputs.Length; ++i )
 				{
-					if ( !string.IsNullOrEmpty( inputs[ i ].Name ) )
+					if( !string.IsNullOrEmpty( inputs[ i ].Name ) )
+					{
 						count = i + 1;
+					}
 				}
 				return count;
 			}
@@ -639,8 +449,10 @@ namespace Axiom.Graphics
 		///</remarks>	
 		public void ClearAllInputs()
 		{
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for( int i = 0; i < Config.MaxTextureLayers; i++ )
+			{
 				inputs[ i ].Name = String.Empty;
+			}
 		}
 
 		#endregion InputTexture Management

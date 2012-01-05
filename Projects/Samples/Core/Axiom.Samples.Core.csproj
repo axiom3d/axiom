@@ -27,6 +27,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\bin\samples\</OutputPath>
@@ -41,15 +42,32 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.19506, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BezierPatch.cs" />
+    <Compile Include="BezierSample.cs" />
+    <Compile Include="BSPSample.cs" />
+    <Compile Include="CameraTrackingSample.cs" />
+    <Compile Include="Character\CharacterSample.cs" />
+    <Compile Include="Character\SinbadCharacterController.cs" />
+    <Compile Include="DynamicTexture.cs" />
+    <Compile Include="Ocean\MaterialControls.cs" />
+    <Compile Include="Ocean\OceanSample.cs" />
+    <Compile Include="Ocean\ShaderControl.cs" />
+    <Compile Include="ParticleFXSample.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmokeSample.cs" />
+    <Compile Include="SphereMappingSample.cs" />
+    <Compile Include="VolumeTexture\Julia.cs" />
+    <Compile Include="VolumeTexture\ThingRendable.cs" />
+    <Compile Include="VolumeTexture\VolumeRendable.cs" />
+    <Compile Include="VolumeTexture\VolumeTextureSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.csproj">

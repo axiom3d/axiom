@@ -1,11 +1,17 @@
 ﻿using System;
+
 using Axiom.Math;
+
 namespace Axiom.Samples
 {
 	public delegate void CursorMovedHandler( Vector2 cursorPosition );
-	public delegate void CursorPressedHandler(object sender, Vector2 cursorPosition );
+
+	public delegate void CursorPressedHandler( object sender, Vector2 cursorPosition );
+
 	public delegate void CursorReleasedHandler( Vector2 cursorPosition );
+
 	public delegate void LostFocusHandler();
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -14,11 +20,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		public Widget Widget
-		{
-			get;
-			set;
-		}
+		public Widget Widget { get; set; }
 
 		/// <summary>
 		/// 

@@ -42,7 +42,7 @@ namespace Axiom.Demos
 			rootNode.AttachObject( knot );
 
 			Entity clone = null;
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
 				// create a new node under the root
 				SceneNode node = scene.CreateSceneNode();
@@ -67,6 +67,7 @@ namespace Axiom.Demos
 				node.AttachObject( clone );
 			}
 		}
+
 		#endregion Methods
 	}
 }

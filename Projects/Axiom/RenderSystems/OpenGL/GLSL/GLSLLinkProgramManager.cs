@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -67,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		internal GLSLLinkProgramManager()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 			}
@@ -76,13 +80,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static GLSLLinkProgramManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static GLSLLinkProgramManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
@@ -92,14 +90,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		List holding previously created program objects.
 		/// </summary>
 		private Hashtable linkPrograms = new Hashtable();
+
 		/// <summary>
 		///		Currently active vertex GPU program.
 		/// </summary>
 		private GLSLGpuProgram activeVertexProgram;
+
 		/// <summary>
 		///		Currently active fragment GPU program.
 		/// </summary>
 		private GLSLGpuProgram activeFragmentProgram;
+
 		/// <summary>
 		///		Currently active link program.
 		/// </summary>
@@ -118,7 +119,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			get
 			{
 				// if there is an active link program then return it
-				if ( activeLinkProgram != null )
+				if( activeLinkProgram != null )
 				{
 					return activeLinkProgram;
 				}
@@ -127,32 +128,32 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				// is there an active key?
 				int activeKey = 0;
 
-				if ( activeVertexProgram != null )
+				if( activeVertexProgram != null )
 				{
 					activeKey = activeVertexProgram.ProgramID << 8;
 				}
 
-				if ( activeFragmentProgram != null )
+				if( activeFragmentProgram != null )
 				{
 					activeKey += activeFragmentProgram.ProgramID;
 				}
 
 				// only return a link program object if a vertex or fragment program exist
-				if ( activeKey > 0 )
+				if( activeKey > 0 )
 				{
-					if ( linkPrograms[ activeKey ] == null )
+					if( linkPrograms[ activeKey ] == null )
 					{
 						activeLinkProgram = new GLSLLinkProgram();
 						linkPrograms[ activeKey ] = activeLinkProgram;
 
 						// tell shaders to attach themselves to the LinkProgram
 						// let the shaders do the attaching since they may have several children to attach
-						if ( activeVertexProgram != null )
+						if( activeVertexProgram != null )
 						{
 							activeVertexProgram.GLSLProgram.AttachToProgramObject( activeLinkProgram.GLHandle );
 						}
 
-						if ( activeFragmentProgram != null )
+						if( activeFragmentProgram != null )
 						{
 							activeFragmentProgram.GLSLProgram.AttachToProgramObject( activeLinkProgram.GLHandle );
 						}
@@ -165,7 +166,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				}
 
 				// make the program object active
-				if ( activeLinkProgram != null )
+				if( activeLinkProgram != null )
 				{
 					activeLinkProgram.Activate();
 				}
@@ -188,7 +189,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="fragmentProgram"></param>
 		public void SetActiveFragmentShader( GLSLGpuProgram fragmentProgram )
 		{
-			if ( fragmentProgram != activeFragmentProgram )
+			if( fragmentProgram != activeFragmentProgram )
 			{
 				activeFragmentProgram = fragmentProgram;
 
@@ -210,7 +211,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveVertexShader( GLSLGpuProgram vertexProgram )
 		{
-			if ( vertexProgram != activeVertexProgram )
+			if( vertexProgram != activeVertexProgram )
 			{
 				activeVertexProgram = vertexProgram;
 
@@ -231,7 +232,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			foreach ( GLSLLinkProgram program in linkPrograms.Values )
+			foreach( GLSLLinkProgram program in linkPrograms.Values )
 			{
 				program.Dispose();
 			}

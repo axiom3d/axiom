@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,19 +52,17 @@ namespace Axiom.RenderSystems.Xna.Content
 	public class AxiomContentManager : ContentManager
 	{
 		public AxiomContentManager( IServiceProvider serviceProvider )
-			: base( serviceProvider )
-		{
-		}
+			: base( serviceProvider ) {}
 
 		public AxiomContentManager( IServiceProvider serviceProvider, string rootDirectory )
-			: base( serviceProvider, rootDirectory )
-		{
-		}
+			: base( serviceProvider, rootDirectory ) {}
 
 		protected override System.IO.Stream OpenStream( string assetName )
 		{
-			if ( System.IO.Path.GetExtension( assetName ) != "xnb" )
+			if( System.IO.Path.GetExtension( assetName ) != "xnb" )
+			{
 				assetName = System.IO.Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
+			}
 			return ResourceGroupManager.Instance.OpenResource( assetName );
 		}
 	}

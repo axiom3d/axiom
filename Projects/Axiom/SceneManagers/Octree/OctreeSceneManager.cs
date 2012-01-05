@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,9 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -54,13 +60,21 @@ namespace Axiom.SceneManagers.Octree
 	public class OctreeSceneManager : SceneManager
 	{
 		#region Member Variables
+
 		protected List<WireBoundingBox> boxList = new List<WireBoundingBox>();
 		protected List<ColorEx> colorList = new List<ColorEx>();
 		//NOTE: "visible" was a Nodelist...could be a custom collection
 		protected List<OctreeNode> visible = new List<OctreeNode>();
 		protected static long white = 0xFFFFFFFF;
-		protected short[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
-		protected long[] colors = { white, white, white, white, white, white, white, white };
+
+		protected short[] indexes = {
+		                            	0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
+		                            };
+
+		protected long[] colors = {
+		                          	white, white, white, white, white, white, white, white
+		                          };
+
 		protected float[] corners;
 		protected Matrix4 scaleFactor;
 		protected int intersect = 0;
@@ -83,21 +97,9 @@ namespace Axiom.SceneManagers.Octree
 
 		#region Properties
 
-		public long White
-		{
-			get
-			{
-				return white;
-			}
-		}
+		public long White { get { return white; } }
 
-		public override string TypeName
-		{
-			get
-			{
-				return "OctreeSceneManager";
-			}
-		}
+		public override string TypeName { get { return "OctreeSceneManager"; } }
 
 		#endregion Properties
 
@@ -125,25 +127,23 @@ namespace Axiom.SceneManagers.Octree
 			Vector3[] outside = box1.Corners;
 			Vector3[] inside = box2.Corners;
 
-			if ( inside[ 4 ].x < outside[ 0 ].x ||
-				inside[ 4 ].y < outside[ 0 ].y ||
-				inside[ 4 ].z < outside[ 0 ].z ||
-				inside[ 0 ].x > outside[ 4 ].x ||
-				inside[ 0 ].y > outside[ 4 ].y ||
-				inside[ 0 ].z > outside[ 4 ].z )
+			if( inside[ 4 ].x < outside[ 0 ].x ||
+			    inside[ 4 ].y < outside[ 0 ].y ||
+			    inside[ 4 ].z < outside[ 0 ].z ||
+			    inside[ 0 ].x > outside[ 4 ].x ||
+			    inside[ 0 ].y > outside[ 4 ].y ||
+			    inside[ 0 ].z > outside[ 4 ].z )
 			{
-
 				return Intersection.Outside;
 			}
 
-			if ( inside[ 0 ].x > outside[ 0 ].x &&
-				inside[ 0 ].y > outside[ 0 ].y &&
-				inside[ 0 ].z > outside[ 0 ].z &&
-				inside[ 4 ].x < outside[ 4 ].x &&
-				inside[ 4 ].y < outside[ 4 ].y &&
-				inside[ 4 ].z < outside[ 4 ].z )
+			if( inside[ 0 ].x > outside[ 0 ].x &&
+			    inside[ 0 ].y > outside[ 0 ].y &&
+			    inside[ 0 ].z > outside[ 0 ].z &&
+			    inside[ 4 ].x < outside[ 4 ].x &&
+			    inside[ 4 ].y < outside[ 4 ].y &&
+			    inside[ 4 ].z < outside[ 4 ].z )
 			{
-
 				return Intersection.Inside;
 			}
 			else
@@ -168,22 +168,22 @@ namespace Axiom.SceneManagers.Octree
 			Vector3 MinDistance = ( Corners[ 0 ] - Center );
 			Vector3 MaxDistance = ( Corners[ 4 ] - Center );
 
-			if ( ( MinDistance.LengthSquared < Radius ) && ( MaxDistance.LengthSquared < Radius ) )
+			if( ( MinDistance.LengthSquared < Radius ) && ( MaxDistance.LengthSquared < Radius ) )
 			{
 				return Intersection.Inside;
 			}
 
 			//find the square of the distance
 			//from the sphere to the box
-			for ( i = 0; i < 3; i++ )
+			for( i = 0; i < 3; i++ )
 			{
-				if ( Center[ i ] < Corners[ 0 ][ i ] )
+				if( Center[ i ] < Corners[ 0 ][ i ] )
 				{
 					s = Center[ i ] - Corners[ 0 ][ i ];
 					d += s * s;
 				}
 
-				else if ( Center[ i ] > Corners[ 4 ][ i ] )
+				else if( Center[ i ] > Corners[ 4 ][ i ] )
 				{
 					s = Center[ i ] - Corners[ 4 ][ i ];
 					d += s * s;
@@ -192,7 +192,7 @@ namespace Axiom.SceneManagers.Octree
 
 			Partial = ( d <= Radius );
 
-			if ( !Partial )
+			if( !Partial )
 			{
 				return Intersection.Outside;
 			}
@@ -258,11 +258,11 @@ namespace Axiom.SceneManagers.Octree
 			boxList.Clear();
 			visible.Clear();
 
-			if ( cullCamera )
+			if( cullCamera )
 			{
 				Camera c = cameraList[ "CullCamera" ];
 
-				if ( c != null )
+				if( c != null )
 				{
 					cameraInProgress = cameraList[ "CullCamera" ];
 				}
@@ -274,11 +274,11 @@ namespace Axiom.SceneManagers.Octree
 			WalkOctree( (OctreeCamera)cam, GetRenderQueue(), octree, false );
 
 			// Show the octree boxes & cull camera if required
-			if ( this.ShowBoundingBoxes || cullCamera )
+			if( this.ShowBoundingBoxes || cullCamera )
 			{
-				if ( this.ShowBoundingBoxes )
+				if( this.ShowBoundingBoxes )
 				{
-					for ( int i = 0; i < boxList.Count; i++ )
+					for( int i = 0; i < boxList.Count; i++ )
 					{
 						WireBoundingBox box = (WireBoundingBox)boxList[ i ];
 
@@ -286,11 +286,11 @@ namespace Axiom.SceneManagers.Octree
 					}
 				}
 
-				if ( cullCamera )
+				if( cullCamera )
 				{
 					OctreeCamera c = (OctreeCamera)GetCamera( "CullCamera" );
 
-					if ( c != null )
+					if( c != null )
 					{
 						GetRenderQueue().AddRenderable( c );
 					}
@@ -302,11 +302,12 @@ namespace Axiom.SceneManagers.Octree
 		* Useful for doing calculations only on nodes that will be drawn, prior
 		* to drawing them...
 		*/
+
 		public void AlertVisibleObjects()
 		{
 			int i;
 
-			for ( i = 0; i < visible.Count; i++ )
+			for( i = 0; i < visible.Count; i++ )
 			{
 				OctreeNode node = (OctreeNode)visible[ i ];
 				//TODO: looks like something is missing here
@@ -325,9 +326,7 @@ namespace Axiom.SceneManagers.Octree
 		//    {
 		//        return;
 		//    }
-
 		//    Visibility v = Visibility.None;
-
 		//    if ( foundVisible )
 		//    {
 		//        v = Visibility.Full;
@@ -341,7 +340,6 @@ namespace Axiom.SceneManagers.Octree
 		//        AxisAlignedBox box = octant.CullBounds;
 		//        v = camera.GetVisibility( box );
 		//    }
-
 		//    // if the octant is visible, or if it's the root node...
 		//    if ( v != Visibility.None )
 		//    {
@@ -349,33 +347,25 @@ namespace Axiom.SceneManagers.Octree
 		//        {
 		//            boxList.Add( octant.WireBoundingBox );
 		//        }
-
 		//        bool vis = true;
-
 		//        for ( int i = 0; i < octant.NodeList.Count; i++ )
 		//        {
 		//            OctreeNode node = (OctreeNode)octant.NodeList.Values[ i ];
-
 		//            // if this octree is partially visible, manually cull all
 		//            // scene nodes attached directly to this level.
-
 		//            if ( v == Visibility.Partial )
 		//            {
 		//                vis = camera.IsObjectVisible( node.WorldAABB );
 		//            }
-
 		//            if ( vis )
 		//            {
 		//                numObjects++;
 		//                node.AddToRenderQueue( camera, queue );
-
 		//                visible.Add( node );
-
 		//                if ( DisplayNodes )
 		//                {
 		//                    GetRenderQueue().AddRenderable( node );
 		//                }
-
 		//                // check if the scene manager or this node wants the bounding box shown.
 		//                if ( node.ShowBoundingBox || this.ShowBoundingBoxes )
 		//                {
@@ -383,33 +373,24 @@ namespace Axiom.SceneManagers.Octree
 		//                }
 		//            }
 		//        }
-
 		//        if ( octant.Children[ 0, 0, 0 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 1, 0, 0 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 0, 1, 0 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 1, 1, 0 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 0, 0, 1 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 1, 0, 1 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 0, 1, 1 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
-
 		//        if ( octant.Children[ 1, 1, 1 ] != null )
 		//            WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
 		//    }
 		//}
-
 		private struct WalkQueueObject
 		{
 			public bool FoundVisible;
@@ -427,32 +408,31 @@ namespace Axiom.SceneManagers.Octree
 		If any octant in the octree if completely within the the view frustum,
 		all subchildren are automatically added with no visibility tests.
 		*/
+
 		public void WalkOctree( OctreeCamera camera, RenderQueue queue, Octree octant, bool foundVisible )
 		{
-
 			Queue<WalkQueueObject> q = new Queue<WalkQueueObject>();
 			WalkQueueObject temp = new WalkQueueObject( octant, foundVisible );
 
 			q.Enqueue( temp );
 
-			while ( q.Count > 0 )
+			while( q.Count > 0 )
 			{
-
 				temp = q.Dequeue();
 
 				//return immediately if nothing is in the node.
-				if ( temp.Octant.NumNodes == 0 )
+				if( temp.Octant.NumNodes == 0 )
 				{
 					continue;
 				}
 
 				Visibility v = Visibility.None;
 
-				if ( temp.FoundVisible )
+				if( temp.FoundVisible )
 				{
 					v = Visibility.Full;
 				}
-				else if ( temp.Octant == octree )
+				else if( temp.Octant == octree )
 				{
 					v = Visibility.Partial;
 				}
@@ -462,98 +442,96 @@ namespace Axiom.SceneManagers.Octree
 					v = camera.GetVisibility( box );
 				}
 
-
-
 				// if the octant is visible, or if it's the root node...
-				if ( v != Visibility.None )
+				if( v != Visibility.None )
 				{
-					if ( this.ShowBoundingBoxes )
+					if( this.ShowBoundingBoxes )
 					{
 						boxList.Add( temp.Octant.WireBoundingBox );
 					}
 
 					bool vis = true;
 
-					foreach ( OctreeNode node in temp.Octant.NodeList.Values )
+					foreach( OctreeNode node in temp.Octant.NodeList.Values )
 					{
 						// if this octree is partially visible, manually cull all
 						// scene nodes attached directly to this level.
 
-						if ( v == Visibility.Partial )
+						if( v == Visibility.Partial )
 						{
 							vis = camera.IsObjectVisible( node.WorldAABB );
 						}
 
-						if ( vis )
+						if( vis )
 						{
 							numObjects++;
 							node.AddToRenderQueue( camera, queue );
 
 							visible.Add( node );
 
-							if ( DisplayNodes )
+							if( DisplayNodes )
 							{
 								GetRenderQueue().AddRenderable( node.GetDebugRenderable() );
 							}
 
 							// check if the scene manager or this node wants the bounding box shown.
-							if ( node.ShowBoundingBox || this.ShowBoundingBoxes )
+							if( node.ShowBoundingBox || this.ShowBoundingBoxes )
 							{
 								node.AddBoundingBoxToQueue( queue );
 							}
 						}
 					}
 
-					if ( temp.Octant.Children[ 0, 0, 0 ] != null )
+					if( temp.Octant.Children[ 0, 0, 0 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 0, 0 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 1, 0, 0 ] != null )
+					if( temp.Octant.Children[ 1, 0, 0 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 0, 0 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 0, 1, 0 ] != null )
+					if( temp.Octant.Children[ 0, 1, 0 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 1, 0 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 1, 1, 0 ] != null )
+					if( temp.Octant.Children[ 1, 1, 0 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 1, 0 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 0, 0, 1 ] != null )
+					if( temp.Octant.Children[ 0, 0, 1 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 0, 1 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 1, 0, 1 ] != null )
+					if( temp.Octant.Children[ 1, 0, 1 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 0, 1 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 0, 1, 1 ] != null )
+					if( temp.Octant.Children[ 0, 1, 1 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 1, 1 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
 						//continue;
 					}
 
-					if ( temp.Octant.Children[ 1, 1, 1 ] != null )
+					if( temp.Octant.Children[ 1, 1, 1 ] != null )
 					{
 						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 1, 1 ], v == Visibility.Full ) );
 						//WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
@@ -566,19 +544,20 @@ namespace Axiom.SceneManagers.Octree
 		/** Checks the given OctreeNode, and determines if it needs to be moved
 		* to a different octant.
 		*/
+
 		public void UpdateOctreeNode( OctreeNode node )
 		{
 			AxisAlignedBox box = node.WorldAABB;
 
-			if ( box.IsNull )
+			if( box.IsNull )
 			{
 				return;
 			}
 
-			if ( node.Octant == null )
+			if( node.Octant == null )
 			{
 				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( octree.Box ) )
+				if( !node.IsInBox( octree.Box ) )
 				{
 					octree.AddNode( node );
 				}
@@ -589,12 +568,12 @@ namespace Axiom.SceneManagers.Octree
 				return;
 			}
 
-			if ( !node.IsInBox( node.Octant.Box ) )
+			if( !node.IsInBox( node.Octant.Box ) )
 			{
 				RemoveOctreeNode( node );
 
 				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( octree.Box ) )
+				if( !node.IsInBox( octree.Box ) )
 				{
 					octree.AddNode( node );
 				}
@@ -612,11 +591,12 @@ namespace Axiom.SceneManagers.Octree
 
 		/** Only removes the node from the octree.  It leaves the octree, even if it's empty.
 		*/
+
 		public void RemoveOctreeNode( OctreeNode node )
 		{
 			Octree tree = node.Octant;
 
-			if ( tree != null )
+			if( tree != null )
 			{
 				tree.RemoveNode( node );
 			}
@@ -626,7 +606,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			OctreeNode node = (OctreeNode)GetSceneNode( name );
 
-			if ( node != null )
+			if( node != null )
 			{
 				RemoveOctreeNode( node );
 			}
@@ -645,13 +625,13 @@ namespace Axiom.SceneManagers.Octree
 
 			//if the octree is twice as big as the scene node,
 			//we will add it to a child.
-			if ( ( depth < maxDepth ) && octant.IsTwiceSize( box ) )
+			if( ( depth < maxDepth ) && octant.IsTwiceSize( box ) )
 			{
 				int x, y, z;
 
 				octant.GetChildIndexes( box, out x, out y, out z );
 
-				if ( octant.Children[ x, y, z ] == null )
+				if( octant.Children[ x, y, z ] == null )
 				{
 					octant.Children[ x, y, z ] = new Octree( octant );
 
@@ -659,7 +639,7 @@ namespace Axiom.SceneManagers.Octree
 
 					Vector3 min, max;
 
-					if ( x == 0 )
+					if( x == 0 )
 					{
 						min.x = corners[ 0 ].x;
 						max.x = ( corners[ 0 ].x + corners[ 4 ].x ) / 2;
@@ -670,7 +650,7 @@ namespace Axiom.SceneManagers.Octree
 						max.x = corners[ 4 ].x;
 					}
 
-					if ( y == 0 )
+					if( y == 0 )
 					{
 						min.y = corners[ 0 ].y;
 						max.y = ( corners[ 0 ].y + corners[ 4 ].y ) / 2;
@@ -682,7 +662,7 @@ namespace Axiom.SceneManagers.Octree
 						max.y = corners[ 4 ].y;
 					}
 
-					if ( z == 0 )
+					if( z == 0 )
 					{
 						min.z = corners[ 0 ].z;
 						max.z = ( corners[ 0 ].z + corners[ 4 ].z ) / 2;
@@ -696,7 +676,6 @@ namespace Axiom.SceneManagers.Octree
 
 					octant.Children[ x, y, z ].Box.SetExtents( min, max );
 					octant.Children[ x, y, z ].HalfSize = ( max - min ) / 2;
-
 				}
 
 				AddOctreeNode( node, octant.Children[ x, y, z ], ++depth );
@@ -714,6 +693,7 @@ namespace Axiom.SceneManagers.Octree
 		}*/
 
 		/** Resizes the octree to the given size */
+
 		public void Resize( AxisAlignedBox box )
 		{
 			NodeCollection nodes = new NodeCollection();
@@ -723,7 +703,7 @@ namespace Axiom.SceneManagers.Octree
 			octree = new Octree( null );
 			octree.Box = box;
 
-			foreach ( OctreeNode node in nodes.Values )
+			foreach( OctreeNode node in nodes.Values )
 			{
 				node.Octant = null;
 				UpdateOctreeNode( node );
@@ -733,18 +713,18 @@ namespace Axiom.SceneManagers.Octree
 		public void FindNodes( AxisAlignedBox box, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
 		{
 			List<OctreeNode> localList = new List<OctreeNode>();
-			if ( octant == null )
+			if( octant == null )
 			{
 				octant = this.octree;
 			}
 
-			if ( !full )
+			if( !full )
 			{
 				AxisAlignedBox obox = octant.CullBounds;
 
 				Intersection isect = this.Intersect( box, obox );
 
-				if ( isect == Intersection.Outside )
+				if( isect == Intersection.Outside )
 				{
 					return;
 				}
@@ -752,11 +732,11 @@ namespace Axiom.SceneManagers.Octree
 				full = ( isect == Intersection.Inside );
 			}
 
-			foreach ( OctreeNode node in octant.NodeList.Values )
+			foreach( OctreeNode node in octant.NodeList.Values )
 			{
-				if ( node != exclude )
+				if( node != exclude )
 				{
-					if ( full )
+					if( full )
 					{
 						localList.Add( node );
 					}
@@ -764,7 +744,7 @@ namespace Axiom.SceneManagers.Octree
 					{
 						Intersection nsect = this.Intersect( box, node.WorldAABB );
 
-						if ( nsect != Intersection.Outside )
+						if( nsect != Intersection.Outside )
 						{
 							localList.Add( node );
 						}
@@ -772,30 +752,45 @@ namespace Axiom.SceneManagers.Octree
 				}
 			}
 
-			if ( octant.Children[ 0, 0, 0 ] != null )
+			if( octant.Children[ 0, 0, 0 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 0, 0 ] );
+			}
 
-			if ( octant.Children[ 1, 0, 0 ] != null )
+			if( octant.Children[ 1, 0, 0 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 0, 0 ] );
+			}
 
-			if ( octant.Children[ 0, 1, 0 ] != null )
+			if( octant.Children[ 0, 1, 0 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 1, 0 ] );
+			}
 
-			if ( octant.Children[ 1, 1, 0 ] != null )
+			if( octant.Children[ 1, 1, 0 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 1, 0 ] );
+			}
 
-			if ( octant.Children[ 0, 0, 1 ] != null )
+			if( octant.Children[ 0, 0, 1 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 0, 1 ] );
+			}
 
-			if ( octant.Children[ 1, 0, 1 ] != null )
+			if( octant.Children[ 1, 0, 1 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 0, 1 ] );
+			}
 
-			if ( octant.Children[ 0, 1, 1 ] != null )
+			if( octant.Children[ 0, 1, 1 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 1, 1 ] );
+			}
 
-			if ( octant.Children[ 1, 1, 1 ] != null )
+			if( octant.Children[ 1, 1, 1 ] != null )
+			{
 				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 1, 1 ] );
-
+			}
 		}
 
 		public void FindNodes( Sphere sphere, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
@@ -806,7 +801,7 @@ namespace Axiom.SceneManagers.Octree
 		public bool SetOption( string key, object val )
 		{
 			bool ret = false;
-			switch ( key )
+			switch( key )
 			{
 				case "Size":
 					Resize( (AxisAlignedBox)val );
@@ -832,16 +827,13 @@ namespace Axiom.SceneManagers.Octree
 
 		public bool GetOption()
 		{
-			return true;//TODO: Implement
+			return true; //TODO: Implement
 		}
 	}
 
-	class OctreeSceneManagerFactory : SceneManagerFactory
+	internal class OctreeSceneManagerFactory : SceneManagerFactory
 	{
-		public OctreeSceneManagerFactory()
-		{
-
-		}
+		public OctreeSceneManagerFactory() {}
 
 		protected override void InitMetaData()
 		{

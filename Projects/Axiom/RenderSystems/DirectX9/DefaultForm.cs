@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using IO = System.IO;
 using SWF = System.Windows.Forms;
 
@@ -44,7 +49,6 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-
 	public class DefaultForm : SWF.Form
 	{
 		private RenderWindow renderWindow;
@@ -61,8 +65,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void WndProc( ref SWF.Message m )
 		{
-			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+			if( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+			{
 				base.WndProc( ref m );
+			}
 		}
 
 		/// <summary>
@@ -72,7 +78,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="e"></param>
 		public void DefaultForm_Deactivate( object source, System.EventArgs e )
 		{
-			if ( renderWindow != null )
+			if( renderWindow != null )
 			{
 				renderWindow.IsActive = false;
 			}
@@ -85,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="e"></param>
 		public void DefaultForm_Activated( object source, System.EventArgs e )
 		{
-			if ( renderWindow != null )
+			if( renderWindow != null )
 			{
 				renderWindow.IsActive = true;
 			}
@@ -103,7 +109,6 @@ namespace Axiom.RenderSystems.DirectX9
 			this.Name = "DefaultForm";
 			this.Load += new System.EventHandler( this.DefaultForm_Load );
 			this.ResumeLayout( false );
-
 		}
 
 		/// <summary>
@@ -114,7 +119,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
-			if ( renderWindow != null )
+			if( renderWindow != null )
 			{
 				renderWindow.IsActive = false;
 			}
@@ -125,14 +130,12 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
-				if ( strm != null )
+				if( strm != null )
 				{
 					this.Icon = new System.Drawing.Icon( strm );
 				}
 			}
-			catch ( IO.FileNotFoundException )
-			{
-			}
+			catch( IO.FileNotFoundException ) {}
 		}
 
 		private void DefaultForm_Resize( object sender, System.EventArgs e )
@@ -143,16 +146,6 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Get/Set the RenderWindow associated with this form.
 		/// </summary>
-		public RenderWindow RenderWindow
-		{
-			get
-			{
-				return renderWindow;
-			}
-			set
-			{
-				renderWindow = value;
-			}
-		}
+		public RenderWindow RenderWindow { get { return renderWindow; } set { renderWindow = value; } }
 	}
 }

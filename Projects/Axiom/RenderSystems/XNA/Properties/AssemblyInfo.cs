@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+
 [assembly: AssemblyTitle( "Axiom Xna Rendering Subsystem" )]
 [assembly: AssemblyDescription( "Rendering system implementation which implements the 3D graphics API abstraction layer using the Xna Framework." )]
 
@@ -19,7 +20,6 @@ using System.Runtime.CompilerServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

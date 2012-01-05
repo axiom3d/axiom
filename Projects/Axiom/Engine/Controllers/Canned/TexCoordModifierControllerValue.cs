@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -65,9 +69,7 @@ namespace Axiom.Controllers.Canned
 		}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU )
-			: this( texUnit, scrollU, false )
-		{
-		}
+			: this( texUnit, scrollU, false ) {}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
 		{
@@ -94,29 +96,41 @@ namespace Axiom.Controllers.Canned
 			{
 				Matrix4 trans = texUnit.TextureMatrix;
 
-				if ( transU )
+				if( transU )
+				{
 					return trans.m03;
-				else if ( transV )
+				}
+				else if( transV )
+				{
 					return trans.m13;
-				else if ( scaleU )
+				}
+				else if( scaleU )
+				{
 					return trans.m00;
-				else if ( scaleV )
+				}
+				else if( scaleV )
+				{
 					return trans.m11;
+				}
 
 				// should never get here
 				return 0.0f;
 			}
 			set
 			{
-				if ( transU )
-					texUnit.SetTextureScrollU( value );
-
-				if ( transV )
-					texUnit.SetTextureScrollV( value );
-
-				if ( scaleU )
+				if( transU )
 				{
-					if ( value >= 0 )
+					texUnit.SetTextureScrollU( value );
+				}
+
+				if( transV )
+				{
+					texUnit.SetTextureScrollV( value );
+				}
+
+				if( scaleU )
+				{
+					if( value >= 0 )
 					{
 						texUnit.SetTextureScaleU( 1 + value );
 					}
@@ -126,9 +140,9 @@ namespace Axiom.Controllers.Canned
 					}
 				}
 
-				if ( scaleV )
+				if( scaleV )
 				{
-					if ( value >= 0 )
+					if( value >= 0 )
 					{
 						texUnit.SetTextureScaleV( 1 + value );
 					}
@@ -138,8 +152,10 @@ namespace Axiom.Controllers.Canned
 					}
 				}
 
-				if ( rotate )
+				if( rotate )
+				{
 					texUnit.SetTextureRotate( value * 360 );
+				}
 			}
 		}
 

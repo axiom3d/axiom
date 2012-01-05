@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,7 +56,6 @@ namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
-
 		///<summary>
 		///    A GeometryBucket is a the lowest level bucket where geometry with
 		///    the same vertex &amp; index format is stored. It also acts as the
@@ -81,87 +84,33 @@ namespace Axiom.Core
 
 			protected List<Vector4> customParams = new List<Vector4>();
 
-			public MaterialBucket Parent
-			{
-				get
-				{
-					return parent;
-				}
-			}
+			public MaterialBucket Parent { get { return parent; } }
 
 			// Get the vertex data for this geometry
-			public VertexData VertexData
-			{
-				get
-				{
-					return vertexData;
-				}
-			}
+			public VertexData VertexData { get { return vertexData; } }
 
 			// Get the index data for this geometry
-			public IndexData IndexData
-			{
-				get
-				{
-					return indexData;
-				}
-			}
+			public IndexData IndexData { get { return indexData; } }
 
 			// @copydoc Renderable::getMaterial
-			public Material Material
-			{
-				get
-				{
-					return parent.Material;
-				}
-			}
+			public Material Material { get { return parent.Material; } }
 
-			public Technique Technique
-			{
-				get
-				{
-					return parent.CurrentTechnique;
-				}
-			}
+			public Technique Technique { get { return parent.CurrentTechnique; } }
 
-			public Quaternion WorldOrientation
-			{
-				get
-				{
-					return Quaternion.Identity;
-				}
-			}
+			public Quaternion WorldOrientation { get { return Quaternion.Identity; } }
 
-			public Vector3 WorldPosition
-			{
-				get
-				{
-					return parent.Parent.Parent.Center;
-				}
-			}
+			public Vector3 WorldPosition { get { return parent.Parent.Parent.Center; } }
 
-			public LightList Lights
-			{
-				get
-				{
-					return parent.Parent.Parent.Lights;
-				}
-			}
+			public LightList Lights { get { return parent.Parent.Parent.Lights; } }
 
-			public bool CastsShadows
-			{
-				get
-				{
-					return parent.Parent.Parent.CastShadows;
-				}
-			}
+			public bool CastsShadows { get { return parent.Parent.Parent.CastShadows; } }
 
 			#endregion Fields and Properties
 
 			#region Constructors
 
 			public GeometryBucket( MaterialBucket parent, string formatString,
-								  VertexData vData, IndexData iData )
+			                       VertexData vData, IndexData iData )
 			{
 				// Clone the structure from the example
 				this.parent = parent;
@@ -175,10 +124,14 @@ namespace Axiom.Core
 				indexType = indexData.indexBuffer.Type;
 				queuedGeometry = new List<QueuedGeometry>();
 				// Derive the max vertices
-				if ( indexType == IndexType.Size32 )
+				if( indexType == IndexType.Size32 )
+				{
 					maxVertexIndex = int.MaxValue;
+				}
 				else
+				{
 					maxVertexIndex = ushort.MaxValue;
+				}
 
 				// Check to see if we have blend indices / blend weights
 				// remove them if so, they can try to blend non-existent bones!
@@ -186,15 +139,15 @@ namespace Axiom.Core
 					vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
 				VertexElement blendWeights =
 					vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
-				if ( blendIndices != null && blendWeights != null )
+				if( blendIndices != null && blendWeights != null )
 				{
 					Debug.Assert( blendIndices.Source == blendWeights.Source,
-								 "Blend indices and weights should be in the same buffer" );
+					              "Blend indices and weights should be in the same buffer" );
 					// Get the source
 					short source = blendIndices.Source;
 					Debug.Assert( blendIndices.Size + blendWeights.Size ==
-						vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize,
-						"Blend indices and blend buffers should have buffer to themselves!" );
+					              vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize,
+					              "Blend indices and blend buffers should have buffer to themselves!" );
 					// Unset the buffer
 					vertexData.vertexBufferBinding.UnsetBinding( source );
 					// Remove the elements
@@ -213,6 +166,7 @@ namespace Axiom.Core
 			}
 
 			protected RenderOperation renderOperation = new RenderOperation();
+
 			public RenderOperation RenderOperation
 			{
 				get
@@ -233,12 +187,13 @@ namespace Axiom.Core
 				xform[ 0 ] = parent.Parent.Parent.ParentNodeFullTransform;
 			}
 
-
 			public bool Assign( QueuedGeometry qgeom )
 			{
 				// do we have enough space
-				if ( vertexData.vertexCount + qgeom.geometry.vertexData.vertexCount > maxVertexIndex )
+				if( vertexData.vertexCount + qgeom.geometry.vertexData.vertexCount > maxVertexIndex )
+				{
 					return false;
+				}
 
 				queuedGeometry.Add( qgeom );
 				vertexData.vertexCount += qgeom.geometry.vertexData.vertexCount;
@@ -254,9 +209,11 @@ namespace Axiom.Core
 				VertexBufferBinding binds = vertexData.vertexBufferBinding;
 
 				// create index buffer, and lock
-				if ( logLevel <= 1 )
+				if( logLevel <= 1 )
+				{
 					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}",
-						indexType, indexData.indexCount );
+					                           indexType, indexData.indexCount );
+				}
 				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
 				IntPtr indexBufferIntPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
@@ -267,21 +224,25 @@ namespace Axiom.Core
 				List<List<VertexElement>> bufferElements = new List<List<VertexElement>>();
 				unsafe
 				{
-					byte*[] destBufferPtrs = new byte*[ binds.BindingCount ];
-					for ( b = 0; b < binds.BindingCount; ++b )
+					byte*[] destBufferPtrs = new byte*[binds.BindingCount];
+					for( b = 0; b < binds.BindingCount; ++b )
 					{
 						int vertexCount = vertexData.vertexCount;
-						if ( logLevel <= 1 )
+						if( logLevel <= 1 )
+						{
 							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}",
-								b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
+							                           b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
+						}
 						// Need to double the vertex count for the position buffer
 						// if we're doing stencil shadows
-						if ( stencilShadows && b == posBufferIdx )
+						if( stencilShadows && b == posBufferIdx )
 						{
 							vertexCount = vertexCount * 2;
-							if ( vertexCount > maxVertexIndex )
+							if( vertexCount > maxVertexIndex )
+							{
 								throw new Exception( "Index range exceeded when using stencil shadows, consider " +
-															 "reducing your region size or reducing poly count" );
+								                     "reducing your region size or reducing poly count" );
+							}
 						}
 						HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.GetVertexSize( b ), vertexCount, BufferUsage.StaticWriteOnly );
 						binds.SetBinding( b, vbuf );
@@ -297,22 +258,26 @@ namespace Axiom.Core
 					Vector3 regionCenter = parent.Parent.Parent.Center;
 					int* pDestInt = (int*)indexBufferIntPtr.ToPointer();
 					ushort* pDestUShort = (ushort*)indexBufferIntPtr.ToPointer();
-					foreach ( QueuedGeometry geom in queuedGeometry )
+					foreach( QueuedGeometry geom in queuedGeometry )
 					{
 						// copy indexes across with offset
 						IndexData srcIdxData = geom.geometry.indexData;
 						IntPtr srcIntPtr = srcIdxData.indexBuffer.Lock( BufferLocking.ReadOnly );
-						if ( indexType == IndexType.Size32 )
+						if( indexType == IndexType.Size32 )
 						{
 							int* pSrcInt = (int*)srcIntPtr.ToPointer();
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
+							for( int i = 0; i < srcIdxData.indexCount; i++ )
+							{
 								*pDestInt++ = ( *pSrcInt++ ) + indexOffset;
+							}
 						}
 						else
 						{
 							ushort* pSrcUShort = (ushort*)( srcIntPtr.ToPointer() );
-							for ( int i = 0; i < srcIdxData.indexCount; i++ )
+							for( int i = 0; i < srcIdxData.indexCount; i++ )
+							{
 								*pDestUShort++ = (ushort)( ( *pSrcUShort++ ) + indexOffset );
+							}
 						}
 						srcIdxData.indexBuffer.Unlock();
 
@@ -320,21 +285,25 @@ namespace Axiom.Core
 						// we can rely on buffer counts / formats being the same
 						VertexData srcVData = geom.geometry.vertexData;
 						VertexBufferBinding srcBinds = srcVData.vertexBufferBinding;
-						for ( b = 0; b < binds.BindingCount; ++b )
+						for( b = 0; b < binds.BindingCount; ++b )
+						{
 							// Iterate over vertices
 							destBufferPtrs[ b ] = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
+						}
 						indexOffset += geom.geometry.vertexData.vertexCount;
 					}
 				}
 
 				// unlock everything
 				indexData.indexBuffer.Unlock();
-				for ( b = 0; b < binds.BindingCount; ++b )
+				for( b = 0; b < binds.BindingCount; ++b )
+				{
 					binds.GetBuffer( b ).Unlock();
+				}
 
 				// If we're dealing with stencil shadows, copy the position data from
 				// the early half of the buffer to the latter part
-				if ( stencilShadows )
+				if( stencilShadows )
 				{
 					unsafe
 					{
@@ -345,21 +314,27 @@ namespace Axiom.Core
 						byte* pDst = pSrc + buf.VertexSize * vertexData.vertexCount;
 
 						int count = buf.VertexSize * buf.VertexCount;
-						while ( count-- > 0 )
+						while( count-- > 0 )
+						{
 							*pDst++ = *pSrc++;
+						}
 						buf.Unlock();
 
 						// Also set up hardware W buffer if appropriate
 						RenderSystem rend = Root.Instance.RenderSystem;
-						if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+						if( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 						{
 							buf = HardwareBufferManager.Instance.CreateVertexBuffer( sizeof( float ), vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
 							// Fill the first half with 1.0, second half with 0.0
 							float* pW = (float*)buf.Lock( BufferLocking.Discard ).ToPointer();
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
+							for( int v = 0; v < vertexData.vertexCount; ++v )
+							{
 								*pW++ = 1.0f;
-							for ( int v = 0; v < vertexData.vertexCount; ++v )
+							}
+							for( int v = 0; v < vertexData.vertexCount; ++v )
+							{
 								*pW++ = 0.0f;
+							}
 							buf.Unlock();
 							vertexData.hardwareShadowVolWBuffer = buf;
 						}
@@ -382,7 +357,7 @@ namespace Axiom.Core
 
 			#region Protected Methods
 
-			protected unsafe byte* CopyVertices( HardwareVertexBuffer srcBuf, byte* pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
+			unsafe protected byte* CopyVertices( HardwareVertexBuffer srcBuf, byte* pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
 			{
 				// lock source
 				IntPtr src = srcBuf.Lock( BufferLocking.ReadOnly );
@@ -394,23 +369,25 @@ namespace Axiom.Core
 				Vector3 temp = Vector3.Zero;
 
 				// Calculate elem sizes outside the loop
-				int[] elemSizes = new int[ elems.Count ];
-				for ( int i = 0; i < elems.Count; i++ )
+				int[] elemSizes = new int[elems.Count];
+				for( int i = 0; i < elems.Count; i++ )
+				{
 					elemSizes[ i ] = VertexElement.GetTypeSize( elems[ i ].Type );
+				}
 
 				// Move the position offset calculation outside the loop
 				Vector3 positionDelta = geom.position - regionCenter;
 
-				for ( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
+				for( int v = 0; v < geom.geometry.vertexData.vertexCount; ++v )
 				{
 					// iterate over vertex elements
-					for ( int i = 0; i < elems.Count; i++ )
+					for( int i = 0; i < elems.Count; i++ )
 					{
 						VertexElement elem = elems[ i ];
 						pSrcReal = (float*)( pSrc + elem.Offset );
 						pDstReal = (float*)( pDst + elem.Offset );
 
-						switch ( elem.Semantic )
+						switch( elem.Semantic )
 						{
 							case VertexElementSemantic.Position:
 								temp.x = *pSrcReal++;
@@ -439,19 +416,23 @@ namespace Axiom.Core
 								int size = elemSizes[ i ];
 								// Optimize the loop for the case that
 								// these things are in units of 4
-								if ( ( size & 0x3 ) == 0x3 )
+								if( ( size & 0x3 ) == 0x3 )
 								{
 									int cnt = size / 4;
-									while ( cnt-- > 0 )
+									while( cnt-- > 0 )
+									{
 										*pDstReal++ = *pSrcReal++;
+									}
 								}
 								else
 								{
 									// Fall back to the byte-by-byte copy
 									byte* pbSrc = (byte*)pSrcReal;
 									byte* pbDst = (byte*)pDstReal;
-									while ( size-- > 0 )
+									while( size-- > 0 )
+									{
 										*pbDst++ = *pbSrc++;
+									}
 								}
 								break;
 						}
@@ -470,49 +451,19 @@ namespace Axiom.Core
 
 			#region IRenderable members
 
-			public bool NormalizeNormals
-			{
-				get
-				{
-					return false;
-				}
-			}
+			public bool NormalizeNormals { get { return false; } }
 
-			public ushort NumWorldTransforms
-			{
-				get
-				{
-					return parent.Parent.Parent.NumWorldTransforms;
-				}
-			}
+			public ushort NumWorldTransforms { get { return parent.Parent.Parent.NumWorldTransforms; } }
 
-			public bool UseIdentityProjection
-			{
-				get
-				{
-					return false;
-				}
-			}
+			public bool UseIdentityProjection { get { return false; } }
 
-			public bool UseIdentityView
-			{
-				get
-				{
-					return false;
-				}
-			}
+			public bool UseIdentityView { get { return false; } }
 
-			public virtual bool PolygonModeOverrideable
-			{
-				get
-				{
-					return true;
-				}
-			}
+			virtual public bool PolygonModeOverrideable { get { return true; } }
 
 			public Vector4 GetCustomParameter( int index )
 			{
-				if ( customParams[ index ] == null )
+				if( customParams[ index ] == null )
 				{
 					throw new Exception( "A parameter was not found at the given index" );
 				}
@@ -524,14 +475,16 @@ namespace Axiom.Core
 
 			public void SetCustomParameter( int index, Vector4 val )
 			{
-				while ( customParams.Count <= index )
+				while( customParams.Count <= index )
+				{
 					customParams.Add( Vector4.Zero );
+				}
 				customParams[ index ] = val;
 			}
 
 			public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 			{
-				if ( customParams[ entry.Data ] != null )
+				if( customParams[ entry.Data ] != null )
 				{
 					gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 				}
@@ -540,16 +493,17 @@ namespace Axiom.Core
 			/// <summary>
 			///     Dispose the hardware index and vertex buffers
 			/// </summary>
-			public virtual void Dispose()
+			virtual public void Dispose()
 			{
 				indexData.indexBuffer.Dispose();
 				VertexBufferBinding bindings = vertexData.vertexBufferBinding;
-				for ( short b = 0; b < bindings.BindingCount; ++b )
+				for( short b = 0; b < bindings.BindingCount; ++b )
+				{
 					bindings.GetBuffer( b ).Dispose();
+				}
 			}
 
 			#endregion IRenderable members
-
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -78,20 +82,11 @@ namespace Axiom.Core
 		///		Camera that this viewport is attached to.
 		/// </summary>
 		private Camera _camera;
+
 		/// <summary>
 		///		Retrieves a reference to the camera for this viewport.
 		/// </summary>
-		public Camera Camera
-		{
-			get
-			{
-				return _camera;
-			}
-			set
-			{
-				_camera = value;
-			}
-		}
+		public Camera Camera { get { return _camera; } set { _camera = value; } }
 
 		#endregion Camera Property
 
@@ -101,20 +96,11 @@ namespace Axiom.Core
 		///		Render target that is using this viewport.
 		/// </summary>
 		private RenderTarget _target;
+
 		/// <summary>
 		///		Retrieves a reference to the render target for this viewport.
 		/// </summary>
-		public RenderTarget Target
-		{
-			get
-			{
-				return _target;
-			}
-			set
-			{
-				_target = value;
-			}
-		}
+		public RenderTarget Target { get { return _target; } set { _target = value; } }
 
 		#endregion Target Property
 
@@ -124,16 +110,11 @@ namespace Axiom.Core
 		///		Relative top [0.0, 1.0].
 		/// </summary>
 		private float _relativeTop;
+
 		/// <summary>
 		///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
-		public float Top
-		{
-			get
-			{
-				return _relativeTop;
-			}
-		}
+		public float Top { get { return _relativeTop; } }
 
 		#endregion Top (Relative [0.0, 1.0]) Property
 
@@ -143,16 +124,11 @@ namespace Axiom.Core
 		///		Relative left [0.0, 1.0].
 		/// </summary>
 		private float _relativeLeft;
+
 		/// <summary>
 		///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
-		public float Left
-		{
-			get
-			{
-				return _relativeLeft;
-			}
-		}
+		public float Left { get { return _relativeLeft; } }
 
 		#endregion Left (Relative [0.0, 1.0]) Property
 
@@ -162,16 +138,11 @@ namespace Axiom.Core
 		///		Relative width [0.0, 1.0].
 		/// </summary>
 		private float _relativeWidth;
+
 		/// <summary>
 		///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
-		public float Width
-		{
-			get
-			{
-				return _relativeWidth;
-			}
-		}
+		public float Width { get { return _relativeWidth; } }
 
 		#endregion With (Relative [0.0, 1.0]) Property
 
@@ -181,16 +152,11 @@ namespace Axiom.Core
 		///		Relative height [0.0, 1.0].
 		/// </summary>
 		private float _relativeHeight;
+
 		/// <summary>
 		///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
 		/// </summary>
-		public float Height
-		{
-			get
-			{
-				return _relativeHeight;
-			}
-		}
+		public float Height { get { return _relativeHeight; } }
 
 		#endregion Height (Relative [0.0, 1.0]) Property
 
@@ -200,16 +166,11 @@ namespace Axiom.Core
 		///		Absolute top edge of the viewport (in pixels).
 		/// </summary>
 		private int _actualTop;
+
 		/// <summary>
 		///		Gets the actual top edge of the viewport, a value in pixels.
 		/// </summary>
-		public int ActualTop
-		{
-			get
-			{
-				return _actualTop;
-			}
-		}
+		public int ActualTop { get { return _actualTop; } }
 
 		#endregion ActualTop (In Pixels) Property
 
@@ -219,16 +180,11 @@ namespace Axiom.Core
 		///		Absolute left edge of the viewport (in pixels).
 		/// </summary>
 		private int _actualLeft;
+
 		/// <summary>
 		///		Gets the actual left edge of the viewport, a value in pixels.
 		/// </summary>
-		public int ActualLeft
-		{
-			get
-			{
-				return _actualLeft;
-			}
-		}
+		public int ActualLeft { get { return _actualLeft; } }
 
 		#endregion ActualLeft (In Pixels) Property
 
@@ -238,16 +194,11 @@ namespace Axiom.Core
 		///		Absolute width of the viewport (in pixels).
 		/// </summary>
 		private int _actualWidth;
+
 		/// <summary>
 		///		Gets the actual width of the viewport, a value in pixels.
 		/// </summary>
-		public int ActualWidth
-		{
-			get
-			{
-				return _actualWidth;
-			}
-		}
+		public int ActualWidth { get { return _actualWidth; } }
 
 		#endregion ActualWidth (In Pixels) Property
 
@@ -257,16 +208,11 @@ namespace Axiom.Core
 		///		Absolute height of the viewport (in pixels).
 		/// </summary>
 		private int _actualHeight;
+
 		/// <summary>
 		///		Gets the actual height of the viewport, a value in pixels.
 		/// </summary>
-		public int ActualHeight
-		{
-			get
-			{
-				return _actualHeight;
-			}
-		}
+		public int ActualHeight { get { return _actualHeight; } }
 
 		#endregion ActualHeight (In Pixels) Property
 
@@ -276,16 +222,12 @@ namespace Axiom.Core
 		///		Depth order of the viewport, for sorting.
 		/// </summary>
 		private int _zOrder;
+
 		/// <summary>
 		///		Gets the ZOrder of this viewport.
 		/// </summary>
-		public int ZOrder
-		{
-			get
-			{
-				return _zOrder;
-			}
-		}
+		public int ZOrder { get { return _zOrder; } }
+
 		#endregion ZOrder Property
 
 		#region BackgroundColor Property
@@ -294,20 +236,11 @@ namespace Axiom.Core
 		///		Background color of the viewport.
 		/// </summary>
 		private ColorEx _backColor;
+
 		/// <summary>
 		///		Gets/Sets the background color which will be used to clear the screen every frame.
 		/// </summary>
-		public ColorEx BackgroundColor
-		{
-			get
-			{
-				return _backColor;
-			}
-			set
-			{
-				_backColor = value;
-			}
-		}
+		public ColorEx BackgroundColor { get { return _backColor; } set { _backColor = value; } }
 
 		#endregion BackgroundColor Property
 
@@ -317,20 +250,11 @@ namespace Axiom.Core
 		///		Has this viewport been updated?
 		/// </summary>
 		private bool _isUpdated;
+
 		/// <summary>
 		///		Gets/Sets the IsUpdated value.
 		/// </summary>
-		public bool IsUpdated
-		{
-			get
-			{
-				return _isUpdated;
-			}
-			set
-			{
-				_isUpdated = value;
-			}
-		}
+		public bool IsUpdated { get { return _isUpdated; } set { _isUpdated = value; } }
 
 		#endregion IsUpdated Property
 
@@ -340,6 +264,7 @@ namespace Axiom.Core
 		///		Should we show overlays on this viewport?
 		/// </summary>
 		private bool _showOverlays;
+
 		/// <summary>
 		///		Tells this viewport whether it should display Overlay objects.
 		///	</summary>
@@ -350,17 +275,7 @@ namespace Axiom.Core
 		///		because one of them is probably a picture-in-picture which is not supposed to
 		///		have overlays of it's own. In this case you can turn off overlays on this viewport
 		///		by calling this method.
-		public bool ShowOverlays
-		{
-			get
-			{
-				return _showOverlays;
-			}
-			set
-			{
-				_showOverlays = value;
-			}
-		}
+		public bool ShowOverlays { get { return _showOverlays; } set { _showOverlays = value; } }
 
 		#endregion ShowOverlays Property
 
@@ -370,6 +285,7 @@ namespace Axiom.Core
 		///		Should we show skies on this viewport?
 		/// </summary>
 		private bool _showSkies;
+
 		/// <summary>
 		/// Tells this viewport whether it should display skies.
 		/// </summary>
@@ -381,17 +297,7 @@ namespace Axiom.Core
 		/// which is not supposed to have skies of it's own. In this case you can turn off skies
 		/// on this viewport by calling this method.
 		/// </remarks>
-		public bool ShowSkies
-		{
-			get
-			{
-				return _showSkies;
-			}
-			set
-			{
-				_showSkies = value;
-			}
-		}
+		public bool ShowSkies { get { return _showSkies; } set { _showSkies = value; } }
 
 		#endregion ShowSkies Property
 
@@ -401,6 +307,7 @@ namespace Axiom.Core
 		///		Should we show shadows on this viewport?
 		/// </summary>
 		private bool _showShadows;
+
 		/// <summary>
 		/// Tells this viewport whether it should display shadows.
 		/// </summary>
@@ -410,17 +317,7 @@ namespace Axiom.Core
 		/// but this flag can override the setting so that no shadows are rendered for a given
 		/// viewport to save processing time where they are not required.
 		/// </remarks>
-		public bool ShowShadows
-		{
-			get
-			{
-				return _showShadows;
-			}
-			set
-			{
-				_showShadows = value;
-			}
-		}
+		public bool ShowShadows { get { return _showShadows; } set { _showShadows = value; } }
 
 		#endregion ShowShadows Property
 
@@ -430,6 +327,7 @@ namespace Axiom.Core
 		///     Which material scheme should this viewport use?
 		/// </summary>
 		private string _materialScheme = MaterialManager.DefaultSchemeName;
+
 		/// <summary>
 		/// the material scheme which the viewport should use.
 		/// </summary>
@@ -439,17 +337,7 @@ namespace Axiom.Core
 		/// involve using different techniques to render your materials.
 		/// <see>Technique.SchemeName</see>
 		/// </remarks>
-		public string MaterialScheme
-		{
-			get
-			{
-				return _materialScheme;
-			}
-			set
-			{
-				_materialScheme = value;
-			}
-		}
+		public string MaterialScheme { get { return _materialScheme; } set { _materialScheme = value; } }
 
 		#endregion MaterialScheme Property
 
@@ -459,6 +347,7 @@ namespace Axiom.Core
 		/// the per-viewport visibility mask
 		/// </summary>
 		private uint _visibilityMask = unchecked( 0xFFFFFFFF );
+
 		/// <summary>
 		/// a per-viewport visibility mask.
 		/// </summary>
@@ -469,17 +358,7 @@ namespace Axiom.Core
 		/// <see cref="MovableObject.VisibilityFlags"/> , and if a binary 'and'
 		/// returns zero, the object will not be rendered.
 		/// </remarks>
-		public uint VisibilityMask
-		{
-			get
-			{
-				return _visibilityMask;
-			}
-			set
-			{
-				_visibilityMask = value;
-			}
-		}
+		public uint VisibilityMask { get { return _visibilityMask; } set { _visibilityMask = value; } }
 
 		#endregion VisibilityMask Property
 
@@ -488,13 +367,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Returns the number of faces rendered to this viewport during the last frame.
 		/// </summary>
-		public int RenderedFaceCount
-		{
-			get
-			{
-				return _camera.RenderedFaceCount;
-			}
-		}
+		public int RenderedFaceCount { get { return _camera.RenderedFaceCount; } }
 
 		#endregion RenderedFaceCount Property
 
@@ -534,9 +407,7 @@ namespace Axiom.Core
 				//TODO : Implement Viewport.RenderQueueSequenceName
 				throw new System.NotImplementedException();
 			}
-			set
-			{
-			}
+			set { }
 		}
 
 		/// <summary>
@@ -549,9 +420,7 @@ namespace Axiom.Core
 				//TODO : Implement Viewport.RenderQueueSequence
 				return null;
 			}
-			set
-			{
-			}
+			set { }
 		}
 
 		#endregion RenderQueueSequence Properties Property
@@ -559,11 +428,8 @@ namespace Axiom.Core
 		/// <summary>
 		/// Gets the default depth buffer value to which the viewport is cleared.
 		/// </summary>
-		public float ClearDepth
-		{
-			get;
-			set;
-		}
+		public float ClearDepth { get; set; }
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -587,7 +453,7 @@ namespace Axiom.Core
 			Debug.Assert( target != null, "Cannot use a null RenderTarget to create a viewport." );
 
 			LogManager.Instance.Write( "Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
-				camera.Name, left, top, width, height, zOrder );
+			                           camera.Name, left, top, width, height, zOrder );
 
 			this._camera = camera;
 			this._target = target;
@@ -640,13 +506,13 @@ namespace Axiom.Core
 			// If it's false the camera remains unchanged.
 			// This allows cameras to be used to render to many viewports,
 			// which can have their own dimensions and aspect ratios.
-			if ( _camera.AutoAspectRatio )
+			if( _camera.AutoAspectRatio )
 			{
 				_camera.AspectRatio = (float)_actualWidth / (float)_actualHeight;
 			}
 
 			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}",
-				_camera.Name, _actualLeft, _actualTop, _actualWidth, _actualHeight, _camera.AspectRatio );
+			                           _camera.Name, _actualLeft, _actualTop, _actualWidth, _actualHeight, _camera.AspectRatio );
 
 			_isUpdated = true;
 		}
@@ -660,34 +526,13 @@ namespace Axiom.Core
 		///		viewport before every frame. Do so by setting this property
 		///		to false.
 		///	</remarks>
-		public bool ClearEveryFrame
-		{
-			get
-			{
-				return _clearEveryFrame;
-			}
-			set
-			{
-				_clearEveryFrame = value;
-			}
-		}
-
+		public bool ClearEveryFrame { get { return _clearEveryFrame; } set { _clearEveryFrame = value; } }
 
 		/// <summary>
 		/// Gets the buffers to clear every frame
 		/// </summary>
 		/// <returns></returns>
-		public FrameBufferType ClearBuffers
-		{
-			get
-			{
-				return _clearBuffers;
-			}
-			set
-			{
-				_clearBuffers = value;
-			}
-		}
+		public FrameBufferType ClearBuffers { get { return _clearBuffers; } set { _clearBuffers = value; } }
 
 		/// <summary>
 		///		Instructs the viewport to updates its contents from the viewpoint of
@@ -695,7 +540,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void Update()
 		{
-			if ( _camera != null )
+			if( _camera != null )
 			{
 				_camera.RenderScene( this, _showOverlays );
 			}

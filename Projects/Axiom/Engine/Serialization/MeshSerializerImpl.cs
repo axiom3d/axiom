@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -74,6 +78,7 @@ namespace Axiom.Serialization
 		#endregion Fields
 
 		#region Constructor
+
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
@@ -81,6 +86,7 @@ namespace Axiom.Serialization
 		{
 			version = "[MeshSerializer_v1.41]";
 		}
+
 		#endregion Constructor
 
 		#region Methods
@@ -99,7 +105,7 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "MeshSerializer writing mesh data to {0} ...", fileName );
 			this.mesh = mesh;
 			// Check that the mesh has it's bounds set
-			if ( mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == 0.0F )
+			if( mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == 0.0F )
 			{
 				throw new AxiomException( "The mesh you supplied does not have its bounds completely defined. Define them first before exporting." );
 			}
@@ -116,12 +122,11 @@ namespace Axiom.Serialization
 			}
 			finally
 			{
-				if ( stream != null )
+				if( stream != null )
 				{
 					stream.Close();
 					LogManager.Instance.Write( "MeshSerializer export successful." );
 				}
-
 			}
 		}
 
@@ -141,10 +146,10 @@ namespace Axiom.Serialization
 			MeshChunkID chunkID = 0;
 
 			// read until the end
-			while ( !IsEOF( reader ) )
+			while( !IsEOF( reader ) )
 			{
 				chunkID = ReadChunk( reader );
-				if ( chunkID == MeshChunkID.DependencyInfo )
+				if( chunkID == MeshChunkID.DependencyInfo )
 				{
 					DependencyInfo info = new DependencyInfo();
 					ReadDependencyInfo( reader, info );
@@ -175,11 +180,11 @@ namespace Axiom.Serialization
 			MeshChunkID chunkID = 0;
 
 			// read until the end
-			while ( !IsEOF( reader ) )
+			while( !IsEOF( reader ) )
 			{
 				chunkID = ReadChunk( reader );
 
-				switch ( chunkID )
+				switch( chunkID )
 				{
 					case MeshChunkID.DependencyInfo: // NOTE: This case and read is not in Ogre, why is it here?
 						DependencyInfo info = new DependencyInfo();
@@ -206,17 +211,17 @@ namespace Axiom.Serialization
 		/// <param name="depends"></param>
 		protected void ReadDependencyInfo( BinaryReader reader, DependencyInfo depends )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				// check out the next chunk
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					   ( chunkID == MeshChunkID.MeshDependency ||
-						chunkID == MeshChunkID.SkeletonDependency ||
-						chunkID == MeshChunkID.MaterialDependency ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.MeshDependency ||
+				         chunkID == MeshChunkID.SkeletonDependency ||
+				         chunkID == MeshChunkID.MaterialDependency ) )
 				{
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.MeshDependency:
 							ReadMeshDependency( reader, depends );
@@ -229,7 +234,7 @@ namespace Axiom.Serialization
 							break;
 					}
 				} // while
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// skip back so the continuation of the calling loop can look at the next chunk
 					// since we already read past it
@@ -241,7 +246,7 @@ namespace Axiom.Serialization
 		protected void ReadMeshDependency( BinaryReader reader, DependencyInfo depends )
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				string name = reader.ReadString();
 				depends.meshes.Add( name );
@@ -251,7 +256,7 @@ namespace Axiom.Serialization
 		protected void ReadSkeletonDependency( BinaryReader reader, DependencyInfo depends )
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				string name = reader.ReadString();
 				depends.skeletons.Add( name );
@@ -261,20 +266,20 @@ namespace Axiom.Serialization
 		protected void ReadMaterialDependency( BinaryReader reader, DependencyInfo depends )
 		{
 			int count = reader.ReadInt16();
-			for ( int i = 0; i < count; ++i )
+			for( int i = 0; i < count; ++i )
 			{
 				string name = reader.ReadString();
 				depends.materials.Add( name );
 			}
 		}
 
-		protected virtual void ReadSubMeshNameTable( BinaryReader reader )
+		virtual protected void ReadSubMeshNameTable( BinaryReader reader )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) && ( chunkID == MeshChunkID.SubMeshNameTableElement ) )
+				while( !IsEOF( reader ) && ( chunkID == MeshChunkID.SubMeshNameTableElement ) )
 				{
 					// i'm not bothering with the name table business here, I don't see what the purpose is
 					// since we can simply name the submesh.  it appears this section always comes after all submeshes
@@ -284,27 +289,27 @@ namespace Axiom.Serialization
 
 					SubMesh sub = mesh.GetSubMesh( index );
 
-					if ( sub != null )
+					if( sub != null )
 					{
 						sub.Name = name;
 					}
 
 					// If we're not end of file get the next chunk ID
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					Seek( reader, -ChunkOverheadSize );
 				}
 			}
 		}
 
-		protected virtual void ReadMesh( BinaryReader reader )
+		virtual protected void ReadMesh( BinaryReader reader )
 		{
 			MeshChunkID chunkID;
 
@@ -316,26 +321,25 @@ namespace Axiom.Serialization
 			isSkeletallyAnimated = ReadBool( reader );
 
 			// find all sub chunks
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.Geometry ||
-					chunkID == MeshChunkID.SubMesh ||
-					chunkID == MeshChunkID.MeshSkeletonLink ||
-					chunkID == MeshChunkID.MeshBoneAssignment ||
-					chunkID == MeshChunkID.MeshLOD ||
-					chunkID == MeshChunkID.MeshBounds ||
-					chunkID == MeshChunkID.SubMeshNameTable ||
-					chunkID == MeshChunkID.EdgeLists ||
-					chunkID == MeshChunkID.Poses ||
-					chunkID == MeshChunkID.Animations ||
-					//chunkID == MeshChunkID.TableExtremes ||
-					chunkID == MeshChunkID.AttachmentPoint ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.Geometry ||
+				         chunkID == MeshChunkID.SubMesh ||
+				         chunkID == MeshChunkID.MeshSkeletonLink ||
+				         chunkID == MeshChunkID.MeshBoneAssignment ||
+				         chunkID == MeshChunkID.MeshLOD ||
+				         chunkID == MeshChunkID.MeshBounds ||
+				         chunkID == MeshChunkID.SubMeshNameTable ||
+				         chunkID == MeshChunkID.EdgeLists ||
+				         chunkID == MeshChunkID.Poses ||
+				         chunkID == MeshChunkID.Animations ||
+				         //chunkID == MeshChunkID.TableExtremes ||
+				         chunkID == MeshChunkID.AttachmentPoint ) )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.Geometry:
 							mesh.SharedVertexData = new VertexData();
@@ -387,9 +391,9 @@ namespace Axiom.Serialization
 							ReadAnimations( reader );
 							break;
 
-						//case MeshChunkID.TableExtremes:
-						//    ReadExtremes( reader );
-						//    break;
+							//case MeshChunkID.TableExtremes:
+							//    ReadExtremes( reader );
+							//    break;
 
 						case MeshChunkID.AttachmentPoint:
 							ReadAttachmentPoint( reader );
@@ -397,14 +401,14 @@ namespace Axiom.Serialization
 					} // switch
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				} // while
 
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					Seek( reader, -ChunkOverheadSize );
 				}
@@ -423,13 +427,13 @@ namespace Axiom.Serialization
 			WriteBool( writer, mesh.HasSkeleton );
 
 			// Write shared geometry
-			if ( mesh.SharedVertexData != null )
+			if( mesh.SharedVertexData != null )
 			{
 				WriteGeometry( writer, mesh.SharedVertexData );
 			}
 
 			// Write Submeshes
-			for ( int i = 0; i < mesh.SubMeshCount; ++i )
+			for( int i = 0; i < mesh.SubMeshCount; ++i )
 			{
 				SubMesh subMesh = mesh.GetSubMesh( i );
 				LogManager.Instance.Write( "Writing submesh {0} ...", subMesh.Name );
@@ -438,7 +442,7 @@ namespace Axiom.Serialization
 			}
 
 			// Write skeleton info if required
-			if ( mesh.Skeleton != null )
+			if( mesh.Skeleton != null )
 			{
 				// Write skeleton link
 				LogManager.Instance.Write( "Exporting skeleton link..." );
@@ -448,17 +452,19 @@ namespace Axiom.Serialization
 				// Write bone assignments
 				LogManager.Instance.Write( "Exporting shared geometry bone assignments..." );
 				Dictionary<int, List<VertexBoneAssignment>> weights = mesh.BoneAssignmentList;
-				foreach ( int v in weights.Keys )
+				foreach( int v in weights.Keys )
 				{
 					List<VertexBoneAssignment> vbaList = weights[ v ];
-					foreach ( VertexBoneAssignment vba in vbaList )
+					foreach( VertexBoneAssignment vba in vbaList )
+					{
 						WriteMeshBoneAssignment( writer, vba );
+					}
 				}
 				LogManager.Instance.Write( "Shared geometry bone assignments exported." );
 			}
 
 			// Write LOD data if any
-			if ( mesh.LodLevelCount > 1 )
+			if( mesh.LodLevelCount > 1 )
 			{
 				LogManager.Instance.Write( "Exporting LOD information..." );
 				this.WriteMeshLodInfo( writer );
@@ -482,10 +488,14 @@ namespace Axiom.Serialization
 
 			//Write morph animation
 			LogManager.Instance.Write( "Exporting morph animations..." );
-			if ( mesh.PoseList.Count > 0 )
+			if( mesh.PoseList.Count > 0 )
+			{
 				WritePoses( writer );
-			if ( mesh.HasVertexAnimation )
+			}
+			if( mesh.HasVertexAnimation )
+			{
 				WriteAnimations( writer );
+			}
 			LogManager.Instance.Write( "Morph animations exported." );
 
 			// Write submesh extremes
@@ -495,8 +505,10 @@ namespace Axiom.Serialization
 
 			// Write Attachment Points
 			LogManager.Instance.Write( "Exporting attachment points..." );
-			foreach ( AttachmentPoint ap in mesh.AttachmentPoints )
+			foreach( AttachmentPoint ap in mesh.AttachmentPoints )
+			{
 				WriteAttachmentPoint( writer, ap );
+			}
 			LogManager.Instance.Write( "Attachment points exported." );
 
 			// Some ending stuff...
@@ -530,25 +542,33 @@ namespace Axiom.Serialization
 			IntPtr buf = subMesh.indexData.indexBuffer.Lock( BufferLocking.Discard );
 			try
 			{
-				if ( indexes32bit )
+				if( indexes32bit )
+				{
 					WriteInts( writer, subMesh.indexData.indexCount, buf );
+				}
 				else
+				{
 					WriteShorts( writer, subMesh.indexData.indexCount, buf );
+				}
 			}
 			finally
 			{
 				subMesh.indexData.indexBuffer.Unlock();
 			}
-			if ( !subMesh.useSharedVertices )
+			if( !subMesh.useSharedVertices )
+			{
 				WriteGeometry( writer, subMesh.vertexData );
+			}
 			WriteSubMeshOperation( writer, subMesh );
 
 			Dictionary<int, List<VertexBoneAssignment>> weights = subMesh.BoneAssignmentList;
-			foreach ( int v in weights.Keys )
+			foreach( int v in weights.Keys )
 			{
 				List<VertexBoneAssignment> vbaList = weights[ v ];
-				foreach ( VertexBoneAssignment vba in vbaList )
+				foreach( VertexBoneAssignment vba in vbaList )
+				{
 					WriteSubMeshBoneAssignment( writer, vba );
+				}
 			}
 
 			// Write the texture alias (not currently supported)
@@ -609,8 +629,10 @@ namespace Axiom.Serialization
 
 			WriteUInt( writer, (uint)vertexData.vertexCount );
 			WriteGeometryVertexDeclaration( writer, vertexData.vertexDeclaration );
-			for ( short i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i )
+			for( short i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i )
+			{
 				WriteGeometryVertexBuffer( writer, i, vertexData.vertexBufferBinding.GetBuffer( i ) );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -623,8 +645,10 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.GeometryVertexDeclaration, 0 );
 
-			for ( int i = 0; i < vertexDeclaration.ElementCount; ++i )
+			for( int i = 0; i < vertexDeclaration.ElementCount; ++i )
+			{
 				WriteGeometryVertexElement( writer, vertexDeclaration.GetElement( i ) );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -704,7 +728,7 @@ namespace Axiom.Serialization
 			this.WriteMeshLodSummary( writer );
 
 			// Start from 1 to skip the LOD 0 entry
-			for ( int i = 1; i < mesh.LodLevelCount; ++i )
+			for( int i = 1; i < mesh.LodLevelCount; ++i )
 			{
 				MeshLodUsage usage = mesh.GetLodLevel( i );
 				WriteMeshLodUsage( writer, usage, i );
@@ -716,7 +740,7 @@ namespace Axiom.Serialization
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
 		}
 
-		protected virtual void WriteMeshLodSummary( BinaryWriter writer )
+		virtual protected void WriteMeshLodSummary( BinaryWriter writer )
 		{
 			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
 			WriteString( writer, mesh.LodStrategy.Name );
@@ -729,11 +753,13 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLODUsage, 0 );
 
-			if ( mesh.IsLodManual )
+			if( mesh.IsLodManual )
+			{
 				WriteMeshLodManual( writer, usage );
+			}
 			else
 			{
-				for ( int i = 0; i < mesh.SubMeshCount; ++i )
+				for( int i = 0; i < mesh.SubMeshCount; ++i )
 				{
 					SubMesh subMesh = mesh.GetSubMesh( i );
 					WriteMeshLodGenerated( writer, subMesh, usageIndex );
@@ -773,10 +799,14 @@ namespace Axiom.Serialization
 			// lock the buffer
 			IntPtr data = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
 
-			if ( indexes32bit )
+			if( indexes32bit )
+			{
 				WriteInts( writer, indexData.indexCount, data );
+			}
 			else
+			{
 				WriteShorts( writer, indexData.indexCount, data );
+			}
 
 			indexData.indexBuffer.Unlock();
 
@@ -811,7 +841,7 @@ namespace Axiom.Serialization
 			WriteChunk( writer, MeshChunkID.SubMeshNameTable, 0 );
 
 			// Loop through and save out the index and names
-			for ( short i = 0; i < mesh.SubMeshCount; ++i )
+			for( short i = 0; i < mesh.SubMeshCount; ++i )
 			{
 				SubMesh subMesh = mesh.GetSubMesh( i );
 				WriteSubMeshNameTableElement( writer, i, subMesh.Name );
@@ -843,8 +873,10 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.Poses, 0 );
 
-			foreach ( Pose pose in mesh.PoseList )
+			foreach( Pose pose in mesh.PoseList )
+			{
 				WritePose( writer, pose );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -859,8 +891,10 @@ namespace Axiom.Serialization
 
 			WriteString( writer, pose.Name );
 			WriteUShort( writer, pose.Target );
-			foreach ( KeyValuePair<int, Vector3> kvp in pose.VertexOffsetMap )
+			foreach( KeyValuePair<int, Vector3> kvp in pose.VertexOffsetMap )
+			{
 				WritePoseVertex( writer, kvp.Key, kvp.Value );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -887,7 +921,7 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.Animations, 0 );
 
-			for ( ushort animIndex = 0; animIndex < mesh.AnimationCount; ++animIndex )
+			for( ushort animIndex = 0; animIndex < mesh.AnimationCount; ++animIndex )
 			{
 				Animation anim = mesh.GetAnimation( animIndex );
 				WriteAnimation( writer, anim );
@@ -906,8 +940,10 @@ namespace Axiom.Serialization
 
 			WriteString( writer, anim.Name );
 			WriteFloat( writer, anim.Length );
-			foreach ( VertexAnimationTrack track in anim.VertexTracks.Values )
+			foreach( VertexAnimationTrack track in anim.VertexTracks.Values )
+			{
 				WriteAnimationTrack( writer, track );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -922,14 +958,14 @@ namespace Axiom.Serialization
 
 			WriteUShort( writer, (ushort)track.AnimationType );
 			WriteUShort( writer, track.Handle );
-			foreach ( KeyFrame keyFrame in track.KeyFrames )
+			foreach( KeyFrame keyFrame in track.KeyFrames )
 			{
-				if ( keyFrame is VertexMorphKeyFrame )
+				if( keyFrame is VertexMorphKeyFrame )
 				{
 					VertexMorphKeyFrame vmkf = keyFrame as VertexMorphKeyFrame;
 					WriteMorphKeyframe( writer, vmkf );
 				}
-				else if ( keyFrame is VertexPoseKeyFrame )
+				else if( keyFrame is VertexPoseKeyFrame )
 				{
 					VertexPoseKeyFrame vpkf = keyFrame as VertexPoseKeyFrame;
 					WritePoseKeyframe( writer, vpkf );
@@ -965,8 +1001,10 @@ namespace Axiom.Serialization
 			WriteChunk( writer, MeshChunkID.AnimationPoseKeyframe, 0 );
 
 			WriteFloat( writer, keyFrame.Time );
-			foreach ( PoseRef poseRef in keyFrame.PoseRefs )
+			foreach( PoseRef poseRef in keyFrame.PoseRefs )
+			{
 				WriteAnimationPoseRef( writer, poseRef );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -1003,7 +1041,7 @@ namespace Axiom.Serialization
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
 		}
 
-		protected virtual void ReadSubMesh( BinaryReader reader )
+		virtual protected void ReadSubMesh( BinaryReader reader )
 		{
 			MeshChunkID chunkID;
 
@@ -1027,16 +1065,16 @@ namespace Axiom.Serialization
 
 			HardwareIndexBuffer idxBuffer = null;
 
-			if ( idx32bit )
+			if( idx32bit )
 			{
 				// create the index buffer
 				idxBuffer =
 					HardwareBufferManager.Instance.
-					CreateIndexBuffer(
-					IndexType.Size32,
-					subMesh.indexData.indexCount,
-					mesh.IndexBufferUsage,
-					mesh.UseIndexShadowBuffer );
+						CreateIndexBuffer(
+						                  IndexType.Size32,
+						                  subMesh.indexData.indexCount,
+						                  mesh.IndexBufferUsage,
+						                  mesh.UseIndexShadowBuffer );
 
 				IntPtr indices = idxBuffer.Lock( BufferLocking.Discard );
 
@@ -1047,15 +1085,16 @@ namespace Axiom.Serialization
 				idxBuffer.Unlock();
 			}
 			else
-			{ // 16-bit
+			{
+				// 16-bit
 				// create the index buffer
 				idxBuffer =
 					HardwareBufferManager.Instance.
-					CreateIndexBuffer(
-					IndexType.Size16,
-					subMesh.indexData.indexCount,
-					mesh.IndexBufferUsage,
-					mesh.UseIndexShadowBuffer );
+						CreateIndexBuffer(
+						                  IndexType.Size16,
+						                  subMesh.indexData.indexCount,
+						                  mesh.IndexBufferUsage,
+						                  mesh.UseIndexShadowBuffer );
 
 				IntPtr indices = idxBuffer.Lock( BufferLocking.Discard );
 
@@ -1069,11 +1108,11 @@ namespace Axiom.Serialization
 			subMesh.indexData.indexBuffer = idxBuffer;
 
 			// Geometry chunk (optional, only present if useSharedVertices = false)
-			if ( !subMesh.useSharedVertices )
+			if( !subMesh.useSharedVertices )
 			{
 				chunkID = ReadChunk( reader );
 
-				if ( chunkID != MeshChunkID.Geometry )
+				if( chunkID != MeshChunkID.Geometry )
 				{
 					throw new AxiomException( "Missing geometry data in mesh file." );
 				}
@@ -1088,12 +1127,11 @@ namespace Axiom.Serialization
 			chunkID = ReadChunk( reader );
 
 			// walk through all the bone assignments for this submesh
-			while ( !IsEOF( reader ) &&
-				( chunkID == MeshChunkID.SubMeshBoneAssignment ||
-				chunkID == MeshChunkID.SubMeshOperation ) )
+			while( !IsEOF( reader ) &&
+			       ( chunkID == MeshChunkID.SubMeshBoneAssignment ||
+			         chunkID == MeshChunkID.SubMeshOperation ) )
 			{
-
-				switch ( chunkID )
+				switch( chunkID )
 				{
 					case MeshChunkID.SubMeshBoneAssignment:
 						ReadSubMeshBoneAssignment( reader, subMesh );
@@ -1105,7 +1143,7 @@ namespace Axiom.Serialization
 				}
 
 				// read the next chunkID
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					chunkID = ReadChunk( reader );
 				}
@@ -1113,33 +1151,32 @@ namespace Axiom.Serialization
 
 			// walk back to the beginning of the last chunk ID read since
 			// we already moved past it and it wasnt of interest to us
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				Seek( reader, -ChunkOverheadSize );
 			}
 		}
 
-		protected virtual void ReadSubMeshOperation( BinaryReader reader, SubMesh sub )
+		virtual protected void ReadSubMeshOperation( BinaryReader reader, SubMesh sub )
 		{
 			sub.operationType = (OperationType)ReadShort( reader );
 		}
 
-		protected virtual void ReadGeometry( BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometry( BinaryReader reader, VertexData data )
 		{
 			data.vertexStart = 0;
 			data.vertexCount = ReadInt( reader );
 
 			// find optional geometry chunks
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryVertexDeclaration ||
-					chunkID == MeshChunkID.GeometryVertexBuffer ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.GeometryVertexDeclaration ||
+				         chunkID == MeshChunkID.GeometryVertexBuffer ) )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.GeometryVertexDeclaration:
 							ReadGeometryVertexDeclaration( reader, data );
@@ -1151,13 +1188,13 @@ namespace Axiom.Serialization
 					}
 
 					// get the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to start of non-submesh chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1175,18 +1212,17 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadGeometryVertexDeclaration( BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryVertexDeclaration( BinaryReader reader, VertexData data )
 		{
 			// find optional geometry chunks
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryVertexElement ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.GeometryVertexElement ) )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.GeometryVertexElement:
 							ReadGeometryVertexElement( reader, data );
@@ -1194,13 +1230,13 @@ namespace Axiom.Serialization
 					}
 
 					// get the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to start of non-submesh chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1208,7 +1244,7 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadGeometryVertexElement( BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryVertexElement( BinaryReader reader, VertexData data )
 		{
 			short source = ReadShort( reader );
 			VertexElementType type = (VertexElementType)ReadUShort( reader );
@@ -1219,15 +1255,15 @@ namespace Axiom.Serialization
 			// add the element to the declaration for the current vertex data
 			data.vertexDeclaration.AddElement( source, offset, type, semantic, index );
 
-			if ( type == VertexElementType.Color )
+			if( type == VertexElementType.Color )
 			{
 				LogManager.Instance.Write( "Warning: VET_COLOUR element type is deprecated, you should use " +
-										   "one of the more specific types to indicate the byte order. " +
-										   "Use OgreMeshUpgrade on {0} as soon as possible. ", mesh.Name );
+				                           "one of the more specific types to indicate the byte order. " +
+				                           "Use OgreMeshUpgrade on {0} as soon as possible. ", mesh.Name );
 			}
 		}
 
-		protected virtual void ReadGeometryVertexBuffer( BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryVertexBuffer( BinaryReader reader, VertexData data )
 		{
 			// Index to bind this buffer to
 			short bindIdx = ReadShort( reader );
@@ -1238,13 +1274,13 @@ namespace Axiom.Serialization
 			// check for vertex data header
 			MeshChunkID chunkID = ReadChunk( reader );
 
-			if ( chunkID != MeshChunkID.GeometryVertexBufferData )
+			if( chunkID != MeshChunkID.GeometryVertexBufferData )
 			{
 				throw new AxiomException( "Can't find vertex buffer data area!" );
 			}
 
 			// check that vertex size agrees
-			if ( data.vertexDeclaration.GetVertexSize( bindIdx ) != vertexSize )
+			if( data.vertexDeclaration.GetVertexSize( bindIdx ) != vertexSize )
 			{
 				throw new AxiomException( "Vertex buffer size does not agree with vertex declaration!" );
 			}
@@ -1252,10 +1288,10 @@ namespace Axiom.Serialization
 			// create/populate vertex buffer
 			HardwareVertexBuffer buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-					vertexSize,
-					data.vertexCount,
-					mesh.VertexBufferUsage,
-					mesh.UseVertexShadowBuffer );
+				                                                  vertexSize,
+				                                                  data.vertexCount,
+				                                                  mesh.VertexBufferUsage,
+				                                                  mesh.UseVertexShadowBuffer );
 
 			IntPtr bufferPtr = buffer.Lock( BufferLocking.Discard );
 
@@ -1267,14 +1303,14 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, buffer );
 		}
 
-		protected virtual void ReadSkeletonLink( BinaryReader reader )
+		virtual protected void ReadSkeletonLink( BinaryReader reader )
 		{
 			mesh.SkeletonName = ReadString( reader );
 
 			MeshManager.Instance.FireProcessSkeletonName( this.mesh, this.mesh.SkeletonName );
 		}
 
-		protected virtual void ReadMeshBoneAssignment( BinaryReader reader )
+		virtual protected void ReadMeshBoneAssignment( BinaryReader reader )
 		{
 			VertexBoneAssignment assignment = new VertexBoneAssignment();
 
@@ -1287,7 +1323,7 @@ namespace Axiom.Serialization
 			mesh.AddBoneAssignment( assignment );
 		}
 
-		protected virtual void ReadSubMeshBoneAssignment( BinaryReader reader, SubMesh sub )
+		virtual protected void ReadSubMeshBoneAssignment( BinaryReader reader, SubMesh sub )
 		{
 			VertexBoneAssignment assignment = new VertexBoneAssignment();
 
@@ -1300,7 +1336,7 @@ namespace Axiom.Serialization
 			sub.AddBoneAssignment( assignment );
 		}
 
-		protected virtual void ReadMeshLodInfo( BinaryReader reader )
+		virtual protected void ReadMeshLodInfo( BinaryReader reader )
 		{
 			// Read the strategy to be used for this mesh
 			string strategyName = this.ReadString( reader );
@@ -1313,34 +1349,38 @@ namespace Axiom.Serialization
 			this.mesh.IsLodManual = this.ReadBool( reader ); //readBools(stream, &(pMesh->mIsLodManual), 1);
 
 			// Preallocate submesh lod face data if not manual
-			if ( !this.mesh.IsLodManual )
+			if( !this.mesh.IsLodManual )
 			{
-				for ( ushort i = 0; i < this.mesh.SubMeshCount; ++i )
+				for( ushort i = 0; i < this.mesh.SubMeshCount; ++i )
 				{
 					SubMesh sm = this.mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
-					for ( ushort j = 1; j < lodLevelCount; j++ )
+					for( ushort j = 1; j < lodLevelCount; j++ )
+					{
 						sm.lodFaceList.Add( null );
+					}
 
 					//sm.lodFaceList.resize(pMesh->mNumLods-1);
-					}
 				}
+			}
 
 			MeshChunkID chunkId;
 			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( ushort i = 1; i < lodLevelCount; ++i )
+			for( ushort i = 1; i < lodLevelCount; ++i )
 			{
 				chunkId = this.ReadChunk( reader );
 
-				if ( chunkId != MeshChunkID.MeshLODUsage )
+				if( chunkId != MeshChunkID.MeshLODUsage )
+				{
 					throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
+				}
 
 				// Read depth
 				MeshLodUsage usage = new MeshLodUsage();
 				usage.UserValue = this.ReadFloat( reader );
 
-				if ( this.mesh.IsLodManual )
+				if( this.mesh.IsLodManual )
 				{
 					this.ReadMeshLodUsageManual( reader, i, ref usage );
 				}
@@ -1355,11 +1395,11 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
+		virtual protected void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
 		{
 			MeshChunkID chunkId = ReadChunk( reader );
 
-			if ( chunkId != MeshChunkID.MeshLODManual )
+			if( chunkId != MeshChunkID.MeshLODManual )
 			{
 				throw new AxiomException( "Missing MeshLODManual chunk in '{0}'.", mesh.Name );
 			}
@@ -1370,7 +1410,7 @@ namespace Axiom.Serialization
 			usage.ManualMesh = null;
 		}
 
-		protected virtual void ReadMeshLodUsageGenerated( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
+		virtual protected void ReadMeshLodUsageGenerated( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
 		{
 			usage.ManualName = "";
 			usage.ManualMesh = null;
@@ -1378,11 +1418,11 @@ namespace Axiom.Serialization
 			// get one set of detail per submesh
 			MeshChunkID chunkId;
 
-			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			for( int i = 0; i < mesh.SubMeshCount; i++ )
 			{
 				chunkId = ReadChunk( reader );
 
-				if ( chunkId != MeshChunkID.MeshLODGenerated )
+				if( chunkId != MeshChunkID.MeshLODGenerated )
 				{
 					throw new AxiomException( "Missing MeshLodGenerated chunk in '{0}'", mesh.Name );
 				}
@@ -1400,14 +1440,14 @@ namespace Axiom.Serialization
 				bool is32bit = ReadBool( reader );
 
 				// create an appropriate index buffer and stuff in the data
-				if ( is32bit )
+				if( is32bit )
 				{
 					indexData.indexBuffer =
 						HardwareBufferManager.Instance.CreateIndexBuffer(
-						IndexType.Size32,
-						indexData.indexCount,
-						mesh.IndexBufferUsage,
-						mesh.UseIndexShadowBuffer );
+						                                                 IndexType.Size32,
+						                                                 indexData.indexCount,
+						                                                 mesh.IndexBufferUsage,
+						                                                 mesh.UseIndexShadowBuffer );
 
 					// lock the buffer
 					IntPtr data = indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -1422,10 +1462,10 @@ namespace Axiom.Serialization
 				{
 					indexData.indexBuffer =
 						HardwareBufferManager.Instance.CreateIndexBuffer(
-						IndexType.Size16,
-						indexData.indexCount,
-						mesh.IndexBufferUsage,
-						mesh.UseIndexShadowBuffer );
+						                                                 IndexType.Size16,
+						                                                 indexData.indexCount,
+						                                                 mesh.IndexBufferUsage,
+						                                                 mesh.UseIndexShadowBuffer );
 
 					// lock the buffer
 					IntPtr data = indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -1439,7 +1479,7 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadBoundsInfo( BinaryReader reader )
+		virtual protected void ReadBoundsInfo( BinaryReader reader )
 		{
 			// min abb extent
 			Vector3 min = ReadVector3( reader );
@@ -1454,16 +1494,15 @@ namespace Axiom.Serialization
 			mesh.BoundingSphereRadius = ReadFloat( reader );
 		}
 
-		protected virtual void ReadEdgeList( BinaryReader reader )
+		virtual protected void ReadEdgeList( BinaryReader reader )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.EdgeListLOD )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.EdgeListLOD )
 				{
-
 					// process single LOD
 					short lodIndex = ReadShort( reader );
 
@@ -1471,7 +1510,7 @@ namespace Axiom.Serialization
 					bool isManual = ReadBool( reader );
 
 					// Only load in non-manual levels; others will be connected up by Mesh on demand
-					if ( !isManual )
+					if( !isManual )
 					{
 						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
 
@@ -1486,7 +1525,7 @@ namespace Axiom.Serialization
 						// TODO: Resize triangle list
 						// TODO: Resize edge groups
 
-						for ( int i = 0; i < triCount; i++ )
+						for( int i = 0; i < triCount; i++ )
 						{
 							EdgeData.Triangle tri = new EdgeData.Triangle();
 
@@ -1506,11 +1545,11 @@ namespace Axiom.Serialization
 							usage.EdgeData.triangles.Add( tri );
 						}
 
-						for ( int eg = 0; eg < edgeGroupCount; eg++ )
+						for( int eg = 0; eg < edgeGroupCount; eg++ )
 						{
 							chunkID = ReadChunk( reader );
 
-							if ( chunkID != MeshChunkID.EdgeListGroup )
+							if( chunkID != MeshChunkID.EdgeListGroup )
 							{
 								throw new AxiomException( "Missing EdgeListGroup chunk." );
 							}
@@ -1526,7 +1565,7 @@ namespace Axiom.Serialization
 
 							// TODO: Resize the edge group list
 
-							for ( int e = 0; e < edgeCount; e++ )
+							for( int e = 0; e < edgeCount; e++ )
 							{
 								EdgeData.Edge edge = new EdgeData.Edge();
 
@@ -1548,9 +1587,9 @@ namespace Axiom.Serialization
 							// Populate edgeGroup.vertexData references
 							// If there is shared vertex data, vertexSet 0 is that, 
 							// otherwise 0 is first dedicated
-							if ( mesh.SharedVertexData != null )
+							if( mesh.SharedVertexData != null )
 							{
-								if ( edgeGroup.vertexSet == 0 )
+								if( edgeGroup.vertexSet == 0 )
 								{
 									edgeGroup.vertexData = mesh.SharedVertexData;
 								}
@@ -1570,14 +1609,14 @@ namespace Axiom.Serialization
 					}
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1587,24 +1626,22 @@ namespace Axiom.Serialization
 			mesh.IsEdgeListBuilt = true;
 		}
 
-		protected virtual void ReadPoses( BinaryReader reader )
+		virtual protected void ReadPoses( BinaryReader reader )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.Pose )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.Pose )
 				{
-
 					string name = ReadString( reader );
 					ushort target = ReadUShort( reader );
 					Pose pose = mesh.CreatePose( target, name );
 
-					while ( !IsEOF( reader ) &&
-						   ( chunkID = ReadChunk( reader ) ) == MeshChunkID.PoseVertex )
+					while( !IsEOF( reader ) &&
+					       ( chunkID = ReadChunk( reader ) ) == MeshChunkID.PoseVertex )
 					{
-
 						int vertexIndex = ReadInt( reader );
 						Vector3 offset = ReadVector3( reader );
 						pose.VertexOffsetMap[ vertexIndex ] = offset;
@@ -1612,7 +1649,7 @@ namespace Axiom.Serialization
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1620,26 +1657,27 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadAnimations( BinaryReader reader )
+		virtual protected void ReadAnimations( BinaryReader reader )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.Animation )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.Animation )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.Animation:
 							ReadAnimation( reader );
 							break;
 					}
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
+					{
 						chunkID = ReadChunk( reader );
+					}
 				}
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1654,23 +1692,24 @@ namespace Axiom.Serialization
 			Animation anim = mesh.CreateAnimation( name, length );
 
 			// Read the tracks for this animation
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   chunkID == MeshChunkID.AnimationTrack )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.AnimationTrack )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.AnimationTrack:
 							ReadAnimationTrack( reader, anim );
 							break;
 					}
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
+					{
 						chunkID = ReadChunk( reader );
+					}
 				}
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1684,17 +1723,17 @@ namespace Axiom.Serialization
 			ushort target = ReadUShort( reader );
 
 			VertexAnimationTrack track = anim.CreateVertexTrack( target,
-																mesh.GetVertexDataByTrackHandle( target ),
-																(VertexAnimationType)type );
+			                                                     mesh.GetVertexDataByTrackHandle( target ),
+			                                                     (VertexAnimationType)type );
 			// Now read the key frames for this track
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   ( chunkID == MeshChunkID.AnimationMorphKeyframe ||
-						chunkID == MeshChunkID.AnimationPoseKeyframe ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.AnimationMorphKeyframe ||
+				         chunkID == MeshChunkID.AnimationPoseKeyframe ) )
 				{
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.AnimationMorphKeyframe:
 							ReadMorphKeyframe( reader, track );
@@ -1703,10 +1742,12 @@ namespace Axiom.Serialization
 							ReadPoseKeyframe( reader, track );
 							break;
 					}
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
+					{
 						chunkID = ReadChunk( reader );
+					}
 				}
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1722,8 +1763,8 @@ namespace Axiom.Serialization
 			// create/populate vertex buffer
 			HardwareVertexBuffer buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-						VertexElement.GetTypeSize( VertexElementType.Float3 ),
-						vertexCount, BufferUsage.Static, true );
+				                                                  VertexElement.GetTypeSize( VertexElementType.Float3 ),
+				                                                  vertexCount, BufferUsage.Static, true );
 			// lock the buffer for editing
 			IntPtr vertices = buffer.Lock( BufferLocking.Discard );
 			// stuff the floats into the normal buffer
@@ -1738,26 +1779,28 @@ namespace Axiom.Serialization
 			float time = ReadFloat( reader );
 			VertexPoseKeyFrame vkf = track.CreateVertexPoseKeyFrame( time );
 
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) &&
-					   chunkID == MeshChunkID.AnimationPoseRef )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.AnimationPoseRef )
 				{
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.AnimationPoseRef:
-							{
-								ushort poseIndex = ReadUShort( reader );
-								float influence = ReadFloat( reader );
-								vkf.AddPoseReference( poseIndex, influence );
-								break;
-							}
+						{
+							ushort poseIndex = ReadUShort( reader );
+							float influence = ReadFloat( reader );
+							vkf.AddPoseReference( poseIndex, influence );
+							break;
+						}
 					}
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
+					{
 						chunkID = ReadChunk( reader );
+					}
 				}
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -1818,14 +1861,14 @@ namespace Axiom.Serialization
 			mesh.IsLodManual = ReadBool( reader );
 
 			// preallocate submesh lod face data if not manual
-			if ( !mesh.IsLodManual )
+			if( !mesh.IsLodManual )
 			{
-				for ( int i = 0; i < mesh.SubMeshCount; i++ )
+				for( int i = 0; i < mesh.SubMeshCount; i++ )
 				{
 					SubMesh sub = mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
-					for ( int j = 1; j < lodLevelCount; j++ )
+					for( int j = 1; j < lodLevelCount; j++ )
 					{
 						sub.lodFaceList.Add( null );
 					}
@@ -1834,11 +1877,11 @@ namespace Axiom.Serialization
 			}
 
 			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( int i = 1; i < lodLevelCount; i++ )
+			for( int i = 1; i < lodLevelCount; i++ )
 			{
 				chunkId = ReadChunk( reader );
 
-				if ( chunkId != MeshChunkID.MeshLODUsage )
+				if( chunkId != MeshChunkID.MeshLODUsage )
 				{
 					throw new AxiomException( "Missing MeshLodUsage chunk in mesh '{0}'", mesh.Name );
 				}
@@ -1848,7 +1891,7 @@ namespace Axiom.Serialization
 				usage.Value = ReadFloat( reader );
 				usage.UserValue = Utility.Sqrt( usage.Value );
 
-				if ( mesh.IsLodManual )
+				if( mesh.IsLodManual )
 				{
 					ReadMeshLodUsageManual( reader, i, ref usage );
 				}
@@ -1894,14 +1937,13 @@ namespace Axiom.Serialization
 
 		protected override void ReadEdgeList( BinaryReader reader )
 		{
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				MeshChunkID chunkID = ReadChunk( reader );
 
-				while ( !IsEOF( reader ) &&
-					chunkID == MeshChunkID.EdgeListLOD )
+				while( !IsEOF( reader ) &&
+				       chunkID == MeshChunkID.EdgeListLOD )
 				{
-
 					// process single LOD
 					short lodIndex = ReadShort( reader );
 
@@ -1909,7 +1951,7 @@ namespace Axiom.Serialization
 					bool isManual = ReadBool( reader );
 
 					// Only load in non-manual levels; others will be connected up by Mesh on demand
-					if ( !isManual )
+					if( !isManual )
 					{
 						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
 
@@ -1921,7 +1963,7 @@ namespace Axiom.Serialization
 						// TODO: Resize triangle list
 						// TODO: Resize edge groups
 
-						for ( int i = 0; i < triCount; i++ )
+						for( int i = 0; i < triCount; i++ )
 						{
 							EdgeData.Triangle tri = new EdgeData.Triangle();
 
@@ -1941,11 +1983,11 @@ namespace Axiom.Serialization
 							usage.EdgeData.triangles.Add( tri );
 						}
 
-						for ( int eg = 0; eg < edgeGroupCount; eg++ )
+						for( int eg = 0; eg < edgeGroupCount; eg++ )
 						{
 							chunkID = ReadChunk( reader );
 
-							if ( chunkID != MeshChunkID.EdgeListGroup )
+							if( chunkID != MeshChunkID.EdgeListGroup )
 							{
 								throw new AxiomException( "Missing EdgeListGroup chunk." );
 							}
@@ -1958,7 +2000,7 @@ namespace Axiom.Serialization
 
 							// TODO: Resize the edge group list
 
-							for ( int e = 0; e < edgeCount; e++ )
+							for( int e = 0; e < edgeCount; e++ )
 							{
 								EdgeData.Edge edge = new EdgeData.Edge();
 
@@ -1980,9 +2022,9 @@ namespace Axiom.Serialization
 							// Populate edgeGroup.vertexData references
 							// If there is shared vertex data, vertexSet 0 is that, 
 							// otherwise 0 is first dedicated
-							if ( mesh.SharedVertexData != null )
+							if( mesh.SharedVertexData != null )
 							{
-								if ( edgeGroup.vertexSet == 0 )
+								if( edgeGroup.vertexSet == 0 )
 								{
 									edgeGroup.vertexData = mesh.SharedVertexData;
 								}
@@ -2002,14 +2044,14 @@ namespace Axiom.Serialization
 					}
 
 					// grab the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 
 				// grab the next chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// backpedal to the start of chunk
 					Seek( reader, -ChunkOverheadSize );
@@ -2057,19 +2099,18 @@ namespace Axiom.Serialization
 
 			ReadGeometryPositions( bindIdx++, reader, data );
 
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				// check out the next chunk
 				MeshChunkID chunkID = ReadChunk( reader );
 
 				// keep going as long as we have more optional buffer chunks
-				while ( !IsEOF( reader ) &&
-					( chunkID == MeshChunkID.GeometryNormals ||
-					chunkID == MeshChunkID.GeometryColors ||
-					chunkID == MeshChunkID.GeometryTexCoords ) )
+				while( !IsEOF( reader ) &&
+				       ( chunkID == MeshChunkID.GeometryNormals ||
+				         chunkID == MeshChunkID.GeometryColors ||
+				         chunkID == MeshChunkID.GeometryTexCoords ) )
 				{
-
-					switch ( chunkID )
+					switch( chunkID )
 					{
 						case MeshChunkID.GeometryNormals:
 							ReadGeometryNormals( bindIdx++, reader, data );
@@ -2082,17 +2123,16 @@ namespace Axiom.Serialization
 						case MeshChunkID.GeometryTexCoords:
 							ReadGeometryTexCoords( bindIdx++, reader, data, texCoordSet++ );
 							break;
-
 					} // switch
 
 					// read the next chunk
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				} // while
 
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					// skip back so the continuation of the calling loop can look at the next chunk
 					// since we already read past it
@@ -2101,14 +2141,14 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadGeometryPositions( short bindIdx, BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryPositions( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// vertex buffers
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.
 				CreateVertexBuffer( data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
+				                    data.vertexCount, mesh.VertexBufferUsage, mesh.UseVertexShadowBuffer );
 
 			IntPtr posData = vBuffer.Lock( BufferLocking.Discard );
 
@@ -2122,16 +2162,16 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryNormals( short bindIdx, BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryNormals( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr normals = vBuffer.Lock( BufferLocking.Discard );
@@ -2145,16 +2185,17 @@ namespace Axiom.Serialization
 			// bind this buffer
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
-		protected virtual void ReadGeometryTangents( short bindIdx, BinaryReader reader, VertexData data )
+
+		virtual protected void ReadGeometryTangents( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Tangent );
 
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
@@ -2168,16 +2209,17 @@ namespace Axiom.Serialization
 			// bind this buffer
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
-		protected virtual void ReadGeometryBinormals( short bindIdx, BinaryReader reader, VertexData data )
+
+		virtual protected void ReadGeometryBinormals( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Binormal );
 
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr buf = vBuffer.Lock( BufferLocking.Discard );
@@ -2192,16 +2234,16 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryColors( short bindIdx, BinaryReader reader, VertexData data )
+		virtual protected void ReadGeometryColors( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the buffer for editing
 			IntPtr colors = vBuffer.Lock( BufferLocking.Discard );
@@ -2216,24 +2258,24 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
+		virtual protected void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
 		{
 			// get the number of texture dimensions (1D, 2D, 3D, etc)
 			short dim = ReadShort( reader );
 
 			// add a vertex element for the current tex coord set
 			data.vertexDeclaration.AddElement(
-				bindIdx, 0,
-				VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ),
-				VertexElementSemantic.TexCoords,
-				coordSet );
+			                                  bindIdx, 0,
+			                                  VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ),
+			                                  VertexElementSemantic.TexCoords,
+			                                  coordSet );
 
 			// create the vertex buffer for the tex coords
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the vertex buffer
 			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
@@ -2274,17 +2316,17 @@ namespace Axiom.Serialization
 
 			// add a vertex element for the current tex coord set
 			data.vertexDeclaration.AddElement(
-				bindIdx, 0,
-				VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ),
-				VertexElementSemantic.TexCoords,
-				coordSet );
+			                                  bindIdx, 0,
+			                                  VertexElement.MultiplyTypeCount( VertexElementType.Float1, dim ),
+			                                  VertexElementSemantic.TexCoords,
+			                                  coordSet );
 
 			// create the vertex buffer for the tex coords
 			HardwareVertexBuffer vBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				data.vertexDeclaration.GetVertexSize( bindIdx ),
-				data.vertexCount,
-				mesh.VertexBufferUsage,
-				mesh.UseVertexShadowBuffer );
+			                                                                                 data.vertexDeclaration.GetVertexSize( bindIdx ),
+			                                                                                 data.vertexCount,
+			                                                                                 mesh.VertexBufferUsage,
+			                                                                                 mesh.UseVertexShadowBuffer );
 
 			// lock the vertex buffer
 			IntPtr texCoords = vBuffer.Lock( BufferLocking.Discard );
@@ -2293,7 +2335,7 @@ namespace Axiom.Serialization
 			ReadFloats( reader, data.vertexCount * dim, texCoords );
 
 			// Adjust individual v values to (1 - v)
-			if ( dim == 2 )
+			if( dim == 2 )
 			{
 				int count = 0;
 
@@ -2301,7 +2343,7 @@ namespace Axiom.Serialization
 				{
 					float* pTex = (float*)texCoords.ToPointer();
 
-					for ( int i = 0; i < data.vertexCount; i++ )
+					for( int i = 0; i < data.vertexCount; i++ )
 					{
 						count++; // skip u
 						pTex[ count ] = 1.0f - pTex[ count ]; // v = 1 - v

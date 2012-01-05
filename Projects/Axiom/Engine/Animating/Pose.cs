@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,7 +51,6 @@ using Axiom.Math;
 
 namespace Axiom.Animating
 {
-
 	/// <summary>
 	///     A pose is a linked set of vertex offsets applying to one set of vertex
 	/// 	data. 
@@ -61,20 +64,19 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class Pose
 	{
-
 		#region Protected Members
 
 		/// <summary>Target geometry index</summary>
-		ushort target;
+		private ushort target;
 
 		/// Optional name
-		string name;
+		private string name;
 
 		/// <summary>Primary storage, sparse vertex use</summary>
-		Dictionary<int, Vector3> vertexOffsetMap = new Dictionary<int, Vector3>();
+		private Dictionary<int, Vector3> vertexOffsetMap = new Dictionary<int, Vector3>();
 
 		/// <summary>Derived hardware buffer, covers all vertices</summary>
-		HardwareVertexBuffer vertexBuffer;
+		private HardwareVertexBuffer vertexBuffer;
 
 		#endregion Protected Members
 
@@ -94,37 +96,13 @@ namespace Axiom.Animating
 
 		#region Properties
 
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
+		public string Name { get { return name; } }
 
-		public ushort Target
-		{
-			get
-			{
-				return target;
-			}
-		}
+		public ushort Target { get { return target; } }
 
-		public Dictionary<int, Vector3> VertexOffsetMap
-		{
-			get
-			{
-				return vertexOffsetMap;
-			}
-		}
+		public Dictionary<int, Vector3> VertexOffsetMap { get { return vertexOffsetMap; } }
 
-		public HardwareVertexBuffer VertexBuffer
-		{
-			get
-			{
-				return vertexBuffer;
-			}
-		}
+		public HardwareVertexBuffer VertexBuffer { get { return vertexBuffer; } }
 
 		#endregion Properties
 
@@ -142,8 +120,10 @@ namespace Axiom.Animating
 		/// <summary>Remove a vertex offset.</summary>
 		public void RemoveVertex( int index )
 		{
-			if ( vertexOffsetMap.ContainsKey( index ) )
+			if( vertexOffsetMap.ContainsKey( index ) )
+			{
 				vertexOffsetMap.Remove( index );
+			}
 			DisposeVertexBuffer();
 		}
 
@@ -156,7 +136,7 @@ namespace Axiom.Animating
 
 		protected void DisposeVertexBuffer()
 		{
-			if ( vertexBuffer != null )
+			if( vertexBuffer != null )
 			{
 				vertexBuffer.Dispose();
 				vertexBuffer = null;
@@ -166,14 +146,14 @@ namespace Axiom.Animating
 		/// <summary>Get a hardware vertex buffer version of the vertex offsets.</summary>
 		public HardwareVertexBuffer GetHardwareVertexBuffer( int numVertices )
 		{
-			if ( vertexBuffer == null )
+			if( vertexBuffer == null )
 			{
 				// Create buffer
 				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-					VertexElement.GetTypeSize( VertexElementType.Float3 ),
-					numVertices,
-					BufferUsage.StaticWriteOnly,
-					false );
+				                                                                 VertexElement.GetTypeSize( VertexElementType.Float3 ),
+				                                                                 numVertices,
+				                                                                 BufferUsage.StaticWriteOnly,
+				                                                                 false );
 
 				// lock the vertex buffer
 				IntPtr ipBuf = vertexBuffer.Lock( BufferLocking.Discard );
@@ -181,11 +161,13 @@ namespace Axiom.Animating
 				unsafe
 				{
 					float* buffer = (float*)ipBuf.ToPointer();
-					for ( int i = 0; i < numVertices * 3; i++ )
+					for( int i = 0; i < numVertices * 3; i++ )
+					{
 						buffer[ i ] = 0f;
+					}
 
 					// Set each vertex
-					foreach ( KeyValuePair<int, Vector3> pair in vertexOffsetMap )
+					foreach( KeyValuePair<int, Vector3> pair in vertexOffsetMap )
 					{
 						int offset = 3 * pair.Key;
 						Vector3 v = pair.Value;
@@ -200,7 +182,5 @@ namespace Axiom.Animating
 		}
 
 		#endregion Public Methods
-
 	}
-
 }

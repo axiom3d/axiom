@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -59,9 +63,7 @@ namespace Axiom.Media
 			private int _channels;
 
 			public Byte()
-				: this( 1 )
-			{
-			}
+				: this( 1 ) {}
 
 			public Byte( int channels )
 			{
@@ -73,7 +75,7 @@ namespace Axiom.Media
 				// assert(src.format == dst.format);
 
 				// only optimized for 2D
-				if ( src.Depth > 1 || dst.Depth > 1 )
+				if( src.Depth > 1 || dst.Depth > 1 )
 				{
 					( new LinearResampler() ).Scale( src, dst );
 					return;
@@ -97,7 +99,7 @@ namespace Axiom.Media
 					uint temp;
 
 					UInt64 sy_48 = ( stepy >> 1 ) - 1;
-					for ( uint y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
+					for( uint y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
 					{
 						temp = (uint)( sy_48 >> 36 );
 						temp = ( temp > 0x800 ) ? temp - 0x800 : 0;
@@ -108,7 +110,7 @@ namespace Axiom.Media
 						uint syoff2 = (uint)( sy2 * src.RowPitch );
 
 						UInt64 sx_48 = ( stepx >> 1 ) - 1;
-						for ( uint x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
+						for( uint x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
 						{
 							temp = (uint)( sx_48 >> 36 );
 							temp = ( temp > 0x800 ) ? temp - 0x800 : 0;
@@ -117,13 +119,13 @@ namespace Axiom.Media
 							uint sx2 = (uint)System.Math.Min( sx1 + 1, src.Right - src.Left - 1 );
 
 							uint sxfsyf = sxf * syf;
-							for ( uint k = 0; k < this._channels; k++ )
+							for( uint k = 0; k < this._channels; k++ )
 							{
 								uint accum = (uint)(
-													   srcdata[ ( sx1 + syoff1 ) * this._channels + k ] * (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) +
-													   srcdata[ ( sx2 + syoff1 ) * this._channels + k ] * (char)( ( sxf << 12 ) - sxfsyf ) +
-													   srcdata[ ( sx1 + syoff2 ) * this._channels + k ] * (char)( ( syf << 12 ) - sxfsyf ) +
-													   srcdata[ ( sx2 + syoff2 ) * this._channels + k ] * (char)sxfsyf );
+								                   	srcdata[ ( sx1 + syoff1 ) * this._channels + k ] * (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) +
+								                   	srcdata[ ( sx2 + syoff1 ) * this._channels + k ] * (char)( ( sxf << 12 ) - sxfsyf ) +
+								                   	srcdata[ ( sx1 + syoff2 ) * this._channels + k ] * (char)( ( syf << 12 ) - sxfsyf ) +
+								                   	srcdata[ ( sx2 + syoff2 ) * this._channels + k ] * (char)sxfsyf );
 								// accum is computed using 8/24-bit fixed-point math
 								// (maximum is 0xFF000000; rounding will not cause overflow)
 								*pdst++ = (byte)( ( accum + 0x800000 ) >> 24 );

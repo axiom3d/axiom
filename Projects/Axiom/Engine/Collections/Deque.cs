@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -76,7 +78,7 @@ namespace Axiom.Collections
 		/// </summary>
 		public Deque()
 		{
-			this._data = new T[ this._capacity ];
+			this._data = new T[this._capacity];
 		}
 
 		/// <summary>
@@ -98,7 +100,7 @@ namespace Axiom.Collections
 			: this()
 		{
 			this.Capacity = collection.Count;
-			foreach ( T item in collection )
+			foreach( T item in collection )
 			{
 				this.Add( item );
 			}
@@ -114,16 +116,13 @@ namespace Axiom.Collections
 		/// </summary>
 		public int Capacity
 		{
-			get
-			{
-				return this._capacity;
-			}
+			get { return this._capacity; }
 			set
 			{
 				int previousCapacity = this._capacity;
 				this._capacity = System.Math.Max( value, System.Math.Max( this._count, MIN_CAPACITY ) );
-				var temp = new T[ this._capacity ];
-				if ( this._tail > this._head )
+				var temp = new T[this._capacity];
+				if( this._tail > this._head )
 				{
 					Array.Copy( this._data, this._head, temp, 0, this._tail + 1 - this._head );
 					this._tail -= this._head;
@@ -153,7 +152,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				if ( position >= this._count )
+				if( position >= this._count )
 				{
 					throw new
 						ArgumentOutOfRangeException( "position" );
@@ -173,11 +172,11 @@ namespace Axiom.Collections
 		public void AddToHead( T item )
 		{
 			this._count++;
-			if ( this._count > this._capacity )
+			if( this._count > this._capacity )
 			{
 				this.Capacity *= 2;
 			}
-			if ( this._count > 1 )
+			if( this._count > 1 )
 			{
 				this._head = this.Decrement( this._head );
 			}
@@ -191,11 +190,11 @@ namespace Axiom.Collections
 		public void AddToTail( T item )
 		{
 			this._count++;
-			if ( this._count > this._capacity )
+			if( this._count > this._capacity )
 			{
 				this.Capacity *= 2;
 			}
-			if ( this._count > 1 )
+			if( this._count > 1 )
 			{
 				this._tail = this.Increment( this._tail );
 			}
@@ -228,14 +227,14 @@ namespace Axiom.Collections
 		public T RemoveAt( int index )
 		{
 			this._count--;
-			if ( index >= this._count )
+			if( index >= this._count )
 			{
 				throw new
 					ArgumentOutOfRangeException( "index" );
 			}
 			int i = ( this._head + index ) % this._capacity;
 			T item = this._data[ i ];
-			if ( i < this._head )
+			if( i < this._head )
 			{
 				Array.Copy( this._data, i + 1, this._data, i, this._tail - i );
 				this._data[ this._tail ] = default( T );
@@ -257,7 +256,7 @@ namespace Axiom.Collections
 		public T RemoveFromHead()
 		{
 			this._count--;
-			if ( this._count < 0 )
+			if( this._count < 0 )
 			{
 				throw new
 					InvalidOperationException( "DequeEmptyException" );
@@ -275,14 +274,14 @@ namespace Axiom.Collections
 		public T RemoveFromTail()
 		{
 			this._count--;
-			if ( this._count < 0 )
+			if( this._count < 0 )
 			{
 				throw new
 					InvalidOperationException( "DequeEmptyException" );
 			}
 			T item = this._data[ this._tail ];
 			this._data[ this._tail ] = default( T );
-			if ( this._count > 1 )
+			if( this._count > 1 )
 			{
 				this._tail = this.Decrement( this._tail );
 			}
@@ -295,7 +294,7 @@ namespace Axiom.Collections
 		/// <returns>An array of type T.</returns>
 		public T[] ToArray()
 		{
-			T[] array = new T[ this._count ];
+			T[] array = new T[this._count];
 			this.CopyTo( array, 0 );
 			return array;
 		}
@@ -327,13 +326,7 @@ namespace Axiom.Collections
 		/// <summary>
 		/// Gets the number of items in the deque.
 		/// </summary>
-		public int Count
-		{
-			get
-			{
-				return this._count;
-			}
-		}
+		public int Count { get { return this._count; } }
 
 		/// <summary>
 		/// Copies the deque to an array at the specified index.
@@ -344,22 +337,22 @@ namespace Axiom.Collections
 		/// copying begins.</param>
 		public void CopyTo( T[] array, int arrayIndex )
 		{
-			if ( this._count == 0 )
+			if( this._count == 0 )
 			{
 				return;
 			}
-			if ( this._head < this._tail )
+			if( this._head < this._tail )
 			{
 				Array.Copy( this._data, this._head, array, arrayIndex, this._tail + 1
-																	   - this._head );
+				                                                       - this._head );
 			}
 			else
 			{
 				int headLength = this._capacity - this._head;
 				Array.Copy( this._data, this._head, array, arrayIndex,
-							headLength );
+				            headLength );
 				Array.Copy( this._data, 0, array, arrayIndex + headLength,
-							this._tail + 1 );
+				            this._tail + 1 );
 			}
 		}
 
@@ -380,7 +373,7 @@ namespace Axiom.Collections
 		/// <returns>An IEnumerator of type T.</returns>
 		public IEnumerator<T> GetEnumerator()
 		{
-			for ( int i = 0; i < this._count; i++ )
+			for( int i = 0; i < this._count; i++ )
 			{
 				yield return this[ i ];
 			}
@@ -407,9 +400,9 @@ namespace Axiom.Collections
 		/// <returns>A boolean, true if deque contains item.</returns>
 		public bool Contains( T item )
 		{
-			for ( int i = 0; i < this.Count; i++ )
+			for( int i = 0; i < this.Count; i++ )
 			{
-				if ( this[ i ].Equals( item ) )
+				if( this[ i ].Equals( item ) )
 				{
 					return true;
 				}
@@ -420,13 +413,7 @@ namespace Axiom.Collections
 		/// <summary>
 		/// Gets whether or not the deque is readonly.
 		/// </summary>
-		public bool IsReadOnly
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool IsReadOnly { get { return false; } }
 
 		/// <summary>
 		/// Removes an item from the deque.
@@ -435,9 +422,9 @@ namespace Axiom.Collections
 		/// <returns>Boolean true if the item was removed.</returns>
 		public bool Remove( T item )
 		{
-			for ( int i = 0; i < this.Count; i++ )
+			for( int i = 0; i < this.Count; i++ )
 			{
-				if ( this[ i ].Equals( item ) )
+				if( this[ i ].Equals( item ) )
 				{
 					this.RemoveAt( i );
 					return true;

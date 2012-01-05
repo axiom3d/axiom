@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Controllers.Canned;
 using Axiom.Graphics;
@@ -61,7 +66,7 @@ namespace Axiom.Controllers
 		/// </summary>
 		internal ControllerManager()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 			}
@@ -70,13 +75,7 @@ namespace Axiom.Controllers
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static ControllerManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static ControllerManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
@@ -94,7 +93,6 @@ namespace Axiom.Controllers
 
 		private IControllerFunction<float> passthroughFunction = new PassthroughControllerFunction();
 		private ulong lastFrameNumber = 0;
-
 
 		#endregion
 
@@ -145,7 +143,6 @@ namespace Axiom.Controllers
 		{
 			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
 		}
-
 
 		/// <summary>
 		///     Creates a texture layer animator controller.
@@ -226,7 +223,7 @@ namespace Axiom.Controllers
 			Controller<float> controller = null;
 
 			// if both u and v speeds are the same, we can use a single controller for it
-			if ( speed != 0 )
+			if( speed != 0 )
 			{
 				// create the value and function
 				val = new TexCoordModifierControllerValue( layer, true, true );
@@ -257,7 +254,7 @@ namespace Axiom.Controllers
 			Controller<float> controller = null;
 
 			// Don't create a controller if the speed is zero
-			if ( speed != 0 )
+			if( speed != 0 )
 			{
 				// create the value and function
 				val = new TexCoordModifierControllerValue( layer, true );
@@ -288,7 +285,7 @@ namespace Axiom.Controllers
 			Controller<float> controller = null;
 
 			// if both u and v speeds are the same, we can use a single controller for it
-			if ( speed != 0 )
+			if( speed != 0 )
 			{
 				// create the value and function
 				val = new TexCoordModifierControllerValue( layer, false, true );
@@ -314,13 +311,13 @@ namespace Axiom.Controllers
 		/// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
 		public Controller<float> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
-			float baseVal, float frequency, float phase, float amplitude )
+		                                                       float baseVal, float frequency, float phase, float amplitude )
 		{
 			IControllerValue<float> val = null;
 			IControllerFunction<float> function = null;
 
 			// determine which type of controller value this layer needs
-			switch ( type )
+			switch( type )
 			{
 				case TextureTransform.TranslateU:
 					val = new TexCoordModifierControllerValue( layer, true, false );
@@ -357,10 +354,10 @@ namespace Axiom.Controllers
 		public void UpdateAll()
 		{
 			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
-			if ( thisFrameNumber != lastFrameNumber )
+			if( thisFrameNumber != lastFrameNumber )
 			{
 				// loop through each controller and tell it to update
-				foreach ( Controller<float> controller in controllers )
+				foreach( Controller<float> controller in controllers )
 				{
 					controller.Update();
 				}

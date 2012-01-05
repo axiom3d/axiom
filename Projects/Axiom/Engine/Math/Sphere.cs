@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -91,32 +95,12 @@ namespace Axiom.Math
 		/// <summary>
 		///		Gets/Sets the center of the sphere.
 		/// </summary>
-		public Vector3 Center
-		{
-			get
-			{
-				return center;
-			}
-			set
-			{
-				center = value;
-			}
-		}
+		public Vector3 Center { get { return center; } set { center = value; } }
 
 		/// <summary>
 		///		Gets/Sets the radius of the sphere.
 		/// </summary>
-		public Real Radius
-		{
-			get
-			{
-				return radius;
-			}
-			set
-			{
-				radius = value;
-			}
-		}
+		public Real Radius { get { return radius; } set { radius = value; } }
 
 		#endregion
 
@@ -131,16 +115,16 @@ namespace Axiom.Math
 		{
 			return sphere1.center != sphere2.center || sphere1.radius != sphere2.radius;
 		}
+
 		public override bool Equals( object obj )
 		{
 			return obj is Sphere && this == (Sphere)obj;
 		}
+
 		public override int GetHashCode()
 		{
 			return center.GetHashCode() ^ radius.GetHashCode();
 		}
-
-
 
 		/// <summary>
 		///		Tests for intersection between this sphere and another sphere.

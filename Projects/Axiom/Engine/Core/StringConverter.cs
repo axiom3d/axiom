@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -62,7 +66,6 @@ namespace Axiom.Core
 		#endregion IEqualityComparer<string> Members
 	}
 
-
 	/// <summary>
 	///     Helper class for going back and forth between strings and various types.
 	/// </summary>
@@ -82,9 +85,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Private constructor so no instances can be created.
 		/// </summary>
-		private StringConverter()
-		{
-		}
+		private StringConverter() {}
 
 		#endregion Constructor
 
@@ -235,7 +236,9 @@ namespace Axiom.Core
 			}
 		}
 #endif
+
 		#endregion String.Split() replacements
+
 		/// <summary>
 		///		Parses a boolean type value
 		/// </summary>
@@ -243,7 +246,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public static bool ParseBool( string val )
 		{
-			switch ( val.ToLower() )
+			switch( val.ToLower() )
 			{
 				case "true":
 				case "on":
@@ -345,8 +348,10 @@ namespace Axiom.Core
 		/// <returns>A float representation of the string value.</returns>
 		public static float ParseFloat( string val )
 		{
-			if ( val == float.NaN.ToString() )
+			if( val == float.NaN.ToString() )
+			{
 				return float.NaN;
+			}
 			return float.Parse( val, englishCulture );
 		}
 
@@ -404,7 +409,7 @@ namespace Axiom.Core
 			{
 				num = Int32.Parse( value );
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				num = 0;
 				retVal = false;

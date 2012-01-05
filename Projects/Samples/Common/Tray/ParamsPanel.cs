@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -37,22 +39,27 @@ namespace Axiom.Samples
 	public class ParamsPanel : Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea namesArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea valuesArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected IList<String> names;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected IList<String> values;
+
 		#endregion fields
 
 		#region properties
@@ -62,16 +69,15 @@ namespace Axiom.Samples
 		/// </summary>
 		public IList<string> ParamNames
 		{
-			get
-			{
-				return names;
-			}
+			get { return names; }
 			set
 			{
 				this.names = value;
 				this.values.Clear();
-				for ( int i = 0; i < value.Count; i++ )
+				for( int i = 0; i < value.Count; i++ )
+				{
 					this.values.Add( "" );
+				}
 				element.Height = this.namesArea.Top * 2 + this.names.Count * this.namesArea.CharHeight;
 				this.UpdateText();
 			}
@@ -87,10 +93,7 @@ namespace Axiom.Samples
 				values = value;
 				UpdateText();
 			}
-			get
-			{
-				return values;
-			}
+			get { return values; }
 		}
 
 		#endregion properties
@@ -119,9 +122,9 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( String paramName, String paramValue )
 		{
-			for ( int i = 0; i < this.names.Count; i++ )
+			for( int i = 0; i < this.names.Count; i++ )
 			{
-				if ( this.names[ i ] == paramName )
+				if( this.names[ i ] == paramName )
 				{
 					this.values[ i ] = paramValue;
 					this.UpdateText();
@@ -140,15 +143,19 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( int index, String paramValue )
 		{
-			if ( index < 0 || index >= this.names.Count )
+			if( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
 			}
-			if ( this.values.Count < index )
+			if( this.values.Count < index )
+			{
 				this.values.Insert( index, paramValue );
+			}
 			else
+			{
 				this.values[ index ] = paramValue;
+			}
 			this.UpdateText();
 		}
 
@@ -159,10 +166,12 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( String paramName )
 		{
-			for ( int i = 0; i < this.names.Count; i++ )
+			for( int i = 0; i < this.names.Count; i++ )
 			{
-				if ( this.names[ i ] == paramName )
+				if( this.names[ i ] == paramName )
+				{
 					return this.values[ i ];
+				}
 			}
 
 			String desc = "ParamsPanel \"" + Name + "\" has no parameter \"" + paramName + "\".";
@@ -176,7 +185,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( int index )
 		{
-			if ( index < 0 || index >= this.names.Count )
+			if( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
@@ -193,7 +202,7 @@ namespace Axiom.Samples
 			StringBuilder namesDS = new StringBuilder();
 			StringBuilder valuesDS = new StringBuilder();
 
-			for ( int i = 0; i < this.names.Count; i++ )
+			for( int i = 0; i < this.names.Count; i++ )
 			{
 				namesDS.Append( this.names[ i ] + ":\n" );
 				valuesDS.Append( this.values[ i ] + "\n" );
@@ -202,6 +211,5 @@ namespace Axiom.Samples
 			this.namesArea.Text = namesDS.ToString();
 			this.valuesArea.Text = valuesDS.ToString();
 		}
-
 	}
 }

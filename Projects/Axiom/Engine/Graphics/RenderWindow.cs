@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -61,69 +65,52 @@ namespace Axiom.Graphics
 	///		in the window for effects like rear-view mirrors and
 	///		picture-in-picture views (see Viewport and Camera).
 	///	</remarks>
-	public abstract class RenderWindow : RenderTarget
+	abstract public class RenderWindow : RenderTarget
 	{
 		#region Protected member variables
 
 		protected bool isFullScreen;
 		protected IntPtr targetHandle;
+
 		#region top Property
 
 		private int _top;
+
 		/// <summary>
 		/// 
 		/// </summary>
-		protected int top
-		{
-			get
-			{
-				return _top;
-			}
-			set
-			{
-				_top = value;
-			}
-		}
+		protected int top { get { return _top; } set { _top = value; } }
 
 		#endregion top Property
 
 		#region left Property
 
 		private int _left;
+
 		/// <summary>
 		/// 
 		/// </summary>
-		protected int left
-		{
-			get
-			{
-				return _left;
-			}
-			set
-			{
-				_left = value;
-			}
-		}
+		protected int left { get { return _left; } set { _left = value; } }
 
 		#endregion left Property
 
 		#region IsFullScreen Property
 
 		private bool _isFullScreen;
+
 		/// <summary>
 		/// Returns true if window is running in fullscreen mode.
 		/// </summary>
-		public virtual bool IsFullScreen
-		{
-			get
-			{
-				return _isFullScreen;
-			}
-			protected set
-			{
-				_isFullScreen = value;
-			}
-		}
+		virtual public bool IsFullScreen { get { return _isFullScreen; } protected set { _isFullScreen = value; } }
+
+		/// <summary>
+		/// Alter fullscreen mode options.
+		/// </summary>
+		/// <remarks>Nothing will happen unless the settings here are different from the current settings.</remarks>
+		/// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
+		/// <param name="width">The new width to use</param>
+		/// <param name="height">The new height to use</param>
+		virtual public void SetFullscreen( bool fullScreen, int width, int height ) {}
 
 		#endregion IsFullScreen Property
 
@@ -132,44 +119,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Indicates whether the window is visible (not minimized or obscured)
 		/// </summary>
-		public virtual bool IsVisible
-		{
-			get
-			{
-				return true;
-			}
-			set
-			{
-
-			}
-		}
+		virtual public bool IsVisible { get { return true; } set { } }
 
 		#endregion IsVisible Property
 
-		public override bool IsActive
-		{
-			get
-			{
-				return base.IsActive && IsVisible;
-			}
-			set
-			{
-				base.IsActive = value;
-			}
-		}
+		public override bool IsActive { get { return base.IsActive && IsVisible; } set { base.IsActive = value; } }
 
 		/// <summary>
 		/// Indicates whether the window has been closed by the user.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool IsClosed
-		{
-			get;
-		}
+		abstract public bool IsClosed { get; }
 
 		#region IsPrimary Property
 
 		private bool _isPrimary;
+
 		/// <summary>
 		/// Indicates wether the window is the primary window. The
 		/// primary window is special in that it is destroyed when 
@@ -177,16 +142,11 @@ namespace Axiom.Graphics
 		/// This is the case because it holds the context for vertex,
 		/// index buffers and textures.
 		/// </summary>
-		public virtual bool IsPrimary
+		virtual public bool IsPrimary
 		{
-			get
-			{
-				return _isPrimary;
-			}
+			get { return _isPrimary; }
 			internal set // Only to be called by root
-			{
-				_isPrimary = value;
-			}
+			{ _isPrimary = value; }
 		}
 
 		#endregion IsPrimary Property
@@ -197,7 +157,6 @@ namespace Axiom.Graphics
 
 		protected RenderWindow()
 		{
-
 			// render windows are low priority
 			this.Priority = RenderTargetPriority.Default;
 		}
@@ -215,29 +174,27 @@ namespace Axiom.Graphics
 		/// <param name="fullScreen">If true, the window fills the screen, with no title bar or border.</param>
 		/// <param name="miscParams">A variable number of platform-specific arguments. 
 		/// The actual requirements must be defined by the implementing subclasses.</param>
-		public abstract void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
+		abstract public void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
 
 		/// <summary>
 		///		Alter the size of the window.
 		/// </summary>
 		/// <param name="pWidth"></param>
 		/// <param name="pHeight"></param>
-		public abstract void Resize( int width, int height );
+		abstract public void Resize( int width, int height );
 
 		/// <summary>
 		///		Reposition the window.
 		/// </summary>
 		/// <param name="pLeft"></param>
 		/// <param name="pRight"></param>
-		public abstract void Reposition( int left, int right );
+		abstract public void Reposition( int left, int right );
 
 		/// <summary>
 		/// Notify that the window has been resized
 		/// </summary>
 		/// <remarks>You don't need to call this unless you created the window externally.</remarks>
-		public virtual void WindowMovedOrResized()
-		{
-		}
+		virtual public void WindowMovedOrResized() {}
 
 		#endregion
 
@@ -249,15 +206,13 @@ namespace Axiom.Graphics
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="colorDepth"></param>
-		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
+		virtual public void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
 			top = _top;
 			left = _left;
 		}
 
-
 		#endregion
-
 	}
 }

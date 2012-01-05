@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -79,56 +83,21 @@ namespace Axiom.SceneManagers.Octree
 		Children are dynamically created as needed when nodes are inserted in the Octree.
 		If, later, the all the nodes are removed from the child, it is still kept arround.
 		*/
-		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
+		public Octree[,,] Children = new Octree[8,8,8];
 
 		protected Octree parent = null;
 
 		#endregion Member Variables
 
 		#region Properties
-		public int NumNodes
-		{
-			get
-			{
-				return numNodes;
-			}
-			set
-			{
-				numNodes = value;
-			}
-		}
 
-		public NodeCollection NodeList
-		{
-			get
-			{
-				return nodeList;
-			}
-		}
+		public int NumNodes { get { return numNodes; } set { numNodes = value; } }
 
-		public Vector3 HalfSize
-		{
-			get
-			{
-				return halfSize;
-			}
-			set
-			{
-				halfSize = value;
-			}
-		}
+		public NodeCollection NodeList { get { return nodeList; } }
 
-		public AxisAlignedBox Box
-		{
-			get
-			{
-				return box;
-			}
-			set
-			{
-				box = value;
-			}
-		}
+		public Vector3 HalfSize { get { return halfSize; } set { halfSize = value; } }
+
+		public AxisAlignedBox Box { get { return box; } set { box = value; } }
 
 		#endregion Properties
 
@@ -162,16 +131,14 @@ namespace Axiom.SceneManagers.Octree
 		///	This method is used by the OctreeSceneManager to determine if the given
 		///	box will fit into a child of this octree.
 		/// </summary>
-
 		public bool IsTwiceSize( AxisAlignedBox box )
 		{
 			Vector3[] pts1 = this.box.Corners;
 			Vector3[] pts2 = box.Corners;
 
 			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) &&
-				( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
-				( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
-
+			       ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
+			       ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
 		}
 
 		/// <summary>
@@ -183,14 +150,13 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-
 			Vector3 max = this.box.Maximum;
 			Vector3 min = aabox.Minimum;
 
 			Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
 			Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
-			if ( CheckCenter.x > Center.x )
+			if( CheckCenter.x > Center.x )
 			{
 				x = 1;
 			}
@@ -199,8 +165,7 @@ namespace Axiom.SceneManagers.Octree
 				x = 0;
 			}
 
-
-			if ( CheckCenter.y > Center.y )
+			if( CheckCenter.y > Center.y )
 			{
 				y = 1;
 			}
@@ -209,8 +174,7 @@ namespace Axiom.SceneManagers.Octree
 				y = 0;
 			}
 
-
-			if ( CheckCenter.z > Center.z )
+			if( CheckCenter.z > Center.z )
 			{
 				z = 1;
 			}
@@ -241,7 +205,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			numNodes++;
 
-			if ( parent != null )
+			if( parent != null )
 			{
 				parent.Ref();
 			}
@@ -251,7 +215,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			numNodes--;
 
-			if ( parent != null )
+			if( parent != null )
 			{
 				parent.UnRef();
 			}
@@ -262,8 +226,10 @@ namespace Axiom.SceneManagers.Octree
 			get
 			{
 				// Create a WireBoundingBox if needed
-				if ( wireBoundingBox == null )
+				if( wireBoundingBox == null )
+				{
 					wireBoundingBox = new WireBoundingBox();
+				}
 
 				wireBoundingBox.BoundingBox = box;
 				return wireBoundingBox;

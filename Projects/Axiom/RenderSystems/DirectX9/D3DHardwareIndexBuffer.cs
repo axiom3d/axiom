@@ -68,9 +68,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
 			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
-				// If not system mem, use managed pool UNLESS buffer is discardable
-				// if discardable, keeping the software backing is expensive
-					  ( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+			                                                  	// If not system mem, use managed pool UNLESS buffer is discardable
+			          // if discardable, keeping the software backing is expensive
+			          ( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
 #else
 			d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		~D3DHardwareIndexBuffer()
 		{
-			if ( d3dBuffer != null )
+			if( d3dBuffer != null )
 			{
 				d3dBuffer.Dispose();
 			}
@@ -148,7 +148,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// lock the buffer real quick
 			IntPtr dest = this.Lock( offset, length,
-				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			                         discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
@@ -159,9 +159,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public bool ReleaseIfDefaultPool()
 		{
-			if ( d3dPool == D3D.Pool.Default )
+			if( d3dPool == D3D.Pool.Default )
 			{
-				if ( d3dBuffer != null )
+				if( d3dBuffer != null )
 				{
 					d3dBuffer.Dispose();
 					d3dBuffer = null;
@@ -174,7 +174,7 @@ namespace Axiom.RenderSystems.DirectX9
 		//---------------------------------------------------------------------
 		public bool RecreateIfDefaultPool( D3D.Device device )
 		{
-			if ( d3dPool == D3D.Pool.Default )
+			if( d3dPool == D3D.Pool.Default )
 			{
 				// Create the Index buffer
 				d3dBuffer = new D3D.IndexBuffer(
@@ -191,11 +191,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( d3dBuffer != null && !d3dBuffer.Disposed )
+					if( d3dBuffer != null && !d3dBuffer.Disposed )
 					{
 						d3dBuffer.Dispose();
 						d3dBuffer = null;
@@ -215,13 +215,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Gets the underlying D3D Vertex Buffer object.
 		/// </summary>
-		public D3D.IndexBuffer D3DIndexBuffer
-		{
-			get
-			{
-				return d3dBuffer;
-			}
-		}
+		public D3D.IndexBuffer D3DIndexBuffer { get { return d3dBuffer; } }
 
 		#endregion Properties
 	}

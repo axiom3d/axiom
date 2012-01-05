@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: ZipArchive.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,7 +50,6 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Axiom.FileSystem
 {
-
 	/// <summary>
 	/// Specialization of the Archive class to allow reading of files from from a zip format source archive.
 	/// </summary>
@@ -66,6 +69,7 @@ namespace Axiom.FileSystem
 		/// root location of the zip file.
 		/// </summary>
 		private string _zipFile;
+
 		private string _zipDir = "/";
 		private ZipInputStream _zipStream;
 		private List<FileInfo> _fileList = new List<FileInfo>();
@@ -86,30 +90,35 @@ namespace Axiom.FileSystem
 		{
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
+
 		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
 		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
-			if ( currentDir == "" )
+			if( currentDir == "" )
+			{
 				currentDir = _zipDir;
+			}
 			FileStream fs = File.OpenRead( _zipFile );
 			_zipStream = new ZipInputStream( fs );
 
 			ZipEntry entry = _zipStream.GetNextEntry();
-			if ( pattern[ 0 ] == '*' )
+			if( pattern[ 0 ] == '*' )
+			{
 				pattern = pattern.Substring( 1 );
+			}
 			Regex ex = new Regex( pattern );
 
-			while ( entry != null )
+			while( entry != null )
 			{
 				// get the full path for the output file
 				string file = entry.Name;
-				if ( ex.IsMatch( file ) )
+				if( ex.IsMatch( file ) )
 				{
-					if ( simpleList != null )
+					if( simpleList != null )
 					{
 						simpleList.Add( file );
 					}
-					if ( detailList != null )
+					if( detailList != null )
 					{
 						FileInfo fileInfo;
 						fileInfo.Archive = this;
@@ -118,10 +127,9 @@ namespace Axiom.FileSystem
 						fileInfo.Path = Path.GetDirectoryName( entry.Name ) + Path.DirectorySeparatorChar;
 						fileInfo.CompressedSize = entry.CompressedSize;
 						fileInfo.UncompressedSize = entry.Size;
-                        fileInfo.ModifiedTime = entry.DateTime;
+						fileInfo.ModifiedTime = entry.DateTime;
 						detailList.Add( fileInfo );
 					}
-
 				}
 
 				entry = _zipStream.GetNextEntry();
@@ -133,9 +141,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructor
 
 		public ZipArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+			: base( name, archType ) {}
 
 		~ZipArchive()
 		{
@@ -146,23 +152,17 @@ namespace Axiom.FileSystem
 
 		#region Archive Implementation
 
-        /// <summary>
-        /// 
-        /// </summary>
-		public override bool IsCaseSensitive
-		{
-			get
-			{
-				return false;
-			}
-		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public override bool IsCaseSensitive { get { return false; } }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void Load()
 		{
-			if ( _zipFile == null || _zipFile.Length == 0 )
+			if( _zipFile == null || _zipFile.Length == 0 )
 			{
 				_zipFile = Path.GetFullPath( Name );
 
@@ -193,16 +193,15 @@ namespace Axiom.FileSystem
 
 				//    entry = _zipStream.GetNextEntry();
 				//}
-
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		public override void Unload()
 		{
-			if ( _zipStream != null )
+			if( _zipStream != null )
 			{
 				_zipStream.Close();
 				_zipStream.Dispose();
@@ -210,12 +209,12 @@ namespace Axiom.FileSystem
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="readOnly"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="readOnly"></param>
+		/// <returns></returns>
 		public override Stream Open( string filename, bool readOnly )
 		{
 			ZipEntry entry;
@@ -229,9 +228,9 @@ namespace Axiom.FileSystem
 			entry = _zipStream.GetNextEntry();
 
 			// loop through all the entries until we find the requested one
-			while ( entry != null )
+			while( entry != null )
 			{
-				if ( entry.Name.ToLower() == filename.ToLower() )
+				if( entry.Name.ToLower() == filename.ToLower() )
 				{
 					break;
 				}
@@ -240,18 +239,18 @@ namespace Axiom.FileSystem
 				entry = _zipStream.GetNextEntry();
 			}
 
-			if ( entry == null )
+			if( entry == null )
 			{
 				return null;
 			}
 
 			// write the data to the output stream
 			int size = 2048;
-			byte[] data = new byte[ 2048 ];
-			while ( true )
+			byte[] data = new byte[2048];
+			while( true )
 			{
 				size = _zipStream.Read( data, 0, data.Length );
-				if ( size > 0 )
+				if( size > 0 )
 				{
 					output.Write( data, 0, size );
 				}
@@ -266,32 +265,32 @@ namespace Axiom.FileSystem
 			return output;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> List( bool recursive )
 		{
 			return Find( "*", recursive );
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList ListFileInfo( bool recursive )
 		{
 			return FindFileInfo( "*", recursive );
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> Find( string pattern, bool recursive )
 		{
 			List<string> ret = new List<string>();
@@ -301,12 +300,12 @@ namespace Axiom.FileSystem
 			return ret;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pattern"></param>
-        /// <param name="recursive"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList FindFileInfo( string pattern, bool recursive )
 		{
 			FileInfoList ret = new FileInfoList();
@@ -316,11 +315,11 @@ namespace Axiom.FileSystem
 			return ret;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		public override bool Exists( string fileName )
 		{
 			List<string> ret = new List<string>();
@@ -331,7 +330,6 @@ namespace Axiom.FileSystem
 		}
 
 		#endregion Archive Implementation
-
 	}
 
 	/// <summary>
@@ -347,13 +345,7 @@ namespace Axiom.FileSystem
 
 		#region ArchiveFactory Implementation
 
-		public override string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+		public override string Type { get { return _type; } }
 
 		public override Archive CreateInstance( string name )
 		{

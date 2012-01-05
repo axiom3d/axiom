@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,6 +41,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -54,6 +59,7 @@ namespace Axiom.Core
 		///     List of logs created by the log manager.
 		/// </summary>
 		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
+
 		/// <summary>
 		///     The default log to which output is done.
 		/// </summary>
@@ -67,33 +73,20 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( defaultLog == null )
+				if( defaultLog == null )
 				{
 					throw new AxiomException( "No logs have been created yet." );
 				}
 
 				return defaultLog;
 			}
-			set
-			{
-				defaultLog = value;
-			}
+			set { defaultLog = value; }
 		}
 
 		/// <summary>
 		///     Sets the level of detail of the default log.
 		/// </summary>
-		public LoggingLevel LogDetail
-		{
-			get
-			{
-				return DefaultLog.LogDetail;
-			}
-			set
-			{
-				DefaultLog.LogDetail = value;
-			}
-		}
+		public LoggingLevel LogDetail { get { return DefaultLog.LogDetail; } set { DefaultLog.LogDetail = value; } }
 
 		#endregion Fields and Properties
 
@@ -146,13 +139,15 @@ namespace Axiom.Core
 			Log newLog = new Log( name, debuggerOutput );
 
 			// set as the default log if need be
-			if ( defaultLog == null || isDefaultLog )
+			if( defaultLog == null || isDefaultLog )
 			{
 				defaultLog = newLog;
 			}
 
-			if ( name == null )
+			if( name == null )
+			{
 				name = string.Empty;
+			}
 			logList.Add( name, newLog );
 
 			return newLog;
@@ -165,7 +160,7 @@ namespace Axiom.Core
 		/// <returns>Log with the specified name.</returns>
 		public Log GetLog( string name )
 		{
-			if ( logList[ name ] == null )
+			if( logList[ name ] == null )
 			{
 				throw new AxiomException( "Log with the name '{0}' not found.", name );
 			}
@@ -227,7 +222,7 @@ namespace Axiom.Core
 
 			errMessage.Append( exception.Message + Environment.NewLine + exception.StackTrace );
 
-			while ( exception.InnerException != null )
+			while( exception.InnerException != null )
 			{
 				errMessage.Append( BuildInnerExceptionString( exception.InnerException ) );
 				exception = exception.InnerException;
@@ -254,19 +249,18 @@ namespace Axiom.Core
 		{
 			Write( "*-*-* Axiom Shutdown Complete." );
 
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					// dispose of all the logs
-					foreach ( IDisposable o in logList.Values )
+					foreach( IDisposable o in logList.Values )
 					{
 						o.Dispose();
 					}
 
 					logList.Clear();
-
 				}
 
 				// There are no unmanaged resources to release, but
@@ -278,8 +272,6 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-
 		#endregion Singleton implementation
-
 	}
 }

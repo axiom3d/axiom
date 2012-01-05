@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,66 +55,82 @@ namespace Axiom.Graphics
 		///     Pre-blended position buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcPositionBuffer;
+
 		/// <summary>
 		///     Pre-blended normal buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcNormalBuffer;
+
 		/// <summary>
 		///     Pre-blended tangent buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcTangentBuffer;
+
 		/// <summary>
 		///     Pre-blended binormal buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcBinormalBuffer;
+
 		/// <summary>
 		///     Post-blended position buffer.
 		/// </summary>
 		public HardwareVertexBuffer destPositionBuffer;
+
 		/// <summary>
 		///     Post-blended normal buffer.
 		/// </summary>
 		public HardwareVertexBuffer destNormalBuffer;
+
 		/// <summary>
 		///     Post-blended tangent buffer.
 		/// </summary>
 		public HardwareVertexBuffer destTangentBuffer;
+
 		/// <summary>
 		///     Post-blended binormal buffer.
 		/// </summary>
 		public HardwareVertexBuffer destBinormalBuffer;
+
 		/// <summary>
 		///     Both positions and normals are contained in the same buffer
 		/// </summary>
 		public bool posNormalShareBuffer;
+
 		/// <summary>
 		///     Index at which the positions are bound in the buffer.
 		/// </summary>
 		public short posBindIndex;
+
 		/// <summary>
 		///     Index at which the normals are bound in the buffer.
 		/// </summary>
 		public short normBindIndex;
+
 		/// <summary>
 		///     Index at which the tangents are bound in the buffer.
 		/// </summary>
 		public short tanBindIndex;
+
 		/// <summary>
 		///     Index at which the binormals are bound in the buffer.
 		/// </summary>
 		public short binormBindIndex;
+
 		/// <summary>
 		///		Should we bind the position buffer
 		/// </summary>
 		public bool bindPositions;
+
 		/// <summary>
 		///		Should we bind the normals buffer
 		/// </summary>
 		public bool bindNormals;
+
 		/// <summary>
 		///		Should we bind the tangents buffer
 		/// </summary>
 		public bool bindTangents;
+
 		/// <summary>
 		///		Should we bind the binormals buffer
 		/// </summary>
@@ -120,7 +140,6 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-
 		/// <summary>
 		///		Utility method, extract info from the given VertexData
 		/// </summary>
@@ -128,12 +147,12 @@ namespace Axiom.Graphics
 		{
 			// Release old buffer copies first
 			HardwareBufferManager mgr = HardwareBufferManager.Instance;
-			if ( destPositionBuffer != null )
+			if( destPositionBuffer != null )
 			{
 				mgr.ReleaseVertexBufferCopy( destPositionBuffer );
 				Debug.Assert( destPositionBuffer == null );
 			}
-			if ( destNormalBuffer != null )
+			if( destNormalBuffer != null )
 			{
 				mgr.ReleaseVertexBufferCopy( destNormalBuffer );
 				Debug.Assert( destNormalBuffer == null );
@@ -151,7 +170,7 @@ namespace Axiom.Graphics
 			posBindIndex = posElem.Source;
 			srcPositionBuffer = bind.GetBuffer( posBindIndex );
 
-			if ( normElem == null )
+			if( normElem == null )
 			{
 				posNormalShareBuffer = false;
 				srcNormalBuffer = null;
@@ -159,7 +178,7 @@ namespace Axiom.Graphics
 			else
 			{
 				normBindIndex = normElem.Source;
-				if ( normBindIndex == posBindIndex )
+				if( normBindIndex == posBindIndex )
 				{
 					posNormalShareBuffer = true;
 					srcNormalBuffer = null;
@@ -170,16 +189,20 @@ namespace Axiom.Graphics
 					srcNormalBuffer = bind.GetBuffer( normBindIndex );
 				}
 			}
-			if ( tanElem == null )
+			if( tanElem == null )
+			{
 				srcTangentBuffer = null;
+			}
 			else
 			{
 				tanBindIndex = tanElem.Source;
 				srcTangentBuffer = bind.GetBuffer( tanBindIndex );
 			}
 
-			if ( binormElem == null )
+			if( binormElem == null )
+			{
 				srcBinormalBuffer = null;
+			}
 			else
 			{
 				binormBindIndex = binormElem.Source;
@@ -197,49 +220,49 @@ namespace Axiom.Graphics
 			bindTangents = tangents;
 			bindBinormals = binormals;
 
-			if ( bindPositions && destPositionBuffer == null )
+			if( bindPositions && destPositionBuffer == null )
 			{
 				destPositionBuffer =
 					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-					srcPositionBuffer,
-					BufferLicenseRelease.Automatic,
-					this );
+					                                                        srcPositionBuffer,
+					                                                        BufferLicenseRelease.Automatic,
+					                                                        this );
 			}
 
-			if ( bindNormals && !posNormalShareBuffer &&
-				srcNormalBuffer != null && destNormalBuffer == null )
+			if( bindNormals && !posNormalShareBuffer &&
+			    srcNormalBuffer != null && destNormalBuffer == null )
 			{
 				destNormalBuffer =
 					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-					srcNormalBuffer,
-					BufferLicenseRelease.Automatic,
-					this );
+					                                                        srcNormalBuffer,
+					                                                        BufferLicenseRelease.Automatic,
+					                                                        this );
 			}
 
-			if ( bindTangents && srcTangentBuffer != null )
+			if( bindTangents && srcTangentBuffer != null )
 			{
-				if ( this.tanBindIndex != this.posBindIndex &&
-					this.tanBindIndex != this.normBindIndex )
+				if( this.tanBindIndex != this.posBindIndex &&
+				    this.tanBindIndex != this.normBindIndex )
 				{
 					destTangentBuffer =
-						   HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-						   srcTangentBuffer,
-						   BufferLicenseRelease.Automatic,
-						   this );
+						HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+						                                                        srcTangentBuffer,
+						                                                        BufferLicenseRelease.Automatic,
+						                                                        this );
 				}
 			}
 
-			if ( bindNormals && srcBinormalBuffer != null )
+			if( bindNormals && srcBinormalBuffer != null )
 			{
-				if ( this.binormBindIndex != this.posBindIndex &&
-					this.binormBindIndex != this.normBindIndex &&
-					this.binormBindIndex != this.tanBindIndex )
+				if( this.binormBindIndex != this.posBindIndex &&
+				    this.binormBindIndex != this.normBindIndex &&
+				    this.binormBindIndex != this.tanBindIndex )
 				{
 					destBinormalBuffer =
 						HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-						srcBinormalBuffer,
-						BufferLicenseRelease.Automatic,
-						this );
+						                                                        srcBinormalBuffer,
+						                                                        BufferLicenseRelease.Automatic,
+						                                                        this );
 				}
 			}
 		}
@@ -254,16 +277,20 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool BuffersCheckedOut( bool positions, bool normals )
 		{
-			if ( positions || ( normals && posNormalShareBuffer ) )
+			if( positions || ( normals && posNormalShareBuffer ) )
 			{
-				if ( destPositionBuffer == null )
+				if( destPositionBuffer == null )
+				{
 					return false;
+				}
 				HardwareBufferManager.Instance.TouchVertexBufferCopy( destPositionBuffer );
 			}
-			if ( normals && !posNormalShareBuffer )
+			if( normals && !posNormalShareBuffer )
 			{
-				if ( destNormalBuffer == null )
+				if( destNormalBuffer == null )
+				{
 					return false;
+				}
 				HardwareBufferManager.Instance.TouchVertexBufferCopy( destNormalBuffer );
 			}
 			return true;
@@ -279,28 +306,28 @@ namespace Axiom.Graphics
 			destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
 			targetData.vertexBufferBinding.SetBinding( posBindIndex, destPositionBuffer );
 
-			if ( bindNormals && destNormalBuffer != null )
+			if( bindNormals && destNormalBuffer != null )
 			{
-				if ( normBindIndex != posBindIndex )
+				if( normBindIndex != posBindIndex )
 				{
 					destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
 					targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
 				}
 			}
-			if ( bindTangents && destTangentBuffer != null )
+			if( bindTangents && destTangentBuffer != null )
 			{
-				if ( tanBindIndex != posBindIndex &&
-					tanBindIndex != normBindIndex )
+				if( tanBindIndex != posBindIndex &&
+				    tanBindIndex != normBindIndex )
 				{
 					destTangentBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
 					targetData.vertexBufferBinding.SetBinding( tanBindIndex, destTangentBuffer );
 				}
 			}
-			if ( bindBinormals && destBinormalBuffer != null )
+			if( bindBinormals && destBinormalBuffer != null )
 			{
-				if ( binormBindIndex != posBindIndex &&
-					binormBindIndex != normBindIndex &&
-					binormBindIndex != tanBindIndex )
+				if( binormBindIndex != posBindIndex &&
+				    binormBindIndex != normBindIndex &&
+				    binormBindIndex != tanBindIndex )
 				{
 					destBinormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
 					targetData.vertexBufferBinding.SetBinding( binormBindIndex, destBinormalBuffer );
@@ -318,11 +345,11 @@ namespace Axiom.Graphics
 		/// <param name="buffer"></param>
 		public void LicenseExpired( HardwareBuffer buffer )
 		{
-			if ( buffer == destPositionBuffer )
+			if( buffer == destPositionBuffer )
 			{
 				destPositionBuffer = null;
 			}
-			if ( buffer == destNormalBuffer )
+			if( buffer == destNormalBuffer )
 			{
 				destNormalBuffer = null;
 			}

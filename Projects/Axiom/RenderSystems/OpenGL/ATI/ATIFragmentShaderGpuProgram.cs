@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,7 +59,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
 			programType = Gl.GL_FRAGMENT_SHADER_ATI;
 			programId = Gl.glGenFragmentShadersATI( 1 );
 		}
@@ -70,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			bool error = !assembler.Compile( source );
 
-			if ( !error )
+			if( !error )
 			{
 				Gl.glBindFragmentShaderATI( programId );
 				Gl.glBeginFragmentShaderATI();
@@ -80,9 +83,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 				Gl.glEndFragmentShaderATI();
 			}
-			else
-			{
-			}
+			else {}
 		}
 
 		public override void Unload()
@@ -92,7 +93,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// delete the fragment shader for good
 			Gl.glDeleteFragmentShaderATI( programId );
 		}
-
 
 		#endregion Implementation of GpuProgram
 
@@ -107,13 +107,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public override void BindParameters( GpuProgramParameters parms )
 		{
 			// program constants done internally by compiler for local
-			if ( parms.HasFloatConstants )
+			if( parms.HasFloatConstants )
 			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				for( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
 					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-					if ( entry.isSet )
+					if( entry.isSet )
 					{
 						// send the params 4 at a time
 						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.val );
@@ -148,5 +148,4 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		#endregion
 	}
-
 }

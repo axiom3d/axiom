@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLFrameBufferObject.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,9 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
+
 using Tao.OpenGl;
+
 using Axiom.Configuration;
 
 #endregion Namespace Declarations
@@ -85,22 +91,10 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		private GLFBORTTManager _manager;
-		public GLFBORTTManager Manager
-		{
-			get
-			{
-				return _manager;
-			}
-		}
+		public GLFBORTTManager Manager { get { return _manager; } }
 
 		private GLSurfaceDesc _surfaceDesc;
-		public GLSurfaceDesc SurfaceDesc
-		{
-			get
-			{
-				return _surfaceDesc;
-			}
-		}
+		public GLSurfaceDesc SurfaceDesc { get { return _surfaceDesc; } }
 
 		#endregion Fields and Properties
 
@@ -114,8 +108,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGenFramebuffersEXT( 1, out _frameBuffer );
 
 			/// Initialize state
-			_color = new GLSurfaceDesc[ Config.MaxMultipleRenderTargets ];
-
+			_color = new GLSurfaceDesc[Config.MaxMultipleRenderTargets];
 		}
 
 		~GLFrameBufferObject()
@@ -137,8 +130,10 @@ namespace Axiom.RenderSystems.OpenGL
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
 			_color[ attachment ] = target;
 			// Re-initialise
-			if ( _color[ 0 ].Buffer != null )
+			if( _color[ 0 ].Buffer != null )
+			{
 				_initialize();
+			}
 		}
 
 		/// <summary>
@@ -150,7 +145,7 @@ namespace Axiom.RenderSystems.OpenGL
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
 			_color[ attachment ].Buffer = null;
 			// Re-initialise if buffer 0 still bound
-			if ( _color[ 0 ].Buffer == null )
+			if( _color[ 0 ].Buffer == null )
 			{
 				_initialize();
 			}
@@ -180,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_manager.ReleaseRenderBuffer( _depth );
 			_manager.ReleaseRenderBuffer( _stencil );
 			/// First buffer must be bound
-			if ( _color[ 0 ].Buffer == null )
+			if( _color[ 0 ].Buffer == null )
 			{
 				throw new ArgumentException( "Attachment 0 must have surface attached." );
 			}
@@ -195,15 +190,15 @@ namespace Axiom.RenderSystems.OpenGL
 			PixelFormat format = _color[ 0 ].Buffer.Format;
 
 			/// Bind all attachment points to frame buffer
-			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
+			for( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
-				if ( _color[ x ].Buffer != null )
+				if( _color[ x ].Buffer != null )
 				{
-					if ( _color[ x ].Buffer.Width != width || _color[ x ].Buffer.Height != height )
+					if( _color[ x ].Buffer.Width != width || _color[ x ].Buffer.Height != height )
 					{
 						throw new ArgumentException( String.Format( "Attachment {0} has incompatible size {1}x{2}. It must be of the same as the size of surface 0, {3}x{4}.", x, _color[ x ].Buffer.Width, _color[ x ].Buffer.Height, width, height ) );
 					}
-					if ( _color[ x ].Buffer.GLFormat != glFormat )
+					if( _color[ x ].Buffer.GLFormat != glFormat )
 					{
 						throw new ArgumentException( String.Format( "Attachment {0} has incompatible format.", x ) );
 					}
@@ -221,7 +216,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			/// Request surfaces
 			_depth = _manager.RequestRenderBuffer( depthFormat, width, height );
-			if ( depthFormat == GLFBORTTManager.GL_DEPTH24_STENCIL8_EXT )
+			if( depthFormat == GLFBORTTManager.GL_DEPTH24_STENCIL8_EXT )
 			{
 				// bind same buffer to depth and stencil attachments
 				_manager.RequestRenderBuffer( _depth );
@@ -234,7 +229,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/// Attach/detach surfaces
-			if ( _depth.Buffer != null )
+			if( _depth.Buffer != null )
 			{
 				_depth.Buffer.BindToFramebuffer( Gl.GL_DEPTH_ATTACHMENT_EXT, _depth.ZOffset );
 			}
@@ -242,7 +237,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, 0 );
 			}
-			if ( _stencil.Buffer != null )
+			if( _stencil.Buffer != null )
 			{
 				_stencil.Buffer.BindToFramebuffer( Gl.GL_STENCIL_ATTACHMENT_EXT, _stencil.ZOffset );
 			}
@@ -252,12 +247,12 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/// Do glDrawBuffer calls
-			int[] bufs = new int[ Config.MaxMultipleRenderTargets ];
+			int[] bufs = new int[Config.MaxMultipleRenderTargets];
 			int n = 0;
-			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
+			for( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
 				// Fill attached colour buffers
-				if ( _color[ x ].Buffer != null )
+				if( _color[ x ].Buffer != null )
 				{
 					bufs[ x ] = Gl.GL_COLOR_ATTACHMENT0_EXT + x;
 					// Keep highest used buffer + 1
@@ -269,12 +264,12 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 			}
 
-			if ( _manager.GLSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
+			if( _manager.GLSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
 			{
 				/// Drawbuffer extension supported, use it
 				Gl.glDrawBuffers( n, bufs );
 			}
-			else if ( _manager.GLSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+			else if( _manager.GLSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
 			{
 				Gl.glDrawBuffersATI( n, bufs );
 			}
@@ -293,7 +288,7 @@ namespace Axiom.RenderSystems.OpenGL
 			/// Bind main buffer
 			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
 
-			switch ( status )
+			switch( status )
 			{
 				case Gl.GL_FRAMEBUFFER_COMPLETE_EXT:
 					// All is good
@@ -309,24 +304,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region IDisposable Implementation
 
-
 		#region isDisposed Property
 
 		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -354,11 +339,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					_manager.ReleaseRenderBuffer( _depth );
@@ -371,7 +356,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					Gl.glDeleteFramebuffersEXT( 1, ref _frameBuffer );
 				}
-				catch ( AccessViolationException ave )
+				catch( AccessViolationException ave )
 				{
 					LogManager.Instance.Write( "Error Deleting Framebuffer[{0}].", _frameBuffer );
 				}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,10 +45,12 @@ using Axiom.Core;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
@@ -63,10 +69,13 @@ namespace Axiom.Animating
 
 		/// <summary>Numeric handle of this bone.</summary>
 		protected ushort handle;
+
 		/// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
 		protected bool isManuallyControlled;
+
 		/// <summary>The skeleton that created this bone.</summary>
 		protected Skeleton creator;
+
 		/// <summary>The inverse derived transform of the bone in the binding pose.</summary>
 		protected Matrix4 bindDerivedInverseTransform;
 
@@ -169,10 +178,10 @@ namespace Axiom.Animating
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
 			MakeInverseTransform(
-				this.DerivedPosition,
-				Vector3.UnitScale,
-				this.DerivedOrientation,
-				ref bindDerivedInverseTransform );
+			                     this.DerivedPosition,
+			                     Vector3.UnitScale,
+			                     this.DerivedOrientation,
+			                     ref bindDerivedInverseTransform );
 		}
 
 		#endregion
@@ -182,39 +191,17 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Determines whether this bone is controlled at runtime.
 		/// </summary>
-		public bool IsManuallyControlled
-		{
-			get
-			{
-				return isManuallyControlled;
-			}
-			set
-			{
-				isManuallyControlled = value;
-			}
-		}
+		public bool IsManuallyControlled { get { return isManuallyControlled; } set { isManuallyControlled = value; } }
 
 		/// <summary>
 		///    Gets the inverse transform which takes bone space to origin from the binding pose. 
 		/// </summary>
-		public Matrix4 BindDerivedInverseTransform
-		{
-			get
-			{
-				return bindDerivedInverseTransform;
-			}
-		}
+		public Matrix4 BindDerivedInverseTransform { get { return bindDerivedInverseTransform; } }
 
 		/// <summary>
 		///    Gets the numeric handle of this bone.
 		/// </summary>
-		public ushort Handle
-		{
-			get
-			{
-				return handle;
-			}
-		}
+		public ushort Handle { get { return handle; } }
 
 		#endregion
 	}
@@ -235,9 +222,8 @@ namespace Axiom.Animating
 		public ushort boneIndex;
 		public float weight;
 
-		public VertexBoneAssignment()
-		{
-		}
+		public VertexBoneAssignment() {}
+
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{
 			vertexIndex = other.vertexIndex;
@@ -249,20 +235,28 @@ namespace Axiom.Animating
 
 		public int CompareTo( object obj )
 		{
-			if ( obj is VertexBoneAssignment )
+			if( obj is VertexBoneAssignment )
 			{
 				VertexBoneAssignment v = (VertexBoneAssignment)obj;
 
-				if ( weight > v.weight )
+				if( weight > v.weight )
+				{
 					return 1;
-				if ( weight < v.weight )
+				}
+				if( weight < v.weight )
+				{
 					return -1;
+				}
 
-				if ( vertexIndex != v.vertexIndex )
+				if( vertexIndex != v.vertexIndex )
+				{
 					return vertexIndex - v.vertexIndex;
+				}
 
-				if ( boneIndex != v.boneIndex )
+				if( boneIndex != v.boneIndex )
+				{
 					return boneIndex - v.boneIndex;
+				}
 
 				return 0;
 			}
@@ -270,7 +264,6 @@ namespace Axiom.Animating
 		}
 
 		#endregion
-
 	}
 
 	public class VertexBoneAssignmentWeightComparer : System.Collections.Generic.IComparer<VertexBoneAssignment>
@@ -282,20 +275,30 @@ namespace Axiom.Animating
 		/// <filterpriority>2</filterpriority>
 		public int Compare( VertexBoneAssignment xVba, VertexBoneAssignment yVba )
 		{
-			if ( xVba == null && yVba == null )
+			if( xVba == null && yVba == null )
+			{
 				return 0;
-			else if ( xVba == null )
+			}
+			else if( xVba == null )
+			{
 				return -1;
-			else if ( yVba == null )
+			}
+			else if( yVba == null )
+			{
 				return 1;
-			else if ( xVba.weight == yVba.weight )
+			}
+			else if( xVba.weight == yVba.weight )
+			{
 				return 0;
-			else if ( xVba.weight < yVba.weight )
+			}
+			else if( xVba.weight < yVba.weight )
+			{
 				return -1;
+			}
 			else // if (xVba.weight > yVba.weight)
+			{
 				return 1;
+			}
 		}
-
 	}
-
 }

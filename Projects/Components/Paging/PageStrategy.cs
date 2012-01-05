@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -31,111 +34,110 @@ using Axiom.Math;
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    /// Defines the interface to a strategy class which is responsible for deciding
+	/// <summary>
+	/// Defines the interface to a strategy class which is responsible for deciding
 	/// when Page instances are requested for addition and removal from the 
-    /// paging system.
-    /// </summary>
-    public class PageStrategy
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string mName;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected PageManager mManager;
+	/// paging system.
+	/// </summary>
+	public class PageStrategy
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		protected string mName;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Name
-        {
-            get { return mName; }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		protected PageManager mManager;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public PageManager Manager
-        {
-            get { return mManager; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="manager"></param>
-        public PageStrategy(string name, PageManager manager)
-        {
-            mName = name;
-            mManager = manager;
-        }
-        /// <summary>
-        /// Destructor.
-        /// </summary>
-        public PageStrategy(){}
+		/// <summary>
+		/// 
+		/// </summary>
+		public string Name { get { return mName; } }
 
-        /// <summary>
-        /// Called when the frame starts
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        /// <param name="section"></param>
-        public virtual void FrameStart(float timeSinceLastFrame, PagedWorldSection section) { }
+		/// <summary>
+		/// 
+		/// </summary>
+		public PageManager Manager { get { return mManager; } }
 
-        /// <summary>
-        /// Called when the frame ends
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        /// <param name="section"></param>
-        public virtual void FrameEnd(float timeElapsed, PagedWorldSection section) { }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="manager"></param>
+		public PageStrategy( string name, PageManager manager )
+		{
+			mName = name;
+			mManager = manager;
+		}
 
-        /// <summary>
-        /// Called when a camera is used for any kind of rendering.
-        /// </summary>
-        /// <param name="cam"></param>
-        /// <param name="section"></param>
-        public virtual void NotifyCamera(Camera cam, PagedWorldSection section) { }
+		/// <summary>
+		/// Destructor.
+		/// </summary>
+		public PageStrategy() {}
 
-        /// <summary>
-        /// Create a PageStrategyData instance containing the data specific to this
+		/// <summary>
+		/// Called when the frame starts
+		/// </summary>
+		/// <param name="timeSinceLastFrame"></param>
+		/// <param name="section"></param>
+		virtual public void FrameStart( float timeSinceLastFrame, PagedWorldSection section ) {}
+
+		/// <summary>
+		/// Called when the frame ends
+		/// </summary>
+		/// <param name="timeSinceLastFrame"></param>
+		/// <param name="section"></param>
+		virtual public void FrameEnd( float timeElapsed, PagedWorldSection section ) {}
+
+		/// <summary>
+		/// Called when a camera is used for any kind of rendering.
+		/// </summary>
+		/// <param name="cam"></param>
+		/// <param name="section"></param>
+		virtual public void NotifyCamera( Camera cam, PagedWorldSection section ) {}
+
+		/// <summary>
+		/// Create a PageStrategyData instance containing the data specific to this
 		///	PageStrategy. 
-        /// </summary>
-        /// <returns></returns>
-        public virtual IPageStrategyData CreateData()
-        {
-            throw new NotImplementedException();
-        }
+		/// </summary>
+		/// <returns></returns>
+		virtual public IPageStrategyData CreateData()
+		{
+			throw new NotImplementedException();
+		}
 
-        /// <summary>
-        /// Destroy a PageStrategyData instance containing the data specific to this
+		/// <summary>
+		/// Destroy a PageStrategyData instance containing the data specific to this
 		/// PageStrategy. 
-        /// </summary>
-        /// <param name="data"></param>
-        public virtual void DestroyData(IPageStrategyData data)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Update the contents of the passed in SceneNode to reflect the 
-        /// debug display of a given page. 
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="n"></param>
-        public virtual void UpdateDebugDisplay(Page p, SceneNode n)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Get the page ID for a given world position. 
-        /// </summary>
-        /// <param name="worldPos"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public virtual PageID GetPageID(Vector3 worldPos, PagedWorldSection section)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		/// </summary>
+		/// <param name="data"></param>
+		virtual public void DestroyData( IPageStrategyData data )
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Update the contents of the passed in SceneNode to reflect the 
+		/// debug display of a given page. 
+		/// </summary>
+		/// <param name="p"></param>
+		/// <param name="n"></param>
+		virtual public void UpdateDebugDisplay( Page p, SceneNode n )
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Get the page ID for a given world position. 
+		/// </summary>
+		/// <param name="worldPos"></param>
+		/// <param name="section"></param>
+		/// <returns></returns>
+		virtual public PageID GetPageID( Vector3 worldPos, PagedWorldSection section )
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

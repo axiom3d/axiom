@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -120,27 +124,37 @@ namespace Axiom.Controllers.Canned
 			float output = 0.0f;
 
 			// first, get output in range [-1,1] (typical for waveforms)
-			switch ( type )
+			switch( type )
 			{
 				case WaveformType.Sine:
 					output = Utility.Sin( input * Utility.TWO_PI );
 					break;
 
 				case WaveformType.Triangle:
-					if ( input < 0.25f )
+					if( input < 0.25f )
+					{
 						output = input * 4;
-					else if ( input >= 0.25f && input < 0.75f )
+					}
+					else if( input >= 0.25f && input < 0.75f )
+					{
 						output = 1.0f - ( ( input - 0.25f ) * 4 );
+					}
 					else
+					{
 						output = ( ( input - 0.75f ) * 4 ) - 1.0f;
+					}
 
 					break;
 
 				case WaveformType.Square:
-					if ( input <= 0.5f )
+					if( input <= 0.5f )
+					{
 						output = 1.0f;
+					}
 					else
+					{
 						output = -1.0f;
+					}
 					break;
 
 				case WaveformType.Sawtooth:
@@ -150,7 +164,6 @@ namespace Axiom.Controllers.Canned
 				case WaveformType.InverseSawtooth:
 					output = -( ( input * 2 ) - 1 );
 					break;
-
 			} // end switch
 
 			// scale final output to range [0,1], and then by base and amplitude
@@ -162,8 +175,10 @@ namespace Axiom.Controllers.Canned
 			float adjusted = base.AdjustInput( input );
 
 			// if not using delta accumulation, adjust by phase value
-			if ( !useDeltaInput )
+			if( !useDeltaInput )
+			{
 				adjusted += phase;
+			}
 
 			return adjusted;
 		}
@@ -173,6 +188,5 @@ namespace Axiom.Controllers.Canned
 		#region Properties
 
 		#endregion
-
 	}
 }

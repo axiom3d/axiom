@@ -41,7 +41,7 @@
     <DebugType>full</DebugType>
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox\Debug</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
@@ -54,8 +54,8 @@
     <DebugType>pdbonly</DebugType>
     <BaseAddress>285212672</BaseAddress>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox\Release</OutputPath>
-    <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
+    <OutputPath>bin\Xbox</OutputPath>
+    <DocumentationFile>bin\Xbox\Axiom.XML</DocumentationFile>
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>

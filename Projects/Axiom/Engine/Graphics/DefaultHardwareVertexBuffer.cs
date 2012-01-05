@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -46,25 +49,25 @@ namespace Axiom.Graphics
 {
 	public class DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		byte[] mpData = null;
+		private byte[] mpData = null;
 
 		public DefaultHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
-			: base( null, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+			: base( null, vertexSize, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[base.sizeInBytes];
 		}
 
 		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage )
-			: base( manager, vertexSize, numVertices, usage, true, false )// always software, never shadowed
+			: base( manager, vertexSize, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[base.sizeInBytes];
 		}
 
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -79,7 +82,7 @@ namespace Axiom.Graphics
 			IntPtr pSource = Memory.PinObject( data );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -94,7 +97,7 @@ namespace Axiom.Graphics
 		{
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -115,7 +118,7 @@ namespace Axiom.Graphics
 			IntPtr ret = Memory.PinObject( mpData );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -129,7 +132,7 @@ namespace Axiom.Graphics
 			IntPtr ret = Memory.PinObject( mpData );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}

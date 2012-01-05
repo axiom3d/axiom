@@ -80,7 +80,7 @@ namespace Axiom.Graphics
 	///     the buffer of the type you require (see <see cref="HardwareBufferManager"/>) to enable this feature.
 	///     <seealso cref="HardwareBufferManager"/>
 	/// </remarks>
-	public abstract class HardwareBuffer : DisposableObject
+	abstract public class HardwareBuffer : DisposableObject
 	{
 		#region Fields
 
@@ -88,46 +88,57 @@ namespace Axiom.Graphics
 		///     Total size (in bytes) of the buffer.
 		/// </summary>
 		protected int sizeInBytes;
+
 		/// <summary>
 		///     Usage type for this buffer.
 		/// </summary>
 		protected BufferUsage usage;
+
 		/// <summary>
 		///     Is this buffer currently locked?
 		/// </summary>
 		protected bool isLocked;
+
 		/// <summary>
 		///     Byte offset into the buffer where the current lock is held.
 		/// </summary>
 		protected int lockStart;
+
 		/// <summary>
 		///     Total size (int bytes) of locked buffer data.
 		/// </summary>
 		protected int lockSize;
+
 		/// <summary>
 		///
 		/// </summary>
 		protected bool useSystemMemory;
+
 		/// <summary>
 		///     Does this buffer have a shadow buffer?
 		/// </summary>
 		protected bool useShadowBuffer;
+
 		/// <summary>
 		///     Reference to the sys memory shadow buffer tied to this hardware buffer.
 		/// </summary>
 		protected HardwareBuffer shadowBuffer;
+
 		/// <summary>
 		///     Flag indicating whether the shadow buffer (if it exists) has been updated.
 		/// </summary>
 		protected bool shadowUpdated;
+
 		/// <summary>
 		///     Flag indicating whether hardware updates from shadow buffer should be supressed.
 		/// </summary>
 		protected bool suppressHardwareUpdate;
+
 		/// <summary>
 		///		Unique id for this buffer.
 		/// </summary>
 		public int ID;
+
 		protected static int nextID;
 
 		#endregion Fields
@@ -152,10 +163,14 @@ namespace Axiom.Graphics
 			ID = nextID++;
 
 			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
-			if ( useShadowBuffer && usage == BufferUsage.Dynamic )
+			if( useShadowBuffer && usage == BufferUsage.Dynamic )
+			{
 				usage = BufferUsage.DynamicWriteOnly;
-			else if ( useShadowBuffer && usage == BufferUsage.Static )
+			}
+			else if( useShadowBuffer && usage == BufferUsage.Static )
+			{
 				usage = BufferUsage.StaticWriteOnly;
+			}
 		}
 
 		#endregion
@@ -186,12 +201,14 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( shadowBuffer != null )
+				if( shadowBuffer != null )
 				{
-					if ( !shadowBuffer.IsDisposed )
+					if( !shadowBuffer.IsDisposed )
+					{
 						shadowBuffer.Dispose();
+					}
 
 					shadowBuffer = null;
 				}
@@ -225,16 +242,16 @@ namespace Axiom.Graphics
 		/// <param name="length">Number of bytes to lock after the offset.</param>
 		/// <param name="locking">Specifies how to lock the buffer.</param>
 		/// <returns>An array of the <code>System.Type</code> associated with this VertexBuffer.</returns>
-		public virtual IntPtr Lock( int offset, int length, BufferLocking locking )
+		virtual public IntPtr Lock( int offset, int length, BufferLocking locking )
 		{
 			Debug.Assert( !IsLocked, "Cannot lock this buffer because it is already locked." );
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
 
 			IntPtr data; // = IntPtr.Zero;
 
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
-				if ( locking != BufferLocking.ReadOnly )
+				if( locking != BufferLocking.ReadOnly )
 				{
 					// we have to assume a read / write lock so we use the shadow buffer
 					// and tag for sync on Unlock()
@@ -264,17 +281,17 @@ namespace Axiom.Graphics
 		/// <param name="length">Length of the portion of the buffer (int bytes) to lock.</param>
 		/// <param name="locking">Locking type.</param>
 		/// <returns>IntPtr to the beginning of the locked portion of the buffer.</returns>
-		protected abstract IntPtr LockImpl( int offset, int length, BufferLocking locking );
+		abstract protected IntPtr LockImpl( int offset, int length, BufferLocking locking );
 
 		/// <summary>
 		///		Must be called after a call to <code>Lock</code>.  Unlocks the vertex buffer in the hardware
 		///		memory.
 		/// </summary>
-		public virtual void Unlock()
+		virtual public void Unlock()
 		{
 			Debug.Assert( this.IsLocked, "Cannot unlock this buffer if it isn't locked to begin with." );
 
-			if ( useShadowBuffer && shadowBuffer.IsLocked )
+			if( useShadowBuffer && shadowBuffer.IsLocked )
 			{
 				shadowBuffer.Unlock();
 
@@ -293,7 +310,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Abstract implementation of <see cref="Unlock"/>.
 		/// </summary>
-		protected abstract void UnlockImpl();
+		abstract protected void UnlockImpl();
 
 		/// <summary>
 		///     Reads data from the buffer and places it in the memory pointed to by 'dest'.
@@ -304,7 +321,7 @@ namespace Axiom.Graphics
 		///     The area of memory in which to place the data, must be large enough to
 		///     accommodate the data!
 		/// </param>
-		public abstract void ReadData( int offset, int length, IntPtr dest );
+		abstract public void ReadData( int offset, int length, IntPtr dest );
 
 		/// <summary>
 		///     Writes data to the buffer from an area of system memory; note that you must
@@ -317,7 +334,7 @@ namespace Axiom.Graphics
 		///     If true, this allows the driver to discard the entire buffer when writing,
 		///     such that DMA stalls can be avoided; use if you can.
 		/// </param>
-		public abstract void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
+		abstract public void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
 
 		/// <summary>
 		///     Writes data to the buffer from an area of system memory; note that you must
@@ -364,7 +381,7 @@ namespace Axiom.Graphics
 		///     If true, this allows the driver to discard the entire buffer when writing,
 		///     such that DMA stalls can be avoided; use if you can.
 		/// </param>
-		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+		virtual public void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
 		{
 			IntPtr dataPtr = Memory.PinObject( data );
 
@@ -380,7 +397,7 @@ namespace Axiom.Graphics
 		/// <param name="srcOffset">Offset in the source buffer at which to start reading.</param>
 		/// <param name="destOffset">Offset in the destination buffer to start writing.</param>
 		/// <param name="length">Length of the data to copy, in bytes.</param>
-		public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length )
+		virtual public void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length )
 		{
 			// call the overloaded method
 			CopyData( srcBuffer, srcOffset, destOffset, length, false );
@@ -394,7 +411,7 @@ namespace Axiom.Graphics
 		/// <param name="destOffset">Offset in the destination buffer to start writing.</param>
 		/// <param name="length">Length of the data to copy, in bytes.</param>
 		/// <param name="discardWholeBuffer">If true, will discard the entire contents of this buffer before copying.</param>
-		public virtual void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
+		virtual public void CopyData( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
 		{
 			// lock the source buffer
 			IntPtr srcData = srcBuffer.Lock( srcOffset, length, BufferLocking.ReadOnly );
@@ -411,7 +428,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void UpdateFromShadow()
 		{
-			if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
+			if( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
 			{
 				// do this manually to avoid locking problems
 				IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
@@ -443,7 +460,7 @@ namespace Axiom.Graphics
 
 			// if disabling future shadow updates, then update from what is current in the buffer now
 			// this is needed for shadow volumes
-			if ( !suppress )
+			if( !suppress )
 			{
 				UpdateFromShadow();
 			}
@@ -456,57 +473,27 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets whether or not this buffer is currently locked.
 		/// </summary>
-		public bool IsLocked
-		{
-			get
-			{
-				return isLocked || ( useShadowBuffer && shadowBuffer.IsLocked );
-			}
-		}
+		public bool IsLocked { get { return isLocked || ( useShadowBuffer && shadowBuffer.IsLocked ); } }
 
 		/// <summary>
 		///		Gets whether this buffer is held in system memory.
 		/// </summary>
-		public bool IsSystemMemory
-		{
-			get
-			{
-				return useSystemMemory;
-			}
-		}
+		public bool IsSystemMemory { get { return useSystemMemory; } }
 
 		/// <summary>
 		///		Gets the size (in bytes) for this buffer.
 		/// </summary>
-		public int Size
-		{
-			get
-			{
-				return sizeInBytes;
-			}
-		}
+		public int Size { get { return sizeInBytes; } }
 
 		/// <summary>
 		///		Gets the usage of this buffer.
 		/// </summary>
-		public BufferUsage Usage
-		{
-			get
-			{
-				return usage;
-			}
-		}
+		public BufferUsage Usage { get { return usage; } }
 
 		/// <summary>
 		///     Gets a bool that specifies whether this buffer has a software shadow buffer.
 		/// </summary>
-		public bool HasShadowBuffer
-		{
-			get
-			{
-				return useShadowBuffer;
-			}
-		}
+		public bool HasShadowBuffer { get { return useShadowBuffer; } }
 
 		#endregion
 	}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -63,7 +67,7 @@ namespace Axiom.Scripting
 		{
 			StringBuilder sb = new StringBuilder();
 
-			for ( int i = start; i < end; i++ )
+			for( int i = start; i < end; i++ )
 			{
 				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
 			}
@@ -95,13 +99,13 @@ namespace Axiom.Scripting
 		{
 			string line = reader.ReadLine();
 
-			if ( line != null )
+			if( line != null )
 			{
 				line = line.Replace( "\t", " " );
 				line = line.Trim();
 
 				// ignore blank lines, lines without spaces, or comments
-				if ( line.Length == 0 || line.IndexOf( ' ' ) == -1 || line.StartsWith( "//" ) )
+				if( line.Length == 0 || line.IndexOf( ' ' ) == -1 || line.StartsWith( "//" ) )
 				{
 					return line;
 				}
@@ -111,11 +115,11 @@ namespace Axiom.Scripting
 				string[] values = line.Split( ' ' );
 
 				// reduce big space gaps between values down to a single space
-				for ( int i = 0; i < values.Length; i++ )
+				for( int i = 0; i < values.Length; i++ )
 				{
 					string val = values[ i ];
 
-					if ( val.Length != 0 )
+					if( val.Length != 0 )
 					{
 						sb.Append( val + " " );
 					}
@@ -138,7 +142,7 @@ namespace Axiom.Scripting
 		public static string[] GetParams( string[] all )
 		{
 			// create a seperate parm list that has the command removed
-			string[] parms = new string[ all.Length - 1 ];
+			string[] parms = new string[all.Length - 1];
 			Array.Copy( all, 1, parms, 0, parms.Length );
 
 			return parms;
@@ -150,7 +154,7 @@ namespace Axiom.Scripting
 		public static void SkipToNextOpenBrace( TextReader reader )
 		{
 			string line = "";
-			while ( line != null && line != "{" )
+			while( line != null && line != "{" )
 			{
 				line = ReadLine( reader );
 			}
@@ -163,7 +167,7 @@ namespace Axiom.Scripting
 		public static void SkipToNextCloseBrace( TextReader reader )
 		{
 			string line = "";
-			while ( line != null && line != "}" )
+			while( line != null && line != "}" )
 			{
 				line = ReadLine( reader );
 			}

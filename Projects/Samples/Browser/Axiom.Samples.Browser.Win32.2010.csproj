@@ -133,6 +133,10 @@
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp.2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Components\Terrain\Axiom.Components.Terrain.2010.csproj">
+      <Project>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</Project>
+      <Name>Axiom.Components.Terrain.2010</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.2010</Name>

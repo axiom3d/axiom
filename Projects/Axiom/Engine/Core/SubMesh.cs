@@ -68,25 +68,32 @@ namespace Axiom.Core
 
 		/// <summary>The parent mesh that this subMesh belongs to.</summary>
 		protected Mesh parent;
+
 		/// <summary>Name of the material assigned to this subMesh.</summary>
 		protected string materialName;
+
 		/// <summary>Name of this SubMesh.</summary>
 		internal string name;
+
 		/// <summary></summary>
 		protected bool isMaterialInitialized;
 
 		/// <summary>List of bone assignment for this mesh.</summary>
 		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList =
 			new Dictionary<int, List<VertexBoneAssignment>>();
+
 		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
 		protected internal bool boneAssignmentsOutOfDate;
 
 		/// <summary>Mode used for rendering this submesh.</summary>
 		protected internal Axiom.Graphics.OperationType operationType;
+
 		public VertexData vertexData;
 		public IndexData indexData = new IndexData();
+
 		/// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
 		public bool useSharedVertices;
+
 		protected internal List<IndexData> lodFaceList = new List<IndexData>();
 
 		/// <summary>Type of vertex animation for dedicated vertex data (populated by Mesh)</summary>
@@ -101,7 +108,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		public SubMesh( /*string name*/ )
-            : base()
+			: base()
 		{
 			//this.name = name;
 
@@ -126,8 +133,10 @@ namespace Axiom.Core
 		/// <param name="boneAssignment"></param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			if( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			{
 				boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+			}
 			boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
 			boneAssignmentsOutOfDate = true;
 		}
@@ -153,7 +162,7 @@ namespace Axiom.Core
 			int maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
 
 			// return if no bone assigments
-			if ( maxBones != 0 )
+			if( maxBones != 0 )
 			{
 				// FIXME: For now, to support hardware skinning with a single shader,
 				// we always want to have 4 bones. (robin@multiverse.net)
@@ -175,27 +184,14 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets/Sets the name of this SubMesh.
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-			set
-			{
-				name = value;
-			}
-		}
+		public string Name { get { return name; } set { name = value; } }
 
 		/// <summary>
 		///		Gets/Sets the name of the material this SubMesh will be using.
 		/// </summary>
 		public string MaterialName
 		{
-			get
-			{
-				return materialName;
-			}
+			get { return materialName; }
 			set
 			{
 				materialName = value;
@@ -206,17 +202,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets/Sets the parent mode of this SubMesh.
 		/// </summary>
-		public Mesh Parent
-		{
-			get
-			{
-				return parent;
-			}
-			set
-			{
-				parent = value;
-			}
-		}
+		public Mesh Parent { get { return parent; } set { parent = value; } }
 
 		/// <summary>
 		///		Overloaded method.
@@ -240,13 +226,15 @@ namespace Axiom.Core
 			op.useIndices = true;
 
 			// use lod face list if requested, else pass the normal face list
-			if ( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
+			if( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
 			{
 				// Use the set of indices defined for this LOD level
 				op.indexData = lodFaceList[ lodIndex - 1 ];
 			}
 			else
+			{
 				op.indexData = indexData;
+			}
 
 			// set the operation type
 			op.operationType = operationType;
@@ -258,139 +246,104 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets whether or not a material has been set for this subMesh.
 		/// </summary>
-		public bool IsMaterialInitialized
-		{
-			get
-			{
-				return isMaterialInitialized;
-			}
-		}
+		public bool IsMaterialInitialized { get { return isMaterialInitialized; } }
 
 		/// <summary>
 		///		Gets bone assigment list
 		/// </summary>
-		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
-		{
-			get
-			{
-				return boneAssignmentList;
-			}
-		}
+		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList { get { return boneAssignmentList; } }
 
 		public int NumFaces
 		{
 			get
 			{
 				int numFaces = 0;
-				if ( indexData == null )
+				if( indexData == null )
+				{
 					return 0;
-				if ( operationType == OperationType.TriangleList )
+				}
+				if( operationType == OperationType.TriangleList )
+				{
 					numFaces = indexData.indexCount / 3;
+				}
 				else
+				{
 					numFaces = indexData.indexCount - 2;
+				}
 				return numFaces;
 			}
 		}
 
-		public OperationType OperationType
-		{
-			get
-			{
-				return operationType;
-			}
-			set
-			{
-				operationType = value;
-			}
-		}
+		public OperationType OperationType { get { return operationType; } set { operationType = value; } }
 
 		public VertexAnimationType VertexAnimationType
 		{
 			get
 			{
-				if ( parent.AnimationTypesDirty )
+				if( parent.AnimationTypesDirty )
+				{
 					parent.DetermineAnimationTypes();
+				}
 				return vertexAnimationType;
 			}
-			set
-			{
-				vertexAnimationType = value;
-			}
+			set { vertexAnimationType = value; }
 		}
 
-		public VertexAnimationType CurrentVertexAnimationType
-		{
-			get
-			{
-				return vertexAnimationType;
-			}
-		}
+		public VertexAnimationType CurrentVertexAnimationType { get { return vertexAnimationType; } }
 
-		public List<IndexData> LodFaceList
-		{
-			get
-			{
-				return lodFaceList;
-			}
-		}
+		public List<IndexData> LodFaceList { get { return lodFaceList; } }
 
-		public VertexData VertexData
-		{
-			get
-			{
-				return vertexData;
-			}
-		}
+		public VertexData VertexData { get { return vertexData; } }
 
-		public IndexData IndexData
-		{
-			get
-			{
-				return indexData;
-			}
-		}
+		public IndexData IndexData { get { return indexData; } }
 
 		#endregion Properties
 
-        #region DisposableObject Implementation
+		#region DisposableObject Implementation
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                    if ( indexData != null )
-                    {
-                        if ( !indexData.IsDisposed )
-                            indexData.Dispose();
+			if( !IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					if( indexData != null )
+					{
+						if( !indexData.IsDisposed )
+						{
+							indexData.Dispose();
+						}
 
-                        indexData = null;
-                    }
+						indexData = null;
+					}
 
-                    if ( vertexData != null )
-                    {
-                        if ( !vertexData.IsDisposed )
-                            vertexData.Dispose();
+					if( vertexData != null )
+					{
+						if( !vertexData.IsDisposed )
+						{
+							vertexData.Dispose();
+						}
 
-                        vertexData = null;
-                    }
+						vertexData = null;
+					}
 
-                    foreach ( IndexData data in lodFaceList )
-                    {
-                        if ( !data.IsDisposed )
-                            data.Dispose();
-                    }
-                    lodFaceList.Clear();
-                }
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+					foreach( IndexData data in lodFaceList )
+					{
+						if( !data.IsDisposed )
+						{
+							data.Dispose();
+						}
+					}
+					lodFaceList.Clear();
+				}
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
-        #endregion DisposableObject Implementation
+		#endregion DisposableObject Implementation
 	}
 }

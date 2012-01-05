@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,7 +43,9 @@ using System.Diagnostics;
 
 using Axiom.Configuration;
 using Axiom.Core;
+
 using System.Collections.Generic;
+
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
@@ -69,7 +75,6 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class Pass
 	{
-
 		#region Static Interface
 
 		#region DirtyList Property
@@ -78,16 +83,11 @@ namespace Axiom.Graphics
 		///		List of passes with dirty hashes.
 		/// </summary>
 		private static PassList _dirtyList = new PassList();
+
 		/// <summary>
 		///		Gets a list of dirty passes.
 		/// </summary>
-		internal static PassList DirtyList
-		{
-			get
-			{
-				return _dirtyList;
-			}
-		}
+		internal static PassList DirtyList { get { return _dirtyList; } }
 
 		#endregion DirtyList Property
 
@@ -97,16 +97,11 @@ namespace Axiom.Graphics
 		///		List of passes queued for deletion.
 		/// </summary>
 		private static PassList _graveyardList = new PassList();
+
 		/// <summary>
 		///		Gets a list of passes queued for deletion.
 		/// </summary>
-		internal static PassList GraveyardList
-		{
-			get
-			{
-				return _graveyardList;
-			}
-		}
+		internal static PassList GraveyardList { get { return _graveyardList; } }
 
 		#endregion GraveyardList Property
 
@@ -130,20 +125,11 @@ namespace Axiom.Graphics
 		///    A reference to the technique that owns this Pass.
 		/// </summary>
 		private Technique _parent;
+
 		/// <summary>
 		///    Gets a reference to the Technique that owns this pass.
 		/// </summary>
-		public Technique Parent
-		{
-			get
-			{
-				return _parent;
-			}
-			set
-			{
-				_parent = value;
-			}
-		}
+		public Technique Parent { get { return _parent; } set { _parent = value; } }
 
 		#endregion Parent Property
 
@@ -153,15 +139,13 @@ namespace Axiom.Graphics
 		///    Index of this rendering pass.
 		/// </summary>
 		private int _index;
+
 		/// <summary>
 		///    Gets the index of this Pass in the parent Technique.
 		/// </summary>
 		public int Index
 		{
-			get
-			{
-				return _index;
-			}
+			get { return _index; }
 			set
 			{
 				_index = value;
@@ -182,21 +166,11 @@ namespace Axiom.Graphics
 		///     Name of this pass (or the index if it isn't set)
 		/// </summary>
 		private string _name;
+
 		/// <summary>
 		///     Name of this pass (or the index if it isn't set)
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _name;
-			}
-			set
-			{
-				_name = value;
-			}
-		}
-
+		public string Name { get { return _name; } set { _name = value; } }
 
 		#endregion Name Property
 
@@ -206,6 +180,7 @@ namespace Axiom.Graphics
 		///    Ambient color in fixed function passes.
 		/// </summary>
 		private ColorEx _ambient;
+
 		/// <summary>
 		///    Sets the ambient color reflectance properties of this pass.
 		/// </summary>
@@ -220,17 +195,7 @@ namespace Axiom.Graphics
 		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
 		///    or if this is a programmable pass.
 		/// </remarks>
-		public ColorEx Ambient
-		{
-			get
-			{
-				return _ambient;
-			}
-			set
-			{
-				_ambient = value;
-			}
-		}
+		public ColorEx Ambient { get { return _ambient; } set { _ambient = value; } }
 
 		#endregion Ambient Property
 
@@ -240,6 +205,7 @@ namespace Axiom.Graphics
 		///    Diffuse color in fixed function passes.
 		/// </summary>
 		private ColorEx _diffuse;
+
 		/// <summary>
 		///    Sets the diffuse color reflectance properties of this pass.
 		/// </summary>
@@ -252,17 +218,7 @@ namespace Axiom.Graphics
 		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
 		///    or if this is a programmable pass.
 		/// </remarks>
-		public ColorEx Diffuse
-		{
-			get
-			{
-				return _diffuse;
-			}
-			set
-			{
-				_diffuse = value;
-			}
-		}
+		public ColorEx Diffuse { get { return _diffuse; } set { _diffuse = value; } }
 
 		#endregion Diffuse Property
 
@@ -272,6 +228,7 @@ namespace Axiom.Graphics
 		///    Specular color in fixed function passes.
 		/// </summary>
 		private ColorEx _specular;
+
 		/// <summary>
 		///    Sets the specular color reflectance properties of this pass.
 		/// </summary>
@@ -286,17 +243,7 @@ namespace Axiom.Graphics
 		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
 		///    or if this is a programmable pass.
 		/// </remarks>
-		public ColorEx Specular
-		{
-			get
-			{
-				return _specular;
-			}
-			set
-			{
-				_specular = value;
-			}
-		}
+		public ColorEx Specular { get { return _specular; } set { _specular = value; } }
 
 		#endregion Specular Property
 
@@ -306,35 +253,16 @@ namespace Axiom.Graphics
 		/// Emissive color in fixed function passes.
 		/// </summary>
 		private ColorEx _emissive;
-		/// <summary>
-		/// Emissive color in fixed function passes.
-		/// </summary>
-		public ColorEx Emissive
-		{
-			get
-			{
-				return _emissive;
-			}
-			set
-			{
-				_emissive = value;
-			}
-		}
 
 		/// <summary>
 		/// Emissive color in fixed function passes.
 		/// </summary>
-		public ColorEx SelfIllumination
-		{
-			get
-			{
-				return _emissive;
-			}
-			set
-			{
-				_emissive = value;
-			}
-		}
+		public ColorEx Emissive { get { return _emissive; } set { _emissive = value; } }
+
+		/// <summary>
+		/// Emissive color in fixed function passes.
+		/// </summary>
+		public ColorEx SelfIllumination { get { return _emissive; } set { _emissive = value; } }
 
 		#endregion Emmissive Property
 
@@ -344,6 +272,7 @@ namespace Axiom.Graphics
 		///    Shininess of the object's surface in fixed function passes.
 		/// </summary>
 		private float _shininess;
+
 		/// <summary>
 		///    Sets the shininess of the pass, affecting the size of specular highlights.
 		/// </summary>
@@ -351,17 +280,7 @@ namespace Axiom.Graphics
 		///    This setting has no effect if dynamic lighting is disabled (see Pass::setLightingEnabled),
 		///    or if this is a programmable pass.
 		/// </remarks>
-		public float Shininess
-		{
-			get
-			{
-				return _shininess;
-			}
-			set
-			{
-				_shininess = value;
-			}
-		}
+		public float Shininess { get { return _shininess; } set { _shininess = value; } }
 
 		#endregion Shininess Property
 
@@ -371,20 +290,11 @@ namespace Axiom.Graphics
 		///    Color parameters that should track the vertex color for fixed function passes.
 		/// </summary>
 		private TrackVertexColor _tracking = TrackVertexColor.None;
+
 		/// <summary>
 		///    Color parameters that should track the vertex color for fixed function passes.
 		/// </summary>
-		public TrackVertexColor VertexColorTracking
-		{
-			get
-			{
-				return _tracking;
-			}
-			set
-			{
-				_tracking = value;
-			}
-		}
+		public TrackVertexColor VertexColorTracking { get { return _tracking; } set { _tracking = value; } }
 
 		#endregion VertexColorTracking Property
 
@@ -394,20 +304,11 @@ namespace Axiom.Graphics
 		///    Source blend factor.
 		/// </summary>
 		private SceneBlendFactor _sourceBlendFactor;
+
 		/// <summary>
 		///    Retrieves the source blending factor for the material (as set using SetSceneBlending).
 		/// </summary>
-		public SceneBlendFactor SourceBlendFactor
-		{
-			get
-			{
-				return _sourceBlendFactor;
-			}
-			set
-			{
-				_sourceBlendFactor = value;
-			}
-		}
+		public SceneBlendFactor SourceBlendFactor { get { return _sourceBlendFactor; } set { _sourceBlendFactor = value; } }
 
 		#endregion SourceBlendFactor Property
 
@@ -417,16 +318,11 @@ namespace Axiom.Graphics
 		///    Destination blend factor.
 		/// </summary>
 		private SceneBlendFactor _destinationBlendFactor;
+
 		/// <summary>
 		///    Retrieves the destination blending factor for the material (as set using SetSceneBlending).
 		/// </summary>
-		public SceneBlendFactor DestinationBlendFactor
-		{
-			get
-			{
-				return _destinationBlendFactor;
-			}
-		}
+		public SceneBlendFactor DestinationBlendFactor { get { return _destinationBlendFactor; } }
 
 		#endregion DestinationBlendFactor Property
 
@@ -436,6 +332,7 @@ namespace Axiom.Graphics
 		///    Depth buffer checking setting for this pass.
 		/// </summary>
 		private bool _depthCheck;
+
 		/// <summary>
 		///    Gets/Sets whether or not this pass renders with depth-buffer checking on or not.
 		/// </summary>
@@ -447,17 +344,7 @@ namespace Axiom.Graphics
 		///    If depth checking is off, pixels are written no matter what has been rendered before.
 		///    Also see <see cref="DepthFunction"/> for more advanced depth check configuration.
 		/// </remarks>
-		public bool DepthCheck
-		{
-			get
-			{
-				return _depthCheck;
-			}
-			set
-			{
-				_depthCheck = value;
-			}
-		}
+		public bool DepthCheck { get { return _depthCheck; } set { _depthCheck = value; } }
 
 		#endregion DepthCheck Property
 
@@ -467,6 +354,7 @@ namespace Axiom.Graphics
 		///    Depth write setting for this pass.
 		/// </summary>
 		private bool _depthWrite;
+
 		/// <summary>
 		///    Gets/Sets whether or not this pass renders with depth-buffer writing on or not.
 		/// </summary>
@@ -479,17 +367,7 @@ namespace Axiom.Graphics
 		///    normally be on but can be turned off when rendering static backgrounds or when rendering a collection
 		///    of transparent objects at the end of a scene so that they overlap each other correctly.
 		/// </remarks>
-		public bool DepthWrite
-		{
-			get
-			{
-				return _depthWrite;
-			}
-			set
-			{
-				_depthWrite = value;
-			}
-		}
+		public bool DepthWrite { get { return _depthWrite; } set { _depthWrite = value; } }
 
 		#endregion DepthWrite Property
 
@@ -499,6 +377,7 @@ namespace Axiom.Graphics
 		///    Depth comparison function for this pass.
 		/// </summary>
 		private CompareFunction _depthFunction;
+
 		/// <summary>
 		///    Gets/Sets the function used to compare depth values when depth checking is on.
 		/// </summary>
@@ -508,17 +387,7 @@ namespace Axiom.Graphics
 		///    normally CompareFunction.LessEqual, i.e. the pixel is written if it is closer (or at the same distance)
 		///    than the current contents. If you wish, you can change this comparison using this method.
 		/// </remarks>
-		public CompareFunction DepthFunction
-		{
-			get
-			{
-				return _depthFunction;
-			}
-			set
-			{
-				_depthFunction = value;
-			}
-		}
+		public CompareFunction DepthFunction { get { return _depthFunction; } set { _depthFunction = value; } }
 
 		#endregion DepthFunction Property
 
@@ -528,6 +397,7 @@ namespace Axiom.Graphics
 		///    Depth bias for this pass.
 		/// </summary>
 		private float _depthBiasConstant;
+
 		/// <summary>
 		///		Depth bias slope for this pass.
 		/// </summary>
@@ -569,25 +439,13 @@ namespace Axiom.Graphics
 		/// Returns the current DepthBiasConstant value for this pass.
 		/// </summary>
 		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
-		public float DepthBiasConstant
-		{
-			get
-			{
-				return _depthBiasConstant;
-			}
-		}
+		public float DepthBiasConstant { get { return _depthBiasConstant; } }
 
 		/// <summary>
 		/// Returns the current DepthBiasSlopeScale value for this pass.
 		/// </summary>
 		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
-		public float DepthBiasSlopeScale
-		{
-			get
-			{
-				return _depthBiasSlopeScale;
-			}
-		}
+		public float DepthBiasSlopeScale { get { return _depthBiasSlopeScale; } }
 
 		#endregion DepthBias Property
 
@@ -597,6 +455,7 @@ namespace Axiom.Graphics
 		///    Color write setting for this pass.
 		/// </summary>
 		private bool _colorWriteEnabled;
+
 		/// <summary>
 		///    Sets whether or not color buffer writing is enabled for this Pass.
 		/// </summary>
@@ -609,17 +468,7 @@ namespace Axiom.Graphics
 		///    level only, not the Material since you are likely to want to manage it 
 		///    at a higher level).
 		/// </remarks>
-		public bool ColorWriteEnabled
-		{
-			get
-			{
-				return _colorWriteEnabled;
-			}
-			set
-			{
-				_colorWriteEnabled = value;
-			}
-		}
+		public bool ColorWriteEnabled { get { return _colorWriteEnabled; } set { _colorWriteEnabled = value; } }
 
 		#endregion ColorWrite Property
 
@@ -646,27 +495,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The comparison which must pass for the pixel to be written.
 		/// </summary>
-		public CompareFunction AlphaRejectFunction
-		{
-			get
-			{
-				return _alphaRejectFunction;
-			}
-			set
-			{
-				_alphaRejectFunction = value;
-			}
-		}
+		public CompareFunction AlphaRejectFunction { get { return _alphaRejectFunction; } set { _alphaRejectFunction = value; } }
 
 		/// <summary>
 		/// value against which alpha values will be tested [(0-255]
 		/// </summary>
 		public int AlphaRejectValue
 		{
-			get
-			{
-				return _alphaRejectValue;
-			}
+			get { return _alphaRejectValue; }
 			set
 			{
 				Debug.Assert( value < 255 && value > 0, "AlphaRejectValue must be between 0 and 255" );
@@ -677,17 +513,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Whether to use alpha to coverage (A2C) when blending alpha rejected values
 		/// </summary>
-		public bool IsAlphaToCoverageEnabled
-		{
-			get
-			{
-				return _alphaToCoverageEnabled;
-			}
-			set
-			{
-				_alphaToCoverageEnabled = value;
-			}
-		}
+		public bool IsAlphaToCoverageEnabled { get { return _alphaToCoverageEnabled; } set { _alphaToCoverageEnabled = value; } }
 
 		#endregion AlphaReject Properties
 
@@ -697,6 +523,7 @@ namespace Axiom.Graphics
 		///    Hardware culling mode for this pass.
 		/// </summary>
 		private CullingMode _cullingMode;
+
 		/// <summary>
 		///    Sets the culling mode for this pass based on the 'vertex winding'.
 		/// </summary>
@@ -711,17 +538,7 @@ namespace Axiom.Graphics
 		///    You may wish to use the CullingMode.None option for mesh data that you cull yourself where the vertex
 		///    winding is uncertain.
 		/// </remarks>
-		public CullingMode CullingMode
-		{
-			get
-			{
-				return _cullingMode;
-			}
-			set
-			{
-				_cullingMode = value;
-			}
-		}
+		public CullingMode CullingMode { get { return _cullingMode; } set { _cullingMode = value; } }
 
 		#endregion CullingMode Property
 
@@ -731,6 +548,7 @@ namespace Axiom.Graphics
 		///    Software culling mode for this pass.
 		/// </summary>
 		private ManualCullingMode _manualCullingMode;
+
 		/// <summary>
 		///    Sets the manual culling mode, performed by CPU rather than hardware.
 		/// </summary>
@@ -744,17 +562,7 @@ namespace Axiom.Graphics
 		/// <value>
 		///    The default for this setting is ManualCullingMode.Back.
 		/// </value>
-		public ManualCullingMode ManualCullingMode
-		{
-			get
-			{
-				return _manualCullingMode;
-			}
-			set
-			{
-				_manualCullingMode = value;
-			}
-		}
+		public ManualCullingMode ManualCullingMode { get { return _manualCullingMode; } set { _manualCullingMode = value; } }
 
 		#endregion ManualCullingMode Property
 
@@ -764,6 +572,7 @@ namespace Axiom.Graphics
 		///    Is lighting enabled for this pass?
 		/// </summary>
 		private bool _lightingEnabled;
+
 		/// <summary>
 		///    Sets whether or not dynamic lighting is enabled.
 		/// </summary>
@@ -772,17 +581,7 @@ namespace Axiom.Graphics
 		///    normals will not be displayed.
 		///    If false, no lighting is applied and all geometry will be full brightness.
 		/// </remarks>
-		public bool LightingEnabled
-		{
-			get
-			{
-				return _lightingEnabled;
-			}
-			set
-			{
-				_lightingEnabled = value;
-			}
-		}
+		public bool LightingEnabled { get { return _lightingEnabled; } set { _lightingEnabled = value; } }
 
 		#endregion LightingEnabled Property
 
@@ -792,6 +591,7 @@ namespace Axiom.Graphics
 		///    Max number of simultaneous lights that can be used for this pass.
 		/// </summary>
 		private int _maxSimultaneousLights;
+
 		/// <summary>
 		///    Sets the maximum number of lights to be used by this pass. 
 		/// </summary>
@@ -802,17 +602,7 @@ namespace Axiom.Graphics
 		///    parameter sets the limit on the number of lights which should apply to objects 
 		///    rendered with this pass. 
 		/// </remarks>
-		public int MaxSimultaneousLights
-		{
-			get
-			{
-				return _maxSimultaneousLights;
-			}
-			set
-			{
-				_maxSimultaneousLights = value;
-			}
-		}
+		public int MaxSimultaneousLights { get { return _maxSimultaneousLights; } set { _maxSimultaneousLights = value; } }
 
 		#endregion MaxLights Property
 
@@ -822,6 +612,7 @@ namespace Axiom.Graphics
 		///    the light index that this pass will start at in the light list.
 		/// </summary>
 		private bool _startLight;
+
 		/// <summary>
 		///    Sets the light index that this pass will start at in the light list.
 		/// </summary>
@@ -834,17 +625,7 @@ namespace Axiom.Graphics
 		/// if you choose to iterate this pass per light too, the iteration will
 		/// only begin from light 4.
 		/// </remarks>
-		public bool StartLight
-		{
-			get
-			{
-				return _startLight;
-			}
-			set
-			{
-				_startLight = value;
-			}
-		}
+		public bool StartLight { get { return _startLight; } set { _startLight = value; } }
 
 		#endregion StartLight Property
 
@@ -854,24 +635,16 @@ namespace Axiom.Graphics
 		///    Run this pass once per light? 
 		/// </summary>
 		private bool _iteratePerLight;
+
 		/// <summary>
 		///    Does this pass run once for every light in range?
 		/// </summary>
-		public bool IteratePerLight
-		{
-			get
-			{
-				return _iteratePerLight;
-			}
-			set
-			{
-				_iteratePerLight = value;
-			}
-		}
+		public bool IteratePerLight { get { return _iteratePerLight; } set { _iteratePerLight = value; } }
 
 		#endregion IteratePerLight Property
 
 		#region LightsPerIteration Property
+
 		private int _lightsPerIteration = 1;
 
 		/// <summary>
@@ -884,17 +657,7 @@ namespace Axiom.Graphics
 		/// The start of the iteration is set by <see cref="StartLight"/> and the end
 		/// by <see cref="MaxSimultaneousLights"/>.
 		/// </remarks>
-		public int LightsPerIteration
-		{
-			get
-			{
-				return _lightsPerIteration;
-			}
-			set
-			{
-				_lightsPerIteration = value;
-			}
-		}
+		public int LightsPerIteration { get { return _lightsPerIteration; } set { _lightsPerIteration = value; } }
 
 		#endregion LightsPerIteration Property
 
@@ -904,20 +667,11 @@ namespace Axiom.Graphics
 		///     Should it only be run for a certain light type? 
 		/// </summary>
 		private bool _runOnlyForOneLightType;
+
 		/// <summary>
 		///    Does this pass run only for a single light type (if RunOncePerLight is true). 
 		/// </summary>
-		public bool RunOnlyOncePerLightType
-		{
-			get
-			{
-				return _runOnlyForOneLightType;
-			}
-			set
-			{
-				_runOnlyForOneLightType = value;
-			}
-		}
+		public bool RunOnlyOncePerLightType { get { return _runOnlyForOneLightType; } set { _runOnlyForOneLightType = value; } }
 
 		#endregion RunOnlyOncePerLightType Property
 
@@ -927,21 +681,12 @@ namespace Axiom.Graphics
 		///    Type of light for a programmable pass that supports only one particular type of light.
 		/// </summary>
 		private LightType _onlyLightType;
+
 		/// <summary>
 		///     Gets the single light type this pass runs for if RunOncePerLight and 
 		///     RunOnlyForOneLightType are both true. 
 		/// </summary>
-		public LightType OnlyLightType
-		{
-			get
-			{
-				return _onlyLightType;
-			}
-			set
-			{
-				_onlyLightType = value;
-			}
-		}
+		public LightType OnlyLightType { get { return _onlyLightType; } set { _onlyLightType = value; } }
 
 		#endregion OnlyLightType Property
 
@@ -951,23 +696,14 @@ namespace Axiom.Graphics
 		///    Shading options for this pass.
 		/// </summary>
 		private Shading _shadingMode;
+
 		/// <summary>
 		///    Sets the type of light shading required.
 		/// </summary>
 		/// <value>
 		///    The default shading method is Gouraud shading.
 		/// </value>
-		public Shading ShadingMode
-		{
-			get
-			{
-				return _shadingMode;
-			}
-			set
-			{
-				_shadingMode = value;
-			}
-		}
+		public Shading ShadingMode { get { return _shadingMode; } set { _shadingMode = value; } }
 
 		#endregion ShadingMode Property
 
@@ -977,23 +713,14 @@ namespace Axiom.Graphics
 		/// the type of polygon rendering required
 		/// </summary>
 		private PolygonMode _polygonMode = PolygonMode.Solid;
+
 		/// <summary>
 		/// Sets the type of polygon rendering required
 		/// </summary>
 		/// <remarks>
 		/// The default shading method is Solid
 		/// </remarks>
-		public PolygonMode PolygonMode
-		{
-			get
-			{
-				return _polygonMode;
-			}
-			set
-			{
-				_polygonMode = value;
-			}
-		}
+		public PolygonMode PolygonMode { get { return _polygonMode; } set { _polygonMode = value; } }
 
 		#endregion PolygonMode Property
 
@@ -1005,20 +732,11 @@ namespace Axiom.Graphics
 		///    Does this pass override global fog settings?
 		/// </summary>
 		private bool _fogOverride;
+
 		/// <summary>
 		///    Returns true if this pass is to override the scene fog settings.
 		/// </summary>
-		public bool FogOverride
-		{
-			get
-			{
-				return _fogOverride;
-			}
-			protected set
-			{
-				_fogOverride = value;
-			}
-		}
+		public bool FogOverride { get { return _fogOverride; } protected set { _fogOverride = value; } }
 
 		#endregion FogOverride Property
 
@@ -1028,23 +746,14 @@ namespace Axiom.Graphics
 		///    Fog mode to use for this pass (if overriding).
 		/// </summary>
 		private FogMode _fogMode;
+
 		/// <summary>
 		///    Returns the fog mode for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public FogMode FogMode
-		{
-			get
-			{
-				return _fogMode;
-			}
-			protected set
-			{
-				_fogMode = value;
-			}
-		}
+		public FogMode FogMode { get { return _fogMode; } protected set { _fogMode = value; } }
 
 		#endregion FogMode Property
 
@@ -1054,23 +763,14 @@ namespace Axiom.Graphics
 		///    Color of the fog used for this pass (if overriding).
 		/// </summary>
 		private ColorEx _fogColor;
+
 		/// <summary>
 		///    Returns the fog color for the scene.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public ColorEx FogColor
-		{
-			get
-			{
-				return _fogColor;
-			}
-			protected set
-			{
-				_fogColor = value;
-			}
-		}
+		public ColorEx FogColor { get { return _fogColor; } protected set { _fogColor = value; } }
 
 		#endregion FogColor Property
 
@@ -1080,23 +780,14 @@ namespace Axiom.Graphics
 		///    Starting point of the fog for this pass (if overriding).
 		/// </summary>
 		private float _fogStart;
+
 		/// <summary>
 		///    Returns the fog start distance for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogStart
-		{
-			get
-			{
-				return _fogStart;
-			}
-			protected set
-			{
-				_fogStart = value;
-			}
-		}
+		public float FogStart { get { return _fogStart; } protected set { _fogStart = value; } }
 
 		#endregion FogStart Property
 
@@ -1106,23 +797,14 @@ namespace Axiom.Graphics
 		///    Ending point of the fog for this pass (if overriding).
 		/// </summary>
 		private float _fogEnd;
+
 		/// <summary>
 		///    Returns the fog end distance for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogEnd
-		{
-			get
-			{
-				return _fogEnd;
-			}
-			set
-			{
-				_fogEnd = value;
-			}
-		}
+		public float FogEnd { get { return _fogEnd; } set { _fogEnd = value; } }
 
 		#endregion FogEnd Property
 
@@ -1132,23 +814,14 @@ namespace Axiom.Graphics
 		///    Density of the fog for this pass (if overriding).
 		/// </summary>
 		private float _fogDensity;
+
 		/// <summary>
 		///    Returns the fog density for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogDensity
-		{
-			get
-			{
-				return _fogDensity;
-			}
-			protected set
-			{
-				_fogDensity = value;
-			}
-		}
+		public float FogDensity { get { return _fogDensity; } protected set { _fogDensity = value; } }
 
 		#endregion FogDensity Property
 
@@ -1164,13 +837,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the number of fixed function texture unit states for this Pass.
 		/// </summary>
-		public int TextureUnitStageCount
-		{
-			get
-			{
-				return textureUnitStates.Count;
-			}
-		}
+		public int TextureUnitStageCount { get { return textureUnitStates.Count; } }
 
 		/// <summary>
 		///    Sets the anisotropy level to be used for all textures.
@@ -1185,7 +852,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				for( int i = 0; i < textureUnitStates.Count; i++ )
 				{
 					( (TextureUnitState)textureUnitStates[ i ] ).TextureAnisotropy = value;
 				}
@@ -1205,7 +872,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				for( int i = 0; i < textureUnitStates.Count; i++ )
 				{
 					( (TextureUnitState)textureUnitStates[ i ] ).SetTextureFiltering( value );
 				}
@@ -1219,13 +886,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this pass is programmable ie includes either a vertex or fragment program.
 		/// </summary>
-		public bool IsProgrammable
-		{
-			get
-			{
-				return _vertexProgramUsage != null || _fragmentProgramUsage != null;
-			}
-		}
+		public bool IsProgrammable { get { return _vertexProgramUsage != null || _fragmentProgramUsage != null; } }
 
 		#region VertexProgram Properties
 
@@ -1237,13 +898,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this Pass uses the programmable vertex pipeline.
 		/// </summary>
-		public bool HasVertexProgram
-		{
-			get
-			{
-				return _vertexProgramUsage != null;
-			}
-		}
+		public bool HasVertexProgram { get { return _vertexProgramUsage != null; } }
 
 		/// <summary>
 		///    Gets the vertex program used by this pass.
@@ -1275,7 +930,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.HasVertexProgram )
+				if( this.HasVertexProgram )
 				{
 					return _vertexProgramUsage.ProgramName;
 				}
@@ -1284,10 +939,7 @@ namespace Axiom.Graphics
 					return String.Empty;
 				}
 			}
-			set
-			{
-				SetVertexProgram( value );
-			}
+			set { SetVertexProgram( value ); }
 		}
 
 		/// <summary>
@@ -1324,13 +976,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this Pass uses the programmable fragment pipeline.
 		/// </summary>
-		public bool HasFragmentProgram
-		{
-			get
-			{
-				return _fragmentProgramUsage != null;
-			}
-		}
+		public bool HasFragmentProgram { get { return _fragmentProgramUsage != null; } }
 
 		/// <summary>
 		///    Gets the fragment program used by this pass.
@@ -1363,7 +1009,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no fragment program in this pass
-				if ( this.HasFragmentProgram )
+				if( this.HasFragmentProgram )
 				{
 					return _fragmentProgramUsage.ProgramName;
 				}
@@ -1372,10 +1018,7 @@ namespace Axiom.Graphics
 					return String.Empty;
 				}
 			}
-			set
-			{
-				SetFragmentProgram( value );
-			}
+			set { SetFragmentProgram( value ); }
 		}
 
 		/// <summary>
@@ -1412,13 +1055,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this Pass uses the programmable geometry pipeline.
 		/// </summary>
-		public bool HasGeometryProgram
-		{
-			get
-			{
-				return _geometryProgramUsage != null;
-			}
-		}
+		public bool HasGeometryProgram { get { return _geometryProgramUsage != null; } }
 
 		/// <summary>
 		///    Gets the geometry program used by this pass.
@@ -1451,7 +1088,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no geometry program in this pass
-				if ( this.HasGeometryProgram )
+				if( this.HasGeometryProgram )
 				{
 					return _geometryProgramUsage.ProgramName;
 				}
@@ -1460,10 +1097,7 @@ namespace Axiom.Graphics
 					return String.Empty;
 				}
 			}
-			set
-			{
-				SetGeometryProgram( value );
-			}
+			set { SetGeometryProgram( value ); }
 		}
 
 		/// <summary>
@@ -1500,18 +1134,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this Pass uses the programmable shadow caster vertex pipeline.
 		/// </summary>
-		public bool HasShadowCasterVertexProgram
-		{
-			get
-			{
-				return shadowCasterVertexProgramUsage != null;
-			}
-		}
+		public bool HasShadowCasterVertexProgram { get { return shadowCasterVertexProgramUsage != null; } }
+
 		public string ShadowCasterVertexProgramName
 		{
 			get
 			{
-				if ( this.HasShadowCasterVertexProgram )
+				if( this.HasShadowCasterVertexProgram )
 				{
 					return shadowCasterVertexProgramUsage.ProgramName;
 				}
@@ -1521,6 +1150,7 @@ namespace Axiom.Graphics
 				}
 			}
 		}
+
 		public GpuProgramParameters ShadowCasterVertexProgramParameters
 		{
 			get
@@ -1547,18 +1177,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this Pass uses the programmable shadow caster fragment pipeline.
 		/// </summary>
-		public bool HasShadowCasterFragmentProgram
-		{
-			get
-			{
-				return _shadowCasterFragmentProgramUsage != null;
-			}
-		}
+		public bool HasShadowCasterFragmentProgram { get { return _shadowCasterFragmentProgramUsage != null; } }
+
 		public string ShadowCasterFragmentProgramName
 		{
 			get
 			{
-				if ( this.HasShadowCasterFragmentProgram )
+				if( this.HasShadowCasterFragmentProgram )
 				{
 					return _shadowCasterFragmentProgramUsage.ProgramName;
 				}
@@ -1568,6 +1193,7 @@ namespace Axiom.Graphics
 				}
 			}
 		}
+
 		public GpuProgramParameters ShadowCasterFragmentProgramParameters
 		{
 			get
@@ -1590,21 +1216,17 @@ namespace Axiom.Graphics
 		///    Details on the shadow receiver vertex program to be used for this pass.
 		/// </summary>
 		private GpuProgramUsage _shadowReceiverVertexProgramUsage;
+
 		/// <summary>
 		///    Returns true if this Pass uses the programmable shadow receiver vertex pipeline.
 		/// </summary>
-		public bool HasShadowReceiverVertexProgram
-		{
-			get
-			{
-				return _shadowReceiverVertexProgramUsage != null;
-			}
-		}
+		public bool HasShadowReceiverVertexProgram { get { return _shadowReceiverVertexProgramUsage != null; } }
+
 		public string ShadowReceiverVertexProgramName
 		{
 			get
 			{
-				if ( this.HasShadowReceiverVertexProgram )
+				if( this.HasShadowReceiverVertexProgram )
 				{
 					return _shadowReceiverVertexProgramUsage.ProgramName;
 				}
@@ -1614,6 +1236,7 @@ namespace Axiom.Graphics
 				}
 			}
 		}
+
 		public GpuProgramParameters ShadowReceiverVertexProgramParameters
 		{
 			get
@@ -1636,21 +1259,17 @@ namespace Axiom.Graphics
 		///    Details on the shadow receiver fragment program to be used for this pass.
 		/// </summary>
 		private GpuProgramUsage _shadowReceiverFragmentProgramUsage;
+
 		/// <summary>
 		///    Returns true if this Pass uses the programmable shadow receiver fragment pipeline.
 		/// </summary>
-		public bool HasShadowReceiverFragmentProgram
-		{
-			get
-			{
-				return _shadowReceiverFragmentProgramUsage != null;
-			}
-		}
+		public bool HasShadowReceiverFragmentProgram { get { return _shadowReceiverFragmentProgramUsage != null; } }
+
 		public string ShadowReceiverFragmentProgramName
 		{
 			get
 			{
-				if ( this.HasShadowReceiverFragmentProgram )
+				if( this.HasShadowReceiverFragmentProgram )
 				{
 					return _shadowReceiverFragmentProgramUsage.ProgramName;
 				}
@@ -1660,6 +1279,7 @@ namespace Axiom.Graphics
 				}
 			}
 		}
+
 		public GpuProgramParameters ShadowReceiverFragmentProgramParameters
 		{
 			get
@@ -1681,51 +1301,21 @@ namespace Axiom.Graphics
 		#region PointSize Property
 
 		private float _pointSize;
-		public float PointSize
-		{
-			get
-			{
-				return _pointSize;
-			}
-			set
-			{
-				_pointSize = value;
-			}
-		}
+		public float PointSize { get { return _pointSize; } set { _pointSize = value; } }
 
 		#endregion PointSize Property
 
 		#region PointMinSize Property
 
 		private float _pointMinSize;
-		public float PointMinSize
-		{
-			get
-			{
-				return _pointMinSize;
-			}
-			set
-			{
-				_pointMinSize = value;
-			}
-		}
+		public float PointMinSize { get { return _pointMinSize; } set { _pointMinSize = value; } }
 
 		#endregion PointMinSize Property
 
 		#region PointMaxSize Property
 
 		private float _pointMaxSize;
-		public float PointMaxSize
-		{
-			get
-			{
-				return _pointMaxSize;
-			}
-			set
-			{
-				_pointMaxSize = value;
-			}
-		}
+		public float PointMaxSize { get { return _pointMaxSize; } set { _pointMaxSize = value; } }
 
 		#endregion PointMaxSize Property
 
@@ -1733,17 +1323,7 @@ namespace Axiom.Graphics
 
 		private bool _pointSpritesEnabled;
 
-		public bool PointSpritesEnabled
-		{
-			get
-			{
-				return _pointSpritesEnabled;
-			}
-			set
-			{
-				_pointSpritesEnabled = value;
-			}
-		}
+		public bool PointSpritesEnabled { get { return _pointSpritesEnabled; } set { _pointSpritesEnabled = value; } }
 
 		#endregion PointSpritesEnabled Property
 
@@ -1753,7 +1333,6 @@ namespace Axiom.Graphics
 		protected bool queuedForDeletion;
 
 		#region PassIterationCount Property
-
 
 		#endregion PassIterationCount Property
 
@@ -1771,22 +1350,15 @@ namespace Axiom.Graphics
 				// setting the state so it matches one of the conditions above, even 
 				// though this state is not used in rendering.
 				return ( !_lightingEnabled ||
-						 !_colorWriteEnabled ||
-						 ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
+				         !_colorWriteEnabled ||
+				         ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
 			}
 		}
 
 		/// <summary>
 		///    Returns true if this pass is loaded.
 		/// </summary>
-		public bool IsLoaded
-		{
-			get
-			{
-				return _parent.IsLoaded;
-			}
-		}
-
+		public bool IsLoaded { get { return _parent.IsLoaded; } }
 
 		/// <summary>
 		///    Returns true if this pass has some element of transparency.
@@ -1814,7 +1386,7 @@ namespace Axiom.Graphics
 			this._parent = parent;
 			this._index = index;
 
-			lock ( passLock )
+			lock( passLock )
 			{
 				this.passId = nextPassId++;
 			}
@@ -1836,8 +1408,6 @@ namespace Axiom.Graphics
 			// default blending (overwrite)
 			_sourceBlendFactor = SceneBlendFactor.One;
 			_destinationBlendFactor = SceneBlendFactor.Zero;
-
-
 
 			// depth buffer settings
 			_depthCheck = true;
@@ -1874,7 +1444,7 @@ namespace Axiom.Graphics
 		public void AddTextureUnitState( TextureUnitState state )
 		{
 			textureUnitStates.Add( state );
-			if ( state.Name == null )
+			if( state.Name == null )
 			{
 				// it's the last entry in the container so it's index is count - 1
 				state.Name = ( textureUnitStates.Count - 1 ).ToString();
@@ -1954,7 +1524,7 @@ namespace Axiom.Graphics
 			//target._passIterationCount = _passIterationCount;
 
 			// vertex program
-			if ( _vertexProgramUsage != null )
+			if( _vertexProgramUsage != null )
 			{
 				target._vertexProgramUsage = _vertexProgramUsage.Clone();
 			}
@@ -1964,7 +1534,7 @@ namespace Axiom.Graphics
 			}
 
 			// shadow caster vertex program
-			if ( shadowCasterVertexProgramUsage != null )
+			if( shadowCasterVertexProgramUsage != null )
 			{
 				target.shadowCasterVertexProgramUsage = shadowCasterVertexProgramUsage.Clone();
 			}
@@ -1974,7 +1544,7 @@ namespace Axiom.Graphics
 			}
 
 			// shadow receiver vertex program
-			if ( _shadowReceiverVertexProgramUsage != null )
+			if( _shadowReceiverVertexProgramUsage != null )
 			{
 				target._shadowReceiverVertexProgramUsage = _shadowReceiverVertexProgramUsage.Clone();
 			}
@@ -1984,7 +1554,7 @@ namespace Axiom.Graphics
 			}
 
 			// fragment program
-			if ( _fragmentProgramUsage != null )
+			if( _fragmentProgramUsage != null )
 			{
 				target._fragmentProgramUsage = _fragmentProgramUsage.Clone();
 			}
@@ -1994,7 +1564,7 @@ namespace Axiom.Graphics
 			}
 
 			// shadow caster fragment program
-			if ( _shadowCasterFragmentProgramUsage != null )
+			if( _shadowCasterFragmentProgramUsage != null )
 			{
 				target._shadowCasterFragmentProgramUsage = _shadowCasterFragmentProgramUsage.Clone();
 			}
@@ -2004,7 +1574,7 @@ namespace Axiom.Graphics
 			}
 
 			// shadow receiver fragment program
-			if ( _shadowReceiverFragmentProgramUsage != null )
+			if( _shadowReceiverFragmentProgramUsage != null )
 			{
 				target._shadowReceiverFragmentProgramUsage = _shadowReceiverFragmentProgramUsage.Clone();
 			}
@@ -2013,14 +1583,13 @@ namespace Axiom.Graphics
 				target._shadowReceiverFragmentProgramUsage = null;
 			}
 
-
 			// Clear texture units but doesn't notify need recompilation in the case
 			// we are cloning, The parent material will take care of this.
 			target.textureUnitStates.Clear();
 
 			// Copy texture units
 
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for( int i = 0; i < textureUnitStates.Count; i++ )
 			{
 				TextureUnitState newState = new TextureUnitState( target );
 				TextureUnitState src = (TextureUnitState)textureUnitStates[ i ];
@@ -2100,43 +1669,43 @@ namespace Axiom.Graphics
 			// it is assumed this is only being called when the Material is being loaded
 
 			// load each texture unit state
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for( int i = 0; i < textureUnitStates.Count; i++ )
 			{
 				( (TextureUnitState)textureUnitStates[ i ] ).Load();
 			}
 
 			// load programs
-			if ( this.HasVertexProgram )
+			if( this.HasVertexProgram )
 			{
 				// load vertex program
 				_vertexProgramUsage.Load();
 			}
 
-			if ( this.HasFragmentProgram )
+			if( this.HasFragmentProgram )
 			{
 				// load vertex program
 				_fragmentProgramUsage.Load();
 			}
 
-			if ( this.HasShadowCasterVertexProgram )
+			if( this.HasShadowCasterVertexProgram )
 			{
 				// load shadow caster vertex program
 				shadowCasterVertexProgramUsage.Load();
 			}
 
-			if ( this.HasShadowCasterFragmentProgram )
+			if( this.HasShadowCasterFragmentProgram )
 			{
 				// load shadow caster fragment program
 				_shadowCasterFragmentProgramUsage.Load();
 			}
 
-			if ( this.HasShadowReceiverVertexProgram )
+			if( this.HasShadowReceiverVertexProgram )
 			{
 				// load shadow receiver vertex program
 				_shadowReceiverVertexProgramUsage.Load();
 			}
 
-			if ( this.HasShadowReceiverFragmentProgram )
+			if( this.HasShadowReceiverFragmentProgram )
 			{
 				// load shadow receiver fragment program
 				_shadowReceiverFragmentProgramUsage.Load();
@@ -2174,11 +1743,11 @@ namespace Axiom.Graphics
 
 			// Fix from Multiverse
 			//    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
-			if ( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
+			if( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
 			{
 				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
 			}
-			if ( count > 1 && !( (TextureUnitState)textureUnitStates[ 1 ] ).IsBlank )
+			if( count > 1 && !( (TextureUnitState)textureUnitStates[ 1 ] ).IsBlank )
 			{
 				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 1 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) );
 			}
@@ -2191,7 +1760,7 @@ namespace Axiom.Graphics
 		{
 			textureUnitStates.Clear();
 
-			if ( !queuedForDeletion )
+			if( !queuedForDeletion )
 			{
 				// needs recompilation
 				_parent.NotifyNeedsRecompile();
@@ -2208,7 +1777,7 @@ namespace Axiom.Graphics
 		{
 			textureUnitStates.Remove( state );
 
-			if ( !queuedForDeletion )
+			if( !queuedForDeletion )
 			{
 				// needs recompilation
 				_parent.NotifyNeedsRecompile();
@@ -2225,8 +1794,10 @@ namespace Axiom.Graphics
 		{
 			TextureUnitState state = (TextureUnitState)textureUnitStates[ index ];
 
-			if ( state != null )
+			if( state != null )
+			{
 				RemoveTextureUnitState( state );
+			}
 		}
 
 		/// <summary>
@@ -2271,7 +1842,7 @@ namespace Axiom.Graphics
 			_fogOverride = overrideScene;
 
 			// set individual params if overriding scene level fog
-			if ( overrideScene )
+			if( overrideScene )
 			{
 				_fogMode = mode;
 				_fogColor = color;
@@ -2431,7 +2002,7 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendType type )
 		{
 			// convert canned blending types into blending factors
-			switch ( type )
+			switch( type )
 			{
 				case SceneBlendType.Add:
 					SetSceneBlending( SceneBlendFactor.One, SceneBlendFactor.One );
@@ -2494,14 +2065,14 @@ namespace Axiom.Graphics
 		public void SetFragmentProgram( string name, bool resetParams )
 		{
 			// turn off fragment programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_fragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasFragmentProgram )
+				if( !this.HasFragmentProgram )
 				{
 					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
@@ -2530,14 +2101,14 @@ namespace Axiom.Graphics
 		public void SetGeometryProgram( string name, bool resetParams )
 		{
 			// turn off fragment programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_geometryProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasGeometryProgram )
+				if( !this.HasGeometryProgram )
 				{
 					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
 				}
@@ -2557,14 +2128,14 @@ namespace Axiom.Graphics
 		public void SetShadowCasterFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_shadowCasterFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowCasterFragmentProgram )
+				if( !this.HasShadowCasterFragmentProgram )
 				{
 					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
@@ -2584,14 +2155,14 @@ namespace Axiom.Graphics
 		public void SetShadowReceiverFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_shadowReceiverFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowReceiverFragmentProgram )
+				if( !this.HasShadowReceiverFragmentProgram )
 				{
 					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
@@ -2620,14 +2191,14 @@ namespace Axiom.Graphics
 		public void SetVertexProgram( string name, bool resetParams )
 		{
 			// turn off vertex programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_vertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasVertexProgram )
+				if( !this.HasVertexProgram )
 				{
 					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
@@ -2647,14 +2218,14 @@ namespace Axiom.Graphics
 		public void SetShadowCasterVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				shadowCasterVertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowCasterVertexProgram )
+				if( !this.HasShadowCasterVertexProgram )
 				{
 					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
@@ -2674,14 +2245,14 @@ namespace Axiom.Graphics
 		public void SetShadowReceiverVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
-			if ( name.Length == 0 )
+			if( name.Length == 0 )
 			{
 				_shadowReceiverVertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowReceiverVertexProgram )
+				if( !this.HasShadowReceiverVertexProgram )
 				{
 					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
@@ -2708,12 +2279,12 @@ namespace Axiom.Graphics
 		public Pass Split( int numUnits )
 		{
 			// can't split programmable passes
-			if ( _fragmentProgramUsage != null )
+			if( _fragmentProgramUsage != null )
 			{
 				throw new Exception( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
 			}
 
-			if ( textureUnitStates.Count > numUnits )
+			if( textureUnitStates.Count > numUnits )
 			{
 				int start = textureUnitStates.Count - numUnits;
 
@@ -2726,7 +2297,7 @@ namespace Axiom.Graphics
 				newPass.SetSceneBlending( state.ColorBlendFallbackSource, state.ColorBlendFallbackDest );
 
 				// add the rest of the texture units to the new pass
-				for ( int i = start; i < textureUnitStates.Count; i++ )
+				for( int i = start; i < textureUnitStates.Count; i++ )
 				{
 					state = (TextureUnitState)textureUnitStates[ i ];
 					newPass.AddTextureUnitState( state );
@@ -2747,16 +2318,20 @@ namespace Axiom.Graphics
 		internal void Unload()
 		{
 			// load each texture unit state
-			for ( int i = 0; i < textureUnitStates.Count; i++ )
+			for( int i = 0; i < textureUnitStates.Count; i++ )
 			{
 				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
 
-			if ( this.HasFragmentProgram )
+			if( this.HasFragmentProgram )
+			{
 				this._fragmentProgramUsage.Program.Unload();
+			}
 
-			if ( this.HasVertexProgram )
+			if( this.HasVertexProgram )
+			{
 				this._vertexProgramUsage.Program.Unload();
+			}
 		}
 
 		/// <summary>
@@ -2767,13 +2342,13 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters
-			if ( this.HasVertexProgram )
+			if( this.HasVertexProgram )
 			{
 				_vertexProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
 			}
 
 			// auto update fragment program parameters
-			if ( this.HasFragmentProgram )
+			if( this.HasFragmentProgram )
 			{
 				_fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
 			}
@@ -2787,13 +2362,13 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
 		{
 			// auto update vertex program parameters
-			if ( this.HasVertexProgram )
+			if( this.HasVertexProgram )
 			{
 				_vertexProgramUsage.Params.UpdateAutoParamsNoLights( source );
 			}
 
 			// auto update fragment program parameters
-			if ( this.HasFragmentProgram )
+			if( this.HasFragmentProgram )
 			{
 				_fragmentProgramUsage.Params.UpdateAutoParamsNoLights( source );
 			}
@@ -2831,7 +2406,7 @@ namespace Axiom.Graphics
 			_graveyardList.Clear();
 
 			// recalc the hashcode for each pass
-			for ( int i = 0; i < _dirtyList.Count; i++ )
+			for( int i = 0; i < _dirtyList.Count; i++ )
 			{
 				Pass pass = (Pass)_dirtyList[ i ];
 				pass.RecalculateHash();
@@ -2846,14 +2421,15 @@ namespace Axiom.Graphics
 			// iterate through all TextureUnitStates and apply texture aliases
 			bool testResult = false;
 
-			foreach ( TextureUnitState tus in textureUnitStates )
+			foreach( TextureUnitState tus in textureUnitStates )
 			{
-				if ( tus.ApplyTextureAliases( aliasList, apply ) )
+				if( tus.ApplyTextureAliases( aliasList, apply ) )
+				{
 					testResult = true;
+				}
 			}
 
 			return testResult;
-
 		}
 
 		#endregion
@@ -2875,7 +2451,6 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Object overrides
-
 	}
 
 	/// <summary>
@@ -2895,14 +2470,17 @@ namespace Axiom.Graphics
 		///		The stage at which this pass is relevant.
 		/// </summary>
 		public IlluminationStage Stage;
+
 		/// <summary>
 		///		The pass to use in this stage.
 		/// </summary>
 		public Pass Pass;
+
 		/// <summary>
 		///		Whether this pass is one which should be deleted itself.
 		/// </summary>
 		public bool DestroyOnShutdown;
+
 		/// <summary>
 		///		The original pass which spawned this one.
 		/// </summary>

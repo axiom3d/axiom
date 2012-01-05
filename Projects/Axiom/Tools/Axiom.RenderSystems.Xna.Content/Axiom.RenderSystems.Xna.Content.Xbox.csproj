@@ -14,7 +14,7 @@
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>bin\Xbox\Debug\</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -28,7 +28,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox\Release\</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -39,7 +39,7 @@
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCompressContent>true</XnaCompressContent>
-    <DocumentationFile>bin\Xbox\Release\Axiom.RenderSystems.Xna.Content.XML</DocumentationFile>
+    <DocumentationFile>bin\Xbox\Axiom.RenderSystems.Xna.Content.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">

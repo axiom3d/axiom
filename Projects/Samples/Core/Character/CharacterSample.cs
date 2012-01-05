@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
@@ -28,9 +30,10 @@ using Axiom.Graphics;
 
 namespace Axiom.Samples.Core
 {
-	class CharacterSample : SdkSample
+	internal class CharacterSample : SdkSample
 	{
 		protected SinbadCharacterController chara;
+
 		public CharacterSample()
 		{
 			Metadata[ "Title" ] = "Character";
@@ -38,11 +41,10 @@ namespace Axiom.Samples.Core
 			Metadata[ "Thumbnail" ] = "thumb_char.png";
 			Metadata[ "Category" ] = "Animation";
 			Metadata[ "Help" ] = "Use the WASD keys to move Sinbad, and the space bar to jump. " +
-				"Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " +
-				"Sinbad's swords. With the swords equipped, you can left click to slice vertically or " +
-				"right click to slice horizontally. When the swords are not equipped, press E to " +
-				"start/stop a silly dance routine.";
-
+			                     "Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " +
+			                     "Sinbad's swords. With the swords equipped, you can left click to slice vertically or " +
+			                     "right click to slice horizontally. When the swords are not equipped, press E to " +
+			                     "start/stop a silly dance routine.";
 		}
 
 		/// <summary>
@@ -56,10 +58,12 @@ namespace Axiom.Samples.Core
 			chara.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
+
 		public override bool FrameEnded( FrameEventArgs evt )
 		{
 			return base.FrameEnded( evt );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -68,11 +72,14 @@ namespace Axiom.Samples.Core
 		public override bool KeyPressed( SharpInputSystem.KeyEventArgs evt )
 		{
 			// relay input events to character controller
-			if ( !TrayManager.IsDialogVisible )
+			if( !TrayManager.IsDialogVisible )
+			{
 				chara.InjectKeyDown( evt );
+			}
 
 			return base.KeyPressed( evt );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -80,8 +87,10 @@ namespace Axiom.Samples.Core
 		/// <returns></returns>
 		public override bool KeyReleased( SharpInputSystem.KeyEventArgs evt )
 		{
-			if ( !TrayManager.IsDialogVisible )
+			if( !TrayManager.IsDialogVisible )
+			{
 				chara.InjectKeyUp( evt );
+			}
 
 			return base.KeyReleased( evt );
 		}
@@ -94,8 +103,10 @@ namespace Axiom.Samples.Core
 		public override bool MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
 			// relay input events to character controller
-			if ( !TrayManager.IsDialogVisible )
+			if( !TrayManager.IsDialogVisible )
+			{
 				chara.InjectMouseMove( evt );
+			}
 
 			return base.MouseMoved( evt );
 		}
@@ -109,8 +120,10 @@ namespace Axiom.Samples.Core
 		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
 			// relay input events to character controller
-			if ( !TrayManager.IsDialogVisible )
+			if( !TrayManager.IsDialogVisible )
+			{
 				chara.InjectMouseDown( evt, id );
+			}
 
 			return base.MousePressed( evt, id );
 		}
@@ -140,15 +153,13 @@ namespace Axiom.Samples.Core
 			light.Specular = ColorEx.White;
 
 			MeshManager.Instance.CreatePlane( "floor", ResourceGroupManager.DefaultResourceGroupName,
-				new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
+			                                  new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
 
 			// create a floor entity, give it a material, and place it at the origin
 			Entity floor = SceneManager.CreateEntity( "Floor", "floor" );
 			floor.MaterialName = "Examples/Rockwall";
 			floor.CastShadows = false;
 			SceneManager.RootSceneNode.AttachObject( floor );
-
-
 
 			// create our character controller
 			chara = new SinbadCharacterController( Camera );
@@ -163,8 +174,10 @@ namespace Axiom.Samples.Core
 
 		protected override void CleanupContent()
 		{
-			if ( chara != null )
+			if( chara != null )
+			{
 				chara = null;
+			}
 
 			MeshManager.Instance.Remove( "floor" );
 		}

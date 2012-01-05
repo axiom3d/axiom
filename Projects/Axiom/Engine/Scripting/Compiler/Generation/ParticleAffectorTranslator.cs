@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -66,14 +70,14 @@ namespace Axiom.Scripting.Compiler
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 				// Must have a type as the first value
-				if ( obj.Values.Count == 0 )
+				if( obj.Values.Count == 0 )
 				{
 					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 					return;
 				}
 
 				string type = string.Empty;
-				if ( !getString( obj.Values[ 0 ], out type ) )
+				if( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 					return;
@@ -82,22 +86,26 @@ namespace Axiom.Scripting.Compiler
 				ParticleSystem system = (ParticleSystem)obj.Parent.Context;
 				_Affector = system.AddAffector( type );
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is PropertyAbstractNode )
+					if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 						string value = string.Empty;
 
 						// Glob the values together
-						foreach ( AbstractNode it in prop.Values )
+						foreach( AbstractNode it in prop.Values )
 						{
-							if ( it is AtomAbstractNode )
+							if( it is AtomAbstractNode )
 							{
-								if ( string.IsNullOrEmpty( value ) )
+								if( string.IsNullOrEmpty( value ) )
+								{
 									value = ( (AtomAbstractNode)it ).Value;
+								}
 								else
+								{
 									value = value + " " + ( (AtomAbstractNode)it ).Value;
+								}
 							}
 							else
 							{
@@ -106,7 +114,7 @@ namespace Axiom.Scripting.Compiler
 							}
 						}
 
-						if ( !_Affector.SetParam( prop.Name, value ) )
+						if( !_Affector.SetParam( prop.Name, value ) )
 						{
 							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 						}
@@ -122,4 +130,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -82,11 +86,11 @@ namespace Axiom.Core
 		internal PlatformManager()
 		{
 			// First look in current Executing assembly for a PlatformManager
-			if ( instance == null )
+			if( instance == null )
 			{
 				DynamicLoader platformMgr = new DynamicLoader();
 				IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
-				if ( platforms.Count != 0 )
+				if( platforms.Count != 0 )
 				{
 					instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 				}
@@ -94,14 +98,14 @@ namespace Axiom.Core
 
 #if !(XBOX || XBOX360)
 			// Then look in loaded assemblies
-			if ( instance == null )
+			if( instance == null )
 			{
 				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				for ( int index = 0; index < assemblies.Length && instance == null; index++ )
+				for( int index = 0; index < assemblies.Length && instance == null; index++ )
 				{
 					DynamicLoader platformMgr = new DynamicLoader( assemblies[ index ].Location );
 					IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
-					if ( platforms.Count != 0 )
+					if( platforms.Count != 0 )
 					{
 						instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 					}
@@ -110,14 +114,14 @@ namespace Axiom.Core
 #endif
 
 			// Then look in external assemblies
-			if ( instance == null )
+			if( instance == null )
 			{
 				// find and load a platform manager assembly
 				string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" );
 				string file = "";
 
 				// make sure there is 1 platform manager available
-				if ( files.Length == 0 )
+				if( files.Length == 0 )
 				{
 					throw new PluginException( "A PlatformManager was not found in the execution path, and is required." );
 				}
@@ -126,15 +130,15 @@ namespace Axiom.Core
 					bool isWindows = IsWindowsOS;
 					string platform = IsWindowsOS ? "Win32" : "OpenTK";
 
-					if ( files.Length == 1 )
+					if( files.Length == 1 )
 					{
 						file = files[ 0 ];
 					}
 					else
 					{
-						for ( int i = 0; i < files.Length; i++ )
+						for( int i = 0; i < files.Length; i++ )
 						{
-							if ( ( files[ i ].IndexOf( platform ) != -1 ) == true )
+							if( ( files[ i ].IndexOf( platform ) != -1 ) == true )
 							{
 								file = files[ i ];
 							}
@@ -148,28 +152,23 @@ namespace Axiom.Core
 
 				DynamicLoader platformMgr = new DynamicLoader( path );
 				IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
-				if ( platforms.Count != 0 )
+				if( platforms.Count != 0 )
 				{
 					instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 				}
-
 			}
 
 			// All else fails, yell loudly
-			if ( instance == null )
+			if( instance == null )
+			{
 				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+			}
 		}
 
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static IPlatformManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static IPlatformManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 	}

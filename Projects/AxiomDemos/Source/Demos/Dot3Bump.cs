@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Input;
@@ -20,85 +21,96 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		const int NUM_ENTITIES = 3;
-		const int NUM_MATERIALS = 6;
-		const int NUM_LIGHTS = 3;
+		private const int NUM_ENTITIES = 3;
+		private const int NUM_MATERIALS = 6;
+		private const int NUM_LIGHTS = 3;
 
-		float timeDelay = 0.0f;
+		private float timeDelay = 0.0f;
 
-		Entity[] entities = new Entity[ NUM_LIGHTS ];
-		string[] entityMeshes = new string[] { "athene.mesh", "knot.mesh", "ogrehead.mesh" };
-		Light[] lights = new Light[ NUM_LIGHTS ];
-		BillboardSet[] lightFlareSets = new BillboardSet[ NUM_LIGHTS ];
-		Billboard[] lightFlares = new Billboard[ NUM_LIGHTS ];
-		Vector3[] lightPositions = new Vector3[] {
-                                                     new Vector3(300, 0, 0),
-                                                     new Vector3(-200, 50, 0),
-                                                     new Vector3(0, -300, -100)
-                                                 };
+		private Entity[] entities = new Entity[NUM_LIGHTS];
 
-		float[] lightRotationAngles = new float[] { 0, 30, 75 };
+		private string[] entityMeshes = new string[] {
+		                                             	"athene.mesh", "knot.mesh", "ogrehead.mesh"
+		                                             };
 
-		Vector3[] lightRotationAxes = new Vector3[] {
-                                                        Vector3.UnitX,
-                                                        Vector3.UnitZ,
-                                                        Vector3.UnitY
-                                                    };
+		private Light[] lights = new Light[NUM_LIGHTS];
+		private BillboardSet[] lightFlareSets = new BillboardSet[NUM_LIGHTS];
+		private Billboard[] lightFlares = new Billboard[NUM_LIGHTS];
 
-		float[] lightSpeeds = new float[] { 30, 10, 50 };
+		private Vector3[] lightPositions = new Vector3[] {
+		                                                 	new Vector3( 300, 0, 0 ),
+		                                                 	new Vector3( -200, 50, 0 ),
+		                                                 	new Vector3( 0, -300, -100 )
+		                                                 };
 
-		ColorEx[] diffuseLightColors = new ColorEx[] {
-                                                         new ColorEx(1, 1, 1, 1),
-                                                         new ColorEx(1, 1, 0, 0),
-                                                         new ColorEx(1, 1, 1, 0.5f)
-                                                     };
+		private float[] lightRotationAngles = new float[] {
+		                                                  	0, 30, 75
+		                                                  };
 
-		ColorEx[] specularLightColors = new ColorEx[] {
-                                                          new ColorEx(1, 1, 1, 1),
-                                                          new ColorEx(1, 0, 0.8f, 0.8f),
-                                                          new ColorEx(1, 1, 1, 0.8f)
-                                                      };
+		private Vector3[] lightRotationAxes = new Vector3[] {
+		                                                    	Vector3.UnitX,
+		                                                    	Vector3.UnitZ,
+		                                                    	Vector3.UnitY
+		                                                    };
 
-		bool[] lightState = new bool[] { true, true, false };
+		private float[] lightSpeeds = new float[] {
+		                                          	30, 10, 50
+		                                          };
 
-		string[ , ] materialNames = new string[ , ] {
-													// athene
-													{
-														"Examples/Athene/NormalMapped",
-														"Examples/Athene/NormalMappedSpecular",
-														"Examples/Athene/NormalMapped",
-														"Examples/ShowUV",
-														"Examples/ShowNormals",
-														"Examples/ShowTangents"
-													},
-													// knot
-													{
-														"Examples/BumpMapping/MultiLight",
-														"Examples/BumpMapping/MultiLightSpecular",
-														"Examples/OffsetMapping/Specular",
-														"Examples/ShowUV",
-														"Examples/ShowNormals",
-														"Examples/ShowTangents"
-													},
-													// ogre head
-													{
-														"Examples/BumpMapping/MultiLight",
-														"Examples/BumpMapping/MultiLightSpecular",
-														"Examples/OffsetMapping/Specular",
-														"Examples/ShowUV",
-														"Examples/ShowNormals",
-														"Examples/ShowTangents"
-													}
-												  };
+		private ColorEx[] diffuseLightColors = new ColorEx[] {
+		                                                     	new ColorEx( 1, 1, 1, 1 ),
+		                                                     	new ColorEx( 1, 1, 0, 0 ),
+		                                                     	new ColorEx( 1, 1, 1, 0.5f )
+		                                                     };
 
-		int currentMaterial = 0;
-		int currentEntity = 0;
+		private ColorEx[] specularLightColors = new ColorEx[] {
+		                                                      	new ColorEx( 1, 1, 1, 1 ),
+		                                                      	new ColorEx( 1, 0, 0.8f, 0.8f ),
+		                                                      	new ColorEx( 1, 1, 1, 0.8f )
+		                                                      };
 
-		SceneNode mainNode;
-		SceneNode[] lightNodes = new SceneNode[ NUM_LIGHTS ];
-		SceneNode[] lightPivots = new SceneNode[ NUM_LIGHTS ];
+		private bool[] lightState = new bool[] {
+		                                       	true, true, false
+		                                       };
 
-		OverlayElement objectInfo, materialInfo, info;
+		private string[,] materialNames = new string[,] {
+		                                                	// athene
+		                                                	{
+		                                                		"Examples/Athene/NormalMapped",
+		                                                		"Examples/Athene/NormalMappedSpecular",
+		                                                		"Examples/Athene/NormalMapped",
+		                                                		"Examples/ShowUV",
+		                                                		"Examples/ShowNormals",
+		                                                		"Examples/ShowTangents"
+		                                                	},
+		                                                	// knot
+		                                                	{
+		                                                		"Examples/BumpMapping/MultiLight",
+		                                                		"Examples/BumpMapping/MultiLightSpecular",
+		                                                		"Examples/OffsetMapping/Specular",
+		                                                		"Examples/ShowUV",
+		                                                		"Examples/ShowNormals",
+		                                                		"Examples/ShowTangents"
+		                                                	},
+		                                                	// ogre head
+		                                                	{
+		                                                		"Examples/BumpMapping/MultiLight",
+		                                                		"Examples/BumpMapping/MultiLightSpecular",
+		                                                		"Examples/OffsetMapping/Specular",
+		                                                		"Examples/ShowUV",
+		                                                		"Examples/ShowNormals",
+		                                                		"Examples/ShowTangents"
+		                                                	}
+		                                                };
+
+		private int currentMaterial = 0;
+		private int currentEntity = 0;
+
+		private SceneNode mainNode;
+		private SceneNode[] lightNodes = new SceneNode[NUM_LIGHTS];
+		private SceneNode[] lightPivots = new SceneNode[NUM_LIGHTS];
+
+		private OverlayElement objectInfo, materialInfo, info;
 
 		#endregion Fields
 
@@ -106,14 +118,14 @@ namespace Axiom.Demos
 		{
 			// Check prerequisites first
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
-			if ( !caps.HasCapability( Capabilities.VertexPrograms ) || !caps.HasCapability( Capabilities.FragmentPrograms ) )
+			if( !caps.HasCapability( Capabilities.VertexPrograms ) || !caps.HasCapability( Capabilities.FragmentPrograms ) )
 			{
 				throw new AxiomException( "Your card does not support vertex and fragment programs, so cannot run this demo. Sorry!" );
 			}
 			else
 			{
-				if ( !GpuProgramManager.Instance.IsSyntaxSupported( "arbfp1" ) &&
-					!GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) )
+				if( !GpuProgramManager.Instance.IsSyntaxSupported( "arbfp1" ) &&
+				    !GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) )
 				{
 					throw new AxiomException( "Your card does not support shader model 2, so cannot run this demo. Sorry!" );
 				}
@@ -125,17 +137,17 @@ namespace Axiom.Demos
 			mainNode = scene.RootSceneNode.CreateChildSceneNode();
 
 			// Load the meshes with non-default HBU options
-			for ( int mn = 0; mn < NUM_ENTITIES; mn++ )
+			for( int mn = 0; mn < NUM_ENTITIES; mn++ )
 			{
 				Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ], ResourceGroupManager.DefaultResourceGroupName,
-					BufferUsage.DynamicWriteOnly,
-					BufferUsage.StaticWriteOnly,
-					true, true, 1 ); //so we can still read it
+				                                       BufferUsage.DynamicWriteOnly,
+				                                       BufferUsage.StaticWriteOnly,
+				                                       true, true, 1 ); //so we can still read it
 
 				// Build tangent vectors, all our meshes use only 1 texture coordset
 				short srcIdx, destIdx;
 
-				if ( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
+				if( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
 				{
 					mesh.BuildTangentVectors( srcIdx, destIdx );
 				}
@@ -147,7 +159,7 @@ namespace Axiom.Demos
 				mainNode.AttachObject( entities[ mn ] );
 
 				// Make invisible, except for index 0
-				if ( mn == 0 )
+				if( mn == 0 )
 				{
 					entities[ mn ].MaterialName = materialNames[ currentEntity, currentMaterial ];
 				}
@@ -157,7 +169,7 @@ namespace Axiom.Demos
 				}
 			}
 
-			for ( int i = 0; i < NUM_LIGHTS; i++ )
+			for( int i = 0; i < NUM_LIGHTS; i++ )
 			{
 				lightPivots[ i ] = scene.RootSceneNode.CreateChildSceneNode();
 				lightPivots[ i ].Rotate( lightRotationAxes[ i ], lightRotationAngles[ i ] );
@@ -192,7 +204,7 @@ namespace Axiom.Demos
 
 			objectInfo.Text = "Current: " + entityMeshes[ currentEntity ];
 			materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
-			if ( !caps.HasCapability( Capabilities.FragmentPrograms ) )
+			if( !caps.HasCapability( Capabilities.FragmentPrograms ) )
 			{
 				info.Text = "NOTE: Light colours and specular highlights are not supported by your card.";
 			}
@@ -206,41 +218,32 @@ namespace Axiom.Demos
 			timeDelay -= e.TimeSinceLastFrame;
 
 			IfKeyPressed( KeyCodes.O, delegate()
-			{
-				entities[ currentEntity ].IsVisible = false;
-				currentEntity = ( ++currentEntity ) % NUM_ENTITIES;
-				entities[ currentEntity ].IsVisible = true;
-				entities[ currentEntity ].MaterialName = materialNames[ currentEntity, currentMaterial ];
+			                          {
+			                          	entities[ currentEntity ].IsVisible = false;
+			                          	currentEntity = ( ++currentEntity ) % NUM_ENTITIES;
+			                          	entities[ currentEntity ].IsVisible = true;
+			                          	entities[ currentEntity ].MaterialName = materialNames[ currentEntity, currentMaterial ];
 
-				objectInfo.Text = "Current: " + entityMeshes[ currentEntity ];
-				materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
-			} );
+			                          	objectInfo.Text = "Current: " + entityMeshes[ currentEntity ];
+			                          	materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
+			                          } );
 
 			IfKeyPressed( KeyCodes.M, delegate()
-			{
-				currentMaterial = ( ++currentMaterial ) % NUM_MATERIALS;
-				entities[ currentEntity ].MaterialName = materialNames[ currentEntity, currentMaterial ];
+			                          {
+			                          	currentMaterial = ( ++currentMaterial ) % NUM_MATERIALS;
+			                          	entities[ currentEntity ].MaterialName = materialNames[ currentEntity, currentMaterial ];
 
-				materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
-			} );
+			                          	materialInfo.Text = "Current: " + materialNames[ currentEntity, currentMaterial ];
+			                          } );
 
-			IfKeyPressed( KeyCodes.D1, delegate()
-			{
-				FlipLightState( 0 );
-			} );
+			IfKeyPressed( KeyCodes.D1, delegate() { FlipLightState( 0 ); } );
 
-			IfKeyPressed( KeyCodes.D2, delegate()
-			{
-				FlipLightState( 1 );
-			} );
+			IfKeyPressed( KeyCodes.D2, delegate() { FlipLightState( 1 ); } );
 
-			IfKeyPressed( KeyCodes.D3, delegate()
-			{
-				FlipLightState( 2 );
-			} );
+			IfKeyPressed( KeyCodes.D3, delegate() { FlipLightState( 2 ); } );
 
 			// animate the lights
-			for ( int i = 0; i < NUM_LIGHTS; i++ )
+			for( int i = 0; i < NUM_LIGHTS; i++ )
 			{
 				lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * e.TimeSinceLastFrame );
 			}
@@ -250,7 +253,7 @@ namespace Axiom.Demos
 		///    Flips the light states for the light at the specified index.
 		/// </summary>
 		/// <param name="index"></param>
-		void FlipLightState( int index )
+		private void FlipLightState( int index )
 		{
 			lightState[ index ] = !lightState[ index ];
 			lights[ index ].IsVisible = lightState[ index ];

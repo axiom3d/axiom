@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,6 +44,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -69,9 +74,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#region Inner Classes
 
-		public class UniformReferenceList : List<UniformReference>
-		{
-		}
+		public class UniformReferenceList : List<UniformReference> {}
 
 		#endregion Inner Classes
 
@@ -81,14 +84,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		Container of uniform references that are active in the program object.
 		/// </summary>
 		protected UniformReferenceList uniformReferences = new UniformReferenceList();
+
 		/// <summary>
 		///		Flag to indicate that uniform references have already been built.
 		/// </summary>
 		protected bool uniformRefsBuilt;
+
 		/// <summary>
 		///		GL handle for the program object.
 		/// </summary>
 		protected int glHandle;
+
 		/// <summary>
 		///		Flag indicating that the program object has been successfully linked
 		/// </summary>
@@ -118,13 +124,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Gets the GL Handle for the program object.
 		/// </summary>
-		public int GLHandle
-		{
-			get
-			{
-				return glHandle;
-			}
-		}
+		public int GLHandle { get { return glHandle; } }
 
 		#endregion Properties
 
@@ -135,7 +135,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Activate()
 		{
-			if ( !linked )
+			if( !linked )
 			{
 				int linkStatus;
 
@@ -147,14 +147,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				// force logging and raise exception if not linked
 				GLSLHelper.CheckForGLSLError( "Error linking GLSL Program Object", glHandle, !linked, !linked );
 
-				if ( linked )
+				if( linked )
 				{
 					GLSLHelper.LogObjectInfo( "GLSL link result : ", glHandle );
 					BuildUniformReferences();
 				}
 			}
 
-			if ( linked )
+			if( linked )
 			{
 				Gl.glUseProgramObjectARB( glHandle );
 			}
@@ -165,7 +165,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private void BuildUniformReferences()
 		{
-			if ( !uniformRefsBuilt )
+			if( !uniformRefsBuilt )
 			{
 				// scane through the active uniforms and add them to the reference list
 				int uniformCount;
@@ -178,7 +178,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 				// Loop over each of the active uniforms, and add them to the reference container
 				// only do this for user defined uniforms, ignore built in gl state uniforms
-				for ( int i = 0; i < uniformCount; i++ )
+				for( int i = 0; i < uniformCount; i++ )
 				{
 					UniformReference newUniformReference = new UniformReference();
 
@@ -192,13 +192,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					// don't add built in uniforms
 					newUniformReference.location = Gl.glGetUniformLocationARB( glHandle, uniformName );
 
-					if ( newUniformReference.location >= 0 )
+					if( newUniformReference.location >= 0 )
 					{
 						// user defined uniform found, add it to the reference list
 						newUniformReference.name = uniformName;
 
 						// decode uniform size and type
-						switch ( newUniformReference.type )
+						switch( newUniformReference.type )
 						{
 							case Gl.GL_FLOAT:
 								newUniformReference.isFloat = true;
@@ -260,22 +260,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="parameters">GPU Parameters to use to update the uniforms params.</param>
 		public void UpdateUniforms( GpuProgramParameters parameters )
 		{
-			for ( int i = 0; i < uniformReferences.Count; i++ )
+			for( int i = 0; i < uniformReferences.Count; i++ )
 			{
 				UniformReference uniformRef = (UniformReference)uniformReferences[ i ];
 
 				GpuProgramParameters.FloatConstantEntry currentFloatEntry = null;
 				GpuProgramParameters.IntConstantEntry currentIntEntry = null;
 
-				if ( uniformRef.isFloat )
+				if( uniformRef.isFloat )
 				{
 					currentFloatEntry = parameters.GetNamedFloatConstant( uniformRef.name );
 
-					if ( currentFloatEntry != null )
+					if( currentFloatEntry != null )
 					{
-						if ( currentFloatEntry.isSet )
+						if( currentFloatEntry.isSet )
 						{
-							switch ( uniformRef.elementCount )
+							switch( uniformRef.elementCount )
 							{
 								case 1:
 									Gl.glUniform1fvARB( uniformRef.location, 1, currentFloatEntry.val );
@@ -300,11 +300,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				{
 					currentIntEntry = parameters.GetNamedIntConstant( uniformRef.name );
 
-					if ( currentIntEntry != null )
+					if( currentIntEntry != null )
 					{
-						if ( currentIntEntry.isSet )
+						if( currentIntEntry.isSet )
 						{
-							switch ( uniformRef.elementCount )
+							switch( uniformRef.elementCount )
 							{
 								case 1:
 									Gl.glUniform1ivARB( uniformRef.location, 1, currentIntEntry.val );

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -45,10 +49,12 @@ using Axiom.Graphics;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="OgrePanelOverlayElement.h"   revision="1.3.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 ///     <file name="OgrePanelOverlayElement.cpp" revision="1.10.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Overlays.Elements
@@ -74,15 +80,15 @@ namespace Axiom.Overlays.Elements
 	{
 		#region Member variables
 
-		protected float[] tileX = new float[ Config.MaxTextureLayers ];
-		protected float[] tileY = new float[ Config.MaxTextureLayers ];
+		protected float[] tileX = new float[Config.MaxTextureLayers];
+		protected float[] tileY = new float[Config.MaxTextureLayers];
 		protected bool isTransparent;
 		protected int numTexCoordsInBuffer;
 		protected Vector2 topLeft, bottomRight;
 
 		// source bindings for vertex buffers
-		const int POSITION = 0;
-		const int TEXTURE_COORDS = 1;
+		private const int POSITION = 0;
+		private const int TEXTURE_COORDS = 1;
 
 		#endregion
 
@@ -93,7 +99,7 @@ namespace Axiom.Overlays.Elements
 		{
 			//this.IsTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
 			// initialize the default tiling to 1 for all layers
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for( int i = 0; i < Config.MaxTextureLayers; i++ )
 			{
 				tileX[ i ] = 1.0f;
 				tileY[ i ] = 1.0f;
@@ -116,7 +122,7 @@ namespace Axiom.Overlays.Elements
 		{
 			bool init = !isInitialized;
 			base.Initialize();
-			if ( init )
+			if( init )
 			{
 				// setup the vertex data
 				renderOperation.vertexData = new VertexData();
@@ -131,9 +137,9 @@ namespace Axiom.Overlays.Elements
 				// create the first vertex buffer, mostly static except during resizing
 				HardwareVertexBuffer buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer(
-						 decl.GetVertexSize( POSITION ),
-						 renderOperation.vertexData.vertexCount,
-						 BufferUsage.StaticWriteOnly );
+					                                                  decl.GetVertexSize( POSITION ),
+					                                                  renderOperation.vertexData.vertexCount,
+					                                                  BufferUsage.StaticWriteOnly );
 
 				// bind the vertex buffer
 				renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
@@ -165,12 +171,11 @@ namespace Axiom.Overlays.Elements
 		public float GetTileX( int layer )
 		{
 			return tileX[ layer ];
-
 		}
+
 		public float GetTileY( int layer )
 		{
 			return tileY[ layer ];
-
 		}
 
 		/// <summary>
@@ -238,30 +243,29 @@ namespace Axiom.Overlays.Elements
 
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( isVisible )
+			if( isVisible )
 			{
 				// only add this panel to the render queue if it is not transparent
 				// that would mean the panel should be a virtual container of sorts,
 				// and the children would still be rendered
-				if ( !isTransparent && material != null )
+				if( !isTransparent && material != null )
 				{
 					base.UpdateRenderQueue( queue, false );
 				}
 
-				foreach ( OverlayElement child in children.Values )
+				foreach( OverlayElement child in children.Values )
 				{
 					child.UpdateRenderQueue( queue );
 				}
 			}
 		}
 
-
 		/// <summary>
 		///    Called to update the texture coords when layers change.
 		/// </summary>
 		protected override void UpdateTextureGeometry()
 		{
-			if ( material != null && isInitialized )
+			if( material != null && isInitialized )
 			{
 				int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStageCount;
 
@@ -269,19 +273,19 @@ namespace Axiom.Overlays.Elements
 
 				// if the required layers is less than the current amount of tex coord buffers, remove
 				// the extraneous buffers
-				if ( numTexCoordsInBuffer > numLayers )
+				if( numTexCoordsInBuffer > numLayers )
 				{
-					for ( int i = numTexCoordsInBuffer; i > numLayers; --i )
+					for( int i = numTexCoordsInBuffer; i > numLayers; --i )
 					{
 						decl.RemoveElement( VertexElementSemantic.TexCoords, i );
 					}
 				}
-				else if ( numTexCoordsInBuffer < numLayers )
+				else if( numTexCoordsInBuffer < numLayers )
 				{
 					// we need to add more buffers
 					int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
-					for ( int i = numTexCoordsInBuffer; i < numLayers; ++i )
+					for( int i = numTexCoordsInBuffer; i < numLayers; ++i )
 					{
 						decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
 						offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
@@ -289,13 +293,13 @@ namespace Axiom.Overlays.Elements
 				} // if
 
 				// if the number of layers changed at all, we'll need to reallocate buffer
-				if ( numTexCoordsInBuffer != numLayers )
+				if( numTexCoordsInBuffer != numLayers )
 				{
 					HardwareVertexBuffer newBuffer =
 						HardwareBufferManager.Instance.CreateVertexBuffer(
-							decl.GetVertexSize( TEXTURE_COORDS ),
-							renderOperation.vertexData.vertexCount,
-							BufferUsage.StaticWriteOnly );
+						                                                  decl.GetVertexSize( TEXTURE_COORDS ),
+						                                                  renderOperation.vertexData.vertexCount,
+						                                                  BufferUsage.StaticWriteOnly );
 
 					// Bind buffer, note this will unbind the old one and destroy the buffer it had
 					renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
@@ -304,7 +308,7 @@ namespace Axiom.Overlays.Elements
 					numTexCoordsInBuffer = numLayers;
 				} // if
 
-				if ( numTexCoordsInBuffer != 0 )
+				if( numTexCoordsInBuffer != 0 )
 				{
 					// get the tex coord buffer
 					HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
@@ -312,14 +316,13 @@ namespace Axiom.Overlays.Elements
 
 					unsafe
 					{
-
 						float* texPtr = (float*)data.ToPointer();
 						int texIndex = 0;
 
 						int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
 						int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
 
-						for ( int i = 0; i < numLayers; i++ )
+						for( int i = 0; i < numLayers; i++ )
 						{
 							// Calc upper tex coords
 							float upperX = bottomRight.x * tileX[ i ];
@@ -380,17 +383,7 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsTransparent
-		{
-			get
-			{
-				return isTransparent;
-			}
-			set
-			{
-				isTransparent = value;
-			}
-		}
+		public bool IsTransparent { get { return isTransparent; } set { isTransparent = value; } }
 
 		/// <summary>
 		/// 
@@ -402,10 +395,7 @@ namespace Axiom.Overlays.Elements
 				base.MaterialName = value;
 				//UpdateTextureGeometry();
 			}
-			get
-			{
-				return base.MaterialName;
-			}
+			get { return base.MaterialName; }
 		}
 
 		#endregion
@@ -425,7 +415,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as Panel;
-				if ( element != null )
+				if( element != null )
 				{
 					// NOTE: Only returns the top tiling
 					return String.Format( "{0} {1} {2}", "0", element.GetTileX( 0 ), element.GetTileY( 0 ) );
@@ -445,7 +435,7 @@ namespace Axiom.Overlays.Elements
 			{
 				var element = target as Panel;
 				var parms = val.Split( ' ' );
-				if ( element != null )
+				if( element != null )
 				{
 					element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), int.Parse( parms[ 0 ] ) );
 				}
@@ -455,7 +445,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " +
-			"but it's contents are still displayed.", typeof( Panel ) )]
+		                                    "but it's contents are still displayed.", typeof( Panel ) )]
 		private class TransparentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -468,7 +458,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as Panel;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.IsTransparent.ToString();
 				}
@@ -486,7 +476,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
-				if ( element != null )
+				if( element != null )
 				{
 					element.IsTransparent = StringConverter.ParseBool( val );
 				}
@@ -508,7 +498,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as Panel;
-				if ( element != null )
+				if( element != null )
 				{
 					Real u1, v1, u2, v2;
 					element.GetUV( out u1, out v1, out u2, out v2 );
@@ -529,12 +519,12 @@ namespace Axiom.Overlays.Elements
 			{
 				var element = target as Panel;
 				var parms = val.Split( ' ' );
-				if ( element != null )
+				if( element != null )
 				{
 					element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ),
-								   StringConverter.ParseFloat( parms[ 1 ] ),
-								   StringConverter.ParseFloat( parms[ 2 ] ),
-								   StringConverter.ParseFloat( parms[ 3 ] ) );
+					               StringConverter.ParseFloat( parms[ 1 ] ),
+					               StringConverter.ParseFloat( parms[ 2 ] ),
+					               StringConverter.ParseFloat( parms[ 3 ] ) );
 				}
 			}
 
@@ -542,6 +532,5 @@ namespace Axiom.Overlays.Elements
 		}
 
 		#endregion ScriptableObject Interface Command Classes
-
 	}
 }

@@ -1,6 +1,5 @@
 ﻿#region Namespace Declarations
 
-
 using Axiom.Core;
 using Axiom.Input;
 
@@ -34,15 +33,17 @@ namespace Axiom.Platforms.OpenTK
 		#endregion IPlatformManager Members
 
 		#region IDisposable Members
+
 		public void Dispose()
 		{
-			if ( inputReader != null )
+			if( inputReader != null )
 			{
 				inputReader.Dispose();
 				inputReader = null;
 			}
 			LogManager.Instance.Write( "OpenTK Platform Manager Shutdown." );
 		}
+
 		#endregion IDisposable Members
 	}
 }

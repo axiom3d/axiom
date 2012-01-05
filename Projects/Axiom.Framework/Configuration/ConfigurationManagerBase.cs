@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -27,19 +29,14 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// 
 	/// </summary>
-	public abstract class ConfigurationManagerBase : IConfigurationManager
+	abstract public class ConfigurationManagerBase : IConfigurationManager
 	{
-
 		#region Fields and Properties
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected string ConfigurationFile
-		{
-			get;
-			set;
-		}
+		protected string ConfigurationFile { get; set; }
 
 		#endregion Fields and Properties
 
@@ -61,36 +58,31 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// 
 		/// </summary>
-		public virtual string LogFilename
-		{
-			get;
-			protected set;
-		}
+		virtual public string LogFilename { get; protected set; }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
-		public abstract bool RestoreConfiguration( Root engine );
-
+		abstract public bool RestoreConfiguration( Root engine );
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
-		public abstract void SaveConfiguration( Root engine );
+		abstract public void SaveConfiguration( Root engine );
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
 		/// <param name="defaultRenderer"></param>
-		public abstract void SaveConfiguration( Root engine, string defaultRenderer );
+		abstract public void SaveConfiguration( Root engine, string defaultRenderer );
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public abstract bool ShowConfigDialog( Root engine );
+		abstract public bool ShowConfigDialog( Root engine );
 
 		#endregion IConfigurationManager Implementation
 	}

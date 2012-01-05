@@ -4,8 +4,5 @@ using System.Text;
 
 namespace Axiom.RenderSystems.Xna.Source.FixedFunctionEmulation
 {
-	class Serializer
-	{
-
-	}
+	internal class Serializer {}
 }

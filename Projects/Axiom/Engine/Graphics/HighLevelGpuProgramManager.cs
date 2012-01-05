@@ -38,8 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Collections;
 using Axiom.Core;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -66,7 +68,7 @@ namespace Axiom.Graphics
 	{
 		#region Singleton implementation
 
-        public const string NullLang = "null";
+		public const string NullLang = "null";
 
 		/// <summary>
 		///     Singleton instance of this class.
@@ -79,7 +81,7 @@ namespace Axiom.Graphics
 		internal HighLevelGpuProgramManager()
 			: base()
 		{
-			if ( _instance == null )
+			if( _instance == null )
 			{
 				_instance = this;
 				LoadingOrder = 50.0f;
@@ -94,13 +96,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static HighLevelGpuProgramManager Instance
-		{
-			get
-			{
-				return _instance;
-			}
-		}
+		public static HighLevelGpuProgramManager Instance { get { return _instance; } }
 
 		#endregion Singleton implementation
 
@@ -143,7 +139,7 @@ namespace Axiom.Graphics
 			// lookup the factory for the requested program language
 			HighLevelGpuProgramFactory factory = GetFactory( language );
 
-			if ( factory == null )
+			if( factory == null )
 			{
 				throw new Exception(
 					string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
@@ -166,14 +162,18 @@ namespace Axiom.Graphics
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
-			if ( !factories.ContainsKey( language ) )
+			if( !factories.ContainsKey( language ) )
 			{
-                // use the null factory to create programs that will never be supported
-                if ( factories.ContainsKey( NullLang ) )
-                    return (HighLevelGpuProgramFactory)factories[ NullLang ];
+				// use the null factory to create programs that will never be supported
+				if( factories.ContainsKey( NullLang ) )
+				{
+					return (HighLevelGpuProgramFactory)factories[ NullLang ];
+				}
 			}
-            else
-                return (HighLevelGpuProgramFactory)factories[ language ];
+			else
+			{
+				return (HighLevelGpuProgramFactory)factories[ language ];
+			}
 
 			// wasn't found, so return null
 			return null;
@@ -187,9 +187,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				string[] sl = new string[ resources.Count ];
+				string[] sl = new string[resources.Count];
 				int count = 0;
-				foreach ( string s in resources.Keys )
+				foreach( string s in resources.Keys )
 				{
 					sl[ count++ ] = s;
 				}
@@ -207,9 +207,9 @@ namespace Axiom.Graphics
 		#region ResourceManager Implementation
 
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
-											 IManualResourceLoader loader, NameValuePairList createParams )
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			if ( createParams == null || !createParams.ContainsKey( "language" ) )
+			if( createParams == null || !createParams.ContainsKey( "language" ) )
 			{
 				throw new Exception( "You must supply a 'language' parameter" );
 			}
@@ -221,26 +221,14 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of the program to retrieve.</param>
 		/// <returns>The high level gpu program with the specified name.</returns>
-		public new HighLevelGpuProgram this[ string name ]
-		{
-			get
-			{
-				return (HighLevelGpuProgram)base[ name ];
-			}
-		}
+		new public HighLevelGpuProgram this[ string name ] { get { return (HighLevelGpuProgram)base[ name ]; } }
 
 		/// <summary>
 		///     Gets a HighLevelGpuProgram with the specified handle.
 		/// </summary>
 		/// <param name="name">Handle of the program to retrieve.</param>
 		/// <returns>The high level gpu program with the specified handle.</returns>
-		public new HighLevelGpuProgram this[ ResourceHandle handle ]
-		{
-			get
-			{
-				return (HighLevelGpuProgram)base[ handle ];
-			}
-		}
+		new public HighLevelGpuProgram this[ ResourceHandle handle ] { get { return (HighLevelGpuProgram)base[ handle ]; } }
 
 		/// <summary>
 		///     Called when the engine is shutting down.
@@ -250,9 +238,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					_instance = null;

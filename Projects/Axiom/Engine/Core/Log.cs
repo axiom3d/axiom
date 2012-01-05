@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,12 +41,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
+
 	#region LogListenerEventArgs Class
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -51,38 +56,22 @@ namespace Axiom.Core
 		/// <summary>
 		/// The message to be logged
 		/// </summary>
-		public string Message
-		{
-			get;
-			private set;
-		}
+		public string Message { get; private set; }
 
 		/// <summary>
 		/// The message level the log is using
 		/// </summary>
-		public LogMessageLevel Level
-		{
-			get;
-			private set;
-		}
+		public LogMessageLevel Level { get; private set; }
 
 		/// <summary>
 		/// If we are printing to the console or not
 		/// </summary>
-		public bool MaskDebug
-		{
-			get;
-			private set;
-		}
+		public bool MaskDebug { get; private set; }
 
 		/// <summary>
 		/// the name of this log (so you can have several listeners for different logs, and identify them)
 		/// </summary>
-		public string LogName
-		{
-			get;
-			private set;
-		}
+		public string LogName { get; private set; }
 
 		/// <summary>
 		/// This is called whenever the log recieves a message and is about to write it out
@@ -100,9 +89,11 @@ namespace Axiom.Core
 			this.LogName = logName;
 		}
 	}
+
 	#endregion LogListenerEventArgs Class
 
 	#region Log Class
+
 	/// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
@@ -114,26 +105,31 @@ namespace Axiom.Core
 		///     File stream used for kepping the log file open.
 		/// </summary>
 		private FileStream log;
+
 		/// <summary>
 		///     Writer used for writing to the log file.
 		/// </summary>
 		private StreamWriter writer;
+
 		/// <summary>
 		///     Level of detail for this log.
 		/// </summary>
 		private LoggingLevel logLevel;
+
 		/// <summary>
 		///     Debug output enabled?
 		/// </summary>
 		private bool debugOutput;
+
 		/// <summary>
 		///		flag to indicate object already disposed.
 		/// </summary>
 		private bool _isDisposed;
+
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
-		const int LogThreshold = 4;
+		private const int LogThreshold = 4;
 
 		private string mLogName;
 
@@ -148,9 +144,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="fileName">Name of the log file to open.</param>
 		public Log( string fileName )
-			: this( fileName, true )
-		{
-		}
+			: this( fileName, true ) {}
 
 		/// <summary>
 		///     Constructor.
@@ -165,7 +159,7 @@ namespace Axiom.Core
 			this.debugOutput = debugOutput;
 			logLevel = LoggingLevel.Normal;
 
-			if ( fileName != null )
+			if( fileName != null )
 			{
 				try
 				{
@@ -174,13 +168,10 @@ namespace Axiom.Core
 
 					// get a stream writer using the file stream
 					writer = new StreamWriter( log );
-					writer.AutoFlush = true;	//always flush after write
+					writer.AutoFlush = true; //always flush after write
 				}
-				catch
-				{
-				}
+				catch {}
 			}
-
 		}
 
 		~Log()
@@ -196,17 +187,7 @@ namespace Axiom.Core
 		///     Gets/Sets the level of the detail for this log.
 		/// </summary>
 		/// <value></value>
-		public LoggingLevel LogDetail
-		{
-			get
-			{
-				return logLevel;
-			}
-			set
-			{
-				logLevel = value;
-			}
-		}
+		public LoggingLevel LogDetail { get { return logLevel; } set { logLevel = value; } }
 
 		#endregion Properties
 
@@ -257,29 +238,34 @@ namespace Axiom.Core
 		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
-			if ( _isDisposed )
+			if( _isDisposed )
+			{
 				return;
+			}
 
-			if ( message == null )
+			if( message == null )
+			{
 				throw new ArgumentNullException( "The log message cannot be null" );
-			if ( ( (int)logLevel + (int)level ) > LogThreshold )
-				return;	//too verbose a message to write
+			}
+			if( ( (int)logLevel + (int)level ) > LogThreshold )
+			{
+				return; //too verbose a message to write
+			}
 
 			// construct the log message
-			if ( substitutions != null && substitutions.Length > 0 )
+			if( substitutions != null && substitutions.Length > 0 )
 			{
 				message = string.Format( message, substitutions );
 			}
 
 			// write the the debug output if requested
-			if ( debugOutput && !maskDebug )
+			if( debugOutput && !maskDebug )
 			{
 				System.Diagnostics.Debug.WriteLine( message );
 			}
 
-			if ( writer != null && writer.BaseStream != null )
+			if( writer != null && writer.BaseStream != null )
 			{
-
 				// prepend the current time to the message
 				message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
@@ -294,7 +280,7 @@ namespace Axiom.Core
 		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
 		{
 			// Now fire the MessageLogged event
-			if ( this.MessageLogged != null )
+			if( this.MessageLogged != null )
 			{
 				LogListenerEventArgs args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
 				this.MessageLogged( this, args );
@@ -315,19 +301,22 @@ namespace Axiom.Core
 		{
 			try
 			{
-				if ( writer != null )
+				if( writer != null )
+				{
 					writer.Close();
+				}
 
-				if ( log != null )
+				if( log != null )
+				{
 					log.Close();
+				}
 			}
-			catch
-			{
-			}
+			catch {}
 			_isDisposed = true;
 		}
 
 		#endregion IDisposable Members
 	}
+
 	#endregion Log Class
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,8 +41,8 @@ using System;
 
 using Axiom.Graphics;
 using Axiom.Core;
-using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using DX = SlimDX.Direct3D9;
 using D3D = SlimDX.Direct3D9;
 
@@ -111,16 +115,20 @@ namespace Axiom.RenderSystems.DirectX9
 			int iCount = 0;
 			int vCount = 0;
 
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
+			foreach( D3DHardwareVertexBuffer buffer in vertexBuffers )
 			{
-				if ( buffer.ReleaseIfDefaultPool() )
+				if( buffer.ReleaseIfDefaultPool() )
+				{
 					vCount++;
+				}
 			}
 
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
+			foreach( D3DHardwareIndexBuffer buffer in indexBuffers )
 			{
-				if ( buffer.ReleaseIfDefaultPool() )
+				if( buffer.ReleaseIfDefaultPool() )
+				{
 					iCount++;
+				}
 			}
 
 			LogManager.Instance.Write( "D3DHardwareBufferManager released:" );
@@ -134,16 +142,20 @@ namespace Axiom.RenderSystems.DirectX9
 			int iCount = 0;
 			int vCount = 0;
 
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
+			foreach( D3DHardwareVertexBuffer buffer in vertexBuffers )
 			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
+				if( buffer.RecreateIfDefaultPool( device ) )
+				{
 					vCount++;
+				}
 			}
 
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
+			foreach( D3DHardwareIndexBuffer buffer in indexBuffers )
 			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
+				if( buffer.RecreateIfDefaultPool( device ) )
+				{
 					iCount++;
+				}
 			}
 
 			LogManager.Instance.Write( "D3DHardwareBufferManager recreated:" );
@@ -158,15 +170,12 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Properties
 
 		#endregion Properties
-
 	}
 
 	public class D3DHardwareBufferManager : HardwareBufferManager
 	{
-		public D3DHardwareBufferManager(  D3D.Device device )
-			: base( new D3DHardwareBufferManagerBase( device ) )
-		{
-		}
+		public D3DHardwareBufferManager( D3D.Device device )
+			: base( new D3DHardwareBufferManagerBase( device ) ) {}
 
 		public void ReleaseDefaultPoolResources()
 		{
@@ -180,13 +189,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
 				_baseInstance.Dispose();
 				_baseInstance = null;
 			}
 			base.dispose( disposeManagedResources );
 		}
-
 	}
 }

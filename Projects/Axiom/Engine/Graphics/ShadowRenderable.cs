@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -58,15 +59,17 @@ namespace Axiom.Graphics
 	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
 	///		should come from one buffer if possible)
 	/// </remarks>
-	public abstract class ShadowRenderable : DisposableObject, IRenderable
+	abstract public class ShadowRenderable : DisposableObject, IRenderable
 	{
 		#region Fields and Properties
 
 		protected Material material;
+
 		/// <summary>
 		///		Used only if IsLightCapSeparate == true.
 		/// </summary>
 		protected ShadowRenderable lightCap;
+
 		protected LightList dummyLightList = new LightList();
 		protected List<Vector4> customParams = new List<Vector4>();
 
@@ -82,42 +85,24 @@ namespace Axiom.Graphics
 		///		inaccuracies caused by calculating the shadow geometry separately from
 		///		the real geometry.
 		/// </remarks>
-		public bool IsLightCapSeperate
-		{
-			get
-			{
-				return lightCap != null;
-			}
-		}
+		public bool IsLightCapSeperate { get { return lightCap != null; } }
 
 		/// <summary>
 		///		Get the light cap version of this renderable.
 		/// </summary>
-		public ShadowRenderable LightCapRenderable
-		{
-			get
-			{
-				return lightCap;
-			}
-		}
+		public ShadowRenderable LightCapRenderable { get { return lightCap; } }
 
 		/// <summary>
 		///		Should this ShadowRenderable be treated as visible?
 		/// </summary>
-		public virtual bool IsVisible
-		{
-			get
-			{
-				return true;
-			}
-		}
+		virtual public bool IsVisible { get { return true; } }
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		protected ShadowRenderable()
-            : base()
+			: base()
 		{
 			this.renderOperation = new RenderOperation();
 			this.renderOperation.useIndices = true;
@@ -141,13 +126,7 @@ namespace Axiom.Graphics
 
 		#region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastsShadows { get { return false; } }
 
 		/// <summary>
 		///		Gets/Sets the material to use for this shadow renderable.
@@ -155,25 +134,9 @@ namespace Axiom.Graphics
 		/// <remarks>
 		///		Should be set by the caller before adding to a render queue.
 		/// </remarks>
-		public Material Material
-		{
-			get
-			{
-				return material;
-			}
-			set
-			{
-				material = value;
-			}
-		}
+		public Material Material { get { return material; } set { material = value; } }
 
-		public Technique Technique
-		{
-			get
-			{
-				return this.Material.GetBestTechnique();
-			}
-		}
+		public Technique Technique { get { return this.Material.GetBestTechnique(); } }
 
 		protected RenderOperation renderOperation;
 
@@ -181,82 +144,34 @@ namespace Axiom.Graphics
 		///		Gets the render operation for this shadow renderable.
 		/// </summary>
 		/// <param name="value"></param>
-		public RenderOperation RenderOperation
-		{
-			get
-			{
-				return renderOperation;
-			}
-		}
+		public RenderOperation RenderOperation { get { return renderOperation; } }
 
-		public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
+		abstract public void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
 
-		public LightList Lights
-		{
-			get
-			{
-				return dummyLightList;
-			}
-		}
+		public LightList Lights { get { return dummyLightList; } }
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
-		public virtual ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		virtual public ushort NumWorldTransforms { get { return 1; } }
 
-		public virtual bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool UseIdentityProjection { get { return false; } }
 
-		public virtual bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool UseIdentityView { get { return false; } }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		virtual public bool PolygonModeOverrideable { get { return true; } }
 
-		public abstract Axiom.Math.Quaternion WorldOrientation
-		{
-			get;
-		}
+		abstract public Axiom.Math.Quaternion WorldOrientation { get; }
 
-		public abstract Axiom.Math.Vector3 WorldPosition
-		{
-			get;
-		}
+		abstract public Axiom.Math.Vector3 WorldPosition { get; }
 
-		public virtual float GetSquaredViewDepth( Camera camera )
+		virtual public float GetSquaredViewDepth( Camera camera )
 		{
 			return 0;
 		}
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
@@ -268,14 +183,16 @@ namespace Axiom.Graphics
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while( customParams.Count <= index )
+			{
 				customParams.Add( Vector4.Zero );
+			}
 			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if( customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
@@ -284,6 +201,7 @@ namespace Axiom.Graphics
 		#endregion IRenderable Members
 
 		#region IDisposable Implementation
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -308,17 +226,19 @@ namespace Axiom.Graphics
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if( renderOperation != null )
 					{
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
 						renderOperation = null;
 					}
@@ -328,8 +248,9 @@ namespace Axiom.Graphics
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
+
 		#endregion IDisposable Implementation
 	}
 }

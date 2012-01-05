@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,7 +41,9 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -48,7 +54,7 @@ namespace Axiom.Math
 	{
 		#region Fields and Properties
 
-		readonly protected Matrix4 hermitePoly = new Matrix4(
+		protected readonly Matrix4 hermitePoly = new Matrix4(
 			2, -2, 1, 1,
 			-3, 3, -2, -1,
 			0, 0, 1, 0,
@@ -56,36 +62,22 @@ namespace Axiom.Math
 
 		/// <summary>Collection of control points.</summary>
 		protected List<T> pointList;
+
 		/// <summary>Collection of generated tangents for the spline controls points.</summary>
 		protected List<T> tangentList;
 
 		/// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
 		protected bool autoCalculateTangents;
+
 		/// <summary>
 		///		Specifies whether or not to recalculate tangents as each control point is added.
 		/// </summary>
-		public bool AutoCalculate
-		{
-			get
-			{
-				return autoCalculateTangents;
-			}
-			set
-			{
-				autoCalculateTangents = value;
-			}
-		}
+		public bool AutoCalculate { get { return autoCalculateTangents; } set { autoCalculateTangents = value; } }
 
 		/// <summary>
 		///    Gets the number of control points in this spline.
 		/// </summary>
-		public int PointCount
-		{
-			get
-			{
-				return pointList.Count;
-			}
-		}
+		public int PointCount { get { return pointList.Count; } }
 
 		#endregion Fields and Properties
 
@@ -114,8 +106,10 @@ namespace Axiom.Math
 			pointList.Add( point );
 
 			// recalc tangents if necessary
-			if ( autoCalculateTangents )
+			if( autoCalculateTangents )
+			{
 				RecalculateTangents();
+			}
 		}
 
 		/// <summary>
@@ -138,7 +132,6 @@ namespace Axiom.Math
 
 			return pointList[ index ];
 		}
-
 
 		/// <summary>
 		///		Recalculates the tangents associated with this spline. 

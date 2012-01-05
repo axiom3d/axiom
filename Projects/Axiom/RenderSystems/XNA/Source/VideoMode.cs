@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,11 +55,12 @@ namespace Axiom.RenderSystems.Xna
 
 		private XFG.DisplayMode displayMode;
 		private int modeNum;
-		static int modeCount = 0;
+		private static int modeCount = 0;
 
 		#endregion
 
 		#region Constructors
+
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
@@ -98,46 +103,22 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Width of this video mode.
 		/// </summary>
-		public int Width
-		{
-			get
-			{
-				return displayMode.Width;
-			}
-		}
+		public int Width { get { return displayMode.Width; } }
 
 		/// <summary>
 		///		Height of this video mode.
 		/// </summary>
-		public int Height
-		{
-			get
-			{
-				return displayMode.Height;
-			}
-		}
+		public int Height { get { return displayMode.Height; } }
 
 		/// <summary>
 		///		Format of this video mode.
 		/// </summary>
-		public XFG.SurfaceFormat Format
-		{
-			get
-			{
-				return displayMode.Format;
-			}
-		}
+		public XFG.SurfaceFormat Format { get { return displayMode.Format; } }
 
 		/// <summary>
 		///		Refresh rate of this video mode.
 		/// </summary>
-		public int RefreshRate
-		{
-			get
-			{
-				return displayMode.RefreshRate;
-			}
-		}
+		public int RefreshRate { get { return displayMode.RefreshRate; } }
 
 		/// <summary>
 		///		Color depth of this video mode.
@@ -146,9 +127,9 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				if ( displayMode.Format == XFG.SurfaceFormat.Bgr32 ||
-					displayMode.Format == XFG.SurfaceFormat.Color ||
-					displayMode.Format == XFG.SurfaceFormat.Bgr24 )
+				if( displayMode.Format == XFG.SurfaceFormat.Bgr32 ||
+				    displayMode.Format == XFG.SurfaceFormat.Color ||
+				    displayMode.Format == XFG.SurfaceFormat.Bgr24 )
 				{
 					return 32;
 				}
@@ -162,13 +143,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Gets the XNA.DisplayMode object associated with this video mode.
 		/// </summary>
-		public XFG.DisplayMode DisplayMode
-		{
-			get
-			{
-				return displayMode;
-			}
-		}
+		public XFG.DisplayMode DisplayMode { get { return displayMode; } }
 
 		/// <summary>
 		///		Returns a string representation of this video mode.

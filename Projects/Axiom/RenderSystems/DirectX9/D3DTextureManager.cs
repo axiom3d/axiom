@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,6 +41,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+
 using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -50,13 +55,14 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		/// <summary>Reference to the D3D device.</summary>
 		private D3D.Device device;
+
 		/// <summary>
 		/// Reference to the Direct3D object
 		/// </summary>
 		private D3D.Direct3D manager;
 
 		public D3DTextureManager( D3D.Direct3D manager, D3D.Device device )
-            : base()
+			: base()
 		{
 			this.device = device;
 			this.manager = manager;
@@ -77,19 +83,19 @@ namespace Axiom.RenderSystems.DirectX9
 			// Calculate usage
 			D3D.Usage d3dusage = 0;
 			D3D.Pool pool = D3D.Pool.Managed;
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
+			if( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
 				d3dusage |= D3D.Usage.RenderTarget;
 				pool = D3D.Pool.Default;
 			}
-			if ( ( usage & TextureUsage.Dynamic ) != 0 )
+			if( ( usage & TextureUsage.Dynamic ) != 0 )
 			{
 				d3dusage |= D3D.Usage.Dynamic;
 				pool = D3D.Pool.Default;
 			}
 
 			// Use D3DX to adjust pixel format
-			switch ( ttype )
+			switch( ttype )
 			{
 				case TextureType.OneD:
 				case TextureType.TwoD:
@@ -108,14 +114,15 @@ namespace Axiom.RenderSystems.DirectX9
 			return D3DHelper.ConvertEnum( d3dPF );
 		}
 
-
 		public void ReleaseDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resources.Values )
+			foreach( D3DTexture tex in resources.Values )
 			{
-				if ( tex.ReleaseIfDefaultPool() )
+				if( tex.ReleaseIfDefaultPool() )
+				{
 					count++;
+				}
 			}
 			LogManager.Instance.Write( "D3DTextureManager released: \n\t{0} unmanaged textures.", count );
 		}
@@ -123,21 +130,16 @@ namespace Axiom.RenderSystems.DirectX9
 		public void RecreateDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resources.Values )
+			foreach( D3DTexture tex in resources.Values )
 			{
-				if ( tex.RecreateIfDefaultPool( device ) )
+				if( tex.RecreateIfDefaultPool( device ) )
+				{
 					count++;
+				}
 			}
 			LogManager.Instance.Write( "D3DTextureManager recreated: \n\t{0} unmanaged textures.", count );
 		}
 
-
-		public override int AvailableTextureMemory
-		{
-			get
-			{
-				return (int)device.AvailableTextureMemory;
-			}
-		}
+		public override int AvailableTextureMemory { get { return (int)device.AvailableTextureMemory; } }
 	}
 }

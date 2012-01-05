@@ -76,13 +76,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static CompositorManager Instance
-		{
-			get
-			{
-				return Singleton<CompositorManager>.Instance;
-			}
-		}
+		public static CompositorManager Instance { get { return Singleton<CompositorManager>.Instance; } }
 
 		/// <summary>
 		/// Initializes the Compositor Manager
@@ -201,29 +195,29 @@ namespace Axiom.Graphics
 		{
 			public int Compare( TextureDefinition x, TextureDefinition y )
 			{
-				if ( x.Format < y.Format )
+				if( x.Format < y.Format )
 				{
 					return -1;
 				}
-				else if ( x.Format == y.Format )
+				else if( x.Format == y.Format )
 				{
-					if ( x.Width < y.Width )
+					if( x.Width < y.Width )
 					{
 						return -1;
 					}
-					else if ( x.Width == y.Width )
+					else if( x.Width == y.Width )
 					{
-						if ( x.FSAA < y.FSAA )
+						if( x.FSAA < y.FSAA )
 						{
 							return -1;
 						}
-						else if ( x.FSAA == y.FSAA )
+						else if( x.FSAA == y.FSAA )
 						{
-							if ( x.FSAAHint != y.FSAAHint )
+							if( x.FSAAHint != y.FSAAHint )
 							{
 								return -1;
 							}
-							else if ( !x.SRGBWrite && y.SRGBWrite )
+							else if( !x.SRGBWrite && y.SRGBWrite )
 							{
 								return -1;
 							}
@@ -271,13 +265,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of registered compositor logics
 		/// </summary>
-		public ReadOnlyDictionary<string, ICompositorLogic> CompositorLogics
-		{
-			get
-			{
-				return compositorLogicIndex;
-			}
-		}
+		public ReadOnlyDictionary<string, ICompositorLogic> CompositorLogics { get { return compositorLogicIndex; } }
 
 		/// <summary>
 		/// List of registered custom composition passes
@@ -289,13 +277,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of registered custom composition passes
 		/// </summary>
-		public ReadOnlyDictionary<string, ICustomCompositionPass> CustomCompositionPasses
-		{
-			get
-			{
-				return customCompositionPassesIndex;
-			}
-		}
+		public ReadOnlyDictionary<string, ICustomCompositionPass> CustomCompositionPasses { get { return customCompositionPassesIndex; } }
 
 		///<summary>
 		///    Get a textured fullscreen 2D rectangle, for internal use.
@@ -304,7 +286,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( rectangle == null )
+				if( rectangle == null )
 				{
 					rectangle = new Rectangle2D( true );
 				}
@@ -326,7 +308,7 @@ namespace Axiom.Graphics
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public CompositorManager()
-            : base()
+			: base()
 		{
 			// OGRE initializes this manager here in the constructor. For consistency Axiom calls Initialize() directly
 			// in Root.ctor(), this does change the order in which things are initialized.
@@ -357,7 +339,7 @@ namespace Axiom.Graphics
 		public CompositorChain GetCompositorChain( Viewport vp )
 		{
 			CompositorChain chain;
-			if ( chains.TryGetValue( vp, out chain ) )
+			if( chains.TryGetValue( vp, out chain ) )
 			{
 				// Make sure we have the right viewport
 				// It's possible that this chain may have outlived a viewport and another
@@ -417,7 +399,7 @@ namespace Axiom.Graphics
 		public CompositorInstance AddCompositor( Viewport vp, string compositor, int addPosition )
 		{
 			Compositor comp = (Compositor)this[ compositor ];
-			if ( comp == null )
+			if( comp == null )
 			{
 				return null;
 			}
@@ -436,10 +418,10 @@ namespace Axiom.Graphics
 		public void RemoveCompositor( Viewport vp, string compositor )
 		{
 			CompositorChain chain = GetCompositorChain( vp );
-			for ( int i = 0; i < chain.Instances.Count; i++ )
+			for( int i = 0; i < chain.Instances.Count; i++ )
 			{
 				CompositorInstance instance = chain.GetCompositor( i );
-				if ( instance.Compositor.Name == compositor )
+				if( instance.Compositor.Name == compositor )
 				{
 					chain.RemoveCompositor( i );
 					break;
@@ -455,10 +437,10 @@ namespace Axiom.Graphics
 		{
 			CompositorChain chain = remInstance.Chain;
 
-			for ( int i = 0; i < chain.Instances.Count; i++ )
+			for( int i = 0; i < chain.Instances.Count; i++ )
 			{
 				CompositorInstance instance = chain.GetCompositor( i );
-				if ( instance == remInstance )
+				if( instance == remInstance )
 				{
 					chain.RemoveCompositor( i );
 					break;
@@ -475,10 +457,10 @@ namespace Axiom.Graphics
 		public void SetCompositorEnabled( Viewport vp, string compositor, bool value )
 		{
 			CompositorChain chain = GetCompositorChain( vp );
-			for ( int i = 0; i < chain.Instances.Count; i++ )
+			for( int i = 0; i < chain.Instances.Count; i++ )
 			{
 				CompositorInstance instance = chain.GetCompositor( i );
-				if ( instance.Compositor.Name == compositor )
+				if( instance.Compositor.Name == compositor )
 				{
 					chain.SetCompositorEnabled( i, value );
 					break;
@@ -488,11 +470,11 @@ namespace Axiom.Graphics
 
 		public void RegisterCompositorLogic( string name, ICompositorLogic compositorLogic )
 		{
-			if ( string.IsNullOrEmpty( name ) )
+			if( string.IsNullOrEmpty( name ) )
 			{
 				throw new AxiomException( "Compositor logic name must not be empty." );
 			}
-			if ( compositorLogics.ContainsKey( name ) )
+			if( compositorLogics.ContainsKey( name ) )
 			{
 				throw new AxiomException( "Compositor logic '" + name + "' already exists." );
 			}
@@ -502,11 +484,11 @@ namespace Axiom.Graphics
 
 		public void RegisterCustomCompositorPass( string name, ICustomCompositionPass compositionPass )
 		{
-			if ( string.IsNullOrEmpty( name ) )
+			if( string.IsNullOrEmpty( name ) )
 			{
 				throw new AxiomException( "Pass name must not be empty." );
 			}
-			if ( compositorLogics.ContainsKey( name ) )
+			if( compositorLogics.ContainsKey( name ) )
 			{
 				throw new AxiomException( "Pass '" + name + "' already exists." );
 			}
@@ -532,28 +514,28 @@ namespace Axiom.Graphics
 		/// <param name="scope"></param>
 		/// <returns></returns>
 		public Texture GetPooledTexture( string name, string localName, int width, int height, PixelFormat format, int aa, string aaHint, bool srgb,
-										 List<Texture> textureAllreadyAssigned, CompositorInstance instance, CompositionTechnique.TextureScope scope )
+		                                 List<Texture> textureAllreadyAssigned, CompositorInstance instance, CompositionTechnique.TextureScope scope )
 		{
-			if ( scope == CompositionTechnique.TextureScope.Global )
+			if( scope == CompositionTechnique.TextureScope.Global )
 			{
 				throw new AxiomException( "Global scope texture can not be pooled." );
 			}
 
 			TextureDefinition def = new TextureDefinition( width, height, format, aa, aaHint, srgb );
-			if ( scope == CompositionTechnique.TextureScope.Chain )
+			if( scope == CompositionTechnique.TextureScope.Chain )
 			{
 				Pair<string> pair = new Pair<string>( instance.Compositor.Name, localName );
 				SortedList<TextureDefinition, Texture> defMap = null;
-				if ( chainTexturesByRef.TryGetValue( pair, out defMap ) )
+				if( chainTexturesByRef.TryGetValue( pair, out defMap ) )
 				{
 					Texture tex;
-					if ( defMap.TryGetValue( def, out tex ) )
+					if( defMap.TryGetValue( def, out tex ) )
 					{
 						return tex;
 					}
 				}
 				// ok, we need to create a new one
-				if ( defMap == null )
+				if( defMap == null )
 				{
 					defMap = new SortedList<TextureDefinition, Texture>( new TextureDefLess() );
 				}
@@ -562,7 +544,7 @@ namespace Axiom.Graphics
 
 				defMap.Add( def, newTex );
 
-				if ( chainTexturesByRef.ContainsKey( pair ) )
+				if( chainTexturesByRef.ContainsKey( pair ) )
 				{
 					chainTexturesByRef[ pair ] = defMap;
 				}
@@ -575,7 +557,7 @@ namespace Axiom.Graphics
 			} //end if scope
 
 			List<Texture> i = null;
-			if ( !texturesByDef.TryGetValue( def, out i ) )
+			if( !texturesByDef.TryGetValue( def, out i ) )
 			{
 				i = new List<Texture>();
 				texturesByDef.Add( def, i );
@@ -586,10 +568,10 @@ namespace Axiom.Graphics
 
 			Texture ret = null;
 			// iterate over the existing textures and check if we can re-use
-			foreach ( Texture tex in i )
+			foreach( Texture tex in i )
 			{
 				// check not already used
-				if ( !textureAllreadyAssigned.Contains( tex ) )
+				if( !textureAllreadyAssigned.Contains( tex ) )
 				{
 					bool allowReuse = true;
 					// ok, we didn't use this one already
@@ -598,25 +580,25 @@ namespace Axiom.Graphics
 					// compositor, we can end up trying to use the same texture for both
 					// so, never allow a texture with an input previous pass to be
 					// shared with its immediate predecessor in the chain
-					if ( IsInputPreviousTarget( instance, localName ) )
+					if( IsInputPreviousTarget( instance, localName ) )
 					{
 						// Check whether this is also an input to the output target of previous
 						// can't use CompositorInstance._previousInstance, only set up
 						// during compile
-						if ( previous != null && IsInputToOutputTarget( previous, tex ) )
+						if( previous != null && IsInputToOutputTarget( previous, tex ) )
 						{
 							allowReuse = false;
 						}
 					}
 					// now check the other way around since we don't know what order they're bound in
-					if ( IsInputToOutputTarget( instance, localName ) )
+					if( IsInputToOutputTarget( instance, localName ) )
 					{
-						if ( next != null && IsInputPreviousTarget( next, tex ) )
+						if( next != null && IsInputPreviousTarget( next, tex ) )
 						{
 							allowReuse = false;
 						}
 					}
-					if ( allowReuse )
+					if( allowReuse )
 					{
 						ret = tex;
 						break;
@@ -624,7 +606,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			if ( ret == null )
+			if( ret == null )
 			{
 				// ok, we need to create a new one
 				ret = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
@@ -652,30 +634,30 @@ namespace Axiom.Graphics
 		/// <param name="onlyIfUnreferenced"></param>
 		public void FreePooledTextures( bool onlyIfUnreferenced )
 		{
-			if ( onlyIfUnreferenced )
+			if( onlyIfUnreferenced )
 			{
-				foreach ( KeyValuePair<TextureDefinition, List<Texture>> i in texturesByDef )
+				foreach( KeyValuePair<TextureDefinition, List<Texture>> i in texturesByDef )
 				{
 					List<Texture> texList = i.Value;
 					// if the resource system, plus this class, are the only ones to have a reference..
 					// NOTE: any material references will stop this texture getting freed (e.g. compositor demo)
 					// until this routine is called again after the material no longer references the texture
-					for ( int j = 0; j < texList.Count; j++ )
+					for( int j = 0; j < texList.Count; j++ )
 					{
-						if ( texList[ j ].UseCount == ResourceGroupManager.ResourceSystemNumReferenceCount + 1 )
+						if( texList[ j ].UseCount == ResourceGroupManager.ResourceSystemNumReferenceCount + 1 )
 						{
 							TextureManager.Instance.Remove( texList[ j ].Handle );
 							texList.Remove( texList[ j ] );
 						}
 					}
 				}
-				foreach ( KeyValuePair<Pair<string>, SortedList<TextureDefinition, Texture>> i in chainTexturesByRef )
+				foreach( KeyValuePair<Pair<string>, SortedList<TextureDefinition, Texture>> i in chainTexturesByRef )
 				{
 					SortedList<TextureDefinition, Texture> texMap = i.Value;
-					foreach ( KeyValuePair<TextureDefinition, Texture> j in texMap )
+					foreach( KeyValuePair<TextureDefinition, Texture> j in texMap )
 					{
 						Texture tex = j.Value;
-						if ( tex.UseCount == ResourceGroupManager.ResourceSystemNumReferenceCount + 1 )
+						if( tex.UseCount == ResourceGroupManager.ResourceSystemNumReferenceCount + 1 )
 						{
 							TextureManager.Instance.Remove( tex.Handle );
 							texMap.Remove( j.Key );
@@ -686,10 +668,10 @@ namespace Axiom.Graphics
 			else
 			{
 				// destroy all
-				foreach ( KeyValuePair<TextureDefinition, List<Texture>> i in texturesByDef )
+				foreach( KeyValuePair<TextureDefinition, List<Texture>> i in texturesByDef )
 				{
 					List<Texture> texList = i.Value;
-					for ( int j = 0; j < texList.Count; j++ )
+					for( int j = 0; j < texList.Count; j++ )
 					{
 						TextureManager.Instance.Remove( texList[ 0 ].Handle );
 						texList.Remove( texList[ 0 ] );
@@ -708,10 +690,10 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		private bool IsInputPreviousTarget( CompositorInstance instance, string localName )
 		{
-			foreach ( CompositionTargetPass tp in instance.Technique.TargetPasses )
+			foreach( CompositionTargetPass tp in instance.Technique.TargetPasses )
 			{
-				if ( tp.InputMode == CompositorInputMode.Previous &&
-					 tp.OutputName == localName )
+				if( tp.InputMode == CompositorInputMode.Previous &&
+				    tp.OutputName == localName )
 				{
 					return true;
 				}
@@ -727,13 +709,13 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		private bool IsInputPreviousTarget( CompositorInstance instance, Texture texture )
 		{
-			foreach ( CompositionTargetPass tp in instance.Technique.TargetPasses )
+			foreach( CompositionTargetPass tp in instance.Technique.TargetPasses )
 			{
-				if ( tp.InputMode == CompositorInputMode.Previous )
+				if( tp.InputMode == CompositorInputMode.Previous )
 				{
 					// Don't have to worry about an MRT, because no MRT can be input previous
 					Texture t = instance.GetTextureInstance( tp.OutputName, 0 );
-					if ( t != null && t == texture )
+					if( t != null && t == texture )
 					{
 						return true;
 					}
@@ -751,11 +733,11 @@ namespace Axiom.Graphics
 		private bool IsInputToOutputTarget( CompositorInstance instance, string localName )
 		{
 			CompositionTargetPass tp = instance.Technique.OutputTarget;
-			foreach ( CompositionPass p in tp.Passes )
+			foreach( CompositionPass p in tp.Passes )
 			{
-				for ( int i = 0; i < p.Inputs.Length; i++ )
+				for( int i = 0; i < p.Inputs.Length; i++ )
 				{
-					if ( p.GetInput( i ).Name == localName )
+					if( p.GetInput( i ).Name == localName )
 					{
 						return true;
 					}
@@ -773,12 +755,12 @@ namespace Axiom.Graphics
 		private bool IsInputToOutputTarget( CompositorInstance instance, Texture texture )
 		{
 			CompositionTargetPass tp = instance.Technique.OutputTarget;
-			foreach ( CompositionPass p in tp.Passes )
+			foreach( CompositionPass p in tp.Passes )
 			{
-				for ( int i = 0; i < p.Inputs.Length; i++ )
+				for( int i = 0; i < p.Inputs.Length; i++ )
 				{
 					Texture t = instance.GetTextureInstance( p.GetInput( i ).Name, 0 );
-					if ( t != null && t == texture )
+					if( t != null && t == texture )
 					{
 						return true;
 					}
@@ -807,22 +789,22 @@ namespace Axiom.Graphics
 #if AXIOM_USENEWCOMPILERS
             Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( data, groupName, fileName );
 #else
-            CompositorScriptLoader.ParseScript( this, data, groupName, fileName );
+			CompositorScriptLoader.ParseScript( this, data, groupName, fileName );
 #endif
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					foreach ( KeyValuePair<Viewport, CompositorChain> item in chains )
+					foreach( KeyValuePair<Viewport, CompositorChain> item in chains )
 					{
 						item.Value.RemoveAllCompositors();
 					}
 
-					if ( ResourceGroupManager.Instance != null )
+					if( ResourceGroupManager.Instance != null )
 					{
 						ResourceGroupManager.Instance.UnregisterScriptLoader( this );
 						ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );

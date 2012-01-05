@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -27,12 +29,13 @@ using System.Linq;
 using System.Globalization;
 using System.Security.Permissions;
 using System.Threading;
+
 using Axiom.Core;
 using Axiom.Framework.Exceptions;
 
 namespace Axiom.Samples
 {
-	static class Program
+	internal static class Program
 	{
 		/// <summary>
 		/// The main entry point for the application.
@@ -40,13 +43,13 @@ namespace Axiom.Samples
 #if !(XBOX || XBOX360)
 		[STAThread]
 #endif
-		static void Main()
+		private static void Main()
 		{
 			try
 			{
 #if !(XBOX || XBOX360)
 				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
+				using( SampleBrowser sb = new SampleBrowser() )
 #else
 				using (SampleBrowser sb = new XBox.SampleBrowser())
 #endif
@@ -54,7 +57,7 @@ namespace Axiom.Samples
 					sb.Go();
 				}
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 #if !(XBOX || XBOX360)
 				IErrorDialog messageBox = new WinFormErrorDialog();
@@ -63,7 +66,6 @@ namespace Axiom.Samples
 				Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
 #endif
 			}
-
 		}
 	}
 }

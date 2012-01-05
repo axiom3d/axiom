@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -45,16 +47,13 @@ namespace Axiom.Samples
 		/// <summary>
 		/// click and drag to free-look
 		/// </summary>
-		protected virtual bool DragLook
+		virtual protected bool DragLook
 		{
-			get
-			{
-				return dragLook;
-			}
+			get { return dragLook; }
 
 			set
 			{
-				if ( value )
+				if( value )
 				{
 					CameraManager.setStyle( CameraStyle.Manual );
 					TrayManager.ShowCursor();
@@ -73,6 +72,7 @@ namespace Axiom.Samples
 		/// Main Viewport
 		/// </summary>
 		protected Viewport Viewport;
+
 		/// <summary>
 		/// Main Camera
 		/// </summary>
@@ -115,9 +115,7 @@ namespace Axiom.Samples
 			this.CameraManager = null;
 		}
 
-		~SdkSample()
-		{
-		}
+		~SdkSample() {}
 
 		#endregion Construction and Destruction
 
@@ -137,7 +135,7 @@ namespace Axiom.Samples
 		/// <param name="state"></param>
 		public override void SaveState( NameValuePairList state )
 		{
-			if ( this.CameraManager.getStyle() == CameraStyle.FreeLook )
+			if( this.CameraManager.getStyle() == CameraStyle.FreeLook )
 			{
 				state[ "CameraPosition" ] = this.Camera.Position.ToString();
 				state[ "CameraOrientation" ] = this.Camera.Orientation.ToString();
@@ -150,7 +148,7 @@ namespace Axiom.Samples
 		/// <param name="state"></param>
 		public override void RestoreState( NameValuePairList state )
 		{
-			if ( state.ContainsKey( "CameraPosition" ) && state.ContainsKey( "CameraOrientation" ) )
+			if( state.ContainsKey( "CameraPosition" ) && state.ContainsKey( "CameraOrientation" ) )
 			{
 				this.CameraManager.setStyle( CameraStyle.FreeLook );
 				this.Camera.Position = StringConverter.ParseVector3( state[ "CameraPosition" ] );
@@ -167,11 +165,11 @@ namespace Axiom.Samples
 		{
 			this.TrayManager.FrameRenderingQueued( evt );
 
-			if ( !this.TrayManager.IsDialogVisible )
+			if( !this.TrayManager.IsDialogVisible )
 			{
-				this.CameraManager.frameRenderingQueued( evt );   // if dialog isn't up, then update the camera
+				this.CameraManager.frameRenderingQueued( evt ); // if dialog isn't up, then update the camera
 
-				if ( this.DetailsPanel.IsVisible )   // if details panel is visible, then update its contents
+				if( this.DetailsPanel.IsVisible ) // if details panel is visible, then update its contents
 				{
 					this.DetailsPanel.SetParamValue( 0, this.Camera.DerivedPosition.x.ToString() );
 					this.DetailsPanel.SetParamValue( 1, this.Camera.DerivedPosition.y.ToString() );
@@ -202,24 +200,30 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public override bool KeyPressed( SIS.KeyEventArgs evt )
 		{
-			if ( evt.Key == SIS.KeyCode.Key_H || evt.Key == SIS.KeyCode.Key_F1 ) // toggle visibility of help dialog
+			if( evt.Key == SIS.KeyCode.Key_H || evt.Key == SIS.KeyCode.Key_F1 ) // toggle visibility of help dialog
 			{
-				if ( !this.TrayManager.IsDialogVisible && Metadata[ "Help" ] != "" )
+				if( !this.TrayManager.IsDialogVisible && Metadata[ "Help" ] != "" )
+				{
 					this.TrayManager.ShowOkDialog( "Help", Metadata[ "Help" ] );
+				}
 				else
+				{
 					this.TrayManager.CloseDialog();
+				}
 			}
 
-			if ( this.TrayManager.IsDialogVisible )
+			if( this.TrayManager.IsDialogVisible )
+			{
 				return true; // don't process any more keys if dialog is up
+			}
 
-			if ( evt.Key == SIS.KeyCode.Key_F ) // toggle visibility of advanced frame stats
+			if( evt.Key == SIS.KeyCode.Key_F ) // toggle visibility of advanced frame stats
 			{
 				this.TrayManager.ToggleAdvancedFrameStats();
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_G ) // toggle visibility of even rarer debugging details
+			else if( evt.Key == SIS.KeyCode.Key_G ) // toggle visibility of even rarer debugging details
 			{
-				if ( this.DetailsPanel.TrayLocation == TrayLocation.None )
+				if( this.DetailsPanel.TrayLocation == TrayLocation.None )
 				{
 					this.TrayManager.MoveWidgetToTray( this.DetailsPanel, TrayLocation.TopRight, 0 );
 					this.DetailsPanel.Show();
@@ -230,13 +234,13 @@ namespace Axiom.Samples
 					this.DetailsPanel.Hide();
 				}
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_T ) // cycle polygon rendering mode
+			else if( evt.Key == SIS.KeyCode.Key_T ) // cycle polygon rendering mode
 			{
 				String newVal;
 				TextureFiltering tfo;
 				int aniso;
 
-				switch ( this.DetailsPanel.GetParamValue( 9 )[ 0 ] )
+				switch( this.DetailsPanel.GetParamValue( 9 )[ 0 ] )
 				{
 					case 'B':
 						newVal = "Trilinear";
@@ -264,12 +268,12 @@ namespace Axiom.Samples
 				MaterialManager.Instance.DefaultAnisotropy = aniso;
 				this.DetailsPanel.SetParamValue( 9, newVal );
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_R ) // cycle polygon rendering mode
+			else if( evt.Key == SIS.KeyCode.Key_R ) // cycle polygon rendering mode
 			{
 				String newVal;
 				PolygonMode pm;
 
-				switch ( this.Camera.PolygonMode )
+				switch( this.Camera.PolygonMode )
 				{
 					case PolygonMode.Solid:
 						newVal = "Wireframe";
@@ -288,11 +292,11 @@ namespace Axiom.Samples
 				this.Camera.PolygonMode = pm;
 				this.DetailsPanel.SetParamValue( 10, newVal );
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_F5 ) // refresh all textures
+			else if( evt.Key == SIS.KeyCode.Key_F5 ) // refresh all textures
 			{
 				TextureManager.Instance.ReloadAll();
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_F9 ) // take a screenshot
+			else if( evt.Key == SIS.KeyCode.Key_F9 ) // take a screenshot
 			{
 				String path = "screenshots\\screenshot_";
 				Window.WriteContentsToFile( path + Root.CurrentFrameCount + ".jpg" );
@@ -327,8 +331,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public override bool MouseMoved( SIS.MouseEventArgs evt )
 		{
-			if ( this.TrayManager.InjectMouseMove( evt ) )
+			if( this.TrayManager.InjectMouseMove( evt ) )
+			{
 				return true;
+			}
 
 			this.CameraManager.injectMouseMove( evt );
 
@@ -348,8 +354,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public override bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( this.TrayManager.InjectMouseDown( evt, id ) )
+			if( this.TrayManager.InjectMouseDown( evt, id ) )
+			{
 				return true;
+			}
 
 			this.CameraManager.injectMouseDown( evt, id );
 
@@ -369,8 +377,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public override bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( this.TrayManager.InjectMouseUp( evt, id ) )
+			if( this.TrayManager.InjectMouseUp( evt, id ) )
+			{
 				return true;
+			}
 
 			this.CameraManager.injectMouseUp( evt, id );
 
@@ -393,7 +403,7 @@ namespace Axiom.Samples
 			CreateSceneManager();
 			SetupView();
 
-			this.TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener );  // create a tray interface
+			this.TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener ); // create a tray interface
 
 			LoadResources();
 			ResourcesLoaded = true;
@@ -404,20 +414,19 @@ namespace Axiom.Samples
 			this.TrayManager.HideCursor();
 
 			// create a params panel for displaying sample details
-			List<string> items = new List<string>
-								 {
-									 "cam.pX", 
-									 "cam.pY", 
-									 "cam.pZ", 
-									 String.Empty, 
-									 "cam.oW", 
-									 "cam.oX", 
-									 "cam.oY", 
-									 "cam.oZ", 
-									 String.Empty, 
-									 "Filtering", 
-									 "Poly Mode"
-								 };
+			List<string> items = new List<string> {
+			                                      	"cam.pX",
+			                                      	"cam.pY",
+			                                      	"cam.pZ",
+			                                      	String.Empty,
+			                                      	"cam.oW",
+			                                      	"cam.oX",
+			                                      	"cam.oY",
+			                                      	"cam.oZ",
+			                                      	String.Empty,
+			                                      	"Filtering",
+			                                      	"Poly Mode"
+			                                      };
 			this.DetailsPanel = this.TrayManager.CreateParamsPanel( TrayLocation.None, "DetailsPanel", 180, items );
 			this.DetailsPanel.SetParamValue( 9, "Bilinear" );
 			this.DetailsPanel.SetParamValue( 10, "Solid" );
@@ -436,10 +445,14 @@ namespace Axiom.Samples
 		{
 			base.Shutdown();
 
-			if ( this.TrayManager != null )
+			if( this.TrayManager != null )
+			{
 				this.TrayManager.Dispose();
-			if ( this.CameraManager != null )
+			}
+			if( this.CameraManager != null )
+			{
 				this.CameraManager = null;
+			}
 
 			// restore settings we may have changed, so as not to affect other samples
 			MaterialManager.Instance.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
@@ -457,10 +470,9 @@ namespace Axiom.Samples
 			this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
 			this.Camera.Near = 5;
 
-			this.CameraManager = new SdkCameraManager( this.Camera );   // create a default camera controller
+			this.CameraManager = new SdkCameraManager( this.Camera ); // create a default camera controller
 		}
 
 		#endregion Sample Implementation
-
 	}
 }

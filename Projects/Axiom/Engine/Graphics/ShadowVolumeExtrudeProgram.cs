@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -144,9 +148,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		This is a static class; don't allow instantiation.
 		/// </summary>
-		private ShadowVolumeExtrudeProgram()
-		{
-		}
+		private ShadowVolumeExtrudeProgram() {}
 
 		#endregion Constructor
 
@@ -272,7 +274,6 @@ namespace Axiom.Graphics
 			"dp4 oPos.z, c2, r0\n" +
 			"dp4 oPos.w, c3, r0\n" +
 			"mov oD0, c5.x\n";
-
 
 		// c4 is the light position/direction in these
 		// c5 is extrusion distance
@@ -429,16 +430,16 @@ namespace Axiom.Graphics
 		/// </summary>
 		private static bool isInitialized = false;
 
-		public static string[] programNames = new string[]{
-															   "Axiom/ShadowExtrudePointLight",
-															   "Axiom/ShadowExtrudePointLightDebug",
-															   "Axiom/ShadowExtrudeDirLight",
-															   "Axiom/ShadowExtrudeDirLightDebug",
-															   "Axiom/ShadowExtrudePointLightFinite",
-															   "Axiom/ShadowExtrudePointLightFiniteDebug",
-															   "Axiom/ShadowExtrudeDirLightFinite",
-															   "Axiom/ShadowExtrudeDirLightFiniteDebug"
-														   };
+		public static string[] programNames = new string[] {
+		                                                   	"Axiom/ShadowExtrudePointLight",
+		                                                   	"Axiom/ShadowExtrudePointLightDebug",
+		                                                   	"Axiom/ShadowExtrudeDirLight",
+		                                                   	"Axiom/ShadowExtrudeDirLightDebug",
+		                                                   	"Axiom/ShadowExtrudePointLightFinite",
+		                                                   	"Axiom/ShadowExtrudePointLightFiniteDebug",
+		                                                   	"Axiom/ShadowExtrudeDirLightFinite",
+		                                                   	"Axiom/ShadowExtrudeDirLightFiniteDebug"
+		                                                   };
 
 		/// <summary>
 		///		Contains the possible hardware extrusion programs.
@@ -449,30 +450,37 @@ namespace Axiom.Graphics
 			///		Point light extruder, infinite distance.
 			/// </summary>
 			PointLight = 0,
+
 			/// <summary>
 			///		Point light extruder, infinite distance, debug mode.
 			/// </summary>
 			PointLightDebug = 1,
+
 			/// <summary>
 			///		Directional light extruder, infinite distance.
 			/// </summary>
 			DirectionalLight = 2,
+
 			/// <summary>
 			///		Directional light extruder, infinite distance, debug mode.
 			/// </summary>
 			DirectionalLightDebug = 3,
+
 			/// <summary>
 			///		Point light extruder, finite distance.
 			/// </summary>
 			PointLightFinite = 4,
+
 			/// <summary>
 			///		Point light extruder, finite distance, debug mode.
 			/// </summary>
 			PointLightFiniteDebug = 5,
+
 			/// <summary>
 			///		Directional light extruder, finite distance.
 			/// </summary>
 			DirectionalLightFinite = 6,
+
 			/// <summary>
 			///		Directional light extruder, finite distance, debug mode.
 			/// </summary>
@@ -493,13 +501,13 @@ namespace Axiom.Graphics
 		/// <returns>Source of the specified program.</returns>
 		public static string GetProgramSource( LightType lightType, string syntax, bool finite, bool debug )
 		{
-			if ( lightType == LightType.Directional )
+			if( lightType == LightType.Directional )
 			{
-				if ( syntax == "arbvp1" )
+				if( syntax == "arbvp1" )
 				{
-					if ( finite )
+					if( finite )
 					{
-						if ( debug )
+						if( debug )
 						{
 							return dirArbvp1FiniteDebug;
 						}
@@ -510,7 +518,7 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-						if ( debug )
+						if( debug )
 						{
 							return dirArbvp1Debug;
 						}
@@ -522,9 +530,9 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					if ( finite )
+					if( finite )
 					{
-						if ( debug )
+						if( debug )
 						{
 							return dirVs_1_1FiniteDebug;
 						}
@@ -535,7 +543,7 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-						if ( debug )
+						if( debug )
 						{
 							return dirVs_1_1Debug;
 						}
@@ -548,11 +556,11 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				if ( syntax == "arbvp1" )
+				if( syntax == "arbvp1" )
 				{
-					if ( finite )
+					if( finite )
 					{
-						if ( debug )
+						if( debug )
 						{
 							return pointArbvp1FiniteDebug;
 						}
@@ -563,7 +571,7 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-						if ( debug )
+						if( debug )
 						{
 							return pointArbvp1Debug;
 						}
@@ -575,9 +583,9 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					if ( finite )
+					if( finite )
 					{
-						if ( debug )
+						if( debug )
 						{
 							return pointVs_1_1FiniteDebug;
 						}
@@ -588,7 +596,7 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-						if ( debug )
+						if( debug )
 						{
 							return pointVs_1_1Debug;
 						}
@@ -610,7 +618,7 @@ namespace Axiom.Graphics
 		{
 			int index = (int)type;
 
-			if ( index < programNames.Length )
+			if( index < programNames.Length )
 			{
 				return programNames[ index ];
 			}
@@ -627,11 +635,11 @@ namespace Axiom.Graphics
 		/// <returns>Name of the program matching the specified parameters.</returns>
 		public static string GetProgramName( LightType lightType, bool finite, bool debug )
 		{
-			if ( lightType == LightType.Directional )
+			if( lightType == LightType.Directional )
 			{
-				if ( finite )
+				if( finite )
 				{
-					if ( debug )
+					if( debug )
 					{
 						return programNames[ (int)Programs.DirectionalLightFiniteDebug ];
 					}
@@ -642,7 +650,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					if ( debug )
+					if( debug )
 					{
 						return programNames[ (int)Programs.DirectionalLightDebug ];
 					}
@@ -654,9 +662,9 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				if ( finite )
+				if( finite )
 				{
-					if ( debug )
+					if( debug )
 					{
 						return programNames[ (int)Programs.PointLightFiniteDebug ];
 					}
@@ -667,7 +675,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					if ( debug )
+					if( debug )
 					{
 						return programNames[ (int)Programs.PointLightDebug ];
 					}
@@ -685,33 +693,37 @@ namespace Axiom.Graphics
 		public static void Initialize()
 		{
 			// only need to initialize once
-			if ( !isInitialized )
+			if( !isInitialized )
 			{
 				string syntax = "";
 
 				// flags for which of the programs use finite extrusion
 				bool[] vertexProgramFinite =
-					new bool[] { false, false, false, false, true, true, true, true };
+					new bool[] {
+					           	false, false, false, false, true, true, true, true
+					           };
 
 				// flags for which of the programs use debug rendering
 				bool[] vertexProgramDebug =
-					new bool[] { false, true, false, true, false, true, false, true };
+					new bool[] {
+					           	false, true, false, true, false, true, false, true
+					           };
 
 				// types of lights that each of the programs target
 				LightType[] vertexProgramLightTypes =
-					new LightType[] { 
-							LightType.Point, LightType.Point, 
-							LightType.Directional, LightType.Directional,
-							LightType.Point, LightType.Point,
-							LightType.Directional, LightType.Directional
-					};
+					new LightType[] {
+					                	LightType.Point, LightType.Point,
+					                	LightType.Directional, LightType.Directional,
+					                	LightType.Point, LightType.Point,
+					                	LightType.Directional, LightType.Directional
+					                };
 
 				// load hardware extrusion programs for point & dir lights
-				if ( GpuProgramManager.Instance.IsSyntaxSupported( "arbvp1" ) )
+				if( GpuProgramManager.Instance.IsSyntaxSupported( "arbvp1" ) )
 				{
 					syntax = "arbvp1";
 				}
-				else if ( GpuProgramManager.Instance.IsSyntaxSupported( "vs_1_1" ) )
+				else if( GpuProgramManager.Instance.IsSyntaxSupported( "vs_1_1" ) )
 				{
 					syntax = "vs_1_1";
 				}
@@ -721,10 +733,10 @@ namespace Axiom.Graphics
 				}
 
 				// create the programs
-				for ( int i = 0; i < programNames.Length; i++ )
+				for( int i = 0; i < programNames.Length; i++ )
 				{
 					// sanity check to make sure it doesn't already exist
-					if ( GpuProgramManager.Instance.GetByName( programNames[ i ] ) == null )
+					if( GpuProgramManager.Instance.GetByName( programNames[ i ] ) == null )
 					{
 						string source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
 
@@ -745,10 +757,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		public static void Shutdown()
 		{
-			if ( isInitialized )
+			if( isInitialized )
 			{
 				// destroy shadow volume extruders
-				foreach ( string programName in programNames )
+				foreach( string programName in programNames )
 				{
 					// TODO: Toast the programs
 					//GpuProgramManager.Instance.Remove(programName);

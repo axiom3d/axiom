@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,10 +56,12 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				foreach ( Driver drv in this )
+				foreach( Driver drv in this )
 				{
-					if ( drv.Description == description )
+					if( drv.Description == description )
+					{
 						return drv;
+					}
 				}
 				return null;
 			}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Contract.cs 1256 2008-03-21 14:35:53Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -53,7 +57,7 @@ namespace Axiom.Utilities
 		/// <exception cref="ArgumentException">Condition is <c>false</c>.</exception>
 		public static void Requires( bool condition )
 		{
-			if ( !condition )
+			if( !condition )
 			{
 				throw new ArgumentException( "Method condition violated." );
 			}
@@ -66,7 +70,7 @@ namespace Axiom.Utilities
 		{
 			Proclaim.NotEmpty( name );
 
-			if ( !condition )
+			if( !condition )
 			{
 				throw new ArgumentException( "Invalid parameter value.", name );
 			}
@@ -79,7 +83,7 @@ namespace Axiom.Utilities
 		{
 			Proclaim.NotEmpty( name );
 
-			if ( !condition )
+			if( !condition )
 			{
 				throw new ArgumentException( message, name );
 			}
@@ -95,7 +99,7 @@ namespace Axiom.Utilities
 		{
 			Proclaim.NotEmpty( name );
 
-			if ( value == null )
+			if( value == null )
 			{
 				throw new ArgumentNullException( name );
 			}
@@ -110,7 +114,7 @@ namespace Axiom.Utilities
 		public static void RequiresNotEmpty( string str, string name )
 		{
 			RequiresNotNull( str, name );
-			if ( str.Length == 0 )
+			if( str.Length == 0 )
 			{
 				throw new ArgumentException( "Non-empty string required.", name );
 			}
@@ -126,7 +130,7 @@ namespace Axiom.Utilities
 		public static void RequiresNotEmpty<T>( ICollection<T> collection, string name )
 		{
 			RequiresNotNull( collection, name );
-			if ( collection.Count == 0 )
+			if( collection.Count == 0 )
 			{
 				throw new ArgumentException( "Non-empty collection required.", name );
 			}
@@ -142,8 +146,10 @@ namespace Axiom.Utilities
 			Proclaim.NotEmpty( indexName );
 			Proclaim.NotNull( array );
 
-			if ( index < 0 || index >= array.Count )
+			if( index < 0 || index >= array.Count )
+			{
 				throw new ArgumentOutOfRangeException( indexName );
+			}
 		}
 
 		/// <summary>
@@ -156,8 +162,10 @@ namespace Axiom.Utilities
 			Proclaim.NotEmpty( indexName );
 			Proclaim.NotNull( array );
 
-			if ( index < 0 || index > array.Count )
+			if( index < 0 || index > array.Count )
+			{
 				throw new ArgumentOutOfRangeException( indexName );
+			}
 		}
 
 		/// <summary>
@@ -171,10 +179,14 @@ namespace Axiom.Utilities
 			Proclaim.NotEmpty( countName );
 			Proclaim.NotNull( array );
 
-			if ( count < 0 )
+			if( count < 0 )
+			{
 				throw new ArgumentOutOfRangeException( countName );
-			if ( offset < 0 || array.Count - offset < count )
+			}
+			if( offset < 0 || array.Count - offset < count )
+			{
 				throw new ArgumentOutOfRangeException( offsetName );
+			}
 		}
 
 		/// <summary>
@@ -188,10 +200,14 @@ namespace Axiom.Utilities
 			Proclaim.NotEmpty( countName );
 			Proclaim.NotNull( str );
 
-			if ( count < 0 )
+			if( count < 0 )
+			{
 				throw new ArgumentOutOfRangeException( countName );
-			if ( offset < 0 || str.Length - offset < count )
+			}
+			if( offset < 0 || str.Length - offset < count )
+			{
 				throw new ArgumentOutOfRangeException( offsetName );
+			}
 		}
 
 		/// <summary>
@@ -202,9 +218,9 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( name );
 			RequiresNotNull( items, name );
 
-			for ( int i = 0; i < items.Count; i++ )
+			for( int i = 0; i < items.Count; i++ )
 			{
-				if ( items[ i ] == null )
+				if( items[ i ] == null )
 				{
 					throw ExceptionFactory.CreateArgumentItemNullException( i, name );
 				}

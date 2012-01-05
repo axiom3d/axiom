@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -53,7 +57,6 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class TriangleListBuilder : AnyBuilder
 	{
-
 		#region Methods
 
 		public IEnumerable<TriangleVertices> Build()
@@ -61,17 +64,17 @@ namespace Axiom.Graphics
 			List<TriangleVertices> triangles = new List<TriangleVertices>();
 
 			//Iterate index sets
-			for ( int indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
+			for( int indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
 			{
 				IndexData indexData = indexDataList[ indexSet ];
 				VertexData vertexData =
-				vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
+					vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
 				IndexType indexType = indexData.indexBuffer.Type;
 				OperationType opType = operationTypes[ indexSet ];
 
 				int iterations = 0;
 
-				switch ( opType )
+				switch( opType )
 				{
 					case OperationType.TriangleList:
 						iterations = indexData.indexCount / 3;
@@ -102,13 +105,13 @@ namespace Axiom.Graphics
 						unsafe
 						{
 							byte* pVertexPos = (byte*)vxPtr + posElement.Offset; // positional element of the base vertex
-							float* pReal;										 // for vector component retrieval
-							int icount = 0;										 // index into the index buffer
-							int index;											 // index into the vertex buffer
+							float* pReal; // for vector component retrieval
+							int icount = 0; // index into the index buffer
+							int index; // index into the vertex buffer
 							short* p16Idx = null;
 							int* p32Idx = null;
 
-							if ( indexType == IndexType.Size16 )
+							if( indexType == IndexType.Size16 )
 							{
 								p16Idx = (Int16*)idxPtr; //.ToPointer(); (?)
 							}
@@ -118,17 +121,17 @@ namespace Axiom.Graphics
 							}
 
 							// iterate over all the groups of 3 indices
-							for ( int t = 0; t < iterations; t++ )
+							for( int t = 0; t < iterations; t++ )
 							{
-								Vector3[] v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
+								Vector3[] v = new Vector3[3]; //vertices of a single triangle, new instance needed each iteration
 
 								//assemble a triangle
-								for ( int i = 0; i < 3; i++ )
+								for( int i = 0; i < 3; i++ )
 								{
 									// standard 3-index read for tri list or first tri in strip / fan
-									if ( opType == OperationType.TriangleList || t == 0 )
+									if( opType == OperationType.TriangleList || t == 0 )
 									{
-										if ( indexType == IndexType.Size32 )
+										if( indexType == IndexType.Size32 )
 										{
 											index = p32Idx[ icount++ ];
 										}
@@ -142,18 +145,18 @@ namespace Axiom.Graphics
 										// Strips and fans are formed from last 2 indexes plus the
 										// current one for triangles after the first
 
-										if ( indexType == IndexType.Size32 )
+										if( indexType == IndexType.Size32 )
 										{
 											index = p32Idx[ icount + i -
-											2 ];
+											                2 ];
 										}
 										else
 										{
 											index = p16Idx[ icount + i -
-											2 ];
+											                2 ];
 										}
 
-										if ( i == 2 )
+										if( i == 2 )
 										{
 											icount++;
 										}
@@ -167,8 +170,8 @@ namespace Axiom.Graphics
 								}
 
 								// Put the points in in counter-clockwise order
-								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
-								- ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
+								if( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
+								      - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
 								{
 									// Clockwise, so reverse points 1 and 2
 									Vector3 tmp = v[ 1 ];
@@ -177,12 +180,11 @@ namespace Axiom.Graphics
 								}
 
 								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) -
-												( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
-												"Failed to arrange triangle points counter-clockwise." );
+								                ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
+								              "Failed to arrange triangle points counter-clockwise." );
 
 								// Add to the list of triangles
 								triangles.Add( new TriangleVertices( v ) );
-
 							} // for iterations
 						} // unsafe
 					}
@@ -201,24 +203,18 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Methods
-
 	}
 
 	public class TriangleVertices
 	{
 		protected Vector3[] vertices;
+
 		public TriangleVertices( Vector3[] vertices )
 		{
 			this.vertices = vertices;
 		}
 
-		public Vector3[] Vertices
-		{
-			get
-			{
-				return vertices;
-			}
-		}
+		public Vector3[] Vertices { get { return vertices; } }
 	}
 
 	public class TriangleIntersector
@@ -254,14 +250,14 @@ namespace Axiom.Graphics
 			Vector3 where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( int i = 0; i < triangles.Count; i++ )
+			for( int i = 0; i < triangles.Count; i++ )
 			{
 				TriangleVertices t = triangles[ i ];
-				if ( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
+				if( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared &&
-						 distSquared < minDistSquared )
+					if( distSquared > ignoreDistanceSquared &&
+					    distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;
@@ -281,14 +277,14 @@ namespace Axiom.Graphics
 			Vector3 where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( int i = 0; i < triangles.Count; i++ )
+			for( int i = 0; i < triangles.Count; i++ )
 			{
 				TriangleVertices t = triangles[ i ];
-				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform, ref where ) )
+				if( RayIntersectsTriangle( ray, t.Vertices, ref transform, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared &&
-						distSquared < minDistSquared )
+					if( distSquared > ignoreDistanceSquared &&
+					    distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;
@@ -317,14 +313,20 @@ namespace Axiom.Graphics
 			// that the signed tetrahedral volumes, computed using scalar triple
 			// products, are all positive
 			float u = pq.Cross( pc ).Dot( pb );
-			if ( u < 0.0f )
+			if( u < 0.0f )
+			{
 				return false;
+			}
 			float v = pq.Cross( pa ).Dot( pc );
-			if ( v < 0.0f )
+			if( v < 0.0f )
+			{
 				return false;
+			}
 			float w = pq.Cross( pb ).Dot( pa );
-			if ( w < 0.0f )
+			if( w < 0.0f )
+			{
 				return false;
+			}
 			float denom = 1.0f / ( u + v + w );
 			// Finally fill in the intersection point
 			where = ( u * a + v * b + w * c ) * denom;
@@ -349,14 +351,20 @@ namespace Axiom.Graphics
 			// that the signed tetrahedral volumes, computed using scalar triple
 			// products, are all positive
 			float u = pq.Cross( pc ).Dot( pb );
-			if ( u < 0.0f )
+			if( u < 0.0f )
+			{
 				return false;
+			}
 			float v = pq.Cross( pa ).Dot( pc );
-			if ( v < 0.0f )
+			if( v < 0.0f )
+			{
 				return false;
+			}
 			float w = pq.Cross( pb ).Dot( pa );
-			if ( w < 0.0f )
+			if( w < 0.0f )
+			{
 				return false;
+			}
 			float denom = 1.0f / ( u + v + w );
 			// Finally fill in the intersection point
 			where = ( u * a + v * b + w * c ) * denom;
@@ -364,7 +372,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Protected Methods
-
 	}
 }
-

@@ -42,6 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -81,34 +82,23 @@ namespace Axiom.Core
 	///     <file name="OgreResourceManager.cpp" revision="1.17.2.2" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	///
-	public abstract class ResourceManager : DisposableObject, IScriptLoader
+	abstract public class ResourceManager : DisposableObject, IScriptLoader
 	{
 		#region Fields and Properties
 
 		#region Resources Property
 
 		private readonly Dictionary<string, Resource> _resources = new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
+
 		/// <summary>
 		///		A cached list of all resources in memory.
 		///	</summary>
-		public ICollection<Resource> Resources
-		{
-			get
-			{
-				return _resources.Values;
-			}
-		}
+		public ICollection<Resource> Resources { get { return _resources.Values; } }
 
 		/// <summary>
 		///		A cached list of all resources and keys in memory.
 		///	</summary>
-		protected IDictionary<string, Resource> resources
-		{
-			get
-			{
-				return _resources;
-			}
-		}
+		protected IDictionary<string, Resource> resources { get { return _resources; } }
 
 		#endregion Resources Property
 
@@ -116,22 +106,18 @@ namespace Axiom.Core
 
 		//  std::map<ResourceHandle, ResourcePtr>
 		private readonly Dictionary<ResourceHandle, Resource> _resourceHandleMap = new Dictionary<ResourceHandle, Resource>();
+
 		/// <summary>
 		///		A cached list of all resources handles in memory.
 		///	</summary>
-		protected IDictionary<ResourceHandle, Resource> resourceHandleMap
-		{
-			get
-			{
-				return _resourceHandleMap;
-			}
-		}
+		protected IDictionary<ResourceHandle, Resource> resourceHandleMap { get { return _resourceHandleMap; } }
 
 		#endregion resourceHandleMap Property
 
 		#region MemoryBudget Property
 
 		private long _memoryBudget; // in bytes
+
 		/// <summary>
 		/// Get/Set a limit on the amount of memory all resource handlers may use.
 		/// </summary>
@@ -143,10 +129,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public long MemoryBudget
 		{
-			get
-			{
-				return _memoryBudget;
-			}
+			get { return _memoryBudget; }
 			set
 			{
 				_memoryBudget = value;
@@ -159,52 +142,33 @@ namespace Axiom.Core
 		#region memoryUsage Property
 
 		private long _memoryUsage; // in bytes
+
 		/// <summary>
 		///		Gets/Sets the current memory usages by all resource managers.
 		/// </summary>
-		protected long memoryUsage
-		{
-			get
-			{
-				return _memoryUsage;
-			}
-		}
+		protected long memoryUsage { get { return _memoryUsage; } }
 
 		#endregion memoryUsage Property
 
 		#region nextHandle Property
 
-		static private ResourceHandle _nextHandle = 1;
+		private static ResourceHandle _nextHandle = 1;
+
 		/// <summary>
 		///     Gets the next available unique resource handle.
 		/// </summary>
-		static protected ResourceHandle nextHandle
-		{
-			get
-			{
-				return _nextHandle++;
-			}
-		}
+		protected static ResourceHandle nextHandle { get { return _nextHandle++; } }
 
 		#endregion nextHandle Property
 
 		#region ResourceType Property
 
 		private string _resourceType;
+
 		/// <summary>
 		/// Gets/Sets a string identifying the type of resource this manager handles.
 		/// </summary>
-		public string ResourceType
-		{
-			get
-			{
-				return _resourceType;
-			}
-			protected set
-			{
-				_resourceType = value;
-			}
-		}
+		public string ResourceType { get { return _resourceType; } protected set { _resourceType = value; } }
 
 		#endregion ResourceType Property
 
@@ -257,7 +221,7 @@ namespace Axiom.Core
 				Resource resource;
 
 				// try to obtain the resource
-				if ( _resourceHandleMap.TryGetValue( handle, out resource ) )
+				if( _resourceHandleMap.TryGetValue( handle, out resource ) )
 				{
 					resource.Touch();
 				}
@@ -277,7 +241,7 @@ namespace Axiom.Core
 		///		Default constructor
 		/// </summary>
 		protected ResourceManager()
-            : base()
+			: base()
 		{
 			_memoryBudget = long.MaxValue;
 			_memoryUsage = 0;
@@ -311,6 +275,7 @@ namespace Axiom.Core
 		{
 			return Create( name, group, null );
 		}
+
 		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
 		public Resource Create( string name, string group, NameValuePairList createParams )
 		{
@@ -331,11 +296,11 @@ namespace Axiom.Core
 		/// ManualLoader instance is strongly recommended.
 		/// </param>
 		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		virtual public Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
 			Resource ret = _create( name, nextHandle, group, isManual, loader, createParams );
-			if ( createParams != null )
+			if( createParams != null )
 			{
 				ret.SetParameters( createParams );
 			}
@@ -357,7 +322,7 @@ namespace Axiom.Core
 		{
 			Resource res = this[ name ];
 			bool created = false;
-			if ( res == null )
+			if( res == null )
 			{
 				created = true;
 				res = Create( name, group, isManual, loader, paramaters );
@@ -395,7 +360,7 @@ namespace Axiom.Core
 		/// </param>
 		/// <returns></returns>
 		/// </overloads>
-		public virtual Resource Load( string name, string group )
+		virtual public Resource Load( string name, string group )
 		{
 			return Load( name, group, null );
 		}
@@ -404,7 +369,7 @@ namespace Axiom.Core
 		///     Optional pointer to a list of name/value pairs
 		///     containing loading parameters for this type of resource.
 		/// </param>
-		public virtual Resource Load( string name, string group, NameValuePairList loadParams )
+		virtual public Resource Load( string name, string group, NameValuePairList loadParams )
 		{
 			return Load( name, group, false, null, null );
 		}
@@ -422,10 +387,10 @@ namespace Axiom.Core
 		///     Optional pointer to a list of name/value pairs
 		///     containing loading parameters for this type of resource.
 		/// </param>
-		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		virtual public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
 			Resource ret = this[ name ];
-			if ( ret == null )
+			if( ret == null )
 			{
 				ret = Create( name, group, isManual, loader, loadParams );
 			}
@@ -449,11 +414,11 @@ namespace Axiom.Core
 		/// </remarks>
 		/// </overloads>
 		/// <param name="name">Name of the resource.</param>
-		public virtual void Unload( string name )
+		virtual public void Unload( string name )
 		{
 			Resource res = this[ name ];
 
-			if ( res != null )
+			if( res != null )
 			{
 				// Unload resource
 				res.Unload();
@@ -461,11 +426,11 @@ namespace Axiom.Core
 		}
 
 		/// <param name="handle">Handle of the resource</param>
-		public virtual void Unload( ResourceHandle handle )
+		virtual public void Unload( ResourceHandle handle )
 		{
 			Resource res = this[ handle ];
 
-			if ( res != null )
+			if( res != null )
 			{
 				// Unload resource
 				res.Unload();
@@ -481,7 +446,7 @@ namespace Axiom.Core
 		///		freed up. This would allow you to reload the resource again if you wished.
 		/// </remarks>
 		/// <param name="resource"></param>
-		public virtual void Unload( Resource resource )
+		virtual public void Unload( Resource resource )
 		{
 			// unload the resource
 			resource.Unload();
@@ -503,9 +468,9 @@ namespace Axiom.Core
 		/// as much as they can and wait to be reloaded.
 		/// <see>ResourceGroupManager</see> for unloading of resource groups.
 		/// </remarks>
-		public virtual void UnloadAll()
+		virtual public void UnloadAll()
 		{
-			foreach ( Resource res in _resources.Values )
+			foreach( Resource res in _resources.Values )
 			{
 				res.Unload();
 			}
@@ -517,9 +482,9 @@ namespace Axiom.Core
 		/// as much as they can and wait to be reloaded.
 		/// <see>ResourceGroupManager</see> for unloading of resource groups.
 		/// </remarks>
-		public virtual void ReloadAll()
+		virtual public void ReloadAll()
 		{
-			foreach ( Resource res in _resources.Values )
+			foreach( Resource res in _resources.Values )
 			{
 				res.Reload();
 			}
@@ -549,26 +514,26 @@ namespace Axiom.Core
 		/// </remarks>
 		/// </overloads>
 		/// <param name="resource">The resource to remove</param>
-		public virtual void Remove( Resource resource )
+		virtual public void Remove( Resource resource )
 		{
 			_remove( resource );
 		}
 
 		/// <param name="name">The name of the resource to remove</param>
-		public virtual void Remove( string name )
+		virtual public void Remove( string name )
 		{
 			Resource resource = this[ name ];
-			if ( resource != null )
+			if( resource != null )
 			{
 				_remove( resource );
 			}
 		}
 
 		/// <param name="handle">The Handle of the resource to remove</param>
-		public virtual void Remove( ResourceHandle handle )
+		virtual public void Remove( ResourceHandle handle )
 		{
 			Resource resource = this[ handle ];
-			if ( resource != null )
+			if( resource != null )
 			{
 				_remove( resource );
 			}
@@ -595,12 +560,14 @@ namespace Axiom.Core
 		/// destruction of resources, try making sure you release all your
 		/// references before you shutdown Axiom.
 		/// </remarks>
-		public virtual void RemoveAll()
+		virtual public void RemoveAll()
 		{
-			foreach ( Resource resource in _resources.Values )
+			foreach( Resource resource in _resources.Values )
 			{
-                if (!resource.IsDisposed)
-				resource.Dispose();
+				if( !resource.IsDisposed )
+				{
+					resource.Dispose();
+				}
 			}
 			_resources.Clear();
 			_resourceHandleMap.Clear();
@@ -612,13 +579,14 @@ namespace Axiom.Core
 
 		/// <summary>Returns whether the named resource exists in this manager</summary>
 		/// <param name="name">name of the resource</param>
-		public virtual bool ResourceExists( string name )
+		virtual public bool ResourceExists( string name )
 		{
 			return this[ name ] != null;
 		}
+
 		/// <summary>Returns whether a resource with the given handle exists in this manager</summary>
 		/// <param name="handle">handle of the resource</param>
-		public virtual bool ResourceExists( ResourceHandle handle )
+		virtual public bool ResourceExists( ResourceHandle handle )
 		{
 			return this[ handle ] != null;
 		}
@@ -627,21 +595,21 @@ namespace Axiom.Core
 
 		/// <summary>Notify this manager that a resource which it manages has been 'touched', ie used. </summary>
 		/// <param name="res">the resource</param>
-		public virtual void NotifyResourceTouched( Resource res )
+		virtual public void NotifyResourceTouched( Resource res )
 		{
 			// TODO
 		}
 
 		/// <summary> Notify this manager that a resource which it manages has been loaded. </summary>
 		/// <param name="res">the resource</param>
-		public virtual void NotifyResourceLoaded( Resource res )
+		virtual public void NotifyResourceLoaded( Resource res )
 		{
 			_memoryUsage += res.Size;
 		}
 
 		/// <summary>Notify this manager that a resource which it manages has been unloaded.</summary>
 		/// <param name="res">the resource</param>
-		public virtual void NotifyResourceUnloaded( Resource res )
+		virtual public void NotifyResourceUnloaded( Resource res )
 		{
 			_memoryUsage -= res.Size;
 		}
@@ -673,15 +641,15 @@ namespace Axiom.Core
 		///     to differentiate which concrete class is created.
 		/// </param>
 		/// <returns></returns>
-		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams );
+		abstract protected Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams );
 
 		/// <summary>
 		/// Add a newly created resource to the manager
 		/// </summary>
 		/// <param name="res"></param>
-		protected virtual void _add( Resource res )
+		virtual protected void _add( Resource res )
 		{
-			if ( !_resources.ContainsKey( res.Name ) )
+			if( !_resources.ContainsKey( res.Name ) )
 			{
 				_resources.Add( res.Name, res );
 			}
@@ -690,7 +658,7 @@ namespace Axiom.Core
 				throw new AxiomException( String.Format( "Resource with the name {0} already exists.", res.Name ) );
 			}
 
-			if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
+			if( !_resourceHandleMap.ContainsKey( res.Handle ) )
 			{
 				_resourceHandleMap.Add( res.Handle, res );
 			}
@@ -704,14 +672,14 @@ namespace Axiom.Core
 		/// Remove a resource from this manager; remove it from the lists.
 		/// </summary>
 		/// <param name="res"></param>
-		protected virtual void _remove( Resource res )
+		virtual protected void _remove( Resource res )
 		{
-			if ( _resources.ContainsKey( res.Name ) )
+			if( _resources.ContainsKey( res.Name ) )
 			{
 				_resources.Remove( res.Name );
 			}
 
-			if ( _resourceHandleMap.ContainsKey( res.Handle ) )
+			if( _resourceHandleMap.ContainsKey( res.Handle ) )
 			{
 				_resourceHandleMap.Remove( res.Handle );
 			}
@@ -758,11 +726,11 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-                    UnloadAll();
+					UnloadAll();
 					RemoveAll();
 				}
 
@@ -770,16 +738,17 @@ namespace Axiom.Core
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
-        #endregion DisposableObject Implementation
+		#endregion DisposableObject Implementation
 
 		#region IScriptLoader Members
 
 		#region ScriptPatterns Property
 
 		private List<string> _scriptPatterns = new List<string>();
+
 		/// <summary>
 		/// Gets the file patterns which should be used to find scripts for this class.
 		/// </summary>
@@ -788,17 +757,7 @@ namespace Axiom.Core
 		/// ResourceGroupManager::registerScriptLoader. Returns a list of file
 		/// patterns, in the order they should be searched in.
 		/// </remarks>
-		public virtual List<string> ScriptPatterns
-		{
-			get
-			{
-				return _scriptPatterns;
-			}
-			protected set
-			{
-				_scriptPatterns = value;
-			}
-		}
+		virtual public List<string> ScriptPatterns { get { return _scriptPatterns; } protected set { _scriptPatterns = value; } }
 
 		#endregion ScriptPatterns Property
 
@@ -812,15 +771,14 @@ namespace Axiom.Core
 		/// The name of a resource group which should be used if any resources
 		/// are created during the parse of this script.
 		/// </param>
-		public virtual void ParseScript( Stream stream, string groupName, string fileName )
-		{
-		}
+		virtual public void ParseScript( Stream stream, string groupName, string fileName ) {}
 
 		#endregion ParseScriptMethod
 
 		#region LoadingOrder Property
 
 		private Real _loadingOrder;
+
 		/// <summary>
 		/// Gets the relative loading order of scripts of this type.
 		/// </summary>
@@ -830,17 +788,7 @@ namespace Axiom.Core
 		/// Returns a value representing the relative loading order of these scripts
 		/// compared to other script users, where higher values load later.
 		/// </remarks>
-		public virtual Real LoadingOrder
-		{
-			get
-			{
-				return _loadingOrder;
-			}
-			protected set
-			{
-				_loadingOrder = value;
-			}
-		}
+		virtual public Real LoadingOrder { get { return _loadingOrder; } protected set { _loadingOrder = value; } }
 
 		#endregion LoadingOrder Property
 

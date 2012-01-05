@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using Axiom.Graphics;
+
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -44,7 +49,6 @@ namespace Axiom.RenderSystems.Xna
 	///		Xna implementation of a hardware occlusion query.
 	/// </summary>
 	// Original Author: Lee Sandberg
-
 	public class XnaHardwareOcclusionQuery : HardwareOcclusionQuery
 	{
 		#region Fields
@@ -53,6 +57,7 @@ namespace Axiom.RenderSystems.Xna
 		///		Reference to the current Xna device object.
 		/// </summary>
 		private XFG.GraphicsDevice device;
+
 		/// <summary>
 		///		Reference to the query object being used.
 		/// </summary>
@@ -82,7 +87,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void Begin()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( oQuery.IsSupported )
+			if( oQuery.IsSupported )
 			{
 				oQuery.Begin();
 			}
@@ -101,7 +106,7 @@ namespace Axiom.RenderSystems.Xna
 			// default to returning a high count.  will be set otherwise if the query runs
 			LastFragmentCount = 100000;
 
-			if ( oQuery.IsSupported && oQuery.IsComplete )
+			if( oQuery.IsSupported && oQuery.IsComplete )
 			{
 				LastFragmentCount = oQuery.PixelCount;
 			}
@@ -115,7 +120,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void End()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( oQuery.IsSupported )
+			if( oQuery.IsSupported )
 			{
 				oQuery.End();
 			}

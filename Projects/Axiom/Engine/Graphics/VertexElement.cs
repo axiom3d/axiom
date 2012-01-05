@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,18 +56,22 @@ namespace Axiom.Graphics
 		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
 		/// </summary>
 		protected short source;
+
 		/// <summary>
 		///     The offset in the buffer that this element starts at.
 		/// </summary>
 		protected int offset;
+
 		/// <summary>
 		///     The type of element.
 		/// </summary>
 		protected VertexElementType type;
+
 		/// <summary>
 		///     The meaning of the element.
 		/// </summary>
 		protected VertexElementSemantic semantic;
+
 		/// <summary>
 		///     Index of the item, only applicable for some elements like texture coords.
 		/// </summary>
@@ -81,9 +89,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 )
-		{
-		}
+			: this( source, offset, type, semantic, 0 ) {}
 
 		/// <summary>
 		///     Constructor.
@@ -111,8 +117,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public static int GetTypeSize( VertexElementType type )
 		{
-
-			switch ( type )
+			switch( type )
 			{
 				case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
@@ -156,7 +161,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public static int GetTypeCount( VertexElementType type )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
@@ -211,10 +216,10 @@ namespace Axiom.Graphics
 		/// </example>
 		public static VertexElementType MultiplyTypeCount( VertexElementType type, int count )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case VertexElementType.Float1:
-					switch ( count )
+					switch( count )
 					{
 						case 1:
 							return VertexElementType.Float1;
@@ -228,7 +233,7 @@ namespace Axiom.Graphics
 					break;
 
 				case VertexElementType.Short1:
-					switch ( count )
+					switch( count )
 					{
 						case 1:
 							return VertexElementType.Short1;
@@ -252,68 +257,32 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		public short Source
-		{
-			get
-			{
-				return source;
-			}
-		}
+		public short Source { get { return source; } }
 
 		/// <summary>
 		///     Gets the offset into the buffer where this element starts.
 		/// </summary>
-		public int Offset
-		{
-			get
-			{
-				return offset;
-			}
-		}
+		public int Offset { get { return offset; } }
 
 		/// <summary>
 		///     Gets the data format of this element.
 		/// </summary>
-		public VertexElementType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
+		public VertexElementType Type { get { return type; } }
 
 		/// <summary>
 		///     Gets the meaning of this element.
 		/// </summary>
-		public VertexElementSemantic Semantic
-		{
-			get
-			{
-				return semantic;
-			}
-		}
+		public VertexElementSemantic Semantic { get { return semantic; } }
 
 		/// <summary>
 		///     Gets the index of this element, only applicable for repeating elements (like texcoords).
 		/// </summary>
-		public int Index
-		{
-			get
-			{
-				return index;
-			}
-		}
+		public int Index { get { return index; } }
 
 		/// <summary>
 		///     Gets the size of this element in bytes.
 		/// </summary>
-		public int Size
-		{
-			get
-			{
-				return GetTypeSize( type );
-			}
-		}
+		public int Size { get { return GetTypeSize( type ); } }
 
 		#endregion
 

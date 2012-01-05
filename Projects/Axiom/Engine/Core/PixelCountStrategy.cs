@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: PixelCountStrategy.cs 1762 2009-09-13 17:56:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,7 +41,9 @@ using System;
 
 using Axiom.Graphics;
 using Axiom.Math;
+
 using MathHelper = Axiom.Math.Utility;
+
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -49,24 +55,15 @@ namespace Axiom.Core
 	/// </summary>
 	public class PixelCountStrategy : LodStrategy
 	{
-
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
 		public PixelCountStrategy()
-			: base( "PixelCount" )
-		{
-		}
+			: base( "PixelCount" ) {}
 
 		#region LodStrategy Implementation
 
-		public override Real BaseValue
-		{
-			get
-			{
-				return float.MaxValue;
-			}
-		}
+		public override Real BaseValue { get { return float.MaxValue; } }
 
 		public override Real TransformBias( Real factor )
 		{
@@ -110,42 +107,46 @@ namespace Axiom.Core
 			float boundingArea = MathHelper.PI * MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Base computation on projection type
-			switch ( camera.ProjectionType )
+			switch( camera.ProjectionType )
 			{
 				case Projection.Perspective:
+				{
+					// Get camera distance
+					float distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
+
+					// Check for 0 distance
+					if( distanceSquared <= float.Epsilon )
 					{
-						// Get camera distance
-						float distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
-
-						// Check for 0 distance
-						if ( distanceSquared <= float.Epsilon )
-							return BaseValue;
-
-						// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-						Matrix4 projectionMatrix = camera.ProjectionMatrix;
-
-						//estimate pixel count
-						return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
+						return BaseValue;
 					}
+
+					// Get projection matrix (this is done to avoid computation of tan(fov / 2))
+					Matrix4 projectionMatrix = camera.ProjectionMatrix;
+
+					//estimate pixel count
+					return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
+				}
 					break;
 				case Projection.Orthographic:
+				{
+					// Compute orthographic area
+					float orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
+
+					// Check for 0 orthographic area
+					if( orthoArea <= float.Epsilon )
 					{
-						// Compute orthographic area
-						float orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
-
-						// Check for 0 orthographic area
-						if ( orthoArea <= float.Epsilon )
-							return BaseValue;
-
-						// Estimate pixel count
-						return ( boundingArea * viewportArea ) / orthoArea;
+						return BaseValue;
 					}
+
+					// Estimate pixel count
+					return ( boundingArea * viewportArea ) / orthoArea;
+				}
 					break;
 				default:
-					{
-						// This case is not covered for obvious reasons
-						throw new NotSupportedException();
-					}
+				{
+					// This case is not covered for obvious reasons
+					throw new NotSupportedException();
+				}
 			}
 		}
 

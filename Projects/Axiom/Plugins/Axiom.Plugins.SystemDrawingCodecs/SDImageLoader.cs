@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.SystemDrawingCodecs
@@ -43,20 +49,11 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 	public class SDImageLoader : SDImageCodec
 	{
 		private string extension;
+
 		/// <summary>
 		/// The file extension
 		/// </summary>
-		public string Extension
-		{
-			get
-			{
-				return extension;
-			}
-			set
-			{
-				extension = value;
-			}
-		}
+		public string Extension { get { return extension; } set { extension = value; } }
 
 		/// <summary>
 		/// Constructor
@@ -83,15 +80,8 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// <summary>
 		///    Gets the type of data that this codec is meant to handle, typically a file extension.
 		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return this.extension;
-			}
-		}
+		public override String Type { get { return this.extension; } }
 
 		#endregion SDImageCodec Implementation
-
 	}
 }

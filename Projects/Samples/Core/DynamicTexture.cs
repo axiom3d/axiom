@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -29,24 +31,25 @@ using Axiom.Math;
 using Axiom.Animating;
 using Axiom.Media;
 using Axiom.ParticleSystems;
+
 using System.Collections.Generic;
 
 namespace Axiom.Samples.Core
 {
-	class DynamicTexture : SdkSample
+	internal class DynamicTexture : SdkSample
 	{
 		#region Protected Fields
 
-		const int TEXTURE_SIZE = 128;
-		const int SQR_BRUSH_RADIUS = 12 * 12;
-		HardwarePixelBuffer mTexBuf;
-		Real mPlaneSize;
-		RaySceneQuery mCursorQuery;
-		Vector2 mBrushPos;
-		Real mTimeSinceLastFreeze;
-		bool mWiping;
-		SceneNode mPenguinNode;
-		AnimationState mPenguinAnimState;
+		private const int TEXTURE_SIZE = 128;
+		private const int SQR_BRUSH_RADIUS = 12 * 12;
+		private HardwarePixelBuffer mTexBuf;
+		private Real mPlaneSize;
+		private RaySceneQuery mCursorQuery;
+		private Vector2 mBrushPos;
+		private Real mTimeSinceLastFreeze;
+		private bool mWiping;
+		private SceneNode mPenguinNode;
+		private AnimationState mPenguinAnimState;
 
 		#endregion Protected Fields
 
@@ -66,7 +69,7 @@ namespace Axiom.Samples.Core
 			mCursorQuery.Ray = ray;
 			IList<RaySceneQueryResultEntry> result = mCursorQuery.Execute();
 
-			if ( result.Count != 0 )
+			if( result.Count != 0 )
 			{
 				// using the point of intersection, find the corresponding texel on our texture
 				Vector3 pt = ray.GetPoint( result[ result.Count - 1 ].Distance );
@@ -77,39 +80,43 @@ namespace Axiom.Samples.Core
 			mTimeSinceLastFreeze += evt.TimeSinceLastFrame;
 
 			// find out how much to freeze the plane based on time passed
-			while ( mTimeSinceLastFreeze >= 0.1 )
+			while( mTimeSinceLastFreeze >= 0.1 )
 			{
 				mTimeSinceLastFreeze -= 0.1;
 				freezeAmount += 0x04;
 			}
 
-			UpdateTexture( freezeAmount );  // rebuild texture contents
+			UpdateTexture( freezeAmount ); // rebuild texture contents
 
-			mPenguinAnimState.AddTime( evt.TimeSinceLastFrame );  // increment penguin idle animation time
-			mPenguinNode.Yaw( (Real)( new Radian( (Real)evt.TimeSinceLastFrame ) ) );   // spin the penguin around
+			mPenguinAnimState.AddTime( evt.TimeSinceLastFrame ); // increment penguin idle animation time
+			mPenguinNode.Yaw( (Real)( new Radian( (Real)evt.TimeSinceLastFrame ) ) ); // spin the penguin around
 
-			return base.FrameRenderingQueued( evt );  // don't forget the parent class updates!
+			return base.FrameRenderingQueued( evt ); // don't forget the parent class updates!
 		}
 
 		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( TrayManager.InjectMouseDown( evt, id ) )
+			if( TrayManager.InjectMouseDown( evt, id ) )
+			{
 				return true;
-			mWiping = true;  // wipe frost if user left clicks in the scene
+			}
+			mWiping = true; // wipe frost if user left clicks in the scene
 			return true;
 		}
 
 		public override bool MouseReleased( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( TrayManager.InjectMouseUp( evt, id ) )
+			if( TrayManager.InjectMouseUp( evt, id ) )
+			{
 				return true;
-			mWiping = false;  // stop wiping frost if user releases LMB
+			}
+			mWiping = false; // stop wiping frost if user releases LMB
 			return true;
 		}
 
 		protected override void SetupContent()
 		{
-			SceneManager.SetSkyBox( true, "Examples/StormySkyBox", 5000 );  // add a skybox
+			SceneManager.SetSkyBox( true, "Examples/StormySkyBox", 5000 ); // add a skybox
 
 			// setup some basic lighting for our scene
 			SceneManager.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
@@ -124,7 +131,7 @@ namespace Axiom.Samples.Core
 			// create our dynamic texture with 8-bit luminance texels
 			Texture tex = TextureManager.Instance.CreateManual( "thaw", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8, TextureUsage.DynamicWriteOnly );
 
-			mTexBuf = tex.GetBuffer();  // save off the texture buffer
+			mTexBuf = tex.GetBuffer(); // save off the texture buffer
 
 			// initialise the texture to have full luminance
 			mTexBuf.Lock( BufferLocking.Discard );
@@ -152,9 +159,9 @@ namespace Axiom.Samples.Core
 			node.Position = new Vector3( 0, 0, 50 );
 			node.AttachObject( ent );
 
-			mPlaneSize = ent.BoundingBox.Size.x;   // remember the size of the plane
+			mPlaneSize = ent.BoundingBox.Size.x; // remember the size of the plane
 
-			mCursorQuery = SceneManager.CreateRayQuery( new Ray() );  // create a ray scene query for the cursor
+			mCursorQuery = SceneManager.CreateRayQuery( new Ray() ); // create a ray scene query for the cursor
 
 			mTimeSinceLastFreeze = 0;
 			mWiping = false;
@@ -174,26 +181,32 @@ namespace Axiom.Samples.Core
 				byte* data = (byte*)dataPtr.ToPointer();
 				{
 					// go through every texel...
-					for ( int y = 0; y < TEXTURE_SIZE; y++ )
+					for( int y = 0; y < TEXTURE_SIZE; y++ )
 					{
-						for ( int x = 0; x < TEXTURE_SIZE; x++ )
+						for( int x = 0; x < TEXTURE_SIZE; x++ )
 						{
-							if ( freezeAmount != 0 )
+							if( freezeAmount != 0 )
 							{
 								// gradually refreeze anything that isn't completely frozen
 								temperature = 0xff - data[ dataIdx ];
-								if ( temperature > freezeAmount )
+								if( temperature > freezeAmount )
+								{
 									data[ dataIdx ] += freezeAmount;
+								}
 								else
+								{
 									data[ dataIdx ] = 0xff;
+								}
 							}
 
-							if ( mWiping )
+							if( mWiping )
 							{
 								// wipe frost from under the cursor
 								sqrDistToBrush = Math.Utility.Sqr( x - mBrushPos.x ) + Math.Utility.Sqr( y - mBrushPos.y );
-								if ( sqrDistToBrush <= SQR_BRUSH_RADIUS )
+								if( sqrDistToBrush <= SQR_BRUSH_RADIUS )
+								{
 									data[ dataIdx ] = (byte)Math.Utility.Min( sqrDistToBrush / SQR_BRUSH_RADIUS * 0xff, data[ dataIdx ] );
+								}
 							}
 
 							dataIdx++;
@@ -203,6 +216,7 @@ namespace Axiom.Samples.Core
 			}
 			mTexBuf.Unlock();
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>

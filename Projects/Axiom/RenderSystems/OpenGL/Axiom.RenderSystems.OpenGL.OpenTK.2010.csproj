@@ -9,7 +9,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Axiom.RenderSystems.OpenGL.OpenTK</AssemblyName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -46,7 +46,7 @@
     <DefineConstants>TRACE;DEBUG;OPENGL_OTK</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.XML</DocumentationFile>
     <WarningLevel>4</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
@@ -61,14 +61,14 @@
     <DefineConstants>TRACE;OPENGL_OTK</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
@@ -233,7 +233,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="axiom.rendersystem.opengl.module" />
+    <None Include="..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.Compatibility.dll.config">
+      <Link>OpenTK.Compatibility.dll.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

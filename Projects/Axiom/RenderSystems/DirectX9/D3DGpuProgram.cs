@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,8 +43,8 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
-using ResourceHandle = System.UInt64;
 
+using ResourceHandle = System.UInt64;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
@@ -51,7 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
 	/// </summary>
-	public abstract class D3DGpuProgram : GpuProgram
+	abstract public class D3DGpuProgram : GpuProgram
 	{
 		#region Fields
 
@@ -59,6 +63,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///    Reference to the current D3D device object.
 		/// </summary>
 		protected D3D.Device device;
+
 		/// <summary>
 		///     Microsode set externally, most likely from the HLSL compiler.
 		/// </summary>
@@ -76,12 +81,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( externalMicrocode != null && !externalMicrocode.Disposed )
+					if( externalMicrocode != null && !externalMicrocode.Disposed )
+					{
 						externalMicrocode.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -102,10 +109,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		protected override void load()
 		{
-			if ( externalMicrocode != null )
+			if( externalMicrocode != null )
 			{
 				// unload if needed
-				if ( IsLoaded )
+				if( IsLoaded )
 				{
 					Unload();
 				}
@@ -131,7 +138,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// load the shader from the source string
 			DX.Direct3D9.ShaderBytecode microcode = D3D.ShaderBytecode.Assemble( source, null, null, 0, out errors );
 
-			if ( !string.IsNullOrEmpty( errors ) )
+			if( !string.IsNullOrEmpty( errors ) )
 			{
 				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
 				return;
@@ -151,7 +158,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="microcode">
 		///     GraphicsStream that contains the assembler instructions for the program.
 		/// </param>
-		protected abstract void LoadFromMicrocode( D3D.ShaderBytecode microcode );
+		abstract protected void LoadFromMicrocode( D3D.ShaderBytecode microcode );
 
 		#endregion Methods
 
@@ -166,17 +173,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///     level microcode, which can then be loaded into a low level GPU
 		///     program.
 		/// </remarks>
-		internal D3D.ShaderBytecode ExternalMicrocode
-		{
-			get
-			{
-				return externalMicrocode;
-			}
-			set
-			{
-				externalMicrocode = value;
-			}
-		}
+		internal D3D.ShaderBytecode ExternalMicrocode { get { return externalMicrocode; } set { externalMicrocode = value; } }
 
 		#endregion Properties
 	}
@@ -205,12 +202,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( vertexShader != null && !vertexShader.Disposed )
+					if( vertexShader != null && !vertexShader.Disposed )
+					{
 						vertexShader.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -241,7 +240,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		protected override void unload()
 		{
-			if ( vertexShader != null )
+			if( vertexShader != null )
 			{
 				vertexShader.Dispose();
 			}
@@ -255,21 +254,9 @@ namespace Axiom.RenderSystems.DirectX9
 		///    Used internally by the D3DRenderSystem to get a reference to the underlying
 		///    VertexShader object.
 		/// </summary>
-		internal D3D.VertexShader VertexShader
-		{
-			get
-			{
-				return vertexShader;
-			}
-		}
+		internal D3D.VertexShader VertexShader { get { return vertexShader; } }
 
-		public override int SamplerCount
-		{
-			get
-			{
-				throw new AxiomException( "Attempted to query sample count for vertex shader." );
-			}
-		}
+		public override int SamplerCount { get { throw new AxiomException( "Attempted to query sample count for vertex shader." ); } }
 
 		#endregion Properties
 	}
@@ -298,12 +285,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( pixelShader != null && !pixelShader.Disposed )
+					if( pixelShader != null && !pixelShader.Disposed )
+					{
 						pixelShader.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -334,7 +323,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		protected override void unload()
 		{
-			if ( pixelShader != null )
+			if( pixelShader != null )
 			{
 				pixelShader.Dispose();
 			}
@@ -348,13 +337,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///    Used internally by the D3DRenderSystem to get a reference to the underlying
 		///    PixelShader object.
 		/// </summary>
-		internal D3D.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
+		internal D3D.PixelShader PixelShader { get { return pixelShader; } }
 
 		public override int SamplerCount
 		{

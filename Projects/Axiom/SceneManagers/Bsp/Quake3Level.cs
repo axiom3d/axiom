@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -103,6 +107,7 @@ namespace Axiom.SceneManagers.Bsp
 	public class Quake3Level
 	{
 		#region Internal storage
+
 		// This is ALL temporary. Don't rely on it being static
 		// NB no brushes, fog or local lightvolumes yet
 		private Stream chunk;
@@ -125,167 +130,47 @@ namespace Axiom.SceneManagers.Bsp
 		private InternalBspBrushSide[] brushSides;
 
 		protected BspOptions options;
+
 		#endregion Internal storage
 
 		#region Properties
-		public int NumVertices
-		{
-			get
-			{
-				return vertices.Length;
-			}
-		}
-		public int NumFaces
-		{
-			get
-			{
-				return faces.Length;
-			}
-		}
-		public int NumLeafFaces
-		{
-			get
-			{
-				return leafFaces.Length;
-			}
-		}
-		public int NumElements
-		{
-			get
-			{
-				return elements.Length;
-			}
-		}
-		public int NumNodes
-		{
-			get
-			{
-				return nodes.Length;
-			}
-		}
-		public int NumLeaves
-		{
-			get
-			{
-				return leaves.Length;
-			}
-		}
-		public int NumBrushes
-		{
-			get
-			{
-				return brushes.Length;
-			}
-		}
-		public BspOptions Options
-		{
-			get
-			{
-				return options;
-			}
-		}
 
-		public int[] LeafFaces
-		{
-			get
-			{
-				return leafFaces;
-			}
-		}
-		public int[] LeafBrushes
-		{
-			get
-			{
-				return leafBrushes;
-			}
-		}
-		public int[] Elements
-		{
-			get
-			{
-				return elements;
-			}
-		}
-		public string Entities
-		{
-			get
-			{
-				return entities;
-			}
-		}
-		public InternalBspVertex[] Vertices
-		{
-			get
-			{
-				return vertices;
-			}
-		}
-		public InternalBspFace[] Faces
-		{
-			get
-			{
-				return faces;
-			}
-		}
-		public InternalBspShader[] Shaders
-		{
-			get
-			{
-				return shaders;
-			}
-		}
-		public InternalBspNode[] Nodes
-		{
-			get
-			{
-				return nodes;
-			}
-		}
-		public InternalBspPlane[] Planes
-		{
-			get
-			{
-				return planes;
-			}
-		}
-		public InternalBspBrush[] Brushes
-		{
-			get
-			{
-				return brushes;
-			}
-		}
-		public InternalBspBrushSide[] BrushSides
-		{
-			get
-			{
-				return brushSides;
-			}
-		}
-		public InternalBspVis VisData
-		{
-			get
-			{
-				return visData;
-			}
-		}
-		public InternalBspLeaf[] Leaves
-		{
-			get
-			{
-				return leaves;
-			}
-		}
+		public int NumVertices { get { return vertices.Length; } }
+		public int NumFaces { get { return faces.Length; } }
+		public int NumLeafFaces { get { return leafFaces.Length; } }
+		public int NumElements { get { return elements.Length; } }
+		public int NumNodes { get { return nodes.Length; } }
+		public int NumLeaves { get { return leaves.Length; } }
+		public int NumBrushes { get { return brushes.Length; } }
+		public BspOptions Options { get { return options; } }
+
+		public int[] LeafFaces { get { return leafFaces; } }
+		public int[] LeafBrushes { get { return leafBrushes; } }
+		public int[] Elements { get { return elements; } }
+		public string Entities { get { return entities; } }
+		public InternalBspVertex[] Vertices { get { return vertices; } }
+		public InternalBspFace[] Faces { get { return faces; } }
+		public InternalBspShader[] Shaders { get { return shaders; } }
+		public InternalBspNode[] Nodes { get { return nodes; } }
+		public InternalBspPlane[] Planes { get { return planes; } }
+		public InternalBspBrush[] Brushes { get { return brushes; } }
+		public InternalBspBrushSide[] BrushSides { get { return brushSides; } }
+		public InternalBspVis VisData { get { return visData; } }
+		public InternalBspLeaf[] Leaves { get { return leaves; } }
+
 		#endregion Properties
 
 		#region Constructor
+
 		public Quake3Level( BspOptions options )
 		{
 			this.options = options;
 		}
+
 		#endregion Constructor
 
 		#region Methods
+
 		/// <summary>
 		///		Utility function read the header.
 		/// </summary>
@@ -301,9 +186,9 @@ namespace Axiom.SceneManagers.Bsp
 			header = new InternalBspHeader();
 			header.magic = System.Text.Encoding.ASCII.GetChars( reader.ReadBytes( 4 ) );
 			header.version = reader.ReadInt32();
-			header.lumps = new InternalBspLump[ (int)Quake3LumpType.NumLumps ];
+			header.lumps = new InternalBspLump[(int)Quake3LumpType.NumLumps];
 
-			for ( int i = 0; i < (int)Quake3LumpType.NumLumps; i++ )
+			for( int i = 0; i < (int)Quake3LumpType.NumLumps; i++ )
 			{
 				header.lumps[ i ] = new InternalBspLump();
 				header.lumps[ i ].offset = reader.ReadInt32();
@@ -311,10 +196,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			InitializeCounts( reader );
-			if ( headerOnly )
-			{
-
-			}
+			if( headerOnly ) {}
 			else
 			{
 				this.InitializeData( reader );
@@ -333,16 +215,16 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected void InitializeCounts( BinaryReader reader )
 		{
-			brushes = new InternalBspBrush[ header.lumps[ (int)Quake3LumpType.Brushes ].size / Marshal.SizeOf( typeof( InternalBspBrush ) ) ];
-			leafBrushes = new int[ header.lumps[ (int)Quake3LumpType.LeafBrushes ].size / Marshal.SizeOf( typeof( int ) ) ];
-			vertices = new InternalBspVertex[ header.lumps[ (int)Quake3LumpType.Vertices ].size / Marshal.SizeOf( typeof( InternalBspVertex ) ) ];
-			planes = new InternalBspPlane[ header.lumps[ (int)Quake3LumpType.Planes ].size / Marshal.SizeOf( typeof( InternalBspPlane ) ) ];
-			nodes = new InternalBspNode[ header.lumps[ (int)Quake3LumpType.Nodes ].size / Marshal.SizeOf( typeof( InternalBspNode ) ) ];
-			models = new InternalBspModel[ header.lumps[ (int)Quake3LumpType.Models ].size / Marshal.SizeOf( typeof( InternalBspModel ) ) ];
-			leaves = new InternalBspLeaf[ header.lumps[ (int)Quake3LumpType.Leaves ].size / Marshal.SizeOf( typeof( InternalBspLeaf ) ) ];
-			leafFaces = new int[ header.lumps[ (int)Quake3LumpType.LeafFaces ].size / Marshal.SizeOf( typeof( int ) ) ];
-			faces = new InternalBspFace[ header.lumps[ (int)Quake3LumpType.Faces ].size / Marshal.SizeOf( typeof( InternalBspFace ) ) ];
-			elements = new int[ header.lumps[ (int)Quake3LumpType.Elements ].size / Marshal.SizeOf( typeof( int ) ) ];
+			brushes = new InternalBspBrush[header.lumps[ (int)Quake3LumpType.Brushes ].size / Marshal.SizeOf( typeof( InternalBspBrush ) )];
+			leafBrushes = new int[header.lumps[ (int)Quake3LumpType.LeafBrushes ].size / Marshal.SizeOf( typeof( int ) )];
+			vertices = new InternalBspVertex[header.lumps[ (int)Quake3LumpType.Vertices ].size / Marshal.SizeOf( typeof( InternalBspVertex ) )];
+			planes = new InternalBspPlane[header.lumps[ (int)Quake3LumpType.Planes ].size / Marshal.SizeOf( typeof( InternalBspPlane ) )];
+			nodes = new InternalBspNode[header.lumps[ (int)Quake3LumpType.Nodes ].size / Marshal.SizeOf( typeof( InternalBspNode ) )];
+			models = new InternalBspModel[header.lumps[ (int)Quake3LumpType.Models ].size / Marshal.SizeOf( typeof( InternalBspModel ) )];
+			leaves = new InternalBspLeaf[header.lumps[ (int)Quake3LumpType.Leaves ].size / Marshal.SizeOf( typeof( InternalBspLeaf ) )];
+			leafFaces = new int[header.lumps[ (int)Quake3LumpType.LeafFaces ].size / Marshal.SizeOf( typeof( int ) )];
+			faces = new InternalBspFace[header.lumps[ (int)Quake3LumpType.Faces ].size / Marshal.SizeOf( typeof( InternalBspFace ) )];
+			elements = new int[header.lumps[ (int)Quake3LumpType.Elements ].size / Marshal.SizeOf( typeof( int ) )];
 		}
 
 		protected void InitializeData( BinaryReader reader )
@@ -400,10 +282,10 @@ namespace Axiom.SceneManagers.Bsp
 			int numLightmaps = header.lumps[ (int)Quake3LumpType.Lightmaps ].size / BspLevel.LightmapSize;
 
 			// Lightmaps are always 128x128x24 (RGB).
-			for ( int i = 0; i < numLightmaps; i++ )
+			for( int i = 0; i < numLightmaps; i++ )
 			{
 				string name = String.Format( "@lightmap{0}", i );
-				byte[] buffer = new byte[ BspLevel.LightmapSize ];
+				byte[] buffer = new byte[BspLevel.LightmapSize];
 				chunk.Read( buffer, 0, BspLevel.LightmapSize );
 
 				// Load, no mipmaps, brighten by factor 4
@@ -438,16 +320,20 @@ namespace Axiom.SceneManagers.Bsp
 			LogManager.Instance.Write( "" );
 			LogManager.Instance.Write( "-= Shaders =-" );
 
-			for ( int i = 0; i < shaders.Length; i++ )
+			for( int i = 0; i < shaders.Length; i++ )
+			{
 				LogManager.Instance.Write( String.Format( "Shader {0}: {1:x}", i, shaders[ i ].name ) );
+			}
 
 			LogManager.Instance.Write( "" );
 			LogManager.Instance.Write( "-= Entities =-" );
 
 			string[] ents = entities.Split( '\0' );
 
-			for ( int i = 0; i < ents.Length; i++ )
+			for( int i = 0; i < ents.Length; i++ )
+			{
 				LogManager.Instance.Write( ents[ i ] );
+			}
 		}
 
 		private void ReadEntities( InternalBspLump lump, BinaryReader reader )
@@ -460,17 +346,18 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < elements.Length; i++ )
+			for( int i = 0; i < elements.Length; i++ )
+			{
 				elements[ i ] = reader.ReadInt32();
+			}
 		}
 
 		private void ReadFaces( InternalBspLump lump, BinaryReader reader )
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < faces.Length; i++ )
+			for( int i = 0; i < faces.Length; i++ )
 			{
-
 				faces[ i ] = new InternalBspFace();
 				faces[ i ].shader = reader.ReadInt32();
 				faces[ i ].unknown = reader.ReadInt32();
@@ -481,17 +368,29 @@ namespace Axiom.SceneManagers.Bsp
 				faces[ i ].elemCount = reader.ReadInt32();
 				faces[ i ].lmTexture = reader.ReadInt32();
 
-				faces[ i ].lmOffset = new int[] { reader.ReadInt32(), reader.ReadInt32() };
-				faces[ i ].lmSize = new int[] { reader.ReadInt32(), reader.ReadInt32() };
-				faces[ i ].org = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+				faces[ i ].lmOffset = new int[] {
+				                                	reader.ReadInt32(), reader.ReadInt32()
+				                                };
+				faces[ i ].lmSize = new int[] {
+				                              	reader.ReadInt32(), reader.ReadInt32()
+				                              };
+				faces[ i ].org = new float[] {
+				                             	reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()
+				                             };
 
-				faces[ i ].bbox = new float[ 6 ];
+				faces[ i ].bbox = new float[6];
 
-				for ( int j = 0; j < faces[ i ].bbox.Length; j++ )
+				for( int j = 0; j < faces[ i ].bbox.Length; j++ )
+				{
 					faces[ i ].bbox[ j ] = reader.ReadSingle();
+				}
 
-				faces[ i ].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
-				faces[ i ].meshCtrl = new int[] { reader.ReadInt32(), reader.ReadInt32() };
+				faces[ i ].normal = new float[] {
+				                                	reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()
+				                                };
+				faces[ i ].meshCtrl = new int[] {
+				                                	reader.ReadInt32(), reader.ReadInt32()
+				                                };
 
 				TransformBoundingBox( faces[ i ].bbox );
 				TransformVector( faces[ i ].org );
@@ -503,24 +402,28 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < leafFaces.Length; i++ )
+			for( int i = 0; i < leafFaces.Length; i++ )
+			{
 				leafFaces[ i ] = reader.ReadInt32();
+			}
 		}
 
 		private void ReadLeaves( InternalBspLump lump, BinaryReader reader )
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < leaves.Length; i++ )
+			for( int i = 0; i < leaves.Length; i++ )
 			{
 				leaves[ i ] = new InternalBspLeaf();
 				leaves[ i ].cluster = reader.ReadInt32();
 				leaves[ i ].area = reader.ReadInt32();
 
-				leaves[ i ].bbox = new int[ 6 ];
+				leaves[ i ].bbox = new int[6];
 
-				for ( int j = 0; j < leaves[ i ].bbox.Length; j++ )
+				for( int j = 0; j < leaves[ i ].bbox.Length; j++ )
+				{
 					leaves[ i ].bbox[ j ] = reader.ReadInt32();
+				}
 
 				leaves[ i ].faceStart = reader.ReadInt32();
 				leaves[ i ].faceCount = reader.ReadInt32();
@@ -535,13 +438,15 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < models.Length; i++ )
+			for( int i = 0; i < models.Length; i++ )
 			{
 				models[ i ] = new InternalBspModel();
-				models[ i ].bbox = new float[ 6 ];
+				models[ i ].bbox = new float[6];
 
-				for ( int j = 0; j < models[ i ].bbox.Length; j++ )
+				for( int j = 0; j < models[ i ].bbox.Length; j++ )
+				{
 					models[ i ].bbox[ j ] = reader.ReadSingle();
+				}
 
 				models[ i ].faceStart = reader.ReadInt32();
 				models[ i ].faceCount = reader.ReadInt32();
@@ -556,16 +461,18 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < nodes.Length; i++ )
+			for( int i = 0; i < nodes.Length; i++ )
 			{
 				nodes[ i ] = new InternalBspNode();
 				nodes[ i ].plane = reader.ReadInt32();
 				nodes[ i ].front = reader.ReadInt32();
 				nodes[ i ].back = reader.ReadInt32();
-				nodes[ i ].bbox = new int[ 6 ];
+				nodes[ i ].bbox = new int[6];
 
-				for ( int j = 0; j < nodes[ i ].bbox.Length; j++ )
+				for( int j = 0; j < nodes[ i ].bbox.Length; j++ )
+				{
 					nodes[ i ].bbox[ j ] = reader.ReadInt32();
+				}
 
 				TransformBoundingBox( nodes[ i ].bbox );
 			}
@@ -575,10 +482,12 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < planes.Length; i++ )
+			for( int i = 0; i < planes.Length; i++ )
 			{
 				planes[ i ] = new InternalBspPlane();
-				planes[ i ].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+				planes[ i ].normal = new float[] {
+				                                 	reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()
+				                                 };
 				planes[ i ].distance = reader.ReadSingle();
 
 				TransformPlane( planes[ i ].normal, ref planes[ i ].distance );
@@ -588,9 +497,9 @@ namespace Axiom.SceneManagers.Bsp
 		private void ReadShaders( InternalBspLump lump, BinaryReader reader )
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-			shaders = new InternalBspShader[ lump.size / Marshal.SizeOf( typeof( InternalBspShader ) ) ];
+			shaders = new InternalBspShader[lump.size / Marshal.SizeOf( typeof( InternalBspShader ) )];
 
-			for ( int i = 0; i < shaders.Length; i++ )
+			for( int i = 0; i < shaders.Length; i++ )
 			{
 				char[] name = Encoding.ASCII.GetChars( reader.ReadBytes( 64 ) );
 
@@ -598,10 +507,12 @@ namespace Axiom.SceneManagers.Bsp
 				shaders[ i ].surfaceFlags = (SurfaceFlags)Enum.Parse( typeof( SurfaceFlags ), reader.ReadInt32().ToString() );
 				shaders[ i ].contentFlags = (ContentFlags)Enum.Parse( typeof( ContentFlags ), reader.ReadInt32().ToString() );
 
-				foreach ( char c in name )
+				foreach( char c in name )
 				{
-					if ( c == '\0' )
+					if( c == '\0' )
+					{
 						break;
+					}
 
 					shaders[ i ].name += c;
 				}
@@ -622,13 +533,21 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < vertices.Length; i++ )
+			for( int i = 0; i < vertices.Length; i++ )
 			{
 				vertices[ i ] = new InternalBspVertex();
-				vertices[ i ].point = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
-				vertices[ i ].texture = new float[] { reader.ReadSingle(), reader.ReadSingle() };
-				vertices[ i ].lightMap = new float[] { reader.ReadSingle(), reader.ReadSingle() };
-				vertices[ i ].normal = new float[] { reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle() };
+				vertices[ i ].point = new float[] {
+				                                  	reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()
+				                                  };
+				vertices[ i ].texture = new float[] {
+				                                    	reader.ReadSingle(), reader.ReadSingle()
+				                                    };
+				vertices[ i ].lightMap = new float[] {
+				                                     	reader.ReadSingle(), reader.ReadSingle()
+				                                     };
+				vertices[ i ].normal = new float[] {
+				                                   	reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()
+				                                   };
 				vertices[ i ].color = reader.ReadInt32();
 
 				TransformVector( vertices[ i ].point );
@@ -640,15 +559,17 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < leafBrushes.Length; i++ )
+			for( int i = 0; i < leafBrushes.Length; i++ )
+			{
 				leafBrushes[ i ] = reader.ReadInt32();
+			}
 		}
 
 		private void ReadBrushes( InternalBspLump lump, BinaryReader reader )
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
 
-			for ( int i = 0; i < brushes.Length; i++ )
+			for( int i = 0; i < brushes.Length; i++ )
 			{
 				brushes[ i ] = new InternalBspBrush();
 				brushes[ i ].firstSide = reader.ReadInt32();
@@ -660,9 +581,9 @@ namespace Axiom.SceneManagers.Bsp
 		private void ReadBrushSides( InternalBspLump lump, BinaryReader reader )
 		{
 			reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-			brushSides = new InternalBspBrushSide[ lump.size / Marshal.SizeOf( typeof( InternalBspBrushSide ) ) ];
+			brushSides = new InternalBspBrushSide[lump.size / Marshal.SizeOf( typeof( InternalBspBrushSide ) )];
 
-			for ( int i = 0; i < brushSides.Length; i++ )
+			for( int i = 0; i < brushSides.Length; i++ )
 			{
 				brushSides[ i ] = new InternalBspBrushSide();
 				brushSides[ i ].planeNum = reader.ReadInt32();
@@ -672,16 +593,18 @@ namespace Axiom.SceneManagers.Bsp
 
 		internal void TransformVector( float[] v, bool isNormal, int pos )
 		{
-			if ( options.setYAxisUp )
+			if( options.setYAxisUp )
 			{
 				Swap( ref v[ pos + 1 ], ref v[ pos + 2 ] );
 				v[ pos + 2 ] = -v[ pos + 2 ];
 			}
 
-			if ( !isNormal )
+			if( !isNormal )
 			{
-				for ( int i = pos; i < pos + 3; i++ )
+				for( int i = pos; i < pos + 3; i++ )
+				{
 					v[ i ] *= options.scale;
+				}
 
 				Vector3 move = options.move;
 				v[ pos ] += options.move.x;
@@ -719,20 +642,26 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			TransformVector( bb, 0 );
 			TransformVector( bb, 3 );
-			if ( options.setYAxisUp )
+			if( options.setYAxisUp )
+			{
 				Swap( ref bb[ 2 ], ref bb[ 5 ] );
+			}
 		}
 
 		internal void TransformBoundingBox( int[] bb )
 		{
-			float[] floatbb = new float[ 6 ];
-			for ( int i = 0; i < 6; i++ )
+			float[] floatbb = new float[6];
+			for( int i = 0; i < 6; i++ )
+			{
 				floatbb[ i ] = (float)bb[ i ];
+			}
 
 			TransformBoundingBox( floatbb );
 
-			for ( int i = 0; i < 6; i++ )
+			for( int i = 0; i < 6; i++ )
+			{
 				bb[ i ] = Convert.ToInt32( floatbb[ i ] );
+			}
 		}
 
 		private void Swap( ref float num1, ref float num2 )
@@ -748,22 +677,21 @@ namespace Axiom.SceneManagers.Bsp
 			num1 = num2;
 			num2 = tmp;
 		}
+
 		#endregion Methods
 	}
 
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspPlane
 	{
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-		public float[] normal;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )] public float[] normal;
 		public float distance;
 	}
 
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspModel
 	{
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-		public float[] bbox;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )] public float[] bbox;
 		public int faceStart;
 		public int faceCount;
 		public int brushStart;
@@ -773,23 +701,21 @@ namespace Axiom.SceneManagers.Bsp
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspNode
 	{
-		public int plane;          // dividing plane
+		public int plane; // dividing plane
 		//int children[2];    // left and right nodes,
 		// negative are leaves
 		public int front;
 		public int back;
 
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-		public int[] bbox;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )] public int[] bbox;
 	}
 
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspLeaf
 	{
-		public int cluster;    // visibility cluster number
+		public int cluster; // visibility cluster number
 		public int area;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-		public int[] bbox;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )] public int[] bbox;
 		public int faceStart;
 		public int faceCount;
 		public int brushStart;
@@ -799,51 +725,39 @@ namespace Axiom.SceneManagers.Bsp
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspFace
 	{
-		public int shader;         // shader ref
+		public int shader; // shader ref
 		public int unknown;
-		public BspFaceType type;           // face type
+		public BspFaceType type; // face type
 		public int vertStart;
 		public int vertCount;
 		public int elemStart;
 		public int elemCount;
-		public int lmTexture;     // lightmap
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-		public int[] lmOffset;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-		public int[] lmSize;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-		public float[] org;       // facetype_normal only
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )]
-		public float[] bbox;      // facetype_patch only
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-		public float[] normal;    // facetype_normal only
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-		public int[] meshCtrl;     // patch control point dims
+		public int lmTexture; // lightmap
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )] public int[] lmOffset;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )] public int[] lmSize;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )] public float[] org; // facetype_normal only
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 6 )] public float[] bbox; // facetype_patch only
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )] public float[] normal; // facetype_normal only
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )] public int[] meshCtrl; // patch control point dims
 	}
 
 	[StructLayout( LayoutKind.Explicit )]
 	public struct InternalBspShader
 	{
-		[FieldOffset( 0 )]
-		[MarshalAs( UnmanagedType.LPStr )]
-		public string name;
-		[FieldOffset( 64 )]
-		public SurfaceFlags surfaceFlags;
-		[FieldOffset( 68 )]
-		public ContentFlags contentFlags;
+		[FieldOffset( 0 ), MarshalAs( UnmanagedType.LPStr )]
+		 public string name;
+
+		[FieldOffset( 64 )] public SurfaceFlags surfaceFlags;
+		[FieldOffset( 68 )] public ContentFlags contentFlags;
 	}
 
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspVertex
 	{
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-		public float[] point;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-		public float[] texture;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )]
-		public float[] lightMap;
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )]
-		public float[] normal;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )] public float[] point;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )] public float[] texture;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 2 )] public float[] lightMap;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 3 )] public float[] normal;
 		public int color;
 	}
 
@@ -855,7 +769,6 @@ namespace Axiom.SceneManagers.Bsp
 		public byte[] data;
 	}
 
-
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspLump
 	{
@@ -866,20 +779,17 @@ namespace Axiom.SceneManagers.Bsp
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspHeader
 	{
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 4 )]
-		public char[] magic;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 4 )] public char[] magic;
 		public int version;
 
-		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 17 )]
-		public InternalBspLump[] lumps;
+		[MarshalAs( UnmanagedType.ByValArray, SizeConst = 17 )] public InternalBspLump[] lumps;
 	}
-
 
 	[StructLayout( LayoutKind.Sequential )]
 	public struct InternalBspBrushSide
 	{
 		public int planeNum;
-		public int content;			// ¿?shader¿?
+		public int content; // ¿?shader¿?
 	}
 
 	[StructLayout( LayoutKind.Sequential )]
@@ -906,10 +816,13 @@ namespace Axiom.SceneManagers.Bsp
 
 		/// <summary>Bot specific.</summary>
 		Teleporter = 0x40000,
+
 		/// <summary>Bot specific.</summary>
 		JumpPad = 0x80000,
+
 		/// <summary>Bot specific.</summary>
 		ClusterPortal = 0x100000,
+
 		/// <summary>Bot specific.</summary>
 		DoNotEnter = 0x200000,
 
@@ -919,13 +832,17 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>Should never be on a brush, only in game.</summary>
 		Body = 0x2000000,
 		Corpse = 0x4000000,
+
 		/// <summary>Brushes not used for the bsp.</summary>
 		Detail = 0x8000000,
+
 		/// <summary>Brushes used for the bsp.</summary>
 		Structural = 0x10000000,
+
 		/// <summary>Don't consume surface fragments inside.</summary>
 		Translucent = 0x20000000,
 		Trigger = 0x40000000,
+
 		/// <summary>Don't leave bodies or items (death fog, lava).</summary>
 		NoDrop = 0x80000000
 	}
@@ -935,37 +852,53 @@ namespace Axiom.SceneManagers.Bsp
 	{
 		/// <summary>Never give falling damage.</summary>
 		NoDamage = 0x1,
+
 		/// <summary>Effects game physics.</summary>
 		Slick = 0x2,
+
 		/// <summary>Lighting from environment map.</summary>
 		Sky = 0x4,
 		Ladder = 0x8,
+
 		/// <summary>Don't make missile explosions.</summary>
 		NoImpact = 0x10,
+
 		/// <summary>Don't leave missile marks.</summary>
 		NoMarks = 0x20,
+
 		/// <summary>Make flesh sounds and effects.</summary>
 		Flesh = 0x40,
+
 		/// <summary>Don't generate a drawsurface at all.</summary>
 		NoDraw = 0x80,
+
 		/// <summary>Make a primary bsp splitter.</summary>
 		Hint = 0x100,
+
 		/// <summary>Completely ignore, allowing non-closed brushes.</summary>
 		Skip = 0x200,
+
 		/// <summary>Surface doesn't need a lightmap.</summary>
 		NoLightmap = 0x400,
+
 		/// <summary>Generate lighting info at vertexes.</summary>
 		PointLight = 0x800,
+
 		/// <summary>Clanking footsteps.</summary>
 		MetalSteps = 0x1000,
+
 		/// <summary>No footstep sounds.</summary>
 		NoSteps = 0x2000,
+
 		/// <summary>Don't collide against curves with this set.</summary>
 		NonSolid = 0x4000,
+
 		/// <summary>Act as a light filter during q3map -light.</summary>
 		LightFilter = 0x8000,
+
 		/// <summary>Do per-pixel light shadow casting in q3map.</summary>
 		AlphaShadow = 0x10000,
+
 		/// <summary>Don't dlight even if solid (solid lava, skies).</summary>
 		NoDLight = 0x20000
 	}

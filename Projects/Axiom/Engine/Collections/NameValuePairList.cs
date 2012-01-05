@@ -54,9 +54,7 @@ namespace Axiom.Collections
 		/// Initializes a new instance of the <see cref="NameValuePairList"/> class.
 		/// </summary>
 		public NameValuePairList()
-			: base( new CaseInsensitiveStringComparer() )
-		{
-		}
+			: base( new CaseInsensitiveStringComparer() ) {}
 
 		#endregion Constructors
 	}

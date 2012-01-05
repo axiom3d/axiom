@@ -14,39 +14,43 @@ namespace Axiom.Demos
 	public class SkyBox : TechDemo
 	{
 		#region Fields
+
 		private float defaultDimension = 25;
 		private float defaultVelocity = 50;
 		protected ParticleSystem thrusters = null;
+
 		#endregion Fields
 
 		protected override void OnFrameStarted( Object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
-			if ( input.IsKeyPressed( KeyCodes.N ) )
+			if( input.IsKeyPressed( KeyCodes.N ) )
 			{
 				thrusters.DefaultWidth = defaultDimension + 0.25f;
 				thrusters.DefaultHeight = defaultDimension + 0.25f;
 				defaultDimension += 0.25f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.M ) )
+			if( input.IsKeyPressed( KeyCodes.M ) )
 			{
 				thrusters.DefaultWidth = defaultDimension - 0.25f;
 				thrusters.DefaultHeight = defaultDimension - 0.25f;
 				defaultDimension -= 0.25f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.H ) )
+			if( input.IsKeyPressed( KeyCodes.H ) )
 			{
 				thrusters.GetEmitter( 0 ).ParticleVelocity = defaultVelocity + 1;
 				thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity + 1;
 				defaultVelocity += 1;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.J ) && !( defaultVelocity < 0.0f ) )
+			if( input.IsKeyPressed( KeyCodes.J ) && !( defaultVelocity < 0.0f ) )
 			{
 				thrusters.GetEmitter( 0 ).ParticleVelocity = defaultVelocity - 1;
 				thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity - 1;
@@ -55,6 +59,7 @@ namespace Axiom.Demos
 		}
 
 		#region Methods
+
 		public override void CreateScene()
 		{
 			// since whole screen is being redrawn every frame, dont bother clearing
@@ -108,6 +113,7 @@ namespace Axiom.Demos
 
 			scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 6.5f, -67 ), Quaternion.Identity ).AttachObject( thrusters );
 		}
+
 		#endregion Methods
 	}
 }

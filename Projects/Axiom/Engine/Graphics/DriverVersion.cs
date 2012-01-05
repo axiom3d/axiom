@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,181 +23,215 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// DriverVersion is used by RenderSystemCapabilities and both GL and D3D9
-    /// to store the version of the current GPU driver
-    /// </summary>
-    public struct DriverVersion
-    {
-        public int Major    { get; set; }
-        public int Minor    { get; set; }
-        public int Release  { get; set; }
-        public int Build    { get; set; }
+	/// <summary>
+	/// DriverVersion is used by RenderSystemCapabilities and both GL and D3D9
+	/// to store the version of the current GPU driver
+	/// </summary>
+	public struct DriverVersion
+	{
+		public int Major { get; set; }
+		public int Minor { get; set; }
+		public int Release { get; set; }
+		public int Build { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public DriverVersion( int major, int minor, int release, int build )
-            : this()
-        {
-            Major = major;
-            Minor = minor;
-            Release = release;
-            Build = build;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public DriverVersion( int major, int minor, int release, int build )
+			: this()
+		{
+			Major = major;
+			Minor = minor;
+			Release = release;
+			Build = build;
+		}
 
-        #region System.Object overrides
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return string.Format( "{0}.{1}.{2}.{3}", Major, Minor, Release, Build );
-        }
+		#region System.Object overrides
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override bool Equals( object obj )
-        {
-            if ( obj == null )
-                return false;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return string.Format( "{0}.{1}.{2}.{3}", Major, Minor, Release, Build );
+		}
 
-            if ( !( obj is DriverVersion ) )
-                return false;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public override bool Equals( object obj )
+		{
+			if( obj == null )
+			{
+				return false;
+			}
 
-            DriverVersion v = (DriverVersion)obj;
+			if( !( obj is DriverVersion ) )
+			{
+				return false;
+			}
 
-            return ( v.Major == Major ) && ( v.Minor == Minor ) && ( v.Release == Release ) && ( v.Build == Build );
-        }
+			DriverVersion v = (DriverVersion)obj;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return Major ^ Minor ^ Release ^ Build;
-        }
-        #endregion System.Object overrides
+			return ( v.Major == Major ) && ( v.Minor == Minor ) && ( v.Release == Release ) && ( v.Build == Build );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="versionString"></param>
-        public void FromString( string versionString )
-        {
-            string[] tokens = versionString.Split( '.' );
-            if ( tokens.Length > 0 )
-            {
-                try
-                {
-                    Major = int.Parse( tokens[ 0 ] );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public override int GetHashCode()
+		{
+			return Major ^ Minor ^ Release ^ Build;
+		}
 
-                    if ( tokens.Length > 1 )
-                        Minor = int.Parse( tokens[ 1 ] );
+		#endregion System.Object overrides
 
-                    if ( tokens.Length > 2 )
-                        Release = int.Parse( tokens[ 2 ] );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="versionString"></param>
+		public void FromString( string versionString )
+		{
+			string[] tokens = versionString.Split( '.' );
+			if( tokens.Length > 0 )
+			{
+				try
+				{
+					Major = int.Parse( tokens[ 0 ] );
 
-                    if ( tokens.Length > 3 )
-                        Build = int.Parse( tokens[ 3 ] );
-                }
-                catch
-                {
-                    LogManager.Instance.Write( "Unable to parse the device version" );
-                }
-            }
-        }
+					if( tokens.Length > 1 )
+					{
+						Minor = int.Parse( tokens[ 1 ] );
+					}
 
-        #region Operators
+					if( tokens.Length > 2 )
+					{
+						Release = int.Parse( tokens[ 2 ] );
+					}
 
-        public static bool operator ==( DriverVersion a, DriverVersion b )
-        {
-            if ( Object.ReferenceEquals( a, b ) )
-                return true;
+					if( tokens.Length > 3 )
+					{
+						Build = int.Parse( tokens[ 3 ] );
+					}
+				}
+				catch
+				{
+					LogManager.Instance.Write( "Unable to parse the device version" );
+				}
+			}
+		}
 
-            return ( a.Major == b.Major ) && ( a.Minor == b.Minor ) && ( a.Release == b.Release ) && ( a.Build == b.Build );
-        }
+		#region Operators
 
-        public static bool operator !=( DriverVersion a, DriverVersion b )
-        {
-            return !( a == b );
-        }
+		public static bool operator ==( DriverVersion a, DriverVersion b )
+		{
+			if( Object.ReferenceEquals( a, b ) )
+			{
+				return true;
+			}
 
-        public static bool operator >( DriverVersion a, DriverVersion b )
-        {
-            bool majorCmp = a.Major == b.Major;
-            bool minorCmp = a.Minor == b.Minor;
-            bool releaseCmp = a.Release == b.Release;
+			return ( a.Major == b.Major ) && ( a.Minor == b.Minor ) && ( a.Release == b.Release ) && ( a.Build == b.Build );
+		}
 
-            if ( a.Major > b.Major )
-                return true;
+		public static bool operator !=( DriverVersion a, DriverVersion b )
+		{
+			return !( a == b );
+		}
 
-            else if ( majorCmp && a.Minor > b.Minor )
-                return true;
+		public static bool operator >( DriverVersion a, DriverVersion b )
+		{
+			bool majorCmp = a.Major == b.Major;
+			bool minorCmp = a.Minor == b.Minor;
+			bool releaseCmp = a.Release == b.Release;
 
-            else if ( majorCmp && minorCmp && a.Release > b.Release )
-                return true;
+			if( a.Major > b.Major )
+			{
+				return true;
+			}
 
-            else if ( majorCmp && minorCmp && releaseCmp && a.Build > b.Build )
-                return true;
+			else if( majorCmp && a.Minor > b.Minor )
+			{
+				return true;
+			}
 
-            return false;
-        }
+			else if( majorCmp && minorCmp && a.Release > b.Release )
+			{
+				return true;
+			}
 
-        public static bool operator <( DriverVersion a, DriverVersion b )
-        {
-            bool majorCmp = a.Major == b.Major;
-            bool minorCmp = a.Minor == b.Minor;
-            bool releaseCmp = a.Release == b.Release;
+			else if( majorCmp && minorCmp && releaseCmp && a.Build > b.Build )
+			{
+				return true;
+			}
 
-            if ( a.Major < b.Major )
-                return true;
+			return false;
+		}
 
-            else if ( majorCmp && a.Minor < b.Minor )
-                return true;
+		public static bool operator <( DriverVersion a, DriverVersion b )
+		{
+			bool majorCmp = a.Major == b.Major;
+			bool minorCmp = a.Minor == b.Minor;
+			bool releaseCmp = a.Release == b.Release;
 
-            else if ( majorCmp && minorCmp && a.Release < b.Release )
-                return true;
+			if( a.Major < b.Major )
+			{
+				return true;
+			}
 
-            else if ( majorCmp && minorCmp && releaseCmp && a.Build < b.Build )
-                return true;
+			else if( majorCmp && a.Minor < b.Minor )
+			{
+				return true;
+			}
 
-            return false;
-        }
+			else if( majorCmp && minorCmp && a.Release < b.Release )
+			{
+				return true;
+			}
 
-        public static bool operator >=( DriverVersion a, DriverVersion b )
-        {
-            return ( a > b ) || ( a == b );
-        }
+			else if( majorCmp && minorCmp && releaseCmp && a.Build < b.Build )
+			{
+				return true;
+			}
 
-        public static bool operator <=( DriverVersion a, DriverVersion b )
-        {
-            return ( a < b ) || ( a == b );
-        }
+			return false;
+		}
 
-        #endregion Operators
-    };
+		public static bool operator >=( DriverVersion a, DriverVersion b )
+		{
+			return ( a > b ) || ( a == b );
+		}
+
+		public static bool operator <=( DriverVersion a, DriverVersion b )
+		{
+			return ( a < b ) || ( a == b );
+		}
+
+		#endregion Operators
+	};
 }

@@ -18,9 +18,9 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		const int NumRobots = 10;
-		AnimationState[] animState = new AnimationState[ NumRobots ];
-		float[] animationSpeed = new float[ NumRobots ];
+		private const int NumRobots = 10;
+		private AnimationState[] animState = new AnimationState[NumRobots];
+		private float[] animationSpeed = new float[NumRobots];
 
 		#endregion Fields
 
@@ -35,12 +35,12 @@ namespace Axiom.Demos
 			Entity entity = null;
 
 			// create the robot entity
-			for ( int i = 0; i < NumRobots; i++ )
+			for( int i = 0; i < NumRobots; i++ )
 			{
 				string robotName = string.Format( "Robot{0}", i );
 				entity = scene.CreateEntity( robotName, "robot.mesh" );
 				SceneNode node = scene.RootSceneNode.CreateChildSceneNode(
-					new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
+				                                                          new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
 				node.AttachObject( entity );
 				animState[ i ] = entity.GetAnimationState( "Walk" );
 				animState[ i ].IsEnabled = true;
@@ -62,7 +62,7 @@ namespace Axiom.Demos
 			Technique t = entity.GetSubEntity( 0 ).Material.GetBestTechnique();
 			Pass p = t.GetPass( 0 );
 
-			if ( p.HasVertexProgram && p.VertexProgram.IsSkeletalAnimationIncluded )
+			if( p.HasVertexProgram && p.VertexProgram.IsSkeletalAnimationIncluded )
 			{
 				debugText = "Hardware skinning is enabled.";
 			}
@@ -75,10 +75,12 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
-			for ( int i = 0; i < NumRobots; i++ )
+			for( int i = 0; i < NumRobots; i++ )
 			{
 				// add time to the robot animation
 				animState[ i ].AddTime( evt.TimeSinceLastFrame * animationSpeed[ i ] );

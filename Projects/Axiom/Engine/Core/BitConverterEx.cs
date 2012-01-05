@@ -1,6 +1,8 @@
 ﻿using System;
-#region LGPL License
-/*
+
+	#region LGPL License
+
+	/*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
 
@@ -23,16 +25,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-#endregion LGPL License
 
-#region SVN Version Information
-// <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: Memory.cs 1663 2009-06-12 21:27:34Z borrillis $"/>
-// </file>
-#endregion SVN Version Information
+	#endregion LGPL License
 
-#region Namespace Declarations
+	#region SVN Version Information
+
+	// <file>
+	//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+	//     <id value="$Id: Memory.cs 1663 2009-06-12 21:27:34Z borrillis $"/>
+	// </file>
+
+	#endregion SVN Version Information
+
+	#region Namespace Declarations
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -48,17 +53,17 @@ namespace Axiom.Core
 			int size;
 			byte[] buffer;
 			IntPtr dst;
-			if ( !typeof( T ).IsArray )
+			if( !typeof( T ).IsArray )
 			{
 				size = Marshal.SizeOf( typeof( T ) );
-				buffer = new byte[ size ];
+				buffer = new byte[size];
 				dst = Memory.PinObject( buffer );
 				Marshal.StructureToPtr( value, dst, true );
 			}
 			else
 			{
 				size = Marshal.SizeOf( typeof( T ).GetElementType() ) * (int)typeof( T ).GetProperty( "Length" ).GetValue( value, null );
-				buffer = new byte[ size ];
+				buffer = new byte[size];
 				dst = Memory.PinObject( buffer );
 
 				IntPtr src = Memory.PinObject( value );
@@ -83,14 +88,12 @@ namespace Axiom.Core
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
 			int size = buffer.Length / Marshal.SizeOf( typeof( T ) );
-			dest = new T[ size ];
+			dest = new T[size];
 			IntPtr src = Memory.PinObject( buffer );
 			IntPtr dst = Memory.PinObject( dest );
 			Memory.Copy( src, dst, buffer.Length );
 			Memory.UnpinObject( buffer );
 			Memory.UnpinObject( dest );
 		}
-
-
 	}
 }

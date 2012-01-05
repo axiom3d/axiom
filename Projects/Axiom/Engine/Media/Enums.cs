@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -62,6 +66,7 @@ namespace Axiom.Media
 		///    Unknown pixel format.
 		/// </summary>
 		Unknown = 0,
+
 		/// <summary>
 		///    8-bit pixel format, all bits luminance.
 		/// </summary>
@@ -83,7 +88,6 @@ namespace Axiom.Media
 		///    8-bit pixel format, 4 bits luminace, 4 bits alpha.
 		/// </summary>
 		//L4A4 = 5,
-
 		/// <summary>
 		///   8-bit pixel format, 3 bits red, 3 bits green, 2 bits blue.
 		/// </summary>
@@ -142,7 +146,6 @@ namespace Axiom.Media
 		///    24-bit pixel format, all bits luminance.
 		/// </summary>
 		//L24,
-
 		/// <summary>
 		///    32-bit pixel format, 8 bits for alpha, red, green and blue.
 		/// </summary>
@@ -308,10 +311,18 @@ namespace Axiom.Media
 	/// </summary>
 	public enum PixelComponentType
 	{
-		Byte = 0,    /// Byte per component (8 bit fixed 0.0..1.0)
-		Short = 1,   /// Short per component (16 bit fixed 0.0..1.0))
-		Float16 = 2, /// 16 bit float per component
-		Float32 = 3, /// 32 bit float per component
-		Count = 4    /// Number of pixel types
+		Byte = 0,
+
+		/// Byte per component (8 bit fixed 0.0..1.0)
+		Short = 1,
+
+		/// Short per component (16 bit fixed 0.0..1.0))
+		Float16 = 2,
+
+		/// 16 bit float per component
+		Float32 = 3,
+
+		/// 32 bit float per component
+		Count = 4 /// Number of pixel types
 	}
 }

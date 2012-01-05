@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,9 +56,7 @@ namespace Axiom.RenderSystems.OpenGL
 		protected Hashtable factories = new Hashtable();
 
 		public GLGpuProgramManager()
-			: base()
-		{
-		}
+			: base() {}
 
 		/// <summary>
 		///    Create the specified type of GpuProgram.
@@ -64,8 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-
-			if ( createParams == null || ( createParams.ContainsKey( "syntax" ) == false || createParams.ContainsKey( "type" ) == false ) )
+			if( createParams == null || ( createParams.ContainsKey( "syntax" ) == false || createParams.ContainsKey( "type" ) == false ) )
 			{
 				throw new Exception( "You must supply 'syntax' and 'type' parameters" );
 			}
@@ -75,13 +76,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// if there is none, this syntax code must not be supported
 			// just return the base GL program since it won't be doing anything anyway
-			if ( factories[ syntaxCode ] == null )
+			if( factories[ syntaxCode ] == null )
 			{
 				return new GLGpuProgram( this, name, handle, group, isManual, loader );
 			}
 
 			GpuProgramType gpt;
-			if ( type == "vertex_program" )
+			if( type == "vertex_program" )
 			{
 				gpt = GpuProgramType.Vertex;
 			}
@@ -91,14 +92,13 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			return ( (IOpenGLGpuProgramFactory)factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader, gpt, syntaxCode );
-
 		}
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			// if there is none, this syntax code must not be supported
 			// just return the base GL program since it won't be doing anything anyway
-			if ( factories[ syntaxCode ] == null )
+			if( factories[ syntaxCode ] == null )
 			{
 				return new GLGpuProgram( this, name, handle, group, isManual, loader );
 			}

@@ -52,18 +52,14 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		This class defines the interface that must be implemented by shadow casters.
 	/// </summary>
-	public abstract class ShadowCaster : DisposableObject
+	abstract public class ShadowCaster : DisposableObject
 	{
 		#region Properties
 
 		/// <summary>
 		///		Gets/Sets whether or not this object currently casts a shadow.
 		/// </summary>
-		public abstract bool CastShadows
-		{
-			get;
-			set;
-		}
+		abstract public bool CastShadows { get; set; }
 
 		#endregion Properties
 
@@ -75,7 +71,7 @@ namespace Axiom.Graphics
 		/// <param name="light"></param>
 		/// <param name="dirLightExtrusionDist"></param>
 		/// <returns></returns>
-		public abstract AxisAlignedBox GetDarkCapBounds( Light light, float dirLightExtrusionDist );
+		abstract public AxisAlignedBox GetDarkCapBounds( Light light, float dirLightExtrusionDist );
 
 		/// <summary>
 		///		Gets details of the edges which might be used to determine a silhouette.
@@ -89,20 +85,20 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets details of the edges which might be used to determine a silhouette.
 		/// </summary>
-		public abstract EdgeData GetEdgeList( int lodIndex );
+		abstract public EdgeData GetEdgeList( int lodIndex );
 
 		/// <summary>
 		///		Gets the world space bounding box of the light cap.
 		/// </summary>
 		/// <returns></returns>
-		public abstract AxisAlignedBox GetLightCapBounds();
+		abstract public AxisAlignedBox GetLightCapBounds();
 
 		/// <summary>
 		///		Get the world bounding box of the caster.
 		/// </summary>
 		/// <param name="derive"></param>
 		/// <returns></returns>
-		public abstract AxisAlignedBox GetWorldBoundingBox( bool derive );
+		abstract public AxisAlignedBox GetWorldBoundingBox( bool derive );
 
 		public AxisAlignedBox GetWorldBoundingBox()
 		{
@@ -126,11 +122,11 @@ namespace Axiom.Graphics
 		/// will not be done (a vertex program is assumed).</param>
 		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
 		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
-		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
+		abstract public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
+		                                                                 HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
 
 		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
+		                                                        HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
 		{
 			return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
 		}
@@ -139,7 +135,7 @@ namespace Axiom.Graphics
 		///		Return the last calculated shadow renderables.
 		/// </summary>
 		/// <returns></returns>
-		public abstract IEnumerator GetLastShadowVolumeRenderableEnumerator();
+		abstract public IEnumerator GetLastShadowVolumeRenderableEnumerator();
 
 		/// <summary>
 		///		Utility method for extruding vertices based on a light.
@@ -184,9 +180,9 @@ namespace Axiom.Graphics
 				extrusionDir.Normalize();
 				extrusionDir *= extrudeDistance;
 
-				for ( int vert = 0; vert < originalVertexCount; vert++ )
+				for( int vert = 0; vert < originalVertexCount; vert++ )
 				{
-					if ( lightPosition.w != 0.0f )
+					if( lightPosition.w != 0.0f )
 					{
 						// Point light, adjust extrusionDir
 						extrusionDir.x = pSrc[ srcCount + 0 ] - lightPosition.x;
@@ -212,7 +208,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="edgeData">The edge information to update.</param>
 		/// <param name="lightPosition">4D vector representing the light, a directional light has w=0.0.</param>
-		protected virtual void UpdateEdgeListLightFacing( EdgeData edgeData, Vector4 lightPosition )
+		virtual protected void UpdateEdgeListLightFacing( EdgeData edgeData, Vector4 lightPosition )
 		{
 			edgeData.UpdateTriangleLightFacing( lightPosition );
 		}
@@ -230,8 +226,8 @@ namespace Axiom.Graphics
 		/// already been constructed but will need populating with details of
 		/// the index ranges to be used.</param>
 		/// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
-		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
-			ShadowRenderableList shadowRenderables, int flags )
+		virtual protected void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
+		                                             ShadowRenderableList shadowRenderables, int flags )
 		{
 			// Edge groups should be 1:1 with shadow renderables
 			Debug.Assert( edgeData.edgeGroups.Count == shadowRenderables.Count );
@@ -253,7 +249,7 @@ namespace Axiom.Graphics
 
 				// Iterate over the groups and form renderables for each based on their
 				// lightFacing
-				for ( int groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++ )
+				for( int groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++ )
 				{
 					EdgeData.EdgeGroup eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[ groupCount ];
 					ShadowRenderable si = (ShadowRenderable)shadowRenderables[ groupCount ];
@@ -270,7 +266,7 @@ namespace Axiom.Graphics
 					bool firstDarkCapTri = true;
 					int darkCapStart = 0;
 
-					for ( int edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++ )
+					for( int edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++ )
 					{
 						EdgeData.Edge edge = (EdgeData.Edge)eg.edges[ edgeCount ];
 
@@ -278,7 +274,7 @@ namespace Axiom.Graphics
 						EdgeData.Triangle t2 =
 							edge.isDegenerate ? (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ] : (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 1 ] ];
 
-						if ( t1.lightFacing && ( edge.isDegenerate || !t2.lightFacing ) )
+						if( t1.lightFacing && ( edge.isDegenerate || !t2.lightFacing ) )
 						{
 							/* Silhouette edge, first tri facing the light
 															Also covers degenerate tris where only tri 1 is valid
@@ -302,7 +298,7 @@ namespace Axiom.Graphics
 							pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
 							shadOp.indexData.indexCount += 3;
 
-							if ( !( lightType == LightType.Directional && extrudeToInfinity ) )
+							if( !( lightType == LightType.Directional && extrudeToInfinity ) )
 							{
 								// additional tri to make quad
 								pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
@@ -314,9 +310,9 @@ namespace Axiom.Graphics
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
 							// edges and one point (taken from the initial tri)
-							if ( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
+							if( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
 							{
-								if ( firstDarkCapTri )
+								if( firstDarkCapTri )
 								{
 									darkCapStart = edge.vertIndex[ 0 ] + originalVertexCount;
 									firstDarkCapTri = false;
@@ -330,7 +326,7 @@ namespace Axiom.Graphics
 								}
 							}
 						}
-						else if ( !t1.lightFacing && ( edge.isDegenerate || t2.lightFacing ) )
+						else if( !t1.lightFacing && ( edge.isDegenerate || t2.lightFacing ) )
 						{
 							// Silhouette edge, second tri facing the light
 							// Note edge indexes inverse of when t1 is light facing
@@ -339,7 +335,7 @@ namespace Axiom.Graphics
 							pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
 							shadOp.indexData.indexCount += 3;
 
-							if ( !( lightType == LightType.Directional && extrudeToInfinity ) )
+							if( !( lightType == LightType.Directional && extrudeToInfinity ) )
 							{
 								// additional tri to make quad
 								pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
@@ -351,9 +347,9 @@ namespace Axiom.Graphics
 							// Do dark cap tri
 							// Use McGuire et al method, a triangle fan covering all silhouette
 							// edges and one point (taken from the initial tri)
-							if ( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
+							if( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
 							{
-								if ( firstDarkCapTri )
+								if( firstDarkCapTri )
 								{
 									darkCapStart = edge.vertIndex[ 1 ] + originalVertexCount;
 									firstDarkCapTri = false;
@@ -370,11 +366,11 @@ namespace Axiom.Graphics
 					}
 
 					// Do light cap
-					if ( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) > 0 )
+					if( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) > 0 )
 					{
 						ShadowRenderable lightCapRend = null;
 
-						if ( si.IsLightCapSeperate )
+						if( si.IsLightCapSeperate )
 						{
 							// separate light cap
 							lightCapRend = si.LightCapRenderable;
@@ -386,18 +382,18 @@ namespace Axiom.Graphics
 								indexStart + shadOp.indexData.indexCount;
 						}
 
-						for ( int triCount = 0; triCount < edgeData.triangles.Count; triCount++ )
+						for( int triCount = 0; triCount < edgeData.triangles.Count; triCount++ )
 						{
 							EdgeData.Triangle t = (EdgeData.Triangle)edgeData.triangles[ triCount ];
 
 							// Light facing, and vertex set matches
-							if ( t.lightFacing && t.vertexSet == eg.vertexSet )
+							if( t.lightFacing && t.vertexSet == eg.vertexSet )
 							{
 								pIdx[ count++ ] = (short)t.vertIndex[ 0 ];
 								pIdx[ count++ ] = (short)t.vertIndex[ 1 ];
 								pIdx[ count++ ] = (short)t.vertIndex[ 2 ];
 
-								if ( lightShadOp != null )
+								if( lightShadOp != null )
 								{
 									lightShadOp.indexData.indexCount += 3;
 								}
@@ -413,7 +409,7 @@ namespace Axiom.Graphics
 					indexStart += shadOp.indexData.indexCount;
 
 					// add on the light cap too
-					if ( lightShadOp != null )
+					if( lightShadOp != null )
 					{
 						indexStart += lightShadOp.indexData.indexCount;
 					}
@@ -433,11 +429,11 @@ namespace Axiom.Graphics
 		/// <param name="lightPosition">4D light position in object space, when w=0.0f this
 		/// represents a directional light</param>
 		/// <param name="extrudeDistance">The distance to extrude.</param>
-		protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
+		virtual protected void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
 		{
 			Vector3 extrusionDir = Vector3.Zero;
 
-			if ( lightPosition.w == 0 )
+			if( lightPosition.w == 0 )
 			{
 				extrusionDir.x = -lightPosition.x;
 				extrusionDir.y = -lightPosition.y;
@@ -452,7 +448,7 @@ namespace Axiom.Graphics
 				Vector3 vmin = new Vector3();
 				Vector3 vmax = new Vector3();
 
-				for ( int i = 0; i < 8; i++ )
+				for( int i = 0; i < 8; i++ )
 				{
 					extrusionDir.x = corners[ i ].x - lightPosition.x;
 					extrusionDir.y = corners[ i ].y - lightPosition.y;
@@ -461,7 +457,7 @@ namespace Axiom.Graphics
 					extrusionDir *= extrudeDistance;
 					Vector3 res = corners[ i ] + extrusionDir;
 
-					if ( i == 0 )
+					if( i == 0 )
 					{
 						vmin = res;
 						vmax = res;
@@ -494,7 +490,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="light"></param>
 		/// <returns></returns>
-		public abstract float GetPointExtrusionDistance( Light light );
+		abstract public float GetPointExtrusionDistance( Light light );
 
 		#endregion Methods
 	}

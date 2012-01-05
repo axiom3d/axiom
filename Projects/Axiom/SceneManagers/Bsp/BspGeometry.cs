@@ -62,7 +62,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
 
-			if ( geometryMat == null )
+			if( geometryMat == null )
 			{
 				geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
 				geometryMat.ReceiveShadows = true;
@@ -77,24 +77,12 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Gets whether this renderable would normally cast a shadow.
 		/// </summary>
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastsShadows { get { return false; } }
 
 		/// <summary>
 		///    Get the material associated with this renderable object.
 		/// </summary>
-		public Material Material
-		{
-			get
-			{
-				return geometryMat;
-			}
-		}
+		public Material Material { get { return geometryMat; } }
 
 		/// <summary>
 		///    Technique being used to render this object according to the current hardware.
@@ -103,26 +91,14 @@ namespace Axiom.SceneManagers.Bsp
 		///    This is to allow Renderables to use a chosen Technique if they wish, otherwise
 		///    they will use the best Technique available for the Material they are using.
 		/// </remarks>
-		public Technique Technique
-		{
-			get
-			{
-				return technique;
-			}
-		}
+		public Technique Technique { get { return technique; } }
 
 		protected RenderOperation renderOperation = new RenderOperation();
 
 		/// <summary>
 		///    Gets the render operation required to send this object to the frame buffer.
 		/// </summary>
-		public RenderOperation RenderOperation
-		{
-			get
-			{
-				return renderOperation;
-			}
-		}
+		public RenderOperation RenderOperation { get { return renderOperation; } }
 
 		/// <summary>
 		///    Gets the world transform matrix / matrices for this renderable object.
@@ -135,9 +111,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    does use vertex blending it will fill the passed in pointer with an array of matrices,
 		///    the length being the value returned from getNumWorldTransforms.
 		/// </remarks>
-		public void GetWorldTransforms( Matrix4[] matrices )
-		{
-		}
+		public void GetWorldTransforms( Matrix4[] matrices ) {}
 
 		/// <summary>
 		///    Gets a list of lights, ordered relative to how close they are to this renderable.
@@ -145,24 +119,12 @@ namespace Axiom.SceneManagers.Bsp
 		/// <remarks>
 		///    Directional lights, which have no position, will always be first on this list.
 		/// </remarks>
-		public LightList Lights
-		{
-			get
-			{
-				return null;
-			}
-		}
+		public LightList Lights { get { return null; } }
 
 		/// <summary>
 		///    Returns whether or not this Renderable wishes the hardware to normalize normals.
 		/// </summary>
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
 		/// <summary>
 		///    Gets the number of world transformations that will be used for this object.
@@ -174,14 +136,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    If a renderable does not use vertex blending this method returns 1, which is the default for
 		///    simplicity.
 		/// </remarks>
-
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		public ushort NumWorldTransforms { get { return 1; } }
 
 		/// <summary>
 		/// Gets whether this renderable's chosen detail level can be
@@ -189,13 +144,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// override true means that a lower camera detail will override this
 		/// renderables detail level, false means it won't.
 		/// </summary>
-		public bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public bool PolygonModeOverrideable { get { return true; } }
 
 		/// <summary>
 		///    Returns whether or not to use an 'identity' projection.
@@ -207,13 +156,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
 		///    not override this.
 		/// </remarks>
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityProjection { get { return false; } }
 
 		/// <summary>
 		///    Returns whether or not to use an 'identity' projection.
@@ -225,13 +168,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    to be relative to camera space already. Useful for overlay rendering.
 		///    Normal renderables need not override this.
 		/// </remarks>
-		public bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityView { get { return false; } }
 
 		/// <summary>
 		///    Gets the worldspace orientation of this renderable; this is used in order to
@@ -240,13 +177,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    lights is much more efficient than inverting a complete 4x4 matrix, and also
 		///    eliminates problems introduced by scaling.
 		/// </summary>
-		public Quaternion WorldOrientation
-		{
-			get
-			{
-				return Quaternion.Identity;
-			}
-		}
+		public Quaternion WorldOrientation { get { return Quaternion.Identity; } }
 
 		/// <summary>
 		///    Gets the worldspace position of this renderable; this is used in order to
@@ -255,13 +186,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    lights is much more efficient than inverting a complete 4x4 matrix, and also
 		///    eliminates problems introduced by scaling.
 		/// </summary>
-		public Vector3 WorldPosition
-		{
-			get
-			{
-				return Vector3.Zero;
-			}
-		}
+		public Vector3 WorldPosition { get { return Vector3.Zero; } }
 
 		#endregion Properties
 
@@ -310,9 +235,7 @@ namespace Axiom.SceneManagers.Bsp
 		///		two is performed by the AutoConstant.Custom entry, if that is used.
 		/// </param>
 		/// <param name="val">The value to associate.</param>
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-		}
+		public void SetCustomParameter( int index, Vector4 val ) {}
 
 		/// <summary>
 		///		Update a custom GpuProgramParameters constant which is derived from
@@ -331,9 +254,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </remarks>
 		/// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
 		/// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters )
-		{
-		}
+		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters ) {}
 
 		#endregion Public Methods
 
@@ -348,17 +269,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -386,17 +297,19 @@ namespace Axiom.SceneManagers.Bsp
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if( renderOperation != null )
 					{
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
 						renderOperation = null;
 					}

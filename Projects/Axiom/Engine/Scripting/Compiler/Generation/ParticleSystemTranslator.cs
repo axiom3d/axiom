@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -66,9 +70,9 @@ namespace Axiom.Scripting.Compiler
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 				// Find the name
-				if ( obj != null )
+				if( obj != null )
 				{
-					if ( string.IsNullOrEmpty( obj.Name ) )
+					if( string.IsNullOrEmpty( obj.Name ) )
 					{
 						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
 						return;
@@ -85,14 +89,16 @@ namespace Axiom.Scripting.Compiler
 				ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
 				bool processed = compiler._fireEvent( ref evt, out sysObject );
 
-				if ( !processed )
+				if( !processed )
 				{
 					_System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
 				}
 				else
+				{
 					_System = (ParticleSystem)sysObject;
+				}
 
-				if ( _System == null )
+				if( _System == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
@@ -106,22 +112,22 @@ namespace Axiom.Scripting.Compiler
 
 				obj.Context = _System;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is PropertyAbstractNode )
+					if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-						switch ( (Keywords)prop.Id )
+						switch( (Keywords)prop.Id )
 						{
 							case Keywords.ID_MATERIAL:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										string name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
@@ -131,14 +137,14 @@ namespace Axiom.Scripting.Compiler
 										compiler._fireEvent( ref locEvt );
 										string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
-										if ( !_System.SetParameter( "material", locEvtName ) )
+										if( !_System.SetParameter( "material", locEvtName ) )
 										{
-											if ( _System.Renderer != null )
+											if( _System.Renderer != null )
 											{
-												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
+												if( !_System.Renderer.SetParameter( "material", locEvtName ) )
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														"material property could not be set with material \"" + locEvtName + "\"" );
+													                   "material property could not be set with material \"" + locEvtName + "\"" );
 												}
 											}
 										}
@@ -147,7 +153,7 @@ namespace Axiom.Scripting.Compiler
 								break;
 
 							default:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
@@ -157,14 +163,18 @@ namespace Axiom.Scripting.Compiler
 									string name = prop.Name, value = string.Empty;
 
 									// Glob the values together
-									foreach ( AbstractNode it in prop.Values )
+									foreach( AbstractNode it in prop.Values )
 									{
-										if ( it is AtomAbstractNode )
+										if( it is AtomAbstractNode )
 										{
-											if ( string.IsNullOrEmpty( value ) )
+											if( string.IsNullOrEmpty( value ) )
+											{
 												value = ( (AtomAbstractNode)it ).Value;
+											}
 											else
+											{
 												value = value + " " + ( (AtomAbstractNode)it ).Value;
+											}
 										}
 										else
 										{
@@ -173,12 +183,14 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									if ( !_System.SetParameter( name, value ) )
+									if( !_System.SetParameter( name, value ) )
 									{
-										if ( _System.Renderer != null )
+										if( _System.Renderer != null )
 										{
-											if ( !_System.Renderer.SetParameter( name, value ) )
+											if( !_System.Renderer.SetParameter( name, value ) )
+											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+											}
 										}
 									}
 								}
@@ -196,4 +208,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

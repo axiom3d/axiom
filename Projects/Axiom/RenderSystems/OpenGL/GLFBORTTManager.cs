@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLFBORTTManager.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,9 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
+
 using Tao.OpenGl;
+
 using System.Text;
 
 #endregion Namespace Declarations
@@ -54,6 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
 	internal class GLFBORTTManager : GLRTTManager
 	{
 		#region Enumerations and Structures
+
 		/// <summary>
 		/// Extra GL Constant
 		/// </summary>
@@ -78,6 +85,7 @@ namespace Axiom.RenderSystems.OpenGL
 				/// Depth format (0=no depth)
 				/// </summary>
 				public int Depth;
+
 				/// <summary>
 				/// Stencil format (0=no stencil)
 				/// </summary>
@@ -109,20 +117,22 @@ namespace Axiom.RenderSystems.OpenGL
 
 			public static bool operator <( RBFormat lhs, RBFormat rhs )
 			{
-				if ( lhs.Format < rhs.Format )
+				if( lhs.Format < rhs.Format )
 				{
 					return true;
 				}
-				else if ( lhs.Format == rhs.Format )
+				else if( lhs.Format == rhs.Format )
 				{
-					if ( lhs.Width < rhs.Width )
+					if( lhs.Width < rhs.Width )
 					{
 						return true;
 					}
-					else if ( lhs.Width == rhs.Width )
+					else if( lhs.Width == rhs.Width )
 					{
-						if ( lhs.Height < rhs.Height )
+						if( lhs.Height < rhs.Height )
+						{
 							return true;
+						}
 					}
 				}
 				return false;
@@ -130,20 +140,22 @@ namespace Axiom.RenderSystems.OpenGL
 
 			public static bool operator >( RBFormat lhs, RBFormat rhs )
 			{
-				if ( lhs.Format > rhs.Format )
+				if( lhs.Format > rhs.Format )
 				{
 					return true;
 				}
-				else if ( lhs.Format == rhs.Format )
+				else if( lhs.Format == rhs.Format )
 				{
-					if ( lhs.Width > rhs.Width )
+					if( lhs.Width > rhs.Width )
 					{
 						return true;
 					}
-					else if ( lhs.Width == rhs.Width )
+					else if( lhs.Width == rhs.Width )
 					{
-						if ( lhs.Height > rhs.Height )
+						if( lhs.Height > rhs.Height )
+						{
 							return true;
+						}
 					}
 				}
 				return false;
@@ -170,25 +182,28 @@ namespace Axiom.RenderSystems.OpenGL
 
 		/// Stencil and depth formats to be tried
 		private int[] _stencilFormats = new int[] {
-													Gl.GL_NONE,                    // No stencil
-													Gl.GL_STENCIL_INDEX1_EXT,
-													Gl.GL_STENCIL_INDEX4_EXT,
-													Gl.GL_STENCIL_INDEX8_EXT,
-													Gl.GL_STENCIL_INDEX16_EXT
-												  };
+		                                          	Gl.GL_NONE, // No stencil
+		                                          	Gl.GL_STENCIL_INDEX1_EXT,
+		                                          	Gl.GL_STENCIL_INDEX4_EXT,
+		                                          	Gl.GL_STENCIL_INDEX8_EXT,
+		                                          	Gl.GL_STENCIL_INDEX16_EXT
+		                                          };
 
-		private int[] _stencilBits = new int[] { 0, 1, 4, 8, 16 };
+		private int[] _stencilBits = new int[] {
+		                                       	0, 1, 4, 8, 16
+		                                       };
 
 		private int[] _depthFormats = new int[] {
-													Gl.GL_NONE,
-													Gl.GL_DEPTH_COMPONENT16,
-													Gl.GL_DEPTH_COMPONENT24,    // Prefer 24 bit depth
-													Gl.GL_DEPTH_COMPONENT32,
-													GL_DEPTH24_STENCIL8_EXT		// packed depth / stencil
-												};
+		                                        	Gl.GL_NONE,
+		                                        	Gl.GL_DEPTH_COMPONENT16,
+		                                        	Gl.GL_DEPTH_COMPONENT24, // Prefer 24 bit depth
+		                                        	Gl.GL_DEPTH_COMPONENT32,
+		                                        	GL_DEPTH24_STENCIL8_EXT // packed depth / stencil
+		                                        };
 
-		private int[] _depthBits = new int[] { 0, 16, 24, 32, 24 };
-
+		private int[] _depthBits = new int[] {
+		                                     	0, 16, 24, 32, 24
+		                                     };
 
 		/// <summary>
 		///
@@ -203,23 +218,17 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Properties for all internal formats defined by OGRE
 		/// </summary>
-		FormatProperties[] _props = new FormatProperties[ (int)PixelFormat.Count ];
+		private FormatProperties[] _props = new FormatProperties[(int)PixelFormat.Count];
 
 		/// <summary>
 		/// Temporary FBO identifier
 		/// </summary>
-		int _tempFBO;
+		private int _tempFBO;
 
 		/// <summary>
 		/// Get a FBO without depth/stencil for temporary use, like blitting between textures.
 		/// </summary>
-		public int TemporaryFBO
-		{
-			get
-			{
-				return _tempFBO;
-			}
-		}
+		public int TemporaryFBO { get { return _tempFBO; } }
 
 		#endregion Fields and Properties
 
@@ -228,7 +237,7 @@ namespace Axiom.RenderSystems.OpenGL
 		internal GLFBORTTManager( BaseGLSupport glSupport, bool atiMode )
 			: base( glSupport )
 		{
-			for ( int x = 0; x < _props.GetLength( 0 ); x++ )
+			for( int x = 0; x < _props.GetLength( 0 ); x++ )
 			{
 				_props[ x ] = new FormatProperties();
 			}
@@ -257,7 +266,7 @@ namespace Axiom.RenderSystems.OpenGL
 			/// [best supported for internal format]
 			int bestmode = 0;
 			int bestscore = -1;
-			for ( int mode = 0; mode < props.Modes.Count; mode++ )
+			for( int mode = 0; mode < props.Modes.Count; mode++ )
 			{
 				int desirability = 0;
 				/// Find most desirable mode
@@ -266,17 +275,25 @@ namespace Axiom.RenderSystems.OpenGL
 				/// desirability == 2000...3000  if depth, no stencil
 				/// desirability == 3000+        if depth and stencil
 				/// beyond this, the total numer of bits (stencil+depth) is maximised
-				if ( props.Modes[ mode ].Stencil != 0 )
+				if( props.Modes[ mode ].Stencil != 0 )
+				{
 					desirability += 1000;
-				if ( props.Modes[ mode ].Depth != 0 )
+				}
+				if( props.Modes[ mode ].Depth != 0 )
+				{
 					desirability += 2000;
-				if ( _depthBits[ props.Modes[ mode ].Depth ] == 24 ) // Prefer 24 bit for now
+				}
+				if( _depthBits[ props.Modes[ mode ].Depth ] == 24 ) // Prefer 24 bit for now
+				{
 					desirability += 500;
-				if ( _depthFormats[ props.Modes[ mode ].Depth ] == GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed
+				}
+				if( _depthFormats[ props.Modes[ mode ].Depth ] == GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed
+				{
 					desirability += 5000;
+				}
 				desirability += _stencilBits[ props.Modes[ mode ].Stencil ] + _depthBits[ props.Modes[ mode ].Depth ];
 
-				if ( desirability > bestscore )
+				if( desirability > bestscore )
 				{
 					bestscore = desirability;
 					bestmode = mode;
@@ -317,11 +334,11 @@ namespace Axiom.RenderSystems.OpenGL
 			GLSurfaceDesc retval = new GLSurfaceDesc();
 
 			retval.Buffer = null; // Return 0 buffer if GL_NONE is requested
-			if ( format != Gl.GL_NONE )
+			if( format != Gl.GL_NONE )
 			{
 				RBFormat key = new RBFormat( format, width, height );
 				RBRef value;
-				if ( _renderBufferMap.TryGetValue( key, out value ) )
+				if( _renderBufferMap.TryGetValue( key, out value ) )
 				{
 					retval.Buffer = value.Buffer;
 					retval.ZOffset = 0;
@@ -348,14 +365,16 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="surface"></param>
 		public void RequestRenderBuffer( GLSurfaceDesc surface )
 		{
-			if ( surface.Buffer == null )
+			if( surface.Buffer == null )
+			{
 				return;
+			}
 
 			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
 			bool result = _renderBufferMap.TryGetValue( key, out value );
 			Debug.Assert( result );
-			lock ( this )
+			lock( this )
 			{
 				Debug.Assert( value.Buffer == surface.Buffer );
 				// Increase refcount
@@ -370,16 +389,18 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="surface"></param>
 		public void ReleaseRenderBuffer( GLSurfaceDesc surface )
 		{
-			if ( surface.Buffer == null )
+			if( surface.Buffer == null )
+			{
 				return;
+			}
 
 			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
-			if ( _renderBufferMap.TryGetValue( key, out value ) )
+			if( _renderBufferMap.TryGetValue( key, out value ) )
 			{
 				// Decrease refcount
 				value.Refcount--;
-				if ( value.Refcount == 0 )
+				if( value.Refcount == 0 )
 				{
 					// If refcount reaches zero, delete buffer and remove from map
 					value.Buffer.Dispose();
@@ -402,32 +423,40 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGetIntegerv( Gl.GL_DRAW_BUFFER, out old_drawbuffer );
 			Gl.glGetIntegerv( Gl.GL_READ_BUFFER, out old_readbuffer );
 
-			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
+			for( int x = 0; x < (int)PixelFormat.Count; ++x )
 			{
 				_props[ x ].Valid = false;
 
 				// Fetch GL format token
 				int fmt = GLPixelUtil.GetGLInternalFormat( (PixelFormat)x );
-				if ( fmt == Gl.GL_NONE && x != 0 )
+				if( fmt == Gl.GL_NONE && x != 0 )
+				{
 					continue;
+				}
 
 				// No test for compressed formats
-				if ( PixelUtil.IsCompressed( (PixelFormat)x ) )
+				if( PixelUtil.IsCompressed( (PixelFormat)x ) )
+				{
 					continue;
+				}
 
 				// Buggy ATI cards *crash* on non-RGB(A) formats
 				int[] depths = PixelUtil.GetBitDepths( (PixelFormat)x );
-				if ( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] == 0 || depths[ 1 ] == 0 || depths[ 2 ] == 0 ) )
+				if( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] == 0 || depths[ 1 ] == 0 || depths[ 2 ] == 0 ) )
+				{
 					continue;
+				}
 
 				// Buggy NVidia Drivers fail on 32Bit FP formats on Windows.
-				if ( PixelUtil.IsFloatingPoint( (PixelFormat)x ) && PlatformManager.IsWindowsOS && !_atiMode )
+				if( PixelUtil.IsFloatingPoint( (PixelFormat)x ) && PlatformManager.IsWindowsOS && !_atiMode )
+				{
 					continue;
+				}
 
 				// Create and attach framebuffer
 				Gl.glGenFramebuffersEXT( 1, out fb );
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, fb );
-				if ( fmt != Gl.GL_NONE )
+				if( fmt != Gl.GL_NONE )
 				{
 					// Create and attach texture
 					Gl.glGenTextures( 1, out tid );
@@ -456,24 +485,24 @@ namespace Axiom.RenderSystems.OpenGL
 				// Ignore status in case of fmt==GL_NONE, because no implementation will accept
 				// a buffer without *any* attachment. Buffers with only stencil and depth attachment
 				// might still be supported, so we must continue probing.
-				if ( fmt == Gl.GL_NONE || status == Gl.GL_FRAMEBUFFER_COMPLETE_EXT )
+				if( fmt == Gl.GL_NONE || status == Gl.GL_FRAMEBUFFER_COMPLETE_EXT )
 				{
 					_props[ x ].Valid = true;
 					StringBuilder str = new StringBuilder();
 					str.AppendFormat( "\tFBO {0} depth/stencil support: ", PixelUtil.GetFormatName( (PixelFormat)x ) );
 
 					// For each depth/stencil formats
-					for ( int depth = 0; depth < _depthFormats.GetLength( 0 ); ++depth )
+					for( int depth = 0; depth < _depthFormats.GetLength( 0 ); ++depth )
 					{
-						if ( _depthFormats[ depth ] != GL_DEPTH24_STENCIL8_EXT )
+						if( _depthFormats[ depth ] != GL_DEPTH24_STENCIL8_EXT )
 						{
 							// General depth/stencil combination
 
-							for ( int stencil = 0; stencil < _stencilFormats.GetLength( 0 ); ++stencil )
+							for( int stencil = 0; stencil < _stencilFormats.GetLength( 0 ); ++stencil )
 							{
 								//LogManager.Instance.Write( "Trying {0} D{1}S{2} ", PixelUtil.GetFormatName( (PixelFormat)x ), _depthBits[ depth ], _stencilBits[ stencil ] );
 
-								if ( _tryFormat( _depthFormats[ depth ], _stencilFormats[ stencil ] ) )
+								if( _tryFormat( _depthFormats[ depth ], _stencilFormats[ stencil ] ) )
 								{
 									/// Add mode to allowed modes
 									str.AppendFormat( "D{0}S{1} ", _depthBits[ depth ], _stencilBits[ stencil ] );
@@ -488,9 +517,9 @@ namespace Axiom.RenderSystems.OpenGL
 						{
 							// Packed depth/stencil format
 #if false
-                            // Only query packed depth/stencil formats for 32-bit
-                            // non-floating point formats (ie not R32!)
-                            // Linux nVidia driver segfaults if you query others
+	// Only query packed depth/stencil formats for 32-bit
+	// non-floating point formats (ie not R32!)
+	// Linux nVidia driver segfaults if you query others
 							if ( !PlatformManager.IsWindowsOS &&
 								 ( PixelUtil.GetNumElemBits( (PixelFormat)x ) != 32 ||
 								   PixelUtil.IsFloatingPoint( (PixelFormat)x ) ) )
@@ -498,20 +527,19 @@ namespace Axiom.RenderSystems.OpenGL
 								continue;
 							}
 #endif
-							if ( _tryPackedFormat( _depthFormats[ depth ] ) )
+							if( _tryPackedFormat( _depthFormats[ depth ] ) )
 							{
 								/// Add mode to allowed modes
 								str.AppendFormat( "Packed-D{0}S8 ", _depthBits[ depth ] );
 								FormatProperties.Mode mode;
 								mode.Depth = depth;
-								mode.Stencil = 0;   // unuse
+								mode.Stencil = 0; // unuse
 								_props[ x ].Modes.Add( mode );
 							}
 						}
 					}
 
 					LogManager.Instance.Write( str.ToString() );
-
 				}
 				// Delete texture and framebuffer
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
@@ -530,13 +558,14 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glReadBuffer( old_readbuffer );
 
 			string fmtstring = "";
-			for ( int x = 0; x < (int)PixelFormat.Count; ++x )
+			for( int x = 0; x < (int)PixelFormat.Count; ++x )
 			{
-				if ( _props[ x ].Valid )
+				if( _props[ x ].Valid )
+				{
 					fmtstring += PixelUtil.GetFormatName( (PixelFormat)x ) + " ";
+				}
 			}
 			LogManager.Instance.Write( "[GL] : Valid FBO targets " + fmtstring );
-
 		}
 
 		private bool _tryFormat( int depthFormat, int stencilFormat )
@@ -544,7 +573,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int status, depthRB = 0, stencilRB = 0;
 			bool failed = false; // flag on GL errors
 
-			if ( depthFormat != Gl.GL_NONE )
+			if( depthFormat != Gl.GL_NONE )
 			{
 				/// Generate depth renderbuffer
 				Gl.glGenRenderbuffersEXT( 1, out depthRB );
@@ -558,7 +587,7 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, depthRB );
 			}
 
-			if ( stencilFormat != Gl.GL_NONE )
+			if( stencilFormat != Gl.GL_NONE )
 			{
 				/// Generate stencil renderbuffer
 				Gl.glGenRenderbuffersEXT( 1, out stencilRB );
@@ -567,12 +596,16 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glGetError(); // NV hack
 				/// Allocate storage for stencil buffer
 				Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, stencilFormat, PROBE_SIZE, PROBE_SIZE );
-				if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+				if( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+				{
 					failed = true;
+				}
 				/// Attach stencil
 				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, stencilRB );
-				if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+				if( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+				{
 					failed = true;
+				}
 			}
 
 			status = Gl.glCheckFramebufferStatusEXT( Gl.GL_FRAMEBUFFER_EXT );
@@ -580,10 +613,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// Detach and destroy
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, 0 );
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, 0 );
-			if ( depthRB != 0 )
+			if( depthRB != 0 )
+			{
 				Gl.glDeleteRenderbuffersEXT( 1, ref depthRB );
-			if ( stencilRB != 0 )
+			}
+			if( stencilRB != 0 )
+			{
 				Gl.glDeleteRenderbuffersEXT( 1, ref stencilRB );
+			}
 
 			return status == Gl.GL_FRAMEBUFFER_COMPLETE_EXT && !failed;
 		}
@@ -605,13 +642,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 			/// Attach depth
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, packedRB );
-			if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+			if( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+			{
 				failed = true;
+			}
 
 			/// Attach stencil
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, packedRB );
-			if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+			if( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
+			{
 				failed = true;
+			}
 
 			int status = Gl.glCheckFramebufferStatusEXT( Gl.GL_FRAMEBUFFER_EXT );
 
@@ -655,11 +696,15 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			/// Check if the render target is in the rendertarget->FBO map
 			GLFrameBufferObject fbo = (GLFrameBufferObject)target[ "FBO" ];
-			if ( fbo != null )
+			if( fbo != null )
+			{
 				fbo.Bind();
+			}
 			else
+			{
 				// Old style context (window/pbuffer) or copying render texture
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, 0 );
+			}
 		}
 
 		/// <summary>
@@ -673,12 +718,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( _renderBufferMap.Count != 0 )
+					if( _renderBufferMap.Count != 0 )
 					{
 						LogManager.Instance.Write( "GL: Warning! GLFBORTTManager Disposed, but not all renderbuffers were released." );
 					}

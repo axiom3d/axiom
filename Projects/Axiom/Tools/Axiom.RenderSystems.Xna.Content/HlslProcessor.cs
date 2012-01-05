@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
@@ -49,7 +54,6 @@ using TOutput = Axiom.RenderSystems.Xna.Content.HlslCompiledShaders;
 
 namespace Axiom.RenderSystems.Xna.Content
 {
-
 	/// <summary>
 	/// This class will be instantiated by the XNA Framework Content Pipeline
 	/// to apply custom processing to content data, converting an object of
@@ -66,52 +70,25 @@ namespace Axiom.RenderSystems.Xna.Content
 	{
 		private HlslIncludeHandler includeHandler = new HlslIncludeHandler();
 
-		[DisplayName( "Shader Profile" )]
-		[DefaultValue( ShaderProfile.PS_2_0 )]
-		[Description( "The profile to compile this shader with." )]
-		public ShaderProfile Profile
-		{
-			get
-			{
-				return shaderProfile;
-			}
-			set
-			{
-				shaderProfile = value;
-			}
-		}
+		[DisplayName( "Shader Profile" ), DefaultValue( ShaderProfile.PS_2_0 ), Description( "The profile to compile this shader with." )]
+		
+		
+		public ShaderProfile Profile { get { return shaderProfile; } set { shaderProfile = value; } }
+
 		private ShaderProfile shaderProfile = ShaderProfile.PS_2_0;
 
-		[DisplayName( "Entry Point" )]
-		[DefaultValue( "main" )]
-		[Description( "The name of the function used as the entry point for this shader." )]
-		public string EntryPoint
-		{
-			get
-			{
-				return entryPoint;
-			}
-			set
-			{
-				entryPoint = value;
-			}
-		}
+		[DisplayName( "Entry Point" ), DefaultValue( "main" ), Description( "The name of the function used as the entry point for this shader." )]
+		
+		
+		public string EntryPoint { get { return entryPoint; } set { entryPoint = value; } }
+
 		private string entryPoint = "main";
 
-		[DisplayName( "Preprocessor Defines" )]
-		[DefaultValue( "" )]
-		[Description( "A comma separated list of names to define for the preprocessor." )]
-		public string PreprocessorDefines
-		{
-			get
-			{
-				return preprocessorDefines;
-			}
-			set
-			{
-				preprocessorDefines = value;
-			}
-		}
+		[DisplayName( "Preprocessor Defines" ), DefaultValue( "" ), Description( "A comma separated list of names to define for the preprocessor." )]
+		
+		
+		public string PreprocessorDefines { get { return preprocessorDefines; } set { preprocessorDefines = value; } }
+
 		private string preprocessorDefines = String.Empty;
 
 		public override TOutput Process( TInput input, ContentProcessorContext context )
@@ -119,16 +96,16 @@ namespace Axiom.RenderSystems.Xna.Content
 			// Populate preprocessor defines
 			string stringBuffer = string.Empty;
 			List<CompilerMacro> defines = new List<CompilerMacro>();
-			if ( preprocessorDefines != string.Empty )
+			if( preprocessorDefines != string.Empty )
 			{
 				stringBuffer = preprocessorDefines;
 
 				// Split preprocessor defines and build up macro array
 
-				if ( stringBuffer.Contains( "," ) )
+				if( stringBuffer.Contains( "," ) )
 				{
 					string[] definesArr = stringBuffer.Split( ',' );
-					foreach ( string def in definesArr )
+					foreach( string def in definesArr )
 					{
 						CompilerMacro macro = new CompilerMacro();
 						macro.Definition = "1\0";
@@ -139,10 +116,10 @@ namespace Axiom.RenderSystems.Xna.Content
 			}
 
 			CompiledShader shader = ShaderCompiler.CompileFromSource( input, defines.ToArray(), includeHandler,
-																	  CompilerOptions.PackMatrixRowMajor,
-																	  entryPoint, shaderProfile,
-																	  context.TargetPlatform );
-			if ( !shader.Success )
+			                                                          CompilerOptions.PackMatrixRowMajor,
+			                                                          entryPoint, shaderProfile,
+			                                                          context.TargetPlatform );
+			if( !shader.Success )
 			{
 				throw new InvalidContentException( shader.ErrorsAndWarnings );
 			}

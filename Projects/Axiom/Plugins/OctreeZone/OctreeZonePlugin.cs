@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
 
@@ -45,24 +48,24 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
-    public class OctreeZonePlugin : IPlugin
-    {
-        public void Initialize()
-        {
-            terrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
-            octreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
+	public class OctreeZonePlugin : IPlugin
+	{
+		public void Initialize()
+		{
+			terrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
+			octreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
 
-            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(terrainZoneFactory);
-            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(octreeZoneFactory);
-        }
+			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( terrainZoneFactory );
+			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( octreeZoneFactory );
+		}
 
-        public void Shutdown()
-        {
-            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(octreeZoneFactory);
-            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(terrainZoneFactory);
-        }
+		public void Shutdown()
+		{
+			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( octreeZoneFactory );
+			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( terrainZoneFactory );
+		}
 
-        OctreeZoneFactory octreeZoneFactory;
-        TerrainZoneFactory terrainZoneFactory;
-    }
+		private OctreeZoneFactory octreeZoneFactory;
+		private TerrainZoneFactory terrainZoneFactory;
+	}
 }

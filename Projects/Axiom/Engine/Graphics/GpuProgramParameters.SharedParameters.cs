@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,18 +57,22 @@ namespace Axiom.Graphics
 			/// No variation except by manual setting - the default
 			/// </summary>
 			Global = 1,
+
 			/// <summary>
 			/// Varies per object (based on an auto param usually), but not per light setup
 			/// </summary>
 			PerObject = 2,
+
 			/// <summary>
 			/// Varies with light setup
 			/// </summary>
 			Lights = 4,
+
 			/// <summary>
 			/// Varies with pass iteration number
 			/// </summary>
 			PassIterationNumber = 8,
+
 			/// <summary>
 			/// Full mask (16-bit)
 			/// </summary>
@@ -148,13 +154,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// 
 			/// </summary>
-			public GpuNamedConstants ConstantDefinitions
-			{
-				get
-				{
-					return this.NamedConstants;
-				}
-			}
+			public GpuNamedConstants ConstantDefinitions { get { return this.NamedConstants; } }
 
 			/// <summary>
 			/// 
@@ -164,17 +164,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get the name of this shared parameter set
 			/// </summary>
-			public string Name
-			{
-				get
-				{
-					return this._name;
-				}
-				protected set
-				{
-					this._name = value;
-				}
-			}
+			public string Name { get { return this._name; } protected set { this._name = value; } }
 
 			/// <summary>
 			/// Version number of the definitions in this buffer
@@ -185,17 +175,7 @@ namespace Axiom.Graphics
 			/// Get the version number of this shared parameter set, can be used to identify when
 			/// changes have occurred.
 			/// </summary>
-			public ulong Version
-			{
-				get
-				{
-					return this._version;
-				}
-				protected set
-				{
-					this._version = value;
-				}
-			}
+			public ulong Version { get { return this._version; } protected set { this._version = value; } }
 
 			/// <summary>
 			/// Not used when copying data, but might be useful to RS using shared buffers
@@ -205,17 +185,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///  Get the frame in which this shared parameter set was last updated
 			/// </summary>
-			public int FrameLastUpdated
-			{
-				get
-				{
-					return this._frameLastUpdated;
-				}
-				set
-				{
-					this._frameLastUpdated = value;
-				}
-			}
+			public int FrameLastUpdated { get { return this._frameLastUpdated; } set { this._frameLastUpdated = value; } }
 
 			/// <summary>
 			/// Optional data the rendersystem might want to store
@@ -225,17 +195,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///  Internal method that the RenderSystem might use to store optional data.
 			/// </summary>
-			public object RenderSystemData
-			{
-				set
-				{
-					this._renderSystemData = value;
-				}
-				get
-				{
-					return this._renderSystemData;
-				}
-			}
+			public object RenderSystemData { set { this._renderSystemData = value; } get { return this._renderSystemData; } }
 
 			/// <summary>
 			/// 
@@ -276,9 +236,9 @@ namespace Axiom.Graphics
 			/// user. Only parameters which have been predefined here may be later
 			/// updated.
 			/// </remarks>
-			public virtual void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
+			virtual public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
 			{
-				if ( this.NamedConstants.GpuConstantDefinitions.ContainsKey( name ) )
+				if( this.NamedConstants.GpuConstantDefinitions.ContainsKey( name ) )
 				{
 					throw new Exception( "Constant entry with name '" + name + "' allready exists, GpuSharedParameters.AddConstantDefinition" );
 				}
@@ -292,14 +252,14 @@ namespace Axiom.Graphics
 				//not used
 				def.LogicalIndex = 0;
 				def.Variability = GpuParamVariability.Global;
-				byte[] b = new byte[ 1 ];
-				if ( def.IsFloat )
+				byte[] b = new byte[1];
+				if( def.IsFloat )
 				{
 					def.PhysicalIndex = this.FloatConstants.Count;
 					int amount = def.ArraySize * def.ElementSize;
 					;
 					this.FloatConstants.Capacity += amount;
-					for ( int i = 0; i < amount; i++ )
+					for( int i = 0; i < amount; i++ )
 					{
 						this.FloatConstants.Add( b );
 					}
@@ -309,7 +269,7 @@ namespace Axiom.Graphics
 					def.PhysicalIndex = this.IntConstants.Count;
 					int amount = def.ArraySize * def.ElementSize;
 					this.IntConstants.Capacity += amount;
-					for ( int i = 0; i < amount; i++ )
+					for( int i = 0; i < amount; i++ )
 					{
 						this.IntConstants.Add( b );
 					}
@@ -323,20 +283,20 @@ namespace Axiom.Graphics
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
 			/// <param name="name"></param>
-			public virtual void RemoveConstantDefinition( string name )
+			virtual public void RemoveConstantDefinition( string name )
 			{
 				GpuConstantDefinition i = null;
-				if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out i ) )
+				if( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out i ) )
 				{
 					GpuConstantDefinition def = i;
 					bool isFloat = def.IsFloat;
-					foreach ( KeyValuePair<string, GpuConstantDefinition> j in this.NamedConstants.GpuConstantDefinitions )
+					foreach( KeyValuePair<string, GpuConstantDefinition> j in this.NamedConstants.GpuConstantDefinitions )
 					{
 						GpuConstantDefinition otherDef = j.Value;
 						bool otherIsFloat = otherDef.IsFloat;
 						// same type, and comes after in the buffer
-						if ( ( ( isFloat && otherIsFloat ) || ( !isFloat && !otherIsFloat ) ) &&
-							 otherDef.PhysicalIndex > def.PhysicalIndex )
+						if( ( ( isFloat && otherIsFloat ) || ( !isFloat && !otherIsFloat ) ) &&
+						    otherDef.PhysicalIndex > def.PhysicalIndex )
 						{
 							// adjust index
 							otherDef.PhysicalIndex -= 1;
@@ -344,7 +304,7 @@ namespace Axiom.Graphics
 					}
 
 					// remove floats and reduce buffer
-					if ( isFloat )
+					if( isFloat )
 					{
 						byte[] tmp = this.FloatConstants[ def.PhysicalIndex ];
 						this.NamedConstants.FloatBufferSize -= sizeof( byte ) * tmp.Length;
@@ -364,7 +324,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			public virtual void RemoveAllConstantDefinitions()
+			virtual public void RemoveAllConstantDefinitions()
 			{
 				this.NamedConstants.GpuConstantDefinitions.Clear();
 				this.NamedConstants.FloatBufferSize = 0;
@@ -380,7 +340,7 @@ namespace Axiom.Graphics
 			/// You do not need to call this yourself, set is marked as dirty whenever
 			/// setNamedConstant or (non const) getFloatPointer et al are called.
 			/// </remarks>
-			public virtual void MarkDirty()
+			virtual public void MarkDirty()
 			{
 				this._frameLastUpdated = (int)Root.Instance.CurrentFrameCount;
 			}
@@ -390,17 +350,17 @@ namespace Axiom.Graphics
 			/// </summary>
 			/// <param name="name"></param>
 			/// <returns></returns>
-			public virtual GpuConstantDefinition GetConstantDefinition( string name )
+			virtual public GpuConstantDefinition GetConstantDefinition( string name )
 			{
 				GpuConstantDefinition def = null;
-				if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
+				if( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
 				{
 					return def;
 				}
 				else
 				{
 					throw new Exception( "Constant entry with name '" + name + "' does not exists!\n" +
-										 "GpuSharedParameters.GetConstantDefinition" );
+					                     "GpuSharedParameters.GetConstantDefinition" );
 				}
 			}
 
@@ -500,19 +460,19 @@ namespace Axiom.Graphics
 			/// <param name="name"></param>
 			/// <param name="value"></param>
 			/// <param name="isFloat"></param>
-			public virtual void SetNamedConstant( string name, byte[] value, bool isFloat )
+			virtual public void SetNamedConstant( string name, byte[] value, bool isFloat )
 			{
 				GpuConstantDefinition def = null;
-				if ( isFloat )
+				if( isFloat )
 				{
-					if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
+					if( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
 					{
 						this.FloatConstants[ def.PhysicalIndex ] = value;
 					}
 				}
 				else
 				{
-					if ( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
+					if( this.NamedConstants.GpuConstantDefinitions.TryGetValue( name, out def ) )
 					{
 						this.IntConstants[ def.PhysicalIndex ] = value;
 					}
@@ -567,13 +527,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get the name of the shared parameter set
 			/// </summary>
-			public string Name
-			{
-				get
-				{
-					return this._sharedParameters.Name;
-				}
-			}
+			public string Name { get { return this._sharedParameters.Name; } }
 
 			/// <summary>
 			/// 
@@ -583,13 +537,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get's the shared parameters.
 			/// </summary>
-			public GpuSharedParameters SharedParameters
-			{
-				get
-				{
-					return this._sharedParameters;
-				}
-			}
+			public GpuSharedParameters SharedParameters { get { return this._sharedParameters; } }
 
 			/// <summary>
 			/// 
@@ -599,13 +547,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Get's the target Gpu program parameters.
 			/// </summary>
-			public GpuProgramParameters TargetParameters
-			{
-				get
-				{
-					return this._parameters;
-				}
-			}
+			public GpuProgramParameters TargetParameters { get { return this._parameters; } }
 
 			/// <summary>
 			/// Optional data the rendersystem might want to store
@@ -615,17 +557,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Optional data the rendersystem might want to store
 			/// </summary>
-			public object RenderSystemData
-			{
-				set
-				{
-					this._renderSystemData = value;
-				}
-				get
-				{
-					return this._renderSystemData;
-				}
-			}
+			public object RenderSystemData { set { this._renderSystemData = value; } get { return this._renderSystemData; } }
 
 			/// <summary>
 			/// Default Constructor.
@@ -652,15 +584,15 @@ namespace Axiom.Graphics
 			public void CopySharedParamsToTargetParams()
 			{
 				// check copy data version
-				if ( this.CopyDataVersion != this._sharedParameters.Version )
+				if( this.CopyDataVersion != this._sharedParameters.Version )
 				{
 					InitCopyData();
 				}
 
-				foreach ( CopyDataEntry i in this.CopyDataList )
+				foreach( CopyDataEntry i in this.CopyDataList )
 				{
 					CopyDataEntry e = i;
-					if ( e.DstDefinition.IsFloat )
+					if( e.DstDefinition.IsFloat )
 					{
 						unsafe
 						{
@@ -670,11 +602,11 @@ namespace Axiom.Graphics
 
 							// Deal with matrix transposition here!!!
 							// transposition is specific to the dest param set, shared params don't do it
-							if ( this._parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
+							if( this._parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
 							{
-								for ( int row = 0; row < 4; ++row )
+								for( int row = 0; row < 4; ++row )
 								{
-									for ( int col = 0; col < 4; ++col )
+									for( int col = 0; col < 4; ++col )
 									{
 										dst[ row * 4 + col ] = src[ col * 4 + row ];
 									}
@@ -682,7 +614,7 @@ namespace Axiom.Graphics
 							}
 							else
 							{
-								if ( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
+								if( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
 								{
 									// simple copy
 									src.CopyTo( dst, 0 );
@@ -692,11 +624,11 @@ namespace Axiom.Graphics
 									// target params may be padded to 4 elements, shared params are packed
 									System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize % 4 == 0 );
 									int iterations = e.DstDefinition.ElementSize / 4
-													 * e.DstDefinition.ArraySize;
+									                 * e.DstDefinition.ArraySize;
 									int valsPerIteration = e.SrcDefinition.ElementSize / iterations;
 									IntPtr pSrc = Memory.PinObject( src );
 									IntPtr pDst = Memory.PinObject( dst );
-									for ( int l = 0; l < iterations; ++l )
+									for( int l = 0; l < iterations; ++l )
 									{
 										Memory.Copy( pSrc, pDst, sizeof( float ) * valsPerIteration );
 
@@ -718,7 +650,7 @@ namespace Axiom.Graphics
 							byte[] src = this._sharedParameters.GetIntPointer( e.SrcDefinition.PhysicalIndex );
 #warning implement: _parameters.GetIntPointer(e.DstDefinition.PhysicalIndex);
 							byte[] dst = null;
-							if ( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
+							if( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
 							{
 								// simple copy
 								src.CopyTo( dst, 0 );
@@ -728,11 +660,11 @@ namespace Axiom.Graphics
 								// target params may be padded to 4 elements, shared params are packed
 								System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize % 4 == 0 );
 								int iterations = e.DstDefinition.ElementSize / 4
-												 * e.DstDefinition.ArraySize;
+								                 * e.DstDefinition.ArraySize;
 								int valsPerIteration = e.SrcDefinition.ElementSize / iterations;
 								IntPtr pSrc = Memory.PinObject( src );
 								IntPtr pDst = Memory.PinObject( dst );
-								for ( int l = 0; l < iterations; ++l )
+								for( int l = 0; l < iterations; ++l )
 								{
 									Memory.Copy( pSrc, pDst, sizeof( int ) * valsPerIteration );
 
@@ -756,17 +688,17 @@ namespace Axiom.Graphics
 			{
 				this.CopyDataList.Clear();
 				Dictionary<string, GpuConstantDefinition> sharedMap = this._sharedParameters.ConstantDefinitions.GpuConstantDefinitions;
-				foreach ( KeyValuePair<string, GpuConstantDefinition> i in sharedMap )
+				foreach( KeyValuePair<string, GpuConstantDefinition> i in sharedMap )
 				{
 					string name = i.Key;
 					GpuConstantDefinition sharedDef = i.Value;
 #warning implement: _parameters.FindNamedConstantDefinition(name, false);
 					GpuConstantDefinition instDef = null;
-					if ( instDef != null )
+					if( instDef != null )
 					{
 						// Check that the definitions are the same
-						if ( instDef.ConstantType == sharedDef.ConstantType &&
-							 instDef.ArraySize == sharedDef.ArraySize )
+						if( instDef.ConstantType == sharedDef.ConstantType &&
+						    instDef.ArraySize == sharedDef.ArraySize )
 						{
 							CopyDataEntry e = new CopyDataEntry();
 							e.SrcDefinition = sharedDef;

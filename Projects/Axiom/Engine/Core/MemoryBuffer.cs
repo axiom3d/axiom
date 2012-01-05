@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,9 +44,7 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-	public interface IMemoryBuffer : IDisposable
-	{
-	}
+	public interface IMemoryBuffer : IDisposable {}
 
 	public interface IBitConverter
 	{
@@ -54,22 +54,19 @@ namespace Axiom.Core
 	public class MemoryManager : Singleton<MemoryManager>
 	{
 		private readonly List<IMemoryBuffer> _memoryPool = new List<IMemoryBuffer>();
-		private readonly static Dictionary<Type, IBitConverter> _bitConverters;
-		public Dictionary<Type, IBitConverter> BitConverters
-		{
-			get
-			{
-				return _bitConverters;
-			}
-		}
+		private static readonly Dictionary<Type, IBitConverter> _bitConverters;
+		public Dictionary<Type, IBitConverter> BitConverters { get { return _bitConverters; } }
 
 		static MemoryManager()
 		{
-			_bitConverters = new Dictionary<Type, IBitConverter>()
-								 {
-									 {typeof (int), new IntBitConverter()},
-									 {typeof (float), new SingleBitConverter()}
-								 };
+			_bitConverters = new Dictionary<Type, IBitConverter>() {
+			                                                       	{
+			                                                       		typeof( int ), new IntBitConverter()
+			                                                       		},
+			                                                       	{
+			                                                       		typeof( float ), new SingleBitConverter()
+			                                                       		}
+			                                                       };
 		}
 
 		public MemoryBuffer<T> Allocate<T>( long size )
@@ -82,7 +79,7 @@ namespace Axiom.Core
 
 		public void Deallocate( IMemoryBuffer buffer )
 		{
-			if ( _memoryPool.Contains( buffer ) )
+			if( _memoryPool.Contains( buffer ) )
 			{
 				_memoryPool.Remove( buffer );
 				buffer.Dispose();
@@ -100,8 +97,8 @@ namespace Axiom.Core
 			{
 				int[] retVal;
 				int size = buffer.Length / 4;
-				retVal = new int[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				retVal = new int[size];
+				for( int index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}
@@ -115,8 +112,8 @@ namespace Axiom.Core
 			{
 				float[] retVal;
 				int size = buffer.Length / 4;
-				retVal = new float[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				retVal = new float[size];
+				for( int index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}
@@ -130,51 +127,39 @@ namespace Axiom.Core
 	{
 		private T[] _buffer;
 
-		public MemoryManager Owner
-		{
-			get;
-			private set;
-		}
+		public MemoryManager Owner { get; private set; }
 
-		public T this[ long index ]
-		{
-			get
-			{
-				return _buffer[ index ];
-			}
-
-			set
-			{
-				_buffer[ index ] = value;
-			}
-		}
+		public T this[ long index ] { get { return _buffer[ index ]; } set { _buffer[ index ] = value; } }
 
 		internal MemoryBuffer( MemoryManager owner )
-            : base()
+			: base()
 		{
 			this.Owner = owner;
 		}
 
-		internal MemoryBuffer( MemoryManager owner, long size ) :
-			this( owner )
+		internal MemoryBuffer( MemoryManager owner, long size )
+			:
+				this( owner )
 		{
-			_buffer = new T[ size ];
+			_buffer = new T[size];
 		}
 
 		public TDestType[] AsArray<TDestType>()
 		{
-			if ( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
+			if( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
+			{
 				return (TDestType[])( Owner.BitConverters[ typeof( TDestType ) ].Convert( _buffer, 0 ) );
-			return new TDestType[ 0 ];
+			}
+			return new TDestType[0];
 		}
 
 		#region IDisposable Implementation
 
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					this._buffer = null;
 				}

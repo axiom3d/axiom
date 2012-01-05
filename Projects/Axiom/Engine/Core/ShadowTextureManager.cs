@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,13 +41,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using IO = System.IO;
+
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
+
 using System.Text;
+
 using Axiom.Media;
 using Axiom.Graphics;
 
@@ -51,7 +59,6 @@ using Axiom.Graphics;
 
 namespace Axiom.Core
 {
-
 	/// <summary>
 	///     Structure containing the configuration for one shadow texture.
 	/// </summary>
@@ -77,8 +84,10 @@ namespace Axiom.Core
 
 		public override bool Equals( object obj )
 		{
-			if ( obj is ShadowTextureConfig )
+			if( obj is ShadowTextureConfig )
+			{
 				return base.Equals( obj as ShadowTextureConfig );
+			}
 			return false;
 		}
 
@@ -88,7 +97,6 @@ namespace Axiom.Core
 		}
 
 		#endregion System.Object Implementation
-
 	}
 
 	/// <summary>
@@ -111,6 +119,7 @@ namespace Axiom.Core
 		///     A list of textures available for shadow use.</summary>
 		/// </summary>
 		protected List<WeakReference> textureList = new List<WeakReference>();
+
 		protected List<WeakReference> nullTextureList = new List<WeakReference>();
 		protected int count;
 
@@ -118,9 +127,7 @@ namespace Axiom.Core
 
 		#region Constructor
 
-		public ShadowTextureManager()
-		{
-		}
+		public ShadowTextureManager() {}
 
 		#endregion Constructor
 
@@ -136,18 +143,20 @@ namespace Axiom.Core
 
 			List<Texture> usedTextures = new List<Texture>();
 
-			foreach ( ShadowTextureConfig config in configList )
+			foreach( ShadowTextureConfig config in configList )
 			{
 				bool found = false;
-				foreach ( WeakReference wr in textureList )
+				foreach( WeakReference wr in textureList )
 				{
-					if ( wr.IsAlive )
+					if( wr.IsAlive )
 					{
 						Texture tex = (Texture)wr.Target;
 						// Skip if already used this one
-						if ( usedTextures.Contains( tex ) )
+						if( usedTextures.Contains( tex ) )
+						{
 							continue;
-						if ( config.width == tex.Width && config.height == tex.Height && config.format == tex.Format )
+						}
+						if( config.width == tex.Width && config.height == tex.Height && config.format == tex.Format )
 						{
 							// Ok, a match
 							listToPopulate.Add( tex );
@@ -157,15 +166,15 @@ namespace Axiom.Core
 						}
 					}
 				}
-				if ( !found )
+				if( !found )
 				{
 					// Create a new texture
 					string baseName = "Axiom/ShadowTexture";
 					string targName = baseName + count++;
 					Texture shadowTex = TextureManager.Instance.CreateManual(
-						targName, "",
-						TextureType.TwoD, config.width, config.height, 1, 0,
-						TextureUsage.RenderTarget );
+					                                                         targName, "",
+					                                                         TextureType.TwoD, config.width, config.height, 1, 0,
+					                                                         TextureUsage.RenderTarget );
 					// Ensure texture loaded
 					shadowTex.Load();
 					listToPopulate.Add( shadowTex );
@@ -180,14 +189,16 @@ namespace Axiom.Core
 		/// </summary>
 		public Texture GetNullShadowTexture( PixelFormat format )
 		{
-			foreach ( WeakReference wr in nullTextureList )
+			foreach( WeakReference wr in nullTextureList )
 			{
-				if ( wr.IsAlive )
+				if( wr.IsAlive )
 				{
 					Texture tex = (Texture)wr.Target;
-					if ( format == tex.Format )
+					if( format == tex.Format )
+					{
 						// Ok, a match
 						return tex;
+					}
 				}
 			}
 
@@ -196,9 +207,9 @@ namespace Axiom.Core
 			string baseName = "Axiom/ShadowTextureNull";
 			string targName = baseName + count++;
 			Texture shadowTex = TextureManager.Instance.CreateManual( targName, "",
-																	  TextureType.TwoD,
-																	  1, 1, 1, 0,
-																	  TextureUsage.Default );
+			                                                          TextureType.TwoD,
+			                                                          1, 1, 1, 0,
+			                                                          TextureUsage.Default );
 			nullTextureList.Add( new WeakReference( shadowTex ) );
 
 			// Populate the texture based on format
@@ -263,16 +274,16 @@ namespace Axiom.Core
 		/// </summary>
 		public void ClearAll()
 		{
-			foreach ( WeakReference wr in textureList )
+			foreach( WeakReference wr in textureList )
 			{
-				if ( wr.IsAlive )
+				if( wr.IsAlive )
+				{
 					TextureManager.Instance.Remove( (Resource)wr.Target );
+				}
 			}
 			textureList.Clear();
 		}
 
 		#endregion Public Methods
-
 	}
-
 }

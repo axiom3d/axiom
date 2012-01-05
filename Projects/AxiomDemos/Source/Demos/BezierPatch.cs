@@ -5,6 +5,7 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
@@ -26,6 +27,7 @@ namespace Axiom.Demos
 		#endregion Protected Fields
 
 		#region Private Structs
+
 		private struct PatchVertex
 		{
 			public float X, Y, Z;
@@ -36,7 +38,9 @@ namespace Axiom.Demos
 		#endregion Private Structs
 
 		// --- Protected Override Methods ---
+
 		#region CreateScene()
+
 		// Just override the mandatory create scene method
 		public override void CreateScene()
 		{
@@ -59,7 +63,7 @@ namespace Axiom.Demos
 			patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 			// Patch data
-			PatchVertex[] patchVertices = new PatchVertex[ 9 ];
+			PatchVertex[] patchVertices = new PatchVertex[9];
 
 			patchVertices[ 0 ].X = -500;
 			patchVertices[ 0 ].Y = 200;
@@ -161,9 +165,11 @@ namespace Axiom.Demos
 			camera.Position = new Vector3( 500, 500, 1500 );
 			camera.LookAt( new Vector3( 0, 200, -300 ) );
 		}
+
 		#endregion CreateScene()
 
 		// --- Protected Override Event Handlers ---
+
 		#region bool OnFrameStarted(Object source, FrameEventArgs e)
 
 		// Event handler to add ability to alter subdivision
@@ -172,11 +178,11 @@ namespace Axiom.Demos
 			timeLapse += evt.TimeSinceLastFrame;
 
 			// Progressively grow the patch
-			if ( timeLapse > 1.0f )
+			if( timeLapse > 1.0f )
 			{
 				factor += 0.2f;
 
-				if ( factor > 1.0f )
+				if( factor > 1.0f )
 				{
 					isWireframe = !isWireframe;
 					patchPass.PolygonMode = ( isWireframe ? PolygonMode.Wireframe : PolygonMode.Solid );

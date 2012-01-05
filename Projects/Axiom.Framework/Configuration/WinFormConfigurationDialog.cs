@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -28,10 +30,8 @@ using Axiom.Core;
 
 using SWF = System.Windows.Forms;
 
-
 namespace Axiom.Framework.Configuration
 {
-
 	/// <summary>
 	/// 
 	/// </summary>
@@ -52,30 +52,14 @@ namespace Axiom.Framework.Configuration
 		protected SWF.ComboBox cboRenderSystems;
 
 		private const string _logoResourceNameDefault = "AxiomLogo.png";
-		public string LogoResourceName
-		{
-			get;
-			set;
-		}
+		public string LogoResourceName { get; set; }
 
 		private const string _iconResourceNameDefault = "AxiomIcon.ico";
-		public string IconResourceName
-		{
-			get;
-			set;
-		}
+		public string IconResourceName { get; set; }
 
-		public Root Engine
-		{
-			get;
-			set;
-		}
+		public Root Engine { get; set; }
 
-		public ResourceGroupManager ResourceManager
-		{
-			get;
-			set;
-		}
+		public ResourceGroupManager ResourceManager { get; set; }
 
 		#endregion Fields and Properties
 
@@ -173,7 +157,7 @@ namespace Axiom.Framework.Configuration
 			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
 			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.lblRenderer.Location = new System.Drawing.Point( 0 , 185 );
+			this.lblRenderer.Location = new System.Drawing.Point( 0, 185 );
 			this.lblRenderer.Name = "lblRenderer";
 			this.lblRenderer.Size = new System.Drawing.Size( 150, 24 );
 			this.lblRenderer.TabIndex = 9;
@@ -244,14 +228,13 @@ namespace Axiom.Framework.Configuration
 			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).EndInit();
 			this.grpVideoOptions.ResumeLayout( false );
 			this.ResumeLayout( false );
-
 		}
 
 		#region Event Handlers
 
 		protected void cmdOk_Click( object sender, EventArgs e )
 		{
-			if ( cboRenderSystems.SelectedItem == null )
+			if( cboRenderSystems.SelectedItem == null )
 			{
 				SWF.MessageBox.Show( "Please select a rendering system.", "Axiom", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Exclamation );
 				this.DialogResult = SWF.DialogResult.Cancel;
@@ -261,7 +244,7 @@ namespace Axiom.Framework.Configuration
 			Axiom.Graphics.RenderSystem system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
 
 			string errorMsg = system.ValidateConfiguration();
-			if ( !String.IsNullOrEmpty( errorMsg ) )
+			if( !String.IsNullOrEmpty( errorMsg ) )
 			{
 				SWF.MessageBox.Show( errorMsg, "Axiom", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Exclamation );
 				this.DialogResult = SWF.DialogResult.Cancel;
@@ -281,16 +264,15 @@ namespace Axiom.Framework.Configuration
 
 		private void WinFormConfigurationDialog_Load( object sender, EventArgs e )
 		{
-
-			foreach ( Axiom.Graphics.RenderSystem renderSystem in Engine.RenderSystems )
+			foreach( Axiom.Graphics.RenderSystem renderSystem in Engine.RenderSystems )
 			{
 				cboRenderSystems.Items.Add( renderSystem );
 			}
 
 			// Set the default if it's already configured
-			if ( Engine.RenderSystem != null )
+			if( Engine.RenderSystem != null )
 			{
-				if ( cboRenderSystems.Items.Contains( Engine.RenderSystem ) )
+				if( cboRenderSystems.Items.Contains( Engine.RenderSystem ) )
 				{
 					cboRenderSystems.SelectedItem = Engine.RenderSystem;
 				}
@@ -309,26 +291,26 @@ namespace Axiom.Framework.Configuration
 			ConfigOption optVideoMode;
 
 			// Load Render Subsystem Options
-			foreach ( ConfigOption option in system.ConfigOptions.Values )
+			foreach( ConfigOption option in system.ConfigOptions.Values )
 			{
 				lstOptions.Items.Add( option );
 			}
-
 		}
 
 		private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
 		{
-
 			this.cboOptionValues.SelectedIndexChanged -= new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
 
 			Axiom.Graphics.RenderSystem system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
 			ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
 
 			cboOptionValues.Items.Clear();
-			foreach ( string value in opt.PossibleValues.Values )
+			foreach( string value in opt.PossibleValues.Values )
+			{
 				cboOptionValues.Items.Add( value );
+			}
 
-			if ( cboOptionValues.Items.Count == 0 )
+			if( cboOptionValues.Items.Count == 0 )
 			{
 				cboOptionValues.Items.Add( opt.Value );
 			}
@@ -350,25 +332,18 @@ namespace Axiom.Framework.Configuration
 			opt.Value = value;
 
 			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
+			for( int index = 0; index < this.lstOptions.Items.Count; index++ )
 			{
 				lstOptions.Items[ index ] = lstOptions.Items[ index ];
 			}
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-
 		}
 
 		#endregion Event Handlers
 
 		#region IConfigurationDialog Implementation
 
-		public Axiom.Graphics.RenderSystem RenderSystem
-		{
-			get
-			{
-				return cboRenderSystems.SelectedItem as Axiom.Graphics.RenderSystem;
-			}
-		}
+		public Axiom.Graphics.RenderSystem RenderSystem { get { return cboRenderSystems.SelectedItem as Axiom.Graphics.RenderSystem; } }
 
 		public DialogResult Show()
 		{
@@ -393,12 +368,12 @@ namespace Axiom.Framework.Configuration
 			const int WM_KEYDOWN = 0x100;
 
 			SWF.Keys keyCode = (SWF.Keys)(int)msg.WParam & SWF.Keys.KeyCode;
-			if ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Return )
+			if( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Return )
 			{
 				cmdOk_Click( this, null );
 				return true;
 			}
-			if ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Escape )
+			if( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Escape )
 			{
 				cmdCancel_Click( this, null );
 				return true;

@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -34,98 +36,121 @@ namespace Axiom.Samples
 	/// Basic selection menu widget.
 	/// </summary>
 	public class SelectMenu : Widget
-    {
-        #region events
-        /// <summary>
-        /// Occours when the selcted index has changed.
-        /// </summary>
-        public event EventHandler SelectedIndexChanged;
+	{
+		#region events
 
-        /// <summary>
-        /// Raises the Selected Index Changed event.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnSelectedIndexChanged( object sender, EventArgs e )
-        {
-            if ( SelectedIndexChanged != null )
-                SelectedIndexChanged( sender, e );
-        }
-        #endregion
+		/// <summary>
+		/// Occours when the selcted index has changed.
+		/// </summary>
+		public event EventHandler SelectedIndexChanged;
 
-        #region fields
-        /// <summary>
+		/// <summary>
+		/// Raises the Selected Index Changed event.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		virtual public void OnSelectedIndexChanged( object sender, EventArgs e )
+		{
+			if( SelectedIndexChanged != null )
+			{
+				SelectedIndexChanged( sender, e );
+			}
+		}
+
+		#endregion
+
+		#region fields
+
+		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel smallBox;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel expandedBox;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea smallTextArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel scrollTrack;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Panel scrollHandle;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected List<BorderPanel> itemElements;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int maxItemsShown;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int itemsShown;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool IsCursorOver;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isExpanded;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isFitToContents;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isDragging;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected List<String> items;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int sectionIndex;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int highlightIndex;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int displayIndex;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real dragOffset;
+
 		#endregion fields
 
 		#region properties
@@ -143,14 +168,14 @@ namespace Axiom.Samples
 				BorderPanel ie;
 				TextArea ta;
 
-				for ( int i = 0; i < this.itemElements.Count; i++ )
+				for( int i = 0; i < this.itemElements.Count; i++ )
 				{
 					ie = this.itemElements[ i ];
 					ta = (TextArea)ie.Children[ ie.Name + "/MenuItemText" ];
 
 					FitCaptionToArea( this.items[ this.displayIndex + i ], ta, ie.Width - 2 * ta.Left );
 
-					if ( this.displayIndex + i == this.highlightIndex )
+					if( this.displayIndex + i == this.highlightIndex )
 					{
 						ie.MaterialName = "SdkTrays/MiniTextBox/Over";
 						ie.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
@@ -167,27 +192,18 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Indicates whether this menu is expanded or not.
 		/// </summary>
-		public bool IsExpanded
-		{
-			get
-			{
-				return isExpanded;
-			}
-		}
+		public bool IsExpanded { get { return isExpanded; } }
 
 		/// <summary>
 		/// Gets or sets the caption of this menu.
 		/// </summary>
 		public string Caption
 		{
-			get
-			{
-				return textArea.Text;
-			}
+			get { return textArea.Text; }
 			set
 			{
 				this.textArea.Text = value;
-				if ( this.isFitToContents )
+				if( this.isFitToContents )
 				{
 					element.Width = GetCaptionWidth( value, this.textArea ) + this.smallBox.Width + 23;
 					this.smallBox.Left = element.Width - this.smallBox.Width - 5;
@@ -200,16 +216,13 @@ namespace Axiom.Samples
 		/// </summary>
 		public IList<string> Items
 		{
-			get
-			{
-				return items;
-			}
+			get { return items; }
 			set
 			{
 				this.items = (List<String>)value;
 				this.sectionIndex = -1;
 
-				for ( int i = 0; i < this.itemElements.Count; i++ )   // destroy all the item elements
+				for( int i = 0; i < this.itemElements.Count; i++ ) // destroy all the item elements
 				{
 					NukeOverlayElement( this.itemElements[ i ] );
 				}
@@ -217,12 +230,12 @@ namespace Axiom.Samples
 
 				this.itemsShown = System.Math.Max( 2, System.Math.Min( this.maxItemsShown, this.items.Count ) );
 
-				for ( int i = 0; i < this.itemsShown; i++ )   // create all the item elements
+				for( int i = 0; i < this.itemsShown; i++ ) // create all the item elements
 				{
 					BorderPanel e =
 						(BorderPanel)OverlayManager.Instance.Elements.CreateElementFromTemplate
-										 ( "SdkTrays/SelectMenuItem", "BorderPanel",
-										  this.expandedBox.Name + "/Item" + ( i + 1 ) );
+						             	( "SdkTrays/SelectMenuItem", "BorderPanel",
+						             	  this.expandedBox.Name + "/Item" + ( i + 1 ) );
 
 					e.Top = 6 + i * ( this.smallBox.Height - 8 );
 					e.Width = this.expandedBox.Width - 32;
@@ -231,23 +244,21 @@ namespace Axiom.Samples
 					this.itemElements.Add( e );
 				}
 
-				if ( !( items.Count == 0 ) )
+				if( !( items.Count == 0 ) )
+				{
 					this.SelectItem( 0, false );
+				}
 				else
+				{
 					this.smallTextArea.Text = "";
+				}
 			}
 		}
 
 		/// <summary>
 		/// Gets ammount of current items
 		/// </summary>
-		public int ItemsCount
-		{
-			get
-			{
-				return items.Count;
-			}
-		}
+		public int ItemsCount { get { return items.Count; } }
 
 		/// <summary>
 		/// 
@@ -256,27 +267,24 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				if ( this.sectionIndex == -1 )
+				if( this.sectionIndex == -1 )
 				{
 					String desc = "Menu \"" + Name + "\" has no item selected.";
 					throw new AxiomException( desc + ", SelectMenu.getSelectedItem" );
 					throw new Exception();
 				}
 				else
+				{
 					return this.items[ this.sectionIndex ];
+				}
 			}
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public int SelectionIndex
-		{
-			get
-			{
-				return sectionIndex;
-			}
-		}
+		public int SelectionIndex { get { return sectionIndex; } }
+
 		#endregion
 
 		#region construction
@@ -302,17 +310,19 @@ namespace Axiom.Samples
 			this.maxItemsShown = maxItemsShown;
 			this.itemsShown = 0;
 			element = (BorderPanel)OverlayManager.Instance.Elements.CreateElementFromTemplate
-										( "SdkTrays/SelectMenu", "BorderPanel", name );
+			                       	( "SdkTrays/SelectMenu", "BorderPanel", name );
 			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ name + "/MenuCaption" ];
 			this.smallBox = (BorderPanel)( (OverlayElementContainer)element ).Children[ name + "/MenuSmallBox" ];
 			this.smallBox.Width = width - 10;
 			this.smallTextArea = (TextArea)this.smallBox.Children[ name + "/MenuSmallBox/MenuSmallText" ];
 			element.Width = width;
 
-			if ( boxWidth > 0 )  // long style
+			if( boxWidth > 0 ) // long style
 			{
-				if ( width <= 0 )
+				if( width <= 0 )
+				{
 					this.isFitToContents = true;
+				}
 				this.smallBox.Width = boxWidth;
 				this.smallBox.Top = 2;
 				this.smallBox.Left = width - boxWidth - 5;
@@ -352,11 +362,10 @@ namespace Axiom.Samples
 		/// <param name="item"></param>
 		public void RemoveItem( String item )
 		{
-
-			if ( items.Contains( item ) )
+			if( items.Contains( item ) )
 			{
 				items.Remove( item );
-				if ( this.items.Count < this.itemsShown )
+				if( this.items.Count < this.itemsShown )
 				{
 					this.itemsShown = this.items.Count;
 					NukeOverlayElement( this.itemElements[ this.itemElements.Count - 1 ] );
@@ -380,10 +389,10 @@ namespace Axiom.Samples
 			{
 				items.RemoveAt( index );
 			}
-			catch ( ArgumentOutOfRangeException ex )
+			catch( ArgumentOutOfRangeException ex )
 			{
 				String desc = "Menu \"" + Name + "\" contains no item at position " +
-							  index + ".";
+				              index + ".";
 				throw new AxiomException( desc + ", SelectMenu.RemoveItem" );
 			}
 		}
@@ -414,19 +423,21 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void SelectItem( int index, bool notifyListener )
 		{
-			if ( index < 0 || index >= this.items.Count )
+			if( index < 0 || index >= this.items.Count )
 			{
 				String desc = "Menu \"" + Name + "\" contains no item at position " +
-							   index + ".";
+				              index + ".";
 				throw new AxiomException( desc + ", SelectMenu.SelectItem" );
 			}
 			this.sectionIndex = index;
 			FitCaptionToArea( this.items[ index ], this.smallTextArea, this.smallBox.Width - this.smallTextArea.Left * 2 );
 
-			if ( listener != null && notifyListener )
+			if( listener != null && notifyListener )
+			{
 				listener.ItemSelected( this );
+			}
 
-            OnSelectedIndexChanged( this, new EventArgs() );
+			OnSelectedIndexChanged( this, new EventArgs() );
 		}
 
 		/// <summary>
@@ -446,9 +457,9 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void SelectItem( String item, bool notifyListener )
 		{
-			for ( int i = 0; i < this.items.Count; i++ )
+			for( int i = 0; i < this.items.Count; i++ )
 			{
-				if ( item == this.items[ i ] )
+				if( item == this.items[ i ] )
 				{
 					this.SelectItem( i, notifyListener );
 					return;
@@ -468,19 +479,19 @@ namespace Axiom.Samples
 		{
 			OverlayManager om = OverlayManager.Instance;
 
-			if ( this.isExpanded )
+			if( this.isExpanded )
 			{
-				if ( this.scrollHandle.IsVisible )   // check for scrolling
+				if( this.scrollHandle.IsVisible ) // check for scrolling
 				{
 					Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 
-					if ( co.LengthSquared <= 81 )
+					if( co.LengthSquared <= 81 )
 					{
 						this.isDragging = true;
 						this.dragOffset = co.y;
 						return;
 					}
-					else if ( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
+					else if( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
 					{
 						Real newTop = this.scrollHandle.Top + co.y;
 						Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
@@ -492,30 +503,36 @@ namespace Axiom.Samples
 					}
 				}
 
-				if ( !IsCursorOver( this.expandedBox, cursorPos, 3 ) )
+				if( !IsCursorOver( this.expandedBox, cursorPos, 3 ) )
+				{
 					this.Retract();
+				}
 				else
 				{
 					Real l = this.itemElements[ 0 ].DerivedLeft * om.ViewportWidth + 5;
 					Real t = this.itemElements[ 0 ].DerivedTop * om.ViewportHeight + 5;
 					Real r = l + this.itemElements[ itemElements.Count - 1 ].Width - 10;
 					Real b = this.itemElements[ itemElements.Count - 1 ].DerivedTop * om.ViewportHeight +
-							 this.itemElements[ itemElements.Count - 1 ].Height - 5;
+					         this.itemElements[ itemElements.Count - 1 ].Height - 5;
 
-					if ( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
+					if( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
 					{
-						if ( this.highlightIndex != this.sectionIndex )
+						if( this.highlightIndex != this.sectionIndex )
+						{
 							this.SelectItem( this.highlightIndex );
+						}
 						this.Retract();
 					}
 				}
 			}
 			else
 			{
-				if ( this.items.Count < 2 )
-					return;   // don't waste time showing a menu if there's no choice
+				if( this.items.Count < 2 )
+				{
+					return; // don't waste time showing a menu if there's no choice
+				}
 
-				if ( IsCursorOver( this.smallBox, cursorPos, 4 ) )
+				if( IsCursorOver( this.smallBox, cursorPos, 4 ) )
 				{
 					this.expandedBox.Show();
 					this.smallBox.Hide();
@@ -528,28 +545,34 @@ namespace Axiom.Samples
 					this.expandedBox.Left = this.smallBox.Left - 4;
 
 					// if the expanded menu goes down off the screen, make it go up instead
-					if ( this.smallBox.DerivedTop * om.ViewportHeight + idealHeight > om.ViewportHeight )
+					if( this.smallBox.DerivedTop * om.ViewportHeight + idealHeight > om.ViewportHeight )
 					{
 						this.expandedBox.Top = this.smallBox.Top + this.smallBox.Height - idealHeight + 3;
 						// if we're in thick style, hide the caption because it will interfere with the expanded menu
-						if ( this.textArea.HorizontalAlignment == HorizontalAlignment.Center )
+						if( this.textArea.HorizontalAlignment == HorizontalAlignment.Center )
+						{
 							this.textArea.Hide();
+						}
 					}
 					else
+					{
 						this.expandedBox.Top = this.smallBox.Top + 3;
+					}
 
 					this.isExpanded = true;
 					this.highlightIndex = this.sectionIndex;
 					DisplayIndex = this.highlightIndex;
 
-					if ( this.itemsShown < this.items.Count )  // update scrollbar position
+					if( this.itemsShown < this.items.Count ) // update scrollbar position
 					{
 						this.scrollHandle.Show();
 						Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
 						this.scrollHandle.Top = (int)( this.displayIndex * lowerBoundary / ( this.items.Count - this.itemElements.Count ) );
 					}
 					else
+					{
 						this.scrollHandle.Hide();
+					}
 				}
 			}
 
@@ -575,9 +598,9 @@ namespace Axiom.Samples
 		{
 			OverlayManager om = OverlayManager.Instance;
 
-			if ( this.isExpanded )
+			if( this.isExpanded )
 			{
-				if ( this.isDragging )
+				if( this.isDragging )
 				{
 					Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 					Real newTop = this.scrollHandle.Top + co.y - this.dragOffset;
@@ -586,8 +609,10 @@ namespace Axiom.Samples
 
 					Real scrollPercentage = Math.Utility.Clamp<Real>( newTop / lowerBoundary, 0, 1 );
 					int newIndex = (int)( scrollPercentage * ( this.items.Count - this.itemElements.Count ) + 0.5 );
-					if ( newIndex != this.displayIndex )
+					if( newIndex != this.displayIndex )
+					{
 						DisplayIndex = newIndex;
+					}
 					return;
 				}
 
@@ -595,12 +620,12 @@ namespace Axiom.Samples
 				Real t = this.itemElements[ 0 ].DerivedTop * om.ViewportHeight + 5;
 				Real r = l + this.itemElements[ itemElements.Count - 1 ].Width - 10;
 				Real b = this.itemElements[ itemElements.Count - 1 ].DerivedTop * om.ViewportHeight +
-						 this.itemElements[ itemElements.Count - 1 ].Height - 5;
+				         this.itemElements[ itemElements.Count - 1 ].Height - 5;
 
-				if ( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
+				if( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
 				{
 					int newIndex = (int)( this.displayIndex + ( cursorPos.y - t ) / ( b - t ) * this.itemElements.Count );
-					if ( this.highlightIndex != newIndex )
+					if( this.highlightIndex != newIndex )
 					{
 						this.highlightIndex = newIndex;
 						DisplayIndex = this.displayIndex;
@@ -609,7 +634,7 @@ namespace Axiom.Samples
 			}
 			else
 			{
-				if ( IsCursorOver( this.smallBox, cursorPos, 4 ) )
+				if( IsCursorOver( this.smallBox, cursorPos, 4 ) )
 				{
 					this.smallBox.MaterialName = "SdkTrays/MiniTextBox/Over";
 					this.smallBox.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
@@ -617,7 +642,7 @@ namespace Axiom.Samples
 				}
 				else
 				{
-					if ( this.IsCursorOver )
+					if( this.IsCursorOver )
 					{
 						this.smallBox.MaterialName = "SdkTrays/MiniTextBox";
 						this.smallBox.BorderMaterialName = "SdkTrays/MiniTextBox";
@@ -634,8 +659,10 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			if ( this.expandedBox.IsVisible )
+			if( this.expandedBox.IsVisible )
+			{
 				this.Retract();
+			}
 
 			base.OnLostFocus();
 		}

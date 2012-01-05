@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Math;
@@ -52,7 +57,7 @@ namespace Axiom.Core
 	///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
 	///		has been created.
 	/// </remarks>
-	public abstract class TextureManager : ResourceManager
+	abstract public class TextureManager : ResourceManager
 	{
 		#region Singleton implementation
 
@@ -71,26 +76,22 @@ namespace Axiom.Core
 		protected internal TextureManager()
 			: base()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 				ResourceType = "Texture";
 				LoadingOrder = 75.0f;
 			}
 			else
+			{
 				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			}
 		}
 
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static TextureManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static TextureManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
@@ -102,20 +103,11 @@ namespace Axiom.Core
 		///    Flag that indicates whether 32-bit texture are being used.
 		/// </summary>
 		private bool _is32Bit;
+
 		/// <summary>
 		///    Flag that indicates whether 32-bit texture are being used.
 		/// </summary>
-		public bool Is32Bit
-		{
-			get
-			{
-				return _is32Bit;
-			}
-			protected set
-			{
-				_is32Bit = value;
-			}
-		}
+		public bool Is32Bit { get { return _is32Bit; } protected set { _is32Bit = value; } }
 
 		#endregion Is32Bit Property
 
@@ -125,20 +117,11 @@ namespace Axiom.Core
 		///    Default number of mipmaps to be used for loaded textures.
 		/// </summary>
 		protected int _defaultMipmapCount = 5;
+
 		/// <summary>
 		///    Gets/Sets the default number of mipmaps to be used for loaded textures.
 		/// </summary>
-		public int DefaultMipmapCount
-		{
-			get
-			{
-				return _defaultMipmapCount;
-			}
-			set
-			{
-				_defaultMipmapCount = value;
-			}
-		}
+		public int DefaultMipmapCount { get { return _defaultMipmapCount; } set { _defaultMipmapCount = value; } }
 
 		#endregion DefaultMipmapCount Property
 
@@ -148,29 +131,19 @@ namespace Axiom.Core
 
 		private ushort _preferredIntegerBitDepth = 0;
 
-		public ushort PreferredIntegerBitDepth
-		{
-			get
-			{
-				return _preferredIntegerBitDepth;
-			}
-			set
-			{
-				SetPreferredIntegerBitDepth( value, false );
-			}
-		}
+		public ushort PreferredIntegerBitDepth { get { return _preferredIntegerBitDepth; } set { SetPreferredIntegerBitDepth( value, false ); } }
 
 		public void SetPreferredIntegerBitDepth( ushort bits, bool reloadTextures )
 		{
 			_preferredIntegerBitDepth = bits;
 
-			if ( reloadTextures )
+			if( reloadTextures )
 			{
 				// Iterate throught all textures
-				foreach ( Texture texture in Resources )
+				foreach( Texture texture in Resources )
 				{
 					// Reload loaded and reloadable texture only
-					if ( texture.IsLoaded && texture.IsReloadable )
+					if( texture.IsLoaded && texture.IsReloadable )
 					{
 						texture.Unload();
 						texture.DesiredIntegerBitDepth = bits;
@@ -189,29 +162,19 @@ namespace Axiom.Core
 		#region PreferredFloatBitDepth Property
 
 		private ushort _preferredFloatBitDepth = 0;
-		public ushort PreferredFloatBitDepth
-		{
-			get
-			{
-				return _preferredFloatBitDepth;
-			}
-			set
-			{
-				SetPreferredFloatBitDepth( value, false );
-			}
-		}
+		public ushort PreferredFloatBitDepth { get { return _preferredFloatBitDepth; } set { SetPreferredFloatBitDepth( value, false ); } }
 
 		public void SetPreferredFloatBitDepth( ushort bits, bool reloadTextures )
 		{
 			_preferredFloatBitDepth = bits;
 
-			if ( reloadTextures )
+			if( reloadTextures )
 			{
 				// Iterate throught all textures
-				foreach ( Texture texture in Resources )
+				foreach( Texture texture in Resources )
 				{
 					// Reload loaded and reloadable texture only
-					if ( texture.IsLoaded && texture.IsReloadable )
+					if( texture.IsLoaded && texture.IsReloadable )
 					{
 						texture.Unload();
 						texture.DesiredFloatBitDepth = bits;
@@ -232,13 +195,13 @@ namespace Axiom.Core
 			_preferredFloatBitDepth = floatBits;
 			_preferredIntegerBitDepth = integerBits;
 
-			if ( reloadTextures )
+			if( reloadTextures )
 			{
 				// Iterate throught all textures
-				foreach ( Texture texture in Resources )
+				foreach( Texture texture in Resources )
 				{
 					// Reload loaded and reloadable texture only
-					if ( texture.IsLoaded && texture.IsReloadable )
+					if( texture.IsLoaded && texture.IsReloadable )
 					{
 						texture.Unload();
 						texture.SetDesiredBitDepths( integerBits, floatBits );
@@ -447,6 +410,7 @@ namespace Axiom.Core
 			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
 			return Load( name, group, type, numMipMaps, 1.0f, false );
 		}
+
 		/// <summary>
 		///
 		/// </summary>
@@ -479,7 +443,7 @@ namespace Axiom.Core
 			Texture texture = (Texture)result.First;
 
 			// was it created?
-			if ( result.Second == true )
+			if( result.Second == true )
 			{
 				texture.TextureType = type;
 				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
@@ -553,32 +517,28 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public new Texture this[ string name ]
-		{
-			get
-			{
-				return (Texture)base[ name ];
-			}
-		}
+		new public Texture this[ string name ] { get { return (Texture)base[ name ]; } }
 
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( this == instance )
+					if( this == instance )
 					{
 						instance = null;
 					}
 
-					foreach ( Texture texture in Resources )
+					foreach( Texture texture in Resources )
 					{
-						if ( !texture.IsDisposed )
+						if( !texture.IsDisposed )
+						{
 							texture.Dispose();
+						}
 					}
 				}
 
@@ -591,8 +551,8 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-		public virtual PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format,
-												   TextureUsage usage )
+		virtual public PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format,
+		                                            TextureUsage usage )
 		{
 			// Just throw an error, for non-overriders
 			throw new NotImplementedException();
@@ -610,13 +570,7 @@ namespace Axiom.Core
 			return PixelUtil.GetNumElemBits( supportedFormat ) >= PixelUtil.GetNumElemBits( format );
 		}
 
-		public virtual int AvailableTextureMemory
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		virtual public int AvailableTextureMemory { get { throw new NotImplementedException(); } }
 
 		#endregion Methods
 	}

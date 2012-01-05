@@ -24,20 +24,28 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			color.x += evt.TimeSinceLastFrame * .6f;
-			if ( color.x > 1 )
+			if( color.x > 1 )
+			{
 				color.x = 0;
+			}
 
 			color.y += evt.TimeSinceLastFrame * .6f;
-			if ( color.y > 1 )
+			if( color.y > 1 )
+			{
 				color.y = 0;
+			}
 
 			color.z += evt.TimeSinceLastFrame * .6f;
-			if ( color.z > 1 )
+			if( color.z > 1 )
+			{
 				color.z = 0;
+			}
 		}
 
 		public override void CreateScene()
@@ -95,8 +103,8 @@ namespace Axiom.Demos
 	public class Line3d : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		/// <summary>
 		///
@@ -131,11 +139,13 @@ namespace Axiom.Demos
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				                                                  decl.GetVertexSize( POSITION ),
+				                                                  vertexData.vertexCount,
+				                                                  BufferUsage.StaticWriteOnly );
 
-			Vector3[] pos = new Vector3[] { startPoint, endPoint };
+			Vector3[] pos = new Vector3[] {
+			                              	startPoint, endPoint
+			                              };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, pos, true );
@@ -145,13 +155,15 @@ namespace Axiom.Demos
 
 			// create a color buffer
 			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			                                                           decl.GetVertexSize( COLOR ),
+			                                                           vertexData.vertexCount,
+			                                                           BufferUsage.StaticWriteOnly );
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
-			int[] colors = new int[] { colorValue, colorValue };
+			int[] colors = new int[] {
+			                         	colorValue, colorValue
+			                         };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -190,16 +202,8 @@ namespace Axiom.Demos
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
-
+		public override float BoundingRadius { get { return 0; } }
 	}
-
 
 	/// <summary>
 	///		A class for rendering a simple triangle with colored vertices.
@@ -207,8 +211,8 @@ namespace Axiom.Demos
 	public class Triangle : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		/// <summary>
 		///
@@ -237,11 +241,13 @@ namespace Axiom.Demos
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( POSITION ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				                                                  decl.GetVertexSize( POSITION ),
+				                                                  vertexData.vertexCount,
+				                                                  BufferUsage.StaticWriteOnly );
 
-			Vector3[] positions = new Vector3[] { v1, v2, v3 };
+			Vector3[] positions = new Vector3[] {
+			                                    	v1, v2, v3
+			                                    };
 
 			// write the positions to the buffer
 			buffer.WriteData( 0, buffer.Size, positions, true );
@@ -252,18 +258,18 @@ namespace Axiom.Demos
 			// COLORS
 			// create a color buffer
 			buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( COLOR ),
-				vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+			                                                           decl.GetVertexSize( COLOR ),
+			                                                           vertexData.vertexCount,
+			                                                           BufferUsage.StaticWriteOnly );
 
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's
 			// preferred packed int format
 			int[] colors = new int[] {
-                Root.Instance.RenderSystem.ConvertColor(c1),
-                Root.Instance.RenderSystem.ConvertColor(c2),
-                Root.Instance.RenderSystem.ConvertColor(c3)
-            };
+			                         	Root.Instance.RenderSystem.ConvertColor( c1 ),
+			                         	Root.Instance.RenderSystem.ConvertColor( c2 ),
+			                         	Root.Instance.RenderSystem.ConvertColor( c3 )
+			                         };
 
 			// write the colors to the color buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -306,12 +312,6 @@ namespace Axiom.Demos
 			return dist.LengthSquared;
 		}
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override float BoundingRadius { get { return 0; } }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -28,36 +30,43 @@ using Axiom.Animating;
 
 namespace Axiom.Samples.Core
 {
-	class SinbadCharacterController
+	internal class SinbadCharacterController
 	{
 		/// <summary>
 		/// number of animations the character has
 		/// </summary>
 		public const int NumAnims = 13;
+
 		/// <summary>
 		/// height of character's center of mass above ground
 		/// </summary>
 		public const int CharHeight = 5;
+
 		/// <summary>
 		/// height of camera above character's center of mass
 		/// </summary>
 		public const int CamHeight = 2;
+
 		/// <summary>
 		/// character running speed in units per second
 		/// </summary>
 		public const int RunSpeed = 17;
+
 		/// <summary>
 		/// character turning in degrees per second
 		/// </summary>
 		public Real TurnSpeed = 500f;
+
 		/// <summary>
 		/// animation crossfade speed in % of full weight per second
 		/// </summary>
 		public Real AnimFadeSpeed = 7.5;
+
 		/// <summary>
 		/// character jump acceleration in upward units per squared second
 		/// </summary>
 		public Real JumpAcceleration = 30f;
+
 		/// <summary>
 		/// gravity in downward units per squared second
 		/// </summary>
@@ -86,86 +95,107 @@ namespace Axiom.Samples.Core
 		}
 
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Camera camera;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected SceneNode bodyNode;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected SceneNode cameraPivot;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected SceneNode cameraGoal;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected SceneNode cameraNode;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real pivotPitch;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Entity bodyEnt;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Entity sword1;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Entity sword2;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected RibbonTrail swordTrail;
+
 		/// <summary>
 		/// // master animation list
 		/// </summary>
-		protected AnimationState[] anims = new AnimationState[ NumAnims ];
+		protected AnimationState[] anims = new AnimationState[NumAnims];
+
 		/// <summary>
 		/// current base (full- or lower-body) animation
 		/// </summary>
 		protected AnimationID baseAnimID;
+
 		/// <summary>
 		/// current top (upper-body) animation
 		/// </summary>
 		protected AnimationID topAnimID;
+
 		/// <summary>
 		/// which animations are fading in
 		/// </summary>
-		protected bool[] fadingIn = new bool[ NumAnims ];
+		protected bool[] fadingIn = new bool[NumAnims];
+
 		/// <summary>
 		/// which animations are fading out
 		/// </summary>
-		protected bool[] fadingOut = new bool[ NumAnims ];
+		protected bool[] fadingOut = new bool[NumAnims];
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool swordsDrawn;
+
 		/// <summary>
 		/// player's local intended direction based on WASD keys
 		/// </summary>
 		protected Vector3 keyDirection;
+
 		/// <summary>
 		/// actual intended direction in world-space
 		/// </summary>
 		protected Vector3 goalDirection;
+
 		/// <summary>
 		/// for jumping
 		/// </summary>
 		protected Real verticalVelocity;
+
 		/// <summary>
 		/// general timer to see how long animations have been playing
 		/// </summary>
 		protected Real timer;
+
 		#endregion
 
 		/// <summary>
@@ -185,15 +215,15 @@ namespace Axiom.Samples.Core
 		/// <param name="e"></param>
 		public void InjectKeyDown( SharpInputSystem.KeyEventArgs e )
 		{
-			if ( e.Key == SharpInputSystem.KeyCode.Key_Q && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
+			if( e.Key == SharpInputSystem.KeyCode.Key_Q && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
 			{
 				// take swords out (or put them back, since it's the same animation but reversed)
 				SetTopAnimation( AnimationID.DrawSword, true );
 				timer = 0;
 			}
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_E && !swordsDrawn )
+			else if( e.Key == SharpInputSystem.KeyCode.Key_E && !swordsDrawn )
 			{
-				if ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop )
+				if( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop )
 				{
 					// start dancing
 					SetBaseAnimation( AnimationID.Dance, true );
@@ -201,7 +231,7 @@ namespace Axiom.Samples.Core
 					// disable hand animation because the dance controls hands
 					anims[ (int)AnimationID.HandsRelaxed ].IsEnabled = false;
 				}
-				else if ( baseAnimID == AnimationID.Dance )
+				else if( baseAnimID == AnimationID.Dance )
 				{
 					// stop dancing
 					SetBaseAnimation( AnimationID.IdleBase, true );
@@ -210,17 +240,25 @@ namespace Axiom.Samples.Core
 					anims[ (int)AnimationID.HandsRelaxed ].IsEnabled = true;
 				}
 			}
-			// keep track of the player's intended direction
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_W )
+				// keep track of the player's intended direction
+			else if( e.Key == SharpInputSystem.KeyCode.Key_W )
+			{
 				keyDirection.z = -1;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_A )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_A )
+			{
 				keyDirection.x = -1;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_S )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_S )
+			{
 				keyDirection.z = 1;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_D )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_D )
+			{
 				keyDirection.x = 1;
+			}
 
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_SPACE && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
+			else if( e.Key == SharpInputSystem.KeyCode.Key_SPACE && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
 			{
 				// jump if on ground
 				SetBaseAnimation( AnimationID.JumpStart, true );
@@ -228,12 +266,14 @@ namespace Axiom.Samples.Core
 				timer = 0;
 			}
 
-			if ( !keyDirection.IsZeroLength && baseAnimID == AnimationID.IdleBase )
+			if( !keyDirection.IsZeroLength && baseAnimID == AnimationID.IdleBase )
 			{
 				// start running if not already moving and the player wants to move
 				SetBaseAnimation( AnimationID.RunBase, true );
-				if ( topAnimID == AnimationID.IdleTop )
+				if( topAnimID == AnimationID.IdleTop )
+				{
 					SetTopAnimation( AnimationID.RunTop, true );
+				}
 			}
 		}
 
@@ -244,21 +284,31 @@ namespace Axiom.Samples.Core
 		public void InjectKeyUp( SharpInputSystem.KeyEventArgs e )
 		{
 			// keep track of the player's intended direction
-			if ( e.Key == SharpInputSystem.KeyCode.Key_W && keyDirection.z == -1 )
+			if( e.Key == SharpInputSystem.KeyCode.Key_W && keyDirection.z == -1 )
+			{
 				keyDirection.z = 0;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_A && keyDirection.x == -1 )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_A && keyDirection.x == -1 )
+			{
 				keyDirection.x = 0;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_S && keyDirection.z == 1 )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_S && keyDirection.z == 1 )
+			{
 				keyDirection.z = 0;
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_D && keyDirection.x == 1 )
+			}
+			else if( e.Key == SharpInputSystem.KeyCode.Key_D && keyDirection.x == 1 )
+			{
 				keyDirection.x = 0;
+			}
 
-			if ( keyDirection.IsZeroLength && baseAnimID == AnimationID.RunBase )
+			if( keyDirection.IsZeroLength && baseAnimID == AnimationID.RunBase )
 			{
 				// start running if not already moving and the player wants to move
 				SetBaseAnimation( AnimationID.IdleBase, true );
-				if ( topAnimID == AnimationID.RunTop )
+				if( topAnimID == AnimationID.RunTop )
+				{
 					SetTopAnimation( AnimationID.IdleTop, true );
+				}
 			}
 		}
 
@@ -279,16 +329,21 @@ namespace Axiom.Samples.Core
 		/// <param name="id"></param>
 		public void InjectMouseDown( SharpInputSystem.MouseEventArgs e, SharpInputSystem.MouseButtonID id )
 		{
-			if ( swordsDrawn && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
+			if( swordsDrawn && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
 			{
 				// if swords are out, and character's not doing something weird, then SLICE!
-				if ( id == SharpInputSystem.MouseButtonID.Left )
+				if( id == SharpInputSystem.MouseButtonID.Left )
+				{
 					SetTopAnimation( AnimationID.SliceVertical, true );
-				else if ( id == SharpInputSystem.MouseButtonID.Right )
+				}
+				else if( id == SharpInputSystem.MouseButtonID.Right )
+				{
 					SetTopAnimation( AnimationID.SliceHorizontal, true );
+				}
 				timer = 0;
 			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -299,6 +354,7 @@ namespace Axiom.Samples.Core
 			UpdateAnimations( deltaTime );
 			UpdateCamera( deltaTime );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -326,7 +382,7 @@ namespace Axiom.Samples.Core
 			swordTrail.IsVisible = false;
 			sceneMgr.RootSceneNode.AttachObject( swordTrail );
 
-			for ( int i = 0; i < 2; i++ )
+			for( int i = 0; i < 2; i++ )
 			{
 				swordTrail.SetInitialColor( i, new ColorEx( 1, 0.8f, 0 ) );
 				swordTrail.SetColorChange( i, new ColorEx( 0.75f, 0.25f, 0.25f, 0.25f ) );
@@ -336,7 +392,6 @@ namespace Axiom.Samples.Core
 
 			keyDirection = Vector3.Zero;
 			verticalVelocity = 0;
-
 		}
 
 		/// <summary>
@@ -347,13 +402,12 @@ namespace Axiom.Samples.Core
 			// this is very important due to the nature of the exported animations
 			bodyEnt.Skeleton.BlendMode = SkeletalAnimBlendMode.Cumulative;
 
-			string[] animNames = new string[]
-			{
-				"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
-				"SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
-			};
+			string[] animNames = new string[] {
+			                                  	"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
+			                                  	"SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
+			                                  };
 
-			for ( int i = 0; i < NumAnims; i++ )
+			for( int i = 0; i < NumAnims; i++ )
 			{
 				anims[ i ] = bodyEnt.GetAnimationState( animNames[ i ] );
 				anims[ i ].Loop = true;
@@ -405,7 +459,7 @@ namespace Axiom.Samples.Core
 			// we will calculate this
 			goalDirection = Vector3.Zero;
 
-			if ( keyDirection != Vector3.Zero && baseAnimID != AnimationID.Dance )
+			if( keyDirection != Vector3.Zero && baseAnimID != AnimationID.Dance )
 			{
 				// calculate actually goal direction in world based on player's key directions
 				goalDirection += keyDirection.z * cameraNode.Orientation.ZAxis;
@@ -419,14 +473,20 @@ namespace Axiom.Samples.Core
 				// this is how much the character CAN turn this frame
 				Real yawAtSpeed = yawToGlobal / Utility.Abs( yawToGlobal ) * deltaTime * TurnSpeed;
 				// reduce "turnability" if we're in midair
-				if ( baseAnimID == AnimationID.JumpLoop )
+				if( baseAnimID == AnimationID.JumpLoop )
+				{
 					yawAtSpeed *= 0.2;
+				}
 
 				// turn as much as we can, but not more than we need to
-				if ( yawToGlobal < 0 )
+				if( yawToGlobal < 0 )
+				{
 					yawToGlobal = Utility.Min<Real>( yawToGlobal, yawAtSpeed );
-				else if ( yawToGlobal > 0 )
+				}
+				else if( yawToGlobal > 0 )
+				{
 					yawToGlobal = Utility.Max<Real>( 0, Utility.Min<Real>( yawToGlobal, yawAtSpeed ) );
+				}
 
 				bodyNode.Yaw( yawToGlobal );
 
@@ -434,14 +494,14 @@ namespace Axiom.Samples.Core
 				bodyNode.Translate( new Vector3( 0, 0, deltaTime * RunSpeed * anims[ (int)baseAnimID ].Weight ), TransformSpace.Local );
 			}
 
-			if ( baseAnimID == AnimationID.JumpLoop )
+			if( baseAnimID == AnimationID.JumpLoop )
 			{
 				// if we're jumping, add a vertical offset too, and apply gravity
 				bodyNode.Translate( new Vector3( 0, verticalVelocity * deltaTime, 0 ), TransformSpace.Local );
 				verticalVelocity -= Gravity * deltaTime;
 
 				Vector3 pos = bodyNode.Position;
-				if ( pos.y <= CharHeight )
+				if( pos.y <= CharHeight )
 				{
 					// if we've hit the ground, change to landing state
 					pos.y = CharHeight;
@@ -463,20 +523,20 @@ namespace Axiom.Samples.Core
 
 			timer += deltaTime;
 
-			if ( topAnimID == AnimationID.DrawSword )
+			if( topAnimID == AnimationID.DrawSword )
 			{
 				// flip the draw swords animation if we need to put it back
 				topAnimSpeed = swordsDrawn ? -1 : 1;
 
 				// half-way through the animation is when the hand grasps the handles...
-				if ( timer >= anims[ (int)topAnimID ].Length / 2 &&
-					 timer - deltaTime < anims[ (int)topAnimID ].Length / 2 )
+				if( timer >= anims[ (int)topAnimID ].Length / 2 &&
+				    timer - deltaTime < anims[ (int)topAnimID ].Length / 2 )
 				{
 					// toggle sword trails
 					swordTrail.IsVisible = !swordsDrawn;
 
 					// so transfer the swords from the sheaths to the hands
-					if ( swordsDrawn )
+					if( swordsDrawn )
 					{
 						swordTrail.RemoveNode( sword1.ParentNode );
 						swordTrail.RemoveNode( sword2.ParentNode );
@@ -485,7 +545,7 @@ namespace Axiom.Samples.Core
 					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.L" : "Handle.L", sword1 );
 					bodyEnt.AttachObjectToBone( swordsDrawn ? "Sheath.R" : "Handle.R", sword2 );
 
-					if ( !swordsDrawn )
+					if( !swordsDrawn )
 					{
 						swordTrail.AddNode( sword1.ParentNode );
 						swordTrail.AddNode( sword2.ParentNode );
@@ -493,14 +553,15 @@ namespace Axiom.Samples.Core
 					// change the hand state to grab or let go
 					anims[ (int)AnimationID.HandsClosed ].IsEnabled = !swordsDrawn;
 					anims[ (int)AnimationID.HandsRelaxed ].IsEnabled = swordsDrawn;
+				} //end if
 
-				}//end if
-
-				if ( timer >= anims[ (int)topAnimID ].Length )
+				if( timer >= anims[ (int)topAnimID ].Length )
 				{
 					// animation is finished, so return to what we were doing before
-					if ( baseAnimID == AnimationID.IdleBase )
+					if( baseAnimID == AnimationID.IdleBase )
+					{
 						SetTopAnimation( AnimationID.IdleTop );
+					}
 					else
 					{
 						SetTopAnimation( AnimationID.RunTop );
@@ -508,15 +569,17 @@ namespace Axiom.Samples.Core
 					}
 
 					swordsDrawn = !swordsDrawn;
-				}//end if
-			}//end if
-			else if ( topAnimID == AnimationID.SliceVertical || topAnimID == AnimationID.SliceHorizontal )
+				} //end if
+			} //end if
+			else if( topAnimID == AnimationID.SliceVertical || topAnimID == AnimationID.SliceHorizontal )
 			{
-				if ( timer >= anims[ (int)topAnimID ].Length )
+				if( timer >= anims[ (int)topAnimID ].Length )
 				{
 					// animation is finished, so return to what we were doing before
-					if ( baseAnimID == AnimationID.IdleBase )
+					if( baseAnimID == AnimationID.IdleBase )
+					{
 						SetTopAnimation( AnimationID.IdleTop );
+					}
 					else
 					{
 						SetTopAnimation( AnimationID.RunTop );
@@ -524,25 +587,27 @@ namespace Axiom.Samples.Core
 					}
 				}
 				// don't sway hips from side to side when slicing. that's just embarrasing.
-				if ( baseAnimID == AnimationID.IdleBase )
+				if( baseAnimID == AnimationID.IdleBase )
+				{
 					baseAnimSpeed = 0;
-			}//end else if
-			else if ( baseAnimID == AnimationID.JumpStart )
+				}
+			} //end else if
+			else if( baseAnimID == AnimationID.JumpStart )
 			{
-				if ( timer >= anims[ (int)baseAnimID ].Length )
+				if( timer >= anims[ (int)baseAnimID ].Length )
 				{
 					// takeoff animation finished, so time to leave the ground!
 					SetBaseAnimation( AnimationID.JumpLoop, true );
 					// apply a jump acceleration to the character
 					verticalVelocity = JumpAcceleration;
 				}
-			}//end if
-			else if ( baseAnimID == AnimationID.JumpEnd )
+			} //end if
+			else if( baseAnimID == AnimationID.JumpEnd )
 			{
-				if ( timer >= anims[ (int)baseAnimID ].Length )
+				if( timer >= anims[ (int)baseAnimID ].Length )
 				{
 					// safely landed, so go back to running or idling
-					if ( keyDirection == Vector3.Zero )
+					if( keyDirection == Vector3.Zero )
 					{
 						SetBaseAnimation( AnimationID.IdleBase );
 						SetTopAnimation( AnimationID.IdleTop );
@@ -556,10 +621,14 @@ namespace Axiom.Samples.Core
 			}
 
 			// increment the current base and top animation times
-			if ( baseAnimID != AnimationID.None )
+			if( baseAnimID != AnimationID.None )
+			{
 				anims[ (int)baseAnimID ].AddTime( deltaTime * baseAnimSpeed );
-			if ( topAnimID != AnimationID.None )
+			}
+			if( topAnimID != AnimationID.None )
+			{
 				anims[ (int)topAnimID ].AddTime( deltaTime * topAnimSpeed );
+			}
 
 			// apply smooth transitioning between our animations
 			FadeAnimations( deltaTime );
@@ -571,22 +640,24 @@ namespace Axiom.Samples.Core
 		/// <param name="deltaTime"></param>
 		private void FadeAnimations( Real deltaTime )
 		{
-			for ( int i = 0; i < NumAnims; i++ )
+			for( int i = 0; i < NumAnims; i++ )
 			{
-				if ( fadingIn[ i ] )
+				if( fadingIn[ i ] )
 				{
 					// slowly fade this animation in until it has full weight
 					Real newWeight = anims[ i ].Weight + deltaTime * AnimFadeSpeed;
 					anims[ i ].Weight = Utility.Clamp<Real>( newWeight, 1, 0 );
-					if ( newWeight >= 1 )
+					if( newWeight >= 1 )
+					{
 						fadingIn[ i ] = false;
+					}
 				}
-				else if ( fadingOut[ i ] )
+				else if( fadingOut[ i ] )
 				{
 					// slowly fade this animation out until it has no weight, and then disable it
 					Real newWeight = anims[ i ].Weight - deltaTime * AnimFadeSpeed;
 					anims[ i ].Weight = Utility.Clamp<Real>( newWeight, 1, 0 );
-					if ( newWeight <= 0 )
+					if( newWeight <= 0 )
 					{
 						anims[ i ].IsEnabled = false;
 						fadingOut[ i ] = false;
@@ -621,8 +692,8 @@ namespace Axiom.Samples.Core
 			cameraPivot.Yaw( deltaYaw, TransformSpace.World );
 
 			// bound the pitch
-			if ( !( pivotPitch + deltaPitch > 25 && deltaPitch > 0 ) &&
-				 !( pivotPitch + deltaPitch < -60 && deltaPitch < 0 ) )
+			if( !( pivotPitch + deltaPitch > 25 && deltaPitch > 0 ) &&
+			    !( pivotPitch + deltaPitch < -60 && deltaPitch < 0 ) )
 			{
 				cameraPivot.Pitch( deltaPitch, TransformSpace.Local );
 				pivotPitch += deltaPitch;
@@ -632,8 +703,8 @@ namespace Axiom.Samples.Core
 			Real distChange = deltaZoom * dist;
 
 			// bound the zoom
-			if ( !( dist + distChange < 8 && distChange < 0 ) &&
-				!( dist + distChange > 25 && distChange > 0 ) )
+			if( !( dist + distChange < 8 && distChange < 0 ) &&
+			    !( dist + distChange > 25 && distChange > 0 ) )
 			{
 				cameraGoal.Translate( new Vector3( 0, 0, distChange ), TransformSpace.Local );
 			}
@@ -655,7 +726,7 @@ namespace Axiom.Samples.Core
 		/// <param name="reset"></param>
 		private void SetBaseAnimation( AnimationID id, bool reset )
 		{
-			if ( (int)baseAnimID >= 0 && (int)baseAnimID < NumAnims )
+			if( (int)baseAnimID >= 0 && (int)baseAnimID < NumAnims )
 			{
 				// if we have an old animation, fade it out
 				fadingIn[ (int)baseAnimID ] = false;
@@ -664,15 +735,17 @@ namespace Axiom.Samples.Core
 
 			baseAnimID = id;
 
-			if ( id != AnimationID.None )
+			if( id != AnimationID.None )
 			{
 				// if we have a new animation, enable it and fade it in
 				anims[ (int)id ].IsEnabled = true;
 				anims[ (int)id ].Weight = 0;
 				fadingOut[ (int)id ] = false;
 				fadingIn[ (int)id ] = true;
-				if ( reset )
+				if( reset )
+				{
 					anims[ (int)id ].Time = 0;
+				}
 			}
 		}
 
@@ -692,7 +765,7 @@ namespace Axiom.Samples.Core
 		/// <param name="reset"></param>
 		private void SetTopAnimation( AnimationID id, bool reset )
 		{
-			if ( (int)topAnimID >= 0 && (int)topAnimID < NumAnims )
+			if( (int)topAnimID >= 0 && (int)topAnimID < NumAnims )
 			{
 				// if we have an old animation, fade it out
 				fadingIn[ (int)topAnimID ] = false;
@@ -701,15 +774,17 @@ namespace Axiom.Samples.Core
 
 			topAnimID = id;
 
-			if ( id != AnimationID.None )
+			if( id != AnimationID.None )
 			{
 				// if we have a new animation, enable it and fade it in
 				anims[ (int)id ].IsEnabled = true;
 				anims[ (int)id ].Weight = 0;
 				fadingOut[ (int)id ] = false;
 				fadingIn[ (int)id ] = true;
-				if ( reset )
+				if( reset )
+				{
 					anims[ (int)id ].Time = 0;
+				}
 			}
 		}
 	}

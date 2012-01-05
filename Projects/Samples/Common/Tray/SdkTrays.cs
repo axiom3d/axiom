@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,14 +19,17 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
+
 using DisplayString = System.String;
 using SIS = SharpInputSystem;
 using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
@@ -65,64 +69,66 @@ namespace Axiom.Samples
 	public class SdkTrayManager : ISdkTrayListener, IResourceGroupListener
 	{
 		#region events
+
 		public event ButtonHitDelegate ButtonHit;
+
 		#endregion
 
 		#region fields
-		protected String mName;                   // name of this tray system
-		protected RenderWindow mWindow;          // render window
-		protected SIS.Mouse Mouse;                   // mouse device
-		protected Overlay backdropLayer;        // backdrop layer
-		protected Overlay mTraysLayer;           // widget layer
-		protected Overlay mPriorityLayer;        // top priority layer
-		protected Overlay cursorLayer;          // cursor layer
-		protected OverlayElementContainer backdrop;    // backdrop
-		protected OverlayElementContainer[] mTrays = new OverlayElementContainer[ 10 ];   // widget trays
-		protected WidgetList[] mWidgets = new WidgetList[ 10 ];              // widgets
-		protected WidgetList mWidgetDeathRow = new WidgetList();           // widget queue for deletion
-		protected OverlayElementContainer cursor;      // cursor
-		protected ISdkTrayListener listener;           // tray listener
-		protected Real mWidgetPadding;            // widget padding
-		protected Real mWidgetSpacing;            // widget spacing
-		protected Real mTrayPadding;              // tray padding
-		protected bool mTrayDrag;                       // a mouse press was initiated on a tray
-		protected SelectMenu expandedMenu;            // top priority expanded menu widget
-		protected TextBox Dialog;                     // top priority dialog widget
+
+		protected String mName; // name of this tray system
+		protected RenderWindow mWindow; // render window
+		protected SIS.Mouse Mouse; // mouse device
+		protected Overlay backdropLayer; // backdrop layer
+		protected Overlay mTraysLayer; // widget layer
+		protected Overlay mPriorityLayer; // top priority layer
+		protected Overlay cursorLayer; // cursor layer
+		protected OverlayElementContainer backdrop; // backdrop
+		protected OverlayElementContainer[] mTrays = new OverlayElementContainer[10]; // widget trays
+		protected WidgetList[] mWidgets = new WidgetList[10]; // widgets
+		protected WidgetList mWidgetDeathRow = new WidgetList(); // widget queue for deletion
+		protected OverlayElementContainer cursor; // cursor
+		protected ISdkTrayListener listener; // tray listener
+		protected Real mWidgetPadding; // widget padding
+		protected Real mWidgetSpacing; // widget spacing
+		protected Real mTrayPadding; // tray padding
+		protected bool mTrayDrag; // a mouse press was initiated on a tray
+		protected SelectMenu expandedMenu; // top priority expanded menu widget
+		protected TextBox Dialog; // top priority dialog widget
 		protected OverlayElementContainer mDialogShade; // top priority dialog shade
-		protected Button mOk;                          // top priority OK button
-		protected Button mYes;                         // top priority Yes button
-		protected Button mNo;                          // top priority No button
-		protected bool CursorWasVisible;               // cursor state before showing dialog
-		protected Label mFpsLabel;                     // FPS label
-		protected ParamsPanel StatsPanel;             // frame stats panel
-		protected DecorWidget Logo;                   // logo
-		protected ProgressBar LoadBar;                // loading bar
-		protected Real groupInitProportion;      // proportion of load job assigned to initialising one resource group
-		protected Real groupLoadProportion;      // proportion of load job assigned to loading one resource group
-		protected Real loadInc;                  // loading increment
-		protected HorizontalAlignment[] trayWidgetAlign = new HorizontalAlignment[ 10 ];   // tray widget alignments
+		protected Button mOk; // top priority OK button
+		protected Button mYes; // top priority Yes button
+		protected Button mNo; // top priority No button
+		protected bool CursorWasVisible; // cursor state before showing dialog
+		protected Label mFpsLabel; // FPS label
+		protected ParamsPanel StatsPanel; // frame stats panel
+		protected DecorWidget Logo; // logo
+		protected ProgressBar LoadBar; // loading bar
+		protected Real groupInitProportion; // proportion of load job assigned to initialising one resource group
+		protected Real groupLoadProportion; // proportion of load job assigned to loading one resource group
+		protected Real loadInc; // loading increment
+		protected HorizontalAlignment[] trayWidgetAlign = new HorizontalAlignment[10]; // tray widget alignments
+
 		#endregion
 
 		#region properties
+
 		public SelectMenu ExpandedMenu
 		{
-			get
-			{
-				return expandedMenu;
-			}
+			get { return expandedMenu; }
 			set
 			{
-				if ( expandedMenu == null && value != null )
+				if( expandedMenu == null && value != null )
 				{
 					OverlayElementContainer c = (OverlayElementContainer)value.OverlayElement;
 					OverlayElementContainer eb = (OverlayElementContainer)c.Children[ value.Name + "/MenuExpandedBox" ];
 					eb.Update();
 					eb.SetPosition( (int)( eb.DerivedLeft * OverlayManager.Instance.ViewportWidth ),
-									(int)( eb.DerivedTop * OverlayManager.Instance.ViewportHeight ) );
+					                (int)( eb.DerivedTop * OverlayManager.Instance.ViewportHeight ) );
 					c.RemoveChild( eb.Name );
 					mPriorityLayer.AddElement( eb );
 				}
-				else if ( expandedMenu != null && value == null )
+				else if( expandedMenu != null && value == null )
 				{
 					OverlayElementContainer eb = mPriorityLayer.GetChild( expandedMenu.Name + "/MenuExpandedBox" );
 					mPriorityLayer.RemoveElement( eb );
@@ -132,6 +138,7 @@ namespace Axiom.Samples
 				expandedMenu = value;
 			}
 		}
+
 		/// <summary>
 		///  Gets the number of widgets in total.
 		/// </summary>
@@ -141,7 +148,7 @@ namespace Axiom.Samples
 			{
 				int total = 0;
 
-				for ( int i = 0; i < 10; i++ )
+				for( int i = 0; i < 10; i++ )
 				{
 					total += mWidgets[ i ].Count;
 				}
@@ -153,47 +160,24 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Determines if any dialog is currently visible.
 		/// </summary>
-		public bool IsDialogVisible
-		{
-			get
-			{
-				return Dialog != null;
-			}
-		}
+		public bool IsDialogVisible { get { return Dialog != null; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsLoadingBarVisible
-		{
-			get
-			{
-				return LoadBar != null;
-			}
-		}
+		public bool IsLoadingBarVisible { get { return LoadBar != null; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsLogoVisible
-		{
-			get
-			{
-				return this.Logo != null;
-			}
-		}
+		public bool IsLogoVisible { get { return this.Logo != null; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public bool IsFrameStatsVisible
-		{
-			get
-			{
-				return mFpsLabel != null;
-			}
-		}
+		public bool IsFrameStatsVisible { get { return mFpsLabel != null; } }
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -204,10 +188,7 @@ namespace Axiom.Samples
 				mWidgetPadding = System.Math.Max( value, 0 );
 				AdjustTrays();
 			}
-			get
-			{
-				return mWidgetPadding;
-			}
+			get { return mWidgetPadding; }
 		}
 
 		/// <summary>
@@ -220,10 +201,7 @@ namespace Axiom.Samples
 				mWidgetSpacing = System.Math.Max( value, 0 );
 				AdjustTrays();
 			}
-			get
-			{
-				return mWidgetSpacing;
-			}
+			get { return mWidgetSpacing; }
 		}
 
 		/// <summary>
@@ -236,139 +214,64 @@ namespace Axiom.Samples
 				mTrayPadding = System.Math.Max( value, 0 );
 				AdjustTrays();
 			}
-			get
-			{
-				return mTrayPadding;
-			}
+			get { return mTrayPadding; }
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsCursorVisible
-		{
-			get
-			{
-				return this.cursorLayer.IsVisible;
-			}
-		}
+		public bool IsCursorVisible { get { return this.cursorLayer.IsVisible; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsBackdropVisible
-		{
-			get
-			{
-				return this.BackdropLayer.IsVisible;
-			}
-		}
+		public bool IsBackdropVisible { get { return this.BackdropLayer.IsVisible; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool AreTraysVisible
-		{
-			get
-			{
-				return this.mTraysLayer.IsVisible;
-			}
-		}
+		public bool AreTraysVisible { get { return this.mTraysLayer.IsVisible; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public ISdkTrayListener Listener
-		{
-			get
-			{
-				return listener;
-			}
-			set
-			{
-				listener = value;
-			}
-		}
+		public ISdkTrayListener Listener { get { return listener; } set { listener = value; } }
+
 		/// <summary>
 		///  these methods get the underlying overlays and overlay elements
 		/// </summary>
-		public OverlayElementContainer[] TrayContainer
-		{
-			get
-			{
-				return mTrays;
-			}
-		}
-		/// <summary>
-		/// 
-		/// </summary>
-		public Overlay BackdropLayer
-		{
-			get
-			{
-				return backdropLayer;
-			}
-			protected set
-			{
-				backdropLayer = value;
-			}
-		}
+		public OverlayElementContainer[] TrayContainer { get { return mTrays; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public Overlay TraysLayer
-		{
-			get
-			{
-
-				return mTraysLayer;
-			}
-		}
+		public Overlay BackdropLayer { get { return backdropLayer; } protected set { backdropLayer = value; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public Overlay CursorLayer
-		{
-			get
-			{
-				return cursorLayer;
-			}
-		}
+		public Overlay TraysLayer { get { return mTraysLayer; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public OverlayElementContainer BackdropContainer
-		{
-			get
-			{
-				return backdrop;
-			}
-		}
+		public Overlay CursorLayer { get { return cursorLayer; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public OverlayElementContainer CursorContainer
-		{
-			get
-			{
-				return cursor;
-			}
-		}
+		public OverlayElementContainer BackdropContainer { get { return backdrop; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public OverlayElement CursorImage
-		{
-			get
-			{
-				return cursor.Children[ cursor.Name + "/CursorImage" ];
-			}
-		}
+		public OverlayElementContainer CursorContainer { get { return cursor; } }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public OverlayElement CursorImage { get { return cursor.Children[ cursor.Name + "/CursorImage" ]; } }
+
 		#endregion properties
 
 		/// <summary>
@@ -378,9 +281,7 @@ namespace Axiom.Samples
 		/// <param name="window"></param>
 		/// <param name="mouse"></param>
 		public SdkTrayManager( String name, RenderWindow window, SIS.Mouse mouse )
-			: this( name, window, mouse, null )
-		{
-		}
+			: this( name, window, mouse, null ) {}
 
 		/// <summary>
 		/// Creates backdrop, cursor, and trays.
@@ -427,10 +328,10 @@ namespace Axiom.Samples
 			mPriorityLayer.AddElement( mDialogShade );
 
 			String[] trayNames = {
-									 "TopLeft", "Top", "TopRight", "Left", "Center", "Right", "BottomLeft", "Bottom", "BottomRight"
-								 };
+			                     	"TopLeft", "Top", "TopRight", "Left", "Center", "Right", "BottomLeft", "Bottom", "BottomRight"
+			                     };
 
-			for ( int i = 0; i < 9; i++ ) // make the real trays
+			for( int i = 0; i < 9; i++ ) // make the real trays
 			{
 				mTrays[ i ] = (OverlayElementContainer)om.Elements.CreateElementFromTemplate( "SdkTrays/Tray", "BorderPanel", nameBase + trayNames[ i ] + "Tray" );
 
@@ -439,14 +340,22 @@ namespace Axiom.Samples
 				trayWidgetAlign[ i ] = HorizontalAlignment.Center;
 
 				// align trays based on location
-				if ( i == (int)TrayLocation.Top || i == (int)TrayLocation.Center || i == (int)TrayLocation.Bottom )
+				if( i == (int)TrayLocation.Top || i == (int)TrayLocation.Center || i == (int)TrayLocation.Bottom )
+				{
 					mTrays[ i ].HorizontalAlignment = HorizontalAlignment.Center;
-				if ( i == (int)TrayLocation.Left || i == (int)TrayLocation.Center || i == (int)TrayLocation.Right )
+				}
+				if( i == (int)TrayLocation.Left || i == (int)TrayLocation.Center || i == (int)TrayLocation.Right )
+				{
 					mTrays[ i ].VerticalAlignment = VerticalAlignment.Center;
-				if ( i == (int)TrayLocation.TopRight || i == (int)TrayLocation.Right || i == (int)TrayLocation.BottomRight )
+				}
+				if( i == (int)TrayLocation.TopRight || i == (int)TrayLocation.Right || i == (int)TrayLocation.BottomRight )
+				{
 					mTrays[ i ].HorizontalAlignment = HorizontalAlignment.Right;
-				if ( i == (int)TrayLocation.BottomLeft || i == (int)TrayLocation.Bottom || i == (int)TrayLocation.BottomRight )
+				}
+				if( i == (int)TrayLocation.BottomLeft || i == (int)TrayLocation.Bottom || i == (int)TrayLocation.BottomRight )
+				{
 					mTrays[ i ].VerticalAlignment = VerticalAlignment.Bottom;
+				}
 			}
 
 			// create the null tray for free-floating widgets
@@ -454,7 +363,7 @@ namespace Axiom.Samples
 			trayWidgetAlign[ 9 ] = HorizontalAlignment.Left;
 			mTraysLayer.AddElement( mTrays[ 9 ] );
 
-			for ( int i = 0; i < mWidgets.Length; i++ )
+			for( int i = 0; i < mWidgets.Length; i++ )
 			{
 				mWidgets[ i ] = new WidgetList();
 			}
@@ -474,12 +383,12 @@ namespace Axiom.Samples
 
 			DestroyAllWidgets();
 
-			for ( int i = 0; i < mWidgetDeathRow.Count; i++ )   // delete widgets queued for destruction
+			for( int i = 0; i < mWidgetDeathRow.Count; i++ ) // delete widgets queued for destruction
 			{
 				mWidgetDeathRow[ i ] = null;
 			}
 			mWidgetDeathRow.Clear();
-			if ( om != null )
+			if( om != null )
 			{
 				om.Destroy( this.BackdropLayer );
 				om.Destroy( mTraysLayer );
@@ -493,7 +402,7 @@ namespace Axiom.Samples
 				Widget.NukeOverlayElement( cursor );
 				Widget.NukeOverlayElement( mDialogShade );
 
-				for ( int i = 0; i < 10; i++ )
+				for( int i = 0; i < 10; i++ )
 				{
 					Widget.NukeOverlayElement( mTrays[ i ] );
 				}
@@ -530,42 +439,32 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="yesHit"></param>
-		public void YesNoDialogClosed( string text, bool yesHit )
-		{
-		}
+		public void YesNoDialogClosed( string text, bool yesHit ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="text"></param>
-		public void OkDialogClosed( string text )
-		{
-		}
+		public void OkDialogClosed( string text ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="slider"></param>
-		public void SliderMoved( Slider slider )
-		{
-		}
+		public void SliderMoved( Slider slider ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="box"></param>
-		public void CheckboxToggled( CheckBox box )
-		{
-
-		}
+		public void CheckboxToggled( CheckBox box ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="menu"></param>
-		public void ItemSelected( SelectMenu menu )
-		{
-		}
+		public void ItemSelected( SelectMenu menu ) {}
+
 		#endregion ISdkTrayListerner implementation
 
 		/// <summary>
@@ -604,8 +503,10 @@ namespace Axiom.Samples
 		/// <param name="materialName"></param>
 		public void ShowBackdrop( String materialName )
 		{
-			if ( materialName != String.Empty )
+			if( materialName != String.Empty )
+			{
 				backdrop.MaterialName = materialName;
+			}
 			this.BackdropLayer.Show();
 		}
 
@@ -633,10 +534,12 @@ namespace Axiom.Samples
 		/// <param name="materialName"></param>
 		public void ShowCursor( String materialName )
 		{
-			if ( materialName != String.Empty )
+			if( materialName != String.Empty )
+			{
 				CursorImage.MaterialName = materialName;
+			}
 
-			if ( !cursorLayer.IsVisible )
+			if( !cursorLayer.IsVisible )
 			{
 				cursorLayer.Show();
 				RefreshCursor();
@@ -651,11 +554,11 @@ namespace Axiom.Samples
 			cursorLayer.Hide();
 
 			// give widgets a chance to reset in case they're in the middle of something
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
-				if ( mWidgets[ i ] != null )
+				if( mWidgets[ i ] != null )
 				{
-					for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+					for( int j = 0; j < mWidgets[ i ].Count; j++ )
 					{
 						mWidgets[ i ][ j ].OnLostFocus();
 					}
@@ -673,7 +576,7 @@ namespace Axiom.Samples
 		public void RefreshCursor()
 		{
 			int cursorX = 0, cursorY = 0;
-			if ( Mouse != null )
+			if( Mouse != null )
 			{
 				cursorX = Mouse.MouseState.X.Absolute;
 				cursorY = Mouse.MouseState.Y.Absolute;
@@ -699,9 +602,9 @@ namespace Axiom.Samples
 			mPriorityLayer.Hide();
 
 			// give widgets a chance to reset in case they're in the middle of something
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
 					mWidgets[ i ][ j ].OnLostFocus();
 				}
@@ -719,7 +622,7 @@ namespace Axiom.Samples
 		{
 			trayWidgetAlign[ (int)trayLoc ] = gha;
 
-			for ( int i = 0; i < mWidgets[ (int)trayLoc ].Count; i++ )
+			for( int i = 0; i < mWidgets[ (int)trayLoc ].Count; i++ )
 			{
 				mWidgets[ (int)trayLoc ][ i ].OverlayElement.HorizontalAlignment = gha;
 			}
@@ -728,34 +631,38 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Fits trays to their contents and snaps them to their anchor locations.
 		/// </summary>
-		public virtual void AdjustTrays()
+		virtual public void AdjustTrays()
 		{
-			for ( int i = 0; i < 9; i++ )   // resizes and hides trays if necessary
+			for( int i = 0; i < 9; i++ ) // resizes and hides trays if necessary
 			{
 				Real trayWidth = 0;
 				Real trayHeight = mWidgetPadding;
 				List<OverlayElement> labelsAndSeps = new List<OverlayElement>();
 
-				if ( mWidgets[ i ] == null || mWidgets[ i ].Count == 0 )   // hide tray if empty
+				if( mWidgets[ i ] == null || mWidgets[ i ].Count == 0 ) // hide tray if empty
 				{
 					mTrays[ i ].Hide();
 					continue;
 				}
 				else
+				{
 					mTrays[ i ].Show();
+				}
 
 				// arrange widgets and calculate final tray size and position
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
 					OverlayElement e = mWidgets[ i ][ j ].OverlayElement;
 
-					if ( j != 0 )
-						trayHeight += mWidgetSpacing;   // don't space first widget
+					if( j != 0 )
+					{
+						trayHeight += mWidgetSpacing; // don't space first widget
+					}
 
 					e.VerticalAlignment = VerticalAlignment.Top;
 					e.Top = trayHeight;
 
-					switch ( e.HorizontalAlignment )
+					switch( e.HorizontalAlignment )
 					{
 						case HorizontalAlignment.Left:
 							e.Left = mWidgetPadding;
@@ -775,48 +682,62 @@ namespace Axiom.Samples
 					trayHeight += e.Height;
 
 					Label l = mWidgets[ i ][ j ] as Label;
-					if ( l != null && l.IsFitToTray )
+					if( l != null && l.IsFitToTray )
 					{
 						labelsAndSeps.Add( e );
 						continue;
 					}
 					Separator s = mWidgets[ i ][ j ] as Separator;
-					if ( s != null && s.IsFitToTray )
+					if( s != null && s.IsFitToTray )
 					{
 						labelsAndSeps.Add( e );
 						continue;
 					}
 
-					if ( e.Width > trayWidth )
+					if( e.Width > trayWidth )
+					{
 						trayWidth = e.Width;
+					}
 				}
 
 				// add paddings and resize trays
 				mTrays[ i ].Width = trayWidth + 2 * mWidgetPadding;
 				mTrays[ i ].Height = trayHeight + mWidgetPadding;
 
-				for ( int k = 0; k < labelsAndSeps.Count; k++ )
+				for( int k = 0; k < labelsAndSeps.Count; k++ )
 				{
 					labelsAndSeps[ k ].Width = (int)trayWidth;
 					labelsAndSeps[ k ].Left = -(int)( trayWidth / 2 );
 				}
 			}
 
-			for ( int i = 0; i < 9; i++ )    // snap trays to anchors
+			for( int i = 0; i < 9; i++ ) // snap trays to anchors
 			{
-				if ( i == (int)TrayLocation.TopLeft || i == (int)TrayLocation.Left || i == (int)TrayLocation.BottomLeft )
+				if( i == (int)TrayLocation.TopLeft || i == (int)TrayLocation.Left || i == (int)TrayLocation.BottomLeft )
+				{
 					mTrays[ i ].Left = mTrayPadding;
-				if ( i == (int)TrayLocation.Top || i == (int)TrayLocation.Center || i == (int)TrayLocation.Bottom )
+				}
+				if( i == (int)TrayLocation.Top || i == (int)TrayLocation.Center || i == (int)TrayLocation.Bottom )
+				{
 					mTrays[ i ].Left = -mTrays[ i ].Width / 2;
-				if ( i == (int)TrayLocation.TopRight || i == (int)TrayLocation.Right || i == (int)TrayLocation.BottomRight )
+				}
+				if( i == (int)TrayLocation.TopRight || i == (int)TrayLocation.Right || i == (int)TrayLocation.BottomRight )
+				{
 					mTrays[ i ].Left = -( mTrays[ i ].Width + mTrayPadding );
+				}
 
-				if ( i == (int)TrayLocation.TopLeft || i == (int)TrayLocation.Top || i == (int)TrayLocation.TopRight )
+				if( i == (int)TrayLocation.TopLeft || i == (int)TrayLocation.Top || i == (int)TrayLocation.TopRight )
+				{
 					mTrays[ i ].Top = mTrayPadding;
-				if ( i == (int)TrayLocation.Left || i == (int)TrayLocation.Center || i == (int)TrayLocation.Right )
+				}
+				if( i == (int)TrayLocation.Left || i == (int)TrayLocation.Center || i == (int)TrayLocation.Right )
+				{
 					mTrays[ i ].Top = -mTrays[ i ].Height / 2;
-				if ( i == (int)TrayLocation.BottomLeft || i == (int)TrayLocation.Bottom || i == (int)TrayLocation.BottomRight )
+				}
+				if( i == (int)TrayLocation.BottomLeft || i == (int)TrayLocation.Bottom || i == (int)TrayLocation.BottomRight )
+				{
 					mTrays[ i ].Top = -mTrays[ i ].Height - mTrayPadding;
+				}
 
 				// prevents some weird texture filtering problems (just some)
 				mTrays[ i ].SetPosition( (int)mTrays[ i ].Left, (int)mTrays[ i ].Top );
@@ -908,8 +829,10 @@ namespace Axiom.Samples
 			SelectMenu sm = new SelectMenu( name, caption, width, 0, maxItemsShown );
 			MoveWidgetToTray( sm, trayLoc );
 			sm.AssignedTrayListener = listener;
-			if ( !( items.Count == 0 ) )
+			if( !( items.Count == 0 ) )
+			{
 				sm.Items = items;
+			}
 			return sm;
 		}
 
@@ -958,8 +881,10 @@ namespace Axiom.Samples
 			SelectMenu sm = new SelectMenu( name, caption, width, boxWidth, maxItemsShown );
 			MoveWidgetToTray( sm, trayLoc );
 			sm.AssignedTrayListener = listener;
-			if ( !( items.Count == 0 ) )
+			if( !( items.Count == 0 ) )
+			{
 				sm.Items = items;
+			}
 			return sm;
 		}
 
@@ -1029,7 +954,7 @@ namespace Axiom.Samples
 		/// <param name="snaps"></param>
 		/// <returns></returns>
 		public Slider CreateThickSlider( TrayLocation trayLoc, String name, DisplayString caption,
-			 Real width, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		                                 Real width, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
 			Slider s = new Slider( name, caption, width, 0, valueBoxWidth, minValue, maxValue, snaps );
 			MoveWidgetToTray( s, trayLoc );
@@ -1051,10 +976,12 @@ namespace Axiom.Samples
 		/// <param name="snaps"></param>
 		/// <returns></returns>
 		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption, Real width,
-			Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		                                Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
-			if ( trackWidth <= 0 )
+			if( trackWidth <= 0 )
+			{
 				trackWidth = 1;
+			}
 			Slider s = new Slider( name, caption, width, trackWidth, valueBoxWidth, minValue, maxValue, snaps );
 			MoveWidgetToTray( s, trayLoc );
 			s.AssignedTrayListener = listener;
@@ -1074,7 +1001,7 @@ namespace Axiom.Samples
 		/// <param name="snaps"></param>
 		/// <returns></returns>
 		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption,
-			Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		                                Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
 			return CreateLongSlider( trayLoc, name, caption, 0, trackWidth, valueBoxWidth, minValue, maxValue, snaps );
 		}
@@ -1109,6 +1036,7 @@ namespace Axiom.Samples
 			this.MoveWidgetToTray( pp, trayLoc );
 			return pp;
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -1120,6 +1048,7 @@ namespace Axiom.Samples
 		{
 			return CreateCheckBox( trayLoc, name, caption, 0 );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -1198,7 +1127,7 @@ namespace Axiom.Samples
 		/// <param name="place"></param>
 		public void ShowFrameStats( TrayLocation trayLoc, int place )
 		{
-			if ( !IsFrameStatsVisible )
+			if( !IsFrameStatsVisible )
 			{
 				List<String> stats = new List<string>();
 				stats.Add( "Average FPS" );
@@ -1221,7 +1150,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void HideFrameStats()
 		{
-			if ( IsFrameStatsVisible )
+			if( IsFrameStatsVisible )
 			{
 				DestroyWidget( mFpsLabel );
 				DestroyWidget( StatsPanel );
@@ -1235,8 +1164,10 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ToggleAdvancedFrameStats()
 		{
-			if ( mFpsLabel != null )
+			if( mFpsLabel != null )
+			{
 				LabelHit( mFpsLabel );
+			}
 		}
 
 		/// <summary>
@@ -1255,7 +1186,7 @@ namespace Axiom.Samples
 		/// <param name="place"></param>
 		public void ShowLogo( TrayLocation trayLoc, int place )
 		{
-			if ( !IsLogoVisible )
+			if( !IsLogoVisible )
 			{
 				Logo = CreateDecorWidget( trayLoc, mName + "/Logo", "Panel", "SdkTrays/Logo" );
 			}
@@ -1267,7 +1198,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void HideLogo()
 		{
-			if ( this.IsLogoVisible )
+			if( this.IsLogoVisible )
 			{
 				DestroyWidget( this.Logo );
 				this.Logo = null;
@@ -1309,7 +1240,7 @@ namespace Axiom.Samples
 		/// <param name="initProportion"></param>
 		public void ShowLoadingBar( int numGroupsInit, int numGroupsLoad, Real initProportion )
 		{
-			if ( LoadBar != null )
+			if( LoadBar != null )
 			{
 				HideLoadingBar();
 				return;
@@ -1325,18 +1256,20 @@ namespace Axiom.Samples
 			HideCursor();
 			mDialogShade.Show();
 			// calculate the proportion of job required to init/load one group
-			if ( numGroupsInit == 0 && numGroupsLoad != 0 )
+			if( numGroupsInit == 0 && numGroupsLoad != 0 )
 			{
 				groupInitProportion = 0;
 				groupLoadProportion = 1;
 			}
-			else if ( numGroupsLoad == 0 && numGroupsInit != 0 )
+			else if( numGroupsLoad == 0 && numGroupsInit != 0 )
 			{
 				groupLoadProportion = 0;
-				if ( numGroupsInit != 0 )
+				if( numGroupsInit != 0 )
+				{
 					groupInitProportion = 1;
+				}
 			}
-			else if ( numGroupsInit == 0 && numGroupsLoad == 0 )
+			else if( numGroupsInit == 0 && numGroupsLoad == 0 )
 			{
 				groupInitProportion = 0;
 				groupLoadProportion = 0;
@@ -1353,13 +1286,15 @@ namespace Axiom.Samples
 		/// </summary>
 		public void HideLoadingBar()
 		{
-			if ( LoadBar != null )
+			if( LoadBar != null )
 			{
 				LoadBar.Cleanup();
 				LoadBar = null;
 				ResourceGroupManager.Instance.RemoveResourceGroupListener( this );
-				if ( CursorWasVisible )
+				if( CursorWasVisible )
+				{
 					ShowCursor();
+				}
 				mDialogShade.Hide();
 			}
 		}
@@ -1372,18 +1307,24 @@ namespace Axiom.Samples
 		public void ShowOkDialog( DisplayString caption, DisplayString message )
 		{
 			OverlayElement e;
-			if ( Dialog != null )
+			if( Dialog != null )
 			{
 				Dialog.Caption = caption;
 				Dialog.Text = message;
-				if ( mOk != null )
+				if( mOk != null )
+				{
 					return;
+				}
 				else
 				{
-					if ( mYes != null )
+					if( mYes != null )
+					{
 						mYes.Cleanup();
-					if ( mNo != null )
+					}
+					if( mNo != null )
+					{
 						mNo.Cleanup();
+					}
 
 					mYes = null;
 					mNo = null;
@@ -1392,9 +1333,9 @@ namespace Axiom.Samples
 			else
 			{
 				// give widgets a chance to reset in case they're in the middle of something
-				for ( int i = 0; i < 10; i++ )
+				for( int i = 0; i < 10; i++ )
 				{
-					for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+					for( int j = 0; j < mWidgets[ i ].Count; j++ )
 					{
 						mWidgets[ i ][ j ].OnLostFocus();
 					}
@@ -1427,26 +1368,30 @@ namespace Axiom.Samples
 		public void ShowYesNoDialog( DisplayString caption, DisplayString question )
 		{
 			OverlayElement e;
-			if ( Dialog != null )
+			if( Dialog != null )
 			{
 				Dialog.Caption = caption;
 				Dialog.Text = question;
-				if ( mOk != null )
+				if( mOk != null )
 				{
-					if ( mOk != null )
+					if( mOk != null )
+					{
 						mOk.Cleanup();
+					}
 
 					mOk = null;
 				}
 				else
+				{
 					return;
+				}
 			}
 			else
 			{
 				// give widgets a chance to reset in case they're in the middle of something
-				for ( int i = 0; i < 10; i++ )
+				for( int i = 0; i < 10; i++ )
 				{
-					for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+					for( int j = 0; j < mWidgets[ i ].Count; j++ )
 					{
 						mWidgets[ i ][ j ].OnLostFocus();
 					}
@@ -1483,19 +1428,23 @@ namespace Axiom.Samples
 		/// </summary>
 		public void CloseDialog()
 		{
-			if ( Dialog != null )
+			if( Dialog != null )
 			{
-				if ( mOk != null )
+				if( mOk != null )
 				{
 					mOk.Cleanup();
 					mOk = null;
 				}
 				else
 				{
-					if ( mYes != null )
+					if( mYes != null )
+					{
 						mYes.Cleanup();
-					if ( mNo != null )
+					}
+					if( mNo != null )
+					{
 						mNo.Cleanup();
+					}
 
 					mYes = null;
 					mNo = null;
@@ -1503,8 +1452,10 @@ namespace Axiom.Samples
 				mDialogShade.Hide();
 				Dialog.Cleanup();
 				Dialog = null;
-				if ( !CursorWasVisible )
+				if( !CursorWasVisible )
+				{
 					HideCursor();
+				}
 			}
 		}
 
@@ -1516,8 +1467,10 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Widget GetWidget( TrayLocation trayLoc, int place )
 		{
-			if ( place >= 0 && place < mWidgets[ (int)trayLoc ].Count )
+			if( place >= 0 && place < mWidgets[ (int)trayLoc ].Count )
+			{
 				return mWidgets[ (int)trayLoc ][ place ];
+			}
 			return null;
 		}
 
@@ -1529,10 +1482,12 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Widget GetWidget( TrayLocation trayLoc, String name )
 		{
-			for ( int i = 0; i < mWidgets[ (int)trayLoc ].Count; i++ )
+			for( int i = 0; i < mWidgets[ (int)trayLoc ].Count; i++ )
 			{
-				if ( mWidgets[ (int)trayLoc ][ i ].Name == name )
+				if( mWidgets[ (int)trayLoc ][ i ].Name == name )
+				{
 					return mWidgets[ (int)trayLoc ][ i ];
+				}
 			}
 			return null;
 		}
@@ -1544,12 +1499,14 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Widget GetWidget( String name )
 		{
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
-					if ( mWidgets[ i ][ j ].Name == name )
+					if( mWidgets[ i ][ j ].Name == name )
+					{
 						return mWidgets[ i ][ j ];
+					}
 				}
 			}
 			return null;
@@ -1582,10 +1539,12 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public int LocateWidgetInTray( Widget widget )
 		{
-			for ( int i = 0; i < mWidgets[ (int)widget.TrayLocation ].Count; i++ )
+			for( int i = 0; i < mWidgets[ (int)widget.TrayLocation ].Count; i++ )
 			{
-				if ( mWidgets[ (int)widget.TrayLocation ][ i ] == widget )
+				if( mWidgets[ (int)widget.TrayLocation ][ i ] == widget )
+				{
 					return i;
+				}
 			}
 			return -1;
 		}
@@ -1596,23 +1555,33 @@ namespace Axiom.Samples
 		/// <param name="widget"></param>
 		public void DestroyWidget( Widget widget )
 		{
-			if ( widget == null )
+			if( widget == null )
+			{
 				new AxiomException( "Widget does not exist,TrayManager.DestroyWidget" );
+			}
 
 			// in case special widgets are destroyed manually, set them to 0
-			if ( widget == Logo )
+			if( widget == Logo )
+			{
 				Logo = null;
-			else if ( widget == StatsPanel )
+			}
+			else if( widget == StatsPanel )
+			{
 				StatsPanel = null;
-			else if ( widget == mFpsLabel )
+			}
+			else if( widget == mFpsLabel )
+			{
 				mFpsLabel = null;
+			}
 
 			mTrays[ (int)widget.TrayLocation ].RemoveChild( widget.Name );
 
 			WidgetList wList = mWidgets[ (int)widget.TrayLocation ];
 			wList.Remove( widget );
-			if ( widget == ExpandedMenu )
+			if( widget == ExpandedMenu )
+			{
 				ExpandedMenu = null;
+			}
 
 			widget.Cleanup();
 
@@ -1656,8 +1625,10 @@ namespace Axiom.Samples
 		/// <param name="trayLoc"></param>
 		public void DestroyAllWidgetsInTray( TrayLocation trayLoc )
 		{
-			while ( !( mWidgets[ (int)trayLoc ].Count == 0 ) )
+			while( !( mWidgets[ (int)trayLoc ].Count == 0 ) )
+			{
 				DestroyWidget( mWidgets[ (int)trayLoc ][ 0 ] );
+			}
 		}
 
 		/// <summary>
@@ -1665,7 +1636,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void DestroyAllWidgets()
 		{
-			for ( int i = 0; i < 10; i++ )  // destroy every widget in every tray (including null tray)
+			for( int i = 0; i < 10; i++ ) // destroy every widget in every tray (including null tray)
 			{
 				DestroyAllWidgetsInTray( (TrayLocation)i );
 			}
@@ -1689,26 +1660,30 @@ namespace Axiom.Samples
 		/// <param name="place"></param>
 		public void MoveWidgetToTray( Widget widget, TrayLocation trayLoc, int place )
 		{
-			if ( widget == null )
+			if( widget == null )
+			{
 				throw new ArgumentNullException( "widget", "Widget deos not exist." );
+			}
 
 			// remove widget from old tray
 			WidgetList wList = mWidgets[ (int)widget.TrayLocation ];
-			if ( wList == null )
+			if( wList == null )
 			{
 				wList = new WidgetList();
 				mWidgets[ (int)widget.TrayLocation ] = wList;
 			}
 
-			if ( wList.Contains( widget ) )
+			if( wList.Contains( widget ) )
 			{
 				wList.Remove( widget );
 				mTrays[ (int)widget.TrayLocation ].RemoveChild( widget.Name );
 			}
 
 			// insert widget into new tray at given position, or at the end if unspecified or invalid
-			if ( place == -1 || place > mWidgets[ (int)trayLoc ].Count )
+			if( place == -1 || place > mWidgets[ (int)trayLoc ].Count )
+			{
 				place = mWidgets[ (int)trayLoc ].Count;
+			}
 			mWidgets[ (int)trayLoc ].Insert( place, widget );
 			// mWidgets[ (int)trayLoc ].Add( widget );
 			mTrays[ (int)trayLoc ].AddChild( widget.OverlayElement );
@@ -1716,7 +1691,7 @@ namespace Axiom.Samples
 			widget.OverlayElement.HorizontalAlignment = trayWidgetAlign[ (int)trayLoc ];
 
 			// adjust trays if necessary
-			if ( widget.TrayLocation != TrayLocation.None || trayLoc != TrayLocation.None )
+			if( widget.TrayLocation != TrayLocation.None || trayLoc != TrayLocation.None )
 			{
 				AdjustTrays();
 			}
@@ -1766,7 +1741,7 @@ namespace Axiom.Samples
 		/// <param name="targetTrayLoc"></param>
 		/// <param name="place"></param>
 		public void MoveWidgetToTray( TrayLocation currentTrayLoc, String name, TrayLocation targetTrayLoc,
-			int place )
+		                              int place )
 		{
 			MoveWidgetToTray( GetWidget( currentTrayLoc, name ), targetTrayLoc, place );
 		}
@@ -1790,7 +1765,7 @@ namespace Axiom.Samples
 		/// <param name="targetTrayLoc"></param>
 		/// <param name="targetPlace"></param>
 		public void MoveWidgetToTray( TrayLocation currentTrayLoc, int currentPlace, TrayLocation targetTrayLoc,
-			int targetPlace )
+		                              int targetPlace )
 		{
 			MoveWidgetToTray( GetWidget( currentTrayLoc, currentPlace ), targetTrayLoc, targetPlace );
 		}
@@ -1839,10 +1814,12 @@ namespace Axiom.Samples
 		/// <param name="trayLoc"></param>
 		public void ClearTray( TrayLocation trayLoc )
 		{
-			if ( trayLoc == TrayLocation.None )
-				return;      // can't clear the null tray
+			if( trayLoc == TrayLocation.None )
+			{
+				return; // can't clear the null tray
+			}
 
-			while ( !( mWidgets[ (int)trayLoc ].Count == 0 ) )  // remove every widget from given tray
+			while( !( mWidgets[ (int)trayLoc ].Count == 0 ) ) // remove every widget from given tray
 			{
 				RemoveWidgetFromTray( mWidgets[ (int)trayLoc ][ 0 ] );
 			}
@@ -1853,7 +1830,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ClearAllTrays()
 		{
-			for ( int i = 0; i < 9; i++ )
+			for( int i = 0; i < 9; i++ )
 			{
 				ClearTray( (TrayLocation)i );
 			}
@@ -1867,7 +1844,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			for ( int i = 0; i < mWidgetDeathRow.Count; i++ )
+			for( int i = 0; i < mWidgetDeathRow.Count; i++ )
 			{
 				mWidgetDeathRow[ i ] = null;
 			}
@@ -1875,14 +1852,14 @@ namespace Axiom.Samples
 
 			RenderTarget.FrameStatistics stats = mWindow.Statistics;
 
-			if ( IsFrameStatsVisible )
+			if( IsFrameStatsVisible )
 			{
 				String s;
 
 				s = String.Format( "{0:#.##}", stats.LastFPS );
 				mFpsLabel.Caption = s;
 
-				if ( StatsPanel.OverlayElement.IsVisible )
+				if( StatsPanel.OverlayElement.IsVisible )
 				{
 					List<String> values = new List<string>();
 
@@ -1921,7 +1898,7 @@ namespace Axiom.Samples
 			LoadBar.Caption = "Parsing...";
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -1936,7 +1913,7 @@ namespace Axiom.Samples
 			LoadBar.Comment = System.IO.Path.GetFileName( scriptName );
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -1950,7 +1927,7 @@ namespace Axiom.Samples
 			LoadBar.Progress = LoadBar.Progress + loadInc;
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -1960,9 +1937,7 @@ namespace Axiom.Samples
 		/// This event is fired when a resource group finished parsing scripts.
 		/// </summary>
 		/// <param name="groupName">The name of the group</param>
-		public void ResourceGroupScriptingEnded( string groupName )
-		{
-		}
+		public void ResourceGroupScriptingEnded( string groupName ) {}
 
 		/// <summary>
 		/// This event is fired  when a resource group begins loading.
@@ -1978,7 +1953,7 @@ namespace Axiom.Samples
 			LoadBar.Caption = "Loading...";
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -1993,7 +1968,7 @@ namespace Axiom.Samples
 			LoadBar.Comment = resource.Name;
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -2007,7 +1982,7 @@ namespace Axiom.Samples
 			LoadBar.Progress = LoadBar.Progress + loadInc;
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -2024,7 +1999,7 @@ namespace Axiom.Samples
 			LoadBar.Comment = description;
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -2041,7 +2016,7 @@ namespace Axiom.Samples
 			LoadBar.Progress = LoadBar.Progress + loadInc;
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
-			if ( WindowEventMonitor.Instance.MessagePump != null )
+			if( WindowEventMonitor.Instance.MessagePump != null )
 			{
 				WindowEventMonitor.Instance.MessagePump();
 			}
@@ -2050,41 +2025,31 @@ namespace Axiom.Samples
 		/// <summary>
 		/// This event is fired when a resource group finished loading.
 		/// </summary>
-		public void ResourceGroupLoadEnded( string groupName )
-		{
-		}
+		public void ResourceGroupLoadEnded( string groupName ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="groupName"></param>
-		public void ResourceGroupPrepareEnded( string groupName )
-		{
-		}
+		public void ResourceGroupPrepareEnded( string groupName ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public void ResourcePrepareEnded()
-		{
-		}
+		public void ResourcePrepareEnded() {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="resource"></param>
-		public void ResourcePrepareStarted( Resource resource )
-		{
-		}
+		public void ResourcePrepareStarted( Resource resource ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="groupName"></param>
 		/// <param name="resourceCount"></param>
-		public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
-		{
-		}
+		public void ResourceGroupPrepareStarted( string groupName, int resourceCount ) {}
 
 		#endregion
 
@@ -2094,7 +2059,7 @@ namespace Axiom.Samples
 		/// <param name="label"></param>
 		public void LabelHit( Label label )
 		{
-			if ( StatsPanel.OverlayElement.IsVisible )
+			if( StatsPanel.OverlayElement.IsVisible )
 			{
 				StatsPanel.OverlayElement.Hide();
 				mFpsLabel.OverlayElement.Width = 150;
@@ -2114,17 +2079,23 @@ namespace Axiom.Samples
 		/// <param name="button"></param>
 		public void OnButtonHit( object sender, Button button )
 		{
-			if ( listener != null )
+			if( listener != null )
 			{
-				if ( button == mOk )
+				if( button == mOk )
+				{
 					listener.OkDialogClosed( Dialog.Text );
+				}
 				else
+				{
 					listener.YesNoDialogClosed( Dialog.Text, button == mYes );
+				}
 			}
 			CloseDialog();
 
-			if ( ButtonHit != null )
+			if( ButtonHit != null )
+			{
 				ButtonHit( sender, button );
+			}
 		}
 
 		/// <summary>
@@ -2137,26 +2108,32 @@ namespace Axiom.Samples
 		public bool InjectMouseDown( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
 			// only process left button when stuff is visible
-			if ( !cursorLayer.IsVisible || id != SIS.MouseButtonID.Left )
+			if( !cursorLayer.IsVisible || id != SIS.MouseButtonID.Left )
+			{
 				return false;
+			}
 
 			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
 
 			mTrayDrag = false;
 
-			if ( ExpandedMenu != null )   // only check top priority widget until it passes on
+			if( ExpandedMenu != null ) // only check top priority widget until it passes on
 			{
 				ExpandedMenu.OnCursorPressed( cursorPos );
-				if ( !ExpandedMenu.IsExpanded )
+				if( !ExpandedMenu.IsExpanded )
+				{
 					ExpandedMenu = null;
+				}
 				return true;
 			}
 
-			if ( Dialog != null )   // only check top priority widget until it passes on
+			if( Dialog != null ) // only check top priority widget until it passes on
 			{
 				Dialog.OnCursorPressed( cursorPos );
-				if ( mOk != null )
+				if( mOk != null )
+				{
 					mOk.OnCursorPressed( cursorPos );
+				}
 				else
 				{
 					mYes.OnCursorPressed( cursorPos );
@@ -2165,44 +2142,50 @@ namespace Axiom.Samples
 				return true;
 			}
 
-			for ( int i = 0; i < 9; i++ )   // check if mouse is over a non-null tray
+			for( int i = 0; i < 9; i++ ) // check if mouse is over a non-null tray
 			{
-				if ( mTrays[ i ].IsVisible && Widget.IsCursorOver( mTrays[ i ], cursorPos, 2 ) )
+				if( mTrays[ i ].IsVisible && Widget.IsCursorOver( mTrays[ i ], cursorPos, 2 ) )
 				{
-					mTrayDrag = true;   // initiate a drag that originates in a tray
+					mTrayDrag = true; // initiate a drag that originates in a tray
 					break;
 				}
 			}
 
-			for ( int i = 0; i < mWidgets[ 9 ].Count; i++ )  // check if mouse is over a non-null tray's widgets
+			for( int i = 0; i < mWidgets[ 9 ].Count; i++ ) // check if mouse is over a non-null tray's widgets
 			{
-				if ( mWidgets[ 9 ][ i ].OverlayElement.IsVisible &&
-					Widget.IsCursorOver( mWidgets[ 9 ][ i ].OverlayElement, cursorPos ) )
+				if( mWidgets[ 9 ][ i ].OverlayElement.IsVisible &&
+				    Widget.IsCursorOver( mWidgets[ 9 ][ i ].OverlayElement, cursorPos ) )
 				{
-					mTrayDrag = true;   // initiate a drag that originates in a tray
+					mTrayDrag = true; // initiate a drag that originates in a tray
 					break;
 				}
 			}
 
-			if ( !mTrayDrag )
-				return false;   // don't process if mouse press is not in tray
+			if( !mTrayDrag )
+			{
+				return false; // don't process if mouse press is not in tray
+			}
 
 			Widget w;
 
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
-				if ( !mTrays[ i ].IsVisible )
+				if( !mTrays[ i ].IsVisible )
+				{
 					continue;
+				}
 
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
 					w = mWidgets[ i ][ j ];
-					if ( !w.OverlayElement.IsVisible )
+					if( !w.OverlayElement.IsVisible )
+					{
 						continue;
-					w.OnCursorPressed( cursorPos );    // send event to widget
+					}
+					w.OnCursorPressed( cursorPos ); // send event to widget
 
 					SelectMenu m = w as SelectMenu;
-					if ( m != null && m.IsExpanded )       // a menu has begun a top priority session
+					if( m != null && m.IsExpanded ) // a menu has begun a top priority session
 					{
 						ExpandedMenu = m;
 						return true;
@@ -2210,7 +2193,7 @@ namespace Axiom.Samples
 				}
 			}
 
-			return true;   // a tray click is not to be handled by another party
+			return true; // a tray click is not to be handled by another party
 		}
 
 		/// <summary>
@@ -2223,53 +2206,65 @@ namespace Axiom.Samples
 		public bool InjectMouseUp( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
 			// only process left button when stuff is visible
-			if ( !cursorLayer.IsVisible || id != SIS.MouseButtonID.Left )
+			if( !cursorLayer.IsVisible || id != SIS.MouseButtonID.Left )
+			{
 				return false;
+			}
 
 			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
 
-			if ( ExpandedMenu != null )   // only check top priority widget until it passes on
+			if( ExpandedMenu != null ) // only check top priority widget until it passes on
 			{
 				ExpandedMenu.OnCursorReleased( cursorPos );
 				return true;
 			}
 
-			if ( Dialog != null )   // only check top priority widget until it passes on
+			if( Dialog != null ) // only check top priority widget until it passes on
 			{
 				Dialog.OnCursorReleased( cursorPos );
-				if ( mOk != null )
+				if( mOk != null )
+				{
 					mOk.OnCursorReleased( cursorPos );
+				}
 				else
 				{
 					mYes.OnCursorReleased( cursorPos );
 					// very important to check if second button still exists, because first button could've closed the popup
-					if ( mNo != null )
+					if( mNo != null )
+					{
 						mNo.OnCursorReleased( cursorPos );
+					}
 				}
 				return true;
 			}
 
-			if ( !mTrayDrag )
-				return false;    // this click did not originate in a tray, so don't process
+			if( !mTrayDrag )
+			{
+				return false; // this click did not originate in a tray, so don't process
+			}
 
 			Widget w;
 
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
-				if ( !mTrays[ i ].IsVisible )
+				if( !mTrays[ i ].IsVisible )
+				{
 					continue;
+				}
 
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
 					w = mWidgets[ i ][ j ];
-					if ( !w.OverlayElement.IsVisible )
+					if( !w.OverlayElement.IsVisible )
+					{
 						continue;
-					w.OnCursorReleased( cursorPos );    // send event to widget
+					}
+					w.OnCursorReleased( cursorPos ); // send event to widget
 				}
 			}
 
-			mTrayDrag = false;   // stop this drag
-			return true;         // this click did originate in this tray, so don't pass it on
+			mTrayDrag = false; // stop this drag
+			return true; // this click did originate in this tray, so don't pass it on
 		}
 
 		/// <summary>
@@ -2280,24 +2275,28 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public bool InjectMouseMove( SIS.MouseEventArgs evt )
 		{
-			if ( !cursorLayer.IsVisible )
-				return false;   // don't process if cursor layer is invisible
+			if( !cursorLayer.IsVisible )
+			{
+				return false; // don't process if cursor layer is invisible
+			}
 
 			cursor.SetPosition( evt.State.X.Absolute, evt.State.Y.Absolute );
 
 			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
 
-			if ( ExpandedMenu != null )   // only check top priority widget until it passes on
+			if( ExpandedMenu != null ) // only check top priority widget until it passes on
 			{
 				ExpandedMenu.OnCursorMoved( cursorPos );
 				return true;
 			}
 
-			if ( Dialog != null )   // only check top priority widget until it passes on
+			if( Dialog != null ) // only check top priority widget until it passes on
 			{
 				Dialog.OnCursorMoved( cursorPos );
-				if ( mOk != null )
+				if( mOk != null )
+				{
 					mOk.OnCursorMoved( cursorPos );
+				}
 				else
 				{
 					mYes.OnCursorMoved( cursorPos );
@@ -2308,25 +2307,29 @@ namespace Axiom.Samples
 
 			Widget w;
 
-			for ( int i = 0; i < mTrays.Length; i++ )
+			for( int i = 0; i < mTrays.Length; i++ )
 			{
-				if ( !mTrays[ i ].IsVisible )
+				if( !mTrays[ i ].IsVisible )
+				{
 					continue;
+				}
 
-				for ( int j = 0; j < mWidgets[ i ].Count; j++ )
+				for( int j = 0; j < mWidgets[ i ].Count; j++ )
 				{
 					w = mWidgets[ i ][ j ];
-					if ( !w.OverlayElement.IsVisible )
+					if( !w.OverlayElement.IsVisible )
+					{
 						continue;
-					w.OnCursorMoved( cursorPos );    // send event to widget
+					}
+					w.OnCursorMoved( cursorPos ); // send event to widget
 				}
 			}
 
-			if ( mTrayDrag )
-				return true;  // don't pass this event on if we're in the middle of a drag
+			if( mTrayDrag )
+			{
+				return true; // don't pass this event on if we're in the middle of a drag
+			}
 			return false;
 		}
-
 	};
 }
-

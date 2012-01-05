@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: JPGCodec.cs 1054 2007-05-24 13:47:35Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,9 +50,7 @@ namespace Axiom.Plugins.DevILCodecs
 	/// </summary>
 	public class JPGCodec : ILImageCodec
 	{
-		public JPGCodec()
-		{
-		}
+		public JPGCodec() {}
 
 		#region ILImageCodec Implementation
 
@@ -79,25 +81,12 @@ namespace Axiom.Plugins.DevILCodecs
 		/// <summary>
 		///    Returns the JPG file extension.
 		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return "jpg";
-			}
-		}
-
+		public override String Type { get { return "jpg"; } }
 
 		/// <summary>
 		///    Returns JPG enum.
 		/// </summary>
-		public override int ILType
-		{
-			get
-			{
-				return Il.IL_JPG;
-			}
-		}
+		public override int ILType { get { return Il.IL_JPG; } }
 
 		#endregion ILImageCodec Implementation
 	}

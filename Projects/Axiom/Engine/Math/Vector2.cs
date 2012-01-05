@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -64,51 +68,28 @@ namespace Axiom.Math
 		/// <summary>
 		/// Gets length of this vector
 		/// </summary>
-		public Real Length
-		{
-			get
-			{
-				return Utility.Sqrt( x * x + y * y );
-			}
-		}
+		public Real Length { get { return Utility.Sqrt( x * x + y * y ); } }
 
 		/// <summary>
 		/// Gets the squared length of this vector
 		/// </summary>
-		public Real LengthSquared
-		{
-			get
-			{
-				return x * x + y * y;
-			}
-		}
+		public Real LengthSquared { get { return x * x + y * y; } }
 
 		/// <summary>
 		/// Gets a vector perpendicular to this, which has the same magnitude.
 		/// </summary>
-		public Vector2 Perpendicular
-		{
-			get
-			{
-				return new Vector2( this.y, -this.x );
-			}
-		}
+		public Vector2 Perpendicular { get { return new Vector2( this.y, -this.x ); } }
 
 		#endregion
 
 		#region Static
 
 		private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
+
 		/// <summary>
 		///		Gets a Vector2 with all components set to 0.
 		/// </summary>
-		public static Vector2 Zero
-		{
-			get
-			{
-				return zeroVector;
-			}
-		}
+		public static Vector2 Zero { get { return zeroVector; } }
 
 		#endregion
 
@@ -145,7 +126,7 @@ namespace Axiom.Math
 			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y );
 
 			// Will also work for zero-sized vectors, but will change nothing
-			if ( length > Real.Epsilon )
+			if( length > Real.Epsilon )
 			{
 				Real inverseLength = 1.0f / length;
 
@@ -217,6 +198,7 @@ namespace Axiom.Math
 		{
 			return left.x != right.x || left.y != right.y;
 		}
+
 		public override bool Equals( object obj )
 		{
 			return obj is Vector2 && this == (Vector2)obj;
@@ -230,9 +212,9 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 operator +( Vector2 left, Vector2 right )
 		{
-            left.x += right.x;
-            left.y += right.y;
-            return left;
+			left.x += right.x;
+			left.y += right.y;
+			return left;
 			//return new Vector2( left.x + right.x, left.y + right.y );
 		}
 
@@ -350,13 +332,15 @@ namespace Axiom.Math
 		public Vector2 Parse( string s )
 		{
 			// the format is "Vector2(x, y)"
-			if ( !s.StartsWith( "Vector2(" ) )
+			if( !s.StartsWith( "Vector2(" ) )
+			{
 				throw new FormatException();
+			}
 
 			string[] values = s.Substring( 8 ).TrimEnd( '}' ).Split( ',' );
 
 			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
-							   Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
+			                    Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

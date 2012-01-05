@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
@@ -59,13 +64,7 @@ namespace Axiom.Scripting.Compiler
 		private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
 		private ScriptTranslatorManager _builtinTranslatorManager;
 
-		public IList<ScriptTranslatorManager> TranslatorManagers
-		{
-			get
-			{
-				return _translatorManagers;
-			}
-		}
+		public IList<ScriptTranslatorManager> TranslatorManagers { get { return _translatorManagers; } }
 
 		#endregion Fields and Properties
 
@@ -89,6 +88,7 @@ namespace Axiom.Scripting.Compiler
 			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
 			this._translatorManagers.Add( this._builtinTranslatorManager );
 		}
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -103,13 +103,15 @@ namespace Axiom.Scripting.Compiler
 			ScriptCompiler.Translator translator = null;
 
 			// Start looking from the back
-			if ( _translatorManagers.Count > 0 )
+			if( _translatorManagers.Count > 0 )
 			{
-				for ( int i = _translatorManagers.Count - 1; i >= 0; i-- )
+				for( int i = _translatorManagers.Count - 1; i >= 0; i-- )
 				{
 					translator = _translatorManagers[ i ].GetTranslator( node );
-					if ( translator != null )
+					if( translator != null )
+					{
 						break;
+					}
 				}
 			}
 
@@ -123,13 +125,7 @@ namespace Axiom.Scripting.Compiler
 		/// <summary>
 		/// A list of patterns loaded by this compiler manager
 		/// </summary>
-		public List<string> ScriptPatterns
-		{
-			get
-			{
-				return _scriptPatterns;
-			}
-		}
+		public List<string> ScriptPatterns { get { return _scriptPatterns; } }
 
 		public void ParseScript( System.IO.Stream stream, string groupName, string fileName )
 		{
@@ -152,20 +148,30 @@ namespace Axiom.Scripting.Compiler
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if( this.OnImportFile != null )
+			{
 				_compiler.OnImportFile += this.OnImportFile;
+			}
 
-			if ( this.OnPreConversion != null )
+			if( this.OnPreConversion != null )
+			{
 				_compiler.OnPreConversion += this.OnPreConversion;
+			}
 
-			if ( this.OnPostConversion != null )
+			if( this.OnPostConversion != null )
+			{
 				_compiler.OnPostConversion += this.OnPostConversion;
+			}
 
-			if ( this.OnCompileError != null )
+			if( this.OnCompileError != null )
+			{
 				_compiler.OnCompileError += this.OnCompileError;
+			}
 
-			if ( this.OnCompilerEvent != null )
+			if( this.OnCompilerEvent != null )
+			{
 				_compiler.OnCompilerEvent += this.OnCompilerEvent;
+			}
 		}
 
 		/// <summary>
@@ -175,20 +181,30 @@ namespace Axiom.Scripting.Compiler
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if( this.OnImportFile != null )
+			{
 				_compiler.OnImportFile -= this.OnImportFile;
+			}
 
-			if ( this.OnPreConversion != null )
+			if( this.OnPreConversion != null )
+			{
 				_compiler.OnPreConversion -= this.OnPreConversion;
+			}
 
-			if ( this.OnPostConversion != null )
+			if( this.OnPostConversion != null )
+			{
 				_compiler.OnPostConversion -= this.OnPostConversion;
+			}
 
-			if ( this.OnCompileError != null )
+			if( this.OnCompileError != null )
+			{
 				_compiler.OnCompileError -= this.OnCompileError;
+			}
 
-			if ( this.OnCompilerEvent != null )
+			if( this.OnCompilerEvent != null )
+			{
 				_compiler.OnCompilerEvent -= this.OnCompilerEvent;
+			}
 		}
 
 		public Real LoadingOrder
@@ -201,7 +217,6 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		#endregion IScriptLoader Implementation
-
 	}
 
 	/// <summary>
@@ -210,20 +225,14 @@ namespace Axiom.Scripting.Compiler
 	/// ScriptCompilerManager tied to specific object types.
 	/// Each manager may manage multiple types.
 	/// </summary>
-	public abstract class ScriptTranslatorManager
+	abstract public class ScriptTranslatorManager
 	{
 		protected List<ScriptCompiler.Translator> _translators = new List<ScriptCompiler.Translator>();
 
 		/// <summary>
 		/// Returns the number of translators being managed
 		/// </summary>
-		public int TranslatorsCount
-		{
-			get
-			{
-				return _translators.Count;
-			}
-		}
+		public int TranslatorsCount { get { return _translators.Count; } }
 
 		/// <summary>
 		/// Returns a manager for the given object abstract node, or null if it is not supported
@@ -232,16 +241,18 @@ namespace Axiom.Scripting.Compiler
 		/// <returns>Returns a manager for the given object abstract node, or null if it is not supported</returns>
 		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
 		{
-			if ( node is ObjectAbstractNode )
+			if( node is ObjectAbstractNode )
 			{
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 				ObjectAbstractNode parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
 				Keywords parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( ScriptCompiler.Translator currentTranslator in _translators )
+				foreach( ScriptCompiler.Translator currentTranslator in _translators )
 				{
-					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
+					if( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
+					{
 						return currentTranslator;
+					}
 				}
 			}
 

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -58,29 +62,29 @@ namespace Axiom.Core
 		protected OverlayElementContainer parentContainer;
 
 		protected bool enabled;
+
 		public bool IsEnabled
 		{
-			get
-			{
-				return enabled;
-			}
+			get { return enabled; }
 			set
 			{
 				this.enabled = value;
-				if ( value )
+				if( value )
+				{
 					this.parentOverlay.Show();
+				}
 				else
+				{
 					this.parentOverlay.Hide();
-
+				}
 			}
 		}
+
 		protected string text;
+
 		public string Text
 		{
-			get
-			{
-				return text;
-			}
+			get { return text; }
 			set
 			{
 				this.text = value;
@@ -118,16 +122,13 @@ namespace Axiom.Core
 			//parentText.setMetricsMode(Ogre.GMM_PIXELS);
 			this.parentText.MetricsMode = MetricsMode.Pixels;
 
-
 			this.parentText.SetPosition( 1.0f, 1.0f );
-
 
 			this.parentText.SetParam( "font_name", "Arial" );
 			this.parentText.SetParam( "char_height", "25" );
 			this.parentText.SetParam( "horz_align", "center" );
 			this.parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
 			//parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
-
 
 			this.parentContainer.AddChild( this.parentText );
 
@@ -138,18 +139,18 @@ namespace Axiom.Core
 
 		public void Update()
 		{
-			if ( !this.enabled )
+			if( !this.enabled )
+			{
 				return;
+			}
 
 			// get the projection of the object's AABB into screen space
-			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true );//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
-
+			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true ); //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
 			Matrix4 mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
 			Vector3[] corners = bbox.Corners;
-
 
 			float min_x = 1.0f;
 			float max_x = 0.0f;
@@ -158,7 +159,7 @@ namespace Axiom.Core
 
 			// expand the screen-space bounding-box so that it completely encloses
 			// the object's AABB
-			for ( int i = 0; i < 8; i++ )
+			for( int i = 0; i < 8; i++ )
 			{
 				Vector3 corner = corners[ i ];
 
@@ -172,17 +173,25 @@ namespace Axiom.Core
 				float x = corner.x / corner.z + 0.5f;
 				float y = corner.y / corner.z + 0.5f;
 
-				if ( x < min_x )
+				if( x < min_x )
+				{
 					min_x = x;
+				}
 
-				if ( x > max_x )
+				if( x > max_x )
+				{
 					max_x = x;
+				}
 
-				if ( y < min_y )
+				if( y < min_y )
+				{
 					min_y = y;
+				}
 
-				if ( y > max_y )
+				if( y > max_y )
+				{
 					max_y = y;
+				}
 			}
 
 			// we now have relative screen-space coords for the object's bounding box; here
@@ -194,6 +203,4 @@ namespace Axiom.Core
 			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
 		}
 	}
-
-
 }

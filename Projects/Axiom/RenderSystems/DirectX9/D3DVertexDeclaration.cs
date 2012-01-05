@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,7 +44,6 @@ using Axiom.Graphics;
 using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
-
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -66,13 +69,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( d3dVertexDecl != null && !d3dVertexDecl.Disposed )
+					if( d3dVertexDecl != null && !d3dVertexDecl.Disposed )
+					{
 						d3dVertexDecl.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -113,7 +118,6 @@ namespace Axiom.RenderSystems.DirectX9
 			needsRebuild = true;
 		}
 
-
 		public override void RemoveElement( VertexElementSemantic semantic, int index )
 		{
 			base.RemoveElement( semantic, index );
@@ -128,7 +132,6 @@ namespace Axiom.RenderSystems.DirectX9
 			needsRebuild = true;
 		}
 
-
 		#endregion Methods
 
 		#region Properties
@@ -141,16 +144,18 @@ namespace Axiom.RenderSystems.DirectX9
 			get
 			{
 				// rebuild declaration if things have changed
-				if ( needsRebuild )
+				if( needsRebuild )
 				{
-					if ( d3dVertexDecl != null )
+					if( d3dVertexDecl != null )
+					{
 						d3dVertexDecl.Dispose();
+					}
 
 					// create elements array
-					D3D.VertexElement[] d3dElements = new D3D.VertexElement[ elements.Count + 1 ];
+					D3D.VertexElement[] d3dElements = new D3D.VertexElement[elements.Count + 1];
 
 					// loop through and configure each element for D3D
-					for ( int i = 0; i < elements.Count; i++ )
+					for( int i = 0; i < elements.Count; i++ )
 					{
 						Axiom.Graphics.VertexElement element =
 							(Axiom.Graphics.VertexElement)elements[ i ];
@@ -162,7 +167,7 @@ namespace Axiom.RenderSystems.DirectX9
 						d3dElements[ i ].Usage = D3DHelper.ConvertEnum( element.Semantic );
 
 						// set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
-						switch ( element.Semantic )
+						switch( element.Semantic )
 						{
 							case VertexElementSemantic.Diffuse:
 								d3dElements[ i ].UsageIndex = 0;
@@ -176,7 +181,6 @@ namespace Axiom.RenderSystems.DirectX9
 								d3dElements[ i ].UsageIndex = (byte)element.Index;
 								break;
 						} //  switch
-
 					} // for
 
 					// configure the last element to be the end
@@ -194,6 +198,5 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion Properties
-
 	}
 }

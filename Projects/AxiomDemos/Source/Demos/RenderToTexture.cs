@@ -15,17 +15,18 @@ namespace Axiom.Demos
 	/// </summary>
 	public class RenderToTexture : TechDemo
 	{
-
-		Camera reflectCam;
-		SceneNode planeNode;
-		MovablePlane plane;
-		Entity planeEntity;
+		private Camera reflectCam;
+		private SceneNode planeNode;
+		private MovablePlane plane;
+		private Entity planeEntity;
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			// make sure reflection camera is updated too
 			reflectCam.Orientation = camera.Orientation;
@@ -104,7 +105,7 @@ namespace Axiom.Demos
 
 			// blend with base texture
 			t.SetColorOperationEx( LayerBlendOperationEx.BlendManual, LayerBlendSource.Texture, LayerBlendSource.Current,
-				ColorEx.White, ColorEx.White, 0.25f );
+			                       ColorEx.White, ColorEx.White, 0.25f );
 
 			t.SetProjectiveTexturing( true, reflectCam );
 
@@ -122,7 +123,7 @@ namespace Axiom.Demos
 
 			Entity clone = null;
 
-			for ( int i = 0; i < 10; i++ )
+			for( int i = 0; i < 10; i++ )
 			{
 				// create a new node under the root
 				SceneNode node = scene.CreateSceneNode();

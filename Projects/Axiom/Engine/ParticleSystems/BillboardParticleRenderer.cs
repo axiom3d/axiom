@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,9 +56,8 @@ namespace Axiom.ParticleSystems
 {
 	public class BillboardParticleRenderer : ParticleSystemRenderer
 	{
-
-		static string rendererTypeName = "billboard";
-		const string PARTICLE = "Particle";
+		private static string rendererTypeName = "billboard";
+		private const string PARTICLE = "Particle";
 
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
@@ -62,10 +65,10 @@ namespace Axiom.ParticleSystems
 		private Dictionary<string, MethodInfo> attribParsers =
 			new Dictionary<string, MethodInfo>();
 
-		BillboardSet billboardSet;
+		private BillboardSet billboardSet;
 
 		public BillboardParticleRenderer()
-            : base()
+			: base()
 		{
 			billboardSet = new BillboardSet( "", 0, true );
 			billboardSet.SetBillboardsInWorldSpace( true );
@@ -74,60 +77,63 @@ namespace Axiom.ParticleSystems
 			RegisterParsers();
 		}
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                    if ( this.billboardSet != null )
-                    {
-                        if ( !this.billboardSet.IsDisposed )
-                            this.billboardSet.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					if( this.billboardSet != null )
+					{
+						if( !this.billboardSet.IsDisposed )
+						{
+							this.billboardSet.Dispose();
+						}
 
-                        this.billboardSet = null;
-                    }
+						this.billboardSet = null;
+					}
 
-                    this.attribParsers.Clear();
-                }
+					this.attribParsers.Clear();
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		#region Attribute Parsers
+
 		[ParserCommand( "billboard_type", PARTICLE )]
 		public static void ParseBillboardType( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "billboard_type", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -138,16 +144,20 @@ namespace Axiom.ParticleSystems
 
 			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
-			if ( val != null )
+			if( val != null )
+			{
 				renderer.BillboardType = (BillboardType)val;
+			}
 			else
+			{
 				ParseHelper.LogParserError( "billboard_type", _renderer.Type, "Invalid enum value" );
+			}
 		}
 
 		[ParserCommand( "billboard_origin", PARTICLE )]
 		public static void ParseBillboardOrigin( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "billboard_origin", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -158,16 +168,20 @@ namespace Axiom.ParticleSystems
 
 			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
-			if ( val != null )
+			if( val != null )
+			{
 				renderer.BillboardOrigin = (BillboardOrigin)val;
+			}
 			else
+			{
 				ParseHelper.LogParserError( "billboard_origin", _renderer.Type, "Invalid enum value" );
+			}
 		}
 
 		[ParserCommand( "billboard_rotation_type", PARTICLE )]
 		public static void ParseBillboardRotationType( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "billboard_rotation_type", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -178,16 +192,20 @@ namespace Axiom.ParticleSystems
 
 			BillboardParticleRenderer renderer = (BillboardParticleRenderer)_renderer;
 			// if a value was found, assign it
-			if ( val != null )
+			if( val != null )
+			{
 				renderer.BillboardRotationType = (BillboardRotationType)val;
+			}
 			else
+			{
 				ParseHelper.LogParserError( "billboard_rotation_type", _renderer.Type, "Invalid enum value" );
+			}
 		}
 
 		[ParserCommand( "common_direction", PARTICLE )]
 		public static void ParseCommonDirection( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 3 )
+			if( values.Length != 3 )
 			{
 				ParseHelper.LogParserError( "common_direction", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -199,7 +217,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "common_up_vector", PARTICLE )]
 		public static void ParseCommonUpDirection( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 3 )
+			if( values.Length != 3 )
 			{
 				ParseHelper.LogParserError( "common_up_vector", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -211,7 +229,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "point_rendering", PARTICLE )]
 		public static void ParsePointRendering( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "point_rendering", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -224,7 +242,7 @@ namespace Axiom.ParticleSystems
 		[ParserCommand( "accurate_facing", PARTICLE )]
 		public static void ParseAccurateFacing( string[] values, ParticleSystemRenderer _renderer )
 		{
-			if ( values.Length != 1 )
+			if( values.Length != 1 )
 			{
 				ParseHelper.LogParserError( "accurate_facing", _renderer.Type, "Wrong number of parameters." );
 				return;
@@ -245,7 +263,7 @@ namespace Axiom.ParticleSystems
 			MethodInfo[] methods = this.GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
-			for ( int i = 0; i < methods.Length; i++ )
+			for( int i = 0; i < methods.Length; i++ )
 			{
 				// get the current method in the loop
 				MethodInfo method = methods[ i ];
@@ -255,18 +273,17 @@ namespace Axiom.ParticleSystems
 					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
-				for ( int j = 0; j < parserAtts.Length; j++ )
+				for( int j = 0; j < parserAtts.Length; j++ )
 				{
 					ParserCommandAttribute parserAtt = parserAtts[ j ];
 
-					switch ( parserAtt.ParserType )
+					switch( parserAtt.ParserType )
 					{
-						// this method should parse a material attribute
+							// this method should parse a material attribute
 						case PARTICLE:
 							// attribParsers.Add(parserAtt.Name, Delegate.CreateDelegate(typeof(ParticleSystemRendererAttributeParser), method));
 							attribParsers[ parserAtt.Name ] = method;
 							break;
-
 					} // switch
 				} // for
 			} // for
@@ -280,6 +297,7 @@ namespace Axiom.ParticleSystems
 			otherBpr.CommonUpVector = this.CommonUpVector;
 			otherBpr.CommonDirection = this.CommonDirection;
 		}
+
 		#endregion
 
 		/// <summary>
@@ -289,9 +307,9 @@ namespace Axiom.ParticleSystems
 		/// <param name="system"></param>
 		public override bool SetParameter( string attr, string val )
 		{
-			if ( attribParsers.ContainsKey( attr ) )
+			if( attribParsers.ContainsKey( attr ) )
 			{
-				object[] args = new object[ 2 ];
+				object[] args = new object[2];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ attr ].Invoke( null, args );
@@ -306,19 +324,19 @@ namespace Axiom.ParticleSystems
 		}
 
 		public override void UpdateRenderQueue( RenderQueue queue,
-											   List<Particle> currentParticles,
-											   bool cullIndividually )
+		                                        List<Particle> currentParticles,
+		                                        bool cullIndividually )
 		{
 			billboardSet.CullIndividual = cullIndividually;
 
 			// Update billboard set geometry
 			billboardSet.BeginBillboards();
 			Billboard bb = new Billboard();
-			foreach ( Particle p in currentParticles )
+			foreach( Particle p in currentParticles )
 			{
 				bb.Position = p.Position;
-				if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||
-					billboardSet.BillboardType == BillboardType.PerpendicularSelf )
+				if( billboardSet.BillboardType == BillboardType.OrientedSelf ||
+				    billboardSet.BillboardType == BillboardType.PerpendicularSelf )
 				{
 					// Normalise direction vector
 					bb.Direction = p.Direction;
@@ -327,7 +345,7 @@ namespace Axiom.ParticleSystems
 				bb.Color = p.Color;
 				bb.rotationInRadians = p.rotationInRadians;
 				bb.HasOwnDimensions = p.HasOwnDimensions;
-				if ( bb.HasOwnDimensions )
+				if( bb.HasOwnDimensions )
 				{
 					bb.width = p.Width;
 					bb.height = p.Height;
@@ -342,39 +360,38 @@ namespace Axiom.ParticleSystems
 		}
 
 		//-----------------------------------------------------------------------
-		public override Material Material
-		{
-			set
-			{
-				billboardSet.MaterialName = value.Name;
-			}
-		}
+		public override Material Material { set { billboardSet.MaterialName = value.Name; } }
 
 		//-----------------------------------------------------------------------
 		public override void NotifyCurrentCamera( Camera cam )
 		{
 			billboardSet.NotifyCurrentCamera( cam );
 		}
+
 		//-----------------------------------------------------------------------
 		public override void NotifyParticleRotated()
 		{
 			billboardSet.NotifyBillboardRotated();
 		}
+
 		//-----------------------------------------------------------------------
 		public override void NotifyDefaultDimensions( float width, float height )
 		{
 			billboardSet.SetDefaultDimensions( width, height );
 		}
+
 		//-----------------------------------------------------------------------
 		public override void NotifyParticleResized()
 		{
 			billboardSet.NotifyBillboardResized();
 		}
+
 		//-----------------------------------------------------------------------
 		public override void NotifyParticleQuota( int quota )
 		{
 			billboardSet.PoolSize = quota;
 		}
+
 		//-----------------------------------------------------------------------
 		public override void NotifyAttached( Node parent, bool isTagPoint )
 		{
@@ -382,13 +399,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		//-----------------------------------------------------------------------
-		public override RenderQueueGroupID RenderQueueGroup
-		{
-			set
-			{
-				billboardSet.RenderQueueGroup = value;
-			}
-		}
+		public override RenderQueueGroupID RenderQueueGroup { set { billboardSet.RenderQueueGroup = value; } }
 		//-----------------------------------------------------------------------
 		public override void SetKeepParticlesInLocalSpace( bool keepLocal )
 		{
@@ -396,80 +407,18 @@ namespace Axiom.ParticleSystems
 		}
 
 		//-----------------------------------------------------------------------
-		public BillboardType BillboardType
-		{
-			get
-			{
-				return billboardSet.BillboardType;
-			}
-			set
-			{
-				billboardSet.BillboardType = value;
-			}
-		}
+		public BillboardType BillboardType { get { return billboardSet.BillboardType; } set { billboardSet.BillboardType = value; } }
 
-		public BillboardOrigin BillboardOrigin
-		{
-			get
-			{
-				return billboardSet.BillboardOrigin;
-			}
-			set
-			{
-				billboardSet.BillboardOrigin = value;
-			}
-		}
+		public BillboardOrigin BillboardOrigin { get { return billboardSet.BillboardOrigin; } set { billboardSet.BillboardOrigin = value; } }
 
 		//-----------------------------------------------------------------------
-		public bool UseAccurateFacing
-		{
-			get
-			{
-				return billboardSet.UseAccurateFacing;
-			}
-			set
-			{
-				billboardSet.UseAccurateFacing = value;
-			}
-		}
+		public bool UseAccurateFacing { get { return billboardSet.UseAccurateFacing; } set { billboardSet.UseAccurateFacing = value; } }
 
-		public BillboardRotationType BillboardRotationType
-		{
-			get
-			{
-				return billboardSet.BillboardRotationType;
-			}
-			set
-			{
-				billboardSet.BillboardRotationType = value;
-			}
-		}
+		public BillboardRotationType BillboardRotationType { get { return billboardSet.BillboardRotationType; } set { billboardSet.BillboardRotationType = value; } }
 
-		public Vector3 CommonDirection
-		{
-			get
-			{
-				return billboardSet.CommonDirection;
-			}
-			set
-			{
-				billboardSet.CommonDirection = value;
-			}
-		}
+		public Vector3 CommonDirection { get { return billboardSet.CommonDirection; } set { billboardSet.CommonDirection = value; } }
 
-		public Vector3 CommonUpVector
-		{
-			get
-			{
-				return billboardSet.CommonUpVector;
-			}
-			set
-			{
-				billboardSet.CommonUpVector = value;
-			}
-		}
-
-
+		public Vector3 CommonUpVector { get { return billboardSet.CommonUpVector; } set { billboardSet.CommonUpVector = value; } }
 
 		//-----------------------------------------------------------------------
 		//SortMode BillboardParticleRenderer::_getSortMode(void) const
@@ -477,41 +426,20 @@ namespace Axiom.ParticleSystems
 		//    return mBillboardSet->_getSortMode();
 		//}
 		//-----------------------------------------------------------------------
-		public bool PointRenderingEnabled
-		{
-			get
-			{
-				return billboardSet.PointRenderingEnabled;
-			}
-			set
-			{
-				billboardSet.PointRenderingEnabled = value;
-			}
-		}
+		public bool PointRenderingEnabled { get { return billboardSet.PointRenderingEnabled; } set { billboardSet.PointRenderingEnabled = value; } }
 
-		public override string Type
-		{
-			get
-			{
-				return rendererTypeName;
-			}
-		}
+		public override string Type { get { return rendererTypeName; } }
 	}
 
 	/** Factory class for BillboardParticleRenderer */
+
 	public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
 	{
 		private const string rendererTypeName = "billboard";
 
 		#region IParticleSystemRendererFactory Members
 
-		public override string Type
-		{
-			get
-			{
-				return rendererTypeName;
-			}
-		}
+		public override string Type { get { return rendererTypeName; } }
 
 		/// @copydoc FactoryObj::createInstance
 		public override ParticleSystemRenderer CreateInstance( string name )
@@ -520,9 +448,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// @copydoc FactoryObj::destroyInstance
-		public override void DestroyInstance( ref ParticleSystemRenderer inst )
-		{
-		}
+		public override void DestroyInstance( ref ParticleSystemRenderer inst ) {}
 
 		#endregion IParticleSystemRendererFactory Members
 	};

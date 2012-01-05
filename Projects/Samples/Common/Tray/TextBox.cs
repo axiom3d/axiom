@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -36,54 +38,67 @@ namespace Axiom.Samples
 	public class TextBox : Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel captionBar;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea captionTextArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel scrollTrack;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Panel scrollHandle;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected String text;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected List<String> lines;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real padding;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isDragging;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real scrollPercentage;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real dragOffset;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int startingLine;
+
 		#endregion fields
 
 		#region construction
@@ -132,36 +147,20 @@ namespace Axiom.Samples
 				padding = value;
 				RefitContents();
 			}
-			get
-			{
-				return padding;
-			}
+			get { return padding; }
 		}
 
 		/// <summary>
 		/// Gets or sets the current caption.
 		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return captionTextArea.Text;
-			}
-			set
-			{
-				captionTextArea.Text = value;
-			}
-		}
+		public string Caption { get { return captionTextArea.Text; } set { captionTextArea.Text = value; } }
 
 		/// <summary>
 		/// Gets or sets the current text.
 		/// </summary>
 		public String Text
 		{
-			get
-			{
-				return this.text;
-			}
+			get { return this.text; }
 			set
 			{
 				this.text = value;
@@ -176,19 +175,23 @@ namespace Axiom.Samples
 				Real lineWidth = 0;
 				Real rightBoundary = element.Width - 2 * this.padding + this.scrollTrack.Left + 10;
 				bool insert = true;
-				for ( int i = 0; i < current.Length; i++ )
+				for( int i = 0; i < current.Length; i++ )
 				{
-					if ( current[ i ] == ' ' )
+					if( current[ i ] == ' ' )
 					{
-						if ( this.textArea.SpaceWidth != 0 )
+						if( this.textArea.SpaceWidth != 0 )
+						{
 							lineWidth += this.textArea.SpaceWidth;
+						}
 						else
+						{
 							lineWidth += font.GetGlyphAspectRatio( ' ' ) * this.textArea.CharHeight;
+						}
 						firstWord = false;
 						lastSpace = i;
 						insert = true;
 					}
-					else if ( current[ i ] == '\n' )
+					else if( current[ i ] == '\n' )
 					{
 						firstWord = true;
 						lineWidth = 0;
@@ -200,9 +203,9 @@ namespace Axiom.Samples
 					{
 						// use glyph information to calculate line width
 						lineWidth += font.GetGlyphAspectRatio( current[ i ] ) * this.textArea.CharHeight;
-						if ( lineWidth > rightBoundary && insert )
+						if( lineWidth > rightBoundary && insert )
 						{
-							if ( firstWord )
+							if( firstWord )
 							{
 								current.Insert( i, "\n" );
 								i = i - 1;
@@ -216,13 +219,14 @@ namespace Axiom.Samples
 								current = string.Empty;
 
 								ll[ lastSpace ] = '\n';
-								for ( int letter = 0; letter < ll.Length; letter++ )
+								for( int letter = 0; letter < ll.Length; letter++ )
+								{
 									current += ll[ letter ];
+								}
 								i = lastSpace - 1;
 								insert = false;
 							}
 						}
-
 					}
 				}
 
@@ -230,7 +234,7 @@ namespace Axiom.Samples
 
 				int maxLines = this.HeightInLines;
 
-				if ( this.lines.Count > maxLines )     // if too much text, filter based on scroll percentage
+				if( this.lines.Count > maxLines ) // if too much text, filter based on scroll percentage
 				{
 					this.scrollHandle.Show();
 					this.FilterLines();
@@ -250,10 +254,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public HorizontalAlignment TextAlignment
 		{
-			get
-			{
-				return textArea.HorizontalAlignment;
-			}
+			get { return textArea.HorizontalAlignment; }
 			set
 			{
 				textArea.HorizontalAlignment = value;
@@ -272,22 +273,13 @@ namespace Axiom.Samples
 				this.scrollHandle.Top = (int)( value * ( this.scrollTrack.Height - this.scrollHandle.Height ) );
 				this.FilterLines();
 			}
-			get
-			{
-				return scrollPercentage;
-			}
+			get { return scrollPercentage; }
 		}
 
 		/// <summary>
 		/// Gets how many lines of text can fit in this window.
 		/// </summary>
-		public int HeightInLines
-		{
-			get
-			{
-				return (int)( ( element.Height - 2 * this.padding - this.captionBar.Height + 5 ) / this.textArea.CharHeight );
-			}
-		}
+		public int HeightInLines { get { return (int)( ( element.Height - 2 * this.padding - this.captionBar.Height + 5 ) / this.textArea.CharHeight ); } }
 
 		#endregion properties
 
@@ -319,12 +311,18 @@ namespace Axiom.Samples
 			this.scrollTrack.Top = this.captionBar.Height + 10;
 
 			this.textArea.Top = this.captionBar.Height + this.padding - 5;
-			if ( this.textArea.HorizontalAlignment == HorizontalAlignment.Right )
+			if( this.textArea.HorizontalAlignment == HorizontalAlignment.Right )
+			{
 				this.textArea.Left = -this.padding + this.scrollTrack.Left;
-			else if ( this.textArea.HorizontalAlignment == HorizontalAlignment.Left )
+			}
+			else if( this.textArea.HorizontalAlignment == HorizontalAlignment.Left )
+			{
 				this.textArea.Left = this.padding;
+			}
 			else
+			{
 				this.textArea.Left = this.scrollTrack.Left / 2;
+			}
 
 			Text = this.Text;
 		}
@@ -335,17 +333,19 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( !this.scrollHandle.IsVisible )
-				return;   // don't care about clicks if text not scrollable
+			if( !this.scrollHandle.IsVisible )
+			{
+				return; // don't care about clicks if text not scrollable
+			}
 
 			Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 
-			if ( co.LengthSquared <= 81 )
+			if( co.LengthSquared <= 81 )
 			{
 				this.isDragging = true;
 				this.dragOffset = co.y;
 			}
-			else if ( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
+			else if( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
 			{
 				Real newTop = this.scrollHandle.Top + co.y;
 				Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
@@ -376,7 +376,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( this.isDragging )
+			if( this.isDragging )
 			{
 				Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 				Real newTop = this.scrollHandle.Top + co.y - this.dragOffset;
@@ -396,7 +396,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			this.isDragging = false;  // stop dragging if cursor was lost
+			this.isDragging = false; // stop dragging if cursor was lost
 			base.OnLostFocus();
 		}
 
@@ -411,12 +411,12 @@ namespace Axiom.Samples
 
 			this.startingLine = newStart;
 
-			for ( int i = 0; i < maxLines; i++ )
+			for( int i = 0; i < maxLines; i++ )
 			{
 				shown += this.lines[ this.startingLine + i ] + "\n";
 			}
 
-			this.textArea.Text = shown;    // show just the filtered lines
+			this.textArea.Text = shown; // show just the filtered lines
 		}
 
 		#endregion methods

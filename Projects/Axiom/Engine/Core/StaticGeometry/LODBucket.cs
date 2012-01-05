@@ -67,37 +67,13 @@ namespace Axiom.Core
 			protected Dictionary<string, MaterialBucket> materialBucketMap;
 			protected List<QueuedGeometry> queuedGeometryList;
 
-			public Region Parent
-			{
-				get
-				{
-					return parent;
-				}
-			}
+			public Region Parent { get { return parent; } }
 
-			public ushort Lod
-			{
-				get
-				{
-					return lod;
-				}
-			}
+			public ushort Lod { get { return lod; } }
 
-			public float SquaredDistance
-			{
-				get
-				{
-					return squaredDistance;
-				}
-			}
+			public float SquaredDistance { get { return squaredDistance; } }
 
-			public Dictionary<string, MaterialBucket> MaterialBucketMap
-			{
-				get
-				{
-					return materialBucketMap;
-				}
-			}
+			public Dictionary<string, MaterialBucket> MaterialBucketMap { get { return materialBucketMap; } }
 
 			#endregion
 
@@ -123,7 +99,7 @@ namespace Axiom.Core
 				q.position = qsm.position;
 				q.orientation = qsm.orientation;
 				q.scale = qsm.scale;
-				if ( qsm.geometryLodList.Count > atlod )
+				if( qsm.geometryLodList.Count > atlod )
 				{
 					// This submesh has enough lods, use the right one
 					q.geometry = (SubMeshLodGeometryLink)qsm.geometryLodList[ atlod ];
@@ -135,7 +111,7 @@ namespace Axiom.Core
 				}
 				// Locate a material bucket
 				MaterialBucket mbucket;
-				if ( materialBucketMap.ContainsKey( qsm.materialName ) )
+				if( materialBucketMap.ContainsKey( qsm.materialName ) )
 				{
 					mbucket = materialBucketMap[ qsm.materialName ];
 				}
@@ -150,15 +126,19 @@ namespace Axiom.Core
 			public void Build( bool stencilShadows, int logLevel )
 			{
 				// Just pass this on to child buckets
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach( MaterialBucket mbucket in materialBucketMap.Values )
+				{
 					mbucket.Build( stencilShadows, logLevel );
+				}
 			}
 
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
 			{
 				// Just pass this on to child buckets
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach( MaterialBucket mbucket in materialBucketMap.Values )
+				{
 					mbucket.AddRenderables( queue, group, camSquaredDistance );
+				}
 			}
 
 			public void Dump()
@@ -167,18 +147,22 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "------------------" );
 				LogManager.Instance.Write( "Distance: {0}", Utility.Sqrt( squaredDistance ) );
 				LogManager.Instance.Write( "Number of Materials: {0}", materialBucketMap.Count );
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach( MaterialBucket mbucket in materialBucketMap.Values )
+				{
 					mbucket.Dump();
+				}
 				LogManager.Instance.Write( "------------------" );
 			}
 
 			/// <summary>
 			///     Dispose the material buckets
 			/// </summary>
-			public virtual void Dispose()
+			virtual public void Dispose()
 			{
-				foreach ( MaterialBucket mbucket in materialBucketMap.Values )
+				foreach( MaterialBucket mbucket in materialBucketMap.Values )
+				{
 					mbucket.Dispose();
+				}
 			}
 
 			#endregion

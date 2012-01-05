@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,9 +59,7 @@ namespace Axiom.Scripting.Compiler.Parser
 			PossibleComment
 		}
 
-		public ScriptLexer()
-		{
-		}
+		public ScriptLexer() {}
 
 		/// <summary>
 		/// Tokenizes the given input and returns the list of tokens found
@@ -77,107 +79,128 @@ namespace Axiom.Scripting.Compiler.Parser
 
 			List<ScriptToken> tokens = new List<ScriptToken>();
 
-			for ( int index = 0; index < str.Length; index++ )
+			for( int index = 0; index < str.Length; index++ )
 			{
 				lastChar = c;
 				c = str[ index ];
 
-				if ( c == quote )
-					lastQuote = line;
-
-				switch ( state )
+				if( c == quote )
 				{
-					#region Ready
+					lastQuote = line;
+				}
+
+				switch( state )
+				{
+						#region Ready
+
 					case ScriptState.Ready:
-						if ( c == slash && lastChar == slash )
+						if( c == slash && lastChar == slash )
 						{
 							// Comment start, clear out the lexeme
 							lexeme = new StringBuilder();
 							state = ScriptState.Comment;
 						}
-						else if ( c == star && lastChar == slash )
+						else if( c == star && lastChar == slash )
 						{
 							// Comment start, clear out the lexeme
 							lexeme = new StringBuilder();
 							state = ScriptState.MultiComment;
 						}
-						else if ( c == quote )
+						else if( c == quote )
 						{
 							// Clear out the lexeme ready to be filled with quotes!
 							lexeme = new StringBuilder( c.ToString() );
 							state = ScriptState.Quote;
 						}
-						else if ( c == varOpener )
+						else if( c == varOpener )
 						{
 							// Set up to read in a variable
 							lexeme = new StringBuilder( c.ToString() );
 							state = ScriptState.Var;
 						}
-						else if ( IsNewline( c ) )
+						else if( IsNewline( c ) )
 						{
 							lexeme = new StringBuilder( c.ToString() );
 							SetToken( lexeme, line, source, tokens );
 						}
-						else if ( !IsWhitespace( c ) )
+						else if( !IsWhitespace( c ) )
 						{
 							lexeme = new StringBuilder( c.ToString() );
-							if ( c == slash )
+							if( c == slash )
+							{
 								state = ScriptState.PossibleComment;
+							}
 							else
+							{
 								state = ScriptState.Word;
+							}
 						}
 						break;
-					#endregion Ready
 
-					#region Comment
+						#endregion Ready
+
+						#region Comment
+
 					case ScriptState.Comment:
 						// This newline happens to be ignored automatically
-						if ( IsNewline( c ) )
+						if( IsNewline( c ) )
+						{
 							state = ScriptState.Ready;
+						}
 						break;
-					#endregion Comment
 
-					#region MultiComment
+						#endregion Comment
+
+						#region MultiComment
+
 					case ScriptState.MultiComment:
-						if ( c == slash && lastChar == star )
+						if( c == slash && lastChar == star )
+						{
 							state = ScriptState.Ready;
+						}
 						break;
-					#endregion MultiComment
 
-					#region PossibleComment
+						#endregion MultiComment
+
+						#region PossibleComment
+
 					case ScriptState.PossibleComment:
-						if ( c == slash && lastChar == slash )
+						if( c == slash && lastChar == slash )
 						{
 							lexeme = new StringBuilder();
 							state = ScriptState.Comment;
 							break;
 						}
-						else if ( c == star && lastChar == slash )
+						else if( c == star && lastChar == slash )
 						{
 							lexeme = new StringBuilder();
 							state = ScriptState.MultiComment;
 							break;
 						}
 						else
+						{
 							state = ScriptState.Word;
+						}
 						break;
-					#endregion PossibleComment
 
-					#region Word
+						#endregion PossibleComment
+
+						#region Word
+
 					case ScriptState.Word:
-						if ( IsNewline( c ) )
+						if( IsNewline( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
 							lexeme = new StringBuilder( c.ToString() );
 							SetToken( lexeme, line, source, tokens );
 							state = ScriptState.Ready;
 						}
-						else if ( IsWhitespace( c ) )
+						else if( IsWhitespace( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
 							state = ScriptState.Ready;
 						}
-						else if ( c == openbrace || c == closebrace || c == colon )
+						else if( c == openbrace || c == closebrace || c == colon )
 						{
 							SetToken( lexeme, line, source, tokens );
 							lexeme = new StringBuilder( c.ToString() );
@@ -189,18 +212,20 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
-					#endregion Word
 
-					#region Quote
+						#endregion Word
+
+						#region Quote
+
 					case ScriptState.Quote:
-						if ( c != backslash )
+						if( c != backslash )
 						{
 							// Allow embedded quotes with escaping
-							if ( c == quote && lastChar == backslash )
+							if( c == quote && lastChar == backslash )
 							{
 								lexeme.Append( c );
 							}
-							else if ( c == quote )
+							else if( c == quote )
 							{
 								lexeme.Append( c );
 								SetToken( lexeme, line, source, tokens );
@@ -209,33 +234,37 @@ namespace Axiom.Scripting.Compiler.Parser
 							else
 							{
 								// Backtrack here and allow a backslash normally within the quote
-								if ( lastChar == backslash )
+								if( lastChar == backslash )
 								{
 									lexeme.Append( "\\" );
 									lexeme.Append( c );
 								}
 								else
+								{
 									lexeme.Append( c );
+								}
 							}
 						}
 						break;
-					#endregion Quote
 
-					#region Var
+						#endregion Quote
+
+						#region Var
+
 					case ScriptState.Var:
-						if ( IsNewline( c ) )
+						if( IsNewline( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
 							lexeme = new StringBuilder( c.ToString() );
 							SetToken( lexeme, line, source, tokens );
 							state = ScriptState.Ready;
 						}
-						else if ( IsWhitespace( c ) )
+						else if( IsWhitespace( c ) )
 						{
 							SetToken( lexeme, line, source, tokens );
 							state = ScriptState.Ready;
 						}
-						else if ( c == openbrace || c == closebrace || c == colon )
+						else if( c == openbrace || c == closebrace || c == colon )
 						{
 							SetToken( lexeme, line, source, tokens );
 							lexeme = new StringBuilder( c.ToString() );
@@ -247,23 +276,28 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
-					#endregion Var
+
+						#endregion Var
 				}
 
 				// Separate check for newlines just to track line numbers
-				if ( IsNewline( c ) )
+				if( IsNewline( c ) )
+				{
 					line++;
+				}
 			}
 
 			// Check for valid exit states
-			if ( state == ScriptState.Word || state == ScriptState.Var )
+			if( state == ScriptState.Word || state == ScriptState.Var )
 			{
-				if ( lexeme.Length != 0 )
+				if( lexeme.Length != 0 )
+				{
 					SetToken( lexeme, line, source, tokens );
+				}
 			}
 			else
 			{
-				if ( state == ScriptState.Quote )
+				if( state == ScriptState.Quote )
 				{
 					throw new Exception( String.Format( "no matching \" found for \" at line {0}", lastQuote ) );
 				}
@@ -285,24 +319,34 @@ namespace Axiom.Scripting.Compiler.Parser
 			bool ignore = false;
 
 			// Check the user token map first
-			if ( lexeme.Length == 1 && lexeme[ 0 ] == newline )
+			if( lexeme.Length == 1 && lexeme[ 0 ] == newline )
 			{
 				token.type = Tokens.Newline;
-				if ( tokens.Count != 0 && tokens[ tokens.Count - 1 ].type == Tokens.Newline )
+				if( tokens.Count != 0 && tokens[ tokens.Count - 1 ].type == Tokens.Newline )
+				{
 					ignore = true;
+				}
 			}
-			else if ( lexeme.Length == 1 && lexeme[ 0 ] == openBrace )
+			else if( lexeme.Length == 1 && lexeme[ 0 ] == openBrace )
+			{
 				token.type = Tokens.LeftBrace;
-			else if ( lexeme.Length == 1 && lexeme[ 0 ] == closeBrace )
+			}
+			else if( lexeme.Length == 1 && lexeme[ 0 ] == closeBrace )
+			{
 				token.type = Tokens.RightBrace;
-			else if ( lexeme.Length == 1 && lexeme[ 0 ] == colon )
+			}
+			else if( lexeme.Length == 1 && lexeme[ 0 ] == colon )
+			{
 				token.type = Tokens.Colon;
-			else if ( lexeme[ 0 ] == var )
+			}
+			else if( lexeme[ 0 ] == var )
+			{
 				token.type = Tokens.Variable;
+			}
 			else
 			{
 				// This is either a non-zero length phrase or quoted phrase
-				if ( lexeme.Length >= 2 && lexeme[ 0 ] == quote && lexeme[ lexeme.Length - 1 ] == quote )
+				if( lexeme.Length >= 2 && lexeme[ 0 ] == quote && lexeme[ lexeme.Length - 1 ] == quote )
 				{
 					token.type = Tokens.Quote;
 				}
@@ -312,8 +356,10 @@ namespace Axiom.Scripting.Compiler.Parser
 				}
 			}
 
-			if ( !ignore )
+			if( !ignore )
+			{
 				tokens.Add( token );
+			}
 		}
 
 		private bool IsWhitespace( char c )

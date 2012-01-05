@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -100,13 +104,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public Vector3 this[ Real t ]
-		{
-			get
-			{
-				return origin + ( direction * t );
-			}
-		}
+		public Vector3 this[ Real t ] { get { return origin + ( direction * t ); } }
 
 		#endregion Methods
 
@@ -193,12 +191,11 @@ namespace Axiom.Math
 		{
 			return obj is Ray && this == (Ray)obj;
 		}
+
 		public override int GetHashCode()
 		{
 			return direction.GetHashCode() ^ origin.GetHashCode();
 		}
-
-
 
 		#endregion Operator Overloads
 
@@ -207,17 +204,7 @@ namespace Axiom.Math
 		/// <summary>
 		///    Gets/Sets the origin of the ray.
 		/// </summary>
-		public Vector3 Origin
-		{
-			get
-			{
-				return origin;
-			}
-			set
-			{
-				origin = value;
-			}
-		}
+		public Vector3 Origin { get { return origin; } set { origin = value; } }
 
 		/// <summary>
 		///    Gets/Sets the direction this ray is pointing.
@@ -225,17 +212,7 @@ namespace Axiom.Math
 		/// <remarks>
 		///    A ray has no length, so the direction goes to infinity.
 		/// </remarks>
-		public Vector3 Direction
-		{
-			get
-			{
-				return direction;
-			}
-			set
-			{
-				direction = value;
-			}
-		}
+		public Vector3 Direction { get { return direction; } set { direction = value; } }
 
 		#endregion
 	}

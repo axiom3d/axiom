@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,19 +51,18 @@ namespace Axiom.Controllers
 	public enum WaveformType
 	{
 		/// <summary>Standard sine wave which smoothly changes from low to high and back again.</summary>
-		[ScriptEnum( "sine" )]
-		Sine,
+		[ScriptEnum( "sine" )] Sine,
+
 		/// <summary>An angular wave with a constant increase / decrease speed with pointed peaks.</summary>
-		[ScriptEnum( "triangle" )]
-		Triangle,
+		[ScriptEnum( "triangle" )] Triangle,
+
 		/// <summary>Half of the time is spent at the min, half at the max with instant transition between. </summary>
-		[ScriptEnum( "square" )]
-		Square,
+		[ScriptEnum( "square" )] Square,
+
 		/// <summary>Gradual steady increase from min to max over the period with an instant return to min at the end. </summary>
-		[ScriptEnum( "sawtooth" )]
-		Sawtooth,
+		[ScriptEnum( "sawtooth" )] Sawtooth,
+
 		/// <summary>Gradual steady decrease from max to min over the period, with an instant return to max at the end. </summary>
-		[ScriptEnum( "inverse_sawtooth" )]
-		InverseSawtooth
+		[ScriptEnum( "inverse_sawtooth" )] InverseSawtooth
 	};
 }

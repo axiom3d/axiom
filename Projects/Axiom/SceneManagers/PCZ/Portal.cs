@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 // <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 // <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,136 +48,109 @@ using System.Collections;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
+	/// <summary>
+	/// Portal data structure for connecting zones. 
+	/// </summary>
+	public class Portal : PortalBase
+	{
+		/// <summary>
+		/// name generator
+		/// </summary>
+		private static NameGenerator<Portal> _nameGenerator = new NameGenerator<Portal>( "Portal" );
 
-    /// <summary>
-    /// Portal data structure for connecting zones. 
-    /// </summary>
-    public class Portal : PortalBase
-    {
+		private string _typeName = "Portal";
+		public override string TypeName { get { return _typeName; } }
 
-        /// <summary>
-        /// name generator
-        /// </summary>
-        private static NameGenerator<Portal> _nameGenerator = new NameGenerator<Portal>("Portal");
+		/// <summary>
+		/// Portal Constructor, auto name
+		/// </summary>
+		public Portal()
+			: this( _nameGenerator.GetNextUniqueName(), PortalType.Quad ) {}
 
-        private string _typeName = "Portal";
-        public override string TypeName
-        {
-            get { return _typeName; }
-        }
+		/// <summary>
+		/// Portal Constructor, supply name
+		/// </summary>
+		/// <param name="name"></param>
+		public Portal( string name )
+			: this( name, PortalType.Quad ) {}
 
+		/// <summary>
+		/// Portal Constructor, supply name and portal type
+		/// </summary>
+		/// <param name="name">string</param>
+		/// <param name="type">PortalType</param>
+		public Portal( string name, PortalType type )
+			: base( name, type )
+		{
+			_targetZone = null;
+			_targetZone = null;
+		}
 
-        /// <summary>
-        /// Portal Constructor, auto name
-        /// </summary>
-        public Portal()
-            : this(_nameGenerator.GetNextUniqueName(), PortalType.Quad)
-        {
-        }
+		///connected Zone
+		private PCZone _targetZone;
 
-        /// <summary>
-        /// Portal Constructor, supply name
-        /// </summary>
-        /// <param name="name"></param>
-        public Portal(string name)
-            : this(name, PortalType.Quad)
-        {
-        }
+		public PCZone TargetZone { get { return _targetZone; } set { _targetZone = value; } }
 
-        /// <summary>
-        /// Portal Constructor, supply name and portal type
-        /// </summary>
-        /// <param name="name">string</param>
-        /// <param name="type">PortalType</param>
-        public Portal(string name, PortalType type)
-            : base(name, type)
-        {
-            _targetZone = null;
-            _targetZone = null;
-        }
+		// Matching Portal in the target zone (usually in same world space 
+		//as this portal, but pointing the opposite direction)
+		private Portal _targetPortal;
+		public Portal TargetPortal { get { return _targetPortal; } set { _targetPortal = value; } }
+	}
 
+	//* Factory object for creating Portal instances 
+	public class PortalFactory : MovableObjectFactory
+	{
+		new public const string TypeName = "Portal";
 
-        ///connected Zone
-        private PCZone _targetZone;
-        public PCZone TargetZone
-        {
-            get { return _targetZone; }
-            set { _targetZone = value; }
+		public PortalFactory()
+		{
+			base.Type = PortalFactory.TypeName;
+			base.TypeFlag = (uint)SceneQueryTypeMask.WorldGeometry;
+		}
 
-        }
+		public void Dispose() {}
 
-        // Matching Portal in the target zone (usually in same world space 
-        //as this portal, but pointing the opposite direction)
-        private Portal _targetPortal;
-        public Portal TargetPortal
-        {
-            get { return _targetPortal; }
-            set { _targetPortal = value; }
-        }
-    }
+		protected override MovableObject _createInstance( string name, NamedParameterList param )
+		{
+			Portal portal = new Portal( name );
 
-    //* Factory object for creating Portal instances 
-    public class PortalFactory : MovableObjectFactory
-    {
+			if( param != null )
+			{
+				if( param.ContainsKey( "Type" ) )
+				{
+					switch( param[ "Type" ].ToString() )
+					{
+						case "Quad":
+							portal.Type = PortalType.Quad;
+							break;
+						case "AABB":
+							portal.Type = PortalType.AABB;
+							break;
+						case "Sphere":
+							portal.Type = PortalType.Sphere;
+							break;
+						default:
+							throw new AxiomException( "Invalid portal type '" + param[ "type" ] + "'." );
+					}
+				}
 
-        public new const string TypeName = "Portal";
+				// TODO CHECK THIS
+				// Common Properties ????
+			}
 
-        public PortalFactory()
-        {
+			return portal;
+		}
 
-            base.Type = PortalFactory.TypeName;
-            base.TypeFlag = (uint)SceneQueryTypeMask.WorldGeometry;
-        }
+		public override void DestroyInstance( ref MovableObject obj )
+		{
+			obj = null;
+		}
 
-        public void Dispose()
-        {
-        }
-
-        protected override MovableObject _createInstance(string name, NamedParameterList param)
-        {
-
-            Portal portal = new Portal(name);
-
-            if (param != null)
-            {
-                if (param.ContainsKey("Type"))
-                {
-                    switch (param["Type"].ToString())
-                    {
-                        case "Quad":
-                            portal.Type = PortalType.Quad;
-                            break;
-                        case "AABB":
-                            portal.Type = PortalType.AABB;
-                            break;
-                        case "Sphere":
-                            portal.Type = PortalType.Sphere;
-                            break;
-                        default:
-                            throw new AxiomException("Invalid portal type '" + param["type"] + "'.");
-                    }
-
-                }
-
-                // TODO CHECK THIS
-                // Common Properties ????
-            }
-
-            return portal;
-        }
-
-        public override void DestroyInstance(ref MovableObject obj)
-        {
-            obj = null;
-        }
-
-        //* Return true here as we want to get a unique type flag. 
-        //ORIGINAL LINE: bool requestTypeFlags() const
-        public bool RequestTypeFlags()
-        {
-            return true;
-        }
-
-    }
-
+		//* Return true here as we want to get a unique type flag. 
+		//ORIGINAL LINE: bool requestTypeFlags() const
+		public bool RequestTypeFlags()
+		{
+			return true;
+		}
+	}
 }

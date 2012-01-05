@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -82,16 +87,11 @@ namespace Axiom.Core
 		///		Parent scene manager.
 		/// </summary>
 		protected SceneManager sceneManager;
+
 		/// <summary>
 		///    Returns the current SceneManager that this camera is using.
 		/// </summary>
-		public SceneManager SceneManager
-		{
-			get
-			{
-				return sceneManager;
-			}
-		}
+		public SceneManager SceneManager { get { return sceneManager; } }
 
 		#endregion SceneManager Property
 
@@ -101,15 +101,13 @@ namespace Axiom.Core
 		///		Camera orientation.
 		/// </summary>
 		protected Quaternion orientation;
+
 		/// <summary>
 		///     Gets/Sets the camera's orientation.
 		/// </summary>
 		public Quaternion Orientation
 		{
-			get
-			{
-				return orientation;
-			}
+			get { return orientation; }
 			set
 			{
 				orientation = value;
@@ -125,15 +123,13 @@ namespace Axiom.Core
 		///		Camera position.
 		/// </summary>
 		protected Vector3 position;
+
 		/// <summary>
 		///     Gets/Sets the camera's position.
 		/// </summary>
 		public Vector3 Position
 		{
-			get
-			{
-				return position;
-			}
+			get { return position; }
 			set
 			{
 				position = value;
@@ -151,24 +147,23 @@ namespace Axiom.Core
 		public Vector3 Direction
 		{
 			// Direction points down the negatize Z axis by default.
-			get
-			{
-				return orientation * -Vector3.UnitZ;
-			}
+			get { return orientation * -Vector3.UnitZ; }
 			set
 			{
 				// Do nothing if given a zero vector
 				// (Replaced assert since this could happen with auto tracking camera and
 				//  camera passes through the lookAt point)
-				if ( value == Vector3.Zero )
+				if( value == Vector3.Zero )
+				{
 					return;
+				}
 
 				// Remember, camera points down -Z of local axes!
 				// Therefore reverse direction of direction vector before determining local Z
 				Vector3 zAdjustVector = -value;
 				zAdjustVector.Normalize();
 
-				if ( isYawFixed )
+				if( isYawFixed )
 				{
 					Vector3 xVector = yawFixedAxis.Cross( zAdjustVector );
 					xVector.Normalize();
@@ -188,7 +183,7 @@ namespace Axiom.Core
 
 					Quaternion rotationQuat;
 
-					if ( -zAdjustVector == zAxis )
+					if( -zAdjustVector == zAxis )
 					{
 						// Oops, a 180 degree turn (infinite possible rotation axes)
 						// Default to yaw i.e. use current UP
@@ -204,7 +199,7 @@ namespace Axiom.Core
 				}
 
 				// transform to parent space
-				if ( parentNode != null )
+				if( parentNode != null )
 				{
 					orientation = parentNode.DerivedOrientation.Inverse() * orientation;
 				}
@@ -224,13 +219,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets camera's 'up' vector.
 		/// </summary>
-		public Vector3 Up
-		{
-			get
-			{
-				return Orientation * Vector3.UnitY;
-			}
-		}
+		public Vector3 Up { get { return Orientation * Vector3.UnitY; } }
 
 		#endregion Up Property
 
@@ -239,13 +228,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets camera's 'right' vector.
 		/// </summary>
-		public Vector3 Right
-		{
-			get
-			{
-				return Orientation * Vector3.UnitX;
-			}
-		}
+		public Vector3 Right { get { return Orientation * Vector3.UnitX; } }
 
 		#endregion Right Property
 
@@ -255,6 +238,7 @@ namespace Axiom.Core
 		///		Orientation derived from parent.
 		/// </summary>
 		protected Quaternion derivedOrientation;
+
 		/// <summary>
 		///	Gets the derived orientation of the camera, including any
 		/// rotation inherited from a node attachment and reflection matrix.
@@ -276,6 +260,7 @@ namespace Axiom.Core
 		///		Position derived from parent.
 		/// </summary>
 		protected Vector3 derivedPosition;
+
 		/// <summary>
 		///	Gets the derived position of the camera, including any
 		/// rotation inherited from a node attachment and reflection matrix.
@@ -350,6 +335,7 @@ namespace Axiom.Core
 		///		Real world orientation of the camera.
 		/// </summary>
 		protected Quaternion realOrientation;
+
 		/// <summary>
 		/// Gets the real world orientation of the camera, including any
 		/// rotation inherited from a node attachment
@@ -371,6 +357,7 @@ namespace Axiom.Core
 		///		Real world position of the camera.
 		/// </summary>
 		protected Vector3 realPosition;
+
 		/// <summary>
 		/// Gets the real world orientation of the camera, including any
 		/// rotation inherited from a node attachment
@@ -445,10 +432,12 @@ namespace Axiom.Core
 		///		Whether to yaw around a fixed axis.
 		/// </summary>
 		protected bool isYawFixed;
+
 		/// <summary>
 		///		Fixed axis to yaw around.
 		/// </summary>
 		protected Vector3 yawFixedAxis;
+
 		/// <summary>
 		/// Tells the camera whether to yaw around it's own local Y axis or a fixed axis of choice.
 		/// </summary>
@@ -465,15 +454,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public Vector3 FixedYawAxis
 		{
-			get
-			{
-				return yawFixedAxis;
-			}
+			get { return yawFixedAxis; }
 			set
 			{
 				yawFixedAxis = value;
 
-				if ( yawFixedAxis != Vector3.Zero )
+				if( yawFixedAxis != Vector3.Zero )
 				{
 					isYawFixed = true;
 				}
@@ -492,6 +478,7 @@ namespace Axiom.Core
 		///		Rendering type (wireframe, solid, point).
 		/// </summary>
 		protected PolygonMode sceneDetail;
+
 		/// <summary>
 		///		Sets the level of rendering detail required from this camera.
 		/// </summary>
@@ -501,17 +488,7 @@ namespace Axiom.Core
 		///		that behavior, allowing you to make the camera just render a
 		///		wireframe view, for example.
 		/// </remarks>
-		public PolygonMode PolygonMode
-		{
-			get
-			{
-				return sceneDetail;
-			}
-			set
-			{
-				sceneDetail = value;
-			}
-		}
+		public PolygonMode PolygonMode { get { return sceneDetail; } set { sceneDetail = value; } }
 
 		#endregion PolygonMode Property
 
@@ -521,16 +498,11 @@ namespace Axiom.Core
 		///		Stored number of visible faces in the last render.
 		/// </summary>
 		protected int faceCountRenderedLastFrame;
+
 		/// <summary>
 		/// Gets the last count of triangles visible in the view of this camera.
 		/// </summary>
-		public int RenderedFaceCount
-		{
-			get
-			{
-				return faceCountRenderedLastFrame;
-			}
-		}
+		public int RenderedFaceCount { get { return faceCountRenderedLastFrame; } }
 
 		#endregion RenderedFaceCount Property
 
@@ -540,16 +512,11 @@ namespace Axiom.Core
 		///		Stored number of visible batches in the last render.
 		/// </summary>
 		protected int batchCountRenderedLastFrame;
+
 		/// <summary>
 		/// Gets the last count of batches visible in the view of this camera.
 		/// </summary>
-		public int RenderedBatchCount
-		{
-			get
-			{
-				return batchCountRenderedLastFrame;
-			}
-		}
+		public int RenderedBatchCount { get { return batchCountRenderedLastFrame; } }
 
 		#endregion RenderedBatchCount Property
 
@@ -559,20 +526,11 @@ namespace Axiom.Core
 		///		SceneNode which this Camera will automatically track.
 		/// </summary>
 		protected SceneNode autoTrackTarget;
+
 		/// <summary>
 		///		SceneNode which this Camera will automatically track.
 		/// </summary>
-		public SceneNode AutoTrackingTarget
-		{
-			get
-			{
-				return autoTrackTarget;
-			}
-			set
-			{
-				autoTrackTarget = value;
-			}
-		}
+		public SceneNode AutoTrackingTarget { get { return autoTrackTarget; } set { autoTrackTarget = value; } }
 
 		#endregion AutoTrackingTarget Property
 
@@ -582,20 +540,11 @@ namespace Axiom.Core
 		///		Tracking offset for fine tuning.
 		/// </summary>
 		protected Vector3 autoTrackOffset;
+
 		/// <summary>
 		///		Tracking offset for fine tuning.
 		/// </summary>
-		public Vector3 AutoTrackingOffset
-		{
-			get
-			{
-				return autoTrackOffset;
-			}
-			set
-			{
-				autoTrackOffset = value;
-			}
-		}
+		public Vector3 AutoTrackingOffset { get { return autoTrackOffset; } set { autoTrackOffset = value; } }
 
 		#endregion AutoTrackingOffset Property
 
@@ -605,6 +554,7 @@ namespace Axiom.Core
 		///		Scene LOD factor used to adjust overall LOD.
 		/// </summary>
 		protected float sceneLodFactor;
+
 		/// <summary>
 		///     Sets the level-of-detail factor for this Camera.
 		/// </summary>
@@ -624,10 +574,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public float LodBias
 		{
-			get
-			{
-				return sceneLodFactor;
-			}
+			get { return sceneLodFactor; }
 			set
 			{
 				Debug.Assert( value > 0.0f, "Lod bias must be greater than 0" );
@@ -641,6 +588,7 @@ namespace Axiom.Core
 		#region LodCamera Property
 
 		private Camera _lodCamera;
+
 		/// <summary>
 		/// Get/Sets a reference to the Camera which should be used to determine LOD settings.
 		/// </summary>
@@ -656,13 +604,10 @@ namespace Axiom.Core
 		/// </remarks>
 		public Camera LodCamera
 		{
-			get
-			{
-				return this._lodCamera ?? this;
-			}
+			get { return this._lodCamera ?? this; }
 			set
 			{
-				if ( this == value )
+				if( this == value )
 				{
 					_lodCamera = null;
 				}
@@ -681,16 +626,11 @@ namespace Axiom.Core
 		///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
 		/// </summary>
 		protected float invSceneLodFactor;
+
 		/// <summary>
 		///     Used for internal Lod calculations.
 		/// </summary>
-		public float InverseLodBias
-		{
-			get
-			{
-				return invSceneLodFactor;
-			}
-		}
+		public float InverseLodBias { get { return invSceneLodFactor; } }
 
 		#endregion InverseLodBias Property
 
@@ -698,14 +638,17 @@ namespace Axiom.Core
 		///		Left window edge (window clip planes).
 		/// </summary>
 		protected float windowLeft;
+
 		/// <summary>
 		///		Right window edge (window clip planes).
 		/// </summary>
 		protected float windowRight;
+
 		/// <summary>
 		///		Top window edge (window clip planes).
 		/// </summary>
 		protected float windowTop;
+
 		/// <summary>
 		///		Bottom window edge (window clip planes).
 		/// </summary>
@@ -717,16 +660,11 @@ namespace Axiom.Core
 		///		Is viewing window used.
 		/// </summary>
 		protected bool isWindowSet;
+
 		/// <summary>
 		///		Gets the flag specifying if a viewport window is being used.
 		/// </summary>
-		public virtual bool IsWindowSet
-		{
-			get
-			{
-				return isWindowSet;
-			}
-		}
+		virtual public bool IsWindowSet { get { return isWindowSet; } }
 
 		#endregion IsWindowSet Property
 
@@ -736,6 +674,7 @@ namespace Axiom.Core
 		/// Windowed viewport clip planes.
 		/// </summary>
 		protected List<Plane> windowClipPlanes = new List<Plane>();
+
 		/// <summary>
 		///  Gets the window clip planes, only applicable if isWindowSet == true
 		/// </summary>
@@ -762,6 +701,7 @@ namespace Axiom.Core
 		///		The last viewport to be added using this camera.
 		/// </summary>
 		protected Viewport lastViewport;
+
 		/// <summary>
 		///		Get the last viewport which was attached to this camera.
 		/// </summary>
@@ -770,13 +710,7 @@ namespace Axiom.Core
 		///		using this camera, just the last once which was created referring
 		///		to it.
 		/// </remarks>
-		public Viewport Viewport
-		{
-			get
-			{
-				return lastViewport;
-			}
-		}
+		public Viewport Viewport { get { return lastViewport; } }
 
 		#endregion Viewport Property
 
@@ -786,6 +720,7 @@ namespace Axiom.Core
 		///		Whether aspect ratio will automaticaally be recalculated when a vieport changes its size.
 		/// </summary>
 		protected bool autoAspectRatio;
+
 		/// <summary>
 		///		If set to true a viewport that owns this frustum will be able to
 		///		recalculate the aspect ratio whenever the frustum is resized.
@@ -795,17 +730,7 @@ namespace Axiom.Core
 		///		one viewport at the same time. Otherwise the aspect ratio for other
 		///		viewports may be wrong.
 		/// </remarks>
-		public bool AutoAspectRatio
-		{
-			get
-			{
-				return autoAspectRatio;
-			}
-			set
-			{
-				autoAspectRatio = value;
-			}
-		}
+		public bool AutoAspectRatio { get { return autoAspectRatio; } set { autoAspectRatio = value; } }
 
 		#endregion AutoAspectRatio Property
 
@@ -815,20 +740,11 @@ namespace Axiom.Core
 		///     Whether or not the rendering distance of objects should take effect for this camera
 		/// </summary>
 		protected bool useRenderingDistance;
+
 		/// <summary>
 		///		Whether or not the rendering distance of objects should take effect for this camera
 		/// </summary>
-		public bool UseRenderingDistance
-		{
-			get
-			{
-				return useRenderingDistance;
-			}
-			set
-			{
-				useRenderingDistance = value;
-			}
-		}
+		public bool UseRenderingDistance { get { return useRenderingDistance; } set { useRenderingDistance = value; } }
 
 		#endregion UseRenderingQueue Property
 
@@ -846,24 +762,14 @@ namespace Axiom.Core
 		///     to scene nodes like any other MovableObject), or another camera.
 		///     If you pass null to this property it reverts the camera to normal behaviour.
 		/// </remarks>
-		public Frustum CullFrustum
-		{
-			get
-			{
-				return cullFrustum;
-			}
-			set
-			{
-				cullFrustum = value;
-			}
-		}
+		public Frustum CullFrustum { get { return cullFrustum; } set { cullFrustum = value; } }
 
 		#endregion Fields and Properties
 
 		#region Constructors
 
 		public Camera( string name, SceneManager sceneManager )
-			: base(name)
+			: base( name )
 		{
 			// Init camera location & direction
 
@@ -948,11 +854,11 @@ namespace Axiom.Core
 			{
 				// Overridden from Frustum to use local orientation / position offsets
 				// are we attached to another node?
-				if ( parentNode != null )
+				if( parentNode != null )
 				{
-					if ( _recalculateView ||
-						parentNode.DerivedOrientation != _lastParentOrientation ||
-						parentNode.DerivedPosition != _lastParentPosition )
+					if( _recalculateView ||
+					    parentNode.DerivedOrientation != _lastParentOrientation ||
+					    parentNode.DerivedPosition != _lastParentPosition )
 					{
 						// we are out of date with the parent scene node
 						_lastParentOrientation = parentNode.DerivedOrientation;
@@ -970,11 +876,10 @@ namespace Axiom.Core
 					realPosition = position;
 				}
 
-				if ( IsReflected &&
-					linkedReflectionPlane != null &&
-					lastLinkedReflectionPlane != linkedReflectionPlane.DerivedPlane )
+				if( IsReflected &&
+				    linkedReflectionPlane != null &&
+				    lastLinkedReflectionPlane != linkedReflectionPlane.DerivedPlane )
 				{
-
 					ReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					ReflectionMatrix = Utility.BuildReflectionMatrix( ReflectionPlane );
 					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
@@ -983,9 +888,9 @@ namespace Axiom.Core
 				}
 
 				// Deriving reflected orientation / position
-				if ( _recalculateView )
+				if( _recalculateView )
 				{
-					if ( IsReflected )
+					if( IsReflected )
 					{
 						// Calculate reflected orientation, use up-vector as fallback axis.
 						Vector3 dir = realOrientation * Vector3.NegativeUnitZ;
@@ -1011,7 +916,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( AxisAlignedBox box )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( box );
 			}
@@ -1023,7 +928,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( AxisAlignedBox box, out FrustumPlane culledBy )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( box, out culledBy );
 			}
@@ -1035,7 +940,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( Sphere sphere )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( sphere );
 			}
@@ -1047,7 +952,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( Sphere sphere, out FrustumPlane culledBy )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( sphere, out culledBy );
 			}
@@ -1059,7 +964,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( Vector3 vertex )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( vertex );
 			}
@@ -1071,7 +976,7 @@ namespace Axiom.Core
 
 		new public bool IsObjectVisible( Vector3 vertex, out FrustumPlane culledBy )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.IsObjectVisible( vertex, out culledBy );
 			}
@@ -1081,20 +986,14 @@ namespace Axiom.Core
 			}
 		}
 
-		new public Vector3[] WorldSpaceCorners
-		{
-			get
-			{
-				return null != CullFrustum ? CullFrustum.WorldSpaceCorners : base.WorldSpaceCorners;
-			}
-		}
+		new public Vector3[] WorldSpaceCorners { get { return null != CullFrustum ? CullFrustum.WorldSpaceCorners : base.WorldSpaceCorners; } }
 
 		new public Plane[] FrustumPlanes
 		{
 			get
 			{
 				UpdateFrustumPlanes();
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					return CullFrustum.FrustumPlanes;
 				}
@@ -1107,7 +1006,7 @@ namespace Axiom.Core
 
 		public override bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
 		{
-			if ( null != CullFrustum )
+			if( null != CullFrustum )
 			{
 				return CullFrustum.ProjectSphere( sphere, out left, out top, out right, out bottom );
 			}
@@ -1121,7 +1020,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					return CullFrustum.Near;
 				}
@@ -1132,7 +1031,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					CullFrustum.Near = value;
 				}
@@ -1147,7 +1046,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					return CullFrustum.Near;
 				}
@@ -1158,7 +1057,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					CullFrustum.Far = value;
 				}
@@ -1173,7 +1072,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					return CullFrustum.ViewMatrix;
 				}
@@ -1184,7 +1083,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				if ( null != CullFrustum )
+				if( null != CullFrustum )
 				{
 					CullFrustum.ViewMatrix = value;
 				}
@@ -1198,13 +1097,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Returns the ViewMatrix for the underlying Frustum only
 		/// </summary>
-		public Matrix4 FrustumViewMatrix
-		{
-			get
-			{
-				return base.ViewMatrix;
-			}
-		}
+		public Matrix4 FrustumViewMatrix { get { return base.ViewMatrix; } }
 
 		#endregion Custom Frustum culling implementation
 
@@ -1263,6 +1156,7 @@ namespace Axiom.Core
 		{
 			batchCountRenderedLastFrame = renderedBatchCount;
 		}
+
 		#endregion SceneObject Implementation
 
 		#region Public methods
@@ -1320,7 +1214,7 @@ namespace Axiom.Core
 		{
 			Vector3 yAxis;
 
-			if ( isYawFixed )
+			if( isYawFixed )
 			{
 				// Rotate around fixed yaw axis
 				yAxis = yawFixedAxis;
@@ -1369,8 +1263,8 @@ namespace Axiom.Core
 		public void Rotate( Vector3 axis, float degrees )
 		{
 			Quaternion q = Quaternion.FromAngleAxis(
-					Utility.DegreesToRadians( (Real)degrees ),
-					axis );
+			                                        Utility.DegreesToRadians( (Real)degrees ),
+			                                        axis );
 			Rotate( q );
 		}
 
@@ -1449,7 +1343,7 @@ namespace Axiom.Core
 		///	</param>
 		public void SetAutoTracking( bool enabled, SceneNode target, Vector3 offset )
 		{
-			if ( enabled )
+			if( enabled )
 			{
 				Debug.Assert( target != null, "A camera's auto track target cannot be null." );
 				autoTrackTarget = target;
@@ -1471,7 +1365,7 @@ namespace Axiom.Core
 		/// <param name="top">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 0).</param>
 		/// <param name="right">Relative to Viewport - 0 corresponds to left edge, 1 - to right edge (default - 1).</param>
 		/// <param name="bottom">Relative to Viewport - 0 corresponds to top edge, 1 - to bottom edge (default - 1).</param>
-		public virtual void SetWindow( float left, float top, float right, float bottom )
+		virtual public void SetWindow( float left, float top, float right, float bottom )
 		{
 			windowLeft = left;
 			windowTop = top;
@@ -1490,7 +1384,7 @@ namespace Axiom.Core
 		/// <remarks>The method is called after projection matrix each change.</remarks>
 		protected void SetWindowImpl()
 		{
-			if ( !isWindowSet || !recalculateWindow )
+			if( !isWindowSet || !recalculateWindow )
 			{
 				return;
 			}
@@ -1521,7 +1415,7 @@ namespace Axiom.Core
 
 			windowClipPlanes.Clear();
 
-			if ( ProjectionType == Projection.Perspective )
+			if( ProjectionType == Projection.Perspective )
 			{
 				Vector3 pos = GetPositionForViewUpdate();
 
@@ -1549,7 +1443,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Cancel view window.
 		/// </summary>
-		public virtual void ResetWindow()
+		virtual public void ResetWindow()
 		{
 			isWindowSet = false;
 		}
@@ -1619,7 +1513,7 @@ namespace Axiom.Core
 		{
 			PlaneBoundedVolume outVolume = new PlaneBoundedVolume();
 
-			if ( ProjectionType == Projection.Perspective )
+			if( ProjectionType == Projection.Perspective )
 			{
 				// Use the corner rays to generate planes
 				Ray ul = GetCameraToViewportRay( screenLeft, screenTop );
@@ -1664,8 +1558,10 @@ namespace Axiom.Core
 
 			// near/far planes applicable to both projection types
 			outVolume.planes.Add( new Plane( FrustumPlanes[ (int)FrustumPlane.Near ] ) );
-			if ( includeFarPlane )
+			if( includeFarPlane )
+			{
 				outVolume.planes.Add( new Plane( FrustumPlanes[ (int)FrustumPlane.Far ] ) );
+			}
 
 			return outVolume;
 		}
@@ -1699,7 +1595,7 @@ namespace Axiom.Core
 		internal void AutoTrack()
 		{
 			// assumes all scene nodes have been updated
-			if ( autoTrackTarget != null )
+			if( autoTrackTarget != null )
 			{
 				LookAt( autoTrackTarget.DerivedPosition + autoTrackOffset );
 			}

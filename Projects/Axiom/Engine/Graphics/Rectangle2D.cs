@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,16 +56,16 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class Rectangle2D : SimpleRenderable
 	{
+		private const int POSITION = 0;
+		private const int TEXCOORD = 1;
+		private const int NORMAL = 2;
 
-		const int POSITION = 0;
-		const int TEXCOORD = 1;
-		const int NORMAL = 2;
-		static float[] texCoords = new float[] { 0, 0, 0, 1, 1, 0, 1, 1 };
+		private static float[] texCoords = new float[] {
+		                                               	0, 0, 0, 1, 1, 0, 1, 1
+		                                               };
 
 		public Rectangle2D()
-			: this( false )
-		{
-		}
+			: this( false ) {}
 
 		public Rectangle2D( bool includeTextureCoordinates )
 		{
@@ -80,9 +84,9 @@ namespace Axiom.Graphics
 
 			HardwareVertexBuffer buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( POSITION ),
-					vertexData.vertexCount,
-					BufferUsage.StaticWriteOnly );
+				                                                  decl.GetVertexSize( POSITION ),
+				                                                  vertexData.vertexCount,
+				                                                  BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
 
@@ -90,9 +94,9 @@ namespace Axiom.Graphics
 
 			buffer =
 				HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize( NORMAL ),
-				renderOperation.vertexData.vertexCount,
-				BufferUsage.StaticWriteOnly );
+				                                                  decl.GetVertexSize( NORMAL ),
+				                                                  renderOperation.vertexData.vertexCount,
+				                                                  BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( NORMAL, buffer );
 
@@ -117,15 +121,15 @@ namespace Axiom.Graphics
 
 				buffer.Unlock();
 			}
-			if ( includeTextureCoordinates )
+			if( includeTextureCoordinates )
 			{
 				decl.AddElement( TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 
 				buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( TEXCOORD ),
-					vertexData.vertexCount,
-					BufferUsage.StaticWriteOnly );
+					                                                  decl.GetVertexSize( TEXCOORD ),
+					                                                  vertexData.vertexCount,
+					                                                  BufferUsage.StaticWriteOnly );
 
 				binding.SetBinding( TEXCOORD, buffer );
 
@@ -139,13 +143,7 @@ namespace Axiom.Graphics
 
 		#region SimpleRenderable Members
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override float BoundingRadius { get { return 0; } }
 
 		public override float GetSquaredViewDepth( Camera camera )
 		{
@@ -158,39 +156,13 @@ namespace Axiom.Graphics
 			matrices[ 0 ] = Matrix4.Identity;
 		}
 
+		public override bool UseIdentityProjection { get { return true; } }
 
-		public override bool UseIdentityProjection
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool UseIdentityView { get { return true; } }
 
-		public override bool UseIdentityView
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override Quaternion WorldOrientation { get { return Quaternion.Identity; } }
 
-		public override Quaternion WorldOrientation
-		{
-			get
-			{
-				return Quaternion.Identity;
-			}
-		}
-
-		public override Vector3 WorldPosition
-		{
-			get
-			{
-				return Vector3.Zero;
-			}
-		}
-
+		public override Vector3 WorldPosition { get { return Vector3.Zero; } }
 
 		#endregion SimpleRenderable Members
 
@@ -207,6 +179,7 @@ namespace Axiom.Graphics
 		{
 			SetCorners( left, top, right, bottom, true );
 		}
+
 		/// <summary>
 		///		Sets the corners of the rectangle, in relative coordinates.
 		/// </summary>
@@ -218,23 +191,24 @@ namespace Axiom.Graphics
 		public void SetCorners( float left, float top, float right, float bottom, bool updateAABB )
 		{
 			float[] data = new float[] {
-				left, top, -1,
-				left, bottom, -1,
-				right, top, -1, // Fix for Issue #1187096
-				right, bottom, -1
-			};
+			                           	left, top, -1,
+			                           	left, bottom, -1,
+			                           	right, top, -1, // Fix for Issue #1187096
+			                           	right, bottom, -1
+			                           };
 
 			HardwareVertexBuffer buffer =
 				vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			buffer.WriteData( 0, buffer.Size, data, true );
 
-			if ( updateAABB )
+			if( updateAABB )
 			{
 				box = new AxisAlignedBox();
 				box.SetExtents( new Vector3( left, top, 0 ), new Vector3( right, bottom, 0 ) );
 			}
 		}
+
 		/// <summary>
 		/// Sets the normals of the rectangle
 		/// </summary>
@@ -267,6 +241,7 @@ namespace Axiom.Graphics
 				vbuf.Unlock();
 			}
 		}
+
 		#endregion Methods
 	}
 }

@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -51,13 +54,13 @@ namespace Axiom.Graphics
 		public DefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
 			: base( null, idxType, numIndexes, usage, true, false )
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[base.sizeInBytes];
 		}
 
 		public DefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes, BufferUsage usage )
 			: base( manager, idxType, numIndexes, usage, true, false )
 		{
-			mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[base.sizeInBytes];
 		}
 
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
@@ -65,7 +68,7 @@ namespace Axiom.Graphics
 			IntPtr ret = Memory.PinObject( mpData );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -83,7 +86,7 @@ namespace Axiom.Graphics
 		{
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -98,7 +101,7 @@ namespace Axiom.Graphics
 			IntPtr pSource = Memory.PinObject( data );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -113,7 +116,7 @@ namespace Axiom.Graphics
 		{
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}
@@ -129,7 +132,7 @@ namespace Axiom.Graphics
 			IntPtr ret = Memory.PinObject( mpData );
 			unsafe
 			{
-				fixed ( byte* pdataF = mpData )
+				fixed( byte* pdataF = mpData )
 				{
 					byte* pData = pdataF + offset;
 				}

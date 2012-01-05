@@ -55,7 +55,6 @@ namespace Axiom.Graphics
 	/// </summary>
 	public interface ICompositorLogic
 	{
-
 		/// <summary>
 		/// Called when a compositor instance has been created.
 		/// </summary>
@@ -74,7 +73,6 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="destroyedInstance"></param>
 		void CompositorInstanceDestroyed( CompositorInstance destroyedInstance );
-
 	}
 
 	/// <summary>
@@ -98,9 +96,7 @@ namespace Axiom.Graphics
 		/// This is an ideal method to automatically attach a compositor listener.
 		/// </remarks>
 		/// <param name="newInstance"></param>
-		public virtual void CompositorInstanceCreated( CompositorInstance newInstance )
-		{
-		}
+		virtual public void CompositorInstanceCreated( CompositorInstance newInstance ) {}
 
 		/// <summary>
 		/// Called when a compositor instance has been destroyed
@@ -109,9 +105,7 @@ namespace Axiom.Graphics
 		/// The chain that contained the compositor is still alive during this call.
 		/// </remarks>
 		/// <param name="destroyedInstance"></param>
-		public virtual void CompositorInstanceDestroyed( CompositorInstance destroyedInstance )
-		{
-		}
+		virtual public void CompositorInstanceDestroyed( CompositorInstance destroyedInstance ) {}
 
 		#endregion
 	}

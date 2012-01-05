@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -41,11 +43,17 @@ namespace Axiom.Samples
 		event ButtonHitDelegate ButtonHit;
 
 		void OnButtonHit( object sender, Button button );
+
 		void ItemSelected( SelectMenu menu );
+
 		void LabelHit( Label label );
+
 		void SliderMoved( Slider slider );
+
 		void CheckboxToggled( CheckBox box );
+
 		void OkDialogClosed( String message );
+
 		void YesNoDialogClosed( String question, bool yesHit );
 	};
 }

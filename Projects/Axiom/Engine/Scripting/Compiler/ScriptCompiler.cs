@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+
 using Axiom.Core;
 using Axiom.Scripting.Compiler.AST;
 using Axiom.Scripting.Compiler.Parser;
@@ -53,7 +58,7 @@ namespace Axiom.Scripting.Compiler
 	public partial class ScriptCompiler
 	{
 		// This enum are built-in word id values
-		enum BuiltIn : uint
+		private enum BuiltIn : uint
 		{
 			ID_ON = 1,
 			ID_OFF = 2,
@@ -66,31 +71,13 @@ namespace Axiom.Scripting.Compiler
 		private List<CompileError> _errors = new List<CompileError>();
 
 		private String _resourceGroup;
-		public String ResourceGroup
-		{
-			get
-			{
-				return _resourceGroup;
-			}
-		}
+		public String ResourceGroup { get { return _resourceGroup; } }
 
 		private Dictionary<string, string> _environment = new Dictionary<string, string>();
-		public Dictionary<string, string> Environment
-		{
-			get
-			{
-				return _environment;
-			}
-		}
+		public Dictionary<string, string> Environment { get { return _environment; } }
 
 		private Dictionary<string, uint> _keywordMap = new Dictionary<string, uint>();
-		public Dictionary<string, uint> KeywordMap
-		{
-			get
-			{
-				return _keywordMap;
-			}
-		}
+		public Dictionary<string, uint> KeywordMap { get { return _keywordMap; } }
 
 		/// <summary>
 		/// The set of imported scripts to avoid circular dependencies
@@ -108,17 +95,7 @@ namespace Axiom.Scripting.Compiler
 		private List<AbstractNode> _importTable = new List<AbstractNode>();
 
 		private ScriptCompilerListener _listener;
-		public ScriptCompilerListener Listener
-		{
-			get
-			{
-				return _listener;
-			}
-			set
-			{
-				_listener = value;
-			}
-		}
+		public ScriptCompilerListener Listener { get { return _listener; } set { _listener = value; } }
 
 		#region Events
 
@@ -204,28 +181,38 @@ namespace Axiom.Scripting.Compiler
 			_environment.Clear();
 
 			// Processes the imports for this script
-			if ( doImports )
+			if( doImports )
+			{
 				_processImports( ref nodes );
+			}
 
 			// Process object inheritance
-			if ( doObjects )
+			if( doObjects )
+			{
 				_processObjects( ref nodes, nodes );
+			}
 
 			// Process variable expansion
-			if ( doVariables )
+			if( doVariables )
+			{
 				_processVariables( ref nodes );
+			}
 
 			// Translate the nodes
-			foreach ( AbstractNode currentNode in nodes )
+			foreach( AbstractNode currentNode in nodes )
 			{
 				//logAST(0, *i);
-				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				if( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				{
 					continue;
+				}
 
 				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
 
-				if ( translator != null )
+				if( translator != null )
+				{
 					translator.Translate( this, currentNode );
+				}
 			}
 
 			return _errors.Count == 0;
@@ -248,8 +235,10 @@ namespace Axiom.Scripting.Compiler
 			// Clear the environment
 			_environment.Clear();
 
-			if ( this.OnPreConversion != null )
+			if( this.OnPreConversion != null )
+			{
 				this.OnPreConversion( this, nodes );
+			}
 
 			// Convert our nodes to an AST
 			IList<AbstractNode> ast = _convertToAST( nodes );
@@ -261,20 +250,26 @@ namespace Axiom.Scripting.Compiler
 			_processVariables( ref ast );
 
 			// Allows early bail-out through the listener
-			if ( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
+			if( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
+			{
 				return _errors.Count == 0;
+			}
 
 			// Translate the nodes
-			foreach ( AbstractNode currentNode in ast )
+			foreach( AbstractNode currentNode in ast )
 			{
 				//logAST(0, *i);
-				if ( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				if( currentNode is ObjectAbstractNode && ( (ObjectAbstractNode)currentNode ).IsAbstract )
+				{
 					continue;
+				}
 
 				ScriptCompiler.Translator translator = ScriptCompilerManager.Instance.GetTranslator( currentNode );
 
-				if ( translator != null )
+				if( translator != null )
+				{
 					translator.Translate( this, currentNode );
+				}
 			}
 
 			_imports.Clear();
@@ -301,7 +296,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			CompileError error = new CompileError( code, file, line, msg );
 
-			if ( this.OnCompileError != null )
+			if( this.OnCompileError != null )
 			{
 				this.OnCompileError( this, error );
 			}
@@ -309,8 +304,10 @@ namespace Axiom.Scripting.Compiler
 			{
 				string str = string.Format( "Compiler error: {0} in {1}({2})", ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof( CompileErrorCode ) ), file, line );
 
-				if ( !string.IsNullOrEmpty( msg ) )
+				if( !string.IsNullOrEmpty( msg ) )
+				{
 					str += ": " + msg;
+				}
 
 				LogManager.Instance.Write( str );
 			}
@@ -335,8 +332,10 @@ namespace Axiom.Scripting.Compiler
 		{
 			retVal = null;
 
-			if ( this.OnCompilerEvent != null )
+			if( this.OnCompilerEvent != null )
+			{
 				return this.OnCompilerEvent( this, ref evt, out retVal );
+			}
 
 			return false;
 		}
@@ -362,43 +361,49 @@ namespace Axiom.Scripting.Compiler
 			ScriptCompilerEvent evt = new ProcessNameExclusionScriptCompilerEvent( cls, parent );
 			bool processed = _fireEvent( ref evt, out excludeObj );
 
-			if ( !processed )
+			if( !processed )
 			{
 				// Process the built-in name exclusions
-				if ( cls == "emitter" || cls == "affector" )
+				if( cls == "emitter" || cls == "affector" )
 				{
 					// emitters or affectors inside a particle_system are excluded
-					while ( parent != null && parent is ObjectAbstractNode )
+					while( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
-						if ( obj.Cls == "particle_system" )
+						if( obj.Cls == "particle_system" )
+						{
 							return true;
+						}
 
 						parent = obj.Parent;
 					}
 					return false;
 				}
-				else if ( cls == "pass" )
+				else if( cls == "pass" )
 				{
 					// passes inside compositors are excluded
-					while ( parent != null && parent is ObjectAbstractNode )
+					while( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
-						if ( obj.Cls == "compositor" )
+						if( obj.Cls == "compositor" )
+						{
 							return true;
+						}
 
 						parent = obj.Parent;
 					}
 					return false;
 				}
-				else if ( cls == "texture_source" )
+				else if( cls == "texture_source" )
 				{
 					// Parent must be texture_unit
-					while ( parent != null && parent is ObjectAbstractNode )
+					while( parent != null && parent is ObjectAbstractNode )
 					{
 						ObjectAbstractNode obj = (ObjectAbstractNode)parent;
-						if ( obj.Cls == "texture_unit" )
+						if( obj.Cls == "texture_unit" )
+						{
 							return true;
+						}
 
 						parent = obj.Parent;
 					}
@@ -420,50 +425,59 @@ namespace Axiom.Scripting.Compiler
 		private void _processImports( ref IList<AbstractNode> nodes )
 		{
 			// We only need to iterate over the top-level of nodes
-			for ( int i = 1; i < nodes.Count; i++ )
+			for( int i = 1; i < nodes.Count; i++ )
 			{
 				AbstractNode cur = nodes[ i ];
 
-				if ( cur is ImportAbstractNode )
+				if( cur is ImportAbstractNode )
 				{
 					ImportAbstractNode import = (ImportAbstractNode)cur;
 
 					// Only process if the file's contents haven't been loaded
-					if ( !_imports.ContainsKey( import.Source ) )
+					if( !_imports.ContainsKey( import.Source ) )
 					{
 						// Load the script
 						IList<AbstractNode> importedNodes = _loadImportPath( import.Source );
-						if ( importedNodes != null && importedNodes.Count != 0 )
+						if( importedNodes != null && importedNodes.Count != 0 )
 						{
 							_processImports( ref importedNodes );
 							_processObjects( ref importedNodes, importedNodes );
 						}
 
-						if ( importedNodes != null && importedNodes.Count != 0 )
+						if( importedNodes != null && importedNodes.Count != 0 )
+						{
 							_imports.Add( import.Source, importedNodes );
+						}
 					}
 
 					// Handle the target request now
 					// If it is a '*' import we remove all previous requests and just use the '*'
 					// Otherwise, ensure '*' isn't already registered and register our request
-					if ( import.Target == "*" )
+					if( import.Target == "*" )
 					{
-						if ( _importRequests.ContainsKey( import.Source ) )
+						if( _importRequests.ContainsKey( import.Source ) )
 						{
 							_importRequests.Remove( import.Source );
 						}
-						_importRequests.Add( import.Source, new List<string>() { "*" } );
+						_importRequests.Add( import.Source, new List<string>() {
+						                                                       	"*"
+						                                                       } );
 					}
 					else
 					{
-						if ( _importRequests.ContainsKey( import.Source ) )
+						if( _importRequests.ContainsKey( import.Source ) )
 						{
-							if ( _importRequests[ import.Source ][ 0 ] != "*" )
-							_importRequests[ import.Source].Add( import.Target );
+							if( _importRequests[ import.Source ][ 0 ] != "*" )
+							{
+								_importRequests[ import.Source ].Add( import.Target );
+							}
 						}
 						else
-							_importRequests.Add( import.Source, new List<string>() {import.Target });
-
+						{
+							_importRequests.Add( import.Source, new List<string>() {
+							                                                       	import.Target
+							                                                       } );
+						}
 					}
 
 					nodes.RemoveAt( i );
@@ -474,14 +488,13 @@ namespace Axiom.Scripting.Compiler
 			// All import nodes are removed
 			// We have cached the code blocks from all the imported scripts
 			// We can process all import requests now
-			foreach ( KeyValuePair<string, IList<AbstractNode>> it in _imports )
+			foreach( KeyValuePair<string, IList<AbstractNode>> it in _imports )
 			{
-				if ( _importRequests.ContainsKey( it.Key ) )
+				if( _importRequests.ContainsKey( it.Key ) )
 				{
-					foreach ( string j in _importRequests[ it.Key ] )
+					foreach( string j in _importRequests[ it.Key ] )
 					{
-
-						if ( j == "*" )
+						if( j == "*" )
 						{
 							// Insert the entire AST into the import table
 							_importTable.InsertRange( 0, it.Value );
@@ -491,8 +504,10 @@ namespace Axiom.Scripting.Compiler
 						{
 							// Locate this target and insert it into the import table
 							IList<AbstractNode> newNodes = _locateTarget( it.Value, j );
-							if ( newNodes != null && newNodes.Count > 0 )
+							if( newNodes != null && newNodes.Count > 0 )
+							{
 								_importTable.InsertRange( 0, newNodes );
+							}
 						}
 					}
 				}
@@ -505,35 +520,35 @@ namespace Axiom.Scripting.Compiler
 		/// <param name="nodes"></param>
 		private void _processVariables( ref IList<AbstractNode> nodes )
 		{
-			for ( int i = 0; i < nodes.Count; ++i )
+			for( int i = 0; i < nodes.Count; ++i )
 			{
 				AbstractNode cur = nodes[ i ];
 
-				if ( cur is ObjectAbstractNode )
+				if( cur is ObjectAbstractNode )
 				{
 					// Only process if this object is not abstract
 					ObjectAbstractNode obj = (ObjectAbstractNode)cur;
-					if ( !obj.IsAbstract )
+					if( !obj.IsAbstract )
 					{
 						_processVariables( ref obj.Children );
 						_processVariables( ref obj.Values );
 					}
 				}
-				else if ( cur is PropertyAbstractNode )
+				else if( cur is PropertyAbstractNode )
 				{
 					PropertyAbstractNode prop = (PropertyAbstractNode)cur;
 					_processVariables( ref prop.Values );
 				}
-				else if ( cur is VariableGetAbstractNode )
+				else if( cur is VariableGetAbstractNode )
 				{
 					VariableGetAbstractNode var = (VariableGetAbstractNode)cur;
 
 					// Look up the enclosing scope
 					ObjectAbstractNode scope = null;
 					AbstractNode temp = var.Parent;
-					while ( temp != null )
+					while( temp != null )
 					{
-						if ( temp is ObjectAbstractNode )
+						if( temp is ObjectAbstractNode )
 						{
 							scope = (ObjectAbstractNode)temp;
 							break;
@@ -543,19 +558,25 @@ namespace Axiom.Scripting.Compiler
 
 					// Look up the variable in the environment
 					KeyValuePair<bool, string> varAccess = new KeyValuePair<bool, string>( false, string.Empty );
-					if ( scope != null )
-						varAccess = scope.GetVariable( var.Name );
-
-					if ( scope == null || !varAccess.Key )
+					if( scope != null )
 					{
-						bool found = _environment.ContainsKey( var.Name );
-						if ( found )
-							varAccess = new KeyValuePair<bool, string>( true, _environment[ var.Name ] );
-						else
-							varAccess = new KeyValuePair<bool, string>( false, varAccess.Value );
+						varAccess = scope.GetVariable( var.Name );
 					}
 
-					if ( varAccess.Key )
+					if( scope == null || !varAccess.Key )
+					{
+						bool found = _environment.ContainsKey( var.Name );
+						if( found )
+						{
+							varAccess = new KeyValuePair<bool, string>( true, _environment[ var.Name ] );
+						}
+						else
+						{
+							varAccess = new KeyValuePair<bool, string>( false, varAccess.Value );
+						}
+					}
+
+					if( varAccess.Key )
 					{
 						// Found the variable, so process it and insert it into the tree
 						ScriptLexer lexer = new ScriptLexer();
@@ -565,15 +586,19 @@ namespace Axiom.Scripting.Compiler
 						IList<AbstractNode> ast = _convertToAST( cst );
 
 						// Set up ownership for these nodes
-						foreach ( AbstractNode currentNode in ast )
+						foreach( AbstractNode currentNode in ast )
+						{
 							currentNode.Parent = var.Parent;
+						}
 
 						// Recursively handle variable accesses within the variable expansion
 						_processVariables( ref ast );
 
 						// Insert the nodes in place of the variable
-						for ( int j = 0; j < ast.Count; j++ )
+						for( int j = 0; j < ast.Count; j++ )
+						{
 							nodes.Insert( j, ast[ j ] );
+						}
 					}
 					else
 					{
@@ -595,25 +620,29 @@ namespace Axiom.Scripting.Compiler
 		/// <param name="top"></param>
 		private void _processObjects( ref IList<AbstractNode> nodes, IList<AbstractNode> top )
 		{
-			foreach ( AbstractNode node in nodes )
+			foreach( AbstractNode node in nodes )
 			{
-				if ( node is ObjectAbstractNode )
+				if( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 					// Overlay base classes in order.
-					foreach ( string currentBase in obj.Bases )
+					foreach( string currentBase in obj.Bases )
 					{
 						// Check the top level first, then check the import table
 						List<AbstractNode> newNodes = _locateTarget( top, currentBase );
 
-						if ( newNodes.Count == 0 )
-							newNodes = _locateTarget( _importTable, currentBase );
-
-						if ( newNodes.Count != 0 )
+						if( newNodes.Count == 0 )
 						{
-							foreach ( AbstractNode j in newNodes )
+							newNodes = _locateTarget( _importTable, currentBase );
+						}
+
+						if( newNodes.Count != 0 )
+						{
+							foreach( AbstractNode j in newNodes )
+							{
 								_overlayObject( j, obj );
+							}
 						}
 						else
 						{
@@ -627,8 +656,10 @@ namespace Axiom.Scripting.Compiler
 					// Overrides now exist in obj's overrides list. These are non-object nodes which must now
 					// Be placed in the children section of the object node such that overriding from parents
 					// into children works properly.
-					for ( int i = 0; i < obj.Overrides.Count; i++ )
+					for( int i = 0; i < obj.Overrides.Count; i++ )
+					{
 						obj.Children.Insert( i, obj.Overrides[ i ] );
+					}
 				}
 			}
 		}
@@ -643,19 +674,21 @@ namespace Axiom.Scripting.Compiler
 			IList<AbstractNode> retval = null;
 			IList<ConcreteNode> nodes = null;
 
-			if ( this.OnImportFile != null )
-				this.OnImportFile( this, name );
-
-			if ( nodes != null && ResourceGroupManager.Instance != null )
+			if( this.OnImportFile != null )
 			{
-				using ( Stream stream = ResourceGroupManager.Instance.OpenResource( name, _resourceGroup ) )
+				this.OnImportFile( this, name );
+			}
+
+			if( nodes != null && ResourceGroupManager.Instance != null )
+			{
+				using( Stream stream = ResourceGroupManager.Instance.OpenResource( name, _resourceGroup ) )
 				{
-					if ( stream != null )
+					if( stream != null )
 					{
 						ScriptLexer lexer = new ScriptLexer();
 						ScriptParser parser = new ScriptParser();
 						IList<ScriptToken> tokens = null;
-						using ( StreamReader reader = new StreamReader( stream ) )
+						using( StreamReader reader = new StreamReader( stream ) )
 						{
 							tokens = lexer.Tokenize( reader.ReadToEnd(), name );
 						}
@@ -664,8 +697,10 @@ namespace Axiom.Scripting.Compiler
 				}
 			}
 
-			if ( nodes != null )
+			if( nodes != null )
+			{
 				retval = _convertToAST( nodes );
+			}
 
 			return retval;
 		}
@@ -681,18 +716,20 @@ namespace Axiom.Scripting.Compiler
 			AbstractNode iter = null;
 
 			// Search for a top-level object node
-			foreach ( AbstractNode node in nodes )
+			foreach( AbstractNode node in nodes )
 			{
-				if ( node is ObjectAbstractNode )
+				if( node is ObjectAbstractNode )
 				{
 					ObjectAbstractNode impl = (ObjectAbstractNode)node;
-					if ( impl.Name == target )
+					if( impl.Name == target )
+					{
 						iter = node;
+					}
 				}
 			}
 
 			List<AbstractNode> newNodes = new List<AbstractNode>();
-			if ( iter != null )
+			if( iter != null )
 			{
 				newNodes.Add( iter );
 			}
@@ -701,16 +738,18 @@ namespace Axiom.Scripting.Compiler
 
 		private void _overlayObject( AbstractNode source, ObjectAbstractNode dest )
 		{
-			if ( source is ObjectAbstractNode )
+			if( source is ObjectAbstractNode )
 			{
 				ObjectAbstractNode src = (ObjectAbstractNode)source;
 
 				// Overlay the environment of one on top the other first
-				foreach ( KeyValuePair<string, string> i in src.Variables )
+				foreach( KeyValuePair<string, string> i in src.Variables )
 				{
 					KeyValuePair<bool, string> var = dest.GetVariable( i.Key );
-					if ( !var.Key )
+					if( !var.Key )
+					{
 						dest.SetVariable( i.Key, i.Value );
+					}
 				}
 
 				// Create a vector storing each pairing of override between source and destination
@@ -725,9 +764,9 @@ namespace Axiom.Scripting.Compiler
 				// And insert non-objects into the overrides list of the destination
 				int insertPos = 0;
 
-				foreach ( AbstractNode i in src.Children )
+				foreach( AbstractNode i in src.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						overrides.Add( new KeyValuePair<AbstractNode, AbstractNode>( i, null ) );
 					}
@@ -743,9 +782,9 @@ namespace Axiom.Scripting.Compiler
 				int maxOverrideIndex = 0;
 
 				// Loop through destination children searching for name-matching overrides
-				for ( int i = 0; i < dest.Children.Count; i++ )
+				for( int i = 0; i < dest.Children.Count; i++ )
 				{
-					if ( dest.Children[ i ] is ObjectAbstractNode )
+					if( dest.Children[ i ] is ObjectAbstractNode )
 					{
 						// Start tracking the override index position for this object
 						int overrideIndex = 0;
@@ -758,28 +797,28 @@ namespace Axiom.Scripting.Compiler
 						bool nodeHasWildcard = ( !string.IsNullOrEmpty( node.Name ) && node.Name.Contains( "*" ) );
 
 						// Find the matching name node
-						for ( int j = 0; j < overrides.Count; ++j )
+						for( int j = 0; j < overrides.Count; ++j )
 						{
 							ObjectAbstractNode temp = (ObjectAbstractNode)overrides[ j ].Key;
 							// Consider a match a node that has a wildcard and matches an input name
 							bool wildcardMatch = nodeHasWildcard &&
-								( ( new Regex( node.Name ) ).IsMatch( temp.Name ) ||
-									( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
+							                     ( ( new Regex( node.Name ) ).IsMatch( temp.Name ) ||
+							                       ( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
 
-							if ( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
+							if( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
 							{
 								// Pair these two together unless it's already paired
-								if ( overrides[ j ].Value == null )
+								if( overrides[ j ].Value == null )
 								{
 									int currentIterator = i;
 									ObjectAbstractNode currentNode = node;
-									if ( wildcardMatch )
+									if( wildcardMatch )
 									{
 										//If wildcard is matched, make a copy of current material and put it before the iterator, matching its name to the parent. Use same reinterpret cast as above when node is set
 										AbstractNode newNode = dest.Children[ i ].Clone();
 										dest.Children.Insert( currentIterator, newNode );
 										currentNode = (ObjectAbstractNode)dest.Children[ currentIterator ];
-										currentNode.Name = temp.Name;//make the regex match its matcher
+										currentNode.Name = temp.Name; //make the regex match its matcher
 									}
 									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, dest.Children[ currentIterator ] );
 									// Store the max override index for this matched pair
@@ -793,12 +832,14 @@ namespace Axiom.Scripting.Compiler
 									AddError( CompileErrorCode.DuplicateOverride, node.File, node.Line );
 								}
 
-								if ( !wildcardMatch )
+								if( !wildcardMatch )
+								{
 									break;
+								}
 							}
 						}
 
-						if ( nodeHasWildcard )
+						if( nodeHasWildcard )
 						{
 							//if the node has a wildcard it will be deleted since it was duplicated for every match
 							dest.Children.RemoveAt( i );
@@ -809,23 +850,23 @@ namespace Axiom.Scripting.Compiler
 
 				// Now make matches based on index
 				// Loop through destination children searching for name-matching overrides
-				foreach ( AbstractNode i in dest.Children )
+				foreach( AbstractNode i in dest.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						ObjectAbstractNode node = (ObjectAbstractNode)i;
-						if ( !overridden[ node ] )
+						if( !overridden[ node ] )
 						{
 							// Retrieve the minimum override index from the map
 							int overrideIndex = indices[ node ];
 
-							if ( overrideIndex < overrides.Count )
+							if( overrideIndex < overrides.Count )
 							{
 								// Search for minimum matching override
-								for ( int j = overrideIndex; j < overrides.Count; ++j )
+								for( int j = overrideIndex; j < overrides.Count; ++j )
 								{
 									ObjectAbstractNode temp = (ObjectAbstractNode)overrides[ j ].Key;
-									if ( string.IsNullOrEmpty( temp.Name ) && temp.Cls == node.Cls && overrides[ j ].Value == null )
+									if( string.IsNullOrEmpty( temp.Name ) && temp.Cls == node.Cls && overrides[ j ].Value == null )
 									{
 										overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, i );
 										break;
@@ -837,9 +878,9 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				// Loop through overrides, either inserting source nodes or overriding
-				for ( int i = 0; i < overrides.Count; ++i )
+				for( int i = 0; i < overrides.Count; ++i )
 				{
-					if ( overrides[ i ].Value != null )
+					if( overrides[ i ].Value != null )
 					{
 						// Override the destination with the source (base) object
 						_overlayObject( overrides[ i ].Key, (ObjectAbstractNode)overrides[ i ].Value );
@@ -852,7 +893,7 @@ namespace Axiom.Scripting.Compiler
 						// into the destination (child) object
 						AbstractNode newNode = overrides[ i ].Key.Clone();
 						newNode.Parent = dest;
-						if ( insertPos != dest.Children.Count - 1 )
+						if( insertPos != dest.Children.Count - 1 )
 						{
 							dest.Children.Insert( insertPos, newNode );
 						}
@@ -912,8 +953,6 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "gpu_device_rule" ] = (uint)Keywords.ID_GPU_DEVICE_RULE;
 			_keywordMap[ "include" ] = (uint)Keywords.ID_INCLUDE;
 			_keywordMap[ "exclude" ] = (uint)Keywords.ID_EXCLUDE;
-
-
 
 			_keywordMap[ "ambient" ] = (uint)Keywords.ID_AMBIENT;
 			_keywordMap[ "diffuse" ] = (uint)Keywords.ID_DIFFUSE;
@@ -1094,7 +1133,6 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "shared_params" ] = (uint)Keywords.ID_SHARED_PARAMS;
 			_keywordMap[ "shared_param_named" ] = (uint)Keywords.ID_SHARED_PARAM_NAMED;
 			_keywordMap[ "shared_params_ref" ] = (uint)Keywords.ID_SHARED_PARAMS_REF;
-
 
 			// Particle system
 			_keywordMap[ "particle_system" ] = (uint)Keywords.ID_PARTICLE_SYSTEM;
