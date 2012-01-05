@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,6 +44,7 @@ using Axiom.RenderSystems.Xna.HLSL;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -49,7 +54,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// <summary>
 	/// General State values which can be copied easily
 	/// </summary>
-	struct GeneralFixedFunctionState
+	internal struct GeneralFixedFunctionState
 	{
 		#region Factory
 
@@ -62,7 +67,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			gffs.FogMode = FogMode.None;
 			gffs.Shading = Shading.Gouraud;
 			gffs.AlphaRejectFunction = CompareFunction.AlwaysPass;
-			gffs.lightTypeCount = new uint[ (uint)( LightType.Spotlight ) + 1 ];
+			gffs.lightTypeCount = new uint[(uint)( LightType.Spotlight ) + 1];
 
 			return gffs;
 		}
@@ -159,8 +164,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		internal void ResetLightTypeCounts()
 		{
-			for ( int index = 0; index < lightTypeCount.Length; index++ )
+			for( int index = 0; index < lightTypeCount.Length; index++ )
+			{
 				lightTypeCount[ index ] = 0;
+			}
 		}
 
 		internal void IncrementLightTypeCount( LightType lightType )
@@ -169,6 +176,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		#region Object Implementation
+
 		public override bool Equals( object obj )
 		{
 			return obj.GetHashCode() == GetHashCode();
@@ -178,6 +186,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		{
 			return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
 		}
+
 		#endregion
 	}
 }

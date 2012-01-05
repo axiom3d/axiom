@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,8 +45,10 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Media;
+
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -69,19 +75,12 @@ namespace Axiom.Graphics
 	{
 		internal RenderTarget source;
 
-		public RenderTarget Source
-		{
-			get
-			{
-				return source;
-			}
-		}
+		public RenderTarget Source { get { return source; } }
 
 		public RenderTargetEventArgs( RenderTarget source )
 		{
 			this.source = source;
 		}
-
 	}
 
 	/// <summary>
@@ -91,20 +90,13 @@ namespace Axiom.Graphics
 	{
 		internal Viewport viewport;
 
-		public Viewport Viewport
-		{
-			get
-			{
-				return viewport;
-			}
-		}
+		public Viewport Viewport { get { return viewport; } }
 
 		public RenderTargetViewportEventArgs( RenderTarget source, Viewport viewport )
 			: base( source )
 		{
 			this.viewport = viewport;
 		}
-
 	}
 
 	#endregion Delegate/EventArg Declarations
@@ -117,7 +109,7 @@ namespace Axiom.Graphics
 	///		render target could be a window on a screen, or another
 	///		offscreen surface like a render texture.
 	///	</remarks>
-	public abstract class RenderTarget : DisposableObject
+	abstract public class RenderTarget : DisposableObject
 	{
 		#region Enumerations and Structures
 
@@ -142,30 +134,37 @@ namespace Axiom.Graphics
 			/// The number of Frames per second.
 			/// </summary>
 			public float LastFPS;
+
 			/// <summary>
 			/// The average number of Frames per second since Root.StartRendering was called.
 			/// </summary>
 			public float AverageFPS;
+
 			/// <summary>
 			/// The highest number of Frames per second since Root.StartRendering was called.
 			/// </summary>
 			public float BestFPS;
+
 			/// <summary>
 			/// The lowest number of Frames per second since Root.StartRendering was called.
 			/// </summary>
 			public float WorstFPS;
+
 			/// <summary>
 			/// The best frame time recorded since Root.StartRendering was called.
 			/// </summary>
 			public float BestFrameTime;
+
 			/// <summary>
 			/// The worst frame time recorded since Root.StartRendering was called.
 			/// </summary>
 			public float WorstFrameTime;
+
 			/// <summary>
 			/// The number of triangles processed in the last call to Update()
 			/// </summary>
 			public float TriangleCount;
+
 			/// <summary>
 			/// The number of batches procecssed in the last call to Update()
 			/// </summary>
@@ -191,18 +190,10 @@ namespace Axiom.Graphics
 		private long _frameCount;
 
 		#region DepthBufferPool Property
+
 		private ushort _poolID;
-		public ushort DepthBufferPool
-		{
-			get
-			{
-				return _poolID;
-			}
-			set
-			{
-				_poolID = value;
-			}
-		}
+		public ushort DepthBufferPool { get { return _poolID; } set { _poolID = value; } }
+
 		#endregion DepthBufferPool Property
 
 		#region Height Property
@@ -211,20 +202,11 @@ namespace Axiom.Graphics
 		///    Height of this render target.
 		/// </summary>
 		private int _height;
+
 		/// <summary>
 		/// Gets/Sets the height of this render target.
 		/// </summary>
-		public virtual int Height
-		{
-			get
-			{
-				return _height;
-			}
-			protected set
-			{
-				_height = value;
-			}
-		}
+		virtual public int Height { get { return _height; } protected set { _height = value; } }
 
 		#endregion Height Property
 
@@ -234,20 +216,11 @@ namespace Axiom.Graphics
 		///    Width of this render target.
 		/// </summary>
 		private int _width;
+
 		/// <summary>
 		/// Gets/Sets the width of this render target.
 		/// </summary>
-		public virtual int Width
-		{
-			get
-			{
-				return _width;
-			}
-			protected set
-			{
-				_width = value;
-			}
-		}
+		virtual public int Width { get { return _width; } protected set { _width = value; } }
 
 		#endregion Width Property
 
@@ -257,20 +230,11 @@ namespace Axiom.Graphics
 		///     Color depth of this render target.
 		/// </summary>
 		private int _colorDepth;
+
 		/// <summary>
 		/// Gets/Sets the color depth of this render target.
 		/// </summary>
-		public virtual int ColorDepth
-		{
-			get
-			{
-				return _colorDepth;
-			}
-			protected set
-			{
-				_colorDepth = value;
-			}
-		}
+		virtual public int ColorDepth { get { return _colorDepth; } protected set { _colorDepth = value; } }
 
 		#endregion ColorDepth Property
 
@@ -280,20 +244,11 @@ namespace Axiom.Graphics
 		///    Indicates the priority of this render target.  Higher priority targets will get processed first.
 		/// </summary>
 		private RenderTargetPriority _priority;
+
 		/// <summary>
 		///    Gets/Sets the priority of this render target.  Higher priority targets will get processed first.
 		/// </summary>
-		public virtual RenderTargetPriority Priority
-		{
-			get
-			{
-				return _priority;
-			}
-			set
-			{
-				_priority = value;
-			}
-		}
+		virtual public RenderTargetPriority Priority { get { return _priority; } set { _priority = value; } }
 
 		#endregion Priority Property
 
@@ -303,21 +258,11 @@ namespace Axiom.Graphics
 		///    Unique name assigned to this render target.
 		/// </summary>
 		private string _name;
+
 		/// <summary>
 		///    Gets/Sets the name of this render target.
 		/// </summary>
-		public virtual string Name
-		{
-			get
-			{
-				return _name;
-			}
-			protected set
-			{
-				_name = value;
-			}
-		}
-
+		virtual public string Name { get { return _name; } protected set { _name = value; } }
 
 		#endregion Name Property
 
@@ -327,13 +272,7 @@ namespace Axiom.Graphics
 		///     Signals whether textures should be flipping before this target
 		///     is updated.  Required for render textures in some API's.
 		/// </summary>
-		public virtual bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool RequiresTextureFlipping { get { return false; } }
 
 		#endregion RequiresTextureFlipping Property
 
@@ -343,21 +282,12 @@ namespace Axiom.Graphics
 		///    Flag that states whether this target is active or not.
 		/// </summary>
 		private bool _isActive = true;
+
 		/// <summary>
 		///    Gets/Sets whether this RenderTarget is active or not.  When inactive, it will be skipped
 		///    during processing each frame.
 		/// </summary>
-		public virtual bool IsActive
-		{
-			get
-			{
-				return _isActive && !IsDisposed;
-			}
-			set
-			{
-				_isActive = value;
-			}
-		}
+		virtual public bool IsActive { get { return _isActive && !IsDisposed; } set { _isActive = value; } }
 
 		#endregion IsActive Property
 
@@ -367,6 +297,7 @@ namespace Axiom.Graphics
 		///     Is this render target updated automatically each frame?
 		/// </summary>
 		private bool _isAutoUpdated = true;
+
 		/// <summary>
 		///    Gets/Sets whether this target should be automatically updated if Axiom's rendering
 		///    loop or Root.UpdateAllRenderTargets is being used.
@@ -377,34 +308,14 @@ namespace Axiom.Graphics
 		///		automatically. This method allows you to control that behaviour, if 
 		///		for example you have a render target which you only want to update periodically.
 		/// </remarks>
-		public virtual bool IsAutoUpdated
-		{
-			get
-			{
-				return _isAutoUpdated;
-			}
-			set
-			{
-				_isAutoUpdated = value;
-			}
-		}
+		virtual public bool IsAutoUpdated { get { return _isAutoUpdated; } set { _isAutoUpdated = value; } }
 
 		#endregion IsAutoUpdated Property
 
 		#region isDepthBuffered Property
 
 		private bool _isDepthBuffered = true;
-		protected bool isDepthBuffered
-		{
-			get
-			{
-				return _isDepthBuffered;
-			}
-			set
-			{
-				_isDepthBuffered = value;
-			}
-		}
+		protected bool isDepthBuffered { get { return _isDepthBuffered; } set { _isDepthBuffered = value; } }
 
 		#endregion isDepthBuffered Property
 
@@ -420,13 +331,7 @@ namespace Axiom.Graphics
 		/// enabled through the 'gamma' creation misc parameter. For textures, 
 		/// it is enabled through the hwGamma parameter to the create call.
 		/// </summary>
-		public bool HardwareGammaEnabled
-		{
-			get
-			{
-				return _hwGamma;
-			}
-		}
+		public bool HardwareGammaEnabled { get { return _hwGamma; } }
 
 		#endregion HardwareGammaEnabled Property
 
@@ -436,44 +341,24 @@ namespace Axiom.Graphics
 		///    Flag that states whether this target is FSAA.
 		/// </summary>
 		private int _fsaa = 0;
+
 		/// <summary>
 		///    Gets/Sets whether this RenderTarget is FSAA or not.
 		/// </summary>
-		public virtual int FSAA
-		{
-			get
-			{
-				return _fsaa;
-			}
-			set
-			{
-				_fsaa = value;
-			}
-		}
+		virtual public int FSAA { get { return _fsaa; } set { _fsaa = value; } }
 
 		#endregion FSAA Property
 
 		#region FSAAHint Property
+
 		private string _fsaaHint;
-		public string FSAAHint
-		{
-			get
-			{
-				return _fsaaHint;
-			}
-			set
-			{
-				_fsaaHint = value;
-			}
-		}
+		public string FSAAHint { get { return _fsaaHint; } set { _fsaaHint = value; } }
+
 		#endregion FSAAHint Property
 
 		#endregion Fields and Properties
 
-		public RenderTarget()
-		{
-
-		}
+		public RenderTarget() {}
 
 		public RenderTarget( string name )
 		{
@@ -517,49 +402,49 @@ namespace Axiom.Graphics
 		/// </summary>
 		public event RenderTargetViewportEventHandler ViewportRemoved;
 
-		protected virtual void OnBeforeUpdate()
+		virtual protected void OnBeforeUpdate()
 		{
-			if ( BeforeUpdate != null )
+			if( BeforeUpdate != null )
 			{
 				BeforeUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
-		protected virtual void OnAfterUpdate()
+		virtual protected void OnAfterUpdate()
 		{
-			if ( AfterUpdate != null )
+			if( AfterUpdate != null )
 			{
 				AfterUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
-		protected virtual void OnBeforeViewportUpdate( Viewport viewport )
+		virtual protected void OnBeforeViewportUpdate( Viewport viewport )
 		{
-			if ( BeforeViewportUpdate != null )
+			if( BeforeViewportUpdate != null )
 			{
 				BeforeViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
-		protected virtual void OnAfterViewportUpdate( Viewport viewport )
+		virtual protected void OnAfterViewportUpdate( Viewport viewport )
 		{
-			if ( AfterViewportUpdate != null )
+			if( AfterViewportUpdate != null )
 			{
 				AfterViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
-		protected virtual void OnViewportAdded( Viewport viewport )
+		virtual protected void OnViewportAdded( Viewport viewport )
 		{
-			if ( ViewportAdded != null )
+			if( ViewportAdded != null )
 			{
 				ViewportAdded( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
-		protected virtual void OnViewportRemoved( Viewport viewport )
+		virtual protected void OnViewportRemoved( Viewport viewport )
 		{
-			if ( ViewportRemoved != null )
+			if( ViewportRemoved != null )
 			{
 				ViewportRemoved( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
@@ -570,34 +455,23 @@ namespace Axiom.Graphics
 		#region Viewport Management
 
 		private ViewportCollection _viewportList = new ViewportCollection();
+
 		/// <summary>
 		/// The list of viewports
 		/// </summary>
-		protected virtual ViewportCollection viewportList
-		{
-			get
-			{
-				return _viewportList;
-			}
-		}
+		virtual protected ViewportCollection viewportList { get { return _viewportList; } }
 
 		/// <summary>
 		///     Gets the number of viewports attached to this render target.
 		/// </summary>
-		public virtual int ViewportCount
-		{
-			get
-			{
-				return _viewportList.Count;
-			}
-		}
+		virtual public int ViewportCount { get { return _viewportList.Count; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public virtual Viewport GetViewport( int index )
+		virtual public Viewport GetViewport( int index )
 		{
 			Debug.Assert( index >= 0 && index < _viewportList.Count );
 
@@ -634,10 +508,12 @@ namespace Axiom.Graphics
 		///		viewports i.e. picture-in-picture). Higher ZOrders are on top of lower ones. The actual number
 		///		is irrelevant, only the relative ZOrder matters (you can leave gaps in the numbering)</param>
 		/// <returns></returns>
-		public virtual Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
+		virtual public Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
 		{
-			if ( _viewportList.ContainsKey( zOrder ) )
+			if( _viewportList.ContainsKey( zOrder ) )
+			{
 				throw new AxiomException( String.Format( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", _name, zOrder ) );
+			}
 
 			// create a new camera and add it to our internal collection
 			Viewport viewport = new Viewport( camera, this, left, top, width, height, zOrder );
@@ -654,9 +530,9 @@ namespace Axiom.Graphics
 		/// <param name="zOrder">
 		/// The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
 		/// </param>
-		public virtual void RemoveViewport( int zOrder )
+		virtual public void RemoveViewport( int zOrder )
 		{
-			if ( _viewportList.ContainsKey( zOrder ) )
+			if( _viewportList.ContainsKey( zOrder ) )
 			{
 				Viewport viewport = _viewportList[ zOrder ];
 
@@ -669,9 +545,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Removes all viewports on this target.
 		/// </summary>
-		public virtual void RemoveAllViewports()
+		virtual public void RemoveAllViewports()
 		{
-			foreach ( Viewport pair in _viewportList.Values )
+			foreach( Viewport pair in _viewportList.Values )
 			{
 				OnViewportRemoved( pair );
 			}
@@ -693,8 +569,8 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
 		/// <param name="worstFPS">The worst FPS rating seen so far</param>
-		[Obsolete("The RenderTarget.Statistics Property provides complete access to all statistical data.")]
-		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
+		[Obsolete( "The RenderTarget.Statistics Property provides complete access to all statistical data." )]
+		virtual public void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
 		{
 			lastFPS = _statistics.LastFPS;
 			avgFPS = _statistics.AverageFPS;
@@ -705,105 +581,51 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Retieves details of current rendering performance.
 		/// </summary>
-		public virtual FrameStatistics Statistics
-		{
-			get
-			{
-				return this._statistics;
-			}
-		}
+		virtual public FrameStatistics Statistics { get { return this._statistics; } }
 
 		/// <summary>
 		/// The number of frames per second (FPS) based on the last frame rendered.
 		/// </summary>
-		public virtual float LastFPS
-		{
-			get
-			{
-				return _statistics.LastFPS;
-			}
-		}
+		virtual public float LastFPS { get { return _statistics.LastFPS; } }
 
 		/// The average frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		public virtual float AverageFPS
-		{
-			get
-			{
-				return _statistics.AverageFPS;
-			}
-		}
+		virtual public float AverageFPS { get { return _statistics.AverageFPS; } }
 
 		/// <summary>
 		/// The best frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		public virtual float BestFPS
-		{
-			get
-			{
-				return _statistics.BestFPS;
-			}
-		}
+		virtual public float BestFPS { get { return _statistics.BestFPS; } }
 
 		/// <summary>
 		/// The worst frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		public virtual float WorstFPS
-		{
-			get
-			{
-				return _statistics.WorstFPS;
-			}
-		}
+		virtual public float WorstFPS { get { return _statistics.WorstFPS; } }
 
 		/// <summary>
 		/// The best frame time
 		/// </summary>
-		public virtual float BestFrameTime
-		{
-			get
-			{
-				return _statistics.BestFrameTime;
-			}
-		}
+		virtual public float BestFrameTime { get { return _statistics.BestFrameTime; } }
 
 		/// <summary>
 		/// The worst frame time
 		/// </summary>
-		public virtual float WorstFrameTime
-		{
-			get
-			{
-				return _statistics.WorstFrameTime;
-			}
-		}
+		virtual public float WorstFrameTime { get { return _statistics.WorstFrameTime; } }
 
 		/// <summary>
 		/// The number of triangles rendered in the last Update() call. 
 		/// </summary>
-		public virtual float LastTriangleCount
-		{
-			get
-			{
-				return _statistics.TriangleCount;
-			}
-		}
+		virtual public float LastTriangleCount { get { return _statistics.TriangleCount; } }
 
 		/// <summary>
 		/// The number of triangles rendered in the last Update() call. 
 		/// </summary>
-		public virtual float LastBatchCount
-		{
-			get
-			{
-				return _statistics.BatchCount;
-			}
-		}
+		virtual public float LastBatchCount { get { return _statistics.BatchCount; } }
 
 		/// <summary>
 		/// Resets saved frame-rate statistices.
 		/// </summary>
-		public virtual void ResetStatistics()
+		virtual public void ResetStatistics()
 		{
 			_statistics.AverageFPS = 0.0F;
 			_statistics.BestFPS = 0.0F;
@@ -832,25 +654,28 @@ namespace Axiom.Graphics
 			_statistics.WorstFrameTime = Math.Utility.Max( _statistics.WorstFrameTime, frameTime );
 
 			// check if new second (update only once per second)
-			if ( thisTime - _lastSecond > 1000 )
+			if( thisTime - _lastSecond > 1000 )
 			{
 				// new second - not 100% precise
 				_statistics.LastFPS = (float)_frameCount / (float)( thisTime - _lastSecond ) * 1000;
 
-				if ( _statistics.AverageFPS == 0 )
+				if( _statistics.AverageFPS == 0 )
+				{
 					_statistics.AverageFPS = _statistics.LastFPS;
+				}
 				else
+				{
 					_statistics.AverageFPS = ( _statistics.AverageFPS + _statistics.LastFPS ) / 2; // not strictly correct, but good enough
+				}
 
 				_statistics.BestFPS = Math.Utility.Max( _statistics.BestFPS, _statistics.LastFPS );
 				_statistics.WorstFPS = Math.Utility.Min( _statistics.WorstFPS, _statistics.LastFPS );
 
 				_lastSecond = thisTime;
 				_frameCount = 0;
-
 			}
-
 		}
+
 		#endregion Statistics
 
 		#region Custom Attributes
@@ -870,13 +695,7 @@ namespace Axiom.Graphics
 			return this[ attribute ];
 		}
 
-		public virtual object this[ string attribute ]
-		{
-			get
-			{
-				throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
-			}
-		}
+		virtual public object this[ string attribute ] { get { throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) ); } }
 
 		#endregion Custom Attributes
 
@@ -890,7 +709,7 @@ namespace Axiom.Graphics
 		///		to render into this window to render it's view, and then
 		///		the window buffers are swapped via SwapBuffers()
 		///	</remarks>
-		public virtual void Update()
+		virtual public void Update()
 		{
 			Update( true );
 		}
@@ -913,7 +732,7 @@ namespace Axiom.Graphics
 		///	queued commands complete. Or, you might do this if you want custom
 		///	control over your windows, such as for externally created windows.
 		///	</param>
-		public virtual void Update( bool swapBuffers )
+		virtual public void Update( bool swapBuffers )
 		{
 			// Clear per frame statistics
 			_statistics.BatchCount = _statistics.TriangleCount = 0;
@@ -923,7 +742,7 @@ namespace Axiom.Graphics
 
 			// Go through viewportList in Z-order
 			// Tell each to refresh
-			for ( int i = 0; i < _viewportList.Count; i++ )
+			for( int i = 0; i < _viewportList.Count; i++ )
 			{
 				Viewport viewport = _viewportList.Values[ i ];
 
@@ -945,11 +764,11 @@ namespace Axiom.Graphics
 			// notify event handlers that this target update is complete
 			OnAfterUpdate();
 
-			if ( swapBuffers )
+			if( swapBuffers )
+			{
 				this.SwapBuffers( Root.Instance.RenderSystem.IsVSync );
+			}
 		}
-
-
 
 		/// <summary>
 		///		Utility method to notify a render target that a camera has been removed, 
@@ -958,12 +777,12 @@ namespace Axiom.Graphics
 		/// <param name="camera"></param>
 		internal void NotifyCameraRemoved( Camera camera )
 		{
-			for ( int i = 0; i < _viewportList.Count; i++ )
+			for( int i = 0; i < _viewportList.Count; i++ )
 			{
 				Viewport viewport = _viewportList.Values[ i ];
 
 				// remove the link to this camera
-				if ( viewport.Camera == camera )
+				if( viewport.Camera == camera )
 				{
 					viewport.Camera = null;
 				}
@@ -990,7 +809,7 @@ namespace Axiom.Graphics
 		{
 			PixelFormat pf = suggestPixelFormat();
 
-			byte[] data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+			byte[] data = new byte[Width * Height * PixelUtil.GetNumElemBytes( pf )];
 			GCHandle bufGCHandle = new GCHandle();
 			bufGCHandle = GCHandle.Alloc( data, GCHandleType.Pinned );
 			PixelBox pb = new PixelBox( Width, Height, 1, pf, bufGCHandle.AddrOfPinnedObject() );
@@ -999,8 +818,10 @@ namespace Axiom.Graphics
 
 			( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
 
-			if ( bufGCHandle.IsAllocated )
+			if( bufGCHandle.IsAllocated )
+			{
 				bufGCHandle.Free();
+			}
 		}
 
 		public void CopyContentsToMemory( PixelBox pb )
@@ -1008,13 +829,13 @@ namespace Axiom.Graphics
 			CopyContentsToMemory( pb, FrameBuffer.Auto );
 		}
 
-		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
+		abstract public void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
 
 		/// <summary>
 		/// Suggests a pixel format to use for extracting the data in this target, when calling <see cref="CopyContentsToMemory"/>.
 		/// </summary>
 		/// <returns></returns>
-		protected virtual PixelFormat suggestPixelFormat()
+		virtual protected PixelFormat suggestPixelFormat()
 		{
 			return PixelFormat.BYTE_RGBA;
 		}
@@ -1041,10 +862,7 @@ namespace Axiom.Graphics
 		///		resulting from flipping buffers when the beam is
 		///		in the progress of drawing the last frame). 
 		///</param>
-		public virtual void SwapBuffers( bool waitForVSync )
-		{
-		}
-
+		virtual public void SwapBuffers( bool waitForVSync ) {}
 
 		#endregion Methods
 
@@ -1056,26 +874,27 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Delete viewports
-					while ( _viewportList.Count > 0 )
+					while( _viewportList.Count > 0 )
 					{
 						Viewport vp = _viewportList.Values[ 0 ];
 						OnViewportRemoved( vp );
 						this._viewportList.Remove( vp.ZOrder );
 					}
 					// Write final performance stats
-					if ( LogManager.Instance != null )
+					if( LogManager.Instance != null )
+					{
 						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AverageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
+					}
 				}
 			}
 			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

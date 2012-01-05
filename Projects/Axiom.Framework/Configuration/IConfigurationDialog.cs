@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,11 +19,11 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 namespace Axiom.Framework.Configuration
 {
-
 	/// <summary>
 	/// 
 	/// </summary>
@@ -31,10 +32,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets the selected rendersystem (and all the values of options set for it)
 		/// </summary>
-		Axiom.Graphics.RenderSystem RenderSystem
-		{
-			get;
-		}
+		Axiom.Graphics.RenderSystem RenderSystem { get; }
 
 		/// <summary>
 		/// Display the dialog of configuration options
@@ -43,6 +41,5 @@ namespace Axiom.Framework.Configuration
 		/// A <see cref="DialogResult"/>
 		/// </returns>
 		DialogResult Show();
-
 	}
 }

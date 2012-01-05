@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -73,17 +75,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Indicates whether all array entries will be generated and added to the definitions map
 			/// </summary>
-			public static bool GenerateAllConstantDefinitionEntries
-			{
-				get
-				{
-					return _generateAllConstantDefinitionArrayEntries;
-				}
-				set
-				{
-					_generateAllConstantDefinitionArrayEntries = value;
-				}
-			}
+			public static bool GenerateAllConstantDefinitionEntries { get { return _generateAllConstantDefinitionArrayEntries; } set { _generateAllConstantDefinitionArrayEntries = value; } }
 
 			/// <summary>
 			/// Generate additional constant entries for arrays based on a base definition.
@@ -114,12 +106,12 @@ namespace Axiom.Graphics
 
 				// paramName[0] version will always exist
 				int maxArrayIndex = 1;
-				if ( baseDef.ArraySize <= 16 || _generateAllConstantDefinitionArrayEntries )
+				if( baseDef.ArraySize <= 16 || _generateAllConstantDefinitionArrayEntries )
 				{
 					maxArrayIndex = baseDef.ArraySize;
 				}
 
-				for ( int i = 0; i < maxArrayIndex; i++ )
+				for( int i = 0; i < maxArrayIndex; i++ )
 				{
 					arrayName = paramName + "[" + i + "]";
 					// increment location

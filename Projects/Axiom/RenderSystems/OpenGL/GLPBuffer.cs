@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLPBuffer.cs 1085 2007-08-13 20:37:24Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,58 +52,28 @@ namespace Axiom.RenderSystems.OpenGL
 	/// An off-screen rendering context. These contexts are always RGBA for simplicity, speed and
 	/// convenience, but the component format is configurable.
 	/// </summary>
-	internal abstract class GLPBuffer
+	abstract internal class GLPBuffer
 	{
 		#region Fields and Properties
 
 		#region Format Property
 
 		private PixelComponentType _format;
-		public PixelComponentType Format
-		{
-			get
-			{
-				return _format;
-			}
-			protected set
-			{
-				_format = value;
-			}
-		}
+		public PixelComponentType Format { get { return _format; } protected set { _format = value; } }
 
 		#endregion Format Property
 
 		#region Width Property
 
 		private int _width;
-		public int Width
-		{
-			get
-			{
-				return _width;
-			}
-			protected set
-			{
-				_width = value;
-			}
-		}
+		public int Width { get { return _width; } protected set { _width = value; } }
 
 		#endregion Width Property
 
 		#region Height Property
 
 		private int _height;
-		public int Height
-		{
-			get
-			{
-				return _height;
-			}
-			protected set
-			{
-				_height = value;
-			}
-		}
+		public int Height { get { return _height; } protected set { _height = value; } }
 
 		#endregion Height Property
 
@@ -109,10 +83,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// Get the GL context that needs to be active to render to this PBuffer.
 		/// </summary>
 		/// <returns></returns>
-		public abstract GLContext Context
-		{
-			get;
-		}
+		abstract public GLContext Context { get; }
 
 		#endregion GLContext Property
 
@@ -126,9 +97,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="format"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public GLPBuffer( PixelComponentType format, int width, int height )
-		{
-		}
+		public GLPBuffer( PixelComponentType format, int width, int height ) {}
 
 		#endregion Construction and Destruction
 
@@ -145,6 +114,5 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion Methods
-
 	}
 }

@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -30,14 +32,11 @@ namespace Axiom.Samples
 	public class SamplePlugin : IPlugin
 	{
 		#region Fields and Properties
+
 		/// <summary>
 		/// 
 		/// </summary>
-		public string Name
-		{
-			get;
-			protected set;
-		}
+		public string Name { get; protected set; }
 
 		/// <summary>
 		/// 
@@ -47,11 +46,13 @@ namespace Axiom.Samples
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		public SamplePlugin()
 		{
 			//this ctor is for axiom's plugin manager
 			this.Name = string.Empty;
 		}
+
 		public SamplePlugin( string name )
 		{
 			this.Name = name;
@@ -60,21 +61,19 @@ namespace Axiom.Samples
 		#endregion Construction and Destruction
 
 		#region Methods
+
 		public void AddSample( Sample s )
 		{
 			Samples.Add( s );
 		}
+
 		#endregion Methods
 
 		#region IPlugin Implementation
 
-		public virtual void Initialize()
-		{
-		}
+		virtual public void Initialize() {}
 
-		public virtual void Shutdown()
-		{
-		}
+		virtual public void Shutdown() {}
 
 		#endregion
 	}

@@ -13,13 +13,15 @@ using Axiom.Math;
 using Axiom.Graphics;
 #if !( SIS )
 using MouseButtons = Axiom.Input.MouseButtons;
+
 using Axiom.Utilities;
 using Axiom.Input;
+
 using InputReader = Axiom.Input.InputReader;
+
 #else
 using InputReader = SharpInputSystem.InputManager;
 #endif
-
 
 #endregion Namespace Declarations
 
@@ -28,9 +30,10 @@ namespace Axiom.Demos
 	/// <summary>
 	///     Base class for Axiom examples.
 	/// </summary>
-	public abstract class TechDemo : IDisposable
+	abstract public class TechDemo : IDisposable
 	{
 		public delegate InputReader ConfigureInput();
+
 		public ConfigureInput SetupInput;
 
 		public TechDemo()
@@ -41,32 +44,12 @@ namespace Axiom.Demos
 		#region Protected Fields
 
 		protected Root engine;
-		public Root Engine
-		{
-			get
-			{
-				return engine;
-			}
-			set
-			{
-				engine = value;
-			}
-		}
+		public Root Engine { get { return engine; } set { engine = value; } }
 		protected Camera camera;
 		protected Viewport viewport;
 		protected SceneManager scene;
 		protected RenderWindow window;
-		public RenderWindow Window
-		{
-			get
-			{
-				return window;
-			}
-			set
-			{
-				window = value;
-			}
-		}
+		public RenderWindow Window { get { return window; } set { window = value; } }
 		protected InputReader input;
 #if ( SIS )
 		protected SharpInputSystem.Mouse mouse;
@@ -88,11 +71,12 @@ namespace Axiom.Demos
 		protected CeGui.Renderer guiRenderer = null;
 		protected CeGui.GuiSheet rootGuiSheet = null;
 #endif
+
 		#endregion Protected Fields
 
 		#region Protected Methods
 
-		public virtual void CreateCamera()
+		virtual public void CreateCamera()
 		{
 			// create a camera and initialize its position
 			camera = scene.CreateCamera( "MainCamera" );
@@ -113,13 +97,13 @@ namespace Axiom.Demos
 			// gets a reference to the default overlay
 			Overlay o = OverlayManager.Instance.GetByName( "Core/DebugOverlay" );
 
-			if ( o == null )
+			if( o == null )
 			{
 				LogManager.Instance.Write( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
 				return;
 			}
 
-			if ( show )
+			if( show )
 			{
 				o.Show();
 			}
@@ -138,14 +122,14 @@ namespace Axiom.Demos
 
 		#region Protected Virtual Methods
 
-		public virtual void ChooseSceneManager()
+		virtual public void ChooseSceneManager()
 		{
 			// Get the SceneManager, a generic one by default
 			scene = engine.CreateSceneManager( "DefaultSceneManager", "TechDemoSMInstance" );
 			scene.ClearScene();
 		}
 
-		public virtual void CreateViewports()
+		virtual public void CreateViewports()
 		{
 			Debug.Assert( window != null, "Attempting to use a null RenderWindow." );
 
@@ -154,11 +138,9 @@ namespace Axiom.Demos
 			viewport.BackgroundColor = ColorEx.Black;
 		}
 
-		public virtual void SetupResources()
-		{
-		}
+		virtual public void SetupResources() {}
 
-		protected virtual bool Setup()
+		virtual protected bool Setup()
 		{
 			// instantiate the Root singleton
 			//engine = new Root( "AxiomEngine.log" );
@@ -190,7 +172,6 @@ namespace Axiom.Demos
 
 			//CreateGUI();
 
-
 			input = SetupInput();
 
 			// call the overridden CreateScene method
@@ -201,15 +182,13 @@ namespace Axiom.Demos
 		/// <summary>
 		/// Optional override method where you can create resource listeners (e.g. for loading screens)
 		/// </summary>
-		protected virtual void CreateResourceListener()
-		{
-		}
+		virtual protected void CreateResourceListener() {}
 
 		/// <summary>
 		/// Optional override method where you can perform resource group loading
 		/// </summary>
 		/// <remarks>Must at least do ResourceGroupManager.Instance.InitializeAllResourceGroups();</remarks>
-		protected virtual void LoadResources()
+		virtual protected void LoadResources()
 		{
 			ResourceGroupManager.Instance.InitializeAllResourceGroups();
 		}
@@ -347,6 +326,7 @@ namespace Axiom.Demos
 								));
 		}
 #endif
+
 		#endregion Protected Virtual Methods
 
 		#region Protected Abstract Methods
@@ -354,7 +334,7 @@ namespace Axiom.Demos
 		/// <summary>
 		///
 		/// </summary>
-		public abstract void CreateScene();
+		abstract public void CreateScene();
 
 		#endregion Protected Abstract Methods
 
@@ -364,44 +344,52 @@ namespace Axiom.Demos
 		{
 			try
 			{
-				if ( Setup() )
+				if( Setup() )
 				{
 					// start the engines rendering loop
 					engine.StartRendering();
 				}
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				// try logging the error here first, before Root is disposed of
-				if ( LogManager.Instance != null )
+				if( LogManager.Instance != null )
 				{
 					LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				}
 			}
 		}
 
-		public virtual void Dispose()
+		virtual public void Dispose()
 		{
-			if ( engine != null )
+			if( engine != null )
 			{
 				// remove event handlers
 				engine.FrameStarted -= OnFrameStarted;
 				engine.FrameEnded -= OnFrameEnded;
 			}
-			if ( scene != null )
+			if( scene != null )
+			{
 				scene.RemoveAllCameras();
+			}
 			camera = null;
-			if ( Root.Instance != null )
+			if( Root.Instance != null )
+			{
 				Root.Instance.RenderSystem.DetachRenderTarget( window );
-			if ( window != null )
+			}
+			if( window != null )
+			{
 				window.Dispose();
-			if ( engine != null )
+			}
+			if( engine != null )
+			{
 				engine.Dispose();
+			}
 		}
 
 		#endregion Public Methods
 
-		protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
+		virtual protected void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			float scaleMove = 200 * evt.TimeSinceLastFrame;
 
@@ -415,50 +403,50 @@ namespace Axiom.Demos
 			// TODO: Move this into an event queueing mechanism that is processed every frame
 			input.Capture();
 
-			if ( input.IsKeyPressed( KeyCodes.Escape ) )
+			if( input.IsKeyPressed( KeyCodes.Escape ) )
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.A ) )
+			if( input.IsKeyPressed( KeyCodes.A ) )
 			{
 				camAccel.x = -0.5f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.D ) )
+			if( input.IsKeyPressed( KeyCodes.D ) )
 			{
 				camAccel.x = 0.5f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.W ) )
+			if( input.IsKeyPressed( KeyCodes.W ) )
 			{
 				camAccel.z = -1.0f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.S ) )
+			if( input.IsKeyPressed( KeyCodes.S ) )
 			{
 				camAccel.z = 1.0f;
 			}
 
 			//camAccel.y += (float)( input.RelativeMouseZ * 0.1f );
 
-			if ( input.IsKeyPressed( KeyCodes.Left ) )
+			if( input.IsKeyPressed( KeyCodes.Left ) )
 			{
 				camera.Yaw( cameraScale );
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Right ) )
+			if( input.IsKeyPressed( KeyCodes.Right ) )
 			{
 				camera.Yaw( -cameraScale );
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Up ) )
+			if( input.IsKeyPressed( KeyCodes.Up ) )
 			{
 				camera.Pitch( cameraScale );
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Down ) )
+			if( input.IsKeyPressed( KeyCodes.Down ) )
 			{
 				camera.Pitch( -cameraScale );
 			}
@@ -467,13 +455,13 @@ namespace Axiom.Demos
 			keypressDelay -= evt.TimeSinceLastFrame;
 
 			// toggle rendering mode
-			if ( input.IsKeyPressed( KeyCodes.R ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.R ) && keypressDelay < 0 )
 			{
-				if ( camera.PolygonMode == PolygonMode.Points )
+				if( camera.PolygonMode == PolygonMode.Points )
 				{
 					camera.PolygonMode = PolygonMode.Solid;
 				}
-				else if ( camera.PolygonMode == PolygonMode.Solid )
+				else if( camera.PolygonMode == PolygonMode.Solid )
 				{
 					camera.PolygonMode = PolygonMode.Wireframe;
 				}
@@ -487,10 +475,10 @@ namespace Axiom.Demos
 				keypressDelay = .3f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.T ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.T ) && keypressDelay < 0 )
 			{
 				// toggle the texture settings
-				switch ( filtering )
+				switch( filtering )
 				{
 					case TextureFiltering.Bilinear:
 						filtering = TextureFiltering.Trilinear;
@@ -515,7 +503,7 @@ namespace Axiom.Demos
 			}
 
 #if !( XBOX || XBOX360 )
-			if ( input.IsKeyPressed( KeyCodes.P ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.P ) && keypressDelay < 0 )
 			{
 				string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
 				string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
@@ -529,7 +517,7 @@ namespace Axiom.Demos
 			}
 #endif
 
-			if ( input.IsKeyPressed( KeyCodes.B ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.B ) && keypressDelay < 0 )
 			{
 				scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
 
@@ -538,14 +526,14 @@ namespace Axiom.Demos
 				keypressDelay = .3f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.F ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.F ) && keypressDelay < 0 )
 			{
 				// hide all overlays, includes ones besides the debug overlay
 				viewport.ShowOverlays = !viewport.ShowOverlays;
 				keypressDelay = .3f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Comma ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.Comma ) && keypressDelay < 0 )
 			{
 				Root.Instance.MaxFramesPerSecond = 60;
 
@@ -554,7 +542,7 @@ namespace Axiom.Demos
 				keypressDelay = .3f;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Period ) && keypressDelay < 0 )
+			if( input.IsKeyPressed( KeyCodes.Period ) && keypressDelay < 0 )
 			{
 				Root.Instance.MaxFramesPerSecond = 0;
 
@@ -564,12 +552,12 @@ namespace Axiom.Demos
 			}
 
 			// turn off debug text when delay ends
-			if ( debugTextDelay < 0.0f )
+			if( debugTextDelay < 0.0f )
 			{
 				debugTextDelay = 0.0f;
 				debugText = "";
 			}
-			else if ( debugTextDelay > 0.0f )
+			else if( debugTextDelay > 0.0f )
 			{
 				debugTextDelay -= evt.TimeSinceLastFrame;
 			}
@@ -592,7 +580,7 @@ namespace Axiom.Demos
 #endif
 
 #if ( SIS )
-			// TODO: Move this into an event queueing mechanism that is processed every frame
+	// TODO: Move this into an event queueing mechanism that is processed every frame
 			mouse.Capture();
 			keyboard.Capture();
 
@@ -741,40 +729,44 @@ namespace Axiom.Demos
 			camera.MoveRelative( camVelocity * evt.TimeSinceLastFrame );
 
 			// Now dampen the Velocity - only if user is not accelerating
-			if ( camAccel == Vector3.Zero )
+			if( camAccel == Vector3.Zero )
 			{
 				camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
 			}
 		}
 
-		protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
-		{
-		}
+		virtual protected void OnFrameRenderingQueued( object source, FrameEventArgs evt ) {}
 
-		protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
+		virtual protected void OnFrameEnded( object source, FrameEventArgs evt )
 		{
 			UpdateStats();
 		}
 
+		private DateTime averageStart = DateTime.Now;
+		private float sum = 0;
+		private float average = 0;
+		private int elapsedFrames = 1;
 
-		DateTime averageStart = DateTime.Now;
-		float sum = 0;
-		float average = 0;
-		int elapsedFrames = 1;
 		protected void UpdateStats()
 		{
 			// TODO: Replace with CEGUI
 			OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/CurrFps" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
+			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/BestFps" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
+			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/WorstFps" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
+			}
 
 			//element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
 			//element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
@@ -783,22 +775,29 @@ namespace Axiom.Demos
 			sum += Root.Instance.CurrentFPS;
 			average = sum / elapsedFrames;
 			elapsedFrames++;
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
+			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/NumBatches" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = string.Format( "Batch Count: {0}", scene.TargetRenderSystem.BatchesRendered );
+			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
-			if ( element != null )
+			if( element != null )
+			{
 				element.Text = debugText;
+			}
 		}
-
 
 		/// <summary>
 		/// Show a text message on screen for two seconds.
@@ -820,7 +819,6 @@ namespace Axiom.Demos
 			debugTextDelay = delay;
 		}
 
-
 		protected delegate void KeyPressCommand();
 
 		protected void IfKeyPressed( KeyCodes key, KeyPressCommand command )
@@ -830,18 +828,18 @@ namespace Axiom.Demos
 
 		protected void IfKeyPressed( KeyCodes key, float delay, KeyPressCommand command )
 		{
-			if ( input.IsKeyPressed( key ) && keypressDelay < 0.0f )
+			if( input.IsKeyPressed( key ) && keypressDelay < 0.0f )
 			{
 				keypressDelay = delay;
 				command();
 			}
 		}
-
 	}
 
 	public class TechDemoListener : IWindowEventListener
 	{
 		private RenderWindow _mw;
+
 		public TechDemoListener( RenderWindow mainWindow )
 		{
 			Contract.RequiresNotNull( mainWindow, "mainWindow" );
@@ -853,17 +851,13 @@ namespace Axiom.Demos
 		/// Window has moved position
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowMoved( RenderWindow rw )
-		{
-		}
+		public void WindowMoved( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has resized
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowResized( RenderWindow rw )
-		{
-		}
+		public void WindowResized( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has closed
@@ -874,7 +868,7 @@ namespace Axiom.Demos
 			Contract.RequiresNotNull( rw, "RenderWindow" );
 
 			// Only do this for the Main Window
-			if ( rw == _mw )
+			if( rw == _mw )
 			{
 				Root.Instance.QueueEndRendering();
 			}
@@ -884,10 +878,6 @@ namespace Axiom.Demos
 		/// Window lost/regained the focus
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowFocusChange( RenderWindow rw )
-		{
-		}
-
+		public void WindowFocusChange( RenderWindow rw ) {}
 	}
-
 }

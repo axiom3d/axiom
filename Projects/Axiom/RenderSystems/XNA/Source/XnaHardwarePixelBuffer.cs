@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -45,6 +49,7 @@ using Axiom.RenderSystems.Xna;
 
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Root = Axiom.Core.Root;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -67,83 +72,69 @@ namespace Axiom.RenderSystems.Xna
 		///    Xna Device
 		///</summary>
 		protected XFG.GraphicsDevice device;
+
 		///<summary>
 		///    Surface abstracted by this buffer
 		///</summary>
 		protected ushort mipLevel;
+
 		protected XFG.Texture2D surface;
+
 		///<summary>
 		///    FSAA Surface abstracted by this buffer
 		///</summary>
 		protected XFG.RenderTarget2D fsaaSurface;
+
 		///<summary>
 		///    Volume abstracted by this buffer
 		///</summary>
 		protected XFG.Texture3D volume;
+
 		///<summary>
 		///    Temporary surface in main memory if direct locking of mSurface is not possible
 		///</summary>
 		protected XFG.Texture2D tempSurface;
+
 		///<summary>
 		///    Temporary volume in main memory if direct locking of mVolume is not possible
 		///</summary>
 		protected XFG.Texture3D tempVolume;
+
 		///<summary>
 		///    Doing Mipmapping?
 		///</summary>
 		protected bool doMipmapGen;
+
 		///<summary>
 		///    Hardware Mipmaps?
 		///</summary>
 		protected bool HWMipmaps;
+
 		///<summary>
 		///    The Mipmap texture?
 		///</summary>
 		protected XFG.Texture mipTex;
+
 		///<summary>
 		///    Render targets
 		///</summary>
 		protected List<RenderTexture> sliceTRT;
 
-
 		private byte[] _bufferBytes;
-		BasicBox _lockedBox;
+		private BasicBox _lockedBox;
 
-		XFG.RenderTarget2D renderTarget;
-		public XFG.RenderTarget2D RenderTarget
-		{
-			get
-			{
-				return renderTarget;
-			}
-		}
+		private XFG.RenderTarget2D renderTarget;
+		public XFG.RenderTarget2D RenderTarget { get { return renderTarget; } }
 
 		///<summary>
 		/// Accessor for surface
 		///</summary>
-		public XFG.RenderTarget2D FSAASurface
-		{
-			get
-			{
-				return fsaaSurface;
-			}
-		}
-
+		public XFG.RenderTarget2D FSAASurface { get { return fsaaSurface; } }
 
 		///<summary>
 		/// Accessor for surface
 		///</summary>
-		public XFG.Texture Surface
-		{
-			get
-			{
-				return surface;
-			}
-			set
-			{
-				surface = (XFG.Texture2D)value;
-			}
-		}
+		public XFG.Texture Surface { get { return surface; } set { surface = (XFG.Texture2D)value; } }
 
 		#endregion Fields and Properties
 
@@ -173,13 +164,12 @@ namespace Axiom.RenderSystems.Xna
 		///<param name="useSystemMemory"></param>
 		///<param name="useShadowBuffer"></param>
 		public XnaHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-			: base( width, height, depth, format, usage, useSystemMemory, useShadowBuffer )
-		{
-		}
+			: base( width, height, depth, format, usage, useSystemMemory, useShadowBuffer ) {}
 
 		#endregion Construction and Destruction
 
 		#region Methods
+
 		///<summary>
 		///    Call this to associate a Xna Texture2D with this pixel buffer
 		///</summary>
@@ -198,8 +188,10 @@ namespace Axiom.RenderSystems.Xna
 			SlicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				CreateRenderTextures( update );
+			}
 		}
 
 		public void Bind( XFG.GraphicsDevice device, XFG.RenderTarget surface, bool update )
@@ -216,10 +208,11 @@ namespace Axiom.RenderSystems.Xna
 			SlicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				CreateRenderTextures( update );
+			}
 		}
-
 
 		///<summary>
 		///    Call this to associate a Xna Texture3D with this pixel buffer
@@ -238,8 +231,10 @@ namespace Axiom.RenderSystems.Xna
 			SlicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				CreateRenderTextures( update );
+			}
 		}
 
 		///<summary>
@@ -248,11 +243,13 @@ namespace Axiom.RenderSystems.Xna
 		///<param name="update">are we updating an existing texture</param>
 		protected void CreateRenderTextures( bool update )
 		{
-			if ( update )
+			if( update )
 			{
 				Debug.Assert( sliceTRT.Count == Depth );
-				foreach ( XnaRenderTexture trt in sliceTRT )
+				foreach( XnaRenderTexture trt in sliceTRT )
+				{
 					trt.Rebind( this );
+				}
 				return;
 			}
 
@@ -260,7 +257,7 @@ namespace Axiom.RenderSystems.Xna
 			// Create render target for each slice
 			sliceTRT.Clear();
 			Debug.Assert( Depth == 1 );
-			for ( int zoffset = 0; zoffset < Depth; ++zoffset )
+			for( int zoffset = 0; zoffset < Depth; ++zoffset )
 			{
 				string name = "rtt/" + this.ID;
 				RenderTexture trt = new XnaRenderTexture( name, this );
@@ -274,14 +271,18 @@ namespace Axiom.RenderSystems.Xna
 		///</summary>
 		protected void DestroyRenderTextures()
 		{
-			if ( sliceTRT.Count == 0 )
+			if( sliceTRT.Count == 0 )
+			{
 				return;
+			}
 
-			for ( int i = 0; i < sliceTRT.Count; ++i )
+			for( int i = 0; i < sliceTRT.Count; ++i )
 			{
 				RenderTexture trt = sliceTRT[ i ];
-				if ( trt != null )
+				if( trt != null )
+				{
 					Root.Instance.RenderSystem.DestroyRenderTarget( trt.Name );
+				}
 			}
 		}
 
@@ -319,10 +320,10 @@ namespace Axiom.RenderSystems.Xna
 
 			// Get src.Data as byte[]
 			bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
-			byte[] newBuffer = new byte[ bufSize ];
+			byte[] newBuffer = new byte[bufSize];
 			bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
 			// convert to pixelbuffer's native format if necessary
-			if ( XnaHelper.Convert( src.Format ) == XFG.SurfaceFormat.Unknown )
+			if( XnaHelper.Convert( src.Format ) == XFG.SurfaceFormat.Unknown )
 			{
 				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
 				PixelConverter.BulkPixelConversion( src, converted );
@@ -332,7 +333,7 @@ namespace Axiom.RenderSystems.Xna
 				Memory.Copy( converted.Data, bufGCHandle.AddrOfPinnedObject(), bufSize );
 			}
 
-			if ( surface != null )
+			if( surface != null )
 			{
 				surface.SetData<byte>( mipLevel, XnaHelper.ToRectangle( dstBox ), newBuffer, 0, bufSize, XFG.SetDataOptions.None );
 			}
@@ -342,11 +343,15 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// If we allocated a buffer for the temporary conversion, free it here
-			if ( bufGCHandle.IsAllocated )
+			if( bufGCHandle.IsAllocated )
+			{
 				bufGCHandle.Free();
+			}
 
-			if ( doMipmapGen )
+			if( doMipmapGen )
+			{
 				GenMipmaps();
+			}
 		}
 
 		///<summary>
@@ -359,9 +364,7 @@ namespace Axiom.RenderSystems.Xna
 		///    case scaling is done.
 		///    Only call this function when the buffer is unlocked. 
 		///</remarks>
-		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
-		{
-		}
+		public override void BlitToMemory( BasicBox srcBox, PixelBox dst ) {}
 
 		///<summary>
 		///    Internal implementation of <see cref="HardwareBuffer.Lock"/>.
@@ -372,13 +375,13 @@ namespace Axiom.RenderSystems.Xna
 			// Set extents and format
 			PixelBox rval = new PixelBox( lockBox, Format );
 			int sizeInBytes = PixelUtil.GetMemorySize( lockBox.Width, lockBox.Height, lockBox.Depth, XnaHelper.Convert( surface.Format ) );
-			_bufferBytes = new byte[ sizeInBytes ];
+			_bufferBytes = new byte[sizeInBytes];
 
 			surface.GetData( mipLevel,
-							new Microsoft.Xna.Framework.Rectangle( lockBox.Left, lockBox.Top, lockBox.Right, lockBox.Bottom ),
-						   _bufferBytes, 0, _bufferBytes.Length );
+			                 new Microsoft.Xna.Framework.Rectangle( lockBox.Left, lockBox.Top, lockBox.Right, lockBox.Bottom ),
+			                 _bufferBytes, 0, _bufferBytes.Length );
 
-			fixed ( byte* bytes = &_bufferBytes[ 0 ] )
+			fixed( byte* bytes = &_bufferBytes[ 0 ] )
 			{
 				rval.Data = new IntPtr( bytes );
 			}
@@ -393,17 +396,16 @@ namespace Axiom.RenderSystems.Xna
 		{
 			//set the bytes array inside the texture
 			surface.SetData( mipLevel,
-							new Microsoft.Xna.Framework.Rectangle( _lockedBox.Left, _lockedBox.Top, _lockedBox.Right, _lockedBox.Bottom ),
-							_bufferBytes, 0,
-							_bufferBytes.Length,
-							Microsoft.Xna.Framework.Graphics.SetDataOptions.None );
+			                 new Microsoft.Xna.Framework.Rectangle( _lockedBox.Left, _lockedBox.Top, _lockedBox.Right, _lockedBox.Bottom ),
+			                 _bufferBytes, 0,
+			                 _bufferBytes.Length,
+			                 Microsoft.Xna.Framework.Graphics.SetDataOptions.None );
 		}
 
 		public override RenderTexture GetRenderTarget( int slice )
 		{
 			return sliceTRT[ slice ];
 		}
-
 
 		#endregion HardwarePixelBuffer Implementation
 

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,6 +48,7 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 using Axiom.Utilities;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -83,7 +88,6 @@ namespace Axiom.Math
 
 		#region Public methods
 
-
 		/// <summary>
 		///		Returns an interpolated point based on a parametric value over the whole series.
 		/// </summary>
@@ -120,17 +124,21 @@ namespace Axiom.Math
 			Contract.Requires( index >= 0, "index", "Spline point index underrun." );
 			Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
 
-			if ( ( index + 1 ) == pointList.Count )
+			if( ( index + 1 ) == pointList.Count )
 			{
 				// cant interpolate past the end of the list, just return the last point
 				return pointList[ index ];
 			}
 
 			// quick special cases
-			if ( t == 0.0f )
+			if( t == 0.0f )
+			{
 				return pointList[ index ];
-			else if ( t == 1.0f )
+			}
+			else if( t == 1.0f )
+			{
 				return pointList[ index + 1 ];
+			}
 
 			// Time for real interpolation
 			// Construct a Vector4 of powers of 2
@@ -196,41 +204,53 @@ namespace Axiom.Math
 			numPoints = pointList.Count;
 
 			// if there arent at least 2 points, there is nothing to inerpolate
-			if ( numPoints < 2 )
+			if( numPoints < 2 )
+			{
 				return;
+			}
 
 			// closed or open?
-			if ( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			if( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			{
 				isClosed = true;
+			}
 			else
+			{
 				isClosed = false;
+			}
 
 			// loop through the points and generate the tangents
-			for ( i = 0; i < numPoints; i++ )
+			for( i = 0; i < numPoints; i++ )
 			{
 				// special cases for first and last point in list
-				if ( i == 0 )
+				if( i == 0 )
 				{
-					if ( isClosed )
+					if( isClosed )
 					{
 						// Use numPoints-2 since numPoints-1 is the last point and == [0]
 						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
 					}
 					else
+					{
 						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ 0 ] ) );
+					}
 				}
-				else if ( i == numPoints - 1 )
+				else if( i == numPoints - 1 )
 				{
-					if ( isClosed )
+					if( isClosed )
 					{
 						// Use same tangent as already calculated for [0]
 						tangentList.Add( tangentList[ 0 ] );
 					}
 					else
+					{
 						tangentList.Add( 0.5f * ( pointList[ i ] - pointList[ i - 1 ] ) );
+					}
 				}
 				else
+				{
 					tangentList.Add( 0.5f * ( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
+				}
 			}
 		}
 

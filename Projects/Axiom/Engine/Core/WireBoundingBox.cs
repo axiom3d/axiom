@@ -61,12 +61,9 @@ namespace Axiom.Core
 
 		protected float Radius;
 
-		public new AxisAlignedBox BoundingBox
+		new public AxisAlignedBox BoundingBox
 		{
-			get
-			{
-				return base.BoundingBox;
-			}
+			get { return base.BoundingBox; }
 			set
 			{
 				// init the vertices to the aabb
@@ -103,10 +100,10 @@ namespace Axiom.Core
 
 			// create a new hardware vertex buffer for the position data
 			HardwareVertexBuffer buffer = HardwareBufferManager.Instance
-															   .CreateVertexBuffer(
-																	decl.GetVertexSize( PositionBinding ),
-																	vertexData.vertexCount,
-																	BufferUsage.StaticWriteOnly );
+				.CreateVertexBuffer(
+				                    decl.GetVertexSize( PositionBinding ),
+				                    vertexData.vertexCount,
+				                    BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
@@ -132,7 +129,7 @@ namespace Axiom.Core
 			this.BoundingBox = box;
 		}
 
-		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
+		virtual protected void SetupBoundingBoxVertices( AxisAlignedBox aab )
 		{
 			Vector3 vmax = aab.Maximum;
 			Vector3 vmin = aab.Minimum;
@@ -266,9 +263,9 @@ namespace Axiom.Core
 		public override float GetSquaredViewDepth( Camera camera )
 		{
 			Vector3 min = box.Minimum,
-					max = box.Maximum,
-					mid = ( ( max - min ) * 0.5f ) + min,
-					dist = camera.DerivedPosition - mid;
+			        max = box.Maximum,
+			        mid = ( ( max - min ) * 0.5f ) + min,
+			        dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
 		}
@@ -276,13 +273,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Get the local bounding radius of the wire bounding box.
 		/// </summary>
-		public override float BoundingRadius
-		{
-			get
-			{
-				return this.Radius;
-			}
-		}
+		public override float BoundingRadius { get { return this.Radius; } }
 
 		#endregion Implementation of SimpleRenderable
 	}

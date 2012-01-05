@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,7 +52,7 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	static class GLPixelUtil
+	internal static class GLPixelUtil
 	{
 		/// <summary>
 		/// Takes the Axiom pixel format and returns the appropriate GL one
@@ -60,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </returns>
 		public static int GetGLOriginFormat( PixelFormat format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case PixelFormat.A8:
 					return Gl.GL_ALPHA;
@@ -142,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </returns>
 		public static int GetGLOriginDataType( PixelFormat format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case PixelFormat.A8:
 				case PixelFormat.L8:
@@ -189,12 +193,12 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.A2B10G10R10:
 					return Gl.GL_UNSIGNED_INT_2_10_10_10_REV;
 				case PixelFormat.FLOAT16_R:
-				//case PixelFormat.FLOAT16_GR:
+					//case PixelFormat.FLOAT16_GR:
 				case PixelFormat.FLOAT16_RGB:
 				case PixelFormat.FLOAT16_RGBA:
 					return Gl.GL_HALF_FLOAT_ARB;
 				case PixelFormat.FLOAT32_R:
-				//case PixelFormat.FLOAT32_GR:
+					//case PixelFormat.FLOAT32_GR:
 				case PixelFormat.FLOAT32_RGB:
 				case PixelFormat.FLOAT32_RGBA:
 					return Gl.GL_FLOAT;
@@ -215,7 +219,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public static int GetGLInternalFormat( PixelFormat format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case PixelFormat.L8:
 					return Gl.GL_LUMINANCE8;
@@ -289,10 +293,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public static int GetClosestGLInternalFormat( PixelFormat format )
 		{
 			int glFormat = GetGLInternalFormat( format );
-			if ( glFormat == Gl.GL_NONE )
+			if( glFormat == Gl.GL_NONE )
+			{
 				return Gl.GL_RGBA8;
+			}
 			else
+			{
 				return glFormat;
+			}
 		}
 
 		/// <summary>
@@ -307,7 +315,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public static PixelFormat GetClosestPixelFormat( int format )
 		{
-			switch ( format )
+			switch( format )
 			{
 				case Gl.GL_LUMINANCE8:
 					return PixelFormat.L8;
@@ -315,11 +323,11 @@ namespace Axiom.RenderSystems.OpenGL
 					return PixelFormat.L16;
 				case Gl.GL_ALPHA8:
 					return PixelFormat.A8;
-				//case Gl.GL_LUMINANCE4_ALPHA4:
-				//    // Unsupported by GL as input format, use the byte packed format
-				//    return PixelFormat.BYTE_LA;
-				//case Gl.GL_LUMINANCE8_ALPHA8:
-				//    return PixelFormat.BYTE_LA;
+					//case Gl.GL_LUMINANCE4_ALPHA4:
+					//    // Unsupported by GL as input format, use the byte packed format
+					//    return PixelFormat.BYTE_LA;
+					//case Gl.GL_LUMINANCE8_ALPHA8:
+					//    return PixelFormat.BYTE_LA;
 				case Gl.GL_R3_G3_B2:
 					return PixelFormat.R3G3B2;
 				case Gl.GL_RGB5_A1:
@@ -336,16 +344,16 @@ namespace Axiom.RenderSystems.OpenGL
 					return PixelFormat.A2R10G10B10;
 				case Gl.GL_RGBA16:
 					return PixelFormat.SHORT_RGBA;
-				//case Gl.GL_RGB16:
-				//    return PixelFormat.SHORT_RGB;
-				//case Gl.GL_LUMINANCE16_ALPHA16:
-				//    return PixelFormat.SHORT_GR;
+					//case Gl.GL_RGB16:
+					//    return PixelFormat.SHORT_RGB;
+					//case Gl.GL_LUMINANCE16_ALPHA16:
+					//    return PixelFormat.SHORT_GR;
 				case Gl.GL_LUMINANCE_FLOAT16_ATI:
 					return PixelFormat.FLOAT16_R;
-				//case Gl.GL_LUMINANCE_ALPHA_FLOAT16_ATI:
-				//    return PixelFormat.FLOAT16_GR;
-				//case Gl.GL_LUMINANCE_ALPHA_FLOAT32_ATI:
-				//    return PixelFormat.FLOAT32_GR;
+					//case Gl.GL_LUMINANCE_ALPHA_FLOAT16_ATI:
+					//    return PixelFormat.FLOAT16_GR;
+					//case Gl.GL_LUMINANCE_ALPHA_FLOAT32_ATI:
+					//    return PixelFormat.FLOAT32_GR;
 				case Gl.GL_LUMINANCE_FLOAT32_ATI:
 					return PixelFormat.FLOAT32_R;
 				case Gl.GL_RGB_FLOAT16_ATI: // Gl.GL_RGB16F_ARB
@@ -388,14 +396,21 @@ namespace Axiom.RenderSystems.OpenGL
 			int count = 0;
 			do
 			{
-				if ( width > 1 )
+				if( width > 1 )
+				{
 					width = width / 2;
-				if ( height > 1 )
+				}
+				if( height > 1 )
+				{
 					height = height / 2;
-				if ( depth > 1 )
+				}
+				if( depth > 1 )
+				{
 					depth = depth / 2;
+				}
 				count++;
-			} while ( !( width == 1 && height == 1 && depth == 1 ) );
+			}
+			while( !( width == 1 && height == 1 && depth == 1 ) );
 
 			return count;
 		}
@@ -409,11 +424,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public static int OptionalPO2( int value )
 		{
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
-			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
+			if( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
+			{
 				return value;
+			}
 			else
+			{
 				return (int)Bitwise.FirstPO2From( (uint)value );
-
+			}
 		}
 	}
 }

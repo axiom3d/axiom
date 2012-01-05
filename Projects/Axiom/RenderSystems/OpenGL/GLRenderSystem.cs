@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,8 +48,10 @@ using Axiom.Math;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
 
@@ -60,7 +66,6 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	public class GLRenderSystem : RenderSystem
 	{
-
 		#region Fields
 
 		/// <summary>
@@ -91,29 +96,30 @@ namespace Axiom.RenderSystems.OpenGL
 		private GLContext _mainContext;
 		private GLContext _currentContext;
 
-
 		/// <summary>
 		/// Manager object for creating render textures.
 		/// Direct render to texture via GL_EXT_framebuffer_object is preferable
 		/// to pbuffers, which depend on the GL support used and are generally
 		/// unwieldy and slow. However, FBO support for stencil buffers is poor.
 		/// </summary>
-		GLRTTManager rttManager;
+		private GLRTTManager rttManager;
 
 		/// <summary>Internal view matrix.</summary>
 		protected Matrix4 viewMatrix;
+
 		/// <summary>Internal world matrix.</summary>
 		protected Matrix4 worldMatrix;
+
 		/// <summary>Internal texture matrix.</summary>
 		protected Matrix4 textureMatrix;
 
 		// used for manual texture matrix calculations, for things like env mapping
 		protected bool useAutoTextureMatrix;
-		protected float[] autoTextureMatrix = new float[ 16 ];
-		protected int[] texCoordIndex = new int[ Config.MaxTextureCoordSets ];
+		protected float[] autoTextureMatrix = new float[16];
+		protected int[] texCoordIndex = new int[Config.MaxTextureCoordSets];
 
 		// keeps track of type for each stage (2d, 3d, cube, etc)
-		protected int[] textureTypes = new int[ Config.MaxTextureLayers ];
+		protected int[] textureTypes = new int[Config.MaxTextureLayers];
 
 		// retained stencil buffer params vals, since we allow setting invidual params but GL
 		// only lets you set them all at once, keep old values around to allow this to work
@@ -125,6 +131,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///    Last min filtering option.
 		/// </summary>
 		protected FilterOptions minFilter;
+
 		/// <summary>
 		///    Last mip filtering option.
 		/// </summary>
@@ -134,27 +141,27 @@ namespace Axiom.RenderSystems.OpenGL
 		protected PolygonMode lastPolygonMode;
 		protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
 		protected float lastShininess;
-		protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[ Config.MaxTextureLayers ];
+		protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
 		protected bool fogEnabled;
 		protected bool lightingEnabled;
 		protected SceneBlendFactor lastBlendSrc, lastBlendDest;
-		protected LayerBlendOperationEx[] lastColorOp = new LayerBlendOperationEx[ Config.MaxTextureLayers ];
-		protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[ Config.MaxTextureLayers ];
+		protected LayerBlendOperationEx[] lastColorOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
+		protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
 		protected LayerBlendType lastBlendType;
-		protected TextureAddressing[] lastAddressingMode = new TextureAddressing[ Config.MaxTextureLayers ];
+		protected TextureAddressing[] lastAddressingMode = new TextureAddressing[Config.MaxTextureLayers];
 		protected float lastDepthBias;
 		protected bool lastDepthCheck, lastDepthWrite;
 		protected CompareFunction lastDepthFunc;
 
-		const int MAX_LIGHTS = 8;
-		protected Light[] lights = new Light[ MAX_LIGHTS ];
+		private const int MAX_LIGHTS = 8;
+		protected Light[] lights = new Light[MAX_LIGHTS];
 
 		// temp arrays to reduce runtime allocations
-		protected float[] tempMatrix = new float[ 16 ];
-		protected float[] tempColorVals = new float[ 4 ];
-		protected float[] tempLightVals = new float[ 4 ];
-		protected float[] tempProgramFloats = new float[ 4 ];
-		protected int[] colorWrite = new int[ 4 ];
+		protected float[] tempMatrix = new float[16];
+		protected float[] tempColorVals = new float[4];
+		protected float[] tempLightVals = new float[4];
+		protected float[] tempProgramFloats = new float[4];
+		protected int[] colorWrite = new int[4];
 
 		protected GLGpuProgramManager gpuProgramMgr;
 		protected GLGpuProgram currentVertexProgram;
@@ -184,7 +191,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			colorWrite[ 0 ] = colorWrite[ 1 ] = colorWrite[ 2 ] = colorWrite[ 3 ] = 1;
 
-			for ( int i = 0; i < Config.MaxTextureCoordSets; i++ )
+			for( int i = 0; i < Config.MaxTextureCoordSets; i++ )
 			{
 				texCoordIndex[ i ] = 99;
 			}
@@ -197,41 +204,34 @@ namespace Axiom.RenderSystems.OpenGL
 
 			minFilter = FilterOptions.Linear;
 			mipFilter = FilterOptions.Point;
-
 		}
 
 		#endregion Constructors
 
 		#region Implementation of RenderSystem
 
-		public override ConfigOptionCollection ConfigOptions
-		{
-			get
-			{
-				return _glSupport.ConfigOptions;
-			}
-		}
+		public override ConfigOptionCollection ConfigOptions { get { return _glSupport.ConfigOptions; } }
 
 		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			int flags = 0;
 
-			if ( ( buffers & FrameBufferType.Color ) > 0 )
+			if( ( buffers & FrameBufferType.Color ) > 0 )
 			{
 				flags |= Gl.GL_COLOR_BUFFER_BIT;
 			}
-			if ( ( buffers & FrameBufferType.Depth ) > 0 )
+			if( ( buffers & FrameBufferType.Depth ) > 0 )
 			{
 				flags |= Gl.GL_DEPTH_BUFFER_BIT;
 			}
-			if ( ( buffers & FrameBufferType.Stencil ) > 0 )
+			if( ( buffers & FrameBufferType.Stencil ) > 0 )
 			{
 				flags |= Gl.GL_STENCIL_BUFFER_BIT;
 			}
 
 			// Enable depth & color buffer for writing if it isn't
 
-			if ( !depthWrite )
+			if( !depthWrite )
 			{
 				Gl.glDepthMask( Gl.GL_TRUE );
 			}
@@ -242,7 +242,7 @@ namespace Axiom.RenderSystems.OpenGL
 				|| colorWrite[ 2 ] == 0
 				|| colorWrite[ 3 ] == 0;
 
-			if ( colorMask )
+			if( colorMask )
 			{
 				Gl.glColorMask( Gl.GL_TRUE, Gl.GL_TRUE, Gl.GL_TRUE, Gl.GL_TRUE );
 			}
@@ -257,12 +257,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Reset depth write state if appropriate
 			// Enable depth buffer for writing if it isn't
-			if ( !depthWrite )
+			if( !depthWrite )
 			{
 				Gl.glDepthMask( Gl.GL_FALSE );
 			}
 
-			if ( colorMask )
+			if( colorMask )
 			{
 				Gl.glColorMask( colorWrite[ 0 ], colorWrite[ 1 ], colorWrite[ 2 ], colorWrite[ 3 ] );
 			}
@@ -288,7 +288,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
 		{
-			if ( renderTargets.ContainsKey( name ) )
+			if( renderTargets.ContainsKey( name ) )
 			{
 				throw new Exception( String.Format( "Window with the name '{0}' already exists.", name ) );
 			}
@@ -296,10 +296,10 @@ namespace Axiom.RenderSystems.OpenGL
 			// Log a message
 			StringBuilder msg = new StringBuilder();
 			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height, isFullscreen ? "fullscreen" : "windowed" );
-			if ( miscParams != null )
+			if( miscParams != null )
 			{
 				msg.Append( "miscParams: " );
-				foreach ( KeyValuePair<string, object> param in miscParams )
+				foreach( KeyValuePair<string, object> param in miscParams )
 				{
 					msg.AppendFormat( " {0} = {1} ", param.Key, param.Value.ToString() );
 				}
@@ -313,7 +313,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// add the new render target
 			AttachRenderTarget( window );
 
-			if ( !_isGLInitialized )
+			if( !_isGLInitialized )
 			{
 				InitGL( window );
 
@@ -322,11 +322,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// in GL there can be less fixed function texture units than general
 				// texture units. use the smaller of the two.
-				if ( HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
+				if( HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
 				{
 					int maxTexUnits;
 					Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out maxTexUnits );
-					if ( _fixedFunctionTextureUnits > maxTexUnits )
+					if( _fixedFunctionTextureUnits > maxTexUnits )
 					{
 						_fixedFunctionTextureUnits = maxTexUnits;
 					}
@@ -334,8 +334,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Initialise the main context
 				_oneTimeContextInitialization();
-				if ( _currentContext != null )
+				if( _currentContext != null )
+				{
 					_currentContext.Initialized = true;
+				}
 			}
 
 			return window;
@@ -359,8 +361,10 @@ namespace Axiom.RenderSystems.OpenGL
 			_currentContext = _mainContext;
 
 			// Set primary context as active
-			if ( _currentContext != null )
+			if( _currentContext != null )
+			{
 				_currentContext.SetCurrent();
+			}
 
 			// intialize GL extensions and check capabilites
 			_glSupport.InitializeExtensions();
@@ -376,7 +380,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			LogManager.Instance.Write( "Extensions supported: " );
 
-			foreach ( string ext in _glSupport.Extensions )
+			foreach( string ext in _glSupport.Extensions )
 			{
 				LogManager.Instance.Write( ext );
 			}
@@ -389,7 +393,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
 			// use software buffers as a fallback, which operate as regular vertex arrays
-			if ( this._rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+			if( this._rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 			{
 				hardwareBufferManager = new GLHardwareBufferManager();
 			}
@@ -414,11 +418,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Check for FSAA
 			// Enable the extension if it was enabled by the GLSupport
-			if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
 			{
 				int fsaa_active = 0; // Default to false
 				Gl.glGetIntegerv( Gl.GL_SAMPLE_BUFFERS_ARB, out fsaa_active );
-				if ( fsaa_active == 1 )
+				if( fsaa_active == 1 )
 				{
 					Gl.glEnable( Gl.GL_MULTISAMPLE_ARB );
 					LogManager.Instance.Write( "Using FSAA from GL_ARB_multisample extension." );
@@ -428,10 +432,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override ColorEx AmbientLight
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// create a float[4]  to contain the RGBA data
@@ -448,19 +449,22 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override bool LightingEnabled
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
-				if ( lightingEnabled == value )
+				if( lightingEnabled == value )
+				{
 					return;
+				}
 
-				if ( value )
+				if( value )
+				{
 					Gl.glEnable( Gl.GL_LIGHTING );
+				}
 				else
+				{
 					Gl.glDisable( Gl.GL_LIGHTING );
+				}
 
 				lightingEnabled = value;
 			}
@@ -471,13 +475,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override bool NormalizeNormals
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
-				if ( value )
+				if( value )
 				{
 					Gl.glEnable( Gl.GL_NORMALIZE );
 				}
@@ -493,13 +494,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override PolygonMode PolygonMode
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
-				if ( value == lastPolygonMode )
+				if( value == lastPolygonMode )
 				{
 					return;
 				}
@@ -507,7 +505,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// default to fill to make compiler happy
 				int mode = Gl.GL_FILL;
 
-				switch ( value )
+				switch( value )
 				{
 					case PolygonMode.Solid:
 						mode = Gl.GL_FILL;
@@ -537,14 +535,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override Shading ShadingMode
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			// OpenGL supports Flat and Smooth shaded primitives
 			set
 			{
-				switch ( value )
+				switch( value )
 				{
 					case Shading.Flat:
 						Gl.glShadeModel( Gl.GL_FLAT );
@@ -561,13 +556,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override bool StencilCheckEnabled
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
-				if ( value )
+				if( value )
 				{
 					Gl.glEnable( Gl.GL_STENCIL_TEST );
 				}
@@ -591,7 +583,7 @@ namespace Axiom.RenderSystems.OpenGL
 			float h = 1.0f / halfH;
 			float q = 0;
 
-			if ( far != 0 )
+			if( far != 0 )
 			{
 				q = 2.0f / ( far - near );
 			}
@@ -605,7 +597,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 			return dest;
 		}
-
 
 		/// <summary>
 		///		Creates a projection matrix specific to OpenGL based on the given params.
@@ -629,7 +620,7 @@ namespace Axiom.RenderSystems.OpenGL
 			float q = 0;
 			float qn = 0;
 
-			if ( far == 0 )
+			if( far == 0 )
 			{
 				q = Frustum.InfiniteFarPlaneAdjust - 1;
 				qn = near * ( Frustum.InfiniteFarPlaneAdjust - 2 );
@@ -673,7 +664,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Real width = right - left;
 			Real height = top - bottom;
 			Real q, qn;
-			if ( farPlane == 0 )
+			if( farPlane == 0 )
 			{
 				// Infinite far plane
 				q = Frustum.InfiniteFarPlaneAdjust - 1;
@@ -698,7 +689,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
 		{
-			if ( _clipPlanes.Count < index + 1 )
+			if( _clipPlanes.Count < index + 1 )
 			{
 				_clipPlanes.Add( new Vector4( A, B, C, D ) );
 			}
@@ -707,31 +698,37 @@ namespace Axiom.RenderSystems.OpenGL
 				_clipPlanes[ index ] = new Vector4( A, B, C, D );
 			}
 
-			double[] planeArray = new double[] { A, B, C, D };
+			double[] planeArray = new double[] {
+			                                   	A, B, C, D
+			                                   };
 			Gl.glClipPlane( Gl.GL_CLIP_PLANE0 + index, planeArray );
 		}
 
 		public void SetGLClipPlanes()
 		{
 			int size = _clipPlanes.Count;
-			for ( int i = 0; i < size; i++ )
+			for( int i = 0; i < size; i++ )
 			{
 				Vector4 p = _clipPlanes[ i ];
-				double[] planeArray = new double[] { p.x, p.y, p.z, p.w };
+				double[] planeArray = new double[] {
+				                                   	p.x, p.y, p.z, p.w
+				                                   };
 				Gl.glClipPlane( Gl.GL_CLIP_PLANE0 + i, planeArray );
 			}
 		}
 
 		public override void EnableClipPlane( ushort index, bool enable )
 		{
-			if ( index > 0 && index < _clipPlanes.Count )
+			if( index > 0 && index < _clipPlanes.Count )
 			{
-				if ( enable )
+				if( enable )
 				{
 					Gl.glEnable( Gl.GL_CLIP_PLANE0 + index );
 				}
 				else
+				{
 					Gl.glDisable( Gl.GL_CLIP_PLANE0 + index ); // This isn't checked in OGRE, they have a bug...
+				}
 			}
 		}
 
@@ -796,7 +793,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Debug.Assert( activeViewport != null, "BeginFrame cannot run without an active viewport." );
 
 			// clear the viewport if required
-			if ( activeViewport.ClearEveryFrame == true )
+			if( activeViewport.ClearEveryFrame == true )
 			{
 				// active viewport clipping
 				Gl.glEnable( Gl.GL_SCISSOR_TEST );
@@ -812,7 +809,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// clear stored blend modes, to ensure they gets set properly in multi texturing scenarios
 			// overall this will still reduce the number of blend mode changes
-			for ( int i = 1; i < Config.MaxTextureLayers; i++ )
+			for( int i = 1; i < Config.MaxTextureLayers; i++ )
 			{
 				lastAlphaOp[ i ] = 0;
 				lastColorOp[ i ] = 0;
@@ -825,7 +822,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="viewport"></param>
 		public override void SetViewport( Viewport viewport )
 		{
-			if ( activeViewport != viewport || viewport.IsUpdated )
+			if( activeViewport != viewport || viewport.IsUpdated )
 			{
 				// store this viewport and it's target
 				activeViewport = viewport;
@@ -840,7 +837,7 @@ namespace Axiom.RenderSystems.OpenGL
 				x = viewport.ActualLeft;
 				y = viewport.ActualTop;
 
-				if ( target.RequiresTextureFlipping )
+				if( target.RequiresTextureFlipping )
 				{
 					// make up for the fact that GL's origin starts at the bottom left corner
 					y = activeRenderTarget.Height - viewport.ActualTop - height;
@@ -862,9 +859,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
 		{
-			if ( twoSidedOperation )
+			if( twoSidedOperation )
 			{
-				if ( !_rsCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
+				if( !_rsCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
 				{
 					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
 				}
@@ -875,18 +872,18 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glStencilMask( mask );
 			Gl.glStencilFunc( GLHelper.ConvertEnum( function ), refValue, mask );
 			Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp ), GLHelper.ConvertEnum( depthFailOp ),
-				GLHelper.ConvertEnum( passOp ) );
+			                GLHelper.ConvertEnum( passOp ) );
 
-			if ( twoSidedOperation )
+			if( twoSidedOperation )
 			{
 				// set everything again, inverted
 				Gl.glActiveStencilFaceEXT( Gl.GL_BACK );
 				Gl.glStencilMask( mask );
 				Gl.glStencilFunc( GLHelper.ConvertEnum( function ), refValue, mask );
 				Gl.glStencilOp(
-					GLHelper.ConvertEnum( stencilFailOp, true ),
-					GLHelper.ConvertEnum( depthFailOp, true ),
-					GLHelper.ConvertEnum( passOp, true ) );
+				               GLHelper.ConvertEnum( stencilFailOp, true ),
+				               GLHelper.ConvertEnum( depthFailOp, true ),
+				               GLHelper.ConvertEnum( passOp, true ) );
 
 				// reset
 				Gl.glActiveStencilFaceEXT( Gl.GL_FRONT );
@@ -897,7 +894,6 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glDisable( Gl.GL_STENCIL_TEST_TWO_SIDE_EXT );
 			}
 		}
-
 
 		/// <summary>
 		///
@@ -969,10 +965,12 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			set
 			{
-				if ( !HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
+				if( !HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
+				{
 					return;
+				}
 
-				if ( value )
+				if( value )
 				{
 					Gl.glEnable( Gl.GL_POINTS );
 				}
@@ -983,7 +981,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Set sprite Texture coord calulation
 				// Don't offer this as an option as DX links it to sprite enabled
-				for ( int i = 0; i < _fixedFunctionTextureUnits; i++ )
+				for( int i = 0; i < _fixedFunctionTextureUnits; i++ )
 				{
 					activateGLTextureUnit( i );
 					Gl.glTexEnvi( Gl.GL_POINT_SPRITE, Gl.GL_COORD_REPLACE, value ? Gl.GL_TRUE : Gl.GL_FALSE );
@@ -1009,9 +1007,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="maxSize"></param>
 		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
 		{
-			float[] val = new float[] { 1, 0, 0, 1 };
+			float[] val = new float[] {
+			                          	1, 0, 0, 1
+			                          };
 
-			if ( attenuationEnabled )
+			if( attenuationEnabled )
 			{
 				// Point size is still calculated in pixels even when attenuation is
 				// enabled, which is pretty awkward, since you typically want a viewport
@@ -1020,10 +1020,14 @@ namespace Axiom.RenderSystems.OpenGL
 				// what D3D does as standard)
 				size = size * activeViewport.ActualHeight;
 				minSize = minSize * activeViewport.ActualHeight;
-				if ( maxSize == 0.0f )
+				if( maxSize == 0.0f )
+				{
 					maxSize = HardwareCapabilities.MaxPointSize; // pixels
+				}
 				else
+				{
 					maxSize = maxSize * activeViewport.ActualHeight;
+				}
 
 				// XXX: why do I need this for results to be consistent with D3D?
 				// Equations are supposedly the same once you factor in vp height
@@ -1034,22 +1038,28 @@ namespace Axiom.RenderSystems.OpenGL
 				val[ 2 ] = quadratic * correction;
 				val[ 3 ] = 1;
 
-				if ( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				{
 					Gl.glEnable( Gl.GL_VERTEX_PROGRAM_POINT_SIZE );
+				}
 			}
 			else
 			{
-				if ( maxSize == 0.0f )
+				if( maxSize == 0.0f )
+				{
 					maxSize = HardwareCapabilities.MaxPointSize;
-				if ( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				}
+				if( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+				{
 					Gl.glDisable( Gl.GL_VERTEX_PROGRAM_POINT_SIZE );
+				}
 			}
 
 			// no scaling required
 			// GL has no disabled flag for this so just set to constant
 			Gl.glPointSize( size );
 
-			if ( HardwareCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
+			if( HardwareCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
 			{
 				Gl.glPointParameterfv( Gl.GL_POINT_DISTANCE_ATTENUATION, val );
 				Gl.glPointParameterf( Gl.GL_POINT_SIZE_MIN, minSize );
@@ -1070,50 +1080,51 @@ namespace Axiom.RenderSystems.OpenGL
 			//}
 		}
 
+		private int _getTextureAddressingMode( TextureAddressing tam )
+		{
+			int type = 0;
 
-        private int _getTextureAddressingMode( TextureAddressing tam )
-        {
-            int type = 0;
+			switch( tam )
+			{
+				case TextureAddressing.Wrap:
+					type = Gl.GL_REPEAT;
+					break;
 
-            switch ( tam )
-            {
-                case TextureAddressing.Wrap:
-                    type = Gl.GL_REPEAT;
-                    break;
+				case TextureAddressing.Mirror:
+					type = Gl.GL_MIRRORED_REPEAT;
+					break;
 
-                case TextureAddressing.Mirror:
-                    type = Gl.GL_MIRRORED_REPEAT;
-                    break;
+				case TextureAddressing.Clamp:
+					type = Gl.GL_CLAMP_TO_EDGE;
+					break;
 
-                case TextureAddressing.Clamp:
-                    type = Gl.GL_CLAMP_TO_EDGE;
-                    break;
+				case TextureAddressing.Border:
+					type = Gl.GL_CLAMP_TO_BORDER;
+					break;
+			}
 
-                case TextureAddressing.Border:
-                    type = Gl.GL_CLAMP_TO_BORDER;
-                    break;
-            }
-
-            return type;
-        }
+			return type;
+		}
 
 		public override void SetTextureAddressingMode( int stage, UVWAddressing uvw )
-        {
-            //if ( lastAddressingMode[ stage ] == uvw )
-            //{
-            //    //return;
-            //}
+		{
+			//if ( lastAddressingMode[ stage ] == uvw )
+			//{
+			//    //return;
+			//}
 
-            //lastAddressingMode[ stage ] = uvw;
+			//lastAddressingMode[ stage ] = uvw;
 
-            if ( !activateGLTextureUnit( stage ) )
-                return;
+			if( !activateGLTextureUnit( stage ) )
+			{
+				return;
+			}
 
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, _getTextureAddressingMode( uvw.U ) );
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, _getTextureAddressingMode( uvw.V ) );
-            Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, _getTextureAddressingMode( uvw.W ) );
-            activateGLTextureUnit( 0 );
-        }
+			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_S, _getTextureAddressingMode( uvw.U ) );
+			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_T, _getTextureAddressingMode( uvw.V ) );
+			Gl.glTexParameteri( textureTypes[ stage ], Gl.GL_TEXTURE_WRAP_R, _getTextureAddressingMode( uvw.W ) );
+			activateGLTextureUnit( 0 );
+		}
 
 		/// <summary>
 		///
@@ -1122,7 +1133,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="maxAnisotropy"></param>
 		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
 		{
-			if ( !_rsCapabilities.HasCapability( Capabilities.AnisotropicFiltering ) )
+			if( !_rsCapabilities.HasCapability( Capabilities.AnisotropicFiltering ) )
 			{
 				return;
 			}
@@ -1135,13 +1146,13 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGetTexParameterfv( textureTypes[ stage ], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, out currentAnisotropy );
 			Gl.glGetFloatv( Gl.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, out maxSupportedAnisotropy );
 
-			if ( maxAnisotropy > maxSupportedAnisotropy )
+			if( maxAnisotropy > maxSupportedAnisotropy )
 			{
 				maxAnisotropy =
 					(int)maxSupportedAnisotropy > 0 ? (int)maxSupportedAnisotropy : 1;
 			}
 
-			if ( currentAnisotropy != maxAnisotropy )
+			if( currentAnisotropy != maxAnisotropy )
 			{
 				Gl.glTexParameterf( textureTypes[ stage ], Gl.GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)maxAnisotropy );
 			}
@@ -1154,14 +1165,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="blendMode"></param>
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
 		{
-			if ( !_rsCapabilities.HasCapability( Capabilities.TextureBlending ) )
+			if( !_rsCapabilities.HasCapability( Capabilities.TextureBlending ) )
 			{
 				return;
 			}
 
 			LayerBlendOperationEx lastOp;
 
-			if ( blendMode.blendType == LayerBlendType.Alpha )
+			if( blendMode.blendType == LayerBlendType.Alpha )
 			{
 				lastOp = lastAlphaOp[ stage ];
 			}
@@ -1172,14 +1183,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// ignore the new blend mode only if the last one for the current texture stage
 			// is the same, and if no special texture coord calcs are required
-			if ( lastOp == blendMode.operation &&
-				lastTexCalMethods[ stage ] == TexCoordCalcMethod.None )
+			if( lastOp == blendMode.operation &&
+			    lastTexCalMethods[ stage ] == TexCoordCalcMethod.None )
 			{
 				//return;
 			}
 
 			// remember last setting
-			if ( blendMode.blendType == LayerBlendType.Alpha )
+			if( blendMode.blendType == LayerBlendType.Alpha )
 			{
 				lastAlphaOp[ stage ] = blendMode.operation;
 			}
@@ -1192,7 +1203,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			src1op = src2op = cmd = 0;
 
-			switch ( blendMode.source1 )
+			switch( blendMode.source1 )
 			{
 				case LayerBlendSource.Current:
 					src1op = Gl.GL_PREVIOUS;
@@ -1210,13 +1221,13 @@ namespace Axiom.RenderSystems.OpenGL
 					src1op = Gl.GL_PRIMARY_COLOR;
 					break;
 
-				// no diffuse or specular equivalent right now
+					// no diffuse or specular equivalent right now
 				default:
 					src1op = 0;
 					break;
 			}
 
-			switch ( blendMode.source2 )
+			switch( blendMode.source2 )
 			{
 				case LayerBlendSource.Current:
 					src2op = Gl.GL_PREVIOUS;
@@ -1234,13 +1245,13 @@ namespace Axiom.RenderSystems.OpenGL
 					src2op = Gl.GL_PRIMARY_COLOR;
 					break;
 
-				// no diffuse or specular equivalent right now
+					// no diffuse or specular equivalent right now
 				default:
 					src2op = 0;
 					break;
 			}
 
-			switch ( blendMode.operation )
+			switch( blendMode.operation )
 			{
 				case LayerBlendOperationEx.Source1:
 					cmd = Gl.GL_REPLACE;
@@ -1303,7 +1314,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
 			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_COMBINE );
 
-			if ( blendMode.blendType == LayerBlendType.Color )
+			if( blendMode.blendType == LayerBlendType.Color )
 			{
 				Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_COMBINE_RGB, cmd );
 				Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE0_RGB, src1op );
@@ -1319,7 +1330,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// handle blend types first
-			switch ( blendMode.operation )
+			switch( blendMode.operation )
 			{
 				case LayerBlendOperationEx.BlendDiffuseAlpha:
 					Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_SOURCE2_RGB, Gl.GL_PRIMARY_COLOR );
@@ -1351,21 +1362,21 @@ namespace Axiom.RenderSystems.OpenGL
 			// set alpha scale to 1 by default unless specifically requested to be higher
 			// otherwise, textures that get switch from ModulateX2 or ModulateX4 down to Source1
 			// for example, the alpha scale would still be high and overbrighten the texture
-			switch ( blendMode.operation )
+			switch( blendMode.operation )
 			{
 				case LayerBlendOperationEx.ModulateX2:
 					Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ?
-						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2 );
+					                                                                             	Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 2 );
 					break;
 
 				case LayerBlendOperationEx.ModulateX4:
 					Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ?
-						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4 );
+					                                                                             	Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 4 );
 					break;
 
 				default:
 					Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, blendMode.blendType == LayerBlendType.Color ?
-						Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1 );
+					                                                                             	Gl.GL_RGB_SCALE : Gl.GL_ALPHA_SCALE, 1 );
 					break;
 			}
 
@@ -1377,9 +1388,9 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glTexEnvi( Gl.GL_TEXTURE_ENV, Gl.GL_OPERAND2_ALPHA, Gl.GL_SRC_ALPHA );
 
 			// check source1 and set colors values appropriately
-			if ( blendMode.source1 == LayerBlendSource.Manual )
+			if( blendMode.source1 == LayerBlendSource.Manual )
 			{
-				if ( blendMode.blendType == LayerBlendType.Color )
+				if( blendMode.blendType == LayerBlendType.Color )
 				{
 					// color value 1
 					blendMode.colorArg1.ToArrayRGBA( tempColorVals );
@@ -1397,9 +1408,9 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// check source2 and set colors values appropriately
-			if ( blendMode.source2 == LayerBlendSource.Manual )
+			if( blendMode.source2 == LayerBlendSource.Manual )
 			{
-				if ( blendMode.blendType == LayerBlendType.Color )
+				if( blendMode.blendType == LayerBlendType.Color )
 				{
 					// color value 2
 					blendMode.colorArg2.ToArrayRGBA( tempColorVals );
@@ -1430,34 +1441,34 @@ namespace Axiom.RenderSystems.OpenGL
 			// set the current texture unit
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + unit );
 
-			switch ( type )
+			switch( type )
 			{
 				case FilterType.Min:
 					minFilter = filter;
 
 					// combine with exiting mip filter
 					Gl.glTexParameteri(
-						textureTypes[ unit ],
-						Gl.GL_TEXTURE_MIN_FILTER,
-						GetCombinedMinMipFilter() );
+					                   textureTypes[ unit ],
+					                   Gl.GL_TEXTURE_MIN_FILTER,
+					                   GetCombinedMinMipFilter() );
 					break;
 
 				case FilterType.Mag:
-					switch ( filter )
+					switch( filter )
 					{
 						case FilterOptions.Anisotropic:
 						case FilterOptions.Linear:
 							Gl.glTexParameteri(
-								textureTypes[ unit ],
-								Gl.GL_TEXTURE_MAG_FILTER,
-								Gl.GL_LINEAR );
+							                   textureTypes[ unit ],
+							                   Gl.GL_TEXTURE_MAG_FILTER,
+							                   Gl.GL_LINEAR );
 							break;
 						case FilterOptions.Point:
 						case FilterOptions.None:
 							Gl.glTexParameteri(
-								textureTypes[ unit ],
-								Gl.GL_TEXTURE_MAG_FILTER,
-								Gl.GL_NEAREST );
+							                   textureTypes[ unit ],
+							                   Gl.GL_TEXTURE_MAG_FILTER,
+							                   Gl.GL_NEAREST );
 							break;
 					}
 					break;
@@ -1467,9 +1478,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 					// combine with exiting mip filter
 					Gl.glTexParameteri(
-						textureTypes[ unit ],
-						Gl.GL_TEXTURE_MIN_FILTER,
-						GetCombinedMinMipFilter() );
+					                   textureTypes[ unit ],
+					                   Gl.GL_TEXTURE_MIN_FILTER,
+					                   GetCombinedMinMipFilter() );
 					break;
 			}
 
@@ -1497,8 +1508,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Default to no extra auto texture matrix
 			useAutoTextureMatrix = false;
 
-			if ( method == TexCoordCalcMethod.None &&
-				lastTexCalMethods[ stage ] == method )
+			if( method == TexCoordCalcMethod.None &&
+			    lastTexCalMethods[ stage ] == method )
 			{
 				return;
 			}
@@ -1506,14 +1517,22 @@ namespace Axiom.RenderSystems.OpenGL
 			// store for next checking next time around
 			lastTexCalMethods[ stage ] = method;
 
-			float[] eyePlaneS = { 1.0f, 0.0f, 0.0f, 0.0f };
-			float[] eyePlaneT = { 0.0f, 1.0f, 0.0f, 0.0f };
-			float[] eyePlaneR = { 0.0f, 0.0f, 1.0f, 0.0f };
-			float[] eyePlaneQ = { 0.0f, 0.0f, 0.0f, 1.0f };
+			float[] eyePlaneS = {
+			                    	1.0f, 0.0f, 0.0f, 0.0f
+			                    };
+			float[] eyePlaneT = {
+			                    	0.0f, 1.0f, 0.0f, 0.0f
+			                    };
+			float[] eyePlaneR = {
+			                    	0.0f, 0.0f, 1.0f, 0.0f
+			                    };
+			float[] eyePlaneQ = {
+			                    	0.0f, 0.0f, 0.0f, 1.0f
+			                    };
 
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
 
-			switch ( method )
+			switch( method )
 			{
 				case TexCoordCalcMethod.None:
 					Gl.glDisable( Gl.GL_TEXTURE_GEN_S );
@@ -1541,7 +1560,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
 					// XXX This doesn't seem right?!
-					if ( _glSupport.CheckMinVersion( "1.3" ) )
+					if( _glSupport.CheckMinVersion( "1.3" ) )
 					{
 						Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
 						Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
@@ -1656,7 +1675,6 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="xform"></param>
 		public override void SetTextureMatrix( int stage, Matrix4 xform )
 		{
-
 			MakeGLMatrix( ref xform, tempMatrix );
 
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
@@ -1665,7 +1683,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glLoadMatrixf( tempMatrix );
 
 			// if texture matrix was precalced, use that
-			if ( useAutoTextureMatrix )
+			if( useAutoTextureMatrix )
 			{
 				Gl.glMultMatrixf( autoTextureMatrix );
 			}
@@ -1704,17 +1722,17 @@ namespace Axiom.RenderSystems.OpenGL
 			// call base Shutdown implementation
 			base.Shutdown();
 
-			if ( gpuProgramMgr != null )
+			if( gpuProgramMgr != null )
 			{
 				gpuProgramMgr.Dispose();
 			}
 
-			if ( hardwareBufferManager != null )
+			if( hardwareBufferManager != null )
 			{
 				hardwareBufferManager.Dispose();
 			}
 
-			if ( rttManager != null )
+			if( rttManager != null )
 			{
 				rttManager.Dispose();
 			}
@@ -1722,7 +1740,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_glSupport.Stop();
 			_stopRendering = true;
 
-			if ( textureManager != null )
+			if( textureManager != null )
 			{
 				textureManager.Dispose();
 			}
@@ -1731,7 +1749,6 @@ namespace Axiom.RenderSystems.OpenGL
 			//  some params will access an invalid pointer, so it is best to reset
 			//  the whole state.
 			_isGLInitialized = false;
-
 		}
 
 		/// <summary>
@@ -1749,9 +1766,9 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
 
 			// enable and bind the texture if necessary
-			if ( enabled )
+			if( enabled )
 			{
-				if ( glTexture != null )
+				if( glTexture != null )
 				{
 					textureTypes[ stage ] = glTexture.GLTextureType;
 				}
@@ -1761,20 +1778,20 @@ namespace Axiom.RenderSystems.OpenGL
 					textureTypes[ stage ] = Gl.GL_TEXTURE_2D;
 				}
 
-				if ( lastTextureType != textureTypes[ stage ] && lastTextureType != 0 )
+				if( lastTextureType != textureTypes[ stage ] && lastTextureType != 0 )
 				{
-					if ( stage < _fixedFunctionTextureUnits )
+					if( stage < _fixedFunctionTextureUnits )
 					{
 						Gl.glDisable( lastTextureType );
 					}
 				}
 
-				if ( stage < _fixedFunctionTextureUnits )
+				if( stage < _fixedFunctionTextureUnits )
 				{
 					Gl.glEnable( textureTypes[ stage ] );
 				}
 
-				if ( glTexture != null )
+				if( glTexture != null )
 				{
 					Gl.glBindTexture( textureTypes[ stage ], glTexture.TextureID );
 				}
@@ -1785,9 +1802,9 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				if ( stage < _fixedFunctionTextureUnits )
+				if( stage < _fixedFunctionTextureUnits )
 				{
-					if ( lastTextureType != 0 )
+					if( lastTextureType != 0 )
 					{
 						Gl.glDisable( textureTypes[ stage ] );
 					}
@@ -1801,11 +1818,12 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		private bool lasta2c = false;
+
 		public override void SetAlphaRejectSettings( CompareFunction func, int val, bool alphaToCoverage )
 		{
 			bool a2c = false;
 
-			if ( func != CompareFunction.AlwaysPass )
+			if( func != CompareFunction.AlwaysPass )
 			{
 				Gl.glEnable( Gl.GL_ALPHA_TEST );
 			}
@@ -1817,9 +1835,9 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val / 255.0f );
 
 			// Alpha to coverage
-			if ( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+			if( lasta2c != a2c && this.HardwareCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
 			{
-				if ( a2c )
+				if( a2c )
 				{
 					Gl.glEnable( Gl.GL_SAMPLE_ALPHA_TO_COVERAGE );
 				}
@@ -1829,7 +1847,6 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				lasta2c = a2c;
 			}
-
 		}
 
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
@@ -1862,7 +1879,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			int fogMode;
 
-			switch ( mode )
+			switch( mode )
 			{
 				case FogMode.Exp:
 					fogMode = Gl.GL_EXP;
@@ -1874,7 +1891,7 @@ namespace Axiom.RenderSystems.OpenGL
 					fogMode = Gl.GL_LINEAR;
 					break;
 				default:
-					if ( fogEnabled )
+					if( fogEnabled )
 					{
 						Gl.glDisable( Gl.GL_FOG );
 						fogEnabled = false;
@@ -1901,9 +1918,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="op"></param>
 		public override void Render( RenderOperation op )
 		{
-
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
-			if ( op.vertexData.vertexCount == 0 )
+			if( op.vertexData.vertexCount == 0 )
 			{
 				return;
 			}
@@ -1918,7 +1934,7 @@ namespace Axiom.RenderSystems.OpenGL
 			VertexDeclaration decl = op.vertexData.vertexDeclaration;
 
 			// loop through and handle each element
-			for ( int i = 0; i < decl.ElementCount; i++ )
+			for( int i = 0; i < decl.ElementCount; i++ )
 			{
 				// get a reference to the current object in the collection
 				VertexElement element = decl.GetElement( i );
@@ -1930,7 +1946,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// get the current vertex buffer
 				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( element.Source );
 
-				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+				if( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
 					// get the buffer id
 					int bufferId = ( (GLHardwareVertexBuffer)vertexBuffer ).GLBufferID;
@@ -1954,14 +1970,14 @@ namespace Axiom.RenderSystems.OpenGL
 				int type = GLHelper.ConvertEnum( element.Type );
 
 				// set pointer usage based on the use of this buffer
-				switch ( element.Semantic )
+				switch( element.Semantic )
 				{
 					case VertexElementSemantic.Position:
 						// set the pointer data
 						Gl.glVertexPointer( VertexElement.GetTypeCount( element.Type ),
-											type,
-											vertexBuffer.VertexSize,
-											bufferData );
+						                    type,
+						                    vertexBuffer.VertexSize,
+						                    bufferData );
 
 						// enable the vertex array client state
 						Gl.glEnableClientState( Gl.GL_VERTEX_ARRAY );
@@ -1997,33 +2013,33 @@ namespace Axiom.RenderSystems.OpenGL
 
 					case VertexElementSemantic.TexCoords:
 						//TODO : Needs changes to GLHardwareBufferManager
-						if ( currentFragmentProgram != null )
+						if( currentFragmentProgram != null )
 						{
 							Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + element.Index );
 							Gl.glTexCoordPointer( VertexElement.GetTypeCount( element.Type ),
-												  GLHelper.ConvertEnum( element.Type ),
-												  vertexBuffer.VertexSize,
-												  bufferData );
+							                      GLHelper.ConvertEnum( element.Type ),
+							                      vertexBuffer.VertexSize,
+							                      bufferData );
 							Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
 						}
 						else
 						{
 							// this ignores vertex element index and sets tex array for each available texture unit
 							// this allows for multitexturing on entities whose mesh only has a single set of tex coords
-							for ( int j = 0; j < Config.MaxTextureCoordSets; j++ )
+							for( int j = 0; j < Config.MaxTextureCoordSets; j++ )
 							{
 								// only set if this textures index if it is supposed to
-								if ( texCoordIndex[ j ] == element.Index )
+								if( texCoordIndex[ j ] == element.Index )
 								{
 									// set the current active texture unit
 									Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + j );
 
 									// set the tex coord pointer
 									Gl.glTexCoordPointer(
-										VertexElement.GetTypeCount( element.Type ),
-										type,
-										vertexBuffer.VertexSize,
-										bufferData );
+									                     VertexElement.GetTypeCount( element.Type ),
+									                     type,
+									                     vertexBuffer.VertexSize,
+									                     bufferData );
 
 									// enable texture coord state
 									Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
@@ -2038,16 +2054,16 @@ namespace Axiom.RenderSystems.OpenGL
 					case VertexElementSemantic.Binormal:
 
 						Debug.Assert( _rsCapabilities.HasCapability( Capabilities.VertexPrograms ) );
-						if ( currentVertexProgram != null )
+						if( currentVertexProgram != null )
 						{
 							int attrib = currentVertexProgram.AttributeIndex( element.Semantic );
 							Gl.glVertexAttribPointerARB(
-														attrib, // matrix indices are vertex attribute 7
-														VertexElement.GetTypeCount( element.Type ),
-														GLHelper.ConvertEnum( element.Type ),
-														Gl.GL_FALSE, // normalisation disabled
-														vertexBuffer.VertexSize,
-														bufferData );
+							                            attrib, // matrix indices are vertex attribute 7
+							                            VertexElement.GetTypeCount( element.Type ),
+							                            GLHelper.ConvertEnum( element.Type ),
+							                            Gl.GL_FALSE, // normalisation disabled
+							                            vertexBuffer.VertexSize,
+							                            bufferData );
 
 							Gl.glEnableVertexAttribArrayARB( attrib );
 						}
@@ -2058,12 +2074,11 @@ namespace Axiom.RenderSystems.OpenGL
 				} // switch
 
 				// If using Software Buffers, unlock it.
-				if ( !_rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+				if( !_rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
 					( (DefaultHardwareVertexBuffer)vertexBuffer ).Unlock();
 				}
 			} // for
-
 
 			// reset to texture unit 0
 			Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 );
@@ -2071,7 +2086,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int primType = 0;
 
 			// which type of render operation is this?
-			switch ( op.operationType )
+			switch( op.operationType )
 			{
 				case OperationType.PointList:
 					primType = Gl.GL_POINTS;
@@ -2093,17 +2108,17 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 			}
 
-			if ( op.useIndices )
+			if( op.useIndices )
 			{
 				// setup a pointer to the index data
 				IntPtr indexPtr; // = IntPtr.Zero;
 
 				// find what type of index buffer elements we are using
 				int indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 )
-					? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
+				                	? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
 				// if hardware is supported, expect it is a hardware buffer.  else, fallback to software
-				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+				if( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
 				{
 					// get the index buffer id
 					int idxBufferID = ( (GLHardwareIndexBuffer)op.indexData.indexBuffer ).GLBufferID;
@@ -2124,7 +2139,8 @@ namespace Axiom.RenderSystems.OpenGL
 					do
 					{
 						Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
-					} while ( UpdatePassIterationRenderState() );
+					}
+					while( UpdatePassIterationRenderState() );
 				}
 				else
 				{
@@ -2143,7 +2159,8 @@ namespace Axiom.RenderSystems.OpenGL
 					do
 					{
 						Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
-					} while ( UpdatePassIterationRenderState() );
+					}
+					while( UpdatePassIterationRenderState() );
 
 					( (DefaultHardwareIndexBuffer)op.indexData.indexBuffer ).Unlock();
 				}
@@ -2153,15 +2170,15 @@ namespace Axiom.RenderSystems.OpenGL
 				do
 				{
 					Gl.glDrawArrays( primType, op.vertexData.vertexStart, op.vertexData.vertexCount );
-				} while ( UpdatePassIterationRenderState() );
-
+				}
+				while( UpdatePassIterationRenderState() );
 			}
 
 			// disable all client states
 			Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
 
 			// disable all texture units
-			for ( int i = 0; i < _rsCapabilities.TextureUnitCount; i++ )
+			for( int i = 0; i < _rsCapabilities.TextureUnitCount; i++ )
 			{
 				Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
 				Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
@@ -2172,16 +2189,24 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 			Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
-			if ( currentVertexProgram != null )
+			if( currentVertexProgram != null )
 			{
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
+				if( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
+				{
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendIndices ) ); // disable indices
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendWeights ) )
+				}
+				if( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendWeights ) )
+				{
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendWeights ) ); // disable weights
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Tangent ) )
+				}
+				if( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Tangent ) )
+				{
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Tangent ) ); // disable tangent
-				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
+				}
+				if( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Binormal ) )
+				{
 					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
+				}
 			}
 
 			Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -2192,17 +2217,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override Matrix4 ProjectionMatrix
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// create a float[16] from our Matrix4
 				MakeGLMatrix( ref value, tempMatrix );
 
 				// invert the Y if need be
-				if ( activeRenderTarget.RequiresTextureFlipping )
+				if( activeRenderTarget.RequiresTextureFlipping )
 				{
 					tempMatrix[ 5 ] = -tempMatrix[ 5 ];
 				}
@@ -2223,10 +2245,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override Matrix4 ViewMatrix
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				viewMatrix = value;
@@ -2254,10 +2273,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override Matrix4 WorldMatrix
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				//store the new world matrix locally
@@ -2291,13 +2307,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 			int i = 0;
 
-			for ( ; i < limit && i < lightList.Count; i++ )
+			for( ; i < limit && i < lightList.Count; i++ )
 			{
 				SetGLLight( i, lightList[ i ] );
 				lights[ i ] = lightList[ i ];
 			}
 
-			for ( ; i < numCurrentLights; i++ )
+			for( ; i < numCurrentLights; i++ )
 			{
 				SetGLLight( i, null );
 				lights[ i ] = null;
@@ -2333,14 +2349,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetConfigOption( string name, string value )
 		{
-			if ( ConfigOptions.ContainsKey( name ) )
+			if( ConfigOptions.ContainsKey( name ) )
+			{
 				ConfigOptions[ name ].Value = value;
-
+			}
 		}
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			float[] border = new float[] { borderColor.r, borderColor.g, borderColor.b, borderColor.a };
+			float[] border = new float[] {
+			                             	borderColor.r, borderColor.g, borderColor.b, borderColor.a
+			                             };
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
 			Gl.glTexParameterfv( textureTypes[ stage ], Gl.GL_TEXTURE_BORDER_COLOR, border );
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
@@ -2348,10 +2367,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override CullingMode CullingMode
 		{
-			get
-			{
-				return cullingMode;
-			}
+			get { return cullingMode; }
 			set
 			{
 				// NB: Because two-sided stencil API dependence of the front face, we must
@@ -2362,7 +2378,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				int cullMode;
 
-				switch ( value )
+				switch( value )
 				{
 					case CullingMode.None:
 						Gl.glDisable( Gl.GL_CULL_FACE );
@@ -2370,8 +2386,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 					default:
 					case CullingMode.Clockwise:
-						if ( activeRenderTarget != null
-							&& ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
+						if( activeRenderTarget != null
+						    && ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
 						{
 							cullMode = Gl.GL_FRONT;
 						}
@@ -2381,10 +2397,9 @@ namespace Axiom.RenderSystems.OpenGL
 						}
 						break;
 					case CullingMode.CounterClockwise:
-						if ( activeRenderTarget != null
-							&& ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
+						if( activeRenderTarget != null
+						    && ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
 						{
-
 							cullMode = Gl.GL_BACK;
 						}
 						else
@@ -2406,7 +2421,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="dest"></param>
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
-			if ( src == lastBlendSrc && dest == lastBlendDest )
+			if( src == lastBlendSrc && dest == lastBlendDest )
 			{
 				return;
 			}
@@ -2414,13 +2429,12 @@ namespace Axiom.RenderSystems.OpenGL
 			int srcFactor = GLHelper.ConvertEnum( src );
 			int destFactor = GLHelper.ConvertEnum( dest );
 
-			if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
+			if( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
 			{
 				Gl.glDisable( Gl.GL_BLEND );
 			}
 			else
 			{
-
 				// enable blending and set the blend function
 				Gl.glEnable( Gl.GL_BLEND );
 				Gl.glBlendFunc( srcFactor, destFactor );
@@ -2447,8 +2461,8 @@ namespace Axiom.RenderSystems.OpenGL
 			int sourceBlendAlpha = GLHelper.ConvertEnum( sourceFactorAlpha );
 			int destBlendAlpha = GLHelper.ConvertEnum( destFactorAlpha );
 
-			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
-				sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+			if( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+			    sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
 			{
 				Gl.glDisable( Gl.GL_BLEND );
 			}
@@ -2457,7 +2471,6 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glEnable( Gl.GL_BLEND );
 				Gl.glBlendFuncSeparate( sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha );
 			}
-
 		}
 
 		/// <summary>
@@ -2465,21 +2478,18 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override float DepthBias
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// reduce dupe state changes
-				if ( lastDepthBias == value )
+				if( lastDepthBias == value )
 				{
 					return;
 				}
 
 				lastDepthBias = value;
 
-				if ( value > 0 )
+				if( value > 0 )
 				{
 					Gl.glEnable( Gl.GL_POLYGON_OFFSET_FILL );
 					Gl.glEnable( Gl.GL_POLYGON_OFFSET_POINT );
@@ -2501,28 +2511,27 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override bool DepthCheck
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// reduce dupe state changes
-				if ( lastDepthCheck == value )
+				if( lastDepthCheck == value )
 				{
 					return;
 				}
 
 				lastDepthCheck = value;
 
-				if ( value )
+				if( value )
 				{
 					// clear the buffer and enable
 					Gl.glClearDepth( 1.0f );
 					Gl.glEnable( Gl.GL_DEPTH_TEST );
 				}
 				else
+				{
 					Gl.glDisable( Gl.GL_DEPTH_TEST );
+				}
 			}
 		}
 
@@ -2531,14 +2540,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override CompareFunction DepthFunction
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// reduce dupe state changes
-				if ( lastDepthFunc == value )
+				if( lastDepthFunc == value )
 				{
 					return;
 				}
@@ -2553,14 +2559,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override bool DepthWrite
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 			set
 			{
 				// reduce dupe state changes
-				if ( lastDepthWrite == value )
+				if( lastDepthWrite == value )
 				{
 					return;
 				}
@@ -2609,7 +2612,7 @@ namespace Axiom.RenderSystems.OpenGL
 			glProgram.Bind();
 
 			// store the current program in use for eas unbinding later
-			if ( glProgram.Type == GpuProgramType.Vertex )
+			if( glProgram.Type == GpuProgramType.Vertex )
 			{
 				currentVertexProgram = glProgram;
 			}
@@ -2627,7 +2630,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
 		{
 			// store the current program in use for eas unbinding later
-			if ( type == GpuProgramType.Vertex )
+			if( type == GpuProgramType.Vertex )
 			{
 				currentVertexProgram.BindParameters( parms );
 			}
@@ -2644,12 +2647,12 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void UnbindGpuProgram( GpuProgramType type )
 		{
 			// store the current program in use for eas unbinding later
-			if ( type == GpuProgramType.Vertex && currentVertexProgram != null )
+			if( type == GpuProgramType.Vertex && currentVertexProgram != null )
 			{
 				currentVertexProgram.Unbind();
 				currentVertexProgram = null;
 			}
-			else if ( type == GpuProgramType.Fragment && currentFragmentProgram != null )
+			else if( type == GpuProgramType.Fragment && currentFragmentProgram != null )
 			{
 				currentFragmentProgram.Unbind();
 				currentFragmentProgram = null;
@@ -2658,7 +2661,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
-			if ( enable )
+			if( enable )
 			{
 				Gl.glEnable( Gl.GL_SCISSOR_TEST );
 				// GL uses width / height rather than right / bottom
@@ -2703,7 +2706,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			int lightIndex = Gl.GL_LIGHT0 + index;
 
-			if ( light == null )
+			if( light == null )
 			{
 				// disable the light if it is not visible
 				Gl.glDisable( lightIndex );
@@ -2711,7 +2714,7 @@ namespace Axiom.RenderSystems.OpenGL
 			else
 			{
 				// set spotlight cutoff
-				switch ( light.Type )
+				switch( light.Type )
 				{
 					case LightType.Spotlight:
 						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, light.SpotlightOuterAngle );
@@ -2763,7 +2766,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glLightfv( Gl.GL_LIGHT0 + index, Gl.GL_POSITION, tempLightVals );
 
 			// set spotlight direction
-			if ( light.Type == LightType.Spotlight )
+			if( light.Type == LightType.Spotlight )
 			{
 				Vector3 vec3 = light.DerivedDirection;
 				tempLightVals[ 0 ] = vec3.x;
@@ -2780,9 +2783,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private void SetLights()
 		{
-			for ( int i = 0; i < lights.Length; i++ )
+			for( int i = 0; i < lights.Length; i++ )
 			{
-				if ( lights[ i ] != null )
+				if( lights[ i ] != null )
 				{
 					SetGLLightPositionDirection( lights[ i ], i );
 				}
@@ -2802,39 +2805,40 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private void CheckCaps( RenderTarget primary )
 		{
-
 			// check hardware mip mapping
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
+			if( _glSupport.CheckMinVersion( "1.4" ) ||
+			    _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.HardwareMipMaps );
 			}
 
 			// check texture blending
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
+			if( _glSupport.CheckMinVersion( "1.3" ) ||
+			    _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.TextureBlending );
 			}
 
 			// check multitexturing
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
+			if( _glSupport.CheckMinVersion( "1.3" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
 			{
 				// check the number of texture units available
 				int numTextureUnits = 0;
 				Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits );
 				_fixedFunctionTextureUnits = numTextureUnits;
 
-				if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
+				if( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
 				{
 					// Also check GL_MAX_TEXTURE_IMAGE_UNITS_ARB since NV at least
 					// only increased this on the FX/6x00 series
 					int arbUnits = 0;
 					Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_IMAGE_UNITS_ARB, out arbUnits );
-					if ( arbUnits > numTextureUnits )
+					if( arbUnits > numTextureUnits )
+					{
 						numTextureUnits = arbUnits;
+					}
 				}
 
 				_rsCapabilities.TextureUnitCount = numTextureUnits;
@@ -2848,36 +2852,36 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// anisotropic filtering
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
+			if( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
 			}
 
 			// check dot3 support
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
+			if( _glSupport.CheckMinVersion( "1.3" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.Dot3 );
 			}
 
 			// check support for cube mapping
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_cube_map" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
+			if( _glSupport.CheckMinVersion( "1.3" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_texture_cube_map" ) ||
+			    _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.CubeMapping );
 			}
 
 			// check for point sprite support
-			if ( _glSupport.CheckMinVersion( "1.2" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_point_sprite" ) )
+			if( _glSupport.CheckMinVersion( "1.2" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_point_sprite" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.PointSprites );
 			}
 			// check support for point parameters
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_point_parameters" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_point_parameters" ) )
+			if( _glSupport.CheckMinVersion( "1.4" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_point_parameters" ) ||
+			    _glSupport.CheckExtension( "GL_EXT_point_parameters" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.PointExtendedParameters );
 			}
@@ -2885,20 +2889,20 @@ namespace Axiom.RenderSystems.OpenGL
 			// Check for hardware stencil support and set bit depth
 			int stencilBits;
 			Gl.glGetIntegerv( Gl.GL_STENCIL_BITS, out stencilBits );
-			if ( stencilBits > 0 )
+			if( stencilBits > 0 )
 			{
 				_rsCapabilities.StencilBufferBitCount = stencilBits;
 				_rsCapabilities.SetCapability( Capabilities.StencilBuffer );
 			}
 
 			// check support for vertex buffers in hardware
-			if ( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.VertexBuffer );
 			}
 
 			// ARB Vertex Programs
-			if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.VertexPrograms );
 				_rsCapabilities.MaxVertexProgramVersion = "arbvp1";
@@ -2914,7 +2918,7 @@ namespace Axiom.RenderSystems.OpenGL
 				gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
 
 				// GeForceFX vp30 Vertex Programs
-				if ( _glSupport.CheckExtension( "GL_NV_vertex_program2_option" ) )
+				if( _glSupport.CheckExtension( "GL_NV_vertex_program2_option" ) )
 				{
 					_rsCapabilities.SetCapability( Capabilities.VertexPrograms );
 					_rsCapabilities.MaxVertexProgramVersion = "vp30";
@@ -2923,7 +2927,7 @@ namespace Axiom.RenderSystems.OpenGL
 					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
 				}
 
-				if ( _glSupport.CheckExtension( "GL_NV_vertex_program3" ) )
+				if( _glSupport.CheckExtension( "GL_NV_vertex_program3" ) )
 				{
 					_rsCapabilities.SetCapability( Capabilities.VertexPrograms );
 					_rsCapabilities.MaxVertexProgramVersion = "vp40";
@@ -2934,8 +2938,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// GeForce3/4 Register Combiners/Texture Shaders
-			if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
-				 _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
+			if( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
+			    _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.FragmentPrograms );
 				_rsCapabilities.MaxFragmentProgramVersion = "fp20";
@@ -2945,7 +2949,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
-			if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
+			if( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.FragmentPrograms );
 				_rsCapabilities.MaxFragmentProgramVersion = "ps_1_4";
@@ -2968,7 +2972,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// ARB Fragment Programs
-			if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.FragmentPrograms );
 
@@ -2985,14 +2989,14 @@ namespace Axiom.RenderSystems.OpenGL
 				gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
 
 				// GeForceFX fp30 Fragment Programs
-				if ( _glSupport.CheckExtension( "GL_NV_fragment_program_option" ) )
+				if( _glSupport.CheckExtension( "GL_NV_fragment_program_option" ) )
 				{
 					_rsCapabilities.MaxFragmentProgramVersion = "fp30";
 					gpuProgramMgr.PushSyntaxCode( "fp30" );
 					gpuProgramMgr.RegisterProgramFactory( "fp30", new Nvidia.NV3xGpuProgramFactory() );
 				}
 
-				if ( _glSupport.CheckExtension( "GL_NV_fragment_program2" ) )
+				if( _glSupport.CheckExtension( "GL_NV_fragment_program2" ) )
 				{
 					_rsCapabilities.MaxFragmentProgramVersion = "fp40";
 					gpuProgramMgr.PushSyntaxCode( "fp40" );
@@ -3001,11 +3005,11 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// GLSL support
-			if ( _glSupport.CheckMinVersion( "1.2" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
-				 _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
+			if( _glSupport.CheckMinVersion( "1.2" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
+			    _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
+			    _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
+			    _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
 			{
 				HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
 				gpuProgramMgr.PushSyntaxCode( "glsl" );
@@ -3013,19 +3017,19 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Texture Compression
-			if ( _glSupport.CheckMinVersion( "1.3" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
+			if( _glSupport.CheckMinVersion( "1.3" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.TextureCompression );
 
 				// DXT compression
-				if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
+				if( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
 				{
 					_rsCapabilities.SetCapability( Capabilities.TextureCompressionDXT );
 				}
 
 				// VTC compression
-				if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
+				if( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
 				{
 					_rsCapabilities.SetCapability( Capabilities.TextureCompressionVTC );
 				}
@@ -3038,19 +3042,19 @@ namespace Axiom.RenderSystems.OpenGL
 			_rsCapabilities.SetCapability( Capabilities.UserClipPlanes );
 
 			// 2 sided stencil
-			if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
+			if( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.TwoSidedStencil );
 			}
 
 			// stencil wrapping
-			if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
+			if( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.StencilWrap );
 			}
 
 			// Check for hardware occlusion support
-			if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) || _glSupport.CheckExtension( "GL_ARB_occlusion_query" ) )
+			if( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) || _glSupport.CheckExtension( "GL_ARB_occlusion_query" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.HardwareOcculusion );
 			}
@@ -3061,14 +3065,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// Infinit far plane always supported
 			_rsCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
 
-			if ( _glSupport.CheckExtension( "GL_ARB_texture_non_power_of_two" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_texture_non_power_of_two" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.NonPowerOf2Textures );
 			}
 
 			// Check for Float textures
-			if ( _glSupport.CheckExtension( "GL_ATI_texture_float" ) ||
-				 _glSupport.CheckExtension( "GL_ARB_texture_float" ) )
+			if( _glSupport.CheckExtension( "GL_ATI_texture_float" ) ||
+			    _glSupport.CheckExtension( "GL_ARB_texture_float" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.TextureFloat );
 			}
@@ -3079,28 +3083,28 @@ namespace Axiom.RenderSystems.OpenGL
 			/// Do this after extension function pointers are initialised as the extension
 			/// is used to probe further capabilities.
 			int rttMode = 0;
-			if ( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
+			if( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
 			{
 				ConfigOption opt = ConfigOptions[ "RTT Preferred Mode" ];
 				// RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
-				if ( opt.Value == "PBuffer" )
+				if( opt.Value == "PBuffer" )
 				{
 					rttMode = 1;
 				}
-				else if ( opt.Value == "Copy" )
+				else if( opt.Value == "Copy" )
 				{
 					rttMode = 2;
 				}
 			}
 
 			// Check for framebuffer object extension
-			if ( _glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) && ( rttMode < 1 ) )
+			if( _glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) && ( rttMode < 1 ) )
 			{
 				// Probe number of draw buffers
 				// Only makes sense with FBO support, so probe here
-				if ( _glSupport.CheckMinVersion( "2.0" ) ||
-					_glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
-					_glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+				if( _glSupport.CheckMinVersion( "2.0" ) ||
+				    _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
+				    _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
 				{
 					int buffers;
 					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
@@ -3123,7 +3127,7 @@ namespace Axiom.RenderSystems.OpenGL
 			else
 			{
 				// Check GLSupport for PBuffer support
-				if ( _glSupport.SupportsPBuffers && rttMode < 2 )
+				if( _glSupport.SupportsPBuffers && rttMode < 2 )
 				{
 					// Use PBuffers
 					rttManager = new GLPBRTTManager( _glSupport, primary );
@@ -3148,7 +3152,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int vUnits;
 			Gl.glGetIntegerv( Gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, out vUnits );
 			_rsCapabilities.VertexTextureUnitCount = vUnits;
-			if ( vUnits > 0 )
+			if( vUnits > 0 )
 			{
 				_rsCapabilities.SetCapability( Capabilities.VertexTextureFetch );
 			}
@@ -3156,14 +3160,14 @@ namespace Axiom.RenderSystems.OpenGL
 			_rsCapabilities.VertexTextureUnitsShared = true;
 
 			// Mipmap LOD biasing?
-			if ( _glSupport.CheckMinVersion( "1.4" ) ||
-				 _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
+			if( _glSupport.CheckMinVersion( "1.4" ) ||
+			    _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.MipmapLODBias );
 			}
 
 			// Alpha to coverage??
-			if ( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
+			if( _glSupport.CheckExtension( "GL_ARB_multisample" ) )
 			{
 				// Alpha to coverage always 'supported' when MSAA is available
 				// although card may ignore it if it doesn't specifically support A2C
@@ -3175,18 +3179,16 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
 			_rsCapabilities.MaxLights = maxLights;
 
-
 			// check support for hardware vertex blending
 			// TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
 			//if(GLHelper.CheckExtension("GL_ARB_vertex_blend"))
 			//    caps.SetCap(Capabilities.VertexBlending);
 
 			// check if the hardware supports anisotropic filtering
-			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
+			if( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
 			}
-
 
 			// write info to logs
 			_rsCapabilities.Log();
@@ -3198,11 +3200,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		private int GetCombinedMinMipFilter()
 		{
-			switch ( minFilter )
+			switch( minFilter )
 			{
 				case FilterOptions.Anisotropic:
 				case FilterOptions.Linear:
-					switch ( mipFilter )
+					switch( mipFilter )
 					{
 						case FilterOptions.Anisotropic:
 						case FilterOptions.Linear:
@@ -3219,7 +3221,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				case FilterOptions.Point:
 				case FilterOptions.None:
-					switch ( mipFilter )
+					switch( mipFilter )
 					{
 						case FilterOptions.Anisotropic:
 						case FilterOptions.Linear:
@@ -3251,15 +3253,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private bool activateGLTextureUnit( int unit )
 		{
-			if ( _activeTextureUnit != unit )
+			if( _activeTextureUnit != unit )
 			{
-				if ( _glSupport.CheckMinVersion( "1.2" ) && unit < HardwareCapabilities.TextureUnitCount )
+				if( _glSupport.CheckMinVersion( "1.2" ) && unit < HardwareCapabilities.TextureUnitCount )
 				{
 					Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + unit );
 					_activeTextureUnit = unit;
 					return true;
 				}
-				else if ( unit == 0 )
+				else if( unit == 0 )
 				{
 					// always ok to use the first unit;
 					return true;
@@ -3278,15 +3280,17 @@ namespace Axiom.RenderSystems.OpenGL
 		private void _setRenderTarget( RenderTarget target )
 		{
 			// Unbind frame buffer object
-			if ( activeRenderTarget != null )
+			if( activeRenderTarget != null )
+			{
 				rttManager.Unbind( activeRenderTarget );
+			}
 
 			activeRenderTarget = target;
 
 			// Switch context if different from current one
 			GLContext newContext = null;
 			newContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
-			if ( newContext != null && this._currentContext != newContext )
+			if( newContext != null && this._currentContext != newContext )
 			{
 				_switchContext( newContext );
 			}
@@ -3294,7 +3298,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Bind frame buffer object
 			rttManager.Bind( target );
 
-			if ( target.HardwareGammaEnabled )
+			if( target.HardwareGammaEnabled )
 			{
 				Gl.glEnable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
 
@@ -3306,17 +3310,16 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				Gl.glDisable( Gl.GL_FRAMEBUFFER_SRGB_EXT );
 			}
-
 		}
 
 		internal void UnRegisterContext( GLContext context )
 		{
-			if ( this._currentContext == context )
+			if( this._currentContext == context )
 			{
 				// Change the context to something else so that a valid context
 				// remains active. When this is the main context being unregistered,
 				// we set the main context to 0.
-				if ( this._currentContext != this._mainContext )
+				if( this._currentContext != this._mainContext )
 				{
 					this._switchContext( this._mainContext );
 				}
@@ -3335,10 +3338,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// Unbind GPU programs and rebind to new context later, because
 			// scene manager treat render system as ONE 'context' ONLY, and it
 			// cached the GPU programs using state.
-			if ( currentVertexProgram != null )
+			if( currentVertexProgram != null )
+			{
 				currentVertexProgram.Unbind();
-			if ( currentFragmentProgram != null )
+			}
+			if( currentFragmentProgram != null )
+			{
 				currentFragmentProgram.Unbind();
+			}
 
 			// It's ready to switching
 			_currentContext.EndCurrent();
@@ -3346,17 +3353,21 @@ namespace Axiom.RenderSystems.OpenGL
 			_currentContext.SetCurrent();
 
 			// Check if the context has already done one-time initialisation
-			if ( !_currentContext.Initialized )
+			if( !_currentContext.Initialized )
 			{
 				_oneTimeContextInitialization();
 				_currentContext.Initialized = true;
 			}
 
 			// Rebind GPU programs to new context
-			if ( currentVertexProgram != null )
+			if( currentVertexProgram != null )
+			{
 				currentVertexProgram.Bind();
-			if ( currentFragmentProgram != null )
+			}
+			if( currentFragmentProgram != null )
+			{
 				currentFragmentProgram.Bind();
+			}
 
 			// Must reset depth/colour write mask to according with user desired, otherwise,
 			// clearFrameBuffer would be wrong because the value we are recorded may be
@@ -3368,6 +3379,5 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion Private methods
-
 	}
 }

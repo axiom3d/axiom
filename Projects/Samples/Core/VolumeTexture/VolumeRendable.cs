@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
@@ -28,7 +30,7 @@ using Axiom.Graphics;
 
 namespace Axiom.Samples.Core
 {
-	class VolumeRendable : SimpleRenderable
+	internal class VolumeRendable : SimpleRenderable
 	{
 		protected int slices;
 		protected float size;
@@ -40,12 +42,8 @@ namespace Axiom.Samples.Core
 		/// <summary>
 		/// 
 		/// </summary>
-		public override float BoundingRadius
-		{
-			get { return radius; }
-		}
+		public override float BoundingRadius { get { return radius; } }
 
-		
 		/// <summary>
 		/// 
 		/// </summary>
@@ -73,10 +71,12 @@ namespace Axiom.Samples.Core
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
-				if ( TextureManager.Instance != null )
+				if( TextureManager.Instance != null )
+				{
 					TextureManager.Instance.Remove( texture );
+				}
 			}
 			base.dispose( disposeManagedResources );
 		}
@@ -88,7 +88,6 @@ namespace Axiom.Samples.Core
 		public override void NotifyCurrentCamera( Camera camera )
 		{
 			base.NotifyCurrentCamera( camera );
-
 
 			///Fake orientation toward camera
 			Vector3 zVec = ParentNode.DerivedPosition - camera.DerivedPosition;
@@ -116,8 +115,6 @@ namespace Axiom.Samples.Core
 			unit.TextureMatrix = rotMat;
 		}
 
-		
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -137,7 +134,6 @@ namespace Axiom.Samples.Core
 			destMatrix = fakeOrientation * scale3x3;
 			destMatrix.Translation = position;
 			matrices[ 0 ] = destMatrix;
-
 		}
 
 		/// <summary>
@@ -167,19 +163,26 @@ namespace Axiom.Samples.Core
 
 			IndexData indexData = new IndexData();
 			VertexData vertexData = new VertexData();
-			float[] vertices = new float[ dsize ];
+			float[] vertices = new float[dsize];
 
-			float[ , ] coords = new float[ 4, 2 ]
-			{
-				{0.0f, 0.0f},
-				{0.0f, 1.0f},
-				{1.0f, 0.0f},
-				{1.0f, 1.0f}
-			};
+			float[,] coords = new float[4,2] {
+			                                 	{
+			                                 		0.0f, 0.0f
+			                                 	},
+			                                 	{
+			                                 		0.0f, 1.0f
+			                                 	},
+			                                 	{
+			                                 		1.0f, 0.0f
+			                                 	},
+			                                 	{
+			                                 		1.0f, 1.0f
+			                                 	}
+			                                 };
 
-			for ( x = 0; x < slices; x++ )
+			for( x = 0; x < slices; x++ )
 			{
-				for ( int y = 0; y < 4; y++ )
+				for( int y = 0; y < 4; y++ )
 				{
 					float xcoord = coords[ y, 0 ] - 0.5f;
 					float ycoord = coords[ y, 1 ] - 0.5f;
@@ -200,8 +203,8 @@ namespace Axiom.Samples.Core
 				}
 			}
 
-			short[] faces = new short[ slices * 6 ];
-			for ( x = 0; x < slices; x++ )
+			short[] faces = new short[slices * 6];
+			for( x = 0; x < slices; x++ )
 			{
 				faces[ x * 6 + 0 ] = (short)( x * 4 + 0 );
 				faces[ x * 6 + 1 ] = (short)( x * 4 + 1 );
@@ -246,7 +249,7 @@ namespace Axiom.Samples.Core
 			renderOperation.useIndices = true;
 
 			// Create a brand new private material
-			if ( !ResourceGroupManager.Instance.GetResourceGroups().Contains( "VolumeRendable" ) )
+			if( !ResourceGroupManager.Instance.GetResourceGroups().Contains( "VolumeRendable" ) )
 			{
 				ResourceGroupManager.Instance.CreateResourceGroup( "VolumeRendable" );
 			}

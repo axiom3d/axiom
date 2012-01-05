@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,7 +51,7 @@ namespace Axiom.ParticleFX
 	/// <summary>
 	/// Summary description for AreaEmitter.
 	/// </summary>
-	public abstract class AreaEmitter : ParticleEmitter
+	abstract public class AreaEmitter : ParticleEmitter
 	{
 		#region Fields
 
@@ -59,18 +63,13 @@ namespace Axiom.ParticleFX
 		#endregion Fields
 
 		public AreaEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-		}
+			: base( ps ) {}
 
 		#region Properties
 
 		public override Axiom.Math.Vector3 Direction
 		{
-			get
-			{
-				return base.Direction;
-			}
+			get { return base.Direction; }
 			set
 			{
 				base.Direction = value;
@@ -82,10 +81,7 @@ namespace Axiom.ParticleFX
 
 		public Vector3 Size
 		{
-			get
-			{
-				return size;
-			}
+			get { return size; }
 			set
 			{
 				size = value;
@@ -95,10 +91,7 @@ namespace Axiom.ParticleFX
 
 		public float Width
 		{
-			get
-			{
-				return size.x;
-			}
+			get { return size.x; }
 			set
 			{
 				size.x = value;
@@ -108,10 +101,7 @@ namespace Axiom.ParticleFX
 
 		public float Height
 		{
-			get
-			{
-				return size.y;
-			}
+			get { return size.y; }
 			set
 			{
 				size.y = value;
@@ -121,10 +111,7 @@ namespace Axiom.ParticleFX
 
 		public float Depth
 		{
-			get
-			{
-				return size.z;
-			}
+			get { return size.z; }
 			set
 			{
 				size.z = value;

@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -58,21 +60,23 @@ namespace Axiom.Core
 		/// <param name="arg"></param>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public virtual bool Fire( object sender, T arg, Predicate<T> compare )
+		virtual public bool Fire( object sender, T arg, Predicate<T> compare )
 		{
 			bool continueChain = true;
 
 			// Assuming the multicast delegate is not null...
-			if ( EventSinks != null )
+			if( EventSinks != null )
 			{
 				// Call the methods until one of them handles the event
 				// or all the methods in the delegate list are processed.
-				foreach ( EventHandler<T> sink in EventSinks.GetInvocationList() )
+				foreach( EventHandler<T> sink in EventSinks.GetInvocationList() )
 				{
 					sink( sender, arg );
 					continueChain = compare( arg );
-					if ( !continueChain )
+					if( !continueChain )
+					{
 						break;
+					}
 				}
 			}
 			// Return a flag indicating whether an event sink canceled the event.

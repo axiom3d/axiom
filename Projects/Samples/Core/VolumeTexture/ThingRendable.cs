@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
@@ -32,7 +34,7 @@ namespace Axiom.Samples.Core
 	/// Quad fragments that rotate around origin (0,0,0) in a random orbit, always oriented to 0,0,0.
 	/// </summary>
 	/// <OriginalAuthor>W.J. van der Laan</OriginalAuthor>
-	class ThingRendable : SimpleRenderable
+	internal class ThingRendable : SimpleRenderable
 	{
 		protected HardwareVertexBuffer vertexBuffer;
 		protected float radius;
@@ -44,10 +46,8 @@ namespace Axiom.Samples.Core
 		/// <summary>
 		/// 
 		/// </summary>
-		public override float BoundingRadius
-		{
-			get { return radius; }
-		}
+		public override float BoundingRadius { get { return radius; } }
+
 		/// <summary>
 		/// Default ctor.
 		/// </summary>
@@ -71,7 +71,7 @@ namespace Axiom.Samples.Core
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
 				renderOperation.indexData.Dispose();
 				renderOperation.vertexData.Dispose();
@@ -85,7 +85,7 @@ namespace Axiom.Samples.Core
 		/// <param name="time">time elapsed</param>
 		public void AddTime( float elapsedTime )
 		{
-			for ( int x = 0; x < count; x++ )
+			for( int x = 0; x < count; x++ )
 			{
 				Quaternion dest = things[ x ] * orbits[ x ];
 				things[ x ] = things[ x ] + elapsedTime * ( dest - things[ x ] );
@@ -123,7 +123,7 @@ namespace Axiom.Samples.Core
 			things.Clear();
 			orbits.Clear();
 
-			for ( x = 0; x < count; x++ )
+			for( x = 0; x < count; x++ )
 			{
 				ax = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
 				ay = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
@@ -148,12 +148,12 @@ namespace Axiom.Samples.Core
 
 			int nVertices = count * 4;
 
-			IndexData indexData  = new IndexData();
+			IndexData indexData = new IndexData();
 			VertexData vertexData = new VertexData();
 
 			//Quads
-			short[] faces = new short[ count * 6 ];
-			for ( x = 0; x < count; x++ )
+			short[] faces = new short[count * 6];
+			for( x = 0; x < count; x++ )
 			{
 				faces[ x * 6 + 0 ] = (short)( x * 4 + 0 );
 				faces[ x * 6 + 1 ] = (short)( x * 4 + 1 );
@@ -173,7 +173,7 @@ namespace Axiom.Samples.Core
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position ).Size;
 
 			vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-				decl.GetVertexSize(0), nVertices, BufferUsage.DynamicWriteOnly );
+			                                                                 decl.GetVertexSize( 0 ), nVertices, BufferUsage.DynamicWriteOnly );
 
 			bind.SetBinding( 0, vertexBuffer );
 
@@ -181,7 +181,7 @@ namespace Axiom.Samples.Core
 			indexData.indexBuffer = indexBuffer;
 			indexData.indexStart = 0;
 			indexData.indexCount = count * 6;
-			
+
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
 			faces = null;
@@ -203,7 +203,7 @@ namespace Axiom.Samples.Core
 				float* vIdx = (float*)( vertexBuffer.Lock( BufferLocking.Discard ) );
 				int elemsize = 1 * 3; // position only
 				int planesize = 4 * elemsize; // four vertices per plane
-				for ( int x = 0; x < count; x++ )
+				for( int x = 0; x < count; x++ )
 				{
 					Vector3 ax, ay, az;
 					things[ x ].ToAxes( out ax, out ay, out az );

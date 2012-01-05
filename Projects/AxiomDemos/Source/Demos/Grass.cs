@@ -47,10 +47,7 @@ namespace Axiom.Demos
 
 		public float Value
 		{
-			get
-			{
-				return intensity;
-			}
+			get { return intensity; }
 			set
 			{
 				intensity = value;
@@ -124,9 +121,9 @@ namespace Axiom.Demos
 			s.RegionDimensions = new Vector3( 1000, 1000, 1000 );
 			s.Origin = new Vector3( -500, 500, -500 ); //Set the region origin so the centre is at 0 world
 
-			for ( int x = -1950; x < 1950; x += 150 )
+			for( int x = -1950; x < 1950; x += 150 )
 			{
-				for ( int z = -1950; z < 1950; z += 150 )
+				for( int z = -1950; z < 1950; z += 150 )
 				{
 					Vector3 pos = new Vector3( x + Math.Utility.RangeRandom( -25, 25 ), 0, z + Math.Utility.RangeRandom( -25, 25 ) );
 
@@ -143,7 +140,7 @@ namespace Axiom.Demos
 			Mesh mesh = MeshManager.Instance.Load( "ogrehead.mesh", ResourceGroupManager.DefaultResourceGroupName );
 
 			short src, dest;
-			if ( !mesh.SuggestTangentVectorBuildParams( out src, out dest ) )
+			if( !mesh.SuggestTangentVectorBuildParams( out src, out dest ) )
 			{
 				mesh.BuildTangentVectors( src, dest );
 			}
@@ -156,7 +153,7 @@ namespace Axiom.Demos
 			HeadNode.Scale = new Vector3( 7, 7, 7 );
 			HeadNode.Position = new Vector3( 0, 200, 0 );
 
-			if ( e.GetSubEntity( 0 ).NormalizeNormals == false )
+			if( e.GetSubEntity( 0 ).NormalizeNormals == false )
 			{
 				LogManager.Instance.Write( "aie aie aie" );
 			}
@@ -198,7 +195,7 @@ namespace Axiom.Demos
 				Vector3 vec = baseVec;
 				Quaternion rot = Quaternion.FromAngleAxis( Utility.DegreesToRadians( 60 ), Vector3.UnitY );
 
-				for ( i = 0; i < 3; ++i )
+				for( i = 0; i < 3; ++i )
 				{
 					//position
 					*pData++ = -vec.x;
@@ -262,7 +259,7 @@ namespace Axiom.Demos
 			{
 				ushort* pI = (ushort*)( sm.indexData.indexBuffer.Lock( BufferLocking.Discard ) ).ToPointer();
 
-				for ( i = 0; i < 3; ++i )
+				for( i = 0; i < 3; ++i )
 				{
 					int off = i * 4;
 					*pI++ = (ushort)( off );
@@ -344,45 +341,49 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			// animate Light Wibbler
 			AnimState.AddTime( evt.TimeSinceLastFrame );
 
 			randomRange = Math.Utility.RangeRandom( 20, 100 );
 
-			if ( !backward )
+			if( !backward )
 			{
 				extraOffset += 0.5f;
-				if ( extraOffset > randomRange )
+				if( extraOffset > randomRange )
 				{
 					backward = true;
 				}
 			}
-			if ( backward )
+			if( backward )
 			{
 				extraOffset -= 0.5f;
-				if ( extraOffset < 0.02f )
+				if( extraOffset < 0.02f )
 				{
 					backward = false;
 				}
 			}
 
 			// we are animating the static mesh ( Entity ) here with a simple offset
-			foreach ( Axiom.Core.StaticGeometry.Region reg in StaticGeom.RegionMap.Values )
+			foreach( Axiom.Core.StaticGeometry.Region reg in StaticGeom.RegionMap.Values )
 			{
-				foreach ( StaticGeometry.LODBucket lod in reg.LodBucketList )
+				foreach( StaticGeometry.LODBucket lod in reg.LodBucketList )
 				{
-					foreach ( StaticGeometry.MaterialBucket mat in lod.MaterialBucketMap.Values )
+					foreach( StaticGeometry.MaterialBucket mat in lod.MaterialBucketMap.Values )
 					{
-						foreach ( StaticGeometry.GeometryBucket geom in mat.GeometryBucketList )
+						foreach( StaticGeometry.GeometryBucket geom in mat.GeometryBucketList )
 						{
 							geom.SetCustomParameter( OFFSET_PARAM, new Vector4( extraOffset, 0, 0, 0 ) );
 						}
 					}
 				}
 			}
-		} //end function
+		}
+
+		//end function
 	}
 }

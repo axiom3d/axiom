@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: DistanceLodStrategy.cs 1762 2009-09-13 18:56:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,7 +44,9 @@ using System.Diagnostics;
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
+
 using MathHelper = Axiom.Math.Utility;
+
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -55,6 +61,7 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		public const string StrategyName = "Distance";
+
 		/// <summary>
 		///
 		/// </summary>
@@ -64,6 +71,7 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		private bool _referenceViewEnabled;
+
 		/// <summary>
 		///
 		/// </summary>
@@ -72,15 +80,14 @@ namespace Axiom.Core
 			set
 			{
 				// Ensure reference value has been set before being enabled
-				if ( value )
+				if( value )
+				{
 					Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+				}
 
 				_referenceViewEnabled = value;
 			}
-			get
-			{
-				return _referenceViewEnabled;
-			}
+			get { return _referenceViewEnabled; }
 		}
 
 		#endregion Fields and Properties
@@ -91,13 +98,15 @@ namespace Axiom.Core
 		protected internal DistanceLodStrategy()
 			: base( StrategyName )
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 				ReferenceViewValue = float.NaN;
 			}
 			else
+			{
 				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			}
 		}
 
 		/// <summary>
@@ -111,7 +120,7 @@ namespace Axiom.Core
 		/// <param name="viewportWidth"></param>
 		/// <param name="viewportHeight"></param>
 		/// <param name="fovY"></param>
-		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
+		virtual public void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
 			Radian fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
@@ -128,13 +137,7 @@ namespace Axiom.Core
 
 		#region LodStrategy Implemention
 
-		public override Real BaseValue
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override Real BaseValue { get { return 0; } }
 
 		protected override Real getValue( MovableObject movableObject, Camera cam )
 		{
@@ -146,7 +149,7 @@ namespace Axiom.Core
 			float squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
-			if ( _referenceViewEnabled )
+			if( _referenceViewEnabled )
 			{
 				// Reference view only applicable to perspective projection
 				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
@@ -211,13 +214,7 @@ namespace Axiom.Core
 
 		protected static DistanceLodStrategy instance;
 
-		public static DistanceLodStrategy Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static DistanceLodStrategy Instance { get { return instance; } }
 
 		public bool Initialize( params object[] args )
 		{

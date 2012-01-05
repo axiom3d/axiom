@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -61,13 +65,7 @@ namespace Axiom.Fonts
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static FontManager Instance
-		{
-			get
-			{
-				return Singleton<FontManager>.Instance;
-			}
-		}
+		public static FontManager Instance { get { return Singleton<FontManager>.Instance; } }
 
 		/// <summary>
 		/// 
@@ -87,7 +85,7 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
-            : base()
+			: base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -115,20 +113,22 @@ namespace Axiom.Fonts
 		/// <param name="font"></param>
 		protected void parseAttribute( string line, Font font )
 		{
-			string[] parms = line.Split( new char[] { ' ', '\t' } );
+			string[] parms = line.Split( new char[] {
+			                                        	' ', '\t'
+			                                        } );
 			string attrib = parms[ 0 ].ToLower();
 
-			switch ( attrib )
+			switch( attrib )
 			{
 				case "type":
-					if ( parms.Length != 2 )
+					if( parms.Length != 2 )
 					{
 						ParseHelper.LogParserError( attrib, font.Name, "Invalid number of params for glyph " );
 						return;
 					}
 					else
 					{
-						if ( parms[ 1 ].ToLower() == "truetype" )
+						if( parms[ 1 ].ToLower() == "truetype" )
 						{
 							font.Type = FontType.TrueType;
 						}
@@ -140,7 +140,7 @@ namespace Axiom.Fonts
 					break;
 
 				case "source":
-					if ( parms.Length != 2 )
+					if( parms.Length != 2 )
 					{
 						ParseHelper.LogParserError( "source", font.Name, "Invalid number of params." );
 						return;
@@ -152,7 +152,7 @@ namespace Axiom.Fonts
 					break;
 
 				case "glyph":
-					if ( parms.Length != 6 )
+					if( parms.Length != 6 )
 					{
 						ParseHelper.LogParserError( "glyph", font.Name, "Invalid number of params." );
 						return;
@@ -162,16 +162,16 @@ namespace Axiom.Fonts
 
 					// set the texcoords for this glyph
 					font.SetGlyphTexCoords(
-						glyph,
-						StringConverter.ParseFloat( parms[ 2 ] ),
-						StringConverter.ParseFloat( parms[ 3 ] ),
-						StringConverter.ParseFloat( parms[ 4 ] ),
-						StringConverter.ParseFloat( parms[ 5 ] ) );
+					                       glyph,
+					                       StringConverter.ParseFloat( parms[ 2 ] ),
+					                       StringConverter.ParseFloat( parms[ 3 ] ),
+					                       StringConverter.ParseFloat( parms[ 4 ] ),
+					                       StringConverter.ParseFloat( parms[ 5 ] ) );
 
 					break;
 
 				case "size":
-					if ( parms.Length != 2 )
+					if( parms.Length != 2 )
 					{
 						ParseHelper.LogParserError( "size", font.Name, "Invalid number of params." );
 						return;
@@ -182,7 +182,7 @@ namespace Axiom.Fonts
 					break;
 
 				case "resolution":
-					if ( parms.Length != 2 )
+					if( parms.Length != 2 )
 					{
 						ParseHelper.LogParserError( "resolution", font.Name, "Invalid number of params." );
 						return;
@@ -193,7 +193,7 @@ namespace Axiom.Fonts
 					break;
 
 				case "antialias_colour":
-					if ( parms.Length != 2 )
+					if( parms.Length != 2 )
 					{
 						ParseHelper.LogParserError( "antialias_colour", font.Name, "Invalid number of params." );
 						return;
@@ -231,44 +231,44 @@ namespace Axiom.Fonts
 
 			string line;
 
-            // parse through the data to the end
-            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-            {
-                // ignore blank lines and comments
-                if ( line.Length == 0 || line.StartsWith( "//" ) )
-                {
-                    continue;
-                }
-                else
-                {
-                    if ( font == null )
-                    {
-                        // No current font
-                        // So first valid data should be font name
-                        if ( line.StartsWith( "font " ) )
-                        {
-                            // chop off the 'particle_system ' needed by new compilers
-                            line = line.Substring( 5 );
-                        }
-                        font = (Font)Create( line, groupName );
+			// parse through the data to the end
+			while( ( line = ParseHelper.ReadLine( script ) ) != null )
+			{
+				// ignore blank lines and comments
+				if( line.Length == 0 || line.StartsWith( "//" ) )
+				{
+					continue;
+				}
+				else
+				{
+					if( font == null )
+					{
+						// No current font
+						// So first valid data should be font name
+						if( line.StartsWith( "font " ) )
+						{
+							// chop off the 'particle_system ' needed by new compilers
+							line = line.Substring( 5 );
+						}
+						font = (Font)Create( line, groupName );
 
-                        ParseHelper.SkipToNextOpenBrace( script );
-                    }
-                    else
-                    {
-                        // currently in a font
-                        if ( line == "}" )
-                        {
-                            // finished
-                            font = null;
-                            // NB font isn't loaded until required
-                        }
-                        else
-                        {
-                            parseAttribute( line, font );
-                        }
-                    }
-                }
+						ParseHelper.SkipToNextOpenBrace( script );
+					}
+					else
+					{
+						// currently in a font
+						if( line == "}" )
+						{
+							// finished
+							font = null;
+							// NB font isn't loaded until required
+						}
+						else
+						{
+							parseAttribute( line, font );
+						}
+					}
+				}
 			}
 		}
 
@@ -278,9 +278,9 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Unregister with resource group manager
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );

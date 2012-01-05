@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,16 +43,20 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Overlays.Elements;
+
 using System.Collections.Generic;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="OgreOverlayManager.h"   revision="1.23.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 ///     <file name="OgreOverlayManager.cpp" revision="1.39.2.3" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Overlays
@@ -73,9 +81,9 @@ namespace Axiom.Overlays
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal OverlayElementManager()
-            : base()
+			: base()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 
@@ -89,13 +97,7 @@ namespace Axiom.Overlays
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		internal static OverlayElementManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		internal static OverlayElementManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
@@ -106,32 +108,22 @@ namespace Axiom.Overlays
 		#region Instances Property
 
 		private Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
+
 		/// <summary>
 		/// returns all elemnt instances
 		/// </summary>
-		public IEnumerable<OverlayElement> Instances
-		{
-			get
-			{
-				return _elementInstances.Values;
-			}
-		}
+		public IEnumerable<OverlayElement> Instances { get { return _elementInstances.Values; } }
 
 		#endregion Instances Property
 
 		#region Templates Property
 
 		private Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
+
 		/// <summary>
 		/// returns all element templates
 		/// </summary>
-		public IEnumerable<OverlayElement> Templates
-		{
-			get
-			{
-				return _elementTemplates.Values;
-			}
-		}
+		public IEnumerable<OverlayElement> Templates { get { return _elementTemplates.Values; } }
 
 		#endregion Templates Property
 
@@ -180,7 +172,7 @@ namespace Axiom.Overlays
 		{
 			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 
-			if ( elements.ContainsKey( instanceName ) )
+			if( elements.ContainsKey( instanceName ) )
 			{
 				//throw new AxiomException( "OverlayElement with the name '{0}' already exists.", instanceName );
 				return (OverlayElement)elements[ instanceName ];
@@ -205,7 +197,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElement CreateElementFromFactory( string typeName, string instanceName )
 		{
-			if ( !_elementFactories.ContainsKey( typeName ) )
+			if( !_elementFactories.ContainsKey( typeName ) )
 			{
 				throw new AxiomException( "Cannot locate factory for element type '{0}'", typeName );
 			}
@@ -239,7 +231,7 @@ namespace Axiom.Overlays
 		{
 			OverlayElement element = null;
 
-			if ( String.IsNullOrEmpty( templateName ) )
+			if( String.IsNullOrEmpty( templateName ) )
 			{
 				element = CreateElement( typeName, instanceName, isTemplate );
 			}
@@ -248,7 +240,7 @@ namespace Axiom.Overlays
 				OverlayElement template = GetElement( templateName, true );
 
 				string typeToCreate = "";
-				if ( String.IsNullOrEmpty( typeName ) )
+				if( String.IsNullOrEmpty( typeName ) )
 				{
 					typeToCreate = template.GetType().Name;
 				}
@@ -303,13 +295,15 @@ namespace Axiom.Overlays
 
 			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 
-			if ( !elements.ContainsKey( name ) )
+			if( !elements.ContainsKey( name ) )
 			{
 				LogManager.Instance.Write( string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
 				return null;
 			}
 			else
+			{
 				return (OverlayElement)elements[ name ];
+			}
 		}
 
 		/// <summary>
@@ -340,16 +334,18 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( string name, bool isTemplate )
 		{
-            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
-			if ( !elements.ContainsKey( name ) )
+			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			if( !elements.ContainsKey( name ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
 			}
 
-            if ( !elements[ name ].IsDisposed )
-                elements[ name ].Dispose();
+			if( !elements[ name ].IsDisposed )
+			{
+				elements[ name ].Dispose();
+			}
 
-            elements.Remove( name );
+			elements.Remove( name );
 		}
 
 		/// <summary>
@@ -368,14 +364,16 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		public void DestroyElement( OverlayElement element, bool isTemplate )
 		{
-            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
-			if ( !elements.ContainsValue( element ) )
+			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			if( !elements.ContainsValue( element ) )
 			{
 				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );
 			}
 
-            if ( !element.IsDisposed )
-                element.Dispose();
+			if( !element.IsDisposed )
+			{
+				element.Dispose();
+			}
 
 			elements.Remove( element.Name );
 		}
@@ -393,15 +391,17 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void DestroyAllElements( bool isTemplate )
 		{
-            Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 
-            foreach ( OverlayElement element in elements.Values )
-            {
-                if ( !element.IsDisposed )
-                    element.Dispose();
-            }
+			foreach( OverlayElement element in elements.Values )
+			{
+				if( !element.IsDisposed )
+				{
+					element.Dispose();
+				}
+			}
 
-            elements.Clear();
+			elements.Clear();
 		}
 
 		#endregion Destroy*OverlayElement
@@ -413,36 +413,36 @@ namespace Axiom.Overlays
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( _elementFactories != null )
-                    {
-                        _elementFactories.Clear();
-                        _elementFactories = null;
-                    }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					if( _elementFactories != null )
+					{
+						_elementFactories.Clear();
+						_elementFactories = null;
+					}
 
-                    if ( _elementInstances != null )
-                    {
-                        DestroyAllElements();
-                        _elementInstances = null;
-                    }
+					if( _elementInstances != null )
+					{
+						DestroyAllElements();
+						_elementInstances = null;
+					}
 
-                    if ( _elementTemplates != null )
-                    {
-                        DestroyAllElements( true );
-                        _elementTemplates = null;
-                    }
+					if( _elementTemplates != null )
+					{
+						DestroyAllElements( true );
+						_elementTemplates = null;
+					}
 
-                    instance = null;
-                }
-            }
+					instance = null;
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		#endregion IDisposable Implementation
 	}

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,26 +48,25 @@ using Axiom.Core;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+
 using Axiom.Media;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	class D3DMultiRenderTarget : MultiRenderTarget
+	internal class D3DMultiRenderTarget : MultiRenderTarget
 	{
 		#region Fields and Properties
 
-		protected D3DHardwarePixelBuffer[] _targets = new D3DHardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
+		protected D3DHardwarePixelBuffer[] _targets = new D3DHardwarePixelBuffer[Config.MaxMultipleRenderTargets];
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		public D3DMultiRenderTarget( string name )
-			: base( name )
-		{
-		}
+			: base( name ) {}
 
 		#endregion Construction and Destruction
 
@@ -89,14 +92,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Find first non null target
 			int y;
-			for ( y = 0; y < Config.MaxMultipleRenderTargets && this._targets[ y ] == null; y++ )
-				;
-
-			if ( y != Config.MaxMultipleRenderTargets )
+			for( y = 0; y < Config.MaxMultipleRenderTargets && this._targets[ y ] == null; y++ )
 			{
-				if ( this._targets[ y ].Width != buffer.Width
-					&& this._targets[ y ].Height != buffer.Height
-					&& PixelUtil.GetNumElemBits( this._targets[ y ].Format ) != PixelUtil.GetNumElemBits( this._targets[ y ].Format ) )
+				;
+			}
+
+			if( y != Config.MaxMultipleRenderTargets )
+			{
+				if( this._targets[ y ].Width != buffer.Width
+				    && this._targets[ y ].Height != buffer.Height
+				    && PixelUtil.GetNumElemBits( this._targets[ y ].Format ) != PixelUtil.GetNumElemBits( this._targets[ y ].Format ) )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size or bit depth." );
 				}
@@ -119,7 +124,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void CheckAndUpdate()
 		{
-			if ( this._targets[ 0 ] != null )
+			if( this._targets[ 0 ] != null )
 			{
 				Width = this._targets[ 0 ].Width;
 				Height = this._targets[ 0 ].Height;
@@ -138,8 +143,10 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void Update()
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			if ( rs.IsDeviceLost )
+			if( rs.IsDeviceLost )
+			{
 				return;
+			}
 
 			base.Update();
 		}
@@ -148,14 +155,16 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				if ( attribute == "D3DBACKBUFFER" )
+				if( attribute == "D3DBACKBUFFER" )
 				{
-					D3D.Surface[] surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
+					D3D.Surface[] surfaces = new D3D.Surface[Config.MaxMultipleRenderTargets];
 					/// Transfer surfaces
-					for ( int x = 0; x < Config.MaxMultipleRenderTargets; x++ )
+					for( int x = 0; x < Config.MaxMultipleRenderTargets; x++ )
 					{
-						if ( this._targets[ x ] != null )
+						if( this._targets[ x ] != null )
+						{
 							surfaces[ x ] = this._targets[ x ].Surface;
+						}
 					}
 					return surfaces;
 				}
@@ -164,13 +173,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool RequiresTextureFlipping { get { return true; } }
 
 		#endregion RenderTarget Implementation
 	}

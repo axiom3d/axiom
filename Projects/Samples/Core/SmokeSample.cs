@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -30,9 +32,10 @@ namespace Axiom.Samples.Core
 	/// <summary>
 	/// 
 	/// </summary>
-	class SmokeSample : SdkSample
+	internal class SmokeSample : SdkSample
 	{
 		private SceneNode _pivot;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -58,13 +61,12 @@ namespace Axiom.Samples.Core
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			_pivot.Position = new Vector3( 0, Utility.Sin( Root.Timer.Milliseconds / 150.0f ) * 10, 0 );
-			_pivot.Yaw( (Real)(new Degree( (Real)(-evt.TimeSinceLastFrame * 15f ) ) ) );
+			_pivot.Yaw( (Real)( new Degree( (Real)( -evt.TimeSinceLastFrame * 15f ) ) ) );
 			return base.FrameRenderingQueued( evt );
 		}
 
 		protected override void SetupContent()
 		{
-
 			SceneManager.SetSkyBox( true, "Examples/EveningSkyBox", 5000 );
 
 			// dim orange ambient and two bright orange lights to match the skybox
@@ -80,7 +82,7 @@ namespace Axiom.Samples.Core
 
 			// create a child node and attach ogre head and some smoke to it
 			SceneNode headNode = _pivot.CreateChildSceneNode( new Vector3( 100, 0, 0 ) );
-			headNode.AttachObject(  SceneManager.CreateEntity( "Head", "ogrehead.mesh" ) );
+			headNode.AttachObject( SceneManager.CreateEntity( "Head", "ogrehead.mesh" ) );
 			headNode.AttachObject( ParticleSystemManager.Instance.CreateSystem( "Smoke", "Examples/Smoke" ) );
 
 			Camera.Position = new Vector3( 0.0f, 30.0f, 350.0f );

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,31 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
 using SDI = System.Drawing.Imaging;
+
 using System.IO;
 using System.Runtime.InteropServices;
 
 using Axiom.Media;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.SystemDrawingCodecs
@@ -48,7 +55,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 	/// <summary>
 	/// System.Drawing base implementation of Axiom's ImageCodec
 	/// </summary>
-	public abstract class SDImageCodec : ImageCodec
+	abstract public class SDImageCodec : ImageCodec
 	{
 		/// <summary>
 		///     Encodes data to a file.
@@ -64,7 +71,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			SDI.PixelFormat pf;
 			int bpp;
 
-			switch ( data.format )
+			switch( data.format )
 			{
 				case Axiom.Media.PixelFormat.B8G8R8:
 					pf = SDI.PixelFormat.Format24bppRgb;
@@ -77,19 +84,18 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 
 				default:
 					throw new ArgumentException( "Unsupported Pixel Format " + data.format );
-
 			}
 			Bitmap image = new Bitmap( data.width, data.height, pf );
 
 			//Create a BitmapData and Lock all pixels to be written
 			SDI.BitmapData imagedta = image.LockBits(
-								 new Rectangle( 0, 0, image.Width, image.Height ),
-								 SDI.ImageLockMode.WriteOnly, image.PixelFormat );
+			                                         new Rectangle( 0, 0, image.Width, image.Height ),
+			                                         SDI.ImageLockMode.WriteOnly, image.PixelFormat );
 
-			byte[] buffer = new byte[ input.Length ];
+			byte[] buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
-			for ( int c = 0; c < buffer.Length - bpp; c += bpp )
+			for( int c = 0; c < buffer.Length - bpp; c += bpp )
 			{
 				byte tmp = buffer[ c ];
 				buffer[ c ] = buffer[ c + 2 ];
@@ -107,15 +113,19 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 
 		private ImageFormat ConvertImageFormat( string name )
 		{
-			if ( string.IsNullOrEmpty( name ) )
+			if( string.IsNullOrEmpty( name ) )
+			{
 				throw new ArgumentNullException( "name" );
+			}
 
-			if ( !Path.HasExtension( name ) )
+			if( !Path.HasExtension( name ) )
+			{
 				throw new ArgumentException( "filename must have an extension." );
+			}
 
 			string ext = Path.GetExtension( name );
 
-			switch ( ext.ToLower() )
+			switch( ext.ToLower() )
 			{
 				case ".jpg":
 				case ".jpeg":
@@ -128,7 +138,6 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 					return ImageFormat.Png;
 				case ".tiff":
 					return ImageFormat.Tiff;
-
 			}
 			return ImageFormat.Png;
 		}
@@ -154,12 +163,12 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			try
 			{
 				CurrentBitmap = new Bitmap( input );
-				if ( ( CurrentBitmap.Flags & 64 ) != 0 ) // if grayscale
+				if( ( CurrentBitmap.Flags & 64 ) != 0 ) // if grayscale
 				{
 					gray = true;
 				}
 
-				switch ( CurrentBitmap.PixelFormat )
+				switch( CurrentBitmap.PixelFormat )
 				{
 					case SDI.PixelFormat.Format24bppRgb:
 						bytesPerPixel = 3;
@@ -180,7 +189,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				data.height = Data.Height;
 				data.depth = 1;
 				data.numMipMaps = 0;
-				if ( gray )
+				if( gray )
 				{
 					data.format = Axiom.Media.PixelFormat.L8;
 					data.size = data.width * data.height;
@@ -192,7 +201,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				}
 
 				// get the decoded data
-				byte[] buffer = new byte[ data.size ];
+				byte[] buffer = new byte[data.size];
 
 				// copy the data into the byte array
 				unsafe
@@ -200,31 +209,34 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 					int qw = 0;
 					byte* imgPtr = (byte*)( Data.Scan0 );
 
-					if ( gray == false )
+					if( gray == false )
 					{
-						for ( int i = 0; i < Data.Height; i++ )
+						for( int i = 0; i < Data.Height; i++ )
 						{
-							for ( int j = 0; j < Data.Width; j++ )
+							for( int j = 0; j < Data.Width; j++ )
 							{
 								buffer[ qw++ ] = *( imgPtr + 2 );
 								buffer[ qw++ ] = *( imgPtr + 1 );
 								buffer[ qw++ ] = *( imgPtr + 0 );
 
-								if ( bytesPerPixel == 3 )
+								if( bytesPerPixel == 3 )
+								{
 									buffer[ qw++ ] = 255;
+								}
 								else
+								{
 									buffer[ qw++ ] = *( imgPtr + 3 ); // alpha
+								}
 								imgPtr += bytesPerPixel;
 							}
 							imgPtr += Data.Stride - Data.Width * bytesPerPixel;
 						}
-
 					}
 					else
 					{
-						for ( int i = 0; i < Data.Height; i++ )
+						for( int i = 0; i < Data.Height; i++ )
 						{
-							for ( int j = 0; j < Data.Width; j++ )
+							for( int j = 0; j < Data.Width; j++ )
 							{
 								buffer[ qw++ ] = *( imgPtr );
 								imgPtr += bytesPerPixel;
@@ -239,7 +251,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 
 				CurrentBitmap.UnlockBits( Data );
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				throw new ArgumentException( "Texture loading error.", e );
 			}

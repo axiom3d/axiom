@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -72,17 +76,25 @@ namespace Axiom.SceneManagers.Octree
 		protected bool useIdentityProj;
 		protected bool useIdentityView;
 
-		const int PositionBinding = 0;
-		const int ColorBinding = 1;
+		private const int PositionBinding = 0;
+		private const int ColorBinding = 1;
 
-		static long red = 0xFF0000FF;
-		short[] indexes = {0, 1, 1, 2, 2, 3, 3, 0,       //back
-                              0, 6, 6, 5, 5, 1,             //left
-                              3, 7, 7, 4, 4, 2,             //right
-                              6, 7, 5, 4 };
-		long[] colors = { red, red, red, red, red, red, red, red };
+		private static long red = 0xFF0000FF;
 
-		int[] corners = { 0, 4, 3, 5, 2, 6, 1, 7 };
+		private short[] indexes = {
+		                          	0, 1, 1, 2, 2, 3, 3, 0, //back
+		                          	0, 6, 6, 5, 5, 1, //left
+		                          	3, 7, 7, 4, 4, 2, //right
+		                          	6, 7, 5, 4
+		                          };
+
+		private long[] colors = {
+		                        	red, red, red, red, red, red, red, red
+		                        };
+
+		private int[] corners = {
+		                        	0, 4, 3, 5, 2, 6, 1, 7
+		                        };
 
 		#endregion Fields
 
@@ -97,10 +109,9 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		/// <param name="bound"></param>
 		/// <returns></returns>
-
 		public Visibility GetVisibility( AxisAlignedBox bound )
 		{
-			if ( bound.IsNull )
+			if( bound.IsNull )
 			{
 				return Visibility.None;
 			}
@@ -116,31 +127,31 @@ namespace Axiom.SceneManagers.Octree
 
 			bool AllInside = true;
 
-			for ( int plane = 0; plane < 6; plane++ )
+			for( int plane = 0; plane < 6; plane++ )
 			{
 				bool AllOutside = false;
 
 				float distance = 0;
 
-				for ( int corner = 0; corner < 8; corner++ )
+				for( int corner = 0; corner < 8; corner++ )
 				{
 					distance = _planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
 					AllOutside = AllOutside && ( distance < 0 );
 					AllInside = AllInside && ( distance >= 0 );
 
-					if ( !AllOutside && !AllInside )
+					if( !AllOutside && !AllInside )
 					{
 						break;
 					}
 				}
 
-				if ( AllOutside )
+				if( AllOutside )
 				{
 					return Visibility.None;
 				}
 			}
 
-			if ( AllInside )
+			if( AllInside )
 			{
 				return Visibility.Full;
 			}
@@ -148,7 +159,6 @@ namespace Axiom.SceneManagers.Octree
 			{
 				return Visibility.Partial;
 			}
-
 		}
 
 		//        /// <summary>
@@ -204,7 +214,7 @@ namespace Axiom.SceneManagers.Octree
 
 			float det = mdet.Determinant;
 
-			if ( det == 0 )
+			if( det == 0 )
 			{
 				//TODO: Unsure. The C++ just returned
 				return Vector3.Zero; //some planes are parallel.

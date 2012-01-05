@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,61 +19,59 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Axiom.Samples.Core
 {
-    enum ShaderType
-    {
-        GpuVertex,
-        GpuFragment,
-        MatSpecular,
-        MatDiffuse,
-        MatAmbient,
-        MatShininess,
-        MatEmissive
-    }
+	internal enum ShaderType
+	{
+		GpuVertex,
+		GpuFragment,
+		MatSpecular,
+		MatDiffuse,
+		MatAmbient,
+		MatShininess,
+		MatEmissive
+	}
 
-    struct ShaderControl
-    {
-        public string Name;
-        public string ParamName;
-        public ShaderType Type;
-        public float MinVal;
-        public float MaxVal;
-        public int PhysicalIndex;
-        public int ElementIndex;
-        /// <summary>
-        /// 
-        /// </summary>
-        public float Range
-        {
-            get { return MaxVal - MinVal; }
-        }
-      
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public float ConvertParamToScrollPosition( float val )
-        {
-            return val - MinVal;
-        }
+	internal struct ShaderControl
+	{
+		public string Name;
+		public string ParamName;
+		public ShaderType Type;
+		public float MinVal;
+		public float MaxVal;
+		public int PhysicalIndex;
+		public int ElementIndex;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public float ConvertScrollPositionToParam( float val )
-        {
-            return val + MinVal;
-        }
-    }
+		/// <summary>
+		/// 
+		/// </summary>
+		public float Range { get { return MaxVal - MinVal; } }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public float ConvertParamToScrollPosition( float val )
+		{
+			return val - MinVal;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public float ConvertScrollPositionToParam( float val )
+		{
+			return val + MinVal;
+		}
+	}
 }

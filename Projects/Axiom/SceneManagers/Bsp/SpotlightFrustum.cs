@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -59,10 +63,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		public Light Spotlight
 		{
-			get
-			{
-				return light;
-			}
+			get { return light; }
 			set
 			{
 				this.light = value;
@@ -85,12 +86,12 @@ namespace Axiom.SceneManagers.Bsp
 			// grab a reference to the current render system
 			RenderSystem renderSystem = Root.Instance.RenderSystem;
 
-			if ( ProjectionType == Projection.Perspective )
+			if( ProjectionType == Projection.Perspective )
 			{
 				// perspective transform, API specific
 				ProjectionMatrix = renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far );
 			}
-			else if ( ProjectionType == Projection.Orthographic )
+			else if( ProjectionType == Projection.Orthographic )
 			{
 				// orthographic projection, API specific
 				ProjectionMatrix = renderSystem.MakeOrthoMatrix( FieldOfView, AspectRatio, Near, Far );
@@ -143,7 +144,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			Quaternion rotationQuat;
 
-			if ( ( zAxis + zAdjustVec ).LengthSquared < 0.00001f )
+			if( ( zAxis + zAdjustVec ).LengthSquared < 0.00001f )
 			{
 				// Oops, a 180 degree turn (infinite possible rotation axes)
 				// Default to yaw i.e. use current UP

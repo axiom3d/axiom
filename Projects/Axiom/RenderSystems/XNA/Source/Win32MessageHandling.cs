@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,17 +42,18 @@ using System.Windows.Forms;
 
 using Axiom.Core;
 using Axiom.Graphics;
+
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-	class Win32MessageHandling
+	internal class Win32MessageHandling
 	{
 		#region P/Invoke Declarations
 
-		enum WindowMessage
+		private enum WindowMessage
 		{
 			Create = 0x0001,
 			Destroy = 0x0002,
@@ -64,21 +69,21 @@ namespace Axiom.RenderSystems.Xna
 			ExitSizeMove = 0x0232
 		}
 
-		enum ActivateState
+		private enum ActivateState
 		{
 			InActive = 0,
 			Active = 1,
 			ClickActive = 2
 		}
 
-		enum VirtualKeys
+		private enum VirtualKeys
 		{
 			Shift = 0x10,
 			Control = 0x11,
 			Menu = 0x12
 		}
 
-		struct Msg
+		private struct Msg
 		{
 			public int hWnd;
 			public int Message;
@@ -88,7 +93,7 @@ namespace Axiom.RenderSystems.Xna
 			public POINTAPI pt;
 		}
 
-		struct POINTAPI
+		private struct POINTAPI
 		{
 			public int x;
 			public int y;
@@ -104,8 +109,9 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		PeekMessage option to remove the message from the queue after processing.
 		/// </summary>
-		const int PM_REMOVE = 0x0001;
-		const string USER_DLL = "user32.dll";
+		private const int PM_REMOVE = 0x0001;
+
+		private const string USER_DLL = "user32.dll";
 
 		/// <summary>
 		///		The PeekMessage function dispatches incoming sent messages, checks the thread message 
@@ -139,14 +145,12 @@ namespace Axiom.RenderSystems.Xna
 		#endregion P/Invoke Declarations
 
 		#region Fields and Properties
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
-		public Win32MessageHandling()
-		{
-
-		}
+		public Win32MessageHandling() {}
 
 		#endregion Construction and Destruction
 
@@ -156,19 +160,19 @@ namespace Axiom.RenderSystems.Xna
 		/// Internal winProc (RenderWindow's use this when creating the Win32 Window)
 		/// </summary>
 		/// <param name="m"></param>
-		static public bool WndProc( RenderWindow win, ref Message m )
+		public static bool WndProc( RenderWindow win, ref Message m )
 		{
-			switch ( (WindowMessage)m.Msg )
+			switch( (WindowMessage)m.Msg )
 			{
 				case WindowMessage.Activate:
-					{
-						bool active = ( (ActivateState)( m.WParam.ToInt32() & 0xFFFF ) ) != ActivateState.InActive;
-						win.IsActive = active;
-						WindowEventMonitor.Instance.WindowFocusChange( win, active );
-						break;
-					}
+				{
+					bool active = ( (ActivateState)( m.WParam.ToInt32() & 0xFFFF ) ) != ActivateState.InActive;
+					win.IsActive = active;
+					WindowEventMonitor.Instance.WindowFocusChange( win, active );
+					break;
+				}
 				case WindowMessage.SysKeyDown:
-					switch ( (VirtualKeys)m.WParam )
+					switch( (VirtualKeys)m.WParam )
 					{
 						case VirtualKeys.Control:
 						case VirtualKeys.Shift:
@@ -178,7 +182,7 @@ namespace Axiom.RenderSystems.Xna
 					}
 					break;
 				case WindowMessage.SysKeyUp:
-					switch ( (VirtualKeys)m.WParam )
+					switch( (VirtualKeys)m.WParam )
 					{
 						case VirtualKeys.Control:
 						case VirtualKeys.Shift:
@@ -214,12 +218,12 @@ namespace Axiom.RenderSystems.Xna
 			return false;
 		}
 
-		static public void MessagePump()
+		public static void MessagePump()
 		{
 			Msg msg;
 
 			// pump those events!
-			while ( !( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) == 0 ) )
+			while( !( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) == 0 ) )
 			{
 				TranslateMessage( ref msg );
 				DispatchMessage( ref msg );

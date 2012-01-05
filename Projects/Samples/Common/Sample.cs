@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections;
@@ -37,108 +39,87 @@ namespace Axiom.Samples
 	/// </summary>
 	public class Sample
 	{
-
 		#region Fields and Properties
 
 		/// <summary>
 		/// Axiom root object
 		/// </summary>
 		protected Root Root;
+
 		/// <summary>
 		/// context render window
 		/// </summary>
 		protected RenderWindow Window;
+
 		/// <summary>
 		/// context keyboard device
 		/// </summary>
 		protected SIS.Keyboard Keyboard;
+
 		/// <summary>
 		/// context mouse device
 		/// </summary>
 		protected SIS.Mouse Mouse;
+
 		/// <summary>
 		/// whether or not resources have been loaded
 		/// </summary>
 		protected bool ResourcesLoaded;
+
 		/// <summary>
 		/// whether or not scene was created
 		/// </summary>
 		protected bool ContentSetup;
 
 		#region Metadata Property
+
 		protected readonly NameValuePairList _metadata = new NameValuePairList();
+
 		/// <summary>
 		///  Retrieves custom sample info.
 		/// </summary>
-		public NameValuePairList Metadata
-		{
-			get
-			{
-				return _metadata;
-			}
-		}
+		public NameValuePairList Metadata { get { return _metadata; } }
+
 		#endregion Metadata Property
 
 		#region RequiredRenderSystem Property
+
 		/// <summary>
 		/// If this sample requires a specific render system to run, this method will be used to return its name.
 		/// </summary>
-		public virtual string RequiredRenderSystem
-		{
-			get
-			{
-				return string.Empty;
-			}
-		}
+		virtual public string RequiredRenderSystem { get { return string.Empty; } }
+
 		#endregion RequiredRenderSystem Property
 
 		#region RequiredPlugins Property
+
 		/// <summary>
 		/// If this sample requires specific plugins to run, this method will be used to return their names.
 		/// </summary>
-		public virtual IList<string> RequiredPlugins
-		{
-			get
-			{
-				return new List<string>();
-			}
-		}
+		virtual public IList<string> RequiredPlugins { get { return new List<string>(); } }
+
 		#endregion RequiredPlugins Property
 
 		#region SceneManager Property
-		private SceneManager _sceneManager;    // scene manager for this sample
+
+		private SceneManager _sceneManager; // scene manager for this sample
+
 		/// <summary>
 		/// <see cref="Axiom.Core.SceneManager"/> for this sample
 		/// </summary>
-		public SceneManager SceneManager
-		{
-			get
-			{
-				return this._sceneManager;
-			}
-			protected set
-			{
-				_sceneManager = value;
-			}
-		}
+		public SceneManager SceneManager { get { return this._sceneManager; } protected set { _sceneManager = value; } }
+
 		#endregion SceneManager Property
 
 		#region IsDone Property
-		private bool _done;                       // flag to mark the end of the sample
+
+		private bool _done; // flag to mark the end of the sample
+
 		/// <summary>
 		/// Has the sample ended
 		/// </summary>
-		public bool IsDone
-		{
-			get
-			{
-				return this._done;
-			}
-			protected set
-			{
-				_done = value;
-			}
-		}
+		public bool IsDone { get { return this._done; } protected set { _done = value; } }
+
 		#endregion IsDone Property
 
 		#endregion Fields and Properties
@@ -160,9 +141,7 @@ namespace Axiom.Samples
 		/// Tests to see if target machine meets any special requirements of this sample. Signal a failure by throwing an exception.
 		/// </summary>
 		/// <param name="capabilities"></param>
-		public virtual void TestCapabilities( RenderSystemCapabilities capabilities )
-		{
-		}
+		virtual public void TestCapabilities( RenderSystemCapabilities capabilities ) {}
 
 		/// <summary>
 		/// Sets up a sample. Used by the SampleContext class. Do not call directly.
@@ -170,7 +149,7 @@ namespace Axiom.Samples
 		/// <param name="window"></param>
 		/// <param name="keyboard"></param>
 		/// <param name="mouse"></param>
-		protected internal virtual void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
+		virtual protected internal void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
 		{
 			Window = window;
 			Keyboard = keyboard;
@@ -190,21 +169,29 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Shuts down a sample. Used by the SampleContext class. Do not call directly.
 		/// </summary>
-		public virtual void Shutdown()
+		virtual public void Shutdown()
 		{
-			if ( this._sceneManager != null )
+			if( this._sceneManager != null )
+			{
 				this._sceneManager.ClearScene();
+			}
 
-			if ( ContentSetup )
+			if( ContentSetup )
+			{
 				CleanupContent();
+			}
 			ContentSetup = false;
 
-			if ( ResourcesLoaded )
+			if( ResourcesLoaded )
+			{
 				UnloadResources();
+			}
 			ResourcesLoaded = false;
 
-			if ( this._sceneManager != null )
-				Root.DestroySceneManager( this._sceneManager );			
+			if( this._sceneManager != null )
+			{
+				Root.DestroySceneManager( this._sceneManager );
+			}
 			this._sceneManager = null;
 
 			this._done = true;
@@ -214,105 +201,103 @@ namespace Axiom.Samples
 		| Actions to perform when the context stops sending frame listener events
 		| and input device events to this sample.
 		-----------------------------------------------------------------------------*/
-		public virtual void Paused()
-		{
-		}
+
+		virtual public void Paused() {}
 
 		/*-----------------------------------------------------------------------------
 		| Actions to perform when the context continues sending frame listener
 		| events and input device events to this sample.
 		-----------------------------------------------------------------------------*/
-		public virtual void Unpaused()
-		{
-		}
+
+		virtual public void Unpaused() {}
 
 		/*-----------------------------------------------------------------------------
 		| Saves the sample state. Optional. Used during reconfiguration.
 		-----------------------------------------------------------------------------*/
-		public virtual void SaveState( NameValuePairList state )
-		{
-		}
+
+		virtual public void SaveState( NameValuePairList state ) {}
 
 		/*-----------------------------------------------------------------------------
 		| Restores the sample state. Optional. Used during reconfiguration.
 		-----------------------------------------------------------------------------*/
-		public virtual void RestoreState( NameValuePairList state )
-		{
-		}
+
+		virtual public void RestoreState( NameValuePairList state ) {}
 
 		// callback interface copied from various listeners to be used by SampleContext
 
-		public virtual bool FrameStarted( FrameEventArgs evt )
+		virtual public bool FrameStarted( FrameEventArgs evt )
 		{
 			return false;
 		}
-		public virtual bool FrameRenderingQueued( FrameEventArgs evt )
+
+		virtual public bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			return false;
 		}
-		public virtual bool FrameEnded( FrameEventArgs evt )
+
+		virtual public bool FrameEnded( FrameEventArgs evt )
 		{
 			return false;
 		}
-		public virtual void WindowMoved( RenderWindow rw )
-		{
-		}
-		public virtual void WindowResized( RenderWindow rw )
-		{
-		}
-		public virtual bool WindowClosing( RenderWindow rw )
-		{
-			return true;
-		}
-		public virtual void WindowClosed( RenderWindow rw )
-		{
-		}
-		public virtual void WindowFocusChange( RenderWindow rw )
-		{
-		}
-		public virtual bool KeyPressed( SIS.KeyEventArgs evt )
-		{
-			return true;
-		}
-		public virtual bool KeyReleased( SIS.KeyEventArgs evt )
-		{
-			return true;
-		}
-		public virtual bool MouseMoved( SIS.MouseEventArgs evt )
-		{
-			return true;
-		}
-		public virtual bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
-		{
-			return true;
-		}
-		public virtual bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+
+		virtual public void WindowMoved( RenderWindow rw ) {}
+
+		virtual public void WindowResized( RenderWindow rw ) {}
+
+		virtual public bool WindowClosing( RenderWindow rw )
 		{
 			return true;
 		}
 
+		virtual public void WindowClosed( RenderWindow rw ) {}
+
+		virtual public void WindowFocusChange( RenderWindow rw ) {}
+
+		virtual public bool KeyPressed( SIS.KeyEventArgs evt )
+		{
+			return true;
+		}
+
+		virtual public bool KeyReleased( SIS.KeyEventArgs evt )
+		{
+			return true;
+		}
+
+		virtual public bool MouseMoved( SIS.MouseEventArgs evt )
+		{
+			return true;
+		}
+
+		virtual public bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		{
+			return true;
+		}
+
+		virtual public bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		{
+			return true;
+		}
 
 		/*-----------------------------------------------------------------------------
 		| Finds sample-specific resources. No such effort is made for most samples,
 		| but this is useful for special samples with large, exclusive resources.
 		-----------------------------------------------------------------------------*/
-		protected virtual void LocateResources()
-		{
-		}
+
+		virtual protected void LocateResources() {}
 
 		/*-----------------------------------------------------------------------------
 		| Loads sample-specific resources. No such effort is made for most samples,
 		| but this is useful for special samples with large, exclusive resources.
 		-----------------------------------------------------------------------------*/
-		protected virtual void LoadResources()
-		{
-		}
+
+		virtual protected void LoadResources() {}
 
 		/*-----------------------------------------------------------------------------
 		| Creates a scene manager for the sample. A generic one is the default,
 		| but many samples require a special kind of scene manager.
 		-----------------------------------------------------------------------------*/
-		protected virtual void CreateSceneManager()
+
+		virtual protected void CreateSceneManager()
 		{
 			this._sceneManager = Root.Instance.CreateSceneManager( "DefaultSceneManager" );
 		}
@@ -320,57 +305,58 @@ namespace Axiom.Samples
 		/*-----------------------------------------------------------------------------
 		| Sets up viewport layout and camera.
 		-----------------------------------------------------------------------------*/
-		protected virtual void SetupView()
-		{
-		}
+
+		virtual protected void SetupView() {}
 
 		/*-----------------------------------------------------------------------------
 		| Sets up the scene (and anything else you want for the sample).
 		-----------------------------------------------------------------------------*/
-		protected virtual void SetupContent()
-		{
-		}
+
+		virtual protected void SetupContent() {}
 
 		/*-----------------------------------------------------------------------------
 		| Cleans up the scene (and anything else you used).
 		-----------------------------------------------------------------------------*/
-		protected virtual void CleanupContent()
-		{
-		}
+
+		virtual protected void CleanupContent() {}
 
 		/*-----------------------------------------------------------------------------
 		| Unloads sample-specific resources. My method here is simple and good
 		| enough for most small samples, but your needs may vary.
 		-----------------------------------------------------------------------------*/
-		protected virtual void UnloadResources()
+
+		virtual protected void UnloadResources()
 		{
-			foreach ( ResourceManager manager in ResourceGroupManager.Instance.ResourceManagers.Values )
+			foreach( ResourceManager manager in ResourceGroupManager.Instance.ResourceManagers.Values )
 			{
 				//manager.UnloadUnreferencedResources();
 			}
 		}
 	};
 
-	public class SampleSet : List<Sample>
-	{
-	}
+	public class SampleSet : List<Sample> {}
 
 	/// <summary>
 	/// Utility comparison structure for sorting samples using SampleSet.
 	/// </summary>
 	public class SampleComparer : IComparer<Sample>
 	{
-
 		#region IComparer<Sample> Members
 
 		public int Compare( Sample x, Sample y )
 		{
-			if ( x == null && y == null )
+			if( x == null && y == null )
+			{
 				return 0;
-			if ( x == null )
+			}
+			if( x == null )
+			{
 				return -1;
-			if ( y == null )
+			}
+			if( y == null )
+			{
 				return 1;
+			}
 
 			string titleX;
 			string titleY;
@@ -383,6 +369,4 @@ namespace Axiom.Samples
 
 		#endregion IComparer<Sample> Members
 	}
-
-
 }

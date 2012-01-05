@@ -1,0 +1,25 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <Import Project="$(RootDir)\tools\build\Module.targets" />
+  
+  <ItemGroup>
+    <CSharpProject Include="Axiom.Framework$(ProjectVariant).csproj" />
+    <CSharpProject Include="Axiom.Framework.Xbox.csproj" />
+  
+    <AssemblyFile Include="bin\x86\Axiom.Framework.dll">
+      <ImagePath>bin\Net35</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="bin\x86\Axiom.Framework.pdb">
+      <ImagePath>bin\Net35</ImagePath>
+    </PdbFile>
+    <AssemblyFile Include="bin\Xbox\Axiom.Framework.dll">
+      <ImagePath>bin\Xbox</ImagePath>
+    </AssemblyFile>
+    <PdbFile Include="bin\Xbox\Axiom.Framework.pdb">
+      <ImagePath>bin\Xbox</ImagePath>
+    </PdbFile>
+    <XmlDocFile Include="bin\x86\Axiom.Framework.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+  </ItemGroup>
+
+</Project>

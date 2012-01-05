@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Graphics;
 using Axiom.Utilities;
 
@@ -43,7 +48,7 @@ using Axiom.Utilities;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	class GLFBOMultiRenderTarget : MultiRenderTarget
+	internal class GLFBOMultiRenderTarget : MultiRenderTarget
 	{
 		#region Fields and Properties
 
@@ -87,7 +92,6 @@ namespace Axiom.RenderSystems.OpenGL
 			// Set width and height
 			Width = this._fbo.Width;
 			Height = this._fbo.Height;
-
 		}
 
 		/// <summary>
@@ -109,7 +113,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				if ( attribute == "FBO" )
+				if( attribute == "FBO" )
 				{
 					return this._fbo;
 				}
@@ -118,13 +122,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool RequiresTextureFlipping { get { return true; } }
 
 		#endregion RenderTarget Implementation
 	}

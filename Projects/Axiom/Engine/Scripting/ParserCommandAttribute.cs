@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: ParserCommandAttribute.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,6 @@ using System.Text;
 
 namespace Axiom.Scripting
 {
-
 	/// <summary>
 	///		Custom attribute to mark methods as handling the parsing for a material script attribute.
 	/// </summary>
@@ -57,20 +60,8 @@ namespace Axiom.Scripting
 			this.parserType = parserType;
 		}
 
-		public string Name
-		{
-			get
-			{
-				return attributeName;
-			}
-		}
+		public string Name { get { return attributeName; } }
 
-		public string ParserType
-		{
-			get
-			{
-				return parserType;
-			}
-		}
+		public string ParserType { get { return parserType; } }
 	}
 }

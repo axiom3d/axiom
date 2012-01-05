@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -71,13 +75,13 @@ namespace Axiom.Scripting.Compiler
 				obj.Context = _Pass;
 
 				// The name is the type of the pass
-				if ( obj.Values.Count == 0 )
+				if( obj.Values.Count == 0 )
 				{
 					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 					return;
 				}
 				string type = string.Empty;
-				if ( !getString( obj.Values[ 0 ], out type ) )
+				if( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 					return;
@@ -86,16 +90,16 @@ namespace Axiom.Scripting.Compiler
 				{
 					_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof( CompositorPassType ) );
 				}
-				catch ( System.Exception ex )
+				catch( System.Exception ex )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line, "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
 					return;
 				}
-				if ( _Pass.Type == CompositorPassType.RenderCustom )
+				if( _Pass.Type == CompositorPassType.RenderCustom )
 				{
 					string customType = string.Empty;
 					//This is the ugly one liner for safe access to the second parameter.
-					if ( obj.Values.Count < 2 || !getString( obj.Values[ 1 ], out customType ) )
+					if( obj.Values.Count < 2 || !getString( obj.Values[ 1 ], out customType ) )
 					{
 						compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 						return;
@@ -103,25 +107,26 @@ namespace Axiom.Scripting.Compiler
 					_Pass.CustomType = customType;
 				}
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
-					else if ( i is PropertyAbstractNode )
+					else if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-						switch ( (Keywords)prop.Id )
+						switch( (Keywords)prop.Id )
 						{
-							#region ID_MATERIAL
+								#region ID_MATERIAL
+
 							case Keywords.ID_MATERIAL:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -129,7 +134,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									string val = string.Empty;
-									if ( getString( prop.Values[ 0 ], out val ) )
+									if( getString( prop.Values[ 0 ], out val ) )
 									{
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent(
 											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
@@ -143,16 +148,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_MATERIAL
 
-							#region ID_INPUT
+								#endregion ID_MATERIAL
+
+								#region ID_INPUT
+
 							case Keywords.ID_INPUT:
-								if ( prop.Values.Count < 2 )
+								if( prop.Values.Count < 2 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 3 )
+								else if( prop.Values.Count > 3 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -162,11 +169,11 @@ namespace Axiom.Scripting.Compiler
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 									int id = 0;
 									string name = string.Empty;
-									if ( getInt( i0, out id ) && getString( i1, out name ) )
+									if( getInt( i0, out id ) && getString( i1, out name ) )
 									{
 										int index = 0;
 
-										if ( i2 != null && !getInt( i2, out index ) )
+										if( i2 != null && !getInt( i2, out index ) )
 										{
 											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 											return;
@@ -180,16 +187,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_INPUT
 
-							#region ID_IDENTIFIER
+								#endregion ID_INPUT
+
+								#region ID_IDENTIFIER
+
 							case Keywords.ID_IDENTIFIER:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -197,7 +206,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
+									if( getUInt( prop.Values[ 0 ], out val ) )
 									{
 										_Pass.Identifier = val;
 									}
@@ -207,16 +216,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_IDENTIFIER
 
-							#region ID_FIRST_RENDER_QUEUE
+								#endregion ID_IDENTIFIER
+
+								#region ID_FIRST_RENDER_QUEUE
+
 							case Keywords.ID_FIRST_RENDER_QUEUE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -224,7 +235,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
+									if( getUInt( prop.Values[ 0 ], out val ) )
 									{
 										_Pass.FirstRenderQueue = (RenderQueueGroupID)val;
 									}
@@ -234,16 +245,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_FIRST_RENDER_QUEUE
 
-							#region ID_LAST_RENDER_QUEUE
+								#endregion ID_FIRST_RENDER_QUEUE
+
+								#region ID_LAST_RENDER_QUEUE
+
 							case Keywords.ID_LAST_RENDER_QUEUE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -251,7 +264,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
+									if( getUInt( prop.Values[ 0 ], out val ) )
 									{
 										_Pass.LastRenderQueue = (RenderQueueGroupID)val;
 									}
@@ -261,16 +274,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_LAST_RENDER_QUEUE
 
-							#region ID_MATERIAL_SCHEME
+								#endregion ID_LAST_RENDER_QUEUE
+
+								#region ID_MATERIAL_SCHEME
+
 							case Keywords.ID_MATERIAL_SCHEME:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -278,7 +293,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									string val;
-									if ( getString( prop.Values[ 0 ], out val ) )
+									if( getString( prop.Values[ 0 ], out val ) )
 									{
 										_Pass.MaterialScheme = val;
 									}
@@ -288,31 +303,39 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_MATERIAL_SCHEME
 
-							#region ID_QUAD_NORMALS
+								#endregion ID_MATERIAL_SCHEME
+
+								#region ID_QUAD_NORMALS
+
 							case Keywords.ID_QUAD_NORMALS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
+										if( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
+										{
 											_Pass.SetQuadFarCorners( true, true );
-										else if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )
+										}
+										else if( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )
+										{
 											_Pass.SetQuadFarCorners( true, false );
+										}
 										else
+										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+										}
 									}
 									else
 									{
@@ -320,11 +343,12 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_QUAD_NORMALS
+
+								#endregion ID_QUAD_NORMALS
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}
@@ -335,4 +359,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

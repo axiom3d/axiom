@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,19 +55,23 @@ namespace Axiom.RenderSystems.Xna
 	internal struct XnaTextureStageDescription
 	{
 		public bool Enabled;
+
 		/// the type of the texture
 		public TextureType texType;
+
 		/// wich texCoordIndex to use
 		public int coordIndex;
+
 		/// type of auto tex. calc. used
 		public TexCoordCalcMethod autoTexCoordType;
+
 		/// Frustum, used if the above is projection
 		public Frustum frustum;
+
 		/// texture 
 		public XFG.Texture tex;
 
 		//keep the blending 
 		public LayerBlendModeEx layerBlendMode;
 	}
-
 }

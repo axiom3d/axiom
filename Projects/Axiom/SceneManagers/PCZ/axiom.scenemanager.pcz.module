@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ModuleReference Include="..\..\Engine\axiom.module" />
+
     <!-- The path of a project to be built. -->
     <CSharpProject Include="$(ProjectFile)" >
       <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

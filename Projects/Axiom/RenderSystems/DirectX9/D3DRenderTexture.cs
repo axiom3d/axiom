@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,23 +44,22 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using Image = Axiom.Media.Image;
 
+using Image = Axiom.Media.Image;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+
 using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-
 	/// <summary>
 	///     Summary description for D3DRenderTexture.
 	/// </summary>
 	public class D3DRenderTexture : RenderTexture
 	{
-
 		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
 			: base( buffer, 0 )
 		{
@@ -76,8 +79,10 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void Update()
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			if ( rs.IsDeviceLost )
+			if( rs.IsDeviceLost )
+			{
 				return;
+			}
 
 			base.Update();
 		}
@@ -86,11 +91,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				switch ( attribute.ToUpper() )
+				switch( attribute.ToUpper() )
 				{
 					case "D3DBACKBUFFER":
-						D3D.Surface[] surface = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
-						if ( this.FSAA > 0 )
+						D3D.Surface[] surface = new D3D.Surface[Config.MaxMultipleRenderTargets];
+						if( this.FSAA > 0 )
 						{
 							surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
 						}
@@ -110,23 +115,18 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public override bool RequiresTextureFlipping { get { return false; } }
 
 		public override void SwapBuffers( bool waitForVSync )
 		{
 			//// Only needed if we have to blit from AA surface
-			if ( this.FSAA > 0 )
+			if( this.FSAA > 0 )
 			{
-
 				D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-				if ( rs.IsDeviceLost )
+				if( rs.IsDeviceLost )
+				{
 					return;
+				}
 
 				D3DHardwarePixelBuffer buf = (D3DHardwarePixelBuffer)this.pixelBuffer;
 
@@ -138,16 +138,14 @@ namespace Axiom.RenderSystems.DirectX9
 				//            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)),
 				//            "D3D9RenderTexture::swapBuffers");
 				//    }
-
-
 			}
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 				}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using SWF = System.Windows.Forms;
 
+using SWF = System.Windows.Forms;
 using DX = SlimDX;
 using DI = SlimDX.DirectInput;
 
@@ -64,14 +68,17 @@ namespace Axiom.Platforms.Win32
 		///		Holds a snapshot of DirectInput keyboard state.
 		/// </summary>
 		protected DI.KeyboardState keyboardState;
+
 		/// <summary>
 		///		Holds a snapshot of DirectInput mouse state.
 		/// </summary>
 		protected DI.MouseState mouseState;
+
 		/// <summary>
 		///		DirectInput keyboard device.
 		/// </summary>
 		protected DI.Keyboard keyboardDevice;
+
 		/// <summary>
 		///		DirectInput mouse device.
 		/// </summary>
@@ -82,22 +89,27 @@ namespace Axiom.Platforms.Win32
 		protected bool isInitialized;
 		protected bool useMouse, useKeyboard, useGamepad;
 		protected int mouseButtons;
+
 		/// <summary>
 		///		Active host control that reserves control over the input.
 		/// </summary>
 		protected IntPtr winHandle;
+
 		/// <summary>
 		/// System.Windows.Forms.Form control to retrieve input from
 		/// </summary>
 		protected SWF.Control control;
+
 		/// <summary>
 		///		Do we want exclusive use of the mouse?
 		/// </summary>
 		protected bool ownMouse;
+
 		/// <summary>
 		///		Reference to the render window that is the target of the input.
 		/// </summary>
 		protected RenderWindow window;
+
 		/// <summary>
 		///		Flag used to remember the state of the render window the last time input was captured.
 		/// </summary>
@@ -110,7 +122,7 @@ namespace Axiom.Platforms.Win32
 		/// <summary>
 		///		Size to use for DirectInput's input buffer.
 		/// </summary>
-		const int BufferSize = 16;
+		private const int BufferSize = 16;
 
 		#endregion Constants
 
@@ -122,70 +134,34 @@ namespace Axiom.Platforms.Win32
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the X (horizontal) axis.
 		/// </summary>
-		public override int RelativeMouseX
-		{
-			get
-			{
-				return mouseRelX;
-			}
-		}
+		public override int RelativeMouseX { get { return mouseRelX; } }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Y (vertical) axis.
 		/// </summary>
-		public override int RelativeMouseY
-		{
-			get
-			{
-				return mouseRelY;
-			}
-		}
+		public override int RelativeMouseY { get { return mouseRelY; } }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Z (mouse wheel) axis.
 		/// </summary>
-		public override int RelativeMouseZ
-		{
-			get
-			{
-				return mouseRelZ;
-			}
-		}
+		public override int RelativeMouseZ { get { return mouseRelZ; } }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the X (horizontal) axis.
 		/// </summary>
-		public override int AbsoluteMouseX
-		{
-			get
-			{
-				return mouseAbsX;
-			}
-		}
+		public override int AbsoluteMouseX { get { return mouseAbsX; } }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Y (vertical) axis.
 		/// </summary>
-		public override int AbsoluteMouseY
-		{
-			get
-			{
-				return mouseAbsY;
-			}
-		}
+		public override int AbsoluteMouseY { get { return mouseAbsY; } }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
 		/// </summary>
-		public override int AbsoluteMouseZ
-		{
-			get
-			{
-				return mouseAbsZ;
-			}
-		}
+		public override int AbsoluteMouseZ { get { return mouseAbsZ; } }
 
 		/// <summary>
 		///		Get/Set whether or not to use event based keyboard input notification.
@@ -196,18 +172,15 @@ namespace Axiom.Platforms.Win32
 		/// </value>
 		public override bool UseKeyboardEvents
 		{
-			get
-			{
-				return useKeyboardEvents;
-			}
+			get { return useKeyboardEvents; }
 			set
 			{
-				if ( useKeyboardEvents != value )
+				if( useKeyboardEvents != value )
 				{
 					useKeyboardEvents = value;
 
 					// dump the current keyboard device (if any)
-					if ( keyboardDevice != null )
+					if( keyboardDevice != null )
 					{
 						keyboardDevice.Unacquire();
 						keyboardDevice.Dispose();
@@ -228,18 +201,15 @@ namespace Axiom.Platforms.Win32
 		/// </value>
 		public override bool UseMouseEvents
 		{
-			get
-			{
-				return useMouseEvents;
-			}
+			get { return useMouseEvents; }
 			set
 			{
-				if ( useMouseEvents != value )
+				if( useMouseEvents != value )
 				{
 					useMouseEvents = value;
 
 					// dump the current keyboard device (if any)
-					if ( mouseDevice != null )
+					if( mouseDevice != null )
 					{
 						mouseDevice.Unacquire();
 						mouseDevice.Dispose();
@@ -251,7 +221,6 @@ namespace Axiom.Platforms.Win32
 			}
 		}
 
-
 		#endregion Properties
 
 		#region Methods
@@ -261,28 +230,28 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		public override void Capture()
 		{
-			if ( window.IsActive )
+			if( window.IsActive )
 			{
 				try
 				{
 					CaptureInput();
 				}
-				catch ( Exception )
+				catch( Exception )
 				{
 					try
 					{
 						// try to acquire device and try again
-						if ( useKeyboard )
+						if( useKeyboard )
 						{
 							keyboardDevice.Acquire();
 						}
-						if ( useMouse )
+						if( useMouse )
 						{
 							mouseDevice.Acquire();
 						}
 						CaptureInput();
 					}
-					catch ( Exception )
+					catch( Exception )
 					{
 						ClearInput(); //not to appear as something would be pressed or whatever.
 					}
@@ -310,26 +279,28 @@ namespace Axiom.Platforms.Win32
 
 			// Keyboard and mouse capture must use Form's handle not child
 			control = SWF.Control.FromHandle( winHandle );
-			while ( control != null && control.Parent != null )
+			while( control != null && control.Parent != null )
 			{
 				control = control.Parent;
 			}
-			if ( control != null )
+			if( control != null )
+			{
 				winHandle = control.Handle;
+			}
 
-			if ( dinput == null )
+			if( dinput == null )
 			{
 				dinput = new DI.DirectInput();
 			}
 
 			// initialize keyboard if needed
-			if ( useKeyboard )
+			if( useKeyboard )
 			{
 				InitializeKeyboard();
 			}
 
 			// initialize the mouse if needed
-			if ( useMouse )
+			if( useMouse )
 			{
 				InitializeImmediateMouse();
 			}
@@ -349,12 +320,12 @@ namespace Axiom.Platforms.Win32
 		/// <returns></returns>
 		public override bool IsKeyPressed( KeyCodes key )
 		{
-			if ( keyboardState != null )
+			if( keyboardState != null )
 			{
 				// get the DI.Key enum from the System.Windows.Forms.Keys enum passed in
 				DI.Key daKey = ConvertKeyEnum( key );
 
-				if ( keyboardState.IsPressed( daKey ) )
+				if( keyboardState.IsPressed( daKey ) )
 				{
 					return true;
 				}
@@ -378,21 +349,21 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		public override void Dispose()
 		{
-			if ( keyboardDevice != null )
+			if( keyboardDevice != null )
 			{
 				keyboardDevice.Unacquire();
 				keyboardDevice.Dispose();
 				keyboardDevice = null;
 			}
 
-			if ( mouseDevice != null )
+			if( mouseDevice != null )
 			{
 				mouseDevice.Unacquire();
 				mouseDevice.Dispose();
 				mouseDevice = null;
 			}
 
-			if ( dinput != null )
+			if( dinput != null )
 			{
 				dinput.Dispose();
 				dinput = null;
@@ -420,10 +391,9 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		private void CaptureInput()
 		{
-
-			if ( useKeyboard )
+			if( useKeyboard )
 			{
-				if ( useKeyboardEvents )
+				if( useKeyboardEvents )
 				{
 					ReadBufferedKeyboardData();
 				}
@@ -434,9 +404,9 @@ namespace Axiom.Platforms.Win32
 				}
 			}
 
-			if ( useMouse )
+			if( useMouse )
 			{
-				if ( useMouseEvents )
+				if( useMouseEvents )
 				{
 					//TODO: implement
 				}
@@ -452,12 +422,12 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		private void InitializeKeyboard()
 		{
-			if ( dinput == null )
+			if( dinput == null )
 			{
 				dinput = new DI.DirectInput();
 			}
 
-			if ( useKeyboardEvents )
+			if( useKeyboardEvents )
 			{
 				InitializeBufferedKeyboard();
 			}
@@ -472,12 +442,12 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		private void InitializeMouse()
 		{
-			if ( dinput == null )
+			if( dinput == null )
 			{
 				dinput = new DI.DirectInput();
 			}
 
-			if ( useMouseEvents )
+			if( useMouseEvents )
 			{
 				InitializeBufferedMouse();
 			}
@@ -553,7 +523,7 @@ namespace Axiom.Platforms.Win32
 			//mouseDevice.SetDataFormat( DI.DeviceDataFormat.Mouse );
 
 			// set cooperation level
-			if ( ownMouse )
+			if( ownMouse )
 			{
 				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Exclusive | DI.CooperativeLevel.Foreground );
 			}
@@ -582,7 +552,7 @@ namespace Axiom.Platforms.Win32
 
 			// set the buffer size to use for input
 			mouseDevice.Properties.BufferSize = BufferSize;
-			if ( ownMouse )
+			if( ownMouse )
 			{
 				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Exclusive | DI.CooperativeLevel.Foreground );
 			}
@@ -607,24 +577,21 @@ namespace Axiom.Platforms.Win32
 			IEnumerable<DI.KeyboardState> bufferedData = keyboardDevice.GetBufferedData();
 
 			// please tell me why this would ever come back null, rather than an empty collection...
-			if ( bufferedData == null )
+			if( bufferedData == null )
 			{
 				return;
 			}
 
-			foreach ( DI.KeyboardState packet in bufferedData )
+			foreach( DI.KeyboardState packet in bufferedData )
 			{
-				foreach ( DI.Key key in packet.PressedKeys )
+				foreach( DI.Key key in packet.PressedKeys )
 				{
 					KeyChanged( ConvertKeyEnum( key ), true );
-
 				}
-				foreach ( DI.Key key in packet.ReleasedKeys )
+				foreach( DI.Key key in packet.ReleasedKeys )
 				{
-
 					KeyChanged( ConvertKeyEnum( key ), false );
 				}
-
 			}
 		}
 
@@ -644,7 +611,7 @@ namespace Axiom.Platforms.Win32
 			mouseDevice.Acquire();
 
 			// determine whether to used immediate or buffered mouse input
-			if ( useMouseEvents )
+			if( useMouseEvents )
 			{
 				CaptureBufferedMouse();
 			}
@@ -657,9 +624,7 @@ namespace Axiom.Platforms.Win32
 		/// <summary>
 		///		Checks the buffered mouse events.
 		/// </summary>
-		private void CaptureBufferedMouse()
-		{
-		}
+		private void CaptureBufferedMouse() {}
 
 		/// <summary>
 		///		Takes a snapshot of the mouse state for immediate input checking.
@@ -668,7 +633,6 @@ namespace Axiom.Platforms.Win32
 		{
 			// capture the current mouse state
 			mouseState = mouseDevice.GetCurrentState();
-
 
 			// store the updated absolute values
 			mouseAbsX = control.PointToClient( SWF.Cursor.Position ).X;
@@ -685,9 +649,9 @@ namespace Axiom.Platforms.Win32
 			// clear the flags
 			mouseButtons = 0;
 
-			for ( int i = 0; i < buttons.Length; i++ )
+			for( int i = 0; i < buttons.Length; i++ )
 			{
-				if ( buttons[ i ] == true )
+				if( buttons[ i ] == true )
 				{
 					mouseButtons |= ( 1 << i );
 				}
@@ -702,20 +666,20 @@ namespace Axiom.Platforms.Win32
 		protected bool VerifyInputAcquired()
 		{
 			// if the window is coming back from being deactivated, lets grab input again
-			if ( window.IsActive && !lastWindowActive )
+			if( window.IsActive && !lastWindowActive )
 			{
 				// no exceptions right now, thanks anyway
 				//DX.DirectXException.IgnoreExceptions();
 
 				// acquire and capture keyboard input
-				if ( useKeyboard )
+				if( useKeyboard )
 				{
 					keyboardDevice.Acquire();
 					CaptureKeyboard();
 				}
 
 				// acquire and capture mouse input
-				if ( useMouse )
+				if( useMouse )
 				{
 					mouseDevice.Acquire();
 					CaptureMouse();
@@ -743,7 +707,7 @@ namespace Axiom.Platforms.Win32
 			// TODO: Quotes
 			DI.Key dinputKey = 0;
 
-			switch ( key )
+			switch( key )
 			{
 				case KeyCodes.A:
 					dinputKey = DI.Key.A;
@@ -1032,7 +996,7 @@ namespace Axiom.Platforms.Win32
 		{
 			Axiom.Input.KeyCodes axiomKey = 0;
 
-			switch ( key )
+			switch( key )
 			{
 				case DI.Key.A:
 					axiomKey = Axiom.Input.KeyCodes.A;
@@ -1265,12 +1229,12 @@ namespace Axiom.Platforms.Win32
 				case DI.Key.RightBracket:
 					axiomKey = Axiom.Input.KeyCodes.CloseBracket;
 					break;
-				//case DI.Key.Equals:
-				//    axiomKey = KeyCodes.Plus;
-				//    break;
-				//case DI.Key.Minus:
-				//    axiomKey = KeyCodes.Subtract;
-				//    break;
+					//case DI.Key.Equals:
+					//    axiomKey = KeyCodes.Plus;
+					//    break;
+					//case DI.Key.Minus:
+					//    axiomKey = KeyCodes.Subtract;
+					//    break;
 				case DI.Key.Slash:
 					axiomKey = KeyCodes.QuestionMark;
 					break;

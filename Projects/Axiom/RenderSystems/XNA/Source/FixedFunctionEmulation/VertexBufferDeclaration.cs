@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,46 +50,18 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration: IComparable<VertexBufferDeclaration>
+	internal class VertexBufferDeclaration : IComparable<VertexBufferDeclaration>
 	{
 		#region Fields and Properties
 
 		protected List<VertexBufferElement> vertexBufferElements;
-		public IEnumerable<VertexBufferElement> VertexBufferElements
-		{
-			get
-			{
-				return vertexBufferElements;
-			}
-			set
-			{
-				vertexBufferElements = (List<VertexBufferElement>)value;
-			}
-		}
+		public IEnumerable<VertexBufferElement> VertexBufferElements { get { return vertexBufferElements; } set { vertexBufferElements = (List<VertexBufferElement>)value; } }
 
-		public bool HasColor
-		{
-			get
-			{
-				return ( GetVertexElementSemanticCount( VertexElementSemantic.Diffuse ) > 0 );
-			}
-		}
+		public bool HasColor { get { return ( GetVertexElementSemanticCount( VertexElementSemantic.Diffuse ) > 0 ); } }
 
-		public bool HasTexCoord
-		{
-			get
-			{
-				return ( GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ) > 0 );
-			}
-		}
+		public bool HasTexCoord { get { return ( GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ) > 0 ); } }
 
-		public ushort TexCoordCount
-		{
-			get
-			{
-				return GetVertexElementSemanticCount( VertexElementSemantic.TexCoords );
-			}
-		}
+		public ushort TexCoordCount { get { return GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ); } }
 
 		#endregion Fields and Properties
 
@@ -94,9 +70,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public ushort GetVertexElementSemanticCount( VertexElementSemantic semantic )
 		{
 			ushort count = 0;
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			foreach( VertexBufferElement vbe in vertexBufferElements )
 			{
-				if ( vbe.VertexElementSemantic == semantic )
+				if( vbe.VertexElementSemantic == semantic )
 				{
 					count++;
 				}
@@ -116,7 +92,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public override int GetHashCode()
 		{
 			int hashcode = 0;
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			foreach( VertexBufferElement vbe in vertexBufferElements )
 			{
 				hashcode ^= vbe.GetHashCode();
 				//hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
@@ -127,7 +103,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public override string ToString()
 		{
 			System.Text.StringBuilder result = new System.Text.StringBuilder();
-			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			foreach( VertexBufferElement vbe in vertexBufferElements )
 			{
 				result.Append( vbe.ToString() + ";\n" );
 			}
@@ -135,7 +111,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		#endregion System.Object Implementation
-
 
 		public int CompareTo( VertexBufferDeclaration other )
 		{

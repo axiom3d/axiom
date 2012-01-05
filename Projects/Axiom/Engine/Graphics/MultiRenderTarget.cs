@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: MultiRenderTarget.cs 1658 2009-06-10 19:31:32Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Media;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -50,18 +56,12 @@ namespace Axiom.Graphics
 	/// - All bound surfaces have the same internal format 
 	/// - Target 0 is bound
 	/// </summary>
-	public abstract class MultiRenderTarget : RenderTarget
+	abstract public class MultiRenderTarget : RenderTarget
 	{
 		#region Fields and Properties
 
 		protected List<RenderTexture> boundSurfaces = new List<RenderTexture>();
-		public IList<RenderTexture> BoundSurfaces
-		{
-			get
-			{
-				return boundSurfaces;
-			}
-		}
+		public IList<RenderTexture> BoundSurfaces { get { return boundSurfaces; } }
 
 		#endregion Fields and Properties
 
@@ -89,13 +89,13 @@ namespace Axiom.Graphics
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format 
 		/// </remarks>
-		public abstract void BindSurface( int attachment, RenderTexture target );
+		abstract public void BindSurface( int attachment, RenderTexture target );
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
 		/// <param name="attachment"></param>
-		public abstract void UnbindSurface( int attachment );
+		abstract public void UnbindSurface( int attachment );
 
 		#endregion Methods
 

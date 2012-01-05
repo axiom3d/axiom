@@ -50,13 +50,7 @@ namespace Axiom.Collections
 		/// Gets the <see cref="TValue"/> at the specified index.
 		/// </summary>
 		/// <value>A <see cref="TValue"/>.</value>
-		public TValue this[ int index ]
-		{
-			get
-			{
-				return Values[ index ];
-			}
-		}
+		public TValue this[ int index ] { get { return Values[ index ]; } }
 
 		#endregion
 

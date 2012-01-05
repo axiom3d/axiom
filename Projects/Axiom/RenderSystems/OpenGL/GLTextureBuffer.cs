@@ -43,15 +43,18 @@ using System.Collections.Generic;
 
 using Axiom.Graphics;
 using Axiom.Media;
+
 using Tao.OpenGl;
+
 using Axiom.Core;
+
 using System.Diagnostics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	class GLTextureBuffer : GLHardwarePixelBuffer
+	internal class GLTextureBuffer : GLHardwarePixelBuffer
 	{
 		#region Fields and Properties
 
@@ -63,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 		private int _textureId;
 		private int _face;
 		private int _level;
-		private bool _softwareMipmap;		// Use GLU for mip mapping
+		private bool _softwareMipmap; // Use GLU for mip mapping
 
 		private List<RenderTexture> _sliceTRT = new List<RenderTexture>();
 
@@ -88,25 +91,35 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Get face identifier
 			_faceTarget = _target;
-			if ( _target == Gl.GL_TEXTURE_CUBE_MAP )
+			if( _target == Gl.GL_TEXTURE_CUBE_MAP )
+			{
 				_faceTarget = Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + _face;
+			}
 
 			// Get width
 			Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_WIDTH, out value );
 			Width = value;
 
 			// Get height
-			if ( _target == Gl.GL_TEXTURE_1D )
-				value = 1;	// Height always 1 for 1D textures
+			if( _target == Gl.GL_TEXTURE_1D )
+			{
+				value = 1; // Height always 1 for 1D textures
+			}
 			else
+			{
 				Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_HEIGHT, out value );
+			}
 			Height = value;
 
 			// Get depth
-			if ( _target != Gl.GL_TEXTURE_3D )
+			if( _target != Gl.GL_TEXTURE_3D )
+			{
 				value = 1; // Depth always 1 for non-3D textures
+			}
 			else
+			{
 				Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_DEPTH, out value );
+			}
 			Depth = value;
 
 			// Get format
@@ -122,16 +135,18 @@ namespace Axiom.RenderSystems.OpenGL
 			// Set up pixel box
 			this.buffer = new PixelBox( Width, Height, Depth, Format );
 
-			if ( Width == 0 || Height == 0 || Depth == 0 )
+			if( Width == 0 || Height == 0 || Depth == 0 )
+			{
 				/// We are invalid, do not allocate a buffer
 				return;
+			}
 
 			// Is this a render target?
-			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
+			if( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
 			{
 				// Create render target for each slice
 				_sliceTRT.Capacity = Depth;
-				for ( int zoffset = 0; zoffset < Depth; ++zoffset )
+				for( int zoffset = 0; zoffset < Depth; ++zoffset )
 				{
 					String name;
 					name = String.Format( "{0}/{1}/{2}/{3}", baseName, face, _level, zoffset );
@@ -157,20 +172,20 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void BindToFramebuffer( int attachment, int zOffset )
 		{
 			Debug.Assert( zOffset < Depth );
-			switch ( _target )
+			switch( _target )
 			{
 				case Gl.GL_TEXTURE_1D:
 					Gl.glFramebufferTexture1DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
-										_faceTarget, _textureId, _level );
+					                              _faceTarget, _textureId, _level );
 					break;
 				case Gl.GL_TEXTURE_2D:
 				case Gl.GL_TEXTURE_CUBE_MAP:
 					Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
-										_faceTarget, _textureId, _level );
+					                              _faceTarget, _textureId, _level );
 					break;
 				case Gl.GL_TEXTURE_3D:
 					Gl.glFramebufferTexture3DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
-										_faceTarget, _textureId, _level, zOffset );
+					                              _faceTarget, _textureId, _level, zOffset );
 					break;
 			}
 		}
@@ -178,7 +193,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public void CopyFromFrameBuffer( int zOffset )
 		{
 			Gl.glBindTexture( _target, _textureId );
-			switch ( _target )
+			switch( _target )
 			{
 				case Gl.GL_TEXTURE_1D:
 					Gl.glCopyTexSubImage1D( _faceTarget, _level, 0, 0, 0, Width );
@@ -198,8 +213,8 @@ namespace Axiom.RenderSystems.OpenGL
 			/// Fall back to normal GLHardwarePixelBuffer.BlitFromMemory in case
 			/// - FBO is not supported
 			/// - the source dimensions match the destination ones, in which case no scaling is needed
-			if ( !_glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) ||
-				 ( src.Width == dstBox.Width && src.Height == dstBox.Height && src.Depth == dstBox.Depth ) )
+			if( !_glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) ||
+			    ( src.Width == dstBox.Width && src.Height == dstBox.Height && src.Depth == dstBox.Depth ) )
 			{
 				base.BlitFromMemory( src, dstBox );
 				return;
@@ -208,12 +223,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					foreach ( RenderTexture rt in _sliceTRT )
+					foreach( RenderTexture rt in _sliceTRT )
 					{
 						rt.Dispose();
 					}
@@ -235,35 +250,43 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void download( PixelBox data )
 		{
-			if ( data.Width != Width ||
-				data.Height != Height ||
-				data.Depth != Depth )
+			if( data.Width != Width ||
+			    data.Height != Height ||
+			    data.Depth != Depth )
+			{
 				throw new ArgumentException( "only download of entire buffer is supported by GL" );
+			}
 
 			Gl.glBindTexture( _target, _textureId );
-			if ( PixelUtil.IsCompressed( data.Format ) )
+			if( PixelUtil.IsCompressed( data.Format ) )
 			{
-				if ( data.Format != Format || !data.IsConsecutive )
+				if( data.Format != Format || !data.IsConsecutive )
+				{
 					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
+				}
 				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
 				// for compressed formate
 				Gl.glGetCompressedTexImageARB( _faceTarget, _level, data.Data );
 			}
 			else
 			{
-				if ( data.Width != data.RowPitch )
+				if( data.Width != data.RowPitch )
+				{
 					Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, data.RowPitch );
-				if ( data.Height * data.Width != data.SlicePitch )
+				}
+				if( data.Height * data.Width != data.SlicePitch )
+				{
 					Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, ( data.SlicePitch / data.Width ) );
-				if ( ( ( data.Width * PixelUtil.GetNumElemBytes( data.Format ) ) & 3 ) != 0 )
+				}
+				if( ( ( data.Width * PixelUtil.GetNumElemBytes( data.Format ) ) & 3 ) != 0 )
 				{
 					// Standard alignment of 4 is not right
 					Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
 				}
 				// We can only get the entire texture
 				Gl.glGetTexImage( _faceTarget, _level,
-								  GLPixelUtil.GetGLOriginFormat( data.Format ), GLPixelUtil.GetGLOriginDataType( data.Format ),
-								  data.Data );
+				                  GLPixelUtil.GetGLOriginFormat( data.Format ), GLPixelUtil.GetGLOriginDataType( data.Format ),
+				                  data.Data );
 				// Restore defaults
 				Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, 0 );
 				Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, 0 );
@@ -274,66 +297,72 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override void upload( PixelBox box )
 		{
 			Gl.glBindTexture( _target, _textureId );
-			if ( PixelUtil.IsCompressed( box.Format ) )
+			if( PixelUtil.IsCompressed( box.Format ) )
 			{
-				if ( box.Format != Format || !box.IsConsecutive )
+				if( box.Format != Format || !box.IsConsecutive )
+				{
 					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
+				}
 
 				int format = GLPixelUtil.GetClosestGLInternalFormat( Format );
 				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
 				// for compressed formats
-				switch ( _target )
+				switch( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
 						Gl.glCompressedTexSubImage1DARB( Gl.GL_TEXTURE_1D, _level,
-							box.Left,
-							box.Width,
-							format, box.ConsecutiveSize,
-							box.Data );
+						                                 box.Left,
+						                                 box.Width,
+						                                 format, box.ConsecutiveSize,
+						                                 box.Data );
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
 						Gl.glCompressedTexSubImage2DARB( _faceTarget, _level,
-							box.Left, box.Top,
-							box.Width, box.Height,
-							format, box.ConsecutiveSize,
-							box.Data );
+						                                 box.Left, box.Top,
+						                                 box.Width, box.Height,
+						                                 format, box.ConsecutiveSize,
+						                                 box.Data );
 						break;
 					case Gl.GL_TEXTURE_3D:
 						Gl.glCompressedTexSubImage3DARB( Gl.GL_TEXTURE_3D, _level,
-							box.Left, box.Top, box.Front,
-							box.Width, box.Height, box.Depth,
-							format, box.ConsecutiveSize,
-							box.Data );
+						                                 box.Left, box.Top, box.Front,
+						                                 box.Width, box.Height, box.Depth,
+						                                 format, box.ConsecutiveSize,
+						                                 box.Data );
 						break;
 				}
 			}
-			else if ( _softwareMipmap )
+			else if( _softwareMipmap )
 			{
 				int internalFormat;
 				Gl.glGetTexLevelParameteriv( _target, _level, Gl.GL_TEXTURE_INTERNAL_FORMAT, out internalFormat );
-				if ( box.Width != box.RowPitch )
+				if( box.Width != box.RowPitch )
+				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
-				if ( box.Height * box.Width != box.SlicePitch )
+				}
+				if( box.Height * box.Width != box.SlicePitch )
+				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
+				}
 				Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
 
-				switch ( _target )
+				switch( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
 						Glu.gluBuild1DMipmaps(
-							Gl.GL_TEXTURE_1D, internalFormat,
-							box.Width,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                      Gl.GL_TEXTURE_1D, internalFormat,
+						                      box.Width,
+						                      GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                      box.Data );
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
 						Glu.gluBuild2DMipmaps(
-							_faceTarget,
-							internalFormat, box.Width, box.Height,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                      _faceTarget,
+						                      internalFormat, box.Width, box.Height,
+						                      GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                      box.Data );
 						break;
 					case Gl.GL_TEXTURE_3D:
 						/* Requires GLU 1.3 which is harder to come by than cards doing hardware mipmapping
@@ -345,48 +374,52 @@ namespace Axiom.RenderSystems.OpenGL
 							box.box);
 						*/
 						Gl.glTexImage3D(
-							Gl.GL_TEXTURE_3D, 0, internalFormat,
-							box.Width, box.Height, box.Depth, 0,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                Gl.GL_TEXTURE_3D, 0, internalFormat,
+						                box.Width, box.Height, box.Depth, 0,
+						                GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                box.Data );
 						break;
 				}
 			}
 			else
 			{
-				if ( box.Width != box.RowPitch )
+				if( box.Width != box.RowPitch )
+				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
-				if ( box.Height * box.Width != box.SlicePitch )
+				}
+				if( box.Height * box.Width != box.SlicePitch )
+				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
-				if ( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0 )
+				}
+				if( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0 )
 				{
 					// Standard alignment of 4 is not right
 					Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
 				}
-				switch ( _target )
+				switch( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
 						Gl.glTexSubImage1D( Gl.GL_TEXTURE_1D, _level,
-							box.Left,
-							box.Width,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                    box.Left,
+						                    box.Width,
+						                    GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                    box.Data );
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
 						Gl.glTexSubImage2D( _faceTarget, _level,
-							box.Left, box.Top,
-							box.Width, box.Height,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                    box.Left, box.Top,
+						                    box.Width, box.Height,
+						                    GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                    box.Data );
 						break;
 					case Gl.GL_TEXTURE_3D:
 						Gl.glTexSubImage3D(
-							Gl.GL_TEXTURE_3D, _level,
-							box.Left, box.Top, box.Front,
-							box.Width, box.Height, box.Depth,
-							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
-							box.Data );
+						                   Gl.GL_TEXTURE_3D, _level,
+						                   box.Left, box.Top, box.Front,
+						                   box.Width, box.Height, box.Depth,
+						                   GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                   box.Data );
 						break;
 				}
 			}

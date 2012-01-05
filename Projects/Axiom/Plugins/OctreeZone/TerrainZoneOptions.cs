@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,148 +48,104 @@ using Axiom.Math;
 /// </summary>
 public class TerrainZoneOptions
 {
-    private int _pageSize = 0;
-    /// <summary>
-    /// The size of one edge of a terrain page, in vertices
-    /// </summary>
-    public int PageSize
-    {
-        get { return _pageSize; }
-        set { _pageSize = value; }
-    }
+	private int _pageSize = 0;
 
-    private int _tileSize = 0;
-    /// <summary>
-    /// The size of one edge of a terrain tile, in vertices
-    /// </summary>
-    public int TileSize
-    {
-        get { return _tileSize; }
-        set { _tileSize = value; }
-    }
+	/// <summary>
+	/// The size of one edge of a terrain page, in vertices
+	/// </summary>
+	public int PageSize { get { return _pageSize; } set { _pageSize = value; } }
 
-    private int _tilesPerPage;
-    /// <summary>
-    /// Precalculated number of tiles per page
-    /// </summary>
-    public int TilesPerPage
-    {
-        get { return _tilesPerPage; }
-        set { _tilesPerPage = value; }
-    }
+	private int _tileSize = 0;
 
-    private Camera _primaryCamera = null;
-    /// <summary>
-    /// The primary camera, used for error metric calculation and page choice
-    /// </summary> 
-    public Camera PrimaryCamera
-    {
-        get { return _primaryCamera; }
-        set { _primaryCamera = value; }
-    }
+	/// <summary>
+	/// The size of one edge of a terrain tile, in vertices
+	/// </summary>
+	public int TileSize { get { return _tileSize; } set { _tileSize = value; } }
 
-    private int _maxGeoMipMapLevel = 0;
-    /// <summary>
-    /// The maximum terrain geo-mipmap level
-    /// </summary>
-    public int MaxGeoMipMapLevel
-    {
-        get { return _maxGeoMipMapLevel; }
-        set { _maxGeoMipMapLevel = value; }
-    }
+	private int _tilesPerPage;
 
-    public Vector3 _scale = Vector3.UnitScale;
-    /// <summary>
-    /// The scale factor to apply to the terrain (each vertex is 1 unscaled unit
-    /// away from the next, and height is from 0 to 1)
-    /// </summary>
-    public Vector3 Scale
-    {
-        get { return _scale; }
-        set { _scale = value; }
-    }
+	/// <summary>
+	/// Precalculated number of tiles per page
+	/// </summary>
+	public int TilesPerPage { get { return _tilesPerPage; } set { _tilesPerPage = value; } }
 
-    private int _maxPixelError = 4;
-    /// <summary>
-    /// The maximum pixel error allowed
-    /// </summary>
-    public int MaxPixelError
-    {
-        get { return _maxPixelError; }
-        set { _maxPixelError = value; }
-    }
+	private Camera _primaryCamera = null;
 
-    private bool _useTriStrips = false;
-    /// <summary>
-    /// Whether we should use triangle strips
-    /// </summary>
-    public bool UseTriStrips
-    {
-        get { return _useTriStrips; }
-        set { _useTriStrips = value; }
-    }
+	/// <summary>
+	/// The primary camera, used for error metric calculation and page choice
+	/// </summary> 
+	public Camera PrimaryCamera { get { return _primaryCamera; } set { _primaryCamera = value; } }
 
-    private int _detailTile = 1;
-    /// <summary>
-    /// The number of times to repeat a detail texture over a tile
-    /// </summary>
-    public int DetailTile
-    {
-        get { return _detailTile; }
-        set { _detailTile = value; }
-    }
+	private int _maxGeoMipMapLevel = 0;
 
-    private bool _lodMorph = false;
-    /// <summary>
-    /// Whether LOD morphing is enabled
-    /// </summary>
-    public bool LodMorph
-    {
-        get { return _lodMorph; }
-        set { _lodMorph = value; }
-    }
+	/// <summary>
+	/// The maximum terrain geo-mipmap level
+	/// </summary>
+	public int MaxGeoMipMapLevel { get { return _maxGeoMipMapLevel; } set { _maxGeoMipMapLevel = value; } }
 
-    private Real _lodMorphStart = 0.5;
-    /// <summary>
-    /// At what point (parametric) should LOD morphing start
-    /// </summary>
-    public Real LodMorphStart
-    {
-        get { return _lodMorphStart; }
-        set { _lodMorphStart = value; }
-    }
+	public Vector3 _scale = Vector3.UnitScale;
 
-    private bool _useDynamicLighting = false;
-    /// <summary>
-    /// Whether dynamic lighting is enabled
-    /// </summary>
-    public bool UseDynamicLighting
-    {
-        get { return _useDynamicLighting; }
-        set { _useDynamicLighting = value; }
-    }
+	/// <summary>
+	/// The scale factor to apply to the terrain (each vertex is 1 unscaled unit
+	/// away from the next, and height is from 0 to 1)
+	/// </summary>
+	public Vector3 Scale { get { return _scale; } set { _scale = value; } }
 
-    private bool _coloured = false;
-    /// <summary>
-    /// Whether vertex colors are enabled
-    /// </summary>
-    public bool Coloured
-    {
-        get { return _coloured; }
-        set { _coloured = value; }
-    }
+	private int _maxPixelError = 4;
 
-    private Material _terrainMaterial = null;
-    /// <summary>
-    /// Pointer to the material to use to render the terrain
-    /// </summary>
-    public Material terrainMaterial
-    {
-        get { return _terrainMaterial; }
-        set { _terrainMaterial = value; }
-    }
+	/// <summary>
+	/// The maximum pixel error allowed
+	/// </summary>
+	public int MaxPixelError { get { return _maxPixelError; } set { _maxPixelError = value; } }
 
-    public TerrainZoneOptions()
-    {
-    }
+	private bool _useTriStrips = false;
+
+	/// <summary>
+	/// Whether we should use triangle strips
+	/// </summary>
+	public bool UseTriStrips { get { return _useTriStrips; } set { _useTriStrips = value; } }
+
+	private int _detailTile = 1;
+
+	/// <summary>
+	/// The number of times to repeat a detail texture over a tile
+	/// </summary>
+	public int DetailTile { get { return _detailTile; } set { _detailTile = value; } }
+
+	private bool _lodMorph = false;
+
+	/// <summary>
+	/// Whether LOD morphing is enabled
+	/// </summary>
+	public bool LodMorph { get { return _lodMorph; } set { _lodMorph = value; } }
+
+	private Real _lodMorphStart = 0.5;
+
+	/// <summary>
+	/// At what point (parametric) should LOD morphing start
+	/// </summary>
+	public Real LodMorphStart { get { return _lodMorphStart; } set { _lodMorphStart = value; } }
+
+	private bool _useDynamicLighting = false;
+
+	/// <summary>
+	/// Whether dynamic lighting is enabled
+	/// </summary>
+	public bool UseDynamicLighting { get { return _useDynamicLighting; } set { _useDynamicLighting = value; } }
+
+	private bool _coloured = false;
+
+	/// <summary>
+	/// Whether vertex colors are enabled
+	/// </summary>
+	public bool Coloured { get { return _coloured; } set { _coloured = value; } }
+
+	private Material _terrainMaterial = null;
+
+	/// <summary>
+	/// Pointer to the material to use to render the terrain
+	/// </summary>
+	public Material terrainMaterial { get { return _terrainMaterial; } set { _terrainMaterial = value; } }
+
+	public TerrainZoneOptions() {}
 }

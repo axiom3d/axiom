@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,32 +51,31 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// <summary>
 		/// Default optimization - no optimization in debug mode, LevelOne in release
 		/// </summary>
-		[ScriptEnum( "default" )]
-		Default,
+		[ScriptEnum( "default" )] Default,
+
 		/// <summary>
 		/// No optimization
 		/// </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
+
 		/// <summary>
 		/// Optimization level 0
 		/// </summary>
-		[ScriptEnum( "0" )]
-		LevelZero,
+		[ScriptEnum( "0" )] LevelZero,
+
 		/// <summary>
 		/// Optimization level 1
 		/// </summary>
-		[ScriptEnum( "1" )]
-		LevelOne,
+		[ScriptEnum( "1" )] LevelOne,
+
 		/// <summary>
 		/// Optimization level 2
 		/// </summary>
-		[ScriptEnum( "2" )]
-		LevelTwo,
+		[ScriptEnum( "2" )] LevelTwo,
+
 		/// <summary>
 		/// Optimization level 3
 		/// </summary>
-		[ScriptEnum( "3" )]
-		LevelThree
+		[ScriptEnum( "3" )] LevelThree
 	}
 }

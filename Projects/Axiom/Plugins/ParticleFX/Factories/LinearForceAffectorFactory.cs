@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,27 +52,19 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-    /// <summary>
-    /// Summary description for LinearForceAffectorFactory.
-    /// </summary>
-    public class LinearForceAffectorFactory : ParticleAffectorFactory
-    {
-        public override string Name
-        {
-            get
-            {
-                return "LinearForce";
-            }
-        }
+	/// <summary>
+	/// Summary description for LinearForceAffectorFactory.
+	/// </summary>
+	public class LinearForceAffectorFactory : ParticleAffectorFactory
+	{
+		public override string Name { get { return "LinearForce"; } }
 
-        public override ParticleAffector Create()
-        {
-            ParticleAffector p = new LinearForceAffector();
-            affectorList.Add( p );
+		public override ParticleAffector Create()
+		{
+			ParticleAffector p = new LinearForceAffector();
+			affectorList.Add( p );
 
-            return p;
-        }
-
-
-    }
+			return p;
+		}
+	}
 }

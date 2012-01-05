@@ -98,6 +98,7 @@ namespace Axiom.Demos
 			// turn on some fog
 			scene.SetFog( FogMode.Exp, ColorEx.White, 0.0002f );
 		}
+
 		#endregion Protected Override Methods
 
 		#region Protected Override Event Handlers

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,103 +56,45 @@ namespace Axiom.Graphics
 	///     or in main memory depending on its usage. One mipmap level of a
 	///     texture is an example of a HardwarePixelBuffer.
 	/// </summary>
-	public abstract class HardwarePixelBuffer : HardwareBuffer
+	abstract public class HardwarePixelBuffer : HardwareBuffer
 	{
-
 		#region Fields and Properties
 
 		///<summary>
 		///    Extents
 		///</summary>
 		private int _width;
-		public int Width
-		{
-			get
-			{
-				return _width;
-			}
-			protected set
-			{
-				_width = value;
-			}
-		}
+
+		public int Width { get { return _width; } protected set { _width = value; } }
 
 		private int _height;
-		public int Height
-		{
-			get
-			{
-				return _height;
-			}
-			protected set
-			{
-				_height = value;
-			}
-		}
+		public int Height { get { return _height; } protected set { _height = value; } }
 
 		private int _depth;
-		public int Depth
-		{
-			get
-			{
-				return _depth;
-			}
-			protected set
-			{
-				_depth = value;
-			}
-		}
-
+		public int Depth { get { return _depth; } protected set { _depth = value; } }
 
 		///<summary>
 		///    Pitches (offsets between rows and slices)
 		///</summary>
 		private int _rowPitch;
-		public int RowPitch
-		{
-			get
-			{
-				return _rowPitch;
-			}
-			protected set
-			{
-				_rowPitch = value;
-			}
-		}
+
+		public int RowPitch { get { return _rowPitch; } protected set { _rowPitch = value; } }
 
 		private int _slicePitch;
-		public int SlicePitch
-		{
-			get
-			{
-				return _slicePitch;
-			}
-			protected set
-			{
-				_slicePitch = value;
-			}
-		}
+		public int SlicePitch { get { return _slicePitch; } protected set { _slicePitch = value; } }
 
 		///<summary>
 		///    Internal format
 		///</summary>
 		private Axiom.Media.PixelFormat _format;
-		public Axiom.Media.PixelFormat Format
-		{
-			get
-			{
-				return _format;
-			}
-			protected set
-			{
-				_format = value;
-			}
-		}
+
+		public Axiom.Media.PixelFormat Format { get { return _format; } protected set { _format = value; } }
 
 		///<summary>
 		///    Currently locked region
 		///</summary>
 		private PixelBox _currentLock;
+
 		///<summary>
 		///    Get the current locked region. This is the same value as returned
 		///    by Lock(BasicBox, BufferLocking)
@@ -161,10 +107,7 @@ namespace Axiom.Graphics
 				Debug.Assert( IsLocked, "Cannot get current lock: buffer not locked" );
 				return _currentLock;
 			}
-			protected set
-			{
-				_currentLock = value;
-			}
+			protected set { _currentLock = value; }
 		}
 
 		#endregion Fields and Properties
@@ -175,10 +118,10 @@ namespace Axiom.Graphics
 		///    Should be called by HardwareBufferManager
 		///</summary>
 		public HardwarePixelBuffer( int width, int height, int depth,
-								   Axiom.Media.PixelFormat format, BufferUsage usage,
-								   bool useSystemMemory, bool useShadowBuffer )
+		                            Axiom.Media.PixelFormat format, BufferUsage usage,
+		                            bool useSystemMemory, bool useShadowBuffer )
 			:
-			base( usage, useSystemMemory, useShadowBuffer )
+				base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this._width = width;
 			this._height = height;
@@ -197,7 +140,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Internal implementation of lock(), must be overridden in subclasses
 		///</summary>
-		protected abstract PixelBox LockImpl( BasicBox lockBox, BufferLocking options );
+		abstract protected PixelBox LockImpl( BasicBox lockBox, BufferLocking options );
 
 		///<summary>
 		///    Copies a region from normal memory to a region of this pixelbuffer. The source
@@ -211,7 +154,7 @@ namespace Axiom.Graphics
 		///    but it is faster to pass the source image in the right dimensions.
 		///    Only call this function when both  buffers are unlocked. 
 		///</remarks>
-		public abstract void BlitFromMemory( PixelBox src, BasicBox dstBox );
+		abstract public void BlitFromMemory( PixelBox src, BasicBox dstBox );
 
 		///<summary>
 		///    Copies a region of this pixelbuffer to normal memory.
@@ -223,7 +166,7 @@ namespace Axiom.Graphics
 		///    case scaling is done.
 		///    Only call this function when the buffer is unlocked. 
 		///</remarks>
-		public abstract void BlitToMemory( BasicBox srcBox, PixelBox dst );
+		abstract public void BlitToMemory( BasicBox srcBox, PixelBox dst );
 
 		#endregion Abstract Methods
 
@@ -238,14 +181,16 @@ namespace Axiom.Graphics
 		///    PixelBox containing the locked region, the pitches and
 		///    the pixel format
 		///</returns>
-		public virtual PixelBox Lock( BasicBox lockBox, BufferLocking options )
+		virtual public PixelBox Lock( BasicBox lockBox, BufferLocking options )
 		{
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
-				if ( options != BufferLocking.ReadOnly )
+				if( options != BufferLocking.ReadOnly )
+				{
 					// we have to assume a read / write lock so we use the shadow buffer
 					// and tag for sync on unlock()
 					shadowUpdated = true;
+				}
 				_currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
 			}
 			else
@@ -285,30 +230,40 @@ namespace Axiom.Graphics
 		///    but it is faster to pass the source image in the right dimensions.
 		///    Only call this function when both buffers are unlocked. 
 		///</remarks>
-		public virtual void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
+		virtual public void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
-			if ( IsLocked || src.IsLocked )
+			if( IsLocked || src.IsLocked )
+			{
 				throw new Exception( "Source and destination buffer may not be locked!" );
-			if ( src == this )
+			}
+			if( src == this )
+			{
 				throw new Exception( "Source must not be the same object." );
+			}
 
 			PixelBox srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
 			BufferLocking method = BufferLocking.Normal;
-			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
-				 dstBox.Right == _width && dstBox.Bottom == _height &&
-				 dstBox.Back == _depth )
+			if( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
+			    dstBox.Right == _width && dstBox.Bottom == _height &&
+			    dstBox.Back == _depth )
+			{
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
+			}
 
 			PixelBox dstlock = Lock( dstBox, method );
-			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
+			if( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
+			{
 				// Scaling desired
 				throw new Exception( "Image scaling not yet implemented." );
-			//Image.Scale(srclock, dstlock);
+			}
+				//Image.Scale(srclock, dstlock);
 			else
+			{
 				// No scaling needed
 				PixelConverter.BulkPixelConversion( srclock, dstlock );
+			}
 
 			Unlock();
 			src.Unlock();
@@ -318,7 +273,7 @@ namespace Axiom.Graphics
 		///    Notify TextureBuffer of destruction of render target.
 		///    Called by RenderTexture when destroyed.
 		///</summary>
-		public virtual void ClearSliceRTT( int zoffset )
+		virtual public void ClearSliceRTT( int zoffset )
 		{
 			// Do nothing; derived classes may override
 		}
@@ -364,8 +319,8 @@ namespace Axiom.Graphics
 		public void Blit( HardwarePixelBuffer src )
 		{
 			Blit( src,
-				 new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ),
-				 new BasicBox( 0, 0, 0, _width, _height, _depth ) );
+			      new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ),
+			      new BasicBox( 0, 0, 0, _width, _height, _depth ) );
 		}
 
 		///<summary>
@@ -380,7 +335,6 @@ namespace Axiom.Graphics
 		{
 			BlitFromMemory( src, new BasicBox( 0, 0, 0, _width, _height, _depth ) );
 		}
-
 
 		///<summary>
 		///    Convenience function that blits this entire buffer to a pixelbox.
@@ -404,7 +358,7 @@ namespace Axiom.Graphics
 		///<returns>
 		///    A pointer to the render target. This pointer has the lifespan of this PixelBuffer.
 		///</returns>
-		public virtual RenderTexture GetRenderTarget( int slice )
+		virtual public RenderTexture GetRenderTarget( int slice )
 		{
 			throw new Exception( "Not yet implemented for this rendersystem." );
 		}
@@ -417,12 +371,11 @@ namespace Axiom.Graphics
 		///<returns>
 		///    A pointer to the render target. This pointer has the lifespan of this PixelBuffer.
 		///</returns>
-		public virtual RenderTexture GetRenderTarget()
+		virtual public RenderTexture GetRenderTarget()
 		{
 			return GetRenderTarget( 0 );
 		}
 
 		#endregion Methods
-
 	}
 }

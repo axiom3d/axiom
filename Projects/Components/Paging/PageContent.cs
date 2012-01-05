@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Serialization;
 
@@ -31,88 +34,77 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-    public class PageContent : PageLoadableUnit
-    {
-        IPageContentFactory mCreator;
-        PageContentCollection mParent;
+	public class PageContent : PageLoadableUnit
+	{
+		private IPageContentFactory mCreator;
+		private PageContentCollection mParent;
 
-        #region - properties -
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Type
-        {
-            get
-            {
-                return mCreator.Name;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public PageManager Manager
-        {
-            get { return mParent.Manager; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneManager SceneManager
-        {
-            get { return mParent.SceneManager; }
-        }
-        #endregion
+		#region - properties -
 
-        #region - constructor, destructor -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="creator"></param>
-        public PageContent(IPageContentFactory creator)
-        {
-            mCreator = creator;
-        }
-        #endregion
+		/// <summary>
+		/// 
+		/// </summary>
+		public string Type { get { return mCreator.Name; } }
 
-        /// <summary>
-        /// Internal method to notify a page that it is attached
-        /// </summary>
-        /// <param name="parent"></param>
-        public virtual void NotifyAttached(PageContentCollection parent)
-        {
-            mParent = parent;
-        }
-        /// <summary>
-        /// Save content to a stream
-        /// </summary>
-        /// <param name="stream"></param>
-        public virtual void Save(StreamSerializer stream)
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public PageManager Manager { get { return mParent.Manager; } }
 
-        /// <summary>
-        /// Called when the frame starts.
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        public virtual void FrameStart(float timeSinceLastFrame)
-        {
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public SceneManager SceneManager { get { return mParent.SceneManager; } }
 
-        /// <summary>
-        /// Called when the frame ends.
-        /// </summary>
-        /// <param name="timeElapsed"></param>
-        public virtual void FrameEnd(float timeElapsed)
-        {
-        }
+		#endregion
 
-        /// <summary>
-        /// Notify a section of the current camera.
-        /// </summary>
-        /// <param name="camera"></param>
-        public virtual void NotifyCamera(Camera camera)
-        {
-        }
-    }
+		#region - constructor, destructor -
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="creator"></param>
+		public PageContent( IPageContentFactory creator )
+		{
+			mCreator = creator;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Internal method to notify a page that it is attached
+		/// </summary>
+		/// <param name="parent"></param>
+		virtual public void NotifyAttached( PageContentCollection parent )
+		{
+			mParent = parent;
+		}
+
+		/// <summary>
+		/// Save content to a stream
+		/// </summary>
+		/// <param name="stream"></param>
+		virtual public void Save( StreamSerializer stream )
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Called when the frame starts.
+		/// </summary>
+		/// <param name="timeSinceLastFrame"></param>
+		virtual public void FrameStart( float timeSinceLastFrame ) {}
+
+		/// <summary>
+		/// Called when the frame ends.
+		/// </summary>
+		/// <param name="timeElapsed"></param>
+		virtual public void FrameEnd( float timeElapsed ) {}
+
+		/// <summary>
+		/// Notify a section of the current camera.
+		/// </summary>
+		/// <param name="camera"></param>
+		virtual public void NotifyCamera( Camera camera ) {}
+	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,7 +54,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// 	Defines a program which runs on the GPU such as a vertex or fragment program.
 	/// </summary>
-	public abstract class GpuProgram : Resource
+	abstract public class GpuProgram : Resource
 	{
 		#region Fields and Properties
 
@@ -63,13 +67,7 @@ namespace Axiom.Graphics
 		///    This method is simply to allow some subclasses of GpuProgram to delegate
 		///    the program which is bound to the pipeline to a delegate, if required.
 		/// </remarks>
-		public virtual GpuProgram BindingDelegate
-		{
-			get
-			{
-				return this;
-			}
-		}
+		virtual public GpuProgram BindingDelegate { get { return this; } }
 
 		#endregion BindingDelegate Property
 
@@ -84,6 +82,7 @@ namespace Axiom.Graphics
 		///    The name of the file to load from source (may be blank).
 		/// </summary>
 		protected string fileName;
+
 		/// <summary>
 		///    Gets/Sets the source file for this program.
 		/// </summary>
@@ -92,10 +91,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public string SourceFile
 		{
-			get
-			{
-				return fileName;
-			}
+			get { return fileName; }
 			set
 			{
 				fileName = value;
@@ -113,6 +109,7 @@ namespace Axiom.Graphics
 		///    The assembler source of this program.
 		/// </summary>
 		protected string source;
+
 		/// <summary>
 		///    Gets/Sets the source assembler code for this program.
 		/// </summary>
@@ -121,10 +118,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public string Source
 		{
-			get
-			{
-				return source;
-			}
+			get { return source; }
 			set
 			{
 				source = value;
@@ -142,20 +136,11 @@ namespace Axiom.Graphics
 		///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
 		/// </summary>
 		protected string syntaxCode;
+
 		/// <summary>
 		///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
 		/// </summary>
-		public string SyntaxCode
-		{
-			get
-			{
-				return syntaxCode;
-			}
-			set
-			{
-				syntaxCode = value;
-			}
-		}
+		public string SyntaxCode { get { return syntaxCode; } set { syntaxCode = value; } }
 
 		#endregion SyntaxCode Property
 
@@ -165,20 +150,11 @@ namespace Axiom.Graphics
 		///    Type of program this represents (vertex or fragment).
 		/// </summary>
 		protected GpuProgramType type;
+
 		/// <summary>
 		///    Gets the type of GPU program this represents (vertex or fragment).
 		/// </summary>
-		public virtual GpuProgramType Type
-		{
-			get
-			{
-				return type;
-			}
-			set
-			{
-				type = value;
-			}
-		}
+		virtual public GpuProgramType Type { get { return type; } set { type = value; } }
 
 		#endregion Type Property
 
@@ -188,21 +164,12 @@ namespace Axiom.Graphics
 		///		Flag indicating whether this program is being used for hardware skinning.
 		/// </summary>
 		protected bool isSkeletalAnimationSupported;
+
 		/// <summary>
 		///		Gets/Sets whether a vertex program includes the required instructions
 		///		to perform skeletal animation. 
 		/// </summary>
-		public virtual bool IsSkeletalAnimationIncluded
-		{
-			get
-			{
-				return isSkeletalAnimationSupported;
-			}
-			set
-			{
-				isSkeletalAnimationSupported = value;
-			}
-		}
+		virtual public bool IsSkeletalAnimationIncluded { get { return isSkeletalAnimationSupported; } set { isSkeletalAnimationSupported = value; } }
 
 		#endregion IsSkeletalAnimationIncluded Property
 
@@ -212,21 +179,12 @@ namespace Axiom.Graphics
 		///		Does this (vertex) program include morph animation?
 		/// </summary>
 		protected bool isMorphAnimationSupported;
+
 		/// <summary>
 		///		Gets/Sets whether a vertex program includes the required instructions
 		///		to perform morph animation. 
 		/// </summary>
-		public virtual bool IsMorphAnimationIncluded
-		{
-			get
-			{
-				return isMorphAnimationSupported;
-			}
-			set
-			{
-				isMorphAnimationSupported = value;
-			}
-		}
+		virtual public bool IsMorphAnimationIncluded { get { return isMorphAnimationSupported; } set { isMorphAnimationSupported = value; } }
 
 		#endregion IsMorphAninimationIncluded Property
 
@@ -236,21 +194,12 @@ namespace Axiom.Graphics
 		///		Does this (vertex) program require vertex texture fetch?
 		/// </summary>
 		protected bool _isVertexTextureFetchRequired;
+
 		/// <summary>
 		///		Gets/Sets whether this vertex program requires support for vertex 
 		///		texture fetch from the hardware. 
 		/// </summary>
-		public virtual bool IsVertexTextureFetchRequired
-		{
-			get
-			{
-				return _isVertexTextureFetchRequired;
-			}
-			set
-			{
-				_isVertexTextureFetchRequired = value;
-			}
-		}
+		virtual public bool IsVertexTextureFetchRequired { get { return _isVertexTextureFetchRequired; } set { _isVertexTextureFetchRequired = value; } }
 
 		#endregion IsVertexTextureFetchRequired Property
 
@@ -260,21 +209,12 @@ namespace Axiom.Graphics
 		///		Does this (vertex) program include morph animation?
 		/// </summary>
 		protected ushort poseAnimationCount;
+
 		/// <summary>
 		///		Gets/Sets whether a vertex program includes the required instructions
 		///		to perform pose animation. 
 		/// </summary>
-		public virtual ushort PoseAnimationCount
-		{
-			get
-			{
-				return poseAnimationCount;
-			}
-			set
-			{
-				poseAnimationCount = value;
-			}
-		}
+		virtual public ushort PoseAnimationCount { get { return poseAnimationCount; } set { poseAnimationCount = value; } }
 
 		#endregion PoseAnimationCount Property
 
@@ -284,6 +224,7 @@ namespace Axiom.Graphics
 		///	List of default parameters, as gathered from the program definition.
 		/// </summary>
 		protected GpuProgramParameters defaultParams;
+
 		/// <summary>
 		///	Get a reference to the default parameters which are to be used for all uses of this program.
 		/// </summary>
@@ -295,11 +236,11 @@ namespace Axiom.Graphics
 		/// the default parameters; thus users of the program need only change the parameters
 		/// which are unique to their own usage of the program.
 		/// </remarks>
-		public virtual GpuProgramParameters DefaultParameters
+		virtual public GpuProgramParameters DefaultParameters
 		{
 			get
 			{
-				if ( defaultParams == null )
+				if( defaultParams == null )
 				{
 					defaultParams = this.CreateParameters();
 				}
@@ -311,13 +252,7 @@ namespace Axiom.Graphics
 
 		#region HasDefaultParameters Property
 
-		public virtual bool HasDefaultParameters
-		{
-			get
-			{
-				return defaultParams != null;
-			}
-		}
+		virtual public bool HasDefaultParameters { get { return defaultParams != null; } }
 
 		#endregion HasDefaultParameters Property
 
@@ -327,6 +262,7 @@ namespace Axiom.Graphics
 		///		Does this program want light states passed through fixed pipeline?
 		/// </summary>
 		protected bool passSurfaceAndLightStates;
+
 		/// <summary>
 		///		Sets whether a vertex program requires light and material states to be passed
 		///		to through fixed pipeline low level API rendering calls.
@@ -337,17 +273,7 @@ namespace Axiom.Graphics
 		///		light and material states.  This way the user does not have to use autoparameters to 
 		///		pass light position, color etc.
 		/// </remarks>
-		public virtual bool PassSurfaceAndLightStates
-		{
-			get
-			{
-				return passSurfaceAndLightStates;
-			}
-			set
-			{
-				passSurfaceAndLightStates = value;
-			}
-		}
+		virtual public bool PassSurfaceAndLightStates { get { return passSurfaceAndLightStates; } set { passSurfaceAndLightStates = value; } }
 
 		#endregion PassSurfaceAndLightStates Property
 
@@ -356,13 +282,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns whether this program can be supported on the current renderer and hardware.
 		/// </summary>
-		public virtual bool IsSupported
+		virtual public bool IsSupported
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported() )
+				if( _compileError || !IsRequiredCapabilitiesSupported() )
 				{
-
 					return false;
 				}
 
@@ -378,10 +303,7 @@ namespace Axiom.Graphics
 		/// Returns the maximum number of samplers that this fragment program has access
 		/// to, based on the fragment program profile it uses.
 		/// </summary>
-		public abstract int SamplerCount
-		{
-			get;
-		}
+		abstract public int SamplerCount { get; }
 
 		#endregion SamplerCount Property
 
@@ -395,13 +317,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Did this program encounter a compile error when loading?
 		/// </summary>
-		public bool HasCompileError
-		{
-			get
-			{
-				return _compileError;
-			}
-		}
+		public bool HasCompileError { get { return _compileError; } }
 
 		/// <summary>
 		/// Reset a compile error if it occurred, allowing the load to be retried.
@@ -430,6 +346,7 @@ namespace Axiom.Graphics
 		/// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
 		/// </summary>
 		private GpuProgramParameters.GpuNamedConstants constantDefs;
+
 		/// <summary>
 		/// Get the full list of named constants.
 		/// </summary>
@@ -438,13 +355,7 @@ namespace Axiom.Graphics
 		/// a high-level program which loads them, or a low-level program which has them
 		/// specified manually.
 		/// </note>
-		public GpuProgramParameters.GpuNamedConstants ConstantDefinitions
-		{
-			get
-			{
-				return constantDefs;
-			}
-		}
+		public GpuProgramParameters.GpuNamedConstants ConstantDefinitions { get { return constantDefs; } }
 
 		#endregion ConstantDefinitions Property
 
@@ -462,10 +373,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public GpuProgramParameters.GpuNamedConstants ManualNamedConstants
 		{
-			get
-			{
-				return constantDefs;
-			}
+			get { return constantDefs; }
 			set
 			{
 				constantDefs = value;
@@ -507,6 +415,7 @@ namespace Axiom.Graphics
 		/// File from which to load named constants manually
 		/// </summary>
 		private string manualNamedConstantsFile;
+
 		/// <summary>
 		/// Specifies the name of a file from which to load named parameters mapping
 		/// for a program which would not be able to derive named parameters itself.
@@ -519,17 +428,7 @@ namespace Axiom.Graphics
 		/// program for the named file from which to load parameter names from. 
 		/// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
 		/// </remarks>
-		public string ManualNamedConstantsFile
-		{
-			get
-			{
-				return manualNamedConstantsFile;
-			}
-			set
-			{
-				manualNamedConstantsFile = value;
-			}
-		}
+		public string ManualNamedConstantsFile { get { return manualNamedConstantsFile; } set { manualNamedConstantsFile = value; } }
 
 		#endregion ManualNamedConstantsFile Property
 
@@ -568,12 +467,12 @@ namespace Axiom.Graphics
 		///    they are appropriate.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual GpuProgramParameters CreateParameters()
+		virtual public GpuProgramParameters CreateParameters()
 		{
 			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
 			// optionally load manually supplied named constants
-			if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !loadedManualNamedConstants )
+			if( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !loadedManualNamedConstants )
 			{
 				try
 				{
@@ -582,7 +481,7 @@ namespace Axiom.Graphics
 					namedConstants.Load( stream );
 					ManualNamedConstants = namedConstants;
 				}
-				catch ( Exception ex )
+				catch( Exception ex )
 				{
 					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
 				}
@@ -600,8 +499,10 @@ namespace Axiom.Graphics
 			*/
 
 			// Copy in default parameters if present
-			if ( defaultParams != null )
+			if( defaultParams != null )
+			{
 				newParams.CopyConstantsFrom( defaultParams );
+			}
 
 			return newParams;
 		}
@@ -612,7 +513,7 @@ namespace Axiom.Graphics
 		protected override void load()
 		{
 			// load from file and get the source string from it
-			if ( loadFromFile )
+			if( loadFromFile )
 			{
 				Stream stream = ResourceGroupManager.Instance.OpenResource( fileName, this.Group );
 				StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
@@ -624,7 +525,7 @@ namespace Axiom.Graphics
 				// call polymorphic load to read source
 				LoadFromSource();
 
-				if ( defaultParams != null )
+				if( defaultParams != null )
 				{
 					// Keep a reference to old ones to copy
 					GpuProgramParameters savedParams = defaultParams;
@@ -636,37 +537,34 @@ namespace Axiom.Graphics
 					// Don't use copyConstantsFrom since program may be different
 					//defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
 				}
-
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				LogManager.Instance.Write( "Gpu program {0} encountered an error during loading and is thus not supported.", Name );
 				_compileError = true;
 			}
 		}
 
-		protected override void unload()
-		{
-		}
+		protected override void unload() {}
 
 		/// <summary>
 		///    Method which must be implemented by subclasses, loads the program from source.
 		/// </summary>
-		protected abstract void LoadFromSource();
+		abstract protected void LoadFromSource();
 
 		protected bool IsRequiredCapabilitiesSupported()
 		{
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			// If skeletal animation is being done, we need support for UBYTE4
-			if ( this.IsSkeletalAnimationIncluded &&
-				!caps.HasCapability( Capabilities.VertexFormatUByte4 ) )
+			if( this.IsSkeletalAnimationIncluded &&
+			    !caps.HasCapability( Capabilities.VertexFormatUByte4 ) )
 			{
 				return false;
 			}
 
 			// Vertex texture fetch required?
-			if ( this.IsVertexTextureFetchRequired &&
-				!caps.HasCapability( Capabilities.VertexTextureFetch ) )
+			if( this.IsVertexTextureFetchRequired &&
+			    !caps.HasCapability( Capabilities.VertexTextureFetch ) )
 			{
 				return false;
 			}

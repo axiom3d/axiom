@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,16 +44,20 @@ using Axiom.Core;
 using Axiom.Fonts;
 using Axiom.Scripting;
 using Axiom.Graphics;
+
 using Font = Axiom.Fonts.Font;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
 ///     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Overlays.Elements
@@ -70,14 +78,16 @@ namespace Axiom.Overlays.Elements
 		protected int pixelSpaceWidth;
 		protected int allocSize;
 		protected float viewportAspectCoef;
+
 		/// Colors to use for the vertices
 		protected ColorEx colorBottom;
+
 		protected ColorEx colorTop;
 		protected bool haveColorsChanged;
 
-		const int DEFAULT_INITIAL_CHARS = 12;
-		const int POSITION_TEXCOORD_BINDING = 0;
-		const int COLOR_BINDING = 1;
+		private const int DEFAULT_INITIAL_CHARS = 12;
+		private const int POSITION_TEXCOORD_BINDING = 0;
+		private const int COLOR_BINDING = 1;
 
 		#endregion
 
@@ -92,7 +102,6 @@ namespace Axiom.Overlays.Elements
 		{
 			//isTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
 			textAlign = HorizontalAlignment.Center;
-
 
 			colorTop = ColorEx.White;
 			colorBottom = ColorEx.White;
@@ -113,7 +122,7 @@ namespace Axiom.Overlays.Elements
 		/// <param name="size"></param>
 		protected void CheckMemoryAllocation( int numChars )
 		{
-			if ( allocSize < numChars )
+			if( allocSize < numChars )
 			{
 				// Create and bind new buffers
 				// Note that old buffers will be deleted automatically through reference counting
@@ -129,9 +138,9 @@ namespace Axiom.Overlays.Elements
 				// positions & texcoords
 				HardwareVertexBuffer buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer(
-						decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
-						renderOperation.vertexData.vertexCount,
-						BufferUsage.DynamicWriteOnly );
+					                                                  decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
+					                                                  renderOperation.vertexData.vertexCount,
+					                                                  BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
@@ -139,9 +148,9 @@ namespace Axiom.Overlays.Elements
 				// colors
 				buffer =
 					HardwareBufferManager.Instance.CreateVertexBuffer(
-					decl.GetVertexSize( COLOR_BINDING ),
-					renderOperation.vertexData.vertexCount,
-					BufferUsage.DynamicWriteOnly );
+					                                                  decl.GetVertexSize( COLOR_BINDING ),
+					                                                  renderOperation.vertexData.vertexCount,
+					                                                  BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
@@ -157,7 +166,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Initialize()
 		{
-			if ( !isInitialized )
+			if( !isInitialized )
 			{
 				// Set up the render operation
 				// Combine positions and texture coords since they tend to change together
@@ -197,8 +206,8 @@ namespace Axiom.Overlays.Elements
 			float vpHeight = OverlayManager.Instance.ViewportHeight;
 			viewportAspectCoef = vpHeight / vpWidth;
 
-			if ( metricsMode != MetricsMode.Relative &&
-				( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if( metricsMode != MetricsMode.Relative &&
+			    ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
 				charHeight = (float)pixelCharHeight / vpHeight;
 				spaceWidth = (float)pixelSpaceWidth / vpHeight;
@@ -208,7 +217,7 @@ namespace Axiom.Overlays.Elements
 
 			base.Update();
 
-			if ( this.haveColorsChanged && isInitialized )
+			if( this.haveColorsChanged && isInitialized )
 			{
 				UpdateColors();
 				haveColorsChanged = false;
@@ -218,7 +227,7 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateColors()
+		unsafe protected void UpdateColors()
 		{
 			// convert to API specific color values
 			int topColor = Root.Instance.ConvertColor( colorTop );
@@ -232,7 +241,7 @@ namespace Axiom.Overlays.Elements
 			int* colPtr = (int*)data.ToPointer();
 			int index = 0;
 
-			for ( int i = 0; i < allocSize; i++ )
+			for( int i = 0; i < allocSize; i++ )
 			{
 				// first tri (top, bottom, top);
 				colPtr[ index++ ] = topColor;
@@ -252,9 +261,9 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		/// 
 		/// </summary>
-		protected unsafe void UpdateGeometry()
+		unsafe protected void UpdateGeometry()
 		{
-			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
+			if( font == null || text == null || !this.isGeomPositionsOutOfDate )
 			{
 				// must not be initialized yet, probably due to order of creation in a template
 				return;
@@ -274,28 +283,27 @@ namespace Axiom.Overlays.Elements
 			float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
-			if ( spaceWidth == 0 )
+			if( spaceWidth == 0 )
 			{
 				spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f * viewportAspectCoef;
 			}
-
 
 			bool newLine = true;
 			int index = 0;
 
 			// go through each character and process
-			for ( int i = 0; i < charLength; i++ )
+			for( int i = 0; i < charLength; i++ )
 			{
 				char c = text[ i ];
 
-				if ( newLine )
+				if( newLine )
 				{
 					float length = 0.0f;
 
 					// precalc the length of this line
-					for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
+					for( int j = i; j < charLength && text[ j ] != '\n'; j++ )
 					{
-						if ( text[ j ] == ' ' )
+						if( text[ j ] == ' ' )
 						{
 							length += spaceWidth;
 						}
@@ -305,11 +313,11 @@ namespace Axiom.Overlays.Elements
 						}
 					} // for j
 
-					if ( this.horzAlign == HorizontalAlignment.Right )
+					if( this.horzAlign == HorizontalAlignment.Right )
 					{
 						left -= length;
 					}
-					else if ( this.horzAlign == HorizontalAlignment.Center )
+					else if( this.horzAlign == HorizontalAlignment.Center )
 					{
 						left -= length * 0.5f;
 					}
@@ -317,7 +325,7 @@ namespace Axiom.Overlays.Elements
 					newLine = false;
 				} // if newLine
 
-				if ( c == '\n' )
+				if( c == '\n' )
 				{
 					left = this.DerivedLeft * 2.0f - 1.0f;
 					top -= charHeight * 2.0f;
@@ -327,7 +335,7 @@ namespace Axiom.Overlays.Elements
 					continue;
 				}
 
-				if ( c == ' ' )
+				if( c == ' ' )
 				{
 					// leave a gap, no tris required
 					left += spaceWidth;
@@ -404,7 +412,7 @@ namespace Axiom.Overlays.Elements
 
 				float currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
 
-				if ( currentWidth > largestWidth )
+				if( currentWidth > largestWidth )
 				{
 					largestWidth = currentWidth;
 				}
@@ -413,7 +421,7 @@ namespace Axiom.Overlays.Elements
 			// unlock vertex buffer
 			buffer.Unlock();
 
-			if ( metricsMode == MetricsMode.Pixels )
+			if( metricsMode == MetricsMode.Pixels )
 			{
 				// Derive parametric version of dimensions
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
@@ -422,7 +430,7 @@ namespace Axiom.Overlays.Elements
 			}
 
 			// record the width as the longest width calculated for any of the lines
-			if ( this.Width < largestWidth )
+			if( this.Width < largestWidth )
 			{
 				this.Width = largestWidth;
 			}
@@ -452,7 +460,7 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				if ( metricsMode == MetricsMode.Pixels )
+				if( metricsMode == MetricsMode.Pixels )
 				{
 					return (float)pixelCharHeight;
 				}
@@ -463,7 +471,7 @@ namespace Axiom.Overlays.Elements
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelCharHeight = value;
 				}
@@ -498,10 +506,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public ColorEx ColorTop
 		{
-			get
-			{
-				return colorTop;
-			}
+			get { return colorTop; }
 			set
 			{
 				colorTop = value;
@@ -514,10 +519,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public ColorEx ColorBottom
 		{
-			get
-			{
-				return colorBottom;
-			}
+			get { return colorBottom; }
 			set
 			{
 				colorBottom = value;
@@ -530,14 +532,11 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public string FontName
 		{
-			get
-			{
-				return font != null ? font.Name : null;
-			}
+			get { return font != null ? font.Name : null; }
 			set
 			{
 				font = (Font)FontManager.Instance[ value ];
-				if ( font == null )
+				if( font == null )
 				{
 					throw new Exception( "Could not find font " + value );
 				}
@@ -559,37 +558,23 @@ namespace Axiom.Overlays.Elements
 		/// <summary>
 		///    Override to update geometry when new material is assigned.
 		/// </summary>
-		public override string MaterialName
-		{
-			get
-			{
-				return base.MaterialName;
-			}
-			set
-			{
-				base.MaterialName = value;
-			}
-		}
+		public override string MaterialName { get { return base.MaterialName; } set { base.MaterialName = value; } }
 
 		/// <summary>
 		///    Override to handle character spacing
 		/// </summary>
 		public override MetricsMode MetricsMode
 		{
-			get
-			{
-				return base.MetricsMode;
-			}
+			get { return base.MetricsMode; }
 			set
 			{
-
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
 				float vpHeight = OverlayManager.Instance.ViewportHeight;
 				viewportAspectCoef = vpHeight / vpWidth;
 				base.MetricsMode = value;
 
 				// configure pixel variables based on current viewport
-				switch ( metricsMode )
+				switch( metricsMode )
 				{
 					case MetricsMode.Pixels:
 						// set pixel variables multiplied by the viewport multipliers
@@ -612,7 +597,7 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				if ( metricsMode == MetricsMode.Pixels )
+				if( metricsMode == MetricsMode.Pixels )
 				{
 					return (float)pixelSpaceWidth;
 				}
@@ -623,7 +608,7 @@ namespace Axiom.Overlays.Elements
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if( metricsMode != MetricsMode.Relative )
 				{
 					pixelSpaceWidth = (int)value;
 				}
@@ -641,10 +626,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public HorizontalAlignment TextAlign
 		{
-			get
-			{
-				return textAlign;
-			}
+			get { return textAlign; }
 			set
 			{
 				textAlign = value;
@@ -657,10 +639,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override string Text
 		{
-			get
-			{
-				return base.Text;
-			}
+			get { return base.Text; }
 			set
 			{
 				base.Text = value;
@@ -686,7 +665,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.CharHeight.ToString();
 				}
@@ -704,7 +683,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.CharHeight = StringConverter.ParseFloat( val );
 				}
@@ -726,7 +705,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.SpaceWidth.ToString();
 				}
@@ -744,7 +723,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.SpaceWidth = StringConverter.ParseFloat( val );
 				}
@@ -766,7 +745,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return element.FontName;
 				}
@@ -784,7 +763,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.FontName = val;
 				}
@@ -806,7 +785,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof( HorizontalAlignment ) );
 				}
@@ -824,7 +803,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
 				}
@@ -832,8 +811,9 @@ namespace Axiom.Overlays.Elements
 
 			#endregion
 		}
-		[ScriptableProperty( "color", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour", "", typeof( TextArea ) )]
+
+		[ScriptableProperty( "color", "", typeof( TextArea ) ), ScriptableProperty( "colour", "", typeof( TextArea ) )]
+		
 		private class ColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -846,7 +826,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return StringConverter.ToString( element.Color );
 				}
@@ -864,7 +844,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.Color = StringConverter.ParseColor( val );
 				}
@@ -873,8 +853,8 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		[ScriptableProperty( "color_top", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
+		[ScriptableProperty( "color_top", "", typeof( TextArea ) ), ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
+		
 		private class TopColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -887,7 +867,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return StringConverter.ToString( element.ColorTop );
 				}
@@ -905,7 +885,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.ColorTop = StringConverter.ParseColor( val );
 				}
@@ -914,8 +894,8 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		[ScriptableProperty( "color_bottom", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
+		[ScriptableProperty( "color_bottom", "", typeof( TextArea ) ), ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
+		
 		private class BottomColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -928,7 +908,7 @@ namespace Axiom.Overlays.Elements
 			public string Get( object target )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					return StringConverter.ToString( element.ColorBottom );
 				}
@@ -946,7 +926,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as TextArea;
-				if ( element != null )
+				if( element != null )
 				{
 					element.ColorBottom = StringConverter.ParseColor( val );
 				}
@@ -956,6 +936,5 @@ namespace Axiom.Overlays.Elements
 		}
 
 		#endregion ScriptableObject Interface Command Classes
-
 	}
 }

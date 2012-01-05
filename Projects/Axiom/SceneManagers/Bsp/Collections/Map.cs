@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -107,7 +111,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		public void Clear( object key )
 		{
 			ArrayList bucket = (ArrayList)buckets[ key ];
-			if ( bucket != null )
+			if( bucket != null )
 			{
 				count -= bucket.Count;
 				buckets.Remove( key );
@@ -123,7 +127,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns>IEnumerator to go through the items assigned to the key.</returns>
 		public IEnumerator Find( object key )
 		{
-			if ( buckets[ key ] == null )
+			if( buckets[ key ] == null )
 			{
 				return null;
 			}
@@ -135,7 +139,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		public IList FindBucket( object key )
 		{
-			if ( buckets[ key ] == null )
+			if( buckets[ key ] == null )
 			{
 				return null;
 			}
@@ -152,7 +156,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <param name="key">Key to look for.</param>
 		public object FindFirst( object key )
 		{
-			if ( buckets[ key ] == null )
+			if( buckets[ key ] == null )
 			{
 				return null;
 			}
@@ -169,7 +173,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns></returns>
 		public int Count( object key )
 		{
-			if ( buckets[ key ] != null )
+			if( buckets[ key ] != null )
 			{
 				return ( (ArrayList)buckets[ key ] ).Count;
 			}
@@ -187,7 +191,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			ArrayList container = null;
 
-			if ( buckets[ key ] == null )
+			if( buckets[ key ] == null )
 			{
 				container = new ArrayList();
 				buckets.Add( key, container );
@@ -207,13 +211,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <summary>
 		///     Gets the total count of all items contained within the map.
 		/// </summary>
-		public int TotalCount
-		{
-			get
-			{
-				return count;
-			}
-		}
+		public int TotalCount { get { return count; } }
 
 		/// <summary>
 		///     Gets an appropriate enumerator for the map, customized to go

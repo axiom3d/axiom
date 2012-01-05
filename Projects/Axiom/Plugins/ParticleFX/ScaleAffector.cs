@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -57,17 +61,7 @@ namespace Axiom.ParticleFX
 			scaleAdjust = 0;
 		}
 
-		public float ScaleAdjust
-		{
-			get
-			{
-				return scaleAdjust;
-			}
-			set
-			{
-				scaleAdjust = value;
-			}
-		}
+		public float ScaleAdjust { get { return scaleAdjust; } set { scaleAdjust = value; } }
 
 		public override void AffectParticles( ParticleSystem system, float timeElapsed )
 		{
@@ -80,11 +74,11 @@ namespace Axiom.ParticleFX
 
 			// loop through the particles
 
-			for ( int i = 0; i < system.Particles.Count; i++ )
+			for( int i = 0; i < system.Particles.Count; i++ )
 			{
 				Particle p = (Particle)system.Particles[ i ];
 
-				if ( p.HasOwnDimensions == false )
+				if( p.HasOwnDimensions == false )
 				{
 					newHigh = system.DefaultHeight + ds;
 					newWide = system.DefaultWidth + ds;
@@ -101,7 +95,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
-		class RateCommand : IPropertyCommand
+		private class RateCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -110,6 +104,7 @@ namespace Axiom.ParticleFX
 				ScaleAffector affector = target as ScaleAffector;
 				return StringConverter.ToString( affector.ScaleAdjust );
 			}
+
 			public void Set( object target, string val )
 			{
 				ScaleAffector affector = target as ScaleAffector;

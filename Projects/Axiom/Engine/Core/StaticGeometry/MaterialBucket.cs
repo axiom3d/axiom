@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,7 +54,6 @@ namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
-
 		/// <summary>
 		/// A MaterialBucket is a collection of smaller buckets with the same 
 		/// Material (and implicitly the same LOD).
@@ -67,45 +70,15 @@ namespace Axiom.Core
 			protected List<GeometryBucket> geometryBucketList;
 			protected Dictionary<string, GeometryBucket> currentGeometryMap;
 
-			public string MaterialName
-			{
-				get
-				{
-					return materialName;
-				}
-			}
+			public string MaterialName { get { return materialName; } }
 
-			public LODBucket Parent
-			{
-				get
-				{
-					return parent;
-				}
-			}
+			public LODBucket Parent { get { return parent; } }
 
-			public Material Material
-			{
-				get
-				{
-					return material;
-				}
-			}
+			public Material Material { get { return material; } }
 
-			public Technique CurrentTechnique
-			{
-				get
-				{
-					return technique;
-				}
-			}
+			public Technique CurrentTechnique { get { return technique; } }
 
-			public List<GeometryBucket> GeometryBucketList
-			{
-				get
-				{
-					return geometryBucketList;
-				}
-			}
+			public List<GeometryBucket> GeometryBucketList { get { return geometryBucketList; } }
 
 			#endregion
 
@@ -122,6 +95,7 @@ namespace Axiom.Core
 			#endregion
 
 			#region Proteced Methods
+
 			protected string GetGeometryFormatString( SubMeshLodGeometryLink geom )
 			{
 				// Formulate an identifying string for the geometry format
@@ -134,7 +108,7 @@ namespace Axiom.Core
 				//   type
 				string str = string.Format( "{0}|", geom.indexData.indexBuffer.Type );
 
-				for ( int i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
+				for( int i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
 				{
 					VertexElement elem = geom.vertexData.vertexDeclaration.GetElement( i );
 					str += string.Format( "{0}|{0}|{1}|{2}|", elem.Source, elem.Semantic, elem.Type );
@@ -145,12 +119,13 @@ namespace Axiom.Core
 			#endregion
 
 			#region Public Methods
+
 			public void Assign( QueuedGeometry qgeom )
 			{
 				// Look up any current geometry
 				string formatString = GetGeometryFormatString( qgeom.geometry );
 				bool newBucket = true;
-				if ( currentGeometryMap.ContainsKey( formatString ) )
+				if( currentGeometryMap.ContainsKey( formatString ) )
 				{
 					GeometryBucket gbucket = currentGeometryMap[ formatString ];
 					// Found existing geometry, try to assign
@@ -159,32 +134,38 @@ namespace Axiom.Core
 					// for this format string below since it's out of space
 				}
 				// Do we need to create a new one?
-				if ( newBucket )
+				if( newBucket )
 				{
 					GeometryBucket gbucket = new GeometryBucket( this, formatString, qgeom.geometry.vertexData, qgeom.geometry.indexData );
 					// Add to main list
 					geometryBucketList.Add( gbucket );
 					// Also index in 'current' list
 					currentGeometryMap[ formatString ] = gbucket;
-					if ( !gbucket.Assign( qgeom ) )
+					if( !gbucket.Assign( qgeom ) )
 					{
 						throw new AxiomException( "Somehow we couldn't fit the requested geometry even in a " +
-							"brand new GeometryBucket!! Must be a bug, please report." );
+						                          "brand new GeometryBucket!! Must be a bug, please report." );
 					}
 				}
 			}
 
 			public void Build( bool stencilShadows, int logLevel )
 			{
-				if ( logLevel <= 1 )
+				if( logLevel <= 1 )
+				{
 					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", materialName );
+				}
 				material = (Material)MaterialManager.Instance[ materialName ];
-				if ( null == material )
+				if( null == material )
+				{
 					throw new AxiomException( "Material '{0}' not found.", materialName );
+				}
 				material.Load();
 				// tell the geometry buckets to build
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach( GeometryBucket gbucket in geometryBucketList )
+				{
 					gbucket.Build( stencilShadows, logLevel );
+				}
 			}
 
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, Real lodValue )
@@ -203,8 +184,10 @@ namespace Axiom.Core
 
 				// determine the current material technique
 				technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach( GeometryBucket gbucket in geometryBucketList )
+				{
 					queue.AddRenderable( gbucket, RenderQueue.DEFAULT_PRIORITY, group );
+				}
 			}
 
 			public void Dump()
@@ -212,18 +195,22 @@ namespace Axiom.Core
 				LogManager.Instance.Write( "Material Bucket {0}", materialName );
 				LogManager.Instance.Write( "--------------------------------------------------" );
 				LogManager.Instance.Write( "Geometry buckets: {0}", geometryBucketList.Count );
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach( GeometryBucket gbucket in geometryBucketList )
+				{
 					gbucket.Dump();
+				}
 				LogManager.Instance.Write( "--------------------------------------------------" );
 			}
 
 			/// <summary>
 			///     Dispose the geometry buckets
 			/// </summary>
-			public virtual void Dispose()
+			virtual public void Dispose()
 			{
-				foreach ( GeometryBucket gbucket in geometryBucketList )
+				foreach( GeometryBucket gbucket in geometryBucketList )
+				{
 					gbucket.Dispose();
+				}
 			}
 
 			#endregion

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -56,17 +60,18 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class AnimationStateSet
 	{
-
 		#region Protected Fields
 
 		/// <summary>
 		///		Mapping from string to AnimationState
 		/// </summary>
 		protected Dictionary<string, AnimationState> stateSet = new Dictionary<string, AnimationState>();
+
 		/// <summary>
 		///		
 		/// </summary>
 		protected int dirtyFrameNumber;
+
 		/// <summary>
 		///		A list of enabled animation states
 		/// </summary>
@@ -88,51 +93,22 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Get the latest animation state been altered frame number
 		/// </summary>
-		public int DirtyFrameNumber
-		{
-			get
-			{
-				return dirtyFrameNumber;
-			}
-			set
-			{
-				dirtyFrameNumber = value;
-			}
-		}
+		public int DirtyFrameNumber { get { return dirtyFrameNumber; } set { dirtyFrameNumber = value; } }
 
 		/// <summary>
 		///     Get the dictionary of states
 		/// </summary>
-		public Dictionary<string, AnimationState> AllAnimationStates
-		{
-			get
-			{
-				return stateSet;
-			}
-		}
+		public Dictionary<string, AnimationState> AllAnimationStates { get { return stateSet; } }
 
 		/// <summary>
 		///     Get the list of enabled animation states
 		/// </summary>
-
 		/// <summary>
 		///     Get the list of all animation states
 		/// </summary>
-		public List<AnimationState> EnabledAnimationStates
-		{
-			get
-			{
-				return enabledAnimationStates;
-			}
-		}
+		public List<AnimationState> EnabledAnimationStates { get { return enabledAnimationStates; } }
 
-		public ICollection<AnimationState> Values
-		{
-			get
-			{
-				return (ICollection<AnimationState>)stateSet.Values;
-			}
-		}
+		public ICollection<AnimationState> Values { get { return (ICollection<AnimationState>)stateSet.Values; } }
 
 		#endregion Properties
 
@@ -145,12 +121,16 @@ namespace Axiom.Animating
 		{
 			AnimationStateSet newSet = new AnimationStateSet();
 
-			foreach ( AnimationState animationState in stateSet.Values )
+			foreach( AnimationState animationState in stateSet.Values )
+			{
 				new AnimationState( newSet, animationState );
+			}
 
 			// Clone enabled animation state list
-			foreach ( AnimationState animationState in enabledAnimationStates )
+			foreach( AnimationState animationState in enabledAnimationStates )
+			{
 				newSet.EnabledAnimationStates.Add( newSet.GetAnimationState( animationState.Name ) );
+			}
 			return newSet;
 		}
 
@@ -174,13 +154,15 @@ namespace Axiom.Animating
 		/// <param name="weight Weight to apply the animation with</param>
 		/// <param name="enabled Whether the animation is enabled</param>
 		public AnimationState CreateAnimationState( string name, float time, float length,
-												   float weight, bool enabled )
+		                                            float weight, bool enabled )
 		{
-			if ( stateSet.ContainsKey( name ) )
+			if( stateSet.ContainsKey( name ) )
+			{
 				throw new Exception( "State for animation named '" + name + "' already exists, " +
-									"in AnimationStateSet.CreateAnimationState" );
+				                     "in AnimationStateSet.CreateAnimationState" );
+			}
 			AnimationState newState = new AnimationState( name, this, time,
-														 length, weight, enabled );
+			                                              length, weight, enabled );
 			stateSet[ name ] = newState;
 			return newState;
 		}
@@ -190,9 +172,11 @@ namespace Axiom.Animating
 		/// </summary>
 		public AnimationState GetAnimationState( string name )
 		{
-			if ( !stateSet.ContainsKey( name ) )
+			if( !stateSet.ContainsKey( name ) )
+			{
 				throw new Exception( "No state found for animation named '" + name + "', " +
-									"in AnimationStateSet.CreateAnimationState" );
+				                     "in AnimationStateSet.CreateAnimationState" );
+			}
 			return stateSet[ name ];
 		}
 
@@ -209,7 +193,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public void RemoveAnimationState( string name )
 		{
-			if ( stateSet.ContainsKey( name ) )
+			if( stateSet.ContainsKey( name ) )
 			{
 				enabledAnimationStates.Remove( stateSet[ name ] );
 				stateSet.Remove( name );
@@ -230,20 +214,26 @@ namespace Axiom.Animating
 		/// </summary>
 		public void CopyMatchingState( AnimationStateSet target )
 		{
-			foreach ( KeyValuePair<string, AnimationState> pair in target.AllAnimationStates )
+			foreach( KeyValuePair<string, AnimationState> pair in target.AllAnimationStates )
 			{
 				AnimationState result;
-				if ( !stateSet.TryGetValue( pair.Key, out result ) )
+				if( !stateSet.TryGetValue( pair.Key, out result ) )
+				{
 					throw new Exception( "No animation entry found named '" + pair.Key + "', in " +
-										"AnimationStateSet.CopyMatchingState" );
+					                     "AnimationStateSet.CopyMatchingState" );
+				}
 				else
+				{
 					pair.Value.CopyFrom( result );
+				}
 			}
 
 			// Copy matching enabled animation state list
 			target.EnabledAnimationStates.Clear();
-			foreach ( AnimationState state in enabledAnimationStates )
+			foreach( AnimationState state in enabledAnimationStates )
+			{
 				target.EnabledAnimationStates.Add( target.AllAnimationStates[ state.Name ] );
+			}
 
 			target.DirtyFrameNumber = dirtyFrameNumber;
 		}
@@ -265,8 +255,10 @@ namespace Axiom.Animating
 			enabledAnimationStates.Remove( target );
 
 			// Add to enabled animation state list if need
-			if ( enabled )
+			if( enabled )
+			{
 				enabledAnimationStates.Add( target );
+			}
 
 			// Set the dirty frame number
 			NotifyDirty();

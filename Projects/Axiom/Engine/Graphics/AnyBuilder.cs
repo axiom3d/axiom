@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,25 +58,28 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class AnyBuilder : IDisposable
 	{
-
 		#region Fields
 
 		/// <summary>
 		/// List of objects that will provide index data to the build process.
 		/// </summary>
 		protected IndexDataList indexDataList = new IndexDataList();
+
 		/// <summary>
 		/// Mapping of index data sets to vertex data sets.
 		/// </summary>
 		protected IntList indexDataVertexDataSetList = new IntList();
+
 		/// <summary>
 		/// List of vertex data objects.
 		/// </summary>
 		protected VertexDataList vertexDataList = new VertexDataList();
+
 		/// <summary>
 		/// Mappings of operation type to vertex data.
 		/// </summary>
 		protected OperationTypeList operationTypes = new OperationTypeList();
+
 		/// <summary>
 		/// List of software index buffers that were created and to be disposed by this class.
 		/// </summary>
@@ -144,13 +151,15 @@ namespace Axiom.Graphics
 		/// <param name="objects"></param>
 		public void AddObject( IRenderable obj )
 		{
-			if ( obj == null )
+			if( obj == null )
+			{
 				throw new ArgumentNullException();
+			}
 
 			RenderOperation renderOp = obj.RenderOperation;
 
 			IndexData indexData;
-			if ( renderOp.useIndices )
+			if( renderOp.useIndices )
 			{
 				indexData = renderOp.indexData;
 			}
@@ -159,7 +168,7 @@ namespace Axiom.Graphics
 				//Create custom index buffer
 				int vertexCount = renderOp.vertexData.vertexCount;
 				IndexType itype = vertexCount > UInt16.MaxValue ?
-				IndexType.Size32 : IndexType.Size16;
+				                                                	IndexType.Size32 : IndexType.Size16;
 
 				DefaultHardwareIndexBuffer ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
 				customIndexBufferList.Add( ibuf ); //to be disposed later
@@ -171,16 +180,16 @@ namespace Axiom.Graphics
 
 				//Fill buffer with indices
 				IntPtr ibuffer =
-				indexData.indexBuffer.Lock( BufferLocking.Normal );
+					indexData.indexBuffer.Lock( BufferLocking.Normal );
 				try
 				{
 					unsafe
 					{
 						Int16* ibuf16 = (Int16*)ibuffer;
 						Int32* ibuf32 = (Int32*)ibuffer;
-						for ( int i = 0; i < indexData.indexCount; i++ )
+						for( int i = 0; i < indexData.indexCount; i++ )
 						{
-							if ( itype == IndexType.Size16 )
+							if( itype == IndexType.Size16 )
 							{
 								ibuf16[ i ] = (Int16)i;
 							}
@@ -199,9 +208,8 @@ namespace Axiom.Graphics
 
 			AddVertexData( renderOp.vertexData );
 			AddIndexData( indexData, vertexDataList.Count - 1,
-			renderOp.operationType );
+			              renderOp.operationType );
 		}
-
 
 		/// <summary>
 		/// Add vertex and index sets of a mesh to the builder.
@@ -210,8 +218,10 @@ namespace Axiom.Graphics
 		/// <param name="lodIndex">The LOD level to be processed.</param>
 		public void AddObject( Mesh mesh, int lodIndex )
 		{
-			if ( mesh == null )
+			if( mesh == null )
+			{
 				throw new ArgumentNullException();
+			}
 
 			//mesh.AddVertexAndIndexSets(this, lodIndex);
 
@@ -226,29 +236,29 @@ namespace Axiom.Graphics
 			int vertexSetCount = vertexDataList.Count;
 			int indexOfSharedVertexSet = vertexSetCount;
 
-			if ( mesh.SharedVertexData != null )
+			if( mesh.SharedVertexData != null )
 			{
 				AddVertexData( mesh.SharedVertexData );
 				vertexSetCount++;
 			}
 
 			// Prepare the builder using the submesh information
-			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			for( int i = 0; i < mesh.SubMeshCount; i++ )
 			{
 				SubMesh sm = mesh.GetSubMesh( i );
 
-				if ( sm.useSharedVertices )
+				if( sm.useSharedVertices )
 				{
 					// Use shared vertex data
-					if ( lodIndex == 0 )
+					if( lodIndex == 0 )
 					{
 						AddIndexData( sm.IndexData, indexOfSharedVertexSet,
-						sm.OperationType );
+						              sm.OperationType );
 					}
 					else
 					{
 						AddIndexData( sm.LodFaceList[ lodIndex - 1 ],
-						indexOfSharedVertexSet, sm.OperationType );
+						              indexOfSharedVertexSet, sm.OperationType );
 					}
 				}
 				else
@@ -256,17 +266,17 @@ namespace Axiom.Graphics
 					// own vertex data, add it and reference it directly
 					AddVertexData( sm.VertexData );
 
-					if ( lodIndex == 0 )
+					if( lodIndex == 0 )
 					{
 						// base index data
 						AddIndexData( sm.IndexData, vertexSetCount++,
-						sm.OperationType );
+						              sm.OperationType );
 					}
 					else
 					{
 						// LOD index data
 						AddIndexData( sm.LodFaceList[ lodIndex - 1 ],
-						vertexSetCount++, sm.OperationType );
+						              vertexSetCount++, sm.OperationType );
 					}
 				}
 			}
@@ -278,14 +288,12 @@ namespace Axiom.Graphics
 
 		public void Dispose()
 		{
-			foreach ( DefaultHardwareIndexBuffer buf in customIndexBufferList )
+			foreach( DefaultHardwareIndexBuffer buf in customIndexBufferList )
 			{
 				DefaultHardwareBufferManager.Instance.DisposeIndexBuffer( buf );
 			}
 		}
 
 		#endregion
-
 	}
 }
-

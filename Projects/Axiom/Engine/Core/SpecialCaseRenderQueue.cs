@@ -57,6 +57,7 @@ namespace Axiom.Core
 		/// Render only the queues in the special case list
 		/// </summary>
 		Include,
+
 		/// <summary>
 		/// Render all except the queues in the special case list
 		/// </summary>
@@ -85,7 +86,7 @@ namespace Axiom.Core
 		/// rendering without requiring a <see cref="RenderQueueListener"/>.</remarks>
 		/// <param name="queueId">The identifier of the queue which should be added to the
 		///  special case list. Nothing happens if the queue is already in the list.</param>
-		public virtual void AddRenderQueue( RenderQueueGroupID queueId )
+		virtual public void AddRenderQueue( RenderQueueGroupID queueId )
 		{
 			_queue.Add( queueId );
 		}
@@ -95,7 +96,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="queueId">The identifier of the queue which should be removed from the
 		/// special case list. Nothing happens if the queue is not in the list.</param>
-		public virtual void RemoveRenderQueue( RenderQueueGroupID queueId )
+		virtual public void RemoveRenderQueue( RenderQueueGroupID queueId )
 		{
 			_queue.Remove( queueId );
 		}
@@ -103,7 +104,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Clears the 'special case' render queue list. <see cref="SceneManager.AddRenderQueueMode" />
 		/// </summary>
-		public virtual void ClearRenderQueues()
+		virtual public void ClearRenderQueues()
 		{
 			_queue.Clear();
 		}
@@ -112,18 +113,7 @@ namespace Axiom.Core
 		/// Gets the way the special case render queue list is processed. <see cref="SceneManager.AddRenderQueueMode" />
 		/// </summary>
 		/// <returns></returns>
-		public virtual SpecialCaseRenderQueueMode RenderQueueMode
-		{
-			get
-			{
-				return _mode;
-			}
-
-			set
-			{
-				_mode = value;
-			}
-		}
+		virtual public SpecialCaseRenderQueueMode RenderQueueMode { get { return _mode; } set { _mode = value; } }
 
 		/// <summary>
 		/// Returns whether or not the named queue will be rendered based on the
@@ -131,12 +121,11 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="queueId">The identifier of the queue which should be tested</param>
 		/// <returns>true if the queue will be rendered, false otherwise</returns>
-		public virtual bool IsRenderQueueToBeProcessed( RenderQueueGroupID queueId )
+		virtual public bool IsRenderQueueToBeProcessed( RenderQueueGroupID queueId )
 		{
 			bool inList = _queue.Contains( queueId );
 			return ( inList && _mode == SpecialCaseRenderQueueMode.Include )
-				|| ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
+			       || ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
 		}
-
 	}
 }

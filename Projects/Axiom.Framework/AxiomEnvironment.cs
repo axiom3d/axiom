@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,19 +19,23 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
+
 using System;
 using System.Linq;
+
 using Axiom.Core;
 using Axiom.Framework.Configuration;
 using Axiom.Graphics;
+
 using Vector3 = Axiom.Math.Vector3;
+
 using Axiom.Animating;
 
 #endregion Namespace Declarations
-
 
 namespace Axiom.Framework
 {
@@ -39,13 +44,7 @@ namespace Axiom.Framework
 		private Root _root;
 		private LogManager _logManager;
 		private Log _log;
-		public Log Log
-		{
-			get
-			{
-				return _log;
-			}
-		}
+		public Log Log { get { return _log; } }
 
 		private ResourceGroupManager _resourceGroupManager;
 		private MeshManager _meshManager;
@@ -58,30 +57,34 @@ namespace Axiom.Framework
 		//public StatefulSkeletonSerializer SkeletonSerializer { get { return _skeletonSerializer; } }
 		private DefaultHardwareBufferManager _bufferManager;
 		private bool _isStandalone;
-		public bool IsStandalone
-		{
-			get
-			{
-				return _isStandalone;
-			}
-		}
+		public bool IsStandalone { get { return _isStandalone; } }
 
-		public AxiomEnvironment()
-		{
-		}
+		public AxiomEnvironment() {}
 
-		~AxiomEnvironment()
-		{
-		}
+		~AxiomEnvironment() {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="standalone"></param>
 		/// <param name="log"></param>
-		public void Initialize( bool standalone = true, Log log = null )
+#if !NET_40
+		public void Initialize()
 		{
-			if ( standalone )
+			Initialize( true, null );
+		}
+
+		public void Initialize( bool standalone )
+		{
+			Initialize( standalone, null );
+		}
+
+		public void Initialize( bool standalone, Log log )
+#else
+		public void Initialize( bool standalone = true, Log log = null )
+#endif
+		{
+			if( standalone )
 			{
 				this._logManager = LogManager.Instance;
 				this._log = this._logManager.CreateLog( "meshmagick.log", true, false );
@@ -104,8 +107,6 @@ namespace Axiom.Framework
 
 			//this._meshSerializer = new StatefulMeshSerializer();
 			//this._skeletonSerializer = new StatefulSkeletonSerializer();
-
 		}
-
 	}
 }

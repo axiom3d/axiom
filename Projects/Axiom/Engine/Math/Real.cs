@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: GpuProgramParameters.cs 1036 2007-04-27 02:56:41Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,7 +43,6 @@ using Numeric = System.Single;
 #else
 using Numeric = System.Double;
 #endif
-
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -60,15 +63,16 @@ namespace Axiom.Math
 	/// Use the AXIOM_REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
 	/// AXIOM_REAL_AS_SINGLE to use a single-precision value.
 	/// </remarks>
-	[StructLayout( LayoutKind.Sequential )]
+	[StructLayout( LayoutKind.Sequential ), Serializable]
 #if !( XBOX || XBOX360 )
-	[Serializable]
+	
 	public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
 #else
 	public struct Real : IComparable<Real>, IConvertible
 #endif
 	{
 		#region Fields
+
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
@@ -84,19 +88,25 @@ namespace Axiom.Math
 		#region Static Interface
 
 		/// <summary>The value 0</summary>
-		public readonly static Real Zero = new Real( 0 );
+		public static readonly Real Zero = new Real( 0 );
+
 		/// <summary>The value of Positive Infinity</summary>
-		public readonly static Real PositiveInfinity = Numeric.PositiveInfinity;
+		public static readonly Real PositiveInfinity = Numeric.PositiveInfinity;
+
 		/// <summary>The value of Negative Infinity</summary>
-		public readonly static Real NegativeInfinity = Numeric.NegativeInfinity;
+		public static readonly Real NegativeInfinity = Numeric.NegativeInfinity;
+
 		/// <summary>Represents not a number</summary>
-		public readonly static Real NaN = Numeric.NaN;
+		public static readonly Real NaN = Numeric.NaN;
+
 		/// <summary>The value of Epsilon</summary>
-		public readonly static Real Epsilon = Numeric.Epsilon;
+		public static readonly Real Epsilon = Numeric.Epsilon;
+
 		/// <summary>The maximum possible value</summary>
-		public readonly static Real MaxValue = Numeric.MaxValue;
+		public static readonly Real MaxValue = Numeric.MaxValue;
+
 		/// <summary>The minimum possible value</summary>
-		public readonly static Real MinValue = Numeric.MinValue;
+		public static readonly Real MinValue = Numeric.MinValue;
 
 		/// <summary>
 		/// Returns a value indicating whether the specified number evaluates to positive infinity
@@ -224,6 +234,7 @@ namespace Axiom.Math
 		#endregion Constructors
 
 		#region Conversion Operators
+
 		// Conversion Grid
 		//
 		//-------------------------------------------
@@ -239,12 +250,13 @@ namespace Axiom.Math
 		//-------------------------------------------
 
 		#region Int Conversions
+
 		/// <summary>
 		/// Implicit conversion from int to Real
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( int value )
+		public static implicit operator Real( int value )
 		{
 			Real retval;
 			retval._value = value;
@@ -256,19 +268,21 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public explicit operator int( Real real )
+		public static explicit operator int( Real real )
 		{
 			return (int)real._value;
 		}
+
 		#endregion Int Conversions
 
 		#region Long Conversions
+
 		/// <summary>
 		/// Implicit conversion from int to Real
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( long value )
+		public static implicit operator Real( long value )
 		{
 			Real retval;
 			retval._value = value;
@@ -280,10 +294,11 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public explicit operator long( Real real )
+		public static explicit operator long( Real real )
 		{
 			return (long)real._value;
 		}
+
 		#endregion Long Conversions
 
 		#region Float Conversions
@@ -293,7 +308,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( float value )
+		public static implicit operator Real( float value )
 		{
 			Real retval;
 			retval._value = value;
@@ -305,7 +320,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public implicit operator float( Real real )
+		public static implicit operator float( Real real )
 		{
 			return (float)real._value;
 		}
@@ -313,12 +328,13 @@ namespace Axiom.Math
 		#endregion Float Conversions
 
 		#region Double Conversions
+
 		/// <summary>
 		/// Implicit conversion from double to Real
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( double value )
+		public static implicit operator Real( double value )
 		{
 			Real retval;
 			retval._value = (Numeric)value;
@@ -330,19 +346,21 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public implicit operator double( Real real )
+		public static implicit operator double( Real real )
 		{
 			return real._value;
 		}
+
 		#endregion Double Conversions
 
 		#region Decimal Conversions
+
 		/// <summary>
 		/// Implicit conversion from decimal to Real
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( decimal value )
+		public static implicit operator Real( decimal value )
 		{
 			Real retval;
 			retval._value = (Numeric)value;
@@ -354,10 +372,11 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public explicit operator decimal( Real real )
+		public static explicit operator decimal( Real real )
 		{
 			return (decimal)real._value;
 		}
+
 		#endregion Decimal Conversions
 
 		#region String Conversions
@@ -367,7 +386,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		static public implicit operator Real( string value )
+		public static implicit operator Real( string value )
 		{
 			Real retval;
 			retval._value = Numeric.Parse( value );
@@ -379,7 +398,7 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="real"></param>
 		/// <returns></returns>
-		static public explicit operator string( Real real )
+		public static explicit operator string( Real real )
 		{
 			return real.ToString();
 		}
@@ -389,6 +408,7 @@ namespace Axiom.Math
 		#endregion Conversion Operators
 
 		#region Operator Overrides
+
 		#region Logical Operators
 
 		#region Equality Operators
@@ -416,6 +436,7 @@ namespace Axiom.Math
 		{
 			return ( Utility.Abs( right._value - left._value ) >= Tolerance );
 		}
+
 		#endregion Equality Operators
 
 		/// <summary>
@@ -461,7 +482,6 @@ namespace Axiom.Math
 		{
 			return ( left._value <= right._value );
 		}
-
 
 		#endregion Logical Operators
 
@@ -526,6 +546,7 @@ namespace Axiom.Math
 		#region CLSCompliant Methods
 
 		#region Arithmatic Operations
+
 		/// <summary>
 		///		Used when a Real is added to another Real.
 		/// </summary>
@@ -665,6 +686,7 @@ namespace Axiom.Math
 		#endregion System.Object Overrides
 
 #if !( XBOX || XBOX360 )
+
 		#region ISerializable Implementation
 
 		/// <summary>
@@ -689,6 +711,7 @@ namespace Axiom.Math
 		}
 
 		#endregion ISerializable Implementation
+
 #endif
 
 		#region IComparable<Real> Members
@@ -803,17 +826,17 @@ namespace Axiom.Math
 			}
 		}
 
-		static public explicit operator ulong( Real real )
+		public static explicit operator ulong( Real real )
 		{
 			return (ulong)real._value;
 		}
 
-		static public explicit operator uint( Real real )
+		public static explicit operator uint( Real real )
 		{
 			return (uint)real._value;
 		}
 
-		static public explicit operator byte( Real real )
+		public static explicit operator byte( Real real )
 		{
 			return (byte)real._value;
 		}
@@ -842,8 +865,8 @@ namespace Axiom.Math
 
 		public static float[] ToFloatArray( Real[] real )
 		{
-			float[] floatArray = new float[ real.Length ];
-			for ( int myIndex = 0; myIndex < real.Length; myIndex++ )
+			float[] floatArray = new float[real.Length];
+			for( int myIndex = 0; myIndex < real.Length; myIndex++ )
 			{
 				floatArray[ myIndex ] = real[ myIndex ];
 			}
@@ -880,7 +903,7 @@ namespace Axiom.Math
 				string v = reader.ReadElementContentAsString();
 				this._value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				Console.WriteLine( e.Message );
 			}

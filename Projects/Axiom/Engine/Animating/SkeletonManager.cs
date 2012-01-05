@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,13 +58,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static SkeletonManager Instance
-		{
-			get
-			{
-				return Singleton<SkeletonManager>.Instance;
-			}
-		}
+		public static SkeletonManager Instance { get { return Singleton<SkeletonManager>.Instance; } }
 
 		/// <summary>
 		/// Initializes the Skeleton Manager
@@ -80,7 +78,7 @@ namespace Axiom.Animating
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public SkeletonManager()
-            : base()
+			: base()
 		{
 			LoadingOrder = 300.0f;
 			ResourceType = "Skeleton";
@@ -104,9 +102,9 @@ namespace Axiom.Animating
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					Singleton<SkeletonManager>.Destroy();

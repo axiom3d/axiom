@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,30 +19,36 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 // <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 // <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.SceneManagers.PortalConnected;
 using Axiom.Core;
+
 #endregion
 
 namespace PCZDemo
 {
-    /// <summary>
-    /// Room Walls Enum
-    /// </summary>
+	/// <summary>
+	/// Room Walls Enum
+	/// </summary>
 	public enum RoomWalls
 	{
 		TopWall,
@@ -52,11 +59,11 @@ namespace PCZDemo
 		RightWall
 	};
 
-    /// <summary>
-    /// Room doors flag
-    /// </summary>
+	/// <summary>
+	/// Room doors flag
+	/// </summary>
 	[Flags]
-	enum RoomDoors : short
+	internal enum RoomDoors : short
 	{
 		None = 0x00,
 		Top = 0x01,
@@ -68,24 +75,23 @@ namespace PCZDemo
 		All = 0xFF
 	};
 
-
-    /// <summary>
-    /// Room Object
-    /// </summary>
+	/// <summary>
+	/// Room Object
+	/// </summary>
 	public class RoomObject
 	{
-		private Vector3[] _points = new Vector3[ 32 ];
+		private Vector3[] _points = new Vector3[32];
 		private int _PortalCount;
-		static bool init = false;
+		private static bool init = false;
 
-		static int count = 0;
+		private static int count = 0;
 
-        /// <summary>
-        /// Create Test Building
-        /// </summary>
-        /// <param name="scene">SceneManager</param>
-        /// <param name="name">string</param>
-        /// <returns>PCZSceneNode</returns>
+		/// <summary>
+		/// Create Test Building
+		/// </summary>
+		/// <param name="scene">SceneManager</param>
+		/// <param name="name">string</param>
+		/// <returns>PCZSceneNode</returns>
 		public PCZSceneNode CreateTestBuilding( SceneManager scene, string name )
 		{
 			count++;
@@ -106,11 +112,11 @@ namespace PCZDemo
 
 			// create portals for the building exterior
 			CreatePortals( scene,
-						  exterior,
-						  exteriorNode,
-						  pczSM.DefaultZone,
-						  (short)( RoomDoors.Front | RoomDoors.Back | RoomDoors.Left | RoomDoors.Right ),
-						  true );
+			               exterior,
+			               exteriorNode,
+			               pczSM.DefaultZone,
+			               (short)( RoomDoors.Front | RoomDoors.Back | RoomDoors.Left | RoomDoors.Right ),
+			               true );
 
 			// reset points to room size
 			CreatePoints( new Vector3( 20.0f, 10.0f, 20.0f ), new Vector3( 4.0f, 10.0f, 4.0f ) );
@@ -127,16 +133,16 @@ namespace PCZDemo
 			string zoneType = "ZoneType_Default";
 			string zoneName = name + "_room1_zone";
 			PCZone newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Front | RoomDoors.Back ),
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Front | RoomDoors.Back ),
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room2", "room_nxpxnypynzpz.mesh" );
@@ -148,16 +154,16 @@ namespace PCZDemo
 			// room needs it's own zone
 			zoneName = name + "_room2_zone";
 			newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Front | RoomDoors.Back | RoomDoors.Left | RoomDoors.Right | RoomDoors.Top | RoomDoors.Bot ),
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Front | RoomDoors.Back | RoomDoors.Left | RoomDoors.Right | RoomDoors.Top | RoomDoors.Bot ),
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room3", "room_nzpz.mesh" );
@@ -169,16 +175,16 @@ namespace PCZDemo
 			// room needs it's own zone
 			zoneName = name + "_room3_zone";
 			newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Front | RoomDoors.Back ),
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Front | RoomDoors.Back ),
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room4", "room_nxpx.mesh" );
@@ -190,16 +196,16 @@ namespace PCZDemo
 			// room needs it's own zone
 			zoneName = name + "_room4_zone";
 			newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode  = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Left | RoomDoors.Right ),
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Left | RoomDoors.Right ),
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room5", "room_nxpx.mesh" );
@@ -211,16 +217,16 @@ namespace PCZDemo
 			// room needs it's own zone
 			zoneName = name + "_room5_zone";
 			newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Left | RoomDoors.Right ),
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Left | RoomDoors.Right ),
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room6", "room_ny.mesh" );
@@ -232,16 +238,16 @@ namespace PCZDemo
 			// room needs it's own zone
 			zoneName = name + "_room6_zone";
 			newZone = pczSM.CreateZone( zoneType, zoneName );
-			newZone.EnclosureNode = roomNode ;
+			newZone.EnclosureNode = roomNode;
 			pczSM.AddPCZSceneNode( roomNode, newZone );
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)RoomDoors.Bot,
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)RoomDoors.Bot,
+			               false );
 
 			// create another interior room
 			room = pczSM.CreateEntity( name + "_room7", "room_py.mesh" );
@@ -258,11 +264,11 @@ namespace PCZDemo
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)RoomDoors.Top,
-						  false );
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)RoomDoors.Top,
+			               false );
 
 			// reset points to tall room size
 			CreatePoints( new Vector3( 20.0f, 40.0f, 20.0f ), new Vector3( 4.0f, 10.0f, 4.0f ) );
@@ -282,12 +288,11 @@ namespace PCZDemo
 
 			// create portals for the room
 			CreatePortals( scene,
-						  room,
-						  roomNode,
-						  newZone,
-						  (short)( RoomDoors.Bot | RoomDoors.Top ),
-						  false );
-
+			               room,
+			               roomNode,
+			               newZone,
+			               (short)( RoomDoors.Bot | RoomDoors.Top ),
+			               false );
 
 			// resolve portal zone pointers
 			pczSM.ConnectPortalsToTargetZonesByLocation();
@@ -295,22 +300,22 @@ namespace PCZDemo
 			return exteriorNode;
 		}
 
-        /// <summary>
-        /// Create Room
-        /// </summary>
-        /// <param name="scene">SceneManager</param>
-        /// <param name="name">string</param>
-        /// <param name="doorFlags">short</param>
-        /// <param name="isEnclosure">bool</param>
-        /// <param name="dimensions">Vector3</param>
-        /// <param name="doorDimensions">Vector3</param>
-        /// <returns>ManualObject</returns>
+		/// <summary>
+		/// Create Room
+		/// </summary>
+		/// <param name="scene">SceneManager</param>
+		/// <param name="name">string</param>
+		/// <param name="doorFlags">short</param>
+		/// <param name="isEnclosure">bool</param>
+		/// <param name="dimensions">Vector3</param>
+		/// <param name="doorDimensions">Vector3</param>
+		/// <returns>ManualObject</returns>
 		public ManualObject CreateRoom( SceneManager scene,
-												   string name,
-												   short doorFlags,
-												   bool isEnclosure,
-												   Vector3 dimensions,
-												   Vector3 doorDimensions )
+		                                string name,
+		                                short doorFlags,
+		                                bool isEnclosure,
+		                                Vector3 dimensions,
+		                                Vector3 doorDimensions )
 		{
 			AddMaterial( name, new ColorEx( .75f, 1f, 1f, 1f ), SceneBlendType.TransparentAlpha );
 
@@ -326,7 +331,7 @@ namespace PCZDemo
 			ColorEx color = new ColorEx( solid, 0, solid, 0 );
 
 			// copy to room
-			for ( int i = 0; i < 32; i++ )
+			for( int i = 0; i < 32; i++ )
 			{
 				room.Position( _points[ i ] );
 				room.Color( color );
@@ -339,20 +344,24 @@ namespace PCZDemo
 			return room;
 		}
 
-        /// <summary>
-        /// Add Material
-        /// </summary>
-        /// <param name="mat">string</param>
-        /// <param name="clr">ColorEx</param>
-        /// <param name="sbt">SceneBlendType</param>
+		/// <summary>
+		/// Add Material
+		/// </summary>
+		/// <param name="mat">string</param>
+		/// <param name="clr">ColorEx</param>
+		/// <param name="sbt">SceneBlendType</param>
 		public void AddMaterial( string mat,
-									 ColorEx clr,
-									 SceneBlendType sbt )
+		                         ColorEx clr,
+		                         SceneBlendType sbt )
 		{
-			if ( init )
+			if( init )
+			{
 				return;
+			}
 			else
+			{
 				init = true;
+			}
 
 			Material matptr = (Material)MaterialManager.Instance.Create( mat, "General" );
 			matptr.ReceiveShadows = false;
@@ -365,11 +374,11 @@ namespace PCZDemo
 			matptr.GetTechnique( 0 ).GetPass( 0 ).VertexColorTracking = TrackVertexColor.Diffuse;
 		}
 
-        /// <summary>
-        /// Create Points
-        /// </summary>
-        /// <param name="dimensions">Vector3</param>
-        /// <param name="doorDimensions">Vector3</param>
+		/// <summary>
+		/// Create Points
+		/// </summary>
+		/// <param name="dimensions">Vector3</param>
+		/// <param name="doorDimensions">Vector3</param>
 		public void CreatePoints( Vector3 dimensions, Vector3 doorDimensions )
 		{
 			Real l = dimensions.x / 2;
@@ -387,15 +396,15 @@ namespace PCZDemo
 			//        |/	  |/
 			//		 1*-------*2
 
-			_points[ 0 ] = new Vector3( -l, h, w );//0
-			_points[ 1 ] = new Vector3( -l, -h, w );//1
-			_points[ 2 ] = new Vector3( l, -h, w );//2
-			_points[ 3 ] = new Vector3( l, h, w );//3
+			_points[ 0 ] = new Vector3( -l, h, w ); //0
+			_points[ 1 ] = new Vector3( -l, -h, w ); //1
+			_points[ 2 ] = new Vector3( l, -h, w ); //2
+			_points[ 3 ] = new Vector3( l, h, w ); //3
 
-			_points[ 4 ] = new Vector3( -l, h, -w );//4
-			_points[ 5 ] = new Vector3( -l, -h, -w );//5
-			_points[ 6 ] = new Vector3( l, -h, -w );//6
-			_points[ 7 ] = new Vector3( l, h, -w );//7
+			_points[ 4 ] = new Vector3( -l, h, -w ); //4
+			_points[ 5 ] = new Vector3( -l, -h, -w ); //5
+			_points[ 6 ] = new Vector3( l, -h, -w ); //6
+			_points[ 7 ] = new Vector3( l, h, -w ); //7
 
 			// doors
 			Real l2 = doorDimensions.x / 2;
@@ -403,56 +412,55 @@ namespace PCZDemo
 			Real w2 = doorDimensions.z / 2;
 
 			// front door
-			_points[ 8 ] = new Vector3( -l2, h2, w );//8
-			_points[ 9 ] = new Vector3( -l2, -h2, w );//9
-			_points[ 10 ] = new Vector3( l2, -h2, w );//10
-			_points[ 11 ] = new Vector3( l2, h2, w );//11
+			_points[ 8 ] = new Vector3( -l2, h2, w ); //8
+			_points[ 9 ] = new Vector3( -l2, -h2, w ); //9
+			_points[ 10 ] = new Vector3( l2, -h2, w ); //10
+			_points[ 11 ] = new Vector3( l2, h2, w ); //11
 
 			// back door
-			_points[ 12 ] = new Vector3( -l2, h2, -w );//12
-			_points[ 13 ] = new Vector3( -l2, -h2, -w );//13
-			_points[ 14 ] = new Vector3( l2, -h2, -w );//14
-			_points[ 15 ] = new Vector3( l2, h2, -w );//15
+			_points[ 12 ] = new Vector3( -l2, h2, -w ); //12
+			_points[ 13 ] = new Vector3( -l2, -h2, -w ); //13
+			_points[ 14 ] = new Vector3( l2, -h2, -w ); //14
+			_points[ 15 ] = new Vector3( l2, h2, -w ); //15
 
 			// top door
-			_points[ 16 ] = new Vector3( -l2, h, -w2 );//16
-			_points[ 17 ] = new Vector3( -l2, h, w2 );//17
-			_points[ 18 ] = new Vector3( l2, h, w2 );//18
-			_points[ 19 ] = new Vector3( l2, h, -w2 );//19
+			_points[ 16 ] = new Vector3( -l2, h, -w2 ); //16
+			_points[ 17 ] = new Vector3( -l2, h, w2 ); //17
+			_points[ 18 ] = new Vector3( l2, h, w2 ); //18
+			_points[ 19 ] = new Vector3( l2, h, -w2 ); //19
 
 			// bottom door
-			_points[ 20 ] = new Vector3( -l2, -h, -w2 );//20
-			_points[ 21 ] = new Vector3( -l2, -h, w2 );//21
-			_points[ 22 ] = new Vector3( l2, -h, w2 );//22
-			_points[ 23 ] = new Vector3( l2, -h, -w2 );//23
+			_points[ 20 ] = new Vector3( -l2, -h, -w2 ); //20
+			_points[ 21 ] = new Vector3( -l2, -h, w2 ); //21
+			_points[ 22 ] = new Vector3( l2, -h, w2 ); //22
+			_points[ 23 ] = new Vector3( l2, -h, -w2 ); //23
 
 			// left door
-			_points[ 24 ] = new Vector3( -l, h2, w2 );//24
-			_points[ 25 ] = new Vector3( -l, -h2, w2 );//25
-			_points[ 26 ] = new Vector3( -l, -h2, -w2 );//26
-			_points[ 27 ] = new Vector3( -l, h2, -w2 );//27
+			_points[ 24 ] = new Vector3( -l, h2, w2 ); //24
+			_points[ 25 ] = new Vector3( -l, -h2, w2 ); //25
+			_points[ 26 ] = new Vector3( -l, -h2, -w2 ); //26
+			_points[ 27 ] = new Vector3( -l, h2, -w2 ); //27
 
 			// right door
-			_points[ 28 ] = new Vector3( l, h2, w2 );//28
-			_points[ 29 ] = new Vector3( l, -h2, w2 );//29
-			_points[ 30 ] = new Vector3( l, -h2, -w2 );//30
-			_points[ 31 ] = new Vector3( l, h2, -w2 );//31
+			_points[ 28 ] = new Vector3( l, h2, w2 ); //28
+			_points[ 29 ] = new Vector3( l, -h2, w2 ); //29
+			_points[ 30 ] = new Vector3( l, -h2, -w2 ); //30
+			_points[ 31 ] = new Vector3( l, h2, -w2 ); //31
 		}
 
-        /// <summary>
-        /// Create Walls
-        /// </summary>
-        /// <param name="room">ManualObject</param>
-        /// <param name="doorFlags">short</param>
-        /// <param name="isEnclosure">bool</param>
+		/// <summary>
+		/// Create Walls
+		/// </summary>
+		/// <param name="room">ManualObject</param>
+		/// <param name="doorFlags">short</param>
+		/// <param name="isEnclosure">bool</param>
 		public void CreateWalls( ManualObject room,
-									 short doorFlags,
-									 bool isEnclosure )
+		                         short doorFlags,
+		                         bool isEnclosure )
 		{
-
-			if ( isEnclosure )
+			if( isEnclosure )
 			{
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// make front wall outward facing with door
 					room.Quad( 0, 8, 11, 3 );
@@ -465,7 +473,7 @@ namespace PCZDemo
 					// make front wall outward facing without door
 					room.Quad( 0, 1, 2, 3 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// make back wall outward facing with door
 					room.Quad( 7, 15, 12, 4 );
@@ -478,7 +486,7 @@ namespace PCZDemo
 					// make back wall outward facing without door
 					room.Quad( 7, 6, 5, 4 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// make top wall outward facing with door
 					room.Quad( 0, 17, 16, 4 );
@@ -491,7 +499,7 @@ namespace PCZDemo
 					// make top wall outward facing without door
 					room.Quad( 0, 3, 7, 4 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// make bottom wall outward facing with door
 					room.Quad( 5, 20, 21, 1 );
@@ -504,7 +512,7 @@ namespace PCZDemo
 					// make bottom wall outward facing without door
 					room.Quad( 2, 1, 5, 6 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// make left wall outward facing with door
 					room.Quad( 0, 24, 25, 1 );
@@ -517,7 +525,7 @@ namespace PCZDemo
 					// make left side wall outward facing without door
 					room.Quad( 1, 0, 4, 5 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// make right wall outward facing with door
 					room.Quad( 2, 29, 28, 3 );
@@ -534,7 +542,7 @@ namespace PCZDemo
 			else
 			{
 				// front back
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// make front wall inward facing with door
 					room.Quad( 3, 11, 8, 0 );
@@ -547,7 +555,7 @@ namespace PCZDemo
 					// make front wall inward facing without door
 					room.Quad( 3, 2, 1, 0 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// make back wall inward facing with door
 					room.Quad( 4, 12, 15, 7 );
@@ -561,7 +569,7 @@ namespace PCZDemo
 					room.Quad( 4, 5, 6, 7 );
 				}
 				// top bottom
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// make top wall inward facing with door
 					room.Quad( 4, 16, 17, 0 );
@@ -574,7 +582,7 @@ namespace PCZDemo
 					// make top wall inward facing without door
 					room.Quad( 4, 7, 3, 0 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// make bottom wall inward facing with door
 					room.Quad( 1, 21, 20, 5 );
@@ -588,7 +596,7 @@ namespace PCZDemo
 					room.Quad( 6, 5, 1, 2 );
 				}
 				// end caps
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// make left wall inward facing with door
 					room.Quad( 1, 25, 24, 0 );
@@ -601,7 +609,7 @@ namespace PCZDemo
 					// make left side wall inward facing without door
 					room.Quad( 5, 4, 0, 1 );
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// make right wall inward facing with door
 					room.Quad( 3, 28, 29, 2 );
@@ -618,26 +626,26 @@ namespace PCZDemo
 		}
 
 		/// <summary>
-        /// Create portals for every door
+		/// Create portals for every door
 		/// </summary>
-        /// <param name="scene">SceneManager</param>
-        /// <param name="room">ManualObject</param>
-        /// <param name="roomNode">SceneNode</param>
-        /// <param name="zone">PCZone</param>
-        /// <param name="doorFlags">short</param>
-        /// <param name="isEnclosure">bool</param>
+		/// <param name="scene">SceneManager</param>
+		/// <param name="room">ManualObject</param>
+		/// <param name="roomNode">SceneNode</param>
+		/// <param name="zone">PCZone</param>
+		/// <param name="doorFlags">short</param>
+		/// <param name="isEnclosure">bool</param>
 		public void CreatePortals( SceneManager scene,
-									   ManualObject room,
-									   SceneNode roomNode,
-									   PCZone zone,
-									   short doorFlags,
-									   bool isEnclosure )
+		                           ManualObject room,
+		                           SceneNode roomNode,
+		                           PCZone zone,
+		                           short doorFlags,
+		                           bool isEnclosure )
 		{
 			string portalName;
-            List<Vector3> corners = new List<Vector3>(4);
-			if ( isEnclosure )
+			List<Vector3> corners = new List<Vector3>( 4 );
+			if( isEnclosure )
 			{
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 8 ];
@@ -647,7 +655,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + "_FrontDoorPortal";
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -655,7 +663,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 15 ];
@@ -665,7 +673,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BackDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -673,7 +681,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 16 ];
@@ -683,7 +691,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_TopDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -691,7 +699,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 23 ];
@@ -701,7 +709,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BottomDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -709,7 +717,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 27 ];
@@ -719,7 +727,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_LeftDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -727,7 +735,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 28 ];
@@ -737,7 +745,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_RightDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -748,7 +756,7 @@ namespace PCZDemo
 			}
 			else
 			{
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 11 ];
@@ -758,7 +766,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_FrontDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -766,7 +774,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 12 ];
@@ -776,7 +784,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BackDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -784,7 +792,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 19 ];
@@ -794,7 +802,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_TopDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -802,7 +810,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 20 ];
@@ -812,7 +820,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BottomDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -820,7 +828,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 24 ];
@@ -830,7 +838,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_LeftDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -838,7 +846,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 31 ];
@@ -848,7 +856,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_RightDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -860,32 +868,32 @@ namespace PCZDemo
 		}
 
 		/// <summary>
-        /// Create portals for every door
+		/// Create portals for every door
 		/// </summary>
-        /// <param name="scene">SceneManager</param>
-        /// <param name="room">Entity</param>
-        /// <param name="roomNode">SceneNode</param>
-        /// <param name="zone">PCZone</param>
-        /// <param name="doorFlags">short</param>
-        /// <param name="isEnclosure">bool</param>
+		/// <param name="scene">SceneManager</param>
+		/// <param name="room">Entity</param>
+		/// <param name="roomNode">SceneNode</param>
+		/// <param name="zone">PCZone</param>
+		/// <param name="doorFlags">short</param>
+		/// <param name="isEnclosure">bool</param>
 		public void CreatePortals( SceneManager scene,
-									   Entity room,
-									   SceneNode roomNode,
-									   PCZone zone,
-									   short doorFlags,
-									   bool isEnclosure )
+		                           Entity room,
+		                           SceneNode roomNode,
+		                           PCZone zone,
+		                           short doorFlags,
+		                           bool isEnclosure )
 		{
 			string portalName;
-			List<Vector3> corners = new List<Vector3>(4);
-            // TODO Better way to do this??
-            corners.Add(Vector3.Zero);
-            corners.Add(Vector3.Zero);
-            corners.Add(Vector3.Zero);
-            corners.Add(Vector3.Zero);
- 
-			if ( isEnclosure )
+			List<Vector3> corners = new List<Vector3>( 4 );
+			// TODO Better way to do this??
+			corners.Add( Vector3.Zero );
+			corners.Add( Vector3.Zero );
+			corners.Add( Vector3.Zero );
+			corners.Add( Vector3.Zero );
+
+			if( isEnclosure )
 			{
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 8 ];
@@ -895,7 +903,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_FrontDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -903,7 +911,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 15 ];
@@ -913,7 +921,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BackDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -921,7 +929,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 16 ];
@@ -931,7 +939,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_TopDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -939,7 +947,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 23 ];
@@ -949,7 +957,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BottomDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -957,7 +965,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 27 ];
@@ -967,7 +975,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_LeftDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -975,7 +983,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 28 ];
@@ -985,7 +993,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_RightDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -996,7 +1004,7 @@ namespace PCZDemo
 			}
 			else
 			{
-				if ( ( doorFlags & (short)RoomDoors.Front ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Front ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 11 ];
@@ -1006,7 +1014,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_FrontDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1014,7 +1022,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Back ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Back ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 12 ];
@@ -1024,7 +1032,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BackDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1032,7 +1040,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Top ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Top ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 19 ];
@@ -1042,7 +1050,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_TopDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1050,7 +1058,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Bot ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 20 ];
@@ -1060,7 +1068,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_BottomDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1068,7 +1076,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Left ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Left ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 24 ];
@@ -1078,7 +1086,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_LeftDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1086,7 +1094,7 @@ namespace PCZDemo
 					// update derived values for the portal
 					p.updateDerivedValues();
 				}
-				if ( ( doorFlags & (short)RoomDoors.Right ) != 0 )
+				if( ( doorFlags & (short)RoomDoors.Right ) != 0 )
 				{
 					// set the corners to the front door corners
 					corners[ 0 ] = _points[ 31 ];
@@ -1096,7 +1104,7 @@ namespace PCZDemo
 					// create the portal
 					portalName = room.Name + ( "_RightDoorPortal" );
 					Portal p = ( (PCZSceneManager)scene ).CreatePortal( portalName, PortalType.Quad );
-					p.Corners = corners  ;
+					p.Corners = corners;
 					// associate the portal with the roomnode
 					p.setNode( roomNode );
 					// add the portal to the zone
@@ -1106,7 +1114,5 @@ namespace PCZDemo
 				}
 			}
 		}
-
-
 	}
 }

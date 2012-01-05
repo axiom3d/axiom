@@ -74,14 +74,16 @@ namespace Axiom.RenderSystems.Xna
 			_bufferType = ( type == IndexType.Size16 ) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
 
 			// create the buffer
-			if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+			if( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
 			{
 				_xnaBuffer = new XFG.DynamicIndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
 			}
 			else
+			{
 				_xnaBuffer = new XFG.IndexBuffer( device, sizeInBytes, XnaHelper.Convert( usage ), _bufferType );
+			}
 
-			_bufferBytes = new byte[ sizeInBytes ];
+			_bufferBytes = new byte[sizeInBytes];
 			_bufferBytes.Initialize();
 		}
 
@@ -100,7 +102,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_offset = offset;
 			_length = length;
-			fixed ( byte* bytes = &_bufferBytes[ offset ] )
+			fixed( byte* bytes = &_bufferBytes[ offset ] )
 			{
 				return new IntPtr( bytes );
 			}
@@ -154,13 +156,11 @@ namespace Axiom.RenderSystems.Xna
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
-				{
-				}
+				if( disposeManagedResources ) {}
 
-				if ( _xnaBuffer != null )
+				if( _xnaBuffer != null )
 				{
 					_xnaBuffer.Dispose();
 					_xnaBuffer = null;
@@ -179,13 +179,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Gets the underlying Xna Vertex Buffer object.
 		/// </summary>
-		public XFG.IndexBuffer XnaIndexBuffer
-		{
-			get
-			{
-				return _xnaBuffer;
-			}
-		}
+		public XFG.IndexBuffer XnaIndexBuffer { get { return _xnaBuffer; } }
 
 		#endregion
 	}

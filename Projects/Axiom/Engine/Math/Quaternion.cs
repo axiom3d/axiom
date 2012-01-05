@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,13 +58,16 @@ namespace Axiom.Math
 	{
 		#region Private member variables and constants
 
-		const float EPSILON = 1e-03f;
+		private const float EPSILON = 1e-03f;
 
 		public Real w, x, y, z;
 
 		private static readonly Quaternion identityQuat = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
 		private static readonly Quaternion zeroQuat = new Quaternion( 0.0f, 0.0f, 0.0f, 0.0f );
-		private static readonly int[] next = new int[ 3 ] { 1, 2, 0 };
+
+		private static readonly int[] next = new int[3] {
+		                                                	1, 2, 0
+		                                                };
 
 		#endregion
 
@@ -131,7 +138,6 @@ namespace Axiom.Math
 
 			return q;
 		}
-
 
 		/// <summary>
 		/// 
@@ -271,35 +277,17 @@ namespace Axiom.Math
 		/// <summary>
 		///    An Identity Quaternion.
 		/// </summary>
-		public static Quaternion Identity
-		{
-			get
-			{
-				return identityQuat;
-			}
-		}
+		public static Quaternion Identity { get { return identityQuat; } }
 
 		/// <summary>
 		///    A Quaternion with all elements set to 0.0f;
 		/// </summary>
-		public static Quaternion Zero
-		{
-			get
-			{
-				return zeroQuat;
-			}
-		}
+		public static Quaternion Zero { get { return zeroQuat; } }
 
 		/// <summary>
 		///		Squared 'length' of this quaternion.
 		/// </summary>
-		public Real Norm
-		{
-			get
-			{
-				return x * x + y * y + z * z + w * w;
-			}
-		}
+		public Real Norm { get { return x * x + y * y + z * z + w * w; } }
 
 		/// <summary>
 		///    Local X-axis portion of this rotation.
@@ -363,39 +351,10 @@ namespace Axiom.Math
 				return new Vector3( fTxz + fTwy, fTyz - fTwx, 1.0f - ( fTxx + fTyy ) );
 			}
 		}
-		public Real PitchInDegrees
-		{
-			get
-			{
-				return Utility.RadiansToDegrees( Pitch );
-			}
-			set
-			{
-				Pitch = Utility.DegreesToRadians( value );
-			}
-		}
-		public Real YawInDegrees
-		{
-			get
-			{
-				return Utility.RadiansToDegrees( Yaw );
-			}
-			set
-			{
-				Yaw = Utility.DegreesToRadians( value );
-			}
-		}
-		public Real RollInDegrees
-		{
-			get
-			{
-				return Utility.RadiansToDegrees( Roll );
-			}
-			set
-			{
-				Roll = Utility.DegreesToRadians( value );
-			}
-		}
+
+		public Real PitchInDegrees { get { return Utility.RadiansToDegrees( Pitch ); } set { Pitch = Utility.DegreesToRadians( value ); } }
+		public Real YawInDegrees { get { return Utility.RadiansToDegrees( Yaw ); } set { Yaw = Utility.DegreesToRadians( value ); } }
+		public Real RollInDegrees { get { return Utility.RadiansToDegrees( Roll ); } set { Roll = Utility.DegreesToRadians( value ); } }
 
 		public Real Pitch
 		{
@@ -408,12 +367,13 @@ namespace Axiom.Math
 			get
 			{
 				Real test = x * y + z * w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				{
 					return 0f;
+				}
 				return (Real)Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z );
 			}
 		}
-
 
 		public Real Yaw
 		{
@@ -426,16 +386,18 @@ namespace Axiom.Math
 			get
 			{
 				Real test = x * y + z * w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				{
 					return Utility.Sign( test ) * 2 * Utility.ATan2( x, w );
+				}
 				return Utility.ATan2( 2 * y * w - 2 * x * z, 1 - 2 * y * y - 2 * z * z );
 			}
 		}
+
 		public Real Roll
 		{
 			set
 			{
-
 				Real pitch, yaw, roll;
 				ToEulerAngles( out pitch, out yaw, out roll );
 				this = FromEulerAngles( pitch, yaw, value );
@@ -443,12 +405,13 @@ namespace Axiom.Math
 			get
 			{
 				Real test = x * y + z * w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				{
 					return Utility.Sign( test ) * Utility.PI / 2;
+				}
 				return (Real)Utility.ASin( 2 * test );
 			}
 		}
-
 
 		#endregion
 
@@ -473,7 +436,7 @@ namespace Axiom.Math
 
 			Real angle = (Real)Utility.ACos( cos );
 
-			if ( Utility.Abs( angle ) < EPSILON )
+			if( Utility.Abs( angle ) < EPSILON )
 			{
 				return quatA;
 			}
@@ -485,7 +448,7 @@ namespace Axiom.Math
 
 			Quaternion result;
 
-			if ( cos < 0.0f && useShortestPath )
+			if( cos < 0.0f && useShortestPath )
 			{
 				coeff0 = -coeff0;
 				// taking the complement requires renormalisation
@@ -514,20 +477,18 @@ namespace Axiom.Math
 			return Nlerp( fT, rkP, rkQ, false );
 		}
 
-
 		/// <param name="shortestPath"></param>
 		public static Quaternion Nlerp( Real fT, Quaternion rkP, Quaternion rkQ, bool shortestPath )
 		{
 			Quaternion result;
 			Real fCos = rkP.Dot( rkQ );
-			if ( fCos < 0.0f && shortestPath )
+			if( fCos < 0.0f && shortestPath )
 			{
 				result = rkP + fT * ( ( -rkQ ) - rkP );
 			}
 			else
 			{
 				result = rkP + fT * ( rkQ - rkP );
-
 			}
 			result.Normalize();
 			return result;
@@ -610,17 +571,18 @@ namespace Axiom.Math
 
 		public void ToEulerAngles( out Real pitch, out Real yaw, out Real roll )
 		{
-
 			Real halfPi = Utility.PI / 2;
 			Real test = x * y + z * w;
-			if ( test > 0.499f )
-			{ // singularity at north pole
+			if( test > 0.499f )
+			{
+				// singularity at north pole
 				yaw = 2 * Utility.ATan2( x, w );
 				roll = halfPi;
 				pitch = 0;
 			}
-			else if ( test < -0.499f )
-			{ // singularity at south pole
+			else if( test < -0.499f )
+			{
+				// singularity at south pole
 				yaw = -2 * Utility.ATan2( x, w );
 				roll = -halfPi;
 				pitch = 0;
@@ -635,12 +597,18 @@ namespace Axiom.Math
 				pitch = Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz );
 			}
 
-			if ( pitch <= Real.Epsilon )
+			if( pitch <= Real.Epsilon )
+			{
 				pitch = 0f;
-			if ( yaw <= Real.Epsilon )
+			}
+			if( yaw <= Real.Epsilon )
+			{
 				yaw = 0f;
-			if ( roll <= Real.Epsilon )
+			}
+			if( roll <= Real.Epsilon )
+			{
 				roll = 0f;
+			}
 		}
 
 		public static Quaternion FromEulerAnglesInDegrees( Real pitch, Real yaw, Real roll )
@@ -658,8 +626,8 @@ namespace Axiom.Math
 		public static Quaternion FromEulerAngles( Real pitch, Real yaw, Real roll )
 		{
 			return Quaternion.FromAngleAxis( yaw, Vector3.UnitY )
-				* Quaternion.FromAngleAxis( pitch, Vector3.UnitX )
-				* Quaternion.FromAngleAxis( roll, Vector3.UnitZ );
+			       * Quaternion.FromAngleAxis( pitch, Vector3.UnitX )
+			       * Quaternion.FromAngleAxis( roll, Vector3.UnitZ );
 
 			/*TODO: Debug
 			//Equation from http://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToQuaternion/index.htm
@@ -721,7 +689,7 @@ namespace Axiom.Math
 
 			Real sqrLength = x * x + y * y + z * z;
 
-			if ( sqrLength > 0.0f )
+			if( sqrLength > 0.0f )
 			{
 				angle = 2.0f * (Real)Utility.ACos( w );
 				Real invLength = Utility.InvSqrt( sqrLength );
@@ -779,7 +747,7 @@ namespace Axiom.Math
 		public Quaternion Inverse()
 		{
 			Real norm = this.w * this.w + this.x * this.x + this.y * this.y + this.z * this.z;
-			if ( norm > 0.0f )
+			if( norm > 0.0f )
 			{
 				Real inverseNorm = 1.0f / norm;
 				return new Quaternion( this.w * inverseNorm, -this.x * inverseNorm, -this.y * inverseNorm, -this.z * inverseNorm );
@@ -795,13 +763,7 @@ namespace Axiom.Math
 		///   Variant of Inverse() that is only valid for unit quaternions.
 		/// </summary>
 		/// <returns></returns>
-		public Quaternion UnitInverse
-		{
-			get
-			{
-				return new Quaternion( w, -x, -y, -z );
-			}
-		}
+		public Quaternion UnitInverse { get { return new Quaternion( w, -x, -y, -z ); } }
 
 		/// <summary>
 		/// 
@@ -871,13 +833,13 @@ namespace Axiom.Math
 
 			Real root = 0.0f;
 
-			if ( trace > 0.0f )
+			if( trace > 0.0f )
 			{
 				// |this.w| > 1/2, may as well choose this.w > 1/2
-				root = Utility.Sqrt( trace + 1.0f );  // 2w
+				root = Utility.Sqrt( trace + 1.0f ); // 2w
 				result.w = 0.5f * root;
 
-				root = 0.5f / root;  // 1/(4w)
+				root = 0.5f / root; // 1/(4w)
 
 				result.x = ( matrix.m21 - matrix.m12 ) * root;
 				result.y = ( matrix.m02 - matrix.m20 ) * root;
@@ -888,10 +850,14 @@ namespace Axiom.Math
 				// |result.w| <= 1/2
 
 				int i = 0;
-				if ( matrix.m11 > matrix.m00 )
+				if( matrix.m11 > matrix.m00 )
+				{
 					i = 1;
-				if ( matrix.m22 > matrix[ i, i ] )
+				}
+				if( matrix.m22 > matrix[ i, i ] )
+				{
 					i = 2;
+				}
 
 				int j = next[ i ];
 				int k = next[ j ];
@@ -929,12 +895,12 @@ namespace Axiom.Math
 			// start off with a zero quat
 			Quaternion result = Quaternion.Zero;
 
-			if ( Utility.Abs( w ) < 1.0f )
+			if( Utility.Abs( w ) < 1.0f )
 			{
 				Real angle = (Real)Utility.ACos( w );
 				Real sin = Utility.Sin( angle );
 
-				if ( Utility.Abs( sin ) >= EPSILON )
+				if( Utility.Abs( sin ) >= EPSILON )
 				{
 					Real coeff = angle / sin;
 					result.x = coeff * x;
@@ -970,7 +936,7 @@ namespace Axiom.Math
 
 			result.w = Utility.Cos( angle );
 
-			if ( Utility.Abs( sin ) >= EPSILON )
+			if( Utility.Abs( sin ) >= EPSILON )
 			{
 				Real coeff = sin / angle;
 
@@ -1029,16 +995,17 @@ namespace Axiom.Math
 		public Quaternion Parse( string quat )
 		{
 			// the format is "Quaternion(w, x, y, z)"
-			if ( !quat.StartsWith( "Quaternion(" ) )
+			if( !quat.StartsWith( "Quaternion(" ) )
+			{
 				throw new FormatException();
+			}
 
 			string[] values = quat.Substring( 11 ).TrimEnd( ')' ).Split( ',' );
 
 			return new Quaternion( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
-								  Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ),
-								  Real.Parse( values[ 2 ], CultureInfo.InvariantCulture ),
-								  Real.Parse( values[ 3 ], CultureInfo.InvariantCulture ) );
-
+			                       Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ),
+			                       Real.Parse( values[ 2 ], CultureInfo.InvariantCulture ),
+			                       Real.Parse( values[ 3 ], CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

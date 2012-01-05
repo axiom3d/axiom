@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,6 +56,7 @@ namespace Axiom.Controllers
 		private float frameTime;
 
 		private float frameDelay;
+
 		/// <summary>
 		///		Float value that should be used to scale controller time.
 		/// </summary>
@@ -79,10 +84,7 @@ namespace Axiom.Controllers
 		/// </summary>
 		float IControllerValue<float>.Value
 		{
-			get
-			{
-				return frameTime;
-			}
+			get { return frameTime; }
 			set
 			{
 				// Do nothing			
@@ -100,13 +102,10 @@ namespace Axiom.Controllers
 		/// </summary>
 		public float TimeFactor
 		{
-			get
-			{
-				return timeFactor;
-			}
+			get { return timeFactor; }
 			set
 			{
-				if ( value >= 0 )
+				if( value >= 0 )
 				{
 					timeFactor = value;
 					frameDelay = 0;
@@ -116,10 +115,7 @@ namespace Axiom.Controllers
 
 		public float FrameDelay
 		{
-			get
-			{
-				return frameDelay;
-			}
+			get { return frameDelay; }
 			set
 			{
 				timeFactor = 0;
@@ -127,17 +123,7 @@ namespace Axiom.Controllers
 			}
 		}
 
-		public float ElapsedTime
-		{
-			get
-			{
-				return elapsedTime;
-			}
-			set
-			{
-				elapsedTime = value;
-			}
-		}
+		public float ElapsedTime { get { return elapsedTime; } set { elapsedTime = value; } }
 
 		#endregion
 
@@ -150,7 +136,7 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
-			if ( frameDelay != 0 )
+			if( frameDelay != 0 )
 			{
 				// Fixed frame time
 				frameTime = frameDelay;

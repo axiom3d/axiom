@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
+
 using Axiom.Core;
 
 using ResourceHandle = System.UInt64;
@@ -67,7 +72,7 @@ namespace Axiom.Graphics
 	///    can query on the available custom parameters and get/set them without having to 
 	///    link specifically with it.
 	/// </remarks>
-	public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
+	abstract public class HighLevelGpuProgram : GpuProgram, IConfigurable
 	{
 		#region Fields and Properties
 
@@ -82,16 +87,12 @@ namespace Axiom.Graphics
 		///    The underlying assembler program.
 		/// </summary>
 		protected GpuProgram assemblerProgram;
+
 		/// <summary>
 		///    Gets the lowlevel assembler program based on this HighLevel program.
 		/// </summary>
-		public override GpuProgram BindingDelegate
-		{
-			get
-			{
-				return assemblerProgram;
-			}
-		}
+		public override GpuProgram BindingDelegate { get { return assemblerProgram; } }
+
 		#endregion BindingDelegate Property
 
 		#endregion Fields and Properties
@@ -105,9 +106,7 @@ namespace Axiom.Graphics
 		/// <param name="type">Type of program, vertex or fragment.</param>
 		/// <param name="language">HLSL language this program is written in.</param>
 		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Construction and Destruction
 
@@ -118,7 +117,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void load()
 		{
-			if ( IsLoaded )
+			if( IsLoaded )
 			{
 				Unload();
 			}
@@ -139,11 +138,11 @@ namespace Axiom.Graphics
 		///    Internal load implementation, loads just the high-level portion, enough to 
 		///    get parameters.
 		/// </summary>
-		protected virtual void LoadHighLevelImpl()
+		virtual protected void LoadHighLevelImpl()
 		{
-			if ( !isHighLevelLoaded )
+			if( !isHighLevelLoaded )
 			{
-				if ( loadFromFile )
+				if( loadFromFile )
 				{
 					Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
 					StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
@@ -160,14 +159,14 @@ namespace Axiom.Graphics
 		///    Internal method for creating an appropriate low-level program from this
 		///    high-level program, must be implemented by subclasses.
 		/// </summary>
-		protected abstract void CreateLowLevelImpl();
+		abstract protected void CreateLowLevelImpl();
 
 		/// <summary>
 		///    Implementation of Resource.unload.
 		/// </summary>
 		protected override void unload()
 		{
-			if ( assemblerProgram != null )
+			if( assemblerProgram != null )
 			{
 				assemblerProgram.Unload();
 			}
@@ -181,13 +180,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Internal unload implementation, must be implemented by subclasses.
 		/// </summary>
-		protected abstract void UnloadImpl();
+		abstract protected void UnloadImpl();
 
 		/// <summary>
 		///    Populate the passed parameters with name->index map, must be overridden.
 		/// </summary>
 		/// <param name="parms"></param>
-		protected abstract void PopulateParameterNames( GpuProgramParameters parms );
+		abstract protected void PopulateParameterNames( GpuProgramParameters parms );
 
 		/// <summary>
 		///    Creates a new parameters object compatible with this program definition.
@@ -205,7 +204,7 @@ namespace Axiom.Graphics
 			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
 			// load high level program and parameters if required
-			if ( IsSupported )
+			if( IsSupported )
 			{
 				// make sure parameter definitions are loaded
 				LoadHighLevelImpl();
@@ -214,7 +213,7 @@ namespace Axiom.Graphics
 			}
 
 			// copy in default parameters if present
-			if ( defaultParams != null )
+			if( defaultParams != null )
 			{
 				newParams.CopyConstantsFrom( defaultParams );
 			}
@@ -231,7 +230,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="val"></param>
-		public abstract bool SetParam( string name, string val );
+		abstract public bool SetParam( string name, string val );
 
 		#endregion
 	}
@@ -239,17 +238,14 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Interface definition for factories that create instances of HighLevelGpuProgram.
 	/// </summary>
-	public abstract class HighLevelGpuProgramFactory : AbstractFactory<HighLevelGpuProgram>
+	abstract public class HighLevelGpuProgramFactory : AbstractFactory<HighLevelGpuProgram>
 	{
 		#region Properties
 
 		/// <summary>
 		///    Gets the name of the HLSL language that this factory creates programs for.
 		/// </summary>
-		public abstract string Language
-		{
-			get;
-		}
+		abstract public string Language { get; }
 
 		#endregion Properties
 
@@ -268,8 +264,7 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>
-		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader );
-
+		abstract public HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader );
 
 		#endregion Methods
 
@@ -278,13 +273,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// For HighLevelGpuPrograms this simply returns the Language.
 		/// </summary>
-		public string Type
-		{
-			get
-			{
-				return Language;
-			}
-		}
+		public string Type { get { return Language; } }
 
 		/// <summary>
 		/// Creates an instance of a HighLevelGpuProgram
@@ -297,15 +286,16 @@ namespace Axiom.Graphics
 			throw new Exception( "Cannot create a HighLevelGpuProgram without specifing the GpuProgramType." );
 		}
 
-		public virtual void DestroyInstance( HighLevelGpuProgram obj )
+		virtual public void DestroyInstance( HighLevelGpuProgram obj )
 		{
-            if (!obj.IsDisposed)
-			    obj.Dispose();
+			if( !obj.IsDisposed )
+			{
+				obj.Dispose();
+			}
 
 			obj = null;
 		}
 
 		#endregion AbstractFactory<HighLevelGpuProgram> Implementation
 	}
-
 }

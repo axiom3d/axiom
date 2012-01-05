@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -77,10 +81,12 @@ namespace Axiom.Graphics
 		///    Type of program (vertex or fragment) this usage is being specified for.
 		/// </summary>
 		protected GpuProgramType type;
+
 		/// <summary>
 		///    Reference to the program whose usage is being specified within this class.
 		/// </summary>
 		protected GpuProgram program;
+
 		/// <summary>
 		///    Low level GPU program parameters.
 		/// </summary>
@@ -122,7 +128,7 @@ namespace Axiom.Graphics
 		internal void Load()
 		{
 			// only load the program if it isn't already loaded
-			if ( !program.IsLoaded )
+			if( !program.IsLoaded )
 			{
 				program.Load();
 			}
@@ -134,8 +140,10 @@ namespace Axiom.Graphics
 		internal void Unload()
 		{
 			// TODO: Anything needed here?  The program cannot be destroyed since it is shared.
-            if (program.IsLoaded)
-                program.Unload();
+			if( program.IsLoaded )
+			{
+				program.Unload();
+			}
 		}
 
 		#endregion
@@ -151,17 +159,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( parameters == null )
+				if( parameters == null )
 				{
 					throw new Exception( "A program must be loaded before its parameters can be retreived." );
 				}
 
 				return parameters;
 			}
-			set
-			{
-				parameters = value;
-			}
+			set { parameters = value; }
 		}
 
 		/// <summary>
@@ -175,10 +180,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public GpuProgram Program
 		{
-			get
-			{
-				return program;
-			}
+			get { return program; }
 			set
 			{
 				program = value;
@@ -198,16 +200,13 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public string ProgramName
 		{
-			get
-			{
-				return program.Name;
-			}
+			get { return program.Name; }
 			set
 			{
 				// get a reference to the gpu program
 				program = GpuProgramManager.Instance.GetByName( value );
 
-				if ( program == null )
+				if( program == null )
 				{
 					throw new Exception( string.Format( "Unable to locate gpu program named '{0}'", value ) );
 				}
@@ -220,13 +219,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the type of program we're trying to link to.
 		/// </summary>
-		public GpuProgramType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
+		public GpuProgramType Type { get { return type; } }
 
 		#endregion
 	}

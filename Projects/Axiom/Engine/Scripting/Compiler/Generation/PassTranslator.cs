@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -72,219 +76,252 @@ namespace Axiom.Scripting.Compiler
 				obj.Context = _pass;
 
 				// Get the name of the technique
-				if ( !string.IsNullOrEmpty( obj.Name ) )
+				if( !string.IsNullOrEmpty( obj.Name ) )
+				{
 					_pass.Name = obj.Name;
+				}
 
 				// Set the properties for the material
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is PropertyAbstractNode )
+					if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
 
-						switch ( (Keywords)prop.Id )
+						switch( (Keywords)prop.Id )
 						{
-							#region ID_AMBIENT
+								#region ID_AMBIENT
+
 							case Keywords.ID_AMBIENT:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 4 )
+								else if( prop.Values.Count > 4 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"ambient must have at most 4 parameters" );
+									                   "ambient must have at most 4 parameters" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode &&
-										( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
+									if( prop.Values[ 0 ] is AtomAbstractNode &&
+									    ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
 										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Ambient;
 									}
 									else
 									{
 										ColorEx val = ColorEx.White;
-										if ( getColor( prop.Values, 0, out val ) )
+										if( getColor( prop.Values, 0, out val ) )
+										{
 											_pass.Ambient = val;
+										}
 										else
+										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"ambient requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+											                   "ambient requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+										}
 									}
 								}
 								break;
-							#endregion ID_AMBIENT
 
-							#region ID_DIFFUSE
+								#endregion ID_AMBIENT
+
+								#region ID_DIFFUSE
+
 							case Keywords.ID_DIFFUSE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 4 )
+								else if( prop.Values.Count > 4 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"diffuse must have at most 4 arguments" );
+									                   "diffuse must have at most 4 arguments" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode &&
-										( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
+									if( prop.Values[ 0 ] is AtomAbstractNode &&
+									    ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
 										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Diffuse;
 									}
 									else
 									{
 										ColorEx val;
-										if ( getColor( prop.Values, 0, out val ) )
+										if( getColor( prop.Values, 0, out val ) )
+										{
 											_pass.Diffuse = val;
+										}
 										else
+										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"diffuse requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+											                   "diffuse requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+										}
 									}
 								}
 								break;
-							#endregion ID_DIFFUSE
 
-							#region ID_SPECULAR
+								#endregion ID_DIFFUSE
+
+								#region ID_SPECULAR
+
 							case Keywords.ID_SPECULAR:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 5 )
+								else if( prop.Values.Count > 5 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"specular must have at most 5 arguments" );
+									                   "specular must have at most 5 arguments" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode &&
-										( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
+									if( prop.Values[ 0 ] is AtomAbstractNode &&
+									    ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
 										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Specular;
 
-										if ( prop.Values.Count >= 2 )
+										if( prop.Values.Count >= 2 )
 										{
 											Real val = 0;
-											if ( getReal( prop.Values[ prop.Values.Count - 1 ], out val ) )
+											if( getReal( prop.Values[ prop.Values.Count - 1 ], out val ) )
+											{
 												_pass.Shininess = val;
+											}
 											else
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"specular does not support \"" + prop.Values[ prop.Values.Count - 1 ].Value + "\" as its second argument" );
+												                   "specular does not support \"" + prop.Values[ prop.Values.Count - 1 ].Value + "\" as its second argument" );
 											}
 										}
 									}
 									else
 									{
-										if ( prop.Values.Count < 4 )
+										if( prop.Values.Count < 4 )
 										{
 											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												"specular expects at least 4 arguments" );
+											                   "specular expects at least 4 arguments" );
 										}
 										else
 										{
 											AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-											i1 = getNodeAt( prop.Values, 1 ),
-											i2 = getNodeAt( prop.Values, 2 );
+											             i1 = getNodeAt( prop.Values, 1 ),
+											             i2 = getNodeAt( prop.Values, 2 );
 											ColorEx val = new ColorEx( 0, 0, 0, 0 );
-											if ( getFloat( i0, out val.r ) && getFloat( i1, out val.g ) && getFloat( i2, out val.b ) )
+											if( getFloat( i0, out val.r ) && getFloat( i1, out val.g ) && getFloat( i2, out val.b ) )
 											{
-												if ( prop.Values.Count == 4 )
+												if( prop.Values.Count == 4 )
 												{
 													_pass.Specular = val;
 
 													AbstractNode i3 = getNodeAt( prop.Values, 3 );
 
 													Real shininess = 0.0f;
-													if ( getReal( i3, out shininess ) )
+													if( getReal( i3, out shininess ) )
+													{
 														_pass.Shininess = shininess;
+													}
 													else
+													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-															 "specular fourth argument must be a valid number for shininess attribute" );
+														                   "specular fourth argument must be a valid number for shininess attribute" );
+													}
 												}
 												else
 												{
 													AbstractNode i3 = getNodeAt( prop.Values, 3 );
-													if ( !getFloat( i3, out val.a ) )
+													if( !getFloat( i3, out val.a ) )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-															"specular fourth argument must be a valid color component value" );
+														                   "specular fourth argument must be a valid color component value" );
 													}
 													else
+													{
 														_pass.Specular = val;
+													}
 
 													AbstractNode i4 = getNodeAt( prop.Values, 4 );
 
 													Real shininess = 0.0f;
-													if ( getReal( i4, out shininess ) )
+													if( getReal( i4, out shininess ) )
+													{
 														_pass.Shininess = shininess;
+													}
 													else
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-															"specular fourth argument must be a valid number for shininess attribute" );
+														                   "specular fourth argument must be a valid number for shininess attribute" );
 													}
 												}
 											}
 											else
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													"specular must have first 3 arguments be a valid colour" );
+												                   "specular must have first 3 arguments be a valid colour" );
 											}
 										}
 									}
 								}
 								break;
-							#endregion ID_SPECULAR
 
-							#region ID_EMISSIVE
+								#endregion ID_SPECULAR
+
+								#region ID_EMISSIVE
+
 							case Keywords.ID_EMISSIVE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 4 )
+								else if( prop.Values.Count > 4 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"emissive must have at most 4 arguments" );
+									                   "emissive must have at most 4 arguments" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode &&
-													( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
+									if( prop.Values[ 0 ] is AtomAbstractNode &&
+									    ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
 										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Emissive;
 									}
 									else
 									{
 										ColorEx val;
-										if ( getColor( prop.Values, 0, out val ) )
+										if( getColor( prop.Values, 0, out val ) )
+										{
 											_pass.SelfIllumination = val;
+										}
 										else
+										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												"emissive requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+											                   "emissive requires 3 or 4 colour arguments, or a \"vertexcolour\" directive" );
+										}
 									}
 								}
 								break;
-							#endregion ID_EMISSIVE
 
-							#region ID_SCENE_BLEND
+								#endregion ID_EMISSIVE
+
+								#region ID_SCENE_BLEND
+
 							case Keywords.ID_SCENE_BLEND:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 2 )
+								else if( prop.Values.Count > 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scene_blend supports at most 2 arguments" );
 								}
-								else if ( prop.Values.Count == 1 )
+								else if( prop.Values.Count == 1 )
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
 												_pass.SetSceneBlending( SceneBlendType.Add );
@@ -317,7 +354,7 @@ namespace Axiom.Scripting.Compiler
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
 									SceneBlendFactor sbf0, sbf1;
-									if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
+									if( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
 									{
 										_pass.SetSceneBlending( sbf0, sbf1 );
 									}
@@ -327,32 +364,34 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_SCENE_BLEND
 
-							#region ID_SEPARATE_SCENE_BLEND
+								#endregion ID_SCENE_BLEND
+
+								#region ID_SEPARATE_SCENE_BLEND
+
 							case Keywords.ID_SEPARATE_SCENE_BLEND:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count == 3 )
+								else if( prop.Values.Count == 3 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"separate_scene_blend must have 2 or 4 arguments" );
+									                   "separate_scene_blend must have 2 or 4 arguments" );
 								}
-								else if ( prop.Values.Count > 4 )
+								else if( prop.Values.Count > 4 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"separate_scene_blend must have 2 or 4 arguments" );
+									                   "separate_scene_blend must have 2 or 4 arguments" );
 								}
-								else if ( prop.Values.Count == 2 )
+								else if( prop.Values.Count == 2 )
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
-									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode )
+									if( i0 is AtomAbstractNode && i1 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 										SceneBlendType sbt0, sbt1;
-										switch ( (Keywords)atom0.Id )
+										switch( (Keywords)atom0.Id )
 										{
 											case Keywords.ID_ADD:
 												sbt0 = SceneBlendType.Add;
@@ -375,7 +414,7 @@ namespace Axiom.Scripting.Compiler
 												return;
 										}
 
-										switch ( (Keywords)atom1.Id )
+										switch( (Keywords)atom1.Id )
 										{
 											case Keywords.ID_ADD:
 												sbt1 = SceneBlendType.Add;
@@ -409,14 +448,14 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ),
-										i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 );
+									             i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 );
 
-									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode
-										&& i2 is AtomAbstractNode && i3 is AtomAbstractNode )
+									if( i0 is AtomAbstractNode && i1 is AtomAbstractNode
+									    && i2 is AtomAbstractNode && i3 is AtomAbstractNode )
 									{
 										SceneBlendFactor sbf0, sbf1, sbf2, sbf3;
-										if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 )
-											&& getEnumeration<SceneBlendFactor>( i2, compiler, out sbf2 ) && getEnumeration<SceneBlendFactor>( i3, compiler, out sbf3 ) )
+										if( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 )
+										    && getEnumeration<SceneBlendFactor>( i2, compiler, out sbf2 ) && getEnumeration<SceneBlendFactor>( i3, compiler, out sbf3 ) )
 										{
 											//TODO
 											//mPass->setSeparateSceneBlending(sbf0, sbf1, sbf2, sbf3);
@@ -432,26 +471,28 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_SEPARATE_SCENE_BLEND
 
-							#region ID_SCENE_BLEND_OP
+								#endregion ID_SEPARATE_SCENE_BLEND
+
+								#region ID_SCENE_BLEND_OP
+
 							case Keywords.ID_SCENE_BLEND_OP:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"scene_blend_op must have 1 argument" );
+									                   "scene_blend_op must have 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
 
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
 												//TODO
@@ -480,41 +521,43 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													atom.Value + ": unrecognized argument" );
+												                   atom.Value + ": unrecognized argument" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + ": unrecognized argument" );
+										                   prop.Values[ 0 ].Value + ": unrecognized argument" );
 									}
 								}
 								break;
-							#endregion ID_SCENE_BLEND_OP
 
-							#region ID_SEPARATE_SCENE_BLEND_OP
+								#endregion ID_SCENE_BLEND_OP
+
+								#region ID_SEPARATE_SCENE_BLEND_OP
+
 							case Keywords.ID_SEPARATE_SCENE_BLEND_OP:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count != 2 )
+								else if( prop.Values.Count != 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"separate_scene_blend_op must have 2 arguments" );
+									                   "separate_scene_blend_op must have 2 arguments" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
-									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode )
+									if( i0 is AtomAbstractNode && i1 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
-											atom1 = (AtomAbstractNode)i1;
+										                 atom1 = (AtomAbstractNode)i1;
 
 										//TODO
 										//SceneBlendOperation op = SBO_ADD, alphaOp = SBO_ADD;
-										switch ( (Keywords)atom0.Id )
+										switch( (Keywords)atom0.Id )
 										{
 											case Keywords.ID_ADD:
 												//TODO
@@ -543,11 +586,11 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													atom0.Value + ": unrecognized first argument" );
+												                   atom0.Value + ": unrecognized first argument" );
 												break;
 										}
 
-										switch ( (Keywords)atom1.Id )
+										switch( (Keywords)atom1.Id )
 										{
 											case Keywords.ID_ADD:
 												//TODO
@@ -576,7 +619,7 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													atom1.Value + ": unrecognized second argument" );
+												                   atom1.Value + ": unrecognized second argument" );
 												break;
 										}
 
@@ -586,264 +629,316 @@ namespace Axiom.Scripting.Compiler
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + ": unrecognized argument" );
+										                   prop.Values[ 0 ].Value + ": unrecognized argument" );
 									}
 								}
 								break;
-							#endregion ID_SEPARATE_SCENE_BLEND_OP
 
-							#region ID_DEPTH_CHECK
+								#endregion ID_SEPARATE_SCENE_BLEND_OP
+
+								#region ID_DEPTH_CHECK
+
 							case Keywords.ID_DEPTH_CHECK:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"depth_check must have 1 argument" );
+									                   "depth_check must have 1 argument" );
 								}
 								else
 								{
 									bool val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
 										_pass.DepthCheck = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"depth_check third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+										                   "depth_check third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+									}
 								}
 								break;
-							#endregion ID_DEPTH_CHECK
 
-							#region ID_DEPTH_WRITE
+								#endregion ID_DEPTH_CHECK
+
+								#region ID_DEPTH_WRITE
+
 							case Keywords.ID_DEPTH_WRITE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"depth_write must have 1 argument" );
+									                   "depth_write must have 1 argument" );
 								}
 								else
 								{
 									bool val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
 										_pass.DepthWrite = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"depth_write third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+										                   "depth_write third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+									}
 								}
 								break;
-							#endregion ID_DEPTH_WRITE
 
-							#region ID_DEPTH_BIAS
+								#endregion ID_DEPTH_WRITE
+
+								#region ID_DEPTH_BIAS
+
 							case Keywords.ID_DEPTH_BIAS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 2 )
+								else if( prop.Values.Count > 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"depth_bias must have at most 2 arguments" );
+									                   "depth_bias must have at most 2 arguments" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
 									float val0, val1 = 0.0f;
-									if ( getFloat( i0, out val0 ) )
+									if( getFloat( i0, out val0 ) )
 									{
-										if ( i1 != null )
+										if( i1 != null )
+										{
 											getFloat( i1, out val1 );
+										}
 
 										_pass.SetDepthBias( val0, val1 );
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											"depth_bias does not support \"" + i0.Value + "\" for argument 1" );
+										                   "depth_bias does not support \"" + i0.Value + "\" for argument 1" );
 									}
 								}
 								break;
-							#endregion ID_DEPTH_BIAS
 
-							#region ID_DEPTH_FUNC
+								#endregion ID_DEPTH_BIAS
+
+								#region ID_DEPTH_FUNC
+
 							case Keywords.ID_DEPTH_FUNC:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"depth_func must have 1 argument" );
+									                   "depth_func must have 1 argument" );
 								}
 								else
 								{
 									CompareFunction func;
-									if ( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
+									if( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
+									{
 										_pass.DepthFunction = func;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid CompareFunction" );
+										                   prop.Values[ 0 ].Value + " is not a valid CompareFunction" );
+									}
 								}
 								break;
-							#endregion ID_DEPTH_FUNC
 
-							#region ID_ITERATION_DEPTH_BIAS
+								#endregion ID_DEPTH_FUNC
+
+								#region ID_ITERATION_DEPTH_BIAS
+
 							case Keywords.ID_ITERATION_DEPTH_BIAS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"iteration_depth_bias must have 1 argument" );
+									                   "iteration_depth_bias must have 1 argument" );
 								}
 								else
 								{
 									float val = 0.0f;
-									if ( getFloat( prop.Values[ 0 ], out val ) )
+									if( getFloat( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setIterationDepthBias(val);*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid float value" );
+										                   prop.Values[ 0 ].Value + " is not a valid float value" );
+									}
 								}
 								break;
-							#endregion ID_ITERATION_DEPTH_BIAS
 
-							#region ID_ALPHA_REJECTION
+								#endregion ID_ITERATION_DEPTH_BIAS
+
+								#region ID_ALPHA_REJECTION
+
 							case Keywords.ID_ALPHA_REJECTION:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 2 )
+								else if( prop.Values.Count > 2 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"alpha_rejection must have at most 2 arguments" );
+									                   "alpha_rejection must have at most 2 arguments" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
 									CompareFunction func;
-									if ( getEnumeration<CompareFunction>( i0, compiler, out func ) )
+									if( getEnumeration<CompareFunction>( i0, compiler, out func ) )
 									{
-										if ( i1 != null )
+										if( i1 != null )
 										{
 											int val = 0;
-											if ( getInt( i1, out val ) )
+											if( getInt( i1, out val ) )
+											{
 												_pass.SetAlphaRejectSettings( func, val );
+											}
 											else
+											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i1.Value + " is not a valid integer" );
+												                   i1.Value + " is not a valid integer" );
+											}
 										}
 										else
+										{
 											_pass.AlphaRejectFunction = func;
+										}
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											i0.Value + " is not a valid CompareFunction" );
+										                   i0.Value + " is not a valid CompareFunction" );
+									}
 								}
 								break;
-							#endregion ID_ALPHA_REJECTION
 
-							#region ID_ALPHA_TO_COVERAGE
+								#endregion ID_ALPHA_REJECTION
+
+								#region ID_ALPHA_TO_COVERAGE
+
 							case Keywords.ID_ALPHA_TO_COVERAGE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"alpha_to_coverage must have 1 argument" );
+									                   "alpha_to_coverage must have 1 argument" );
 								}
 								else
 								{
 									bool val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
 										_pass.IsAlphaToCoverageEnabled = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"alpha_to_coverage argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+										                   "alpha_to_coverage argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+									}
 								}
 								break;
-							#endregion ID_ALPHA_TO_COVERAGE
 
-							#region ID_LIGHT_SCISSOR
+								#endregion ID_ALPHA_TO_COVERAGE
+
+								#region ID_LIGHT_SCISSOR
+
 							case Keywords.ID_LIGHT_SCISSOR:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"light_scissor must have only 1 argument" );
+									                   "light_scissor must have only 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setLightScissoringEnabled(val);*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_LIGHT_SCISSOR
 
-							#region ID_LIGHT_CLIP_PLANES
+								#endregion ID_LIGHT_SCISSOR
+
+								#region ID_LIGHT_CLIP_PLANES
+
 							case Keywords.ID_LIGHT_CLIP_PLANES:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"light_clip_planes must have at most 1 argument" );
+									                   "light_clip_planes must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setLightClipPlanesEnabled(val);*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_LIGHT_CLIP_PLANES
 
-							#region ID_TRANSPARENT_SORTING
+								#endregion ID_LIGHT_CLIP_PLANES
+
+								#region ID_TRANSPARENT_SORTING
+
 							case Keywords.ID_TRANSPARENT_SORTING:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"transparent_sorting must have at most 1 argument" );
+									                   "transparent_sorting must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										//mPass->setTransparentSortingEnabled(val);
@@ -852,7 +947,7 @@ namespace Axiom.Scripting.Compiler
 									else
 									{
 										string val2;
-										if ( getString( prop.Values[ 0 ], out val2 ) && val2 == "force" )
+										if( getString( prop.Values[ 0 ], out val2 ) && val2 == "force" )
 										{
 											//TODO
 											//mPass->setTransparentSortingEnabled(true);
@@ -861,30 +956,32 @@ namespace Axiom.Scripting.Compiler
 										else
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												prop.Values[ 0 ].Value + " must be boolean or force" );
+											                   prop.Values[ 0 ].Value + " must be boolean or force" );
 										}
 									}
 								}
 								break;
-							#endregion ID_TRANSPARENT_SORTING
 
-							#region ID_ILLUMINATION_STAGE
+								#endregion ID_TRANSPARENT_SORTING
+
+								#region ID_ILLUMINATION_STAGE
+
 							case Keywords.ID_ILLUMINATION_STAGE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"illumination_stage must have at most 1 argument" );
+									                   "illumination_stage must have at most 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_AMBIENT:
 												//TODO
@@ -903,36 +1000,38 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid IlluminationStage" );
+												                   prop.Values[ 0 ].Value + " is not a valid IlluminationStage" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid IlluminationStage" );
+										                   prop.Values[ 0 ].Value + " is not a valid IlluminationStage" );
 									}
 								}
 								break;
-							#endregion ID_ILLUMINATION_STAGE
 
-							#region ID_CULL_HARDWARE
+								#endregion ID_ILLUMINATION_STAGE
+
+								#region ID_CULL_HARDWARE
+
 							case Keywords.ID_CULL_HARDWARE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"cull_hardware must have at most 1 argument" );
+									                   "cull_hardware must have at most 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_CLOCKWISE:
 												_pass.CullingMode = CullingMode.Clockwise;
@@ -948,36 +1047,38 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid CullingMode" );
+												                   prop.Values[ 0 ].Value + " is not a valid CullingMode" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid CullingMode" );
+										                   prop.Values[ 0 ].Value + " is not a valid CullingMode" );
 									}
 								}
 								break;
-							#endregion ID_CULL_HARDWARE
 
-							#region ID_CULL_SOFTWARE
+								#endregion ID_CULL_HARDWARE
+
+								#region ID_CULL_SOFTWARE
+
 							case Keywords.ID_CULL_SOFTWARE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"cull_software must have at most 1 argument" );
+									                   "cull_software must have at most 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FRONT:
 												_pass.ManualCullingMode = ManualCullingMode.Front;
@@ -993,85 +1094,97 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid ManualCullingMode" );
+												                   prop.Values[ 0 ].Value + " is not a valid ManualCullingMode" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid ManualCullingMode" );
+										                   prop.Values[ 0 ].Value + " is not a valid ManualCullingMode" );
 									}
 								}
 								break;
-							#endregion ID_CULL_SOFTWARE
 
-							#region ID_NORMALISE_NORMALS
+								#endregion ID_CULL_SOFTWARE
+
+								#region ID_NORMALISE_NORMALS
+
 							case Keywords.ID_NORMALISE_NORMALS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"normalise_normals must have at most 1 argument" );
+									                   "normalise_normals must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setNormaliseNormals(val);*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_NORMALISE_NORMALS
 
-							#region ID_LIGHTING
+								#endregion ID_NORMALISE_NORMALS
+
+								#region ID_LIGHTING
+
 							case Keywords.ID_LIGHTING:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"lighting must have at most 1 argument" );
+									                   "lighting must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
 										_pass.LightingEnabled = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_LIGHTING
 
-							#region ID_SHADING
+								#endregion ID_LIGHTING
+
+								#region ID_SHADING
+
 							case Keywords.ID_SHADING:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"shading must have at most 1 argument" );
+									                   "shading must have at most 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FLAT:
 												_pass.ShadingMode = Shading.Flat;
@@ -1087,36 +1200,38 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid shading mode (flat, gouraud, or phong)" );
+												                   prop.Values[ 0 ].Value + " is not a valid shading mode (flat, gouraud, or phong)" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid shading mode (flat, gouraud, or phong)" );
+										                   prop.Values[ 0 ].Value + " is not a valid shading mode (flat, gouraud, or phong)" );
 									}
 								}
 								break;
-							#endregion ID_SHADING
 
-							#region ID_POLYGON_MODE
+								#endregion ID_SHADING
+
+								#region ID_POLYGON_MODE
+
 							case Keywords.ID_POLYGON_MODE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"polygon_mode must have at most 1 argument" );
+									                   "polygon_mode must have at most 1 argument" );
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_SOLID:
 												_pass.PolygonMode = PolygonMode.Solid;
@@ -1132,73 +1247,79 @@ namespace Axiom.Scripting.Compiler
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													prop.Values[ 0 ].Value + " is not a valid polygon mode (solid, points, or wireframe)" );
+												                   prop.Values[ 0 ].Value + " is not a valid polygon mode (solid, points, or wireframe)" );
 												break;
 										}
 									}
 									else
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid polygon mode (solid, points, or wireframe)" );
+										                   prop.Values[ 0 ].Value + " is not a valid polygon mode (solid, points, or wireframe)" );
 									}
 								}
 								break;
-							#endregion ID_POLYGON_MODE
 
-							#region ID_POLYGON_MODE_OVERRIDEABLE
+								#endregion ID_POLYGON_MODE
+
+								#region ID_POLYGON_MODE_OVERRIDEABLE
+
 							case Keywords.ID_POLYGON_MODE_OVERRIDEABLE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"polygon_mode_overrideable must have at most 1 argument" );
+									                   "polygon_mode_overrideable must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setPolygonModeOverrideable(val);*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_POLYGON_MODE_OVERRIDEABLE
 
-							#region ID_FOG_OVERRIDE
+								#endregion ID_POLYGON_MODE_OVERRIDEABLE
+
+								#region ID_FOG_OVERRIDE
+
 							case Keywords.ID_FOG_OVERRIDE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 8 )
+								else if( prop.Values.Count > 8 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"fog_override must have at most 8 arguments" );
+									                   "fog_override must have at most 8 arguments" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										FogMode mode = FogMode.None;
 										ColorEx clr = ColorEx.White;
 
 										Real dens = 0.001, start = 0.0f, end = 1.0f;
 
-										if ( i1 != null )
+										if( i1 != null )
 										{
-											if ( i1 is AtomAbstractNode )
+											if( i1 is AtomAbstractNode )
 											{
 												AtomAbstractNode atom = (AtomAbstractNode)i1;
-												switch ( (Keywords)atom.Id )
+												switch( (Keywords)atom.Id )
 												{
 													case Keywords.ID_NONE:
 														mode = FogMode.None;
@@ -1218,61 +1339,61 @@ namespace Axiom.Scripting.Compiler
 
 													default:
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-															i1.Value + " is not a valid FogMode" );
+														                   i1.Value + " is not a valid FogMode" );
 														break;
 												}
 											}
 											else
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i1.Value + " is not a valid FogMode" );
+												                   i1.Value + " is not a valid FogMode" );
 												break;
 											}
 										}
 
-										if ( i2 != null )
+										if( i2 != null )
 										{
 											// following line code was if(!getColour(i2, prop->values.end(), &clr, 3))
-											if ( !getColor( prop.Values, 2, out clr, 3 ) )
+											if( !getColor( prop.Values, 2, out clr, 3 ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i2.Value + " is not a valid colour" );
+												                   i2.Value + " is not a valid colour" );
 												break;
 											}
 
 											i2 = getNodeAt( prop.Values, 5 );
 										}
 
-										if ( i2 != null )
+										if( i2 != null )
 										{
-											if ( !getReal( i2, out dens ) )
+											if( !getReal( i2, out dens ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i2.Value + " is not a valid number" );
+												                   i2.Value + " is not a valid number" );
 												break;
 											}
 											//++i2;
 											i2 = getNodeAt( prop.Values, 6 );
 										}
 
-										if ( i2 != null )
+										if( i2 != null )
 										{
-											if ( !getReal( i2, out start ) )
+											if( !getReal( i2, out start ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i2.Value + " is not a valid number" );
+												                   i2.Value + " is not a valid number" );
 												return;
 											}
 											//++i2;
 											i2 = getNodeAt( prop.Values, 7 );
 										}
 
-										if ( i2 != null )
+										if( i2 != null )
 										{
-											if ( !getReal( i2, out end ) )
+											if( !getReal( i2, out end ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													i2.Value + " is not a valid number" );
+												                   i2.Value + " is not a valid number" );
 												return;
 											}
 											//++i2;
@@ -1282,107 +1403,127 @@ namespace Axiom.Scripting.Compiler
 										_pass.SetFog( val, mode, clr, dens, start, end );
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_FOG_OVERRIDE
 
-							#region ID_COLOUR_WRITE
+								#endregion ID_FOG_OVERRIDE
+
+								#region ID_COLOUR_WRITE
+
 							case Keywords.ID_COLOUR_WRITE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"colour_write must have at most 1 argument" );
+									                   "colour_write must have at most 1 argument" );
 								}
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
 										_pass.ColorWriteEnabled = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_COLOUR_WRITE
 
-							#region ID_MAX_LIGHTS
+								#endregion ID_COLOUR_WRITE
+
+								#region ID_MAX_LIGHTS
+
 							case Keywords.ID_MAX_LIGHTS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"max_lights must have at most 1 argument" );
+									                   "max_lights must have at most 1 argument" );
 								}
 								else
 								{
 									int val = 0;
-									if ( getInt( prop.Values[ 0 ], out val ) )
+									if( getInt( prop.Values[ 0 ], out val ) )
+									{
 										_pass.MaxSimultaneousLights = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid integer" );
+										                   prop.Values[ 0 ].Value + " is not a valid integer" );
+									}
 								}
 								break;
-							#endregion ID_MAX_LIGHTS
 
-							#region ID_START_LIGHT
+								#endregion ID_MAX_LIGHTS
+
+								#region ID_START_LIGHT
+
 							case Keywords.ID_START_LIGHT:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"start_light must have at most 1 argument" );
+									                   "start_light must have at most 1 argument" );
 								}
 								else
 								{
 									uint val = 0;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
+									if( getUInt( prop.Values[ 0 ], out val ) )
 									{
 										//TODO
 										/*mPass->setStartLight(static_cast<unsigned short>(val));*/
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid integer" );
+										                   prop.Values[ 0 ].Value + " is not a valid integer" );
+									}
 								}
 								break;
-							#endregion ID_START_LIGHT
 
-							#region ID_ITERATION
+								#endregion ID_START_LIGHT
+
+								#region ID_ITERATION
+
 							case Keywords.ID_ITERATION:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									if ( i0 is AtomAbstractNode )
+									if( i0 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)i0;
-										if ( atom.Id == (uint)Keywords.ID_ONCE )
+										if( atom.Id == (uint)Keywords.ID_ONCE )
 										{
 											_pass.IteratePerLight = false;
 										}
-										else if ( atom.Id == (uint)Keywords.ID_ONCE_PER_LIGHT )
+										else if( atom.Id == (uint)Keywords.ID_ONCE_PER_LIGHT )
 										{
 											AbstractNode i1 = getNodeAt( prop.Values, 1 );
-											if ( i1 != null && i1 is AtomAbstractNode )
+											if( i1 != null && i1 is AtomAbstractNode )
 											{
 												atom = (AtomAbstractNode)i1;
-												switch ( (Keywords)atom.Id )
+												switch( (Keywords)atom.Id )
 												{
 													case Keywords.ID_POINT:
 														_pass.IteratePerLight = true;
@@ -1400,7 +1541,7 @@ namespace Axiom.Scripting.Compiler
 
 													default:
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-															prop.Values[ 0 ].Value + " is not a valid light type (point, directional, or spot)" );
+														                   prop.Values[ 0 ].Value + " is not a valid light type (point, directional, or spot)" );
 														break;
 												}
 											}
@@ -1409,24 +1550,23 @@ namespace Axiom.Scripting.Compiler
 												//TODO
 												//mPass->setIteratePerLight(true, false);
 											}
-
 										}
-										else if ( atom.IsNumber )
+										else if( atom.IsNumber )
 										{
 											//TODO
 											//mPass->setPassIterationCount(Ogre::StringConverter::parseInt(atom->value));
 
 											AbstractNode i1 = getNodeAt( prop.Values, 1 );
-											if ( i1 != null && i1 is AtomAbstractNode )
+											if( i1 != null && i1 is AtomAbstractNode )
 											{
 												atom = (AtomAbstractNode)i1;
-												if ( atom.Id == (uint)Keywords.ID_PER_LIGHT )
+												if( atom.Id == (uint)Keywords.ID_PER_LIGHT )
 												{
 													AbstractNode i2 = getNodeAt( prop.Values, 2 );
-													if ( i2 != null && i2 is AtomAbstractNode )
+													if( i2 != null && i2 is AtomAbstractNode )
 													{
 														atom = (AtomAbstractNode)i2;
-														switch ( (Keywords)atom.Id )
+														switch( (Keywords)atom.Id )
 														{
 															case Keywords.ID_POINT:
 																_pass.IteratePerLight = true;
@@ -1444,7 +1584,7 @@ namespace Axiom.Scripting.Compiler
 
 															default:
 																compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-																	i2.Value + " is not a valid light type (point, directional, or spot)" );
+																                   i2.Value + " is not a valid light type (point, directional, or spot)" );
 																break;
 														}
 													}
@@ -1454,23 +1594,23 @@ namespace Axiom.Scripting.Compiler
 														//mPass->setIteratePerLight(true, false);
 													}
 												}
-												else if ( atom.Id == (uint)Keywords.ID_PER_N_LIGHTS )
+												else if( atom.Id == (uint)Keywords.ID_PER_N_LIGHTS )
 												{
 													AbstractNode i2 = getNodeAt( prop.Values, 2 );
-													if ( i2 != null && i2 is AtomAbstractNode )
+													if( i2 != null && i2 is AtomAbstractNode )
 													{
 														atom = (AtomAbstractNode)i2;
-														if ( atom.IsNumber )
+														if( atom.IsNumber )
 														{
 															//TODO
 															//mPass->setLightCountPerIteration(
 															//    static_cast<unsigned short>(StringConverter::parseInt(atom->value)));
 
 															AbstractNode i3 = getNodeAt( prop.Values, 3 );
-															if ( i3 != null && i3 is AtomAbstractNode )
+															if( i3 != null && i3 is AtomAbstractNode )
 															{
 																atom = (AtomAbstractNode)i3;
-																switch ( (Keywords)atom.Id )
+																switch( (Keywords)atom.Id )
 																{
 																	case Keywords.ID_POINT:
 																		_pass.IteratePerLight = true;
@@ -1488,7 +1628,7 @@ namespace Axiom.Scripting.Compiler
 
 																	default:
 																		compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-																			i3.Value + " is not a valid light type (point, directional, or spot)" );
+																		                   i3.Value + " is not a valid light type (point, directional, or spot)" );
 																		break;
 																}
 															}
@@ -1501,13 +1641,13 @@ namespace Axiom.Scripting.Compiler
 														else
 														{
 															compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-																i2.Value + " is not a valid number" );
+															                   i2.Value + " is not a valid number" );
 														}
 													}
 													else
 													{
 														compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-															prop.Values[ 0 ].Value + " is not a valid number" );
+														                   prop.Values[ 0 ].Value + " is not a valid number" );
 													}
 												}
 											}
@@ -1523,119 +1663,145 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_ITERATION
 
-							#region ID_POINT_SIZE
+								#endregion ID_ITERATION
+
+								#region ID_POINT_SIZE
+
 							case Keywords.ID_POINT_SIZE:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"point_size must have at most 1 argument" );
+									                   "point_size must have at most 1 argument" );
 								}
 								else
 								{
 									Real val = 0.0f;
-									if ( getReal( prop.Values[ 0 ], out val ) )
-										_pass.PointSize = val;
-									else
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid number" );
-								}
-								break;
-							#endregion ID_POINT_SIZE
-
-							#region ID_POINT_SPRITES
-							case Keywords.ID_POINT_SPRITES:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"point_sprites must have at most 1 argument" );
-								}
-								else
-								{
-									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
-										_pass.PointSpritesEnabled = val;
-									else
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
-								}
-								break;
-							#endregion ID_POINT_SPRITES
-
-							#region ID_POINT_SIZE_ATTENUATION
-							case Keywords.ID_POINT_SIZE_ATTENUATION:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 4 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"point_size_attenuation must have at most 4 arguments" );
-								}
-								else
-								{
-									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getReal( prop.Values[ 0 ], out val ) )
 									{
-										if ( val )
+										_pass.PointSize = val;
+									}
+									else
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   prop.Values[ 0 ].Value + " is not a valid number" );
+									}
+								}
+								break;
+
+								#endregion ID_POINT_SIZE
+
+								#region ID_POINT_SPRITES
+
+							case Keywords.ID_POINT_SPRITES:
+								if( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if( prop.Values.Count > 1 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "point_sprites must have at most 1 argument" );
+								}
+								else
+								{
+									bool val = false;
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
+										_pass.PointSpritesEnabled = val;
+									}
+									else
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
+								}
+								break;
+
+								#endregion ID_POINT_SPRITES
+
+								#region ID_POINT_SIZE_ATTENUATION
+
+							case Keywords.ID_POINT_SIZE_ATTENUATION:
+								if( prop.Values.Count == 0 )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+								}
+								else if( prop.Values.Count > 4 )
+								{
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "point_size_attenuation must have at most 4 arguments" );
+								}
+								else
+								{
+									bool val = false;
+									if( getBoolean( prop.Values[ 0 ], out val ) )
+									{
+										if( val )
 										{
 											AbstractNode i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 ),
-												i3 = getNodeAt( prop.Values, 3 );
+											             i3 = getNodeAt( prop.Values, 3 );
 
-											if ( prop.Values.Count > 1 )
+											if( prop.Values.Count > 1 )
 											{
 												Real constant = 0.0f, linear = 1.0f, quadratic = 0.0f;
 
-												if ( i1 != null && i1 is AtomAbstractNode )
+												if( i1 != null && i1 is AtomAbstractNode )
 												{
 													AtomAbstractNode atom = (AtomAbstractNode)i1;
-													if ( atom.IsNumber )
+													if( atom.IsNumber )
+													{
 														constant = atom.Number;
+													}
 													else
+													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+													}
 												}
 												else
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														i1.Value + " is not a valid number" );
+													                   i1.Value + " is not a valid number" );
 												}
 
-												if ( i2 != null && i2 is AtomAbstractNode )
+												if( i2 != null && i2 is AtomAbstractNode )
 												{
 													AtomAbstractNode atom = (AtomAbstractNode)i2;
-													if ( atom.IsNumber )
+													if( atom.IsNumber )
+													{
 														linear = atom.Number;
+													}
 													else
+													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+													}
 												}
 												else
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														i2.Value + " is not a valid number" );
+													                   i2.Value + " is not a valid number" );
 												}
 
-												if ( i3 != null && i3 is AtomAbstractNode )
+												if( i3 != null && i3 is AtomAbstractNode )
 												{
 													AtomAbstractNode atom = (AtomAbstractNode)i3;
-													if ( atom.IsNumber )
+													if( atom.IsNumber )
+													{
 														quadratic = atom.Number;
+													}
 													else
+													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+													}
 												}
 												else
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														i3.Value + " is not a valid number" );
+													                   i3.Value + " is not a valid number" );
 												}
 
 												//TODO
@@ -1654,69 +1820,83 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid boolean" );
+										                   prop.Values[ 0 ].Value + " is not a valid boolean" );
+									}
 								}
 								break;
-							#endregion ID_POINT_SIZE_ATTENUATION
 
-							#region ID_POINT_SIZE_MIN
+								#endregion ID_POINT_SIZE_ATTENUATION
+
+								#region ID_POINT_SIZE_MIN
+
 							case Keywords.ID_POINT_SIZE_MIN:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"point_size_min must have at most 1 argument" );
+									                   "point_size_min must have at most 1 argument" );
 								}
 								else
 								{
 									Real val = 0.0f;
-									if ( getReal( prop.Values[ 0 ], out val ) )
+									if( getReal( prop.Values[ 0 ], out val ) )
+									{
 										_pass.PointMinSize = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid number" );
+										                   prop.Values[ 0 ].Value + " is not a valid number" );
+									}
 								}
 								break;
-							#endregion ID_POINT_SIZE_MIN
 
-							#region ID_POINT_SIZE_MAX
+								#endregion ID_POINT_SIZE_MIN
+
+								#region ID_POINT_SIZE_MAX
+
 							case Keywords.ID_POINT_SIZE_MAX:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"point_size_max must have at most 1 argument" );
+									                   "point_size_max must have at most 1 argument" );
 								}
 								else
 								{
 									Real val = 0.0f;
-									if ( getReal( prop.Values[ 0 ], out val ) )
+									if( getReal( prop.Values[ 0 ], out val ) )
+									{
 										_pass.PointMaxSize = val;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											prop.Values[ 0 ].Value + " is not a valid number" );
+										                   prop.Values[ 0 ].Value + " is not a valid number" );
+									}
 								}
 								break;
-							#endregion ID_POINT_SIZE_MAX
+
+								#endregion ID_POINT_SIZE_MAX
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
-
 						} // end of switch statement
 					} // end of if ( i is PropertyAbstractNode )
-					else if ( i is ObjectAbstractNode )
+					else if( i is ObjectAbstractNode )
 					{
 						ObjectAbstractNode child = (ObjectAbstractNode)i;
-						switch ( (Keywords)child.Id )
+						switch( (Keywords)child.Id )
 						{
 							case Keywords.ID_FRAGMENT_PROGRAM_REF:
 								_translateFragmentProgramRef( compiler, child );
@@ -1749,6 +1929,7 @@ namespace Axiom.Scripting.Compiler
 					}
 				}
 			}
+
 			#endregion Translator Implementation
 
 			protected void _translateFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
@@ -1756,11 +1937,13 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetFragmentProgram( createdProgramName );
-				if ( pass.FragmentProgram.IsSupported )
+				if( pass.FragmentProgram.IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//GpuProgramParametersShared parameters = pass.FragmentProgramParameters;
@@ -1773,11 +1956,13 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetVertexProgram( createdProgramName );
-				if ( pass.VertexProgram.IsSupported )
+				if( pass.VertexProgram.IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//GpuProgramParametersShared parameters = pass.VertexProgramParameters;
@@ -1790,11 +1975,13 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetGeometryProgram( createdProgramName );
-				if ( pass.GeometryProgram.IsSupported )
+				if( pass.GeometryProgram.IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//GpuProgramParametersShared parameters = pass.GeometryProgramParameters;
@@ -1807,12 +1994,14 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetShadowCasterVertexProgram( createdProgramName );
 
-				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+				if( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//    GpuProgramParametersSharedPtr params = pass->getShadowCasterVertexProgramParameters();
@@ -1825,12 +2014,14 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetShadowReceiverVertexProgram( createdProgramName );
 
-				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+				if( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//    GpuProgramParametersSharedPtr params = pass->getShadowReceiverVertexProgramParameters();
@@ -1843,12 +2034,14 @@ namespace Axiom.Scripting.Compiler
 				string createdProgramName;
 				Pass pass = _commonProgramChecks( compiler, node, out createdProgramName );
 
-				if ( pass == null )
+				if( pass == null )
+				{
 					return;
+				}
 
 				pass.SetShadowReceiverFragmentProgram( createdProgramName );
 
-				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
+				if( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
 				{
 #warning this need GpuProgramParametersShared implementation
 					//    GpuProgramParametersSharedPtr params = pass->getShadowReceiverFragmentProgramParameters();
@@ -1860,7 +2053,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				createdProgramName = string.Empty;
 
-				if ( string.IsNullOrEmpty( node.Name ) )
+				if( string.IsNullOrEmpty( node.Name ) )
 				{
 					compiler.AddError( CompileErrorCode.ObjectNameExpected, node.File, node.Line );
 					return null;
@@ -1872,7 +2065,7 @@ namespace Axiom.Scripting.Compiler
 				compiler._fireEvent( ref evt );
 				createdProgramName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
-				if ( GpuProgramManager.Instance.GetByName( createdProgramName ) == null )
+				if( GpuProgramManager.Instance.GetByName( createdProgramName ) == null )
 				{
 					compiler.AddError( CompileErrorCode.ReferenceToaNonExistingObject, node.File, node.Line );
 					return null;
@@ -1884,4 +2077,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

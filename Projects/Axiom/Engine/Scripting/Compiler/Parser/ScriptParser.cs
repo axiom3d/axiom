@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,15 +47,13 @@ namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptParser
 	{
-		enum ParserState
+		private enum ParserState
 		{
 			Ready,
 			Object
 		}
 
-		public ScriptParser()
-		{
-		}
+		public ScriptParser() {}
 
 		public IList<ConcreteNode> Parse( IList<ScriptToken> tokens )
 		{
@@ -64,20 +66,23 @@ namespace Axiom.Scripting.Compiler.Parser
 			int iter = 0;
 			int end = tokens.Count;
 
-			while ( iter != end )
+			while( iter != end )
 			{
 				token = tokens[ iter ];
-				switch ( state )
+				switch( state )
 				{
-					#region Ready
+						#region Ready
+
 					case ParserState.Ready:
-						switch ( token.type )
+						switch( token.type )
 						{
-							#region Word
+								#region Word
+
 							case Tokens.Word:
-								switch ( token.lexeme )
+								switch( token.lexeme )
 								{
-									#region "import"
+										#region "import"
+
 									case "import":
 										node = new ConcreteNode();
 										node.Token = token.lexeme;
@@ -87,42 +92,54 @@ namespace Axiom.Scripting.Compiler.Parser
 
 										// The next token is the target
 										iter++;
-										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										if( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( String.Format( "Expected import target at line {0}", node.Line ) );
+										}
 
 										ConcreteNode temp = new ConcreteNode();
 										temp.Parent = node;
 										temp.File = tokens[ iter ].file;
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
-										if ( temp.Type == ConcreteNodeType.Quote )
+										if( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// The second-next token is the source
 										iter++; // "from"
 										iter++;
-										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										if( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( String.Format( "Expected import source at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
 										temp.File = tokens[ iter ].file;
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
-										if ( temp.Type == ConcreteNodeType.Quote )
+										if( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// Consume all the newlines
 										iter = SkipNewlines( tokens, iter, end );
 
 										// Insert the node
-										if ( parent != null )
+										if( parent != null )
 										{
 											node.Parent = parent;
 											parent.Children.Add( node );
@@ -134,9 +151,11 @@ namespace Axiom.Scripting.Compiler.Parser
 										}
 										node = null;
 										break;
-									#endregion "import"
 
-									#region "set"
+										#endregion "import"
+
+										#region "set"
+
 									case "set":
 										node = new ConcreteNode();
 										node.Token = token.lexeme;
@@ -146,8 +165,10 @@ namespace Axiom.Scripting.Compiler.Parser
 
 										// The next token is the variable
 										++iter;
-										if ( iter == end || tokens[ iter ].type != Tokens.Variable )
+										if( iter == end || tokens[ iter ].type != Tokens.Variable )
+										{
 											throw new Exception( string.Format( "expected variable name at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
@@ -159,25 +180,31 @@ namespace Axiom.Scripting.Compiler.Parser
 
 										// The next token is the assignment
 										++iter;
-										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										if( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( string.Format( "expected variable name at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
 										temp.File = tokens[ iter ].file;
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
-										if ( temp.Type == ConcreteNodeType.Quote )
+										if( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, tokens[ iter ].lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// Consume all the newlines
 										iter = SkipNewlines( tokens, iter, end );
 
 										// Insert the node
-										if ( parent != null )
+										if( parent != null )
 										{
 											node.Parent = parent;
 											parent.Children.Add( node );
@@ -189,20 +216,25 @@ namespace Axiom.Scripting.Compiler.Parser
 										}
 										node = null;
 										break;
-									#endregion "set"
+
+										#endregion "set"
 
 									default:
 										node = new ConcreteNode();
 										node.File = token.file;
 										node.Line = token.line;
 										node.Type = token.type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
-										if ( node.Type == ConcreteNodeType.Quote )
+										if( node.Type == ConcreteNodeType.Quote )
+										{
 											node.Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											node.Token = token.lexeme;
+										}
 
 										// Insert the node
-										if ( parent != null )
+										if( parent != null )
 										{
 											node.Parent = parent;
 											parent.Children.Add( node );
@@ -224,13 +256,17 @@ namespace Axiom.Scripting.Compiler.Parser
 										break;
 								}
 								break;
-							#endregion Word
 
-							#region RightBrace
+								#endregion Word
+
+								#region RightBrace
+
 							case Tokens.RightBrace:
 								// Go up one level if we can
-								if ( parent != null )
+								if( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -242,7 +278,7 @@ namespace Axiom.Scripting.Compiler.Parser
 								iter = SkipNewlines( tokens, iter, end );
 
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -254,64 +290,74 @@ namespace Axiom.Scripting.Compiler.Parser
 								}
 
 								// Move up another level
-								if ( parent != null )
+								if( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = null;
 
 								break;
-							#endregion RightBrace
+
+								#endregion RightBrace
 						}
 						break;
-					#endregion Ready
 
-					#region Object
+						#endregion Ready
+
+						#region Object
+
 					case ParserState.Object:
-						switch ( token.type )
+						switch( token.type )
 						{
-							#region Newline
+								#region Newline
+
 							case Tokens.Newline:
 								// Look ahead to the next non-newline token and if it isn't an {, this was a property
 								int next = SkipNewlines( tokens, iter, end );
-								if ( next == end || tokens[ next ].type != Tokens.LeftBrace )
+								if( next == end || tokens[ next ].type != Tokens.LeftBrace )
 								{
 									// Ended a property here
-									if ( parent != null )
+									if( parent != null )
+									{
 										parent = parent.Parent;
+									}
 									state = ParserState.Ready;
 								}
 								node = null;
 								break;
-							#endregion Newline
 
-							#region Colon
+								#endregion Newline
+
+								#region Colon
+
 							case Tokens.Colon:
-								node = new ConcreteNode()
-								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme,
-									Type = ConcreteNodeType.Colon
-								};
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme,
+								                          	Type = ConcreteNodeType.Colon
+								                          };
 
 								// The following token are the parent objects (base classes).
 								// Require at least one of them.
 
 								int j = iter + 1;
 								j = SkipNewlines( tokens, j, end );
-								if ( j == end || ( tokens[ j ].type != Tokens.Word && tokens[ j ].type != Tokens.Quote ) )
-									throw new Exception( String.Format( "Expected object identifier at line {0}", node.Line ) );
-
-								while ( j != end && ( tokens[ j ].type == Tokens.Word || tokens[ j ].type == Tokens.Quote ) )
+								if( j == end || ( tokens[ j ].type != Tokens.Word && tokens[ j ].type != Tokens.Quote ) )
 								{
-									ConcreteNode tempNode = new ConcreteNode()
-									{
-										Token = tokens[ j ].lexeme,
-										File = tokens[ j ].file,
-										Line = tokens[ j ].line,
-										Type = tokens[ j ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote,
-										Parent = node
-									};
+									throw new Exception( String.Format( "Expected object identifier at line {0}", node.Line ) );
+								}
+
+								while( j != end && ( tokens[ j ].type == Tokens.Word || tokens[ j ].type == Tokens.Quote ) )
+								{
+									ConcreteNode tempNode = new ConcreteNode() {
+									                                           	Token = tokens[ j ].lexeme,
+									                                           	File = tokens[ j ].file,
+									                                           	Line = tokens[ j ].line,
+									                                           	Type = tokens[ j ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote,
+									                                           	Parent = node
+									                                           };
 									node.Children.Add( tempNode );
 									++j;
 								}
@@ -321,7 +367,7 @@ namespace Axiom.Scripting.Compiler.Parser
 								iter = j;
 
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -333,22 +379,23 @@ namespace Axiom.Scripting.Compiler.Parser
 								}
 								node = null;
 								break;
-							#endregion Colon
 
-							#region LeftBrace
+								#endregion Colon
+
+								#region LeftBrace
+
 							case Tokens.LeftBrace:
-								node = new ConcreteNode()
-								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme,
-									Type = ConcreteNodeType.LeftBrace
-								};
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme,
+								                          	Type = ConcreteNodeType.LeftBrace
+								                          };
 								// Skip newlines
 								iter = SkipNewlines( tokens, iter, end );
 
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -367,31 +414,36 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
-							#endregion LeftBrace
 
-							#region RightBrace
+								#endregion LeftBrace
+
+								#region RightBrace
+
 							case Tokens.RightBrace:
 
 								// Go up one level if we can
-								if ( parent != null )
+								if( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								// If the parent is currently a { then go up again
-								if ( parent != null && parent.Type == ConcreteNodeType.LeftBrace && parent.Parent != null )
-									parent = parent.Parent;
-
-								node = new ConcreteNode()
+								if( parent != null && parent.Type == ConcreteNodeType.LeftBrace && parent.Parent != null )
 								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme,
-									Type = ConcreteNodeType.RightBrace
-								};
+									parent = parent.Parent;
+								}
+
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme,
+								                          	Type = ConcreteNodeType.RightBrace
+								                          };
 								// Skip newlines
 								iter = SkipNewlines( tokens, iter, end );
 
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -403,26 +455,29 @@ namespace Axiom.Scripting.Compiler.Parser
 								}
 
 								//Move up another level
-								if ( parent != null )
+								if( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = null;
 								state = ParserState.Ready;
 
 								break;
-							#endregion RightBrace
 
-							#region Variable
+								#endregion RightBrace
+
+								#region Variable
+
 							case Tokens.Variable:
-								node = new ConcreteNode()
-								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme,
-									Type = ConcreteNodeType.Variable
-								};
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme,
+								                          	Type = ConcreteNodeType.Variable
+								                          };
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -435,19 +490,20 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
-							#endregion Variable
 
-							#region Quote
+								#endregion Variable
+
+								#region Quote
+
 							case Tokens.Quote:
-								node = new ConcreteNode()
-								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 ),
-									Type = ConcreteNodeType.Quote
-								};
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 ),
+								                          	Type = ConcreteNodeType.Quote
+								                          };
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -460,19 +516,20 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
-							#endregion Quote
 
-							#region Word
+								#endregion Quote
+
+								#region Word
+
 							case Tokens.Word:
-								node = new ConcreteNode()
-								{
-									File = token.file,
-									Line = token.line,
-									Token = token.lexeme,
-									Type = ConcreteNodeType.Word
-								};
+								node = new ConcreteNode() {
+								                          	File = token.file,
+								                          	Line = token.line,
+								                          	Token = token.lexeme,
+								                          	Type = ConcreteNodeType.Word
+								                          };
 								// Insert the node
-								if ( parent != null )
+								if( parent != null )
 								{
 									node.Parent = parent;
 									parent.Children.Add( node );
@@ -485,10 +542,12 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
-							#endregion Word
+
+								#endregion Word
 						}
 						break;
-					#endregion Object
+
+						#endregion Object
 				}
 				iter++;
 			}
@@ -500,49 +559,48 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			IList<ConcreteNode> nodes = new List<ConcreteNode>();
 			ConcreteNode node = null;
-			foreach ( ScriptToken token in tokens )
+			foreach( ScriptToken token in tokens )
 			{
-				switch ( token.type )
+				switch( token.type )
 				{
 					case Tokens.Variable:
-						node = new ConcreteNode()
-						{
-							Token = token.lexeme,
-							Type = ConcreteNodeType.Variable,
-							File = token.file,
-							Line = token.line,
-							Parent = null
-						};
+						node = new ConcreteNode() {
+						                          	Token = token.lexeme,
+						                          	Type = ConcreteNodeType.Variable,
+						                          	File = token.file,
+						                          	Line = token.line,
+						                          	Parent = null
+						                          };
 						break;
 
 					case Tokens.Word:
-						node = new ConcreteNode()
-						{
-							Token = token.lexeme,
-							Type = ConcreteNodeType.Word,
-							File = token.file,
-							Line = token.line,
-							Parent = null
-						};
+						node = new ConcreteNode() {
+						                          	Token = token.lexeme,
+						                          	Type = ConcreteNodeType.Word,
+						                          	File = token.file,
+						                          	Line = token.line,
+						                          	Parent = null
+						                          };
 						break;
 
 					case Tokens.Quote:
-						node = new ConcreteNode()
-						{
-							Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 ),
-							Type = ConcreteNodeType.Quote,
-							File = token.file,
-							Line = token.line,
-							Parent = null
-						};
+						node = new ConcreteNode() {
+						                          	Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 ),
+						                          	Type = ConcreteNodeType.Quote,
+						                          	File = token.file,
+						                          	Line = token.line,
+						                          	Parent = null
+						                          };
 						break;
 
 					default:
 						throw new Exception( String.Format( "unexpected token {0} at line {1}.", token.lexeme, token.line ) );
 				}
 
-				if ( node != null )
+				if( node != null )
+				{
 					nodes.Add( node );
+				}
 			}
 			return nodes;
 		}
@@ -550,18 +608,24 @@ namespace Axiom.Scripting.Compiler.Parser
 		private ScriptToken GetToken( IEnumerator<ScriptToken> iter, int offset )
 		{
 			ScriptToken token = new ScriptToken();
-			while ( --offset > 1 && iter.MoveNext() != false )
+			while( --offset > 1 && iter.MoveNext() != false )
+			{
 				;
+			}
 
-			if ( iter.MoveNext() != false )
+			if( iter.MoveNext() != false )
+			{
 				token = iter.Current;
+			}
 			return token;
 		}
 
 		private int SkipNewlines( IList<ScriptToken> tokens, int iter, int end )
 		{
-			while ( tokens[ iter ].type == Tokens.Newline && ++iter != end )
+			while( tokens[ iter ].type == Tokens.Newline && ++iter != end )
+			{
 				;
+			}
 			return iter;
 		}
 	}

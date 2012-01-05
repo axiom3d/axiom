@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,52 +53,37 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		public enum CompileErrorCode
 		{
-			[ScriptEnum( "Unknown error" )]
-			UnknownError = 0,
+			[ScriptEnum( "Unknown error" )] UnknownError = 0,
 
-			[ScriptEnum( "String expected" )]
-			StringExpected,
+			[ScriptEnum( "String expected" )] StringExpected,
 
-			[ScriptEnum( "Number expected" )]
-			NumberExpected,
+			[ScriptEnum( "Number expected" )] NumberExpected,
 
-			[ScriptEnum( "Fewer parameters expected" )]
-			FewerParametersExpected,
+			[ScriptEnum( "Fewer parameters expected" )] FewerParametersExpected,
 
-			[ScriptEnum( "Variable expected" )]
-			VariableExpected,
+			[ScriptEnum( "Variable expected" )] VariableExpected,
 
-			[ScriptEnum( "Undefined variable" )]
-			UndefinedVariable,
+			[ScriptEnum( "Undefined variable" )] UndefinedVariable,
 
-			[ScriptEnum( "Object name expected" )]
-			ObjectNameExpected,
+			[ScriptEnum( "Object name expected" )] ObjectNameExpected,
 
-			[ScriptEnum( "Object allocation error" )]
-			ObjectAllocationError,
+			[ScriptEnum( "Object allocation error" )] ObjectAllocationError,
 
-			[ScriptEnum( "Invalid parameters" )]
-			InvalidParameters,
+			[ScriptEnum( "Invalid parameters" )] InvalidParameters,
 
-			[ScriptEnum( "Duplicate override" )]
-			DuplicateOverride,
+			[ScriptEnum( "Duplicate override" )] DuplicateOverride,
 
-			[ScriptEnum( "Unexpected token" )]
-			UnexpectedToken,
+			[ScriptEnum( "Unexpected token" )] UnexpectedToken,
 
-			[ScriptEnum( "Object base not found" )]
-			ObjectBaseNotFound,
+			[ScriptEnum( "Object base not found" )] ObjectBaseNotFound,
 
-			[ScriptEnum( "Unsupported by RenderSystem" )]
-			UnsupportedByRenderSystem,
+			[ScriptEnum( "Unsupported by RenderSystem" )] UnsupportedByRenderSystem,
 
-			[ScriptEnum( "Reference to a non existing object" )]
-			ReferenceToaNonExistingObject
+			[ScriptEnum( "Reference to a non existing object" )] ReferenceToaNonExistingObject
 		}
 
 		public struct CompileError
 		{
-
 			public CompileError( CompileErrorCode code, string file, uint line, string msg )
 				: this()
 			{
@@ -104,26 +93,10 @@ namespace Axiom.Scripting.Compiler
 				this.Message = msg;
 			}
 
-			public string File
-			{
-				get;
-				private set;
-			}
-			public string Message
-			{
-				get;
-				private set;
-			}
-			public uint Line
-			{
-				get;
-				private set;
-			}
-			public CompileErrorCode Code
-			{
-				get;
-				private set;
-			}
+			public string File { get; private set; }
+			public string Message { get; private set; }
+			public uint Line { get; private set; }
+			public CompileErrorCode Code { get; private set; }
 		}
 	}
 }

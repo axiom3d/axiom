@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
 using SWF = System.Windows.Forms;
 
 using Axiom.Core;
@@ -27,7 +28,7 @@ namespace Axiom.Demos
 		// RenderSystem Configuration needs to be saved.
 		public event SaveRenderSystemConfigEventHandler SaveRenderSystemConfig;
 
-		const int WM_KEYDOWN = 0x100;
+		private const int WM_KEYDOWN = 0x100;
 
 		protected Container components = null;
 		protected PictureBox picLogo;
@@ -41,32 +42,11 @@ namespace Axiom.Demos
 		protected SWF.Panel pnlBackground;
 		protected ComboBox cboRenderSystems;
 
-
 		private string _logoResourceName = "AxiomLogo.png";
-		public string LogoResourceName
-		{
-			get
-			{
-				return _logoResourceName;
-			}
-			set
-			{
-				_logoResourceName = value;
-			}
-		}
+		public string LogoResourceName { get { return _logoResourceName; } set { _logoResourceName = value; } }
 
 		private string _iconResourceName = "AxiomIcon.ico";
-		public string IconResourceName
-		{
-			get
-			{
-				return _iconResourceName;
-			}
-			set
-			{
-				_iconResourceName = value;
-			}
-		}
+		public string IconResourceName { get { return _iconResourceName; } set { _iconResourceName = value; } }
 
 		public ConfigDialog()
 		{
@@ -78,12 +58,12 @@ namespace Axiom.Demos
 				Stream image = ResourceGroupManager.Instance.OpenResource( _logoResourceName, ResourceGroupManager.DefaultResourceGroupName );
 				Stream icon = ResourceGroupManager.Instance.OpenResource( _iconResourceName, ResourceGroupManager.DefaultResourceGroupName );
 
-				if ( image != null )
+				if( image != null )
 				{
 					this.picLogo.Image = System.Drawing.Image.FromStream( image, true );
 				}
 
-				if ( icon != null )
+				if( icon != null )
 				{
 					this.Icon = new Icon( icon );
 				}
@@ -91,17 +71,15 @@ namespace Axiom.Demos
 				image.Close();
 				icon.Close();
 			}
-			catch ( Exception )
-			{
-			}
+			catch( Exception ) {}
 			cboRenderSystems.Enabled = false;
 		}
 
 		protected override void Dispose( bool disposing )
 		{
-			if ( disposing )
+			if( disposing )
 			{
-				if ( components != null )
+				if( components != null )
 				{
 					components.Dispose();
 				}
@@ -259,7 +237,6 @@ namespace Axiom.Demos
 			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).EndInit();
 			this.grpVideoOptions.ResumeLayout( false );
 			this.ResumeLayout( false );
-
 		}
 
 		protected void cmdOk_Click( object sender, EventArgs e )
@@ -268,7 +245,7 @@ namespace Axiom.Demos
 
 			RenderSystem system = Root.Instance.RenderSystem;
 
-			foreach ( ConfigOption opt in lstOptions.Items )
+			foreach( ConfigOption opt in lstOptions.Items )
 			{
 				system.ConfigOptions[ opt.Name ] = opt;
 			}
@@ -291,17 +268,19 @@ namespace Axiom.Demos
 			Application.AddMessageFilter( this );
 			cmdOk.NotifyDefault( true );
 
-			if ( Root.Instance != null )
+			if( Root.Instance != null )
 			{
-				foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
+				foreach( RenderSystem renderSystem in Root.Instance.RenderSystems )
 				{
 					LoadRenderSystemConfig( this, renderSystem );
 					cboRenderSystems.Items.Add( renderSystem );
 				}
 			}
 
-			if ( cboRenderSystems.Items.Count > 0 )
+			if( cboRenderSystems.Items.Count > 0 )
+			{
 				cboRenderSystems.SelectedIndex = 0;
+			}
 		}
 
 		private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
@@ -312,26 +291,26 @@ namespace Axiom.Demos
 			ConfigOption optVideoMode;
 
 			// Load Render Subsystem Options
-			foreach ( ConfigOption option in system.ConfigOptions.Values )
+			foreach( ConfigOption option in system.ConfigOptions.Values )
 			{
 				lstOptions.Items.Add( option );
 			}
-
 		}
 
 		private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
 		{
-
 			this.cboOptionValues.SelectedIndexChanged -= new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
 
 			RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
 			ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
 
 			cboOptionValues.Items.Clear();
-			foreach ( string value in opt.PossibleValues.Values )
+			foreach( string value in opt.PossibleValues.Values )
+			{
 				cboOptionValues.Items.Add( value );
+			}
 
-			if ( cboOptionValues.Items.Count == 0 )
+			if( cboOptionValues.Items.Count == 0 )
 			{
 				cboOptionValues.Items.Add( opt.Value );
 			}
@@ -353,12 +332,11 @@ namespace Axiom.Demos
 			opt.Value = value;
 
 			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
+			for( int index = 0; index < this.lstOptions.Items.Count; index++ )
 			{
 				lstOptions.Items[ index ] = lstOptions.Items[ index ];
 			}
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-
 		}
 
 		#region IMessageFilter Members
@@ -366,18 +344,19 @@ namespace Axiom.Demos
 		public bool PreFilterMessage( ref Message msg )
 		{
 			Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
-			if ( msg.Msg == WM_KEYDOWN && keyCode == Keys.Return )
+			if( msg.Msg == WM_KEYDOWN && keyCode == Keys.Return )
 			{
 				cmdOk_Click( this, null );
 				return true;
 			}
-			if ( msg.Msg == WM_KEYDOWN && keyCode == Keys.Escape )
+			if( msg.Msg == WM_KEYDOWN && keyCode == Keys.Escape )
 			{
 				cmdCancel_Click( this, null );
 				return true;
 			}
 			return false;
 		}
+
 		#endregion IMessageFilter Members
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Scripting.Compiler.AST;
@@ -71,220 +76,223 @@ namespace Axiom.Scripting.Compiler
 				_Technique = compositor.CreateTechnique();
 				obj.Context = _Technique;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
-					else if ( i is PropertyAbstractNode )
+					else if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-						switch ( (Keywords)prop.Id )
+						switch( (Keywords)prop.Id )
 						{
-							#region ID_TEXTURE
+								#region ID_TEXTURE
+
 							case Keywords.ID_TEXTURE:
+							{
+								int atomIndex = 1;
+
+								AbstractNode it = getNodeAt( prop.Values, 0 );
+
+								if( !( it is AtomAbstractNode ) )
 								{
-									int atomIndex = 1;
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+									return;
+								}
+								// Save the first atom, should be name
+								AtomAbstractNode atom0 = (AtomAbstractNode)it;
 
-									AbstractNode it = getNodeAt( prop.Values, 0 );
+								int width = 0, height = 0;
+								float widthFactor = 1.0f, heightFactor = 1.0f;
+								bool widthSet = false, heightSet = false, formatSet = false;
+								bool pooled = false;
+								bool hwGammaWrite = false;
+								bool fsaa = true;
 
-									if ( !(it is AtomAbstractNode) )
+								CompositionTechnique.TextureScope scope = CompositionTechnique.TextureScope.Local;
+								List<PixelFormat> formats = new List<PixelFormat>();
+
+								while( atomIndex < prop.Values.Count )
+								{
+									it = getNodeAt( prop.Values, atomIndex++ );
+									if( !( it is AtomAbstractNode ) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 										return;
 									}
-									// Save the first atom, should be name
-									AtomAbstractNode atom0 = (AtomAbstractNode)it;
+									AtomAbstractNode atom = (AtomAbstractNode)it;
 
-									int width = 0, height = 0;
-									float widthFactor = 1.0f, heightFactor = 1.0f;
-									bool widthSet = false, heightSet = false, formatSet = false;
-									bool pooled = false;
-									bool hwGammaWrite = false;
-									bool fsaa = true;
-
-									CompositionTechnique.TextureScope scope = CompositionTechnique.TextureScope.Local;
-									List<PixelFormat> formats = new List<PixelFormat>();
-
-									while ( atomIndex < prop.Values.Count )
+									switch( (Keywords)atom.Id )
 									{
-										it = getNodeAt( prop.Values, atomIndex++ );
-										if ( !(it is AtomAbstractNode) )
+										case Keywords.ID_TARGET_WIDTH:
+											width = 0;
+											widthSet = true;
+											break;
+
+										case Keywords.ID_TARGET_HEIGHT:
+											height = 0;
+											heightSet = true;
+											break;
+
+										case Keywords.ID_TARGET_WIDTH_SCALED:
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-											return;
+											// advance to next to get scaling
+											it = getNodeAt( prop.Values, atomIndex++ );
+											if( it == null || !( it is AtomAbstractNode ) )
+											{
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+												return;
+											}
+											atom = (AtomAbstractNode)it;
+											if( !atom.IsNumber )
+											{
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+												return;
+											}
+
+											widthSet = true;
+											width = 0;
+											widthFactor = atom.Number;
 										}
-										AtomAbstractNode atom = (AtomAbstractNode)it;
-
-										switch ( (Keywords)atom.Id )
+											break;
+										case Keywords.ID_TARGET_HEIGHT_SCALED:
 										{
-											case Keywords.ID_TARGET_WIDTH:
-												width = 0;
-												widthSet = true;
-												break;
+											// advance to next to get scaling
+											it = getNodeAt( prop.Values, atomIndex++ );
+											if( it == null || !( it is AtomAbstractNode ) )
+											{
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+												return;
+											}
+											atom = (AtomAbstractNode)it;
+											if( !atom.IsNumber )
+											{
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+												return;
+											}
 
-											case Keywords.ID_TARGET_HEIGHT:
-												height = 0;
-												heightSet = true;
-												break;
+											heightSet = true;
+											height = 0;
+											heightFactor = atom.Number;
+										}
+											break;
 
-											case Keywords.ID_TARGET_WIDTH_SCALED:
+										case Keywords.ID_POOLED:
+											pooled = true;
+											break;
+
+										case Keywords.ID_SCOPE_LOCAL:
+											scope = CompositionTechnique.TextureScope.Local;
+											break;
+
+										case Keywords.ID_SCOPE_CHAIN:
+											scope = CompositionTechnique.TextureScope.Chain;
+											break;
+
+										case Keywords.ID_SCOPE_GLOBAL:
+											scope = CompositionTechnique.TextureScope.Global;
+											break;
+
+										case Keywords.ID_GAMMA:
+											hwGammaWrite = true;
+											break;
+
+										case Keywords.ID_NO_FSAA:
+											fsaa = false;
+											break;
+
+										default:
+											if( atom.IsNumber )
+											{
+												if( atomIndex == 2 )
 												{
-													// advance to next to get scaling
-													it = getNodeAt( prop.Values, atomIndex++ );
-													if ( it == null || !(it is AtomAbstractNode) )
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
-													atom = (AtomAbstractNode)it;
-													if ( !atom.IsNumber )
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
-
+													width = (int)atom.Number;
 													widthSet = true;
-													width = 0;
-													widthFactor = atom.Number;
 												}
-												break;
-											case Keywords.ID_TARGET_HEIGHT_SCALED:
+												else if( atomIndex == 3 )
 												{
-													// advance to next to get scaling
-													it = getNodeAt( prop.Values, atomIndex++ );
-													if ( it == null || !(it is AtomAbstractNode) )
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
-													atom = (AtomAbstractNode)it;
-													if ( !atom.IsNumber )
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
-
+													height = (int)atom.Number;
 													heightSet = true;
-													height = 0;
-													heightFactor = atom.Number;
-												}
-												break;
-
-											case Keywords.ID_POOLED:
-												pooled = true;
-												break;
-
-											case Keywords.ID_SCOPE_LOCAL:
-												scope = CompositionTechnique.TextureScope.Local;
-												break;
-
-											case Keywords.ID_SCOPE_CHAIN:
-												scope = CompositionTechnique.TextureScope.Chain;
-												break;
-
-											case Keywords.ID_SCOPE_GLOBAL:
-												scope = CompositionTechnique.TextureScope.Global;
-												break;
-
-											case Keywords.ID_GAMMA:
-												hwGammaWrite = true;
-												break;
-
-											case Keywords.ID_NO_FSAA:
-												fsaa = false;
-												break;
-
-											default:
-												if ( atom.IsNumber )
-												{
-													if ( atomIndex == 2 )
-													{
-														width = (int)atom.Number;
-														widthSet = true;
-													}
-													else if ( atomIndex == 3 )
-													{
-														height = (int)atom.Number;
-														heightSet = true;
-													}
-													else
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
 												}
 												else
 												{
-													// pixel format?
-													PixelFormat format = PixelUtil.GetFormatFromName( atom.Value, true );
-													if ( format == PixelFormat.Unknown )
-													{
-														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-														return;
-													}
-													formats.Add( format );
-													formatSet = true;
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+													return;
 												}
-												break;
-										}
+											}
+											else
+											{
+												// pixel format?
+												PixelFormat format = PixelUtil.GetFormatFromName( atom.Value, true );
+												if( format == PixelFormat.Unknown )
+												{
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+													return;
+												}
+												formats.Add( format );
+												formatSet = true;
+											}
+											break;
 									}
-									if ( !widthSet || !heightSet || !formatSet )
-									{
-										compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-										return;
-									}
-
-									// No errors, create
-									CompositionTechnique.TextureDefinition def = _Technique.CreateTextureDefinition( atom0.Value );
-									def.Width = width;
-									def.Height = height;
-									def.WidthFactor = widthFactor;
-									def.HeightFactor = heightFactor;
-									def.PixelFormats = formats;
-									def.HwGammaWrite = hwGammaWrite;
-									def.Fsaa = fsaa;
-									def.Pooled = pooled;
-									def.Scope = scope;
 								}
-								break;
-							#endregion ID_TEXTURE
+								if( !widthSet || !heightSet || !formatSet )
+								{
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
+									return;
+								}
 
-							#region ID_TEXTURE_REF
+								// No errors, create
+								CompositionTechnique.TextureDefinition def = _Technique.CreateTextureDefinition( atom0.Value );
+								def.Width = width;
+								def.Height = height;
+								def.WidthFactor = widthFactor;
+								def.HeightFactor = heightFactor;
+								def.PixelFormats = formats;
+								def.HwGammaWrite = hwGammaWrite;
+								def.Fsaa = fsaa;
+								def.Pooled = pooled;
+								def.Scope = scope;
+							}
+								break;
+
+								#endregion ID_TEXTURE
+
+								#region ID_TEXTURE_REF
+
 							case Keywords.ID_TEXTURE_REF:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count != 3 )
+								else if( prop.Values.Count != 3 )
 								{
 									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref only supports 3 argument" );
+									                   "texture_ref only supports 3 argument" );
 								}
 								else
 								{
 									string texName = string.Empty, refCompName = string.Empty, refTexName = string.Empty;
 
 									AbstractNode it = getNodeAt( prop.Values, 0 );
-									if ( !getString( it, out texName ) )
+									if( !getString( it, out texName ) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										                   "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 1 );
-									if ( !getString( it, out refCompName ) )
+									if( !getString( it, out refCompName ) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										                   "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 2 );
-									if ( !getString( it, out refTexName ) )
+									if( !getString( it, out refTexName ) )
 									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										                   "texture_ref must have 3 string arguments" );
 									}
 
 									CompositionTechnique.TextureDefinition refTexDef = _Technique.CreateTextureDefinition( texName );
@@ -293,61 +301,74 @@ namespace Axiom.Scripting.Compiler
 									refTexDef.ReferenceTextureName = refTexName;
 								}
 								break;
-							#endregion ID_TEXTURE_REF
 
-							#region ID_SCHEME
+								#endregion ID_TEXTURE_REF
+
+								#region ID_SCHEME
+
 							case Keywords.ID_SCHEME:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"scheme only supports 1 argument" );
+									                   "scheme only supports 1 argument" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 );
 									string scheme = string.Empty;
 
-									if ( getString( i0, out scheme ) )
+									if( getString( i0, out scheme ) )
+									{
 										_Technique.SchemeName = scheme;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"scheme must have 1 string argument" );
+										                   "scheme must have 1 string argument" );
+									}
 								}
 								break;
-							#endregion ID_SCHEME
 
-							#region ID_COMPOSITOR_LOGIC
+								#endregion ID_SCHEME
+
+								#region ID_COMPOSITOR_LOGIC
+
 							case Keywords.ID_COMPOSITOR_LOGIC:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"compositor logic only supports 1 argument" );
+									                   "compositor logic only supports 1 argument" );
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 );
 									string logicName = string.Empty;
 
-									if ( getString( i0, out logicName ) )
+									if( getString( i0, out logicName ) )
+									{
 										_Technique.CompositorLogicName = logicName;
+									}
 									else
+									{
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"compositor logic must have 1 string argument" );
+										                   "compositor logic must have 1 string argument" );
+									}
 								}
 								break;
-							#endregion ID_COMPOSITOR_LOGIC
+
+								#endregion ID_COMPOSITOR_LOGIC
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}
@@ -358,4 +379,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

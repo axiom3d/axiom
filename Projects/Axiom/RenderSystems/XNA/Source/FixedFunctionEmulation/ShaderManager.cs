@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +42,7 @@ using System.Collections.Generic;
 
 using Axiom.Graphics;
 using Axiom.Core;
+
 using System.Collections;
 
 #endregion Namespace Declarations
@@ -47,7 +52,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// <summary>
 	/// 
 	/// </summary>
-	class ShaderManager
+	internal class ShaderManager
 	{
 		#region Static Interface
 
@@ -57,17 +62,15 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#region Nested Types
 
-		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator>
-		{
-		}
+		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator> {}
 
 		protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Hashtable /* SortedDictionary<VertexBufferDeclaration, FixedFunctionPrograms> */
 		{
-			public new FixedFunctionPrograms this[ VertexBufferDeclaration key ]
+			new public FixedFunctionPrograms this[ VertexBufferDeclaration key ]
 			{
 				get
 				{
-					if ( !ContainsKey( key ) )
+					if( !ContainsKey( key ) )
 					{
 						Add( key, null );
 					}
@@ -75,21 +78,25 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				}
 				set
 				{
-					if ( !ContainsKey( key ) )
+					if( !ContainsKey( key ) )
+					{
 						Add( key, value );
+					}
 					else
+					{
 						base[ key ] = value;
+					}
 				}
 			}
 		}
 
 		protected class State2Declaration2ProgramsMap : Hashtable /* SortedDictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap>*/
 		{
-			public new VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
+			new public VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
 			{
 				get
 				{
-					if ( !ContainsKey( key ) )
+					if( !ContainsKey( key ) )
 					{
 						Add( key, new VertexBufferDeclaration2FixedFunctionProgramsMap() );
 					}
@@ -100,11 +107,11 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		protected class Language2State2Declaration2ProgramsMap : Hashtable /* SortedDictionary<String, State2Declaration2ProgramsMap>*/
 		{
-			public new State2Declaration2ProgramsMap this[ String key ]
+			new public State2Declaration2ProgramsMap this[ String key ]
 			{
 				get
 				{
-					if ( !ContainsKey( key ) )
+					if( !ContainsKey( key ) )
 					{
 						Add( key, new State2Declaration2ProgramsMap() );
 					}
@@ -134,7 +141,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				if ( str.StartsWith( System.IO.Directory.GetCurrentDirectory() + "\\shader" ) == true )
 					System.IO.File.Delete( str );
 			}*/
-
 		}
 
 		#endregion Construction and Destruction
@@ -179,7 +185,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 			*/
 			FixedFunctionPrograms programs = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
-			if ( programs != null )
+			if( programs != null )
 			{
 				return programs;
 			}
@@ -195,14 +201,15 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			ShaderGenerator shaderGenerator = shaderGeneratorMap[ generatorName ];
 			String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration, state );
-			if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+			if( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+			{
 				saveShader( state.GetHashCode().ToString(), shaderSource );
+			}
 
 			// Vertex program details
 			GpuProgramUsage vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 			// Fragment program details
 			GpuProgramUsage fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
-
 
 			HighLevelGpuProgram vs;
 			HighLevelGpuProgram fs;
@@ -210,9 +217,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			shaderCount++;
 
 			vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(),
-																	ResourceGroupManager.DefaultResourceGroupName,
-																	shaderGenerator.Language,
-																	GpuProgramType.Vertex );
+			                                                        ResourceGroupManager.DefaultResourceGroupName,
+			                                                        shaderGenerator.Language,
+			                                                        GpuProgramType.Vertex );
 			LogManager.Instance.Write( "Created VertexShader {0}", "VS_" + shaderCount.ToString() );
 			vs.Source = shaderSource;
 			vs.SetParam( "entry_point", vertexProgramName );
@@ -223,9 +230,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			//vertexProgramUsage.Params = vs.CreateParameters();
 
 			fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(),
-																	ResourceGroupManager.DefaultResourceGroupName,
-																	shaderGenerator.Language,
-																	GpuProgramType.Fragment );
+			                                                        ResourceGroupManager.DefaultResourceGroupName,
+			                                                        shaderGenerator.Language,
+			                                                        GpuProgramType.Fragment );
 			LogManager.Instance.Write( "Created FragmentProgram {0}", "FS_" + shaderCount.ToString() );
 			fs.Source = shaderSource;
 			fs.SetParam( "entry_point", fragmentProgramName );
@@ -235,12 +242,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			fragmentProgramUsage.Program = fs;
 			//fragmentProgramUsage.Params = fs.CreateParameters();
 
-
 			FixedFunctionPrograms newPrograms = shaderGenerator.CreateFixedFunctionPrograms();
 			newPrograms.FixedFunctionState = state;
 			newPrograms.FragmentProgramUsage = fragmentProgramUsage;
 			newPrograms.VertexProgramUsage = vertexProgramUsage;
-
 
 			//then save the new program
 			language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ] = newPrograms;
@@ -259,7 +264,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				filename = baseFilename + Convert.ToString( w ) + ".hlsl";
 				w++;
 			}
-			while ( System.IO.File.Exists( filename ) );
+			while( System.IO.File.Exists( filename ) );
 
 			System.IO.StreamWriter sw = new System.IO.StreamWriter( filename );
 			sw.Write( shaderSource );
@@ -268,7 +273,5 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		#endregion Methods
-
 	}
-
 }

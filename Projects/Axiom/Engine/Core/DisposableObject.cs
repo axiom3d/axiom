@@ -70,11 +70,10 @@ namespace Axiom.Core
 		{
 			List<ObjectEntry> objectList = GetOrCreateObjectList( instance.GetType() );
 
-			objectList.Add( new ObjectEntry
-								{
-									Instance = new WeakReference( instance ),
-									ConstructionStack = stackTrace
-								} );
+			objectList.Add( new ObjectEntry {
+			                                	Instance = new WeakReference( instance ),
+			                                	ConstructionStack = stackTrace
+			                                } );
 		}
 
 		/// <summary>
@@ -85,15 +84,15 @@ namespace Axiom.Core
 		{
 			var objectList = GetOrCreateObjectList( instance.GetType() );
 			var objectEntry = from entry in objectList
-							  where entry.Instance.IsAlive && entry.Instance.Target == instance
-							  select entry;
+			                  where entry.Instance.IsAlive && entry.Instance.Target == instance
+			                  select entry;
 			objectList.Remove( objectEntry.First() );
 		}
 
 		private List<ObjectEntry> GetOrCreateObjectList( Type type )
 		{
 			List<ObjectEntry> objectList;
-			if ( _objects.ContainsKey( type ) )
+			if( _objects.ContainsKey( type ) )
 			{
 				objectList = _objects[ type ];
 			}
@@ -113,9 +112,9 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 #if DEBUG
 					long objectCount = 0;
@@ -156,7 +155,6 @@ namespace Axiom.Core
 					else
 						LogManager.Instance.Write( "Everything went right! Congratulations!!" );
 #endif
-
 				}
 
 				// There are no unmanaged resources to release, but
@@ -174,7 +172,7 @@ namespace Axiom.Core
 	/// <summary>
 	/// Base class for all resource classes that require deterministic finalization and resource cleanup
 	/// </summary>
-	public abstract class DisposableObject : IDisposable
+	abstract public class DisposableObject : IDisposable
 	{
 		/// <summary>
 		/// default parameterless constructor
@@ -197,8 +195,10 @@ namespace Axiom.Core
 		/// </summary>
 		~DisposableObject()
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
+			{
 				dispose( false );
+			}
 		}
 
 		#region IDisposable Implementation
@@ -206,11 +206,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		public bool IsDisposed
-		{
-			get;
-			private set;
-		}
+		public bool IsDisposed { get; private set; }
 
 		/// <summary>
 		/// Class level dispose method
@@ -236,11 +232,11 @@ namespace Axiom.Core
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 #if DEBUG

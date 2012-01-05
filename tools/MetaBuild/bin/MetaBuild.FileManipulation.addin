@@ -1,8 +1,0 @@
-<!--
- ! Provides support for copying files and folders and creating archives
- ! declaratively.
- !-->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.FileManipulation.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
-</Project>

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: ILImageCodec.cs 1332 2008-07-28 18:28:27Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,6 +45,7 @@ using Axiom.Math.Collections;
 using Axiom.Media;
 
 using Tao.DevIl;
+
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
@@ -50,7 +55,7 @@ namespace Axiom.Plugins.DevILCodecs
 	/// <summary>
 	///    Base DevIL (OpenIL) implementation for loading images.
 	/// </summary>
-	public abstract class ILImageCodec : ImageCodec
+	abstract public class ILImageCodec : ImageCodec
 	{
 		#region Fields
 
@@ -80,7 +85,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilGenImages( 1, out imageID );
 			Il.ilBindImage( imageID );
 
-			byte[] buffer = new byte[ input.Length ];
+			byte[] buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			ImageData data = (ImageData)codecData;
@@ -93,7 +98,7 @@ namespace Axiom.Plugins.DevILCodecs
 				// Convert image from Axiom to current IL image
 				ILUtil.ConvertToIL( src );
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				LogManager.Instance.Write( "IL Failed image conversion :", ex.Message );
 			}
@@ -104,13 +109,17 @@ namespace Axiom.Plugins.DevILCodecs
 			// save the image to file
 			Il.ilSaveImage( fileName );
 
-			if ( bufHandle.IsAllocated )
+			if( bufHandle.IsAllocated )
+			{
 				bufHandle.Free();
+			}
 
 			int error = Il.ilGetError();
 
-			if ( error != Il.IL_NO_ERROR )
+			if( error != Il.IL_NO_ERROR )
+			{
 				LogManager.Instance.Write( "IL Error, could not save file: {0} : {1}", fileName, Ilu.iluErrorString( error ) );
+			}
 		}
 
 		public override object Decode( Stream input, Stream output, params object[] args )
@@ -125,7 +134,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilBindImage( imageID );
 
 			// create a temp buffer and write the stream into it
-			byte[] buffer = new byte[ input.Length ];
+			byte[] buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			// load the data into DevIL
@@ -134,7 +143,7 @@ namespace Axiom.Plugins.DevILCodecs
 			// check for an error
 			int ilError = Il.ilGetError();
 
-			if ( ilError != Il.IL_NO_ERROR )
+			if( ilError != Il.IL_NO_ERROR )
 			{
 				throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
 			}
@@ -143,15 +152,15 @@ namespace Axiom.Plugins.DevILCodecs
 			int imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
 
 			// Convert image if imageType is incompatible with us (double or long)
-			if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE &&
-				imageType != Il.IL_FLOAT &&
-				imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
+			if( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE &&
+			    imageType != Il.IL_FLOAT &&
+			    imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
 			{
 				Il.ilConvertImage( format, Il.IL_FLOAT );
 				imageType = Il.IL_FLOAT;
 			}
 			// Converted paletted images
-			if ( format == Il.IL_COLOR_INDEX )
+			if( format == Il.IL_COLOR_INDEX )
 			{
 				Il.ilConvertImage( Il.IL_BGRA, Il.IL_UNSIGNED_BYTE );
 				format = Il.IL_BGRA;
@@ -168,31 +177,35 @@ namespace Axiom.Plugins.DevILCodecs
 			data.format = ILUtil.Convert( format, imageType );
 			data.size = data.width * data.height * bytesPerPixel;
 
-			if ( data.format == PixelFormat.Unknown )
+			if( data.format == PixelFormat.Unknown )
 			{
 				throw new AxiomException( "Unsupported devil format ImageFormat={0} ImageType={1}", format, imageType );
 			}
 
 			// Check for cubemap
 			int numFaces = Il.ilGetInteger( Il.IL_NUM_IMAGES ) + 1;
-			if ( numFaces == 6 )
+			if( numFaces == 6 )
+			{
 				data.flags |= ImageFlags.CubeMap;
+			}
 			else
+			{
 				numFaces = 1; // Support only 1 or 6 face images for now
+			}
 
 			// Keep DXT data (if present at all and the GPU supports it)
 			int dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
-			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
+			if( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
 			{
 				data.format = ILUtil.Convert( dxtFormat, imageType );
 				data.flags |= ImageFlags.Compressed;
 
 				// Validate that this devil version loads DXT mipmaps
-				if ( data.numMipMaps > 0 )
+				if( data.numMipMaps > 0 )
 				{
 					Il.ilBindImage( imageID );
 					Il.ilActiveMipmap( 1 );
-					if ( (uint)Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT ) != dxtFormat )
+					if( (uint)Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT ) != dxtFormat )
 					{
 						data.numMipMaps = 0;
 						LogManager.Instance.Write( "Warning: Custom mipmaps for compressed image were ignored because they are not loaded by this DevIL version." );
@@ -213,25 +226,28 @@ namespace Axiom.Plugins.DevILCodecs
 			int depth = data.depth;
 
 			// Transfer data
-			for ( int mip = 0; mip <= data.numMipMaps; ++mip )
+			for( int mip = 0; mip <= data.numMipMaps; ++mip )
 			{
-				for ( int i = 0; i < numFaces; ++i )
+				for( int i = 0; i < numFaces; ++i )
 				{
 					Il.ilBindImage( imageID );
-					if ( numFaces > 1 )
+					if( numFaces > 1 )
+					{
 						Il.ilActiveImage( i );
-					if ( data.numMipMaps > 0 )
+					}
+					if( data.numMipMaps > 0 )
+					{
 						Il.ilActiveMipmap( mip );
+					}
 
 					/// Size of this face
 					int imageSize = PixelUtil.GetMemorySize( width, height, depth, data.format );
-					buffer = new byte[ imageSize ];
+					buffer = new byte[imageSize];
 
-					if ( ( data.flags & ImageFlags.Compressed ) != 0 )
+					if( ( data.flags & ImageFlags.Compressed ) != 0 )
 					{
-
 						// Compare DXT size returned by DevIL with our idea of the compressed size
-						if ( imageSize == Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ) )
+						if( imageSize == Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ) )
 						{
 							// Retrieve data from DevIL
 							BufferHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
@@ -256,12 +272,18 @@ namespace Axiom.Plugins.DevILCodecs
 					output.Write( buffer, 0, buffer.Length );
 				}
 				/// Next mip
-				if ( width != 1 )
+				if( width != 1 )
+				{
 					width /= 2;
-				if ( height != 1 )
+				}
+				if( height != 1 )
+				{
 					height /= 2;
-				if ( depth != 1 )
+				}
+				if( depth != 1 )
+				{
 					depth /= 2;
+				}
 			}
 
 			// Restore IL state
@@ -282,7 +304,7 @@ namespace Axiom.Plugins.DevILCodecs
 		/// </summary>
 		public void InitializeIL()
 		{
-			if ( !isInitialized )
+			if( !isInitialized )
 			{
 				// fire it up!
 				Il.ilInit();
@@ -302,10 +324,7 @@ namespace Axiom.Plugins.DevILCodecs
 		///    Implemented by subclasses to return the IL type enum value for this
 		///    images file type.
 		/// </summary>
-		public abstract int ILType
-		{
-			get;
-		}
+		abstract public int ILType { get; }
 
 		#endregion Properties
 	}

@@ -24,7 +24,6 @@ namespace Axiom.Demos
 				ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
 
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
-
 		}
 	}
 }

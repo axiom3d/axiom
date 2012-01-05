@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -34,26 +36,32 @@ namespace Axiom.Samples
 	public class ProgressBar : Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea commentTextArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement meter;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement fill;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real progress;
+
 		#endregion fields
 
 		#region properties
@@ -69,40 +77,18 @@ namespace Axiom.Samples
 				this.progress = Utility.Clamp<Real>( progress, 1, 0 );
 				fill.Width = System.Math.Max( (int)fill.Height, (int)( progress * ( meter.Width - 2 * fill.Left ) ) );
 			}
-			get
-			{
-				return progress;
-			}
+			get { return progress; }
 		}
+
 		/// <summary>
 		/// Gets or sets the caption
 		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return textArea.Text;
-			}
-			set
-			{
-				textArea.Text = value;
-			}
-		}
+		public string Caption { get { return textArea.Text; } set { textArea.Text = value; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public string Comment
-		{
-			get
-			{
-				return commentTextArea.Text;
-			}
-			set
-			{
-				commentTextArea.Text = value;
-			}
-		}
+		public string Comment { get { return commentTextArea.Text; } set { commentTextArea.Text = value; } }
 
 		#endregion properties
 

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,7 +47,7 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	public abstract class HardwareBufferManagerBase : DisposableObject
+	abstract public class HardwareBufferManagerBase : DisposableObject
 	{
 		#region Fields
 
@@ -51,14 +55,17 @@ namespace Axiom.Graphics
 		///     A list of vertex buffers created by this buffer manager.
 		/// </summary>
 		protected List<HardwareVertexBuffer> vertexBuffers = new List<HardwareVertexBuffer>();
+
 		/// <summary>
 		///     A list of index buffers created by this buffer manager.
 		/// </summary>
 		protected List<HardwareIndexBuffer> indexBuffers = new List<HardwareIndexBuffer>();
+
 		/// <summary>
 		///     A list of vertex declarations created by this buffer manager.
 		/// </summary>
 		protected List<VertexDeclaration> vertexDeclarations = new List<VertexDeclaration>();
+
 		/// <summary>
 		///     A list of vertex buffer bindings created by this buffer manager.
 		/// </summary>
@@ -68,6 +75,7 @@ namespace Axiom.Graphics
 		///		Map from original buffer to list of temporary buffers.
 		/// </summary>
 		protected Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>> freeTempVertexBufferMap = new Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>>( new BufferComparer() );
+
 		/// <summary>
 		///		List of currently licensed temp buffers.
 		/// </summary>
@@ -77,10 +85,12 @@ namespace Axiom.Graphics
 		///		Number of frames elapsed since temporary buffers utilization was above half the available
 		/// </summary>
 		protected int underUsedFrameCount = 0;
+
 		/// <summary>
 		///		Number of frames to wait before free unused temporary buffers
 		/// </summary>
 		protected static int UnderUsedFrameThreshold = 30000;
+
 		/// <summary>
 		///		Frame delay for BLT_AUTOMATIC_RELEASE temporary buffers
 		/// </summary>
@@ -114,7 +124,7 @@ namespace Axiom.Graphics
 		/// <param name="usage">One or more members of the BufferUsage enumeration; you are
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
-		public virtual HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		virtual public HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
 		{
 			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
 		}
@@ -144,7 +154,7 @@ namespace Axiom.Graphics
 		///		strongly advised to use StaticWriteOnly wherever possible, if you need to 
 		///		update regularly, consider WriteOnly and useShadowBuffer=true.</param>
 		/// <param name="useShadowBuffer"></param>
-		public abstract HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer );
+		abstract public HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer );
 
 		/// <summary>
 		///     Create a hardware index buffer.
@@ -156,7 +166,7 @@ namespace Axiom.Graphics
 		/// <param name="numIndices">The number of indexes in the buffer.</param>
 		/// <param name="usage">One or more members of the <see cref="BufferUsage"/> enumeration.</param>
 		/// <returns></returns>
-		public virtual HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+		virtual public HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
 		{
 			return CreateIndexBuffer( type, numIndices, usage, false );
 		}
@@ -180,12 +190,12 @@ namespace Axiom.Graphics
 		///     be synchronized with the real buffer at an appropriate time.
 		/// </param>
 		/// <returns></returns>
-		public abstract HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer );
+		abstract public HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer );
 
 		/// <summary>
 		///     Creates a vertex declaration, may be overridden by certain rendering APIs.
 		/// </summary>
-		public virtual VertexDeclaration CreateVertexDeclaration()
+		virtual public VertexDeclaration CreateVertexDeclaration()
 		{
 			VertexDeclaration decl = new VertexDeclaration();
 			vertexDeclarations.Add( decl );
@@ -195,7 +205,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Creates a new VertexBufferBinding.
 		/// </summary>
-		public virtual VertexBufferBinding CreateVertexBufferBinding()
+		virtual public VertexBufferBinding CreateVertexBufferBinding()
 		{
 			VertexBufferBinding binding = new VertexBufferBinding();
 			vertexBufferBindings.Add( binding );
@@ -206,11 +216,13 @@ namespace Axiom.Graphics
 		///		Creates a new <see cref="VertexBufferBinding"/>.
 		/// </summary>
 		/// <param name="binding"></param>
-		public virtual void DestroyVertexBufferBinding( VertexBufferBinding binding )
+		virtual public void DestroyVertexBufferBinding( VertexBufferBinding binding )
 		{
 			vertexBufferBindings.Remove( binding );
-			if ( !binding.IsDisposed )
+			if( !binding.IsDisposed )
+			{
 				binding.Dispose();
+			}
 		}
 
 		/// <summary>
@@ -221,7 +233,7 @@ namespace Axiom.Graphics
 		///		first, which removes the object the collection of created objects.
 		/// </remarks>
 		/// <param name="decl">VertexDeclaration object to destroy.</param>
-		public virtual void DestroyVertexDeclaration( VertexDeclaration decl )
+		virtual public void DestroyVertexDeclaration( VertexDeclaration decl )
 		{
 			vertexDeclarations.Remove( decl );
 			decl.Dispose();
@@ -248,7 +260,7 @@ namespace Axiom.Graphics
 		///     expires.
 		/// </param>
 		/// <returns></returns>
-		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee )
+		virtual public HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee )
 		{
 			return AllocateVertexBufferCopy( sourceBuffer, licenseType, licensee, false );
 		}
@@ -275,7 +287,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
 		/// <returns></returns>
-		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData )
+		virtual public HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee, bool copyData )
 		{
 			HardwareVertexBuffer vbuf = null;
 
@@ -283,14 +295,14 @@ namespace Axiom.Graphics
 			List<HardwareVertexBuffer> list;
 			freeTempVertexBufferMap.TryGetValue( sourceBuffer, out list );
 
-			if ( list == null )
+			if( list == null )
 			{
 				list = new List<HardwareVertexBuffer>();
 				freeTempVertexBufferMap[ sourceBuffer ] = list;
 			}
 
 			// Are there any free buffers?
-			if ( list.Count == 0 )
+			if( list.Count == 0 )
 			{
 				// copy buffer, use shadow buffer and make dynamic
 				vbuf = MakeBufferCopy( sourceBuffer, BufferUsage.DynamicWriteOnly, true );
@@ -304,7 +316,7 @@ namespace Axiom.Graphics
 			}
 
 			// Copy data?
-			if ( copyData )
+			if( copyData )
 			{
 				vbuf.CopyData( sourceBuffer, 0, 0, sourceBuffer.Size, true );
 			}
@@ -325,13 +337,15 @@ namespace Axiom.Graphics
 		///     The buffer copy. The caller is expected to no longer use this reference, 
 		///     since another user may well begin to modify the contents of the buffer.
 		/// </param>
-		public virtual void ReleaseVertexBufferCopy( HardwareVertexBuffer bufferCopy )
+		virtual public void ReleaseVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			for ( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
+			for( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
 			{
 				VertexBufferLicense vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
-				if ( vbl.buffer != bufferCopy )
+				if( vbl.buffer != bufferCopy )
+				{
 					continue;
+				}
 				vbl.licensee.LicenseExpired( bufferCopy );
 				tempVertexBufferLicenses.RemoveAt( i );
 				return;
@@ -352,11 +366,13 @@ namespace Axiom.Graphics
 		///     buffer copy for use.</param>
 		public void TouchVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			for ( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
+			for( int i = 0; i < tempVertexBufferLicenses.Count; i++ )
 			{
 				VertexBufferLicense vbl = (VertexBufferLicense)tempVertexBufferLicenses[ i ];
-				if ( vbl.buffer != bufferCopy )
+				if( vbl.buffer != bufferCopy )
+				{
 					continue;
+				}
 				Debug.Assert( vbl.licenseType == BufferLicenseRelease.Automatic );
 
 				vbl.expiredDelay = expiredDelayFrameThreshold;
@@ -374,20 +390,20 @@ namespace Axiom.Graphics
 		///     to save hardware memory (e.g. application was runs in a long time, you
 		///     might free temporary buffers periodically to avoid memory overload).
 		/// </remarks>
-		public virtual void FreeUnusedBufferCopies()
+		virtual public void FreeUnusedBufferCopies()
 		{
 			int numFreed = 0;
 
 			// Free unused temporary buffers
-			foreach ( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
+			foreach( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
 			{
-				for ( int i = list.Count - 1; i > 0; i-- )
+				for( int i = list.Count - 1; i > 0; i-- )
 				{
 					HardwareVertexBuffer vbuf = list[ i ];
 					// Free the temporary buffer that referenced by ourself only.
 					// TODO: Some temporary buffers are bound to vertex buffer bindings
 					// but not checked out, need to sort out method to unbind them.
-					if ( vbuf.UseCount <= 1 )
+					if( vbuf.UseCount <= 1 )
 					{
 						++numFreed;
 						list.RemoveAt( i );
@@ -396,10 +412,14 @@ namespace Axiom.Graphics
 			}
 
 			string str;
-			if ( numFreed > 0 )
+			if( numFreed > 0 )
+			{
 				str = "HardwareBufferManager: Freed " + numFreed + " unused temporary vertex buffers.";
+			}
 			else
+			{
 				str = "HardwareBufferManager: No unused temporary vertex buffers found.";
+			}
 			LogManager.Instance.Write( str );
 		}
 
@@ -407,18 +427,18 @@ namespace Axiom.Graphics
 		///     Internal method for releasing all temporary buffers which have been 
 		///     allocated using <see cref="BufferLicenseRelease.Automatic"/> is called by Axiom.
 		/// </summary>
-		public virtual void ReleaseBufferCopies( bool forceFreeUnused )
+		virtual public void ReleaseBufferCopies( bool forceFreeUnused )
 		{
 			int numUnused = freeTempVertexBufferMap.Count;
 			int numUsed = tempVertexBufferLicenses.Count;
-			for ( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
+			for( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
 			{
 				VertexBufferLicense vbl =
 					(VertexBufferLicense)tempVertexBufferLicenses[ i ];
 
 				// only release licenses set to auto release
-				if ( vbl.licenseType == BufferLicenseRelease.Automatic &&
-				   ( forceFreeUnused || --vbl.expiredDelay <= 0 ) )
+				if( vbl.licenseType == BufferLicenseRelease.Automatic &&
+				    ( forceFreeUnused || --vbl.expiredDelay <= 0 ) )
 				{
 					vbl.licensee.LicenseExpired( vbl.buffer );
 					IList<HardwareVertexBuffer> list = freeTempVertexBufferMap[ vbl.originalBuffer ];
@@ -433,27 +453,29 @@ namespace Axiom.Graphics
 				}
 			}
 			// Check whether or not free unused temporary vertex buffers.
-			if ( forceFreeUnused )
+			if( forceFreeUnused )
 			{
 				FreeUnusedBufferCopies();
 				underUsedFrameCount = 0;
 			}
 			else
 			{
-				if ( numUsed < numUnused )
+				if( numUsed < numUnused )
 				{
 					// Free temporary vertex buffers if too many unused for a long time.
 					// Do overall temporary vertex buffers instead of per source buffer
 					// to avoid overhead.
 					++underUsedFrameCount;
-					if ( underUsedFrameCount >= UnderUsedFrameThreshold )
+					if( underUsedFrameCount >= UnderUsedFrameThreshold )
 					{
 						FreeUnusedBufferCopies();
 						underUsedFrameCount = 0;
 					}
 				}
 				else
+				{
 					underUsedFrameCount = 0;
+				}
 			}
 		}
 
@@ -466,15 +488,15 @@ namespace Axiom.Graphics
 		///		wishes to make that known so that new copies will reflect the changes.
 		/// </remarks>
 		/// <param name="sourceBuffer">Buffer to release temp copies of.</param>
-		public virtual void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
+		virtual public void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
 		{
 			// erase the copies which are licensed out
-			for ( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
+			for( int i = tempVertexBufferLicenses.Count - 1; i >= 0; i-- )
 			{
 				VertexBufferLicense vbl =
 					(VertexBufferLicense)tempVertexBufferLicenses[ i ];
 
-				if ( vbl.originalBuffer == sourceBuffer )
+				if( vbl.originalBuffer == sourceBuffer )
 				{
 					// Just tell the owner that this is being released
 					vbl.licensee.LicenseExpired( vbl.buffer );
@@ -483,9 +505,9 @@ namespace Axiom.Graphics
 			}
 
 			// TODO: Verify this works
-			foreach ( KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap )
+			foreach( KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap )
 			{
-				if ( entry.Key == sourceBuffer )
+				if( entry.Key == sourceBuffer )
 				{
 					List<HardwareVertexBuffer> list = entry.Value;
 					list.Clear();
@@ -508,37 +530,38 @@ namespace Axiom.Graphics
 		#endregion
 
 		#region IDisposable Implementation
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Destroy all necessary objects
-					while ( vertexDeclarations.Count > 0 )
+					while( vertexDeclarations.Count > 0 )
 					{
 						vertexDeclarations[ 0 ].Dispose();
 					}
 					vertexDeclarations.Clear();
 
-					while ( vertexBufferBindings.Count > 0 )
+					while( vertexBufferBindings.Count > 0 )
 					{
 						vertexBufferBindings[ 0 ].Dispose();
 					}
 					vertexBufferBindings.Clear();
 
 					// destroy all vertex buffers
-					while ( vertexBuffers.Count > 0 )
+					while( vertexBuffers.Count > 0 )
 					{
 						vertexBuffers[ 0 ].Dispose();
 					}
 					vertexBuffers.Clear();
 
 					// destroy all index buffers
-					while ( indexBuffers.Count > 0 )
+					while( indexBuffers.Count > 0 )
 					{
 						indexBuffers[ 0 ].Dispose();
 					}
@@ -548,26 +571,31 @@ namespace Axiom.Graphics
 
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion IDisposable Implementation
 
 		public void DisposeVertexBuffer( HardwareVertexBuffer buffer )
 		{
 			vertexBuffers.Remove( buffer );
-			if ( !buffer.IsDisposed )
+			if( !buffer.IsDisposed )
+			{
 				buffer.Dispose();
+			}
 		}
 
 		public void DisposeIndexBuffer( HardwareIndexBuffer buffer )
 		{
 			indexBuffers.Remove( buffer );
-			if ( !buffer.IsDisposed )
+			if( !buffer.IsDisposed )
+			{
 				buffer.Dispose();
+			}
 		}
 
 		/// Notification that a hardware vertex buffer has been destroyed
-		public virtual void NotifyVertexBufferDestroyed( HardwareVertexBuffer buffer )
+		virtual public void NotifyVertexBufferDestroyed( HardwareVertexBuffer buffer )
 		{
-			if ( vertexBuffers.Contains( buffer ) )
+			if( vertexBuffers.Contains( buffer ) )
 			{
 				vertexBuffers.Remove( buffer );
 				ForceReleaseBufferCopies( buffer );
@@ -575,9 +603,9 @@ namespace Axiom.Graphics
 		}
 
 		/// Notification that a hardware index buffer has been destroyed
-		public virtual void NotifyIndexBufferDestroyed( HardwareIndexBuffer buffer )
+		virtual public void NotifyIndexBufferDestroyed( HardwareIndexBuffer buffer )
 		{
-			if ( indexBuffers.Contains( buffer ) )
+			if( indexBuffers.Contains( buffer ) )
 			{
 				indexBuffers.Remove( buffer );
 			}
@@ -598,7 +626,7 @@ namespace Axiom.Graphics
 			/// <returns></returns>
 			public int Compare( HardwareVertexBuffer x, HardwareVertexBuffer y )
 			{
-				if ( x.ID == y.ID )
+				if( x.ID == y.ID )
 				{
 					return 0;
 				}
@@ -622,6 +650,5 @@ namespace Axiom.Graphics
 
 			#endregion
 		}
-
 	}
 }

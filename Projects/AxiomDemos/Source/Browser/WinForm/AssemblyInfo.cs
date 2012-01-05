@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+
 [assembly: AssemblyTitle( "Axiom.Demos.Browser.CommandLine" )]
 [assembly: AssemblyDescription( "Command Line browser for Axiom Rendering Engine Demos" )]
 [assembly: AssemblyConfiguration( "" )]
@@ -53,6 +54,7 @@ using System.Runtime.CompilerServices;
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //
+
 [assembly: AssemblyDelaySign( false )]
 [assembly: AssemblyKeyFile( "" )]
 [assembly: AssemblyKeyName( "" )]

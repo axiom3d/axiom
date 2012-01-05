@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -29,7 +31,7 @@ using Axiom.Math;
 
 namespace Axiom.Samples.Core
 {
-	class BezierSample : SdkSample
+	internal class BezierSample : SdkSample
 	{
 		#region Protected Fields
 
@@ -44,6 +46,7 @@ namespace Axiom.Samples.Core
 		#endregion Protected Fields
 
 		#region Private Structs
+
 		private struct PatchVertex
 		{
 			public float X, Y, Z;
@@ -51,8 +54,8 @@ namespace Axiom.Samples.Core
 			public float U, V;
 
 			public PatchVertex( float x, float y, float z,
-				float nx, float ny, float nz,
-				float u, float v )
+			                    float nx, float ny, float nz,
+			                    float u, float v )
 			{
 				X = x;
 				Y = y;
@@ -84,7 +87,7 @@ namespace Axiom.Samples.Core
 
 			// define the control point vertices for our patch
 			// Patch data
-			PatchVertex[] patchVertices = new PatchVertex[ 9 ];
+			PatchVertex[] patchVertices = new PatchVertex[9];
 
 			patchVertices[ 0 ].X = -500;
 			patchVertices[ 0 ].Y = 200;
@@ -191,7 +194,7 @@ namespace Axiom.Samples.Core
 			SceneManager.RootSceneNode.AttachObject( patchEntity );
 
 			// save the main pass of the material so we can toggle wireframe on it
-			if ( material != null )
+			if( material != null )
 			{
 				patchPass = material.GetTechnique( 0 ).GetPass( 0 );
 
@@ -206,16 +209,15 @@ namespace Axiom.Samples.Core
 				CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Wireframe", "Wireframe", 120 );
 				slider.SliderMoved += new SliderMovedHandler( slider_SliderMoved );
 				box.CheckChanged += new CheckChangedHandler( box_CheckChanged );
-
 			}
 		}
 
-		void box_CheckChanged( object sender, CheckBox box )
+		private void box_CheckChanged( object sender, CheckBox box )
 		{
 			patchPass.PolygonMode = ( box.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
 		}
 
-		void slider_SliderMoved( object sender, Slider slider )
+		private void slider_SliderMoved( object sender, Slider slider )
 		{
 			patch.Subdivision = slider.Value;
 		}

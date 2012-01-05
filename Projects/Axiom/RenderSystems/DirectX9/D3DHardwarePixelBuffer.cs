@@ -44,6 +44,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using Root = Axiom.Core.Root;
+
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -65,38 +66,47 @@ namespace Axiom.RenderSystems.DirectX9
 		///    D3DDevice pointer
 		///</summary>
 		protected D3D.Device device;
+
 		///<summary>
 		///    Surface abstracted by this buffer
 		///</summary>
 		protected D3D.Surface surface;
+
 		///<summary>
 		///    FSAA Surface abstracted by this buffer
 		///</summary>
 		protected D3D.Surface fsaaSurface;
+
 		///<summary>
 		///    Volume abstracted by this buffer
 		///</summary>
 		protected D3D.Volume volume;
+
 		///<summary>
 		///    Temporary surface in main memory if direct locking of mSurface is not possible
 		///</summary>
 		protected D3D.Surface tempSurface;
+
 		///<summary>
 		///    Temporary volume in main memory if direct locking of mVolume is not possible
 		///</summary>
 		protected D3D.Volume tempVolume;
+
 		///<summary>
 		///    Doing Mipmapping?
 		///</summary>
 		protected bool doMipmapGen;
+
 		///<summary>
 		///    Hardware Mipmaps?
 		///</summary>
 		protected bool HWMipmaps;
+
 		///<summary>
 		///    The Mipmap texture?
 		///</summary>
 		protected D3D.BaseTexture mipTex;
+
 		///<summary>
 		///    Render targets
 		///</summary>
@@ -127,24 +137,12 @@ namespace Axiom.RenderSystems.DirectX9
 		///<summary>
 		///    Accessor for surface
 		///</summary>
-		public D3D.Surface FSAASurface
-		{
-			get
-			{
-				return fsaaSurface;
-			}
-		}
+		public D3D.Surface FSAASurface { get { return fsaaSurface; } }
 
 		///<summary>
 		///    Accessor for surface
 		///</summary>
-		public D3D.Surface Surface
-		{
-			get
-			{
-				return surface;
-			}
-		}
+		public D3D.Surface Surface { get { return surface; } }
 
 		#endregion Properties
 
@@ -168,8 +166,10 @@ namespace Axiom.RenderSystems.DirectX9
 			SlicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				CreateRenderTextures( update );
+			}
 		}
 
 		///<summary>
@@ -190,8 +190,10 @@ namespace Axiom.RenderSystems.DirectX9
 			SlicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				CreateRenderTextures( update );
+			}
 		}
 
 		///<summary>
@@ -281,19 +283,23 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
 		{
 			// Check for misuse
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+			{
 				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
+			}
 			// Set extents and format
 			PixelBox rval = new PixelBox( lockBox, Format );
 			// Set locking flags according to options
 			D3D.LockFlags flags = D3D.LockFlags.None;
-			switch ( options )
+			switch( options )
 			{
 				case BufferLocking.Discard:
 					// D3D only likes D3D.LockFlags.Discard if you created the texture with D3DUSAGE_DYNAMIC
 					// debug runtime flags this up, could cause problems on some drivers
-					if ( ( usage & BufferUsage.Dynamic ) != 0 )
+					if( ( usage & BufferUsage.Dynamic ) != 0 )
+					{
 						flags |= D3D.LockFlags.Discard;
+					}
 					break;
 				case BufferLocking.ReadOnly:
 					flags |= D3D.LockFlags.ReadOnly;
@@ -302,14 +308,14 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			}
 
-			if ( surface != null )
+			if( surface != null )
 			{
 				// Surface
 				DX.DataRectangle data = null;
 				try
 				{
-					if ( lockBox.Left == 0 && lockBox.Top == 0 &&
-						 lockBox.Right == Width && lockBox.Bottom == Height )
+					if( lockBox.Left == 0 && lockBox.Top == 0 &&
+					    lockBox.Right == Width && lockBox.Bottom == Height )
 					{
 						// Lock whole surface
 						data = surface.LockRectangle( flags );
@@ -320,7 +326,7 @@ namespace Axiom.RenderSystems.DirectX9
 						data = surface.LockRectangle( prect, flags );
 					}
 				}
-				catch ( Exception e )
+				catch( Exception e )
 				{
 					throw new Exception( "Surface locking failed.", e );
 				}
@@ -343,15 +349,21 @@ namespace Axiom.RenderSystems.DirectX9
 		///</summary>
 		protected override void UnlockImpl()
 		{
-			if ( surface != null )
+			if( surface != null )
+			{
 				// Surface
 				surface.UnlockRectangle();
+			}
 			else
+			{
 				// Volume
 				volume.UnlockBox();
+			}
 
-			if ( doMipmapGen )
+			if( doMipmapGen )
+			{
 				GenMipmaps();
+			}
 		}
 
 		///<summary>
@@ -360,22 +372,26 @@ namespace Axiom.RenderSystems.DirectX9
 		///<param name="update">are we updating an existing texture</param>
 		protected void CreateRenderTextures( bool update )
 		{
-			if ( update )
+			if( update )
 			{
 				Debug.Assert( sliceTRT.Count == Depth );
-				foreach ( D3DRenderTexture trt in sliceTRT )
+				foreach( D3DRenderTexture trt in sliceTRT )
+				{
 					trt.Rebind( this );
+				}
 				return;
 			}
 
 			DestroyRenderTextures();
-			if ( surface == null )
+			if( surface == null )
+			{
 				throw new Exception( "Rendering to 3D slices not supported yet for Direct3D; in " +
-									"D3DHardwarePixelBuffer.CreateRenderTexture" );
+				                     "D3DHardwarePixelBuffer.CreateRenderTexture" );
+			}
 			// Create render target for each slice
 			sliceTRT.Clear();
 			Debug.Assert( Depth == 1 );
-			for ( int zoffset = 0; zoffset < Depth; ++zoffset )
+			for( int zoffset = 0; zoffset < Depth; ++zoffset )
 			{
 				string name = "rtt/" + this.ID;
 				RenderTexture trt = new D3DRenderTexture( name, this );
@@ -389,14 +405,18 @@ namespace Axiom.RenderSystems.DirectX9
 		///</summary>
 		protected void DestroyRenderTextures()
 		{
-			if ( sliceTRT.Count == 0 )
+			if( sliceTRT.Count == 0 )
+			{
 				return;
+			}
 			// Delete all render targets that are not yet deleted via _clearSliceRTT
-			for ( int i = 0; i < sliceTRT.Count; ++i )
+			for( int i = 0; i < sliceTRT.Count; ++i )
 			{
 				RenderTexture trt = sliceTRT[ i ];
-				if ( trt != null )
+				if( trt != null )
+				{
 					Root.Instance.RenderSystem.DestroyRenderTarget( trt.Name );
+				}
 			}
 			// sliceTRT.Clear();
 		}
@@ -417,7 +437,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
 			D3DHardwarePixelBuffer _src = (D3DHardwarePixelBuffer)src;
-			if ( surface != null && _src.surface != null )
+			if( surface != null && _src.surface != null )
 			{
 				// Surface-to-surface
 				System.Drawing.Rectangle dsrcRect = ToD3DRectangle( srcBox );
@@ -425,7 +445,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// D3DXLoadSurfaceFromSurface
 				D3D.Surface.FromSurface( surface, _src.surface, D3D.Filter.None, 0, dsrcRect, ddestRect );
 			}
-			else if ( volume != null && _src.volume != null )
+			else if( volume != null && _src.volume != null )
 			{
 				// Volume-to-volume
 				D3D.Box dsrcBox = ToD3DBox( srcBox );
@@ -434,8 +454,10 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D.Volume.FromVolume( volume, _src.volume, D3D.Filter.None, 0, dsrcBox, ddestBox );
 			}
 			else
+			{
 				// Software fallback
 				base.Blit( _src, srcBox, dstBox );
+			}
 		}
 
 		///<summary>
@@ -461,31 +483,31 @@ namespace Axiom.RenderSystems.DirectX9
 			int bufSize = 0;
 
 			// convert to pixelbuffer's native format if necessary
-			if ( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
+			if( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
-				byte[] newBuffer = new byte[ bufSize ];
+				byte[] newBuffer = new byte[bufSize];
 				bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
 				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
 				PixelConverter.BulkPixelConversion( src, converted );
 			}
 
 			//int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
-			using ( D3D.Surface tmpSurface = D3D.Surface.CreateOffscreenPlain( device, converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch ) )
-			{ 
+			using( D3D.Surface tmpSurface = D3D.Surface.CreateOffscreenPlain( device, converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch ) )
+			{
 				int pitch;
 				// Ideally I would be using the Array mechanism here, but that doesn't seem to work
 				DX.DataRectangle buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock );
 				{
 					buf.Data.Position = 0; // Ensure starting Position
 					bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-					byte[] ugh = new byte[ bufSize ];
+					byte[] ugh = new byte[bufSize];
 					Marshal.Copy( converted.Data, ugh, 0, bufSize );
 					buf.Data.Write( ugh, 0, bufSize );
 				}
 				tmpSurface.UnlockRectangle();
 
-				if ( surface != null )
+				if( surface != null )
 				{
 					// I'm trying to write to surface using the data in converted
 					System.Drawing.Rectangle srcRect = ToD3DRectangleExtent( converted );
@@ -507,11 +529,15 @@ namespace Axiom.RenderSystems.DirectX9
 			// it, I need to free it here.  This invalidates converted.
 			// My data has already been copied to tmpSurface and then to the
 			// real surface.
-			if ( bufGCHandle.IsAllocated )
+			if( bufGCHandle.IsAllocated )
+			{
 				bufGCHandle.Free();
+			}
 
-			if ( doMipmapGen )
+			if( doMipmapGen )
+			{
 				GenMipmaps();
+			}
 		}
 
 		///<summary>
@@ -528,17 +554,19 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// Decide on pixel format of temp surface
 			PixelFormat tmpFormat = Format;
-			if ( D3DHelper.ConvertEnum( dst.Format ) == D3D.Format.Unknown )
+			if( D3DHelper.ConvertEnum( dst.Format ) == D3D.Format.Unknown )
+			{
 				tmpFormat = dst.Format;
-			if ( surface != null )
+			}
+			if( surface != null )
 			{
 				Debug.Assert( srcBox.Depth == 1 && dst.Depth == 1 );
 				// Create temp texture
 				D3D.Texture tmp =
 					new D3D.Texture( device, dst.Width, dst.Height,
-									1, // 1 mip level ie topmost, generate no mipmaps
-									0, D3DHelper.ConvertEnum( tmpFormat ),
-									D3D.Pool.Scratch );
+					                 1, // 1 mip level ie topmost, generate no mipmaps
+					                 0, D3DHelper.ConvertEnum( tmpFormat ),
+					                 D3D.Pool.Scratch );
 				D3D.Surface subSurface = tmp.GetSurfaceLevel( 0 );
 				// Copy texture to this temp surface
 				System.Drawing.Rectangle destRect, srcRect;
@@ -564,9 +592,9 @@ namespace Axiom.RenderSystems.DirectX9
 				// Create temp texture
 				D3D.VolumeTexture tmp =
 					new D3D.VolumeTexture( device, dst.Width, dst.Height, dst.Depth,
-										   0, D3D.Usage.None,
-										   D3DHelper.ConvertEnum( tmpFormat ),
-										   D3D.Pool.Scratch );
+					                       0, D3D.Usage.None,
+					                       D3DHelper.ConvertEnum( tmpFormat ),
+					                       D3D.Pool.Scratch );
 				D3D.Volume subVolume = tmp.GetVolumeLevel( 0 );
 				// Volume
 				D3D.Box ddestBox = ToD3DBoxExtent( dst );
@@ -595,7 +623,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			Debug.Assert( mipTex != null );
 			// Mipmapping
-			if ( HWMipmaps )
+			if( HWMipmaps )
 			{
 				// Hardware mipmaps
 				mipTex.GenerateMipSublevels();
@@ -637,11 +665,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
-				{
-				}
+				if( disposeManagedResources ) {}
 				DestroyRenderTextures();
 			}
 

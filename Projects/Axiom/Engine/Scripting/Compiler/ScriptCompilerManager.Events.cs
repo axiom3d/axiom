@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Scripting.Compiler.AST;
 using Axiom.Graphics;
 
@@ -46,11 +51,13 @@ namespace Axiom.Scripting.Compiler
 	{
 		/// Returns the concrete node list from the given file
 		public delegate IList<ConcreteNode> ImportFileHandler( ScriptCompiler compiler, string filename );
+
 		/// Returns the concrete node list from the given file
 		public event ImportFileHandler OnImportFile;
 
 		/// Allows for responding to and overriding behavior before a CST is translated into an AST
 		public delegate void PreConversionHandler( ScriptCompiler compiler, IList<ConcreteNode> nodes );
+
 		/// Allows for responding to and overriding behavior before a CST is translated into an AST
 		public event PreConversionHandler OnPreConversion;
 
@@ -66,6 +73,7 @@ namespace Axiom.Scripting.Compiler
 		/// True continues compilation, false aborts
 		/// </returns>
 		public delegate bool PostConversionHandler( ScriptCompiler compiler, IList<AbstractNode> nodes );
+
 		/// <summary>
 		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
 		/// </summary>
@@ -81,6 +89,7 @@ namespace Axiom.Scripting.Compiler
 
 		/// Called when an error occurred
 		public delegate void CompilerErrorHandler( ScriptCompiler compiler, ScriptCompiler.CompileError err );
+
 		/// Called when an error occurred
 		public event CompilerErrorHandler OnCompileError;
 
@@ -97,6 +106,7 @@ namespace Axiom.Scripting.Compiler
 		/// <param name="retval">A possible return value from handlers</param>
 		/// <returns>True if the handler processed the event</returns>
 		public delegate bool TransationEventHandler( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retval );
+
 		/// <summary>
 		/// Called when an event occurs during translation, return true if handled
 		/// </summary>
@@ -110,58 +120,47 @@ namespace Axiom.Scripting.Compiler
 
 	public enum CompilerEventType
 	{
-		[ScriptEnum( "preApplyTextureAliases" )]
-		PreApplyTextureAliases,
+		[ScriptEnum( "preApplyTextureAliases" )] PreApplyTextureAliases,
 
-		[ScriptEnum( "processResourceName" )]
-		ProcessResourceName,
+		[ScriptEnum( "processResourceName" )] ProcessResourceName,
 
-		[ScriptEnum( "processNameExclusion" )]
-		ProcessNameExclusion,
+		[ScriptEnum( "processNameExclusion" )] ProcessNameExclusion,
 
-		[ScriptEnum( "createMaterial" )]
-		CreateMaterial,
+		[ScriptEnum( "createMaterial" )] CreateMaterial,
 
-		[ScriptEnum( "createGpuProgram" )]
-		CreateGpuProgram,
+		[ScriptEnum( "createGpuProgram" )] CreateGpuProgram,
 
-		[ScriptEnum( "createHighLevelGpuProgram" )]
-		CreateHighLevelGpuProgram,
+		[ScriptEnum( "createHighLevelGpuProgram" )] CreateHighLevelGpuProgram,
 
-		[ScriptEnum( "createGpuSharedParameters" )]
-		CreateGpuSharedParameters,
+		[ScriptEnum( "createGpuSharedParameters" )] CreateGpuSharedParameters,
 
-		[ScriptEnum( "createParticleSystem" )]
-		CreateParticleSystem,
+		[ScriptEnum( "createParticleSystem" )] CreateParticleSystem,
 
-		[ScriptEnum( "createCompositor" )]
-		CreateCompositor
+		[ScriptEnum( "createCompositor" )] CreateCompositor
 	}
 
 	#region ScriptCompiler Events
 
 	#region ScriptCompilerEvent
+
 	/// <summary>
 	/// This struct is a base class for events which can be thrown by the compilers and caught by
 	/// subscribers. There are a set number of standard events which are used by Ogre's core.
 	/// New event types may be derived for more custom compiler processing.
 	/// </summary>
-	public abstract class ScriptCompilerEvent
+	abstract public class ScriptCompilerEvent
 	{
 		/// <summary>
 		/// Return the type of this ScriptCompilerEvent
 		/// </summary>
-		public CompilerEventType Type
-		{
-			get;
-			private set;
-		}
+		public CompilerEventType Type { get; private set; }
 
 		protected ScriptCompilerEvent( CompilerEventType type )
 		{
 			Type = type;
 		}
 	};
+
 	#endregion ScriptCompilerEvent
 
 	// Standard event types
@@ -180,6 +179,7 @@ namespace Axiom.Scripting.Compiler
 			Aliases = aliases;
 		}
 	};
+
 	#endregion PreApplyTextureAliasesScriptCompilerEvent
 
 	#region ProcessResourceNameScriptCompilerEvent
@@ -204,6 +204,7 @@ namespace Axiom.Scripting.Compiler
 			Name = name;
 		}
 	};
+
 	#endregion ProcessResourceNameScriptCompilerEvent
 
 	#region ProcessNameExclusionScriptCompilerEvent
@@ -220,6 +221,7 @@ namespace Axiom.Scripting.Compiler
 			Parent = parent;
 		}
 	};
+
 	#endregion ProcessNameExclusionScriptCompilerEvent
 
 	#region CreateMaterialScriptCompilerEvent
@@ -238,6 +240,7 @@ namespace Axiom.Scripting.Compiler
 			ResourceGroup = resGroup;
 		}
 	};
+
 	#endregion CreateMaterialScriptCompilerEvent
 
 	#region CreateGpuProgramScriptCompilerEvent
@@ -252,7 +255,7 @@ namespace Axiom.Scripting.Compiler
 		public GpuProgramType ProgramType;
 
 		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source,
-			string syntax, GpuProgramType prgType )
+		                                            string syntax, GpuProgramType prgType )
 			: base( CompilerEventType.CreateGpuProgram )
 		{
 			File = file;
@@ -263,6 +266,7 @@ namespace Axiom.Scripting.Compiler
 			ProgramType = prgType;
 		}
 	};
+
 	#endregion CreateGpuProgramScriptCompilerEvent
 
 	#region CreateHighLevelGpuProgramScriptCompilerEvent
@@ -277,7 +281,7 @@ namespace Axiom.Scripting.Compiler
 		public GpuProgramType ProgramType;
 
 		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source,
-			string language, GpuProgramType prgType )
+		                                                     string language, GpuProgramType prgType )
 			: base( CompilerEventType.CreateHighLevelGpuProgram )
 		{
 			File = file;
@@ -288,6 +292,7 @@ namespace Axiom.Scripting.Compiler
 			ProgramType = prgType;
 		}
 	};
+
 	#endregion CreateHighLevelGpuProgramScriptCompilerEvent
 
 	#region CreateGpuSharedParametersScriptCompilerEvent
@@ -306,6 +311,7 @@ namespace Axiom.Scripting.Compiler
 			ResourceGroup = resGroup;
 		}
 	};
+
 	#endregion CreateGpuSharedParametersScriptCompilerEvent
 
 	#region CreateParticleSystemScriptCompilerEvent
@@ -324,6 +330,7 @@ namespace Axiom.Scripting.Compiler
 			ResourceGroup = resGroup;
 		}
 	};
+
 	#endregion CreateParticleSystemScriptCompilerEvent
 
 	#region CreateCompositorScriptCompilerEvent
@@ -342,6 +349,7 @@ namespace Axiom.Scripting.Compiler
 			ResourceGroup = resGroup;
 		}
 	};
+
 	#endregion CreateCompositorScriptCompilerEvent
 
 	#endregion ScriptCompiler Events

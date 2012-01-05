@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,79 +52,19 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		private long _left;
-		public long Left
-		{
-			get
-			{
-				return _left;
-			}
-			set
-			{
-				_left = value;
-			}
-		}
+		public long Left { get { return _left; } set { _left = value; } }
 
 		private long _top;
-		public long Top
-		{
-			get
-			{
-				return _top;
-			}
-			set
-			{
-				_top = value;
-			}
-		}
+		public long Top { get { return _top; } set { _top = value; } }
 
 		private long _right;
-		public long Right
-		{
-			get
-			{
-				return _right;
-			}
-			set
-			{
-				_right = value;
-			}
-		}
+		public long Right { get { return _right; } set { _right = value; } }
 
 		private long _bottom;
-		public long Bottom
-		{
-			get
-			{
-				return _bottom;
-			}
-			set
-			{
-				_bottom = value;
-			}
-		}
+		public long Bottom { get { return _bottom; } set { _bottom = value; } }
 
-		public long Width
-		{
-			get
-			{
-				return _right - _left;
-			}
-			set
-			{
-				_left = value - _right;
-			}
-		}
-		public long Height
-		{
-			get
-			{
-				return _bottom - _top;
-			}
-			set
-			{
-				_bottom = value - _top;
-			}
-		}
+		public long Width { get { return _right - _left; } set { _left = value - _right; } }
+		public long Height { get { return _bottom - _top; } set { _bottom = value - _top; } }
 
 		#endregion Fields and Properties
 
@@ -160,7 +102,7 @@ namespace Axiom.Core
 
 		public Rectangle Merge( Rectangle rhs )
 		{
-			if ( Width == 0 )
+			if( Width == 0 )
 			{
 				this = rhs;
 			}
@@ -195,79 +137,19 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		private float _left;
-		public float Left
-		{
-			get
-			{
-				return _left;
-			}
-			set
-			{
-				_left = value;
-			}
-		}
+		public float Left { get { return _left; } set { _left = value; } }
 
 		private float _top;
-		public float Top
-		{
-			get
-			{
-				return _top;
-			}
-			set
-			{
-				_top = value;
-			}
-		}
+		public float Top { get { return _top; } set { _top = value; } }
 
 		private float _right;
-		public float Right
-		{
-			get
-			{
-				return _right;
-			}
-			set
-			{
-				_right = value;
-			}
-		}
+		public float Right { get { return _right; } set { _right = value; } }
 
 		private float _bottom;
-		public float Bottom
-		{
-			get
-			{
-				return _bottom;
-			}
-			set
-			{
-				_bottom = value;
-			}
-		}
+		public float Bottom { get { return _bottom; } set { _bottom = value; } }
 
-		public float Width
-		{
-			get
-			{
-				return _right - _left;
-			}
-			set
-			{
-				_right = value - _left;
-			}
-		}
-		public float Height
-		{
-			get
-			{
-				return _bottom - _top;
-			}
-			set
-			{
-				_bottom = value - _top;
-			}
-		}
+		public float Width { get { return _right - _left; } set { _right = value - _left; } }
+		public float Height { get { return _bottom - _top; } set { _bottom = value - _top; } }
 
 		#endregion Fields and Properties
 
@@ -305,7 +187,7 @@ namespace Axiom.Core
 
 		public RectangleF Merge( RectangleF rhs )
 		{
-			if ( Width == 0 )
+			if( Width == 0 )
 			{
 				this = rhs;
 			}
@@ -320,9 +202,7 @@ namespace Axiom.Core
 			return this;
 		}
 
-
 		#endregion Methods
-
 
 		internal static RectangleF Intersect( RectangleF lhs, RectangleF rhs )
 		{
@@ -336,5 +216,4 @@ namespace Axiom.Core
 			return r;
 		}
 	}
-
 }

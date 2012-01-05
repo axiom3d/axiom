@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,21 +46,18 @@ using Axiom.Core;
 
 namespace Axiom.Media
 {
-
-
 	///<summary>
 	///    Class for manipulating bit patterns.
 	///</summary>
 	public static class Bitwise
 	{
-
 		///<summary>
 		///    Returns the most significant bit set in a value.
 		///</summary>
 		public static uint MostSignificantBitSet( uint value )
 		{
 			uint result = 0;
-			while ( value != 0 )
+			while( value != 0 )
 			{
 				++result;
 				value >>= 1;
@@ -88,19 +89,27 @@ namespace Axiom.Media
 		///</summary>
 		public static uint FixedToFixed( uint value, int n, int p )
 		{
-			if ( n > p )
+			if( n > p )
+			{
 				// Less bits required than available; this is easy
 				value >>= n - p;
-			else if ( n < p )
+			}
+			else if( n < p )
 			{
 				// More bits required than are there, do the fill
 				// Use old fashioned division, probably better than a loop
-				if ( value == 0 )
+				if( value == 0 )
+				{
 					value = 0;
-				else if ( value == ( (uint)( 1 ) << n ) - 1 )
+				}
+				else if( value == ( (uint)( 1 ) << n ) - 1 )
+				{
 					value = ( 1u << p ) - 1;
+				}
 				else
+				{
 					value = value * ( 1u << p ) / ( ( 1u << n ) - 1u );
+				}
 			}
 			return value;
 		}
@@ -120,12 +129,18 @@ namespace Axiom.Media
 		///</summary>
 		public static uint FloatToFixed( float value, int bits )
 		{
-			if ( value <= 0.0f )
+			if( value <= 0.0f )
+			{
 				return 0;
-			else if ( value >= 1.0f )
+			}
+			else if( value >= 1.0f )
+			{
 				return ( 1u << bits ) - 1;
+			}
 			else
+			{
 				return (uint)( value * ( 1u << bits ) );
+			}
 		}
 
 		///<summary>
@@ -148,9 +163,10 @@ namespace Axiom.Media
 		/**
 		 * Write a n*8 bits integer value to memory in native endian.
 		 */
+
 		unsafe public static void IntWrite( byte* dest, int n, uint value )
 		{
-			switch ( n )
+			switch( n )
 			{
 				case 1:
 					( (byte*)dest )[ 0 ] = (byte)value;
@@ -180,7 +196,7 @@ namespace Axiom.Media
 		///</summary>
 		unsafe public static uint IntRead( byte* src, int n )
 		{
-			switch ( n )
+			switch( n )
 			{
 				case 1:
 					return ( (byte*)src )[ 0 ];
@@ -193,8 +209,8 @@ namespace Axiom.Media
                             ((uint)((byte*)src)[2]);
 #else
 					return ( (uint)( (byte*)src )[ 0 ] ) |
-							( (uint)( (byte*)src )[ 1 ] << 8 ) |
-							( (uint)( (byte*)src )[ 2 ] << 16 );
+					       ( (uint)( (byte*)src )[ 1 ] << 8 ) |
+					       ( (uint)( (byte*)src )[ 2 ] << 16 );
 #endif
 				case 4:
 					return ( (uint*)src )[ 0 ];
@@ -202,8 +218,13 @@ namespace Axiom.Media
 			return 0; // ?
 		}
 
-		private static float[] floatConversionBuffer = new float[] { 0f };
-		private static uint[] uintConversionBuffer = new uint[] { 0 };
+		private static float[] floatConversionBuffer = new float[] {
+		                                                           	0f
+		                                                           };
+
+		private static uint[] uintConversionBuffer = new uint[] {
+		                                                        	0
+		                                                        };
 
 		///<summary>
 		///    Convert a float32 to a float16 (NV_half_float)
@@ -215,7 +236,7 @@ namespace Axiom.Media
 			floatConversionBuffer[ 0 ] = f;
 			unsafe
 			{
-				fixed ( float* pFloat = floatConversionBuffer )
+				fixed( float* pFloat = floatConversionBuffer )
 				{
 					i = *( (uint*)pFloat );
 				}
@@ -232,9 +253,9 @@ namespace Axiom.Media
 			int e = (int)( ( i >> 23 ) & 0x000000ff ) - ( 127 - 15 );
 			int m = (int)i & 0x007fffff;
 
-			if ( e <= 0 )
+			if( e <= 0 )
 			{
-				if ( e < -10 )
+				if( e < -10 )
 				{
 					return 0;
 				}
@@ -242,13 +263,13 @@ namespace Axiom.Media
 
 				return (ushort)( s | ( m >> 13 ) );
 			}
-			else if ( e == 0xff - ( 127 - 15 ) )
+			else if( e == 0xff - ( 127 - 15 ) )
 			{
-				if ( m == 0 ) // Inf
+				if( m == 0 ) // Inf
 				{
 					return (ushort)( s | 0x7c00 );
 				}
-				else    // NAN
+				else // NAN
 				{
 					m >>= 13;
 					return (ushort)( s | 0x7c00 | m | ( m == 0 ? 1u : 0u ) );
@@ -256,7 +277,7 @@ namespace Axiom.Media
 			}
 			else
 			{
-				if ( e > 30 ) // Overflow
+				if( e > 30 ) // Overflow
 				{
 					return (ushort)( s | 0x7c00 );
 				}
@@ -274,7 +295,7 @@ namespace Axiom.Media
 			uintConversionBuffer[ 0 ] = HalfToFloatI( y );
 			unsafe
 			{
-				fixed ( uint* pUint = uintConversionBuffer )
+				fixed( uint* pUint = uintConversionBuffer )
 				{
 					return *( (float*)pUint );
 				}
@@ -292,13 +313,16 @@ namespace Axiom.Media
 			uint e = ( yuint >> 10 ) & 0x0000001f;
 			uint m = yuint & 0x000003ff;
 
-			if ( e == 0 )
+			if( e == 0 )
 			{
-				if ( m == 0 ) // Plus or minus zero
+				if( m == 0 ) // Plus or minus zero
+				{
 					return ( s << 31 );
+				}
 				else
-				{ // Denormalized number -- renormalize it
-					while ( ( m & 0x00000400 ) == 0 )
+				{
+					// Denormalized number -- renormalize it
+					while( ( m & 0x00000400 ) == 0 )
 					{
 						m <<= 1;
 						e -= 1;
@@ -307,12 +331,16 @@ namespace Axiom.Media
 					m &= 0xFFFFFBFF; // ~0x00000400;
 				}
 			}
-			else if ( e == 31 )
+			else if( e == 31 )
 			{
-				if ( m == 0 ) // Inf
+				if( m == 0 ) // Inf
+				{
 					return ( s << 31 ) | 0x7f800000;
+				}
 				else // NaN
+				{
 					return ( s << 31 ) | 0x7f800000 | ( m << 13 );
+				}
 			}
 
 			e = e + ( 127 - 15 );
@@ -320,6 +348,5 @@ namespace Axiom.Media
 
 			return ( s << 31 ) | ( e << 23 ) | m;
 		}
-
 	}
 }

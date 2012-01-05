@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,6 +59,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///     Language string.
 		/// </summary>
 		private static string languageName = "glsl";
+
 		/// <summary>
 		///     Reference to the link program manager we create.
 		/// </summary>
@@ -91,13 +96,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Returns the language code for this high level program manager.
 		/// </summary>
-		public override string Language
-		{
-			get
-			{
-				return languageName;
-			}
-		}
+		public override string Language { get { return languageName; } }
 
 		#endregion HighLevelGpuProgramFactory Implementation
 
@@ -108,13 +107,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			if ( glslLinkProgramMgr != null )
+			if( glslLinkProgramMgr != null )
 			{
 				glslLinkProgramMgr.Dispose();
 			}
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

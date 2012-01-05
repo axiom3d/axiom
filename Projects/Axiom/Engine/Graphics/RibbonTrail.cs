@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
@@ -66,14 +67,9 @@ namespace Axiom.Graphics
 
 			public float Value
 			{
-				get
-				{
-					return 0.0f; // not a source
+				get { return 0.0f; // not a source
 				}
-				set
-				{
-					this.trail.TimeUpdate( value );
-				}
+				set { this.trail.TimeUpdate( value ); }
 			}
 
 			#endregion
@@ -114,40 +110,27 @@ namespace Axiom.Graphics
 		}
 
 		public RibbonTrail( string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors )
-			: this( name, maxElements, 0, useTextureCoords, useColors, true )
-		{
-		}
+			: this( name, maxElements, 0, useTextureCoords, useColors, true ) {}
 
 		public RibbonTrail( string name, int maxElements, int numberOfChains, bool useTextureCoords )
-			: this( name, maxElements, numberOfChains, useTextureCoords, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, useTextureCoords, true ) {}
 
 		public RibbonTrail( string name, int maxElements, int numberOfChains )
-			: this( name, maxElements, numberOfChains, true, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, true, true ) {}
 
 		public RibbonTrail( string name, int maxElements )
-			: this( name, maxElements, 1, true, true )
-		{
-		}
+			: this( name, maxElements, 1, true, true ) {}
 
 		public RibbonTrail( string name )
-			: this( name, 20, 1, true, true )
-		{
-		}
+			: this( name, 20, 1, true, true ) {}
 
 		#endregion
 
 		#region Properties
 
-		public virtual float TrailLength
+		virtual public float TrailLength
 		{
-			get
-			{
-				return this.trailLength;
-			}
+			get { return this.trailLength; }
 			set
 			{
 				this.trailLength = value;
@@ -160,9 +143,9 @@ namespace Axiom.Graphics
 
 		#region Public Virtual Methods
 
-		public virtual void AddNode( Node node )
+		virtual public void AddNode( Node node )
 		{
-			if ( this.nodeList.Count == this.NumberOfChains )
+			if( this.nodeList.Count == this.NumberOfChains )
 			{
 				throw new InvalidOperationException( "Cannot monitor any more nodes, chain count exceeded." );
 			}
@@ -173,15 +156,15 @@ namespace Axiom.Graphics
 			segment.head = segment.tail = SEGMENT_EMPTY;
 			// Create new element, v coord is always 0.0f
 			Element e = new Element( node.DerivedPosition,
-									 this.initialWidth[ segmentIndex ],
-									 0.0f,
-									 this.initialColor[ segmentIndex ] );
+			                         this.initialWidth[ segmentIndex ],
+			                         0.0f,
+			                         this.initialColor[ segmentIndex ] );
 			// Add the start position
 			this.AddChainElement( segmentIndex, e );
 			e = new Element( node.DerivedPosition,
-							 this.initialWidth[ segmentIndex ],
-							 0.0f,
-							 this.initialColor[ segmentIndex ] );
+			                 this.initialWidth[ segmentIndex ],
+			                 0.0f,
+			                 this.initialColor[ segmentIndex ] );
 			// Add another on the same spot, this will extend
 			this.AddChainElement( segmentIndex, e );
 
@@ -190,39 +173,39 @@ namespace Axiom.Graphics
 			node.NodeDestroyed += new NodeDestroyed( this.NodeDestroyed );
 		}
 
-		public virtual void RemoveNode( Node node )
+		virtual public void RemoveNode( Node node )
 		{
 			this.nodeList.Remove( node );
 			node.NodeUpdated -= new NodeUpdated( this.NodeUpdated );
 			node.NodeDestroyed -= new NodeDestroyed( this.NodeDestroyed );
 		}
 
-		public virtual IEnumerator<Node> GetEnumerator()
+		virtual public IEnumerator<Node> GetEnumerator()
 		{
 			return this.nodeList.GetEnumerator();
 		}
 
-		public virtual void SetInitialColor( int chainIndex, ColorEx color )
+		virtual public void SetInitialColor( int chainIndex, ColorEx color )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			this.initialColor[ chainIndex ] = color;
 		}
 
-		public virtual ColorEx GetInitialColor( int chainIndex )
+		virtual public ColorEx GetInitialColor( int chainIndex )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			return this.initialColor[ chainIndex ];
 		}
 
-		public virtual void SetColorChange( int chainIndex, ColorEx valuePerSecond )
+		virtual public void SetColorChange( int chainIndex, ColorEx valuePerSecond )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
@@ -230,36 +213,36 @@ namespace Axiom.Graphics
 			this.ManageController();
 		}
 
-		public virtual ColorEx GetColorChange( int chainIndex )
+		virtual public ColorEx GetColorChange( int chainIndex )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			return this.deltaColor[ chainIndex ];
 		}
 
-		public virtual void SetInitialWidth( int chainIndex, float width )
+		virtual public void SetInitialWidth( int chainIndex, float width )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			this.initialWidth[ chainIndex ] = width;
 		}
 
-		public virtual float GetInitialWidth( int chainIndex )
+		virtual public float GetInitialWidth( int chainIndex )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			return this.initialWidth[ chainIndex ];
 		}
 
-		public virtual void SetWidthChange( int chainIndex, float valuePerSecond )
+		virtual public void SetWidthChange( int chainIndex, float valuePerSecond )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
@@ -267,24 +250,24 @@ namespace Axiom.Graphics
 			this.ManageController();
 		}
 
-		public virtual float GetWidthChange( int chainIndex )
+		virtual public float GetWidthChange( int chainIndex )
 		{
-			if ( chainIndex > this.chainCount )
+			if( chainIndex > this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			return this.deltaWidth[ chainIndex ];
 		}
 
-		public virtual void TimeUpdate( float time )
+		virtual public void TimeUpdate( float time )
 		{
 			// Apply all segment effects
-			for ( int s = 0; s < this.chainSegmentList.Count; ++s )
+			for( int s = 0; s < this.chainSegmentList.Count; ++s )
 			{
 				ChainSegment segment = this.chainSegmentList[ s ];
-				if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
+				if( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 				{
-					for ( int e = segment.head + 1; ; ++e )
+					for( int e = segment.head + 1;; ++e )
 					{
 						e = e % this.maxElementsPerChain;
 						Element element = this.chainElementList[ segment.start + e ];
@@ -292,7 +275,7 @@ namespace Axiom.Graphics
 						element.Width = Utility.Max( 0.0f, element.Width );
 						element.Color = element.Color - ( this.deltaColor[ s ] * time );
 						element.Color.Saturate();
-						if ( e == segment.tail )
+						if( e == segment.tail )
 						{
 							break;
 						}
@@ -305,42 +288,42 @@ namespace Axiom.Graphics
 
 		#region Protected Virtual Methods
 
-		protected virtual void ManageController()
+		virtual protected void ManageController()
 		{
 			bool needController = false;
-			for ( int i = 0; i < this.chainCount; ++i )
+			for( int i = 0; i < this.chainCount; ++i )
 			{
-				if ( this.deltaWidth[ i ] != 0 || this.deltaColor[ i ] != ColorEx.Black )
+				if( this.deltaWidth[ i ] != 0 || this.deltaColor[ i ] != ColorEx.Black )
 				{
 					needController = true;
 					break;
 				}
 			}
 
-			if ( this.fadeController == null && needController )
+			if( this.fadeController == null && needController )
 			{
 				// setup fading via frame time controller
 				ControllerManager mgr = ControllerManager.Instance;
 				this.fadeController = mgr.CreateFrameTimePassthroughController( this.timeControllerValue );
 			}
-			else if ( this.fadeController != null && !needController )
+			else if( this.fadeController != null && !needController )
 			{
 				this.fadeController = null;
 			}
 		}
 
-		protected virtual void UpdateTrail( int index, Node node )
+		virtual protected void UpdateTrail( int index, Node node )
 		{
 			bool done = false;
 			// Repeat this entire process if chain is stretched beyond its natural length
-			while ( !done )
+			while( !done )
 			{
 				// Node has changed somehow, we're only interested in the derived position
 				ChainSegment segment = this.chainSegmentList[ index ];
 				Element headElement = this.chainElementList[ segment.start + segment.head ];
 				int nextElemIndex = segment.head + 1;
 				//wrap
-				if ( nextElemIndex == this.maxElementsPerChain )
+				if( nextElemIndex == this.maxElementsPerChain )
 				{
 					nextElemIndex = 0;
 				}
@@ -348,15 +331,15 @@ namespace Axiom.Graphics
 
 				// Vary the head elem, but bake new version if that exceeds element len
 				Vector3 newPos = node.DerivedPosition;
-				if ( this.ParentNode != null )
+				if( this.ParentNode != null )
 				{
 					// Transform position to ourself space
 					newPos = this.ParentNode.DerivedOrientation.UnitInverse * ( newPos - this.ParentNode.DerivedPosition )
-							 / this.ParentNode.DerivedScale;
+					         / this.ParentNode.DerivedScale;
 				}
 				Vector3 diff = newPos - nextElement.Position;
 				float sqlen = diff.LengthSquared;
-				if ( sqlen >= this.squaredElementLength )
+				if( sqlen >= this.squaredElementLength )
 				{
 					// Move existing head to elemLength
 					Vector3 scaledDiff = diff * (float)( this.elementLength / Utility.Sqrt( sqlen ) );
@@ -367,8 +350,10 @@ namespace Axiom.Graphics
 					// alter diff to represent new head size
 					diff = newPos - newElem.Position;
 					// check whether another step is needed or not
-					if ( diff.LengthSquared <= this.squaredElementLength )
+					if( diff.LengthSquared <= this.squaredElementLength )
+					{
 						done = true;
+					}
 				}
 				else
 				{
@@ -378,12 +363,12 @@ namespace Axiom.Graphics
 				}
 
 				// Is this segment full?
-				if ( ( segment.tail + 1 ) % this.maxElementsPerChain == segment.head )
+				if( ( segment.tail + 1 ) % this.maxElementsPerChain == segment.head )
 				{
 					// If so, shrink tail gradually to match head extension
 					Element tailElement = this.chainElementList[ segment.start + segment.tail ];
 					int preTailIndex;
-					if ( segment.tail == 0 )
+					if( segment.tail == 0 )
 					{
 						preTailIndex = this.maxElementsPerChain - 1;
 					}
@@ -398,7 +383,7 @@ namespace Axiom.Graphics
 					Vector3 tailDiff = tailElement.Position - preTailElement.Position;
 					float tailLength = tailDiff.Length;
 
-					if ( tailLength > 1e-06 )
+					if( tailLength > 1e-06 )
 					{
 						float tailSize = this.elementLength - diff.Length;
 						tailDiff *= tailSize / tailLength;
@@ -412,7 +397,7 @@ namespace Axiom.Graphics
 			// Need to dirty the parent node, but can't do it using needUpdate() here 
 			// since we're in the middle of the scene graph update (node listener), 
 			// so re-entrant calls don't work. Queue.
-			if ( this.parentNode != null )
+			if( this.parentNode != null )
 			{
 				Node.QueueNeedUpdate( this.parentNode );
 			}
@@ -424,9 +409,9 @@ namespace Axiom.Graphics
 
 		public void NodeUpdated( Node node )
 		{
-			for ( int i = 0; i < this.nodeList.Count; ++i )
+			for( int i = 0; i < this.nodeList.Count; ++i )
 			{
-				if ( this.nodeList[ i ] == node )
+				if( this.nodeList[ i ] == node )
 				{
 					this.UpdateTrail( i, node );
 					break;
@@ -445,10 +430,7 @@ namespace Axiom.Graphics
 
 		public override int MaxChainElements
 		{
-			get
-			{
-				return base.MaxChainElements;
-			}
+			get { return base.MaxChainElements; }
 			set
 			{
 				base.MaxChainElements = value;
@@ -459,10 +441,7 @@ namespace Axiom.Graphics
 
 		public override int NumberOfChains
 		{
-			get
-			{
-				return base.NumberOfChains;
-			}
+			get { return base.NumberOfChains; }
 			set
 			{
 				base.NumberOfChains = value;
@@ -471,9 +450,9 @@ namespace Axiom.Graphics
 				this.deltaColor.Capacity = this.NumberOfChains;
 				this.initialWidth.Capacity = this.NumberOfChains;
 				this.deltaWidth.Capacity = this.NumberOfChains;
-				if ( this.initialColor.Count < this.initialColor.Capacity )
+				if( this.initialColor.Count < this.initialColor.Capacity )
 				{
-					for ( int i = this.initialColor.Count; i < this.initialColor.Capacity; ++i )
+					for( int i = this.initialColor.Count; i < this.initialColor.Capacity; ++i )
 					{
 						this.initialColor.Add( ColorEx.White );
 						this.deltaColor.Add( ColorEx.White );
@@ -485,12 +464,11 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
-
 	}
 
 	public class RibbonTrailFactory : MovableObjectFactory
 	{
-		public new static string TypeName = "RibbonTrail";
+		new public static string TypeName = "RibbonTrail";
 
 		public RibbonTrailFactory()
 		{
@@ -507,29 +485,29 @@ namespace Axiom.Graphics
 			bool isDynamic = true;
 
 			// optional parameters
-			if ( param != null )
+			if( param != null )
 			{
-				if ( param.ContainsKey( "maxElements" ) )
+				if( param.ContainsKey( "maxElements" ) )
 				{
 					maxElements = Convert.ToInt32( param[ "maxElements" ] );
 				}
-				if ( param.ContainsKey( "numberOfChains" ) )
+				if( param.ContainsKey( "numberOfChains" ) )
 				{
 					numberOfChains = Convert.ToInt32( param[ "numberOfChains" ] );
 				}
-				if ( param.ContainsKey( "useTextureCoords" ) )
+				if( param.ContainsKey( "useTextureCoords" ) )
 				{
 					useTextureCoords = Convert.ToBoolean( param[ "useTextureCoords" ] );
 				}
-				if ( param.ContainsKey( "useVertexColours" ) )
+				if( param.ContainsKey( "useVertexColours" ) )
 				{
 					useVertexColors = Convert.ToBoolean( param[ "useVertexColours" ] );
 				}
-				else if ( param.ContainsKey( "useVertexColors" ) )
+				else if( param.ContainsKey( "useVertexColors" ) )
 				{
 					useVertexColors = Convert.ToBoolean( param[ "useVertexColors" ] );
 				}
-				if ( param.ContainsKey( "isDynamic" ) )
+				if( param.ContainsKey( "isDynamic" ) )
 				{
 					isDynamic = Convert.ToBoolean( param[ "isDynamic" ] );
 				}

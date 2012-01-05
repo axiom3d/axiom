@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -96,9 +100,7 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public RenderOperation()
-			: base()
-		{
-		}
+			: base() {}
 
 		#endregion
 
@@ -128,22 +130,26 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( this.vertexData != null )
+					if( this.vertexData != null )
 					{
-						if ( !this.vertexData.IsDisposed )
+						if( !this.vertexData.IsDisposed )
+						{
 							this.vertexData.Dispose();
+						}
 
 						this.vertexData = null;
 					}
 
-					if ( this.indexData != null )
+					if( this.indexData != null )
 					{
-						if ( !this.indexData.IsDisposed )
+						if( !this.indexData.IsDisposed )
+						{
 							this.indexData.Dispose();
+						}
 
 						this.indexData = null;
 					}

@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Serialization;
 
@@ -31,149 +34,162 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    ///  Specialisation of PageContentCollection which just provides a simple list
+	/// <summary>
+	///  Specialisation of PageContentCollection which just provides a simple list
 	///	 of PageContent instances. 
-    /// </summary>
-    public class SimplePageContentCollection : PageContentCollection
-    {
-        public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier("SPCD");
-        public static ushort SUBCLASS_CHUNK_VERSION = 1;
-        protected List<PageContent> mContentList;
+	/// </summary>
+	public class SimplePageContentCollection : PageContentCollection
+	{
+		public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier( "SPCD" );
+		public static ushort SUBCLASS_CHUNK_VERSION = 1;
+		protected List<PageContent> mContentList;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<PageContent> ContentList
-        {
-            get { return mContentList; }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public List<PageContent> ContentList { get { return mContentList; } }
 
-        #region - constructor, destructor -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="factory"></param>
-        public SimplePageContentCollection(SimplePageContentCollectionFactory factory)
-            :base(factory){ }
+		#region - constructor, destructor -
 
-        ~SimplePageContentCollection() 
-        {
-            Destroy();
-            mContentList.Clear();
-        }
-        #endregion
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="factory"></param>
+		public SimplePageContentCollection( SimplePageContentCollectionFactory factory )
+			: base( factory ) {}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public virtual PageContent CreateContent(string typeName)
-        {
-            PageContent c = Manager.CreateContent(typeName);
-            AttachContent(c);
-            return c;
-        }
+		~SimplePageContentCollection()
+		{
+			Destroy();
+			mContentList.Clear();
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pcont"></param>
-        public virtual void DestroyContent(PageContent pcont)
-        {
-            DetachContent(pcont);
-            Manager.DestroyContent(pcont);
-        }
+		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        public virtual void AttachContent(PageContent content)
-        {
-            mContentList.Add(content);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		virtual public PageContent CreateContent( string typeName )
+		{
+			PageContent c = Manager.CreateContent( typeName );
+			AttachContent( c );
+			return c;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        public virtual void DetachContent(PageContent content)
-        {
-            mContentList.Remove(content);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="pcont"></param>
+		virtual public void DestroyContent( PageContent pcont )
+		{
+			DetachContent( pcont );
+			Manager.DestroyContent( pcont );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void Save(StreamSerializer stream)
-        {
-            stream.WriteChunkBegin(SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="content"></param>
+		virtual public void AttachContent( PageContent content )
+		{
+			mContentList.Add( content );
+		}
 
-            foreach (PageContent c in mContentList)
-                c.Save(stream);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="content"></param>
+		virtual public void DetachContent( PageContent content )
+		{
+			mContentList.Remove( content );
+		}
 
-            stream.WriteChunkEnd(SUBCLASS_CHUNK_ID);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        public override void FrameStart(float timeSinceLastFrame)
-        {
-            foreach (PageContent c in mContentList)
-                c.FrameStart(timeSinceLastFrame);
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="stream"></param>
+		public override void Save( StreamSerializer stream )
+		{
+			stream.WriteChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeElapsed"></param>
-        public override void FrameEnd(float timeElapsed)
-        {
-            foreach (PageContent c in mContentList)
-                c.FrameEnd(timeElapsed);
-        }
+			foreach( PageContent c in mContentList )
+			{
+				c.Save( stream );
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        public override void NotifyCamera(Camera camera)
-        {
-            foreach (PageContent c in mContentList)
-                c.NotifyCamera(camera);
-        }
+			stream.WriteChunkEnd( SUBCLASS_CHUNK_ID );
+		}
 
-        /// <summary>
-        /// Finalising the load of the data.
-        /// </summary>
-        protected override void LoadImpl()
-        {
-            foreach (PageContent c in mContentList)
-                c.Load();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="timeSinceLastFrame"></param>
+		public override void FrameStart( float timeSinceLastFrame )
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.FrameStart( timeSinceLastFrame );
+			}
+		}
 
-        /// <summary>
-        /// Unload the unit, deallocating any GPU resources.
-        /// </summary>
-        protected override void UnLoadImpl()
-        {
-            foreach (PageContent c in mContentList)
-                c.Unload();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="timeElapsed"></param>
+		public override void FrameEnd( float timeElapsed )
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.FrameEnd( timeElapsed );
+			}
+		}
 
-        /// <summary>
-        /// Deallocate any background resources.
-        /// </summary>
-        /// <returns></returns>
-        protected override void UnPrepareImpl()
-        {
-            foreach (PageContent c in mContentList)
-                c.UnPrepare();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="camera"></param>
+		public override void NotifyCamera( Camera camera )
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.NotifyCamera( camera );
+			}
+		}
 
-    }
+		/// <summary>
+		/// Finalising the load of the data.
+		/// </summary>
+		protected override void LoadImpl()
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.Load();
+			}
+		}
+
+		/// <summary>
+		/// Unload the unit, deallocating any GPU resources.
+		/// </summary>
+		protected override void UnLoadImpl()
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.Unload();
+			}
+		}
+
+		/// <summary>
+		/// Deallocate any background resources.
+		/// </summary>
+		/// <returns></returns>
+		protected override void UnPrepareImpl()
+		{
+			foreach( PageContent c in mContentList )
+			{
+				c.UnPrepare();
+			}
+		}
+	}
 }

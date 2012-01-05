@@ -11,9 +11,8 @@ using Axiom.Graphics;
 
 namespace Axiom.Demos
 {
-	class MousePicking : TechDemo
+	internal class MousePicking : TechDemo
 	{
-
 		#region Fields & Properties
 
 		private SceneNode headNode = null;
@@ -72,8 +71,10 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
 			float mouseX = input.AbsoluteMouseX / (float)window.Width;
 			float mouseY = input.AbsoluteMouseY / (float)window.Height;
@@ -85,6 +86,5 @@ namespace Axiom.Demos
 		}
 
 		#endregion Event Handlers
-
 	}
 }

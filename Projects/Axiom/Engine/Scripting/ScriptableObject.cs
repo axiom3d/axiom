@@ -27,17 +27,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Collections;
+
 using System.Reflection;
 
 using Axiom.Core;
@@ -49,22 +53,13 @@ namespace Axiom.Scripting
 	public sealed class ScriptableProperties
 	{
 		private IScriptableObject _owner;
+
 		public ScriptableProperties( IScriptableObject owner )
 		{
 			_owner = owner;
 		}
 
-		public string this[ string property ]
-		{
-			get
-			{
-				return _owner[ property ];
-			}
-			set
-			{
-				_owner[ property ] = value;
-			}
-		}
+		public string this[ string property ] { get { return _owner[ property ]; } set { _owner[ property ] = value; } }
 	}
 
 	/// <summary>
@@ -75,10 +70,7 @@ namespace Axiom.Scripting
 		/// <summary>
 		/// The property collection available
 		/// </summary>
-		ScriptableProperties Properties
-		{
-			get;
-		}
+		ScriptableProperties Properties { get; }
 
 		/// <summary>
 		/// Set multiple properties at once using a <see cref="NameValuePairList"/>
@@ -91,17 +83,14 @@ namespace Axiom.Scripting
 		/// </summary>
 		/// <param name="index">name of the property</param>
 		/// <returns>the property value</returns>
-		string this[ string index ]
-		{
-			get;
-			set;
-		}
+		string this[ string index ] { get; set; }
 	}
 
 	[AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
 	public sealed class ScriptablePropertyAttribute : Attribute
 	{
 		public readonly string ScriptPropertyName;
+
 		public ScriptablePropertyAttribute( string scriptPropertyName )
 		{
 			ScriptPropertyName = scriptPropertyName;
@@ -113,25 +102,20 @@ namespace Axiom.Scripting
 		}
 	}
 
-	public abstract class ScriptableObject : DisposableObject, IScriptableObject
+	abstract public class ScriptableObject : DisposableObject, IScriptableObject
 	{
 		private Dictionary<String, IPropertyCommand> _classParameters;
+
 		/// <summary>
 		///
 		/// </summary>
-		public ICollection<IPropertyCommand> Commands
-		{
-			get
-			{
-				return _classParameters.Values;
-			}
-		}
+		public ICollection<IPropertyCommand> Commands { get { return _classParameters.Values; } }
 
 		/// <summary>
 		///
 		/// </summary>
 		protected ScriptableObject()
-            : base()
+			: base()
 		{
 			_classParameters = _getTypePropertyMap( this.GetType() );
 			_properties = new ScriptableProperties( this );
@@ -144,7 +128,7 @@ namespace Axiom.Scripting
 		private static Dictionary<String, IPropertyCommand> _getTypePropertyMap( Type type )
 		{
 			Dictionary<String, IPropertyCommand> list;
-			if ( !_propertyMaps.TryGetValue( type, out list ) )
+			if( !_propertyMaps.TryGetValue( type, out list ) )
 			{
 				list = new Dictionary<string, IPropertyCommand>();
 				_propertyMaps.Add( type, list );
@@ -158,28 +142,32 @@ namespace Axiom.Scripting
 		{
 			// Load the IPropertyCommands from the parent Type
 			Type parent = type.BaseType;
-			if ( parent != typeof( System.Object ) )
+			if( parent != typeof( System.Object ) )
 			{
-				foreach ( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( parent ) )
+				foreach( KeyValuePair<string, IPropertyCommand> item in _getTypePropertyMap( parent ) )
 				{
 					list.Add( item.Key, item.Value );
 				}
 				parent = parent.BaseType;
 			}
 
-			foreach ( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
+			foreach( Type nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
 			{
 #if !(XBOX || XBOX360)
-				if ( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
-												{
-													if ( typeObj.ToString() == criteriaObj.ToString() )
-														return true;
-													else
-														return false;
-												}
-											, typeof( IPropertyCommand ).FullName ).Length != 0 )
+				if( nestType.FindInterfaces( delegate( Type typeObj, Object criteriaObj )
+				                             {
+				                             	if( typeObj.ToString() == criteriaObj.ToString() )
+				                             	{
+				                             		return true;
+				                             	}
+				                             	else
+				                             	{
+				                             		return false;
+				                             	}
+				                             }
+				                             , typeof( IPropertyCommand ).FullName ).Length != 0 )
 				{
-					foreach ( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
+					foreach( ScriptablePropertyAttribute attr in nestType.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true ) )
 					{
 						IPropertyCommand propertyCommand = (IPropertyCommand)Activator.CreateInstance( nestType );
 						list.Add( attr.ScriptPropertyName, propertyCommand );
@@ -206,16 +194,11 @@ namespace Axiom.Scripting
 		#region Implementation of IScriptableObject
 
 		private ScriptableProperties _properties;
+
 		/// <summary>
 		/// a list of properties accessible through though a string interface
 		/// </summary>
-		public ScriptableProperties Properties
-		{
-			get
-			{
-				return _properties;
-			}
-		}
+		public ScriptableProperties Properties { get { return _properties; } }
 
 		/// <summary>
 		/// Set multiple properties using a <see cref="NameValuePairList"/>
@@ -223,7 +206,7 @@ namespace Axiom.Scripting
 		/// <param name="parameters">the list of properties to set</param>
 		public void SetParameters( NameValuePairList parameters )
 		{
-			foreach ( KeyValuePair<String, String> item in parameters )
+			foreach( KeyValuePair<String, String> item in parameters )
 			{
 				this.Properties[ item.Key ] = item.Value;
 			}
@@ -237,7 +220,7 @@ namespace Axiom.Scripting
 			{
 				IPropertyCommand command;
 
-				if ( _classParameters.TryGetValue( property, out command ) )
+				if( _classParameters.TryGetValue( property, out command ) )
 				{
 					return command.Get( this );
 				}
@@ -251,7 +234,7 @@ namespace Axiom.Scripting
 			{
 				IPropertyCommand command;
 
-				if ( _classParameters.TryGetValue( property, out command ) )
+				if( _classParameters.TryGetValue( property, out command ) )
 				{
 					command.Set( this, value );
 				}

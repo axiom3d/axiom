@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -80,11 +84,11 @@ namespace Axiom.Serialization
 
 			SkeletonChunkID chunkID = 0;
 
-			while ( !IsEOF( reader ) )
+			while( !IsEOF( reader ) )
 			{
 				chunkID = ReadChunk( reader );
 
-				switch ( chunkID )
+				switch( chunkID )
 				{
 					case SkeletonChunkID.Bone:
 						ReadBone( reader );
@@ -133,22 +137,22 @@ namespace Axiom.Serialization
 			Animation anim = skeleton.CreateAnimation( name, length );
 
 			// keep reading all keyframes for this track
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				SkeletonChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.AnimationTrack ) )
+				while( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.AnimationTrack ) )
 				{
 					// read the animation track
 					ReadAnimationTrack( reader, anim );
 					// read the next chunk id
 					// If we're not end of file get the next chunk ID
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					Seek( reader, -ChunkOverheadSize );
 				}
@@ -170,22 +174,22 @@ namespace Axiom.Serialization
 			NodeAnimationTrack track = anim.CreateNodeTrack( boneHandle, targetBone );
 
 			// keep reading all keyframes for this track
-			if ( !IsEOF( reader ) )
+			if( !IsEOF( reader ) )
 			{
 				SkeletonChunkID chunkID = ReadChunk( reader );
-				while ( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.KeyFrame ) )
+				while( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.KeyFrame ) )
 				{
 					// read the key frame
 					ReadKeyFrame( reader, track );
 					// read the next chunk id
 					// If we're not end of file get the next chunk ID
-					if ( !IsEOF( reader ) )
+					if( !IsEOF( reader ) )
 					{
 						chunkID = ReadChunk( reader );
 					}
 				}
 				// backpedal to the start of the chunk
-				if ( !IsEOF( reader ) )
+				if( !IsEOF( reader ) )
 				{
 					Seek( reader, -ChunkOverheadSize );
 				}
@@ -257,7 +261,7 @@ namespace Axiom.Serialization
 			keyFrame.Translate = translate;
 
 			// read scale if it is in there
-			if ( currentChunkLength >= 50 )
+			if( currentChunkLength >= 50 )
 			{
 				Vector3 scale = ReadVector3( reader );
 				keyFrame.Scale = scale;
@@ -300,32 +304,36 @@ namespace Axiom.Serialization
 			}
 			finally
 			{
-				if ( stream != null )
+				if( stream != null )
+				{
 					stream.Close();
+				}
 			}
 		}
 
 		protected void WriteSkeleton( BinaryWriter writer )
 		{
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for( ushort i = 0; i < skeleton.BoneCount; ++i )
 			{
 				Bone bone = skeleton.GetBone( i );
 				WriteBone( writer, bone );
 			}
 
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for( ushort i = 0; i < skeleton.BoneCount; ++i )
 			{
 				Bone bone = skeleton.GetBone( i );
-				if ( bone.Parent != null )
+				if( bone.Parent != null )
+				{
 					WriteBoneParent( writer, bone, (Bone)bone.Parent );
+				}
 			}
 
-			foreach ( Animation anim in skeleton.Animations )
+			foreach( Animation anim in skeleton.Animations )
 			{
 				WriteAnimation( writer, anim );
 			}
 
-			for ( int i = 0; i < skeleton.AttachmentPoints.Count; ++i )
+			for( int i = 0; i < skeleton.AttachmentPoints.Count; ++i )
 			{
 				AttachmentPoint ap = skeleton.AttachmentPoints[ i ];
 				WriteAttachmentPoint( writer, ap, skeleton.GetBone( ap.ParentBone ) );
@@ -341,8 +349,10 @@ namespace Axiom.Serialization
 			WriteUShort( writer, bone.Handle );
 			WriteVector3( writer, bone.Position );
 			WriteQuat( writer, bone.Orientation );
-			if ( bone.Scale != Vector3.UnitScale )
+			if( bone.Scale != Vector3.UnitScale )
+			{
 				WriteVector3( writer, bone.Scale );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -372,8 +382,10 @@ namespace Axiom.Serialization
 			WriteString( writer, anim.Name );
 			WriteFloat( writer, anim.Length );
 
-			foreach ( NodeAnimationTrack track in anim.NodeTracks.Values )
+			foreach( NodeAnimationTrack track in anim.NodeTracks.Values )
+			{
 				WriteAnimationTrack( writer, track );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -387,7 +399,7 @@ namespace Axiom.Serialization
 			WriteChunk( writer, SkeletonChunkID.AnimationTrack, 0 );
 
 			WriteUShort( writer, (ushort)track.Handle );
-			for ( ushort i = 0; i < track.KeyFrames.Count; i++ )
+			for( ushort i = 0; i < track.KeyFrames.Count; i++ )
 			{
 				TransformKeyFrame keyFrame = track.GetNodeKeyFrame( i );
 				WriteKeyFrame( writer, keyFrame );
@@ -406,8 +418,10 @@ namespace Axiom.Serialization
 			WriteFloat( writer, keyFrame.Time );
 			WriteQuat( writer, keyFrame.Rotation );
 			WriteVector3( writer, keyFrame.Translate );
-			if ( keyFrame.Scale != Vector3.UnitScale )
+			if( keyFrame.Scale != Vector3.UnitScale )
+			{
 				WriteVector3( writer, keyFrame.Scale );
+			}
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );

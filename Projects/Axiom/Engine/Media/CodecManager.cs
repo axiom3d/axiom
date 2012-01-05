@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,7 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.IO;
+
 using Axiom.Core;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -59,9 +65,9 @@ namespace Axiom.Media
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal CodecManager()
-            : base()
+			: base()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 			}
@@ -70,56 +76,50 @@ namespace Axiom.Media
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static CodecManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static CodecManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                    instance = null;
-                }
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					instance = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		#region Fields
 
@@ -159,7 +159,7 @@ namespace Axiom.Media
 		/// <returns></returns>
 		public ICodec GetCodec( string extension )
 		{
-			if ( !codecs.ContainsKey( extension ) )
+			if( !codecs.ContainsKey( extension ) )
 			{
 				LogManager.Instance.Write( "No codec available for media with extension .{0}", extension );
 				RegisterCodec( new NullCodec( extension ) );
@@ -184,14 +184,17 @@ namespace Axiom.Media
 		/// <param name="codec">codec to unrerigster</param>
 		public void UnregisterCodec( ICodec codec )
 		{
-			if ( codecs.ContainsKey( codec.Type ) )
+			if( codecs.ContainsKey( codec.Type ) )
+			{
 				codecs.Remove( codec.Type );
+			}
 		}
 	}
 
 	public class NullCodec : ICodec
 	{
 		private string _type;
+
 		public NullCodec( string extension )
 		{
 			_type = extension;
@@ -212,12 +215,6 @@ namespace Axiom.Media
 			return;
 		}
 
-		public string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+		public string Type { get { return _type; } }
 	}
 }

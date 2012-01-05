@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,9 +19,11 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
+
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Components.Terrain;
@@ -32,7 +35,7 @@ namespace Axiom.Samples.Components
 	/// <summary>
 	/// 
 	/// </summary>
-	enum Mode : int
+	internal enum Mode : int
 	{
 		Normal = 0,
 		EditHeight = 1,
@@ -43,7 +46,7 @@ namespace Axiom.Samples.Components
 	/// <summary>
 	/// 
 	/// </summary>
-	enum ShadowMode : int
+	internal enum ShadowMode : int
 	{
 		None = 0,
 		Color = 1,
@@ -51,16 +54,16 @@ namespace Axiom.Samples.Components
 		Count = 3
 	}
 
-	class TerrainSample : SdkSample
+	internal class TerrainSample : SdkSample
 	{
-		const int TerrainSize = 513;
-		const float TerrainWorldSize = 12000f;
-		const string TerrainFilePrefix = "TestTerrain";
-		const string TerrainFileSuffix = "dat";
-		const long TerrainPageMinX = 0;
-		const long TerrainPageMinY = 0;
-		const long TerrainPageMaxX = 0;
-		const long TerrainPageMaxY = 0;
+		private const int TerrainSize = 513;
+		private const float TerrainWorldSize = 12000f;
+		private const string TerrainFilePrefix = "TestTerrain";
+		private const string TerrainFileSuffix = "dat";
+		private const long TerrainPageMinX = 0;
+		private const long TerrainPageMinY = 0;
+		private const long TerrainPageMaxX = 0;
+		private const long TerrainPageMaxY = 0;
 		protected TerrainGlobalOptions terrainGlobals;
 		protected TerrainGroup terrainGroup;
 		protected bool paging;
@@ -92,7 +95,7 @@ namespace Axiom.Samples.Components
 			Metadata[ "Thumbnail" ] = "thumb_terrain.png";
 			Metadata[ "Category" ] = "Environment";
 			Metadata[ "Help" ] = "Left click and drag anywhere in the scene to look around. Let go again to show " +
-			"cursor and access widgets. Use WASD keys to move. Use +/- keys when in edit mode to change content.";
+			                     "cursor and access widgets. Use WASD keys to move. Use +/- keys when in edit mode to change content.";
 
 			mode = Mode.Normal;
 			layerEdit = 1;
@@ -125,14 +128,14 @@ namespace Axiom.Samples.Components
 
 			// Usually in a real project you'll know whether the compact terrain data is
 			// available or not; I'm doing it this way to save distribution size
-			if ( flat )
+			if( flat )
 			{
 				terrainGroup.DefineTerrain( x, y, 0 );
 			}
 			else
 			{
 				string filename = terrainGroup.GenerateFilename( x, y );
-				if ( ResourceGroupManager.Instance.ResourceExists( terrainGroup.ResourceGroup, filename ) )
+				if( ResourceGroupManager.Instance.ResourceExists( terrainGroup.ResourceGroup, filename ) )
 				{
 					terrainGroup.DefineTerrain( x, y );
 				}
@@ -154,8 +157,10 @@ namespace Axiom.Samples.Components
 		private Image GetTerrainImage( bool flipX, bool flipY )
 		{
 			Image img = Image.FromFile( "terrain.png" );
-			if ( flipX )
+			if( flipX )
+			{
 				img.FlipAroundX();
+			}
 			//if ( flipY )
 			//    img.FlipAroundX();
 
@@ -168,7 +173,6 @@ namespace Axiom.Samples.Components
 		/// <param name="terrain"></param>
 		private void InitBlendMaps( Axiom.Components.Terrain.Terrain terrain )
 		{
-
 			TerrainLayerBlendMap blendMap0 = terrain.GetLayerBlendMap( 1 );
 			TerrainLayerBlendMap blendMap1 = terrain.GetLayerBlendMap( 2 );
 			Real minHeight0 = 70;
@@ -178,9 +182,9 @@ namespace Axiom.Samples.Components
 
 			float[] pBlend1 = blendMap1.BlendPointer;
 			int blendIdx = 0;
-			for ( ushort y = 0; y < terrain.LayerBlendMapSize; y++ )
+			for( ushort y = 0; y < terrain.LayerBlendMapSize; y++ )
 			{
-				for ( ushort x = 0; x < terrain.LayerBlendMapSize; x++ )
+				for( ushort x = 0; x < terrain.LayerBlendMapSize; x++ )
 				{
 					float tx = 0;
 					float ty = 0;
@@ -198,7 +202,6 @@ namespace Axiom.Samples.Components
 			blendMap1.Dirty();
 			blendMap0.Update();
 			blendMap1.Update();
-
 		}
 
 		/// <summary>
@@ -257,9 +260,9 @@ namespace Axiom.Samples.Components
 			Camera.Near = 0.1f;
 			Camera.Far = 50000;
 
-			if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Graphics.Capabilities.InfiniteFarPlane ) )
+			if( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Graphics.Capabilities.InfiniteFarPlane ) )
 			{
-				Camera.Far = 0;// enable infinite far clip distance if we can
+				Camera.Far = 0; // enable infinite far clip distance if we can
 			}
 		}
 
@@ -300,14 +303,14 @@ namespace Axiom.Samples.Components
 			terrainGroup = new TerrainGroup( SceneManager, Alignment.Align_X_Z, (ushort)TerrainSize, TerrainWorldSize );
 			terrainGroup.SetFilenamConvention( TerrainFilePrefix, TerrainFileSuffix );
 			terrainGroup.Origin = Vector3.Zero;
-			
+
 			Terrain terrain = new Terrain( SceneManager );
 			terrain.Position = terrainPos;
-			ImportData data  = ConfigureTerrainDefaults( l );
+			ImportData data = ConfigureTerrainDefaults( l );
 
-			for ( long x = TerrainPageMinX; x <= TerrainPageMaxX; x++ )
+			for( long x = TerrainPageMinX; x <= TerrainPageMaxX; x++ )
 			{
-				for ( long y = TerrainPageMinY; y <= TerrainPageMaxY; y++ )
+				for( long y = TerrainPageMinY; y <= TerrainPageMaxY; y++ )
 				{
 					DefineTerrain( x, y, false );
 				}
@@ -315,7 +318,7 @@ namespace Axiom.Samples.Components
 			// sync load since we want everything in place when we start
 			terrainGroup.LoadAllTerrains( true );
 
-			if ( terrainsImported)
+			if( terrainsImported )
 			{
 				Axiom.Components.Terrain.Terrain t = terrainGroup.GetTerrain( 0, 0 );
 				InitBlendMaps( t );
@@ -334,6 +337,7 @@ namespace Axiom.Samples.Components
 			SceneManager.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
 			//SceneManager.SetSkyBox( true, "Examples/CloudyNoonSkyBox" , 5000);
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -364,17 +368,17 @@ namespace Axiom.Samples.Components
 			shadowsMenu.SelectItem( 0 );
 
 			IList<string> names = new List<string>();
-			names.Add("Help");
+			names.Add( "Help" );
 			//a friendly reminder
 			TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "Help", 100, names ).SetParamValue( 0, "H/F1" );
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			if ( heightUpdateCountdown > 0 )
+			if( heightUpdateCountdown > 0 )
 			{
 				heightUpdateCountdown -= evt.TimeSinceLastFrame;
-				if ( heightUpdateCountdown <= 0 )
+				if( heightUpdateCountdown <= 0 )
 				{
 					terrainGroup.Update();
 					heightUpdateCountdown = 0;
@@ -397,7 +401,6 @@ namespace Axiom.Samples.Components
 			{
 				TrayManager.RemoveWidgetFromTray( infoLabel );
 				infoLabel.Hide();
-				
 			}
 			return base.FrameRenderingQueued( evt );
 		}

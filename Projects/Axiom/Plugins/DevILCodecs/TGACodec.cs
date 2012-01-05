@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: TGACodec.cs 1240 2008-03-11 19:33:13Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,9 +52,7 @@ namespace Axiom.Plugins.DevILCodecs
 	/// </summary>
 	public class TGACodec : ILImageCodec
 	{
-		public TGACodec()
-		{
-		}
+		public TGACodec() {}
 
 		#region ILImageCodec Implementation
 
@@ -73,7 +75,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilBindImage( imageID );
 
 			// create a temp buffer and write the stream into it
-			byte[] buffer = new byte[ input.Length ];
+			byte[] buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			// load the data into DevIL
@@ -82,7 +84,7 @@ namespace Axiom.Plugins.DevILCodecs
 			// check for an error
 			int ilError = Il.ilGetError();
 
-			if ( ilError != Il.IL_NO_ERROR )
+			if( ilError != Il.IL_NO_ERROR )
 			{
 				throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
 			}
@@ -99,10 +101,10 @@ namespace Axiom.Plugins.DevILCodecs
 			data.size = data.width * data.height * bytesPerPixel;
 
 			// get the decoded data
-			buffer = new byte[ data.size ];
+			buffer = new byte[data.size];
 
 			// check to see whether the image is upside down
-			if ( Il.ilGetInteger( Il.IL_ORIGIN_MODE ) == Il.IL_ORIGIN_LOWER_LEFT )
+			if( Il.ilGetInteger( Il.IL_ORIGIN_MODE ) == Il.IL_ORIGIN_LOWER_LEFT )
 			{
 				// if so (probably), put it right side up
 				Il.ilEnable( Il.IL_ORIGIN_SET );
@@ -110,13 +112,13 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			// are the color components reversed?
-			if ( format == Il.IL_BGR || format == Il.IL_BGRA )
+			if( format == Il.IL_BGR || format == Il.IL_BGRA )
 			{
 				// if so (probably), reverse b and r.  this is slower, but it works.
 				int newFormat = ( format == Il.IL_BGR ) ? Il.IL_RGB : Il.IL_RGBA;
 				unsafe
 				{
-					fixed ( byte* bufferPtr = &buffer[ 0 ] )
+					fixed( byte* bufferPtr = &buffer[ 0 ] )
 					{
 						Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, (IntPtr)bufferPtr ); // TAO 2.0
 					}
@@ -132,7 +134,7 @@ namespace Axiom.Plugins.DevILCodecs
 				unsafe
 				{
 					byte* pBuffer = (byte*)ptr;
-					for ( int i = 0; i < buffer.Length; i++ )
+					for( int i = 0; i < buffer.Length; i++ )
 					{
 						buffer[ i ] = pBuffer[ i ];
 					}
@@ -164,24 +166,12 @@ namespace Axiom.Plugins.DevILCodecs
 		/// <summary>
 		///    Returns the JPG file extension.
 		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return "tga";
-			}
-		}
+		public override String Type { get { return "tga"; } }
 
 		/// <summary>
 		///    Returns JPG enum.
 		/// </summary>
-		public override int ILType
-		{
-			get
-			{
-				return Il.IL_TGA;
-			}
-		}
+		public override int ILType { get { return Il.IL_TGA; } }
 
 		#endregion ILImageCodec Implementation
 	}

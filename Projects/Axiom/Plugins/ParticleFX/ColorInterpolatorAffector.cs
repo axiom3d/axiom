@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,8 +55,8 @@ namespace Axiom.ParticleFX
 	{
 		protected const int MAX_STAGES = 6;
 
-		internal ColorEx[] colorAdj = new ColorEx[ MAX_STAGES ];
-		internal float[] timeAdj = new float[ MAX_STAGES ];
+		internal ColorEx[] colorAdj = new ColorEx[MAX_STAGES];
+		internal float[] timeAdj = new float[MAX_STAGES];
 
 		public ColorInterpolatorAffector()
 		{
@@ -61,7 +65,7 @@ namespace Axiom.ParticleFX
 			init.a = init.r = init.g = 0.5f;
 			init.b = 0.0f;
 
-			for ( int i = 0; i < MAX_STAGES; ++i )
+			for( int i = 0; i < MAX_STAGES; ++i )
 			{
 				colorAdj[ i ] = init;
 				timeAdj[ i ] = 1.0f;
@@ -71,26 +75,26 @@ namespace Axiom.ParticleFX
 		public override void AffectParticles( ParticleSystem system, float timeElapsed )
 		{
 			// loop through the particles
-			for ( int i = 0; i < system.Particles.Count; i++ )
+			for( int i = 0; i < system.Particles.Count; i++ )
 			{
 				Particle p = (Particle)system.Particles[ i ];
 
 				float lifeTime = p.totalTimeToLive;
 				float particleTime = 1.0f - ( p.timeToLive / lifeTime );
 
-				if ( particleTime <= timeAdj[ 0 ] )
+				if( particleTime <= timeAdj[ 0 ] )
 				{
 					p.Color = colorAdj[ 0 ];
 				}
-				else if ( particleTime >= timeAdj[ MAX_STAGES - 1 ] )
+				else if( particleTime >= timeAdj[ MAX_STAGES - 1 ] )
 				{
 					p.Color = colorAdj[ MAX_STAGES - 1 ];
 				}
 				else
 				{
-					for ( int k = 0; k < MAX_STAGES - 1; k++ )
+					for( int k = 0; k < MAX_STAGES - 1; k++ )
 					{
-						if ( particleTime >= timeAdj[ k ] && particleTime < timeAdj[ k + 1 ] )
+						if( particleTime >= timeAdj[ k ] && particleTime < timeAdj[ k + 1 ] )
 						{
 							particleTime -= timeAdj[ k ];
 							particleTime /= ( timeAdj[ k + 1 ] - timeAdj[ k ] );
@@ -109,7 +113,7 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "colour0", "Initial 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color0Command : IPropertyCommand
+		private class Color0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -119,6 +123,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.colorAdj[ 0 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -130,7 +135,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour1", "1st 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color1Command : IPropertyCommand
+		private class Color1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -141,6 +146,7 @@ namespace Axiom.ParticleFX
 				// TODO: Common way for writing color.
 				return StringConverter.ToString( affector.colorAdj[ 1 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -152,7 +158,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour2", "2nd 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color2Command : IPropertyCommand
+		private class Color2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -163,6 +169,7 @@ namespace Axiom.ParticleFX
 				// TODO: Common way for writing color.
 				return StringConverter.ToString( affector.colorAdj[ 2 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -174,7 +181,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour3", "3rd 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color3Command : IPropertyCommand
+		private class Color3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -184,6 +191,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.colorAdj[ 3 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -195,7 +203,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour4", "4th 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color4Command : IPropertyCommand
+		private class Color4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -205,6 +213,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.colorAdj[ 4 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -216,7 +225,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "colour5", "5th 'keyframe' color.", typeof( ParticleAffector ) )]
-		class Color5Command : IPropertyCommand
+		private class Color5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -226,6 +235,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.colorAdj[ 5 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -237,7 +247,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time0", "Initial 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time0Command : IPropertyCommand
+		private class Time0Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -247,6 +257,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 0 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -258,7 +269,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time1", "1st 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time1Command : IPropertyCommand
+		private class Time1Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -268,6 +279,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 1 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -279,7 +291,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time2", "2nd 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time2Command : IPropertyCommand
+		private class Time2Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -289,6 +301,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 2 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -300,7 +313,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time3", "3rd 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time3Command : IPropertyCommand
+		private class Time3Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -310,6 +323,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 3 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -321,7 +335,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time4", "4th 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time4Command : IPropertyCommand
+		private class Time4Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -331,6 +345,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 4 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
@@ -342,7 +357,7 @@ namespace Axiom.ParticleFX
 		}
 
 		[ScriptableProperty( "time5", "5th 'keyframe' time.", typeof( ParticleAffector ) )]
-		class Time5Command : IPropertyCommand
+		private class Time5Command : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
@@ -352,6 +367,7 @@ namespace Axiom.ParticleFX
 
 				return StringConverter.ToString( affector.timeAdj[ 5 ] );
 			}
+
 			public void Set( object target, string val )
 			{
 				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;

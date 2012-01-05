@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,6 +44,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.Cg;
+
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -65,22 +70,27 @@ namespace Axiom.CgPrograms
 		///    Current Cg context id.
 		/// </summary>
 		protected IntPtr cgContext;
+
 		/// <summary>
 		///    Current Cg program id.
 		/// </summary>
 		protected IntPtr cgProgram;
+
 		/// <summary>
 		///    Entry point of the Cg program.
 		/// </summary>
 		protected string entry;
+
 		/// <summary>
 		///    List of requested profiles for this program.
 		/// </summary>
 		protected string[] profiles;
+
 		/// <summary>
 		///    Chosen profile for this program.
 		/// </summary>
 		protected string selectedProfile;
+
 		protected int selectedCgProfile;
 
 		#endregion Fields
@@ -104,29 +114,29 @@ namespace Axiom.CgPrograms
 
 		#region Methods
 
-        /// <summary>
-        /// Internal method which works out which profile to use for this program
-        /// </summary>
+		/// <summary>
+		/// Internal method which works out which profile to use for this program
+		/// </summary>
 		protected void SelectProfile()
 		{
 			selectedProfile = "";
 			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 
-            if ( profiles != null )
-            {
-                for ( int i = 0; i < profiles.Length; i++ )
-                {
-                    if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
-                    {
-                        selectedProfile = profiles[ i ];
-                        selectedCgProfile = Cg.cgGetProfile( selectedProfile );
+			if( profiles != null )
+			{
+				for( int i = 0; i < profiles.Length; i++ )
+				{
+					if( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
+					{
+						selectedProfile = profiles[ i ];
+						selectedCgProfile = Cg.cgGetProfile( selectedProfile );
 
-                        CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
+						CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
 
-                        break;
-                    }
-                }
-            }
+						break;
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -139,9 +149,11 @@ namespace Axiom.CgPrograms
 			string[] args = null;
 
 			// This option causes an error with the CG 1.3 compiler
-			if ( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
+			if( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
 			{
-				args = new string[] { "-profileopts", "dcls", null };
+				args = new string[] {
+				                    	"-profileopts", "dcls", null
+				                    };
 			}
 
 			// create the Cg program
@@ -155,7 +167,7 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			if ( this.selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !_compileError )
+			if( this.selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !_compileError )
 			{
 				// retreive the
 				string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
@@ -179,25 +191,23 @@ namespace Axiom.CgPrograms
 			int index = 0;
 
 			// loop through the rest of the params
-			while ( param != IntPtr.Zero )
+			while( param != IntPtr.Zero )
 			{
-
 				// get the type of this param up front
 				int paramType = Cg.cgGetParameterType( param );
 
 				// Look for uniform parameters only
 				// Don't bother enumerating unused parameters, especially since they will
 				// be optimized out and therefore not in the indexed versions
-				if ( Cg.cgIsParameterReferenced( param ) != 0
-					&& Cg.cgGetParameterVariability( param ) == Cg.CG_UNIFORM
-					&& Cg.cgGetParameterDirection( param ) != Cg.CG_OUT
-					&& paramType != Cg.CG_SAMPLER1D
-					&& paramType != Cg.CG_SAMPLER2D
-					&& paramType != Cg.CG_SAMPLER3D
-					&& paramType != Cg.CG_SAMPLERCUBE
-					&& paramType != Cg.CG_SAMPLERRECT )
+				if( Cg.cgIsParameterReferenced( param ) != 0
+				    && Cg.cgGetParameterVariability( param ) == Cg.CG_UNIFORM
+				    && Cg.cgGetParameterDirection( param ) != Cg.CG_OUT
+				    && paramType != Cg.CG_SAMPLER1D
+				    && paramType != Cg.CG_SAMPLER2D
+				    && paramType != Cg.CG_SAMPLER3D
+				    && paramType != Cg.CG_SAMPLERCUBE
+				    && paramType != Cg.CG_SAMPLERRECT )
 				{
-
 					// get the name and index of the program param
 					string name = Cg.cgGetParameterName( param );
 
@@ -207,7 +217,7 @@ namespace Axiom.CgPrograms
 					// it means an unused or non-indexed params, since it is also returned
 					// for programs that have a param that is not referenced in the program
 					// and ends up getting pruned by the Cg compiler
-					if ( selectedCgProfile == Cg.CG_PROFILE_FP30 )
+					if( selectedCgProfile == Cg.CG_PROFILE_FP30 )
 					{
 						// use a fake index just to order the named fp30 params
 						index++;
@@ -224,7 +234,7 @@ namespace Axiom.CgPrograms
 					int resource = Cg.cgGetParameterResource( param );
 
 					// Get the parameter resource, so we know what type we're dealing with
-					switch ( resource )
+					switch( resource )
 					{
 						case Cg.CG_COMBINER_STAGE_CONST0:
 							// register combiner, const 0
@@ -254,7 +264,7 @@ namespace Axiom.CgPrograms
 		protected override void UnloadImpl()
 		{
 			// destroy this program if it had been loaded
-			if ( cgProgram != IntPtr.Zero )
+			if( cgProgram != IntPtr.Zero )
 			{
 				Cg.cgDestroyProgram( cgProgram );
 
@@ -267,12 +277,11 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		public override void Touch()
 		{
-			if ( this.IsSupported )
+			if( this.IsSupported )
 			{
 				base.Touch();
 			}
 		}
-
 
 		#endregion Methods
 
@@ -285,28 +294,29 @@ namespace Axiom.CgPrograms
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported() )
+				if( _compileError || !IsRequiredCapabilitiesSupported() )
+				{
 					return false;
+				}
 
 				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				if( this.IsSkeletalAnimationIncluded &&
+				    !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
-
 					return false;
 				}
 
 				// see if any profiles are supported
-                if ( profiles != null )
-                {
-                    for ( int i = 0; i < profiles.Length; i++ )
-                    {
-                        if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
-                        {
-                            return true;
-                        }
-                    }
-                }
+				if( profiles != null )
+				{
+					for( int i = 0; i < profiles.Length; i++ )
+					{
+						if( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
+						{
+							return true;
+						}
+					}
+				}
 
 				// nope, SOL
 				return false;
@@ -317,7 +327,7 @@ namespace Axiom.CgPrograms
 		{
 			get
 			{
-				switch ( selectedProfile )
+				switch( selectedProfile )
 				{
 					case "ps_1_1":
 					case "ps_1_2":
@@ -362,7 +372,7 @@ namespace Axiom.CgPrograms
 			{
 				this.Properties[ name ] = val;
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				LogManager.Instance.Write( "CgProgram: Unrecognized parameter '{0}'", name );
 				handled = false;
@@ -387,7 +397,7 @@ namespace Axiom.CgPrograms
 
 			public void Set( object target, string val )
 			{
-				( (CgProgram)target ).entry = val ;
+				( (CgProgram)target ).entry = val;
 			}
 
 			#endregion IPropertyCommand Members
@@ -412,6 +422,5 @@ namespace Axiom.CgPrograms
 		}
 
 		#endregion Custom Parameters
-
 	}
 }

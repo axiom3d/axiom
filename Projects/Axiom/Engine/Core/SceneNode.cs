@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,8 +44,11 @@ using System.Collections;
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Core.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -65,96 +72,84 @@ namespace Axiom.Core
 		///		A collection of all objects attached to this scene node.
 		///	</summary>
 		protected MovableObjectCollection objectList = new MovableObjectCollection();
+
 		/// <summary>
 		///    Gets the number of SceneObjects currently attached to this node.
 		/// </summary>
-		public int ObjectCount
-		{
-			get
-			{
-				return objectList.Count;
-			}
-		}
+		public int ObjectCount { get { return objectList.Count; } }
+
 		/// <summary>
 		/// Gets the list of scene objects attached to this scene node
 		/// </summary>
-		public ICollection<MovableObject> Objects
-		{
-			get
-			{
-				return objectList.Values;
-			}
-		}
+		public ICollection<MovableObject> Objects { get { return objectList.Values; } }
 
 		/// <summary>
 		///		Reference to the scene manager who created me.
 		///	</summary>
 		protected SceneManager creator;
+
 		/// <summary>
 		///		Renderable bounding box for this node.
 		///	</summary>
 		protected WireBoundingBox wireBox;
+
 		/// <summary>
 		/// Wireframe bounding box for this scenenode
 		/// </summary>
-		public WireBoundingBox WireBoundingBox
-		{
-			get
-			{
-				return wireBox;
-			}
-			set
-			{
-				wireBox = value;
-			}
-		}
+		public WireBoundingBox WireBoundingBox { get { return wireBox; } set { wireBox = value; } }
+
 		/// <summary>
 		///		Whether or not to display this node's bounding box.
 		///	</summary>
 		protected bool showBoundingBox;
+
 		/// <summary>
 		///		Bounding box. Updated through Update.
 		///	</summary>
 		protected AxisAlignedBox worldAABB = AxisAlignedBox.Null;
+
 		/// <summary>
 		///		Word bounding sphere surrounding this node.
 		/// </summary>
 		protected Sphere worldBoundingSphere = new Sphere();
-		public Sphere WorldBoundingSphere
-		{
-			get
-			{
-				return worldBoundingSphere;
-			}
-		}
+
+		public Sphere WorldBoundingSphere { get { return worldBoundingSphere; } }
+
 		/// <summary>
 		///    List of lights within range of this node.
 		/// </summary>
 		protected LightList lightList = new LightList();
+
 		/// <summary>
 		///    Keeps track of whether the list of lights located near this node needs updating.
 		/// </summary>
 		protected bool lightListDirty;
+
 		/// <summary>
 		///		Where to yaw around a fixed axis.
 		/// </summary>
 		protected bool isYawFixed;
+
 		/// <summary>
 		///		Fixed axis to yaw around.
 		/// </summary>
 		protected Vector3 yawFixedAxis;
+
 		/// <summary>
 		///		Auto tracking target.
 		/// </summary>
 		protected SceneNode autoTrackTarget;
+
 		/// <summary>
 		///		Tracking offset for fine tuning.
 		/// </summary>
 		protected Vector3 autoTrackOffset = Vector3.Zero;
+
 		/// <summary>
 		///		Local 'normal' direction vector.
 		/// </summary>
 		protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
+
 		/// <summary>
 		///		Determines whether node and children are visible or not.
 		/// </summary>
@@ -203,15 +198,15 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
-				foreach ( MovableObject item in objectList )
+				foreach( MovableObject item in objectList )
 				{
 					item.NotifyAttached( null );
 				}
 				objectList.Clear();
 
-				if ( wireBox != null )
+				if( wireBox != null )
 				{
 					wireBox.Dispose();
 					wireBox = null;
@@ -224,32 +219,15 @@ namespace Axiom.Core
 
 		#region Properties
 
-
 		/// <summary>
 		///		Gets/Sets whether or not to display the bounding box for this node.
 		/// </summary>
-		public bool ShowBoundingBox
-		{
-			get
-			{
-				return showBoundingBox;
-			}
-			set
-			{
-				showBoundingBox = value;
-			}
-		}
+		public bool ShowBoundingBox { get { return showBoundingBox; } set { showBoundingBox = value; } }
 
 		/// <summary>
 		///		Gets a reference to the SceneManager that created this node.
 		/// </summary>
-		public SceneManager Creator
-		{
-			get
-			{
-				return creator;
-			}
-		}
+		public SceneManager Creator { get { return creator; } }
 
 		/// <summary>
 		///		Gets the axis-aligned bounding box of this node (and hence all child nodes).
@@ -258,93 +236,53 @@ namespace Axiom.Core
 		///		Usage not recommended unless you are extending a SceneManager, because the bounding box returned
 		///		from this method is only up to date after the SceneManager has called Update.
 		/// </remarks>
-		public AxisAlignedBox WorldAABB
-		{
-			get
-			{
-				return worldAABB;
-			}
-		}
+		public AxisAlignedBox WorldAABB { get { return worldAABB; } }
 
 		/// <summary>
 		///		Gets the offset at which this node is tracking another node, if the node is auto tracking..
 		/// </summary>
-		public Vector3 AutoTrackOffset
-		{
-			get
-			{
-				return autoTrackOffset;
-			}
-			set
-			{
-				autoTrackOffset = value;
-			}
-		}
+		public Vector3 AutoTrackOffset { get { return autoTrackOffset; } set { autoTrackOffset = value; } }
 
 		/// <summary>
 		///		Get the auto tracking local direction for this node, if it is auto tracking.
 		/// </summary>
-		public Vector3 AutoTrackLocalDirection
-		{
-			get
-			{
-				return autoTrackLocalDirection;
-			}
-			set
-			{
-				autoTrackLocalDirection = value;
-			}
-		}
+		public Vector3 AutoTrackLocalDirection { get { return autoTrackLocalDirection; } set { autoTrackLocalDirection = value; } }
 
 		/// <summary>
 		///		Gets the SceneNode that this node is currently tracking, if any.
 		/// </summary>
 		public SceneNode AutoTrackTarget
 		{
-			get
-			{
-				return autoTrackTarget;
-			}
+			get { return autoTrackTarget; }
 			set
 			{
 				autoTrackTarget = value;
-				if ( creator != null )
+				if( creator != null )
+				{
 					creator.NotifyAutoTrackingSceneNode( this, value != null );
+				}
 			}
 		}
 
 		/// <summary>
 		///		Sets visibility for this node. If invisible, child nodes will be invisible, too.
 		/// </summary>
-		public bool IsVisible
-		{
-			get
-			{
-				return this.visible;
-			}
-			set
-			{
-				this.visible = value;
-			}
-		}
+		public bool IsVisible { get { return this.visible; } set { this.visible = value; } }
 
 		/// <summary>
 		/// Determines whether this node is in the scene graph, i.e.
 		/// whether it's ultimate ancestor is the root scene node.
 		/// </summary>
-		public virtual bool IsInSceneGraph
+		virtual public bool IsInSceneGraph
 		{
-			get
-			{
-				return this.isInSceneGraph;
-			}
+			get { return this.isInSceneGraph; }
 			protected set
 			{
-				if ( value != this.isInSceneGraph )
+				if( value != this.isInSceneGraph )
 				{
 					this.isInSceneGraph = value;
 					// notify children
-					foreach ( Node child in childNodes.Values )
+					foreach( Node child in childNodes.Values )
 					{
 						( (SceneNode)child ).IsInSceneGraph = this.isInSceneGraph;
 					}
@@ -360,16 +298,13 @@ namespace Axiom.Core
 			isInSceneGraph = true;
 		}
 
-		public new SceneNode Parent
+		new public SceneNode Parent
 		{
-			get
-			{
-				return (SceneNode)base.Parent;
-			}
+			get { return (SceneNode)base.Parent; }
 			set
 			{
 				base.Parent = value;
-				if ( base.Parent != null )
+				if( base.Parent != null )
 				{
 					IsInSceneGraph = ( (SceneNode)base.Parent ).IsInSceneGraph;
 				}
@@ -379,6 +314,7 @@ namespace Axiom.Core
 				}
 			}
 		}
+
 		#endregion Properties
 
 		#region Methods
@@ -396,7 +332,7 @@ namespace Axiom.Core
 		///    A MovableObject will not show up in the scene until it is attached to a SceneNode.
 		/// </remarks>
 		/// <param name="obj"></param>
-		public virtual void AttachObject( MovableObject obj )
+		virtual public void AttachObject( MovableObject obj )
 		{
 			Debug.Assert( obj != null, "obj != null" );
 
@@ -419,12 +355,11 @@ namespace Axiom.Core
 			objectList.Clear();
 		}
 
-
 		/// <summary>
 		///    Creates a new name child node.
 		/// </summary>
 		/// <param name="name"></param>
-		public virtual SceneNode CreateChildSceneNode( string name )
+		virtual public SceneNode CreateChildSceneNode( string name )
 		{
 			return CreateChildSceneNode( name, Vector3.Zero, Quaternion.Identity );
 		}
@@ -435,7 +370,7 @@ namespace Axiom.Core
 		/// <param name="name">Name of the node.</param>
 		/// <param name="translate">A vector to specify the position relative to the parent.</param>
 		/// <returns></returns>
-		public virtual SceneNode CreateChildSceneNode( string name, Vector3 translate )
+		virtual public SceneNode CreateChildSceneNode( string name, Vector3 translate )
 		{
 			return CreateChildSceneNode( name, translate, Quaternion.Identity );
 		}
@@ -447,7 +382,7 @@ namespace Axiom.Core
 		/// <param name="translate">A vector to specify the position relative to the parent.</param>
 		/// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
 		/// <returns></returns>
-		public virtual SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
+		virtual public SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
 		{
 			return (SceneNode)CreateChild( name, translate, rotate );
 		}
@@ -455,7 +390,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Creates a new child scene node.
 		/// </summary>
-		public virtual SceneNode CreateChildSceneNode()
+		virtual public SceneNode CreateChildSceneNode()
 		{
 			return CreateChildSceneNode( Vector3.Zero, Quaternion.Identity );
 		}
@@ -465,7 +400,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="translate">A vector to specify the position relative to the parent.</param>
 		/// <returns></returns>
-		public virtual SceneNode CreateChildSceneNode( Vector3 translate )
+		virtual public SceneNode CreateChildSceneNode( Vector3 translate )
 		{
 			return CreateChildSceneNode( translate, Quaternion.Identity );
 		}
@@ -476,7 +411,7 @@ namespace Axiom.Core
 		/// <param name="translate">A vector to specify the position relative to the parent.</param>
 		/// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
 		/// <returns></returns>
-		public virtual SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
+		virtual public SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
 		{
 			return (SceneNode)CreateChild( translate, rotate );
 		}
@@ -485,7 +420,7 @@ namespace Axiom.Core
 		/// Rekeys the scene object using its new Name
 		/// </summary>
 		/// <param name="obj"></param>
-		public virtual void NotifyAttachedObjectNameChanged( MovableObject obj )
+		virtual public void NotifyAttachedObjectNameChanged( MovableObject obj )
 		{
 			objectList.Remove( obj.Name );
 			objectList.Add( obj );
@@ -497,10 +432,10 @@ namespace Axiom.Core
 		/// <remarks>
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
-		public virtual void DetachAllObjects()
+		virtual public void DetachAllObjects()
 		{
 			// notify each object that it was removed (sending in null sets its parent scene node to null)
-			foreach ( MovableObject obj in objectList.Values )
+			foreach( MovableObject obj in objectList.Values )
 			{
 				obj.NotifyAttached( null );
 			}
@@ -517,7 +452,7 @@ namespace Axiom.Core
 		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		/// <param name="obj">Reference to the object to remove.</param>
-		public virtual void DetachObject( MovableObject obj )
+		virtual public void DetachObject( MovableObject obj )
 		{
 			Debug.Assert( obj != null, "obj != null" );
 
@@ -539,7 +474,7 @@ namespace Axiom.Core
 		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( string name )
 		{
-			if ( this.objectList.ContainsKey( name ) )
+			if( this.objectList.ContainsKey( name ) )
 			{
 				return this.objectList[ name ];
 			}
@@ -557,10 +492,12 @@ namespace Axiom.Core
 		public MovableObject GetObject( int index )
 		{
 			int i = 0;
-			foreach ( MovableObject mo in this.objectList.Values )
+			foreach( MovableObject mo in this.objectList.Values )
 			{
-				if ( i == index )
+				if( i == index )
+				{
 					return mo;
+				}
 				i++;
 			}
 			throw new IndexOutOfRangeException( "Invalid index specified." );
@@ -580,7 +517,7 @@ namespace Axiom.Core
 		/// the nodes will be detached but will not themselves be destroyed.
 		/// </para>
 		/// </remarks>
-		public virtual void RemoveAndDestroyChild( String name )
+		virtual public void RemoveAndDestroyChild( String name )
 		{
 			SceneNode child = (SceneNode)this.GetChild( name );
 			RemoveAndDestroyChild( child );
@@ -600,7 +537,7 @@ namespace Axiom.Core
 		/// the nodes will be detached but will not themselves be destroyed.
 		/// </para>
 		/// </remarks>
-		public virtual void RemoveAndDestroyChild( SceneNode sceneNode )
+		virtual public void RemoveAndDestroyChild( SceneNode sceneNode )
 		{
 			sceneNode.RemoveAndDestroyAllChildren();
 
@@ -616,9 +553,9 @@ namespace Axiom.Core
 		/// them from the scene graph. Note that all objects attached to the
 		/// nodes will be detached but will not be destroyed.
 		/// </remarks>
-		public virtual void RemoveAndDestroyAllChildren()
+		virtual public void RemoveAndDestroyAllChildren()
 		{
-			foreach ( SceneNode sn in childNodes.Values )
+			foreach( SceneNode sn in childNodes.Values )
 			{
 				sn.RemoveAndDestroyAllChildren();
 
@@ -657,7 +594,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <param name="queue"></param>
-		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue )
+		virtual public void FindVisibleObjects( Camera camera, RenderQueue queue )
 		{
 			// call overloaded method
 			FindVisibleObjects( camera, queue, true, false, false );
@@ -670,7 +607,7 @@ namespace Axiom.Core
 		/// <param name="queue"></param>
 		/// <param name="includeChildren"></param>
 		/// <param name="displayNodes"></param>
-		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes )
+		virtual public void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes )
 		{
 			// call overloaded method
 			FindVisibleObjects( camera, queue, includeChildren, displayNodes, false );
@@ -684,16 +621,18 @@ namespace Axiom.Core
 		/// <param name="includeChildren">If true, cascades down to all children.</param>
 		/// <param name="displayNodes">Renders the local axes for the node.</param>
 		/// <param name="onlyShadowCasters"></param>
-		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes, bool onlyShadowCasters )
+		virtual public void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes, bool onlyShadowCasters )
 		{
 			// if we aren't visible, then quit now
 			// TODO: Make sure sphere is calculated properly for all objects, then switch to cull using that
-			if ( !camera.IsObjectVisible( worldAABB ) )
+			if( !camera.IsObjectVisible( worldAABB ) )
+			{
 				return;
+			}
 
 			// add visible objects to the render queue
 			//objectListMeter.Enter();
-			foreach ( MovableObject obj in objectList.Values )
+			foreach( MovableObject obj in objectList.Values )
 			{
 				// tell attached object about current camera in case it wants to know
 				//notifyCameraMeter.Enter();
@@ -701,8 +640,8 @@ namespace Axiom.Core
 				//notifyCameraMeter.Exit();
 
 				// if this object is visible, add it to the render queue
-				if ( obj.IsVisible &&
-					( !onlyShadowCasters || obj.CastShadows ) )
+				if( obj.IsVisible &&
+				    ( !onlyShadowCasters || obj.CastShadows ) )
 				{
 					//updateQueueMeter.Enter();
 					obj.UpdateRenderQueue( queue );
@@ -712,19 +651,21 @@ namespace Axiom.Core
 			//objectListMeter.Exit();
 
 			//childListMeter.Enter();
-			if ( includeChildren )
+			if( includeChildren )
 			{
 				// ask all child nodes to update the render queue with visible objects
-				foreach ( SceneNode childNode in childNodes.Values )
+				foreach( SceneNode childNode in childNodes.Values )
 				{
-					if ( childNode.IsVisible )
+					if( childNode.IsVisible )
+					{
 						childNode.FindVisibleObjects( camera, queue, includeChildren, displayNodes, onlyShadowCasters );
+					}
 				}
 			}
 			//childListMeter.Exit();
 
 			// if we wanna display nodes themself..
-			if ( displayNodes )
+			if( displayNodes )
 			{
 				// hey, lets just add ourself right to the render queue
 				queue.AddRenderable( GetDebugRenderable() );
@@ -732,7 +673,7 @@ namespace Axiom.Core
 
 			// do we wanna show our beautiful bounding box?
 			// do it if either we want it, or the SceneManager dictates it
-			if ( showBoundingBox || ( creator != null && creator.ShowBoundingBoxes ) )
+			if( showBoundingBox || ( creator != null && creator.ShowBoundingBoxes ) )
 			{
 				AddBoundingBoxToQueue( queue );
 			}
@@ -753,8 +694,10 @@ namespace Axiom.Core
 		/// <param name="queue"></param>
 		public void AddBoundingBoxToQueue( RenderQueue queue )
 		{
-			if ( wireBox == null )
+			if( wireBox == null )
+			{
 				wireBox = new WireBoundingBox();
+			}
 
 			// add the wire bounding box to the render queue
 			wireBox.BoundingBox = worldAABB;
@@ -764,7 +707,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Tell the SceneNode to update the world bound info it stores.
 		/// </summary>
-		protected virtual void UpdateBounds()
+		virtual protected void UpdateBounds()
 		{
 			// reset bounds
 			worldAABB.IsNull = true;
@@ -772,7 +715,7 @@ namespace Axiom.Core
 			float radius = worldBoundingSphere.Radius = 0;
 
 			// update bounds from attached objects
-			foreach ( MovableObject obj in objectList.Values )
+			foreach( MovableObject obj in objectList.Values )
 			{
 				// update
 				worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
@@ -780,7 +723,7 @@ namespace Axiom.Core
 			}
 
 			// merge with Children
-			foreach ( SceneNode child in childNodes.Values )
+			foreach( SceneNode child in childNodes.Values )
 			{
 				// merge our bounding box with that of the child node
 				worldAABB.Merge( child.worldAABB );
@@ -788,7 +731,6 @@ namespace Axiom.Core
 			}
 
 			worldBoundingSphere.Radius = radius;
-
 		}
 
 		/// <summary>
@@ -830,7 +772,7 @@ namespace Axiom.Core
 		{
 			Vector3 yAxis;
 
-			if ( isYawFixed )
+			if( isYawFixed )
 			{
 				// Rotate around fixed yaw axis
 				yAxis = yawFixedAxis;
@@ -843,7 +785,6 @@ namespace Axiom.Core
 
 			Rotate( yAxis, degrees );
 		}
-
 
 		/// <summary>
 		///		Points the local Z direction of this node at a point in space.
@@ -890,7 +831,7 @@ namespace Axiom.Core
 		/// </param>
 		public void SetAutoTracking( bool enabled, SceneNode target, Vector3 localDirection, Vector3 offset )
 		{
-			if ( enabled )
+			if( enabled )
 			{
 				autoTrackTarget = target;
 				autoTrackOffset = offset;
@@ -901,7 +842,7 @@ namespace Axiom.Core
 				autoTrackTarget = null;
 			}
 
-			if ( creator != null )
+			if( creator != null )
 			{
 				creator.NotifyAutoTrackingSceneNode( this, enabled );
 			}
@@ -951,6 +892,7 @@ namespace Axiom.Core
 		{
 			SetDirection( x, y, z, TransformSpace.Local, Vector3.NegativeUnitZ );
 		}
+
 		public void SetDirection( Real x, Real y, Real z, TransformSpace relativeTo )
 		{
 			SetDirection( x, y, z, relativeTo, Vector3.NegativeUnitZ );
@@ -973,7 +915,7 @@ namespace Axiom.Core
 		public void SetDirection( Vector3 vec, TransformSpace relativeTo, Vector3 localDirection )
 		{
 			// Do nothing if given a zero vector
-			if ( vec == Vector3.Zero )
+			if( vec == Vector3.Zero )
 			{
 				return;
 			}
@@ -981,7 +923,7 @@ namespace Axiom.Core
 			// Adjust vector so that it is relative to local Z
 			Vector3 zAdjustVec;
 
-			if ( localDirection == Vector3.NegativeUnitZ )
+			if( localDirection == Vector3.NegativeUnitZ )
 			{
 				zAdjustVec = -vec;
 			}
@@ -995,7 +937,7 @@ namespace Axiom.Core
 
 			Quaternion targetOrientation;
 
-			if ( isYawFixed )
+			if( isYawFixed )
 			{
 				Vector3 xVec = yawFixedAxis.Cross( zAdjustVec );
 				xVec.Normalize();
@@ -1015,7 +957,7 @@ namespace Axiom.Core
 
 				Quaternion rotationQuat;
 
-				if ( ( zAxis + zAdjustVec ).LengthSquared < 0.00000001f )
+				if( ( zAxis + zAdjustVec ).LengthSquared < 0.00000001f )
 				{
 					// Oops, a 180 degree turn (infinite possible rotation axes)
 					// Default to yaw i.e. use current UP
@@ -1030,17 +972,17 @@ namespace Axiom.Core
 				targetOrientation = rotationQuat * orientation;
 			}
 
-			if ( relativeTo == TransformSpace.Local || parent != null )
+			if( relativeTo == TransformSpace.Local || parent != null )
 			{
 				orientation = targetOrientation;
 			}
 			else
 			{
-				if ( relativeTo == TransformSpace.Parent )
+				if( relativeTo == TransformSpace.Parent )
 				{
 					orientation = targetOrientation * parent.Orientation.Inverse();
 				}
-				else if ( relativeTo == TransformSpace.World )
+				else if( relativeTo == TransformSpace.World )
 				{
 					orientation = targetOrientation * parent.DerivedOrientation.Inverse();
 				}
@@ -1069,7 +1011,7 @@ namespace Axiom.Core
 		/// <param name="radius">Parameter to specify lights intersecting a given radius of
 		///		this SceneNode's centre</param>
 		/// <returns></returns>
-		public virtual LightList FindLights( float radius )
+		virtual public LightList FindLights( float radius )
 		{
 			// TEMP FIX
 			// If a scene node is static and lights have moved, light list won't change
@@ -1077,10 +1019,14 @@ namespace Axiom.Core
 			// visible nodes, so temporarily visible nodes will not be updated
 			// Since this is only called for visible nodes, skip the check for now
 			//if(lightListDirty) {
-			if ( creator != null )
+			if( creator != null )
+			{
 				creator.PopulateLightList( this.DerivedPosition, radius, lightList );
+			}
 			else
+			{
 				lightList.Clear();
+			}
 
 			lightListDirty = false;
 			//}
@@ -1093,12 +1039,12 @@ namespace Axiom.Core
 		/// </summary>
 		internal void AutoTrack()
 		{
-			if ( autoTrackTarget != null )
+			if( autoTrackTarget != null )
 			{
 				LookAt(
-					autoTrackTarget.DerivedPosition + autoTrackOffset,
-					TransformSpace.World,
-					autoTrackLocalDirection );
+				       autoTrackTarget.DerivedPosition + autoTrackOffset,
+				       TransformSpace.World,
+				       autoTrackLocalDirection );
 
 				// update self and children
 				Update( true, true );

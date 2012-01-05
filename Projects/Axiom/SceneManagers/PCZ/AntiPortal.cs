@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,19 +19,23 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 // <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 // <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Collections;
@@ -39,64 +44,47 @@ using Axiom.Collections;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-    public class AntiPortal : PortalBase
-    {
-        private static NameGenerator<AntiPortal> _nameGenerator = new NameGenerator<AntiPortal>("AntiPortal");
+	public class AntiPortal : PortalBase
+	{
+		private static NameGenerator<AntiPortal> _nameGenerator = new NameGenerator<AntiPortal>( "AntiPortal" );
 
-        private string _typeName = "AntiPortal";
-        public override string TypeName
-        {
-            get { return _typeName; }
-        }
+		private string _typeName = "AntiPortal";
+		public override string TypeName { get { return _typeName; } }
 
-        public AntiPortal(string name)
-            : this(name, PortalType.AABB)
-        {
+		public AntiPortal( string name )
+			: this( name, PortalType.AABB ) {}
 
-        }
+		public AntiPortal()
+			: this( _nameGenerator.GetNextUniqueName(), PortalType.AABB ) {}
 
-        public AntiPortal()
-            : this(_nameGenerator.GetNextUniqueName(), PortalType.AABB)
-        {
+		public AntiPortal( PortalType type )
+			: this( _nameGenerator.GetNextUniqueName(), type ) {}
 
-        }
+		public AntiPortal( string name, PortalType type )
+			: base( name, type ) {}
+	}
 
-        public AntiPortal(PortalType type)
-            : this(_nameGenerator.GetNextUniqueName(), type)
-        {
+	public class AntiPortalFactory : MovableObjectFactory
+	{
+		new public const string TypeName = "AntiPortal";
 
-        }
+		public AntiPortalFactory()
+		{
+			base.Type = AntiPortalFactory.TypeName;
+		}
 
-        public AntiPortal(string name, PortalType type)
-            : base(name, type)
-        {
-
-        }
-
-    }
-
-    public class AntiPortalFactory : MovableObjectFactory
-    {
-        public new const string TypeName = "AntiPortal";
-
-        public AntiPortalFactory()
-        {
-            base.Type = AntiPortalFactory.TypeName;
-        }
-
-        protected override MovableObject _createInstance(string name, NamedParameterList param)
-        {
-            PortalType portalType = PortalType.AABB;
-            // optional parameters
-            if (param != null)
-            {
-                if (param.ContainsKey("type"))
-                {
-                    portalType = (PortalType)Convert.ToInt32(param["type"]);
-                }
-            }
-            return new AntiPortal(name, portalType);
-        }
-
-    }
+		protected override MovableObject _createInstance( string name, NamedParameterList param )
+		{
+			PortalType portalType = PortalType.AABB;
+			// optional parameters
+			if( param != null )
+			{
+				if( param.ContainsKey( "type" ) )
+				{
+					portalType = (PortalType)Convert.ToInt32( param[ "type" ] );
+				}
+			}
+			return new AntiPortal( name, portalType );
+		}
+	}
 }

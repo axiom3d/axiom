@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -57,10 +61,12 @@ namespace Axiom.RenderSystems.DirectX9
 		///		Reference to the current Direct3D device object.
 		/// </summary>
 		private D3D.Device device;
+
 		/// <summary>
 		///		Reference to the query object being used.
 		/// </summary>
 		private D3D.Query query;
+
 		/// <summary>
 		///		Flag that indicates whether hardware queries are supported
 		/// </summary>
@@ -85,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// check if queries are supported
 			isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
-			if ( isSupported )
+			if( isSupported )
 			{
 				// attempt to create an occlusion query
 				query = new D3D.Query( device, D3D.QueryType.Occlusion );
@@ -102,7 +108,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void Begin()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( isSupported )
+			if( isSupported )
 			{
 				query.Issue( D3D.Issue.Begin );
 			}
@@ -119,15 +125,17 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>the resulting number of fragments.</returns>
 		public override int PullResults()
 		{
-			if ( isQueryResultStillOutstanding )
+			if( isQueryResultStillOutstanding )
 			{
 				// default to returning a high count.  will be set otherwise if the query runs
 				LastFragmentCount = 100000;
 
-				if ( isSupported )
+				if( isSupported )
 				{
-					while ( !query.CheckStatus( true ) )
+					while( !query.CheckStatus( true ) )
+					{
 						;
+					}
 					LastFragmentCount = query.GetData<int>( true );
 				}
 				isQueryResultStillOutstanding = false;
@@ -141,7 +149,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void End()
 		{
 			// proceed if supported, or silently fail otherwise
-			if ( isSupported )
+			if( isSupported )
 			{
 				query.Issue( D3D.Issue.End );
 			}
@@ -153,8 +161,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>true if query isn't finished.</returns>
 		public override bool IsStillOutstanding()
 		{
-			if ( !isQueryResultStillOutstanding )
+			if( !isQueryResultStillOutstanding )
+			{
 				return false;
+			}
 
 			return query.CheckStatus( true );
 		}
@@ -168,6 +178,7 @@ namespace Axiom.RenderSystems.DirectX9
 			query.Dispose();
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion HardwareOcclusionQuery Members
 	}
 }

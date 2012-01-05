@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,7 +52,7 @@ namespace Axiom.Graphics
 	/// <remarks>
 	///		
 	/// </remarks>
-	public abstract class HardwareVertexBuffer : HardwareBuffer
+	abstract public class HardwareVertexBuffer : HardwareBuffer
 	{
 		#region Member variables
 
@@ -72,7 +76,7 @@ namespace Axiom.Graphics
 			sizeInBytes = vertexSize * numVertices;
 
 			// create a shadow buffer if required
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
 				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexSize, numVertices, BufferUsage.Dynamic );
 			}
@@ -87,29 +91,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		public int VertexSize
-		{
-			get
-			{
-				return vertexSize;
-			}
-		}
+		public int VertexSize { get { return vertexSize; } }
 
-		public int VertexCount
-		{
-			get
-			{
-				return numVertices;
-			}
-		}
+		public int VertexCount { get { return numVertices; } }
 
-		public int UseCount
-		{
-			get
-			{
-				return useCount;
-			}
-		}
+		public int UseCount { get { return useCount; } }
 
 		#endregion
 
@@ -117,9 +103,9 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					Manager.NotifyVertexBufferDestroyed( this );
 				}

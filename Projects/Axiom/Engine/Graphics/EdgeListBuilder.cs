@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,10 +40,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Math.Collections;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -65,22 +71,27 @@ namespace Axiom.Graphics
 		///		List of common vertices.
 		/// </summary>
 		protected CommonVertexList vertices = new CommonVertexList();
+
 		/// <summary>
 		///		Underlying edge data to use for building.
 		/// </summary>
 		protected EdgeData edgeData = new EdgeData();
+
 		/// <summary>
 		///		Unique edges, used to detect whether there are too many triangles on an edge
 		/// </summary>
 		protected UniqueEdgeList uniqueEdges = new UniqueEdgeList();
+
 		/// <summary>
 		///		Do we weld common vertices at all?
 		/// </summary>
 		protected bool weldVertices;
+
 		/// <summary>
 		///		Should we treat coincident vertices from different vertex sets as one?
 		/// </summary>
 		protected bool weldVerticesAcrossVertexSets;
+
 		/// <summary>
 		///		Should we treat coincident vertices referenced from different index sets as one?
 		/// </summary>
@@ -138,7 +149,6 @@ namespace Axiom.Graphics
 			vertex buffer which this index set uses.
 			*/
 
-
 			/* 
 			There is a major consideration: 'What is a common vertex'? This is a
 			crucial decision, since to form a completely close hull, you need to treat
@@ -188,9 +198,9 @@ namespace Axiom.Graphics
 			int technique = 1;
 			bool validHull = false;
 
-			while ( !validHull && technique <= 5 )
+			while( !validHull && technique <= 5 )
 			{
-				switch ( technique )
+				switch( technique )
 				{
 					case 1: // weld across everything
 						weldVertices = true;
@@ -220,7 +230,7 @@ namespace Axiom.Graphics
 				} // switch
 
 				// Log alternate techniques
-				if ( technique > 1 )
+				if( technique > 1 )
 				{
 					LogManager.Instance.Write( "Trying alternative edge building technique {0}", technique );
 				}
@@ -232,7 +242,7 @@ namespace Axiom.Graphics
 					// if we got here with no exceptions, we're done
 					validHull = true;
 				}
-				catch ( Exception )
+				catch( Exception )
 				{
 					// Ambiguous hull, try next technique
 					technique++;
@@ -254,7 +264,7 @@ namespace Axiom.Graphics
 			edgeData.edgeGroups.Capacity = vertexDataList.Count;
 
 			// Initialize edge group data
-			for ( int i = 0; i < vertexDataList.Count; i++ )
+			for( int i = 0; i < vertexDataList.Count; i++ )
 			{
 				EdgeData.EdgeGroup group = new EdgeData.EdgeGroup();
 				group.vertexSet = i;
@@ -263,7 +273,7 @@ namespace Axiom.Graphics
 			}
 
 			// Stage 1: Build triangles and initial edge list.
-			for ( int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++ )
+			for( int i = 0, indexSet = 0; i < indexDataList.Count; i++, indexSet++ )
 			{
 				int vertexSet = (int)indexDataVertexDataSetList[ i ];
 
@@ -289,7 +299,7 @@ namespace Axiom.Graphics
 
 			int iterations = 0;
 
-			switch ( opType )
+			switch( opType )
 			{
 				case OperationType.TriangleList:
 					iterations = indexData.indexCount / 3;
@@ -321,7 +331,7 @@ namespace Axiom.Graphics
 				int count16 = 0;
 				int count32 = 0;
 
-				if ( indexData.indexBuffer.Type == IndexType.Size16 )
+				if( indexData.indexBuffer.Type == IndexType.Size16 )
 				{
 					p16Idx = (short*)idxPtr.ToPointer();
 				}
@@ -337,21 +347,21 @@ namespace Axiom.Graphics
 				// iterate over all the groups of 3 indices
 				edgeData.triangles.Capacity = triStart + iterations;
 
-				for ( int t = 0; t < iterations; t++ )
+				for( int t = 0; t < iterations; t++ )
 				{
 					EdgeData.Triangle tri = new EdgeData.Triangle();
 					tri.indexSet = indexSet;
 					tri.vertexSet = vertexSet;
 
-					int[] index = new int[ 3 ];
-					Vector3[] v = new Vector3[ 3 ];
+					int[] index = new int[3];
+					Vector3[] v = new Vector3[3];
 
-					for ( int i = 0; i < 3; i++ )
+					for( int i = 0; i < 3; i++ )
 					{
 						// Standard 3-index read for tri list or first tri in strip / fan
-						if ( opType == OperationType.TriangleList || t == 0 )
+						if( opType == OperationType.TriangleList || t == 0 )
 						{
-							if ( indexData.indexBuffer.Type == IndexType.Size32 )
+							if( indexData.indexBuffer.Type == IndexType.Size32 )
 							{
 								index[ i ] = p32Idx[ count32++ ];
 							}
@@ -364,7 +374,7 @@ namespace Axiom.Graphics
 						{
 							// Strips and fans are formed from last 2 indexes plus the 
 							// current one for triangles after the first
-							if ( indexData.indexBuffer.Type == IndexType.Size32 )
+							if( indexData.indexBuffer.Type == IndexType.Size32 )
 							{
 								index[ i ] = p32Idx[ i - 2 ];
 							}
@@ -374,9 +384,9 @@ namespace Axiom.Graphics
 							}
 
 							// Perform single-index increment at the last tri index
-							if ( i == 2 )
+							if( i == 2 )
 							{
-								if ( indexData.indexBuffer.Type == IndexType.Size32 )
+								if( indexData.indexBuffer.Type == IndexType.Size32 )
 								{
 									count32++;
 								}
@@ -410,26 +420,26 @@ namespace Axiom.Graphics
 					try
 					{
 						// create edges from common list
-						if ( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
+						if( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
 						{
 							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 0 ], tri.vertIndex[ 1 ],
-								tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
+							            tri.vertIndex[ 0 ], tri.vertIndex[ 1 ],
+							            tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
 						}
-						if ( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
+						if( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
 						{
 							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 1 ], tri.vertIndex[ 2 ],
-								tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
+							            tri.vertIndex[ 1 ], tri.vertIndex[ 2 ],
+							            tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
 						}
-						if ( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
+						if( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
 						{
 							CreateEdge( vertexSet, triStart + t,
-								tri.vertIndex[ 2 ], tri.vertIndex[ 0 ],
-								tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
+							            tri.vertIndex[ 2 ], tri.vertIndex[ 0 ],
+							            tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
 						}
 					}
-					catch ( Exception ex )
+					catch( Exception ex )
 					{
 						//Debug.WriteLine(ex.ToString());
 						//Debug.WriteLine(ex.StackTrace);
@@ -462,7 +472,7 @@ namespace Axiom.Graphics
 			vertPair.vertexIndex1 = sharedVertIndex0;
 			vertPair.vertexIndex2 = sharedVertIndex1;
 
-			if ( uniqueEdges.Contains( vertPair ) )
+			if( uniqueEdges.Contains( vertPair ) )
 			{
 				throw new AxiomException( "Edge is shared by too many triangles." );
 			}
@@ -490,37 +500,37 @@ namespace Axiom.Graphics
 		{
 			int triIndex = 0;
 
-			for ( int i = 0; i < edgeData.triangles.Count; i++, triIndex++ )
+			for( int i = 0; i < edgeData.triangles.Count; i++, triIndex++ )
 			{
 				EdgeData.Triangle tri = (EdgeData.Triangle)edgeData.triangles[ i ];
 				EdgeData.Edge e = null;
 
-				if ( tri.sharedVertIndex[ 0 ] > tri.sharedVertIndex[ 1 ] )
+				if( tri.sharedVertIndex[ 0 ] > tri.sharedVertIndex[ 1 ] )
 				{
 					e = FindEdge( tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 0 ] );
 
-					if ( e != null )
+					if( e != null )
 					{
 						e.triIndex[ 1 ] = triIndex;
 						e.isDegenerate = false;
 					}
 				}
-				if ( tri.sharedVertIndex[ 1 ] > tri.sharedVertIndex[ 2 ] )
+				if( tri.sharedVertIndex[ 1 ] > tri.sharedVertIndex[ 2 ] )
 				{
 					// Find the existing edge (should be reversed order)
 					e = FindEdge( tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 1 ] );
 
-					if ( e != null )
+					if( e != null )
 					{
 						e.triIndex[ 1 ] = triIndex;
 						e.isDegenerate = false;
 					}
 				}
-				if ( tri.sharedVertIndex[ 2 ] > tri.sharedVertIndex[ 0 ] )
+				if( tri.sharedVertIndex[ 2 ] > tri.sharedVertIndex[ 0 ] )
 				{
 					e = FindEdge( tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 2 ] );
 
-					if ( e != null )
+					if( e != null )
 					{
 						e.triIndex[ 1 ] = triIndex;
 						e.isDegenerate = false;
@@ -538,18 +548,17 @@ namespace Axiom.Graphics
 		protected EdgeData.Edge FindEdge( int sharedIndex1, int sharedIndex2 )
 		{
 			// Iterate over the existing edges
-			for ( int i = 0; i < edgeData.edgeGroups.Count; i++ )
+			for( int i = 0; i < edgeData.edgeGroups.Count; i++ )
 			{
 				EdgeData.EdgeGroup edgeGroup = (EdgeData.EdgeGroup)edgeData.edgeGroups[ i ];
 
-				for ( int j = 0; j < edgeGroup.edges.Count; j++ )
+				for( int j = 0; j < edgeGroup.edges.Count; j++ )
 				{
 					EdgeData.Edge edge = (EdgeData.Edge)edgeGroup.edges[ j ];
 
-					if ( edge.sharedVertIndex[ 0 ] == sharedIndex1 &&
-						edge.sharedVertIndex[ 1 ] == sharedIndex2 )
+					if( edge.sharedVertIndex[ 0 ] == sharedIndex1 &&
+					    edge.sharedVertIndex[ 1 ] == sharedIndex2 )
 					{
-
 						return edge;
 					}
 				}
@@ -565,18 +574,17 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		protected int FindOrCreateCommonVertex( Vector3 vec, int vertexSet, int indexSet, int originalIndex )
 		{
-			for ( int index = 0; index < vertices.Count; index++ )
+			for( int index = 0; index < vertices.Count; index++ )
 			{
 				CommonVertex commonVec = (CommonVertex)vertices[ index ];
 
-				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-					Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
-					Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
-					( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
-					( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
-					( commonVec.originalIndex == originalIndex || weldVertices ) )
+				if( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
+				    Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
+				    Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+				    ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
+				    ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
+				    ( commonVec.originalIndex == originalIndex || weldVertices ) )
 				{
-
 					return index;
 				}
 			}
@@ -593,7 +601,7 @@ namespace Axiom.Graphics
 			return newCommon.index;
 		}
 
-		public unsafe void DebugLog( Log log )
+		unsafe public void DebugLog( Log log )
 		{
 			log.Write( "EdgeListBuilder Log" );
 			log.Write( "-------------------" );
@@ -603,7 +611,7 @@ namespace Axiom.Graphics
 			int i, j;
 
 			// Log original vertex data
-			for ( i = 0; i < vertexDataList.Count; i++ )
+			for( i = 0; i < vertexDataList.Count; i++ )
 			{
 				VertexData vData = (VertexData)vertexDataList[ i ];
 				log.Write( "." );
@@ -621,7 +629,7 @@ namespace Axiom.Graphics
 
 				float* pReal;
 
-				for ( j = 0; j < vData.vertexCount; j++ )
+				for( j = 0; j < vData.vertexCount; j++ )
 				{
 					pReal = (float*)( pBaseVertex + posElem.Offset );
 
@@ -634,12 +642,12 @@ namespace Axiom.Graphics
 			}
 
 			// Log original index data
-			for ( i = 0; i < indexDataList.Count; i += 3 )
+			for( i = 0; i < indexDataList.Count; i += 3 )
 			{
 				IndexData iData = (IndexData)indexDataList[ i ];
 				log.Write( "." );
 				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})",
-					i, iData.indexCount, indexDataVertexDataSetList[ i ] );
+				           i, iData.indexCount, indexDataVertexDataSetList[ i ] );
 
 				// Get the indexes ready for reading
 				short* p16Idx = null;
@@ -647,7 +655,7 @@ namespace Axiom.Graphics
 
 				IntPtr idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
 
-				if ( iData.indexBuffer.Type == IndexType.Size32 )
+				if( iData.indexBuffer.Type == IndexType.Size32 )
 				{
 					p32Idx = (int*)idxPtr.ToPointer();
 				}
@@ -656,9 +664,9 @@ namespace Axiom.Graphics
 					p16Idx = (short*)idxPtr.ToPointer();
 				}
 
-				for ( j = 0; j < iData.indexCount / 3; j++ )
+				for( j = 0; j < iData.indexCount / 3; j++ )
 				{
-					if ( iData.indexBuffer.Type == IndexType.Size32 )
+					if( iData.indexBuffer.Type == IndexType.Size32 )
 					{
 						log.Write( "Triangle {0}: ({1}, {2}, {3})", j, *p32Idx++, *p32Idx++, *p32Idx++ );
 					}
@@ -674,12 +682,12 @@ namespace Axiom.Graphics
 				log.Write( "." );
 				log.Write( "Common vertex list - vertex count {0}", vertices.Count );
 
-				for ( i = 0; i < vertices.Count; i++ )
+				for( i = 0; i < vertices.Count; i++ )
 				{
 					CommonVertex c = (CommonVertex)vertices[ i ];
 
 					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}",
-						i, c.vertexSet, c.index, c.position );
+					           i, c.vertexSet, c.index, c.position );
 				}
 			}
 		}
@@ -700,18 +708,22 @@ namespace Axiom.Graphics
 			///     Location of point in euclidean space.
 			/// </summary>
 			public Vector3 position;
+
 			/// <summary>
 			///     Place of vertex in original vertex set.
 			/// </summary>
 			public int index;
+
 			/// <summary>
 			///      The vertex set this came from.
 			/// </summary>
 			public int vertexSet;
+
 			/// <summary>
 			///     The index set this was referenced (first) from.
 			/// </summary>
 			public int indexSet;
+
 			/// <summary>
 			///     Place of vertex in original vertex set.
 			/// </summary>
@@ -724,13 +736,9 @@ namespace Axiom.Graphics
 			public int vertexIndex2;
 		}
 
-		public class CommonVertexList : List<CommonVertex>
-		{
-		}
+		public class CommonVertexList : List<CommonVertex> {}
 
-		public class UniqueEdgeList : List<UniqueEdge>
-		{
-		}
+		public class UniqueEdgeList : List<UniqueEdge> {}
 
 		#endregion Structs
 	}

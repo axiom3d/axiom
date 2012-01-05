@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +42,7 @@ using System;
 using System.IO;
 
 using Axiom.Core;
+
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -45,11 +50,12 @@ using System.Collections.Generic;
 
 namespace Axiom.Media
 {
-
 	/** Type for R8G8B8/B8G8R8 */
+
 	public struct Col3b
 	{
 		public byte x, y, z;
+
 		public Col3b( uint a, uint b, uint c )
 		{
 			x = (byte)a;
@@ -59,9 +65,11 @@ namespace Axiom.Media
 	}
 
 	/** Type for FLOAT32_RGB */
+
 	public struct Col3f
 	{
 		public float r, g, b;
+
 		public Col3f( float r, float g, float b )
 		{
 			this.r = r;
@@ -71,9 +79,11 @@ namespace Axiom.Media
 	}
 
 	/** Type for FLOAT32_RGBA */
+
 	public struct Col4f
 	{
 		public float r, g, b, a;
+
 		public Col4f( float r, float g, float b, float a )
 		{
 			this.r = r;
@@ -88,13 +98,12 @@ namespace Axiom.Media
 	///</summary>
 	public static class OptimizedPixelConversion
 	{
-
 		#region PixelFormat.A8R8G8B8 Converters
 
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.A8B8G8R8 )]
 		private class A8R8G8B8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -106,20 +115,19 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.B8G8R8A8 )]
 		private class A8R8G8B8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
 
 				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-
 			}
 		}
 
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.R8G8B8A8 )]
 		private class A8R8G8B8toR8G8B8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -131,7 +139,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.R8G8B8 )]
 		private class A8R8G8B8toR8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input;
 				Col3b* outputPtr = (Col3b*)output;
@@ -146,7 +154,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.B8G8R8 )]
 		private class A8R8G8B8toB8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input;
 				Col3b* outputPtr = (Col3b*)output;
@@ -161,7 +169,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.L8 )]
 		private class A8R8G8B8toL8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input;
 				byte* outputPtr = (byte*)output;
@@ -178,7 +186,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.A8R8G8B8 )]
 		private class A8B8G8R8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -190,7 +198,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.B8G8R8A8 )]
 		private class A8B8G8R8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -202,7 +210,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.R8G8B8A8 )]
 		private class A8B8G8R8toR8G8B8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -214,7 +222,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.L8 )]
 		private class A8B8G8R8toL8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input;
 				byte* outputPtr = (byte*)output;
@@ -231,20 +239,19 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.A8R8G8B8 )]
 		private class B8G8R8A8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
 
 				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-
 			}
 		}
 
 		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.A8B8G8R8 )]
 		private class B8G8R8A8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -256,7 +263,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.R8G8B8A8 )]
 		private class B8G8R8A8toR8G8B8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -268,7 +275,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.L8 )]
 		private class B8G8R8A8toL8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input;
 				byte* outputPtr = (byte*)output;
@@ -285,7 +292,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.A8R8G8B8 )]
 		private class R8G8B8A8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -297,7 +304,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.A8B8G8R8 )]
 		private class R8G8B8A8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -309,7 +316,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.B8G8R8A8 )]
 		private class R8G8B8A8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -325,7 +332,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.L8, PixelFormat.A8B8G8R8 )]
 		private class L8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				byte* inputPtr = (byte*)input;
 				uint* outputPtr = (uint*)output;
@@ -338,7 +345,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.L8, PixelFormat.A8R8G8B8 )]
 		private class L8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				byte* inputPtr = (byte*)input;
 				uint* outputPtr = (uint*)output;
@@ -351,7 +358,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.L8, PixelFormat.B8G8R8A8 )]
 		private class L8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				byte* inputPtr = (byte*)input;
 				uint* outputPtr = (uint*)output;
@@ -364,7 +371,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.L8, PixelFormat.L16 )]
 		private class L8toL16Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				byte* inputPtr = (byte*)input;
 				ushort* outputPtr = (ushort*)output;
@@ -381,7 +388,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.L16, PixelFormat.L8 )]
 		private class L16toL8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				ushort* inputPtr = (ushort*)input;
 				byte* outputPtr = (byte*)output;
@@ -398,7 +405,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.A8R8G8B8 )]
 		private class B8G8R8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -417,7 +424,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.A8B8G8R8 )]
 		private class B8G8R8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -436,7 +443,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.B8G8R8A8 )]
 		private class B8G8R8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -455,7 +462,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.R8G8B8 )]
 		private class B8G8R8toR8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				Col3b* outputPtr = (Col3b*)output;
@@ -474,7 +481,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.A8R8G8B8 )]
 		private class R8G8B8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -493,7 +500,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.A8B8G8R8 )]
 		private class R8G8B8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -506,14 +513,13 @@ namespace Axiom.Media
 #else
 				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-
 			}
 		}
 
 		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.B8G8R8A8 )]
 		private class R8G8B8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				uint* outputPtr = (uint*)output;
@@ -526,14 +532,13 @@ namespace Axiom.Media
 #else
 				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-
 			}
 		}
 
 		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.B8G8R8 )]
 		private class R8G8B8toB8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				Col3b* inputPtr = (Col3b*)input;
 				Col3b* outputPtr = (Col3b*)output;
@@ -552,7 +557,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.A8R8G8B8 )]
 		private class X8R8G8B8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -564,7 +569,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.A8B8G8R8 )]
 		private class X8R8G8B8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -576,7 +581,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.B8G8R8A8 )]
 		private class X8R8G8B8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -588,7 +593,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.R8G8B8A8 )]
 		private class X8R8G8B8toR8G8B8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -604,7 +609,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.A8R8G8B8 )]
 		private class X8B8G8R8toA8R8G8B8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -616,7 +621,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.A8B8G8R8 )]
 		private class X8B8G8R8toA8B8G8R8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -628,7 +633,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.B8G8R8A8 )]
 		private class X8B8G8R8toB8G8R8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -640,7 +645,7 @@ namespace Axiom.Media
 		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.R8G8B8A8 )]
 		private class X8B8G8R8toR8G8B8A8Converter : IPixelConverter
 		{
-			public unsafe void Convert( byte* input, byte* output, int offset )
+			unsafe public void Convert( byte* input, byte* output, int offset )
 			{
 				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
 				uint inp = inputPtr[ offset ];
@@ -656,20 +661,13 @@ namespace Axiom.Media
 			private PixelFormat _srcFormat;
 			private PixelFormat _dstFormat;
 
-			public int Id
-			{
-				get
-				{
-					return ( (int)_srcFormat << 8 ) + (int)_dstFormat;
-				}
-			}
+			public int Id { get { return ( (int)_srcFormat << 8 ) + (int)_dstFormat; } }
 
 			public PixelConverterAttribute( PixelFormat srcFormat, PixelFormat dstFormat )
 			{
 				_srcFormat = srcFormat;
 				_dstFormat = dstFormat;
 			}
-
 		}
 
 		private interface IPixelConverter
@@ -684,10 +682,10 @@ namespace Axiom.Media
 			_supportedConversions = new Dictionary<int, IPixelConverter>();
 			Type t = Assembly.GetExecutingAssembly().GetType( "Axiom.Media.OptimizedPixelConversion" );
 
-			foreach ( Type converter in t.GetNestedTypes( BindingFlags.NonPublic ) )
+			foreach( Type converter in t.GetNestedTypes( BindingFlags.NonPublic ) )
 			{
 				object[] attribs = converter.GetCustomAttributes( typeof( PixelConverterAttribute ), false );
-				if ( attribs.Length != 0 )
+				if( attribs.Length != 0 )
 				{
 					PixelConverterAttribute attrib = (PixelConverterAttribute)attribs[ 0 ];
 					object instance = Assembly.GetExecutingAssembly().CreateInstance( converter.FullName );
@@ -708,11 +706,11 @@ namespace Axiom.Media
 					int dstSliceSkip = dst.SliceSkip;
 					int k = src.Right - src.Left;
 
-					for ( int z = src.Front; z < src.Back; z++ )
+					for( int z = src.Front; z < src.Back; z++ )
 					{
-						for ( int y = src.Top; y < src.Bottom; y++ )
+						for( int y = src.Top; y < src.Bottom; y++ )
 						{
-							for ( int x = 0; x < k; x++ )
+							for( int x = 0; x < k; x++ )
 							{
 								pixelConverter.Convert( srcptr, dstptr, x );
 							}
@@ -730,7 +728,7 @@ namespace Axiom.Media
 		{
 			int conversion = ( (int)src.Format << 8 ) + (int)dst.Format;
 
-			if ( _supportedConversions.ContainsKey( conversion ) )
+			if( _supportedConversions.ContainsKey( conversion ) )
 			{
 				PixelBoxConverter.Convert( src, dst, _supportedConversions[ conversion ] );
 				return true;

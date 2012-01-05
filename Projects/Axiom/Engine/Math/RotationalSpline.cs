@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,6 +48,7 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 using Axiom.Utilities;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -75,9 +80,7 @@ namespace Axiom.Math
 		///		Creates a new Rotational Spline.
 		/// </summary>
 		public RotationalSpline()
-			: base()
-		{
-		}
+			: base() {}
 
 		#endregion
 
@@ -145,18 +148,18 @@ namespace Axiom.Math
 			Contract.Requires( index >= 0, "index", "Spline point index underrun." );
 			Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
 
-			if ( ( index + 1 ) == pointList.Count )
+			if( ( index + 1 ) == pointList.Count )
 			{
 				// can't interpolate past the end of the list, just return the last point
 				return pointList[ index ];
 			}
 
 			// quick special cases
-			if ( t == 0.0f )
+			if( t == 0.0f )
 			{
 				return pointList[ index ];
 			}
-			else if ( t == 1.0f )
+			else if( t == 1.0f )
 			{
 				return pointList[ index + 1 ];
 			}
@@ -195,19 +198,25 @@ namespace Axiom.Math
 			numPoints = pointList.Count;
 
 			// if there arent at least 2 points, there is nothing to inerpolate
-			if ( numPoints < 2 )
+			if( numPoints < 2 )
+			{
 				return;
+			}
 
 			// closed or open?
-			if ( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			if( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			{
 				isClosed = true;
+			}
 			else
+			{
 				isClosed = false;
+			}
 
 			Quaternion invp, part1, part2, preExp;
 
 			// loop through the points and generate the tangents
-			for ( i = 0; i < numPoints; i++ )
+			for( i = 0; i < numPoints; i++ )
 			{
 				Quaternion p = pointList[ i ];
 
@@ -215,26 +224,30 @@ namespace Axiom.Math
 				invp = p.Inverse();
 
 				// special cases for first and last point in list
-				if ( i == 0 )
+				if( i == 0 )
 				{
 					part1 = ( invp * pointList[ i + 1 ] ).Log();
-					if ( isClosed )
+					if( isClosed )
 					{
 						// Use numPoints-2 since numPoints-1 is the last point and == [0]
 						part2 = ( invp * pointList[ numPoints - 2 ] ).Log();
 					}
 					else
+					{
 						part2 = ( invp * p ).Log();
+					}
 				}
-				else if ( i == numPoints - 1 )
+				else if( i == numPoints - 1 )
 				{
-					if ( isClosed )
+					if( isClosed )
 					{
 						// Use same tangent as already calculated for [0]
 						part1 = ( invp * pointList[ 1 ] ).Log();
 					}
 					else
+					{
 						part1 = ( invp * p ).Log();
+					}
 
 					part2 = ( invp * pointList[ i - 1 ] ).Log();
 				}

@@ -38,9 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
-//using System.Data;
+	//using System.Data;
 using System.Xml.Serialization;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -61,7 +61,7 @@ namespace Axiom.SceneManagers.Octree
 	{
 		#region Fields
 
-		protected TerrainRenderable[ , ] tiles;
+		protected TerrainRenderable[,] tiles;
 		protected int tileSize;
 		protected int numTiles;
 		protected Vector3 scale;
@@ -69,30 +69,16 @@ namespace Axiom.SceneManagers.Octree
 		protected SceneNode terrainRoot;
 
 		protected TerrainOptions options; //needed for get HeightAt
-		public TerrainOptions TerrainOptions
-		{
-			get
-			{
-				return options;
-			}
-		}
+		public TerrainOptions TerrainOptions { get { return options; } }
 
 		#endregion Fields
 
 		public TerrainSceneManager( string name )
-			: base( name )
-		{
-		}
+			: base( name ) {}
 
 		#region SceneManager members
 
-		public override string TypeName
-		{
-			get
-			{
-				return "TerrainSceneManager";
-			}
-		}
+		public override string TypeName { get { return "TerrainSceneManager"; } }
 
 		public override void ClearScene()
 		{
@@ -114,7 +100,7 @@ namespace Axiom.SceneManagers.Octree
 			{
 				Image image = Image.FromStream( ResourceGroupManager.Instance.OpenResource( options.Terrain ), options.Terrain.Split( '.' )[ 1 ] );
 				worldSize = options.worldSize = image.Width;
-				Real[] dest = new Real[ (int)worldSize * (int)worldSize ];
+				Real[] dest = new Real[(int)worldSize * (int)worldSize];
 				byte[] src = image.Data;
 				Real invScale;
 
@@ -125,24 +111,24 @@ namespace Axiom.SceneManagers.Octree
 
 				// Determine mapping from fixed to floating
 				ulong rowSize;
-				if ( is16bit )
+				if( is16bit )
 				{
 					invScale = 1.0f / 65535.0f;
 					rowSize = (ulong)worldSize * 2;
 				}
 				else
 				{
-					invScale = 1.0f;// / 255.0f;
+					invScale = 1.0f; // / 255.0f;
 					rowSize = (ulong)worldSize;
 				}
 				// Read the data
 				int srcIndex = 0;
 				int dstIndex = 0;
-				for ( ulong j = 0; j < (ulong)worldSize; ++j )
+				for( ulong j = 0; j < (ulong)worldSize; ++j )
 				{
-					for ( ulong i = 0; i < (ulong)worldSize; ++i )
+					for( ulong i = 0; i < (ulong)worldSize; ++i )
 					{
-						if ( is16bit )
+						if( is16bit )
 						{
 #if OGRE_ENDIAN_BIG
 							ushort val = (ushort)(src[srcIndex++] << 8);
@@ -155,7 +141,7 @@ namespace Axiom.SceneManagers.Octree
 						}
 						else
 						{
-							dest[ dstIndex++ ] = new Real( src[ srcIndex++ ] );// *invScale;
+							dest[ dstIndex++ ] = new Real( src[ srcIndex++ ] ); // *invScale;
 #if (XBOX || XBOX360 )
 							srcIndex += 3;
 #endif
@@ -175,12 +161,12 @@ namespace Axiom.SceneManagers.Octree
 
 			terrainMaterial = (Material)( MaterialManager.Instance.CreateOrRetrieve( !String.IsNullOrEmpty( options.MaterialName ) ? options.MaterialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName ).First );
 
-			if ( options.WorldTexture != "" )
+			if( options.WorldTexture != "" )
 			{
 				terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.WorldTexture, 0 );
 			}
 
-			if ( options.DetailTexture != "" )
+			if( options.DetailTexture != "" )
 			{
 				terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( options.DetailTexture, 1 );
 			}
@@ -192,15 +178,15 @@ namespace Axiom.SceneManagers.Octree
 
 			numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
 
-			tiles = new TerrainRenderable[ numTiles, numTiles ];
+			tiles = new TerrainRenderable[numTiles,numTiles];
 
 			int p = 0, q = 0;
 
-			for ( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
+			for( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
 			{
 				p = 0;
 
-				for ( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
+				for( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
 				{
 					options.startx = i;
 					options.startz = j;
@@ -229,17 +215,17 @@ namespace Axiom.SceneManagers.Octree
 			int size1 = tiles.GetLength( 0 );
 			int size2 = tiles.GetLength( 1 );
 
-			for ( int j = 0; j < size1; j++ )
+			for( int j = 0; j < size1; j++ )
 			{
-				for ( int i = 0; i < size2; i++ )
+				for( int i = 0; i < size2; i++ )
 				{
-					if ( j != size1 - 1 )
+					if( j != size1 - 1 )
 					{
 						tiles[ i, j ].SetNeighbor( Neighbor.South, tiles[ i, j + 1 ] );
 						tiles[ i, j + 1 ].SetNeighbor( Neighbor.North, tiles[ i, j ] );
 					}
 
-					if ( i != size2 - 1 )
+					if( i != size2 - 1 )
 					{
 						tiles[ i, j ].SetNeighbor( Neighbor.East, tiles[ i + 1, j ] );
 						tiles[ i + 1, j ].SetNeighbor( Neighbor.West, tiles[ i, j ] );
@@ -247,11 +233,11 @@ namespace Axiom.SceneManagers.Octree
 				}
 			}
 
-			if ( options.isLit )
+			if( options.isLit )
 			{
-				for ( int j = 0; j < size1; j++ )
+				for( int j = 0; j < size1; j++ )
 				{
-					for ( int i = 0; i < size2; i++ )
+					for( int i = 0; i < size2; i++ )
 					{
 						tiles[ i, j ].CalculateNormals();
 					}
@@ -273,11 +259,13 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		protected override void RenderVisibleObjects()
 		{
-			if ( tiles == null )
-				return;
-			for ( int i = 0; i < tiles.GetLength( 0 ); i++ )
+			if( tiles == null )
 			{
-				for ( int j = 0; j < tiles.GetLength( 1 ); j++ )
+				return;
+			}
+			for( int i = 0; i < tiles.GetLength( 0 ); i++ )
+			{
+				for( int j = 0; j < tiles.GetLength( 1 ); j++ )
 				{
 					tiles[ i, j ].AlignNeighbors();
 				}
@@ -299,7 +287,7 @@ namespace Axiom.SceneManagers.Octree
 		///    Creates a query to return objects found along the ray.
 		/// </summary>
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery()
+		virtual public RaySceneQuery CreateRayQuery()
 		{
 			return this.CreateRayQuery( new Ray(), 0xffffffff );
 		}
@@ -309,7 +297,7 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		/// <param name="ray">Ray to use for the intersection query.</param>
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery( Ray ray )
+		virtual public RaySceneQuery CreateRayQuery( Ray ray )
 		{
 			return this.CreateRayQuery( ray, 0xffffffff );
 		}
@@ -330,7 +318,7 @@ namespace Axiom.SceneManagers.Octree
 		public Vector3 IntersectSegment( Vector3 start, Vector3 end )
 		{
 			TerrainRenderable t = GetTerrainTile( start );
-			if ( t == null )
+			if( t == null )
 			{
 				return new Vector3( -1, -1, -1 );
 			}
@@ -357,8 +345,10 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns></returns>
 		public float GetHeightAt( Vector3 point, float defaultheight )
 		{
-			if ( options == null || tiles == null )
+			if( options == null || tiles == null )
+			{
 				return defaultheight;
+			}
 			float worldsize = options.worldSize;
 			float scalex = options.scalex;
 			float scalez = options.scalez;
@@ -372,8 +362,10 @@ namespace Axiom.SceneManagers.Octree
 			float maxz = scalez * worldsize;
 			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
-			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+			if( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+			{
 				return defaultheight; //point is not over a tile
+			}
 			return tiles[ xCoordIndex, zCoordIndex ].GetHeightAt( point.x, point.z );
 		}
 
@@ -385,8 +377,10 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns></returns>
 		public TerrainRenderable GetTerrainTile( Vector3 point )
 		{
-			if ( options == null || tiles == null )
+			if( options == null || tiles == null )
+			{
 				return null;
+			}
 			float worldsize = options.worldSize;
 			float scalex = options.scalex;
 			float scalez = options.scalez;
@@ -400,10 +394,14 @@ namespace Axiom.SceneManagers.Octree
 			float maxz = scalez * worldsize;
 			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
 
-			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+			if( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+			{
 				return null; //point is not over a tile
+			}
 			else
+			{
 				return tiles[ xCoordIndex, zCoordIndex ];
+			}
 		}
 
 		#endregion SceneManager members
@@ -412,11 +410,9 @@ namespace Axiom.SceneManagers.Octree
 	/// <summary>
 	///		Factory for <see cref="TerrainSceneManager"/>.
 	/// </summary>
-	class TerrainSceneManagerFactory : SceneManagerFactory
+	internal class TerrainSceneManagerFactory : SceneManagerFactory
 	{
-		public TerrainSceneManagerFactory()
-		{
-		}
+		public TerrainSceneManagerFactory() {}
 
 		#region Methods
 
@@ -426,7 +422,7 @@ namespace Axiom.SceneManagers.Octree
 			metaData.typeName = "TerrainSceneManager";
 			metaData.worldGeometrySupported = true;
 			metaData.description = "Scene manager which generally organises the scene on " +
-			"the basis of an octree, but also supports terrain world geometry. ";
+			                       "the basis of an octree, but also supports terrain world geometry. ";
 		}
 
 		public override SceneManager CreateInstance( string name )

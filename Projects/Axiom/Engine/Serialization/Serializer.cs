@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -106,7 +110,7 @@ namespace Axiom.Serialization
 			{
 				byte* pointer = (byte*)dest.ToPointer();
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
@@ -133,7 +137,7 @@ namespace Axiom.Serialization
 			{
 				byte* pointer = (byte*)src.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -152,9 +156,9 @@ namespace Axiom.Serialization
 			{
 				float* pointer = (float*)dest.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
-					pointer[ i ] = ReadFloat(reader);
+					pointer[ i ] = ReadFloat( reader );
 				}
 			}
 		}
@@ -170,7 +174,7 @@ namespace Axiom.Serialization
 			{
 				float* pointer = (float*)src.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -191,7 +195,7 @@ namespace Axiom.Serialization
 			{
 				float* pointer = (float*)dest.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					float val = ReadFloat( reader );
 					pointer[ i ] = val;
@@ -212,13 +216,15 @@ namespace Axiom.Serialization
 
 		protected float ReadFloat( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[4];
-            reader.Read(inputdata, 0, 4);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 4);
-            return BitConverter.ToSingle(inputdata, 0);
-            return reader.ReadSingle();
+			byte[] inputdata = new byte[4];
+			reader.Read( inputdata, 0, 4 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 4 );
+			}
+			return BitConverter.ToSingle( inputdata, 0 );
+			return reader.ReadSingle();
 		}
 
 		protected void WriteFloat( BinaryWriter writer, float val )
@@ -226,16 +232,18 @@ namespace Axiom.Serialization
 			writer.Write( val );
 		}
 
-        protected int ReadInt(BinaryReader reader)
-        {
-            byte[] inputdata = new byte[4];
-            reader.Read(inputdata, 0, 4);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 4);
-            return BitConverter.ToInt32(inputdata, 0);
-            return reader.ReadInt32();
-        }
+		protected int ReadInt( BinaryReader reader )
+		{
+			byte[] inputdata = new byte[4];
+			reader.Read( inputdata, 0, 4 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 4 );
+			}
+			return BitConverter.ToInt32( inputdata, 0 );
+			return reader.ReadInt32();
+		}
 
 		protected void WriteInt( BinaryWriter writer, int val )
 		{
@@ -244,14 +252,16 @@ namespace Axiom.Serialization
 
 		protected uint ReadUInt( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[4];
-            reader.Read(inputdata, 0, 4);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 4);
-            return BitConverter.ToUInt32(inputdata, 0);
+			byte[] inputdata = new byte[4];
+			reader.Read( inputdata, 0, 4 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 4 );
+			}
+			return BitConverter.ToUInt32( inputdata, 0 );
 
-            return reader.ReadUInt32();
+			return reader.ReadUInt32();
 		}
 
 		protected void WriteUInt( BinaryWriter writer, uint val )
@@ -261,14 +271,16 @@ namespace Axiom.Serialization
 
 		protected long ReadLong( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[8];
-            reader.Read(inputdata, 0, 8);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 8);
-            return BitConverter.ToInt64(inputdata, 0);
+			byte[] inputdata = new byte[8];
+			reader.Read( inputdata, 0, 8 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 8 );
+			}
+			return BitConverter.ToInt64( inputdata, 0 );
 
-            return reader.ReadInt64();
+			return reader.ReadInt64();
 		}
 
 		protected void WriteLong( BinaryWriter writer, long val )
@@ -278,14 +290,16 @@ namespace Axiom.Serialization
 
 		protected ulong ReadULong( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[8];
-            reader.Read(inputdata, 0, 8);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 8);
-            return BitConverter.ToUInt64(inputdata, 0);
+			byte[] inputdata = new byte[8];
+			reader.Read( inputdata, 0, 8 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 8 );
+			}
+			return BitConverter.ToUInt64( inputdata, 0 );
 
-            return reader.ReadUInt64();
+			return reader.ReadUInt64();
 		}
 
 		protected void WriteULong( BinaryWriter writer, ulong val )
@@ -295,12 +309,14 @@ namespace Axiom.Serialization
 
 		protected short ReadShort( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[2];
-            reader.Read(inputdata, 0, 2);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse( inputdata, 0, 2);
-            return BitConverter.ToInt16(inputdata,0);
+			byte[] inputdata = new byte[2];
+			reader.Read( inputdata, 0, 2 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 2 );
+			}
+			return BitConverter.ToInt16( inputdata, 0 );
 
 			return reader.ReadInt16();
 		}
@@ -312,14 +328,16 @@ namespace Axiom.Serialization
 
 		protected ushort ReadUShort( BinaryReader reader )
 		{
-            byte[] inputdata = new byte[2];
-            reader.Read(inputdata, 0, 2);
-            // The file format store integral types in little endian order
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(inputdata, 0, 2);
-            return BitConverter.ToUInt16(inputdata, 0);
+			byte[] inputdata = new byte[2];
+			reader.Read( inputdata, 0, 2 );
+			// The file format store integral types in little endian order
+			if( !BitConverter.IsLittleEndian )
+			{
+				Array.Reverse( inputdata, 0, 2 );
+			}
+			return BitConverter.ToUInt16( inputdata, 0 );
 
-            return reader.ReadUInt16();
+			return reader.ReadUInt16();
 		}
 
 		protected void WriteUShort( BinaryWriter writer, ushort val )
@@ -339,7 +357,7 @@ namespace Axiom.Serialization
 			{
 				int* pointer = (int*)dest.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadInt( reader );
 				}
@@ -358,7 +376,7 @@ namespace Axiom.Serialization
 			{
 				int* pointer = (int*)src.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -376,7 +394,7 @@ namespace Axiom.Serialization
 			unsafe
 			{
 				short* pointer = (short*)dest.ToPointer();
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadShort( reader );
 				}
@@ -395,7 +413,7 @@ namespace Axiom.Serialization
 			{
 				short* pointer = (short*)src.ToPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for( int i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -411,7 +429,6 @@ namespace Axiom.Serialization
 			// note: Not using Environment.NewLine here, this character is specifically used in Ogre files.
 			return ReadString( reader, '\n' );
 		}
-
 
 		/// <summary>
 		///		Writes the string to the stream including the endline character.
@@ -433,7 +450,7 @@ namespace Axiom.Serialization
 			char c;
 
 			// sift through each character until we hit the delimiter
-			while ( ( c = reader.ReadChar() ) != delimiter )
+			while( ( c = reader.ReadChar() ) != delimiter )
 			{
 				sb.Append( c );
 			}
@@ -462,9 +479,9 @@ namespace Axiom.Serialization
 			Quaternion quat = new Quaternion();
 
 			quat.x = ReadFloat( reader );
-            quat.y = ReadFloat(reader);
-            quat.z = ReadFloat(reader);
-            quat.w = ReadFloat(reader);
+			quat.y = ReadFloat( reader );
+			quat.z = ReadFloat( reader );
+			quat.w = ReadFloat( reader );
 
 			return quat;
 		}
@@ -584,12 +601,12 @@ namespace Axiom.Serialization
 			headerID = ReadShort( reader );
 
 			// better hope this is the header
-			if ( headerID == (short)MeshChunkID.Header )
+			if( headerID == (short)MeshChunkID.Header )
 			{
 				string fileVersion = ReadString( reader );
 
 				// read the version string
-				if ( version != fileVersion )
+				if( version != fileVersion )
 				{
 					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}", fileVersion, version );
 				}
@@ -599,7 +616,6 @@ namespace Axiom.Serialization
 				throw new AxiomException( "Invalid file: no header found." );
 			}
 		}
-
 
 		/// <summary>
 		///		Writes a file header and version string.
@@ -621,7 +637,7 @@ namespace Axiom.Serialization
 		/// <param name="length">Number of bytes to skip.</param>
 		protected void Seek( BinaryReader reader, long length, SeekOrigin origin )
 		{
-			if ( reader.BaseStream.CanSeek )
+			if( reader.BaseStream.CanSeek )
 			{
 				reader.BaseStream.Seek( length, origin );
 			}

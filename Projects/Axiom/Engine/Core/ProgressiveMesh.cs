@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,14 +29,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *  Progressive Mesh type Polygon Reduction Algorithm
  *  by Stan Melax (c) 1998
  */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -82,6 +86,7 @@ namespace Axiom.Core
 			Constant,
 			Proportional
 		}
+
 		/// <summary>
 		///    A vertex as used by a face. This records the index of the actual vertex which is used
 		///    by the face, and a pointer to the common vertex used for surface evaluation.
@@ -91,6 +96,7 @@ namespace Axiom.Core
 			internal uint realIndex;
 			internal PMVertex commonVertex;
 		}
+
 		/// <summary>
 		///    A triangle in the progressive mesh, holds extra info like face normal.
 		/// </summary>
@@ -106,15 +112,20 @@ namespace Axiom.Core
 				ComputeNormal();
 				// Add tri to vertices
 				// Also tell vertices they are neighbours
-				for ( int i = 0; i < 3; i++ )
+				for( int i = 0; i < 3; i++ )
 				{
 					vertex[ i ].commonVertex.faces.Add( this );
-					for ( int j = 0; j < 3; j++ )
-						if ( i != j )
+					for( int j = 0; j < 3; j++ )
+					{
+						if( i != j )
+						{
 							vertex[ i ].commonVertex.AddIfNonNeighbor( vertex[ j ].commonVertex );
+						}
+					}
 				}
 			}
-			void ComputeNormal()
+
+			private void ComputeNormal()
 			{
 				Vector3 v0 = vertex[ 0 ].commonVertex.position;
 				Vector3 v1 = vertex[ 1 ].commonVertex.position;
@@ -126,15 +137,16 @@ namespace Axiom.Core
 				normal = e1.Cross( e2 );
 				normal.Normalize();
 			}
+
 			internal void ReplaceVertex( PMFaceVertex vold, PMFaceVertex vnew )
 			{
 				Debug.Assert( vold == vertex[ 0 ] || vold == vertex[ 1 ] || vold == vertex[ 2 ] );
 				Debug.Assert( vnew != vertex[ 0 ] && vnew != vertex[ 1 ] && vnew != vertex[ 2 ] );
-				if ( vold == vertex[ 0 ] )
+				if( vold == vertex[ 0 ] )
 				{
 					vertex[ 0 ] = vnew;
 				}
-				else if ( vold == vertex[ 1 ] )
+				else if( vold == vertex[ 1 ] )
 				{
 					vertex[ 1 ] = vnew;
 				}
@@ -144,56 +156,74 @@ namespace Axiom.Core
 				}
 				vold.commonVertex.faces.Remove( this );
 				vnew.commonVertex.faces.Add( this );
-				for ( int i = 0; i < 3; i++ )
+				for( int i = 0; i < 3; i++ )
 				{
 					vold.commonVertex.RemoveIfNonNeighbor( vertex[ i ].commonVertex );
 					vertex[ i ].commonVertex.RemoveIfNonNeighbor( vold.commonVertex );
 				}
-				for ( int i = 0; i < 3; i++ )
+				for( int i = 0; i < 3; i++ )
 				{
 					Debug.Assert( vertex[ i ].commonVertex.faces.Contains( this ) );
-					for ( int j = 0; j < 3; j++ )
-						if ( i != j )
+					for( int j = 0; j < 3; j++ )
+					{
+						if( i != j )
+						{
 							vertex[ i ].commonVertex.AddIfNonNeighbor( vertex[ j ].commonVertex );
+						}
+					}
 				}
 				ComputeNormal();
 			}
+
 			internal bool HasCommonVertex( PMVertex v )
 			{
 				return ( v == vertex[ 0 ].commonVertex ||
-						v == vertex[ 1 ].commonVertex ||
-						v == vertex[ 2 ].commonVertex );
+				         v == vertex[ 1 ].commonVertex ||
+				         v == vertex[ 2 ].commonVertex );
 			}
-			bool HasFaceVertex( PMFaceVertex v )
+
+			private bool HasFaceVertex( PMFaceVertex v )
 			{
 				return ( v == vertex[ 0 ] ||
-						v == vertex[ 1 ] ||
-						v == vertex[ 2 ] );
+				         v == vertex[ 1 ] ||
+				         v == vertex[ 2 ] );
 			}
+
 			internal PMFaceVertex GetFaceVertexFromCommon( PMVertex commonVert )
 			{
-				if ( vertex[ 0 ].commonVertex == commonVert )
+				if( vertex[ 0 ].commonVertex == commonVert )
+				{
 					return vertex[ 0 ];
-				if ( vertex[ 1 ].commonVertex == commonVert )
+				}
+				if( vertex[ 1 ].commonVertex == commonVert )
+				{
 					return vertex[ 1 ];
-				if ( vertex[ 2 ].commonVertex == commonVert )
+				}
+				if( vertex[ 2 ].commonVertex == commonVert )
+				{
 					return vertex[ 2 ];
+				}
 
 				return null;
 			}
+
 			internal void NotifyRemoved()
 			{
-				for ( int i = 0; i < 3; i++ )
+				for( int i = 0; i < 3; i++ )
 				{
 					// remove this tri from the vertices
-					if ( vertex[ i ] != null )
+					if( vertex[ i ] != null )
+					{
 						vertex[ i ].commonVertex.faces.Remove( this );
+					}
 				}
-				for ( int i = 0; i < 3; i++ )
+				for( int i = 0; i < 3; i++ )
 				{
 					int i2 = ( i + 1 ) % 3;
-					if ( vertex[ i ] == null || vertex[ i2 ] == null )
+					if( vertex[ i ] == null || vertex[ i2 ] == null )
+					{
 						continue;
+					}
 					// Check remaining vertices and remove if not neighbours anymore
 					// NB May remain neighbours if other tris link them
 					vertex[ i ].commonVertex.RemoveIfNonNeighbor( vertex[ i2 ].commonVertex );
@@ -203,11 +233,12 @@ namespace Axiom.Core
 				removed = true;
 			}
 
-			internal PMFaceVertex[] vertex = new PMFaceVertex[ 3 ]; // the 3 points that make this tri
-			internal Vector3 normal;    // unit vector othogonal to this face
+			internal PMFaceVertex[] vertex = new PMFaceVertex[3]; // the 3 points that make this tri
+			internal Vector3 normal; // unit vector othogonal to this face
 			internal bool removed = false; // true if this tri is now removed
-			uint index;
+			private uint index;
 		}
+
 		/// <summary>
 		///    A vertex in the progressive mesh, holds info like collapse cost etc. 
 		///    This vertex can actually represent several vertices in the final model, because
@@ -218,38 +249,45 @@ namespace Axiom.Core
 		internal class PMVertex
 		{
 			#region Methods
-			void SetDetails( ref Vector3 v, uint index )
+
+			private void SetDetails( ref Vector3 v, uint index )
 			{
 				position = v;
 				this.index = index;
 			}
+
 			internal void RemoveIfNonNeighbor( PMVertex n )
 			{
 				// removes n from neighbor list if n isn't a neighbor.
-				if ( !neighbors.Contains( n ) )
-					return; // Not in neighbor list anyway
-
-				foreach ( PMTriangle face in faces )
+				if( !neighbors.Contains( n ) )
 				{
-					if ( face.HasCommonVertex( n ) )
+					return; // Not in neighbor list anyway
+				}
+
+				foreach( PMTriangle face in faces )
+				{
+					if( face.HasCommonVertex( n ) )
+					{
 						return; // Still a neighbor
+					}
 				}
 				neighbors.Remove( n );
 
-				if ( neighbors.Count == 0 && !toBeRemoved )
+				if( neighbors.Count == 0 && !toBeRemoved )
 				{
 					// This vertex has been removed through isolation (collapsing around it)
 					this.NotifyRemoved();
 				}
 			}
+
 			internal void AddIfNonNeighbor( PMVertex n )
 			{
-				if ( neighbors.Contains( n ) )
+				if( neighbors.Contains( n ) )
+				{
 					return; // Already in neighbor list
+				}
 				neighbors.Add( n );
 			}
-
-
 
 			// is edge this->src a manifold edge?
 			internal bool IsManifoldEdgeWith( PMVertex v )
@@ -257,17 +295,20 @@ namespace Axiom.Core
 				// Check the sides involving both these verts
 				// If there is only 1 this is a manifold edge
 				ushort sidesCount = 0;
-				foreach ( PMTriangle face in faces )
+				foreach( PMTriangle face in faces )
 				{
-					if ( face.HasCommonVertex( v ) )
+					if( face.HasCommonVertex( v ) )
+					{
 						sidesCount++;
+					}
 				}
 
 				return ( sidesCount == 1 );
 			}
+
 			internal void NotifyRemoved()
 			{
-				foreach ( PMVertex vertex in neighbors )
+				foreach( PMVertex vertex in neighbors )
 				{
 					// Remove me from neighbor
 					vertex.neighbors.Remove( this );
@@ -276,9 +317,11 @@ namespace Axiom.Core
 				this.collapseTo = null;
 				this.collapseCost = float.MaxValue;
 			}
+
 			#endregion
 
 			#region Properties
+
 			/// <summary>
 			///    Determine if this vertex is on the edge of an open geometry patch
 			/// </summary>
@@ -287,18 +330,17 @@ namespace Axiom.Core
 			{
 				get
 				{
-
 					// Look for edges which only have one tri attached, this is a border
 
 					// Loop for each neighbor
-					foreach ( PMVertex neighbor in neighbors )
+					foreach( PMVertex neighbor in neighbors )
 					{
 						// Count of tris shared between the edge between this and neighbor
 						ushort count = 0;
 						// Loop over each face, looking for shared ones
-						foreach ( PMTriangle face in faces )
+						foreach( PMTriangle face in faces )
 						{
-							if ( face.HasCommonVertex( neighbor ) )
+							if( face.HasCommonVertex( neighbor ) )
 							{
 								// Shared tri
 								count++;
@@ -306,12 +348,15 @@ namespace Axiom.Core
 						}
 						// Debug.Assert(count > 0); // Must be at least one!
 						// This edge has only 1 tri on it, it's a border
-						if ( count == 1 )
+						if( count == 1 )
+						{
 							return true;
+						}
 					}
 					return false;
 				}
 			}
+
 			#endregion
 
 			#region Fields
@@ -321,15 +366,16 @@ namespace Axiom.Core
 			internal List<PMVertex> neighbors = new List<PMVertex>(); // adjacent vertices
 			internal List<PMTriangle> faces = new List<PMTriangle>(); // adjacent triangles
 
-			internal float collapseCost;  // cached cost of collapsing edge
+			internal float collapseCost; // cached cost of collapsing edge
 			internal PMVertex collapseTo; // candidate vertex for collapse
 			internal bool removed = false; // true if this vert is now removed
 			internal bool toBeRemoved; // debug
 
-			internal bool seam;	/// true if this vertex is on a model seam where vertices are duplicated
+			internal bool seam;
+
+			/// true if this vertex is on a model seam where vertices are duplicated
 
 			#endregion
-
 			internal void SetDetails( Vector3 pos, uint numCommon )
 			{
 				this.position = pos;
@@ -337,7 +383,7 @@ namespace Axiom.Core
 			}
 		}
 
-		class PMWorkingData
+		private class PMWorkingData
 		{
 			internal PMTriangle[] triList = null;
 			internal PMFaceVertex[] faceVertList = null;
@@ -345,16 +391,17 @@ namespace Axiom.Core
 		}
 
 		#region Fields
-		VertexData vertexData;
-		IndexData indexData;
-		uint currNumIndexes;
-		uint numCommonVertices;
+
+		private VertexData vertexData;
+		private IndexData indexData;
+		private uint currNumIndexes;
+		private uint numCommonVertices;
 
 		/// Multiple copies, 1 per vertex buffer
-		List<PMWorkingData> workingDataList = new List<PMWorkingData>();
+		private List<PMWorkingData> workingDataList = new List<PMWorkingData>();
 
 		/// The worst collapse cost from all vertex buffers for each vertex
-		float[] worstCosts;
+		private float[] worstCosts;
 
 		#endregion
 
@@ -399,25 +446,26 @@ namespace Axiom.Core
 			AddWorkingData( vertexData, this.indexData );
 		}
 
-
 		public void Build( ushort numLevels, List<IndexData> lodFaceList )
 		{
 			Build( numLevels, lodFaceList, VertexReductionQuota.Proportional );
 		}
+
 		public void Build( ushort numLevels, List<IndexData> lodFaceList, VertexReductionQuota quota )
 		{
 			Build( numLevels, lodFaceList, quota, 0.5f );
 		}
+
 		public void Build( ushort numLevels, List<IndexData> lodFaceList, float reductionValue )
 		{
 			Build( numLevels, lodFaceList, VertexReductionQuota.Proportional, reductionValue );
 		}
+
 		/// <summary>
 		///    Builds the progressive mesh with the specified number of levels.
 		/// </summary>
 		public void Build( ushort numLevels, List<IndexData> lodFaceList, VertexReductionQuota quota, float reductionValue )
 		{
-
 			ComputeAllCosts();
 			// Init
 			currNumIndexes = (uint)indexData.indexCount;
@@ -428,33 +476,39 @@ namespace Axiom.Core
 			uint numCollapses = 0;
 			bool abandon = false;
 
-			while ( numLevels-- != 0 )
+			while( numLevels-- != 0 )
 			{
 				// NB if 'abandon' is set, we stop reducing 
 				// However, we still bake the number of LODs requested, even if it 
 				// means they are the same
-				if ( !abandon )
+				if( !abandon )
 				{
-					if ( quota == VertexReductionQuota.Proportional )
+					if( quota == VertexReductionQuota.Proportional )
+					{
 						numCollapses = (uint)( numVerts * reductionValue );
+					}
 					else
+					{
 						numCollapses = (uint)reductionValue;
+					}
 					// Minimum 3 verts!
-					if ( ( numVerts - numCollapses ) < 3 )
+					if( ( numVerts - numCollapses ) < 3 )
+					{
 						numCollapses = numVerts - 3;
+					}
 					// Store new number of verts
 					numVerts = numVerts - numCollapses;
 
 					Debug.Assert( numVerts >= 3 );
-					while ( numCollapses-- != 0 && !abandon )
+					while( numCollapses-- != 0 && !abandon )
 					{
 						int nextIndex = GetNextCollapser();
 						// Collapse on every buffer
-						foreach ( PMWorkingData data in workingDataList )
+						foreach( PMWorkingData data in workingDataList )
 						{
 							PMVertex collapser = data.vertList[ nextIndex ];
 							// This will reduce currNumIndexes and recalc costs as required
-							if ( collapser.collapseTo == null )
+							if( collapser.collapseTo == null )
 							{
 								// Must have run out of valid collapsables
 								abandon = true;
@@ -466,7 +520,6 @@ namespace Axiom.Core
 						}
 					}
 				}
-
 
 				// Bake a new LOD and add it to the list
 				IndexData newLod = new IndexData();
@@ -480,7 +533,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Internal method for building PMWorkingData from geometry data
 		/// </summary>
-		void AddWorkingData( VertexData vertexData, IndexData indexData )
+		private void AddWorkingData( VertexData vertexData, IndexData indexData )
 		{
 			// Insert blank working data, then fill
 			PMWorkingData work = new PMWorkingData();
@@ -488,9 +541,9 @@ namespace Axiom.Core
 
 			// Build vertex list
 			// Resize face list (this will always be this big)
-			work.faceVertList = new PMFaceVertex[ vertexData.vertexCount ];
+			work.faceVertList = new PMFaceVertex[vertexData.vertexCount];
 			// Also resize common vert list to max, to avoid reallocations
-			work.vertList = new PMVertex[ vertexData.vertexCount ];
+			work.vertList = new PMVertex[vertexData.vertexCount];
 
 			// locate position element & the buffer to go with it
 			VertexElement posElem =
@@ -510,7 +563,7 @@ namespace Axiom.Core
 				Vector3 pos;
 				// Map for identifying duplicate position vertices
 				Dictionary<Vector3, uint> commonVertexMap = new Dictionary<Vector3, uint>();
-				for ( uint i = 0; i < vertexData.vertexCount; ++i, pVertex += vbuf.VertexSize )
+				for( uint i = 0; i < vertexData.vertexCount; ++i, pVertex += vbuf.VertexSize )
 				{
 					pFloat = (float*)( pVertex + posElem.Offset );
 					pos.x = *pFloat++;
@@ -520,7 +573,7 @@ namespace Axiom.Core
 					work.faceVertList[ (int)i ] = new PMFaceVertex();
 
 					// Try to find this position in the existing map 
-					if ( !commonVertexMap.ContainsKey( pos ) )
+					if( !commonVertexMap.ContainsKey( pos ) )
 					{
 						// Doesn't exist, so create it
 						PMVertex commonVert = new PMVertex();
@@ -566,7 +619,7 @@ namespace Axiom.Core
 				ushort* pShort = null;
 				uint* pInt = null;
 
-				if ( use32bitindexes )
+				if( use32bitindexes )
 				{
 					pInt = (uint*)indexBufferPtr.ToPointer();
 				}
@@ -574,8 +627,8 @@ namespace Axiom.Core
 				{
 					pShort = (ushort*)indexBufferPtr.ToPointer();
 				}
-				work.triList = new PMTriangle[ (int)numTris ]; // assumed tri list
-				for ( uint i = 0; i < numTris; ++i )
+				work.triList = new PMTriangle[(int)numTris]; // assumed tri list
+				for( uint i = 0; i < numTris; ++i )
 				{
 					// use 32-bit index always since we're not storing
 					uint vindex = use32bitindexes ? *pInt++ : *pShort++;
@@ -594,25 +647,28 @@ namespace Axiom.Core
 		}
 
 		/// Internal method for initialising the edge collapse costs
-		void InitialiseEdgeCollapseCosts()
+		private void InitialiseEdgeCollapseCosts()
 		{
-			worstCosts = new float[ vertexData.vertexCount ];
-			foreach ( PMWorkingData data in workingDataList )
+			worstCosts = new float[vertexData.vertexCount];
+			foreach( PMWorkingData data in workingDataList )
 			{
-				for ( int i = 0; i < data.vertList.Length; ++i )
+				for( int i = 0; i < data.vertList.Length; ++i )
 				{
 					// Typically, at the end, there are a bunch of null entries to represent vertices
 					// that were common.  Make sure we have a vertex here
-					if ( data.vertList[ i ] == null )
+					if( data.vertList[ i ] == null )
+					{
 						data.vertList[ i ] = new PMVertex();
+					}
 					PMVertex vertex = data.vertList[ i ];
 					vertex.collapseTo = null;
 					vertex.collapseCost = float.MaxValue;
 				}
 			}
 		}
+
 		/// Internal calculation method for deriving a collapse cost  from u to v
-		float ComputeEdgeCollapseCost( PMVertex src, PMVertex dest )
+		private float ComputeEdgeCollapseCost( PMVertex src, PMVertex dest )
 		{
 			// if we collapse edge uv by moving src to dest then how 
 			// much different will the model change, i.e. how much "error".
@@ -627,18 +683,20 @@ namespace Axiom.Core
 			// find the "sides" triangles that are on the edge uv
 			List<PMTriangle> sides = new List<PMTriangle>();
 			// Iterate over src's faces and find 'sides' of the shared edge which is being collapsed
-			foreach ( PMTriangle srcFace in src.faces )
+			foreach( PMTriangle srcFace in src.faces )
 			{
 				// Check if this tri also has dest in it (shared edge)
-				if ( srcFace.HasCommonVertex( dest ) )
+				if( srcFace.HasCommonVertex( dest ) )
+				{
 					sides.Add( srcFace );
+				}
 			}
 			// Special cases
 			// If we're looking at a border vertex
 
-			if ( src.IsBorder )
+			if( src.IsBorder )
 			{
-				if ( sides.Count > 1 )
+				if( sides.Count > 1 )
 				{
 					// src is on a border, but the src-dest edge has more than one tri on it
 					// So it must be collapsing inwards
@@ -660,9 +718,9 @@ namespace Axiom.Core
 					maxKinkiness = 0.0f;
 					edgeVector.Normalize();
 					collapseEdge = edgeVector;
-					foreach ( PMVertex neighbor in src.neighbors )
+					foreach( PMVertex neighbor in src.neighbors )
 					{
-						if ( neighbor != dest && neighbor.IsManifoldEdgeWith( src ) )
+						if( neighbor != dest && neighbor.IsManifoldEdgeWith( src ) )
 						{
 							otherBorderEdge = src.position - neighbor.position;
 							otherBorderEdge.Normalize();
@@ -675,7 +733,6 @@ namespace Axiom.Core
 					}
 
 					cost = maxKinkiness;
-
 				}
 			}
 			else // not a border
@@ -685,11 +742,11 @@ namespace Axiom.Core
 				// use the triangle facing most away from the sides 
 				// to determine our curvature term
 				// Iterate over src's faces again
-				foreach ( PMTriangle srcFace in src.faces )
+				foreach( PMTriangle srcFace in src.faces )
 				{
 					float mincurv = 1.0f; // curve for face i and closer side to it
 					// Iterate over the sides
-					foreach ( PMTriangle sideFace in sides )
+					foreach( PMTriangle sideFace in sides )
 					{
 						// Dot product of face normal gives a good delta angle
 						float dotprod = srcFace.normal.Dot( sideFace.normal );
@@ -703,24 +760,27 @@ namespace Axiom.Core
 			}
 
 			// check for texture seam ripping
-			if ( src.seam && !dest.seam )
+			if( src.seam && !dest.seam )
+			{
 				cost = 1.0f;
+			}
 
 			// Check for singular triangle destruction
 			// If src and dest both only have 1 triangle (and it must be a shared one)
 			// then this would destroy the shape, so don't do this
-			if ( src.faces.Count == 1 && dest.faces.Count == 1 )
+			if( src.faces.Count == 1 && dest.faces.Count == 1 )
+			{
 				cost = float.MaxValue;
-
+			}
 
 			// Degenerate case check
 			// Are we going to invert a face normal of one of the neighbouring faces?
 			// Can occur when we have a very small remaining edge and collapse crosses it
 			// Look for a face normal changing by > 90 degrees
-			foreach ( PMTriangle srcFace in src.faces )
+			foreach( PMTriangle srcFace in src.faces )
 			{
 				// Ignore the deleted faces (those including src & dest)
-				if ( !srcFace.HasCommonVertex( dest ) )
+				if( !srcFace.HasCommonVertex( dest ) )
 				{
 					// Test the new face normal
 					PMVertex v0, v1, v2;
@@ -738,7 +798,7 @@ namespace Axiom.Core
 
 					// Dot old and new face normal
 					// If < 0 then more than 90 degree difference
-					if ( newNormal.Dot( srcFace.normal ) < 0.0f )
+					if( newNormal.Dot( srcFace.normal ) < 0.0f )
 					{
 						// Don't do it!
 						cost = float.MaxValue;
@@ -751,11 +811,10 @@ namespace Axiom.Core
 			return cost;
 		}
 
-
 		/// <summary>
 		///    Internal method evaluates all collapse costs from this vertex and picks the lowest for a single buffer
 		/// </summary>
-		float ComputeEdgeCostAtVertexForBuffer( PMWorkingData workingData, uint vertIndex )
+		private float ComputeEdgeCostAtVertexForBuffer( PMWorkingData workingData, uint vertIndex )
 		{
 			// compute the edge collapse cost for all edges that start
 			// from vertex v.  Since we are only interested in reducing
@@ -766,7 +825,7 @@ namespace Axiom.Core
 
 			PMVertex v = workingData.vertList[ (int)vertIndex ];
 
-			if ( v.neighbors.Count == 0 )
+			if( v.neighbors.Count == 0 )
 			{
 				// v doesn't have neighbors so nothing to collapse
 				v.NotifyRemoved();
@@ -778,13 +837,13 @@ namespace Axiom.Core
 			v.collapseTo = null;
 
 			// search all neighboring edges for "least cost" edge
-			foreach ( PMVertex neighbor in v.neighbors )
+			foreach( PMVertex neighbor in v.neighbors )
 			{
 				float cost = ComputeEdgeCollapseCost( v, neighbor );
-				if ( ( v.collapseTo == null ) || cost < v.collapseCost )
+				if( ( v.collapseTo == null ) || cost < v.collapseCost )
 				{
-					v.collapseTo = neighbor;  // candidate for edge collapse
-					v.collapseCost = cost;    // cost of the collapse
+					v.collapseTo = neighbor; // candidate for edge collapse
+					v.collapseCost = cost; // cost of the collapse
 				}
 			}
 
@@ -792,35 +851,38 @@ namespace Axiom.Core
 		}
 
 		/// Internal method evaluates all collapse costs from this vertex for every buffer and returns the worst
-		void ComputeEdgeCostAtVertex( uint vertIndex )
+		private void ComputeEdgeCostAtVertex( uint vertIndex )
 		{
 			// Call computer for each buffer on this vertex
 			float worstCost = -0.01f;
-			foreach ( PMWorkingData data in workingDataList )
+			foreach( PMWorkingData data in workingDataList )
 			{
 				worstCost = Utility.Max( worstCost,
-											ComputeEdgeCostAtVertexForBuffer( data, vertIndex ) );
+				                         ComputeEdgeCostAtVertexForBuffer( data, vertIndex ) );
 			}
 			this.worstCosts[ (int)vertIndex ] = worstCost;
 		}
+
 		/// Internal method to compute edge collapse costs for all buffers /
-		void ComputeAllCosts()
+		private void ComputeAllCosts()
 		{
 			InitialiseEdgeCollapseCosts();
-			for ( uint i = 0; i < vertexData.vertexCount; ++i )
+			for( uint i = 0; i < vertexData.vertexCount; ++i )
+			{
 				ComputeEdgeCostAtVertex( i );
+			}
 		}
 
 		/// Internal method for getting the index of next best vertex to collapse
-		int GetNextCollapser()
+		private int GetNextCollapser()
 		{
 			// Scan
 			// Not done as a sort because want to keep the lookup simple for now
 			float bestVal = float.MaxValue;
 			int bestIndex = 0; // NB this is ok since if nothing is better than this, nothing will collapse
-			for ( int i = 0; i < numCommonVertices; ++i )
+			for( int i = 0; i < numCommonVertices; ++i )
 			{
-				if ( worstCosts[ i ] < bestVal )
+				if( worstCosts[ i ] < bestVal )
 				{
 					bestVal = worstCosts[ i ];
 					bestIndex = i;
@@ -833,7 +895,7 @@ namespace Axiom.Core
 		///    Internal method builds an new LOD based on the current state
 		/// </summary>
 		/// <param name="indexData">Index data which will have an index buffer created and initialized</param>
-		void BakeNewLOD( IndexData indexData )
+		private void BakeNewLOD( IndexData indexData )
 		{
 			Debug.Assert( currNumIndexes > 0, "No triangles to bake!" );
 			// Zip through the tri list of any working data copy and bake
@@ -846,9 +908,9 @@ namespace Axiom.Core
 			// Create index buffer, we don't need to read it back or modify it a lot
 			indexData.indexBuffer =
 				HardwareBufferManager.Instance.CreateIndexBuffer( this.indexData.indexBuffer.Type,
-																 indexData.indexCount,
-																 BufferUsage.StaticWriteOnly,
-																 false );
+				                                                  indexData.indexCount,
+				                                                  BufferUsage.StaticWriteOnly,
+				                                                  false );
 
 			IntPtr bufPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
@@ -856,17 +918,21 @@ namespace Axiom.Core
 			{
 				ushort* pShort = null;
 				uint* pInt = null;
-				if ( use32bitindexes )
+				if( use32bitindexes )
+				{
 					pInt = (uint*)bufPtr.ToPointer();
+				}
 				else
+				{
 					pShort = (ushort*)bufPtr.ToPointer();
+				}
 				// Use the first working data buffer, they are all the same index-wise
 				PMWorkingData work = this.workingDataList[ 0 ];
-				foreach ( PMTriangle tri in work.triList )
+				foreach( PMTriangle tri in work.triList )
 				{
-					if ( !tri.removed )
+					if( !tri.removed )
 					{
-						if ( use32bitindexes )
+						if( use32bitindexes )
 						{
 							*pInt++ = tri.vertex[ 0 ].realIndex;
 							*pInt++ = tri.vertex[ 1 ].realIndex;
@@ -894,14 +960,16 @@ namespace Axiom.Core
 		///    This also updates all the working vertex lists for the relevant buffer. 
 		/// </remarks>
 		/// <pram name="src">the collapser</pram>
-		void Collapse( PMVertex src )
+		private void Collapse( PMVertex src )
 		{
 			PMVertex dest = src.collapseTo;
 			List<PMVertex> recomputeSet = new List<PMVertex>();
 
 			// Abort if we're never supposed to collapse
-			if ( src.collapseCost == float.MaxValue )
+			if( src.collapseCost == float.MaxValue )
+			{
 				return;
+			}
 
 			// Remove this vertex from the running for the next check
 			src.collapseTo = null;
@@ -911,7 +979,7 @@ namespace Axiom.Core
 			// Collapse the edge uv by moving vertex u onto v
 			// Actually remove tris on uv, then update tris that
 			// have u to have v, and then remove u.
-			if ( dest == null )
+			if( dest == null )
 			{
 				// src is a vertex all by itself 
 				return;
@@ -921,15 +989,19 @@ namespace Axiom.Core
 			recomputeSet.Add( dest );
 			PMVertex temp;
 
-			foreach ( PMVertex neighbor in src.neighbors )
+			foreach( PMVertex neighbor in src.neighbors )
 			{
-				if ( !recomputeSet.Contains( neighbor ) )
+				if( !recomputeSet.Contains( neighbor ) )
+				{
 					recomputeSet.Add( neighbor );
+				}
 			}
-			foreach ( PMVertex neighbor in dest.neighbors )
+			foreach( PMVertex neighbor in dest.neighbors )
 			{
-				if ( !recomputeSet.Contains( neighbor ) )
+				if( !recomputeSet.Contains( neighbor ) )
+				{
 					recomputeSet.Add( neighbor );
+				}
 			}
 
 			// delete triangles on edge src-dest
@@ -939,9 +1011,9 @@ namespace Axiom.Core
 			List<PMTriangle> faceRemovalList = new List<PMTriangle>();
 			List<PMTriangle> faceReplacementList = new List<PMTriangle>();
 
-			foreach ( PMTriangle face in src.faces )
+			foreach( PMTriangle face in src.faces )
 			{
-				if ( face.HasCommonVertex( dest ) )
+				if( face.HasCommonVertex( dest ) )
 				{
 					// Tri is on src-dest therefore is gone
 					faceRemovalList.Add( face );
@@ -957,7 +1029,7 @@ namespace Axiom.Core
 
 			src.toBeRemoved = true;
 			// Replace all the faces queued for replacement
-			foreach ( PMTriangle face in faceReplacementList )
+			foreach( PMTriangle face in faceReplacementList )
 			{
 				/* Locate the face vertex which corresponds with the common 'dest' vertex
 				   To to this, find a removed face which has the FACE vertex corresponding with
@@ -965,7 +1037,7 @@ namespace Axiom.Core
 				*/
 				PMFaceVertex srcFaceVert = face.GetFaceVertexFromCommon( src );
 				PMFaceVertex destFaceVert = null;
-				foreach ( PMTriangle removed in faceRemovalList )
+				foreach( PMTriangle removed in faceRemovalList )
 				{
 					//if (removed.HasFaceVertex(srcFaceVert))
 					//{
@@ -978,7 +1050,7 @@ namespace Axiom.Core
 				face.ReplaceVertex( srcFaceVert, destFaceVert );
 			}
 			// Remove all the faces queued for removal
-			foreach ( PMTriangle face in faceRemovalList )
+			foreach( PMTriangle face in faceRemovalList )
 			{
 				face.NotifyRemoved();
 			}
@@ -987,11 +1059,12 @@ namespace Axiom.Core
 			src.NotifyRemoved();
 
 			// recompute costs
-			foreach ( PMVertex recomp in recomputeSet )
+			foreach( PMVertex recomp in recomputeSet )
 			{
 				ComputeEdgeCostAtVertex( recomp.index );
 			}
 		}
+
 		#endregion
 	}
 }

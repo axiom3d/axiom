@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,7 @@ namespace Axiom.Graphics
 	/// 	Abstract singleton class for managing hardware buffers, a concrete instance
 	///		of this will be created by the RenderSystem.
 	/// </summary>
-	public abstract class HardwareBufferManager : HardwareBufferManagerBase
+	abstract public class HardwareBufferManager : HardwareBufferManagerBase
 	{
 		#region Singleton implementation
 
@@ -60,7 +64,7 @@ namespace Axiom.Graphics
 		protected internal HardwareBufferManager( HardwareBufferManagerBase baseInstance )
 			: base()
 		{
-			if ( instance == null )
+			if( instance == null )
 			{
 				instance = this;
 
@@ -71,13 +75,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static HardwareBufferManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+		public static HardwareBufferManager Instance { get { return instance; } }
 
 		#endregion Singleton implementation
 
@@ -136,16 +134,14 @@ namespace Axiom.Graphics
 		//{
 		//}
 
-		public override void FreeUnusedBufferCopies()
-		{
-		}
+		public override void FreeUnusedBufferCopies() {}
 
 		public override void ReleaseBufferCopies( bool forceFreeUnused )
 		{
 			_baseInstance.ReleaseBufferCopies( forceFreeUnused );
 		}
 
-		public override void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer)
+		public override void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
 		{
 			_baseInstance.ForceReleaseBufferCopies( sourceBuffer );
 		}
@@ -162,12 +158,11 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if( disposeManagedResources )
 			{
 				instance = null;
 			}
 			base.dispose( disposeManagedResources );
 		}
-
 	}
 }

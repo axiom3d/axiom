@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,7 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Tao.OpenGl;
+
 using System.Text;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -73,7 +79,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			// get all the GL errors
 			glErr = Gl.glGetError();
-			while ( glErr != Gl.GL_NO_ERROR )
+			while( glErr != Gl.GL_NO_ERROR )
 			{
 				string errMsg = Glu.gluErrorString( glErr );
 				msg += "\n" + errMsg;
@@ -81,14 +87,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				errorsFound = true;
 			}
 
-
 			// if errors were found then put them in the Log and raise and exception
-			if ( errorsFound || forceInfoLog )
+			if( errorsFound || forceInfoLog )
 			{
 				// if shader or program object then get the log message and send to the log manager
 				LogObjectInfo( msg, handle );
 
-				if ( forceException )
+				if( forceException )
 				{
 					throw new Exception( msg );
 				}
@@ -105,18 +110,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			StringBuilder logMessage = new StringBuilder();
 
-			if ( handle > 0 )
+			if( handle > 0 )
 			{
 				int infologLength = 0;
 
 				Gl.glGetObjectParameterivARB( handle, Gl.GL_OBJECT_INFO_LOG_LENGTH_ARB, out infologLength );
 
-				if ( infologLength > 0 )
+				if( infologLength > 0 )
 				{
 					int charsWritten = 0;
 
 					Gl.glGetInfoLogARB( handle, infologLength, out charsWritten, logMessage );
-					if ( charsWritten > 0 )
+					if( charsWritten > 0 )
 					{
 						logMessage.Append( "\n" );
 						message += "\n" + logMessage.ToString();
@@ -126,7 +131,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 
 			return logMessage.ToString();
-
 		}
 	}
 }

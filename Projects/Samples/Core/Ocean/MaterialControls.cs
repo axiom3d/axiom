@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,9 +19,11 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
+
 using Axiom.Utilities;
 using Axiom.Core;
 
@@ -31,7 +34,7 @@ namespace Axiom.Samples.Core
 	/// <summary>
 	/// 
 	/// </summary>
-	class MaterialControls
+	internal class MaterialControls
 	{
 		protected string displayName;
 		protected string materialName;
@@ -40,26 +43,17 @@ namespace Axiom.Samples.Core
 		/// <summary>
 		/// 
 		/// </summary>
-		public string DisplayName
-		{
-			get { return displayName; }
-		}
+		public string DisplayName { get { return displayName; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public string MaterialName
-		{
-			get { return materialName; }
-		}
+		public string MaterialName { get { return materialName; } }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public int ShaderControlsCount
-		{
-			get { return shaderControlsContainer.Count; }
-		}
+		public int ShaderControlsCount { get { return shaderControlsContainer.Count; } }
 
 		/// <summary>
 		/// 
@@ -92,7 +86,7 @@ namespace Axiom.Samples.Core
 			string[] lineParams = parameters.Split( ',' );
 
 			// if there are not five elements then log error and move on
-			if ( lineParams.Length != 6 )
+			if( lineParams.Length != 6 )
 			{
 				LogManager.Instance.Write( "Incorrect number of parameters passed in params string for MaterialControls.AddControl()" );
 				return;
@@ -114,6 +108,7 @@ namespace Axiom.Samples.Core
 				LogManager.Instance.Write( "Error while parsing control params in MaterialControls.AddControl()" );
 			}
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright © 2003-2011 Axiom Project Team
+// 
 //
 // The overall design, and a majority of the core engine and rendering code
 // contained within this library is a derivative of the open source Object Oriented
@@ -94,9 +94,7 @@ namespace Axiom.Collections
 		}
 
 		public AxiomCollection( AxiomCollection<int> copy )
-			: base( (IDictionary<string, T>)copy )
-		{
-		}
+			: base( (IDictionary<string, T>)copy ) {}
 
 		#endregion Constructors
 
@@ -106,7 +104,7 @@ namespace Axiom.Collections
 		///	Adds an unnamed object to the <see cref="AxiomCollection{T}"/> and names it manually.
 		/// </summary>
 		/// <param name="item">The object to add.</param>
-		public virtual void Add( T item )
+		virtual public void Add( T item )
 		{
 			Add( typeName + ( nextUniqueKeyCounter++ ), item );
 		}
@@ -115,9 +113,9 @@ namespace Axiom.Collections
 		/// Adds multiple items from a specified source collection
 		/// </summary>
 		/// <param name="from"></param>
-		public virtual void AddRange( IDictionary<string, T> source )
+		virtual public void AddRange( IDictionary<string, T> source )
 		{
-			foreach ( KeyValuePair<string, T> entry in source )
+			foreach( KeyValuePair<string, T> entry in source )
 			{
 				this.Add( entry.Key, entry.Value );
 			}
@@ -127,7 +125,7 @@ namespace Axiom.Collections
 		/// Returns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
 		/// </summary>
 		/// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
-		public new virtual IEnumerator GetEnumerator()
+		virtual new public IEnumerator GetEnumerator()
 		{
 			return Values.GetEnumerator();
 		}
@@ -136,9 +134,9 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				foreach ( T item in Values )
+				foreach( T item in Values )
 				{
-					if ( index == 0 )
+					if( index == 0 )
 					{
 						return item;
 					}
@@ -148,15 +146,12 @@ namespace Axiom.Collections
 			}
 		}
 
-		public new T this[ string key ]
+		new public T this[ string key ]
 		{
-			get
-			{
-				return base[ key ];
-			}
+			get { return base[ key ]; }
 			set
 			{
-				if ( this.ContainsKey( key ) )
+				if( this.ContainsKey( key ) )
 				{
 					this.Remove( key );
 				}
@@ -166,7 +161,6 @@ namespace Axiom.Collections
 
 		#endregion Instance Methods
 	}
-
 
 	/// <summary>
 	///	Serves as a basis for strongly typed collections in the engine.
@@ -218,9 +212,7 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.
 		/// </exception>
 		public AxiomSortedCollection( int capacity, IComparer<TKey> comparer )
-			: base( capacity, comparer )
-		{
-		}
+			: base( capacity, comparer ) {}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2"/>, has sufficient capacity to accommodate the number of elements copied, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -235,9 +227,7 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentException"><paramref name="dictionary"/> contains one or more duplicate keys.
 		/// </exception>
 		public AxiomSortedCollection( IDictionary<TKey, TValue> dictionary, IComparer<TKey> comparer )
-			: base( dictionary, comparer )
-		{
-		}
+			: base( dictionary, comparer ) {}
 
 		#endregion Constructors
 	}

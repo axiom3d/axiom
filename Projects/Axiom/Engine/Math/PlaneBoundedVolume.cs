@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -58,6 +62,7 @@ namespace Axiom.Math
 		///		Publicly accessible plane list, you can modify this direct.
 		/// </summary>
 		public PlaneList planes = new PlaneList();
+
 		/// <summary>
 		///		Side of the plane to be considered 'outside'.
 		/// </summary>
@@ -71,9 +76,7 @@ namespace Axiom.Math
 		///		Default constructor.
 		/// </summary>
 		public PlaneBoundedVolume()
-			: this( PlaneSide.Negative )
-		{
-		}
+			: this( PlaneSide.Negative ) {}
 
 		/// <summary>
 		///		Constructor.
@@ -98,12 +101,12 @@ namespace Axiom.Math
 		/// <returns>True if interesecting, false otherwise.</returns>
 		public bool Intersects( AxisAlignedBox box )
 		{
-			if ( box.IsNull )
+			if( box.IsNull )
 			{
 				return false;
 			}
 
-			if ( box.IsInfinite )
+			if( box.IsInfinite )
 			{
 				return true;
 			}
@@ -116,12 +119,12 @@ namespace Axiom.Math
 			// If all points are on outside of any plane, we fail
 			Vector3[] points = box.Corners;
 
-			for ( int i = 0; i < planes.Count; i++ )
+			for( int i = 0; i < planes.Count; i++ )
 			{
 				Plane plane = (Plane)planes[ i ];
 
 				PlaneSide side = plane.GetSide( center, halfSize );
-				if ( side == outside )
+				if( side == outside )
 				{
 					// Found a splitting plane therefore return not intersecting
 					return false;
@@ -139,7 +142,7 @@ namespace Axiom.Math
 		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			for ( int i = 0; i < planes.Count; i++ )
+			for( int i = 0; i < planes.Count; i++ )
 			{
 				Plane plane = (Plane)planes[ i ];
 
@@ -147,12 +150,12 @@ namespace Axiom.Math
 				Real d = plane.GetDistance( sphere.Center );
 
 				// Negate d if planes point inwards
-				if ( outside == PlaneSide.Negative )
+				if( outside == PlaneSide.Negative )
 				{
 					d = -d;
 				}
 
-				if ( ( d - sphere.Radius ) > 0 )
+				if( ( d - sphere.Radius ) > 0 )
 				{
 					return false;
 				}

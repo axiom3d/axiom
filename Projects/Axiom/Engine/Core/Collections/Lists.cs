@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Lists.cs -1   $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -45,16 +50,12 @@ namespace Axiom.Core.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="Light">Lights</see>.
 	/// </summary>
-	public class LightList : List<Light>
-	{
-	}
+	public class LightList : List<Light> {}
 
 	/// <summary>
 	/// Represents a collection of <see cref="Entity">Entities</see>
 	/// </summary>
-	public class EntityList : List<Entity>
-	{
-	}
+	public class EntityList : List<Entity> {}
 
 	/// <summary>
 	/// Represents a collection of <see cref="SubEntity"/> objects
@@ -63,9 +64,7 @@ namespace Axiom.Core.Collections
 	/// The items are sorted by their implicit index, it is important that the order of  subentities in the collection maps to the order
 	/// of submeshes in a <see cref="SubMeshList"/>
 	/// </remarks>
-	public class SubEntityList : List<SubEntity>
-	{
-	}
+	public class SubEntityList : List<SubEntity> {}
 
 	/// <summary>
 	/// Represents a collection of <see cref="SubMesh">SubMeshes</see>
@@ -74,23 +73,17 @@ namespace Axiom.Core.Collections
 	/// The items are sorted by their implicit index, it is important that the order of  submeshes in the collection maps to the order
 	/// of subentities in a <see cref="SubEntityList"/>
 	/// </remarks>
-	public class SubMeshList : List<SubMesh>
-	{
-	}
+	public class SubMeshList : List<SubMesh> {}
 
 	/// <summary>
 	///     Generics: List<MeshLodUsage>
 	/// </summary>
-	public class MeshLodUsageList : List<MeshLodUsage>
-	{
-	}
+	public class MeshLodUsageList : List<MeshLodUsage> {}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	public class LodValueList : List<Real>
-	{
-	}
+	public class LodValueList : List<Real> {}
 
 	/// <summary>
 	///     Generics: List<int>
@@ -100,7 +93,7 @@ namespace Axiom.Core.Collections
 		public void Resize( int size )
 		{
 			int[] data = this.ToArray();
-			int[] newData = new int[ size ];
+			int[] newData = new int[size];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );
@@ -115,7 +108,7 @@ namespace Axiom.Core.Collections
 		public void Resize( int size )
 		{
 			float[] data = this.ToArray();
-			float[] newData = new float[ size ];
+			float[] newData = new float[size];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );

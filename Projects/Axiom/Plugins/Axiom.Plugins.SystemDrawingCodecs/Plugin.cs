@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,39 +23,38 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 using Axiom.Media;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.SystemDrawingCodecs
 {
-	class Plugin : Axiom.Core.IPlugin
+	internal class Plugin : Axiom.Core.IPlugin
 	{
 		#region Implementation of IPlugin
 
 		/// <summary>
 		/// Unique name for the plugin
 		/// </summary>
-		string Name
-		{
-			get
-			{
-				return "System.Drawing Media Codecs";
-			}
-		}
+		private string Name { get { return "System.Drawing Media Codecs"; } }
 
 		/// <summary>
 		/// Perform the plugin initial installation sequence.
@@ -68,7 +68,6 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// that should be done in Initialize().
 		/// </remarks>
 		//void Install();
-
 		/// <summary>
 		/// Perform any tasks the plugin needs to perform on full system initialization.
 		/// </summary>
@@ -99,9 +98,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// resources and decouple custom objects from the Axiom system, whilst all the
 		/// instances of other plugins (e.g. rendersystems) still exist.
 		/// </remarks>
-		public void Shutdown()
-		{
-		}
+		public void Shutdown() {}
 
 		#endregion Implementation of IPlugin
 	}

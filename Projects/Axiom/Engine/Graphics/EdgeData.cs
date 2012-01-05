@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -56,6 +60,7 @@ namespace Axiom.Graphics
 		///     List of triangles.
 		/// </summary>
 		protected internal TriangleList triangles = new TriangleList();
+
 		/// <summary>
 		///     List of edge groups.
 		/// </summary>
@@ -64,13 +69,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Accessor needed by Region.cs
 		/// </summary>
-		public EdgeGroupList EdgeGroups
-		{
-			get
-			{
-				return edgeGroups;
-			}
-		}
+		public EdgeGroupList EdgeGroups { get { return edgeGroups; } }
 
 		#endregion Fields
 
@@ -92,7 +91,7 @@ namespace Axiom.Graphics
 		/// </param>
 		public void UpdateTriangleLightFacing( Vector4 lightPos )
 		{
-			for ( int i = 0; i < triangles.Count; i++ )
+			for( int i = 0; i < triangles.Count; i++ )
 			{
 				Triangle tri = (Triangle)triangles[ i ];
 
@@ -119,12 +118,12 @@ namespace Axiom.Graphics
 				float* pVert = (float*)posPtr.ToPointer();
 
 				// Iterate over the triangles
-				for ( int i = 0; i < triangles.Count; i++ )
+				for( int i = 0; i < triangles.Count; i++ )
 				{
 					Triangle t = (Triangle)triangles[ i ];
 
 					// Only update tris which are using this vertex set
-					if ( t.vertexSet == vertexSet )
+					if( t.vertexSet == vertexSet )
 					{
 						int offset = t.vertIndex[ 0 ] * 3;
 						Vector3 v1 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
@@ -150,26 +149,26 @@ namespace Axiom.Graphics
 			log.Write( "Edge Data" );
 			log.Write( "---------" );
 
-			for ( int i = 0; i < triangles.Count; i++ )
+			for( int i = 0; i < triangles.Count; i++ )
 			{
 				Triangle t = (Triangle)triangles[ i ];
 
 				log.Write( "Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]",
-					i, t.indexSet, t.vertexSet, t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
+				           i, t.indexSet, t.vertexSet, t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
 			}
 
-			for ( int i = 0; i < edgeGroups.Count; i++ )
+			for( int i = 0; i < edgeGroups.Count; i++ )
 			{
 				EdgeGroup group = (EdgeGroup)edgeGroups[ i ];
 
 				log.Write( "Edge Group vertexSet={0}", group.vertexSet );
 
-				for ( int j = 0; j < group.edges.Count; j++ )
+				for( int j = 0; j < group.edges.Count; j++ )
 				{
 					Edge e = (Edge)group.edges[ j ];
 
 					log.Write( "Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]",
-						j, e.triIndex[ 0 ], e.triIndex[ 1 ], e.vertIndex[ 0 ], e.vertIndex[ 1 ], e.isDegenerate );
+					           j, e.triIndex[ 0 ], e.triIndex[ 1 ], e.vertIndex[ 0 ], e.vertIndex[ 1 ], e.isDegenerate );
 				}
 			}
 		}
@@ -194,23 +193,28 @@ namespace Axiom.Graphics
 			///     one side of an edge are using a different vertex buffer from those on the other side.)
 			/// </summary>
 			public int indexSet;
+
 			/// <summary>
 			///     The vertex set these vertices came from.
 			/// </summary>
 			public int vertexSet;
+
 			/// <summary>
 			///     Vertex indexes, relative to the original buffer.
 			/// </summary>
 			public int[] vertIndex;
+
 			/// <summary>
 			///     Vertex indexes, relative to a shared vertex buffer with 
 			//      duplicates eliminated (this buffer is not exposed).
 			/// </summary>
 			public int[] sharedVertIndex;
+
 			/// <summary>
 			///      Unit vector othogonal to this face, plus distance from origin.
 			/// </summary>
 			public Vector4 normal;
+
 			/// <summary>
 			///     Working vector used when calculating the silhouette.
 			/// </summary>
@@ -221,17 +225,16 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Triangle()
 			{
-				vertIndex = new int[ 3 ];
-				sharedVertIndex = new int[ 3 ];
+				vertIndex = new int[3];
+				sharedVertIndex = new int[3];
 			}
 
 			public override string ToString()
 			{
 				return string.Format( "IndexSet {0} VertexSet {1} VertIndices({2},{3},{4}) SharedVerts({5},{6},{7}) Normal({8},{9},{10},{11}) LightFacing {12})",
-					indexSet, vertexSet, vertIndex[ 0 ], vertIndex[ 1 ], vertIndex[ 2 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], sharedVertIndex[ 2 ],
-					normal.x, normal.y, normal.z, normal.w, lightFacing );
+				                      indexSet, vertexSet, vertIndex[ 0 ], vertIndex[ 1 ], vertIndex[ 2 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], sharedVertIndex[ 2 ],
+				                      normal.x, normal.y, normal.z, normal.w, lightFacing );
 			}
-
 
 			#endregion Fields
 		}
@@ -249,15 +252,18 @@ namespace Axiom.Graphics
 			///     reversed for tri 1.
 			/// </summary>
 			public int[] triIndex;
+
 			/// <summary>
 			///     The vertex indices for this edge. Note that both vertices will be in the vertex
 			///     set as specified in 'vertexSet', which will also be the same as tri 0.
 			/// </summary>
 			public int[] vertIndex;
+
 			/// <summary>
 			///     Vertex indices as used in the shared vertex list, not exposed.
 			/// </summary>
 			public int[] sharedVertIndex;
+
 			/// <summary>
 			///		Indicates if this is a degenerate edge, ie it does not have 2 triangles.
 			/// </summary>
@@ -270,17 +276,16 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Edge()
 			{
-				triIndex = new int[ 2 ];
-				vertIndex = new int[ 2 ];
-				sharedVertIndex = new int[ 2 ];
+				triIndex = new int[2];
+				vertIndex = new int[2];
+				sharedVertIndex = new int[2];
 			}
 
 			public override string ToString()
 			{
 				return string.Format( "TriIndex({0},{1}) VertIndex({2},{3}) SharedVertIndex({4},{5}) IsDegenerate = {6}",
-					triIndex[ 0 ], triIndex[ 1 ], vertIndex[ 0 ], vertIndex[ 1 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], isDegenerate );
+				                      triIndex[ 0 ], triIndex[ 1 ], vertIndex[ 0 ], vertIndex[ 1 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], isDegenerate );
 			}
-
 		}
 
 		/// <summary>
@@ -294,10 +299,12 @@ namespace Axiom.Graphics
 			///     The vertex set index that contains the vertices for this edge group.
 			/// </summary>
 			public int vertexSet;
+
 			/// <summary>
 			///     Reference to vertex data used by this edge group.
 			/// </summary>
 			public VertexData vertexData;
+
 			/// <summary>
 			///     The edges themselves.
 			/// </summary>

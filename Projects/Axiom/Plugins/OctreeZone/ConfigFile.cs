@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,37 +45,34 @@ using System.Collections;
 
 public class ConfigFile
 {
-    private XmlDocument _doc = new XmlDocument();
-    private string baseSchema;
-    public ConfigFile(string baseSchemaName)
-    {
-        baseSchema = baseSchemaName;
-    }
+	private XmlDocument _doc = new XmlDocument();
+	private string baseSchema;
 
-    public bool Load(Stream stream)
-    {
-        _doc.Load(stream);
-        return true;
-    }
+	public ConfigFile( string baseSchemaName )
+	{
+		baseSchema = baseSchemaName;
+	}
 
-    public string this[string key]
-    {
-        get
-        {
-            return _doc[baseSchema][key].InnerText;
-        }
-    }
+	public bool Load( Stream stream )
+	{
+		_doc.Load( stream );
+		return true;
+	}
 
-    public IEnumerable GetEnumerator()
-    {
-        foreach (XmlElement el in _doc[baseSchema])
-        {
-            yield return new string[] { el.Name, el.InnerText };
-        }
-    }
+	public string this[ string key ] { get { return _doc[ baseSchema ][ key ].InnerText; } }
 
-    public string GetSetting(string key)
-    {
-        return this[key];
-    }
+	public IEnumerable GetEnumerator()
+	{
+		foreach( XmlElement el in _doc[ baseSchema ] )
+		{
+			yield return new string[] {
+			                          	el.Name, el.InnerText
+			                          };
+		}
+	}
+
+	public string GetSetting( string key )
+	{
+		return this[ key ];
+	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -56,7 +60,7 @@ namespace Axiom.ParticleSystems
 	///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
 	///		also be used from XML particle system scripts.
 	/// </summary>
-	public abstract class ParticleEmitterFactory
+	abstract public class ParticleEmitterFactory
 	{
 		#region Member variables
 
@@ -69,9 +73,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor
 		/// </summary>
-		public ParticleEmitterFactory()
-		{
-		}
+		public ParticleEmitterFactory() {}
 
 		#endregion
 
@@ -80,10 +82,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Returns the name of the factory, which identifies which type of emitter this factory creates.
 		/// </summary>
-		public abstract string Name
-		{
-			get;
-		}
+		abstract public string Name { get; }
 
 		#endregion
 
@@ -96,13 +95,13 @@ namespace Axiom.ParticleSystems
 		///		Subclasses must add newly created emitters to the emitterList.
 		/// </remarks>
 		/// <returns></returns>
-		public abstract ParticleEmitter Create( ParticleSystem ps );
+		abstract public ParticleEmitter Create( ParticleSystem ps );
 
 		/// <summary>
 		///		Destroys the emitter referenced by the parameter.
 		/// </summary>
 		/// <param name="emitter"></param>
-		public virtual void Destroy( ParticleEmitter emitter )
+		virtual public void Destroy( ParticleEmitter emitter )
 		{
 			// remove the emitter from the list
 			emitterList.Remove( emitter );

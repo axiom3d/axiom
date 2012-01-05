@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -29,39 +31,48 @@ using Axiom.Overlays.Elements;
 namespace Axiom.Samples
 {
 	public delegate void CheckChangedHandler( object sender, CheckBox box );
+
 	/// <summary>
 	/// Basic check box widget.
 	/// </summary>
 	public class CheckBox : Widget
 	{
-
 		#region events
+
 		/// <summary>
 		/// 
 		/// </summary>
 		public event CheckChangedHandler CheckChanged;
+
 		#endregion
+
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel square;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement x;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isFitToContents;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool IsCursorOver;
+
 		#endregion fields
 
 		#region construction
@@ -96,32 +107,21 @@ namespace Axiom.Samples
 		/// </summary>
 		public string Caption
 		{
-			get
-			{
-				return textArea.Text;
-			}
+			get { return textArea.Text; }
 			set
 			{
 				this.textArea.Text = value;
-				if ( this.isFitToContents )
+				if( this.isFitToContents )
+				{
 					element.Width = GetCaptionWidth( value, this.textArea ) + this.square.Width + 23;
+				}
 			}
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsChecked
-		{
-			get
-			{
-				return this.x.IsVisible;
-			}
-			set
-			{
-				SetChecked( value, true );
-			}
-		}
+		public bool IsChecked { get { return this.x.IsVisible; } set { SetChecked( value, true ); } }
 
 		#endregion
 
@@ -134,12 +134,18 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void SetChecked( bool check, bool notifyListener )
 		{
-			if ( check )
+			if( check )
+			{
 				this.x.Show();
+			}
 			else
+			{
 				this.x.Hide();
-			if ( listener != null && notifyListener )
+			}
+			if( listener != null && notifyListener )
+			{
 				listener.CheckboxToggled( this );
+			}
 
 			OnCheckChanged( this, this );
 		}
@@ -202,11 +208,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( IsCursorOver )
+			if( IsCursorOver )
 			{
 				Toggle();
 				base.OnCursorPressed( cursorPos );
-
 			}
 		}
 
@@ -216,9 +221,9 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( IsCursorOver( this.square, cursorPos, 5 ) )
+			if( IsCursorOver( this.square, cursorPos, 5 ) )
 			{
-				if ( !this.IsCursorOver )
+				if( !this.IsCursorOver )
 				{
 					this.IsCursorOver = true;
 					this.square.MaterialName = "SdkTrays/MiniTextBox/Over";
@@ -227,7 +232,7 @@ namespace Axiom.Samples
 			}
 			else
 			{
-				if ( this.IsCursorOver )
+				if( this.IsCursorOver )
 				{
 					this.IsCursorOver = false;
 					this.square.MaterialName = "SdkTrays/MiniTextBox";
@@ -252,9 +257,12 @@ namespace Axiom.Samples
 
 		public void OnCheckChanged( object sender, CheckBox box )
 		{
-			if ( CheckChanged != null )
+			if( CheckChanged != null )
+			{
 				CheckChanged( sender, box );
+			}
 		}
+
 		#endregion
 	}
 }

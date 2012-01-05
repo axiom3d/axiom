@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,8 +43,8 @@ using System.Text;
 using Axiom.Core;
 
 using Tao.Cg;
-#endregion Namespace Declarations
 
+#endregion Namespace Declarations
 
 namespace Axiom.CgPrograms
 {
@@ -56,11 +60,10 @@ namespace Axiom.CgPrograms
 		/// <param name="context">Current Cg context.</param>
 		internal static void CheckCgError( string potentialError, IntPtr context )
 		{
-
 			// check for a Cg error
 			int error = Cg.cgGetError();
 
-			if ( error != Cg.CG_NO_ERROR )
+			if( error != Cg.CG_NO_ERROR )
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.Append( Environment.NewLine );
@@ -71,7 +74,7 @@ namespace Axiom.CgPrograms
 				sb.Append( Environment.NewLine );
 
 				// Check for compiler error, need CG_COMPILER_ERROR const
-				if ( error == Cg.CG_COMPILER_ERROR )
+				if( error == Cg.CG_COMPILER_ERROR )
 				{
 					sb.Append( Cg.cgGetLastListing( context ) );
 					sb.Append( Environment.NewLine );

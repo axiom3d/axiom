@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
 
 namespace Axiom.Framework.Configuration
 {
-	class XBoxConfigurationManager : ConfigurationManagerBase
+	internal class XBoxConfigurationManager : ConfigurationManagerBase
 	{
 		#region Fields and Properties
 
@@ -33,22 +35,19 @@ namespace Axiom.Framework.Configuration
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		/// <summary>
 		/// 
 		/// </summary>
 		public XBoxConfigurationManager()
-			: base( DefaultLogFileName )
-		{
-		}
+			: base( DefaultLogFileName ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="configurationFile"></param>
 		public XBoxConfigurationManager( string configurationFile )
-			: base( configurationFile )
-		{
-		}
+			: base( configurationFile ) {}
 
 		#endregion Construction and Destruction
 
@@ -68,19 +67,14 @@ namespace Axiom.Framework.Configuration
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
-		public override void SaveConfiguration( Core.Root engine )
-		{
-		}
+		public override void SaveConfiguration( Core.Root engine ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
 		/// <param name="defaultRenderer"></param>
-		public override void SaveConfiguration( Core.Root engine, string defaultRenderer )
-		{
-		}
-
+		public override void SaveConfiguration( Core.Root engine, string defaultRenderer ) {}
 
 		/// <summary>
 		/// 
@@ -93,6 +87,5 @@ namespace Axiom.Framework.Configuration
 		}
 
 		#endregion ConfigurationManagerBase Implementation
-
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,13 +44,18 @@ using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
+
 using System.Collections.Generic;
+
 using Axiom.Core.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
+
 	#region Base Query Implementation
+
 	/// <summary>
 	/// 	A class for performing queries on a scene.
 	/// </summary>
@@ -74,7 +83,7 @@ namespace Axiom.Core
 	/// 	using the SceneManager interfaces for the type of query required, e.g.
 	/// 	SceneManager.CreateRaySceneQuery.
 	/// </remarks>
-	public abstract class SceneQuery
+	abstract public class SceneQuery
 	{
 		#region Fields
 
@@ -82,14 +91,17 @@ namespace Axiom.Core
 		///		Reference to the SceneManager that this query was created by.
 		/// </summary>
 		protected SceneManager creator;
+
 		/// <summary>
 		///		User definable query bit mask which can be used to filter the results of a query.
 		/// </summary>
 		protected uint queryMask;
+
 		/// <summary>
 		///		query bit mask which can be used to filter the results of a query based on object type.
 		/// </summary>
 		protected uint queryTypeMask;
+
 		/// <summary>
 		///		A flag enum which holds the world fragment types supported by this query.
 		/// </summary>
@@ -111,7 +123,7 @@ namespace Axiom.Core
 
 			// default type mask to everything except lights & fx (previous behaviour)
 			this.queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
- 
+
 			// default to no world fragments queried
 			AddWorldFragmentType( WorldFragmentType.None );
 		}
@@ -143,17 +155,7 @@ namespace Axiom.Core
 		///    SceneObject.QueryFlags value is non-zero. The application will
 		///    have to decide what each of the bits means.
 		/// </remarks>
-		public uint QueryMask
-		{
-			get
-			{
-				return queryMask;
-			}
-			set
-			{
-				queryMask = value;
-			}
-		}
+		public uint QueryMask { get { return queryMask; } set { queryMask = value; } }
 
 		/// <summary>
 		///    Sets the mask for results of this query.
@@ -165,17 +167,8 @@ namespace Axiom.Core
 		///    flags set per type of object. Both may exclude an object from query
 		///    results.
 		/// </remarks>
-		public uint QueryTypeMask
-		{
-			get
-			{
-				return queryTypeMask;
-			}
-			set
-			{
-				queryTypeMask = value;
-			}
-		}
+		public uint QueryTypeMask { get { return queryTypeMask; } set { queryTypeMask = value; } }
+
 		#endregion Properties
 
 		#region Nested Structs
@@ -199,14 +192,17 @@ namespace Axiom.Core
 			///		The type of this world fragment.
 			/// </summary>
 			public WorldFragmentType FragmentType;
+
 			/// <summary>
 			///		Single intersection point, only applicable for <see cref="WorldFragmentType.SingleIntersection"/>.
 			/// </summary>
 			public Vector3 SingleIntersection;
+
 			/// <summary>
 			///		Planes bounding a convex region, only applicable for <see cref="WorldFragmentType.PlaneBoundedRegion"/>.
 			/// </summary>
 			public PlaneList Planes;
+
 			/// <summary>
 			///		General render operation structure.  Fallback if nothing else is available.
 			/// </summary>
@@ -224,7 +220,7 @@ namespace Axiom.Core
 	///		a set of individual results in a region. See the <see cref="SceneQuery"/> class for
 	///		abstract information, and subclasses for the detail of each query type.
 	/// </remarks>
-	public abstract class RegionSceneQuery : SceneQuery, ISceneQueryListener
+	abstract public class RegionSceneQuery : SceneQuery, ISceneQueryListener
 	{
 		#region Fields
 
@@ -242,9 +238,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal RegionSceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -253,7 +247,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Clears out any cached results from the last query.
 		/// </summary>
-		public virtual void ClearResults()
+		virtual public void ClearResults()
 		{
 			lastResult.objects.Clear();
 			lastResult.worldFragments.Clear();
@@ -270,7 +264,7 @@ namespace Axiom.Core
 		///		this method that returns results through a listener is also available.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual SceneQueryResult Execute()
+		virtual public SceneQueryResult Execute()
 		{
 			ClearResults();
 
@@ -290,7 +284,7 @@ namespace Axiom.Core
 		///		which returns the results as a collection.
 		/// </remarks>
 		/// <param name="listener"></param>
-		public abstract void Execute( ISceneQueryListener listener );
+		abstract public void Execute( ISceneQueryListener listener );
 
 		#endregion Methods
 
@@ -334,6 +328,7 @@ namespace Axiom.Core
 		///		List of scene objects in the query (entities, particle systems etc).
 		/// </summary>
 		public MovableObjectCollection objects = new MovableObjectCollection();
+
 		/// <summary>
 		///		List of world fragments.
 		/// </summary>
@@ -372,7 +367,7 @@ namespace Axiom.Core
 	/// <summary>
 	///		Specializes the SceneQuery class for querying for objects along a ray.
 	/// </summary>
-	public abstract class RaySceneQuery : SceneQuery, IRaySceneQueryListener
+	abstract public class RaySceneQuery : SceneQuery, IRaySceneQueryListener
 	{
 		#region Fields
 
@@ -380,14 +375,17 @@ namespace Axiom.Core
 		///		Reference to a ray to use for this query.
 		/// </summary>
 		protected Ray ray;
+
 		/// <summary>
 		///		If true, results returned in the list
 		/// </summary>
 		protected bool sortByDistance;
+
 		/// <summary>
 		///		Maximum results to return when executing the query.
 		/// </summary>
 		protected int maxResults;
+
 		/// <summary>
 		///		List of query results from the last execution of this query.
 		/// </summary>
@@ -402,9 +400,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">Scene manager who created this query.</param>
 		internal RaySceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -413,17 +409,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Gets/Sets the Ray being used for this query.
 		/// </summary>
-		public Ray Ray
-		{
-			get
-			{
-				return ray;
-			}
-			set
-			{
-				ray = value;
-			}
-		}
+		public Ray Ray { get { return ray; } set { ray = value; } }
 
 		/// <summary>
 		///		Gets/Sets whether this queries results are sorted by distance.
@@ -440,17 +426,7 @@ namespace Axiom.Core
 		///		bounds checking in order to give the most speedy results since not all applications
 		///		need extreme accuracy.
 		/// </remarks>
-		public bool SortByDistance
-		{
-			get
-			{
-				return sortByDistance;
-			}
-			set
-			{
-				sortByDistance = value;
-			}
-		}
+		public bool SortByDistance { get { return sortByDistance; } set { sortByDistance = value; } }
 
 		/// <summary>
 		///		Gets/Sets the maximum number of results to return from this query when
@@ -461,10 +437,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public int MaxResults
 		{
-			get
-			{
-				return maxResults;
-			}
+			get { return maxResults; }
 			set
 			{
 				maxResults = value;
@@ -481,7 +454,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Clears out any cached results from the last query.
 		/// </summary>
-		public virtual void ClearResults()
+		virtual public void ClearResults()
 		{
 			lastResults.Clear();
 		}
@@ -497,18 +470,18 @@ namespace Axiom.Core
 		///		this method that returns results through a listener is also available.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual IList<RaySceneQueryResultEntry> Execute()
+		virtual public IList<RaySceneQueryResultEntry> Execute()
 		{
 			ClearResults();
 
 			// execute the callback version using ourselves as the listener
 			Execute( this );
 
-			if ( sortByDistance )
+			if( sortByDistance )
 			{
 				lastResults.Sort();
 
-				if ( maxResults != 0 && lastResults.Count > maxResults )
+				if( maxResults != 0 && lastResults.Count > maxResults )
 				{
 					// remove the results greater than the desired amount
 					lastResults.RemoveRange( maxResults, lastResults.Count - maxResults );
@@ -528,7 +501,7 @@ namespace Axiom.Core
 		///		which returns the results as a collection.
 		/// </remarks>
 		/// <param name="listener">Listener object to handle the result callbacks.</param>
-		public abstract void Execute( IRaySceneQueryListener listener );
+		abstract public void Execute( IRaySceneQueryListener listener );
 
 		#endregion Methods
 
@@ -594,10 +567,12 @@ namespace Axiom.Core
 		///		Distance along the ray.
 		/// </summary>
 		public float Distance;
+
 		/// <summary>
 		///		The object, or null if this is not a scene object result.
 		/// </summary>
 		public MovableObject SceneObject;
+
 		/// <summary>
 		///		The world fragment, or null if this is not a fragment result.
 		/// </summary>
@@ -614,12 +589,12 @@ namespace Axiom.Core
 		{
 			RaySceneQueryResultEntry entry = obj as RaySceneQueryResultEntry;
 
-			if ( Distance < entry.Distance )
+			if( Distance < entry.Distance )
 			{
 				// this result is less than
 				return -1;
 			}
-			else if ( Distance > entry.Distance )
+			else if( Distance > entry.Distance )
 			{
 				// this result is greater than
 				return 1;
@@ -639,7 +614,7 @@ namespace Axiom.Core
 	/// <summary>
 	///		Specializes the SceneQuery class for querying items within an AxisAlignedBox.
 	/// </summary>
-	public abstract class AxisAlignedBoxRegionSceneQuery : RegionSceneQuery
+	abstract public class AxisAlignedBoxRegionSceneQuery : RegionSceneQuery
 	{
 		#region Fields
 
@@ -657,9 +632,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal AxisAlignedBoxRegionSceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -668,17 +641,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets/Sets the sphere to use for the query.
 		/// </summary>
-		public AxisAlignedBox Box
-		{
-			get
-			{
-				return box;
-			}
-			set
-			{
-				box = value;
-			}
-		}
+		public AxisAlignedBox Box { get { return box; } set { box = value; } }
 
 		#endregion Properties
 	}
@@ -690,7 +653,7 @@ namespace Axiom.Core
 	/// <summary>
 	///		Specializes the SceneQuery class for querying items within a sphere.
 	/// </summary>
-	public abstract class SphereRegionSceneQuery : RegionSceneQuery
+	abstract public class SphereRegionSceneQuery : RegionSceneQuery
 	{
 		#region Fields
 
@@ -708,9 +671,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal SphereRegionSceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -719,17 +680,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets/Sets the sphere to use for the query.
 		/// </summary>
-		public Sphere Sphere
-		{
-			get
-			{
-				return sphere;
-			}
-			set
-			{
-				sphere = value;
-			}
-		}
+		public Sphere Sphere { get { return sphere; } set { sphere = value; } }
 
 		#endregion Properties
 	}
@@ -741,7 +692,7 @@ namespace Axiom.Core
 	/// <summary>
 	///		Specializes the SceneQuery class for querying items within PlaneBoundedVolumes.
 	/// </summary>
-	public abstract class PlaneBoundedVolumeListSceneQuery : RegionSceneQuery
+	abstract public class PlaneBoundedVolumeListSceneQuery : RegionSceneQuery
 	{
 		#region Fields
 
@@ -759,9 +710,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal PlaneBoundedVolumeListSceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -770,17 +719,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets/Sets the sphere to use for the query.
 		/// </summary>
-		public PlaneBoundedVolumeList Volumes
-		{
-			get
-			{
-				return volumes;
-			}
-			set
-			{
-				volumes = value;
-			}
-		}
+		public PlaneBoundedVolumeList Volumes { get { return volumes; } set { volumes = value; } }
 
 		#endregion Properties
 	}
@@ -799,7 +738,7 @@ namespace Axiom.Core
 	/// this slightly different focus, the return types and listener interface are
 	/// different for this class.
 	/// </remarks>
-	public abstract class IntersectionSceneQuery : SceneQuery, IIntersectionSceneQueryListener
+	abstract public class IntersectionSceneQuery : SceneQuery, IIntersectionSceneQueryListener
 	{
 		#region Fields
 
@@ -817,9 +756,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">Scene manager who created this query.</param>
 		internal IntersectionSceneQuery( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) {}
 
 		#endregion Constructor
 
@@ -828,7 +765,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Clears out any cached results from the last query.
 		/// </summary>
-		public virtual void ClearResults()
+		virtual public void ClearResults()
 		{
 			lastResults.Clear();
 		}
@@ -844,7 +781,7 @@ namespace Axiom.Core
 		///		this method that returns results through a listener is also available.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual IntersectionSceneQueryResult Execute()
+		virtual public IntersectionSceneQueryResult Execute()
 		{
 			ClearResults();
 
@@ -864,7 +801,7 @@ namespace Axiom.Core
 		///		which returns the results as a collection.
 		/// </remarks>
 		/// <param name="listener">Listener object to handle the result callbacks.</param>
-		public abstract void Execute( IIntersectionSceneQueryListener listener );
+		abstract public void Execute( IIntersectionSceneQueryListener listener );
 
 		#endregion Methods
 
@@ -923,21 +860,9 @@ namespace Axiom.Core
 		protected SceneQueryMovableObjectIntersectionList objects2Objects = new SceneQueryMovableObjectIntersectionList();
 		protected SceneQueryMovableObjectWorldFragmentIntersectionList objects2World = new SceneQueryMovableObjectWorldFragmentIntersectionList();
 
-		public SceneQueryMovableObjectIntersectionList Objects2Objects
-		{
-			get
-			{
-				return objects2Objects;
-			}
-		}
+		public SceneQueryMovableObjectIntersectionList Objects2Objects { get { return objects2Objects; } }
 
-		public SceneQueryMovableObjectWorldFragmentIntersectionList Objects2World
-		{
-			get
-			{
-				return objects2World;
-			}
-		}
+		public SceneQueryMovableObjectWorldFragmentIntersectionList Objects2World { get { return objects2World; } }
 
 		public void Clear()
 		{

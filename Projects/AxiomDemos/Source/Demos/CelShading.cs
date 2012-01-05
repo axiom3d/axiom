@@ -10,7 +10,6 @@ using Axiom.Math;
 
 #endregion Namespace Declarations
 
-
 namespace Axiom.Demos
 {
 	/// <summary>
@@ -20,24 +19,23 @@ namespace Axiom.Demos
 	{
 		#region Constants
 
-		const int CustomShininess = 1;
-		const int CustomDiffuse = 2;
-		const int CustomSpecular = 3;
+		private const int CustomShininess = 1;
+		private const int CustomDiffuse = 2;
+		private const int CustomSpecular = 3;
 
 		#endregion Constants
 
 		#region Fields
 
-		SceneNode rotNode;
+		private SceneNode rotNode;
 
 		#endregion Fields
 
 		public override void CreateScene()
 		{
-			if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) ||
-				!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
+			if( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) ||
+			    !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
 			{
-
 				throw new Exception( "Your hardware does not support vertex and fragment programs, so you cannot run this demo." );
 			}
 

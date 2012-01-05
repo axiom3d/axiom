@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,11 +52,11 @@ namespace Axiom.Scripting.Compiler.AST
 		#region Fields and Properties
 
 		private CultureInfo _culture = new CultureInfo( "en-US" );
-		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
-										   NumberStyles.AllowLeadingWhite |
-										   NumberStyles.AllowTrailingWhite |
-										   NumberStyles.AllowDecimalPoint;
 
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
+		                                   NumberStyles.AllowLeadingWhite |
+		                                   NumberStyles.AllowTrailingWhite |
+		                                   NumberStyles.AllowDecimalPoint;
 
 		private bool _parsed = false;
 		private string _value;
@@ -65,8 +69,10 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				if ( !_parsed )
+				if( !_parsed )
+				{
 					_parse();
+				}
 				return _isNumber;
 			}
 		}
@@ -77,17 +83,18 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				if ( !_parsed )
+				if( !_parsed )
+				{
 					_parse();
+				}
 				return _number;
 			}
 		}
+
 		#endregion Fields and Properties
 
 		public AtomAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+			: base( parent ) {}
 
 		private void _parse()
 		{
@@ -113,18 +120,7 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return _value;
-			}
-
-			set
-			{
-				_value = value;
-			}
-		}
+		public override string Value { get { return _value; } set { _value = value; } }
 
 		#endregion AbstractNode Implementation
 	}

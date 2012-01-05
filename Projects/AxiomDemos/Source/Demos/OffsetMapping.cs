@@ -25,55 +25,66 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		const int NUM_LIGHTS = 3;
+		private const int NUM_LIGHTS = 3;
 
-		float timeDelay = 0.0f;
+		private float timeDelay = 0.0f;
 
-		Entity[] entities = new Entity[ NUM_LIGHTS ];
-		string[] entityMeshes = new string[] { "knot.mesh", "ogrehead.mesh" };
-		Light[] lights = new Light[ NUM_LIGHTS ];
-		BillboardSet[] lightFlareSets = new BillboardSet[ NUM_LIGHTS ];
-		Billboard[] lightFlares = new Billboard[ NUM_LIGHTS ];
-		Vector3[] lightPositions = new Vector3[] {
-                                                     new Vector3(300, 0, 0),
-                                                     new Vector3(-200, 50, 0),
-                                                     new Vector3(0, -300, -100)
-                                                 };
+		private Entity[] entities = new Entity[NUM_LIGHTS];
 
-		float[] lightRotationAngles = new float[] { 0, 30, 75 };
+		private string[] entityMeshes = new string[] {
+		                                             	"knot.mesh", "ogrehead.mesh"
+		                                             };
 
-		Vector3[] lightRotationAxes = new Vector3[] {
-                                                        Vector3.UnitX,
-                                                        Vector3.UnitZ,
-                                                        Vector3.UnitY
-                                                    };
+		private Light[] lights = new Light[NUM_LIGHTS];
+		private BillboardSet[] lightFlareSets = new BillboardSet[NUM_LIGHTS];
+		private Billboard[] lightFlares = new Billboard[NUM_LIGHTS];
 
-		float[] lightSpeeds = new float[] { 30, 10, 50 };
+		private Vector3[] lightPositions = new Vector3[] {
+		                                                 	new Vector3( 300, 0, 0 ),
+		                                                 	new Vector3( -200, 50, 0 ),
+		                                                 	new Vector3( 0, -300, -100 )
+		                                                 };
 
-		ColorEx[] diffuseLightColors = new ColorEx[] {
-                                                         new ColorEx(1, 1, 1, 1),
-                                                         new ColorEx(1, 1, 0, 0),
-                                                         new ColorEx(1, 1, 1, 0.5f)
-                                                     };
+		private float[] lightRotationAngles = new float[] {
+		                                                  	0, 30, 75
+		                                                  };
 
-		ColorEx[] specularLightColors = new ColorEx[] {
-                                                          new ColorEx(1, 1, 1, 1),
-                                                          new ColorEx(1, 0, 0.8f, 0.8f),
-                                                          new ColorEx(1, 1, 1, 0.8f)
-                                                      };
+		private Vector3[] lightRotationAxes = new Vector3[] {
+		                                                    	Vector3.UnitX,
+		                                                    	Vector3.UnitZ,
+		                                                    	Vector3.UnitY
+		                                                    };
 
-		bool[] lightState = new bool[] { true, true, false };
+		private float[] lightSpeeds = new float[] {
+		                                          	30, 10, 50
+		                                          };
 
-		string[] materialNames = new string[] {
-                                                  "Examples/OffsetMapping/Specular"
-                                              };
+		private ColorEx[] diffuseLightColors = new ColorEx[] {
+		                                                     	new ColorEx( 1, 1, 1, 1 ),
+		                                                     	new ColorEx( 1, 1, 0, 0 ),
+		                                                     	new ColorEx( 1, 1, 1, 0.5f )
+		                                                     };
 
-		int currentMaterial = 0;
-		int currentEntity = 0;
+		private ColorEx[] specularLightColors = new ColorEx[] {
+		                                                      	new ColorEx( 1, 1, 1, 1 ),
+		                                                      	new ColorEx( 1, 0, 0.8f, 0.8f ),
+		                                                      	new ColorEx( 1, 1, 1, 0.8f )
+		                                                      };
 
-		SceneNode mainNode;
-		SceneNode[] lightNodes = new SceneNode[ NUM_LIGHTS ];
-		SceneNode[] lightPivots = new SceneNode[ NUM_LIGHTS ];
+		private bool[] lightState = new bool[] {
+		                                       	true, true, false
+		                                       };
+
+		private string[] materialNames = new string[] {
+		                                              	"Examples/OffsetMapping/Specular"
+		                                              };
+
+		private int currentMaterial = 0;
+		private int currentEntity = 0;
+
+		private SceneNode mainNode;
+		private SceneNode[] lightNodes = new SceneNode[NUM_LIGHTS];
+		private SceneNode[] lightPivots = new SceneNode[NUM_LIGHTS];
 
 		#endregion Fields
 
@@ -85,16 +96,16 @@ namespace Axiom.Demos
 			mainNode = scene.RootSceneNode.CreateChildSceneNode();
 
 			// Load the meshes with non-default HBU options
-			for ( int mn = 0; mn < entityMeshes.Length; mn++ )
+			for( int mn = 0; mn < entityMeshes.Length; mn++ )
 			{
 				Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ], ResourceGroupManager.DefaultResourceGroupName,
-					BufferUsage.DynamicWriteOnly,
-					BufferUsage.StaticWriteOnly,
-					true, true, 1 ); //so we can still read it
+				                                       BufferUsage.DynamicWriteOnly,
+				                                       BufferUsage.StaticWriteOnly,
+				                                       true, true, 1 ); //so we can still read it
 
 				short srcIdx, destIdx;
 
-				if ( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
+				if( !mesh.SuggestTangentVectorBuildParams( out srcIdx, out destIdx ) )
 				{
 					mesh.BuildTangentVectors( srcIdx, destIdx );
 				}
@@ -106,7 +117,7 @@ namespace Axiom.Demos
 				mainNode.AttachObject( entities[ mn ] );
 
 				// Make invisible, except for index 0
-				if ( mn == 0 )
+				if( mn == 0 )
 				{
 					entities[ mn ].MaterialName = materialNames[ currentMaterial ];
 				}
@@ -116,7 +127,7 @@ namespace Axiom.Demos
 				}
 			}
 
-			for ( int i = 0; i < NUM_LIGHTS; i++ )
+			for( int i = 0; i < NUM_LIGHTS; i++ )
 			{
 				lightPivots[ i ] = scene.RootSceneNode.CreateChildSceneNode();
 				lightPivots[ i ].Rotate( lightRotationAxes[ i ], lightRotationAngles[ i ] );
@@ -147,16 +158,18 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
-			if ( evt.StopRendering )
+			if( evt.StopRendering )
+			{
 				return;
+			}
 
-			if ( timeDelay > 0.0f )
+			if( timeDelay > 0.0f )
 			{
 				timeDelay -= evt.TimeSinceLastFrame;
 			}
 			else
 			{
-				if ( input.IsKeyPressed( KeyCodes.O ) )
+				if( input.IsKeyPressed( KeyCodes.O ) )
 				{
 					entities[ currentEntity ].IsVisible = false;
 					currentEntity = ( ++currentEntity ) % entityMeshes.Length;
@@ -164,23 +177,23 @@ namespace Axiom.Demos
 					entities[ currentEntity ].MaterialName = materialNames[ currentMaterial ];
 				}
 
-				if ( input.IsKeyPressed( KeyCodes.M ) )
+				if( input.IsKeyPressed( KeyCodes.M ) )
 				{
 					currentMaterial = ( ++currentMaterial ) % materialNames.Length;
 					entities[ currentEntity ].MaterialName = materialNames[ currentMaterial ];
 				}
 
-				if ( input.IsKeyPressed( KeyCodes.D1 ) )
+				if( input.IsKeyPressed( KeyCodes.D1 ) )
 				{
 					FlipLightState( 0 );
 				}
 
-				if ( input.IsKeyPressed( KeyCodes.D2 ) )
+				if( input.IsKeyPressed( KeyCodes.D2 ) )
 				{
 					FlipLightState( 1 );
 				}
 
-				if ( input.IsKeyPressed( KeyCodes.D3 ) )
+				if( input.IsKeyPressed( KeyCodes.D3 ) )
 				{
 					FlipLightState( 2 );
 				}
@@ -189,18 +202,17 @@ namespace Axiom.Demos
 			}
 
 			// animate the lights
-			for ( int i = 0; i < NUM_LIGHTS; i++ )
+			for( int i = 0; i < NUM_LIGHTS; i++ )
 			{
 				lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * evt.TimeSinceLastFrame );
 			}
 		}
 
-
 		/// <summary>
 		///    Flips the light states for the light at the specified index.
 		/// </summary>
 		/// <param name="index"></param>
-		void FlipLightState( int index )
+		private void FlipLightState( int index )
 		{
 			lightState[ index ] = !lightState[ index ];
 			lights[ index ].IsVisible = lightState[ index ];

@@ -50,27 +50,18 @@ namespace Axiom.RenderSystems.OpenGL
 	/// This object can also be used to cache renderstate if we decide to do so
 	/// in the future.
 	/// </summary>
-	internal abstract class GLContext : IDisposable
+	abstract internal class GLContext : IDisposable
 	{
 		#region Fields and Properties
 
 		#region Initialized Property
 
 		private bool _initialized;
+
 		/// <summary>
 		///
 		/// </summary>
-		public bool Initialized
-		{
-			get
-			{
-				return _initialized;
-			}
-			set
-			{
-				_initialized = value;
-			}
-		}
+		public bool Initialized { get { return _initialized; } set { _initialized = value; } }
 
 		#endregion Initialized Property
 
@@ -79,11 +70,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///
 		/// </summary>
-		public abstract bool VSync
-		{
-			get;
-			set;
-		}
+		abstract public bool VSync { get; set; }
 
 		#endregion VSync Property
 
@@ -91,9 +78,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLContext()
-		{
-		}
+		public GLContext() {}
 
 		~GLContext()
 		{
@@ -107,15 +92,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Enable the context. All subsequent rendering commands will go here.
 		/// </summary>
-		public abstract void SetCurrent();
+		abstract public void SetCurrent();
 
 		/// <summary>
 		/// This is called before another context is made current. By default,
 		/// nothing is done here.
 		/// </summary>
-		public virtual void EndCurrent()
-		{
-		}
+		virtual public void EndCurrent() {}
 
 		/// <summary>
 		/// Create a new context based on the same window/pbuffer as this
@@ -125,7 +108,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///	The caller is responsible for deleting the returned context.
 		/// </remarks>
 		/// <returns></returns>
-		public abstract GLContext Clone();
+		abstract public GLContext Clone();
 
 		#endregion Methods
 
@@ -134,20 +117,11 @@ namespace Axiom.RenderSystems.OpenGL
 		#region isDisposed Property
 
 		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get { return _disposed; } set { _disposed = value; } }
 
 		#endregion isDisposed Property
 
@@ -175,11 +149,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		virtual protected void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 				}

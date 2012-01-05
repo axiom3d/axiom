@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
@@ -25,28 +27,30 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    /// interface representing the data held against the PagedWorldSection
-    /// which is specifically used by the PageStrategy.
-    /// </summary>
-    public interface IPageStrategyData
-    {
-        /// <summary>
-        /// Load this data from a stream (returns true if successful)
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        bool Load(StreamSerializer stream);
-        /// <summary>
-        /// Save this data to a stream
-        /// </summary>
-        /// <param name="stream"></param>
-        void Save(StreamSerializer stream);
-    }
+	/// <summary>
+	/// interface representing the data held against the PagedWorldSection
+	/// which is specifically used by the PageStrategy.
+	/// </summary>
+	public interface IPageStrategyData
+	{
+		/// <summary>
+		/// Load this data from a stream (returns true if successful)
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		bool Load( StreamSerializer stream );
+
+		/// <summary>
+		/// Save this data to a stream
+		/// </summary>
+		/// <param name="stream"></param>
+		void Save( StreamSerializer stream );
+	}
 }

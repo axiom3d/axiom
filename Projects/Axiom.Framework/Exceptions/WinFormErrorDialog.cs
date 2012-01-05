@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,15 +19,15 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
-using SWF = System.Windows.Forms;
 
+using SWF = System.Windows.Forms;
 
 namespace Axiom.Framework.Exceptions
 {
-
 	/// <summary>
 	/// 
 	/// </summary>
@@ -115,7 +116,6 @@ namespace Axiom.Framework.Exceptions
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Title;
 			this.ResumeLayout( false );
-
 		}
 
 		#region Implementation of IMessageFilter
@@ -133,8 +133,8 @@ namespace Axiom.Framework.Exceptions
 			const int WM_KEYDOWN = 0x100;
 
 			SWF.Keys keyCode = (SWF.Keys)(int)msg.WParam & SWF.Keys.KeyCode;
-			if ( ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Return )
-				|| ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Escape ) )
+			if( ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Return )
+			    || ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Escape ) )
 			{
 				this.Close();
 				return true;
@@ -158,6 +158,5 @@ namespace Axiom.Framework.Exceptions
 		}
 
 		#endregion
-
 	}
 }

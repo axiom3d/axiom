@@ -21,20 +21,20 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		Camera theCam;
-		Entity planeEnt;
-		EntityList aboveWaterEnts = new EntityList();
-		EntityList belowWaterEnts = new EntityList();
+		private Camera theCam;
+		private Entity planeEnt;
+		private EntityList aboveWaterEnts = new EntityList();
+		private EntityList belowWaterEnts = new EntityList();
 
-		const int NUM_FISH = 30;
-		const int NUM_FISH_WAYPOINTS = 10;
-		const int FISH_PATH_LENGTH = 200;
-		AnimationState[] fishAnimations = new AnimationState[ NUM_FISH ];
-		PositionalSpline[] fishSplines = new PositionalSpline[ NUM_FISH ];
-		Vector3[] fishLastPosition = new Vector3[ NUM_FISH ];
-		SceneNode[] fishNodes = new SceneNode[ NUM_FISH ];
-		float animTime;
-		Plane reflectionPlane = new Plane();
+		private const int NUM_FISH = 30;
+		private const int NUM_FISH_WAYPOINTS = 10;
+		private const int FISH_PATH_LENGTH = 200;
+		private AnimationState[] fishAnimations = new AnimationState[NUM_FISH];
+		private PositionalSpline[] fishSplines = new PositionalSpline[NUM_FISH];
+		private Vector3[] fishLastPosition = new Vector3[NUM_FISH];
+		private SceneNode[] fishNodes = new SceneNode[NUM_FISH];
+		private float animTime;
+		private Plane reflectionPlane = new Plane();
 
 		#endregion Fields
 
@@ -42,7 +42,7 @@ namespace Axiom.Demos
 
 		public Fresnel()
 		{
-			for ( int i = 0; i < NUM_FISH; i++ )
+			for( int i = 0; i < NUM_FISH; i++ )
 			{
 				fishSplines[ i ] = new PositionalSpline();
 			}
@@ -55,11 +55,10 @@ namespace Axiom.Demos
 		public override void CreateScene()
 		{
 			// Check gpu caps
-			if ( !GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) &&
-				!GpuProgramManager.Instance.IsSyntaxSupported( "ps_1_4" ) &&
-				!GpuProgramManager.Instance.IsSyntaxSupported( "arbfp1" ) )
+			if( !GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) &&
+			    !GpuProgramManager.Instance.IsSyntaxSupported( "ps_1_4" ) &&
+			    !GpuProgramManager.Instance.IsSyntaxSupported( "arbfp1" ) )
 			{
-
 				throw new Exception( "Your hardware does not support advanced pixel shaders, so you cannot run this demo.  Time to go to Best Buy ;)" );
 			}
 
@@ -104,7 +103,7 @@ namespace Axiom.Demos
 			reflectionPlane.Normal = Vector3.UnitY;
 			reflectionPlane.D = 0;
 			MeshManager.Instance.CreatePlane(
-				"ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
+			                                 "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
 
 			planeEnt = scene.CreateEntity( "Plane", "ReflectionPlane" );
 			planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";
@@ -144,7 +143,7 @@ namespace Axiom.Demos
 			myRootNode.AttachObject( ent );
 			belowWaterEnts.Add( ent );
 
-			for ( int fishNo = 0; fishNo < NUM_FISH; fishNo++ )
+			for( int fishNo = 0; fishNo < NUM_FISH; fishNo++ )
 			{
 				ent = scene.CreateEntity( string.Format( "fish{0}", fishNo ), "fish.mesh" );
 				fishNodes[ fishNo ] = myRootNode.CreateChildSceneNode();
@@ -158,17 +157,17 @@ namespace Axiom.Demos
 
 				Vector3 lastPos = Vector3.Zero;
 
-				for ( int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++ )
+				for( int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++ )
 				{
 					Vector3 pos = new Vector3(
 						Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
 
-					if ( waypoint > 0 )
+					if( waypoint > 0 )
 					{
 						// check this waypoint isn't too far, we don't want turbo-fish ;)
 						// since the waypoints are achieved every 5 seconds, half the length
 						// of the pond is ok
-						while ( ( lastPos - pos ).Length > 750 )
+						while( ( lastPos - pos ).Length > 750 )
 						{
 							pos = new Vector3(
 								Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
@@ -190,12 +189,12 @@ namespace Axiom.Demos
 		{
 			animTime += evt.TimeSinceLastFrame;
 
-			while ( animTime > FISH_PATH_LENGTH )
+			while( animTime > FISH_PATH_LENGTH )
 			{
 				animTime -= FISH_PATH_LENGTH;
 			}
 
-			for ( int i = 0; i < NUM_FISH; i++ )
+			for( int i = 0; i < NUM_FISH; i++ )
 			{
 				// animate the fish
 				fishAnimations[ i ].AddTime( evt.TimeSinceLastFrame );
@@ -215,7 +214,6 @@ namespace Axiom.Demos
 			base.OnFrameStarted( source, evt );
 		}
 
-
 		#endregion Methods
 
 		#region Event Handlers
@@ -224,7 +222,7 @@ namespace Axiom.Demos
 		{
 			planeEnt.IsVisible = false;
 
-			for ( int i = 0; i < belowWaterEnts.Count; i++ )
+			for( int i = 0; i < belowWaterEnts.Count; i++ )
 			{
 				( (Entity)belowWaterEnts[ i ] ).IsVisible = false;
 			}
@@ -236,7 +234,7 @@ namespace Axiom.Demos
 		{
 			planeEnt.IsVisible = true;
 
-			for ( int i = 0; i < belowWaterEnts.Count; i++ )
+			for( int i = 0; i < belowWaterEnts.Count; i++ )
 			{
 				( (Entity)belowWaterEnts[ i ] ).IsVisible = true;
 			}
@@ -248,7 +246,7 @@ namespace Axiom.Demos
 		{
 			planeEnt.IsVisible = false;
 
-			for ( int i = 0; i < aboveWaterEnts.Count; i++ )
+			for( int i = 0; i < aboveWaterEnts.Count; i++ )
 			{
 				( (Entity)aboveWaterEnts[ i ] ).IsVisible = false;
 			}
@@ -258,7 +256,7 @@ namespace Axiom.Demos
 		{
 			planeEnt.IsVisible = true;
 
-			for ( int i = 0; i < aboveWaterEnts.Count; i++ )
+			for( int i = 0; i < aboveWaterEnts.Count; i++ )
 			{
 				( (Entity)aboveWaterEnts[ i ] ).IsVisible = true;
 			}

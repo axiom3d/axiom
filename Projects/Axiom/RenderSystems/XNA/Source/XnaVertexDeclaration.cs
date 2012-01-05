@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -93,7 +97,6 @@ namespace Axiom.RenderSystems.Xna
 			needsRebuild = true;
 		}
 
-
 		public override void RemoveElement( VertexElementSemantic semantic, int index )
 		{
 			base.RemoveElement( semantic, index );
@@ -108,7 +111,6 @@ namespace Axiom.RenderSystems.Xna
 			needsRebuild = true;
 		}
 
-
 		#endregion
 
 		#region Properties
@@ -121,20 +123,21 @@ namespace Axiom.RenderSystems.Xna
 			get
 			{
 				// rebuild declaration if things have changed
-				if ( needsRebuild )
+				if( needsRebuild )
 				{
-					if ( _xnaVertexDecl != null )
+					if( _xnaVertexDecl != null )
+					{
 						_xnaVertexDecl.Dispose();
+					}
 
 					// create elements array
-					XFG.VertexElement[] xnaElements = new XFG.VertexElement[ elements.Count ];
+					XFG.VertexElement[] xnaElements = new XFG.VertexElement[elements.Count];
 
 					// loop through and configure each element for D3D
-					for ( int i = 0; i < elements.Count; i++ )
+					for( int i = 0; i < elements.Count; i++ )
 					{
 						Axiom.Graphics.VertexElement element =
 							(Axiom.Graphics.VertexElement)elements[ i ];
-
 
 						xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
 
@@ -146,7 +149,7 @@ namespace Axiom.RenderSystems.Xna
 						xnaElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
 
 						// set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
-						switch ( element.Semantic )
+						switch( element.Semantic )
 						{
 							case VertexElementSemantic.Diffuse:
 								xnaElements[ i ].UsageIndex = 0;
@@ -160,13 +163,11 @@ namespace Axiom.RenderSystems.Xna
 								xnaElements[ i ].UsageIndex = (byte)element.Index;
 								break;
 						} //  switch
-
 					} // for
 
 					// create the new declaration
 
 					_xnaVertexDecl = new XFG.VertexDeclaration( _device, xnaElements );
-
 
 					// reset the flag
 					needsRebuild = false;
@@ -177,6 +178,5 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion
-
 	}
 }

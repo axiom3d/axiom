@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,14 +59,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	///     Subclasses must implement BindParameters since there are differences
 	///     in how parameters are passed to NV vertex and fragment programs.
 	/// </remarks>
-	public abstract class NV3xGpuProgram : GLGpuProgram
+	abstract public class NV3xGpuProgram : GLGpuProgram
 	{
 		#region Constructor
 
 		public NV3xGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
 			// generate the program and store the unique name
 			Gl.glGenProgramsNV( 1, out programId );
 
@@ -91,7 +94,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			//string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
 
 			// if there was an error, report it
-			if ( error != null && error.Length > 0 )
+			if( error != null && error.Length > 0 )
 			{
 				int pos;
 
@@ -112,7 +115,6 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			// delete this NV program
 			Gl.glDeleteProgramsNV( 1, ref programId );
 		}
-
 
 		#endregion GpuProgram Members
 
@@ -150,9 +152,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		#region Constructor
 
 		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Constructor
 
@@ -164,13 +164,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		/// <param name="parms"></param>
 		public override void BindParameters( GpuProgramParameters parms )
 		{
-			if ( parms.HasFloatConstants )
+			if( parms.HasFloatConstants )
 			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				for( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
 					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-					if ( entry.isSet )
+					if( entry.isSet )
 					{
 						// send the params 4 at a time
 						Gl.glProgramParameter4fvNV( programType, index, entry.val );
@@ -203,9 +203,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		#region Constructor
 
 		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Constructor
 
@@ -217,13 +215,13 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		/// <param name="parms"></param>
 		public override void BindParameters( GpuProgramParameters parms )
 		{
-			if ( parms.HasFloatConstants )
+			if( parms.HasFloatConstants )
 			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				for( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
 					string name = parms.GetNameByIndex( index );
 
-					if ( name != null )
+					if( name != null )
 					{
 						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
@@ -234,6 +232,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 				}
 			}
 		}
+
 		#endregion GpuProgram members
 	}
 
@@ -247,7 +246,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			GLGpuProgram ret;
-			if ( type == GpuProgramType.Vertex )
+			if( type == GpuProgramType.Vertex )
 			{
 				ret = new VP30GpuProgram( parent, name, handle, group, isManual, loader );
 			}
@@ -261,6 +260,5 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		}
 
 		#endregion
-
 	}
 }

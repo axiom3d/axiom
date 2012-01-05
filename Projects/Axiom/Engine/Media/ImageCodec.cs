@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,24 +46,21 @@ namespace Axiom.Media
 	/// <summary>
 	/// Summary description for ImageCodec.
 	/// </summary>
-	public abstract class ImageCodec : ICodec
+	abstract public class ImageCodec : ICodec
 	{
-		public ImageCodec()
-		{
-		}
+		public ImageCodec() {}
 
 		#region ICodec Members
 
 		// Note: Redefining as abstract to force subclasses to implement, since interface methods must still be included
 		// in abstract base classes
-		public abstract object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-		public abstract void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-		public abstract void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
+		abstract public object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
 
-		public abstract String Type
-		{
-			get;
-		}
+		abstract public void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
+
+		abstract public void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
+
+		abstract public String Type { get; }
 
 		#endregion
 

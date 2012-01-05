@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: FileSystemArchive.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,6 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -64,13 +69,7 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// Is this archive capable of being monitored for additions, changes and deletions
 		/// </summary>
-		public override bool IsMonitorable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool IsMonitorable { get { return true; } }
 
 		#endregion Fields and Properties
 
@@ -80,7 +79,7 @@ namespace Axiom.FileSystem
 
 		protected void SafeDirectoryChange( string directory, Action action )
 		{
-			if ( Directory.Exists( directory ) )
+			if( Directory.Exists( directory ) )
 			{
 				// Check we can change to it
 				pushDirectory( directory );
@@ -89,7 +88,7 @@ namespace Axiom.FileSystem
 				{
 					action();
 				}
-				catch ( Exception ex )
+				catch( Exception ex )
 				{
 					LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				}
@@ -114,13 +113,18 @@ namespace Axiom.FileSystem
 		{
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
+
 		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
 		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
-			if ( pattern == "" )
+			if( pattern == "" )
+			{
 				pattern = "*";
-			if ( currentDir == "" )
+			}
+			if( currentDir == "" )
+			{
 				currentDir = _basePath;
+			}
 
 			string[] files;
 
@@ -129,34 +133,34 @@ namespace Axiom.FileSystem
 #else
 			files = recursive ? this.getFilesRecursively(currentDir, pattern) : Directory.GetFiles(currentDir, pattern);
 #endif
-			foreach ( string file in files )
+			foreach( string file in files )
 			{
 				System.IO.FileInfo fi = new System.IO.FileInfo( file );
-				if ( simpleList != null )
+				if( simpleList != null )
 				{
 					simpleList.Add( fi.Name );
 				}
-				if ( detailList != null )
+				if( detailList != null )
 				{
 					FileInfo fileInfo;
 					fileInfo.Archive = this;
 					fileInfo.Filename = fi.FullName;
-					fileInfo.Basename = fi.FullName.Substring( Path.GetFullPath(currentDir).Length );
+					fileInfo.Basename = fi.FullName.Substring( Path.GetFullPath( currentDir ).Length );
 					fileInfo.Path = currentDir;
 					fileInfo.CompressedSize = fi.Length;
 					fileInfo.UncompressedSize = fi.Length;
-                    fileInfo.ModifiedTime = fi.LastWriteTime;
+					fileInfo.ModifiedTime = fi.LastWriteTime;
 					detailList.Add( fileInfo );
 				}
 			}
 		}
 
 #if ( XBOX || XBOX360 )
-		/// <summary>
-		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
-		/// </summary>
-		/// <param name="dir">The directory to search.</param>
-		/// <param name="pattern">The search string to match against the names of files in path.</param>
+	/// <summary>
+	/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+	/// </summary>
+	/// <param name="dir">The directory to search.</param>
+	/// <param name="pattern">The search string to match against the names of files in path.</param>
 		private string[] getFilesRecursively( string dir, string pattern )
 		{
 			List<string> searchResults = new List<string>();
@@ -187,7 +191,7 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>Utility method to change directory and push the current directory onto a stack </summary>
-		void pushDirectory( string dir )
+		private void pushDirectory( string dir )
 		{
 			// get current directory and push it onto the stack
 #if !( XBOX || XBOX360 )
@@ -198,9 +202,9 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
-		void popDirectory()
+		private void popDirectory()
 		{
-			if ( _directoryStack.Count == 0 )
+			if( _directoryStack.Count == 0 )
 			{
 #if !( XBOX || XBOX360 )
 				throw new AxiomException( "No directories left in the stack." );
@@ -217,9 +221,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructors
 
 		public FileSystemArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+			: base( name, archType ) {}
 
 		~FileSystemArchive()
 		{
@@ -230,13 +232,7 @@ namespace Axiom.FileSystem
 
 		#region Archive Implementation
 
-		public override bool IsCaseSensitive
-		{
-			get
-			{
-				return !PlatformManager.IsWindowsOS;
-			}
-		}
+		public override bool IsCaseSensitive { get { return !PlatformManager.IsWindowsOS; } }
 
 		public override void Load()
 		{
@@ -244,27 +240,25 @@ namespace Axiom.FileSystem
 			IsReadOnly = false;
 
 			SafeDirectoryChange( _basePath, () =>
-											{
-												try
-												{
-
+			                                {
+			                                	try
+			                                	{
 #if !( XBOX || XBOX360 )
-													File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
+			                                		File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
 #else
 													File.Create(_basePath + @"__testWrite.Axiom", 1 );
 #endif
-												}
-												catch ( Exception ex )
-												{
-													IsReadOnly = true;
-												}
-											} );
-
+			                                	}
+			                                	catch( Exception ex )
+			                                	{
+			                                		IsReadOnly = true;
+			                                	}
+			                                } );
 		}
 
 		public override Stream Create( string filename, bool overwrite )
 		{
-			if ( IsReadOnly )
+			if( IsReadOnly )
 			{
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
@@ -272,7 +266,7 @@ namespace Axiom.FileSystem
 			Stream stream = null;
 			string fullPath = _basePath + Path.DirectorySeparatorChar + filename;
 			bool exists = File.Exists( fullPath );
-			if ( !exists || overwrite )
+			if( !exists || overwrite )
 			{
 				try
 				{
@@ -282,7 +276,7 @@ namespace Axiom.FileSystem
 					stream = File.Create( fullPath, 1 );
 #endif
 				}
-				catch ( Exception ex )
+				catch( Exception ex )
 				{
 					throw new AxiomException( "Failed to open file : " + filename, ex );
 				}
@@ -305,13 +299,13 @@ namespace Axiom.FileSystem
 			Stream strm = null;
 
 			SafeDirectoryChange( _basePath, () =>
-											{
-												if ( File.Exists( _basePath + filename ) )
-												{
-													System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
-													strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
-												}
-											} );
+			                                {
+			                                	if( File.Exists( _basePath + filename ) )
+			                                	{
+			                                		System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
+			                                		strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                	}
+			                                } );
 
 			return strm;
 		}
@@ -365,13 +359,7 @@ namespace Axiom.FileSystem
 
 		#region ArchiveFactory Implementation
 
-		public override string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+		public override string Type { get { return _type; } }
 
 		public override Archive CreateInstance( string name )
 		{

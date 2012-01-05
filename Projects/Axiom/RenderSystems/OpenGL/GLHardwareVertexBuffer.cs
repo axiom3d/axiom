@@ -69,7 +69,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			Gl.glGenBuffersARB( 1, out bufferID );
 
-			if ( bufferID == 0 )
+			if( bufferID == 0 )
 			{
 				throw new Exception( "Cannot create GL vertex buffer" );
 			}
@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			int access = 0;
 
-			if ( isLocked )
+			if( isLocked )
 			{
 				throw new Exception( "Invalid attempt to lock an index buffer that has already been locked." );
 			}
@@ -104,33 +104,33 @@ namespace Axiom.RenderSystems.OpenGL
 			// bind this buffer
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-			if ( locking == BufferLocking.Discard )
+			if( locking == BufferLocking.Discard )
 			{
 				// fixes issues with ATI cards
 				//Gl.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
 				// find out how we shall access this buffer
 				access = ( usage == BufferUsage.Dynamic ) ?
-					Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
+				                                          	Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
 			}
-			else if ( locking == BufferLocking.ReadOnly )
+			else if( locking == BufferLocking.ReadOnly )
 			{
-				if ( usage == BufferUsage.WriteOnly )
+				if( usage == BufferUsage.WriteOnly )
 				{
 					LogManager.Instance.Write( "Invalid attempt to lock a write-only vertex buffer as read-only." );
 				}
 
 				access = Gl.GL_READ_ONLY_ARB;
 			}
-			else if ( locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite )
+			else if( locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite )
 			{
 				access = ( usage == BufferUsage.Dynamic ) ?
-					Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
+				                                          	Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
 			}
 
 			IntPtr ptr = Gl.glMapBufferARB( Gl.GL_ARRAY_BUFFER_ARB, access );
 
-			if ( ptr == IntPtr.Zero )
+			if( ptr == IntPtr.Zero )
 			{
 				throw new Exception( "GL Vertex Buffer: Out of memory" );
 			}
@@ -148,7 +148,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
 			// Unmap the buffer to unlock it
-			if ( Gl.glUnmapBufferARB( Gl.GL_ARRAY_BUFFER_ARB ) == 0 )
+			if( Gl.glUnmapBufferARB( Gl.GL_ARRAY_BUFFER_ARB ) == 0 )
 			{
 				throw new Exception( "Buffer data currupted!" );
 			}
@@ -167,11 +167,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
 				// lock the buffer for reading
 				IntPtr dest = shadowBuffer.Lock( offset, length,
-					discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+				                                 discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 				// copy that data in there
 				Memory.Copy( src, dest, length );
@@ -180,12 +180,12 @@ namespace Axiom.RenderSystems.OpenGL
 				shadowBuffer.Unlock();
 			}
 
-			if ( discardWholeBuffer )
+			if( discardWholeBuffer )
 			{
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
-					new IntPtr( sizeInBytes ),
-					IntPtr.Zero,
-					GLHelper.ConvertEnum( usage ) ); // TAO 2.0
+				                    new IntPtr( sizeInBytes ),
+				                    IntPtr.Zero,
+				                    GLHelper.ConvertEnum( usage ) ); // TAO 2.0
 				//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
 				//    sizeInBytes,
 				//    IntPtr.Zero,
@@ -193,10 +193,10 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			Gl.glBufferSubDataARB(
-				Gl.GL_ARRAY_BUFFER_ARB,
-				new IntPtr( offset ),
-				new IntPtr( length ),
-				src ); // TAO 2.0
+			                      Gl.GL_ARRAY_BUFFER_ARB,
+			                      new IntPtr( offset ),
+			                      new IntPtr( length ),
+			                      src ); // TAO 2.0
 			//Gl.glBufferSubDataARB(
 			//    Gl.GL_ARRAY_BUFFER_ARB,
 			//    offset,
@@ -212,7 +212,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="dest"></param>
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
 				// lock the buffer for reading
 				IntPtr src = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
@@ -228,10 +228,10 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
 				Gl.glGetBufferSubDataARB(
-					Gl.GL_ARRAY_BUFFER_ARB,
-					new IntPtr( offset ),
-					new IntPtr( length ),
-					dest ); // TAO 2.0
+				                         Gl.GL_ARRAY_BUFFER_ARB,
+				                         new IntPtr( offset ),
+				                         new IntPtr( length ),
+				                         dest ); // TAO 2.0
 				//Gl.glGetBufferSubDataARB(
 				//    Gl.GL_ARRAY_BUFFER_ARB,
 				//    offset,
@@ -245,17 +245,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
-				{
-				}
+				if( disposeManagedResources ) {}
 
 				try
 				{
 					Gl.glDeleteBuffersARB( 1, ref bufferID );
 				}
-				catch ( AccessViolationException ave )
+				catch( AccessViolationException ave )
 				{
 					LogManager.Instance.Write( "Error Deleting Vertexbuffer[{0}].", bufferID );
 				}
@@ -273,13 +271,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Gets the GL buffer ID for this buffer.
 		/// </summary>
-		public int GLBufferID
-		{
-			get
-			{
-				return bufferID;
-			}
-		}
+		public int GLBufferID { get { return bufferID; } }
 
 		#endregion Properties
 	}

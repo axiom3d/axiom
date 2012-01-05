@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,6 +48,7 @@ using Axiom.Core;
 using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -77,8 +82,9 @@ namespace Axiom.Graphics
 	{
 		#region Delegates
 
-		delegate void PassAttributeParser( string[] values, Pass pass );
-		delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
+		private delegate void PassAttributeParser( string[] values, Pass pass );
+
+		private delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
 
 		#endregion
 
@@ -87,13 +93,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
-		public static MaterialManager Instance
-		{
-			get
-			{
-				return Singleton<MaterialManager>.Instance;
-			}
-		}
+		public static MaterialManager Instance { get { return Singleton<MaterialManager>.Instance; } }
 
 		#endregion Singleton implementation
 
@@ -120,22 +120,13 @@ namespace Axiom.Graphics
 		///     Default Texture anisotropy.
 		/// </summary>
 		private int _defaultMaxAniso;
+
 		/// <summary>
 		///    Sets the default anisotropy level to be used for loaded textures, for when textures are
 		///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
 		///    parameters by the application.
 		/// </summary>
-		public int DefaultAnisotropy
-		{
-			get
-			{
-				return _defaultMaxAniso;
-			}
-			set
-			{
-				_defaultMaxAniso = value;
-			}
-		}
+		public int DefaultAnisotropy { get { return _defaultMaxAniso; } set { _defaultMaxAniso = value; } }
 
 		#endregion DefaultAnisotropy Property
 
@@ -145,7 +136,6 @@ namespace Axiom.Graphics
 		private MaterialSerializer _serializer = new MaterialSerializer();
 
 		private TextureFiltering _filtering;
-
 
 		#endregion Fields and Properties
 
@@ -168,7 +158,8 @@ namespace Axiom.Graphics
 			ScriptPatterns.Add( "*.program" );
 			ScriptPatterns.Add( "*.material" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-#endif // AXIOM_USENEWCOMPILERS
+#endif
+			// AXIOM_USENEWCOMPILERS
 			// Material Schemes
 			ActiveScheme = MaterialManager.DefaultSchemeName;
 			ActiveSchemeIndex = 0;
@@ -216,10 +207,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// </overload> 
 		/// <param name="filtering"></param>
-		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
+		virtual public void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
 			this._filtering = filtering;
-			switch ( filtering )
+			switch( filtering )
 			{
 				case TextureFiltering.None:
 					SetDefaultTextureFiltering( FilterOptions.Point, FilterOptions.Point, FilterOptions.None );
@@ -238,9 +229,9 @@ namespace Axiom.Graphics
 
 		/// <param name="type">Type to configure.</param>
 		/// <param name="options">Options to set for the specified type.</param>
-		public virtual void SetDefaultTextureFiltering( FilterType type, FilterOptions options )
+		virtual public void SetDefaultTextureFiltering( FilterType type, FilterOptions options )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case FilterType.Min:
 					_defaultMinFilter = options;
@@ -259,7 +250,7 @@ namespace Axiom.Graphics
 		/// <param name="minFilter">Minification filter.</param>
 		/// <param name="magFilter">Magnification filter.</param>
 		/// <param name="mipFilter">Map filter.</param>
-		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
+		virtual public void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
 		{
 			_defaultMinFilter = minFilter;
 			_defaultMagFilter = magFilter;
@@ -275,9 +266,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="type">Filter type to get options for.</param>
 		/// <returns></returns>
-		public virtual FilterOptions GetDefaultTextureFiltering( FilterType type )
+		virtual public FilterOptions GetDefaultTextureFiltering( FilterType type )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case FilterType.Min:
 					return _defaultMinFilter;
@@ -296,7 +287,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets the default texture filtering options.
 		/// </summary>
-		public virtual TextureFiltering GetDefaultTextureFiltering()
+		virtual public TextureFiltering GetDefaultTextureFiltering()
 		{
 			return _filtering;
 		}
@@ -306,6 +297,7 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region Material Schemes
+
 		public static string DefaultSchemeName = "Default";
 
 		protected readonly Dictionary<String, ushort> _schemes = new Dictionary<String, ushort>();
@@ -318,7 +310,7 @@ namespace Axiom.Graphics
 		/// <seealso ref="Technique.SchemeName"/>
 		public ushort GetSchemeIndex( String name )
 		{
-			if ( !_schemes.ContainsKey( name ) )
+			if( !_schemes.ContainsKey( name ) )
 			{
 				_schemes.Add( name, (ushort)_schemes.Count );
 			}
@@ -326,18 +318,17 @@ namespace Axiom.Graphics
 			return _schemes[ name ];
 		}
 
-
 		/// <summary>
 		/// The name for the given material scheme index. 
 		/// </summary>
 		/// <seealso ref="Technique.SchemeName"/>
 		public String GetSchemeName( ushort index )
 		{
-			if ( _schemes.ContainsValue( index ) )
+			if( _schemes.ContainsValue( index ) )
 			{
-				foreach ( KeyValuePair<String, ushort> item in _schemes )
+				foreach( KeyValuePair<String, ushort> item in _schemes )
 				{
-					if ( item.Value == index )
+					if( item.Value == index )
 					{
 						return item.Key;
 					}
@@ -350,11 +341,7 @@ namespace Axiom.Graphics
 		/// The active scheme index. 
 		/// </summary>
 		/// <seealso ref="Technique.SchemeIndex"/>
-		public ushort ActiveSchemeIndex
-		{
-			get;
-			protected set;
-		}
+		public ushort ActiveSchemeIndex { get; protected set; }
 
 		/// <summary>
 		/// The name of the active material scheme. 
@@ -362,10 +349,7 @@ namespace Axiom.Graphics
 		/// <seealso ref="Technique.SchemeName"/>
 		public String ActiveScheme
 		{
-			get
-			{
-				return _activeSchemeName;
-			}
+			get { return _activeSchemeName; }
 			set
 			{
 				ActiveSchemeIndex = GetSchemeIndex( value );
@@ -395,15 +379,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parse a .material script passed in as a chunk.
 		/// </summary>
-        /// <param name="script"></param>
-        public override void ParseScript( Stream stream, string groupName, string fileName )
-        {
+		/// <param name="script"></param>
+		public override void ParseScript( Stream stream, string groupName, string fileName )
+		{
 #if AXIOM_USENEWCOMPILERS
             Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
 #else
-            _serializer.ParseScript( stream, groupName, fileName );
+			_serializer.ParseScript( stream, groupName, fileName );
 #endif
-        }
+		}
 
 		#endregion IScriptLoader Implementation
 
@@ -415,9 +399,9 @@ namespace Axiom.Graphics
 		/// <ogre name="~MaterialManager" />
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if( !this.IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Unregister with resource group manager
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
@@ -437,6 +421,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

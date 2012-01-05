@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Lists.cs -1   $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,51 +48,37 @@ namespace Axiom.Graphics.Collections
 	/// <summary>
 	///     Generics: List&lt;VertexElement&gt;
 	/// </summary>
-	public class VertexElementList : List<VertexElement>
-	{
-	}
+	public class VertexElementList : List<VertexElement> {}
 
 	/// <summary>
 	///     Generics: List&lt;TextureEffect&lt;
 	/// </summary>
-	public class TextureEffectList : List<TextureEffect>
-	{
-	}
+	public class TextureEffectList : List<TextureEffect> {}
 
 	/// <summary>
 	///     Generics: List&lt;RenderTexture&gt;
 	/// </summary>
-	public class RenderTextureList : List<RenderTexture>
-	{
-	}
+	public class RenderTextureList : List<RenderTexture> {}
 
 	/// <summary>
 	///     Generics: List&lt;Pass&gt;
 	/// </summary>
-	public class PassList : List<Pass>
-	{
-	}
+	public class PassList : List<Pass> {}
 
 	/// <summary>
 	///     Generics: List&lt;Technique&gt;
 	/// </summary>
-	public class TechniqueList : List<Technique>
-	{
-	}
+	public class TechniqueList : List<Technique> {}
 
 	/// <summary>
 	///     Generics: List&lt;TextureUnitState&gt;
 	/// </summary>
-	public class TextureUnitStateList : List<TextureUnitState>
-	{
-	}
+	public class TextureUnitStateList : List<TextureUnitState> {}
 
 	/// <summary>
 	///     Generics: List&lt;AutoConstantEntry&gt;
 	/// </summary>
-	public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry>
-	{
-	}
+	public class AutoConstantEntryList : List<GpuProgramParameters.AutoConstantEntry> {}
 
 	/// <summary>
 	///     Generics: List&gt;AutoConstantEntry&lt;
@@ -97,7 +87,7 @@ namespace Axiom.Graphics.Collections
 	{
 		public void Resize( int size )
 		{
-			while ( this.Count < size )
+			while( this.Count < size )
 			{
 				Add( new GpuProgramParameters.FloatConstantEntry() );
 			}
@@ -111,7 +101,7 @@ namespace Axiom.Graphics.Collections
 	{
 		public void Resize( int size )
 		{
-			while ( this.Count < size )
+			while( this.Count < size )
 			{
 				Add( new GpuProgramParameters.IntConstantEntry() );
 			}
@@ -121,56 +111,40 @@ namespace Axiom.Graphics.Collections
 	/// <summary>
 	///     Generics: List&lt;IRenderable&gt;
 	/// </summary>
-	public class RenderableList : List<IRenderable>
-	{
-	}
+	public class RenderableList : List<IRenderable> {}
 
 	/// <summary>
 	///     Generics: List&lt;EdgeData.Triangle&gt;
 	/// </summary>
-	public class TriangleList : List<EdgeData.Triangle>
-	{
-	}
+	public class TriangleList : List<EdgeData.Triangle> {}
 
 	/// <summary>
 	///     Generics: List&lt;EdgeData.Edge&gt;
 	/// </summary>
-	public class EdgeList : List<EdgeData.Edge>
-	{
-	}
+	public class EdgeList : List<EdgeData.Edge> {}
 
 	/// <summary>
 	///     Generics: List&lt;EdgeData.EdgeGroup&gt;
 	/// </summary>
-	public class EdgeGroupList : List<EdgeData.EdgeGroup>
-	{
-	}
+	public class EdgeGroupList : List<EdgeData.EdgeGroup> {}
 
 	/// <summary>
 	///     Generics: List&lt;VertexData&gt;
 	/// </summary>
-	public class VertexDataList : List<VertexData>
-	{
-	}
+	public class VertexDataList : List<VertexData> {}
 
 	/// <summary>
 	///     Generics: List&lt;IndexData&gt;
 	/// </summary>
-	public class IndexDataList : List<IndexData>
-	{
-	}
+	public class IndexDataList : List<IndexData> {}
 
 	/// <summary>
 	///     Generics: List&lt;ShadowRenderable&gt;
 	/// </summary>
-	public class ShadowRenderableList : List<ShadowRenderable>
-	{
-	}
+	public class ShadowRenderableList : List<ShadowRenderable> {}
 
 	/// <summary>
 	///		Generics: List&lt;RenderOperation>&gt;
 	/// </summary>
-	public class OperationTypeList : List<OperationType>
-	{
-	}
+	public class OperationTypeList : List<OperationType> {}
 }

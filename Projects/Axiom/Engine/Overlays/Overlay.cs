@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,16 +43,20 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="OgreOverlay.h"   revision="1.26.2.1" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 ///     <file name="OgreOverlay.cpp" revision="1.31" lastUpdated="10/5/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Overlays
@@ -82,6 +90,7 @@ namespace Axiom.Overlays
 	public class Overlay : Resource
 	{
 		#region Member variables
+
 		/// <summary>
 		/// Internal root node, used as parent for 3D objects
 		/// </summary>
@@ -89,17 +98,26 @@ namespace Axiom.Overlays
 
 		/// <summary>2D element list.</summary>
 		protected List<OverlayElementContainer> elementList = new List<OverlayElementContainer>();
+
 		protected Dictionary<string, OverlayElementContainer> elementLookup = new Dictionary<string, OverlayElementContainer>();
+
 		/// <summary>Degrees of rotation around center.</summary>
 		protected float rotate;
+
 		/// <summary>Scroll values, offsets.</summary>
 		protected float scrollX, scrollY;
+
 		/// <summary>Scale values.</summary>
 		protected float scaleX, scaleY;
+
 		/// <summary> Camera relative transform. </summary>
 		protected Matrix4 transform = Matrix4.Identity;
+
 		/// <summary> Used when passing transform to overlay elements.</summary>
-		protected Matrix4[] xform = new Matrix4[ 1 ] { Matrix4.Identity };
+		protected Matrix4[] xform = new Matrix4[1] {
+		                                           	Matrix4.Identity
+		                                           };
+
 		protected bool isTransformOutOfDate;
 		protected bool isTransformUpdated;
 
@@ -133,48 +151,50 @@ namespace Axiom.Overlays
 
 		#region Methods
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( rootNode != null )
-                    {
-                        if ( !rootNode.IsDisposed )
-                            rootNode.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					if( rootNode != null )
+					{
+						if( !rootNode.IsDisposed )
+						{
+							rootNode.Dispose();
+						}
 
-                        rootNode = null;
-                    }
-                }
-            }
+						rootNode = null;
+					}
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		/// <summary>
 		///    Adds a 2d element to this overlay.
@@ -202,7 +222,6 @@ namespace Axiom.Overlays
 
 			element.NotifyWorldTransforms( xform );
 			element.NotifyViewport();
-
 		}
 
 		/// <summary>
@@ -263,11 +282,11 @@ namespace Axiom.Overlays
 		/// <param name="element"></param>
 		public void RemoveElement( OverlayElementContainer element )
 		{
-			if ( elementList.Contains( element ) )
+			if( elementList.Contains( element ) )
 			{
 				elementList.Remove( element );
 			}
-			if ( elementLookup.ContainsKey( element.Name ) )
+			if( elementLookup.ContainsKey( element.Name ) )
 			{
 				elementLookup.Remove( element.Name );
 			}
@@ -312,15 +331,15 @@ namespace Axiom.Overlays
 
 		protected void Initialize()
 		{
-
 			// add 2d elements
-			for ( int i = 0; i < elementList.Count; i++ )
+			for( int i = 0; i < elementList.Count; i++ )
 			{
 				OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
 				container.Initialize();
 			}
 			this.isInitialised = true;
 		}
+
 		/// <summary>
 		///    Internal method to put the overlay contents onto the render queue.
 		/// </summary>
@@ -328,24 +347,22 @@ namespace Axiom.Overlays
 		/// <param name="queue">Current render queue.</param>
 		public void FindVisibleObjects( Camera camera, RenderQueue queue )
 		{
-
-			if ( OverlayManager.Instance.HasViewportChanged )
+			if( OverlayManager.Instance.HasViewportChanged )
 			{
-
-				for ( int i = 0; i < elementList.Count; i++ )
+				for( int i = 0; i < elementList.Count; i++ )
 				{
 					OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
 					container.NotifyViewport();
 				}
 			}
 
-			if ( isVisible )
+			if( isVisible )
 			{
 				// update transform of elements
-				if ( isTransformUpdated )
+				if( isTransformUpdated )
 				{
 					GetWorldTransforms( xform );
-					for ( int i = 0; i < elementList.Count; i++ )
+					for( int i = 0; i < elementList.Count; i++ )
 					{
 						OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
 						container.NotifyWorldTransforms( xform );
@@ -371,7 +388,7 @@ namespace Axiom.Overlays
 				queue.DefaultRenderablePriority = oldPriority;
 
 				// add 2d elements
-				for ( int i = 0; i < elementList.Count; i++ )
+				for( int i = 0; i < elementList.Count; i++ )
 				{
 					OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
 					container.Update();
@@ -386,19 +403,19 @@ namespace Axiom.Overlays
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public virtual OverlayElement FindElementAt( float x, float y )
+		virtual public OverlayElement FindElementAt( float x, float y )
 		{
 			OverlayElement ret = null;
 			int currZ = -1;
 
-			for ( int i = 0; i < elementList.Count; i++ )
+			for( int i = 0; i < elementList.Count; i++ )
 			{
 				OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
 				int z = container.ZOrder;
-				if ( z > currZ )
+				if( z > currZ )
 				{
 					OverlayElement elementFound = container.FindElementAt( x, y );
-					if ( elementFound != null )
+					if( elementFound != null )
 					{
 						currZ = elementFound.ZOrder;
 						ret = elementFound;
@@ -407,6 +424,7 @@ namespace Axiom.Overlays
 			}
 			return ret;
 		}
+
 		/// <summary>
 		///    Gets a child container of this overlay by name.
 		/// </summary>
@@ -425,7 +443,7 @@ namespace Axiom.Overlays
 		/// </param>
 		public void GetWorldTransforms( Matrix4[] xform )
 		{
-			if ( isTransformOutOfDate )
+			if( isTransformOutOfDate )
 			{
 				UpdateTransforms();
 			}
@@ -541,7 +559,7 @@ namespace Axiom.Overlays
 		{
 			int zorder = this.zOrder * 100;
 			// notify attached 2d elements
-			for ( int i = 0; i < elementList.Count; i++ )
+			for( int i = 0; i < elementList.Count; i++ )
 			{
 				zorder = ( (OverlayElementContainer)elementList[ i ] ).NotifyZOrder( zorder );
 			}
@@ -556,37 +574,25 @@ namespace Axiom.Overlays
 		/// </summary>
 		public bool IsVisible
 		{
-			get
-			{
-				return isVisible;
-			}
+			get { return isVisible; }
 			set
 			{
 				isVisible = value;
-				if ( isVisible && !isInitialised )
+				if( isVisible && !isInitialised )
 				{
 					Initialize();
 				}
 			}
 		}
 
-		public bool IsInitialized
-		{
-			get
-			{
-				return isInitialised;
-			}
-		}
+		public bool IsInitialized { get { return isInitialised; } }
 
 		/// <summary>
 		///    Gets/Sets the rotation applied to this overlay, in degrees.
 		/// </summary>
 		public float Rotation
 		{
-			get
-			{
-				return rotate;
-			}
+			get { return rotate; }
 			set
 			{
 				rotate = value;
@@ -598,56 +604,29 @@ namespace Axiom.Overlays
 		/// <summary>
 		///    Gets the current x scale value.
 		/// </summary>
-		public float ScaleX
-		{
-			get
-			{
-				return scaleX;
-			}
-		}
+		public float ScaleX { get { return scaleX; } }
 
 		/// <summary>
 		///    Gets the current y scale value.
 		/// </summary>
-		public float ScaleY
-		{
-			get
-			{
-				return scaleY;
-			}
-		}
+		public float ScaleY { get { return scaleY; } }
 
 		/// <summary>
 		///    Gets the current x scroll value.
 		/// </summary>
-		public float ScrollX
-		{
-			get
-			{
-				return scrollX;
-			}
-		}
+		public float ScrollX { get { return scrollX; } }
 
 		/// <summary>
 		///    Gets the  current y scroll value.
 		/// </summary>
-		public float ScrollY
-		{
-			get
-			{
-				return scrollY;
-			}
-		}
+		public float ScrollY { get { return scrollY; } }
 
 		/// <summary>
 		///    Z ordering of this overlay. Valid values are between 0 and 650.
 		/// </summary>
 		public int ZOrder
 		{
-			get
-			{
-				return zOrder;
-			}
+			get { return zOrder; }
 			set
 			{
 				Contract.Requires( value < 650, "ZOrder", "Overlay ZOrder cannot be greater than 650!" );
@@ -656,21 +635,9 @@ namespace Axiom.Overlays
 			}
 		}
 
-		public Quaternion DerivedOrientation
-		{
-			get
-			{
-				return Quaternion.Identity;
-			}
-		}
+		public Quaternion DerivedOrientation { get { return Quaternion.Identity; } }
 
-		public Vector3 DerivedPosition
-		{
-			get
-			{
-				return Vector3.Zero;
-			}
-		}
+		public Vector3 DerivedPosition { get { return Vector3.Zero; } }
 
 		#endregion Properties
 
@@ -692,9 +659,6 @@ namespace Axiom.Overlays
 			// do nothing
 		}
 
-
 		#endregion
 	}
 }
-
-

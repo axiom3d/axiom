@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,10 +41,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
+
 using CodePoint = System.UInt32;
 using Image = Axiom.Media.Image;
 using ResourceHandle = System.UInt64;
@@ -57,6 +63,7 @@ namespace Axiom.Fonts
 	{
 		/// <summary>System truetype fonts, as well as supplementary .ttf files.</summary>
 		TrueType,
+
 		/// <summary>Character image map created by an artist.</summary>
 		Image
 	}
@@ -82,7 +89,6 @@ namespace Axiom.Fonts
 	/// 
 	public class Font : Resource, IManualResourceLoader
 	{
-
 		#region Internal Classes and Structures
 
 		public struct GlyphInfo
@@ -103,41 +109,35 @@ namespace Axiom.Fonts
 
 		#region Constants
 
-		const int BITMAP_HEIGHT = 512;
-		const int BITMAP_WIDTH = 512;
-		const int START_CHAR = 33;
-		const int END_CHAR = 127;
+		private const int BITMAP_HEIGHT = 512;
+		private const int BITMAP_WIDTH = 512;
+		private const int START_CHAR = 33;
+		private const int END_CHAR = 127;
 
 		#endregion
 
 		#region Fields and Properties
 
 		#region MaxBearingY
+
 		/// <summary>
 		///  Max distance to baseline of this (truetype) font
 		/// </summary>
 		private long maxBearingY = 0;
+
 		#endregion MaxBearingY
+
 		#region FontType Property
 
 		/// <summary>
 		///    Type of font, either imag based or TrueType.
 		/// </summary>
 		private FontType _fontType;
+
 		/// <summary>
 		///    Type of font.
 		/// </summary>
-		public FontType Type
-		{
-			get
-			{
-				return _fontType;
-			}
-			set
-			{
-				_fontType = value;
-			}
-		}
+		public FontType Type { get { return _fontType; } set { _fontType = value; } }
 
 		#endregion FontType Property
 
@@ -147,20 +147,11 @@ namespace Axiom.Fonts
 		///    Source of the font (either an image name or a TrueType font).
 		/// </summary>
 		private string _source;
+
 		/// <summary>
 		///    Source of the font (either an image name or a truetype font)
 		/// </summary>
-		public string Source
-		{
-			get
-			{
-				return _source;
-			}
-			set
-			{
-				_source = value;
-			}
-		}
+		public string Source { get { return _source; } set { _source = value; } }
 
 		#endregion Source Property
 
@@ -170,20 +161,11 @@ namespace Axiom.Fonts
 		///    Size of the truetype font, in points.
 		/// </summary>
 		private int _ttfSize;
+
 		/// <summary>
 		///    Size of the truetype font, in points.
 		/// </summary>
-		public int TrueTypeSize
-		{
-			get
-			{
-				return _ttfSize;
-			}
-			set
-			{
-				_ttfSize = value;
-			}
-		}
+		public int TrueTypeSize { get { return _ttfSize; } set { _ttfSize = value; } }
 
 		#endregion TrueTypeSize Property
 
@@ -193,20 +175,11 @@ namespace Axiom.Fonts
 		///    Resolution (dpi) of truetype font.
 		/// </summary>
 		private int _ttfResolution;
+
 		/// <summary>
 		///    Resolution (dpi) of truetype font.
 		/// </summary>
-		public int TrueTypeResolution
-		{
-			get
-			{
-				return _ttfResolution;
-			}
-			set
-			{
-				_ttfResolution = value;
-			}
-		}
+		public int TrueTypeResolution { get { return _ttfResolution; } set { _ttfResolution = value; } }
 
 		#endregion TrueTypeResolution Property
 
@@ -216,20 +189,11 @@ namespace Axiom.Fonts
 		///    Material create for use on entities by this font.
 		/// </summary>
 		private Material _material;
+
 		/// <summary>
 		///    Gets a reference to the material being used for this font.
 		/// </summary>
-		public Material Material
-		{
-			get
-			{
-				return _material;
-			}
-			protected set
-			{
-				_material = value;
-			}
-		}
+		public Material Material { get { return _material; } protected set { _material = value; } }
 
 		#endregion Material Property
 
@@ -239,20 +203,11 @@ namespace Axiom.Fonts
 		///    Material create for use on entities by this font.
 		/// </summary>
 		private Texture _texture;
+
 		/// <summary>
 		///    Gets a reference to the material being used for this font.
 		/// </summary>
-		protected Texture texture
-		{
-			get
-			{
-				return _texture;
-			}
-			set
-			{
-				_texture = value;
-			}
-		}
+		protected Texture texture { get { return _texture; } set { _texture = value; } }
 
 		#endregion texture Property
 
@@ -262,6 +217,7 @@ namespace Axiom.Fonts
 		///    For TrueType fonts only.
 		/// </summary>
 		private bool _antialiasColor;
+
 		/// <summary>
 		///    Sets whether or not the color of this font is antialiased as it is generated
 		///    from a TrueType font.
@@ -275,48 +231,22 @@ namespace Axiom.Fonts
 		///    mode (add or modulate for example) then it's a good idea to set this to true, in
 		///    order to soften your font edges.
 		/// </remarks>
-		public bool AntialiasColor
-		{
-			get
-			{
-				return _antialiasColor;
-			}
-			set
-			{
-				_antialiasColor = value;
-			}
-		}
+		public bool AntialiasColor { get { return _antialiasColor; } set { _antialiasColor = value; } }
 
 		#endregion AntiAliasColor Property
 
 		#region Glyphs Property
 
-		Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
+		private Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
 
-		public IDictionary<CodePoint, GlyphInfo> Glyphs
-		{
-			get
-			{
-				return codePoints;
-			}
-		}
+		public IDictionary<CodePoint, GlyphInfo> Glyphs { get { return codePoints; } }
 
 		#endregion Glyphs Property
 
 		#region showLines Property
 
 		private bool _showLines;
-		protected bool showLines
-		{
-			get
-			{
-				return _showLines;
-			}
-			set
-			{
-				_showLines = value;
-			}
-		}
+		protected bool showLines { get { return _showLines; } set { _showLines = value; } }
 
 		#endregion showLines Property
 
@@ -328,61 +258,59 @@ namespace Axiom.Fonts
 		///		Constructor, should be called through FontManager.Create().
 		/// </summary>
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null )
-		{
-		}
+			: this( parent, name, handle, group, false, null ) {}
 
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-		}
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Constructors and Destructor
 
 		#region Methods
 
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        ///
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( _texture != null )
-                    {
-                        if ( !_texture.IsDisposed )
-                            _texture.Dispose();
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if( !this.IsDisposed )
+			{
+				if( disposeManagedResources )
+				{
+					if( _texture != null )
+					{
+						if( !_texture.IsDisposed )
+						{
+							_texture.Dispose();
+						}
 
-                        _texture = null;
-                    }
-                }
-            }
+						_texture = null;
+					}
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		protected void createTexture()
 		{
@@ -401,7 +329,7 @@ namespace Axiom.Fonts
 		}
 
 		/// <summary>Returns the size in pixels of a box that could contain the whole string.</summary>
-		Pair<int> StrBBox( string text, float char_height, RenderWindow window )
+		private Pair<int> StrBBox( string text, float char_height, RenderWindow window )
 		{
 			int height = 0, width = 0;
 			Real vsX, vsY, veX, veY;
@@ -410,7 +338,7 @@ namespace Axiom.Fonts
 			w = window.Width;
 			h = window.Height;
 
-			for ( int i = 0; i < text.Length; i++ )
+			for( int i = 0; i < text.Length; i++ )
 			{
 				GetGlyphTexCoords( text[ i ], out vsX, out vsY, out veX, out veY );
 
@@ -419,8 +347,10 @@ namespace Axiom.Fonts
 				vsX = GetGlyphAspectRatio( text[ i ] ) * char_height;
 
 				width += (int)( vsX * w );
-				if ( vsY * h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+				if( vsY * h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+				{
 					height += (int)( vsY * h );
+				}
 			}
 
 			return new Pair<int>( height, width );
@@ -437,7 +367,7 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
-			if ( codePoints.ContainsKey( c ) )
+			if( codePoints.ContainsKey( c ) )
 			{
 				GlyphInfo glyph = codePoints[ c ];
 				u1 = glyph.uvRect.Top;
@@ -487,10 +417,14 @@ namespace Axiom.Fonts
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
 			GlyphInfo glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect * ( u2 - u1 ) / ( v2 - v1 ) );
-			if ( codePoints.ContainsKey( c ) )
+			if( codePoints.ContainsKey( c ) )
+			{
 				codePoints[ c ] = glyph;
+			}
 			else
+			{
 				codePoints.Add( c, glyph );
+			}
 		}
 
 		/// <summary>
@@ -501,14 +435,13 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public float GetGlyphAspectRatio( char c )
 		{
-			if ( codePoints.ContainsKey( c ) )
+			if( codePoints.ContainsKey( c ) )
 			{
 				return codePoints[ c ].aspectRatio;
 			}
 
 			return 1.0f;
 		}
-
 
 		#endregion Methods
 
@@ -523,16 +456,15 @@ namespace Axiom.Fonts
 
 			_material = (Material)MaterialManager.Instance.GetByName( "Fonts/" + _name );
 
-			if ( _material == null )
+			if( _material == null )
 			{
-
 				// create a material for this font
 				_material = (Material)MaterialManager.Instance.Create( "Fonts/" + _name, Group );
 
 				TextureUnitState unitState = null;
 				bool blendByAlpha = false;
 
-				if ( _fontType == FontType.TrueType )
+				if( _fontType == FontType.TrueType )
 				{
 #if !( XBOX || XBOX360 )
 					// create the font bitmap on the fly
@@ -556,10 +488,10 @@ namespace Axiom.Fonts
 				}
 
 				// set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
+				unitState.SetTextureAddressingMode( TextureAddressing.Clamp );
 
 				// set up blending mode
-				if ( blendByAlpha )
+				if( blendByAlpha )
 				{
 					_material.SetSceneBlending( SceneBlendType.TransparentAlpha );
 				}
@@ -573,14 +505,14 @@ namespace Axiom.Fonts
 
 		protected override void unload()
 		{
-			if ( _material != null )
+			if( _material != null )
 			{
 				MaterialManager.Instance.Remove( _material );
 				_material.Unload();
 				_material = null;
 			}
 
-			if ( _texture != null )
+			if( _texture != null )
 			{
 				TextureManager.Instance.Remove( _texture );
 				_texture.Unload();
@@ -598,18 +530,19 @@ namespace Axiom.Fonts
 		#endregion Implementation of Resource
 
 		#region Implementation of IManualResourceLoader
+
 		public void LoadResource( Resource resource )
 		{
-			if ( IntPtr.Size == 8 && !PlatformManager.IsWindowsOS )
+			if( IntPtr.Size == 8 && !PlatformManager.IsWindowsOS )
 			{
-				LoadResource64( resource );				
+				LoadResource64( resource );
 			}
 			else
 			{
 				LoadResource32( resource );
 			}
 		}
-		
+
 		private void LoadResource32( Resource resource )
 		{
 #if !( XBOX || XBOX360 )
@@ -617,19 +550,21 @@ namespace Axiom.Fonts
 			string current = Environment.CurrentDirectory;
 
 			IntPtr ftLibrary = IntPtr.Zero;
-			if ( FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+			if( FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+			{
 				throw new AxiomException( "Could not init FreeType library!" );
+			}
 
 			IntPtr face = IntPtr.Zero;
 			int char_space = 5;
 
 			Stream fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
 
-			byte[] data = new byte[ fileStream.Length ];
+			byte[] data = new byte[fileStream.Length];
 			fileStream.Read( data, 0, data.Length );
 			//Load font
 			int success = FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
-			if ( success != 0 )
+			if( success != 0 )
 			{
 				throw new AxiomException( "Could not open font face!" );
 			}
@@ -638,7 +573,7 @@ namespace Axiom.Fonts
 			int ttfSize = _ttfSize * ( 1 << 6 );
 
 			success = FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
-			if ( success != 0 )
+			if( success != 0 )
 			{
 				{
 					throw new AxiomException( "Could not set char size!" );
@@ -647,34 +582,39 @@ namespace Axiom.Fonts
 			long max_height = 0, max_width = 0;
 			List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
 			// Backwards compatibility - if codepoints not supplied, assume 33-166
-			if ( codePointRange.Count == 0 )
+			if( codePointRange.Count == 0 )
 			{
 				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
 			}
 
 			int glyphCount = 0;
-			foreach ( KeyValuePair<int, int> r in codePointRange )
+			foreach( KeyValuePair<int, int> r in codePointRange )
 			{
 				KeyValuePair<int, int> range = r;
-				for ( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
+				for( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
 				{
 					FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
 					FT_FaceRec rec = (FT_FaceRec)Marshal.PtrToStructure( face, typeof( FT_FaceRec ) );
 					FT_GlyphSlotRec glyp = (FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( FT_GlyphSlotRec ) );
-					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					if( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					{
 						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
-					if ( glyp.metrics.horiBearingY > maxBearingY )
+					}
+					if( glyp.metrics.horiBearingY > maxBearingY )
+					{
 						maxBearingY = glyp.metrics.horiBearingY;
+					}
 
-					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+					if( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+					{
 						max_width = ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 );
-
+					}
 				}
 			}
 
 			// Now work out how big our texture needs to be
 			long rawSize = ( max_width + char_space ) *
-				( ( max_height >> 6 ) + char_space ) * glyphCount;
+			               ( ( max_height >> 6 ) + char_space ) * glyphCount;
 
 			long tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -684,7 +624,7 @@ namespace Axiom.Fonts
 			int roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
 			// Would we benefit from using a non-square texture (2X width(
 			int finalWidth = 0, finalHeight = 0;
-			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+			if( roundUpSize * roundUpSize * 0.5 >= rawSize )
 			{
 				finalHeight = (int)( roundUpSize * 0.5 );
 			}
@@ -701,22 +641,21 @@ namespace Axiom.Fonts
 
 			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" + finalHeight.ToString() );
 
-			byte[] imageData = new byte[ data_size ];
-			for ( int i = 0; i < data_size; i += pixelBytes )
+			byte[] imageData = new byte[data_size];
+			for( int i = 0; i < data_size; i += pixelBytes )
 			{
-				imageData[ i + 0 ] = 0xff;// luminance
-				imageData[ i + 1 ] = 0x00;// alpha
+				imageData[ i + 0 ] = 0xff; // luminance
+				imageData[ i + 1 ] = 0x00; // alpha
 			}
 
-
 			long l = 0, m = 0;
-			foreach ( KeyValuePair<int, int> r in codePointRange )
+			foreach( KeyValuePair<int, int> r in codePointRange )
 			{
 				KeyValuePair<int, int> range = r;
-				for ( int cp = range.Key; cp <= range.Value; ++cp )
+				for( int cp = range.Key; cp <= range.Value; ++cp )
 				{
-					int result = FT.FT_Load_Char( face, (uint)cp, 4 );//4 == FT_LOAD_RENDER
-					if ( result != 0 )
+					int result = FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
+					if( result != 0 )
 					{
 						// problem loading this glyph, continue
 						LogManager.Instance.Write( "Info: cannot load character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
@@ -728,7 +667,7 @@ namespace Axiom.Fonts
 					long advance = glyp.advance.x >> 6;
 					unsafe
 					{
-						if ( glyp.bitmap.buffer == IntPtr.Zero )
+						if( glyp.bitmap.buffer == IntPtr.Zero )
 						{
 							LogManager.Instance.Write( "Info: Freetype returned null for character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
 							continue;
@@ -738,13 +677,13 @@ namespace Axiom.Fonts
 						long y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
 						long x_bearing = glyp.metrics.horiBearingX >> 6;
 
-						for ( int j = 0; j < glyp.bitmap.rows; j++ )
+						for( int j = 0; j < glyp.bitmap.rows; j++ )
 						{
 							long row = j + m + y_bearing;
 							byte* pDest = &imageDataPtr[ ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes ];
-							for ( int k = 0; k < glyp.bitmap.width; k++ )
+							for( int k = 0; k < glyp.bitmap.width; k++ )
 							{
-								if ( AntialiasColor )
+								if( AntialiasColor )
 								{
 									// Use the same greyscale pixel for all components RGBA
 									*pDest++ = *buffer;
@@ -757,13 +696,13 @@ namespace Axiom.Fonts
 								}
 								// Always use the greyscale value for alpha
 								*pDest++ = *buffer++;
-							}//end k
-						}//end j
+							} //end k
+						} //end j
 						//
-						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth,//u1
-							(Real)m / (Real)finalHeight,//v1
-							(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
-							( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
+						                        (Real)m / (Real)finalHeight, //v1
+						                        (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+						                        ( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
 						//    textureAspec );
 						//SetGlyphTexCoords( c, u1, v1, u2, v2 );
 						//Glyphs.Add( new KeyValuePair<CodePoint, GlyphInfo>( (uint)cp,
@@ -779,44 +718,44 @@ namespace Axiom.Fonts
 						l += ( advance + char_space );
 
 						// If at end of row
-						if ( finalWidth - 1 < l + ( advance ) )
+						if( finalWidth - 1 < l + ( advance ) )
 						{
 							m += ( max_height >> 6 ) + char_space;
 							l = 0;
 						}
 					}
 				}
-			}//end foreach
+			} //end foreach
 
 			MemoryStream memStream = new MemoryStream( imageData );
 			Image img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
 
 			Texture tex = (Texture)resource;
-			Image[] images = new Image[ 1 ];
+			Image[] images = new Image[1];
 			images[ 0 ] = img;
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );
 
-            //img.Save( "C:\\" + Name + ".png" );
-            //FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
-            //StreamWriter str = new StreamWriter( file );
-            //str.WriteLine( Name );
-            //str.WriteLine( "{" );
-            //str.WriteLine( "\ttype\timage" );
-            //str.WriteLine( "\tsource\t{0}.png\n", Name );
+			//img.Save( "C:\\" + Name + ".png" );
+			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+			//StreamWriter str = new StreamWriter( file );
+			//str.WriteLine( Name );
+			//str.WriteLine( "{" );
+			//str.WriteLine( "\ttype\timage" );
+			//str.WriteLine( "\tsource\t{0}.png\n", Name );
 
-            //for ( uint i = 0; i < (uint)( END_CHAR - START_CHAR ); i++ )
-            //{
-            //    char c = (char)( i + START_CHAR );
-            //    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
-            //}
-            //str.WriteLine( "}" );
-            //str.Close();
-            //file.Close();
+			//for ( uint i = 0; i < (uint)( END_CHAR - START_CHAR ); i++ )
+			//{
+			//    char c = (char)( i + START_CHAR );
+			//    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, Glyphs[ c ].uvRect.Top, Glyphs[ c ].uvRect.Left, Glyphs[ c ].uvRect.Bottom, Glyphs[ c ].uvRect.Right );
+			//}
+			//str.WriteLine( "}" );
+			//str.Close();
+			//file.Close();
 
 #endif
 		}
-		
+
 		private void LoadResource64( Resource resource )
 		{
 #if !( XBOX || XBOX360 )
@@ -824,19 +763,21 @@ namespace Axiom.Fonts
 			string current = Environment.CurrentDirectory;
 
 			IntPtr ftLibrary = IntPtr.Zero;
-			if ( x64.FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+			if( x64.FT.FT_Init_FreeType( out ftLibrary ) != 0 )
+			{
 				throw new AxiomException( "Could not init FreeType library!" );
+			}
 
 			IntPtr face = IntPtr.Zero;
 			int char_space = 5;
 
 			Stream fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
 
-			byte[] data = new byte[ fileStream.Length ];
+			byte[] data = new byte[fileStream.Length];
 			fileStream.Read( data, 0, data.Length );
 			//Load font
 			int success = x64.FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
-			if ( success != 0 )
+			if( success != 0 )
 			{
 				throw new AxiomException( "Could not open font face!" );
 			}
@@ -845,7 +786,7 @@ namespace Axiom.Fonts
 			int ttfSize = _ttfSize * ( 1 << 6 );
 
 			success = x64.FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
-			if ( success != 0 )
+			if( success != 0 )
 			{
 				{
 					throw new AxiomException( "Could not set char size!" );
@@ -854,34 +795,39 @@ namespace Axiom.Fonts
 			long max_height = 0, max_width = 0;
 			List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
 			// Backwards compatibility - if codepoints not supplied, assume 33-166
-			if ( codePointRange.Count == 0 )
+			if( codePointRange.Count == 0 )
 			{
 				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
 			}
 
 			int glyphCount = 0;
-			foreach ( KeyValuePair<int, int> r in codePointRange )
+			foreach( KeyValuePair<int, int> r in codePointRange )
 			{
 				KeyValuePair<int, int> range = r;
-				for ( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
+				for( int cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
 				{
 					x64.FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
 					x64.FT_FaceRec rec = (x64.FT_FaceRec)Marshal.PtrToStructure( face, typeof( x64.FT_FaceRec ) );
 					x64.FT_GlyphSlotRec glyp = (x64.FT_GlyphSlotRec)Marshal.PtrToStructure( rec.glyph, typeof( x64.FT_GlyphSlotRec ) );
-					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					if( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					{
 						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
-					if ( glyp.metrics.horiBearingY > maxBearingY )
+					}
+					if( glyp.metrics.horiBearingY > maxBearingY )
+					{
 						maxBearingY = glyp.metrics.horiBearingY;
+					}
 
-					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+					if( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
+					{
 						max_width = ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 );
-
+					}
 				}
 			}
 
 			// Now work out how big our texture needs to be
 			long rawSize = ( max_width + char_space ) *
-				( ( max_height >> 6 ) + char_space ) * glyphCount;
+			               ( ( max_height >> 6 ) + char_space ) * glyphCount;
 
 			long tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -891,7 +837,7 @@ namespace Axiom.Fonts
 			int roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
 			// Would we benefit from using a non-square texture (2X width(
 			int finalWidth = 0, finalHeight = 0;
-			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+			if( roundUpSize * roundUpSize * 0.5 >= rawSize )
 			{
 				finalHeight = (int)( roundUpSize * 0.5 );
 			}
@@ -908,22 +854,21 @@ namespace Axiom.Fonts
 
 			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" + finalHeight.ToString() );
 
-			byte[] imageData = new byte[ data_size ];
-			for ( int i = 0; i < data_size; i += pixelBytes )
+			byte[] imageData = new byte[data_size];
+			for( int i = 0; i < data_size; i += pixelBytes )
 			{
-				imageData[ i + 0 ] = 0xff;// luminance
-				imageData[ i + 1 ] = 0x00;// alpha
+				imageData[ i + 0 ] = 0xff; // luminance
+				imageData[ i + 1 ] = 0x00; // alpha
 			}
 
-
 			long l = 0, m = 0;
-			foreach ( KeyValuePair<int, int> r in codePointRange )
+			foreach( KeyValuePair<int, int> r in codePointRange )
 			{
 				KeyValuePair<int, int> range = r;
-				for ( int cp = range.Key; cp <= range.Value; ++cp )
+				for( int cp = range.Key; cp <= range.Value; ++cp )
 				{
-					int result = x64.FT.FT_Load_Char( face, (uint)cp, 4 );//4 == FT_LOAD_RENDER
-					if ( result != 0 )
+					int result = x64.FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
+					if( result != 0 )
 					{
 						// problem loading this glyph, continue
 						LogManager.Instance.Write( "Info: cannot load character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
@@ -935,7 +880,7 @@ namespace Axiom.Fonts
 					long advance = glyp.advance.x >> 6;
 					unsafe
 					{
-						if ( glyp.bitmap.buffer == IntPtr.Zero )
+						if( glyp.bitmap.buffer == IntPtr.Zero )
 						{
 							LogManager.Instance.Write( "Info: Freetype returned null for character '" + char.ConvertFromUtf32( cp ) + "' in font " + _name + "." );
 							continue;
@@ -945,13 +890,13 @@ namespace Axiom.Fonts
 						long y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
 						long x_bearing = glyp.metrics.horiBearingX >> 6;
 
-						for ( int j = 0; j < glyp.bitmap.rows; j++ )
+						for( int j = 0; j < glyp.bitmap.rows; j++ )
 						{
 							long row = j + m + y_bearing;
 							byte* pDest = &imageDataPtr[ ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes ];
-							for ( int k = 0; k < glyp.bitmap.width; k++ )
+							for( int k = 0; k < glyp.bitmap.width; k++ )
 							{
-								if ( AntialiasColor )
+								if( AntialiasColor )
 								{
 									// Use the same greyscale pixel for all components RGBA
 									*pDest++ = *buffer;
@@ -964,37 +909,38 @@ namespace Axiom.Fonts
 								}
 								// Always use the greyscale value for alpha
 								*pDest++ = *buffer++;
-							}//end k
-						}//end j
+							} //end k
+						} //end j
 						//
-						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth,//u1
-							(Real)m / (Real)finalHeight,//v1
-							(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
-							( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
+						                        (Real)m / (Real)finalHeight, //v1
+						                        (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+						                        ( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
 
 						// Advance a column
 						l += ( advance + char_space );
 
 						// If at end of row
-						if ( finalWidth - 1 < l + ( advance ) )
+						if( finalWidth - 1 < l + ( advance ) )
 						{
 							m += ( max_height >> 6 ) + char_space;
 							l = 0;
 						}
 					}
 				}
-			}//end foreach
+			} //end foreach
 
 			MemoryStream memStream = new MemoryStream( imageData );
 			Image img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
 
 			Texture tex = (Texture)resource;
-			Image[] images = new Image[ 1 ];
+			Image[] images = new Image[1];
 			images[ 0 ] = img;
 			tex.LoadImages( images );
 			x64.FT.FT_Done_FreeType( ftLibrary );
 #endif
 		}
+
 		#endregion Implementation of IManualResourceLoader
 	}
 }

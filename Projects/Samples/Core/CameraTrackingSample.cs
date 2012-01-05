@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -29,7 +31,7 @@ namespace Axiom.Samples.Core
 	/// <summary>
 	/// 
 	/// </summary>
-	class CameraTrackingSample : SdkSample
+	internal class CameraTrackingSample : SdkSample
 	{
 		/// <summary>
 		/// 
@@ -43,7 +45,7 @@ namespace Axiom.Samples.Core
 		{
 			Metadata[ "Title" ] = "Camera Tracking";
 			Metadata[ "Description" ] = "An example of using AnimationTracks to make a node smoothly follow " +
-			"a predefined path with spline interpolation. Also uses the auto-tracking feature of the camera.";
+			                            "a predefined path with spline interpolation. Also uses the auto-tracking feature of the camera.";
 			Metadata[ "Thumbnail" ] = "thumb_camtrack.png";
 			Metadata[ "Category" ] = "Unsorted";
 		}
@@ -73,9 +75,8 @@ namespace Axiom.Samples.Core
 			Entity head = SceneManager.CreateEntity( "Head", "ogrehead.mesh" );
 			SceneNode headNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			headNode.AttachObject( head );
-			CameraManager.setStyle( CameraStyle.Manual );// we will be controlling the camera ourselves, so disable the camera man
-			Camera.SetAutoTracking( true, headNode );// make the camera face the head
-
+			CameraManager.setStyle( CameraStyle.Manual ); // we will be controlling the camera ourselves, so disable the camera man
+			Camera.SetAutoTracking( true, headNode ); // make the camera face the head
 
 			// create a camera node and attach camera to it
 			SceneNode camNode = SceneManager.RootSceneNode.CreateChildSceneNode();

@@ -68,9 +68,7 @@ namespace Axiom.Core
 
 			#region Constructors
 
-			public Element()
-			{
-			}
+			public Element() {}
 
 			public Element( Vector3 position, float width, float texCoord, ColorEx color )
 			{
@@ -84,53 +82,13 @@ namespace Axiom.Core
 
 			#region Properties
 
-			public Vector3 Position
-			{
-				get
-				{
-					return this.position;
-				}
-				set
-				{
-					this.position = value;
-				}
-			}
+			public Vector3 Position { get { return this.position; } set { this.position = value; } }
 
-			public float Width
-			{
-				get
-				{
-					return this.width;
-				}
-				set
-				{
-					this.width = value;
-				}
-			}
+			public float Width { get { return this.width; } set { this.width = value; } }
 
-			public float TexCoord
-			{
-				get
-				{
-					return this.texCoord;
-				}
-				set
-				{
-					this.texCoord = value;
-				}
-			}
+			public float TexCoord { get { return this.texCoord; } set { this.texCoord = value; } }
 
-			public ColorEx Color
-			{
-				get
-				{
-					return this.color;
-				}
-				set
-				{
-					this.color = value;
-				}
-			}
+			public ColorEx Color { get { return this.color; } set { this.color = value; } }
 
 			#endregion Properties
 		}
@@ -168,7 +126,7 @@ namespace Axiom.Core
 		protected string materialName;
 		protected Material material;
 		protected TexCoordDirection texCoordDirection;
-		protected float[] otherTexCoordRange = new float[ 2 ];
+		protected float[] otherTexCoordRange = new float[2];
 
 		protected List<Element> chainElementList;
 
@@ -180,12 +138,9 @@ namespace Axiom.Core
 
 		#region Properties
 
-		public virtual int MaxChainElements
+		virtual public int MaxChainElements
 		{
-			get
-			{
-				return this.maxElementsPerChain;
-			}
+			get { return this.maxElementsPerChain; }
 			set
 			{
 				this.maxElementsPerChain = value;
@@ -194,12 +149,9 @@ namespace Axiom.Core
 			}
 		}
 
-		public virtual int NumberOfChains
+		virtual public int NumberOfChains
 		{
-			get
-			{
-				return this.chainCount;
-			}
+			get { return this.chainCount; }
 			set
 			{
 				this.chainCount = value;
@@ -208,12 +160,9 @@ namespace Axiom.Core
 			}
 		}
 
-		public virtual bool UseTextureCoords
+		virtual public bool UseTextureCoords
 		{
-			get
-			{
-				return this.useTexCoords;
-			}
+			get { return this.useTexCoords; }
 			set
 			{
 				this.useTexCoords = value;
@@ -222,36 +171,13 @@ namespace Axiom.Core
 			}
 		}
 
-		public virtual TexCoordDirection TextureCoordDirection
-		{
-			get
-			{
-				return this.texCoordDirection;
-			}
-			set
-			{
-				this.texCoordDirection = value;
-			}
-		}
+		virtual public TexCoordDirection TextureCoordDirection { get { return this.texCoordDirection; } set { this.texCoordDirection = value; } }
 
-		public virtual float[] OtherTexCoordRange
-		{
-			get
-			{
-				return this.otherTexCoordRange;
-			}
-			set
-			{
-				this.otherTexCoordRange = value;
-			}
-		}
+		virtual public float[] OtherTexCoordRange { get { return this.otherTexCoordRange; } set { this.otherTexCoordRange = value; } }
 
-		public virtual bool UseVertexColors
+		virtual public bool UseVertexColors
 		{
-			get
-			{
-				return this.useVertexColor;
-			}
+			get { return this.useVertexColor; }
 			set
 			{
 				this.useVertexColor = value;
@@ -260,12 +186,9 @@ namespace Axiom.Core
 			}
 		}
 
-		public virtual bool Dynamic
+		virtual public bool Dynamic
 		{
-			get
-			{
-				return this.dynamic;
-			}
+			get { return this.dynamic; }
 			set
 			{
 				this.dynamic = value;
@@ -274,26 +197,25 @@ namespace Axiom.Core
 			}
 		}
 
-		public virtual string MaterialName
+		virtual public string MaterialName
 		{
-			get
-			{
-				return this.materialName;
-			}
+			get { return this.materialName; }
 			set
 			{
 				this.materialName = value;
 				this.material = (Material)MaterialManager.Instance[ value ];
-				if ( this.material == null )
+				if( this.material == null )
 				{
 					LogManager.Instance.Write( "Can't assign material {0} to BillboardChain {1} because this " +
-											   "Material does not exist. Have you forgotten to define it in a .material script?",
-											   this.materialName, Name );
+					                           "Material does not exist. Have you forgotten to define it in a .material script?",
+					                           this.materialName, Name );
 
 					this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
-					if ( this.material == null )
+					if( this.material == null )
+					{
 						throw new Exception( String.Format( "Can't assign default material to BillboardChain of {0}. Did " +
-															"you forget to call MaterialManager::initialise()?", Name ) );
+						                                    "you forget to call MaterialManager::initialise()?", Name ) );
+					}
 				}
 			}
 		}
@@ -333,47 +255,39 @@ namespace Axiom.Core
 		}
 
 		public BillboardChain( string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors )
-			: this( name, maxElements, numberOfChains, useTextureCoords, useColors, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, useTextureCoords, useColors, true ) {}
 
 		public BillboardChain( string name, int maxElements, int numberOfChains, bool useTextureCoords )
-			: this( name, maxElements, numberOfChains, useTextureCoords, true, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, useTextureCoords, true, true ) {}
 
 		public BillboardChain( string name, int maxElements, int numberOfChains )
-			: this( name, maxElements, numberOfChains, true, true, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, true, true, true ) {}
 
 		public BillboardChain( string name, int maxElements )
-			: this( name, maxElements, 1, true, true, true )
-		{
-		}
+			: this( name, maxElements, 1, true, true, true ) {}
 
 		public BillboardChain( string name )
-			: this( name, 20, 1, true, true, true )
-		{
-		}
+			: this( name, 20, 1, true, true, true ) {}
 
 		#endregion Constructors
 
 		#region Protected Virtual Methods
 
-		protected virtual void SetupChainContainers()
+		virtual protected void SetupChainContainers()
 		{
 			// allocate enough space for everything
 			this.chainElementList = new List<Element>( this.chainCount * this.maxElementsPerChain );
 
-			for ( int i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
+			for( int i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
+			{
 				this.chainElementList.Add( new Element() );
+			}
 
 			this.vertexData.vertexCount = this.chainElementList.Capacity * 2;
 
 			// configure chains
 			this.chainSegmentList = new List<ChainSegment>( this.chainCount );
-			for ( int i = 0; i < this.chainCount; ++i )
+			for( int i = 0; i < this.chainCount; ++i )
 			{
 				this.chainSegmentList.Add( new ChainSegment() );
 				this.chainSegmentList[ i ].start = i * this.maxElementsPerChain;
@@ -381,9 +295,9 @@ namespace Axiom.Core
 			}
 		}
 
-		protected virtual void SetupVertexDeclaration()
+		virtual protected void SetupVertexDeclaration()
 		{
-			if ( this.vertexDeclDirty )
+			if( this.vertexDeclDirty )
 			{
 				VertexDeclaration decl = this.vertexData.vertexDeclaration;
 				decl.RemoveAllElements();
@@ -393,49 +307,49 @@ namespace Axiom.Core
 				decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 				offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-				if ( this.useVertexColor )
+				if( this.useVertexColor )
 				{
 					decl.AddElement( 0, offset, VertexElementType.Color, VertexElementSemantic.Diffuse );
 					offset += VertexElement.GetTypeSize( VertexElementType.Color );
 				}
 
-				if ( this.useTexCoords )
+				if( this.useTexCoords )
 				{
 					decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 					offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 				}
 
-				if ( !this.useTexCoords && !this.useVertexColor )
+				if( !this.useTexCoords && !this.useVertexColor )
 				{
 					LogManager.Instance.Write( "Error - BillboardChain '{0}' is using neither texture " +
-											   "coordinates or vertex colors; it will not be visible " +
-											   "on some rendering API's so you should change this so you " +
-											   "use one or the other." );
+					                           "coordinates or vertex colors; it will not be visible " +
+					                           "on some rendering API's so you should change this so you " +
+					                           "use one or the other." );
 				}
 				this.vertexDeclDirty = false;
 			}
 		}
 
-		protected virtual void SetupBuffers()
+		virtual protected void SetupBuffers()
 		{
 			this.SetupVertexDeclaration();
 
-			if ( this.buffersNeedRecreating )
+			if( this.buffersNeedRecreating )
 			{
 				// Create the vertex buffer (always dynamic due to the camera adjust)
 				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-					this.vertexData.vertexDeclaration.GetVertexSize( 0 ),
-					this.vertexData.vertexCount,
-					BufferUsage.DynamicWriteOnly );
+				                                                                                this.vertexData.vertexDeclaration.GetVertexSize( 0 ),
+				                                                                                this.vertexData.vertexCount,
+				                                                                                BufferUsage.DynamicWriteOnly );
 
 				// (re)Bind the buffer
 				// Any existing buffer will lose its reference count and be destroyed
 				this.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
 
 				this.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer(
-					IndexType.Size16,
-					this.chainCount * this.maxElementsPerChain * 6, // max we can use
-					this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
+				                                                                              IndexType.Size16,
+				                                                                              this.chainCount * this.maxElementsPerChain * 6, // max we can use
+				                                                                              this.dynamic ? BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
 				// NB we don't set the indexCount on IndexData here since we will
 				// probably use less than the maximum number of indices
 
@@ -443,7 +357,7 @@ namespace Axiom.Core
 			}
 		}
 
-		protected virtual void UpdateVertexBuffer( Camera camera )
+		virtual protected void UpdateVertexBuffer( Camera camera )
 		{
 			this.SetupBuffers();
 			HardwareVertexBuffer buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
@@ -458,16 +372,16 @@ namespace Axiom.Core
 			{
 				byte* bufferStart = (byte*)bufferPtr.ToPointer();
 
-				foreach ( ChainSegment segment in this.chainSegmentList )
+				foreach( ChainSegment segment in this.chainSegmentList )
 				{
 					// Skip 0 or 1 element segment counts
-					if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
+					if( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 					{
 						int laste = segment.head;
-						for ( int e = segment.head; ; ++e )
+						for( int e = segment.head;; ++e )
 						{
 							// Wrap forwards
-							if ( e == this.maxElementsPerChain )
+							if( e == this.maxElementsPerChain )
 							{
 								e = 0;
 							}
@@ -480,17 +394,17 @@ namespace Axiom.Core
 
 							// Get index of next item
 							int nexte = e + 1;
-							if ( nexte == this.maxElementsPerChain )
+							if( nexte == this.maxElementsPerChain )
 							{
 								nexte = 0;
 							}
 
-							if ( e == segment.head )
+							if( e == segment.head )
 							{
 								// no laste, use next item
 								chainTangent = this.chainElementList[ nexte + segment.start ].Position - element.Position;
 							}
-							else if ( e == segment.tail )
+							else if( e == segment.tail )
 							{
 								// no nexte, use only last item
 								chainTangent = element.Position - this.chainElementList[ laste + segment.start ].Position;
@@ -517,17 +431,17 @@ namespace Axiom.Core
 
 							pBase = (byte*)pFloat;
 
-							if ( this.useVertexColor )
+							if( this.useVertexColor )
 							{
 								int* pColor = (int*)pBase;
 								*pColor++ = Root.Instance.ConvertColor( element.Color );
 								pBase = (byte*)pColor;
 							}
 
-							if ( this.useTexCoords )
+							if( this.useTexCoords )
 							{
 								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
+								if( this.texCoordDirection == TexCoordDirection.U )
 								{
 									*pFloat++ = element.TexCoord;
 									*pFloat++ = this.otherTexCoordRange[ 0 ];
@@ -547,17 +461,17 @@ namespace Axiom.Core
 
 							pBase = (byte*)pFloat;
 
-							if ( this.useVertexColor )
+							if( this.useVertexColor )
 							{
 								int* pColor = (int*)pBase;
 								*pColor++ = Root.Instance.ConvertColor( element.Color );
 								pBase = (byte*)pColor;
 							}
 
-							if ( this.useTexCoords )
+							if( this.useTexCoords )
 							{
 								pFloat = (float*)pBase;
-								if ( this.texCoordDirection == TexCoordDirection.U )
+								if( this.texCoordDirection == TexCoordDirection.U )
 								{
 									*pFloat++ = element.TexCoord;
 									*pFloat++ = this.otherTexCoordRange[ 0 ];
@@ -570,7 +484,7 @@ namespace Axiom.Core
 								pBase = (byte*)pFloat;
 							}
 
-							if ( e == segment.tail )
+							if( e == segment.tail )
 							{
 								break;
 							}
@@ -582,11 +496,11 @@ namespace Axiom.Core
 			buffer.Unlock();
 		}
 
-		protected virtual void UpdateIndexBuffer()
+		virtual protected void UpdateIndexBuffer()
 		{
 			this.SetupBuffers();
 
-			if ( this.indexContentDirty )
+			if( this.indexContentDirty )
 			{
 				IntPtr pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
 				this.indexData.indexCount = 0;
@@ -595,19 +509,19 @@ namespace Axiom.Core
 				{
 					ushort* pShort = (ushort*)pBufferBase.ToPointer();
 					// indexes
-					foreach ( ChainSegment segment in this.chainSegmentList )
+					foreach( ChainSegment segment in this.chainSegmentList )
 					{
 						// Skip 0 or 1 element segment counts
-						if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
+						if( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 						{
 							// Start from head + 1 since it's only useful in pairs
 							int laste = segment.head;
 
-							while ( true )
+							while( true )
 							{
 								int e = laste + 1;
 								// Wrap Forwards
-								if ( e == this.maxElementsPerChain )
+								if( e == this.maxElementsPerChain )
 								{
 									e = 0;
 								}
@@ -625,7 +539,7 @@ namespace Axiom.Core
 
 								this.indexData.indexCount += 6;
 
-								if ( e == segment.tail )
+								if( e == segment.tail )
 								{
 									break;
 								}
@@ -641,21 +555,21 @@ namespace Axiom.Core
 			}
 		}
 
-		protected virtual void UpdateBoundingBox()
+		virtual protected void UpdateBoundingBox()
 		{
-			if ( this.boundsDirty )
+			if( this.boundsDirty )
 			{
 				this.aabb.IsNull = true;
 				Vector3 widthVector;
 
-				foreach ( ChainSegment segment in this.chainSegmentList )
+				foreach( ChainSegment segment in this.chainSegmentList )
 				{
-					if ( segment.head != SEGMENT_EMPTY )
+					if( segment.head != SEGMENT_EMPTY )
 					{
-						for ( int i = segment.head; ; ++i )
+						for( int i = segment.head;; ++i )
 						{
 							// Wrap forwards
-							if ( i == this.maxElementsPerChain )
+							if( i == this.maxElementsPerChain )
 							{
 								i = 0;
 							}
@@ -666,7 +580,7 @@ namespace Axiom.Core
 							this.aabb.Merge( element.Position - widthVector );
 							this.aabb.Merge( element.Position + widthVector );
 
-							if ( i == segment.tail )
+							if( i == segment.tail )
 							{
 								break;
 							}
@@ -674,7 +588,7 @@ namespace Axiom.Core
 					}
 				}
 
-				if ( this.aabb.IsNull )
+				if( this.aabb.IsNull )
 				{
 					this.radius = 0.0f;
 				}
@@ -690,14 +604,14 @@ namespace Axiom.Core
 
 		#region Public Virtual Methods
 
-		public virtual void AddChainElement( int chainIndex, Element billboardChainElement )
+		virtual public void AddChainElement( int chainIndex, Element billboardChainElement )
 		{
-			if ( chainIndex >= this.chainCount )
+			if( chainIndex >= this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			ChainSegment segment = this.chainSegmentList[ chainIndex ];
-			if ( segment.head == SEGMENT_EMPTY )
+			if( segment.head == SEGMENT_EMPTY )
 			{
 				// Tail starts at end, head grows backwards
 				segment.tail = this.maxElementsPerChain - 1;
@@ -706,7 +620,7 @@ namespace Axiom.Core
 			}
 			else
 			{
-				if ( segment.head == 0 )
+				if( segment.head == 0 )
 				{
 					// Wrap backwards
 					segment.head = this.maxElementsPerChain - 1;
@@ -717,11 +631,11 @@ namespace Axiom.Core
 					--segment.head;
 				}
 				// Run out of elements?
-				if ( segment.head == segment.tail )
+				if( segment.head == segment.tail )
 				{
 					// Move tail backwards too, losing the end of the segment and re-using
 					// it in the head
-					if ( segment.head == 0 )
+					if( segment.head == 0 )
 					{
 						segment.tail = this.maxElementsPerChain - 1;
 					}
@@ -739,28 +653,30 @@ namespace Axiom.Core
 			this.boundsDirty = true;
 
 			// tell parent node to update bounds
-			if ( ParentNode != null )
+			if( ParentNode != null )
 			{
 				ParentNode.NeedUpdate();
 			}
 		}
 
-		public virtual void RemoveChainElement( int chainIndex )
+		virtual public void RemoveChainElement( int chainIndex )
 		{
-			if ( chainIndex >= this.chainCount )
+			if( chainIndex >= this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			ChainSegment segment = this.chainSegmentList[ chainIndex ];
-			if ( segment.head == SEGMENT_EMPTY )
+			if( segment.head == SEGMENT_EMPTY )
+			{
 				return; // nothing to remove
+			}
 
-			if ( segment.tail == segment.head )
+			if( segment.tail == segment.head )
 			{
 				// last item
 				segment.head = segment.tail = SEGMENT_EMPTY;
 			}
-			else if ( segment.tail == 0 )
+			else if( segment.tail == 0 )
 			{
 				segment.tail = this.maxElementsPerChain - 1;
 			}
@@ -773,20 +689,20 @@ namespace Axiom.Core
 			this.indexContentDirty = true;
 			this.boundsDirty = true;
 			// tell parent node to update bounds
-			if ( ParentNode != null )
+			if( ParentNode != null )
 			{
 				ParentNode.NeedUpdate();
 			}
 		}
 
-		public virtual void UpdateChainElement( int chainIndex, int elementIndex, Element billboardChainElement )
+		virtual public void UpdateChainElement( int chainIndex, int elementIndex, Element billboardChainElement )
 		{
-			if ( chainIndex >= this.chainCount )
+			if( chainIndex >= this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			ChainSegment segment = this.chainSegmentList[ chainIndex ];
-			if ( segment.head == SEGMENT_EMPTY )
+			if( segment.head == SEGMENT_EMPTY )
 			{
 				throw new Exception( "Chain segement is empty" );
 			}
@@ -799,15 +715,15 @@ namespace Axiom.Core
 
 			this.boundsDirty = true;
 			// tell parent node to update bounds
-			if ( ParentNode != null )
+			if( ParentNode != null )
 			{
 				ParentNode.NeedUpdate();
 			}
 		}
 
-		public virtual Element GetChainElement( int chainIndex, int elementIndex )
+		virtual public Element GetChainElement( int chainIndex, int elementIndex )
 		{
-			if ( chainIndex >= this.chainCount )
+			if( chainIndex >= this.chainCount )
 			{
 				throw new IndexOutOfRangeException();
 			}
@@ -833,7 +749,7 @@ namespace Axiom.Core
 		{
 			this.UpdateIndexBuffer();
 
-			if ( this.indexData.indexCount > 0 )
+			if( this.indexData.indexCount > 0 )
 			{
 				queue.AddRenderable( this );
 			}
@@ -848,130 +764,53 @@ namespace Axiom.Core
 			}
 		}
 
-		public override float BoundingRadius
-		{
-			get
-			{
-				return this.radius;
-			}
-		}
+		public override float BoundingRadius { get { return this.radius; } }
 
-		public bool CastShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastShadows { get { return false; } }
 
 		#endregion Overriden Methods
 
 		#region IRenderable Implementation
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastsShadows { get { return false; } }
 
-		public Material Material
-		{
-			get
-			{
-				return this.material;
-			}
-		}
+		public Material Material { get { return this.material; } }
 
-		public Technique Technique
-		{
-			get
-			{
-				return this.material.GetBestTechnique();
-			}
-		}
+		public Technique Technique { get { return this.material.GetBestTechnique(); } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public virtual ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		virtual public ushort NumWorldTransforms { get { return 1; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityProjection { get { return false; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityView { get { return false; } }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+		virtual public bool PolygonModeOverrideable { get { return true; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public Quaternion WorldOrientation
-		{
-			get
-			{
-				return parentNode.DerivedOrientation;
-			}
-		}
+		public Quaternion WorldOrientation { get { return parentNode.DerivedOrientation; } }
 
 		/// <summary>
 		///
 		/// </summary>
-		public Vector3 WorldPosition
-		{
-			get
-			{
-				return parentNode.DerivedPosition;
-			}
-		}
+		public Vector3 WorldPosition { get { return parentNode.DerivedPosition; } }
 
-		public LightList Lights
-		{
-			get
-			{
-				return QueryLights();
-			}
-		}
+		public LightList Lights { get { return QueryLights(); } }
 
 		protected RenderOperation renderOperation = new RenderOperation();
+
 		public RenderOperation RenderOperation
 		{
 			get
@@ -988,7 +827,7 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		/// <param name="matrices"></param>
-		public virtual void GetWorldTransforms( Matrix4[] matrices )
+		virtual public void GetWorldTransforms( Matrix4[] matrices )
 		{
 			matrices[ 0 ] = parentNode.FullTransform;
 		}
@@ -998,7 +837,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public virtual float GetSquaredViewDepth( Camera camera )
+		virtual public float GetSquaredViewDepth( Camera camera )
 		{
 			Debug.Assert( parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth." );
 
@@ -1007,7 +846,7 @@ namespace Axiom.Core
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( this.customParams[ index ] == null )
+			if( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
@@ -1019,14 +858,16 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while( customParams.Count <= index )
+			{
 				customParams.Add( Vector4.Zero );
+			}
 			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( this.customParams[ entry.Data ] != null )
+			if( this.customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
@@ -1035,7 +876,6 @@ namespace Axiom.Core
 		#endregion IRenderable Implementation
 
 		#region IDisposable Implementation
-
 
 		/// <summary>
 		/// Class level dispose method
@@ -1063,34 +903,40 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if( renderOperation != null )
 					{
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
 						renderOperation = null;
 					}
 
-                    if ( indexData != null )
-                    {
-                        if ( !indexData.IsDisposed )
-                            indexData.Dispose();
+					if( indexData != null )
+					{
+						if( !indexData.IsDisposed )
+						{
+							indexData.Dispose();
+						}
 
-                        indexData = null;
-                    }
+						indexData = null;
+					}
 
-                    if ( vertexData != null )
-                    {
-                        if ( !vertexData.IsDisposed )
-                            vertexData.Dispose();
+					if( vertexData != null )
+					{
+						if( !vertexData.IsDisposed )
+						{
+							vertexData.Dispose();
+						}
 
-                        vertexData = null;
-                    }
+						vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -1103,7 +949,7 @@ namespace Axiom.Core
 
 	public class BillboardChainFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "BillboardChain";
+		new public const string TypeName = "BillboardChain";
 
 		public BillboardChainFactory()
 		{
@@ -1120,29 +966,29 @@ namespace Axiom.Core
 			bool isDynamic = true;
 
 			// optional parameters
-			if ( param != null )
+			if( param != null )
 			{
-				if ( param.ContainsKey( "maxElements" ) )
+				if( param.ContainsKey( "maxElements" ) )
 				{
 					maxElements = Convert.ToInt32( param[ "maxElements" ] );
 				}
-				if ( param.ContainsKey( "numberOfChains" ) )
+				if( param.ContainsKey( "numberOfChains" ) )
 				{
 					numberOfChains = Convert.ToInt32( param[ "numberOfChains" ] );
 				}
-				if ( param.ContainsKey( "useTextureCoords" ) )
+				if( param.ContainsKey( "useTextureCoords" ) )
 				{
 					useTextureCoords = Convert.ToBoolean( param[ "useTextureCoords" ] );
 				}
-				if ( param.ContainsKey( "useVertexColours" ) )
+				if( param.ContainsKey( "useVertexColours" ) )
 				{
 					useVertexColors = Convert.ToBoolean( param[ "useVertexColours" ] );
 				}
-				else if ( param.ContainsKey( "useVertexColors" ) )
+				else if( param.ContainsKey( "useVertexColors" ) )
 				{
 					useVertexColors = Convert.ToBoolean( param[ "useVertexColors" ] );
 				}
-				if ( param.ContainsKey( "isDynamic" ) )
+				if( param.ContainsKey( "isDynamic" ) )
 				{
 					isDynamic = Convert.ToBoolean( param[ "isDynamic" ] );
 				}

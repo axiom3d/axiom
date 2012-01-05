@@ -25,7 +25,6 @@ namespace Axiom.Demos
 
 		public override void CreateScene()
 		{
-
 			// set some ambient light
 			scene.AmbientLight = ColorEx.Gray;
 
@@ -83,12 +82,10 @@ namespace Axiom.Demos
 			base.OnFrameStarted( source, evt );
 		}
 
-
 		#endregion Methods
 
 		#region Properties
 
 		#endregion Properties
 	}
-
 }

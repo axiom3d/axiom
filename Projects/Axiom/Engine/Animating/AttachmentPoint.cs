@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: TagPoint.cs 909 2006-09-26 09:01:30Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,20 +46,22 @@ using Axiom.Collections;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="TagPoint.cpp" revision="1.12" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
 {
 	public class AttachmentPoint
 	{
-		string name;
-		string parentBone;
-		Quaternion orientation;
-		Vector3 position;
+		private string name;
+		private string parentBone;
+		private Quaternion orientation;
+		private Vector3 position;
 
 		public AttachmentPoint( string name, string parentBone, Quaternion orientation, Vector3 position )
 		{
@@ -65,34 +71,9 @@ namespace Axiom.Animating
 			this.position = position;
 		}
 
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
-		public string ParentBone
-		{
-			get
-			{
-				return parentBone;
-			}
-		}
-		public Quaternion Orientation
-		{
-			get
-			{
-				return orientation;
-			}
-		}
-		public Vector3 Position
-		{
-			get
-			{
-				return position;
-			}
-		}
+		public string Name { get { return name; } }
+		public string ParentBone { get { return parentBone; } }
+		public Quaternion Orientation { get { return orientation; } }
+		public Vector3 Position { get { return position; } }
 	}
-
 }

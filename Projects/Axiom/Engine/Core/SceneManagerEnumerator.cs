@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: SceneManagerList.cs 1036 2007-04-27 02:56:41Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,7 +45,6 @@ using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Core.Collections;
 
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -51,10 +54,7 @@ namespace Axiom.Core
 	/// </summary>
 	public class SceneManagerDefaultFactory : SceneManagerFactory
 	{
-		public SceneManagerDefaultFactory()
-		{
-
-		}
+		public SceneManagerDefaultFactory() {}
 
 		protected override void InitMetaData()
 		{
@@ -73,7 +73,6 @@ namespace Axiom.Core
 		{
 			instance.ClearScene();
 		}
-
 	}
 
 	/// <summary>
@@ -82,17 +81,9 @@ namespace Axiom.Core
 	public class DefaultSceneManager : SceneManager
 	{
 		public DefaultSceneManager( string name )
-			: base( name )
-		{
-		}
+			: base( name ) {}
 
-		public override string TypeName
-		{
-			get
-			{
-				return "DefaultSceneManager";
-			}
-		}
+		public override string TypeName { get { return "DefaultSceneManager"; } }
 	}
 
 	/// <summary>
@@ -148,8 +139,10 @@ namespace Axiom.Core
 			{
 				_currentRenderSystem = value;
 
-				foreach ( SceneManager instance in _instances.Values )
+				foreach( SceneManager instance in _instances.Values )
+				{
 					instance.TargetRenderSystem = value;
+				}
 			}
 		}
 
@@ -157,25 +150,13 @@ namespace Axiom.Core
 		///		A list of all types of SceneManager available for construction,
 		///		providing some information about each one.
 		/// </summary>
-		public List<SceneManagerMetaData> MetaDataList
-		{
-			get
-			{
-				return _metaDataList;
-			}
-		}
+		public List<SceneManagerMetaData> MetaDataList { get { return _metaDataList; } }
 
 		/// <summary>
 		///		A list of all types of SceneManager available for construction,
 		///		providing some information about each one.
 		/// </summary>
-		public SceneManagerCollection SceneManagerList
-		{
-			get
-			{
-				return _instances;
-			}
-		}
+		public SceneManagerCollection SceneManagerList { get { return _instances; } }
 
 		#endregion Public Properties
 
@@ -203,9 +184,9 @@ namespace Axiom.Core
 			// destroy all instances for this factory
 			SceneManagerCollection tempList = new SceneManagerCollection();
 			tempList.AddRange( _instances );
-			foreach ( SceneManager sm in tempList.Values )
+			foreach( SceneManager sm in tempList.Values )
 			{
-				if ( sm.TypeName == fact.MetaData.typeName )
+				if( sm.TypeName == fact.MetaData.typeName )
 				{
 					fact.DestroyInstance( sm );
 					_instances.Remove( sm.Name );
@@ -213,9 +194,9 @@ namespace Axiom.Core
 			}
 
 			// remove from metadata
-			for ( int i = 0; i < _metaDataList.Count; i++ )
+			for( int i = 0; i < _metaDataList.Count; i++ )
 			{
-				if ( _metaDataList[ i ].Equals( fact.MetaData ) )
+				if( _metaDataList[ i ].Equals( fact.MetaData ) )
 				{
 					_metaDataList.Remove( _metaDataList[ i ] );
 					break;
@@ -245,22 +226,22 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( SceneType sceneType, string instanceName )
 		{
-			if ( _instances.ContainsKey( instanceName ) )
+			if( _instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance called '{0}' already exists", instanceName );
 			}
 
 			SceneManager instance = null;
 
-			if ( instanceName == string.Empty )
+			if( instanceName == string.Empty )
 			{
 				instanceName = "SceneManagerInstance" + ( ++_instanceCreateCount ).ToString();
 			}
 
 			// iterate backwards to find the matching factory registered last
-			for ( int i = _factories.Count - 1; i > -1; i-- )
+			for( int i = _factories.Count - 1; i > -1; i-- )
 			{
-				if ( ( _factories[ i ].MetaData.sceneTypeMask & sceneType ) > 0 )
+				if( ( _factories[ i ].MetaData.sceneTypeMask & sceneType ) > 0 )
 				{
 					instance = _factories[ i ].CreateInstance( instanceName );
 					break;
@@ -268,12 +249,16 @@ namespace Axiom.Core
 			}
 
 			// use default factory if none
-			if ( instance == null )
+			if( instance == null )
+			{
 				instance = _defaultFactory.CreateInstance( instanceName );
+			}
 
 			// assign render system if already configured
-			if ( _currentRenderSystem != null )
+			if( _currentRenderSystem != null )
+			{
 				instance.TargetRenderSystem = _currentRenderSystem;
+			}
 
 			_instances.Add( instanceName, instance );
 
@@ -299,18 +284,18 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( string typeName, string instanceName )
 		{
-			if ( _instances.ContainsKey( instanceName ) )
+			if( _instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance called '{0}' already exists", instanceName );
 			}
 
 			SceneManager instance = null;
 
-			foreach ( SceneManagerFactory factory in _factories )
+			foreach( SceneManagerFactory factory in _factories )
 			{
-				if ( factory.MetaData.typeName == typeName )
+				if( factory.MetaData.typeName == typeName )
 				{
-					if ( instanceName == string.Empty )
+					if( instanceName == string.Empty )
 					{
 						instanceName = "SceneManagerInstance" + ( ++_instanceCreateCount ).ToString();
 					}
@@ -320,13 +305,13 @@ namespace Axiom.Core
 				}
 			}
 
-			if ( instance == null )
+			if( instance == null )
 			{
 				throw new AxiomException( "No factory found for scene manager of type '{0}'", typeName );
 			}
 
 			// assign render system if already configured
-			if ( _currentRenderSystem != null )
+			if( _currentRenderSystem != null )
 			{
 				instance.TargetRenderSystem = _currentRenderSystem;
 			}
@@ -336,7 +321,6 @@ namespace Axiom.Core
 			return instance;
 		}
 
-
 		/// <summary>
 		///		Destroys an instance of a SceneManager.
 		/// </summary>
@@ -344,19 +328,20 @@ namespace Axiom.Core
 		public void DestroySceneManager( SceneManager sm )
 		{
 			// erase instance from list
-            if ( !sm.IsDisposed )
-                sm.Dispose();
+			if( !sm.IsDisposed )
+			{
+				sm.Dispose();
+			}
 
 			_instances.Remove( sm.Name );
 
-			foreach ( SceneManagerFactory factory in _factories )
+			foreach( SceneManagerFactory factory in _factories )
 			{
-				if ( factory.MetaData.typeName == sm.TypeName )
+				if( factory.MetaData.typeName == sm.TypeName )
 				{
 					factory.DestroyInstance( sm );
 				}
 			}
-
 		}
 
 		/// <summary>
@@ -368,7 +353,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager GetSceneManager( string instanceName )
 		{
-			if ( !_instances.ContainsKey( instanceName ) )
+			if( !_instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance with name '{0}' not found", instanceName );
 			}
@@ -394,9 +379,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManagerMetaData GetMetaData( string typeName )
 		{
-			foreach ( SceneManagerMetaData metaData in _metaDataList )
+			foreach( SceneManagerMetaData metaData in _metaDataList )
 			{
-				if ( typeName == metaData.typeName )
+				if( typeName == metaData.typeName )
 				{
 					return metaData;
 				}
@@ -410,15 +395,16 @@ namespace Axiom.Core
 		///</summary>
 		public void ShutdownAll()
 		{
-            foreach ( SceneManager instance in _instances.Values )
-            {
-                instance.ClearScene();
-                if (!instance.IsDisposed)
-                    instance.Dispose();
-            }
+			foreach( SceneManager instance in _instances.Values )
+			{
+				instance.ClearScene();
+				if( !instance.IsDisposed )
+				{
+					instance.Dispose();
+				}
+			}
 		}
 
 		#endregion Public Methods
-
 	}
 }

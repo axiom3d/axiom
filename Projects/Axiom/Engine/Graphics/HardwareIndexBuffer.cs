@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,19 +48,22 @@ namespace Axiom.Graphics
 	///		Describes the graphics API independent functionality required by a hardware
 	///		index buffer.  
 	/// </summary>
-	public abstract class HardwareIndexBuffer : HardwareBuffer
+	abstract public class HardwareIndexBuffer : HardwareBuffer
 	{
 		#region Fields
+
 		protected HardwareBufferManagerBase Manager;
 
 		/// <summary>
 		///		Type of index (16 or 32 bit).
 		/// </summary>
 		protected IndexType type;
+
 		/// <summary>
 		///		Number of indices in this buffer.
 		/// </summary>
 		protected int numIndices;
+
 		/// <summary>
 		///     Size of each index.
 		/// </summary>
@@ -79,11 +86,11 @@ namespace Axiom.Graphics
 		{
 			this.type = type;
 			this.numIndices = numIndices;
-			this.Manager =  manager;
+			this.Manager = manager;
 			// calc the index buffer size
 			sizeInBytes = numIndices;
 
-			if ( type == IndexType.Size32 )
+			if( type == IndexType.Size32 )
 			{
 				indexSize = Marshal.SizeOf( typeof( int ) );
 			}
@@ -95,7 +102,7 @@ namespace Axiom.Graphics
 			sizeInBytes *= indexSize;
 
 			// create a shadow buffer if required
-			if ( useShadowBuffer )
+			if( useShadowBuffer )
 			{
 				shadowBuffer = new DefaultHardwareIndexBuffer( Manager, type, numIndices, BufferUsage.Dynamic );
 			}
@@ -108,36 +115,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
 		/// </summary>
-		public IndexType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
+		public IndexType Type { get { return type; } }
 
 		/// <summary>
 		///		Gets the number of indices in this buffer.
 		/// </summary>
-		public int IndexCount
-		{
-			get
-			{
-				return numIndices;
-			}
-		}
+		public int IndexCount { get { return numIndices; } }
 
 		/// <summary>
 		///     Gets the size (in bytes) of each index element.
 		/// </summary>
 		/// <value></value>
-		public int IndexSize
-		{
-			get
-			{
-				return indexSize;
-			}
-		}
+		public int IndexSize { get { return indexSize; } }
 
 		#endregion
 
@@ -145,9 +134,9 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					Manager.NotifyIndexBufferDestroyed( this );
 				}
@@ -156,6 +145,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

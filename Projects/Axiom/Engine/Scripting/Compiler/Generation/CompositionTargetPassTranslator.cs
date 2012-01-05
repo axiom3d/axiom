@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -66,47 +70,50 @@ namespace Axiom.Scripting.Compiler
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
 				CompositionTechnique technique = (CompositionTechnique)obj.Parent.Context;
-				if ( obj.Id == (uint)Keywords.ID_TARGET )
+				if( obj.Id == (uint)Keywords.ID_TARGET )
 				{
 					_Target = technique.CreateTargetPass();
-					if ( !string.IsNullOrEmpty( obj.Name ) )
+					if( !string.IsNullOrEmpty( obj.Name ) )
+					{
 						_Target.OutputName = obj.Name;
+					}
 				}
-				else if ( obj.Id == (uint)Keywords.ID_TARGET_OUTPUT )
+				else if( obj.Id == (uint)Keywords.ID_TARGET_OUTPUT )
 				{
 					_Target = technique.OutputTarget;
 				}
 				obj.Context = _Target;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach( AbstractNode i in obj.Children )
 				{
-					if ( i is ObjectAbstractNode )
+					if( i is ObjectAbstractNode )
 					{
 						_processNode( compiler, i );
 					}
-					else if ( i is PropertyAbstractNode )
+					else if( i is PropertyAbstractNode )
 					{
 						PropertyAbstractNode prop = (PropertyAbstractNode)i;
-						switch ( (Keywords)prop.Id )
+						switch( (Keywords)prop.Id )
 						{
-							#region ID_INPUT
+								#region ID_INPUT
+
 							case Keywords.ID_INPUT:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
 								}
 								else
 								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
+									if( prop.Values[ 0 ] is AtomAbstractNode )
 									{
 										AtomAbstractNode atom = (AtomAbstractNode)prop.Values[ 0 ];
-										switch ( (Keywords)atom.Id )
+										switch( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
 												_Target.InputMode = CompositorInputMode.None;
@@ -127,16 +134,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_INPUT
 
-							#region ID_ONLY_INITIAL
+								#endregion ID_INPUT
+
+								#region ID_ONLY_INITIAL
+
 							case Keywords.ID_ONLY_INITIAL:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -144,7 +153,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									bool val = false;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										_Target.OnlyInitial = val;
 									}
@@ -154,16 +163,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_ONLY_INITIAL
 
-							#region ID_VISIBILITY_MASK
+								#endregion ID_ONLY_INITIAL
+
+								#region ID_VISIBILITY_MASK
+
 							case Keywords.ID_VISIBILITY_MASK:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -171,7 +182,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
+									if( getUInt( prop.Values[ 0 ], out val ) )
 									{
 										_Target.VisibilityMask = val;
 									}
@@ -181,16 +192,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_VISIBILITY_MASK
 
-							#region ID_LOD_BIAS
+								#endregion ID_VISIBILITY_MASK
+
+								#region ID_LOD_BIAS
+
 							case Keywords.ID_LOD_BIAS:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -198,7 +211,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									float val;
-									if ( getFloat( prop.Values[ 0 ], out val ) )
+									if( getFloat( prop.Values[ 0 ], out val ) )
 									{
 										_Target.LodBias = val;
 									}
@@ -208,16 +221,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_LOD_BIAS
 
-							#region ID_MATERIAL_SCHEME
+								#endregion ID_LOD_BIAS
+
+								#region ID_MATERIAL_SCHEME
+
 							case Keywords.ID_MATERIAL_SCHEME:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -225,7 +240,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									string val;
-									if ( getString( prop.Values[ 0 ], out val ) )
+									if( getString( prop.Values[ 0 ], out val ) )
 									{
 										_Target.MaterialScheme = val;
 									}
@@ -235,16 +250,18 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_MATERIAL_SCHEME
 
-							#region ID_SHADOWS_ENABLED
+								#endregion ID_MATERIAL_SCHEME
+
+								#region ID_SHADOWS_ENABLED
+
 							case Keywords.ID_SHADOWS_ENABLED:
-								if ( prop.Values.Count == 0 )
+								if( prop.Values.Count == 0 )
 								{
 									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
 									return;
 								}
-								else if ( prop.Values.Count > 1 )
+								else if( prop.Values.Count > 1 )
 								{
 									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
 									return;
@@ -252,7 +269,7 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									bool val;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
+									if( getBoolean( prop.Values[ 0 ], out val ) )
 									{
 										_Target.ShadowsEnabled = val;
 									}
@@ -262,7 +279,8 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
-							#endregion ID_SHADOWS_ENABLED
+
+								#endregion ID_SHADOWS_ENABLED
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -276,4 +294,3 @@ namespace Axiom.Scripting.Compiler
 		}
 	}
 }
-

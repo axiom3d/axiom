@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -81,13 +85,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Gets a Vector4 with all components set to 0.
 		/// </summary>
-		public static Vector4 Zero
-		{
-			get
-			{
-				return zeroVector;
-			}
-		}
+		public static Vector4 Zero { get { return zeroVector; } }
 
 		#endregion Properties
 
@@ -119,6 +117,7 @@ namespace Axiom.Math
 		{
 			return vector * matrix;
 		}
+
 		/// <summary>
 		///		
 		/// </summary>
@@ -177,9 +176,9 @@ namespace Axiom.Math
 		public static bool operator ==( Vector4 left, Vector4 right )
 		{
 			return ( left.x == right.x &&
-				left.y == right.y &&
-				left.z == right.z &&
-				left.w == right.w );
+			         left.y == right.y &&
+			         left.z == right.z &&
+			         left.w == right.w );
 		}
 
 		/// <summary>
@@ -203,6 +202,7 @@ namespace Axiom.Math
 		{
 			return new Vector4( left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w );
 		}
+
 		/// <summary>
 		///		Used to negate the elements of a vector.
 		/// </summary>
@@ -222,9 +222,9 @@ namespace Axiom.Math
 		public static bool operator !=( Vector4 left, Vector4 right )
 		{
 			return ( left.x != right.x ||
-				left.y != right.y ||
-				left.z != right.z ||
-				left.w != right.w );
+			         left.y != right.y ||
+			         left.z != right.z ||
+			         left.w != right.w );
 		}
 
 		/// <summary>
@@ -242,8 +242,10 @@ namespace Axiom.Math
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed( Real* pX = &x )
+					{
 						return *( pX + index );
+					}
 				}
 			}
 			set
@@ -253,8 +255,10 @@ namespace Axiom.Math
 				// using pointer arithmetic here for less code.  Otherwise, we'd have a big switch statement.
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed( Real* pX = &x )
+					{
 						*( pX + index ) = value;
+					}
 				}
 			}
 		}
@@ -317,7 +321,6 @@ namespace Axiom.Math
 
 			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
 		}
-
 
 		#endregion
 	}

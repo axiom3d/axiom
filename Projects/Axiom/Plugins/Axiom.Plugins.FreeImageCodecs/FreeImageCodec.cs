@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: AssemblyInfo.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Text;
+
 using FI = FreeImageAPI;
 using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
@@ -59,9 +64,10 @@ namespace Axiom.Plugins.FreeImageCodecs
 			_type = type;
 			_freeImageType = freeImageType;
 		}
+
 		public static void Initialize()
 		{
-			if ( !FI.FreeImage.IsAvailable() )
+			if( !FI.FreeImage.IsAvailable() )
 			{
 				LogManager.Instance.Write( "[ Warning ] No Freeimage found." );
 				return;
@@ -73,34 +79,37 @@ namespace Axiom.Plugins.FreeImageCodecs
 			StringBuilder sb = new StringBuilder();
 			sb.Append( " Supported formats: " );
 			bool first = true;
-			for ( int i = 0; i < FI.FreeImage.GetFIFCount(); i++ )
+			for( int i = 0; i < FI.FreeImage.GetFIFCount(); i++ )
 			{
-				if ( (FI.FREE_IMAGE_FORMAT)i == FI.FREE_IMAGE_FORMAT.FIF_DDS )
+				if( (FI.FREE_IMAGE_FORMAT)i == FI.FREE_IMAGE_FORMAT.FIF_DDS )
+				{
 					continue;
+				}
 
 				string exts = FI.FreeImage.GetFIFExtensionList( (FI.FREE_IMAGE_FORMAT)i );
-				if ( !first )
+				if( !first )
 				{
 					sb.Append( "," );
 				}
 				else
+				{
 					first = false;
+				}
 				sb.Append( exts );
 				// Pull off individual formats (separated by comma by FI)
 				string[] extensions = exts.Split( ',' );
-				foreach ( string extension in extensions )
+				foreach( string extension in extensions )
 				{
 					// FreeImage 3.13 lists many formats twice: once under their own codec and
 					// once under the "RAW" codec, which is listed last. Avoid letting the RAW override
 					// the dedicated codec!
-					if ( !CodecManager.Instance.IsCodecAviable( extension ) )
+					if( !CodecManager.Instance.IsCodecAviable( extension ) )
 					{
 						ImageCodec codec = new FreeImageCodec( extension, (FI.FREE_IMAGE_TYPE)i );
 						_codecList.Add( codec );
 						CodecManager.Instance.RegisterCodec( codec );
 					}
 				}
-
 			}
 
 			LogManager.Instance.Write( sb.ToString() );
@@ -112,7 +121,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		/// </summary>
 		public static void Shutdown()
 		{
-			foreach ( ICodec codec in _codecList )
+			foreach( ICodec codec in _codecList )
 			{
 				CodecManager.Instance.UnregisterCodec( codec );
 			}
@@ -123,13 +132,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		/// <summary>
 		/// 
 		/// </summary>
-		public override string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+		public override string Type { get { return _type; } }
 
 		/// <summary>
 		/// 
@@ -143,30 +146,30 @@ namespace Axiom.Plugins.FreeImageCodecs
 			// Set error handler
 			FI.FreeImageEngine.Message += new FI.OutputMessageFunction( FreeImageLoadErrorHandler );
 			// Buffer stream into memory (TODO: override IO functions instead?)
-			byte[] data = new byte[ (int)input.Length ];
+			byte[] data = new byte[(int)input.Length];
 			input.Read( data, 0, data.Length );
 			IntPtr datPtr = Memory.PinObject( data );
 			FI.FIMEMORY fiMem = FI.FreeImage.OpenMemory( datPtr, (uint)data.Length );
 			FI.FREE_IMAGE_FORMAT ff = (FI.FREE_IMAGE_FORMAT)_freeImageType;
 			FI.FIBITMAP fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem, FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
-			if ( fiBitmap.IsNull )
+			if( fiBitmap.IsNull )
 			{
 				throw new AxiomException( "Error decoding image" );
 			}
 
 			ImageData imgData = new ImageData();
 			//output = new System.IO.MemoryStream();
-			imgData.depth = 1;// only 2D formats handled by this codec
+			imgData.depth = 1; // only 2D formats handled by this codec
 			imgData.width = (int)FI.FreeImage.GetWidth( fiBitmap );
 			imgData.height = (int)FI.FreeImage.GetHeight( fiBitmap );
-			imgData.numMipMaps = 0;// no mipmaps in non-DDS
+			imgData.numMipMaps = 0; // no mipmaps in non-DDS
 
 			// Must derive format first, this may perform conversions
 			FI.FREE_IMAGE_TYPE imageType = FI.FreeImage.GetImageType( fiBitmap );
 			FI.FREE_IMAGE_COLOR_TYPE colorType = FI.FreeImage.GetColorType( fiBitmap );
 			int bpp = (int)FI.FreeImage.GetBPP( fiBitmap );
 
-			switch ( imageType )
+			switch( imageType )
 			{
 				case FI.FREE_IMAGE_TYPE.FIT_UNKNOWN:
 				case FI.FREE_IMAGE_TYPE.FIT_COMPLEX:
@@ -179,7 +182,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				case FI.FREE_IMAGE_TYPE.FIT_BITMAP:
 					// Standard image type
 					// Perform any colour conversions for greyscale
-					if ( colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_MINISWHITE || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_MINISBLACK )
+					if( colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_MINISWHITE || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_MINISBLACK )
 					{
 						FI.FIBITMAP newBitmap = FI.FreeImage.ConvertToGreyscale( fiBitmap );
 						// free old bitmap and replace
@@ -189,11 +192,11 @@ namespace Axiom.Plugins.FreeImageCodecs
 						bpp = (int)FI.FreeImage.GetBPP( fiBitmap );
 						colorType = FI.FreeImage.GetColorType( fiBitmap );
 					}
-					// Perform any colour conversions for RGB
-					else if ( bpp < 8 || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_PALETTE || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_CMYK )
+						// Perform any colour conversions for RGB
+					else if( bpp < 8 || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_PALETTE || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_CMYK )
 					{
 						FI.FIBITMAP newBitmap;
-						if ( FI.FreeImage.IsTransparent( fiBitmap ) )
+						if( FI.FreeImage.IsTransparent( fiBitmap ) )
 						{
 							// convert to 32 bit to preserve the transparency 
 							// (the alpha byte will be 0 if pixel is transparent)
@@ -214,7 +217,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 					}
 
 					// by this stage, 8-bit is greyscale, 16/24/32 bit are RGB[A]
-					switch ( bpp )
+					switch( bpp )
 					{
 						case 8:
 							imgData.format = PixelFormat.L8;
@@ -222,7 +225,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 						case 16:
 							// Determine 555 or 565 from green mask
 							// cannot be 16-bit greyscale since that's FIT_UINT16
-							if ( FI.FreeImage.GetGreenMask( fiBitmap ) == FI.FreeImage.FI16_565_GREEN_MASK )
+							if( FI.FreeImage.GetGreenMask( fiBitmap ) == FI.FreeImage.FI16_565_GREEN_MASK )
 							{
 								imgData.format = PixelFormat.R5G6B5;
 							}
@@ -236,7 +239,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 							// FreeImage differs per platform
 							//     PixelFormat.BYTE_BGR[A] for little endian (== PixelFormat.ARGB native)
 							//     PixelFormat.BYTE_RGB[A] for big endian (== PixelFormat.RGBA native)
-							if ( FI.FreeImage.IsLittleEndian() )
+							if( FI.FreeImage.IsLittleEndian() )
 							{
 								imgData.format = PixelFormat.BYTE_BGR;
 							}
@@ -246,7 +249,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 							}
 							break;
 						case 32:
-							if ( FI.FreeImage.IsLittleEndian() )
+							if( FI.FreeImage.IsLittleEndian() )
 							{
 								imgData.format = PixelFormat.BYTE_BGRA;
 							}
@@ -255,9 +258,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 								imgData.format = PixelFormat.BYTE_RGBA;
 							}
 							break;
-
-
-					};
+					}
+					;
 					break;
 				case FI.FREE_IMAGE_TYPE.FIT_UINT16:
 				case FI.FREE_IMAGE_TYPE.FIT_INT16:
@@ -288,15 +290,15 @@ namespace Axiom.Plugins.FreeImageCodecs
 			int dstPitch = imgData.width * PixelUtil.GetNumElemBytes( imgData.format );
 			imgData.size = dstPitch * imgData.height;
 			// Bind output buffer
-			byte[] outPutData = new byte[ imgData.size ];
+			byte[] outPutData = new byte[imgData.size];
 			unsafe
 			{
-				fixed ( byte* pDstPtr = outPutData )//(byte*)Memory.PinObject( outPutData );
+				fixed( byte* pDstPtr = outPutData ) //(byte*)Memory.PinObject( outPutData );
 				{
 					byte* pDst = pDstPtr;
 					byte* pSrc = (byte*)IntPtr.Zero;
 					byte* byteSrcData = (byte*)srcData;
-					for ( int y = 0; y < imgData.height; y++ )
+					for( int y = 0; y < imgData.height; y++ )
 					{
 						pSrc = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
 						Memory.Copy( (IntPtr)pSrc, (IntPtr)pDst, dstPitch );
@@ -315,9 +317,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FreeImage.Unload( fiBitmap );
 			FI.FreeImage.CloseMemory( fiMem );
 
-
 			return imgData;
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -329,9 +331,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FIBITMAP ret = new FI.FIBITMAP();
 			ret.SetNull();
 			ImageData imgData = codecData as ImageData;
-			if ( imgData != null )
+			if( imgData != null )
 			{
-				byte[] data = new byte[ (int)input.Length ];
+				byte[] data = new byte[(int)input.Length];
 				input.Read( data, 0, data.Length );
 				IntPtr dataPtr = Memory.PinObject( data );
 				PixelBox src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, dataPtr );
@@ -345,7 +347,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				PixelFormat determiningFormat = imgData.format;
 
-				switch ( determiningFormat )
+				switch( determiningFormat )
 				{
 					case PixelFormat.R5G6B5:
 					case PixelFormat.B5G6R5:
@@ -367,9 +369,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 						// I'd like to be able to use r/g/b masks to get FreeImage to load the data
 						// in it's existing format, but that doesn't work, FreeImage needs to have
 						// data in RGB[A] (big endian) and BGR[A] (little endian), always.
-						if ( PixelUtil.HasAlpha( determiningFormat ) )
+						if( PixelUtil.HasAlpha( determiningFormat ) )
 						{
-							if ( FI.FreeImageEngine.IsLittleEndian )
+							if( FI.FreeImageEngine.IsLittleEndian )
 							{
 								requiredFormat = PixelFormat.BYTE_BGRA;
 							}
@@ -377,11 +379,10 @@ namespace Axiom.Plugins.FreeImageCodecs
 							{
 								requiredFormat = PixelFormat.BYTE_RGBA;
 							}
-
 						}
 						else
 						{
-							if ( FI.FreeImageEngine.IsLittleEndian )
+							if( FI.FreeImageEngine.IsLittleEndian )
 							{
 								requiredFormat = PixelFormat.BYTE_BGR;
 							}
@@ -431,15 +432,15 @@ namespace Axiom.Plugins.FreeImageCodecs
 						break;
 					default:
 						throw new AxiomException( "Not Supported image format :" + determiningFormat.ToString() );
-				}//end switch
+				} //end switch
 
 				// Check support for this image type & bit depth
-				if ( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)_freeImageType, imageType ) ||
-					!FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, PixelUtil.GetNumElemBits( requiredFormat ) ) )
+				if( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)_freeImageType, imageType ) ||
+				    !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, PixelUtil.GetNumElemBits( requiredFormat ) ) )
 				{
 					// Ok, need to allocate a fallback
 					// Only deal with RGBA . RGB for now
-					switch ( requiredFormat )
+					switch( requiredFormat )
 					{
 						case PixelFormat.BYTE_RGBA:
 							requiredFormat = PixelFormat.BYTE_RGB;
@@ -454,16 +455,16 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				bool conversionRequired = false;
 				input.Position = 0;
-				byte[] srcData = new byte[ (int)input.Length ];
+				byte[] srcData = new byte[(int)input.Length];
 				input.Read( srcData, 0, srcData.Length );
 				IntPtr srcDataPtr = Memory.PinObject( srcData );
 				int bpp = PixelUtil.GetNumElemBits( requiredFormat );
-				if ( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, bpp ) )
+				if( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, bpp ) )
 				{
-					if ( bpp == 32 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 24 ) )
+					if( bpp == 32 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 24 ) )
 					{
 						// drop to 24 bit (lose alpha)
-						if ( FI.FreeImage.IsLittleEndian() )
+						if( FI.FreeImage.IsLittleEndian() )
 						{
 							requiredFormat = PixelFormat.BYTE_BGR;
 						}
@@ -472,7 +473,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 							requiredFormat = PixelFormat.BYTE_RGB;
 						}
 					}
-					else if ( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )
+					else if( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )
 					{
 						//// drop to 96-bit floating point
 						requiredFormat = PixelFormat.FLOAT32_RGB;
@@ -480,11 +481,11 @@ namespace Axiom.Plugins.FreeImageCodecs
 				}
 
 				PixelBox convBox = new PixelBox( imgData.width, imgData.height, 1, requiredFormat );
-				if ( requiredFormat != imgData.format )
+				if( requiredFormat != imgData.format )
 				{
 					conversionRequired = true;
 					// Allocate memory
-					byte[] convData = new byte[ convBox.ConsecutiveSize ];
+					byte[] convData = new byte[convBox.ConsecutiveSize];
 					convBox.Data = Memory.PinObject( convData );
 
 					PixelBox newSrc = new PixelBox( imgData.width, imgData.height, 1, imgData.format, dataPtr );
@@ -493,9 +494,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 				}
 
 				ret = FI.FreeImage.AllocateT( imageType, imgData.width, imgData.height, bpp );
-				if ( ret.IsNull )
+				if( ret.IsNull )
 				{
-					if ( conversionRequired )
+					if( conversionRequired )
 					{
 						Memory.UnpinObject( srcData );
 						convBox = null;
@@ -504,7 +505,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 					throw new AxiomException( "FreeImage.AllocateT failed - possibly out of memory. " );
 				}
 
-				if ( requiredFormat == PixelFormat.L8 || requiredFormat == PixelFormat.A8 )
+				if( requiredFormat == PixelFormat.L8 || requiredFormat == PixelFormat.A8 )
 				{
 					// Must explicitly tell FreeImage that this is greyscale by setting
 					// a "grey" palette (otherwise it will save as a normal RGB
@@ -523,7 +524,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				{
 					byte* byteSrcData = (byte*)( pSrc );
 					byte* byteDstData = (byte*)( pDest );
-					for ( int y = 0; y < imgData.height; y++ )
+					for( int y = 0; y < imgData.height; y++ )
 					{
 						byteSrcData = byteSrcData + ( imgData.height - y - 1 ) * srcPitch;
 						Memory.Copy( pSrc, pDest, srcPitch );
@@ -531,7 +532,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 					}
 				}
 
-				if ( conversionRequired )
+				if( conversionRequired )
 				{
 					// delete temporary conversion area
 					Memory.UnpinObject( srcData );
@@ -540,10 +541,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 			}
 			return ret;
 		}
-		public override void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args )
-		{
 
-		}
+		public override void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args ) {}
 
 		/// <summary>
 		/// 
@@ -566,16 +565,14 @@ namespace Axiom.Plugins.FreeImageCodecs
 		/// </summary>
 		/// <param name="fif"></param>
 		/// <param name="message"></param>
-		private static void FreeImageSaveErrorHandler( FI.FREE_IMAGE_FORMAT fif, string message )
-		{
-		}
+		private static void FreeImageSaveErrorHandler( FI.FREE_IMAGE_FORMAT fif, string message ) {}
+
 		private static void FreeImageLoadErrorHandler( FI.FREE_IMAGE_FORMAT fif, string message )
 		{
 			string format = FI.FreeImage.GetFormatFromFIF( fif );
 
 			LogManager.Instance.Write( "FreeImage error: '" + message + "'" +
-				( string.IsNullOrEmpty( format ) ? "." : " when loading format " + format ) );
+			                           ( string.IsNullOrEmpty( format ) ? "." : " when loading format " + format ) );
 		}
-
 	}
 }

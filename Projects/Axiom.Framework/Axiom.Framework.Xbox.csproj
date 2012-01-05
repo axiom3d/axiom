@@ -20,7 +20,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Xbox 360\</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <DebugType>full</DebugType>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
@@ -30,13 +30,15 @@
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
+	<DocumentationFile>bin\Xbox\Amiom.Framework.xml</DocumentationFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoStdLib>true</NoStdLib>
   </PropertyGroup>
   <ItemGroup>

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -52,7 +56,7 @@ namespace Axiom.Input
 	///		refactored into a better design when I get time to look at it
 	///		properly. For now it's a quick-and-dirty way to get what I need.
 	/// </remarks>
-	public abstract class InputReader : IDisposable
+	abstract public class InputReader : IDisposable
 	{
 		#region Fields
 
@@ -60,6 +64,7 @@ namespace Axiom.Input
 		///		Flag for whether or not to fire keyboard events.
 		/// </summary>
 		protected bool useKeyboardEvents;
+
 		/// <summary>
 		///		Flag for whether or not to fire mouse events.
 		/// </summary>
@@ -89,7 +94,7 @@ namespace Axiom.Input
 		///		If true, input will be taken over from the OS and exclusive to the window.
 		///		If false, input will still be shared with other apps.
 		///	</param>
-		public abstract void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
+		abstract public void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
 
 		/// <summary>
 		///		Captures the state of all the input devices.
@@ -101,21 +106,21 @@ namespace Axiom.Input
 		///		captured at once and therefore combinations of input are not
 		///		subject to time differences when methods are called.
 		/// </remarks>
-		public abstract void Capture();
+		abstract public void Capture();
 
 		/// <summary>
 		///		Used to check if a particular key was pressed during the last call to Capture.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public abstract bool IsKeyPressed( Axiom.Input.KeyCodes key );
+		abstract public bool IsKeyPressed( Axiom.Input.KeyCodes key );
 
 		/// <summary>
 		///    Returns true if the specified mouse button is currently down.
 		/// </summary>
 		/// <param name="button">Mouse button to query.</param>
 		/// <returns>True if the mouse button is down, false otherwise.</returns>
-		public abstract bool IsMousePressed( Axiom.Input.MouseButtons button );
+		abstract public bool IsMousePressed( Axiom.Input.MouseButtons button );
 
 		#endregion Methods
 
@@ -125,52 +130,34 @@ namespace Axiom.Input
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the X (horizontal) axis.
 		/// </summary>
-		public abstract int RelativeMouseX
-		{
-			get;
-		}
+		abstract public int RelativeMouseX { get; }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Y (vertical) axis.
 		/// </summary>
-		public abstract int RelativeMouseY
-		{
-			get;
-		}
+		abstract public int RelativeMouseY { get; }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Z (mouse wheel) axis.
 		/// </summary>
-		public abstract int RelativeMouseZ
-		{
-			get;
-		}
+		abstract public int RelativeMouseZ { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the X (horizontal) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseX
-		{
-			get;
-		}
+		abstract public int AbsoluteMouseX { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Y (vertical) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseY
-		{
-			get;
-		}
+		abstract public int AbsoluteMouseY { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseZ
-		{
-			get;
-		}
+		abstract public int AbsoluteMouseZ { get; }
 
 		/// <summary>
 		///		Get/Set whether or not to use event based keyboard input notification.
@@ -179,11 +166,7 @@ namespace Axiom.Input
 		///		When true, events will be fired when keyboard input occurs on a call to <see cref="Capture"/>.
 		///		When false, the current keyboard state will be available via <see cref="IsKeyPressed"/> .
 		/// </value>
-		public abstract bool UseKeyboardEvents
-		{
-			get;
-			set;
-		}
+		abstract public bool UseKeyboardEvents { get; set; }
 
 		/// <summary>
 		///		Get/Set whether or not to use event based mouse input notification.
@@ -192,11 +175,7 @@ namespace Axiom.Input
 		///		When true, events will be fired when mouse input occurs on a call to <see cref="Capture"/>.
 		///		When false, the current mouse state will be available via <see cref="IsMousePressed"/> .
 		/// </value>
-		public abstract bool UseMouseEvents
-		{
-			get;
-			set;
-		}
+		abstract public bool UseMouseEvents { get; set; }
 
 		#endregion Properties
 
@@ -215,7 +194,7 @@ namespace Axiom.Input
 		{
 			bool isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
 
-			switch ( keyCode )
+			switch( keyCode )
 			{
 				case KeyCodes.A:
 					return isShiftDown ? 'A' : 'a';
@@ -327,9 +306,9 @@ namespace Axiom.Input
 		/// <param name="down">True if the key is being pressed down, false if being released.</param>
 		protected void KeyChanged( KeyCodes key, bool down )
 		{
-			if ( down )
+			if( down )
 			{
-				switch ( key )
+				switch( key )
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
@@ -352,7 +331,7 @@ namespace Axiom.Input
 			}
 			else
 			{
-				switch ( key )
+				switch( key )
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
@@ -405,7 +384,7 @@ namespace Axiom.Input
 		/// <param name="e">Event arguments.</param>
 		protected void OnKeyDown( KeyEventArgs e )
 		{
-			if ( KeyDown != null )
+			if( KeyDown != null )
 			{
 				KeyDown( this, e );
 			}
@@ -417,7 +396,7 @@ namespace Axiom.Input
 		/// <param name="e">Event arguments.</param>
 		protected void OnKeyUp( KeyEventArgs e )
 		{
-			if ( KeyUp != null )
+			if( KeyUp != null )
 			{
 				KeyUp( this, e );
 			}
@@ -432,7 +411,7 @@ namespace Axiom.Input
 		/// <summary>
 		///     Called to destroy this input reader.
 		/// </summary>
-		public abstract void Dispose();
+		abstract public void Dispose();
 
 		#endregion IDisposable Members
 	}

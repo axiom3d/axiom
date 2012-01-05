@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLFBORenderTexture.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,9 +50,8 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	class GLFBORenderTexture : GLRenderTexture
+	internal class GLFBORenderTexture : GLRenderTexture
 	{
-
 		#region Fields and Properties
 
 		private GLFrameBufferObject _fbo;
@@ -78,7 +81,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				switch ( attribute.ToLower() )
+				switch( attribute.ToLower() )
 				{
 					case "fbo":
 						return _fbo;
@@ -90,9 +93,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					_fbo.Dispose();
@@ -106,7 +109,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-		#endregion GLRenderTexture Implementation
 
+		#endregion GLRenderTexture Implementation
 	}
 }

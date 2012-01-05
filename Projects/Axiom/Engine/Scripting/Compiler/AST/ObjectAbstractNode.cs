@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,13 +55,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public string Cls;
 
-		public IList<string> Bases
-		{
-			get
-			{
-				return _bases;
-			}
-		}
+		public IList<string> Bases { get { return _bases; } }
 		private List<string> _bases = new List<string>();
 
 		public uint Id;
@@ -71,24 +69,13 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <summary>
 		/// For use when processing object inheritance and overriding
 		/// </summary>
-		public IList<AbstractNode> Overrides
-		{
-			get
-			{
-				return _overrides;
-			}
-		}
+		public IList<AbstractNode> Overrides { get { return _overrides; } }
+
 		private List<AbstractNode> _overrides = new List<AbstractNode>();
 
 		private Dictionary<String, String> _environment = new Dictionary<string, string>();
 
-		public Dictionary<String, String> Variables
-		{
-			get
-			{
-				return _environment;
-			}
-		}
+		public Dictionary<String, String> Variables { get { return _environment; } }
 
 		#endregion Fields and Properties
 
@@ -112,14 +99,18 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public KeyValuePair<bool, string> GetVariable( string inName )
 		{
-			if ( _environment.ContainsKey( inName ) )
+			if( _environment.ContainsKey( inName ) )
+			{
 				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
+			}
 
 			ObjectAbstractNode parentNode = (ObjectAbstractNode)this.Parent;
-			while ( parentNode != null )
+			while( parentNode != null )
 			{
-				if ( parentNode._environment.ContainsKey( inName ) )
+				if( parentNode._environment.ContainsKey( inName ) )
+				{
 					return new KeyValuePair<bool, string>( true, parentNode._environment[ inName ] );
+				}
 
 				parentNode = (ObjectAbstractNode)parentNode.Parent;
 			}
@@ -141,13 +132,13 @@ namespace Axiom.Scripting.Compiler.AST
 			node.Cls = this.Cls;
 			node.Id = this.Id;
 			node.IsAbstract = this.IsAbstract;
-			foreach ( AbstractNode an in this.Children )
+			foreach( AbstractNode an in this.Children )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( AbstractNode an in this.Values )
+			foreach( AbstractNode an in this.Values )
 			{
 				AbstractNode newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
@@ -158,17 +149,8 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return Cls;
-			}
-			set
-			{
-				Cls = value;
-			}
-		}
+		public override string Value { get { return Cls; } set { Cls = value; } }
+
 		#endregion AbstractNode Implementation
 	}
 }

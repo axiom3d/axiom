@@ -2,12 +2,16 @@
 
 using System;
 using System.IO;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Configuration;
+
 using System.Reflection;
 using System.Windows.Forms;
+
 using Axiom.Demos.Configuration;
+
 using CommandLine;
 using CommandLine.Text;
 
@@ -27,8 +31,7 @@ namespace Axiom.Demos.Browser.WinForm
 
 		private sealed class Options
 		{
-			[Option( "s", "sample", Required = false, HelpText = "Initial sample to run." )]
-			public string Sample = String.Empty;
+			[Option( "s", "sample", Required = false, HelpText = "Initial sample to run." )] public string Sample = String.Empty;
 
 			[HelpOption( HelpText = "Display this help screen." )]
 			public string GetUsage()
@@ -52,7 +55,7 @@ namespace Axiom.Demos.Browser.WinForm
 		private EngineConfig config;
 
 		private readonly string DemoAssembly = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) +
-											   System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll";
+		                                       System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll";
 
 		private bool _configure( Options options )
 		{
@@ -66,11 +69,11 @@ namespace Axiom.Demos.Browser.WinForm
 			dlg.SaveRenderSystemConfig += new ConfigDialog.SaveRenderSystemConfigEventHandler( SaveRenderSystemConfiguration );
 			dlg.LoadDemos( DemoAssembly );
 
-			if ( String.IsNullOrEmpty( options.Sample ) )
+			if( String.IsNullOrEmpty( options.Sample ) )
 			{
 				DialogResult result = dlg.ShowDialog();
 
-				if ( result == DialogResult.Cancel )
+				if( result == DialogResult.Cancel )
 				{
 					Root.Instance.Dispose();
 					engine = null;
@@ -91,10 +94,10 @@ namespace Axiom.Demos.Browser.WinForm
 			string renderSystemId = rs.GetType().FullName;
 
 			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
-			foreach ( ConfigOption opt in rs.ConfigOptions )
+			foreach( ConfigOption opt in rs.ConfigOptions )
 			{
 				EngineConfig.ConfigOptionRow coRow = codt.FindByNameRenderSystem( opt.Name, renderSystemId );
-				if ( coRow == null )
+				if( coRow == null )
 				{
 					coRow = codt.NewConfigOptionRow();
 					coRow.RenderSystem = renderSystemId;
@@ -112,11 +115,11 @@ namespace Axiom.Demos.Browser.WinForm
 			string renderSystemId = rs.GetType().FullName;
 
 			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
-			foreach ( EngineConfig.ConfigOptionRow row in codt )
+			foreach( EngineConfig.ConfigOptionRow row in codt )
 			{
-				if ( row.RenderSystem == renderSystemId )
+				if( row.RenderSystem == renderSystemId )
 				{
-					if ( rs.ConfigOptions.ContainsKey( row.Name ) )
+					if( rs.ConfigOptions.ContainsKey( row.Name ) )
 					{
 						rs.ConfigOptions[ row.Name ].Value = row.Value;
 					}
@@ -131,7 +134,7 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			string resourceConfigPath = Path.GetFullPath( CONFIG_FILE );
 
-			if ( File.Exists( resourceConfigPath ) )
+			if( File.Exists( resourceConfigPath ) )
 			{
 				config = new EngineConfig();
 
@@ -140,7 +143,7 @@ namespace Axiom.Demos.Browser.WinForm
 				config.ReadXml( CONFIG_FILE );
 
 				// interrogate the available resource paths
-				foreach ( EngineConfig.FilePathRow row in config.FilePath )
+				foreach( EngineConfig.FilePathRow row in config.FilePath )
 				{
 					ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type, row.group, false, true );
 				}
@@ -151,10 +154,10 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			try
 			{
-				if ( _configure( options ) )
+				if( _configure( options ) )
 				{
 					Type demoType = null;
-					if ( !String.IsNullOrEmpty( options.Sample ) )
+					if( !String.IsNullOrEmpty( options.Sample ) )
 					{
 						Assembly demos = Assembly.LoadFrom( DemoAssembly );
 						Type[] demoTypes = demos.GetTypes();
@@ -165,9 +168,9 @@ namespace Axiom.Demos.Browser.WinForm
 						demoType = dlg.Demo;
 					}
 
-					if ( demoType != null )
+					if( demoType != null )
 					{
-						using ( TechDemo demo = (TechDemo)Activator.CreateInstance( demoType ) )
+						using( TechDemo demo = (TechDemo)Activator.CreateInstance( demoType ) )
 						{
 							demo.SetupResources();
 							demo.Start(); //show and start rendering
@@ -175,7 +178,7 @@ namespace Axiom.Demos.Browser.WinForm
 					}
 				}
 			}
-			catch ( Exception caughtException )
+			catch( Exception caughtException )
 			{
 				LogManager.Instance.Write( BuildExceptionString( caughtException ) );
 			}
@@ -188,7 +191,7 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			var options = new Options();
 			ICommandLineParser parser = new CommandLineParser( new CommandLineParserSettings( Console.Error ) );
-			if ( !parser.ParseArguments( args, options ) )
+			if( !parser.ParseArguments( args, options ) )
 			{
 				Environment.Exit( 1 );
 			}
@@ -200,12 +203,12 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			try
 			{
-				using ( Program main = new Program() )
+				using( Program main = new Program() )
 				{
 					main.Run( options ); //show and start rendering
 				} //dispose of it when done
 			}
-			catch ( Exception ex )
+			catch( Exception ex )
 			{
 				Console.WriteLine( BuildExceptionString( ex ) );
 				Console.WriteLine( "An exception has occurred.  Press enter to continue..." );
@@ -219,7 +222,7 @@ namespace Axiom.Demos.Browser.WinForm
 
 			errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
 
-			while ( exception.InnerException != null )
+			while( exception.InnerException != null )
 			{
 				errMessage += BuildInnerExceptionString( exception.InnerException );
 				exception = exception.InnerException;

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: BMPCodec.cs 1166 2008-01-10 17:54:02Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -48,9 +52,7 @@ namespace Axiom.Plugins.DevILCodecs
 	/// </summary>
 	public class BMPCodec : ILImageCodec
 	{
-		public BMPCodec()
-		{
-		}
+		public BMPCodec() {}
 
 		#region ILImageCodec Implementation
 
@@ -66,7 +68,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilBindImage( imageID );
 
 			// create a temp buffer and write the stream into it
-			byte[] buffer = new byte[ input.Length ];
+			byte[] buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			// load the data into DevIL
@@ -75,7 +77,7 @@ namespace Axiom.Plugins.DevILCodecs
 			// check for an error
 			int ilError = Il.ilGetError();
 
-			if ( ilError != Il.IL_NO_ERROR )
+			if( ilError != Il.IL_NO_ERROR )
 			{
 				throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
 			}
@@ -95,14 +97,14 @@ namespace Axiom.Plugins.DevILCodecs
 			data.size = data.width * data.height * bytesPerPixel;
 
 			// get the decoded data
-			buffer = new byte[ data.size ];
+			buffer = new byte[data.size];
 			IntPtr ptr = Il.ilGetData();
 
 			// copy the data into the byte array
 			unsafe
 			{
 				byte* pBuffer = (byte*)ptr;
-				for ( int i = 0; i < buffer.Length; i++ )
+				for( int i = 0; i < buffer.Length; i++ )
 				{
 					buffer[ i ] = pBuffer[ i ];
 				}
@@ -131,25 +133,12 @@ namespace Axiom.Plugins.DevILCodecs
 		/// <summary>
 		///    Returns the BMP file extension.
 		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return "bmp";
-			}
-		}
-
+		public override String Type { get { return "bmp"; } }
 
 		/// <summary>
 		///    Returns BMP enum.
 		/// </summary>
-		public override int ILType
-		{
-			get
-			{
-				return Il.IL_BMP;
-			}
-		}
+		public override int ILType { get { return Il.IL_BMP; } }
 
 		#endregion ILImageCodec Implementation
 	}

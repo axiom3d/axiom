@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2011 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -34,42 +36,31 @@ namespace Axiom.Samples
 	public class Label : Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		public OverlayElement textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isFitToTray;
+
 		#endregion
 
 		#region properties
-		/// <summary>
-		/// 
-		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return this.textArea.Text;
-			}
-			set
-			{
-				this.textArea.Text = value;
-			}
-		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsFitToTray
-		{
-			get
-			{
-				return isFitToTray;
-			}
-		}
+		public string Caption { get { return this.textArea.Text; } set { this.textArea.Text = value; } }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool IsFitToTray { get { return isFitToTray; } }
+
 		#endregion properties
 
 		/// <summary>
@@ -84,8 +75,10 @@ namespace Axiom.Samples
 			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
 			this.textArea.Text = caption;
 			this.Caption = caption;
-			if ( width <= 0 )
+			if( width <= 0 )
+			{
 				this.isFitToTray = true;
+			}
 			else
 			{
 				this.isFitToTray = false;
@@ -99,8 +92,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( listener != null && IsCursorOver( element, cursorPos, 3 ) )
+			if( listener != null && IsCursorOver( element, cursorPos, 3 ) )
+			{
 				listener.LabelHit( this );
+			}
 			base.OnCursorPressed( cursorPos );
 		}
 	}

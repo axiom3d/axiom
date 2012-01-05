@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -53,7 +57,6 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaRenderTexture : RenderTexture
 	{
-
 		public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
 			: base( buffer, 0 )
 		{
@@ -86,11 +89,11 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				switch ( attribute.ToUpper() )
+				switch( attribute.ToUpper() )
 				{
 					case "XNABACKBUFFER":
-						XFG.RenderTarget2D[] surface = new XFG.RenderTarget2D[ Config.MaxMultipleRenderTargets ];
-						if ( this.FSAA > 0 )
+						XFG.RenderTarget2D[] surface = new XFG.RenderTarget2D[Config.MaxMultipleRenderTargets];
+						if( this.FSAA > 0 )
 						{
 							surface[ 0 ] = ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
 						}
@@ -110,20 +113,12 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public override bool RequiresTextureFlipping { get { return false; } }
 
 		public override void SwapBuffers( bool waitForVSync )
 		{
-
-
 			//// Only needed if we have to blit from AA surface
-			if ( this.FSAA > 0 )
+			if( this.FSAA > 0 )
 			{
 				XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
 				// TODO: Implement XnaRenderSystem.IsDeviceLost
@@ -147,9 +142,9 @@ namespace Axiom.RenderSystems.Xna
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
 				}

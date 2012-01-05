@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,8 +46,8 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Controllers;
-
 using Axiom.SceneManagers.Bsp.Collections;
+
 using System.Collections.Generic;
 
 using ResourceHandle = System.UInt64;
@@ -68,172 +72,59 @@ namespace Axiom.SceneManagers.Bsp
 		#region Fields and Properties
 
 		#region Flags Property
+
 		private uint _flags;
-		public uint Flags
-		{
-			get
-			{
-				return _flags;
-			}
-			set
-			{
-				_flags = value;
-			}
-		}
+		public uint Flags { get { return _flags; } set { _flags = value; } }
+
 		#endregion Flags Property
 
-		public int PassCount
-		{
-			get
-			{
-				return _pass.Count;
-			}
-		}
+		public int PassCount { get { return _pass.Count; } }
 
 		#region Pass Property
+
 		private List<ShaderPass> _pass;
-		public ICollection<ShaderPass> Pass
-		{
-			get
-			{
-				return _pass;
-			}
-		}
+		public ICollection<ShaderPass> Pass { get { return _pass; } }
+
 		#endregion Pass Property
 
 		#region Farbox Property
-		private bool _farBox;            // Skybox
-		public bool Farbox
-		{
-			get
-			{
-				return _farBox;
-			}
-			set
-			{
-				_farBox = value;
-			}
-		}
+
+		private bool _farBox; // Skybox
+		public bool Farbox { get { return _farBox; } set { _farBox = value; } }
+
 		#endregion Farbox Property
 
 		#region FarboxName Property
+
 		private string _farBoxName;
-		public string FarboxName
-		{
-			get
-			{
-				return _farBoxName;
-			}
-			set
-			{
-				_farBoxName = value;
-			}
-		}
+		public string FarboxName { get { return _farBoxName; } set { _farBoxName = value; } }
+
 		#endregion FarboxName Property
 
 		private bool _skyDome;
-		public bool SkyDome
-		{
-			get
-			{
-				return _skyDome;
-			}
-			set
-			{
-				_skyDome = value;
-			}
-		}
+		public bool SkyDome { get { return _skyDome; } set { _skyDome = value; } }
 
-		private float _cloudHeight;       // Skydome
-		public float CloudHeight
-		{
-			get
-			{
-				return _cloudHeight;
-			}
-			set
-			{
-				_cloudHeight = value;
-			}
-		}
+		private float _cloudHeight; // Skydome
+		public float CloudHeight { get { return _cloudHeight; } set { _cloudHeight = value; } }
 
 		private ShaderDeformFunc _deformFunc;
-		public ShaderDeformFunc DeformFunc
-		{
-			get
-			{
-				return _deformFunc;
-			}
-			set
-			{
-				_deformFunc = value;
-			}
-		}
+		public ShaderDeformFunc DeformFunc { get { return _deformFunc; } set { _deformFunc = value; } }
 
 		private float[] _deformParams;
-		public float[] DeformParams
-		{
-			get
-			{
-				return _deformParams;
-			}
-			set
-			{
-				_deformParams = value;
-			}
-		}
+		public float[] DeformParams { get { return _deformParams; } set { _deformParams = value; } }
 
 		private ManualCullingMode _cullingMode;
-		public ManualCullingMode CullingMode
-		{
-			get
-			{
-				return _cullingMode;
-			}
-			set
-			{
-				_cullingMode = value;
-			}
-		}
+		public ManualCullingMode CullingMode { get { return _cullingMode; } set { _cullingMode = value; } }
 
 		private bool _fog;
-		public bool Fog
-		{
-			get
-			{
-				return _fog;
-			}
-			set
-			{
-				_fog = value;
-			}
-		}
+		public bool Fog { get { return _fog; } set { _fog = value; } }
 
 		private ColorEx _fogColour;
-		public ColorEx FogColour
-		{
-			get
-			{
-				return _fogColour;
-			}
-			set
-			{
-				_fogColour = value;
-			}
-		}
+		public ColorEx FogColour { get { return _fogColour; } set { _fogColour = value; } }
 
 		private float _fogDistance;
-		public float FogDistance
-		{
-			get
-			{
-				return _fogDistance;
-			}
-			set
-			{
-				_fogDistance = value;
-			}
-		}
+		public float FogDistance { get { return _fogDistance; } set { _fogDistance = value; } }
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -246,7 +137,7 @@ namespace Axiom.SceneManagers.Bsp
 			: base( parent, name, handle, group )
 		{
 			_deformFunc = ShaderDeformFunc.None;
-			_deformParams = new float[ 5 ];
+			_deformParams = new float[5];
 			_cullingMode = ManualCullingMode.Back;
 			_pass = new List<ShaderPass>();
 		}
@@ -264,7 +155,7 @@ namespace Axiom.SceneManagers.Bsp
 			pos = textureName.LastIndexOf( "." );
 			ext = textureName.Substring( pos, 4 ).ToLower();
 			baseName = textureName.Substring( 0, pos );
-			if ( ext == ".jpg" )
+			if( ext == ".jpg" )
 			{
 				return baseName + ".tga";
 			}
@@ -294,19 +185,19 @@ namespace Axiom.SceneManagers.Bsp
 
 			LogManager.Instance.Write( "Using Q3 shader {0}", Name );
 
-			for ( int p = 0; p < _pass.Count; ++p )
+			for( int p = 0; p < _pass.Count; ++p )
 			{
 				TextureUnitState t;
 
 				// Create basic texture
-				if ( _pass[ p ].textureName == "$lightmap" )
+				if( _pass[ p ].textureName == "$lightmap" )
 				{
 					string lightmapName = String.Format( "@lightmap{0}", lightmapNumber );
 					t = pass.CreateTextureUnitState( lightmapName );
 				}
 
-				// Animated texture support
-				else if ( _pass[ p ].animNumFrames > 0 )
+					// Animated texture support
+				else if( _pass[ p ].animNumFrames > 0 )
 				{
 					float sequenceTime = _pass[ p ].animNumFrames / _pass[ p ].animFps;
 
@@ -316,29 +207,30 @@ namespace Axiom.SceneManagers.Bsp
 					Pain in the arse - have to check for each frame as letters<n>.tga for example
 					is different per frame!
 					*/
-					for ( uint alt = 0; alt < _pass[ p ].animNumFrames; ++alt )
+					for( uint alt = 0; alt < _pass[ p ].animNumFrames; ++alt )
 					{
-						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
+						if( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
 						{
 							// Try alternate extension
 							_pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
 
-							if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
+							if( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
 							{
 								// stuffed - no texture
 								continue;
 							}
 						}
-
 					}
 
 					t = pass.CreateTextureUnitState( "" );
 					t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
 
-					if ( t.IsBlank )
+					if( t.IsBlank )
 					{
-						for ( int alt = 0; alt < _pass[ p ].animNumFrames; alt++ )
+						for( int alt = 0; alt < _pass[ p ].animNumFrames; alt++ )
+						{
 							_pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
+						}
 
 						t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
 					}
@@ -347,12 +239,12 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					// Quake3 can still include alternate extension filenames e.g. jpg instead of tga
 					// Pain in the arse - have to check for failure
-					if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
+					if( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
 					{
 						// Try alternate extension
 						_pass[ p ].textureName = GetAlternateName( _pass[ p ].textureName );
 
-						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
+						if( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
 						{
 							// stuffed - no texture
 							continue;
@@ -363,13 +255,15 @@ namespace Axiom.SceneManagers.Bsp
 				}
 
 				// Blending
-				if ( p == 0 )
+				if( p == 0 )
 				{
 					// scene blend
 					material.SetSceneBlending( _pass[ p ].blendSrc, _pass[ p ].blendDest );
 
-					if ( material.IsTransparent && ( _pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
+					if( material.IsTransparent && ( _pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
+					{
 						material.DepthWrite = false;
+					}
 
 					t.SetColorOperation( LayerBlendOperation.Replace );
 
@@ -378,7 +272,7 @@ namespace Axiom.SceneManagers.Bsp
 				}
 				else
 				{
-					if ( _pass[ p ].customBlend )
+					if( _pass[ p ].customBlend )
 					{
 						// Fallback for now
 						t.SetColorOperation( LayerBlendOperation.Modulate );
@@ -391,20 +285,26 @@ namespace Axiom.SceneManagers.Bsp
 					// Alpha mode, prefer 'most alphary'
 					CompareFunction currFunc = pass.AlphaRejectFunction;
 					int currValue = pass.AlphaRejectValue;
-					if ( _pass[ p ].alphaFunc > currFunc
-						|| ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
+					if( _pass[ p ].alphaFunc > currFunc
+					    || ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
 					{
 						pass.SetAlphaRejectSettings( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
 					}
 				}
 
 				// Tex coords
-				if ( _pass[ p ].texGen == ShaderTextureGen.Base )
+				if( _pass[ p ].texGen == ShaderTextureGen.Base )
+				{
 					t.TextureCoordSet = 0;
-				else if ( _pass[ p ].texGen == ShaderTextureGen.Lightmap )
+				}
+				else if( _pass[ p ].texGen == ShaderTextureGen.Lightmap )
+				{
 					t.TextureCoordSet = 1;
-				else if ( _pass[ p ].texGen == ShaderTextureGen.Environment )
+				}
+				else if( _pass[ p ].texGen == ShaderTextureGen.Environment )
+				{
 					t.SetEnvironmentMap( true, EnvironmentMap.Planar );
+				}
 
 				// Tex mod
 				// Scale
@@ -414,25 +314,27 @@ namespace Axiom.SceneManagers.Bsp
 				// Procedural mods
 				// Custom - don't use mod if generating environment
 				// Because I do env a different way it look horrible
-				if ( _pass[ p ].texGen != ShaderTextureGen.Environment )
+				if( _pass[ p ].texGen != ShaderTextureGen.Environment )
 				{
-					if ( _pass[ p ].tcModRotate != 0.0f )
-						t.SetRotateAnimation( _pass[ p ].tcModRotate );
-
-					if ( ( _pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( _pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
+					if( _pass[ p ].tcModRotate != 0.0f )
 					{
-						if ( _pass[ p ].tcModTurbOn )
+						t.SetRotateAnimation( _pass[ p ].tcModRotate );
+					}
+
+					if( ( _pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( _pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
+					{
+						if( _pass[ p ].tcModTurbOn )
 						{
 							// Turbulent scroll
-							if ( _pass[ p ].tcModScroll[ 0 ] != 0.0f )
+							if( _pass[ p ].tcModScroll[ 0 ] != 0.0f )
 							{
 								t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine,
-									_pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								                         _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
 							}
-							if ( _pass[ p ].tcModScroll[ 1 ] != 0.0f )
+							if( _pass[ p ].tcModScroll[ 1 ] != 0.0f )
 							{
 								t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine,
-									_pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								                         _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
 							}
 						}
 						else
@@ -442,10 +344,10 @@ namespace Axiom.SceneManagers.Bsp
 						}
 					}
 
-					if ( _pass[ p ].tcModStretchWave != ShaderWaveType.None )
+					if( _pass[ p ].tcModStretchWave != ShaderWaveType.None )
 					{
 						WaveformType wft = WaveformType.Sine;
-						switch ( _pass[ p ].tcModStretchWave )
+						switch( _pass[ p ].tcModStretchWave )
 						{
 							case ShaderWaveType.Sin:
 								wft = WaveformType.Sine;
@@ -466,14 +368,13 @@ namespace Axiom.SceneManagers.Bsp
 
 						// Create wave-based stretcher
 						t.SetTransformAnimation( TextureTransform.ScaleU, wft, _pass[ p ].tcModStretchParams[ 3 ],
-							_pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
+						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
 						t.SetTransformAnimation( TextureTransform.ScaleV, wft, _pass[ p ].tcModStretchParams[ 3 ],
-							_pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
+						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
 					}
 				}
 				// Address mode
-                t.SetTextureAddressingMode( _pass[ p ].addressMode );
-
+				t.SetTextureAddressingMode( _pass[ p ].addressMode );
 			}
 
 			// Do farbox (create new material)
@@ -503,6 +404,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			return material;
 		}
+
 		#endregion Methods
 
 		#region Resource Implementation
@@ -539,21 +441,21 @@ namespace Axiom.SceneManagers.Bsp
 		// TODO - alphaFunc
 		public ShaderGen rgbGenFunc;
 		public ShaderWaveType rgbGenWave;
-		public float[] rgbGenParams = new float[ 4 ]; // base, amplitude, phase, frequency
-		public float[] tcModScale = new float[ 2 ];
+		public float[] rgbGenParams = new float[4]; // base, amplitude, phase, frequency
+		public float[] tcModScale = new float[2];
 		public float tcModRotate;
-		public float[] tcModScroll = new float[ 2 ];
-		public float[] tcModTransform = new float[ 6 ];
+		public float[] tcModScroll = new float[2];
+		public float[] tcModTransform = new float[6];
 		public bool tcModTurbOn;
-		public float[] tcModTurb = new float[ 4 ];
+		public float[] tcModTurb = new float[4];
 		public ShaderWaveType tcModStretchWave;
-		public float[] tcModStretchParams = new float[ 4 ];    // base, amplitude, phase, frequency
+		public float[] tcModStretchParams = new float[4]; // base, amplitude, phase, frequency
 		public CompareFunction alphaFunc;
 		public byte alphaVal;
 
 		public float animFps;
 		public int animNumFrames;
-		public string[] frames = new string[ 32 ];
+		public string[] frames = new string[32];
 	};
 
 	[Flags]

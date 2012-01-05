@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -77,14 +81,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		The GL id for the program object.
 		/// </summary>
 		protected int glHandle;
+
 		/// <summary>
 		///		Flag indicating if shader object successfully compiled.
 		/// </summary>
 		protected bool isCompiled;
+
 		/// <summary>
 		///		Names of shaders attached to this program.
 		/// </summary>
 		protected string attachedShaderNames;
+
 		/// <summary>
 		///		Holds programs attached to this object.
 		/// </summary>
@@ -114,13 +121,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Gets the GL id for the program object.
 		/// </summary>
-		public int GLHandle
-		{
-			get
-			{
-				return glHandle;
-			}
-		}
+		public int GLHandle { get { return glHandle; } }
 
 		#endregion Properties
 
@@ -136,9 +137,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// check with the high level program manager to see if it was loaded
 			HighLevelGpuProgram hlProgram = (HighLevelGpuProgram)HighLevelGpuProgramManager.Instance.GetByName( name );
 
-			if ( hlProgram != null )
+			if( hlProgram != null )
 			{
-				if ( hlProgram.SyntaxCode == "glsl" )
+				if( hlProgram.SyntaxCode == "glsl" )
 				{
 					// make sure attached program source gets loaded and compiled
 					// don't need a low level implementation for attached shader objects
@@ -147,7 +148,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					GLSLProgram childShader = (GLSLProgram)hlProgram;
 
 					// load the source and attach the child shader only if supported
-					if ( IsSupported )
+					if( IsSupported )
 					{
 						childShader.LoadHighLevelImpl();
 						// add to the constainer
@@ -168,7 +169,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			GLSLHelper.CheckForGLSLError( "GLSL : Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject );
 
 			// atach child objects
-			for ( int i = 0; i < attachedGLSLPrograms.Count; i++ )
+			for( int i = 0; i < attachedGLSLPrograms.Count; i++ )
 			{
 				GLSLProgram childShader = (GLSLProgram)attachedGLSLPrograms[ i ];
 
@@ -205,11 +206,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			isCompiled = ( compiled != 0 );
 
 			// force exception if not compiled
-			if ( checkErrors )
+			if( checkErrors )
 			{
 				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", glHandle, !isCompiled, !isCompiled );
 
-				if ( isCompiled )
+				if( isCompiled )
 				{
 					GLSLHelper.LogObjectInfo( "GLSL : " + Name + " : compiled.", glHandle );
 				}
@@ -222,13 +223,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#region HighLevelGpuProgram Implementation
 
-		public override int SamplerCount
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public override int SamplerCount { get { return 0; } }
 
 		protected override void CreateLowLevelImpl()
 		{
@@ -241,7 +236,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		protected override void LoadFromSource()
 		{
 			// only create a shader object if glsl is supported
-			if ( IsSupported )
+			if( IsSupported )
 			{
 				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors before creating shader object.", 0 );
 
@@ -251,7 +246,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors creating shader object.", 0 );
 			}
 
-			Gl.glShaderSourceARB( glHandle, 1, new string[] { source }, null );
+			Gl.glShaderSourceARB( glHandle, 1, new string[] {
+			                                                	source
+			                                                }, null );
 
 			// check for load errors
 			GLSLHelper.CheckForGLSLError( "GLSL : Cannot load GLSL high-level shader source " + Name + ".", glHandle );
@@ -279,13 +276,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		// TODO: Refactor to command pattern
 		public override bool SetParam( string name, string val )
 		{
-			if ( name == "attach" )
+			if( name == "attach" )
 			{
 				//get all the shader program names: there could be more than one
-				string[] shaderNames = val.Split( new char[] { ' ', '\t' } );
+				string[] shaderNames = val.Split( new char[] {
+				                                             	' ', '\t'
+				                                             } );
 
 				// attach the specified shaders to this program
-				for ( int i = 0; i < shaderNames.Length; i++ )
+				for( int i = 0; i < shaderNames.Length; i++ )
 				{
 					AttachChildShader( shaderNames[ i ] );
 				}
@@ -301,7 +300,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		protected override void UnloadImpl()
 		{
-			if ( IsSupported )
+			if( IsSupported )
 			{
 				// only delete it if it was supported to being with, else it won't exist
 				Gl.glDeleteObjectARB( glHandle );
@@ -312,6 +311,5 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		}
 
 		#endregion HighLevelGpuProgram Implementation
-
 	}
 }

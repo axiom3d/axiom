@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLPBRTTManager.cs 1281 2008-05-10 17:28:57Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,10 +53,11 @@ namespace Axiom.RenderSystems.OpenGL
 	internal class GLPBRTTManager : GLRTTManager
 	{
 		#region Inner Classes and Structures
+
 		/// <summary>
 		/// Provides Usage counting for PixelBuffers
 		/// </summary>
-		struct PixelBufferUsage
+		private struct PixelBufferUsage
 		{
 			public GLPBuffer PixelBuffer;
 			public uint InUseCount;
@@ -66,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGL
 		private GLContext _mainGLContext;
 		private RenderTarget _mainWindow;
 
-		private PixelBufferUsage[] pBuffers = new PixelBufferUsage[ (int)PixelComponentType.Count ];
+		private PixelBufferUsage[] pBuffers = new PixelBufferUsage[(int)PixelComponentType.Count];
 
 		#endregion Fields and Properties
 
@@ -105,21 +110,23 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// copy on unbind
 			object attr = target.GetCustomAttribute( "target" );
-			if ( attr != null )
+			if( attr != null )
 			{
 				GLSurfaceDesc surface = (GLSurfaceDesc)attr;
-				if ( surface.Buffer != null )
+				if( surface.Buffer != null )
+				{
 					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
+				}
 			}
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if( !isDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					for ( int i = 0; i < (int)PixelComponentType.Count; i++ )
+					for( int i = 0; i < (int)PixelComponentType.Count; i++ )
 					{
 						pBuffers[ i ].PixelBuffer = null;
 					}
@@ -142,9 +149,9 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// Check Size
 			GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
-			if ( pBuffer != null )
+			if( pBuffer != null )
 			{
-				if ( pBuffer.Width < width || pBuffer.Height < height )
+				if( pBuffer.Width < width || pBuffer.Height < height )
 				{
 					// if the current buffer is too small destroy it and recreate it
 					pBuffer = null;
@@ -152,7 +159,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 			}
 
-			if ( pBuffer == null )
+			if( pBuffer == null )
 			{
 				// create pixelbuffer via rendersystem
 				pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
@@ -167,7 +174,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public void ReleasePBuffer( PixelComponentType pcType )
 		{
 			--pBuffers[ (int)pcType ].InUseCount;
-			if ( pBuffers[ (int)pcType ].InUseCount == 0 )
+			if( pBuffers[ (int)pcType ].InUseCount == 0 )
 			{
 				pBuffers[ (int)pcType ].PixelBuffer = null;
 			}
@@ -184,16 +191,17 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// Faster to return main context if the RTT is smaller than the window size
 			// and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
-			if ( pcType == PixelComponentType.Byte )
+			if( pcType == PixelComponentType.Byte )
 			{
-				if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
+				if( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
+				{
 					return this._mainGLContext;
+				}
 			}
 			Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
 			return pBuffers[ (int)pcType ].PixelBuffer.Context;
 		}
 
 		#endregion Methods
-
 	}
 }

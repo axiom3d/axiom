@@ -49,7 +49,6 @@ namespace Axiom.Graphics.Collections
 	{
 		#region Instance Methods
 
-
 		public override void Add( ConfigOption item )
 		{
 			base.Add( item.Name, item );

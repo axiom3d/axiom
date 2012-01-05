@@ -69,19 +69,21 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
-		public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager,  int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
+		public XnaHardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 			_device = dev;
 			// Create the Xna vertex buffer
-			if ( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
+			if( usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly )
 			{
 				_buffer = new XFG.DynamicVertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
 			}
 			else
+			{
 				_buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
+			}
 
-			_bufferBytes = new byte[ vertexSize * numVertices ];
+			_bufferBytes = new byte[vertexSize * numVertices];
 			_bufferBytes.Initialize();
 		}
 
@@ -100,7 +102,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_offset = offset;
 			_length = length;
-			fixed ( byte* bytes = &_bufferBytes[ offset ] )
+			fixed( byte* bytes = &_bufferBytes[ offset ] )
 			{
 				return new IntPtr( bytes );
 			}
@@ -146,7 +148,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			// lock the buffer real quick
 			IntPtr dest = this.Lock( offset, length,
-				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			                         discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
@@ -156,13 +158,11 @@ namespace Axiom.RenderSystems.Xna
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
-				{
-				}
+				if( disposeManagedResources ) {}
 
-				if ( _buffer != null )
+				if( _buffer != null )
 				{
 					_buffer.Dispose();
 					_buffer = null;
@@ -181,13 +181,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Gets the underlying Xna Vertex Buffer object.
 		/// </summary>
-		public XFG.VertexBuffer XnaVertexBuffer
-		{
-			get
-			{
-				return _buffer;
-			}
-		}
+		public XFG.VertexBuffer XnaVertexBuffer { get { return _buffer; } }
 
 		#endregion Properties
 	}

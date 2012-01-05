@@ -8,6 +8,7 @@ using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -82,7 +83,7 @@ namespace Axiom.Demos
 
 			// Create 3 nodes for trail to follow
 			SceneNode animNode = scene.RootSceneNode.CreateChildSceneNode();
-			animNode.Position = new Vector3( -50, -30, 0 );//new Vector3(50,30,0);
+			animNode.Position = new Vector3( -50, -30, 0 ); //new Vector3(50,30,0);
 			Animation anim = scene.CreateAnimation( "an1", 14 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 			NodeAnimationTrack track = anim.CreateNodeTrack( 1, animNode );
@@ -124,7 +125,7 @@ namespace Axiom.Demos
 			animNode.AttachObject( bbs );
 
 			animNode = scene.RootSceneNode.CreateChildSceneNode();
-			animNode.Position = new Vector3( -50, 100, 0 );//new Vector3(50,30,0);
+			animNode.Position = new Vector3( -50, 100, 0 ); //new Vector3(50,30,0);
 			anim = scene.CreateAnimation( "an2", 10 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 			track = anim.CreateNodeTrack( 1, animNode );
@@ -165,7 +166,7 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// move the billboards around a bit
-			foreach ( AnimationState anim in animationStateList )
+			foreach( AnimationState anim in animationStateList )
 			{
 				anim.AddTime( evt.TimeSinceLastFrame );
 			}
@@ -193,10 +194,7 @@ namespace Axiom.Demos
 
 		public float Value
 		{
-			get
-			{
-				return intensity;
-			}
+			get { return intensity; }
 			set
 			{
 				intensity = value;
@@ -213,7 +211,5 @@ namespace Axiom.Demos
 		}
 
 		#endregion IControllerValue Members
-
 	}
-
 }

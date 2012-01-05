@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,6 +54,7 @@ namespace Axiom.Input
 		///		Special keys currently pressed during this event.
 		/// </summary>
 		protected ModifierKeys modifiers;
+
 		/// <summary>
 		///		Has this event been handled?
 		/// </summary>
@@ -75,50 +80,22 @@ namespace Axiom.Input
 		/// <summary>
 		///		Get/Set whether or not this input event has been handled.
 		/// </summary>
-		public bool Handled
-		{
-			get
-			{
-				return handled;
-			}
-			set
-			{
-				handled = value;
-			}
-		}
+		public bool Handled { get { return handled; } set { handled = value; } }
 
 		/// <summary>
 		///		True if the alt key was down during this event.
 		/// </summary>
-		public bool IsAltDown
-		{
-			get
-			{
-				return ( modifiers & ModifierKeys.Alt ) != 0;
-			}
-		}
+		public bool IsAltDown { get { return ( modifiers & ModifierKeys.Alt ) != 0; } }
 
 		/// <summary>
 		///		True if the shift key was down during this event.
 		/// </summary>
-		public bool IsShiftDown
-		{
-			get
-			{
-				return ( modifiers & ModifierKeys.Shift ) != 0;
-			}
-		}
+		public bool IsShiftDown { get { return ( modifiers & ModifierKeys.Shift ) != 0; } }
 
 		/// <summary>
 		///		True if the ctrl key was down during this event.
 		/// </summary>
-		public bool IsControlDown
-		{
-			get
-			{
-				return ( modifiers & ModifierKeys.Control ) != 0;
-			}
-		}
+		public bool IsControlDown { get { return ( modifiers & ModifierKeys.Control ) != 0; } }
 
 		/// <summary>
 		///		Gets the modifier keys that were down during this event.
@@ -126,13 +103,7 @@ namespace Axiom.Input
 		/// <remarks>
 		///		This is a combination of values from the <see cref="ModifierKeys"/> enum.
 		/// </remarks>
-		public ModifierKeys Modifiers
-		{
-			get
-			{
-				return modifiers;
-			}
-		}
+		public ModifierKeys Modifiers { get { return modifiers; } }
 
 		#endregion Properties
 	}

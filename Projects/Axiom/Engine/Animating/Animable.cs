@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -53,26 +57,32 @@ namespace Axiom.Animating
 		/// 
 		/// </summary>
 		Int,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		Float,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		Vector2,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		Vector3,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		Vector4,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		Quaternion,
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -101,7 +111,6 @@ namespace Axiom.Animating
 	///     are often comprised of multiple properties it helps to be able to deal
 	///     with all values through a single class.
 	///</remarks>
-
 #if CSHARP_30
 	public abstract class AnimableValue<T> where T : struct
 	{
@@ -179,8 +188,7 @@ namespace Axiom.Animating
 	}
 
 #endif
-
-	public abstract class AnimableValue
+	abstract public class AnimableValue
 	{
 		protected AnimableType type;
 		protected Object valueObject;
@@ -192,69 +200,55 @@ namespace Axiom.Animating
 			valueObject = null;
 		}
 
-		public AnimableType Type
-		{
-			get
-			{
-				return type;
-			}
-			set
-			{
-				type = value;
-			}
-		}
+		public AnimableType Type { get { return type; } set { type = value; } }
 
-		public Object ValueObject
+		public Object ValueObject { get { return ValueObject; } set { ValueObject = value; } }
+
+		/// Internal method to set a value as base
+		virtual public void SetAsBaseValue( int val )
 		{
-			get
-			{
-				return ValueObject;
-			}
-			set
-			{
-				ValueObject = value;
-			}
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( int val )
+		virtual public void SetAsBaseValue( float val )
 		{
 			valueObject = val;
 		}
+
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( float val )
+		virtual public void SetAsBaseValue( Vector2 val )
 		{
 			valueObject = val;
 		}
+
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( Vector2 val )
+		virtual public void SetAsBaseValue( Vector3 val )
 		{
 			valueObject = val;
 		}
+
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( Vector3 val )
+		virtual public void SetAsBaseValue( Vector4 val )
 		{
 			valueObject = val;
 		}
+
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( Vector4 val )
+		virtual public void SetAsBaseValue( Quaternion val )
 		{
 			valueObject = val;
 		}
+
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( Quaternion val )
-		{
-			valueObject = val;
-		}
-		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( ColorEx val )
+		virtual public void SetAsBaseValue( ColorEx val )
 		{
 			valueObject = val.Clone();
 		}
 
-		void SetAsBaseValue( Object val )
+		private void SetAsBaseValue( Object val )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					SetAsBaseValue( (int)val );
@@ -282,7 +276,7 @@ namespace Axiom.Animating
 
 		public void ResetToBaseValue()
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					SetValue( (int)valueObject );
@@ -309,44 +303,51 @@ namespace Axiom.Animating
 		}
 
 		/// Set value 
-		public virtual void SetValue( int val )
+		virtual public void SetValue( int val )
 		{
 			throw ( new Exception( "Animable SetValue to int not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( float val )
+		virtual public void SetValue( float val )
 		{
 			throw ( new Exception( "Animable SetValue to float not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( Vector2 val )
+		virtual public void SetValue( Vector2 val )
 		{
 			throw ( new Exception( "Animable SetValue to Vector2 not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( Vector3 val )
+		virtual public void SetValue( Vector3 val )
 		{
 			throw ( new Exception( "Animable SetValue to Vector3 not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( Vector4 val )
+		virtual public void SetValue( Vector4 val )
 		{
 			throw ( new Exception( "Animable SetValue to Vector4 not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( Quaternion val )
+		virtual public void SetValue( Quaternion val )
 		{
 			throw ( new Exception( "Animable SetValue to Quaternion not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( ColorEx val )
+		virtual public void SetValue( ColorEx val )
 		{
 			throw ( new Exception( "Animable SetValue to ColorEx not implemented" ) );
 		}
+
 		/// Set value 
-		public virtual void SetValue( Object val )
+		virtual public void SetValue( Object val )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					SetValue( (int)val );
@@ -373,45 +374,51 @@ namespace Axiom.Animating
 		}
 
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( int val )
+		virtual public void ApplyDeltaValue( int val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to int not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( float val )
+		virtual public void ApplyDeltaValue( float val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to float not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( Vector2 val )
+		virtual public void ApplyDeltaValue( Vector2 val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to Vector2 not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( Vector3 val )
+		virtual public void ApplyDeltaValue( Vector3 val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to Vector3 not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( Vector4 val )
+		virtual public void ApplyDeltaValue( Vector4 val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to Vector4 not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( Quaternion val )
+		virtual public void ApplyDeltaValue( Quaternion val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to Quaternion not implemented" ) );
 		}
+
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( ColorEx val )
+		virtual public void ApplyDeltaValue( ColorEx val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to ColorEx not implemented" ) );
 		}
 
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( Object val )
+		virtual public void ApplyDeltaValue( Object val )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					ApplyDeltaValue( (int)val );
@@ -439,7 +446,7 @@ namespace Axiom.Animating
 
 		public static Object InterpolateValues( float time, AnimableType type, Object k1, Object k2 )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					int i1 = (int)k1;
@@ -469,16 +476,16 @@ namespace Axiom.Animating
 					ColorEx c1 = (ColorEx)k1;
 					ColorEx c2 = (ColorEx)k2;
 					return (Object)( new ColorEx( c1.a + ( c2.a - c1.a ) * time,
-												c1.r + ( c2.r - c1.r ) * time,
-												c1.g + ( c2.g - c1.g ) * time,
-												c1.b + ( c2.b - c1.b ) * time ) );
+					                              c1.r + ( c2.r - c1.r ) * time,
+					                              c1.g + ( c2.g - c1.g ) * time,
+					                              c1.b + ( c2.b - c1.b ) * time ) );
 			}
 			throw new Exception( string.Format( "In AmiableValue.InterpolateValues, unknown type {0}", type ) );
 		}
 
 		public static Object MultiplyFloat( AnimableType type, float v, Object k )
 		{
-			switch ( type )
+			switch( type )
 			{
 				case AnimableType.Int:
 					return (Object)(int)( ( (int)k ) * v );
@@ -506,8 +513,7 @@ namespace Axiom.Animating
 
 		/// Sets the current state as the 'base' value; used for delta animation
 		/// Any instantiated derived class must implement this guy
-		public abstract void SetCurrentStateAsBaseValue();
-
+		abstract public void SetCurrentStateAsBaseValue();
 	}
 
 	/// <summary>
@@ -531,15 +537,8 @@ namespace Axiom.Animating
 		///		Return the names of all the AnimableValue names supported by this object.
 		///     This can return the null list if there are none.
 		/// </summary>
-		string[] AnimableValueNames
-		{
-			get;
-		}
+		string[] AnimableValueNames { get; }
 
 		#endregion Properties
 	}
-
 }
-
-
-

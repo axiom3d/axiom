@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <id value="$Id: Timer.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Runtime.InteropServices;
-
 using System.Diagnostics;
 
 #endregion Namespace Declarations
@@ -68,65 +71,36 @@ namespace Axiom.Core
 		#endregion Methods
 
 		#region Public Properties
+
 		/// <summary>
 		/// Gets a <see cref="System.Int64" /> representing the 
 		/// current tick count of the timer.
 		/// </summary>
-		public long Count
-		{
-			get
-			{
-				return _timer.ElapsedTicks;
-			}
-		}
+		public long Count { get { return _timer.ElapsedTicks; } }
 
 		/// <summary>
 		/// Gets a <see cref="System.Int64" /> representing the 
 		/// frequency of the counter in ticks-per-second.
 		/// </summary>
-		public long Frequency
-		{
-			get
-			{
-				return Stopwatch.Frequency;
-			}
-		}
+		public long Frequency { get { return Stopwatch.Frequency; } }
 
 		/// <summary>
 		/// Gets a <see cref="System.Boolean" /> representing whether the 
 		/// timer has been started and is currently running.
 		/// </summary>
-		public bool IsRunning
-		{
-			get
-			{
-				return _timer.IsRunning;
-			}
-		}
+		public bool IsRunning { get { return _timer.IsRunning; } }
 
 		/// <summary>
 		/// Gets a <see cref="System.Double" /> representing the 
 		/// resolution of the timer in seconds.
 		/// </summary>
-		public float Resolution
-		{
-			get
-			{
-				return ( (float)1.0 / (float)Frequency );
-			}
-		}
+		public float Resolution { get { return ( (float)1.0 / (float)Frequency ); } }
 
 		/// <summary>
 		/// Gets a <see cref="System.Int64" /> representing the 
 		/// tick count at the start of the timer's run.
 		/// </summary>
-		public long StartCount
-		{
-			get
-			{
-				return 0;
-			}
-		}
+		public long StartCount { get { return 0; } }
 
 		#endregion Public Properties
 
@@ -142,21 +116,9 @@ namespace Axiom.Core
 			_timer.Start();
 		}
 
-		public long Microseconds
-		{
-			get
-			{
-				return _timer.ElapsedMilliseconds / 10;
-			}
-		}
+		public long Microseconds { get { return _timer.ElapsedMilliseconds / 10; } }
 
-		public long Milliseconds
-		{
-			get
-			{
-				return _timer.ElapsedMilliseconds;
-			}
-		}
+		public long Milliseconds { get { return _timer.ElapsedMilliseconds; } }
 
 		#endregion
 	}

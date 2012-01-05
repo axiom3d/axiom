@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -77,15 +78,13 @@ namespace Axiom.Core
 		///		Perspective or Orthographic?
 		/// </summary>
 		private Projection _projectionType;
+
 		/// <summary>
 		///    Gets/Sets the type of projection to use (orthographic or perspective). Default is perspective.
 		/// </summary>
 		public Projection ProjectionType
 		{
-			get
-			{
-				return _projectionType;
-			}
+			get { return _projectionType; }
 			set
 			{
 				_projectionType = value;
@@ -101,6 +100,7 @@ namespace Axiom.Core
 		///     y-direction field-of-view (default 45).
 		/// </summary>
 		private float _fieldOfView;
+
 		/// <summary>
 		///		Sets the Y-dimension Field Of View (FOV) of the camera.
 		/// </summary>
@@ -113,12 +113,9 @@ namespace Axiom.Core
 		///		This value represents the HORIZONTAL field-of-view. The vertical field of view is calculated from
 		///		this depending on the dimensions of the viewport (they will only be the same if the viewport is square).
 		/// </remarks>
-		public virtual float FieldOfView
+		virtual public float FieldOfView
 		{
-			get
-			{
-				return _fieldOfView;
-			}
+			get { return _fieldOfView; }
 			set
 			{
 				_fieldOfView = value;
@@ -135,6 +132,7 @@ namespace Axiom.Core
 		///     Far clip distance - default 10000.
 		/// </summary>
 		protected float _farDistance;
+
 		/// <summary>
 		///		Gets/Sets the distance to the far clipping plane.
 		///	 </summary>
@@ -157,17 +155,14 @@ namespace Axiom.Core
 		///		distance which is useful especially when projecting shadows; but
 		///		be careful not to use a near distance too close.
 		/// </value>
-		public virtual float Far
+		virtual public float Far
 		{
-			get
-			{
-				return _farDistance;
-			}
+			get { return _farDistance; }
 			set
 			{
 				_farDistance = value;
 				InvalidateFrustum();
-				InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
+				InvalidateView(); //XEONX FIX: Now the IsObjectVisible() will work properly
 			}
 		}
 
@@ -179,6 +174,7 @@ namespace Axiom.Core
 		///     Near clip distance - default 100.
 		/// </summary>
 		private float _nearDistance;
+
 		/// <summary>
 		///		Gets/Sets the position of the near clipping plane.
 		///	</summary>
@@ -190,19 +186,16 @@ namespace Axiom.Core
 		///		dimensions expressed in pixels. The cameras viewport should have the same aspect ratio as the
 		///		screen viewport it renders into to avoid distortion.
 		/// </remarks>
-		public virtual float Near
+		virtual public float Near
 		{
-			get
-			{
-				return _nearDistance;
-			}
+			get { return _nearDistance; }
 			set
 			{
 				Debug.Assert( value > 0, "Near clip distance must be greater than zero." );
 
 				_nearDistance = value;
 				InvalidateFrustum();
-				InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
+				InvalidateView(); //XEONX FIX: Now the IsObjectVisible() will work properly
 			}
 		}
 
@@ -214,6 +207,7 @@ namespace Axiom.Core
 		///     x/y viewport ratio - default 1.3333
 		/// </summary>
 		private float _aspectRatio;
+
 		/// <summary>
 		///		Gets/Sets the aspect ratio to use for the camera viewport.
 		/// </summary>
@@ -224,12 +218,9 @@ namespace Axiom.Core
 		///		The default for most fullscreen windows is 1.3333f - this is also assumed unless you
 		///		use this property to state otherwise.
 		/// </remarks>
-		public virtual float AspectRatio
+		virtual public float AspectRatio
 		{
-			get
-			{
-				return _aspectRatio;
-			}
+			get { return _aspectRatio; }
 			set
 			{
 				_aspectRatio = value;
@@ -245,15 +236,13 @@ namespace Axiom.Core
 		/// Off-axis frustum center offset - default (0.0, 0.0)
 		///</summary>
 		protected Vector2 _frustumOffset;
+
 		///<summary>
 		/// Off-axis frustum center offset - default (0.0, 0.0)
 		///</summary>
 		public Vector2 FrustumOffset
 		{
-			get
-			{
-				return _frustumOffset;
-			}
+			get { return _frustumOffset; }
 			set
 			{
 				_frustumOffset = value;
@@ -271,11 +260,13 @@ namespace Axiom.Core
 		/// <summary>
 		///     The 6 main clipping planes.
 		/// </summary>
-		protected Plane[] _planes = new Plane[ 6 ];
+		protected Plane[] _planes = new Plane[6];
+
 		/// <summary>
 		///     Stored versions of parent orientation.
 		/// </summary>
 		protected Quaternion _lastParentOrientation;
+
 		/// <summary>
 		///     Stored versions of parent position.
 		/// </summary>
@@ -293,6 +284,7 @@ namespace Axiom.Core
 		/// matrix. If you want a 'typical' projection matrix then use _projectionMatrix.
 		/// </remarks>
 		protected Matrix4 _projectionMatrixRS;
+
 		/// <summary>
 		/// Gets the projection matrix for this frustum adjusted for the current
 		/// rendersystem specifics (may be right or left-handed, depth range
@@ -302,7 +294,7 @@ namespace Axiom.Core
 		/// This method retrieves the rendering-API dependent version of the projection
 		/// matrix. If you want a 'typical' projection matrix then use ProjectionMatrix.
 		/// </remarks>
-		public virtual Matrix4 ProjectionMatrixRS
+		virtual public Matrix4 ProjectionMatrixRS
 		{
 			get
 			{
@@ -330,6 +322,7 @@ namespace Axiom.Core
 		///     and fixed-function pipelines.
 		/// </remarks>
 		protected Matrix4 _projectionMatrixRSDepth;
+
 		/// <summary>
 		///    Gets the 'standard' projection matrix for this camera, ie the
 		///    projection matrix which conforms to standard right-handed rules.
@@ -346,7 +339,7 @@ namespace Axiom.Core
 		///    This corresponds to the Ogre mProjMatrixRSDepth and
 		///    getProjectionMatrixWithRSDepth
 		/// </remarks>
-		public virtual Matrix4 ProjectionMatrixRSDepth
+		virtual public Matrix4 ProjectionMatrixRSDepth
 		{
 			get
 			{
@@ -372,10 +365,11 @@ namespace Axiom.Core
 		///    is required for some uniform algebra for example.
 		///</remarks>
 		protected Matrix4 _projectionMatrix;
+
 		/// <summary>
 		/// Gets the projection matrix for this frustum.
 		/// </summary>
-		public virtual Matrix4 ProjectionMatrix
+		virtual public Matrix4 ProjectionMatrix
 		{
 			get
 			{
@@ -399,10 +393,11 @@ namespace Axiom.Core
 		///     Pre-calced view matrix.
 		/// </summary>
 		protected Matrix4 _viewMatrix;
+
 		/// <summary>
 		///     Gets the view matrix for this frustum.
 		/// </summary>
-		public virtual Matrix4 ViewMatrix
+		virtual public Matrix4 ViewMatrix
 		{
 			get
 			{
@@ -410,10 +405,7 @@ namespace Axiom.Core
 
 				return _viewMatrix;
 			}
-			set
-			{
-				_viewMatrix = value;
-			}
+			set { _viewMatrix = value; }
 		}
 
 		#endregion ViewMatrix Property
@@ -437,21 +429,21 @@ namespace Axiom.Core
 		/// <summary>
 		///		Evaluates whether or not the view frustum is out of date.
 		/// </summary>
-		protected virtual bool IsFrustumOutOfDate
+		virtual protected bool IsFrustumOutOfDate
 		{
 			get
 			{
-				if ( useObliqueDepthProjection )
+				if( useObliqueDepthProjection )
 				{
 					// always out of date since plane needs to be in view space
-					if ( IsViewOutOfDate )
+					if( IsViewOutOfDate )
 					{
 						_recalculateFrustum = true;
 					}
 
 					// update derived plane
-					if ( linkedObliqueProjPlane != null &&
-						!( lastLinkedObliqueProjPlane == linkedObliqueProjPlane.DerivedPlane ) )
+					if( linkedObliqueProjPlane != null &&
+					    !( lastLinkedObliqueProjPlane == linkedObliqueProjPlane.DerivedPlane ) )
 					{
 						obliqueProjPlane = linkedObliqueProjPlane.DerivedPlane;
 						lastLinkedObliqueProjPlane = obliqueProjPlane;
@@ -467,19 +459,20 @@ namespace Axiom.Core
 		///     Something in the view pos has changed?
 		/// </summary>
 		protected bool _recalculateView;
+
 		/// <summary>
 		///		Gets whether or not the view matrix is out of date.
 		/// </summary>
-		protected virtual bool IsViewOutOfDate
+		virtual protected bool IsViewOutOfDate
 		{
 			get
 			{
 				// are we attached to another node?
-				if ( parentNode != null )
+				if( parentNode != null )
 				{
-					if ( _recalculateView ||
-						parentNode.DerivedOrientation != _lastParentOrientation ||
-						parentNode.DerivedPosition != _lastParentPosition )
+					if( _recalculateView ||
+					    parentNode.DerivedOrientation != _lastParentOrientation ||
+					    parentNode.DerivedPosition != _lastParentPosition )
 					{
 						// we are out of date with the parent scene node
 						_lastParentOrientation = parentNode.DerivedOrientation;
@@ -489,8 +482,8 @@ namespace Axiom.Core
 				}
 
 				// deriving direction from linked plane?
-				if ( _isReflected && linkedReflectionPlane != null &&
-					!( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
+				if( _isReflected && linkedReflectionPlane != null &&
+				    !( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
 				{
 					_reflectionPlane = linkedReflectionPlane.DerivedPlane;
 					_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
@@ -505,25 +498,16 @@ namespace Axiom.Core
 		///<summary>
 		/// Are we using a custom view matrix?
 		/// </summary>
-		bool _customViewMatrix;
-		public bool IsCustomViewMatrixEnabled
-		{
-			get
-			{
-				return _customViewMatrix;
-			}
-		}
+		private bool _customViewMatrix;
+
+		public bool IsCustomViewMatrixEnabled { get { return _customViewMatrix; } }
+
 		/// <summary>
 		/// Are we using a custom projection matrix?
 		/// </summary>
-		bool _customProjectionMatrix;
-		public bool IsCustomProjectionMatrixEnabled
-		{
-			get
-			{
-				return _customProjectionMatrix;
-			}
-		}
+		private bool _customProjectionMatrix;
+
+		public bool IsCustomProjectionMatrixEnabled { get { return _customProjectionMatrix; } }
 
 		/// <summary>
 		///     Bounding box of this frustum.
@@ -534,10 +518,12 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		protected bool _recalculateVertexData = true;
+
 		/// <summary>
 		///     Vertex info for rendering this frustum.
 		/// </summary>
 		protected VertexData _vertexData = new VertexData();
+
 		/// <summary>
 		///     Material to use when rendering this frustum.
 		/// </summary>
@@ -547,17 +533,18 @@ namespace Axiom.Core
 		/// Signal to recalculate World Space Corners
 		/// </summary>
 		protected bool _recalculateWorldSpaceCorners;
+
 		/// <summary>
 		///		Frustum corners in world space.
 		/// </summary>
-		protected Vector3[] _worldSpaceCorners = new Vector3[ 8 ];
+		protected Vector3[] _worldSpaceCorners = new Vector3[8];
 
 		/** Temp coefficient values calculated from a frustum change,
 			used when establishing the frustum planes when the view changes. */
-		protected float[] _coeffL = new float[ 2 ];
-		protected float[] _coeffR = new float[ 2 ];
-		protected float[] _coeffB = new float[ 2 ];
-		protected float[] _coeffT = new float[ 2 ];
+		protected float[] _coeffL = new float[2];
+		protected float[] _coeffR = new float[2];
+		protected float[] _coeffB = new float[2];
+		protected float[] _coeffT = new float[2];
 
 		#region IsRefelcted Property
 
@@ -565,16 +552,11 @@ namespace Axiom.Core
 		///		Is this frustum to act as a reflection of itself?
 		/// </summary>
 		private bool _isReflected;
+
 		/// <summary>
 		///     Gets a flag that specifies whether this camera is being reflected or not.
 		/// </summary>
-		public virtual bool IsReflected
-		{
-			get
-			{
-				return _isReflected;
-			}
-		}
+		virtual public bool IsReflected { get { return _isReflected; } }
 
 		#endregion IsRefelcted Property
 
@@ -584,20 +566,11 @@ namespace Axiom.Core
 		///		Derive reflection matrix.
 		/// </summary>
 		private Matrix4 _reflectionMatrix;
+
 		/// <summary>
 		///     Returns the reflection matrix of the camera if appropriate.
 		/// </summary>
-		public virtual Matrix4 ReflectionMatrix
-		{
-			get
-			{
-				return _reflectionMatrix;
-			}
-			protected set
-			{
-				_reflectionMatrix = value;
-			}
-		}
+		virtual public Matrix4 ReflectionMatrix { get { return _reflectionMatrix; } protected set { _reflectionMatrix = value; } }
 
 		#endregion ReflectionMatrix Property
 
@@ -607,20 +580,11 @@ namespace Axiom.Core
 		///		Fixed reflection.
 		/// </summary>
 		private Plane _reflectionPlane;
+
 		/// <summary>
 		///     Returns the reflection plane of the camera if appropriate.
 		/// </summary>
-		public virtual Plane ReflectionPlane
-		{
-			get
-			{
-				return _reflectionPlane;
-			}
-			protected set
-			{
-				_reflectionPlane = value;
-			}
-		}
+		virtual public Plane ReflectionPlane { get { return _reflectionPlane; } protected set { _reflectionPlane = value; } }
 
 		#endregion ReflectionPlane Property
 
@@ -628,22 +592,27 @@ namespace Axiom.Core
 		///		Reference of a reflection plane (automatically updated).
 		/// </summary>
 		protected IDerivedPlaneProvider linkedReflectionPlane;
+
 		/// <summary>
 		///		Record of the last world-space reflection plane info used.
 		/// </summary>
 		protected Plane lastLinkedReflectionPlane;
+
 		/// <summary>
 		///		Is this frustum using an oblique depth projection?
 		/// </summary>
 		protected bool useObliqueDepthProjection;
+
 		/// <summary>
 		///		Fixed oblique projection plane.
 		/// </summary>
 		protected Plane obliqueProjPlane;
+
 		/// <summary>
 		///		Reference to oblique projection plane (automatically updated).
 		/// </summary>
 		protected IDerivedPlaneProvider linkedObliqueProjPlane;
+
 		/// <summary>
 		///		Record of the last world-space oblique depth projection plane info used.
 		/// </summary>
@@ -662,15 +631,13 @@ namespace Axiom.Core
 		protected bool _frustumExtentsManuallySet;
 
 		protected float _orthoHeight;
+
 		/// <summary>
 		///
 		/// </summary>
 		public float OrthoWindowHeight
 		{
-			get
-			{
-				return _orthoHeight;
-			}
+			get { return _orthoHeight; }
 			set
 			{
 				_orthoHeight = value;
@@ -683,10 +650,7 @@ namespace Axiom.Core
 		/// </summary>
 		public float OrthoWindowWidth
 		{
-			get
-			{
-				return _orthoHeight * _aspectRatio;
-			}
+			get { return _orthoHeight * _aspectRatio; }
 			set
 			{
 				_orthoHeight = value / _aspectRatio;
@@ -715,7 +679,7 @@ namespace Axiom.Core
 
 		private void Initialize()
 		{
-			for ( int i = 0; i < 6; i++ )
+			for( int i = 0; i < 6; i++ )
 			{
 				_planes[ i ] = new Plane();
 			}
@@ -744,7 +708,7 @@ namespace Axiom.Core
 			_vertexData.vertexStart = 0;
 			_vertexData.vertexCount = 32;
 			_vertexData.vertexBufferBinding.SetBinding( 0,
-													   HardwareBufferManager.Instance.CreateVertexBuffer( 4 * 3, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
+			                                            HardwareBufferManager.Instance.CreateVertexBuffer( 4 * 3, _vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
 
 			_material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
@@ -767,7 +731,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Disables any custom near clip plane.
 		/// </summary>
-		public virtual void DisableCustomNearClipPlane()
+		virtual public void DisableCustomNearClipPlane()
 		{
 			useObliqueDepthProjection = false;
 			linkedObliqueProjPlane = null;
@@ -782,7 +746,7 @@ namespace Axiom.Core
 		public void SetCustomViewMatrix( bool enable, Matrix4 viewMatrix )
 		{
 			_customViewMatrix = enable;
-			if ( enable )
+			if( enable )
 			{
 				Debug.Assert( viewMatrix.IsAffine );
 				_viewMatrix = viewMatrix;
@@ -798,7 +762,7 @@ namespace Axiom.Core
 		public void SetCustomProjectionMatrix( bool enable, Matrix4 projMatrix )
 		{
 			_customProjectionMatrix = enable;
-			if ( enable )
+			if( enable )
 			{
 				_projectionMatrix = projMatrix;
 			}
@@ -809,7 +773,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Disables reflection modification previously turned on with <see cref="EnableReflection"/>.
 		/// </summary>
-		public virtual void DisableReflection()
+		virtual public void DisableReflection()
 		{
 			_isReflected = false;
 			lastLinkedReflectionPlane.Normal = Vector3.Zero;
@@ -843,7 +807,7 @@ namespace Axiom.Core
 		///		<p>This technique only works for perspective projection.</p>
 		/// </remarks>
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
-		public virtual void EnableCustomNearClipPlane( IDerivedPlaneProvider plane )
+		virtual public void EnableCustomNearClipPlane( IDerivedPlaneProvider plane )
 		{
 			useObliqueDepthProjection = true;
 			linkedObliqueProjPlane = plane;
@@ -878,7 +842,7 @@ namespace Axiom.Core
 		///		<p>This technique only works for perspective projection.</p>
 		/// </remarks>
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
-		public virtual void EnableCustomNearClipPlane( Plane plane )
+		virtual public void EnableCustomNearClipPlane( Plane plane )
 		{
 			useObliqueDepthProjection = true;
 			linkedObliqueProjPlane = null;
@@ -894,7 +858,7 @@ namespace Axiom.Core
 		///     This is obviously useful for rendering planar reflections.
 		/// </remarks>
 		/// <param name="plane"></param>
-		public virtual void EnableReflection( Plane plane )
+		virtual public void EnableReflection( Plane plane )
 		{
 			_isReflected = true;
 			_reflectionPlane = plane;
@@ -910,7 +874,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <remarks>This is obviously useful for performing planar reflections.</remarks>
 		/// <param name="plane"></param>
-		public virtual void EnableReflection( IDerivedPlaneProvider plane )
+		virtual public void EnableReflection( IDerivedPlaneProvider plane )
 		{
 			_isReflected = true;
 			linkedReflectionPlane = plane;
@@ -924,7 +888,7 @@ namespace Axiom.Core
 		///		Get the derived position of this frustum.
 		/// </summary>
 		/// <returns></returns>
-		protected virtual Vector3 GetPositionForViewUpdate()
+		virtual protected Vector3 GetPositionForViewUpdate()
 		{
 			return _lastParentPosition;
 		}
@@ -933,7 +897,7 @@ namespace Axiom.Core
 		///		Get the derived orientation of this frustum.
 		/// </summary>
 		/// <returns></returns>
-		protected virtual Quaternion GetOrientationForViewUpdate()
+		virtual protected Quaternion GetOrientationForViewUpdate()
 		{
 			return _lastParentOrientation;
 		}
@@ -965,12 +929,16 @@ namespace Axiom.Core
 			culledBy = FrustumPlane.None;
 
 			// Null boxes are always invisible
-			if ( box.IsNull )
+			if( box.IsNull )
+			{
 				return false;
+			}
 
 			// Infinite Boxes are always visible
-			if ( box.IsInfinite )
+			if( box.IsInfinite )
+			{
 				return true;
+			}
 
 			// Make any pending updates to the calculated frustum
 			UpdateFrustumPlanes();
@@ -980,22 +948,22 @@ namespace Axiom.Core
 
 			// For each plane, see if all points are on the negative side
 			// If so, object is not visible
-			for ( int plane = 0; plane < 6; plane++ )
+			for( int plane = 0; plane < 6; plane++ )
 			{
 				// skip far plane if infinite view frustum
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if( _farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
-				if ( _planes[ plane ].GetSide( corners[ 0 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 1 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 2 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 3 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 4 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 5 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 6 ] ) == PlaneSide.Negative &&
-					_planes[ plane ].GetSide( corners[ 7 ] ) == PlaneSide.Negative )
+				if( _planes[ plane ].GetSide( corners[ 0 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 1 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 2 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 3 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 4 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 5 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 6 ] ) == PlaneSide.Negative &&
+				    _planes[ plane ].GetSide( corners[ 7 ] ) == PlaneSide.Negative )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1036,16 +1004,16 @@ namespace Axiom.Core
 
 			// For each plane, see if sphere is on negative side
 			// If so, object is not visible
-			for ( int plane = 0; plane < 6; plane++ )
+			for( int plane = 0; plane < 6; plane++ )
 			{
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if( _farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
 				// If the distance from sphere center to plane is negative, and 'more negative'
 				// than the radius of the sphere, sphere is outside frustum
-				if ( _planes[ plane ].GetDistance( sphere.Center ) < -sphere.Radius )
+				if( _planes[ plane ].GetDistance( sphere.Center ) < -sphere.Radius )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1087,14 +1055,14 @@ namespace Axiom.Core
 
 			// For each plane, see if all points are on the negative side
 			// If so, object is not visible
-			for ( int plane = 0; plane < 6; plane++ )
+			for( int plane = 0; plane < 6; plane++ )
 			{
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if( _farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
-				if ( _planes[ plane ].GetSide( vertex ) == PlaneSide.Negative )
+				if( _planes[ plane ].GetSide( vertex ) == PlaneSide.Negative )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1107,7 +1075,7 @@ namespace Axiom.Core
 			return true;
 		}
 
-		public virtual bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
+		virtual public bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
 		{
 			// initialise
 			left = bottom = -1.0f;
@@ -1116,12 +1084,14 @@ namespace Axiom.Core
 			// Transform light position into camera space
 			Vector3 eyeSpacePos = this.ViewMatrix.TransformAffine( sphere.Center );
 
-			if ( eyeSpacePos.z < 0 )
+			if( eyeSpacePos.z < 0 )
 			{
 				float r = sphere.Radius;
 				// early-exit
-				if ( eyeSpacePos.LengthSquared <= r * r )
+				if( eyeSpacePos.LengthSquared <= r * r )
+				{
 					return false;
+				}
 
 				Vector3 screenSpacePos = this.ProjectionMatrix * eyeSpacePos;
 
@@ -1146,7 +1116,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Signal to update frustum information.
 		/// </summary>
-		protected virtual void InvalidateFrustum()
+		virtual protected void InvalidateFrustum()
 		{
 			_recalculateFrustum = true;
 			_recalculateFrustumPlanes = true;
@@ -1157,7 +1127,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Signal to update view information.
 		/// </summary>
-		protected virtual void InvalidateView()
+		virtual protected void InvalidateView()
 		{
 			_recalculateView = true;
 			_recalculateFrustumPlanes = true;
@@ -1166,7 +1136,7 @@ namespace Axiom.Core
 
 		protected void CalculateProjectionParameters( out Real vpLeft, out Real vpRight, out Real vpBottom, out Real vpTop )
 		{
-			if ( _customProjectionMatrix )
+			if( _customProjectionMatrix )
 			{
 				// Convert clipspace corners to camera space
 				Matrix4 invProj = _projectionMatrix.Inverse();
@@ -1181,15 +1151,15 @@ namespace Axiom.Core
 				vpRight = bottomRight.x;
 				vpBottom = bottomRight.y;
 			}
-			else if ( _frustumExtentsManuallySet )
+			else if( _frustumExtentsManuallySet )
 			{
 				vpLeft = _left;
 				vpRight = _right;
 				vpTop = _top;
 				vpBottom = _bottom;
 			}
-			// Calculate general projection parameters
-			else if ( ProjectionType == Projection.Perspective )
+				// Calculate general projection parameters
+			else if( ProjectionType == Projection.Perspective )
 			{
 				// Calculate general projection parameters
 
@@ -1237,19 +1207,19 @@ namespace Axiom.Core
 		/// </summary>
 		protected void UpdateFrustum()
 		{
-			if ( IsFrustumOutOfDate )
+			if( IsFrustumOutOfDate )
 			{
 				_updateFrustum();
 			}
 		}
 
-		protected virtual void _updateFrustum()
+		virtual protected void _updateFrustum()
 		{
 			Real vpTop, vpRight, vpBottom, vpLeft;
 
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 
-			if ( !_customProjectionMatrix )
+			if( !_customProjectionMatrix )
 			{
 				// The code below will dealing with general projection
 				// parameters, similar glFrustum and glOrtho.
@@ -1261,7 +1231,7 @@ namespace Axiom.Core
 				float inv_d = 1.0f / ( _farDistance - _nearDistance );
 
 				// Recalc if frustum params changed
-				if ( _projectionType == Projection.Perspective )
+				if( _projectionType == Projection.Perspective )
 				{
 					// Calc matrix elements
 					float A = 2.0f * _nearDistance * inv_w;
@@ -1269,7 +1239,7 @@ namespace Axiom.Core
 					float C = ( vpRight + vpLeft ) * inv_w;
 					float D = ( vpTop + vpBottom ) * inv_h;
 					float q, qn;
-					if ( _farDistance == 0.0f )
+					if( _farDistance == 0.0f )
 					{
 						// Infinite far plane
 						q = Frustum.InfiniteFarPlaneAdjust - 1.0f;
@@ -1305,7 +1275,7 @@ namespace Axiom.Core
 					_projectionMatrix.m23 = qn;
 					_projectionMatrix.m32 = -1.0f;
 
-					if ( useObliqueDepthProjection )
+					if( useObliqueDepthProjection )
 					{
 						// Translate the plane into view space
 
@@ -1346,14 +1316,14 @@ namespace Axiom.Core
 						_projectionMatrix.m23 = c.w;
 					}
 				} // perspective
-				else if ( _projectionType == Projection.Orthographic )
+				else if( _projectionType == Projection.Orthographic )
 				{
 					float A = 2.0f * inv_w;
 					float B = 2.0f * inv_h;
 					float C = -( vpRight + vpLeft ) * inv_w;
 					float D = -( vpTop + vpBottom ) * inv_h;
 					float q, qn;
-					if ( _farDistance == 0.0f )
+					if( _farDistance == 0.0f )
 					{
 						// Can not do infinite far plane here, avoid divided zero only
 						q = -Frustum.InfiniteFarPlaneAdjust / _nearDistance;
@@ -1407,7 +1377,7 @@ namespace Axiom.Core
 			Vector3 min = new Vector3( vpLeft, vpBottom, -farDist );
 			Vector3 max = new Vector3( vpRight, vpTop, 0 );
 
-			if ( _customProjectionMatrix )
+			if( _customProjectionMatrix )
 			{
 				// Some custom projection matrices can have unusual inverted settings
 				// So make sure the AABB is the right way around to start with
@@ -1417,7 +1387,7 @@ namespace Axiom.Core
 			}
 
 			float radio = 1.0f;
-			if ( _projectionType == Projection.Perspective )
+			if( _projectionType == Projection.Perspective )
 			{
 				// Merge with far plane bounds
 				radio = _farDistance / _nearDistance;
@@ -1438,13 +1408,13 @@ namespace Axiom.Core
 			UpdateView();
 			UpdateFrustum();
 
-			if ( _recalculateFrustumPlanes )
+			if( _recalculateFrustumPlanes )
 			{
 				_updateFrustumPlanes();
 			}
 		}
 
-		protected virtual void _updateFrustumPlanes()
+		virtual protected void _updateFrustumPlanes()
 		{
 			// -------------------------
 			// Update the frustum planes
@@ -1482,7 +1452,7 @@ namespace Axiom.Core
 			_planes[ (int)FrustumPlane.Far ].D = combo[ 3, 3 ] - combo[ 2, 3 ];
 
 			// Renormalise any normals which were not unit length
-			for ( int i = 0; i < 6; i++ )
+			for( int i = 0; i < 6; i++ )
 			{
 				float length = _planes[ i ].Normal.Normalize();
 				_planes[ i ].D /= length;
@@ -1497,13 +1467,13 @@ namespace Axiom.Core
 		protected void UpdateView()
 		{
 			// check if the view is out of date
-			if ( IsViewOutOfDate )
+			if( IsViewOutOfDate )
 			{
 				_updateView();
 			}
 		}
 
-		protected virtual void _updateView()
+		virtual protected void _updateView()
 		{
 			// ----------------------
 			// Update the view matrix
@@ -1522,7 +1492,7 @@ namespace Axiom.Core
 
 			// Get orientation from quaternion
 
-			if ( !_customViewMatrix )
+			if( !_customViewMatrix )
 			{
 				Quaternion orientation = GetOrientationForViewUpdate();
 				Vector3 position = GetPositionForViewUpdate();
@@ -1540,7 +1510,7 @@ namespace Axiom.Core
 				_viewMatrix[ 2, 3 ] = trans.z;
 
 				// Deal with reflections
-				if ( _isReflected )
+				if( _isReflected )
 				{
 					_viewMatrix = _viewMatrix * _reflectionMatrix;
 				}
@@ -1554,7 +1524,7 @@ namespace Axiom.Core
 			_recalculateWorldSpaceCorners = true;
 			// Signal to update frustum if oblique plane enabled,
 			// since plane needs to be in view space
-			if ( useObliqueDepthProjection )
+			if( useObliqueDepthProjection )
 			{
 				_recalculateFrustum = true;
 			}
@@ -1564,13 +1534,13 @@ namespace Axiom.Core
 		{
 			UpdateView();
 
-			if ( _recalculateWorldSpaceCorners )
+			if( _recalculateWorldSpaceCorners )
 			{
 				_updateWorldSpaceCorners();
 			}
 		}
 
-		protected virtual void _updateWorldSpaceCorners()
+		virtual protected void _updateWorldSpaceCorners()
 		{
 			Matrix4 eyeToWorld = _viewMatrix.InverseAffine();
 
@@ -1606,9 +1576,9 @@ namespace Axiom.Core
 			_recalculateWorldSpaceCorners = false;
 		}
 
-		protected virtual void UpdateVertexData()
+		virtual protected void UpdateVertexData()
 		{
-			if ( _recalculateVertexData )
+			if( _recalculateVertexData )
 			{
 				// Note: Even though we could be dealing with general a projection matrix here,
 				//       it is incompatible with the infinite far plane, thus, we need to work
@@ -1834,24 +1804,12 @@ namespace Axiom.Core
 		/// <summary>
 		///    Local bounding radius of this camera.
 		/// </summary>
-		public override float BoundingRadius
-		{
-			get
-			{
-				return ( _farDistance == 0 ) ? InfiniteFarPlaneDistance : _farDistance;
-			}
-		}
+		public override float BoundingRadius { get { return ( _farDistance == 0 ) ? InfiniteFarPlaneDistance : _farDistance; } }
 
 		/// <summary>
 		///     Returns the bounding box for this frustum.
 		/// </summary>
-		public override AxisAlignedBox BoundingBox
-		{
-			get
-			{
-				return _boundingBox;
-			}
-		}
+		public override AxisAlignedBox BoundingBox { get { return _boundingBox; } }
 
 		/// <summary>
 		///
@@ -1868,7 +1826,7 @@ namespace Axiom.Core
 		/// <param name="queue"></param>
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( isVisible )
+			if( isVisible )
 			{
 				queue.AddRenderable( this );
 			}
@@ -1878,49 +1836,26 @@ namespace Axiom.Core
 		/// Get the 'type flags' for this <see cref="Frustum"/>.
 		/// </summary>
 		/// <seealso cref="MovableObject.TypeFlags"/>
-		public override uint TypeFlags
-		{
-			get
-			{
-				return (uint)SceneQueryTypeMask.Frustum;
-			}
-		}
+		public override uint TypeFlags { get { return (uint)SceneQueryTypeMask.Frustum; } }
 
 		#endregion Implementation of MovableObject
 
 		#region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool CastsShadows { get { return false; } }
 
 		/// <summary>
 		///     Returns the material to use when rendering this frustum.
 		/// </summary>
-		public Material Material
-		{
-			get
-			{
-				return _material;
-			}
-		}
+		public Material Material { get { return _material; } }
 
 		/// <summary>
 		///     Just returns the best technique for our material.
 		/// </summary>
-		public Technique Technique
-		{
-			get
-			{
-				return _material.GetBestTechnique();
-			}
-		}
+		public Technique Technique { get { return _material.GetBestTechnique(); } }
 
 		protected RenderOperation renderOperation = new RenderOperation();
+
 		public RenderOperation RenderOperation
 		{
 			get
@@ -1937,7 +1872,7 @@ namespace Axiom.Core
 
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
-			if ( parentNode != null )
+			if( parentNode != null )
 			{
 				parentNode.GetWorldTransforms( matrices );
 			}
@@ -1946,59 +1881,23 @@ namespace Axiom.Core
 		/// <summary>
 		///     Returns a dummy list since we won't be lit.
 		/// </summary>
-		public LightList Lights
-		{
-			get
-			{
-				return dummyLightList;
-			}
-		}
+		public LightList Lights { get { return dummyLightList; } }
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool NormalizeNormals { get { return false; } }
 
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+		public ushort NumWorldTransforms { get { return 1; } }
 
-		public bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityProjection { get { return false; } }
 
-		public bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool UseIdentityView { get { return false; } }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return false;
-			}
-		}
+		virtual public bool PolygonModeOverrideable { get { return false; } }
 
 		public Quaternion WorldOrientation
 		{
 			get
 			{
-				if ( parentNode != null )
+				if( parentNode != null )
 				{
 					return parentNode.DerivedOrientation;
 				}
@@ -2013,7 +1912,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parentNode != null )
+				if( parentNode != null )
 				{
 					return parentNode.DerivedPosition;
 				}
@@ -2036,7 +1935,7 @@ namespace Axiom.Core
 
 		public float GetSquaredViewDepth( Camera camera )
 		{
-			if ( parentNode != null )
+			if( parentNode != null )
 			{
 				return ( camera.DerivedPosition - parentNode.DerivedPosition ).LengthSquared;
 			}
@@ -2048,7 +1947,7 @@ namespace Axiom.Core
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
@@ -2060,14 +1959,16 @@ namespace Axiom.Core
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while( customParams.Count <= index )
+			{
 				customParams.Add( Vector4.Zero );
+			}
 			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if( customParams[ entry.Data ] != null )
 			{
 				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
@@ -2103,33 +2004,37 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-                    //Dispose managed resources.
-                    if ( renderOperation != null )
-                    {
-                        if ( !renderOperation.IsDisposed )
-                            renderOperation.Dispose();
+					//Dispose managed resources.
+					if( renderOperation != null )
+					{
+						if( !renderOperation.IsDisposed )
+						{
+							renderOperation.Dispose();
+						}
 
-                        renderOperation = null;
-                    }
+						renderOperation = null;
+					}
 
-                    if ( _vertexData != null )
-                    {
-                        if (!_vertexData.IsDisposed)
-                            _vertexData.Dispose();
+					if( _vertexData != null )
+					{
+						if( !_vertexData.IsDisposed )
+						{
+							_vertexData.Dispose();
+						}
 
-                        _vertexData = null;
-                    }
+						_vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

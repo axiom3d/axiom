@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -82,48 +84,42 @@ namespace Axiom.RenderSystems.OpenGL
 			glControl.Show();
 
 			int count = 0;
-			while ( glControl.Context == null && ++count < 10 )
+			while( glControl.Context == null && ++count < 10 )
 			{
 				System.Threading.Thread.Sleep( 10 );
 			}
-			if ( glControl.Context == null )
+			if( glControl.Context == null )
+			{
 				throw new Exception( "glControl.Context == null" );
+			}
 
 			Form form = (Form)parent;
 			form.Controls.Add( glControl );
 			control.Hide();
 
-			if ( ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" ).Count > 0 )
+			if( ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" ).Count > 0 )
 			{
-				using ( System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
+				using( System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
 				{
-					if ( icon != null )
+					if( icon != null )
+					{
 						form.Icon = new System.Drawing.Icon( icon );
+					}
 				}
 			}
 			Initialized = true;
 		}
 
-		public override bool VSync
-		{
-			get
-			{
-				return graphicsContext.VSync;
-			}
-			set
-			{
-				graphicsContext.VSync = value;
-			}
-		}
+		public override bool VSync { get { return graphicsContext.VSync; } set { graphicsContext.VSync = value; } }
 
 		public void SwapBuffers()
 		{
-			if ( glControl != null )
+			if( glControl != null )
 			{
 				glControl.MakeCurrent();
 				glControl.SwapBuffers();
 			}
-			else if ( graphicsContext != null )
+			else if( graphicsContext != null )
 			{
 				graphicsContext.MakeCurrent( windowInfo );
 				graphicsContext.SwapBuffers();
@@ -132,19 +128,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetCurrent()
 		{
-			if ( glControl != null )
+			if( glControl != null )
 			{
 				glControl.MakeCurrent();
 			}
-			else if ( graphicsContext != null )
+			else if( graphicsContext != null )
 			{
 				graphicsContext.MakeCurrent( windowInfo );
 			}
 		}
 
-		public override void EndCurrent()
-		{
-		}
+		public override void EndCurrent() {}
 
 		public override GLContext Clone()
 		{

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,10 +47,12 @@ using Axiom.Core.Collections;
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 /// <ogresynchronization>
 ///     <file name="TagPoint.h"   revision="1.10.2.2" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 ///     <file name="TagPoint.cpp" revision="1.12" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 /// </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
@@ -69,16 +75,18 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class TagPoint : Bone
 	{
-        #region Fields and Properties
+		#region Fields and Properties
 
 		/// <summary>
 		///		Reference to the entity that owns this tagpoint.
 		/// </summary>
 		protected Entity parentEntity;
+
 		/// <summary>
 		///		Object attached to this tagpoint.
 		/// </summary>
 		protected MovableObject childObject;
+
 		/// <summary>
 		///		Combined full local transform of this tagpoint.
 		/// </summary>
@@ -87,54 +95,22 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Gets/Sets the object attached to this tagpoint.
 		/// </summary>
-		public MovableObject ChildObject
-		{
-			get
-			{
-				return childObject;
-			}
-			set
-			{
-				childObject = value;
-			}
-		}
+		public MovableObject ChildObject { get { return childObject; } set { childObject = value; } }
 
 		/// <summary>
 		///		Gets/Sets the parent Entity that is using this tagpoint.	
 		/// </summary>
-		public Entity ParentEntity
-		{
-			get
-			{
-				return parentEntity;
-			}
-			set
-			{
-				parentEntity = value;
-			}
-		}
+		public Entity ParentEntity { get { return parentEntity; } set { parentEntity = value; } }
 
 		/// <summary>
 		///		Gets the transform of this node just for the skeleton (not entity).
 		/// </summary>
-		public Matrix4 FullLocalTransform
-		{
-			get
-			{
-				return fullLocalTransform;
-			}
-		}
+		public Matrix4 FullLocalTransform { get { return fullLocalTransform; } }
 
 		/// <summary>
 		///		Transformation matrix of the parent entity.
 		/// </summary>
-		public Matrix4 ParentEntityTransform
-		{
-			get
-			{
-				return parentEntity.ParentNodeFullTransform;
-			}
-		}
+		public Matrix4 ParentEntityTransform { get { return parentEntity.ParentNodeFullTransform; } }
 
 		/// <summary>
 		///  Tells the TagPoint whether it should inherit orientation from it's parent entity.
@@ -143,34 +119,26 @@ namespace Axiom.Animating
 		/// If true, this TagPoint's orientation will be affected by
 		/// its parent entity's orientation. If false, it will not be affected.
 		/// </remarks>
-		public bool InheritParentEntityOrientation
-		{
-			get;
-			set;
-		}
+		public bool InheritParentEntityOrientation { get; set; }
 
-		public bool InheritParentEntityScale
-		{
-			get;
-			set;
-		}
+		public bool InheritParentEntityScale { get; set; }
 
 		#endregion Fields and Properties
 
-        #region Construction and Destruction
+		#region Construction and Destruction
 
-        /// <summary>
-        ///		Constructor.
-        /// </summary>
-        /// <param name="handle">Handle to use.</param>
-        /// <param name="creator">Skeleton who created this tagpoint.</param>
+		/// <summary>
+		///		Constructor.
+		/// </summary>
+		/// <param name="handle">Handle to use.</param>
+		/// <param name="creator">Skeleton who created this tagpoint.</param>
 		public TagPoint( ushort handle, Skeleton creator )
 			: base( handle, creator )
-        {
+		{
 			suppressUpdateEvent = true;
 			InheritParentEntityOrientation = true;
 			InheritParentEntityScale = true;
-        }
+		}
 
 		#endregion Construction and Destruction
 
@@ -179,13 +147,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Gets the transform of this node including the parent entity and skeleton.
 		/// </summary>
-		public override Matrix4 FullTransform
-		{
-			get
-			{
-				return base.FullTransform;
-			}
-		}
+		public override Matrix4 FullTransform { get { return base.FullTransform; } }
 
 		/// <summary>
 		///		Overridden to update parent entity.
@@ -194,11 +156,11 @@ namespace Axiom.Animating
 		{
 			needParentUpdate = true;
 			// // We need to tell parent entities node
-			if ( parentEntity != null )
+			if( parentEntity != null )
 			{
 				Node n = parentEntity.ParentNode;
 
-				if ( n != null )
+				if( n != null )
 				{
 					n.NeedUpdate();
 				}
@@ -213,20 +175,20 @@ namespace Axiom.Animating
 			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
 
 			// Include Entity transform
-			if ( parentEntity != null )
+			if( parentEntity != null )
 			{
 				Node entityParentNode = parentEntity.ParentNode;
-				if ( entityParentNode != null )
+				if( entityParentNode != null )
 				{
 					Quaternion parentQ = entityParentNode.DerivedOrientation;
-					if ( InheritParentEntityOrientation )
+					if( InheritParentEntityOrientation )
 					{
-					derivedOrientation = parentQ * derivedOrientation;
+						derivedOrientation = parentQ * derivedOrientation;
 					}
 
 					// Incorporate parent entity scale
 					Vector3 parentScale = entityParentNode.Scale;
-					if ( InheritParentEntityScale )
+					if( InheritParentEntityScale )
 					{
 						derivedScale *= parentScale;
 					}
@@ -241,13 +203,12 @@ namespace Axiom.Animating
 				}
 			}
 
-			if ( childObject != null )
+			if( childObject != null )
 			{
 				childObject.NotifyMoved();
+			}
 		}
-        }
 
 		#endregion Bone Members
 	}
-
 }

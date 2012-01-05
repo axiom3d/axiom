@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -87,9 +91,7 @@ namespace Axiom.Core
 		/// <param name="g">Green color component.</param>
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float r, float g, float b )
-			: this( 1.0f, r, g, b )
-		{
-		}
+			: this( 1.0f, r, g, b ) {}
 
 		/// <summary>
 		///		Constructor taking all component values.
@@ -139,7 +141,6 @@ namespace Axiom.Core
 
 			return result;
 		}
-
 
 		/// <summary>
 		///		Converts this color value to packed ABGR format.
@@ -220,9 +221,9 @@ namespace Axiom.Core
 		public static bool operator ==( ColorEx left, ColorEx right )
 		{
 			return left.a == right.a &&
-				   left.b == right.b &&
-				   left.g == right.g &&
-				   left.r == right.r;
+			       left.b == right.b &&
+			       left.g == right.g &&
+			       left.r == right.r;
 		}
 
 		public static bool operator !=( ColorEx left, ColorEx right )
@@ -249,7 +250,6 @@ namespace Axiom.Core
 			retVal.b *= scalar;
 			return retVal;
 		}
-
 
 		public static ColorEx operator /( ColorEx left, ColorEx right )
 		{
@@ -2555,24 +2555,32 @@ namespace Axiom.Core
 		public static ColorEx Parse_0_255_String( string parsableText )
 		{
 			ColorEx retVal;
-			if ( parsableText == null )
+			if( parsableText == null )
+			{
 				throw new ArgumentException( "The parsableText parameter cannot be null." );
+			}
 			string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
-			if ( vals.Length < 3 )
+			if( vals.Length < 3 )
+			{
 				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)",
-														parsableText ) );
+				                                          parsableText ) );
+			}
 			//float r, g, b, a;
 			try
 			{
 				retVal.r = int.Parse( vals[ 0 ].Trim() ) / 255f;
 				retVal.g = int.Parse( vals[ 1 ].Trim() ) / 255f;
 				retVal.b = int.Parse( vals[ 2 ].Trim() ) / 255f;
-				if ( vals.Length == 4 )
+				if( vals.Length == 4 )
+				{
 					retVal.a = int.Parse( vals[ 3 ].Trim() ) / 255f;
+				}
 				else
+				{
 					retVal.a = 1.0f;
+				}
 			}
-			catch ( Exception e )
+			catch( Exception e )
 			{
 				throw new FormatException( "The parts of the ColorEx in Parse_0_255 must be integers" );
 			}
@@ -2583,10 +2591,10 @@ namespace Axiom.Core
 		public string To_0_255_String()
 		{
 			return string.Format( "({0},{1},{2},{3})",
-								 (int)( r * 255f ),
-								 (int)( g * 255f ),
-								 (int)( b * 255f ),
-								 (int)( a * 255f ) );
+			                      (int)( r * 255f ),
+			                      (int)( g * 255f ),
+			                      (int)( b * 255f ),
+			                      (int)( a * 255f ) );
 		}
 
 		#endregion Static color properties
@@ -2607,10 +2615,14 @@ namespace Axiom.Core
 
 		public override bool Equals( object obj )
 		{
-			if ( typeof( object ) is ColorEx )
+			if( typeof( object ) is ColorEx )
+			{
 				return this == (ColorEx)obj;
+			}
 			else
+			{
 				return false;
+			}
 		}
 
 		public override string ToString()
@@ -2631,12 +2643,11 @@ namespace Axiom.Core
 		{
 			ColorEx other = (ColorEx)obj;
 
-			if ( this.a == other.a &&
-				this.r == other.r &&
-				this.g == other.g &&
-				this.b == other.b )
+			if( this.a == other.a &&
+			    this.r == other.r &&
+			    this.g == other.g &&
+			    this.b == other.b )
 			{
-
 				return 0;
 			}
 
@@ -2665,6 +2676,5 @@ namespace Axiom.Core
 		}
 
 		#endregion ICloneable Implementation
-
 	}
 }

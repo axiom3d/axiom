@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,6 +55,7 @@ namespace Axiom.Graphics
 		///     Licensee will only release buffer when it says so.
 		/// </summary>
 		Manual,
+
 		/// <summary>
 		///     Licensee can have license revoked.
 		/// </summary>
@@ -66,17 +71,20 @@ namespace Axiom.Graphics
 		/// 
 		/// </summary>
 		Normal,
+
 		/// <summary>
 		///		Discards the <em>entire</em> buffer while locking; this allows optimisation to be 
 		///		performed because synchronisation issues are relaxed. Only allowed on buffers 
 		///		created with the Dynamic flag. 
 		/// </summary>
 		Discard,
+
 		/// <summary>
 		///		Lock the buffer for reading only. Not allowed in buffers which are created with WriteOnly. 
 		///		Mandatory on static buffers, ie those created without the Dynamic flag.
 		/// </summary>
 		ReadOnly,
+
 		/// <summary>
 		///    Potential optimization for some API's.
 		/// </summary>
@@ -93,6 +101,7 @@ namespace Axiom.Graphics
 		/// 
 		/// </summary>
 		Static = 1,
+
 		/// <summary>
 		///		Indicates the application would like to modify this buffer with the CPU
 		///		sometimes. Absence of this flag means the application will never modify. 
@@ -100,6 +109,7 @@ namespace Axiom.Graphics
 		///		than video memory.
 		/// </summary>
 		Dynamic = 2,
+
 		/// <summary>
 		///		Indicates the application will never read the contents of the buffer back, 
 		///		it will only ever write data. Locking a buffer with this flag will ALWAYS 
@@ -108,6 +118,7 @@ namespace Axiom.Graphics
 		///		write to a new memory area while the previous one is being used
 		/// </summary>
 		WriteOnly = 4,
+
 		/// <summary>
 		///     Indicates that the application will be refilling the contents
 		///     of the buffer regularly (not just updating, but generating the
@@ -118,10 +129,12 @@ namespace Axiom.Graphics
 		///     DynamicWriteOnly.
 		/// </summary>
 		Discardable = 8,
+
 		/// <summary>
 		///    Combination of Static and WriteOnly
 		/// </summary>
 		StaticWriteOnly = 5,
+
 		/// <summary>
 		///    Combination of Dynamic and WriteOnly. If you use 
 		///    this, strongly consider using DynamicWriteOnlyDiscardable
@@ -144,19 +157,23 @@ namespace Axiom.Graphics
 		StencilBuffer = 0x00000001,
 		TextureBlending = 0x00000002,
 		VertexBlending = 0x00000004,
+
 		/// <summary>
 		///		Supports anisotropic texture filtering.
 		/// </summary>
 		AnisotropicFiltering = 0x00000008,
+
 		/// <summary>
 		///		Supports fixed-function DOT3 texture blend.
 		/// </summary>
 		Dot3 = 0x00000010,
+
 		/// <summary>
 		///		Supports hardware vertex and index buffers.
 		/// </summary>
 		VertexBuffer = 0x00000020,
 		MultiTexturing = 0x00000040,
+
 		/// <summary>
 		///		Supports generating mipmaps in hardware.
 		/// </summary>
@@ -165,86 +182,107 @@ namespace Axiom.Graphics
 		///		Supports cube mapping.
 		/// </summary>
 		CubeMapping = 0x00000100,
+
 		/// <summary>
 		///		Supports vertex programs (vertex shaders).
 		/// </summary>
 		VertexPrograms = 0x00000200,
+
 		/// <summary>
 		///		Supports fragment programs (pixel shaders).
 		/// </summary>
 		FragmentPrograms = 0x00000400,
+
 		/// <summary>
 		///		Supports compressed textures.
 		/// </summary>
 		TextureCompression = 0x00000800,
+
 		/// <summary>
 		///		Supports compressed textures in the DXT/ST3C formats.
 		/// </summary>
 		TextureCompressionDXT = 0x00001000,
+
 		/// <summary>
 		///		Supports compressed textures in the VTC format.
 		/// </summary>
 		TextureCompressionVTC = 0x00002000,
+
 		/// <summary>
 		///		Supports performing a scissor test to exclude areas of the screen.
 		/// </summary>
 		ScissorTest = 0x00004000,
+
 		/// <summary>
 		///		Supports separate stencil updates for both front and back faces.
 		/// </summary>
 		TwoSidedStencil = 0x00008000,
+
 		/// <summary>
 		///		Supports wrapping the stencil value at the range extremeties.
 		/// </summary>
 		StencilWrap = 0x00010000,
+
 		/// <summary>
 		///		Hardware occlusion queries.
 		/// </summary>
 		HardwareOcculusion = 0x00020000,
+
 		/// <summary>
 		///		User clipping planes.
 		/// </summary>
 		UserClipPlanes = 0x00040000,
+
 		/// <summary>
 		///		4 byte wide vertex elemet format.
 		/// </summary>
 		VertexFormatUByte4 = 0x00080000,
+
 		/// <summary>
 		///		Infinite far plane projection
 		/// </summary>
 		InfiniteFarPlane = 0x00100000,
+
 		/// <summary>
 		///     Supports hardware render-to-texture (bigger than framebuffer)
 		/// </summary>
 		HardwareRenderToTexture = 0x00200000,
+
 		/// <summary>
 		///     Supports float textures and render targets
 		/// </summary>
 		TextureFloat = 0x00400000,
+
 		/// <summary>
 		///     Supports non-power of two textures
 		/// </summary>
 		NonPowerOf2Textures = 0x00800000,
+
 		/// <summary>
 		///     Supports 3d (volume) textures
 		/// </summary>
 		Texture3D = 0x01000000,
+
 		/// <summary>
 		///     Supports basic point sprite rendering
 		/// </summary>
 		PointSprites = 0x02000000,
+
 		/// <summary>
 		///     Supports extra point parameters (minsize, maxsize, attenuation)
 		/// </summary>
 		PointExtendedParameters = 0x04000000,
+
 		/// <summary>
 		///		Supports vertex texture fetch
 		/// </summary>
 		VertexTextureFetch = 0x08000000,
+
 		/// <summary>
 		///		Supports mipmap LOD biasing
 		/// </summary>
 		MipmapLODBias = 0x10000000,
+
 		/// <summary>
 		///     Supports Alpha to Coverage (A2C)
 		/// </summary>
@@ -256,22 +294,14 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompareFunction
 	{
-		[ScriptEnum( "always_fail" )]
-		AlwaysFail,
-		[ScriptEnum( "always_pass" )]
-		AlwaysPass,
-		[ScriptEnum( "less" )]
-		Less,
-		[ScriptEnum( "less_equal" )]
-		LessEqual,
-		[ScriptEnum( "equal" )]
-		Equal,
-		[ScriptEnum( "not_equal" )]
-		NotEqual,
-		[ScriptEnum( "greater_equal" )]
-		GreaterEqual,
-		[ScriptEnum( "greater" )]
-		Greater
+		[ScriptEnum( "always_fail" )] AlwaysFail,
+		[ScriptEnum( "always_pass" )] AlwaysPass,
+		[ScriptEnum( "less" )] Less,
+		[ScriptEnum( "less_equal" )] LessEqual,
+		[ScriptEnum( "equal" )] Equal,
+		[ScriptEnum( "not_equal" )] NotEqual,
+		[ScriptEnum( "greater_equal" )] GreaterEqual,
+		[ScriptEnum( "greater" )] Greater
 	};
 
 	/// <summary>
@@ -282,18 +312,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Draw everything (2 sided geometry).
 		///	 </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
+
 		/// <summary>
 		///		Only draw geomtry where vertices were specified in clockwise order.
 		///	 </summary>
-		[ScriptEnum( "clockwise" )]
-		Clockwise,
+		[ScriptEnum( "clockwise" )] Clockwise,
+
 		/// <summary>
 		///		Only draw geomtry where vertices were specified in counterclockwise order.
 		///	 </summary>
-		[ScriptEnum( "anticlockwise" )]
-		CounterClockwise
+		[ScriptEnum( "anticlockwise" )] CounterClockwise
 	}
 
 	/// <summary>
@@ -308,23 +337,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Envmap based on vector from camera to vertex position, good for planar geometry.
 		///	 </summary>
-		[ScriptEnum( "spherical" )]
-		Curved,
+		[ScriptEnum( "spherical" )] Curved,
+
 		/// <summary>
 		///		Envmap based on dot of vector from camera to vertex and vertex normal, good for curves.
 		///	 </summary>
-		[ScriptEnum( "planar" )]
-		Planar,
+		[ScriptEnum( "planar" )] Planar,
+
 		/// <summary>
 		///		Envmap entended to supply reflection vectors for cube mapping.
 		/// </summary>
-		[ScriptEnum( "cubic_reflection" )]
-		Reflection,
+		[ScriptEnum( "cubic_reflection" )] Reflection,
+
 		/// <summary>
 		///		Envmap entended to supply normal vectors for cube mapping
 		/// </summary>
-		[ScriptEnum( "cubic_normal" )]
-		Normal
+		[ScriptEnum( "cubic_normal" )] Normal
 	}
 
 	/// <summary>
@@ -345,23 +373,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    No filtering, used for FilterType.Mip to turn off mipmapping.
 		/// </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
+
 		/// <summary>
 		///    Use the closest pixel.
 		/// </summary>
-		[ScriptEnum( "point" )]
-		Point,
+		[ScriptEnum( "point" )] Point,
+
 		/// <summary>
 		///    Average of a 2x2 pixel area, denotes bilinear for Min and Mag, trilinear for Mip.
 		/// </summary>
-		[ScriptEnum( "linear" )]
-		Linear,
+		[ScriptEnum( "linear" )] Linear,
+
 		/// <summary>
 		///    Similar to Linear, but compensates for the angle of the texture plane.
 		/// </summary>
-		[ScriptEnum( "anisotropic" )]
-		Anisotropic
+		[ScriptEnum( "anisotropic" )] Anisotropic
 	}
 
 	/// <summary>
@@ -373,10 +400,12 @@ namespace Axiom.Graphics
 		///    The filter used when shrinking a texture.
 		/// </summary>
 		Min,
+
 		/// <summary>
 		///    The filter used when magnifiying a texture.
 		/// </summary>
 		Mag,
+
 		/// <summary>
 		///    The filter used when determining the mipmap.
 		/// </summary>
@@ -391,23 +420,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		No fog.
 		///	 </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
+
 		/// <summary>
 		///		Fog density increases exponentially from the camera (fog = 1/e^(distance * density)).
 		///	 </summary>
-		[ScriptEnum( "exp" )]
-		Exp,
+		[ScriptEnum( "exp" )] Exp,
+
 		/// <summary>
 		///		Fog density increases at the square of FOG_EXP, i.e. even quicker (fog = 1/e^(distance * density)^2).
 		///	 </summary>
-		[ScriptEnum( "exp2" )]
-		Exp2,
+		[ScriptEnum( "exp2" )] Exp2,
+
 		/// <summary>
 		///		Fog density increases linearly between the start and end distances.
 		///	 </summary>
-		[ScriptEnum( "linear" )]
-		Linear
+		[ScriptEnum( "linear" )] Linear
 	}
 
 	/// <summary>
@@ -419,11 +447,13 @@ namespace Axiom.Graphics
 		///    Executes for each vertex passed through the pipeline while this program is active.
 		/// </summary>
 		Vertex,
+
 		/// <summary>
 		///    Executes for each fragment (or pixel) for primitives that are passed through the pipeline
 		///    while this program is active..
 		/// </summary>
 		Fragment,
+
 		/// <summary>
 		///    Executes for each geometry for primitives that are passed through the pipeline
 		///    while this program is active..
@@ -444,7 +474,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parameter is managed by Axiom and passed in by index. Used for ASM shaders.
 		/// </summary>
-
 		IndexedAuto,
 
 		/// <summary>
@@ -457,7 +486,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		NamedAuto
 	}
-
 
 	/// <summary>
 	///		Defines the frame buffers which can be cleared.
@@ -479,22 +507,27 @@ namespace Axiom.Graphics
 		///		No special illumination stage.
 		/// </summary>
 		None,
+
 		/// <summary>
 		///		Ambient stage, when background light is added.
 		/// </summary>
 		Ambient,
+
 		/// <summary>
 		///		Diffuse / specular stage, when individual light contributions are added.
 		/// </summary>
 		PerLight,
+
 		/// <summary>
 		///		Decal stage, when texture detail is added to the lit base.
 		/// </summary>
 		Decal,
+
 		/// <summary>
 		///		Render to texture stage, used for texture based shadows.
 		/// </summary>
 		RenderToTexture,
+
 		/// <summary>
 		///		Render from shadow texture to receivers stage.
 		/// </summary>
@@ -510,10 +543,12 @@ namespace Axiom.Graphics
 		///		Part of the rendering which occurs without any kind of direct lighting.
 		/// </summary>
 		Ambient,
+
 		/// <summary>
 		///		Part of the rendering which occurs per light.
 		/// </summary>
 		PerLight,
+
 		/// <summary>
 		///		Post-lighting rendering.
 		/// </summary>
@@ -541,107 +576,105 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Replace all color with texture and no adjustment.
 		/// </summary>
-		[ScriptEnum( "replace" )]
-		Replace,
+		[ScriptEnum( "replace" )] Replace,
+
 		/// <summary>
 		///		Add color components together.
 		/// </summary>
-		[ScriptEnum( "add" )]
-		Add,
+		[ScriptEnum( "add" )] Add,
+
 		/// <summary>
 		///		Multiply the color components together.
 		/// </summary>
-		[ScriptEnum( "modulate" )]
-		Modulate,
+		[ScriptEnum( "modulate" )] Modulate,
+
 		/// <summary>
 		///		Blend based on texture alpha.
 		/// </summary>
-		[ScriptEnum( "alpha_blend" )]
-		AlphaBlend
+		[ScriptEnum( "alpha_blend" )] AlphaBlend
 	}
 
 	/// <summary>
 	///		Full and complete list of valid texture blending operations.  Fallbacks will be required on older hardware
 	///		that does not supports some of these multitexturing techniques.
 	/// </summary>
-    public enum LayerBlendOperationEx
-    {
-        /// <summary>
-        ///		Use source 1 as is.
-        /// </summary>
-        [ScriptEnum( "source1" )]
-        Source1,
-        /// <summary>
-        ///		Use source 2 as is.
-        /// </summary>
-        [ScriptEnum( "source2" )]
-        Source2,
-        /// <summary>
-        ///		Multiply source 1 and source 2 together.
-        /// </summary>
-        [ScriptEnum( "modulate" )]
-        Modulate,
-        /// <summary>
-        ///		Same as Modulate, but brightens as a result.
-        /// </summary>
-        [ScriptEnum( "modulate_x2" )]
-        ModulateX2,
-        /// <summary>
-        ///		Same as ModuleX2, but brightens even more as a result.
-        /// </summary>
-        [ScriptEnum( "modulate_x4" )]
-        ModulateX4,
-        /// <summary>
-        ///		Add source 1 and source 2 together.
-        /// </summary>
-        [ScriptEnum( "add" )]
-        Add,
-        /// <summary>
-        ///		Same as Add, but subtracts 0.5 from the result.
-        /// </summary>
-        [ScriptEnum( "add_signed" )]
-        AddSigned,
-        /// <summary>
-        ///		Same as Add, but subtracts the product from the sum.
-        /// </summary>
-        [ScriptEnum( "add_smooth" )]
-        AddSmooth,
-        /// <summary>
-        ///		Subtract source 2 from source 1.
-        /// </summary>
-        [ScriptEnum( "subtract" )]
-        Subtract,
-        /// <summary>
-        ///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
-        /// </summary>
-        [ScriptEnum( "blend_diffuse_alpha" )]
-        BlendDiffuseAlpha,
-        /// <summary>
-        ///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
-        /// </summary>
-        [ScriptEnum( "blend_texture_alpha" )]
-        BlendTextureAlpha,
-        /// <summary>
-        ///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
-        /// </summary>
-        [ScriptEnum( "blend_current_alpha" )]
-        BlendCurrentAlpha,
-        /// <summary>
-        ///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
-        /// </summary>
-        [ScriptEnum( "blend_manual" )]
-        BlendManual,
-        /// <summary>
-        ///		Takes the dot product of color 1 and color 2.
-        /// </summary>
-        [ScriptEnum( "dotproduct" )]
-        DotProduct,
-        /// <summary>
-        /// use interpolated color values from vertices to scale source1, then add source2 scaled by (1-color)
-        /// </summary>
-        [ScriptEnum("blend_diffuse_colour")]
-        BlendDiffuseColour
-    }
+	public enum LayerBlendOperationEx
+	{
+		/// <summary>
+		///		Use source 1 as is.
+		/// </summary>
+		[ScriptEnum( "source1" )] Source1,
+
+		/// <summary>
+		///		Use source 2 as is.
+		/// </summary>
+		[ScriptEnum( "source2" )] Source2,
+
+		/// <summary>
+		///		Multiply source 1 and source 2 together.
+		/// </summary>
+		[ScriptEnum( "modulate" )] Modulate,
+
+		/// <summary>
+		///		Same as Modulate, but brightens as a result.
+		/// </summary>
+		[ScriptEnum( "modulate_x2" )] ModulateX2,
+
+		/// <summary>
+		///		Same as ModuleX2, but brightens even more as a result.
+		/// </summary>
+		[ScriptEnum( "modulate_x4" )] ModulateX4,
+
+		/// <summary>
+		///		Add source 1 and source 2 together.
+		/// </summary>
+		[ScriptEnum( "add" )] Add,
+
+		/// <summary>
+		///		Same as Add, but subtracts 0.5 from the result.
+		/// </summary>
+		[ScriptEnum( "add_signed" )] AddSigned,
+
+		/// <summary>
+		///		Same as Add, but subtracts the product from the sum.
+		/// </summary>
+		[ScriptEnum( "add_smooth" )] AddSmooth,
+
+		/// <summary>
+		///		Subtract source 2 from source 1.
+		/// </summary>
+		[ScriptEnum( "subtract" )] Subtract,
+
+		/// <summary>
+		///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
+		/// </summary>
+		[ScriptEnum( "blend_diffuse_alpha" )] BlendDiffuseAlpha,
+
+		/// <summary>
+		///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
+		/// </summary>
+		[ScriptEnum( "blend_texture_alpha" )] BlendTextureAlpha,
+
+		/// <summary>
+		///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
+		/// </summary>
+		[ScriptEnum( "blend_current_alpha" )] BlendCurrentAlpha,
+
+		/// <summary>
+		///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
+		/// </summary>
+		[ScriptEnum( "blend_manual" )] BlendManual,
+
+		/// <summary>
+		///		Takes the dot product of color 1 and color 2.
+		/// </summary>
+		[ScriptEnum( "dotproduct" )] DotProduct,
+
+		/// <summary>
+		/// use interpolated color values from vertices to scale source1, then add source2 scaled by (1-color)
+		/// </summary>
+		[ScriptEnum( "blend_diffuse_colour" )] BlendDiffuseColour
+	}
 
 	/// <summary>
 	///		Valid sources of values for texture layer blending operations.
@@ -651,28 +684,27 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		The color as built up from previous stages.
 		/// </summary>
-		[ScriptEnum( "src_current" )]
-		Current,
+		[ScriptEnum( "src_current" )] Current,
+
 		/// <summary>
 		///		The color derived from the texture assigned to the current layer.
 		/// </summary>
-		[ScriptEnum( "src_texture" )]
-		Texture,
+		[ScriptEnum( "src_texture" )] Texture,
+
 		/// <summary>
 		///		The interpolated diffuse color from the vertices.
 		/// </summary>
-		[ScriptEnum( "src_diffuse" )]
-		Diffuse,
+		[ScriptEnum( "src_diffuse" )] Diffuse,
+
 		/// <summary>
 		///		The interpolated specular color from the vertices.
 		/// </summary>
-		[ScriptEnum( "src_specular" )]
-		Specular,
+		[ScriptEnum( "src_specular" )] Specular,
+
 		/// <summary>
 		///		A color supplied manually as a seperate argument.
 		/// </summary>
-		[ScriptEnum( "src_manual" )]
-		Manual
+		[ScriptEnum( "src_manual" )] Manual
 	}
 
 	/// <summary>
@@ -683,13 +715,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Based on diffuse color of the texture.
 		/// </summary>
-		[ScriptEnum( "color" )]
-		Color,
+		[ScriptEnum( "color" )] Color,
+
 		/// <summary>
 		///		Based on the alpha value of the texture.
 		/// </summary>
-		[ScriptEnum( "alpha" )]
-		Alpha
+		[ScriptEnum( "alpha" )] Alpha
 	}
 
 	/// <summary>
@@ -700,18 +731,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Point light sources give off light equally in all directions, so require only position not direction.
 		///	 </summary>
-		[ScriptEnum( "point" )]
-		Point,
+		[ScriptEnum( "point" )] Point,
+
 		/// <summary>
 		///		Directional lights simulate parallel light beams from a distant source, hence have direction but no position.
 		///	 </summary>
-		[ScriptEnum( "directional" )]
-		Directional,
+		[ScriptEnum( "directional" )] Directional,
+
 		/// <summary>
 		///		Spotlights simulate a cone of light from a source so require position and direction, plus extra values for falloff.
 		///	 </summary>
-		[ScriptEnum( "spot" )]
-		Spotlight
+		[ScriptEnum( "spot" )] Spotlight
 	}
 
 	/// <summary>
@@ -726,18 +756,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		No culling so everything is sent to the hardware.
 		///	 </summary>
-		[ScriptEnum( "none" )]
-		None = 1,
+		[ScriptEnum( "none" )] None = 1,
+
 		/// <summary>
 		///		Cull triangles whose normal is pointing away from the camera (default).
 		///	 </summary>
-		[ScriptEnum( "back" )]
-		Back = 2,
+		[ScriptEnum( "back" )] Back = 2,
+
 		/// <summary>
 		///		Cull triangles whose normal is pointing towards the camera.
 		///	 </summary>
-		[ScriptEnum( "front" )]
-		Front = 3
+		[ScriptEnum( "front" )] Front = 3
 	}
 
 	/// <summary>
@@ -747,6 +776,7 @@ namespace Axiom.Graphics
 	{
 		/// <summary> Things stay the same size no matter where they are in terms of the camera.  Normally only used in 3D HUD elements. </summary>
 		Orthographic,
+
 		/// <summary> Things get smaller when they are furthur away from the camera. </summary>
 		Perspective
 	}
@@ -760,22 +790,27 @@ namespace Axiom.Graphics
 		///		Render the vertices as individual points.
 		/// </summary>
 		PointList = 1,
+
 		/// <summary>
 		///		Render the vertices as a series of individual lines.
 		/// </summary>
 		LineList,
+
 		/// <summary>
 		///		Render the vertices as a continuous line.
 		/// </summary>
 		LineStrip,
+
 		/// <summary>
 		///		Render the vertices as a series of individual triangles.
 		/// </summary>
 		TriangleList,
+
 		/// <summary>
 		///		Render the vertices as a continous set of triangles in a zigzag type fashion.
 		/// </summary>
 		TriangleStrip,
+
 		/// <summary>
 		///		Render the vertices as a set of trinagles in a fan like formation.
 		/// </summary>
@@ -791,6 +826,7 @@ namespace Axiom.Graphics
 		///    Will be processed last.
 		/// </summary>
 		Default = 4,
+
 		/// <summary>
 		///    Will be processed first (i.e. RenderTextures).
 		/// </summary>
@@ -805,43 +841,34 @@ namespace Axiom.Graphics
 	public enum SceneBlendFactor
 	{
 		/// <summary></summary>
-		[ScriptEnum( "one" )]
-		One,
+		[ScriptEnum( "one" )] One,
+
 		/// <summary></summary>
-		[ScriptEnum( "zero" )]
-		Zero,
+		[ScriptEnum( "zero" )] Zero,
+
 		/// <summary></summary>
-		[ScriptEnum( "dest_colour" )]
-		[ScriptEnum( "dest_color" )]
-		[ScriptEnum( "dest_color" )]
-		DestColor,
+		[ScriptEnum( "dest_colour" ), ScriptEnum( "dest_color" ), ScriptEnum( "dest_color" )] 		 DestColor,
+
 		/// <summary></summary>
-		[ScriptEnum( "src_colour" )]
-		[ScriptEnum( "src_color" )]
-		[ScriptEnum( "src_color" )]
-		SourceColor,
+		[ScriptEnum( "src_colour" ), ScriptEnum( "src_color" ), ScriptEnum( "src_color" )] 		 SourceColor,
+
 		/// <summary></summary>
-		[ScriptEnum( "one_minus_dest_colour" )]
-		[ScriptEnum( "one_minus_dest_color" )]
-		[ScriptEnum( "one_minus_dest_color" )]
-		OneMinusDestColor,
+		[ScriptEnum( "one_minus_dest_colour" ), ScriptEnum( "one_minus_dest_color" ), ScriptEnum( "one_minus_dest_color" )] 		 OneMinusDestColor,
+
 		/// <summary></summary>
-		[ScriptEnum( "one_minus_src_colour" )]
-		[ScriptEnum( "one_minus_src_color" )]
-		[ScriptEnum( "one_minus_src_color" )]
-		OneMinusSourceColor,
+		[ScriptEnum( "one_minus_src_colour" ), ScriptEnum( "one_minus_src_color" ), ScriptEnum( "one_minus_src_color" )] 		 OneMinusSourceColor,
+
 		/// <summary></summary>
-		[ScriptEnum( "dest_alpha" )]
-		DestAlpha,
+		[ScriptEnum( "dest_alpha" )] DestAlpha,
+
 		/// <summary></summary>
-		[ScriptEnum( "src_alpha" )]
-		SourceAlpha,
+		[ScriptEnum( "src_alpha" )] SourceAlpha,
+
 		/// <summary></summary>
-		[ScriptEnum( "one_minus_dest_alpha" )]
-		OneMinusDestAlpha,
+		[ScriptEnum( "one_minus_dest_alpha" )] OneMinusDestAlpha,
+
 		/// <summary></summary>
-		[ScriptEnum( "one_minus_src_alpha" )]
-		OneMinusSourceAlpha
+		[ScriptEnum( "one_minus_src_alpha" )] OneMinusSourceAlpha
 	}
 
 	/// <summary>
@@ -852,29 +879,27 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Make the object transparent based on the final alpha values in the texture.
 		///	 </summary>
-		[ScriptEnum( "alpha_blend" )]
-		TransparentAlpha,
+		[ScriptEnum( "alpha_blend" )] TransparentAlpha,
+
 		/// <summary>
 		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
 		///	 </summary>
-		[ScriptEnum( "colour_blend" )]
-		[ScriptEnum( "color_blend" )]
-		TransparentColor,
+		[ScriptEnum( "colour_blend" ), ScriptEnum( "color_blend" )] 		 TransparentColor,
+
 		/// <summary>
 		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
 		///	 </summary>
-		[ScriptEnum( "modulate" )]
-		Modulate,
+		[ScriptEnum( "modulate" )] Modulate,
+
 		/// <summary>
 		///		Add the texture values to the existing scene content.
 		///	 </summary>
-		[ScriptEnum( "add" )]
-		Add,
+		[ScriptEnum( "add" )] Add,
+
 		/// <summary>
 		/// The default blend mode where source replaces destination
 		/// </summary>
-		[ScriptEnum( "replace" )]
-		Replace,
+		[ScriptEnum( "replace" )] Replace,
 	}
 
 	/// <summary>
@@ -886,10 +911,12 @@ namespace Axiom.Graphics
 		///		Render subsequent requests drawing only the vertices in the scene.
 		/// </summary>
 		Points,
+
 		/// <summary>
 		///		Render subsequent requests drawing only objects using wireframe mode.
 		/// </summary>
 		Wireframe,
+
 		/// <summary>
 		///		Render everything in the scene normally (textures, etc).
 		/// </summary>
@@ -904,18 +931,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Draw with a single color.
 		///	 </summary>
-		[ScriptEnum( "flat" )]
-		Flat,
+		[ScriptEnum( "flat" )] Flat,
+
 		/// <summary>
 		///		Interpolate color across primitive vertices.
 		///	 </summary>
-		[ScriptEnum( "gouraud" )]
-		Gouraud,
+		[ScriptEnum( "gouraud" )] Gouraud,
+
 		/// <summary>
 		///		Draw everything (2 sided geometry).
 		///	 </summary>
-		[ScriptEnum( "phong" )]
-		Phong
+		[ScriptEnum( "phong" )] Phong
 	}
 
 	/// <summary>
@@ -927,10 +953,12 @@ namespace Axiom.Graphics
 		///		For shadow volume techniques only, generate a light cap on the volume.
 		/// </summary>
 		IncludeLightCap = 1,
+
 		/// <summary>
 		///		For shadow volume techniques only, generate a dark cap on the volume.
 		/// </summary>
 		IncludeDarkCap = 2,
+
 		/// <summary>
 		///		For shadow volume techniques only, indicates volume is extruded to infinity
 		/// </summary>
@@ -946,6 +974,7 @@ namespace Axiom.Graphics
 		///		No shadows.
 		/// </summary>
 		None,
+
 		/// <summary>
 		///		Stencil shadow technique which renders all shadow volumes as
 		///		a modulation after all the non-transparent areas have been 
@@ -954,6 +983,7 @@ namespace Axiom.Graphics
 		///		lights, but is not an accurate model. 
 		/// </summary>
 		StencilModulative,
+
 		///	<summary>		
 		///		Stencil shadow technique which renders each light as a separate
 		///		additive pass to the scene. This technique can be very fillrate
@@ -963,12 +993,14 @@ namespace Axiom.Graphics
 		///		especially apparant when using coloured lights or bump mapping.
 		/// </summary>
 		StencilAdditive,
+
 		/// <summary>
 		///		Texture-based shadow technique which involves a monochrome render-to-texture
 		///		of the shadow caster and a projection of that texture onto the 
 		///		shadow receivers as a modulative pass.
 		/// </summary>
 		TextureModulative,
+
 		/// <summary>
 		///		Texture-based shadow technique which involves a render-to-texture
 		///		of the shadow caster and a projection of that texture onto the 
@@ -987,30 +1019,37 @@ namespace Axiom.Graphics
 		///		Leave the stencil buffer unchanged.
 		///	 </summary>
 		Keep,
+
 		/// <summary>
 		///		Set the stencil value to zero.
 		///	 </summary>
 		Zero,
+
 		/// <summary>
 		///		Set the stencil value to the reference value.
 		///	 </summary>
 		Replace,
+
 		/// <summary>
 		///		Increase the stencil value by 1, clamping at the maximum value.
 		///	 </summary>
 		Increment,
+
 		/// <summary>
 		///		Decrease the stencil value by 1, clamping at 0.
 		///	 </summary>
 		Decrement,
+
 		/// <summary>
 		///		Increase the stencil value by 1, wrapping back to 0 when incrementing the maximum value.
 		///	 </summary>
 		IncrementWrap,
+
 		/// <summary>
 		///		Decrease the stencil value by 1, wrapping when decrementing 0.
 		///	 </summary>
 		DecrementWrap,
+
 		/// <summary>
 		///		Invert the bits of the stencil buffer.
 		///	 </summary>
@@ -1028,23 +1067,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Texture wraps at values over 1.0 
 		///	 </summary>
-		[ScriptEnum( "wrap" )]
-		Wrap,
+		[ScriptEnum( "wrap" )] Wrap,
+
 		/// <summary>
 		///		Texture mirrors (flips) at joins over 1.0.
 		///	 </summary>
-		[ScriptEnum( "mirror" )]
-		Mirror,
+		[ScriptEnum( "mirror" )] Mirror,
+
 		/// <summary>
 		///		Texture clamps at 1.0.
 		///	 </summary>
-		[ScriptEnum( "clamp" )]
-		Clamp,
+		[ScriptEnum( "clamp" )] Clamp,
+
 		/// <summary>
 		///		Values outside the range [0.0, 1.0] are set to the border colour
 		///	 </summary>
-		[ScriptEnum( "border" )]
-		Border
+		[ScriptEnum( "border" )] Border
 	}
 
 	/// <summary>
@@ -1056,16 +1094,19 @@ namespace Axiom.Graphics
 		///		No calculated texture coordinates.
 		///	 </summary>
 		None,
+
 		/// <summary>
 		///		Environment map based on vertex normals.
 		///	 </summary>
 		EnvironmentMap,
+
 		/// <summary>
 		///		Environment map based on vertex positions.
 		///	 </summary>
 		EnvironmentMapPlanar,
 		EnvironmentMapReflection,
 		EnvironmentMapNormal,
+
 		/// <summary>
 		///		Projective texture.
 		///	 </summary>
@@ -1098,26 +1139,32 @@ namespace Axiom.Graphics
 		///		Generate all texture coords based on angle between camera and vertex.
 		///	 </summary>
 		EnvironmentMap,
+
 		/// <summary>
 		///		Generate texture coords based on a frustum.
 		///	 </summary>
 		ProjectiveTexture,
+
 		/// <summary>
 		///		Constant u/v scrolling effect.
 		///	 </summary>
 		UVScroll,
+
 		/// <summary>
 		///		Constant u scrolling effect.
 		///	 </summary>
 		UScroll,
+
 		/// <summary>
 		///		Constant v scrolling effect.
 		///	 </summary>
 		VScroll,
+
 		/// <summary>
 		///		Constant rotation.
 		///	 </summary>
 		Rotate,
+
 		/// <summary>
 		///		More complex transform.
 		///	 </summary>
@@ -1132,23 +1179,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Equal to: min=Point, mag=Point, mip=None
 		///	 </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
+
 		/// <summary>
 		///		Equal to: min=Linear, mag=Linear, mip=Point
 		///	 </summary>
-		[ScriptEnum( "bilinear" )]
-		Bilinear,
+		[ScriptEnum( "bilinear" )] Bilinear,
+
 		/// <summary>
 		///		Equal to: min=Linear, mag=Linear, mip=Linear
 		///	 </summary>
-		[ScriptEnum( "trilinear" )]
-		Trilinear,
+		[ScriptEnum( "trilinear" )] Trilinear,
+
 		/// <summary>
 		///    Equal to: min=Anisotropic, max=Anisotropic, mip=Linear
 		/// </summary>
-		[ScriptEnum( "anisotropic" )]
-		Anisotropic
+		[ScriptEnum( "anisotropic" )] Anisotropic
 	}
 
 	/// <summary>
@@ -1163,28 +1209,27 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "scroll_x" )]
-		TranslateU,
+		[ScriptEnum( "scroll_x" )] TranslateU,
+
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "scroll_y" )]
-		TranslateV,
+		[ScriptEnum( "scroll_y" )] TranslateV,
+
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "scale_x" )]
-		ScaleU,
+		[ScriptEnum( "scale_x" )] ScaleU,
+
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "scale_y" )]
-		ScaleV,
+		[ScriptEnum( "scale_y" )] ScaleV,
+
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "rotate" )]
-		Rotate
+		[ScriptEnum( "rotate" )] Rotate
 	}
 
 	/// <summary>
@@ -1195,23 +1240,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    1D texture, used in combination with 1D texture coordinates.
 		/// </summary>
-		[ScriptEnum( "1d" )]
-		OneD = 1,
+		[ScriptEnum( "1d" )] OneD = 1,
+
 		/// <summary>
 		///    2D texture, used in combination with 2D texture coordinates (default).
 		/// </summary>
-		[ScriptEnum( "2d" )]
-		TwoD = 2,
+		[ScriptEnum( "2d" )] TwoD = 2,
+
 		/// <summary>
 		///    3D volume texture, used in combination with 3D texture coordinates.
 		/// </summary>
-		[ScriptEnum( "3d" )]
-		ThreeD = 3,
+		[ScriptEnum( "3d" )] ThreeD = 3,
+
 		/// <summary>
 		///    3D cube map, used in combination with 3D texture coordinates.
 		/// </summary>
-		[ScriptEnum( "cubic" )]
-		CubeMap = 4
+		[ScriptEnum( "cubic" )] CubeMap = 4
 	}
 
 	/// <summary>
@@ -1221,6 +1265,7 @@ namespace Axiom.Graphics
 	{
 		/// Generate mipmaps up to 1x1
 		Unlimited = 0x7FFFFFFF,
+
 		/// Use TextureManager default
 		Default = -1
 	}
@@ -1237,15 +1282,18 @@ namespace Axiom.Graphics
 		StaticWriteOnly = BufferUsage.StaticWriteOnly,
 		DynamicWriteOnly = BufferUsage.DynamicWriteOnly,
 		DynamicWriteOnlyDiscardable = BufferUsage.DynamicWriteOnlyDiscardable,
+
 		/// <summary>
 		///    Mipmaps will be automatically generated for this texture
 		///	 </summary>
 		AutoMipMap = 0x100,
+
 		/// <summary>
 		///    This texture will be a render target, ie. used as a target for render to texture
 		///    setting this flag will ignore all other texture usages except AutoMipMap
 		///	 </summary>
 		RenderTarget = 0x200,
+
 		/// <summary>
 		///    Default to automatic mipmap generation static textures
 		///	</summary>
@@ -1266,24 +1314,29 @@ namespace Axiom.Graphics
 		///		Specifies the 3D coordinates of the vertex.
 		///	 </summary>
 		Position = 1,
+
 		/// <summary>
 		///		When applying 1 or more world matrices to a vertex, the weight values of a vertex dictate how much
 		///		of an effect each matrix has in determining its final position.  
 		/// </summary>
 		BlendWeights = 2,
+
 		/// <summary>
 		///		Normal vector, determines the logical direction the vertex is facing for use in
 		///		lighting calculations.
 		///	 </summary>
 		Normals = 4,
+
 		/// <summary>
 		///		Texture coordinate for the vertex.
 		///	 </summary>
 		TextureCoords = 8,
+
 		/// <summary>
 		///		The primary color of the vertex.
 		/// </summary>
 		Diffuse = 16,
+
 		/// <summary>
 		///		Specular color for this vertex.
 		///	 </summary>
@@ -1299,34 +1352,42 @@ namespace Axiom.Graphics
 		///     Position, 3 reals per vertex.
 		/// </summary>
 		Position = 1,
+
 		/// <summary>
 		///     Blending weights.
 		/// </summary>
 		BlendWeights = 2,
+
 		/// <summary>
 		///     Blending indices.
 		/// </summary>
 		BlendIndices = 3,
+
 		/// <summary>
 		///     Normal, 3 reals per vertex.
 		/// </summary>
 		Normal = 4,
+
 		/// <summary>
 		///     Diffuse colors.
 		/// </summary>
 		Diffuse = 5,
+
 		/// <summary>
 		///     Specular colors.
 		/// </summary>
 		Specular = 6,
+
 		/// <summary>
 		///     Texture coordinates.
 		/// </summary>
 		TexCoords = 7,
+
 		/// <summary>
 		///     Binormal (Y axis if normal is Z).
 		/// </summary>
 		Binormal = 8,
+
 		/// <summary>
 		///     Tangent (X axis if normal is Z).
 		/// </summary>
@@ -1348,11 +1409,12 @@ namespace Axiom.Graphics
 		Short3,
 		Short4,
 		UByte4,
+
 		/// D3D style compact colour
 		Color_ARGB = 10,
+
 		/// GL style compact colour
 		Color_ABGR = 11
-
 	}
 
 	/// <summary>
@@ -1360,32 +1422,27 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompositorPassType
 	{
-        /// <summary>
-        /// Clear target to one colour
-        /// </summary>
-        [ScriptEnum("clear")]
-		Clear,
+		/// <summary>
+		/// Clear target to one colour
+		/// </summary>
+		[ScriptEnum( "clear" )] Clear,
 
-        /// <summary>
-        /// Set stencil operation
-        /// </summary>
-        [ScriptEnum("stencil")]
-		Stencil,
+		/// <summary>
+		/// Set stencil operation
+		/// </summary>
+		[ScriptEnum( "stencil" )] Stencil,
 
-        /// <summary>
-        /// Render the scene or part of it
-        /// </summary>
-        [ScriptEnum("render_scene")]
-		RenderScene,
+		/// <summary>
+		/// Render the scene or part of it
+		/// </summary>
+		[ScriptEnum( "render_scene" )] RenderScene,
 
-        /// <summary>
-        /// Render a full screen quad
-        /// </summary>
-        [ScriptEnum("render_quad")]
-		RenderQuad,
+		/// <summary>
+		/// Render a full screen quad
+		/// </summary>
+		[ScriptEnum( "render_quad" )] RenderQuad,
 
-        [ScriptEnum("render_custom")]
-		RenderCustom
+		[ScriptEnum( "render_custom" )] RenderCustom
 	}
 
 	/// <summary>
@@ -1393,7 +1450,7 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompositorInputMode
 	{
-		None,            // No input
-		Previous         // Output of previous Composition in chain
+		None, // No input
+		Previous // Output of previous Composition in chain
 	}
 }

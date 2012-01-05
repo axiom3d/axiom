@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -72,12 +76,15 @@ namespace Axiom.Graphics
 		private List<String> _delegateNames = new List<string>();
 
 		private HighLevelGpuProgram _chosenDelegate;
+
 		public HighLevelGpuProgram Delegate
 		{
 			get
 			{
-				if ( _chosenDelegate == null )
+				if( _chosenDelegate == null )
+				{
 					chooseDelegate();
+				}
 				return _chosenDelegate;
 			}
 		}
@@ -87,27 +94,23 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null )
-		{
-		}
+			: this( creator, name, handle, group, false, null ) {}
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader )
-		{
-		}
+			: base( creator, name, handle, group, isManual, loader ) {}
 
 		#endregion Construction and Destruction
 
 		#region Methods
 
 		/// Choose the delegate to use
-		protected virtual void chooseDelegate()
+		virtual protected void chooseDelegate()
 		{
 			_chosenDelegate = null;
-			foreach ( string delegateName in _delegateNames )
+			foreach( string delegateName in _delegateNames )
 			{
 				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
-				if ( program != null && program.IsSupported )
+				if( program != null && program.IsSupported )
 				{
 					_chosenDelegate = program;
 					break;
@@ -115,9 +118,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		protected virtual void buildConstantDefinitions()
-		{
-		}
+		virtual protected void buildConstantDefinitions() {}
 
 		/// <summary>
 		/// Adds a new delegate program to the list.
@@ -151,7 +152,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.BindingDelegate;
 				}
@@ -164,7 +165,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.IsMorphAnimationIncluded;
 				}
@@ -173,8 +174,10 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
+				{
 					Delegate.IsMorphAnimationIncluded = value;
+				}
 			}
 		}
 
@@ -182,7 +185,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.IsSkeletalAnimationIncluded;
 				}
@@ -190,8 +193,10 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
+				{
 					Delegate.IsSkeletalAnimationIncluded = value;
+				}
 			}
 		}
 
@@ -199,7 +204,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.PoseAnimationCount;
 				}
@@ -207,24 +212,20 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
+				{
 					Delegate.PoseAnimationCount = value;
+				}
 			}
 		}
 
-		public override bool IsSupported
-		{
-			get
-			{
-				return Delegate != null;
-			}
-		}
+		public override bool IsSupported { get { return Delegate != null; } }
 
 		public override bool PassSurfaceAndLightStates
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.PassSurfaceAndLightStates;
 				}
@@ -232,8 +233,10 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
+				{
 					Delegate.PassSurfaceAndLightStates = value;
+				}
 			}
 		}
 
@@ -241,7 +244,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.HasDefaultParameters;
 				}
@@ -253,7 +256,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.DefaultParameters;
 				}
@@ -263,7 +266,7 @@ namespace Axiom.Graphics
 
 		public override GpuProgramParameters CreateParameters()
 		{
-			if ( IsSupported )
+			if( IsSupported )
 			{
 				return Delegate.CreateParameters();
 			}
@@ -278,7 +281,7 @@ namespace Axiom.Graphics
 
 		public override bool SetParam( string name, string val )
 		{
-			switch ( name )
+			switch( name )
 			{
 				case "delegate":
 					AddDelegateProgram( val );
@@ -290,8 +293,10 @@ namespace Axiom.Graphics
 
 		public override void Load( bool background )
 		{
-			if ( Delegate != null )
+			if( Delegate != null )
+			{
 				Delegate.Load( background );
+			}
 		}
 
 		protected override void CreateLowLevelImpl()
@@ -318,7 +323,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( Delegate != null )
+				if( Delegate != null )
 				{
 					return Delegate.SamplerCount;
 				}
@@ -333,13 +338,7 @@ namespace Axiom.Graphics
 	{
 		#region IHighLevelGpuProgramFactory Members
 
-		public override string Language
-		{
-			get
-			{
-				return "unified";
-			}
-		}
+		public override string Language { get { return "unified"; } }
 
 		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 		{

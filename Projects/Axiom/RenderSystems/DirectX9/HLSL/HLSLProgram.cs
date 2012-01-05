@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,7 +46,6 @@ using Axiom.Graphics;
 using Axiom.Scripting;
 
 using ResourceHandle = System.UInt64;
-
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 using ResourceManager = Axiom.Core.ResourceManager;
@@ -66,44 +69,27 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// Shader profile to target for the compile (i.e. vs1.1, etc).
 		/// </summary>
 		protected string target;
+
 		/// <summary>
 		/// Gets/Sets the shader profile to target for the compile (i.e. vs1.1, etc).
 		/// </summary>
-		public string Target
-		{
-			get
-			{
-				return target;
-			}
-			set
-			{
-				target = value;
-			}
-		}
+		public string Target { get { return target; } set { target = value; } }
 
 		/// <summary>
 		/// Entry point to compile from the program.
 		/// </summary>
 		protected string entry;
+
 		/// <summary>
 		/// Gets/Sets the entry point to compile from the program.
 		/// </summary>
-		public string EntryPoint
-		{
-			get
-			{
-				return entry;
-			}
-			set
-			{
-				entry = value;
-			}
-		}
+		public string EntryPoint { get { return entry; } set { entry = value; } }
 
 		/// <summary>
 		/// Holds the low level program instructions after the compile.
 		/// </summary>
 		protected D3D.ShaderBytecode microcode;
+
 		/// <summary>
 		/// Holds information about shader constants.
 		/// </summary>
@@ -113,58 +99,31 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// the preprocessor definitions to use to compile the program
 		/// </summary>
 		protected string preprocessorDefines = string.Empty;
+
 		/// <summary>
 		/// Get/Sets the preprocessor definitions to use to compile the program
 		/// </summary>
-		public string PreprocessorDefinitions
-		{
-			get
-			{
-				return preprocessorDefines;
-			}
-			set
-			{
-				preprocessorDefines = value;
-			}
-		}
+		public string PreprocessorDefinitions { get { return preprocessorDefines; } set { preprocessorDefines = value; } }
 
 		/// <summary>
 		/// the optimization level to use.
 		/// </summary>
 		protected OptimizationLevel optimizationLevel;
+
 		/// <summary>
 		/// Gets/Sets the optimization level to use.
 		/// </summary>
-		public OptimizationLevel OptimizationLevel
-		{
-			get
-			{
-				return optimizationLevel;
-			}
-			set
-			{
-				optimizationLevel = value;
-			}
-		}
+		public OptimizationLevel OptimizationLevel { get { return optimizationLevel; } set { optimizationLevel = value; } }
 
 		/// <summary>
 		/// determines which packing order to use for matrices
 		/// </summary>
 		protected bool columnMajorMatrices;
+
 		/// <summary>
 		/// Gets/Sets which packing order to use for matrices
 		/// </summary>
-		public bool UseColumnMajorMatrices
-		{
-			get
-			{
-				return columnMajorMatrices;
-			}
-			set
-			{
-				columnMajorMatrices = value;
-			}
-		}
+		public bool UseColumnMajorMatrices { get { return columnMajorMatrices; } set { columnMajorMatrices = value; } }
 
 		/// <summary>
 		/// Include handler to load additional files from <see cref="ResourceGroupManager"/>
@@ -192,14 +151,18 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if( !IsDisposed )
 			{
-				if ( disposeManagedResources )
+				if( disposeManagedResources )
 				{
-					if ( microcode != null && !microcode.Disposed )
+					if( microcode != null && !microcode.Disposed )
+					{
 						microcode.Dispose();
-					if ( constantTable != null && !constantTable.Disposed )
+					}
+					if( constantTable != null && !constantTable.Disposed )
+					{
 						constantTable.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -221,7 +184,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			if ( !_compileError )
+			if( !_compileError )
 			{
 				// create a new program, without source since we are setting the microcode manually
 				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
@@ -250,7 +213,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			return parms;
 		}
 
-
 		/// <summary>
 		/// Compiles the high level shader source to low level microcode.
 		/// </summary>
@@ -268,7 +230,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			compileFlags |= D3D.ShaderFlags.Debug;
 			parseFlags |= D3D.ShaderFlags.Debug;
 #endif
-			switch ( optimizationLevel )
+			switch( optimizationLevel )
 			{
 				case OptimizationLevel.Default:
 					compileFlags |= D3D.ShaderFlags.OptimizationLevel1;
@@ -303,23 +265,23 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			try
 			{
 				microcode = effectCompiler.CompileShader( new D3D.EffectHandle( entry ),
-														  target,
-														  compileFlags,
-														  out errors,
-														  out constantTable );
+				                                          target,
+				                                          compileFlags,
+				                                          out errors,
+				                                          out constantTable );
 			}
-			catch ( D3D.Direct3D9Exception ex )
+			catch( D3D.Direct3D9Exception ex )
 			{
 				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name );
 			}
 			finally
 			{
 				// check for errors
-				if ( !String.IsNullOrEmpty( errors ) )
+				if( !String.IsNullOrEmpty( errors ) )
 				{
-					if ( microcode != null )
+					if( microcode != null )
 					{
-						if ( LogManager.Instance != null )
+						if( LogManager.Instance != null )
 						{
 							LogManager.Instance.Write( "HLSL: Warnings while compiling high level shader {0}:\n{1}", Name, errors );
 						}
@@ -344,7 +306,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			D3D.ConstantTableDescription desc = constantTable.Description;
 
 			// iterate over the constants
-			for ( int i = 0; i < desc.Constants; i++ )
+			for( int i = 0; i < desc.Constants; i++ )
 			{
 				// Recursively descend through the structure levels
 				// Since D3D9 has no nice 'leaf' method like Cg (sigh)
@@ -357,12 +319,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void UnloadImpl()
 		{
-			if ( microcode != null )
+			if( microcode != null )
 			{
 				microcode.Dispose();
 				microcode = null;
 			}
-			if ( constantTable != null )
+			if( constantTable != null )
 			{
 				constantTable.Dispose();
 				constantTable = null;
@@ -376,7 +338,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-				if ( _compileError || !IsRequiredCapabilitiesSupported() )
+				if( _compileError || !IsRequiredCapabilitiesSupported() )
 				{
 					return false;
 				}
@@ -393,7 +355,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-				switch ( target )
+				switch( target )
 				{
 					case "ps_1_1":
 					case "ps_1_2":
@@ -436,19 +398,19 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			string paramName = desc.Name;
 
 			// trim the odd '$' which appears at the start of the names in HLSL
-			if ( paramName.StartsWith( "$" ) )
+			if( paramName.StartsWith( "$" ) )
 			{
 				paramName = paramName.Remove( 0, 1 );
 			}
 
 			// If it's an array, elements will be > 1
-			for ( int e = 0; e < desc.Elements; e++ )
+			for( int e = 0; e < desc.Elements; e++ )
 			{
-				if ( desc.Class == D3D.ParameterClass.Struct )
+				if( desc.Class == D3D.ParameterClass.Struct )
 				{
 					// work out a new prefix for the nextest members
 					// if its an array, we need the index
-					if ( desc.Elements > 1 )
+					if( desc.Elements > 1 )
 					{
 						prefix += string.Format( "{0}[{1}].", paramName, e );
 					}
@@ -458,7 +420,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					}
 
 					// cascade into the struct members
-					for ( int i = 0; i < desc.StructMembers; i++ )
+					for( int i = 0; i < desc.StructMembers; i++ )
 					{
 						ProcessParamElement( constant, prefix, i, parms );
 					}
@@ -466,16 +428,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				else
 				{
 					// process params
-					if ( desc.Type == D3D.ParameterType.Float ||
-						desc.Type == D3D.ParameterType.Int ||
-						desc.Type == D3D.ParameterType.Bool )
+					if( desc.Type == D3D.ParameterType.Float ||
+					    desc.Type == D3D.ParameterType.Int ||
+					    desc.Type == D3D.ParameterType.Bool )
 					{
-
 						int paramIndex = desc.RegisterIndex;
 						string newName = prefix + paramName;
 
 						// if this is an array, we need to appent the element index
-						if ( desc.Elements > 1 )
+						if( desc.Elements > 1 )
 						{
 							newName += string.Format( "[{0}]", e );
 						}
@@ -492,10 +453,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			List<D3D.Macro> definesList = new List<D3D.Macro>();
 			D3D.Macro macro;
 			string[] tmp = defines.Split( ' ', ',', ';' );
-			foreach ( string define in tmp )
+			foreach( string define in tmp )
 			{
 				macro = new D3D.Macro();
-				if ( define.Contains( "=" ) )
+				if( define.Contains( "=" ) )
 				{
 					macro.Name = define.Split( '=' )[ 0 ];
 					macro.Definition = define.Split( '=' )[ 1 ];
@@ -524,7 +485,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			bool handled = true;
 
-			switch ( name )
+			switch( name )
 			{
 				case "entry_point":
 					entry = val;
@@ -547,9 +508,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					optimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof( OptimizationLevel ) );
 					break;
 
-                case "includes_skeletal_animation":
-                    this.IsSkeletalAnimationIncluded = true;
-                    break;
+				case "includes_skeletal_animation":
+					this.IsSkeletalAnimationIncluded = true;
+					break;
 				default:
 					LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
 					handled = false;

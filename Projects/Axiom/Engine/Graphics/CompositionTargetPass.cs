@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -25,14 +26,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /*
  * Many thanks to the folks at Multiverse for providing the initial port for this class
  */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -50,7 +54,6 @@ using Axiom.Configuration;
 
 namespace Axiom.Graphics
 {
-
 	///<summary>
 	///    Object representing one pass or operation in a composition sequence. This provides a 
 	///    method to conviently interleave RenderSystem commands between Render Queues.
@@ -70,20 +73,11 @@ namespace Axiom.Graphics
 		///    Input mode
 		///</summary>
 		protected CompositorInputMode inputMode;
+
 		///<summary>
 		///    Input mode
 		///</summary>
-		public CompositorInputMode InputMode
-		{
-			get
-			{
-				return inputMode;
-			}
-			set
-			{
-				inputMode = value;
-			}
-		}
+		public CompositorInputMode InputMode { get { return inputMode; } set { inputMode = value; } }
 
 		#endregion InputMode Property
 
@@ -93,20 +87,11 @@ namespace Axiom.Graphics
 		///    (local) output texture
 		///</summary>
 		protected string outputName;
+
 		///<summary>
 		///    (local) output texture
 		///</summary>
-		public string OutputName
-		{
-			get
-			{
-				return outputName;
-			}
-			set
-			{
-				outputName = value;
-			}
-		}
+		public string OutputName { get { return outputName; } set { outputName = value; } }
 
 		#endregion OutputName Property
 
@@ -116,16 +101,11 @@ namespace Axiom.Graphics
 		///    Passes
 		///</summary>
 		protected List<CompositionPass> passes;
+
 		///<summary>
 		///    Passes
 		///</summary>
-		public IList<CompositionPass> Passes
-		{
-			get
-			{
-				return passes;
-			}
-		}
+		public IList<CompositionPass> Passes { get { return passes; } }
 
 		#endregion Passes Property
 
@@ -136,21 +116,12 @@ namespace Axiom.Graphics
 		///    has been enabled.
 		///</summary>
 		protected bool onlyInitial;
+
 		///<summary>
 		///    This target pass is only executed initially after the effect
 		///    has been enabled.
 		///</summary>
-		public bool OnlyInitial
-		{
-			get
-			{
-				return onlyInitial;
-			}
-			set
-			{
-				onlyInitial = value;
-			}
-		}
+		public bool OnlyInitial { get { return onlyInitial; } set { onlyInitial = value; } }
 
 		#endregion OnlyInitial Property
 
@@ -160,20 +131,11 @@ namespace Axiom.Graphics
 		///    Visibility mask for this render
 		///</summary>
 		protected ulong visibilityMask;
+
 		///<summary>
 		///    Visibility mask for this render
 		///</summary>
-		public ulong VisibilityMask
-		{
-			get
-			{
-				return visibilityMask;
-			}
-			set
-			{
-				visibilityMask = value;
-			}
-		}
+		public ulong VisibilityMask { get { return visibilityMask; } set { visibilityMask = value; } }
 
 		#endregion VisibilityMask Property
 
@@ -183,20 +145,11 @@ namespace Axiom.Graphics
 		///    LOD bias of this render
 		///</summary>
 		protected float lodBias;
+
 		///<summary>
 		///    LOD bias of this render
 		///</summary>
-		public float LodBias
-		{
-			get
-			{
-				return lodBias;
-			}
-			set
-			{
-				lodBias = value;
-			}
-		}
+		public float LodBias { get { return lodBias; } set { lodBias = value; } }
 
 		#endregion LodBias Property
 
@@ -206,20 +159,11 @@ namespace Axiom.Graphics
 		///    Material scheme name
 		///</summary>
 		protected string materialScheme;
+
 		///<summary>
 		///    Material scheme name
 		///</summary>
-		public string MaterialScheme
-		{
-			get
-			{
-				return materialScheme;
-			}
-			set
-			{
-				materialScheme = value;
-			}
-		}
+		public string MaterialScheme { get { return materialScheme; } set { materialScheme = value; } }
 
 		#endregion MaterialScheme Property
 
@@ -229,20 +173,11 @@ namespace Axiom.Graphics
 		/// Shadows option
 		/// </summary>
 		private bool shadowsEnabled;
+
 		/// <summary>
 		/// Get's or Set's  whether shadows are enabled in this target pass.
 		/// </summary>
-		public bool ShadowsEnabled
-		{
-			get
-			{
-				return this.shadowsEnabled;
-			}
-			set
-			{
-				this.shadowsEnabled = value;
-			}
-		}
+		public bool ShadowsEnabled { get { return this.shadowsEnabled; } set { this.shadowsEnabled = value; } }
 
 		#endregion ShadowsEnabled Property
 
@@ -254,10 +189,12 @@ namespace Axiom.Graphics
 			get
 			{
 				// A target pass is supported if all passes are supported
-				foreach ( CompositionPass pass in passes )
+				foreach( CompositionPass pass in passes )
 				{
-					if ( !pass.IsSupported )
+					if( !pass.IsSupported )
+					{
 						return false;
+					}
 				}
 				return true;
 			}

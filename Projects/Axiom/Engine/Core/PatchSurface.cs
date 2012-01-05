@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -41,6 +45,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
+
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -63,58 +68,72 @@ namespace Axiom.Core
 		///     Vertex declaration describing the control point buffer.
 		/// </summary>
 		protected VertexDeclaration declaration;
+
 		/// <summary>
 		///     Buffer containing the system-memory control points.
 		/// </summary>
 		protected IntPtr controlPointBuffer;
+
 		/// <summary>
 		///     Type of surface.
 		/// </summary>
 		protected PatchSurfaceType type;
+
 		/// <summary>
 		///     Width in control points.
 		/// </summary>
 		protected int controlWidth;
+
 		/// <summary>
 		///     Height in control points.
 		/// </summary>
 		protected int controlHeight;
+
 		/// <summary>
 		///     Total number of control level.
 		/// </summary>
 		protected int controlCount;
+
 		/// <summary>
 		///     U-direction subdivision level.
 		/// </summary>
 		protected int uLevel;
+
 		/// <summary>
 		///    V-direction subdivision level.
 		/// </summary>
 		protected int vLevel;
+
 		/// <summary>
 		///     Max U subdivision level.
 		/// </summary>
 		protected int maxULevel;
+
 		/// <summary>
 		///     Max V subdivision level.
 		/// </summary>
 		protected int maxVLevel;
+
 		/// <summary>
 		///     Width of the subdivided mesh (big enough for max level).
 		/// </summary>
 		protected int meshWidth;
+
 		/// <summary>
 		///     Height of the subdivided mesh (big enough for max level).
 		/// </summary>
 		protected int meshHeight;
+
 		/// <summary>
 		///     Which side is visible.
 		/// </summary>
 		protected VisibleSide side;
+
 		/// <summary>
 		///     Mesh subdivision factor.
 		/// </summary>
 		protected float subdivisionFactor;
+
 		/// <summary>
 		///     List of control points.
 		/// </summary>
@@ -133,7 +152,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Constant for indicating automatic determination of subdivision level for patches.
 		/// </summary>
-		const int AUTO_LEVEL = -1;
+		private const int AUTO_LEVEL = -1;
 
 		#endregion Fields
 
@@ -151,9 +170,7 @@ namespace Axiom.Core
 
 		#region Finalizer
 
-		~PatchSurface()
-		{
-		}
+		~PatchSurface() {}
 
 		#endregion Finalizer
 
@@ -231,10 +248,9 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
-			PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
+		                           PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
 		{
-
-			if ( height == 0 || width == 0 )
+			if( height == 0 || width == 0 )
 			{
 				return; // Do nothing - garbage
 			}
@@ -258,7 +274,7 @@ namespace Axiom.Core
 			{
 				byte* pVert = (byte*)controlPointBuffer;
 				float* pReal = null;
-				for ( int i = 0; i < controlCount; i++ )
+				for( int i = 0; i < controlCount; i++ )
 				{
 					pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
 					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
@@ -270,7 +286,7 @@ namespace Axiom.Core
 			// Initialise to 100% detail
 			subdivisionFactor = 1.0f;
 
-			if ( uMaxSubdivisionLevel == AUTO_LEVEL )
+			if( uMaxSubdivisionLevel == AUTO_LEVEL )
 			{
 				uLevel = maxULevel = GetAutoULevel();
 			}
@@ -279,7 +295,7 @@ namespace Axiom.Core
 				uLevel = maxULevel = uMaxSubdivisionLevel;
 			}
 
-			if ( vMaxSubdivisionLevel == AUTO_LEVEL )
+			if( vMaxSubdivisionLevel == AUTO_LEVEL )
 			{
 				vLevel = maxVLevel = GetAutoVLevel();
 			}
@@ -303,10 +319,10 @@ namespace Axiom.Core
 			float maxSqRadius = 0.0f;
 			bool first = true;
 
-			for ( int i = 0; i < controlPoints.Count; i++ )
+			for( int i = 0; i < controlPoints.Count; i++ )
 			{
 				Vector3 vec = controlPoints[ i ];
-				if ( first )
+				if( first )
 				{
 					min = max = vec;
 					maxSqRadius = vec.LengthSquared;
@@ -325,7 +341,6 @@ namespace Axiom.Core
 			boundingSphereRadius = Utility.Sqrt( maxSqRadius );
 		}
 
-
 		/// <summary>
 		///     Tells the system to build the mesh relating to the surface into externally created buffers.
 		/// </summary>
@@ -343,7 +358,7 @@ namespace Axiom.Core
 		/// <param name="indexStart">The offset at which to start writing indexes for this patch.</param>
 		public void Build( HardwareVertexBuffer destVertexBuffer, int vertexStart, HardwareIndexBuffer destIndexBuffer, int indexStart )
 		{
-			if ( controlPoints.Count == 0 )
+			if( controlPoints.Count == 0 )
 			{
 				return;
 			}
@@ -355,9 +370,9 @@ namespace Axiom.Core
 
 			// lock just the region we are interested in
 			IntPtr lockedBuffer = vertexBuffer.Lock(
-				vertexOffset * declaration.GetVertexSize( 0 ),
-				requiredVertexCount * declaration.GetVertexSize( 0 ),
-				BufferLocking.NoOverwrite );
+			                                        vertexOffset * declaration.GetVertexSize( 0 ),
+			                                        requiredVertexCount * declaration.GetVertexSize( 0 ),
+			                                        BufferLocking.NoOverwrite );
 
 			DistributeControlPoints( lockedBuffer );
 
@@ -367,13 +382,13 @@ namespace Axiom.Core
 			int uStep = 1 << maxULevel;
 
 			// subdivide this row in u
-			for ( int v = 0; v < meshHeight; v += vStep )
+			for( int v = 0; v < meshHeight; v += vStep )
 			{
 				SubdivideCurve( lockedBuffer, v * meshWidth, uStep, meshWidth / uStep, uLevel );
 			}
 
 			// Now subdivide in v direction, this time all the u direction points are there so no step
-			for ( int u = 0; u < meshWidth; u++ )
+			for( int u = 0; u < meshWidth; u++ )
 			{
 				SubdivideCurve( lockedBuffer, u, vStep * meshWidth, meshHeight / vStep, vLevel );
 			}
@@ -407,7 +422,7 @@ namespace Axiom.Core
 			Vector3 t = Vector3.Zero;
 			Vector3 d = Vector3.Zero;
 
-			for ( level = 0; level < maxLevels - 1; level++ )
+			for( level = 0; level < maxLevels - 1; level++ )
 			{
 				// Subdivide the 2 lines
 				s = a.MidPoint( b );
@@ -417,7 +432,7 @@ namespace Axiom.Core
 				// Get the vector between this subdivided midpoint and the middle point of the original line
 				d = c - b;
 				// Find the squared length, and break when small enough
-				if ( d.Dot( d ) < test )
+				if( d.Dot( d ) < test )
 				{
 					break;
 				}
@@ -432,12 +447,11 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		/// <param name="lockedBuffer"></param>
-		protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
+		unsafe protected void DistributeControlPoints( IntPtr lockedBuffer )
 		{
 			// Insert original control points into expanded mesh
 			int uStep = 1 << uLevel;
 			int vStep = 1 << vLevel;
-
 
 			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
 			VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
@@ -451,12 +465,12 @@ namespace Axiom.Core
 			float* pSrcReal, pDestReal;
 			int* pSrcRGBA, pDestRGBA;
 
-			for ( int v = 0; v < meshHeight; v += vStep )
+			for( int v = 0; v < meshHeight; v += vStep )
 			{
 				// set dest by v from base
 				pDest = (byte*)( lockedBuffer ) + ( vertexSize * meshWidth * v );
 
-				for ( int u = 0; u < meshWidth; u += uStep )
+				for( int u = 0; u < meshWidth; u += uStep )
 				{
 					// Copy Position
 					pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
@@ -466,7 +480,7 @@ namespace Axiom.Core
 					*pDestReal++ = *pSrcReal++;
 
 					// Copy Normals
-					if ( elemNorm != null )
+					if( elemNorm != null )
 					{
 						pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
 						pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
@@ -476,7 +490,7 @@ namespace Axiom.Core
 					}
 
 					// Copy Diffuse
-					if ( elemDiffuse != null )
+					if( elemDiffuse != null )
 					{
 						pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
 						pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
@@ -484,20 +498,20 @@ namespace Axiom.Core
 					}
 
 					// Copy texture coords
-					if ( elemTex0 != null )
+					if( elemTex0 != null )
 					{
 						pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
 						pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+						for( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
 						{
 							*pDestReal++ = *pSrcReal++;
 						}
 					}
-					if ( elemTex1 != null )
+					if( elemTex1 != null )
 					{
 						pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
 						pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+						for( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
 						{
 							*pDestReal++ = *pSrcReal++;
 						}
@@ -528,7 +542,7 @@ namespace Axiom.Core
 			maxIdx = startIdx + ( numSteps * stepSize );
 			int step = stepSize;
 
-			while ( iterations-- > 0 )
+			while( iterations-- > 0 )
 			{
 				halfStep = step / 2;
 				leftIdx = startIdx;
@@ -536,13 +550,13 @@ namespace Axiom.Core
 				rightIdx = leftIdx + step;
 				firstSegment = true;
 
-				while ( leftIdx < maxIdx )
+				while( leftIdx < maxIdx )
 				{
 					// Interpolate
 					InterpolateVertexData( lockedBuffer, leftIdx, rightIdx, destIdx );
 
 					// If 2nd or more segment, interpolate current left between current and last mid points
-					if ( !firstSegment )
+					if( !firstSegment )
 					{
 						InterpolateVertexData( lockedBuffer, leftIdx - halfStep, leftIdx + halfStep, leftIdx );
 					}
@@ -564,7 +578,7 @@ namespace Axiom.Core
 		/// <param name="leftIndex"></param>
 		/// <param name="rightIndex"></param>
 		/// <param name="destIndex"></param>
-		protected unsafe void InterpolateVertexData( IntPtr lockedBuffer, int leftIndex, int rightIndex, int destIndex )
+		unsafe protected void InterpolateVertexData( IntPtr lockedBuffer, int leftIndex, int rightIndex, int destIndex )
 		{
 			int vertexSize = declaration.GetVertexSize( 0 );
 			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -591,7 +605,7 @@ namespace Axiom.Core
 			*pDestReal++ = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
 			*pDestReal++ = ( *pLeftReal++ + *pRightReal++ ) * 0.5f;
 
-			if ( elemNorm != null )
+			if( elemNorm != null )
 			{
 				// Normals
 				pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
@@ -608,7 +622,7 @@ namespace Axiom.Core
 				*pDestReal++ = norm.y;
 				*pDestReal++ = norm.z;
 			}
-			if ( elemDiffuse != null )
+			if( elemDiffuse != null )
 			{
 				// Blend each byte individually
 				pDestChar = (byte*)( pDest + elemDiffuse.Offset );
@@ -621,26 +635,26 @@ namespace Axiom.Core
 				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
 				*pDestChar++ = (byte)( ( ( *pLeftChar++ ) + ( *pRightChar++ ) ) * 0.5f );
 			}
-			if ( elemTex0 != null )
+			if( elemTex0 != null )
 			{
 				// Blend each byte individually
 				pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
 				pLeftReal = (float*)( (byte*)pLeft + elemTex0.Offset );
 				pRightReal = (float*)( (byte*)pRight + elemTex0.Offset );
 
-				for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+				for( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
 				{
 					*pDestReal++ = ( ( *pLeftReal++ ) + ( *pRightReal++ ) ) * 0.5f;
 				}
 			}
-			if ( elemTex1 != null )
+			if( elemTex1 != null )
 			{
 				// Blend each byte individually
 				pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
 				pLeftReal = (float*)( (byte*)pLeft + elemTex1.Offset );
 				pRightReal = (float*)( (byte*)pRight + elemTex1.Offset );
 
-				for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+				for( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
 				{
 					*pDestReal++ = ( ( *pLeftReal++ ) + ( *pRightReal++ ) ) * 0.5f;
 				}
@@ -650,7 +664,7 @@ namespace Axiom.Core
 		/// <summary>
 		///
 		/// </summary>
-		protected unsafe void MakeTriangles()
+		unsafe protected void MakeTriangles()
 		{
 			// Our vertex buffer is subdivided to the highest level, we need to generate tris
 			// which step over the vertices we don't need for this level of detail.
@@ -668,7 +682,7 @@ namespace Axiom.Core
 
 			int vCount, uCount, v, u, iterations;
 
-			if ( side == VisibleSide.Both )
+			if( side == VisibleSide.Both )
 			{
 				iterations = 2;
 				vInc = vStep;
@@ -677,7 +691,7 @@ namespace Axiom.Core
 			else
 			{
 				iterations = 1;
-				if ( side == VisibleSide.Front )
+				if( side == VisibleSide.Front )
 				{
 					vInc = vStep;
 					v = 0;
@@ -701,37 +715,37 @@ namespace Axiom.Core
 			short* p16 = null;
 			int* p32 = null;
 
-			if ( use32bitindexes )
+			if( use32bitindexes )
 			{
 				intBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( int ),
-					requiredIndexCount * sizeof( int ),
-					BufferLocking.NoOverwrite );
+				                             indexOffset * sizeof( int ),
+				                             requiredIndexCount * sizeof( int ),
+				                             BufferLocking.NoOverwrite );
 
 				p32 = (int*)intBuffer;
 			}
 			else
 			{
 				shortBuffer = indexBuffer.Lock(
-					indexOffset * sizeof( short ),
-					requiredIndexCount * sizeof( short ),
-					BufferLocking.NoOverwrite );
+				                               indexOffset * sizeof( short ),
+				                               requiredIndexCount * sizeof( short ),
+				                               BufferLocking.NoOverwrite );
 
 				p16 = (short*)shortBuffer;
 			}
 
-			while ( iterations-- > 0 )
+			while( iterations-- > 0 )
 			{
 				// Make tris in a zigzag pattern (compatible with strips)
 				u = 0;
 				uInc = uStep; // Start with moving +u
 
 				vCount = currentHeight - 1;
-				while ( vCount-- > 0 )
+				while( vCount-- > 0 )
 				{
 					uCount = currentWidth - 1;
 
-					while ( uCount-- > 0 )
+					while( uCount-- > 0 )
 					{
 						// First Tri in cell
 						// -----------------
@@ -740,7 +754,7 @@ namespace Axiom.Core
 						v3 = ( ( v + vInc ) * meshWidth ) + ( u + uInc );
 
 						// Output indexes
-						if ( use32bitindexes )
+						if( use32bitindexes )
 						{
 							p32[ count++ ] = v1;
 							p32[ count++ ] = v2;
@@ -759,7 +773,7 @@ namespace Axiom.Core
 						v3 = ( v * meshWidth ) + ( u + uInc );
 
 						// Output indexes
-						if ( use32bitindexes )
+						if( use32bitindexes )
 						{
 							p32[ count++ ] = v1;
 							p32[ count++ ] = v2;
@@ -783,7 +797,6 @@ namespace Axiom.Core
 				// Reverse vInc for double sided
 				v = meshHeight - 1;
 				vInc = -vInc;
-
 			}
 
 			// don't forget to unlock!
@@ -816,27 +829,27 @@ namespace Axiom.Core
 			bool found = false;
 
 			// Find u level
-			for ( int v = 0; v < controlHeight; v++ )
+			for( int v = 0; v < controlHeight; v++ )
 			{
-				for ( int u = 0; u < controlWidth - 1; u += 2 )
+				for( int u = 0; u < controlWidth - 1; u += 2 )
 				{
 					a = controlPoints[ v * controlWidth + u + 0 ];
 					b = controlPoints[ v * controlWidth + u + 1 ];
 					c = controlPoints[ v * controlWidth + u + 2 ];
 
-					if ( a != c )
+					if( a != c )
 					{
 						found = true;
 						break;
 					}
 				}
-				if ( found )
+				if( found )
 				{
 					break;
 				}
 			}
 
-			if ( !found )
+			if( !found )
 			{
 				throw new AxiomException( "Can't find suitable control points for determining U subdivision level" );
 			}
@@ -867,27 +880,27 @@ namespace Axiom.Core
 
 			bool found = false;
 
-			for ( int u = 0; u < controlWidth; u++ )
+			for( int u = 0; u < controlWidth; u++ )
 			{
-				for ( int v = 0; v < controlHeight - 1; v += 2 )
+				for( int v = 0; v < controlHeight - 1; v += 2 )
 				{
 					a = controlPoints[ v * controlWidth + u ];
 					b = controlPoints[ ( v + 1 ) * controlWidth + u ];
 					c = controlPoints[ ( v + 2 ) * controlWidth + u ];
 
-					if ( a != c )
+					if( a != c )
 					{
 						found = true;
 						break;
 					}
 				}
 
-				if ( found )
+				if( found )
 				{
 					break;
 				}
 			}
-			if ( !found )
+			if( !found )
 			{
 				throw new AxiomException( "Can't find suitable control points for determining U subdivision level" );
 			}
@@ -911,81 +924,39 @@ namespace Axiom.Core
 		/// <remarks>
 		///     This is useful when you wish to build the patch into external vertex / index buffers.
 		/// </remarks>
-		public int RequiredVertexCount
-		{
-			get
-			{
-				return requiredVertexCount;
-			}
-		}
+		public int RequiredVertexCount { get { return requiredVertexCount; } }
 
 		/// <summary>
 		///     Based on a previous call to <see cref="DefineSurface"/>, establishes the number of indexes required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
-		public int RequiredIndexCount
-		{
-			get
-			{
-				return requiredIndexCount;
-			}
-		}
+		public int RequiredIndexCount { get { return requiredIndexCount; } }
 
 		/// <summary>
 		///     Gets the current index count based on the current subdivision level.
 		/// </summary>
-		public int CurrentIndexCount
-		{
-			get
-			{
-				return currentIndexCount;
-			}
-		}
+		public int CurrentIndexCount { get { return currentIndexCount; } }
 
 		/// <summary>
 		///     Returns the index offset used by this buffer to write data into the buffer.
 		/// </summary>
-		public int IndexOffset
-		{
-			get
-			{
-				return indexOffset;
-			}
-		}
+		public int IndexOffset { get { return indexOffset; } }
 
 		/// <summary>
 		///     Returns the vertex offset used by this buffer to write data into the buffer.
 		/// </summary>
-		public int VertexOffset
-		{
-			get
-			{
-				return vertexOffset;
-			}
-		}
+		public int VertexOffset { get { return vertexOffset; } }
 
 		/// <summary>
 		///     Gets the bounds of this patch, only valid after calling <see cref="DefineSurface"/>.
 		/// </summary>
-		public AxisAlignedBox Bounds
-		{
-			get
-			{
-				return aabb;
-			}
-		}
+		public AxisAlignedBox Bounds { get { return aabb; } }
 
 		/// <summary>
 		///     Gets the radius of the bounding sphere for this patch, only valid after <see cref="DefineSurface"/>
 		///     has been called.
 		/// </summary>
-		public float BoundingSphereRadius
-		{
-			get
-			{
-				return boundingSphereRadius;
-			}
-		}
+		public float BoundingSphereRadius { get { return boundingSphereRadius; } }
 
 		/// <summary>
 		///     Gets/Sets the level of subdivision for this surface.
@@ -999,10 +970,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public float SubdivisionFactor
 		{
-			get
-			{
-				return subdivisionFactor;
-			}
+			get { return subdivisionFactor; }
 			set
 			{
 				Debug.Assert( value >= 0.0f && value <= 1.0f );
@@ -1041,10 +1009,12 @@ namespace Axiom.Core
 		///     The side from which u goes right and v goes up (as in texture coords).
 		/// </summary>
 		Front,
+
 		/// <summary>
 		///     The side from which u goes right and v goes down (reverse of texture coords).
 		/// </summary>
 		Back,
+
 		/// <summary>
 		///     Both sides are visible - warning this creates 2x the number of triangles and adds
 		///     extra overhead for calculating normals.

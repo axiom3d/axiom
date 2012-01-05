@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -69,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		~ARBGpuProgram()
 		{
-			if ( _handle.IsAllocated )
+			if( _handle.IsAllocated )
 			{
 				//GCHandle's a value type, valid even inside the scope of a a finalizer
 				_handle.Free();
@@ -108,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGL
 			//       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
 			//       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
 			//       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
-			if ( _handle.IsAllocated )
+			if( _handle.IsAllocated )
 			{
 				_handle.Free();
 			}
@@ -118,7 +122,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
 
 			// check for any errors
-			if ( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
+			if( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
 			{
 				int pos;
 				string error;
@@ -136,26 +140,21 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void Unload()
 		{
-
-			if ( IsLoaded )
+			if( IsLoaded )
 			{
-				if ( _handle.IsAllocated )
+				if( _handle.IsAllocated )
 				{
 					_handle.Free();
 				}
 
 				Gl.glDeleteProgramsARB( 1, ref programId );
 				base.Unload();
-
 			}
 		}
 
 		public override GpuProgramType Type
 		{
-			get
-			{
-				return base.Type;
-			}
+			get { return base.Type; }
 			set
 			{
 				base.Type = value;
@@ -169,31 +168,37 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Bind()
 		{
-			if ( !IsSupported )
+			if( !IsSupported )
+			{
 				return;
+			}
 			Gl.glEnable( programType );
 			Gl.glBindProgramARB( programType, programId );
 		}
 
 		public override void Unbind()
 		{
-			if ( !IsSupported )
+			if( !IsSupported )
+			{
 				return;
+			}
 			Gl.glBindProgramARB( programType, 0 );
 			Gl.glDisable( programType );
 		}
 
 		public override void BindParameters( GpuProgramParameters parms )
 		{
-			if ( !IsSupported )
-				return;
-			if ( parms.HasFloatConstants )
+			if( !IsSupported )
 			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				return;
+			}
+			if( parms.HasFloatConstants )
+			{
+				for( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
 					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-					if ( entry.isSet )
+					if( entry.isSet )
 					{
 						// MONO: the 4fv version does not work
 						float[] vals = entry.val;

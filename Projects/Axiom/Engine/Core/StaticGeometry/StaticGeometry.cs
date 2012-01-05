@@ -177,8 +177,10 @@ namespace Axiom.Core
 		public class QueuedSubMesh
 		{
 			public SubMesh submesh;
+
 			/// Link to LOD list of geometry, potentially optimised
 			public List<SubMeshLodGeometryLink> geometryLodList;
+
 			public string materialName;
 			public Vector3 position;
 			public Quaternion orientation;
@@ -232,28 +234,13 @@ namespace Axiom.Core
 		/// </summary>
 		protected static int regionSize = 1000000;
 
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-		}
+		public string Name { get { return name; } }
 
-		public float SquaredRenderingDistance
-		{
-			get
-			{
-				return squaredUpperDistance;
-			}
-		}
+		public float SquaredRenderingDistance { get { return squaredUpperDistance; } }
 
 		public float RenderingDistance
 		{
-			get
-			{
-				return upperDistance;
-			}
+			get { return upperDistance; }
 			set
 			{
 				upperDistance = value;
@@ -263,40 +250,35 @@ namespace Axiom.Core
 
 		public bool Visible
 		{
-			get
-			{
-				return visible;
-			}
+			get { return visible; }
 			set
 			{
 				visible = value;
 				// tell any existing regions
-				foreach ( Region region in regionMap.Values )
+				foreach( Region region in regionMap.Values )
+				{
 					region.IsVisible = value;
+				}
 			}
 		}
 
 		public bool CastShadows
 		{
-			get
-			{
-				return castShadows;
-			}
+			get { return castShadows; }
 			set
 			{
 				castShadows = value;
 				// tell any existing regions
-				foreach ( Region region in regionMap.Values )
+				foreach( Region region in regionMap.Values )
+				{
 					region.CastShadows = value;
+				}
 			}
 		}
 
 		public Vector3 RegionDimensions
 		{
-			get
-			{
-				return regionDimensions;
-			}
+			get { return regionDimensions; }
 			set
 			{
 				regionDimensions = value;
@@ -304,53 +286,26 @@ namespace Axiom.Core
 			}
 		}
 
-		public int RegionSize
-		{
-			get
-			{
-				return regionSize;
-			}
-			set
-			{
-				regionSize = value;
-			}
-		}
+		public int RegionSize { get { return regionSize; } set { regionSize = value; } }
 
-		public Vector3 Origin
-		{
-			get
-			{
-				return origin;
-			}
-			set
-			{
-				origin = value;
-			}
-		}
+		public Vector3 Origin { get { return origin; } set { origin = value; } }
 
 		public RenderQueueGroupID RenderQueueID
 		{
-			get
-			{
-				return renderQueueID;
-			}
+			get { return renderQueueID; }
 			set
 			{
 				renderQueueIDSet = true;
 				renderQueueID = value;
 				// tell any existing regions
-				foreach ( Region region in regionMap.Values )
+				foreach( Region region in regionMap.Values )
+				{
 					region.RenderQueueGroup = value;
+				}
 			}
 		}
 
-		public Dictionary<uint, Region> RegionMap
-		{
-			get
-			{
-				return regionMap;
-			}
-		}
+		public Dictionary<uint, Region> RegionMap { get { return regionMap; } }
 
 		#endregion Fields and Properties
 
@@ -384,8 +339,10 @@ namespace Axiom.Core
 
 		protected Region GetRegion( AxisAlignedBox bounds, bool autoCreate )
 		{
-			if ( bounds == null )
+			if( bounds == null )
+			{
 				return null;
+			}
 
 			// Get the region which has the largest overlapping volume
 			Vector3 min = bounds.Minimum;
@@ -400,14 +357,14 @@ namespace Axiom.Core
 			ushort finalx = 0;
 			ushort finaly = 0;
 			ushort finalz = 0;
-			for ( ushort x = minx; x <= maxx; ++x )
+			for( ushort x = minx; x <= maxx; ++x )
 			{
-				for ( ushort y = miny; y <= maxy; ++y )
+				for( ushort y = miny; y <= maxy; ++y )
 				{
-					for ( ushort z = minz; z <= maxz; ++z )
+					for( ushort z = minz; z <= maxz; ++z )
 					{
 						float vol = GetVolumeIntersection( bounds, x, y, z );
-						if ( vol > maxVolume )
+						if( vol > maxVolume )
 						{
 							maxVolume = vol;
 							finalx = x;
@@ -433,8 +390,8 @@ namespace Axiom.Core
 			Vector3 intersectDiff = intersectBox.Maximum - intersectBox.Minimum;
 
 			return ( boxdiff.x == 0 ? 1 : intersectDiff.x ) *
-				( boxdiff.y == 0 ? 1 : intersectDiff.y ) *
-				( boxdiff.z == 0 ? 1 : intersectDiff.z );
+			       ( boxdiff.y == 0 ? 1 : intersectDiff.y ) *
+			       ( boxdiff.z == 0 ? 1 : intersectDiff.z );
 		}
 
 		protected AxisAlignedBox GetRegionBounds( ushort x, ushort y, ushort z )
@@ -451,11 +408,11 @@ namespace Axiom.Core
 		{
 			return new Vector3(
 				( (float)x - regionHalfRange ) * regionDimensions.x + origin.x
-					+ halfRegionDimensions.x,
+				+ halfRegionDimensions.x,
 				( (float)y - regionHalfRange ) * regionDimensions.y + origin.y
-					+ halfRegionDimensions.y,
+				+ halfRegionDimensions.y,
 				( (float)z - regionHalfRange ) * regionDimensions.z + origin.z
-					+ halfRegionDimensions.z
+				+ halfRegionDimensions.z
 				);
 		}
 
@@ -463,7 +420,7 @@ namespace Axiom.Core
 		{
 			uint index = PackIndex( x, y, z );
 			Region region = GetRegion( index );
-			if ( region == null && autoCreate )
+			if( region == null && autoCreate )
 			{
 				// Make a name
 				string str = string.Format( "{0}:{1}", name, index );
@@ -473,8 +430,10 @@ namespace Axiom.Core
 				owner.InjectMovableObject( region );
 				region.IsVisible = visible;
 				region.CastShadows = castShadows;
-				if ( renderQueueIDSet )
+				if( renderQueueIDSet )
+				{
 					region.RenderQueueGroup = renderQueueID;
+				}
 				regionMap[ index ] = region;
 			}
 			return region;
@@ -482,10 +441,14 @@ namespace Axiom.Core
 
 		protected Region GetRegion( uint index )
 		{
-			if ( regionMap.ContainsKey( index ) )
+			if( regionMap.ContainsKey( index ) )
+			{
 				return regionMap[ index ];
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		protected void GetRegionIndexes( Vector3 point, out ushort x, out ushort y, out ushort z )
@@ -499,9 +462,9 @@ namespace Axiom.Core
 			int iz = (int)System.Math.Floor( scaledPoint.z );
 
 			// Check bounds
-			if ( ix < regionMinIndex || ix > regionMaxIndex
-				|| iy < regionMinIndex || iy > regionMaxIndex
-				|| iz < regionMinIndex || iz > regionMaxIndex )
+			if( ix < regionMinIndex || ix > regionMaxIndex
+			    || iy < regionMinIndex || iy > regionMaxIndex
+			    || iz < regionMinIndex || iz > regionMaxIndex )
 			{
 				throw new Exception( "Point out of bounds in StaticGeometry.GetRegionIndexes" );
 			}
@@ -524,9 +487,9 @@ namespace Axiom.Core
 			return GetRegion( x, y, z, autoCreate );
 		}
 
-		protected unsafe AxisAlignedBox CalculateBounds( VertexData vertexData,
-			Vector3 position, Quaternion orientation,
-			Vector3 scale )
+		unsafe protected AxisAlignedBox CalculateBounds( VertexData vertexData,
+		                                                 Vector3 position, Quaternion orientation,
+		                                                 Vector3 scale )
 		{
 			VertexElement posElem =
 				vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -538,13 +501,13 @@ namespace Axiom.Core
 			Vector3 max = Vector3.Zero;
 			bool first = true;
 
-			for ( int j = 0; j < vertexData.vertexCount; ++j, vertex += vbuf.VertexSize )
+			for( int j = 0; j < vertexData.vertexCount; ++j, vertex += vbuf.VertexSize )
 			{
 				float* pFloat = (float*)( vertex + posElem.Offset );
 				Vector3 pt = new Vector3( *pFloat++, *pFloat++, *pFloat++ );
 				// Transform to world (scale, rotate, translate)
 				pt = ( orientation * ( pt * scale ) ) + position;
-				if ( first )
+				if( first )
 				{
 					min = max = pt;
 					first = false;
@@ -563,33 +526,37 @@ namespace Axiom.Core
 		{
 			// First, determine if we've already seen this submesh before
 			List<SubMeshLodGeometryLink> lodList;
-			if ( subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
+			if( subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
+			{
 				return lodList;
+			}
 			// Otherwise, we have to create a new one
 			lodList = new List<SubMeshLodGeometryLink>();
 			subMeshGeometryLookup[ sm ] = lodList;
 			int numLods = sm.Parent.IsLodManual ? 1 : sm.Parent.LodLevelCount;
-			for ( int lod = 0; lod < numLods; ++lod )
+			for( int lod = 0; lod < numLods; ++lod )
 			{
 				SubMeshLodGeometryLink geomLink = new SubMeshLodGeometryLink();
 				lodList.Add( geomLink );
 				IndexData lodIndexData = lod == 0 ? sm.indexData : sm.LodFaceList[ lod - 1 ];
 				// Can use the original mesh geometry?
-				if ( sm.useSharedVertices )
+				if( sm.useSharedVertices )
 				{
-					if ( sm.Parent.SubMeshCount == 1 )
+					if( sm.Parent.SubMeshCount == 1 )
 					{
 						// Ok, this is actually our own anyway
 						geomLink.vertexData = sm.Parent.SharedVertexData;
 						geomLink.indexData = lodIndexData;
 					}
 					else
+					{
 						// We have to split it
 						SplitGeometry( sm.Parent.SharedVertexData, lodIndexData, geomLink );
+					}
 				}
 				else
 				{
-					if ( lod == 0 )
+					if( lod == 0 )
 					{
 						// Ok, we can use the existing geometry; should be in full
 						// use by just this SubMesh
@@ -597,40 +564,48 @@ namespace Axiom.Core
 						geomLink.indexData = sm.IndexData;
 					}
 					else
+					{
 						// We have to split it
 						SplitGeometry( sm.VertexData, lodIndexData, geomLink );
+					}
 				}
 				Debug.Assert( geomLink.vertexData.vertexStart == 0,
-					"Cannot use vertexStart > 0 on indexed geometry due to " +
-					"rendersystem incompatibilities - see the docs!" );
+				              "Cannot use vertexStart > 0 on indexed geometry due to " +
+				              "rendersystem incompatibilities - see the docs!" );
 			}
 			return lodList;
 		}
 
-		protected unsafe void SplitGeometry( VertexData vd, IndexData id, SubMeshLodGeometryLink targetGeomLink )
+		unsafe protected void SplitGeometry( VertexData vd, IndexData id, SubMeshLodGeometryLink targetGeomLink )
 		{
-			if ( logLevel <= 1 )
+			if( logLevel <= 1 )
+			{
 				LogManager.Instance.Write( "StaticGeometry.SplitGeometry called" );
+			}
 			// Firstly we need to scan to see how many vertices are being used
 			// and while we're at it, build the remap we can use later
 			bool use32bitIndexes = id.indexBuffer.Type == IndexType.Size32;
 			Dictionary<int, int> indexRemap = new Dictionary<int, int>();
 			IntPtr src = id.indexBuffer.Lock( BufferLocking.ReadOnly );
 			indexRemap.Clear();
-			if ( use32bitIndexes )
+			if( use32bitIndexes )
 			{
 				int* p32 = (int*)src.ToPointer();
-				for ( int i = 0; i < id.indexCount; ++i )
+				for( int i = 0; i < id.indexCount; ++i )
+				{
 					indexRemap[ *p32++ ] = indexRemap.Count;
+				}
 			}
 			else
 			{
 				short* p16 = (short*)src.ToPointer();
-				for ( int i = 0; i < id.indexCount; ++i )
+				for( int i = 0; i < id.indexCount; ++i )
+				{
 					indexRemap[ *p16++ ] = indexRemap.Count;
+				}
 			}
 			id.indexBuffer.Unlock();
-			if ( indexRemap.Count == vd.vertexCount )
+			if( indexRemap.Count == vd.vertexCount )
 			{
 				// ha, complete usage after all
 				targetGeomLink.vertexData = vd;
@@ -648,7 +623,7 @@ namespace Axiom.Core
 
 			int numvbufs = vd.vertexBufferBinding.BindingCount;
 			// Copy buffers from old to new
-			for ( short b = 0; b < numvbufs; ++b )
+			for( short b = 0; b < numvbufs; ++b )
 			{
 				// Lock old buffer
 				HardwareVertexBuffer oldBuf = vd.vertexBufferBinding.GetBuffer( b );
@@ -671,15 +646,17 @@ namespace Axiom.Core
 				// Buffers should be the same size
 				Debug.Assert( vertexSize == newBuf.VertexSize );
 
-				foreach ( KeyValuePair<int, int> pair in indexRemap )
+				foreach( KeyValuePair<int, int> pair in indexRemap )
 				{
 					Debug.Assert( pair.Key < oldBuf.VertexCount );
 					Debug.Assert( pair.Value < newBuf.VertexCount );
 
 					byte* pSrc = pSrcBase + pair.Key * vertexSize;
 					byte* pDst = pDstBase + pair.Value * vertexSize;
-					for ( int i = 0; i < vertexSize; i++ )
+					for( int i = 0; i < vertexSize; i++ )
+					{
 						*pDst++ = *pSrc++;
+					}
 				}
 				// unlock
 				oldBuf.Unlock();
@@ -692,19 +669,23 @@ namespace Axiom.Core
 
 			IntPtr idSrc = id.indexBuffer.Lock( BufferLocking.ReadOnly );
 			IntPtr idDest = ibuf.Lock( BufferLocking.Discard );
-			if ( use32bitIndexes )
+			if( use32bitIndexes )
 			{
 				int* pSrc32 = (int*)idSrc.ToPointer();
 				int* pDst32 = (int*)idDest.ToPointer();
-				for ( int i = 0; i < id.indexCount; ++i )
+				for( int i = 0; i < id.indexCount; ++i )
+				{
 					*pDst32++ = (int)indexRemap[ *pSrc32++ ];
+				}
 			}
 			else
 			{
 				ushort* pSrc16 = (ushort*)idSrc.ToPointer();
 				ushort* pDst16 = (ushort*)idDest.ToPointer();
-				for ( int i = 0; i < id.indexCount; ++i )
+				for( int i = 0; i < id.indexCount; ++i )
+				{
 					*pDst16++ = (ushort)indexRemap[ *pSrc16++ ];
+				}
 			}
 			id.indexBuffer.Unlock();
 			ibuf.Unlock();
@@ -750,13 +731,15 @@ namespace Axiom.Core
 		{
 			Mesh msh = ent.Mesh;
 			// Validate
-			if ( msh.IsLodManual )
+			if( msh.IsLodManual )
+			{
 				LogManager.Instance.Write(
-					"WARNING (StaticGeometry): Manual LOD is not supported. " +
-					"Using only highest LOD level for mesh " + msh.Name );
+				                          "WARNING (StaticGeometry): Manual LOD is not supported. " +
+				                          "Using only highest LOD level for mesh " + msh.Name );
+			}
 			// queue this entities submeshes and choice of material
 			// also build the lists of geometry to be used for the source of lods
-			foreach ( SubEntity se in ent.SubEntities )
+			foreach( SubEntity se in ent.SubEntities )
 			{
 				QueuedSubMesh q = new QueuedSubMesh();
 
@@ -794,13 +777,15 @@ namespace Axiom.Core
 		/// <param name=node>Pointer to the node to use to provide a set of Entity templates</param>
 		public void AddSceneNode( SceneNode node )
 		{
-			foreach ( MovableObject mobj in node.Objects )
+			foreach( MovableObject mobj in node.Objects )
 			{
-				if ( mobj is Entity )
+				if( mobj is Entity )
+				{
 					AddEntity( (Entity)mobj, node.DerivedPosition, node.DerivedOrientation, node.DerivedScale );
+				}
 			}
 			// recursively add the child-nodes
-			foreach ( SceneNode child in node.Children )
+			foreach( SceneNode child in node.Children )
 			{
 				AddSceneNode( child );
 			}
@@ -821,8 +806,10 @@ namespace Axiom.Core
 		/// </note>
 		public void Build()
 		{
-			if ( logLevel <= 1 )
+			if( logLevel <= 1 )
+			{
 				LogManager.Instance.Write( "Building new static geometry {0}", name );
+			}
 
 			buildCount++;
 
@@ -830,20 +817,24 @@ namespace Axiom.Core
 			Destroy();
 
 			// Firstly allocate meshes to regions
-			foreach ( QueuedSubMesh qsm in queuedSubMeshes )
+			foreach( QueuedSubMesh qsm in queuedSubMeshes )
 			{
 				Region region = GetRegion( qsm.worldBounds, true );
 				region.Assign( qsm );
 			}
 			bool stencilShadows = false;
-			if ( castShadows && owner.IsShadowTechniqueStencilBased )
+			if( castShadows && owner.IsShadowTechniqueStencilBased )
+			{
 				stencilShadows = true;
+			}
 
 			// Now tell each region to build itself
-			foreach ( Region region in regionMap.Values )
+			foreach( Region region in regionMap.Values )
+			{
 				region.Build( stencilShadows, logLevel );
+			}
 
-			if ( logLevel <= 1 )
+			if( logLevel <= 1 )
 			{
 				LogManager.Instance.Write( "Finished building new static geometry {0}", name );
 				Dump();
@@ -859,7 +850,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public void Destroy()
 		{
-			foreach ( Region region in regionMap.Values )
+			foreach( Region region in regionMap.Values )
 			{
 				owner.ExtractMovableObject( region );
 				region.Dispose();
@@ -877,7 +868,7 @@ namespace Axiom.Core
 			queuedSubMeshes.Clear();
 			subMeshGeometryLookup.Clear();
 			HardwareBufferManager bm = HardwareBufferManager.Instance;
-			foreach ( OptimisedSubMeshGeometry smg in optimisedSubMeshGeometryList )
+			foreach( OptimisedSubMeshGeometry smg in optimisedSubMeshGeometryList )
 			{
 				bm.DestroyVertexBufferBinding( smg.vertexData.vertexBufferBinding );
 				bm.DestroyVertexDeclaration( smg.vertexData.vertexDeclaration );
@@ -896,8 +887,10 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Origin: {0}", origin );
 			LogManager.Instance.Write( "Max distance: {0}", upperDistance );
 			LogManager.Instance.Write( "Casts shadows?: {0}", castShadows );
-			foreach ( Region region in regionMap.Values )
+			foreach( Region region in regionMap.Values )
+			{
 				region.Dump();
+			}
 			LogManager.Instance.Write( "-------------------------------------------------" );
 		}
 
