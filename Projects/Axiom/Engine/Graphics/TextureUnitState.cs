@@ -167,6 +167,12 @@ namespace Axiom.Graphics
 			{
 				return parent;
 			}
+
+            [OgreVersion( 1, 7, 2, "Original name _notifyParent" )]
+            set
+            {
+                this.parent = value;
+            }
 		}
 
 		/// <summary>
@@ -1430,7 +1436,7 @@ namespace Axiom.Graphics
 		/// <param name="blendFactor">Manually supplied 'blend' value - only required for operations
 		///    which require manual blend e.g. LayerBlendOperationEx.BlendManual.
 		/// </param>
-		public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, float arg1, float arg2, float blendFactor )
+		public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, Real arg1, Real arg2, Real blendFactor )
 		{
 			alphaBlendMode.operation = operation;
 			alphaBlendMode.source1 = source1;

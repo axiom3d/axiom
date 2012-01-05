@@ -253,7 +253,7 @@ namespace Axiom.Demos
 						Pass clonedPass = cloned.GetTechnique( 0 ).GetPass( 0 );
 
 						// add global texture layers to the existing material of the entity
-						for ( int j = 0; j < pass.TextureUnitStageCount; j++ )
+						for ( int j = 0; j < pass.TextureUnitStatesCount; j++ )
 						{
 							TextureUnitState orgLayer = pass.GetTextureUnitState( j );
 							TextureUnitState newLayer = clonedPass.CreateTextureUnitState( orgLayer.TextureName );

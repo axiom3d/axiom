@@ -1305,6 +1305,76 @@ namespace Axiom.Serialization
 			return false;
 		}
 
+        [OgreVersion( 1, 7, 2 )]
+        [MaterialAttributeParser( "separate_scene_blend", MaterialScriptSection.Pass )]
+        protected static bool ParseSeparateSceneBlend( string parameters, MaterialScriptContext context )
+        {
+            var vecparams = parameters.ToLower().Split( new char[] { ' ', '\t' } );
+
+            // Should be 2 or 4 params
+            if ( vecparams.Length == 2 )
+            {
+                //simple
+                SceneBlendType stype;
+                if ( vecparams[ 0 ] == "add" )
+                    stype = SceneBlendType.Add;
+                else if ( vecparams[ 0 ] == "modulate" )
+                    stype = SceneBlendType.Modulate;
+                else if ( vecparams[ 0 ] == "colour_blend" )
+                    stype = SceneBlendType.TransparentColor;
+                else if ( vecparams[ 0 ] == "alpha_blend" )
+                    stype = SceneBlendType.TransparentAlpha;
+                else
+                {
+                    LogParseError( context, "Bad separate_scene_blend attribute, unrecognised parameter '{0}'", vecparams[ 0 ] );
+                    return false;
+                }
+
+                SceneBlendType stypea;
+                if ( vecparams[ 0 ] == "add" )
+                    stypea = SceneBlendType.Add;
+                else if ( vecparams[ 0 ] == "modulate" )
+                    stypea = SceneBlendType.Modulate;
+                else if ( vecparams[ 0 ] == "colour_blend" )
+                    stypea = SceneBlendType.TransparentColor;
+                else if ( vecparams[ 0 ] == "alpha_blend" )
+                    stypea = SceneBlendType.TransparentAlpha;
+                else
+                {
+                    LogParseError( context, "Bad separate_scene_blend attribute, unrecognised parameter '{0}'", vecparams[ 1 ] );
+                    return false;
+                }
+
+                context.pass.SetSeparateSceneBlending( stype, stypea );
+            }
+            else if ( vecparams.Length == 4 )
+            {
+                //src/dest
+                SceneBlendFactor src, dest;
+                SceneBlendFactor srca, desta;
+
+                try
+                {
+                    src = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 0 ] );
+                    dest = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 1 ] );
+                    srca = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 2 ] );
+                    desta = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 3 ] );
+                    context.pass.SetSeparateSceneBlending( src, dest, srca, desta );
+                }
+                catch ( Exception e )
+                {
+                    LogParseError( context, "Bad separate_scene_blend attribute, {0}", e.Message );
+                }
+
+            }
+            else
+            {
+                LogParseError( context, "Bad separate_scene_blend attribute, wrong number of parameters (expected 2 or 4)" );
+            }
+
+            return false;
+        }
+
 		[MaterialAttributeParser( "shading", MaterialScriptSection.Pass )]
 		protected static bool ParseShading( string parameters, MaterialScriptContext context )
 		{
@@ -2477,8 +2547,7 @@ namespace Axiom.Serialization
 			}
 		}
 		#endregion Public Methods
-
-
+        
 		#region Static Methods
 
 		protected static void ProcessManualProgramParam( bool isNamed, string commandName, string[] parameters, MaterialScriptContext context )
@@ -2847,8 +2916,7 @@ namespace Axiom.Serialization
 
 		#endregion Static Methods
 	}
-
-
+    
 	#region Utility Types
 	/// <summary>
 	///		Enum to identify material sections.

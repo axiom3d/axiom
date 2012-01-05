@@ -466,7 +466,7 @@ namespace Axiom.Graphics
 									var inp = pass.GetInput( x );
 									if ( !string.IsNullOrEmpty( inp.Name ) )
 									{
-										if ( x < targetPass.TextureUnitStageCount )
+										if ( x < targetPass.TextureUnitStatesCount )
 										{
 											targetPass.GetTextureUnitState( x ).SetTextureName( this.GetTextureInstance( inp.Name, inp.MrtIndex ).Name );
 										}

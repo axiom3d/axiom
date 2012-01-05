@@ -218,7 +218,13 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             if ( !HasCompileError )
             {
                 // create a new program, without source since we are setting the microcode manually
-                assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", Type, target );
+                assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(
+                    Name,
+                    Group,
+                    "",// dummy source, since we'll be using microcode
+                    Type,
+                    target
+                    );
 
                 // set the microcode for this program
                 ( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;

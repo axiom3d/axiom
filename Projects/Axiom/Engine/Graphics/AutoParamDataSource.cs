@@ -151,6 +151,9 @@ namespace Axiom.Graphics
 		///    Current global ambient light color.
 		/// </summary>
 		protected ColorEx ambientLight;
+
+        protected Pass currentPass;
+
 		/// <summary>
 		///    Parameters for GPU fog.  fogStart, fogEnd, and fogScale
 		/// </summary>
@@ -430,6 +433,24 @@ namespace Axiom.Graphics
 				ambientLight = value;
 			}
 		}
+
+        /// <summary>
+        /// Gets/Sets the current pass
+        /// </summary>
+        public Pass CurrentPass
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return currentPass;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                currentPass = value;
+            }
+        }
 
 		/// <summary>
 		///    Gets/Sets the current gpu fog parameters.
@@ -795,7 +816,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public float NearClipDistance
+		public Real NearClipDistance
 		{
 			get
 			{
@@ -803,7 +824,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public float FarClipDistance
+		public Real FarClipDistance
 		{
 			get
 			{
@@ -898,5 +919,27 @@ namespace Axiom.Graphics
         }
 
         #endregion
+
+        protected ColorEx fogColor;
+
+        public ColorEx FogColor
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return fogColor;
+            }
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public void SetFog( FogMode fogMode, ColorEx color, Real expDensity, Real linearStart, Real linearEnd )
+        {
+            //(void)mode; // ignored
+            fogColor = color;
+            fogParams.x = expDensity;
+            fogParams.y = linearStart;
+            fogParams.z = linearEnd;
+            fogParams.w = linearEnd != linearStart ? 1 / ( linearEnd - linearStart ) : 0;
+        }
     }
 }
