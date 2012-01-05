@@ -189,10 +189,10 @@ namespace Axiom.Core
 		protected GpuProgramParameters finiteExtrusionParams;
 
 		protected ColorEx fogColor;
-		protected float fogDensity;
-		protected float fogEnd;
+		protected Real fogDensity;
+		protected Real fogEnd;
 		protected FogMode fogMode;
-		protected float fogStart;
+		protected Real fogStart;
 
 		/// <summary>
 		///		Full screen rectangle to use for rendering stencil shadows.
@@ -762,10 +762,6 @@ namespace Axiom.Core
 
 		#endregion Constructors
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !this.IsDisposed )
@@ -2039,11 +2035,11 @@ namespace Axiom.Core
 
 					// So we allow the texture units, but override the color functions
 					// Copy texture state, shift up one since 0 is shadow texture
-					var origPassTUCount = pass.TextureUnitStageCount;
+					var origPassTUCount = pass.TextureUnitStatesCount;
 					for ( var t = 0; t < origPassTUCount; ++t )
 					{
 						TextureUnitState tex;
-						if ( retPass.TextureUnitStageCount <= t )
+						if ( retPass.TextureUnitStatesCount <= t )
 						{
 							tex = retPass.CreateTextureUnitState();
 						}
@@ -2057,7 +2053,7 @@ namespace Axiom.Core
 						tex.SetColorOperationEx( LayerBlendOperationEx.Source1, LayerBlendSource.Manual, LayerBlendSource.Current, this.IsShadowTechniqueAdditive ? ColorEx.Black : shadowColor );
 					}
 					// Remove any extras
-					while ( retPass.TextureUnitStageCount > origPassTUCount )
+					while ( retPass.TextureUnitStatesCount > origPassTUCount )
 					{
 						retPass.RemoveTextureUnitState( origPassTUCount );
 					}
@@ -2067,7 +2063,7 @@ namespace Axiom.Core
 					// reset
 					retPass.SetSceneBlending( SceneBlendType.Replace );
 					retPass.AlphaRejectFunction = CompareFunction.AlwaysPass;
-					while ( retPass.TextureUnitStageCount > 0 )
+					while ( retPass.TextureUnitStatesCount > 0 )
 					{
 						retPass.RemoveTextureUnitState( 0 );
 					}
@@ -2195,11 +2191,11 @@ namespace Axiom.Core
 					// We need to keep alpha rejection settings
 					retPass.SetAlphaRejectSettings( pass.AlphaRejectFunction, pass.AlphaRejectValue );
 					// Copy texture state, shift up one since 0 is shadow texture
-					var origPassTUCount = pass.TextureUnitStageCount;
+					var origPassTUCount = pass.TextureUnitStatesCount;
 					for ( var t = 0; t < origPassTUCount; ++t )
 					{
 						var targetIndex = t + 1;
-						var tex = ( retPass.TextureUnitStageCount <= targetIndex
+						var tex = ( retPass.TextureUnitStatesCount <= targetIndex
 													 ?
 														 retPass.CreateTextureUnitState()
 													 :
@@ -2215,7 +2211,7 @@ namespace Axiom.Core
 				else
 				{
 					// need to keep spotlight fade etc
-					keepTUCount = retPass.TextureUnitStageCount;
+					keepTUCount = retPass.TextureUnitStatesCount;
 				}
 
 				// Will also need fragment programs since this is a complex light setup
@@ -2269,7 +2265,7 @@ namespace Axiom.Core
 				}
 
 				// Remove any extra texture units
-				while ( retPass.TextureUnitStageCount > keepTUCount )
+				while ( retPass.TextureUnitStatesCount > keepTUCount )
 				{
 					retPass.RemoveTextureUnitState( keepTUCount );
 				}
@@ -2661,6 +2657,15 @@ namespace Axiom.Core
 		///	</returns>
 		public virtual Pass SetPass( Pass pass, bool evenIfSuppressed, bool shadowDerivation )
 		{
+            //If using late material resolving, swap now.
+            if ( IsLateMaterialResolving )
+            {
+                Technique lateTech = pass.Parent.Parent.GetBestTechnique();
+                if ( lateTech.PassCount > pass.Index )
+                    pass = lateTech.GetPass( pass.Index );
+                //Should we warn or throw an exception if an illegal state was achieved?
+            }
+
 			if ( !this.suppressRenderStateChanges || evenIfSuppressed )
 			{
 				if ( this.illuminationStage == IlluminationRenderStage.RenderToTexture && shadowDerivation )
@@ -2673,15 +2678,17 @@ namespace Axiom.Core
 					pass = this.DeriveShadowReceiverPass( pass );
 				}
 
-				//TODO :autoParamDataSource.SetPass( pass );
+                // Tell params about current pass
+                autoParamDataSource.CurrentPass = pass;
 
-				var passSurfaceAndLightParams = true;
+                bool passSurfaceAndLightParams = true;
+                bool passFogParams = true;
 
 				if ( pass.HasVertexProgram )
 				{
 					this.targetRenderSystem.BindGpuProgram( pass.VertexProgram.BindingDelegate );
-					// bind parameters later since they can be per-object
-					// does the vertex program want surface and light params passed to rendersystem?
+                    // bind parameters later 
+                    // does the vertex program want surface and light params passed to rendersystem?
 					passSurfaceAndLightParams = pass.VertexProgram.PassSurfaceAndLightStates;
 				}
 				else
@@ -2694,39 +2701,45 @@ namespace Axiom.Core
 					// Set fixed-function vertex parameters
 				}
 
-				if ( passSurfaceAndLightParams )
-				{
-					// Set surface reflectance properties, only valid if lighting is enabled
-					if ( pass.LightingEnabled )
-					{
-						this.targetRenderSystem.SetSurfaceParams( pass.Ambient,
-																  pass.Diffuse,
-																  pass.Specular,
-																  pass.Emissive,
-																  pass.Shininess,
-																  pass.VertexColorTracking );
-					}
-					// #if NOT_IN_OGRE
-					else
-					{
-						// even with lighting off, we need ambient set to white
-						this.targetRenderSystem.SetSurfaceParams( ColorEx.White,
-																  ColorEx.Black,
-																  ColorEx.Black,
-																  ColorEx.Black,
-																  0,
-																  TrackVertexColor.None );
-					}
-					// #endif
-					// Dynamic lighting enabled?
-					this.targetRenderSystem.LightingEnabled = pass.LightingEnabled;
-				}
+                if ( pass.HasGeometryProgram )
+                {
+                    this.targetRenderSystem.BindGpuProgram( pass.GeometryProgram.BindingDelegate );
+                    // bind parameters later 
+                }
+                else
+                {
+                    // Unbind program?
+                    if ( this.targetRenderSystem.IsGpuProgramBound( GpuProgramType.Geometry ) )
+                    {
+                        this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Geometry );
+                    }
+                    // Set fixed-function vertex parameters
+                }
+
+                if ( passSurfaceAndLightParams )
+                {
+                    // Set surface reflectance properties, only valid if lighting is enabled
+                    if ( pass.LightingEnabled )
+                    {
+                        this.targetRenderSystem.SetSurfaceParams(
+                            pass.Ambient,
+                            pass.Diffuse,
+                            pass.Specular,
+                            pass.SelfIllumination,
+                            pass.Shininess,
+                            pass.VertexColorTracking );
+                    }
+
+                    // Dynamic lighting enabled?
+                    this.targetRenderSystem.LightingEnabled = pass.LightingEnabled;
+                }
 
 				// Using a fragment program?
 				if ( pass.HasFragmentProgram )
 				{
 					this.targetRenderSystem.BindGpuProgram( pass.FragmentProgram.BindingDelegate );
-					// bind parameters later since they can be per-object
+                    // bind parameters later 
+                    passFogParams = pass.FragmentProgram.PassFogStates;
 				}
 				else
 				{
@@ -2735,73 +2748,88 @@ namespace Axiom.Core
 					{
 						this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Fragment );
 					}
-				}
-				// Set fixed-function fragment settings
 
-				//We need to set fog properties always. In D3D, it applies to shaders prior
-				//to version vs_3_0 and ps_3_0. And in OGL, it applies to "ARB_fog_XXX" in
-				//fragment program, and in other ways, they maybe accessed by gpu program via
-				//"state.fog.XXX".
-
-				// New fog params can either be from scene or from material
-
-				// jsw - set the fog for both fixed function and fragment programs
-				ColorEx newFogColor;
-				FogMode newFogMode;
-				float newFogDensity, newFogStart, newFogEnd;
-
-				// does the pass want to override the fog mode?
-				if ( pass.FogOverride )
-				{
-					// New fog params from material
-					newFogMode = pass.FogMode;
-					newFogColor = pass.FogColor;
-					newFogDensity = pass.FogDensity;
-					newFogStart = pass.FogStart;
-					newFogEnd = pass.FogEnd;
-				}
-				else
-				{
-					// New fog params from scene
-					newFogMode = this.fogMode;
-					newFogColor = this.fogColor;
-					newFogDensity = this.fogDensity;
-					newFogStart = this.fogStart;
-					newFogEnd = this.fogEnd;
+                    // Set fixed-function fragment settings
 				}
 
-				// set fog params
-                /*
-				float fogScale = 1f;
-				if ( newFogMode == FogMode.None )
-				{
-					fogScale = 0f;
-				}
-                 */
+                if ( passFogParams )
+                {
+                    // New fog params can either be from scene or from material
+                    FogMode newFogMode;
+                    ColorEx newFogColour;
+                    Real newFogStart, newFogEnd, newFogDensity;
+                    if ( pass.FogOverride )
+                    {
+                        // New fog params from material
+                        newFogMode = pass.FogMode;
+                        newFogColour = pass.FogColor;
+                        newFogStart = pass.FogStart;
+                        newFogEnd = pass.FogEnd;
+                        newFogDensity = pass.FogDensity;
+                    }
+                    else
+                    {
+                        // New fog params from scene
+                        newFogMode = this.fogMode;
+                        newFogColour = this.fogColor;
+                        newFogStart = this.fogStart;
+                        newFogEnd = this.fogEnd;
+                        newFogDensity = this.fogDensity;
+                    }
 
-				// set fog using the render system
-				this.targetRenderSystem.SetFog( newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd );
+                    /* In D3D, it applies to shaders prior
+                    to version vs_3_0 and ps_3_0. And in OGL, it applies to "ARB_fog_XXX" in
+                    fragment program, and in other ways, them maybe access by gpu program via
+                    "state.fog.XXX".
+                    */
+                    this.targetRenderSystem.SetFog( newFogMode, newFogColour, newFogDensity, newFogStart, newFogEnd );
+                }
 
 				// Tell params about ORIGINAL fog
 				// Need to be able to override fixed function fog, but still have
 				// original fog parameters available to a shader that chooses to use
-				// TODO: autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
+				autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
 
 				// The rest of the settings are the same no matter whether we use programs or not
 
-				// Set scene blending
-				this.targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor );
+                // Set scene blending
+                if ( pass.HasSeparateSceneBlending )
+                {
+                    this.targetRenderSystem.SetSeparateSceneBlending(
+                        pass.SourceBlendFactor, pass.DestinationBlendFactor,
+                        pass.SourceBlendFactorAlpha, pass.DestinationBlendFactorAlpha,
+                        pass.SceneBlendingOperation,
+                        pass.HasSeparateSceneBlendingOperations ? pass.SceneBlendingOperation : pass.SceneBlendingOperationAlpha );
+                }
+                else
+                {
+                    if ( pass.HasSeparateSceneBlendingOperations )
+                    {
+                        this.targetRenderSystem.SetSeparateSceneBlending(
+                            pass.SourceBlendFactor, pass.DestinationBlendFactor,
+                            pass.SourceBlendFactor, pass.DestinationBlendFactor,
+                            pass.SceneBlendingOperation, pass.SceneBlendingOperationAlpha );
+                    }
+                    else
+                    {
+                        this.targetRenderSystem.SetSceneBlending(
+                            pass.SourceBlendFactor, pass.DestinationBlendFactor, pass.SceneBlendingOperation );
+                    }
+                }
 
-				// TODO : Set point parameters
-				//targetRenderSystem.SetPointParameters(
-				//                                        pass.PointSize,
-				//                                        pass.IsPointAttenuationEnabled,
-				//                                        pass.PointAttenuationConstant,
-				//                                        pass.PointAttenuationLinear,
-				//                                        pass.PointAttenuationQuadratic,
-				//                                        pass.PointMinSize,
-				//                                        pass.PointMaxSize
-				//                                        );
+				//TODO Set point parameters
+                //this.targetRenderSystem.SetPointParameters(
+                //    pass.PointSize,
+                //    pass.IsPointAttenuationEnabled,
+                //    pass.PointAttenuationConstant,
+                //    pass.PointAttenuationLinear,
+                //    pass.PointAttenuationQuadratic,
+                //    pass.PointMinSize,
+                //    pass.PointMaxSize
+                //    );
+
+                if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
+                    this.targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
 
 				//targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
 
@@ -2826,7 +2854,7 @@ namespace Axiom.Core
 
 				for ( var i = 0; i < numTextureUnits; i++ )
 				{
-					if ( i < pass.TextureUnitStageCount )
+					if ( i < pass.TextureUnitStatesCount )
 					{
 						var texUnit = pass.GetTextureUnitState( i );
 					    targetRenderSystem.SetTextureUnitSettings( i, texUnit );
@@ -2843,7 +2871,7 @@ namespace Axiom.Core
 				}
 
                 // Disable remaining texture units
-                targetRenderSystem.DisableTextureUnitsFrom(pass.TextureUnitStageCount);
+                targetRenderSystem.DisableTextureUnitsFrom(pass.TextureUnitStatesCount);
 
 				// Depth Settings
 				this.targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
@@ -3850,7 +3878,7 @@ namespace Axiom.Core
 						mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.InternalResourceGroupName );
 					}
 					var p = mat.GetTechnique( 0 ).GetPass( 0 );
-					if ( p.TextureUnitStageCount != 1 /* ||
+					if ( p.TextureUnitStatesCount != 1 /* ||
 						 p.GetTextureUnitState( 0 ).GetTexture( 0 ) != shadowTexture */ )
 					{
 						mat.GetTechnique( 0 ).GetPass( 0 ).RemoveAllTextureUnitStates();
@@ -5555,7 +5583,7 @@ namespace Axiom.Core
 
 				// issue texture units that depend on updated view matrix
 				// reflective env mapping is one case
-				for ( var i = 0; i < pass.TextureUnitStageCount; i++ )
+				for ( var i = 0; i < pass.TextureUnitStatesCount; i++ )
 				{
 					var texUnit = pass.GetTextureUnitState( i );
 
@@ -6028,13 +6056,13 @@ namespace Axiom.Core
 					{
 						// remove all TUs except 0 & 1
 						// (only an issue if additive shadows have been used)
-						while ( targetPass.TextureUnitStageCount > 2 )
+						while ( targetPass.TextureUnitStatesCount > 2 )
 						{
 							targetPass.RemoveTextureUnitState( 2 );
 						}
 
 						// Add spot fader if not present already
-						if ( targetPass.TextureUnitStageCount == 2 &&
+						if ( targetPass.TextureUnitStatesCount == 2 &&
 							 targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )
 						{
 							// Just set
@@ -6044,7 +6072,7 @@ namespace Axiom.Core
 						else
 						{
 							// Remove any non-conforming spot layers
-							while ( targetPass.TextureUnitStageCount > 1 )
+							while ( targetPass.TextureUnitStatesCount > 1 )
 							{
 								targetPass.RemoveTextureUnitState( 1 );
 							}
@@ -6058,7 +6086,7 @@ namespace Axiom.Core
 					else
 					{
 						// remove all TUs except 0 including spot
-						while ( targetPass.TextureUnitStageCount > 1 )
+						while ( targetPass.TextureUnitStatesCount > 1 )
 						{
 							targetPass.RemoveTextureUnitState( 1 );
 						}
@@ -6133,7 +6161,7 @@ namespace Axiom.Core
 							targetPass.GetTextureUnitState( 0 ).SetProjectiveTexturing( true, camera );
 							this.autoParamDataSource.TextureProjector = camera;
 							// Remove any spot fader layer
-							if ( targetPass.TextureUnitStageCount > 1 &&
+							if ( targetPass.TextureUnitStatesCount > 1 &&
 								 targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )
 							{
 								// remove spot fader layer (should only be there if

@@ -258,7 +258,7 @@ namespace Axiom.Overlays.Elements
 		{
 			if ( material != null && isInitialized )
 			{
-				var numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStageCount;
+				var numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStatesCount;
 
 				var decl = renderOperation.vertexData.vertexDeclaration;
 

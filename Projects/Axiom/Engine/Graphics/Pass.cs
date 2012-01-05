@@ -34,13 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Configuration;
 using Axiom.Core;
-using System.Collections.Generic;
 using Axiom.Graphics.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -67,9 +66,8 @@ namespace Axiom.Graphics
 	///    There are pros and cons to both, just remember that if you use a programmable
 	///    pass to create some great effects, allow more time for definition and testing.
 	/// </remarks>
-	public class Pass
+	public class Pass : DisposableObject
 	{
-
 		#region Static Interface
 
 		#region DirtyList Property
@@ -430,9 +428,39 @@ namespace Axiom.Graphics
 
 		#endregion DestinationBlendFactor Property
 
-		#region DepthCheck Property
+        #region SourceBlendFactorAlpha Property
 
-		/// <summary>
+        private SceneBlendFactor _sourceBlendFactorAlpha;
+
+        public SceneBlendFactor SourceBlendFactorAlpha
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return _sourceBlendFactorAlpha;
+            }
+        }
+
+        #endregion SourceBlendFactorAlpha Property
+
+        #region DestinationBlendFactorAlpha Property
+
+        private SceneBlendFactor _destinationBlendFactorAlpha;
+
+        public SceneBlendFactor DestinationBlendFactorAlpha
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return _destinationBlendFactorAlpha;
+            }
+        }
+
+        #endregion DestinationBlendFactorAlpha Property
+
+        #region DepthCheck Property
+
+        /// <summary>
 		///    Depth buffer checking setting for this pass.
 		/// </summary>
 		private bool _depthCheck;
@@ -1079,14 +1107,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Starting point of the fog for this pass (if overriding).
 		/// </summary>
-		private float _fogStart;
+		private Real _fogStart;
 		/// <summary>
 		///    Returns the fog start distance for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogStart
+		public Real FogStart
 		{
 			get
 			{
@@ -1105,14 +1133,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Ending point of the fog for this pass (if overriding).
 		/// </summary>
-		private float _fogEnd;
+		private Real _fogEnd;
 		/// <summary>
 		///    Returns the fog end distance for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogEnd
+		public Real FogEnd
 		{
 			get
 			{
@@ -1131,14 +1159,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Density of the fog for this pass (if overriding).
 		/// </summary>
-		private float _fogDensity;
+		private Real _fogDensity;
 		/// <summary>
 		///    Returns the fog density for this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only valid if FogOverride is true.
 		/// </remarks>
-		public float FogDensity
+		public Real FogDensity
 		{
 			get
 			{
@@ -1162,10 +1190,11 @@ namespace Axiom.Graphics
 		protected TextureUnitStateList textureUnitStates = new TextureUnitStateList();
 
 		/// <summary>
-		///    Gets the number of fixed function texture unit states for this Pass.
+        /// Returns the number of texture unit settings.
 		/// </summary>
-		public int TextureUnitStageCount
+		public int TextureUnitStatesCount
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
 				return textureUnitStates.Count;
@@ -1747,7 +1776,84 @@ namespace Axiom.Graphics
 
 		#endregion PointSpritesEnabled Property
 
-		/// <summary>
+        #region SceneBlendingOperation Property
+
+        protected SceneBlendOperation blendOperation = SceneBlendOperation.Add;
+
+        /// <summary>
+        /// Returns the current blending operation
+        /// </summary>
+        public SceneBlendOperation SceneBlendingOperation
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return blendOperation;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                blendOperation = value;
+                separateBlendOperation = false;
+            }
+        }
+
+        #endregion SceneBlendingOperation Property
+
+        #region SceneBlendingOperationAlpha Property
+
+        protected SceneBlendOperation slphaBlendOperation = SceneBlendOperation.Add;
+
+        /// <summary>
+        /// Returns the current alpha blending operation
+        /// </summary>
+        public SceneBlendOperation SceneBlendingOperationAlpha
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return slphaBlendOperation;
+            }
+        }
+
+        #endregion SceneBlendingOperation Property
+
+        /// <summary>
+        /// Used to determine if separate alpha blending should be used for color and alpha channels
+        /// </summary>
+        protected bool separateBlend;
+
+        /// <summary>
+        /// Return true if this pass uses separate scene blending
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public bool HasSeparateSceneBlending
+        {
+            get
+            {
+                return separateBlend;
+            }
+        }
+
+        /// <summary>
+        /// Determines if we should use separate blending operations for color and alpha channels
+        /// </summary>
+        protected bool separateBlendOperation;
+
+        /// <summary>
+        /// Returns true if this pass uses separate scene blending operations.
+        /// </summary>
+        public bool HasSeparateSceneBlendingOperations
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return separateBlendOperation;
+            }
+        }
+
+        /// <summary>
 		///		Is this pass queued for deletion?
 		/// </summary>
 		protected bool queuedForDeletion;
@@ -1823,6 +1929,7 @@ namespace Axiom.Graphics
 		/// <param name="parent">Technique that owns this Pass.</param>
 		/// <param name="index">Index of this pass.</param>
 		public Pass( Technique parent, int index )
+            : base()
 		{
 			this._parent = parent;
 			this._index = index;
@@ -1850,8 +1957,6 @@ namespace Axiom.Graphics
 			_sourceBlendFactor = SceneBlendFactor.One;
 			_destinationBlendFactor = SceneBlendFactor.Zero;
 
-
-
 			// depth buffer settings
 			_depthCheck = true;
 			_depthWrite = true;
@@ -1878,10 +1983,21 @@ namespace Axiom.Graphics
 			DirtyHash();
 		}
 
-        ~Pass()
+        protected override void dispose( bool disposeManagedResources )
         {
-            if (_fragmentProgramUsage != null)
-                _fragmentProgramUsage.Dispose();
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( _fragmentProgramUsage != null )
+                    {
+                        if ( !_fragmentProgramUsage.IsDisposed )
+                            _fragmentProgramUsage.Dispose();
+                    }
+                }
+            }
+
+            base.dispose( disposeManagedResources );
         }
 
 	    #endregion Construction and Destruction
@@ -2191,7 +2307,7 @@ namespace Axiom.Graphics
 			   the first 2 gives us the most benefit for now.
 		   */
 			_hashCode = ( _index << 28 );
-			var count = TextureUnitStageCount;
+			var count = TextureUnitStatesCount;
 
 			// Fix from Multiverse
 			//    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
@@ -2432,6 +2548,44 @@ namespace Axiom.Graphics
 			SetRunOncePerLight( enabled, true );
 		}
 
+        /// <summary>
+        /// Used to get scene blending flags from a blending type
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        protected void GetBlendFlags( SceneBlendType type, out SceneBlendFactor source, out SceneBlendFactor dest )
+        {
+            switch ( type )
+            {
+                case SceneBlendType.TransparentAlpha:
+                    source = SceneBlendFactor.SourceAlpha;
+                    dest = SceneBlendFactor.OneMinusSourceAlpha;
+                    break;
+
+                case SceneBlendType.TransparentColor:
+                    source = SceneBlendFactor.SourceColor;
+                    dest = SceneBlendFactor.OneMinusSourceColor;
+                    break;
+
+                case SceneBlendType.Modulate:
+                    source = SceneBlendFactor.DestColor;
+                    dest = SceneBlendFactor.Zero;
+                    break;
+
+                case SceneBlendType.Add:
+                    source = SceneBlendFactor.One;
+                    dest = SceneBlendFactor.One;
+                    break;
+
+                case SceneBlendType.Replace:
+                    source = SceneBlendFactor.One;
+                    dest = SceneBlendFactor.Zero;
+                    break;
+
+                default:
+                    throw new AxiomException( "Invalid SceneBlendType {0}", type );
+            }
+        }
+
 		/// <summary>
 		///    Sets the kind of blending this pass has with the existing contents of the scene.
 		/// </summary>
@@ -2449,25 +2603,52 @@ namespace Axiom.Graphics
 		///    This method is applicable for both the fixed-function and programmable pipelines.
 		/// </remarks>
 		/// <param name="type">One of the predefined SceneBlendType blending types.</param>
+        [OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendType type )
 		{
-			// convert canned blending types into blending factors
-			switch ( type )
-			{
-				case SceneBlendType.Add:
-					SetSceneBlending( SceneBlendFactor.One, SceneBlendFactor.One );
-					break;
-				case SceneBlendType.TransparentAlpha:
-					SetSceneBlending( SceneBlendFactor.SourceAlpha, SceneBlendFactor.OneMinusSourceAlpha );
-					break;
-				case SceneBlendType.TransparentColor:
-					SetSceneBlending( SceneBlendFactor.SourceColor, SceneBlendFactor.OneMinusSourceColor );
-					break;
-				case SceneBlendType.Modulate:
-					SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
-					break;
-			}
+            // Convert type into blend factors
+            SceneBlendFactor source;
+            SceneBlendFactor dest;
+            GetBlendFlags( type , out source, out dest );
+
+            // Set blend factors
+            SetSceneBlending( source, dest );
 		}
+
+        /// <summary>
+        /// Sets the kind of blending this pass has with the existing contents of the scene, separately for color and alpha channels
+        /// </summary>
+        /// <remarks>
+        /// @remarks
+        /// Whereas the texture blending operations seen in the TextureUnitState class are concerned with
+        /// blending between texture layers, this blending is about combining the output of the Pass
+        /// as a whole with the existing contents of the rendering target. This blending therefore allows
+        /// object transparency and other special effects. If all passes in a technique have a scene
+        /// blend, then the whole technique is considered to be transparent.
+        /// @par
+        /// This method allows you to select one of a number of predefined blending types. If you require more
+        /// control than this, use the alternative version of this method which allows you to specify source and
+        /// destination blend factors.
+        /// @note
+        /// This method is applicable for both the fixed-function and programmable pipelines.
+        /// </remarks>
+        /// <param name="sbt">One of the predefined SceneBlendType blending types for the color channel</param>
+        /// <param name="sbta">One of the predefined SceneBlendType blending types for the alpha channel</param>
+        [OgreVersion( 1, 7, 2 )]
+        public void SetSeparateSceneBlending( SceneBlendType sbt, SceneBlendType sbta )
+        {
+            // Convert types into blend factors
+            SceneBlendFactor source;
+            SceneBlendFactor dest;
+            GetBlendFlags( sbt, out source, out dest );
+
+            SceneBlendFactor sourceAlpha;
+            SceneBlendFactor destAlpha;
+            GetBlendFlags( sbta, out sourceAlpha, out destAlpha );
+
+            // Set blend factors
+            SetSeparateSceneBlending( source, dest, sourceAlpha, destAlpha );
+        }
 
 		/// <summary>
 		///    Allows very fine control of blending this Pass with the existing contents of the scene.
@@ -2491,17 +2672,52 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
 		/// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
+        [OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// copy settings
 			_sourceBlendFactor = src;
 			_destinationBlendFactor = dest;
+
+            separateBlend = false;
 		}
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="name"></param>
+        /// <summary>
+        /// Allows very fine control of blending this Pass with the existing contents of the scene.
+        /// </summary>
+        /// <remarks>
+        /// Wheras the texture blending operations seen in the TextureUnitState class are concerned with
+        /// blending between texture layers, this blending is about combining the output of the material
+        /// as a whole with the existing contents of the rendering target. This blending therefore allows
+        /// object transparency and other special effects.
+        /// @par
+        /// This version of the method allows complete control over the blending operation, by specifying the
+        /// source and destination blending factors. The result of the blending operation is:
+        /// <span align="center">
+        /// final = (texture * sourceFactor) + (pixel * destFactor)
+        /// </span>
+        /// @par
+        /// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+        /// enumerated type.
+        /// @note
+        /// This method is applicable for both the fixed-function and programmable pipelines.
+        /// </remarks>
+        /// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
+        /// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="sourceFactorAlpha">The alpha source factor in the above calculation, i.e. multiplied by the texture alpha component.</param>
+        /// <param name="destFactorAlpha">The alpha destination factor in the above calculation, i.e. multiplied by the pixel alpha component.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+            SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+        {
+            _sourceBlendFactor = sourceFactor;
+            _destinationBlendFactor = destFactor;
+            _sourceBlendFactorAlpha = sourceFactorAlpha;
+            _destinationBlendFactorAlpha = destFactorAlpha;
+
+            separateBlend = true;
+        }
+
 		public void SetFragmentProgram( string name )
 		{
 			SetFragmentProgram( name, true );
@@ -2534,20 +2750,11 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="name"></param>
 		public void SetGeometryProgram( string name )
 		{
 			SetGeometryProgram( name, true );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetGeometryProgram( string name, bool resetParams )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2570,8 +2777,6 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		/// </summary>
 		public void SetShadowCasterFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2594,8 +2799,6 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		/// </summary>
 		public void SetShadowReceiverFragmentProgram( string name )
 		{
 			// turn off fragment programs when the name is set to null
@@ -2618,20 +2821,11 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="name"></param>
 		public void SetVertexProgram( string name )
 		{
 			SetVertexProgram( name, true );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="resetParams"></param>
 		public void SetVertexProgram( string name, bool resetParams )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2654,8 +2848,6 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		/// </summary>
 		public void SetShadowCasterVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2678,8 +2870,6 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
-		/// </summary>
 		public void SetShadowReceiverVertexProgram( string name )
 		{
 			// turn off vertex programs when the name is set to null
@@ -2702,6 +2892,29 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
+        /// <summary>
+        /// Sets the specific operation used to blend source and destination pixels together.
+        /// </summary>
+        /// <remarks>
+        /// By default this operation is +, which creates this equation
+        /// <span align="center">
+		///	final = (texture * sourceFactor) + (pixel * destFactor)
+		///	</span>
+		///	By setting this to something other than SBO_ADD you can change the operation to achieve
+		///	a different effect.
+		///	This function allows more control over blending since it allows you to select different blending
+		///	modes for the color and alpha channels
+        /// </remarks>
+        /// <param name="op">The blending operation mode to use for color channels in this pass</param>
+        /// <param name="alphaOp">The blending operation mode to use for alpha channels in this pass</param>
+        [OgreVersion( 1, 7, 2 )]
+        public void SetSeparateSceneBlendingOperation( SceneBlendOperation op, SceneBlendOperation alphaOp )
+        {
+            blendOperation = op;
+            slphaBlendOperation = alphaOp;
+            separateBlendOperation = true;
+        }
+
 		/// <summary>
 		///    Splits this Pass to one which can be handled in the number of
 		///    texture units specified.
@@ -2717,9 +2930,9 @@ namespace Axiom.Graphics
 		public Pass Split( int numUnits )
 		{
 			// can't split programmable passes
-			if ( _fragmentProgramUsage != null )
+			if ( _vertexProgramUsage != null || _geometryProgramUsage != null || _fragmentProgramUsage != null )
 			{
-				throw new Exception( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
+				throw new AxiomException( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
 			}
 
 			if ( textureUnitStates.Count > numUnits )
@@ -2733,17 +2946,26 @@ namespace Axiom.Graphics
 
 				// set the new pass to fallback using scene blending
 				newPass.SetSceneBlending( state.ColorBlendFallbackSource, state.ColorBlendFallbackDest );
+                // Fixup the texture unit 0   of new pass   blending method   to replace
+                // all colour and alpha   with texture without adjustment, because we
+                // assume it's detail texture.
+                state.SetColorOperationEx( LayerBlendOperationEx.Source1, LayerBlendSource.Texture, LayerBlendSource.Current );
+                state.SetAlphaOperation( LayerBlendOperationEx.Source1, LayerBlendSource.Texture, LayerBlendSource.Current, 1, 1, 0 );
 
 				// add the rest of the texture units to the new pass
 				for ( var i = start; i < textureUnitStates.Count; i++ )
 				{
 					state = (TextureUnitState)textureUnitStates[ i ];
+                    // detach from parent first
+                    state.Parent = null;
 					newPass.AddTextureUnitState( state );
 				}
 
 				// remove the extra texture units from this pass
 				textureUnitStates.RemoveRange( start, textureUnitStates.Count - start );
-
+                //TODO
+                //_dirtyHash();
+                //mContentTypeLookupBuilt = false;
 				return newPass;
 			}
 

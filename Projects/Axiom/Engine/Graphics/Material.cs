@@ -704,15 +704,31 @@ namespace Axiom.Graphics
 		/// property there.
 		/// <see ref="Pass.SetSceneBlending"></see>
 		/// </remarks>
-		/// <ogre name="" />
+        [OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendType blendType )
 		{
 			// load each technique
-			for ( var i = 0; i < this.techniques.Count; i++ )
-			{
-				( (Technique)this.techniques[ i ] ).SetSceneBlending( blendType );
-			}
+            for ( var i = 0; i < this.techniques.Count; i++ )
+                this.techniques[ i ].SetSceneBlending( blendType );
 		}
+
+        /// <summary>
+        /// Sets the kind of blending every pass has with the existing contents of the scene, using individual factors for color and alpha channels
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// </remarks>
+        /// <see cref="Pass.SetSeparateSceneBlending"/>
+        [OgreVersion( 1, 7, 2 )]
+        public void SetSeparateSceneBlending( SceneBlendType sbt, SceneBlendType sbta )
+        {
+            for ( var i = 0; i < this.techniques.Count; i++ )
+                this.techniques[ i ].SetSeparateSceneBlending( sbt, sbta );
+        }
 
 		/// <summary>
 		/// Allows very fine control of blending every Pass with the existing contents of the scene.
@@ -725,15 +741,32 @@ namespace Axiom.Graphics
 		/// property there.
 		/// <see ref="Pass.SetSceneBlending"></see>
 		/// </remarks>
-		/// <ogre name="" />
+        [OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// load each technique
 			for ( var i = 0; i < this.techniques.Count; i++ )
-			{
-				( (Technique)this.techniques[ i ] ).SetSceneBlending( src, dest );
-			}
+				this.techniques[ i ].SetSceneBlending( src, dest );
 		}
+
+        /// <summary>
+        /// Allows very fine control of blending every Pass with the existing contents of the scene, using individual factors for color and alpha channels
+        /// </summary>
+        /// <remarks>
+        /// This property has been moved to the Pass class, which is accessible via the 
+        /// Technique. For simplicity, this method allows you to set these properties for 
+        /// every current Technique, and for every current Pass within those Techniques. If 
+        /// you need more precision, retrieve the Technique and Pass instances and set the
+        /// property there.
+        /// </remarks>
+        /// <see cref="Pass.SetSeparateSceneBlending"/>
+        [OgreVersion( 1, 7, 2 )]
+        public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+            SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha)
+        {
+            for ( var i = 0; i < this.techniques.Count; i++ )
+                this.techniques[ i ].SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha );
+        }
 
 		#endregion Convience Properties
 
@@ -770,11 +803,6 @@ namespace Axiom.Graphics
 			this._lodValues.Add( 0.0f );
 
 			this.ApplyDefaults();
-		}
-
-		~Material()
-		{
-			this.Dispose();
 		}
 
 		#endregion Constructors and Destructor
@@ -1004,10 +1032,6 @@ namespace Axiom.Graphics
 			return newMaterial;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <ogre name="applyDefaults" />
 		public void ApplyDefaults()
 		{
 			if ( defaultSettings != null )

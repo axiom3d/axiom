@@ -38,7 +38,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
-using System;
 
 #endregion Namespace Declarations
 
@@ -406,10 +405,7 @@ namespace Axiom.Scripting.Compiler
 												return;
 										}
 
-									    throw new NotImplementedException(
-                                            string.Format("SetSeparateSceneBlending({0}, {1})", sbt0, sbt1));
-									    //TODO
-									    //mPass->setSeparateSceneBlending(sbt0, sbt1);
+                                        _pass.SetSeparateSceneBlending( sbt0, sbt1 );
 									}
 									else
 									{
@@ -467,28 +463,23 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
-												//TODO
-												//mPass->setSceneBlendingOperation(SBO_ADD);
+                                                _pass.SceneBlendingOperation = SceneBlendOperation.Add;
 												break;
 
 											case Keywords.ID_SUBTRACT:
-												//TODO
-												//mPass->setSceneBlendingOperation(SBO_SUBTRACT);
+                                                _pass.SceneBlendingOperation = SceneBlendOperation.Subtract;
 												break;
 
 											case Keywords.ID_REVERSE_SUBTRACT:
-												//TODO
-												//mPass->setSceneBlendingOperation(SBO_REVERSE_SUBTRACT);
+                                                _pass.SceneBlendingOperation = SceneBlendOperation.ReverseSubtract;
 												break;
 
 											case Keywords.ID_MIN:
-												//TODO
-												//mPass->setSceneBlendingOperation(SBO_MIN);
+                                                _pass.SceneBlendingOperation = SceneBlendOperation.Min;
 												break;
 
 											case Keywords.ID_MAX:
-												//TODO
-												//mPass->setSceneBlendingOperation(SBO_MAX);
+                                                _pass.SceneBlendingOperation = SceneBlendOperation.Max;
 												break;
 
 											default:
@@ -525,33 +516,27 @@ namespace Axiom.Scripting.Compiler
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
 											atom1 = (AtomAbstractNode)i1;
 
-										//TODO
-										//SceneBlendOperation op = SBO_ADD, alphaOp = SBO_ADD;
+                                        SceneBlendOperation op = SceneBlendOperation.Add, alphaOp = SceneBlendOperation.Add;
 										switch ( (Keywords)atom0.Id )
 										{
 											case Keywords.ID_ADD:
-												//TODO
-												//op = SBO_ADD;
+                                                op = SceneBlendOperation.Add;
 												break;
 
 											case Keywords.ID_SUBTRACT:
-												//TODO
-												//op = SBO_SUBTRACT;
+                                                op = SceneBlendOperation.Subtract;
 												break;
 
 											case Keywords.ID_REVERSE_SUBTRACT:
-												//TODO
-												//op = SBO_REVERSE_SUBTRACT;
+                                                op = SceneBlendOperation.ReverseSubtract;
 												break;
 
 											case Keywords.ID_MIN:
-												//TODO
-												//op = SBO_MIN;
+                                                op = SceneBlendOperation.Min;
 												break;
 
 											case Keywords.ID_MAX:
-												//TODO
-												//op = SBO_MAX;
+                                                op = SceneBlendOperation.Max;
 												break;
 
 											default:
@@ -562,30 +547,25 @@ namespace Axiom.Scripting.Compiler
 
 										switch ( (Keywords)atom1.Id )
 										{
-											case Keywords.ID_ADD:
-												//TODO
-												//alphaOp = SBO_ADD;
-												break;
+                                            case Keywords.ID_ADD:
+                                                alphaOp = SceneBlendOperation.Add;
+                                                break;
 
-											case Keywords.ID_SUBTRACT:
-												//TODO
-												//alphaOp = SBO_SUBTRACT;
-												break;
+                                            case Keywords.ID_SUBTRACT:
+                                                alphaOp = SceneBlendOperation.Subtract;
+                                                break;
 
-											case Keywords.ID_REVERSE_SUBTRACT:
-												//TODO
-												//alphaOp = SBO_REVERSE_SUBTRACT;
-												break;
+                                            case Keywords.ID_REVERSE_SUBTRACT:
+                                                alphaOp = SceneBlendOperation.ReverseSubtract;
+                                                break;
 
-											case Keywords.ID_MIN:
-												//TODO
-												//alphaOp = SBO_MIN;
-												break;
+                                            case Keywords.ID_MIN:
+                                                alphaOp = SceneBlendOperation.Min;
+                                                break;
 
-											case Keywords.ID_MAX:
-												//TODO
-												//alphaOp = SBO_MAX;
-												break;
+                                            case Keywords.ID_MAX:
+                                                alphaOp = SceneBlendOperation.Max;
+                                                break;
 
 											default:
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
@@ -593,8 +573,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 										}
 
-										//TODO
-										//mPass->setSeparateSceneBlendingOperation(op, alphaOp);
+                                        _pass.SetSeparateSceneBlendingOperation( op, alphaOp );
 									}
 									else
 									{

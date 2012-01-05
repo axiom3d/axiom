@@ -1025,13 +1025,13 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					Pass pass = thisMaterial.GetTechnique( 0 ).GetPass( 0 );
 					// Get the plain geometry texture
-					if (pass.TextureUnitStageCount > 0)
+					if (pass.TextureUnitStatesCount > 0)
 					{
 						TextureUnitState geometryTex = pass.GetTextureUnitState( 0 );
 						targetRenderSystem.SetTexture(0, true, geometryTex.TextureName);
 					}
 
-					if ( pass.TextureUnitStageCount > 1 )
+					if ( pass.TextureUnitStatesCount > 1 )
 					{
 						// Get the lightmap
 						TextureUnitState lightmapTex = pass.GetTextureUnitState( 1 );
