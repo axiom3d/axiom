@@ -159,6 +159,8 @@ namespace Axiom.Graphics
 				{
 					Compile();
 				}
+
+                CreateGlobalTextures();
 			}
 		}
 
@@ -168,6 +170,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void unload()
 		{
+            FreeGlobalTextures();
 		}
 
 		/// <summary>
@@ -191,7 +194,8 @@ namespace Axiom.Graphics
 					{
 						item.Value.Dispose();
 					}
-
+                    return;
+                    unload();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -237,6 +241,9 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveTechnique( int idx )
 		{
+            Debug.Assert(idx < techniques.Count, "Index out of bounds.");
+            techniques[idx].Dispose();
+            techniques[idx] = null;
 			techniques.RemoveAt( idx );
 			supportedTechniques.Clear();
 			compilationRequired = true;
@@ -247,6 +254,11 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveAllTechniques()
 		{
+            //for (int i = 0; i < techniques.Count; i++)
+            //{
+            //    techniques[i].Dispose();
+            //    techniques[i] = null;
+            //}
 			techniques.Clear();
 			supportedTechniques.Clear();
 			compilationRequired = true;
@@ -460,6 +472,9 @@ namespace Axiom.Graphics
 						renderTarget = tex.GetBuffer().GetRenderTarget();
 						globalTextures.Add( def.Name, tex );
 					}
+                    
+                    //Set DepthBuffer pool for sharing
+                    renderTarget.DepthBufferPool = def.DepthBufferId;
 				}
 			}
 

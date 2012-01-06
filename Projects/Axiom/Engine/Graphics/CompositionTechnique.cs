@@ -58,7 +58,7 @@ namespace Axiom.Graphics
 	///<summary>
 	/// Base composition technique, can be subclassed in plugins.
 	///</summary>
-	public class CompositionTechnique
+	public class CompositionTechnique : DisposableObject
 	{
 		///<summary>
 		/// The scope of a texture defined by the compositor.
@@ -421,6 +421,8 @@ namespace Axiom.Graphics
 		public virtual void RemoveTargetPass( int index )
 		{
 			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
+            this.targetPasses[index].Dispose();
+            this.targetPasses[index] = null;
 			this.targetPasses.RemoveAt( index );
 		}
 
@@ -440,6 +442,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllTargetPasses()
 		{
+            for (int i = 0; i < targetPasses.Count; i++)
+            {
+                targetPasses[i].Dispose();
+                targetPasses[i] = null;
+            }
 			this.targetPasses.Clear();
 		}
 
@@ -508,5 +515,21 @@ namespace Axiom.Graphics
 			// must be ok
 			return true;
 		}
+
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    return;
+                    RemoveAllTextureDefinitions();
+                    RemoveAllTargetPasses();
+                    outputTarget.Dispose();
+                    outputTarget = null;
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
 	}
 }

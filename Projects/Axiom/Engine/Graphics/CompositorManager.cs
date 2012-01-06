@@ -92,28 +92,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public bool Initialize( params object[] args )
 		{
-			// Create "default" compositor
-			/* Compositor that is used to implicitly represent the original
-				render in the chain. This is an identity compositor with only an output pass:
-			compositor Axiom/Scene
-			{
-				technique
-				{
-					target_output
-					{
-						pass clear
-						{
-							/// Clear frame
-						}
-						pass render_scene
-						{
-							visibility_mask FFFFFFFF
-							render_queues BACKGROUND SKIES_LATE
-						}
-					}
-				}
-			};
-			*/
+			
 
 			var scene = (Compositor)Create( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
 			var t = scene.CreateTechnique();
@@ -137,6 +116,32 @@ namespace Axiom.Graphics
 		}
 
 		#endregion ISingleton<CompositorManager> Implementation
+
+        #region Construction and Destruction
+
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        public CompositorManager()
+            : base()
+        {
+            // OGRE initializes this manager here in the constructor. For consistency Axiom calls Initialize() directly
+            // in Root.ctor(), this does change the order in which things are initialized.
+            //Initialize();
+
+            customCompositionPassesIndex = new ReadOnlyDictionary<string, ICustomCompositionPass>(customCompositionPasses);
+            compositorLogicIndex = new ReadOnlyDictionary<string, ICompositorLogic>(compositorLogics);
+            //Load right after materials
+            LoadingOrder = 110.0f;
+
+            ScriptPatterns.Add("*.compositor");
+            ResourceGroupManager.Instance.RegisterScriptLoader(this);
+
+            ResourceType = "Compositor";
+            ResourceGroupManager.Instance.RegisterResourceManager(ResourceType, this);
+        }
+
+        #endregion Construction and Destruction
 
 		#region TextureDefinition
 
@@ -321,31 +326,7 @@ namespace Axiom.Graphics
 
 		#endregion Fields and Properties
 
-		#region Construction and Destruction
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		public CompositorManager()
-            : base()
-		{
-			// OGRE initializes this manager here in the constructor. For consistency Axiom calls Initialize() directly
-			// in Root.ctor(), this does change the order in which things are initialized.
-			//Initialize();
-
-			customCompositionPassesIndex = new ReadOnlyDictionary<string, ICustomCompositionPass>( customCompositionPasses );
-			compositorLogicIndex = new ReadOnlyDictionary<string, ICompositorLogic>( compositorLogics );
-			//Load right after materials
-			LoadingOrder = 110.0f;
-
-			ScriptPatterns.Add( "*.compositor" );
-			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-
-			ResourceType = "Compositor";
-			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
-		}
-
-		#endregion Construction and Destruction
+		
 
 		#region Methods
 
@@ -403,8 +384,12 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void FreeChains()
 		{
-			// Do I need to dispose the CompositorChain objects?
-			chains.Clear();
+            //foreach (var item in chains.Values)
+            //{
+            //    item.Dispose();
+            //}
+
+            chains.Clear();
 		}
 
 		///<summary>
@@ -830,6 +815,10 @@ namespace Axiom.Graphics
 					FreeChains();
 					FreePooledTextures( false );
 					Singleton<CompositorManager>.Destroy();
+
+                    return;
+                    rectangle.Dispose();
+                    rectangle = null;
 				}
 
 				// There are no unmanaged resources to release, but
