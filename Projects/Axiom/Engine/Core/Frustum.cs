@@ -1280,14 +1280,14 @@ namespace Axiom.Core
 
 				Real inv_w = 1.0f / ( vpRight - vpLeft );
 				Real inv_h = 1.0f / ( vpTop - vpBottom );
-				var inv_d = 1.0f / ( _farDistance - _nearDistance );
+				Real inv_d = 1.0f / ( _farDistance - _nearDistance );
 
 				// Recalc if frustum params changed
 				if ( _projectionType == Projection.Perspective )
 				{
 					// Calc matrix elements
-					var A = 2.0f * _nearDistance * inv_w;
-					var B = 2.0f * _nearDistance * inv_h;
+					Real A = 2.0f * _nearDistance * inv_w;
+					Real B = 2.0f * _nearDistance * inv_h;
 					Real C = ( vpRight + vpLeft ) * inv_w;
 					Real D = ( vpTop + vpBottom ) * inv_h;
 					Real q, qn;
@@ -1546,40 +1546,24 @@ namespace Axiom.Core
 
 			if ( !_customViewMatrix )
 			{
-				var orientation = GetOrientationForViewUpdate();
-				var position = GetPositionForViewUpdate();
-				var rotation = orientation.ToRotationMatrix();
+                Quaternion orientation = GetOrientationForViewUpdate();
+                Vector3 position = GetPositionForViewUpdate();
 
-				// Make the translation relative to new axes
-				var rotT = rotation.Transpose();
-				var trans = -rotT * position;
+                _viewMatrix = Axiom.Math.Matrix4.MakeViewMatrix(position, orientation, isReflected ? ReflectionMatrix : Matrix4.Zero);
+            }
 
-				// Make final matrix
-				_viewMatrix = Matrix4.Identity;
-				_viewMatrix = rotT; // fills upper 3x3
-				_viewMatrix[ 0, 3 ] = trans.x;
-				_viewMatrix[ 1, 3 ] = trans.y;
-				_viewMatrix[ 2, 3 ] = trans.z;
+            _recalculateView = false;
 
-				// Deal with reflections
-				if ( isReflected )
-				{
-					_viewMatrix = _viewMatrix * _reflectionMatrix;
-				}
-			}
-
-			_recalculateView = false;
-
-			// Signal to update frustum clipping planes
-			_recalculateFrustumPlanes = true;
-			// Signal to update world space corners
-			_recalculateWorldSpaceCorners = true;
-			// Signal to update frustum if oblique plane enabled,
-			// since plane needs to be in view space
-			if ( useObliqueDepthProjection )
-			{
-				_recalculateFrustum = true;
-			}
+            //Signal to update frustum clipping planes
+            _recalculateFrustumPlanes = true;
+            //Signal to update world space corners
+            _recalculateWorldSpaceCorners = true;
+            //Signal to update frustum if oblique plane enabled,
+            //since plane needs to be in view space
+            if (useObliqueDepthProjection)
+            {
+                _recalculateFrustum = true;
+            }
 		}
 
 		protected void UpdateWorldSpaceCorners()
