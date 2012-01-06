@@ -263,9 +263,28 @@ namespace Axiom.Core
 
 		#endregion FrustumOffset Property
 
+        #region FocalLength Property
+        /// <summary>
+        /// Get/Set FocalLength
+        /// <remarks>Focal length of frustum</remarks>
+        /// </summary>
+        public Real FocalLength
+        {
+            get { return _focalLength; }
+            set
+            {
+                if (_focalLength <= 0)
+                {
+                    throw new AxiomException("Focal length must be greater than zero.");
+                }
+                _focalLength = value;
+                InvalidateFrustum();
+            }
+        }
+        #endregion FocalLength Property
         #region OrientationMode
 
-	    private OrientationMode _orientationMode;
+        private OrientationMode _orientationMode;
 
         [OgreVersion(1, 7, 2790)]
         public OrientationMode OrientationMode 
