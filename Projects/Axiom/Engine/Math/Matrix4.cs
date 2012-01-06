@@ -338,6 +338,42 @@ namespace Axiom.Math
 			return result;
 		}
 
+       public static Matrix4 MakeViewMatrix(Vector3 position, Quaternion orientation, Matrix4 reflectMatrix)
+        {
+            Matrix4 viewMatrix;
+
+            // View matrix is:
+                //
+                //  [ Lx  Uy  Dz  Tx  ]
+                //  [ Lx  Uy  Dz  Ty  ]
+                //  [ Lx  Uy  Dz  Tz  ]
+                //  [ 0   0   0   1   ]
+                //
+                // Where T = -(Transposed(Rot) * Pos)
+
+                // This is most efficiently done using 3x3 Matrices
+                Matrix3 rot;
+                rot = orientation.ToRotationMatrix();
+            
+                // Make the translation relative to new axes
+                Matrix3 rotT = rot.Transpose();
+                Vector3 trans = -rotT * position;
+
+                // Make final matrix
+                viewMatrix = Matrix4.Identity;
+                viewMatrix = rotT; // fills upper 3x3
+                viewMatrix[0,3] = trans.x;
+                viewMatrix[1,3] = trans.y;
+                viewMatrix[2,3] = trans.z;
+
+                // Deal with reflections
+                if (reflectMatrix != Matrix4.zeroMatrix)
+                {
+                        viewMatrix = viewMatrix * (reflectMatrix);
+                }
+
+            return viewMatrix;
+        }
 		#endregion
 
 		#region Public methods
