@@ -323,6 +323,8 @@ namespace Axiom.Core
 		/// </summary>
 		private ITimer timer;
 
+
+        private float frameSmoothingTime = 0.0f;
 		#region MovableObjectFactory fields
 
 		private readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
@@ -645,7 +647,19 @@ namespace Axiom.Core
 				return this.averageFPS;
 			}
 		}
-
+        /// <summary>
+        /// Axiom by default gives you the raw frame time, but can 
+        /// optionally smooth it out over several frames, in order to reduce the
+        /// noticable effect of occasional hiccups in framerate.
+        /// These smoothed values are passed back as parameters to FrameListener calls.
+        /// </summary>
+        /// <remarks>This method allows you to tweak the smoothing period, and is expressed
+        /// in seconds. Setting it to 0 will result in completely unsmoothed frame times (the default)</remarks>
+        public float FrameSmoothingTime
+        {
+            get { return frameSmoothingTime; }
+            set { frameSmoothingTime = value; }
+        }
 		/// <summary>
 		///	    Exposes the mechanism to suspend rendering
 		/// </summary>
@@ -1206,16 +1220,25 @@ namespace Axiom.Core
 		/// <returns>Average time since last event of the same type.</returns>
 		private float CalculateEventTime( long time, FrameEventType type )
 		{
+            //calculate the average time passed between events of the given type
+            //during the last frameSmoothingTime seconds
 			float result = 0;
+            float discardThreshold = frameSmoothingTime * 1000.0f;
+         
 
+
+            if (time > discardThreshold)
+                time -= (long)(frameSmoothingTime * discardThreshold);
 			if ( type == FrameEventType.Start )
 			{
 				result = (float)( time - this.lastStartTime ) / 1000;
 
+               
+                
 				// update the last start time before the render targets are rendered
 				this.lastStartTime = time;
 			}
-			if ( type == FrameEventType.Queued )
+			else if ( type == FrameEventType.Queued )
 			{
 				result = (float)( time - this.lastQueuedTime ) / 1000;
 				// update the last queued time before the render targets are rendered
@@ -1263,7 +1286,7 @@ namespace Axiom.Core
 					// Reset Our Frame Count
 					this.frameCount = 0;
 				}
-
+                
 				result = (float)( time - this.lastEndTime ) / 1000;
 
 				this.lastEndTime = time;
