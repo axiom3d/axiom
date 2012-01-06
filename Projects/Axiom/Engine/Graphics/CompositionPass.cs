@@ -55,7 +55,7 @@ namespace Axiom.Graphics
 	///    Object representing one pass or operation in a composition sequence. This provides a 
 	///    method to conviently interleave RenderSystem commands between Render Queues.
 	///</summary>
-	public class CompositionPass
+	public class CompositionPass : DisposableObject
 	{
 		public struct InputTexture
 		{
@@ -695,5 +695,12 @@ namespace Axiom.Graphics
 		#endregion Quad Management
 
 		#endregion Methods
-	}
+
+        #region Disposable
+        protected override void dispose(bool disposeManagedResources)
+        {
+            base.dispose(disposeManagedResources);
+        }
+        #endregion
+    }
 }

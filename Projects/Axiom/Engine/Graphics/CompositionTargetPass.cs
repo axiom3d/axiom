@@ -55,14 +55,23 @@ namespace Axiom.Graphics
 	///    Object representing one pass or operation in a composition sequence. This provides a 
 	///    method to conviently interleave RenderSystem commands between Render Queues.
 	///</summary>
-	public class CompositionTargetPass
+	public class CompositionTargetPass : DisposableObject
 	{
 		#region Fields and Properties
-
-		///<summary>
-		///    Parent technique
-		///</summary>
-		protected CompositionTechnique parent;
+        ///<summary>
+        ///    Parent technique
+        ///</summary>
+        protected CompositionTechnique parent;
+        #region Parent Property
+        /// <summary>
+        /// Gets Parent CompositionTechnique
+        /// </summary>
+        public CompositionTechnique Parent
+        {
+            get { return parent; }
+        }
+        #endregion
+        
 
 		#region InputMode Property
 
@@ -277,6 +286,11 @@ namespace Axiom.Graphics
 			lodBias = 1.0f;
 			materialScheme = MaterialManager.DefaultSchemeName;
 			this.shadowsEnabled = true;
+
+            if (Root.Instance.RenderSystem != null)
+            {
+                materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
+            }
 		}
 
 		#endregion Constructors
@@ -292,7 +306,36 @@ namespace Axiom.Graphics
 			passes.Add( t );
 			return t;
 		}
-
+        public void RemovePass(int index)
+        {
+            Debug.Assert(index < passes.Count, "Index out of bounds.");
+            passes[index].Dispose();
+            passes[index] = null;
+        }
+        public void RemoveAllPasses()
+        {
+            for (int i = 0; i < passes.Count; i++)
+            {
+                passes[i].Dispose();
+                passes[i] = null;
+            }
+        }
+      
 		#endregion Methods
-	}
+
+        #region DisposableObject
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    return;
+                    RemoveAllPasses();
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
+        #endregion
+    }
 }

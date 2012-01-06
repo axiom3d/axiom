@@ -53,7 +53,7 @@ namespace Axiom.Graphics
 	///<summary>
 	///    Chain of compositor effects applying to one viewport.
 	///</summary>
-	public class CompositorChain
+	public class CompositorChain : DisposableObject
 	{
 		public class RQListener
 		{
@@ -98,7 +98,7 @@ namespace Axiom.Graphics
 				operation = op;
 				sceneManager = sm;
 				renderSystem = rs;
-				currentOp = 0;
+                currentOp = 0;
 				lastOp = op.RenderSystemOperations.Count;
 			}
 
@@ -140,8 +140,9 @@ namespace Axiom.Graphics
 				while ( currentOp != lastOp &&
 					   ( (int)operation.RenderSystemOperations[ currentOp ].QueueID < (int)id ) )
 				{
+             
 					operation.RenderSystemOperations[ currentOp ].Operation.Execute( sceneManager, renderSystem );
-					currentOp++;
+                      currentOp++;
 				}
 			}
 		}
@@ -245,7 +246,7 @@ namespace Axiom.Graphics
 		///    Store old viewport material scheme
 		///</summary>
 		protected string oldMaterialScheme;
-
+        protected string originalSceneMaterial;
 		protected bool oldShowShadows;
 
 		/// <summary>
@@ -292,117 +293,161 @@ namespace Axiom.Graphics
 			outputOperation = null;
 			oldClearEveryFrameBuffers = viewport.ClearBuffers;
 			renderSystemOperations = new List<CompositeRenderSystemOperation>();
+
+            CreateOriginalScene();
 			listener = new RQListener();
-			Debug.Assert( viewport != null );
+          Debug.Assert( viewport != null );
+
+          viewport.Target.BeforeUpdate += this.BeforeRenderTargetUpdate;
+          viewport.Target.AfterUpdate += this.AfterRenderTargetUpdate;
+          viewport.Target.BeforeViewportUpdate += this.BeforeViewportUpdate;
+          viewport.Target.AfterViewportUpdate += this.AfterViewportUpdate;
+
+          
 		}
 
 		#endregion Constructor
 
 		#region Methods
+        /// <summary>
+        /// Create "default compositor"
+        /// </summary>
+        protected void CreateOriginalScene()
+        {
+
+            originalSceneMaterial = viewport.MaterialScheme;
+            string compName = "Axiom/Scene/" + originalSceneMaterial;
+            Compositor scene = (Compositor)CompositorManager.Instance.GetByName(compName);
+            if (scene == null)
+            {
+                scene = (Compositor)CompositorManager.Instance.Create(compName, ResourceGroupManager.InternalResourceGroupName);
+                CompositionTechnique t = scene.CreateTechnique();
+                t.SchemeName = string.Empty;
+                CompositionTargetPass tp = t.OutputTarget;
+                tp.VisibilityMask = 0xFFFFFFFF;
+
+                {
+                    CompositionPass pass = tp.CreatePass();
+                    pass.Type = CompositorPassType.Clear;
+                }
+                {
+                    CompositionPass pass = tp.CreatePass();
+                    pass.Type = CompositorPassType.RenderScene;
+                    //Render everything, including skies
+                    pass.FirstRenderQueue = RenderQueueGroupID.Background;
+                    pass.LastRenderQueue = RenderQueueGroupID.SkiesLate;
+                }
+
+                scene = (Compositor)CompositorManager.Instance.Load(compName, ResourceGroupManager.InternalResourceGroupName);
+            }
+
+
+            originalScene = new CompositorInstance(scene.GetSupportedTechniqueByScheme(), this);
+        }
+
+        /// <summary>
+        /// Destroy default compositor
+        /// </summary>
+        protected void DestroyOriginalScene()
+        {
+            if (originalScene != null)
+            {
+                originalScene.Dispose();
+                originalScene = null;
+            }
+        }
 
 		///<summary>
 		///    destroy internal resources
 		///</summary>
-		protected void DestroyResources()
-		{
-			ClearCompiledState();
+        protected void DestroyResources()
+        {
+            ClearCompiledState();
 
-			if ( viewport != null )
-			{
-				RemoveAllCompositors();
+            if (viewport != null)
+            {
 
-				if ( originalScene != null )
-				{
-					viewport.Target.BeforeUpdate -= BeforeRenderTargetUpdate;
-					viewport.Target.AfterUpdate -= AfterRenderTargetUpdate;
-					viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
-					viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
-					// Destroy "original scene" compositor instance
-					originalScene = null;
-				}
-				viewport = null;
-			}
-		}
+                //Remove listeners
+                viewport.Target.BeforeUpdate -= BeforeRenderTargetUpdate;
+                viewport.Target.AfterUpdate -= AfterRenderTargetUpdate;
+                viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
+                viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
 
-		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
-		///</summary>
-		///<param name="filter">Filter to apply</param>
-		public CompositorInstance AddCompositor( Compositor filter )
-		{
-			return AddCompositor( filter, lastCompositor, bestCompositor, string.Empty );
-		}
+                RemoveAllCompositors();
+                // Destroy "original scene" compositor instance
+                DestroyOriginalScene();
 
-		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
-		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-		public CompositorInstance AddCompositor( Compositor filter, int addPosition )
-		{
-			return AddCompositor( filter, addPosition, bestCompositor, string.Empty );
-		}
+                viewport = null;
+            }
+        }
 
-		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
-		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
-		///                        available (first technique supported)
-		///</param>
-		CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique )
-		{
-			return AddCompositor( filter, addPosition, technique, string.Empty );
-		}
+        ///<summary>
+        ///    Apply a compositor. Initially, the filter is enabled.
+        ///</summary>
+        ///<param name="filter">Filter to apply</param>
+        public CompositorInstance AddCompositor(Compositor filter)
+        {
+            return AddCompositor(filter, lastCompositor, bestCompositor, string.Empty);
+        }
 
-	    ///<summary>
-	    ///    Apply a compositor. Initially, the filter is enabled.
-	    ///</summary>
-	    ///<param name="filter">Filter to apply</param>
-	    ///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-	    ///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
-	    ///                        available (first technique supported)
-	    ///</param>
-	    ///<param name="scheme"></param>
-	    CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique, string scheme )
-		{
-			// Init on demand
-			if ( originalScene == null )
-			{
-				viewport.Target.BeforeUpdate += BeforeRenderTargetUpdate;
-				viewport.Target.AfterUpdate += AfterRenderTargetUpdate;
-				viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
-				viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
-				// Create base "original scene" compositor
-				var baseCompositor = (Compositor)CompositorManager.Instance.Load( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
-				originalScene = new CompositorInstance( baseCompositor.GetSupportedTechniqueByScheme(), this );
-			}
+        ///<summary>
+        ///    Apply a compositor. Initially, the filter is enabled.
+        ///</summary>
+        ///<param name="filter">Filter to apply</param>
+        ///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+        public CompositorInstance AddCompositor(Compositor filter, int addPosition)
+        {
+            return AddCompositor(filter, addPosition, bestCompositor, string.Empty);
+        }
 
-			filter.Touch();
-			var tech = filter.GetSupportedTechniqueByScheme( scheme );
-			if ( tech == null )
-			{
-				// Warn user
-				LogManager.Instance.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
-				return null;
-			}
-			var t = new CompositorInstance( tech, this );
+        ///<summary>
+        ///    Apply a compositor. Initially, the filter is enabled.
+        ///</summary>
+        ///<param name="filter">Filter to apply</param>
+        ///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+        ///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
+        ///                        available (first technique supported)
+        ///</param>
+        CompositorInstance AddCompositor(Compositor filter, int addPosition, int technique)
+        {
+            return AddCompositor(filter, addPosition, technique, string.Empty);
+        }
+        ///<summary>
+        ///    Apply a compositor. Initially, the filter is enabled.
+        ///</summary>
+        ///<param name="filter">Filter to apply</param>
+        ///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+        ///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
+        ///                        available (first technique supported)
+        ///</param>
+        ///<param name="scheme"></param>
+        CompositorInstance AddCompositor(Compositor filter, int addPosition, int technique, string scheme)
+        {
+            filter.Touch();
+            CompositionTechnique tech = filter.GetSupportedTechniqueByScheme(scheme);
+            if (tech == null)
+            {
+                LogManager.Instance.DefaultLog.Write(
+                    "CompositorChain: Compositor " + filter.Name + " has no supported techniques.");
 
-			if ( addPosition == lastCompositor )
-			{
-				addPosition = instances.Count;
-			}
-			else
-			{
-				Debug.Assert( addPosition <= instances.Count, "Index out of bounds" );
-			}
-			instances.Insert( addPosition, t );
+            }
+            CompositorInstance t = new CompositorInstance(tech, this);
 
-			dirty = true;
-			anyCompositorsEnabled = true;
-			return t;
-		}
+            if (addPosition == lastCompositor)
+                addPosition = instances.Count;
+            else
+                Debug.Assert(addPosition <= instances.Count, "Index out of bounds.");
+            instances.Insert(addPosition, t);
+
+            dirty = true;
+            anyCompositorsEnabled = true;
+
+            return t;
+        }
+
+		
+
+	   
 
 		///<summary>
 		/// Removes the last compositor in the chain.
@@ -418,6 +463,7 @@ namespace Axiom.Graphics
 		///<param name="position">Position in filter chain of filter to remove</param>
 		public void RemoveCompositor( int position )
 		{
+            Debug.Assert(position < instances.Count, "Index out of bounds.");
 			var instance = instances[ position ];
 			instances.RemoveAt( position );
 			instance = null;
@@ -456,6 +502,22 @@ namespace Axiom.Graphics
 		{
 			return instances[ index ];
 		}
+        /// <summary>
+        /// Get Compositor instance by name
+        /// </summary>
+        /// <returns>Returns instance with matching name, null if none found.</returns>
+        public CompositorInstance GetCompositor(string name)
+        {
+            foreach (CompositorInstance item in instances)
+            {
+                if (item.Compositor.Name == name)
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
 
 		/// <summary>
 		/// Get the previous instance in this chain to the one specified.
@@ -476,22 +538,19 @@ namespace Axiom.Graphics
 		public CompositorInstance GetPreviousInstance( CompositorInstance curr, bool activeOnly )
 		{
 			var found = false;
-			var begin = instances.Count - 1;
-			var end = 0;
-			for ( ; begin >= end; begin-- )
-			{
-				if ( found )
-				{
-					if ( instances[ begin ].IsEnabled || !activeOnly )
-					{
-						return instances[ begin ];
-					}
-				}
-				else if ( curr == instances[ begin ] )
-				{
-					found = true;
-				}
-			}
+
+            for (int i = instances.Count - 1; i >= 0; i--)
+            {
+                if (found)
+                {
+                    if (instances[i].IsEnabled || !activeOnly)
+                        return instances[i];
+                }
+                else if (instances[i] == curr)
+                {
+                    found = true;
+                }
+            }
 
 			return null;
 		}
@@ -566,6 +625,7 @@ namespace Axiom.Graphics
 				}
 			}
 			instance.IsEnabled = state;
+
 		}
 
 		///<summary>
@@ -609,7 +669,6 @@ namespace Axiom.Graphics
 				// Setup and render
 				PreTargetOperation( op, op.Target.GetViewport( 0 ), cam );
 				op.Target.Update();
-				//op.Target.WriteContentsToFile( op.Target.Name + ".png" );
 				PostTargetOperation( op, op.Target.GetViewport( 0 ), cam );
 			}
 		}
@@ -648,6 +707,7 @@ namespace Axiom.Graphics
 			{
 				pass.ClearBuffers = viewport.ClearBuffers;
 				pass.ClearColor = viewport.BackgroundColor;
+                pass.ClearDepth = viewport.ClearDepth;
 				passParent.VisibilityMask = viewport.VisibilityMask;
 				passParent.MaterialScheme = viewport.MaterialScheme;
 				passParent.ShadowsEnabled = viewport.ShowShadows;
@@ -667,22 +727,28 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void PreTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
-			var sm = cam.SceneManager;
-			// Set up render target listener
-			listener.SetOperation( op, sm, sm.TargetRenderSystem );
-			listener.Viewport = vp;
-			// Register it
-			sm.QueueStarted += listener.OnRenderQueueStarted;
-			sm.QueueEnded += listener.OnRenderQueueEnded;
-			// Set visiblity mask
-			oldVisibilityMask = sm.VisibilityMask;
-			sm.VisibilityMask = op.VisibilityMask;
-			// Set whether we find visibles
-			oldFindVisibleObjects = sm.FindVisibleObjectsBool;
-			sm.FindVisibleObjectsBool = op.FindVisibleObjects;
-			// Set LOD bias level
-			oldLodBias = cam.LodBias;
-			cam.LodBias = cam.LodBias * op.LodBias;
+            if (cam != null)
+            {
+                var sm = cam.SceneManager;
+                // Set up render target listener
+                listener.SetOperation(op, sm, sm.TargetRenderSystem);
+                listener.Viewport = vp;
+                // Register it
+                sm.QueueStarted += listener.OnRenderQueueStarted;
+                sm.QueueEnded += listener.OnRenderQueueEnded;
+                // Set visiblity mask
+                oldVisibilityMask = sm.VisibilityMask;
+                sm.VisibilityMask = op.VisibilityMask;
+                // Set whether we find visibles
+                oldFindVisibleObjects = sm.FindVisibleObjectsBool;
+                sm.FindVisibleObjectsBool = op.FindVisibleObjects;
+                // Set LOD bias level
+                oldLodBias = cam.LodBias;
+                cam.LodBias = cam.LodBias * op.LodBias;
+
+            }
+
+			
 			// Set material scheme
 			oldMaterialScheme = vp.MaterialScheme;
 			vp.MaterialScheme = op.MaterialScheme;
@@ -700,14 +766,18 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void PostTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
-			var sm = cam.SceneManager;
-			// Unregister our listener
-			sm.QueueStarted -= listener.OnRenderQueueStarted;
-			sm.QueueEnded -= listener.OnRenderQueueEnded;
-			// Restore default scene and camera settings
-			sm.VisibilityMask = oldVisibilityMask;
-			sm.FindVisibleObjectsBool = oldFindVisibleObjects;
-			cam.LodBias = oldLodBias;
+            if (cam != null)
+            {
+                var sm = cam.SceneManager;
+                // Unregister our listener
+                sm.QueueStarted -= listener.OnRenderQueueStarted;
+                sm.QueueEnded -= listener.OnRenderQueueEnded;
+                // Restore default scene and camera settings
+                sm.VisibilityMask = oldVisibilityMask;
+                sm.FindVisibleObjectsBool = oldFindVisibleObjects;
+                cam.LodBias = oldLodBias;
+            }
+
 			vp.MaterialScheme = oldMaterialScheme;
 			vp.ShowShadows = oldShowShadows;
 		}
@@ -728,6 +798,7 @@ namespace Axiom.Graphics
 				PostTargetOperation( outputOperation, viewport, viewport.Camera );
 			}
 		}
+       
 
 		///<summary>
 		///    @see RenderTargetListener.ViewportRemoved
@@ -748,10 +819,16 @@ namespace Axiom.Graphics
 		///</summary>
 		protected void Compile()
 		{
-			LogManager.Instance.Write( "[CORE] Compiling CompositorChain." );
-			ClearCompiledState();
+            //remove original scen if it has the wrong material scheme
+            if (originalSceneMaterial != viewport.MaterialScheme)
+            {
+                DestroyOriginalScene();
+                CreateOriginalScene();
+            }
 
-			var compositorsEnabled = false;
+            ClearCompiledState();
+
+            bool compositorsEnabled = false;
 
 			// force default scheme so materials for compositor quads will determined correctly
 			var matMgr = MaterialManager.Instance;
@@ -764,6 +841,8 @@ namespace Axiom.Graphics
 			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
 			pass.ClearBuffers = viewport.ClearBuffers;
 			pass.ClearColor = viewport.BackgroundColor;
+            pass.ClearDepth = viewport.ClearDepth;
+
 			foreach ( var instance in instances )
 			{
 				if ( instance.IsEnabled )
@@ -809,7 +888,18 @@ namespace Axiom.Graphics
 			compiledState.Clear();
 			outputOperation = new CompositeTargetOperation( null );
 		}
-
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!this.IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    return;
+                    DestroyResources();
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
 		#endregion Methods
 	}
 }
