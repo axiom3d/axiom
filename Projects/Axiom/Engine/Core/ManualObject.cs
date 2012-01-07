@@ -241,13 +241,8 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var current in shadowRenderables )
-					{
-						if ( !current.IsDisposed )
-							current.Dispose();
-					}
-					shadowRenderables.Clear();
-					shadowRenderables = null;
+					
+                    Clear();
 				}
 			}
 
@@ -517,12 +512,21 @@ namespace Axiom.Core
 		public virtual void Clear()
 		{
 			this.ResetTempAreas();
+            foreach (var item in sectionList)
+            {
+                item.Dispose();
+            }
 			this.sectionList.Clear();
 			this.radius = 0;
 			this.AABB = AxisAlignedBox.Null;
 			this.edgeList = null;
 			this.anyIndexed = false;
+            foreach (var item in shadowRenderables)
+            {
+                item.Dispose();
+            }
 			this.shadowRenderables.Clear();
+            this.shadowRenderables = null;
 		}
 
 		///<summary>
