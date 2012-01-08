@@ -1257,7 +1257,7 @@ namespace Axiom.SceneManagers.Bsp
 						float angle = faceGrp[ i ].plane.Normal.Dot( camDir );
 
 						if ( ( ( dist < 0 && angle > 0 ) || ( dist > 0 && angle < 0 ) ) &&
-							Utility.Abs( angle ) >= Utility.Cos( shadowCam.FieldOfView * 0.5f ) )
+							Utility.Abs( angle ) >= Utility.Cos( shadowCam.FieldOfView * 0.5 ) )
 						{
 							// face is in shadow's frustum
 

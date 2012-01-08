@@ -2729,6 +2729,19 @@ namespace Axiom.Core
                             pass.Shininess,
                             pass.VertexColorTracking );
                     }
+                    // #if NOT_IN_OGRE
+                    else
+                    {
+                        // even with lighting off, we need ambient set to white
+                        this.targetRenderSystem.SetSurfaceParams(
+                            ColorEx.White,
+                            ColorEx.Black,
+                            ColorEx.Black,
+                            ColorEx.Black,
+                            0,
+                            TrackVertexColor.None );
+                    }
+                    // #endif
 
                     // Dynamic lighting enabled?
                     this.targetRenderSystem.LightingEnabled = pass.LightingEnabled;
@@ -4945,15 +4958,15 @@ namespace Axiom.Core
 			this.targetRenderSystem.InvertVertexWinding = camera.IsReflected;
 
 			// Tell params about viewport
-			this.autoParamDataSource.Viewport = viewport;
+			this.autoParamDataSource.CurrentViewport = viewport;
 			// Set the viewport
 			this.SetViewport( viewport );
 
 			// set the current camera for use in the auto GPU program params
-			this.autoParamDataSource.Camera = camera;
+            this.autoParamDataSource.SetCurrentCamera( camera, cameraRelativeRendering );
 
 			// Set autoparams for finite dir light extrusion
-			this.autoParamDataSource.SetShadowDirLightExtrusionDistance( this.shadowDirLightExtrudeDist );
+            this.autoParamDataSource.ShadowDirLightExtrusionDistance = this.shadowDirLightExtrudeDist;
 
 			// sets the current ambient light color for use in auto GPU program params
 			this.autoParamDataSource.AmbientLight = this.ambientColor;
@@ -4961,7 +4974,7 @@ namespace Axiom.Core
 			this.targetRenderSystem.AmbientLight = this.ambientColor;
 
 			// Tell params about render target
-			this.autoParamDataSource.RenderTarget = viewport.Target;
+			this.autoParamDataSource.CurrentRenderTarget = viewport.Target;
 
 			// set fog params
 			var fogScale = 1f;
@@ -5572,7 +5585,7 @@ namespace Axiom.Core
 				if ( pass.IsProgrammable )
 				{
 					// Tell auto params object about the renderable change
-					this.autoParamDataSource.Renderable = renderable;
+					this.autoParamDataSource.CurrentRenderable = renderable;
 					//pass.UpdateAutoParamsNoLights( this.autoParamDataSource );
 
                     if ( pass.HasVertexProgram )
@@ -6047,7 +6060,7 @@ namespace Axiom.Core
                     textureUnit.SetTextureAddressingMode( TextureAddressing.Border );
 					textureUnit.TextureBorderColor = ColorEx.White;
 
-					this.autoParamDataSource.TextureProjector = cam;
+                    this.autoParamDataSource.SetTextureProjector( cam );
 
 					// if this light is a spotlight, we need to add the spot fader layer
 					// BUT not if using a custom projection matrix, since then it will be
@@ -6159,7 +6172,7 @@ namespace Axiom.Core
 							targetPass.GetTextureUnitState( 0 ).SetTextureName( shadowTex.Name );
 							// Hook up projection frustum
 							targetPass.GetTextureUnitState( 0 ).SetProjectiveTexturing( true, camera );
-							this.autoParamDataSource.TextureProjector = camera;
+                            this.autoParamDataSource.SetTextureProjector( camera );
 							// Remove any spot fader layer
 							if ( targetPass.TextureUnitStatesCount > 1 &&
 								 targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )

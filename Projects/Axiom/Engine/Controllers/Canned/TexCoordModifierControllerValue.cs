@@ -33,9 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -46,7 +44,7 @@ namespace Axiom.Controllers.Canned
 	/// <summary>
 	/// Summary description for TexCoordModifierControllerValue.
 	/// </summary>
-	public class TexCoordModifierControllerValue : IControllerValue<float>
+	public class TexCoordModifierControllerValue : IControllerValue<Real>
 	{
 		#region Member variables
 
@@ -88,7 +86,7 @@ namespace Axiom.Controllers.Canned
 
 		#region IControllerValue Members
 
-		public float Value
+		public Real Value
 		{
 			get
 			{

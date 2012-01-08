@@ -33,9 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Controllers;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -57,7 +55,7 @@ namespace Axiom.Controllers.Canned
 	///     supported, therefore do not use this controller value as a source,
 	///     only as a target.
 	/// </remarks>
-	public class FloatGpuParamControllerValue : IControllerValue<float>
+	public class FloatGpuParamControllerValue : IControllerValue<Real>
 	{
 		#region Fields
 
@@ -96,7 +94,7 @@ namespace Axiom.Controllers.Canned
 		/// <summary>
 		/// Gets or Sets the value of the GPU parameter
 		/// </summary>
-		public float Value
+		public Real Value
 		{
 			get
 			{

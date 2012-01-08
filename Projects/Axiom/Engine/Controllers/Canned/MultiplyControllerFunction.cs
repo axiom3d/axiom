@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -44,21 +44,21 @@ namespace Axiom.Controllers.Canned
 	/// </summary>
 	public class MultipyControllerFunction : BaseControllerFunction
 	{
-		private float rate = 10.0f;
+		private Real rate = 10.0f;
 
-		public MultipyControllerFunction( float rate )
+		public MultipyControllerFunction( Real rate )
 			: base( false )
 		{
 			this.rate = rate;
 		}
 
-		public MultipyControllerFunction( float rate, bool useDelta )
+		public MultipyControllerFunction( Real rate, bool useDelta )
 			: base( useDelta )
 		{
 			this.rate = rate;
 		}
 
-		public override float Execute( float sourceValue )
+		public override Real Execute( Real sourceValue )
 		{
 			return AdjustInput( sourceValue * rate );
 		}

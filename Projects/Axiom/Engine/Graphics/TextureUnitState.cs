@@ -392,7 +392,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Duration (in seconds) of the animated texture (if any).
 		/// </summary>
-		private float animDuration;
+		private Real animDuration;
 
 		/// <summary>
 		///    Index of the current frame of animation (always 0 for single texture stages).
@@ -514,6 +514,62 @@ namespace Axiom.Graphics
 			}
 		}
 
+        /// <summary>
+        /// Get/ Set the texture pointer for the current frame.
+        /// </summary>
+        internal Texture Texture
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return this.GetTexture( currentFrame );
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                this.SetTexture( value, currentFrame );
+            }
+        }
+
+        /// <summary>
+        /// Get the texture pointer for a given frame.
+        /// </summary>
+        internal Texture GetTexture( int frame )
+        {
+            throw new System.NotImplementedException();
+            //if (mContentType == CONTENT_NAMED)
+            //{
+            //    if (frame < mFrames.size() && !mTextureLoadFailed)
+            //    {
+            //        ensureLoaded(frame);
+            //        return mFramePtrs[frame];
+            //    }
+            //    else
+            //    {
+            //        // Silent fail with empty texture for internal method
+            //        static TexturePtr nullTexPtr;
+            //        return nullTexPtr;
+            //    }
+            //}
+            //else
+            //{
+            //    // Manually bound texture, no name or loading
+            //    assert(frame < mFramePtrs.size());
+            //    return mFramePtrs[frame];
+            //}
+        }
+
+        /// <summary>
+        /// Set the texture pointer for a given frame (internal use only!).
+        /// </summary>
+        internal void SetTexture(Texture texptr, int frame)
+        {
+            throw new System.NotImplementedException();
+            //assert( frame < mFramePtrs.size() );
+            //mFramePtrs[ frame ] = texptr;
+        }
+
 		private float transV;
 
         /// <summary>
@@ -630,6 +686,7 @@ namespace Axiom.Graphics
 		/// <seealso cref="Controller&lt;T&gt;"/><seealso cref="ControllerManager"/>
 		public Matrix4 TextureMatrix
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
 				// update the matrix before returning it if necessary
@@ -639,6 +696,8 @@ namespace Axiom.Graphics
 				}
 				return texMatrix;
 			}
+
+            [OgreVersion( 1, 7, 2 )]
 			set
 			{
 				texMatrix = value;
@@ -782,7 +841,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Reference to an animation controller for this texture unit.
 		/// </summary>
-		private Controller<float> animController;
+		private Controller<Real> animController;
 
 		/// <summary>
 		///     Reference to the environment mapping type for this texunit.
@@ -2520,13 +2579,13 @@ namespace Axiom.Graphics
 	{
 		public TextureEffectType type;
 		public System.Enum subtype;
-		public float arg1, arg2;
+		public Real arg1, arg2;
 		public WaveformType waveType;
 		public float baseVal;
 		public float frequency;
 		public float phase;
 		public float amplitude;
-		public Controller<float> controller;
+		public Controller<Real> controller;
 		public Frustum frustum;
 
 		/// <summary>

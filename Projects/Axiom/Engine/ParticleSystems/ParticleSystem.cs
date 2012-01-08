@@ -167,7 +167,7 @@ namespace Axiom.ParticleSystems
 		/// Last frame in which known to be visible
 		protected ulong lastVisibleFrame = 0;
 		/// Controller for time update
-		protected Controller<float> timeController = null;
+		protected Controller<Real> timeController = null;
 
 		// various collections for pooling billboards
 		protected List<Particle> freeParticles = new List<Particle>();
@@ -827,7 +827,7 @@ namespace Axiom.ParticleSystems
 
 				// Create time controller when attached
 				var mgr = ControllerManager.Instance;
-				IControllerValue<float> updValue = new ParticleSystemUpdateValue( this );
+				IControllerValue<Real> updValue = new ParticleSystemUpdateValue( this );
 				timeController = ControllerManager.Instance.CreateFrameTimePassthroughController( updValue );
 			}
 			else if ( parent == null && timeController != null )
@@ -1678,7 +1678,7 @@ namespace Axiom.ParticleSystems
 		}
 	}
 
-	public class ParticleSystemUpdateValue : IControllerValue<float>
+	public class ParticleSystemUpdateValue : IControllerValue<Real>
 	{
 		protected ParticleSystem target;
 
@@ -1687,7 +1687,7 @@ namespace Axiom.ParticleSystems
 			this.target = target;
 		}
 
-		public float Value
+		public Real Value
 		{
 			get
 			{

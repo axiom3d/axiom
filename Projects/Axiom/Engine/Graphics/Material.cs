@@ -93,7 +93,7 @@ namespace Axiom.Graphics
 	///    Material returned from this method will apply to any materials created
 	///    from this point onward.
 	/// </remarks>
-	public class Material : Resource, IComparable
+	public class Material : Resource, IComparable, ICopyable<Material>
 	{
 		#region Fields and Properties
 
@@ -255,15 +255,14 @@ namespace Axiom.Graphics
 		/// <ogre name="isTransparent" />
 		public bool IsTransparent
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
 				// check each technique to see if it is transparent
 				for ( var i = 0; i < this.techniques.Count; i++ )
 				{
-					if ( ( (Technique)this.techniques[ i ] ).IsTransparent )
-					{
+					if ( this.techniques[ i ].IsTransparent )
 						return true;
-					}
 				}
 
 				// if we got this far, there are no transparent techniques
@@ -841,9 +840,10 @@ namespace Axiom.Graphics
 		///    more than one Pass in order to emulate the Pass. If you set this to false and
 		///    this situation arises, an Exception will be thrown.
 		/// </param>
+        [OgreVersion( 1, 7, 2 )]
 		public void Compile( bool autoManageTextureUnits )
 		{
-			// clear current list of supported techniques
+            // Compile each technique, then add it to the list of supported techniques
 			this.SupportedTechniques.Clear();
 			this.ClearBestTechniqueList();
 			var unSupportedReasons = new StringBuilder();
@@ -884,6 +884,10 @@ namespace Axiom.Graphics
 			}
 		}
 
+        /// <summary>
+        /// Clear the best technique list.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		private void ClearBestTechniqueList()
 		{
 			foreach ( var pair in this.bestTechniquesByScheme )
@@ -963,6 +967,7 @@ namespace Axiom.Graphics
 		///    Tells the material that it needs recompilation.
 		/// </summary>
 		/// <ogre name="_notifyNeedsRecompile" />
+        [OgreVersion( 1, 7, 2 )]
 		internal void NotifyNeedsRecompile()
 		{
 			this._compilationRequired = true;
@@ -1394,19 +1399,12 @@ namespace Axiom.Graphics
 		///		Once a material has been loaded, all changes made to it are immediately loaded too
 		/// </remarks>
 		/// <ogre name="loadImpl" />
+        [OgreVersion( 1, 7, 2 )]
 		protected override void load()
 		{
-			// compile if needed
-			if ( this.compilationRequired )
-			{
-				this.Compile();
-			}
-
 			// load all the supported techniques
 			for ( var i = 0; i < this.SupportedTechniques.Count; i++ )
-			{
-				( (Technique)this.SupportedTechniques[ i ] ).Load();
-			}
+				this.SupportedTechniques[ i ].Load();
 		}
 
 		/// <summary>
@@ -1414,14 +1412,12 @@ namespace Axiom.Graphics
 		///		<see cref="Resource"/>
 		/// </summary>
 		/// <ogre name="unloadImpl" />
+        [OgreVersion( 1, 7, 2 )]
 		protected override void unload()
 		{
 			// unload unsupported techniques
 			for ( var i = 0; i < this.SupportedTechniques.Count; i++ )
-			{
-				( (Technique)this.SupportedTechniques[ i ] ).Unload();
-			}
-
+				this.SupportedTechniques[ i ].Unload();
 		}
 
 		/// <summary>

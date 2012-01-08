@@ -17,15 +17,15 @@ using Axiom.Graphics;
 
 namespace Axiom.Demos
 {
-	public class LightGrassWibbler : Controllers.IControllerValue<float>
+	public class LightGrassWibbler : Controllers.IControllerValue<Real>
 	{
 		protected Light light;
 		protected Billboard billboard;
 		protected ColorEx colorRange = new ColorEx();
 		protected ColorEx halfColor = new ColorEx();
-		protected float minSize;
-		protected float sizeRange;
-		protected float intensity;
+		protected Real minSize;
+		protected Real sizeRange;
+		protected Real intensity;
 
 		public LightGrassWibbler( Light light, Billboard billboard, ColorEx minColor, ColorEx maxColor, int minSize, int maxSize )
 		{
@@ -44,9 +44,9 @@ namespace Axiom.Demos
 			this.sizeRange = maxSize - minSize;
 		}
 
-		#region IControllerValue<float> Members
+		#region IControllerValue<Real> Members
 
-		public float Value
+		public Real Value
 		{
 			get
 			{
@@ -65,12 +65,12 @@ namespace Axiom.Demos
 				this.light.Diffuse = newColor;
 				this.billboard.Color = newColor;
 
-				float newSize = minSize + ( intensity * sizeRange );
+				Real newSize = minSize + ( intensity * sizeRange );
 				this.billboard.SetDimensions( newSize, newSize );
 			}
 		}
 
-		#endregion IControllerValue<float> Members
+		#endregion IControllerValue<Real> Members
 	}
 
     [Export(typeof(TechDemo))]
@@ -81,8 +81,8 @@ namespace Axiom.Demos
 		protected const string GRASS_MESH_NAME = "grassblades";
 		protected string GRASS_MATERIAL = "Examples/GrassBlades";
 		protected const int OFFSET_PARAM = 999;
-		protected float extraOffset = 0.1f;
-		protected float randomRange = 60;
+		protected Real extraOffset = 0.1f;
+		protected Real randomRange = 60;
 		protected bool backward = false;
 
 		protected Light Light;

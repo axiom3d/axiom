@@ -53,7 +53,7 @@ namespace Axiom.Graphics
 	{
 		#region Nested type: TimeControllerValue
 
-		public class TimeControllerValue : IControllerValue<float>
+		public class TimeControllerValue : IControllerValue<Real>
 		{
 			protected RibbonTrail trail;
 
@@ -62,9 +62,9 @@ namespace Axiom.Graphics
 				this.trail = trail;
 			}
 
-			#region IControllerValue<float> Members
+			#region IControllerValue<Real> Members
 
-			public float Value
+			public Real Value
 			{
 				get
 				{
@@ -85,16 +85,16 @@ namespace Axiom.Graphics
 
 		private List<ColorEx> deltaColor = new List<ColorEx>();
 
-		private List<float> deltaWidth = new List<float>();
-		private float elementLength;
+		private List<Real> deltaWidth = new List<Real>();
+		private Real elementLength;
 
-		private Controller<float> fadeController;
+		private Controller<Real> fadeController;
 		private List<ColorEx> initialColor = new List<ColorEx>();
-		private List<float> initialWidth = new List<float>();
+		private List<Real> initialWidth = new List<Real>();
 		private List<Node> nodeList = new List<Node>();
-		private float squaredElementLength;
-		private IControllerValue<float> timeControllerValue;
-		private float trailLength;
+		private Real squaredElementLength;
+		private IControllerValue<Real> timeControllerValue;
+		private Real trailLength;
 
 		#endregion
 
@@ -142,7 +142,7 @@ namespace Axiom.Graphics
 
 		#region Properties
 
-		public virtual float TrailLength
+		public virtual Real TrailLength
 		{
 			get
 			{
@@ -239,7 +239,7 @@ namespace Axiom.Graphics
 			return this.deltaColor[ chainIndex ];
 		}
 
-		public virtual void SetInitialWidth( int chainIndex, float width )
+		public virtual void SetInitialWidth( int chainIndex, Real width )
 		{
 			if ( chainIndex > this.chainCount )
 			{
@@ -248,7 +248,7 @@ namespace Axiom.Graphics
 			this.initialWidth[ chainIndex ] = width;
 		}
 
-		public virtual float GetInitialWidth( int chainIndex )
+		public virtual Real GetInitialWidth( int chainIndex )
 		{
 			if ( chainIndex > this.chainCount )
 			{
@@ -257,7 +257,7 @@ namespace Axiom.Graphics
 			return this.initialWidth[ chainIndex ];
 		}
 
-		public virtual void SetWidthChange( int chainIndex, float valuePerSecond )
+		public virtual void SetWidthChange( int chainIndex, Real valuePerSecond )
 		{
 			if ( chainIndex > this.chainCount )
 			{
@@ -267,7 +267,7 @@ namespace Axiom.Graphics
 			this.ManageController();
 		}
 
-		public virtual float GetWidthChange( int chainIndex )
+		public virtual Real GetWidthChange( int chainIndex )
 		{
 			if ( chainIndex > this.chainCount )
 			{
@@ -276,7 +276,7 @@ namespace Axiom.Graphics
 			return this.deltaWidth[ chainIndex ];
 		}
 
-		public virtual void TimeUpdate( float time )
+		public virtual void TimeUpdate( Real time )
 		{
 			// Apply all segment effects
 			for ( var s = 0; s < this.chainSegmentList.Count; ++s )

@@ -33,9 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -44,12 +44,12 @@ namespace Axiom.Controllers
 	/// <summary>
 	/// Summary description for FrameTimeControllerValue.
 	/// </summary>
-	public sealed class FrameTimeControllerValue : IControllerValue<float>
+	public sealed class FrameTimeControllerValue : IControllerValue<Real>
 	{
 		/// <summary>
 		///		Stores the value of the time elapsed since the last frame.
 		/// </summary>
-		private float frameTime;
+		private Real frameTime;
 
 		private float frameDelay;
 		/// <summary>
@@ -57,7 +57,7 @@ namespace Axiom.Controllers
 		/// </summary>
 		private float timeFactor;
 
-		private float elapsedTime;
+		private Real elapsedTime;
 
 		public FrameTimeControllerValue()
 		{
@@ -77,7 +77,7 @@ namespace Axiom.Controllers
 		/// <summary>
 		///		Gets a time scaled value to use for controller functions.
 		/// </summary>
-		float IControllerValue<float>.Value
+		Real IControllerValue<Real>.Value
 		{
 			get
 			{
@@ -127,7 +127,7 @@ namespace Axiom.Controllers
 			}
 		}
 
-		public float ElapsedTime
+		public Real ElapsedTime
 		{
 			get
 			{

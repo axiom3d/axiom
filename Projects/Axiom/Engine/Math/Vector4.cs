@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
@@ -168,6 +167,17 @@ namespace Axiom.Math
 			return result;
 		}
 
+        [OgreVersion( 1, 7, 2 )]
+        public static Vector4 operator /( Real fScalar, Vector4 rkVector )
+        {
+            return new Vector4(
+                fScalar / rkVector.x,
+                fScalar / rkVector.y,
+                fScalar / rkVector.z,
+                fScalar / rkVector.w
+                );
+        }
+
 		/// <summary>
 		///		User to compare two Vector4 instances for equality.
 		/// </summary>
@@ -226,6 +236,18 @@ namespace Axiom.Math
 				left.z != right.z ||
 				left.w != right.w );
 		}
+
+        [OgreVersion( 1, 7, 2, "instead of the = operator")]
+        public static implicit operator Vector4( Vector3 rhs )
+        {
+            return new Vector4( rhs.x, rhs.y, rhs.z, 1 );
+        }
+
+        [OgreVersion( 1, 7, 2, "instead of the = operator" )]
+        public static implicit operator Vector4( Real fScalar )
+        {
+            return new Vector4( fScalar, fScalar, fScalar, fScalar );
+        }
 
 		/// <summary>
 		///		Used to access a Vector by index 0 = this.x, 1 = this.y, 2 = this.z, 3 = this.w.  

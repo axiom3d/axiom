@@ -172,7 +172,7 @@ namespace Axiom.SceneManagers.Bsp
 					{
 						angle = faceGroup.plane.Normal.Dot( this.DerivedDirection );
 						if ( ( ( lightDist < 0 && angle > 0 ) || ( lightDist > 0 && angle < 0 ) ) &&
-							Utility.Abs( angle ) >= Utility.Cos( this.spotOuter * 0.5f ) )
+							Utility.Abs( angle ) >= Utility.Cos( this.spotOuter * 0.5 ) )
 							affects = true;
 					}
 					break;

@@ -33,9 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -46,7 +44,7 @@ namespace Axiom.Controllers.Canned
 	/// <summary>
 	/// Summary description for NodeRotationControllerValue.
 	/// </summary>
-	public class NodeRotationControllerValue : IControllerValue<float>
+	public class NodeRotationControllerValue : IControllerValue<Real>
 	{
         // commented out (read access only private)
 		//private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
@@ -61,7 +59,7 @@ namespace Axiom.Controllers.Canned
 
 		#region IControllerValue Members
 
-		public float Value
+		public Real Value
 		{
 			get
 			{
