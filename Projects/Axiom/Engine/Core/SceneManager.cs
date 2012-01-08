@@ -4982,7 +4982,7 @@ namespace Axiom.Core
 			{
 				fogScale = 0f;
 			}
-			this.autoParamDataSource.FogParams = new Vector4( this.fogStart, this.fogEnd, fogScale, 0 );
+            this.autoParamDataSource.SetFog( fogMode, fogColor, fogScale, this.fogStart, this.fogEnd );
 
 			// set the time in the auto param data source
 			//autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
