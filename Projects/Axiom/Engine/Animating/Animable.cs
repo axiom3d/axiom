@@ -222,7 +222,7 @@ namespace Axiom.Animating
 			valueObject = val;
 		}
 		/// Internal method to set a value as base
-		public virtual void SetAsBaseValue( float val )
+		public virtual void SetAsBaseValue( Real val )
 		{
 			valueObject = val;
 		}
@@ -314,7 +314,7 @@ namespace Axiom.Animating
 			throw ( new Exception( "Animable SetValue to int not implemented" ) );
 		}
 		/// Set value 
-		public virtual void SetValue( float val )
+		public virtual void SetValue( Real val )
 		{
 			throw ( new Exception( "Animable SetValue to float not implemented" ) );
 		}
@@ -378,7 +378,7 @@ namespace Axiom.Animating
 			throw ( new Exception( "Animable ApplyDeltaValue to int not implemented" ) );
 		}
 		/// Apply the specified delta 
-		public virtual void ApplyDeltaValue( float val )
+		public virtual void ApplyDeltaValue( Real val )
 		{
 			throw ( new Exception( "Animable ApplyDeltaValue to float not implemented" ) );
 		}

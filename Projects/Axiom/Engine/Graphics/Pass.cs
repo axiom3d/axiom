@@ -341,7 +341,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Shininess of the object's surface in fixed function passes.
 		/// </summary>
-		private float _shininess;
+		private Real _shininess;
 		/// <summary>
 		///    Sets the shininess of the pass, affecting the size of specular highlights.
 		/// </summary>
@@ -349,7 +349,7 @@ namespace Axiom.Graphics
 		///    This setting has no effect if dynamic lighting is disabled (see Pass::setLightingEnabled),
 		///    or if this is a programmable pass.
 		/// </remarks>
-		public float Shininess
+		public Real Shininess
 		{
 			get
 			{

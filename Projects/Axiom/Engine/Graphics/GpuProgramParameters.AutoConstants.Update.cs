@@ -88,7 +88,7 @@ namespace Axiom.Graphics
 
                     case AutoConstantType.RenderTargetFlipping:
                         WriteRawConstant( entry.PhysicalIndex,
-                                          source.RenderTarget.RequiresTextureFlipping ? -1.0f : 1.0f );
+                                          source.CurrentRenderTarget.RequiresTextureFlipping ? -1.0f : 1.0f );
                         break;
 
                     case AutoConstantType.VertexWinding:
@@ -456,11 +456,11 @@ namespace Axiom.Graphics
                         //    WriteRawConstant( entry.PhysicalIndex, source.LightCount );
                         //    break;
                     case AutoConstantType.LightDiffuseColor:
-                        WriteRawConstant( entry.PhysicalIndex, source.GetLightDiffuseColor( entry.Data ),
+                        WriteRawConstant( entry.PhysicalIndex, source.GetLightDiffuse( entry.Data ),
                                           entry.ElementCount );
                         break;
                     case AutoConstantType.LightSpecularColor:
-                        WriteRawConstant( entry.PhysicalIndex, source.GetLightSpecularColor( entry.Data ),
+                        WriteRawConstant( entry.PhysicalIndex, source.GetLightSpecular( entry.Data ),
                                           entry.ElementCount );
                         break;
                     case AutoConstantType.LightPosition:

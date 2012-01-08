@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -50,7 +50,7 @@ namespace Axiom.Controllers
 	///		<p/>
 	///		This base class implements IControllerFunction, but leaves the implementation up to the subclasses.
 	/// </remarks>
-	public abstract class BaseControllerFunction : IControllerFunction<float>
+	public abstract class BaseControllerFunction : IControllerFunction<Real>
 	{
 		#region Member variables
 
@@ -62,7 +62,7 @@ namespace Axiom.Controllers
 		/// <summary>
 		///		Value to be added during evaluation.
 		/// </summary>
-		protected float deltaCount;
+		protected Real deltaCount;
 
 		#endregion
 
@@ -83,7 +83,7 @@ namespace Axiom.Controllers
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		protected virtual float AdjustInput( float input )
+		protected virtual Real AdjustInput( Real input )
 		{
 			if ( useDeltaInput )
 			{
@@ -104,7 +104,7 @@ namespace Axiom.Controllers
 
 		#region IControllerFunction methods
 
-		public abstract float Execute( float sourceValue );
+		public abstract Real Execute( Real sourceValue );
 
 		#endregion
 	}

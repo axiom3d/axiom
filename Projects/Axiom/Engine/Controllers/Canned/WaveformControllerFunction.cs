@@ -51,16 +51,16 @@ namespace Axiom.Controllers.Canned
 		#region Member variables
 
 		protected WaveformType type;
-		protected float baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
-		protected float frequency = 1.0f;
-		protected float phase; //[FXCop Optimization : Do not initialize unnecessarily]
-		protected float amplitude = 1.0f;
+		protected Real baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
+		protected Real frequency = 1.0f;
+		protected Real phase; //[FXCop Optimization : Do not initialize unnecessarily]
+		protected Real amplitude = 1.0f;
 
 		#endregion
 
 		#region Constructors
 
-		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude, bool useDelta )
+		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude, bool useDelta )
 			: base( useDelta )
 		{
 			this.type = type;
@@ -70,14 +70,14 @@ namespace Axiom.Controllers.Canned
 			this.amplitude = amplitude;
 		}
 
-		public WaveformControllerFunction( WaveformType type, float baseVal )
+		public WaveformControllerFunction( WaveformType type, Real baseVal )
 			: base( true )
 		{
 			this.type = type;
 			this.baseVal = baseVal;
 		}
 
-		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency )
+		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency )
 			: base( true )
 		{
 			this.type = type;
@@ -85,7 +85,7 @@ namespace Axiom.Controllers.Canned
 			this.frequency = frequency;
 		}
 
-		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase )
+		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase )
 			: base( true )
 		{
 			this.type = type;
@@ -94,7 +94,7 @@ namespace Axiom.Controllers.Canned
 			this.phase = phase;
 		}
 
-		public WaveformControllerFunction( WaveformType type, float baseVal, float frequency, float phase, float amplitude )
+		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude )
 			: base( true )
 		{
 			this.type = type;
@@ -114,7 +114,7 @@ namespace Axiom.Controllers.Canned
 
 		#region Methods
 
-		public override float Execute( float sourceValue )
+		public override Real Execute( Real sourceValue )
 		{
 			var input = AdjustInput( sourceValue * frequency ) % 1f;
 			var output = 0.0f;
@@ -157,7 +157,7 @@ namespace Axiom.Controllers.Canned
 			return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
 		}
 
-		protected override float AdjustInput( float input )
+		protected override Real AdjustInput( Real input )
 		{
 			var adjusted = base.AdjustInput( input );
 

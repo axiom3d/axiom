@@ -31,8 +31,8 @@ namespace Axiom.Demos
 		SceneNode lightNode;
 		ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
 		ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
-		float minFlareSize = 40;
-		float maxFlareSize = 80;
+		Real minFlareSize = 40;
+		Real maxFlareSize = 80;
 
 		string[] atheneMaterials = new string[] {
 			"Examples/Athene/NormalMapped",
@@ -309,7 +309,7 @@ namespace Axiom.Demos
 	/// <summary>
 	///		This class 'wibbles' the light and billboard.
 	/// </summary>
-	public class LightWibbler : IControllerValue<float>
+	public class LightWibbler : IControllerValue<Real>
 	{
 		#region Fields
 
@@ -317,16 +317,16 @@ namespace Axiom.Demos
 		protected Billboard billboard;
 		protected ColorEx colorRange = new ColorEx();
 		protected ColorEx minColor;
-		protected float minSize;
-		protected float sizeRange;
-		protected float intensity;
+		protected Real minSize;
+		protected Real sizeRange;
+		protected Real intensity;
 
 		#endregion Fields
 
 		#region Constructor
 
 		public LightWibbler( Light light, Billboard billboard, ColorEx minColor,
-			ColorEx maxColor, float minSize, float maxSize )
+			ColorEx maxColor, Real minSize, Real maxSize )
 		{
 
 			this.light = light;
@@ -343,7 +343,7 @@ namespace Axiom.Demos
 
 		#region IControllerValue Members
 
-		public float Value
+		public Real Value
 		{
 			get
 			{
@@ -364,7 +364,7 @@ namespace Axiom.Demos
 				billboard.Color = newColor;
 
 				// set billboard size
-				float newSize = minSize + ( intensity * sizeRange );
+				Real newSize = minSize + ( intensity * sizeRange );
 				billboard.SetDimensions( newSize, newSize );
 			}
 		}

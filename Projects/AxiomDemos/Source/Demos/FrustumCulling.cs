@@ -98,8 +98,8 @@ namespace Axiom.Demos
 
 			objectsVisible = 0;
 
-			float speed = 35 * evt.TimeSinceLastFrame;
-			float change = 15 * evt.TimeSinceLastFrame;
+			Real speed = 35 * evt.TimeSinceLastFrame;
+			Real change = 15 * evt.TimeSinceLastFrame;
 
 			if ( input.IsKeyPressed( KeyCodes.I ) )
 			{

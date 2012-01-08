@@ -143,13 +143,13 @@ namespace Axiom.Core
 		protected ColorEx specular;
 
 		/// <summary></summary>
-		protected float spotFalloff;
+		protected Real spotFalloff;
 
 		/// <summary></summary>
-		protected float spotInner;
+		protected Radian spotInner;
 
 		/// <summary></summary>
-		protected float spotOuter;
+		protected Radian spotOuter;
 
 		/// <summary>
 		///    Used for sorting.  Internal for "friend" access to SceneManager.
@@ -267,7 +267,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets the inner angle of the spotlight.
 		/// </summary>
-		public virtual float SpotlightInnerAngle
+		public virtual Radian SpotlightInnerAngle
 		{
 			get
 			{
@@ -282,7 +282,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets the outer angle of the spotlight.
 		/// </summary>
-		public virtual float SpotlightOuterAngle
+		public virtual Radian SpotlightOuterAngle
 		{
 			get
 			{
@@ -297,7 +297,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets the spotlight falloff.
 		/// </summary>
-		public virtual float SpotlightFalloff
+		public virtual Real SpotlightFalloff
 		{
 			get
 			{
@@ -472,7 +472,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public float PowerScale
+		public Real PowerScale
 		{
 			get
 			{
@@ -561,6 +561,7 @@ namespace Axiom.Core
 		///		calculations.
 		/// </remarks>
 		/// <returns>A 4D vector representation of the light.</returns>
+        [OgreVersion( 1, 7, 2 )]
         public virtual Vector4 GetAs4DVector( bool cameraRelativeIfSet )
 		{
 			Vector4 vec;
@@ -568,15 +569,15 @@ namespace Axiom.Core
 			if ( type == LightType.Directional )
 			{
 				// negate direction as 'position'
-				vec = -(Vector4)DerivedDirection;
+				vec = -DerivedDirection;
 
 				// infinite distance
-				vec.w = 0.0f;
+				vec.w = 0.0;
 			}
 			else
 			{
-                vec = (Vector4)GetDerivedPosition(cameraRelativeIfSet);
-				vec.w = 1.0f;
+                vec = GetDerivedPosition( cameraRelativeIfSet );
+				vec.w = 1.0;
 			}
 
 			return vec;
@@ -996,12 +997,12 @@ namespace Axiom.Core
 				this.SetAsBaseValue( 0.0f );
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.AttenuationConstant = val;
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( val + this.light.AttenuationConstant );
 			}
@@ -1027,12 +1028,12 @@ namespace Axiom.Core
 				this.SetAsBaseValue( 0.0f );
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.AttenuationLinear = val;
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( val + this.light.AttenuationLinear );
 			}
@@ -1058,12 +1059,12 @@ namespace Axiom.Core
 				this.SetAsBaseValue( 0.0f );
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.AttenuationQuadratic = val;
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( val + this.light.AttenuationQuadratic );
 			}
@@ -1089,12 +1090,12 @@ namespace Axiom.Core
 				this.SetAsBaseValue( 0.0f );
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.AttenuationRange = val;
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( val + this.light.AttenuationRange );
 			}
@@ -1214,12 +1215,12 @@ namespace Axiom.Core
 				this.light = light;
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.SpotlightFalloff = val;
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( this.light.SpotlightFalloff + val );
 			}
@@ -1244,12 +1245,12 @@ namespace Axiom.Core
 				this.light = light;
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
 			}
@@ -1274,12 +1275,12 @@ namespace Axiom.Core
 				this.light = light;
 			}
 
-			public override void SetValue( float val )
+			public override void SetValue( Real val )
 			{
 				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
-			public override void ApplyDeltaValue( float val )
+			public override void ApplyDeltaValue( Real val )
 			{
 				this.SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
 			}
@@ -1354,7 +1355,59 @@ namespace Axiom.Core
 		}
 
 		#endregion IComparable Members
-	}
+
+        /// <summary>
+        /// Gets the index at which this light is in the current render.
+        /// </summary>
+        /// <remarks>
+        /// Lights will be present in the in a list for every renderable,
+        /// detected and sorted appropriately, and sometimes it's useful to know 
+        /// what position in that list a given light occupies. This can vary 
+        /// from frame to frame (and object to object) so you should not use this
+        /// value unless you're sure the context is correct.
+        /// </remarks>
+        public int IndexInFrame
+        { 
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Update a custom GpuProgramParameters constant which is derived from 
+        /// information only this Light knows.
+        /// </summary>
+        /// <remarks>
+        /// This method allows a Light to map in a custom GPU program parameter
+        /// based on it's own data. This is represented by a GPU auto parameter
+        /// of ACT_LIGHT_CUSTOM, and to allow there to be more than one of these per
+        /// Light, the 'data' field on the auto parameter will identify
+        /// which parameter is being updated and on which light. The implementation 
+        /// of this method must identify the parameter being updated, and call a 'setConstant' 
+        /// method on the passed in GpuProgramParameters object.
+        /// @par
+        /// You do not need to override this method if you're using the standard
+        /// sets of data associated with the Renderable as provided by setCustomParameter
+        /// and getCustomParameter. By default, the implementation will map from the
+        /// value indexed by the 'constantEntry.data' parameter to a value previously
+        /// set by setCustomParameter. But custom Renderables are free to override
+        /// this if they want, in any case.
+        /// </remarks>
+        /// 
+        /// <param name="paramIndex">The index of the constant being updated</param>
+        /// <param name="constantEntry">The auto constant entry from the program parameters</param>
+        /// <param name="parameters">The parameters object which this method should call to 
+        /// set the updated parameters.</param>
+        internal void UpdateCustomGpuParameter( ushort paramIndex, GpuProgramParameters.AutoConstantEntry constantEntry, GpuProgramParameters parameters )
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 	#region MovableObjectFactory Implementation
 

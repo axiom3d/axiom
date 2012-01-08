@@ -33,10 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Controllers;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -45,7 +44,7 @@ namespace Axiom.Controllers.Canned
 	/// <summary>
 	///     Predefined controller value for getting/setting the frame number of a texture unit.
 	/// </summary>
-	public class TextureFrameControllerValue : IControllerValue<float>
+	public class TextureFrameControllerValue : IControllerValue<Real>
 	{
 		#region Fields
 
@@ -77,7 +76,7 @@ namespace Axiom.Controllers.Canned
 		/// <remarks>
 		///     Value is a parametric value in the range [0,1].
 		/// </remarks>
-		public float Value
+		public Real Value
 		{
 			get
 			{

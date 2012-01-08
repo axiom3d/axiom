@@ -33,12 +33,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Axiom.Core;
 using Axiom.Controllers.Canned;
+using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -86,16 +85,34 @@ namespace Axiom.Controllers
 		/// <summary>
 		///		List of references to controllers in a scene.
 		/// </summary>
-		private List<Controller<float>> controllers = new List<Controller<float>>();
+		private List<Controller<Real>> controllers = new List<Controller<Real>>();
 
 		/// <summary>
 		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
 		/// </summary>
-		private IControllerValue<float> frameTimeController = new FrameTimeControllerValue();
+		private IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
 
-		private IControllerFunction<float> passthroughFunction = new PassthroughControllerFunction();
+		private IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
 		private ulong lastFrameNumber = 0;
 
+        /// <summary>
+        /// Returns a ControllerValue which provides the time since the last frame as a control value source.
+        /// </summary>
+        /// <remarks>
+        /// A common source value to use to feed into a controller is the time since the last frame. This method
+        /// returns a pointer to a common source value which provides this information.
+        /// @par
+        /// Remember the value will only be up to date after the RenderSystem::beginFrame method is called.
+        /// </remarks>
+        /// <see cref="RenderSystem.BeginFrame"/>
+        public IControllerValue<Real> FrameTimeSource
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return frameTimeController;
+            }
+        }
 
 		#endregion
 
@@ -108,7 +125,7 @@ namespace Axiom.Controllers
 		/// <param name="destination">Controller value to use as the destination.</param>
 		/// <param name="function">Controller funcion that will use the source value to set the destination.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateController( IControllerValue<float> destination, IControllerFunction<float> function )
+		public Controller<Real> CreateController( IControllerValue<Real> destination, IControllerFunction<Real> function )
 		{
 			// call the overloaded method passing in our precreated frame time controller value as the source
 			return CreateController( frameTimeController, destination, function );
@@ -121,10 +138,10 @@ namespace Axiom.Controllers
 		/// <param name="destination">Controller value to use as the destination.</param>
 		/// <param name="function">Controller funcion that will use the source value to set the destination.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateController( IControllerValue<float> source, IControllerValue<float> destination, IControllerFunction<float> function )
+		public Controller<Real> CreateController( IControllerValue<Real> source, IControllerValue<Real> destination, IControllerFunction<Real> function )
 		{
 			// create a new controller object
-			var controller = new Controller<float>( source, destination, function );
+			var controller = new Controller<Real>( source, destination, function );
 
 			// add the new controller to our list
 			controllers.Add( controller );
@@ -132,17 +149,18 @@ namespace Axiom.Controllers
 			return controller;
 		}
 
-		public void DestroyController( Controller<float> controller )
+		public void DestroyController( Controller<Real> controller )
 		{
 			controllers.Remove( controller );
 		}
 
-		public Controller<float> CreateFrameTimePassthroughController( IControllerValue<float> dest )
+		public Controller<Real> CreateFrameTimePassthroughController( IControllerValue<Real> dest )
 		{
 			return CreateController( frameTimeController, dest, passthroughFunction );
 		}
 
-		public float GetElapsedTime()
+        [OgreVersion( 1, 7, 2 )]
+		public Real GetElapsedTime()
 		{
 			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
 		}
@@ -158,10 +176,10 @@ namespace Axiom.Controllers
 		/// <param name="texUnit">The texture unit to animate.</param>
 		/// <param name="sequenceTime">Length of the animation (in seconds).</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureAnimator( TextureUnitState texUnit, float sequenceTime )
+		public Controller<Real> CreateTextureAnimator( TextureUnitState texUnit, Real sequenceTime )
 		{
-			IControllerValue<float> val = new TextureFrameControllerValue( texUnit );
-			IControllerFunction<float> func = new AnimationControllerFunction( sequenceTime );
+			IControllerValue<Real> val = new TextureFrameControllerValue( texUnit );
+			IControllerFunction<Real> func = new AnimationControllerFunction( sequenceTime );
 
 			return CreateController( val, func );
 		}
@@ -177,10 +195,10 @@ namespace Axiom.Controllers
 		/// <param name="layer">The texture unit to animate.</param>
 		/// <param name="speed">Speed of the rotation, in counter-clockwise revolutions per second.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureRotator( TextureUnitState layer, float speed )
+		public Controller<Real> CreateTextureRotator( TextureUnitState layer, Real speed )
 		{
-			IControllerValue<float> val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
-			IControllerFunction<float> func = new MultipyControllerFunction( -speed, true );
+			IControllerValue<Real> val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
+			IControllerFunction<Real> func = new MultipyControllerFunction( -speed, true );
 
 			return CreateController( val, func );
 		}
@@ -199,10 +217,10 @@ namespace Axiom.Controllers
 		/// <param name="index"></param>
 		/// <param name="timeFactor"></param>
 		/// <returns></returns>
-		public Controller<float> CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
+		public Controller<Real> CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, Real timeFactor )
 		{
-			IControllerValue<float> val = new FloatGpuParamControllerValue( parms, index );
-			IControllerFunction<float> func = new MultipyControllerFunction( timeFactor, true );
+			IControllerValue<Real> val = new FloatGpuParamControllerValue( parms, index );
+			IControllerFunction<Real> func = new MultipyControllerFunction( timeFactor, true );
 
 			return CreateController( val, func );
 		}
@@ -220,11 +238,11 @@ namespace Axiom.Controllers
 		/// <param name="layer">The texture unit to animate.</param>
 		/// <param name="speed">speed, in wraps per second.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureUVScroller( TextureUnitState layer, float speed )
+		public Controller<Real> CreateTextureUVScroller( TextureUnitState layer, Real speed )
 		{
-			IControllerValue<float> val = null;
-			IControllerFunction<float> func = null;
-			Controller<float> controller = null;
+			IControllerValue<Real> val = null;
+			IControllerFunction<Real> func = null;
+			Controller<Real> controller = null;
 
 			// if both u and v speeds are the same, we can use a single controller for it
 			if ( speed != 0 )
@@ -251,11 +269,11 @@ namespace Axiom.Controllers
 		/// <param name="layer">The texture unit to animate.</param>
 		/// <param name="speed">speed, in wraps per second.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureUScroller( TextureUnitState layer, float speed )
+		public Controller<Real> CreateTextureUScroller( TextureUnitState layer, Real speed )
 		{
-			IControllerValue<float> val = null;
-			IControllerFunction<float> func = null;
-			Controller<float> controller = null;
+			IControllerValue<Real> val = null;
+			IControllerFunction<Real> func = null;
+			Controller<Real> controller = null;
 
 			// Don't create a controller if the speed is zero
 			if ( speed != 0 )
@@ -282,11 +300,11 @@ namespace Axiom.Controllers
 		/// <param name="layer">The texture unit to animate.</param>
 		/// <param name="speed">speed, in wraps per second.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureVScroller( TextureUnitState layer, float speed )
+		public Controller<Real> CreateTextureVScroller( TextureUnitState layer, Real speed )
 		{
-			IControllerValue<float> val = null;
-			IControllerFunction<float> func = null;
-			Controller<float> controller = null;
+			IControllerValue<Real> val = null;
+			IControllerFunction<Real> func = null;
+			Controller<Real> controller = null;
 
 			// if both u and v speeds are the same, we can use a single controller for it
 			if ( speed != 0 )
@@ -314,11 +332,11 @@ namespace Axiom.Controllers
 		/// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
 		/// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<float> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
-			float baseVal, float frequency, float phase, float amplitude )
+		public Controller<Real> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
+			Real baseVal, Real frequency, Real phase, Real amplitude )
 		{
-			IControllerValue<float> val = null;
-			IControllerFunction<float> function = null;
+			IControllerValue<Real> val = null;
+			IControllerFunction<Real> function = null;
 
 			// determine which type of controller value this layer needs
 			switch ( type )

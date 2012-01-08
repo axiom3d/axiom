@@ -2840,7 +2840,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( light.Type )
 				{
 					case LightType.Spotlight:
-						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, light.SpotlightOuterAngle );
+						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, 0.5f * (Real)light.SpotlightOuterAngle.InDegrees );
                         Gl.glLightf( lightIndex, Gl.GL_SPOT_EXPONENT, light.SpotlightFalloff );
 						break;
 					default:

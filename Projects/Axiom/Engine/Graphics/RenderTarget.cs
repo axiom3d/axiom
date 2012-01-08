@@ -34,17 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 using Axiom.CrossPlatform;
+using Axiom.Math;
 using Axiom.Media;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -158,7 +153,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// The number of Frames per second.
 			/// </summary>
-			public float LastFPS;
+			public Real LastFPS;
 			/// <summary>
 			/// The average number of Frames per second since Root.StartRendering was called.
 			/// </summary>
@@ -881,7 +876,7 @@ namespace Axiom.Graphics
 		/// The number of frames per second (FPS) based on the last frame rendered.
 		/// </summary>
 		[OgreVersion(1, 7, 2790)]
-		public virtual float LastFPS
+		public virtual Real LastFPS
 		{
 			get
 			{

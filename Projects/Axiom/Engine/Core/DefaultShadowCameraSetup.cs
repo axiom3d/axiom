@@ -68,7 +68,7 @@ namespace Axiom.Core
 				// need a shadow distance, make one up
 				shadowDist = camera.Near * 300;
 			}
-			float shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
+			Real shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
 
 			// Directional lights
 			if ( light.Type == LightType.Directional )
@@ -100,7 +100,7 @@ namespace Axiom.Core
 				//~ pos.x -= fmod(pos.x, worldTexelSize);
 				//~ pos.y -= fmod(pos.y, worldTexelSize);
 				//~ pos.z -= fmod(pos.z, worldTexelSize);
-				var worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
+				Real worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
 
 				//get texCam orientation
 
@@ -136,12 +136,12 @@ namespace Axiom.Core
 				// Set perspective projection
 				textureCamera.ProjectionType = Projection.Perspective;
 				// set FOV slightly larger than the spotlight range to ensure coverage
-				Radian fovy = light.SpotlightOuterAngle * 1.2f;
+				Radian fovy = light.SpotlightOuterAngle * 1.2;
 
 				// limit angle
 				if ( fovy.InDegrees > 175 )
 					fovy = (Degree)( 175 );
-				textureCamera.FieldOfView = (float)fovy;
+				textureCamera.FieldOfView = fovy;
 
 				// set near clip the same as main camera, since they are likely
 				// to both reflect the nature of the scene

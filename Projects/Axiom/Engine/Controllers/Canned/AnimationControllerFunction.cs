@@ -33,9 +33,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Controllers;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -44,19 +43,19 @@ namespace Axiom.Controllers.Canned
 	/// <summary>
 	///     Predefined controller function for dealing with animation.
 	/// </summary>
-	public class AnimationControllerFunction : IControllerFunction<float>
+	public class AnimationControllerFunction : IControllerFunction<Real>
 	{
 		#region Fields
 
 		/// <summary>
 		///     The amount of time in seconds it takes to loop through the whole animation sequence.
 		/// </summary>
-		protected float sequenceTime;
+		protected Real sequenceTime;
 
 		/// <summary>
 		///     The offset in seconds at which to start (default is start at 0).
 		/// </summary>
-		protected float time;
+		protected Real time;
 
 		#endregion Fields
 
@@ -66,7 +65,7 @@ namespace Axiom.Controllers.Canned
 		///     Constructor.
 		/// </summary>
 		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
-		public AnimationControllerFunction( float sequenceTime )
+		public AnimationControllerFunction( Real sequenceTime )
 			: this( sequenceTime, 0.0f )
 		{
 		}
@@ -76,7 +75,7 @@ namespace Axiom.Controllers.Canned
 		/// </summary>
 		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
 		/// <param name="timeOffset">The offset in seconds at which to start.</param>
-		public AnimationControllerFunction( float sequenceTime, float timeOffset )
+		public AnimationControllerFunction( Real sequenceTime, Real timeOffset )
 		{
 			this.sequenceTime = sequenceTime;
 			this.time = timeOffset;
@@ -91,7 +90,7 @@ namespace Axiom.Controllers.Canned
 		/// </summary>
 		/// <param name="sourceValue"></param>
 		/// <returns></returns>
-		public float Execute( float sourceValue )
+		public Real Execute( Real sourceValue )
 		{
 			// assuming source if the time since the last update
 			time += sourceValue;
