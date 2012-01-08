@@ -992,11 +992,6 @@ namespace Axiom.Graphics
             {
                 return fogParams;
             }
-
-            set
-            {
-                fogParams = value;
-            }
         }
 
         /// <summary>
