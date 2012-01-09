@@ -38,37 +38,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
-using Axiom.Graphics.Collections;
-using Axiom.Media;
-using Axiom.RenderSystems.DirectX9.HLSL;
-using SlimDX;
-using SlimDX.Direct3D9;
-using FogMode = Axiom.Graphics.FogMode;
-using LightType = Axiom.Graphics.LightType;
-using StencilOperation = Axiom.Graphics.StencilOperation;
-using Capabilities = Axiom.Graphics.Capabilities;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Core.Collections;
-using Axiom.Math;
 using Axiom.Graphics;
-
-using DX = SlimDX;
+using Axiom.Math;
+using Axiom.Media;
+using Axiom.RenderSystems.DirectX9.HLSL;
+using Axiom.Utilities;
+using SlimDX;
+using SlimDX.Direct3D9;
+using Capabilities = Axiom.Graphics.Capabilities;
 using D3D = SlimDX.Direct3D9;
+using DX = SlimDX;
+using FogMode = Axiom.Graphics.FogMode;
 using Light = Axiom.Core.Light;
-using Plane = Axiom.Math.Plane;
+using LightType = Axiom.Graphics.LightType;
+using StencilOperation = Axiom.Graphics.StencilOperation;
 using Texture = Axiom.Core.Texture;
-using TextureTransform = SlimDX.Direct3D9.TextureTransform;
 using Vector3 = Axiom.Math.Vector3;
-using Vector4 = Axiom.Math.Vector4;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Viewport = Axiom.Core.Viewport;
-using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -2994,25 +2989,29 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region SetClipPlanesImpl
 
-		protected override void SetClipPlanesImpl(Math.Collections.PlaneList planes)
-		{
-			for (var i = 0; i < planes.Count; i++)
-			{
-				var p = planes[ i ];
-				var plane = new DX.Plane(p.Normal.x, p.Normal.y, p.Normal.z, p.D);
+        [OgreVersion( 1, 7, 2 )]
+        protected override void SetClipPlanesImpl( Math.Collections.PlaneList planes )
+        {
+            for ( var i = 0; i < planes.Count; i++ )
+            {
+                var p = planes[ i ];
+                var plane = new DX.Plane( p.Normal.x, p.Normal.y, p.Normal.z, p.D );
 
-				if (vertexProgramBound)
-				{
-					// programmable clips in clip space (ugh)
-					// must transform worldspace planes by view/proj
-					throw new NotImplementedException();
-				}
+                if ( vertexProgramBound )
+                {
+                    // programmable clips in clip space (ugh)
+                    // must transform worldspace planes by view/proj
+                    var xform = DX.Matrix.Multiply( MakeD3DMatrix( viewMatrix ), MakeD3DMatrix( this.ProjectionMatrix ) );
+                    xform = DX.Matrix.Invert( xform );
+                    xform = DX.Matrix.Transpose( xform );
+                    plane = DX.Plane.Transform( plane, xform );
+                }
 
-				ActiveD3D9Device.SetClipPlane(i, plane);
-			}
-			var bits = ( 1ul << ( planes.Count + 1 ) ) - 1;
-			SetRenderState(RenderState.ClipPlaneEnable, (int)bits);
-		}
+                ActiveD3D9Device.SetClipPlane( i, plane );
+            }
+            var bits = ( 1ul << ( planes.Count + 1 ) ) - 1;
+            SetRenderState( RenderState.ClipPlaneEnable, (int)bits );
+        }
 
 		#endregion
 

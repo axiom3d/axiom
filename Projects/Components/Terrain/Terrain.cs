@@ -946,6 +946,7 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public Material Material
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 if ( mMaterial == null ||
@@ -967,20 +968,31 @@ namespace Axiom.Components.Terrain
                     mMaterialGenerator.UpdateParams( mMaterial, this );
                     if ( mCompositeMapRequired )
                         mMaterialGenerator.UpdateParamsForCompositeMap( mCompositeMapMaterial, this );
+                    mMaterialParamsDirty = false;
                 }
 
                 return mMaterial;
             }
         }
-        public Material _Material
+
+        /// <summary>
+        /// Internal getting of material 
+        /// </summary>
+        internal Material _Material
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mMaterial;
             }
         }
-        public Material _CompositeMapMaterial
+
+        /// <summary>
+        /// Internal getting of material  for the terrain composite map
+        /// </summary>
+        internal Material _CompositeMapMaterial
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return mCompositeMapMaterial; }
         }
 
@@ -1142,7 +1154,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get's whether a global color map is enabled on this terrain
         /// </summary>
-        public bool GlobalColorMapEnabled
+        public bool IsGlobalColorMapEnabled
         {
             get;
             protected set;
@@ -1296,7 +1308,7 @@ namespace Axiom.Components.Terrain
             this.NumLodLevelsPerLeaf = 0;
             this.IsDerivedDataUpdateInProgress = false;
             this.GlobalColorMapSize = 0;
-            this.GlobalColorMapEnabled = false;
+            this.IsGlobalColorMapEnabled = false;
             //TODO
             //mLodMorphRequired(false)
             //mCustomGpuBufferAllocator = null
@@ -1737,7 +1749,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             stream.ReadChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
 
             //color map
-            if ( this.GlobalColorMapEnabled )
+            if ( this.IsGlobalColorMapEnabled )
             {
                 stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
                 stream.Write( "colormap" );
@@ -1918,7 +1930,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                 }
                 else if ( name == "colormap" )
                 {
-                    this.GlobalColorMapEnabled = true;
+                    this.IsGlobalColorMapEnabled = true;
                     this.GlobalColorMapSize = sz;
                     mCpuColorMapStorage = new byte[ sz * sz * 3 ];
                     stream.Read( out mCpuColorMapStorage );
@@ -3971,10 +3983,10 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
             if ( sz == 0 )
                 sz = TerrainGlobalOptions.DefaultGlobalColorMapSize;
 
-            if ( enabled != this.GlobalColorMapEnabled ||
+            if ( enabled != this.IsGlobalColorMapEnabled ||
                 ( enabled && this.GlobalColorMapSize != sz ) )
             {
-                this.GlobalColorMapEnabled = enabled;
+                this.IsGlobalColorMapEnabled = enabled;
                 this.GlobalColorMapSize = sz;
 
                 CreateOrDestroyGPUColorMap();
@@ -4885,7 +4897,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         [OgreVersion( 1, 7, 2 )]
         protected void CreateOrDestroyGPUColorMap()
         {
-            if ( this.GlobalColorMapEnabled && this.GlobalColorMap == null )
+            if ( this.IsGlobalColorMapEnabled && this.GlobalColorMap == null )
             {
 #warning Check MIP_DEFAULT
                 // create
@@ -4903,7 +4915,7 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
                     mCpuColorMapStorage = null;
                 }
             }
-            else if ( !this.GlobalColorMapEnabled && this.GlobalColorMap != null )
+            else if ( !this.IsGlobalColorMapEnabled && this.GlobalColorMap != null )
             {
                 // destroy
                 TextureManager.Instance.Remove( this.GlobalColorMap );
