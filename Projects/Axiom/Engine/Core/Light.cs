@@ -991,7 +991,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightAttenuationConstantValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 				this.SetAsBaseValue( 0.0f );
@@ -1022,7 +1022,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightAttenuationLinearValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 				this.SetAsBaseValue( 0.0f );
@@ -1053,7 +1053,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightAttenuationQuadraticValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 				this.SetAsBaseValue( 0.0f );
@@ -1084,7 +1084,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightAttenuationRangeValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 				this.SetAsBaseValue( 0.0f );
@@ -1210,7 +1210,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightSpotlightFalloffValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 			}
@@ -1240,7 +1240,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightSpotlightInnerValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 			}
@@ -1270,7 +1270,7 @@ namespace Axiom.Core
 			protected Light light;
 
 			public LightSpotlightOuterValue( Light light )
-				: base( AnimableType.Float )
+				: base( AnimableType.Real )
 			{
 				this.light = light;
 			}

@@ -155,7 +155,7 @@ namespace Axiom.Animating
 				var tmpParent = parentTrack as NumericAnimationTrack;
 				if ( tmpParent != null )
 				{
-					if ( tmpParent.TargetAnimable.Type == AnimableType.Float )
+					if ( tmpParent.TargetAnimable.Type == AnimableType.Real )
 					{
 						if ( value is double )
 						{

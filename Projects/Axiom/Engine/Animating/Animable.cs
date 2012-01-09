@@ -35,8 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -45,38 +43,20 @@ using Axiom.Math;
 namespace Axiom.Animating
 {
 	/// <summary>
-	/// 
+    /// The type of the value being animated
 	/// </summary>
+    [OgreVersion( 1, 7, 2, "Original name was ValueType" )]
 	public enum AnimableType
 	{
-		/// <summary>
-		/// 
-		/// </summary>
 		Int,
-		/// <summary>
-		/// 
-		/// </summary>
-		Float,
-		/// <summary>
-		/// 
-		/// </summary>
+		Real,
 		Vector2,
-		/// <summary>
-		/// 
-		/// </summary>
 		Vector3,
-		/// <summary>
-		/// 
-		/// </summary>
 		Vector4,
-		/// <summary>
-		/// 
-		/// </summary>
 		Quaternion,
-		/// <summary>
-		/// 
-		/// </summary>
-		ColorEx
+		ColorEx,
+        Radian,
+        Degree
 	}
 
 	/// <summary>
@@ -259,8 +239,8 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					SetAsBaseValue( (int)val );
 					break;
-				case AnimableType.Float:
-					SetAsBaseValue( (float)val );
+				case AnimableType.Real:
+					SetAsBaseValue( (Real)val );
 					break;
 				case AnimableType.Vector2:
 					SetAsBaseValue( (Vector2)val );
@@ -287,8 +267,8 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					SetValue( (int)valueObject );
 					break;
-				case AnimableType.Float:
-					SetValue( (float)valueObject );
+				case AnimableType.Real:
+					SetValue( (Real)valueObject );
 					break;
 				case AnimableType.Vector2:
 					SetValue( (Vector2)valueObject );
@@ -311,37 +291,37 @@ namespace Axiom.Animating
 		/// Set value 
 		public virtual void SetValue( int val )
 		{
-			throw ( new Exception( "Animable SetValue to int not implemented" ) );
+			throw new AxiomException( "Animable SetValue to int not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Real val )
 		{
-			throw ( new Exception( "Animable SetValue to float not implemented" ) );
+			throw new AxiomException( "Animable SetValue to float not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Vector2 val )
 		{
-			throw ( new Exception( "Animable SetValue to Vector2 not implemented" ) );
+			throw new AxiomException( "Animable SetValue to Vector2 not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Vector3 val )
 		{
-			throw ( new Exception( "Animable SetValue to Vector3 not implemented" ) );
+			throw new AxiomException( "Animable SetValue to Vector3 not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Vector4 val )
 		{
-			throw ( new Exception( "Animable SetValue to Vector4 not implemented" ) );
+			throw new AxiomException( "Animable SetValue to Vector4 not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Quaternion val )
 		{
-			throw ( new Exception( "Animable SetValue to Quaternion not implemented" ) );
+			throw new AxiomException( "Animable SetValue to Quaternion not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( ColorEx val )
 		{
-			throw ( new Exception( "Animable SetValue to ColorEx not implemented" ) );
+			throw new AxiomException( "Animable SetValue to ColorEx not implemented" );
 		}
 		/// Set value 
 		public virtual void SetValue( Object val )
@@ -351,8 +331,8 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					SetValue( (int)val );
 					break;
-				case AnimableType.Float:
-					SetValue( (float)val );
+				case AnimableType.Real:
+					SetValue( (Real)val );
 					break;
 				case AnimableType.Vector2:
 					SetValue( (Vector2)val );
@@ -375,37 +355,37 @@ namespace Axiom.Animating
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( int val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to int not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to int not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Real val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to float not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to float not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector2 val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to Vector2 not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to Vector2 not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector3 val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to Vector3 not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to Vector3 not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector4 val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to Vector4 not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to Vector4 not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Quaternion val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to Quaternion not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to Quaternion not implemented" );
 		}
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( ColorEx val )
 		{
-			throw ( new Exception( "Animable ApplyDeltaValue to ColorEx not implemented" ) );
+			throw new AxiomException( "Animable ApplyDeltaValue to ColorEx not implemented" );
 		}
 
 		/// Apply the specified delta 
@@ -416,8 +396,8 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					ApplyDeltaValue( (int)val );
 					break;
-				case AnimableType.Float:
-					ApplyDeltaValue( (float)val );
+				case AnimableType.Real:
+					ApplyDeltaValue( (Real)val );
 					break;
 				case AnimableType.Vector2:
 					ApplyDeltaValue( (Vector2)val );
@@ -445,7 +425,7 @@ namespace Axiom.Animating
 					var i1 = (int)k1;
 					var i2 = (int)k2;
 					return (Object)(int)( i1 + ( i2 - i1 ) * time );
-				case AnimableType.Float:
+				case AnimableType.Real:
 					var f1 = (float)k1;
 					var f2 = (float)k2;
 					return (Object)( f1 + ( f2 - f1 ) * time );
@@ -473,7 +453,7 @@ namespace Axiom.Animating
 												c1.g + ( c2.g - c1.g ) * time,
 												c1.b + ( c2.b - c1.b ) * time ) );
 			}
-			throw new Exception( string.Format( "In AmiableValue.InterpolateValues, unknown type {0}", type ) );
+			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
 
 		public static Object MultiplyFloat( AnimableType type, float v, Object k )
@@ -482,8 +462,8 @@ namespace Axiom.Animating
 			{
 				case AnimableType.Int:
 					return (Object)(int)( ( (int)k ) * v );
-				case AnimableType.Float:
-					var f = (float)k;
+				case AnimableType.Real:
+					var f = (Real)k;
 					return (Object)( f * v );
 				case AnimableType.Vector2:
 					var v2 = (Vector2)k;
@@ -501,7 +481,7 @@ namespace Axiom.Animating
 					var c = (ColorEx)k;
 					return (Object)( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
 			}
-			throw new Exception( string.Format( "In AmiableValue.InterpolateValues, unknown type {0}", type ) );
+            throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
 
 		/// Sets the current state as the 'base' value; used for delta animation

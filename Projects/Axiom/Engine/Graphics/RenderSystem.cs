@@ -559,7 +559,8 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected PlaneList clipPlanes = new PlaneList();
-		[OgreVersion( 1, 7, 2790 )]
+		
+        [OgreVersion( 1, 7, 2790 )]
 		protected bool clipPlanesDirty;
 
 		/// <summary>

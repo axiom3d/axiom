@@ -820,6 +820,19 @@ namespace Axiom.Core
             InvalidateFrustum();
         }
 
+        /// <summary>
+        /// Calculate a view matrix for this frustum, relative to a potentially dynamic point. 
+        /// Mainly for use by AXIOM internally when using camera-relative rendering
+        /// for frustums that are not the centre (e.g. texture projection)
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public void CalcViewMatrixRelative( Vector3 relPos, out Matrix4 matToUpdate )
+        {
+            Matrix4 matTrans = Matrix4.Identity;
+            matTrans.Translation = relPos;
+            matToUpdate = this.ViewMatrix * matTrans;
+        }
+
         public void SetCustomViewMatrix( bool enable )
         {
             SetCustomViewMatrix( enable, Matrix4.Identity );
@@ -2171,10 +2184,5 @@ namespace Axiom.Core
         }
 
         #endregion IDisposable Implementation
-
-        public void CalcViewMatrixRelative( Vector3 texProjRelativeOrigin, out Matrix4 tmp )
-        {
-            throw new NotImplementedException();
-        }
     }
 }

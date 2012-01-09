@@ -1114,7 +1114,7 @@ namespace Axiom.Graphics
                         projectionMatrix.m10 = -projectionMatrix.m10;
                         projectionMatrix.m11 = -projectionMatrix.m11;
                         projectionMatrix.m12 = -projectionMatrix.m12;
-                        projectionMatrix.m13 = -projectionMatrix.m12;
+                        projectionMatrix.m13 = -projectionMatrix.m13;
                     }
                     projMatrixDirty = false;
                 }
@@ -1552,6 +1552,7 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual int PassNumber
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return passNumber;
