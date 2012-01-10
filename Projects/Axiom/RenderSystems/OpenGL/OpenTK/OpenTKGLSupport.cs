@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright Â© 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -110,11 +110,11 @@ namespace Axiom.RenderSystems.OpenGL
 			optFullScreen.PossibleValues.Add( 1, "No" );
 
 			// Video Mode
-
 			#region Video Modes
 
+
 			// get the available OpenGL resolutions
-			DisplayDevice dev = DisplayDevice.Default;
+			DisplayDevice dev = DisplayDevice.AvailableDisplays[0];
 
 			// add the resolutions to the config
 			for( int q = 0; q < dev.AvailableResolutions.Count; q++ )
@@ -284,7 +284,14 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					opt.Immutable = false;
-					opt.Value = opt.PossibleValues.Values[ opt.PossibleValues.Count - 1 ];
+					if ( opt.PossibleValues.Count != 0 )
+					{
+						opt.Value = opt.PossibleValues.Values[ opt.PossibleValues.Count - 1 ];
+					}
+					else
+					{
+						opt.Value = "N/A";
+					}
 				}
 			}
 		}

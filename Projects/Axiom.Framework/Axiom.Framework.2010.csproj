@@ -52,7 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-	<DocumentationFile>bin\x86\Axiom.Framework.xml</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.Framework.xml</DocumentationFile>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
@@ -81,8 +81,7 @@
       <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
-    <Reference Include="SharpInputSystem.Core, Version=0.4.0.28422, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SharpInputSystem.Core">
       <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
