@@ -43,6 +43,7 @@ using System.Windows.Graphics;
 #else
 using System.Drawing;
 using System.Windows.Forms;
+using XInput = Microsoft.Xna.Framework.Input;
 #endif
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -60,7 +61,6 @@ using Axiom.RenderSystems.Xna.HLSL;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XFG = Microsoft.Xna.Framework.Graphics;
-using XInput = Microsoft.Xna.Framework.Input;
 using Color = Microsoft.Xna.Framework.Color;
 using CompareFunction = Axiom.Graphics.CompareFunction;
 using Plane = Axiom.Math.Plane;
@@ -454,7 +454,7 @@ namespace Axiom.RenderSystems.Xna
 
 				// Reset video mode to default if previous doesn't avail in new possible values
 
-				if (optVideoMode.PossibleValues.Values.Contains(curMode) == false)
+				if (optVideoMode.PossibleValues.ContainsValue(curMode) == false)
 				{
 					optVideoMode.Value = "800 x 600 @ 32-bit color";
 				}
@@ -1349,7 +1349,6 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override void PostExtraThreadsStarted()
 		{
-			throw new NotImplementedException();
 		}
 
 		#endregion
@@ -1498,8 +1497,11 @@ namespace Axiom.RenderSystems.Xna
 		{
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState(_device);
+#if SILVERLIGHT
+            StateManager.ResetState(_device);
+#endif
 
-			Effect effectToUse;
+            Effect effectToUse;
 
 			if (useSkinnedEffect)
 			{
@@ -1543,7 +1545,7 @@ namespace Axiom.RenderSystems.Xna
 			//                " Fog=" + basicEffect.FogEnabled +
 			//                " " + effectToUse);
 
-		   // effectToUse.CurrentTechnique.Passes[0].Apply();
+			// effectToUse.CurrentTechnique.Passes[0].Apply();
 			//DualTextureEffect dualTextureEffect;
 
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800));)
@@ -1719,7 +1721,7 @@ namespace Axiom.RenderSystems.Xna
 					_device.Indices = idxBuffer.XnaIndexBuffer;
 					foreach (var pass in effectToUse.CurrentTechnique.Passes)
 					{
-						pass.Apply();
+						pass.Apply();                      
 						_device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount,
 													   op.indexData.indexStart, primCount);
 					}
@@ -2210,10 +2212,12 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				_secondaryWindows.Add((XnaRenderWindow)window);
-			}
+            }
 
+#if !SILVERLIGHT // Can only work on _device inside the Draw callback
 			StateManager.ResetState( _device );
-			return window;
+#endif
+            return window;
 		}
 
 		#endregion
@@ -2289,7 +2293,6 @@ namespace Axiom.RenderSystems.Xna
 			HighLevelGpuProgramManager.Instance.AddFactory(new HLSLProgramFactory());
 
 			StateManager = new StateManagement();
-
 			if (autoCreateWindow)
 			{
 #if SILVERLIGHT
@@ -3447,8 +3450,10 @@ namespace Axiom.RenderSystems.Xna
 			/*
 			 * TextureFilter enumeration now combines FilterType and TextureType in 4.0, 
 			 */
-			var texType = XnaHelper.Convert(texStageDesc[stage].texType);
-			var texFilter = XnaHelper.Convert(type, filter, texType);
+			//var texType = XnaHelper.Convert(texStageDesc[stage].texType);
+			//var texFilter = XnaHelper.Convert(type, filter, texType);
+            // Actually it combines min, mag & mip filters
+            var texFilter = XnaHelper.Convert(type, filter, StateManager.SamplerStates[stage].Filter);
 			StateManager.SamplerStates[stage].Filter = texFilter;
 		}
 

@@ -59,7 +59,7 @@ namespace Axiom.Media
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal CodecManager()
-            : base()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -80,18 +80,18 @@ namespace Axiom.Media
 
 		#endregion Singleton implementation
 
-        protected override void dispose(bool disposeManagedResources)
-        {
+		protected override void dispose(bool disposeManagedResources)
+		{
 			if ( instance == this )
-            {
-                if (disposeManagedResources)
-                {
-                    instance = null;
-                }
-            }
+			{
+				if (disposeManagedResources)
+				{
+					instance = null;
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose(disposeManagedResources);
+		}
 
 		#region Fields
 

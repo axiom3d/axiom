@@ -465,7 +465,7 @@ namespace Axiom.RenderSystems.DirectX9
 			int bufSize = 0;
 
 			// convert to pixelbuffer's native format if necessary
-			if ( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
+			if ( D3DHelper.ConvertEnum(src.Format) == D3D.Format.Unknown )
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 				byte[] newBuffer = new byte[ bufSize ];

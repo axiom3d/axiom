@@ -127,6 +127,7 @@ namespace Axiom.Core
 		///    Default number of mipmaps to be used for loaded textures.
 		/// </summary>
 		protected int _defaultMipmapCount = 5;
+
 		/// <summary>
 		///    Gets/Sets the default number of mipmaps to be used for loaded textures.
 		/// </summary>

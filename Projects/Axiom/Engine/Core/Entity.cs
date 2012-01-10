@@ -1293,10 +1293,13 @@ namespace Axiom.Core
 						this.mesh.SharedVertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
-				var destPosElem =
-						this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic(
-								VertexElementSemantic.Position );
-				this.softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
+                if (this.softwareVertexAnimVertexData != null)
+                {
+                    var destPosElem =
+                            this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic(
+                                    VertexElementSemantic.Position);
+                    this.softwareVertexAnimVertexData.vertexBufferBinding.SetBinding(destPosElem.Source, srcBuf);
+                }
 			}
 
 			foreach ( var subEntity in this.subEntityList )
@@ -2050,7 +2053,8 @@ namespace Axiom.Core
 			{
 				// Shared data
 				if ( this.mesh.SharedVertexData != null &&
-					 this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None )
+					 this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None &&
+                    this.tempVertexAnimInfo != null)
 				{
 					// Create temporary vertex blend info
 					// Prepare temp vertex data if needed

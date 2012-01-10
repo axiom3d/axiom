@@ -136,7 +136,7 @@ namespace Axiom.Graphics
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// add ourself to the render queue
-			queue.AddRenderable( this );
+			queue.AddRenderable( this, this.RenderQueueGroup);
 		}
 
 		#endregion Implementation of MovableObject
@@ -163,6 +163,8 @@ namespace Axiom.Graphics
 			set
 			{
 				material = value;
+                if (material != null)
+                    materialName = material.Name;
 			}
 		}
 

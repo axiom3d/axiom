@@ -705,7 +705,7 @@ namespace Axiom.Media
             // Return subface as pixelbox
             if ( bufPtr != null )
             {
-                return new PixelBox( width, height, depth, this.Format, bufPtr );
+				return new PixelBox( width, height, depth, this.Format, bufPtr + offset );
             }
             else
             {

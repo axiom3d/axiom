@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Threading;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Core.Collections;
@@ -507,7 +507,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		public Node( string name )
-            : base()
+			: base()
 		{
 			this.name = name;
 
@@ -553,6 +553,7 @@ namespace Axiom.Core
 				throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 
 			child.RemoveFromParent();
+
 			childNodes.Add( childName, child );
 
 			child.NotifyOfNewParent( this );
@@ -643,13 +644,13 @@ namespace Axiom.Core
 		/// <param name="removeFromInternalList"></param>
 		protected virtual void RemoveChild( Node child, bool removeFromInternalList )
 		{
-			CancelUpdate( child );
+			CancelUpdate(child);
 			child.NotifyOfNewParent( null );
 
-            if (removeFromInternalList)
-            {
-                childNodes.Remove(child.Name);
-            }
+			if (removeFromInternalList)
+			{
+				childNodes.Remove(child.Name);
+			}
 		}
 
 		/// <summary>
@@ -675,21 +676,21 @@ namespace Axiom.Core
 		///	This method moves the node by the supplied vector along the
 		///	world cartesian axes, i.e. along world x,y,z
 		/// </summary>
-        /// <param name="translate">Vector with x,y,z values representing the translation.</param>
+		/// <param name="translate">Vector with x,y,z values representing the translation.</param>
 		public virtual void Translate( Vector3 translate )
 		{
 			Translate( translate, TransformSpace.Parent );
 		}
 
-	    /// <summary>
-	    /// Moves the node along the cartesian axes.
-	    ///
-	    ///	This method moves the node by the supplied vector along the
-	    ///	world cartesian axes, i.e. along world x,y,z
-	    /// </summary>
-	    /// <param name="translate">Vector with x,y,z values representing the translation.</param>
-	    ///<param name="relativeTo"></param>
-	    public virtual void Translate( Vector3 translate, TransformSpace relativeTo )
+		/// <summary>
+		/// Moves the node along the cartesian axes.
+		///
+		///	This method moves the node by the supplied vector along the
+		///	world cartesian axes, i.e. along world x,y,z
+		/// </summary>
+		/// <param name="translate">Vector with x,y,z values representing the translation.</param>
+		///<param name="relativeTo"></param>
+		public virtual void Translate( Vector3 translate, TransformSpace relativeTo )
 		{
 			switch ( relativeTo )
 			{
@@ -739,23 +740,23 @@ namespace Axiom.Core
 			Translate( derived, TransformSpace.Parent );
 		}
 
-	    /// <summary>
-	    /// Moves the node along arbitrary axes.
-	    /// </summary>
-	    /// <remarks>
-	    ///	This method translates the node by a vector which is relative to
-	    ///	a custom set of axes.
-	    ///	</remarks>
-	    /// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
-	    ///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
-	    ///		1 0 0
-	    ///		0 1 0
-	    ///		0 0 1
-	    ///		i.e. The Identity matrix.
-	    ///	</param>
-	    /// <param name="move">Vector relative to the supplied axes.</param>
-	    /// <param name="relativeTo"></param>
-	    public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
+		/// <summary>
+		/// Moves the node along arbitrary axes.
+		/// </summary>
+		/// <remarks>
+		///	This method translates the node by a vector which is relative to
+		///	a custom set of axes.
+		///	</remarks>
+		/// <param name="axes">3x3 Matrix containg 3 column vectors each representing the
+		///	X, Y and Z axes respectively. In this format the standard cartesian axes would be expressed as:
+		///		1 0 0
+		///		0 1 0
+		///		0 0 1
+		///		i.e. The Identity matrix.
+		///	</param>
+		/// <param name="move">Vector relative to the supplied axes.</param>
+		/// <param name="relativeTo"></param>
+		public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
 		{
 			var derived = axes * move;
 			Translate( derived, relativeTo );
@@ -778,10 +779,10 @@ namespace Axiom.Core
 			Rotate( Vector3.UnitX, degrees, TransformSpace.Local );
 		}
 
-	    /// <summary>
-	    /// Rotate the node around the Z-axis.
-	    /// </summary>
-	    public virtual void Roll( float degrees, TransformSpace relativeTo )
+		/// <summary>
+		/// Rotate the node around the Z-axis.
+		/// </summary>
+		public virtual void Roll( float degrees, TransformSpace relativeTo )
 		{
 			Rotate( Vector3.UnitZ, degrees, relativeTo );
 		}
@@ -1027,7 +1028,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void NeedUpdate()
 		{
-			NeedUpdate( false );
+			lock (_queuedForUpdate)
+				NeedUpdate(false);
 		}
 
 		public virtual void NeedUpdate( bool forceParentUpdate )
@@ -1038,9 +1040,9 @@ namespace Axiom.Core
 			needRelativeTransformUpdate = true;
 
 			// make sure we are not the root node
-			if ( parent != null && ( !isParentNotified || forceParentUpdate ) )
+			if (parent != null && (!isParentNotified || forceParentUpdate))
 			{
-				parent.RequestUpdate( this );
+				parent.RequestUpdate(this);
 				isParentNotified = true;
 			}
 
@@ -1050,19 +1052,25 @@ namespace Axiom.Core
 
 		public static void QueueNeedUpdate( Node node )
 		{
-			if ( !_queuedForUpdate.Contains( node ) )
+			lock (_queuedForUpdate)
 			{
-				_queuedForUpdate.Add( node );
+				if (!_queuedForUpdate.Contains(node))
+				{
+					_queuedForUpdate.Add(node);
+				}
 			}
 		}
 
 		public static void ProcessQueuedUpdates()
 		{
-			foreach ( var node in _queuedForUpdate )
+			lock (_queuedForUpdate)
 			{
-				node.NeedUpdate( true );
+				foreach (var node in _queuedForUpdate)
+				{
+					node.NeedUpdate(true);
+				}
+				_queuedForUpdate.Clear();
 			}
-			_queuedForUpdate.Clear();
 		}
 
 		/// <summary>
@@ -1082,7 +1090,7 @@ namespace Axiom.Core
 			// request to update me
 			if ( parent != null && !isParentNotified )
 			{
-				parent.RequestUpdate( this );
+				parent.RequestUpdate(this);
 				isParentNotified = true;
 			}
 		}
@@ -1099,7 +1107,7 @@ namespace Axiom.Core
 			// propogate this changed if we are done
 			if ( childrenToUpdate.Count == 0 && parent != null && !needChildUpdate )
 			{
-				parent.CancelUpdate( this );
+				parent.CancelUpdate(this);
 				isParentNotified = false;
 			}
 		}
@@ -1629,6 +1637,9 @@ namespace Axiom.Core
 		/// <param name="hasParentChanged">if true then this will update its derived properties (scale, orientation, position) accoarding to the parent's</param>
 		protected internal virtual void Update( bool updateChildren, bool hasParentChanged )
 		{
+			if(parent == null)
+				Monitor.Enter(_queuedForUpdate);
+
 			isParentNotified = false;
 
 			// skip update if not needed
@@ -1653,7 +1664,7 @@ namespace Axiom.Core
 				// update all children
 				foreach ( var child in childNodes.Values )
 				{
-					child.Update( true, true );
+					child.Update(true, true);
 				}
 
 				childrenToUpdate.Clear();
@@ -1672,6 +1683,9 @@ namespace Axiom.Core
 
 			// reset the flag
 			needChildUpdate = false;
+
+			if (parent == null)
+				Monitor.Exit(_queuedForUpdate);
 		}
 
 		/// <summary>
@@ -1787,4 +1801,4 @@ namespace Axiom.Core
 
 		#endregion IDisposable Implementation
 	}
-}
+}                                    

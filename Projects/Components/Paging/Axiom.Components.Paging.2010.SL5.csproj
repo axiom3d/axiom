@@ -106,6 +106,10 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
+      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
+      <Name>XdotNet.mscorlib.SL5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

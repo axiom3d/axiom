@@ -136,7 +136,7 @@ namespace Axiom.Core
 		protected string _group;
 
 		/// <summary>
-        ///	Gets the group which this resource is a member of
+		///	Gets the group which this resource is a member of
 		/// </summary>
 		public string Group
 		{
@@ -386,7 +386,7 @@ namespace Axiom.Core
 		///	Protected unnamed constructor to prevent default construction.
 		/// </summary>
 		protected Resource()
-            : this(null, string.Empty, 0, string.Empty, false, null)
+			: this(null, string.Empty, 0, string.Empty, false, null)
 		{
 		}
 
@@ -404,25 +404,25 @@ namespace Axiom.Core
 		{
 		}
 
-	    /// <param name="group"></param>
-	    /// <param name="isManual">
-	    ///     Is this resource manually loaded? If so, you should really
-	    ///     populate the loader parameter in order that the load process
-	    ///     can call the loader back when loading is required.
-	    /// </param>
-	    /// <param name="loader">
-	    ///     An IManualResourceLoader implementation which will be called
-	    ///     when the Resource wishes to load (should be supplied if you set
-	    ///     isManual to true). You can in fact leave this parameter null
-	    ///     if you wish, but the Resource will never be able to reload if
-	    ///     anything ever causes it to unload. Therefore provision of a proper
-	    ///     IManualResourceLoader instance is strongly recommended.
-	    /// </param>
-	    /// <param name="parent"></param>
-	    /// <param name="name"></param>
-	    /// <param name="handle"></param>
-	    protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-            : base()
+		/// <param name="group"></param>
+		/// <param name="isManual">
+		///     Is this resource manually loaded? If so, you should really
+		///     populate the loader parameter in order that the load process
+		///     can call the loader back when loading is required.
+		/// </param>
+		/// <param name="loader">
+		///     An IManualResourceLoader implementation which will be called
+		///     when the Resource wishes to load (should be supplied if you set
+		///     isManual to true). You can in fact leave this parameter null
+		///     if you wish, but the Resource will never be able to reload if
+		///     anything ever causes it to unload. Therefore provision of a proper
+		///     IManualResourceLoader instance is strongly recommended.
+		/// </param>
+		/// <param name="parent"></param>
+		/// <param name="name"></param>
+		/// <param name="handle"></param>
+		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base()
 		{
 			_creator = parent;
 			_name = name;
@@ -498,36 +498,36 @@ namespace Axiom.Core
 
 		#endregion Load/Unload Stage Notifiers
 
-        /// <summary>
-        /// Prepares the resource for load, if it is not already.
-        /// </summary>
-        /// <see cref="Resource.Prepare(bool)"/>
-        public void Prepare()
-        {
-            this.Prepare( false );
-        }
+		/// <summary>
+		/// Prepares the resource for load, if it is not already.
+		/// </summary>
+		/// <see cref="Resource.Prepare(bool)"/>
+		public void Prepare()
+		{
+			this.Prepare( false );
+		}
 
-        /// <summary>
-        /// Prepares the resource for load, if it is not already.
-        /// </summary>
-        /// <remarks>
-        /// One can call prepare() before load(), but this is not required as load() will call prepare() 
-        /// itself, if needed.  When OGRE_THREAD_SUPPORT==1 both load() and prepare() 
-        /// are thread-safe.  When OGRE_THREAD_SUPPORT==2 however, only prepare() 
-        /// is thread-safe.  The reason for this function is to allow a background 
-        /// thread to do some of the loading work, without requiring the whole render
-        /// system to be thread-safe.  The background thread would call
-        /// prepare() while the main render loop would later call load().  So long as
-        /// prepare() remains thread-safe, subclasses can arbitrarily split the work of
-        /// loading a resource between load() and prepare().  It is best to try and
-        /// do as much work in prepare(), however, since this will leave less work for
-        /// the main render thread to do and thus increase FPS.
-        /// </remarks>
-        /// <param name="background">Whether this is occurring in a background thread</param>
-        public virtual void Prepare( bool background )
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		/// Prepares the resource for load, if it is not already.
+		/// </summary>
+		/// <remarks>
+		/// One can call prepare() before load(), but this is not required as load() will call prepare() 
+		/// itself, if needed.  When OGRE_THREAD_SUPPORT==1 both load() and prepare() 
+		/// are thread-safe.  When OGRE_THREAD_SUPPORT==2 however, only prepare() 
+		/// is thread-safe.  The reason for this function is to allow a background 
+		/// thread to do some of the loading work, without requiring the whole render
+		/// system to be thread-safe.  The background thread would call
+		/// prepare() while the main render loop would later call load().  So long as
+		/// prepare() remains thread-safe, subclasses can arbitrarily split the work of
+		/// loading a resource between load() and prepare().  It is best to try and
+		/// do as much work in prepare(), however, since this will leave less work for
+		/// the main render thread to do and thus increase FPS.
+		/// </remarks>
+		/// <param name="background">Whether this is occurring in a background thread</param>
+		public virtual void Prepare( bool background )
+		{
+			throw new NotImplementedException();
+		}
 
 		/// <summary>
 		/// Escalates the loading of a background loaded resource.
@@ -788,12 +788,12 @@ namespace Axiom.Core
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose(disposeManagedResources);
 		}
 
 
 		#endregion IDisposable Implementation
-    }
+	}
 
 	/// <summary>
 	/// Interface describing a manual resource loader.

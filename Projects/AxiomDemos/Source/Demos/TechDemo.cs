@@ -170,11 +170,11 @@ namespace Axiom.Demos
 
 #if !WINDOWS_PHONE
 			window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
-            TechDemoListener rwl = new TechDemoListener( window );
-            WindowEventMonitor.Instance.RegisterListener( window, rwl );
+			TechDemoListener rwl = new TechDemoListener( window );
+			WindowEventMonitor.Instance.RegisterListener( window, rwl );
 #endif
 
-            ChooseSceneManager();
+			ChooseSceneManager();
 
 			CreateCamera();
 
@@ -407,9 +407,9 @@ namespace Axiom.Demos
 
 		protected virtual void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-            evt.StopRendering = false;
-            
-            float scaleMove = 200 * evt.TimeSinceLastFrame;
+			evt.StopRendering = false;
+			
+			float scaleMove = 200 * evt.TimeSinceLastFrame;
 
 			// reset acceleration zero
 			camAccel = Vector3.Zero;
@@ -425,7 +425,7 @@ namespace Axiom.Demos
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
-                return;
+				return;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.A ) )
@@ -486,7 +486,7 @@ namespace Axiom.Demos
 				}
 				else
 				{
-					//camera.PolygonMode = PolygonMode.Points;
+					camera.PolygonMode = PolygonMode.Points;
 				}
 
 				SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
@@ -499,6 +499,10 @@ namespace Axiom.Demos
 				// toggle the texture settings
 				switch ( filtering )
 				{
+					case TextureFiltering.None:
+						filtering = TextureFiltering.Bilinear;
+						aniso = 1;
+						break;					
 					case TextureFiltering.Bilinear:
 						filtering = TextureFiltering.Trilinear;
 						aniso = 1;
@@ -508,7 +512,7 @@ namespace Axiom.Demos
 						aniso = 8;
 						break;
 					case TextureFiltering.Anisotropic:
-						filtering = TextureFiltering.Bilinear;
+						filtering = TextureFiltering.None;
 						aniso = 1;
 						break;
 				}
@@ -752,13 +756,13 @@ namespace Axiom.Demos
 			{
 				camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
 			}
-            evt.StopRendering = false;
-        }
+			evt.StopRendering = false;
+		}
 
 		protected virtual void OnFrameRenderingQueued( object source, FrameEventArgs evt )
 		{
-            evt.StopRendering = false;
-        }
+			evt.StopRendering = false;
+		}
 
 		float statsDelay = 1.0f;
 		protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
@@ -769,8 +773,8 @@ namespace Axiom.Demos
 				UpdateStats();
 				statsDelay = 1.0f;
 			}
-            evt.StopRendering = false;
-        }
+			evt.StopRendering = false;
+		}
 
 
 		DateTime averageStart = DateTime.Now;

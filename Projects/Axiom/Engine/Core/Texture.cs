@@ -297,10 +297,10 @@ namespace Axiom.Core
 			{
 				return _mipmapCount;
 			}
-            set
-            {
-                _requestedMipmapCount = _mipmapCount = value;
-            }
+			set
+			{
+				_requestedMipmapCount = _mipmapCount = value;
+			}
 		}
 
 		#endregion MipmapCount Property
@@ -842,7 +842,7 @@ namespace Axiom.Core
 			var imageMips = images[ 0 ].NumMipMaps;
 			if ( imageMips > 0 )
 			{
-                MipmapCount = imageMips;
+				MipmapCount = imageMips;
 				// Disable flag for auto mip generation
 				_usage &= ~TextureUsage.AutoMipMap;
 			}
@@ -894,7 +894,7 @@ namespace Axiom.Core
 
 			// Main loading loop
 			// imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
-            for (var mip = 0; mip <= imageMips; ++mip)
+			for (var mip = 0; mip <= imageMips; ++mip)
 			{
 				for ( var i = 0; i < faces; ++i )
 				{
@@ -913,42 +913,42 @@ namespace Axiom.Core
 							src.Format = PixelFormat.A8;
 					}
 
-                    if (_gamma != 1.0f)
-                    {
-                        // Apply gamma correction
-                        // Do not overwrite original image but do gamma correction in temporary buffer
-                        var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
-                        var buff = new byte[bufSize];
-                        var buffer = BufferBase.Wrap( buff );
+					if (_gamma != 1.0f)
+					{
+						// Apply gamma correction
+						// Do not overwrite original image but do gamma correction in temporary buffer
+						var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
+						var buff = new byte[bufSize];
+						var buffer = BufferBase.Wrap( buff );
 #if !AXIOM_SAFE_ONLY
-                        unsafe
+						unsafe
 #endif
-                        {
+						{
 
-                            try
-                            {
-                                var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
-                                PixelConverter.BulkPixelConversion( src, corrected );
+							try
+							{
+								var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
+								PixelConverter.BulkPixelConversion( src, corrected );
 
-                                Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize,
-                                                  PixelUtil.GetNumElemBits( src.Format ) );
+								Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize,
+												  PixelUtil.GetNumElemBits( src.Format ) );
 
-                                // Destination: entire texture. BlitFromMemory does
-                                // the scaling to a power of two for us when needed
-                                GetBuffer( i, mip ).BlitFromMemory( corrected );
-                            }
-                            finally
-                            {
-                                //Marshal.FreeHGlobal( buffer );
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Destination: entire texture. BlitFromMemory does
-                        // the scaling to a power of two for us when needed
-                        GetBuffer(i, mip).BlitFromMemory(src);
-                    }
+								// Destination: entire texture. BlitFromMemory does
+								// the scaling to a power of two for us when needed
+								GetBuffer( i, mip ).BlitFromMemory( corrected );
+							}
+							finally
+							{
+								//Marshal.FreeHGlobal( buffer );
+							}
+						}
+					}
+					else
+					{
+						// Destination: entire texture. BlitFromMemory does
+						// the scaling to a power of two for us when needed
+						GetBuffer(i, mip).BlitFromMemory(src);
+					}
 				}
 			}
 			// Update size (the final size, not including temp space)
@@ -1030,6 +1030,5 @@ namespace Axiom.Core
 
 
 		#endregion Implementation of Resource
-
 	}
 }

@@ -13,9 +13,9 @@
     <AssemblyName>Axiom.Plugins.OctreeZone</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
@@ -27,9 +27,9 @@
        to set the TargetFrameworkVersion to v3.5 -->
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -48,7 +48,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -98,6 +98,14 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
+      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
+      <Name>XdotNet.mscorlib.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.SL5.csproj">
+      <Project>{DAA8D7C6-F439-467B-85BB-0CFC613457D5}</Project>
+      <Name>XdotNet.System.SL5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

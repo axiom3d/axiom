@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Windows;
 using System.Windows.Graphics;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -68,7 +70,24 @@ namespace Axiom.RenderSystems.Xna
 			var driverList = new DriverCollection();
 
 #if SILVERLIGHT
-			driverList.Add(new Driver(GraphicsDeviceManager.Current.GraphicsDevice.Adapter));
+			switch (GraphicsDeviceManager.Current.RenderModeReason)
+			{
+				case RenderModeReason.GPUAccelerationDisabled:
+					MessageBox.Show("GPU hardware acceleration is disabled. Set 'EnableGPUAcceleration' to true in the hosting HTML page and 'Use GPU Acceleration' in Out-of-Browser settings", "GPUAccelerationDisabled", MessageBoxButton.OK);
+					break;
+				case RenderModeReason.Not3DCapable:
+					MessageBox.Show("The graphics card is not 3D capable.", "Not3DCapable", MessageBoxButton.OK);
+					break;
+				case RenderModeReason.SecurityBlocked:                                
+					MessageBox.Show("Right-click menu, open Silverlight Configuration, go to the Permissions panel and allow 3D Graphics", "SecurityBlocked", MessageBoxButton.OK);
+					break;
+				case RenderModeReason.TemporarilyUnavailable:
+					MessageBox.Show("Device is temporarily unavailable.", "TemporarilyUnavailable", MessageBoxButton.OK);
+					break;
+				case RenderModeReason.Normal:
+					driverList.Add(new Driver(GraphicsDeviceManager.Current.GraphicsDevice.Adapter));
+					break;
+			}
 #else
 			foreach (var adapterInfo in GraphicsAdapter.Adapters)
 			{
@@ -142,62 +161,153 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="caps"></param>
 		/// <param name="texType"></param>
 		/// <returns></returns>
-		public static TextureFilter Convert( FilterType type, Graphics.FilterOptions options, XnaTextureType texType )
+		//public static TextureFilter Convert( FilterType type, Graphics.FilterOptions options, XnaTextureType texType )
+		//{
+		//    // setting a default val here to keep compiler from complaining about using unassigned value types
+
+		//    switch ( type )
+		//    {
+		//        case FilterType.Min:
+		//        {
+		//            switch ( options )
+		//            {
+		//                case Graphics.FilterOptions.Anisotropic:
+		//                    return TextureFilter.Anisotropic;
+
+		//                case Graphics.FilterOptions.Linear:
+		//                    return TextureFilter.Linear;
+
+		//                case Graphics.FilterOptions.Point:
+		//                case Graphics.FilterOptions.None:
+		//                    return TextureFilter.Point;
+		//            }
+		//            break;
+		//        }
+		//        case FilterType.Mag:
+		//        {
+		//            switch ( options )
+		//            {
+		//                case Graphics.FilterOptions.Anisotropic:
+		//                    return TextureFilter.Anisotropic;
+
+		//                case Graphics.FilterOptions.None:
+		//                case Graphics.FilterOptions.Linear:
+		//                    return TextureFilter.Linear;
+
+		//                case Graphics.FilterOptions.Point:
+		//                    return TextureFilter.Point;
+		//            }
+		//            break;
+		//        }
+		//        case FilterType.Mip:
+		//        {
+		//            switch ( options )
+		//            {
+		//                case Graphics.FilterOptions.Anisotropic:
+		//                case Graphics.FilterOptions.Linear:
+		//                    return TextureFilter.Linear;
+
+		//                case Graphics.FilterOptions.None:
+		//                case Graphics.FilterOptions.Point:
+		//                    return TextureFilter.Point;
+		//            }
+		//            break;
+		//        }
+		//    }
+
+		//    // should never get here
+		//    return 0;
+		//}
+
+		public static TextureFilter ToTextureFilter(this FilterOptions options)
 		{
-			// setting a default val here to keep compiler from complaining about using unassigned value types
-
-			switch ( type )
+			switch (options)
 			{
-				case FilterType.Min:
-				{
-					switch ( options )
-					{
-                        case Graphics.FilterOptions.Anisotropic:
-							return TextureFilter.Anisotropic;
+				case FilterOptions.Anisotropic:
+					return TextureFilter.Anisotropic;
+				case FilterOptions.Linear:
+					return TextureFilter.Linear;
+				case FilterOptions.Point:
+				default:
+					return TextureFilter.Point;
+			}
+		}
 
-                        case Graphics.FilterOptions.Linear:
-							return TextureFilter.Linear;
-
-                        case Graphics.FilterOptions.Point:
-                        case Graphics.FilterOptions.None:
-							return TextureFilter.Point;
-					}
+		public static TextureFilter Convert(FilterType type, FilterOptions options, TextureFilter currentFilter)
+		{
+			TextureFilter min, mag, mip;
+			switch (currentFilter)
+			{
+				case TextureFilter.Linear:
+					min = mag = mip = TextureFilter.Linear;
 					break;
-				}
-				case FilterType.Mag:
-				{
-					switch ( options )
-					{
-						case Graphics.FilterOptions.Anisotropic:
-							return TextureFilter.Anisotropic;
-
-						case Graphics.FilterOptions.None:
-						case Graphics.FilterOptions.Linear:
-							return TextureFilter.Linear;
-
-						case Graphics.FilterOptions.Point:
-							return TextureFilter.Point;
-					}
+				case TextureFilter.Point:
+					min = mag = mip = TextureFilter.Point;
 					break;
-				}
-				case FilterType.Mip:
-				{
-					switch ( options )
-					{
-						case Graphics.FilterOptions.Anisotropic:
-						case Graphics.FilterOptions.None:
-						case Graphics.FilterOptions.Linear:
-							return TextureFilter.Linear;
-
-						case Graphics.FilterOptions.Point:
-							return TextureFilter.Point;
-					}
+				case TextureFilter.LinearMipPoint:
+					min = mag = TextureFilter.Linear;
+					mip = TextureFilter.Point;
 					break;
-				}
+				case TextureFilter.PointMipLinear:
+					min = mag = TextureFilter.Point;
+					mip = TextureFilter.Linear;
+					break;
+				case TextureFilter.MinLinearMagPointMipLinear:
+					min = mip = TextureFilter.Linear;
+					mag = TextureFilter.Point;
+					break;
+				case TextureFilter.MinLinearMagPointMipPoint:
+					min = TextureFilter.Linear;
+					mag = mip = TextureFilter.Point;
+					break;
+				case TextureFilter.MinPointMagLinearMipLinear:
+					min = TextureFilter.Point;
+					mag = mip = TextureFilter.Linear;
+					break;
+				case TextureFilter.MinPointMagLinearMipPoint:
+					min = mip = TextureFilter.Point;
+					mag = TextureFilter.Linear;
+					break;
+				case TextureFilter.Anisotropic:
+				default:
+					min = mag = mip = TextureFilter.Anisotropic;
+					break;
 			}
 
-			// should never get here
-			return 0;
+			switch (type)
+			{
+				case FilterType.Min:
+					min = options.ToTextureFilter();
+					break;
+				case FilterType.Mag:
+					mag = options.ToTextureFilter();
+					break;
+				case FilterType.Mip:
+					mip = options.ToTextureFilter();
+					break;
+			}
+
+			if (min == TextureFilter.Linear)
+			{
+				if (mag == TextureFilter.Linear)
+					return mip == TextureFilter.Linear
+							? TextureFilter.Linear
+							: TextureFilter.LinearMipPoint;
+				return mip == TextureFilter.Linear
+						? TextureFilter.MinLinearMagPointMipLinear
+						: TextureFilter.MinLinearMagPointMipPoint;
+			}
+			if (min == TextureFilter.Point)
+			{
+				if (mag == TextureFilter.Linear)
+					return mip == TextureFilter.Linear
+							? TextureFilter.MinPointMagLinearMipLinear
+							: TextureFilter.MinPointMagLinearMipPoint;
+				return mip == TextureFilter.Linear
+						? TextureFilter.PointMipLinear
+						: TextureFilter.Point;
+			}
+			return TextureFilter.Anisotropic;
 		}
 
 		/// <summary>
@@ -208,80 +318,80 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static BlendFunction Convert( LayerBlendOperationEx blendop )
 		{
-		    BlendFunction xnaTexOp = 0;
+			BlendFunction xnaTexOp = 0;
 
 
-		    // figure out what is what
-		    switch ( blendop )
-		    {
-                //case LayerBlendOperationEx.Source1:
-                //    xnaTexOp = BlendFunction.SelectArg1;
-                //    break;
+			// figure out what is what
+			switch ( blendop )
+			{
+				//case LayerBlendOperationEx.Source1:
+				//    xnaTexOp = BlendFunction.SelectArg1;
+				//    break;
 
-                //case LayerBlendOperationEx.Source2:
-                //    xnaTexOp = BlendFunction.SelectArg2;
-                //    break;
+				//case LayerBlendOperationEx.Source2:
+				//    xnaTexOp = BlendFunction.SelectArg2;
+				//    break;
 
-                //case LayerBlendOperationEx.Modulate:
-                //    xnaTexOp = BlendFunction.moXFG.TextureOperation.Modulate;
-                //    break;
+				//case LayerBlendOperationEx.Modulate:
+				//    xnaTexOp = BlendFunction.moXFG.TextureOperation.Modulate;
+				//    break;
 
-                //case LayerBlendOperationEx.ModulateX2:
-                //    xnaTexOp = BlendFunction.Modulate2X;
-                //    break;
+				//case LayerBlendOperationEx.ModulateX2:
+				//    xnaTexOp = BlendFunction.Modulate2X;
+				//    break;
 
-                //case LayerBlendOperationEx.ModulateX4:
-                //    xnaTexOp = BlendFunction.Modulate4X;
-                //    break;
+				//case LayerBlendOperationEx.ModulateX4:
+				//    xnaTexOp = BlendFunction.Modulate4X;
+				//    break;
 
-		        case LayerBlendOperationEx.Add:
-		            xnaTexOp = BlendFunction.Add;
-		            break;
+				case LayerBlendOperationEx.Add:
+					xnaTexOp = BlendFunction.Add;
+					break;
 
-		        case LayerBlendOperationEx.AddSigned:
-		            xnaTexOp = BlendFunction.Add;
-		            break;
+				case LayerBlendOperationEx.AddSigned:
+					xnaTexOp = BlendFunction.Add;
+					break;
 
-		        case LayerBlendOperationEx.AddSmooth:
-		            xnaTexOp = BlendFunction.Add;
-		            break;
+				case LayerBlendOperationEx.AddSmooth:
+					xnaTexOp = BlendFunction.Add;
+					break;
 
-		        case LayerBlendOperationEx.Subtract:
-		            xnaTexOp = BlendFunction.Subtract;
-		            break;
+				case LayerBlendOperationEx.Subtract:
+					xnaTexOp = BlendFunction.Subtract;
+					break;
 
-                //case LayerBlendOperationEx.BlendDiffuseAlpha:
-                //    xnaTexOp = BlendFunction.BlendDiffuseAlpha;
-                //    break;
+				//case LayerBlendOperationEx.BlendDiffuseAlpha:
+				//    xnaTexOp = BlendFunction.BlendDiffuseAlpha;
+				//    break;
 
-                //case LayerBlendOperationEx.BlendTextureAlpha:
-                //    xnaTexOp = BlendFunction.BlendTextureAlpha;
-                //    break;
+				//case LayerBlendOperationEx.BlendTextureAlpha:
+				//    xnaTexOp = BlendFunction.BlendTextureAlpha;
+				//    break;
 
-                //case LayerBlendOperationEx.BlendCurrentAlpha:
-                //    xnaTexOp = BlendFunction.BlendCurrentAlpha;
-                //    break;
+				//case LayerBlendOperationEx.BlendCurrentAlpha:
+				//    xnaTexOp = BlendFunction.BlendCurrentAlpha;
+				//    break;
 
-                //case LayerBlendOperationEx.BlendManual:
-                //    xnaTexOp = BlendFunction.BlendFactorAlpha;
-                //    break;
+				//case LayerBlendOperationEx.BlendManual:
+				//    xnaTexOp = BlendFunction.BlendFactorAlpha;
+				//    break;
 
-                //case LayerBlendOperationEx.DotProduct:
-                //    if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.Dot3 ))
-                //        xnaTexOp = BlendFunction.DotProduct3;
-                //    else
-                //        xnaTexOp = BlendFunction.Modulate;
-                //    break;
+				//case LayerBlendOperationEx.DotProduct:
+				//    if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.Dot3 ))
+				//        xnaTexOp = BlendFunction.DotProduct3;
+				//    else
+				//        xnaTexOp = BlendFunction.Modulate;
+				//    break;
 
-		        default:
-		            xnaTexOp = BlendFunction.Add;
-		            break;
-		    } // end switch
+				default:
+					xnaTexOp = BlendFunction.Add;
+					break;
+			} // end switch
 
-		    return xnaTexOp;
+			return xnaTexOp;
 		}
 
-	    /*  public static XFG.TextureArgument Convert( LayerBlendSource blendSource )
+		/*  public static XFG.TextureArgument Convert( LayerBlendSource blendSource )
 		  {
 			  XFG.TextureArgument d3dTexArg = 0;
 
@@ -825,45 +935,45 @@ namespace Axiom.RenderSystems.Xna
 		{
 			switch ( semantic )
 			{
-                case SurfaceFormat.Color:
-                    return PixelFormat.A8B8G8R8;
-                case SurfaceFormat.Bgr565:
-                    return PixelFormat.R5G6B5;
-                case SurfaceFormat.Bgra5551:
+				case SurfaceFormat.Color:
+					return PixelFormat.A8B8G8R8;
+				case SurfaceFormat.Bgr565:
+					return PixelFormat.R5G6B5;
+				case SurfaceFormat.Bgra5551:
 					return PixelFormat.A1R5G5B5;
 				case SurfaceFormat.Bgra4444:
 					return PixelFormat.A4R4G4B4;
-                //case SurfaceFormat.NormalizedByte2:
-                //    return PixelFormat.BYTE_LA;
-                //case SurfaceFormat.NormalizedByte4:
-                //    return PixelFormat.A8R8G8B8;
+				//case SurfaceFormat.NormalizedByte2:
+				//    return PixelFormat.BYTE_LA;
+				//case SurfaceFormat.NormalizedByte4:
+				//    return PixelFormat.A8R8G8B8;
 #if !SILVERLIGHT
-                case SurfaceFormat.Dxt1:
-                    return PixelFormat.DXT1;
-                case SurfaceFormat.Dxt3:
-                    return PixelFormat.DXT3;
-                case SurfaceFormat.Dxt5:
-                    return PixelFormat.DXT5;
-                case SurfaceFormat.Rgba1010102:
-                    return PixelFormat.A2B10G10R10;
-                case SurfaceFormat.Rg32:
-                    return PixelFormat.SHORT_GR;
-                case SurfaceFormat.Rgba64:
-                    return PixelFormat.SHORT_RGBA;
-                case SurfaceFormat.Alpha8:
+				case SurfaceFormat.Dxt1:
+					return PixelFormat.DXT1;
+				case SurfaceFormat.Dxt3:
+					return PixelFormat.DXT3;
+				case SurfaceFormat.Dxt5:
+					return PixelFormat.DXT5;
+				case SurfaceFormat.Rgba1010102:
+					return PixelFormat.A2B10G10R10;
+				case SurfaceFormat.Rg32:
+					return PixelFormat.SHORT_GR;
+				case SurfaceFormat.Rgba64:
+					return PixelFormat.SHORT_RGBA;
+				case SurfaceFormat.Alpha8:
 					return PixelFormat.A8;
-                case SurfaceFormat.Single:
-                    return PixelFormat.FLOAT32_R;
-                case SurfaceFormat.Vector2:
-                    return PixelFormat.FLOAT32_GR;
-                case SurfaceFormat.Vector4:
-                    return PixelFormat.FLOAT32_RGBA;
-                //case SurfaceFormat.HalfSingle:
-                //case SurfaceFormat.HalfVector2:
-                //case SurfaceFormat.HalfVector4:
-                //case SurfaceFormat.HdrBlendable:
+				case SurfaceFormat.Single:
+					return PixelFormat.FLOAT32_R;
+				case SurfaceFormat.Vector2:
+					return PixelFormat.FLOAT32_GR;
+				case SurfaceFormat.Vector4:
+					return PixelFormat.FLOAT32_RGBA;
+				//case SurfaceFormat.HalfSingle:
+				//case SurfaceFormat.HalfVector2:
+				//case SurfaceFormat.HalfVector4:
+				//case SurfaceFormat.HdrBlendable:
 #endif
-                default:
+				default:
 					return PixelFormat.Unknown;
 			}
 		}
@@ -877,47 +987,47 @@ namespace Axiom.RenderSystems.Xna
 		{
 			switch ( format )
 			{
-                case PixelFormat.A8B8G8R8:
-                    return SurfaceFormat.Color;
-                case PixelFormat.R5G6B5:
-                    return SurfaceFormat.Bgr565;
-                case PixelFormat.A1R5G5B5:
-                    return SurfaceFormat.Bgra5551;
-                case PixelFormat.A4R4G4B4:
-                    return SurfaceFormat.Bgra4444;
-                //case PixelFormat.BYTE_LA:
-                //    return SurfaceFormat.NormalizedByte2;
-                //case PixelFormat.A8R8G8B8:
-                //    return SurfaceFormat.NormalizedByte4;
+				case PixelFormat.A8B8G8R8:
+					return SurfaceFormat.Color;
+				case PixelFormat.R5G6B5:
+					return SurfaceFormat.Bgr565;
+				case PixelFormat.A1R5G5B5:
+					return SurfaceFormat.Bgra5551;
+				case PixelFormat.A4R4G4B4:
+					return SurfaceFormat.Bgra4444;
+				//case PixelFormat.BYTE_LA:
+				//    return SurfaceFormat.NormalizedByte2;
+				//case PixelFormat.A8R8G8B8:
+				//    return SurfaceFormat.NormalizedByte4;
 #if !SILVERLIGHT
-                case PixelFormat.DXT1:
-                    return SurfaceFormat.Dxt1;
-                case PixelFormat.DXT3:
-                    return SurfaceFormat.Dxt3;
-                case PixelFormat.DXT5:
-                    return SurfaceFormat.Dxt5;
-                case PixelFormat.A2B10G10R10:
-                    return SurfaceFormat.Rgba1010102;
-                case PixelFormat.SHORT_GR:
-                    return SurfaceFormat.Rg32;
-                case PixelFormat.SHORT_RGBA:
-                    return SurfaceFormat.Rgba64;
-                case PixelFormat.A8:
-                    return SurfaceFormat.Alpha8;
-                case PixelFormat.FLOAT32_R:
-                    return SurfaceFormat.Single;
-                case PixelFormat.FLOAT32_GR:
-                    return SurfaceFormat.Vector2;
-                case PixelFormat.FLOAT32_RGBA:
-                    return SurfaceFormat.Vector4;
-                    //return SurfaceFormat.HalfSingle;
-                    //return SurfaceFormat.HalfVector2;
-                    //return SurfaceFormat.HalfVector4;
-                    //return SurfaceFormat.HdrBlendable;
+				case PixelFormat.DXT1:
+					return SurfaceFormat.Dxt1;
+				case PixelFormat.DXT3:
+					return SurfaceFormat.Dxt3;
+				case PixelFormat.DXT5:
+					return SurfaceFormat.Dxt5;
+				case PixelFormat.A2B10G10R10:
+					return SurfaceFormat.Rgba1010102;
+				case PixelFormat.SHORT_GR:
+					return SurfaceFormat.Rg32;
+				case PixelFormat.SHORT_RGBA:
+					return SurfaceFormat.Rgba64;
+				case PixelFormat.A8:
+					return SurfaceFormat.Alpha8;
+				case PixelFormat.FLOAT32_R:
+					return SurfaceFormat.Single;
+				case PixelFormat.FLOAT32_GR:
+					return SurfaceFormat.Vector2;
+				case PixelFormat.FLOAT32_RGBA:
+					return SurfaceFormat.Vector4;
+					//return SurfaceFormat.HalfSingle;
+					//return SurfaceFormat.HalfVector2;
+					//return SurfaceFormat.HalfVector4;
+					//return SurfaceFormat.HdrBlendable;
 #endif
-                default:
+				default:
 					return (SurfaceFormat)(-1);
-            }
+			}
 		}
 
 		public static PixelFormat GetClosestSupported( PixelFormat format )
@@ -926,33 +1036,33 @@ namespace Axiom.RenderSystems.Xna
 				return format;
 			switch ( format )
 			{
-                case PixelFormat.B8G8R8:
-			        return PixelFormat.A8B8G8R8;
-                    //return PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
-                case PixelFormat.B5G6R5:
-                    return PixelFormat.R5G6B5;
-                    //return PixelFormat.A1R5G5B5;
-                    //return PixelFormat.A4R4G4B4;
-                    //return PixelFormat.DXT1;
-                    //return PixelFormat.DXT3;
-                    //return PixelFormat.DXT5;
-                    //return PixelFormat.BYTE_LA;
-                    //return PixelFormat.A8R8G8B8;
-                    //return PixelFormat.A2B10G10R10;
-                    //return PixelFormat.SHORT_GR;
-                    //return PixelFormat.SHORT_RGBA;
-                case PixelFormat.L8:
-                    return PixelFormat.A8;
-                    //return PixelFormat.FLOAT32_R;
-                    //return PixelFormat.FLOAT32_GR;
-                case PixelFormat.FLOAT32_RGB:
-                    return PixelFormat.FLOAT32_RGBA;
+				case PixelFormat.B8G8R8:
+					return PixelFormat.A8B8G8R8;
+					//return PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
+				case PixelFormat.B5G6R5:
+					return PixelFormat.R5G6B5;
+					//return PixelFormat.A1R5G5B5;
+					//return PixelFormat.A4R4G4B4;
+					//return PixelFormat.DXT1;
+					//return PixelFormat.DXT3;
+					//return PixelFormat.DXT5;
+					//return PixelFormat.BYTE_LA;
+					//return PixelFormat.A8R8G8B8;
+					//return PixelFormat.A2B10G10R10;
+					//return PixelFormat.SHORT_GR;
+					//return PixelFormat.SHORT_RGBA;
+				case PixelFormat.L8:
+					return PixelFormat.A8;
+					//return PixelFormat.FLOAT32_R;
+					//return PixelFormat.FLOAT32_GR;
+				case PixelFormat.FLOAT32_RGB:
+					return PixelFormat.FLOAT32_RGBA;
 				case PixelFormat.Unknown:
 				default:
-			        return PixelFormat.A8B8G8R8;
-                    //return PixelFormat.B8G8R8A8; // Color	(Unsigned format) 32-bit ARGB pixel format with alpha, using 8 bits per channel.
-                    //return PixelFormat.A8R8G8B8;
-            }
+					return PixelFormat.A8B8G8R8;
+					//return PixelFormat.B8G8R8A8; // Color	(Unsigned format) 32-bit ARGB pixel format with alpha, using 8 bits per channel.
+					//return PixelFormat.A8R8G8B8;
+			}
 		}
 	}
 }

@@ -232,7 +232,6 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Materials\hdr.material">
       <Link>Media\Materials\hdr.material</Link>

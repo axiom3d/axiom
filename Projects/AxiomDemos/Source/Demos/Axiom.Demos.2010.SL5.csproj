@@ -56,16 +56,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Data.Services.Client, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Data, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -157,17 +152,13 @@
   </Target>
   -->
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
+      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
+      <Name>XdotNet.mscorlib.SL5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.SL5.csproj">
-      <Project>{DF2663E8-5CCB-4D39-AE18-AA71F05157F5}</Project>
-      <Name>Axiom.Plugins.OctreeZone.2010.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.SL5.csproj">
-      <Project>{63A38F72-2DBC-4F94-9C1A-4C2C85999216}</Project>
-      <Name>Axiom.SceneManagers.Octree.2010.SL5</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.SL5.csproj">
       <Project>{C9FFCF3D-BFF5-4701-8084-DD178E6A902F}</Project>

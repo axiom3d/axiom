@@ -135,7 +135,7 @@ namespace Axiom.FileSystem
                         select a).First();
             Name = name.Replace('/', '.');
             resources = (from resource in assembly.GetManifestResourceNames()
-                         where resource.StartsWith(Name)
+                         //where resource.StartsWith(Name)
                          select resource).ToList();
             resources.Sort();
         }
