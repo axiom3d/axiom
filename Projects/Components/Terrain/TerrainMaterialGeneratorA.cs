@@ -313,7 +313,7 @@ namespace Axiom.Components.Terrain
                     tu.SetTextureAddressingMode( TextureAddressing.Clamp );
 
                     //global color map
-                    if ( terrain.GlobalColorMapEnabled && IsGlobalColorMapEnabled )
+                    if ( terrain.IsGlobalColorMapEnabled && IsGlobalColorMapEnabled )
                     {
                         tu = pass.CreateTextureUnitState( terrain.GlobalColorMap.Name );
                         tu.SetTextureAddressingMode( TextureAddressing.Clamp );
@@ -439,7 +439,7 @@ namespace Axiom.Components.Terrain
                 // normalmap
                 --freeTextureUnits;
                 // colourmap
-                if ( terrain.GlobalColorMapEnabled )
+                if ( terrain.IsGlobalColorMapEnabled )
                     --freeTextureUnits;
                 // TODO shadowmaps
 
@@ -1068,7 +1068,7 @@ namespace Axiom.Components.Terrain
                             "uniform sampler2D globalNormal : register(s0)\n";
 
                         uint currentSamplerIdx = 1;
-                        if ( terrain.GlobalColorMapEnabled && prof.IsGlobalColorMapEnabled )
+                        if ( terrain.IsGlobalColorMapEnabled && prof.IsGlobalColorMapEnabled )
                         {
                             source +=
                                 ", uniform sampler2D globalColorMap : register(s" +
@@ -1281,7 +1281,7 @@ namespace Axiom.Components.Terrain
                     }
                     else
                     {
-                        if ( terrain.GlobalColorMapEnabled && prof.IsGlobalColorMapEnabled )
+                        if ( terrain.IsGlobalColorMapEnabled && prof.IsGlobalColorMapEnabled )
                         {
                             // sample colour map and apply to diffuse
                             source += "	diffuse *= tex2D(globalColorMap, uv).rgb;\n";
