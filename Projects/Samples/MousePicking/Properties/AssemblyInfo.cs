@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyProduct( "Axiom.Samples.MousePicking" )]
 [assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyCopyright( "Copyright © 2003-2011 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyCopyright( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
