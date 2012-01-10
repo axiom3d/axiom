@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.Samples.Browser</RootNamespace>
     <AssemblyName>Axiom.Samples.Browser</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
@@ -145,24 +144,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
-    </Reference>
-    <Reference Include="System.Core">
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-    </Reference>
-    <Reference Include="System.Data">
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Deployment">
     </Reference>
-    <Reference Include="System.Drawing">
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-    </Reference>
-    <Reference Include="System.Xml">
-    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -177,14 +168,6 @@
     <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpInputSystem\src\Projects\SharpInputSystem\SharpInputSystem.DirectX.2010.v4.0.csproj">
       <Project>{2CBDB2D9-F549-47E5-9BDB-CB2CBA0C9FAE}</Project>
       <Name>SharpInputSystem.DirectX.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.2010.v4.0.csproj">
-      <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
-      <Name>Axiom.Framework.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.v4.0.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>

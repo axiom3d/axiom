@@ -607,14 +607,14 @@ namespace Axiom.Media
                     var outputPtr = output.ToUIntPointer();
                     var inp = inputPtr[offset];
 
-                    //int xshift = 8, yshift = 16, zshift = 24, ashift = 0; //BUG: NRSC: Alpha was on wrong side
+					//int xshift = 8, yshift = 16, zshift = 24, ashift = 0; //BUG: NRSC: Alpha was on wrong side
                     int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
 
 #if BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-                    outputPtr[offset] = ((uint) (0xFF << ashift)) | (((uint) inp.x) << zshift) |
+					outputPtr[offset] = ((uint) (0xFF << ashift)) | (((uint) inp.x) << zshift) |
                                         (((uint) inp.y) << yshift) | (((uint) inp.z) << xshift);
 #endif
                 }
@@ -969,8 +969,8 @@ namespace Axiom.Media
 			public static void Convert( PixelBox src, PixelBox dst, IPixelConverter pixelConverter )
 			{
 			    {
-                    var srcptr = (BufferBase)src.Data.Clone(); srcptr.Ptr = 0;
-                    var dstptr = (BufferBase)dst.Data.Clone(); dstptr.Ptr = 0;
+                    var srcptr = (BufferBase)src.Data.Clone();                     
+                    var dstptr = (BufferBase)dst.Data.Clone();
 					var srcSliceSkip = src.SliceSkip;
 					var dstSliceSkip = dst.SliceSkip;
 					var k = src.Right - src.Left;

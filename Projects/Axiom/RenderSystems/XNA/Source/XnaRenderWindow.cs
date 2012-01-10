@@ -951,17 +951,17 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void Update( bool swapBuffers )
 		{
+#if SILVERLIGHT
+			if (Root.InDrawCallback)
+				base.Update(swapBuffers);
+			else
+				ThreadUI.Invoke(DrawingSurface.Invalidate);
+#else
 			var rs = (XnaRenderSystem)Root.Instance.RenderSystem;
 
 			// access device through driver
 			var device = _driver.XnaDevice;
 
-#if SILVERLIGHT
-			if ( Root.InDrawCallback )
-				base.Update( swapBuffers );
-			else
-				DrawingSurface.Invalidate();
-#else
 			switch ( device.GraphicsDeviceStatus )
 			{
 				case GraphicsDeviceStatus.Lost:

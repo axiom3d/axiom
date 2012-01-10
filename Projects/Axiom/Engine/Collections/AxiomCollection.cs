@@ -38,6 +38,7 @@
 using System;
 #if !USE_CUSTOM_SORTEDLIST
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 #endif
@@ -49,7 +50,7 @@ namespace Axiom.Collections
 	/// <summary>
 	///	Serves as a basis for strongly typed collections in the engine.
 	/// </summary>
-	public class AxiomCollection<T> : Dictionary<string, T>
+	public class AxiomCollection<T> : ConcurrentDictionary<string, T>
 	{
 		#region Constants
 
@@ -87,7 +88,7 @@ namespace Axiom.Collections
 		/// </summary>
 		/// <param name="parent"></param>
 		protected AxiomCollection( Object parent )
-			: base( InitialCapacity )
+			: base(Environment.ProcessorCount, InitialCapacity)
 		{
 			this.parent = parent;
 			this.typeName = typeof( T ).Name;
@@ -101,6 +102,16 @@ namespace Axiom.Collections
 		#endregion Constructors
 
 		#region Instance Methods
+
+		public virtual void Add(string key, T item)
+		{
+			(this as IDictionary<string, T>).Add(key, item);
+		}
+
+		public virtual void Remove(string key)
+		{
+			(this as IDictionary<string, T>).Remove(key);
+		}
 
 		/// <summary>
 		///	Adds an unnamed object to the <see cref="AxiomCollection{T}"/> and names it manually.

@@ -74,6 +74,15 @@ namespace Axiom.Core
 		/// </summary>
 		private static Root instance;
 
+#if SILVERLIGHT
+		[ThreadStatic] public static bool inDrawCallback;
+
+		public static bool InDrawCallback
+		{
+			get { return inDrawCallback; }
+		}
+#endif
+
 		/// <summary>
 		///     Constructor.
 		/// </summary>
@@ -124,15 +133,15 @@ namespace Axiom.Core
 				this.logMgr.Write( "*-*-* Axiom Initializing" );
 
 				ArchiveManager.Instance.Initialize();
-                ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
-                ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
-                ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
 #if WINDOWS_PHONE
 				ArchiveManager.Instance.AddArchiveFactory( new TitleContainerArchiveFactory() );
 #endif
 #if !(XBOX || XBOX360 )
-                ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
 #endif
 #if SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
@@ -215,7 +224,6 @@ namespace Axiom.Core
 		/// </summary>
 		private RenderWindow autoWindow;
 
-		//TODO: NRSC Added
 		/// <summary>
 		///     Gets the Auto created window (if one was created).
 		/// </summary>
@@ -871,6 +879,31 @@ namespace Axiom.Core
 			// initialize timer
 			this.timer.Reset();
 
+#if SILVERLIGHT && !WINDOWS_PHONE
+			ThreadUI.Invoke(delegate
+								{
+									var drawingSurface = (DrawingSurface) autoWindow["DRAWINGSURFACE"];
+									drawingSurface.Draw += (s, args) =>
+															{
+																try
+																{
+																	inDrawCallback = true;
+																	if (!RenderOneFrame())
+																		queuedEnd = true;
+																}
+																catch (Exception ex)
+																{
+																	if (LogManager.Instance != null)
+																		LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+																}
+																finally
+																{
+																	inDrawCallback = false;
+																}
+															};
+								});
+#endif
+
 			return this.autoWindow;
 		}
 
@@ -992,11 +1025,6 @@ namespace Axiom.Core
 			return this.OnFrameEnded();
 		}
 
-#if SILVERLIGHT
-	    [ThreadStatic] private static bool inDrawCallback;
-        public static bool InDrawCallback { get { return inDrawCallback; } }
-#endif
-
 		/// <summary>
 		///		Starts the default rendering loop.
 		/// </summary>
@@ -1013,26 +1041,16 @@ namespace Axiom.Core
 			this.queuedEnd = false;
 
 #if SILVERLIGHT && !WINDOWS_PHONE
-			var drawingSurface = (DrawingSurface)autoWindow[ "DRAWINGSURFACE" ];
-			drawingSurface.Draw += ( s, args ) =>
-								   {
-                                       try
-                                       {
-                                           inDrawCallback = true;
-                                           if (!queuedEnd && RenderOneFrame())
-                                               args.InvalidateSurface();
-                                       }
-                                       catch (Exception ex)
-                                       {
-                                           if (LogManager.Instance != null)
-                                               LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
-                                       }
-                                       finally
-                                       {
-                                           inDrawCallback = false;
-                                       }
-                                   };
-            drawingSurface.Invalidate();
+			ThreadUI.Invoke(delegate
+								{
+									var drawingSurface = (DrawingSurface) autoWindow["DRAWINGSURFACE"];
+									drawingSurface.Draw += (s, args) =>
+															{
+																if (!queuedEnd)
+																	args.InvalidateSurface();
+															};
+									drawingSurface.Invalidate();
+								});
 #else
 			while ( !this.queuedEnd )
 			{
@@ -1558,17 +1576,17 @@ namespace Axiom.Core
 			}
 
 			// Save
-            if ( this.movableObjectFactoryMap.ContainsKey( fact.Type ) )
-            {
-                LogManager.Instance.Write( "Factory {0} has been replaced by {1}.",
-                    this.movableObjectFactoryMap[ fact.Type ].GetType().Name,
-                    fact.GetType().Name
-                    );
+			if ( this.movableObjectFactoryMap.ContainsKey( fact.Type ) )
+			{
+				LogManager.Instance.Write( "Factory {0} has been replaced by {1}.",
+					this.movableObjectFactoryMap[ fact.Type ].GetType().Name,
+					fact.GetType().Name
+					);
 
-                this.movableObjectFactoryMap[ fact.Type ] = fact;
-            }
-            else
-                this.movableObjectFactoryMap.Add( fact.Type, fact );
+				this.movableObjectFactoryMap[ fact.Type ] = fact;
+			}
+			else
+				this.movableObjectFactoryMap.Add( fact.Type, fact );
 
 			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
 		}

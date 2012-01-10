@@ -206,7 +206,7 @@ namespace Axiom.RenderSystems.Xna
             Depth = 1;
             Format = XnaHelper.Convert( surface.Format );
             // Default
-            RowPitch = Width * PixelUtil.GetNumElemBytes(Format); //TODO: NRSC: Check this
+            RowPitch = Width * PixelUtil.GetNumElemBytes(Format);
             SlicePitch = Height * RowPitch;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 

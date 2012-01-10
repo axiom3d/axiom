@@ -302,7 +302,7 @@ namespace Axiom.Core
 				message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
 				// write the message and flush the buffer
-				writer.WriteLine( message );
+                lock (writer) writer.WriteLine(message);
 				//writer auto-flushes
 			}
 

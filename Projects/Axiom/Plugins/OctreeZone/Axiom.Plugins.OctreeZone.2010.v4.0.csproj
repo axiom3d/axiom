@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</ProjectGuid>
+    <ProjectGuid>{0BFA55D7-D951-4D7D-A0DC-0D41FE16C42D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OctreeZone</RootNamespace>
@@ -34,7 +34,6 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -92,16 +91,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition">
-    </Reference>
-    <Reference Include="System.Data">
-    </Reference>
-    <Reference Include="System.Xml">
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigFile.cs" />
@@ -135,11 +129,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.v4.0.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Project>{BE9A5C7A-C717-4110-8D44-A17E835A7211}</Project>
       <Name>Axiom.SceneManagers.PortalConnected.2010.v4.0</Name>
     </ProjectReference>
   </ItemGroup>

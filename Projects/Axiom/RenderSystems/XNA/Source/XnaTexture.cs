@@ -292,8 +292,7 @@ namespace Axiom.RenderSystems.Xna
 				_mipmapCount = _texture.LevelCount - 1;
 			}
 			//#if SILVERLIGHT
-			if ( _mipmapCount < 0 )
-				_mipmapCount = 0;
+			if (_mipmapCount < 0) _mipmapCount = 0;
 			//#endif
 
 			// Need to know static / dynamic
@@ -553,13 +552,13 @@ namespace Axiom.RenderSystems.Xna
 				{
 					// find & load resource data intro stream to allow resource group changes if required
 					stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
-#if SILVERLIGHT
-					if (stream == null)
-					{
-						Name += ".png";
-						stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
-					}
-#endif
+//#if SILVERLIGHT
+//                    if (stream == null)
+//                    {
+//                        Name += ".png";
+//                        stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+//                    }
+//#endif
 					var pos = Name.LastIndexOf( "." );
 					var ext = Name.Substring( pos + 1 );
 
@@ -573,7 +572,8 @@ namespace Axiom.RenderSystems.Xna
 					image.Dispose();
 				}
 
-				stream.Close();
+                if (stream != null)
+                    stream.Close();
 			}
 #endif
 		}
@@ -770,7 +770,7 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Usage == TextureUsage.RenderTarget )
 			{
-				renderTarget = new RenderTarget2D( _device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
+				renderTarget = new RenderTarget2D( _device, SrcWidth, SrcHeight, MipmapCount > 0,
 												   xnaPixelFormat, DepthFormat.Depth24Stencil8 );
 				_normTexture = renderTarget;
 				CreateDepthStencil();
@@ -778,18 +778,12 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 #if SILVERLIGHT
-				if ((SrcWidth & (SrcWidth - 1)) != 0 || (SrcHeight & (SrcHeight - 1)) != 0) // Powers of 2
-					_normTexture = new Texture2D( _device, SrcWidth, SrcHeight, false, xnaPixelFormat );
-				else
+				if (!IsPowerOfTwo)
+					MipmapCount = 0;
 #endif
-				_normTexture = new Texture2D( _device, SrcWidth, SrcHeight, MipmapCount > 0 ? true : false,
-											  xnaPixelFormat );
+				_normTexture = new Texture2D(_device, SrcWidth, SrcHeight, MipmapCount > 0, xnaPixelFormat);
 			}
 			_texture = _normTexture;
-			//#if SILVERLIGHT
-			//            if (_texture.LevelCount == 0)
-			//                MipmapCount = 0;
-			//#endif
 
 			SetFinalAttributes( SrcWidth, SrcHeight, 1, XnaHelper.Convert( xnaPixelFormat ) );
 
@@ -860,6 +854,7 @@ namespace Axiom.RenderSystems.Xna
 		//    }
 		//    return false;
 		//}
+
 		public void CopyToTexture( Texture target )
 		{
 			//not tested for rendertargetCube yet

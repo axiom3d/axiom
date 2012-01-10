@@ -81,31 +81,31 @@ namespace Axiom.Graphics
 
 		delegate void PassAttributeParser( string[] values, Pass pass );
 		
-        delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
+		delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
 
-        public class SchemeNotFoundEventArgs : EventArgs
-        {
-            public ushort SchemeIndex { get; private set; }
+		public class SchemeNotFoundEventArgs : EventArgs
+		{
+			public ushort SchemeIndex { get; private set; }
 
-            public string SchemeName { get; private set; }
+			public string SchemeName { get; private set; }
 
-            public Material OriginalMaterial { get; private set; }
+			public Material OriginalMaterial { get; private set; }
 
-            public int LodIndex { get; private set; }
+			public int LodIndex { get; private set; }
 
-            public IRenderable Renderable { get; private set; }
+			public IRenderable Renderable { get; private set; }
 
-            public SchemeNotFoundEventArgs(ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable)
-            {
-                SchemeIndex = schemeIndex;
-                Renderable = renderable;
-                LodIndex = lodIndex;
-                OriginalMaterial = originalMaterial;
-                SchemeName = schemeName;
-            }
-        }
+			public SchemeNotFoundEventArgs(ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable)
+			{
+				SchemeIndex = schemeIndex;
+				Renderable = renderable;
+				LodIndex = lodIndex;
+				OriginalMaterial = originalMaterial;
+				SchemeName = schemeName;
+			}
+		}
 
-	    public delegate Technique SchemeNotFoundHandler(SchemeNotFoundEventArgs args);
+		public delegate Technique SchemeNotFoundHandler(SchemeNotFoundEventArgs args);
 
 		#endregion
 
@@ -392,81 +392,81 @@ namespace Axiom.Graphics
 
 
 
-        private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
+		private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
 
-        /// <summary>
-        /// Add a listener to handle material events. 
-        /// </summary>
-        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void AddListener(SchemeNotFoundHandler l )
-        {
-            _listenerMap.Add( string.Empty, l );
-        }
+		/// <summary>
+		/// Add a listener to handle material events. 
+		/// </summary>
+		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+		public virtual void AddListener(SchemeNotFoundHandler l )
+		{
+			_listenerMap.Add( string.Empty, l );
+		}
 
-        /// <summary>
-        /// Add a listener to handle material events. 
-        /// If schemeName is supplied, the listener will only receive events for that certain scheme.
-        /// </summary>
-        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void AddListener(SchemeNotFoundHandler l, string schemeName )
-        {
-            _listenerMap.Add( schemeName ?? string.Empty, l );
-        }
+		/// <summary>
+		/// Add a listener to handle material events. 
+		/// If schemeName is supplied, the listener will only receive events for that certain scheme.
+		/// </summary>
+		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+		public virtual void AddListener(SchemeNotFoundHandler l, string schemeName )
+		{
+			_listenerMap.Add( schemeName ?? string.Empty, l );
+		}
 
-        /// <summary>
-        /// Remove a listener handling material events. 
-        /// </summary>
-        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void RemoveListener(SchemeNotFoundHandler l )
-        {
-            _listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
-        }
+		/// <summary>
+		/// Remove a listener handling material events. 
+		/// </summary>
+		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+		public virtual void RemoveListener(SchemeNotFoundHandler l )
+		{
+			_listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
+		}
 
-        /// <summary>
-        /// Remove a listener handling material events. 
-        /// If the listener was added with a custom scheme name, it needs to be supplied here as well.
-        /// </summary>
-        [OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-        public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName )
-        {
-            _listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
-        }
+		/// <summary>
+		/// Remove a listener handling material events. 
+		/// If the listener was added with a custom scheme name, it needs to be supplied here as well.
+		/// </summary>
+		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
+		public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName )
+		{
+			_listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
+		}
 
 
-	    /// <summary>Internal method for sorting out missing technique for a scheme</summary>
-        public Technique ArbitrateMissingTechniqueForActiveScheme(Material mat, int lodIndex, IRenderable rend)
-        {
-            var args = new SchemeNotFoundEventArgs(_activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend);
+		/// <summary>Internal method for sorting out missing technique for a scheme</summary>
+		public Technique ArbitrateMissingTechniqueForActiveScheme(Material mat, int lodIndex, IRenderable rend)
+		{
+			var args = new SchemeNotFoundEventArgs(_activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend);
 
-            //First, check the scheme specific listeners
-	        List<SchemeNotFoundHandler> handlers;
-	        if (_listenerMap.TryGetValue( _activeSchemeName, out handlers ))
-	        {
-                foreach (var i in handlers)
-                {
-                    var t = i(args);
-                    if (t != null)
-                        return t;
-                }
-            }
+			//First, check the scheme specific listeners
+			List<SchemeNotFoundHandler> handlers;
+			if (_listenerMap.TryGetValue( _activeSchemeName, out handlers ))
+			{
+				foreach (var i in handlers)
+				{
+					var t = i(args);
+					if (t != null)
+						return t;
+				}
+			}
 
-            //If no success, check generic listeners
-		    if (_listenerMap.TryGetValue( string.Empty, out handlers ))
-		    {
-			    foreach (var i in handlers)
-			    {
-				    var t = i(args);
-				    if (t != null)
-					    return t;
-			    }
-		    }
+			//If no success, check generic listeners
+			if (_listenerMap.TryGetValue( string.Empty, out handlers ))
+			{
+				foreach (var i in handlers)
+				{
+					var t = i(args);
+					if (t != null)
+						return t;
+				}
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        #endregion
+		#endregion
 
-	    #region ResourceManager Implementation
+		#region ResourceManager Implementation
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
@@ -506,14 +506,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parse a .material script passed in as a chunk.
 		/// </summary>
-        public override void ParseScript( Stream stream, string groupName, string fileName )
-        {
+		public override void ParseScript( Stream stream, string groupName, string fileName )
+		{
 #if AXIOM_USENEWCOMPILERS
-            Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
+			Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
 #else
-            _serializer.ParseScript( stream, groupName, fileName );
+			_serializer.ParseScript( stream, groupName, fileName );
 #endif
-        }
+		}
 
 		#endregion IScriptLoader Implementation
 
@@ -533,7 +533,7 @@ namespace Axiom.Graphics
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-                    Singleton<MaterialManager>.Destroy();
+					Singleton<MaterialManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but

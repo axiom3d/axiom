@@ -525,37 +525,34 @@ namespace Axiom.RenderSystems.DirectX9
 								  globalInstanceVertexBuffer != null && globalVertexDeclaration != null
 				|| binding.HasInstanceData;
 
-
 			// TODO: attempt to detect duplicates
 			var binds = binding.Bindings;
 			var source = -1;
-			foreach ( var i in binds )
+			// Unbind previous sources
+			for (var i = 0; i < _lastVertexSourceCount; i++)
 			{
-				source++;
+				ActiveD3D9Device.SetStreamSource(i, null, 0, 0);
+				ActiveD3D9Device.SetStreamSourceFrequency(i, 1, StreamSource.IndexedData);
+			}
+
+			foreach (var i in binds)
+			{
+				source = i.Key;
 				var d3D9Buf = (D3DHardwareVertexBuffer)i.Value;
-				//D3D9HardwareVertexBuffer* d3d9buf = 
-				//    static_cast<D3D9HardwareVertexBuffer*>(i->second.get());
-
-				// Unbind gap sources
-				for ( ; source < i.Key; ++source )
-				{
-					ActiveD3D9Device.SetStreamSource( source, null, 0, 0 );
-				}
-
 				ActiveD3D9Device.SetStreamSource(source, d3D9Buf.D3DVertexBuffer, 0, d3D9Buf.VertexSize);
 
 				// SetStreamSourceFreq
-				if ( hasInstanceData )
+				if (hasInstanceData)
 				{
-					if ( d3D9Buf.IsInstanceData )
+					if (d3D9Buf.IsInstanceData)
 					{
 						ActiveD3D9Device.SetStreamSourceFrequency(source, d3D9Buf.InstanceDataStepRate, StreamSource.InstanceData);
 					}
 					else
 					{
-						if ( !indexesUsed )
+						if (!indexesUsed)
 						{
-							throw new AxiomException( "Instance data used without index data." );
+							throw new AxiomException("Instance data used without index data.");
 						}
 						ActiveD3D9Device.SetStreamSourceFrequency(source, numberOfInstances, StreamSource.InstanceData);
 					}
@@ -566,17 +563,16 @@ namespace Axiom.RenderSystems.DirectX9
 					ActiveD3D9Device.ResetStreamSourceFrequency(source);
 					//device.SetStreamSourceFrequency( source, 1, StreamSource.IndexedData );
 				}
-
 			}
 
-			if ( useGlobalInstancingVertexBufferIsAvailable )
+			if (useGlobalInstancingVertexBufferIsAvailable)
 			{
 				// bind global instance buffer if exist
-				if ( globalInstanceVertexBuffer != null )
+				if (globalInstanceVertexBuffer != null)
 				{
-					if ( !indexesUsed )
+					if (!indexesUsed)
 					{
-						throw new AxiomException( "Instance data used without index data." );
+						throw new AxiomException("Instance data used without index data.");
 					}
 
 					var d3D9Buf = (D3DHardwareVertexBuffer)globalInstanceVertexBuffer;
@@ -587,13 +583,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 			}
 
-			// Unbind any unused sources
-			for ( var unused = source; unused < _lastVertexSourceCount; ++unused )
-			{
-
-				ActiveD3D9Device.SetStreamSource(unused, null, 0, 0);
-				ActiveD3D9Device.SetStreamSourceFrequency(source, 1, StreamSource.IndexedData);
-			}
 			_lastVertexSourceCount = source;
 		}
 

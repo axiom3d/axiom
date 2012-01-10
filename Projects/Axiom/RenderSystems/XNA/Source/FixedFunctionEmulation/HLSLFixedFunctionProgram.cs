@@ -139,12 +139,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     break;
                 case FogMode.Exp:
                 case FogMode.Exp2:
-                    _setProgramParameter( GpuProgramType.Vertex, "FogDensity", parameters.FogDensity );
+                    _setProgramParameter( GpuProgramType.Vertex, "FogDensity", (float)parameters.FogDensity );
                     _setProgramParameter( GpuProgramType.Fragment, "FogColor", parameters.FogColor );
                     break;
                 case FogMode.Linear:
-                    _setProgramParameter( GpuProgramType.Vertex, "FogStart", parameters.FogStart );
-                    _setProgramParameter( GpuProgramType.Vertex, "FogEnd", parameters.FogEnd );
+                    _setProgramParameter( GpuProgramType.Vertex, "FogStart", (float)parameters.FogStart );
+                    _setProgramParameter( GpuProgramType.Vertex, "FogEnd", (float)parameters.FogEnd );
                     _setProgramParameter( GpuProgramType.Fragment, "FogColor", parameters.FogColor );
                     break;
             }

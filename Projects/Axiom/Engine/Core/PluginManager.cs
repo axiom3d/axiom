@@ -194,8 +194,8 @@ namespace Axiom.Core
 			this.SatisfyImports(folder);
 			foreach (var plugin in plugins)
 			{
-				pluginFactories.Add( new ObjectCreator( plugin.GetType() ) );
-				Debug.WriteLine( String.Format( "MEF IPlugin: {0}.", plugin ) );
+				pluginFactories.Add(new ObjectCreator(plugin.GetType()));
+				Debug.WriteLine(String.Format("MEF IPlugin: {0}.", plugin));
 			}
 #elif !( WINDOWS_PHONE )
 			if ( Directory.Exists( folder ) )

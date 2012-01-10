@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectGuid>{935BCD08-8B02-44A7-B07A-615960D7CCDD}</ProjectGuid>
@@ -8,6 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.Xna</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
@@ -34,19 +35,18 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;WINDOWS;XNA4;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.XML</DocumentationFile>
+    <DocumentationFile>bin\AnyCPUv4.0Debug\Axiom.RenderSystems.Xna.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\AnyCPUv4.0Debug\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -62,14 +62,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS;XNA4;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.xml</DocumentationFile>
+    <DocumentationFile>bin\AnyCPUv4.0Release\Axiom.RenderSystems.Xna.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoStdLib>true</NoStdLib>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\AnyCPUv4.0Release\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -79,99 +79,6 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.XML</DocumentationFile>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.XML</DocumentationFile>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Debug\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <NoStdLib>true</NoStdLib>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>bin\x86v4.0Release\Axiom.RenderSystems.Xna.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Development\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|AnyCPU' ">
@@ -179,23 +86,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS; XNA4; AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;WINDOWS;XNA4;AXIOM_SAFE_MIX;NET_40</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|x86' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Mono-Debug</OutputPath>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mono-Debug|x64' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Mono-Debug</OutputPath>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
@@ -260,20 +155,13 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="mscorlib">
-    </Reference>
-    <Reference Include="System">
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition">
-    </Reference>
-    <Reference Include="System.Data">
-    </Reference>
-    <Reference Include="System.Drawing">
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-    </Reference>
-    <Reference Include="System.Xml">
-    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553">
       <HintPath>C:\Program Files %28x86%29\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
@@ -287,7 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.2010.v4.0.csproj">

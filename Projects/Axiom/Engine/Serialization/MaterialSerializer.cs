@@ -1355,10 +1355,10 @@ namespace Axiom.Serialization
 
                 try
                 {
-                    src = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 0 ] );
-                    dest = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 1 ] );
-                    srca = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 2 ] );
-                    desta = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 3 ] );
+                    src = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[ 0 ], false );
+                    dest = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[1], false );
+                    srca = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[2], false );
+                    desta = (SceneBlendFactor)Enum.Parse( typeof( SceneBlendFactor ), vecparams[3], false );
                     context.pass.SetSeparateSceneBlending( src, dest, srca, desta );
                 }
                 catch ( Exception e )

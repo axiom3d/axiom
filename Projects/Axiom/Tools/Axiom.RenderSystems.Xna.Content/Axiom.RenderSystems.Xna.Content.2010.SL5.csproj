@@ -35,8 +35,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;XNA4;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
@@ -48,7 +48,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;XNA4;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -58,19 +58,10 @@
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework" />
     <Reference Include="Microsoft.Xna.Framework.Graphics" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics.Extensions, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics.Shaders" />
     <Reference Include="Microsoft.Xna.Framework.Math, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Xna" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Missing.cs" />
@@ -87,6 +78,10 @@
     <Compile Include="HlslProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Externals\XdotNet\XdotNet.mscorlib.SL5.csproj">
+      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
+      <Name>XdotNet.mscorlib.SL5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

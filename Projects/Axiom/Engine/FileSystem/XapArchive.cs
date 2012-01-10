@@ -143,7 +143,7 @@ namespace Axiom.FileSystem
 
         public override bool Exists( string fileName )
         {
-            return Application.GetResourceStream( new Uri( _basePath + fileName, UriKind.RelativeOrAbsolute ) ) != null;
+            return Application.GetResourceStream(new Uri(_basePath + fileName, UriKind.RelativeOrAbsolute)) != null;
         }
 
         #endregion Archive Implementation

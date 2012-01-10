@@ -35,6 +35,8 @@
     </LinkedServerProject>
     <TargetFrameworkProfile />
     <OutOfBrowserSettingsFile>Properties\OutOfBrowserSettings.xml</OutOfBrowserSettingsFile>
+    <InBrowserSettingsFile>Properties\InBrowserSettings.xml</InBrowserSettingsFile>
+    <RequireInBrowserElevation>false</RequireInBrowserElevation>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
@@ -70,12 +72,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
+    <Reference Include="system" />
     <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Windows" />
-    <Reference Include="system" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Controls, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Controls.Data.Input, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Xna" />
@@ -147,6 +149,10 @@
       <Link>Media\Textures\SkyBoxes.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Debug.html" />
+    <None Include="Properties\InBrowserSettings.xml" />
+    <Content Include="Release.html" />
+    <Content Include="TestPage.html" />
     <None Include="Properties\OutOfBrowserSettings.xml" />
     <None Include="Properties\AppManifest.xml" />
   </ItemGroup>
@@ -157,6 +163,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
+      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
+      <Name>XdotNet.mscorlib.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.SL5.csproj">
+      <Project>{DAA8D7C6-F439-467B-85BB-0CFC613457D5}</Project>
+      <Name>XdotNet.System.SL5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

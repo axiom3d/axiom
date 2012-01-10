@@ -4,7 +4,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</ProjectGuid>
+    <ProjectGuid>{73A2CE0B-F96A-4F65-836D-BC8DB442FC19}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
@@ -41,20 +41,19 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(TargetFrameworkVersion)Debug\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Debug\Debug\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
+    <DocumentationFile>bin\AnyCPUv4.0Debug\Debug\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <NoWarn>1591 1030 1570</NoWarn>
     <DebugType>full</DebugType>
-    <CodeAnalysisLogFile>bin\x86v4.0Debug\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\AnyCPUv4.0Debug\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -68,14 +67,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(TargetFrameworkVersion)Release\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>TRACE;OPENGL_OTK;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86v4.0Release\Release\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
+    <DocumentationFile>bin\AnyCPUv4.0Release\Release\Axiom.RenderSystems.OpenGL.OpenTK.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
-    <CodeAnalysisLogFile>bin\x86v4.0Release\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisLogFile>bin\AnyCPUv4.0Release\Axiom.RenderSystems.OpenGL.OpenTK.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -87,18 +86,12 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System">
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition">
-    </Reference>
-    <Reference Include="System.Data">
-    </Reference>
-    <Reference Include="System.Drawing">
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-    </Reference>
-    <Reference Include="System.Xml">
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll</HintPath>
     </Reference>
@@ -262,7 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
   </ItemGroup>

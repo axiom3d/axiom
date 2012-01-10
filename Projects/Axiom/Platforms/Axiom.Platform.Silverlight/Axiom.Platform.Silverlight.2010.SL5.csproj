@@ -13,9 +13,9 @@
     <AssemblyName>Axiom.Platform.Silverlight</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
@@ -26,16 +26,16 @@
        to set the TargetFrameworkVersion to v3.5 -->
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -46,7 +46,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-	<IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
+    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -65,12 +65,41 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BilinearResizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SilverlightCodecs.cs" />
     <Compile Include="SilverlightInputReader.cs" />
     <Compile Include="SilverlightPlatformManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.Filtering\ImageTools.Filtering.csproj">
+      <Project>{FB5B5D68-53D9-4B0A-9D06-018E76106922}</Project>
+      <Name>ImageTools.Filtering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.IO.Bmp\ImageTools.IO.Bmp.csproj">
+      <Project>{93A5C453-7E1E-40B5-ACB7-2239CFA6CA97}</Project>
+      <Name>ImageTools.IO.Bmp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.IO.Gif\ImageTools.IO.Gif.csproj">
+      <Project>{DB3B4A4D-276C-499E-B828-66A66D2DBED9}</Project>
+      <Name>ImageTools.IO.Gif</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.IO.Jpeg\ImageTools.IO.Jpeg.csproj">
+      <Project>{D191BB67-FA04-4CAD-ACF8-D9C546A290D3}</Project>
+      <Name>ImageTools.IO.Jpeg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.IO.Png\ImageTools.IO.Png.csproj">
+      <Project>{A3A3393A-D422-4775-AA2C-7B28998F4817}</Project>
+      <Name>ImageTools.IO.Png</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools.Utils\ImageTools.Utils.csproj">
+      <Project>{ECB93D2E-457C-4293-84EE-D5C8B5F7C0E6}</Project>
+      <Name>ImageTools.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\ImageTools\src\ImageTools\ImageTools\ImageTools.csproj">
+      <Project>{48AC0713-B9BF-4BD8-B8C7-F740C2B78F8D}</Project>
+      <Name>ImageTools %28Libs\ImageTools\ImageTools%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

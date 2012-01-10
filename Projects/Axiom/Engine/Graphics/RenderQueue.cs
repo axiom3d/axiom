@@ -277,8 +277,8 @@ namespace Axiom.Graphics
 		/// <param name="item"></param>
 		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable item, ushort priority )
-		{
-			AddRenderable( item, priority, defaultGroup );
+		{			
+            AddRenderable( item, priority,  this.defaultGroup);
 		}
 
 
