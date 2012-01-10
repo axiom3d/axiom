@@ -38,7 +38,6 @@
 using System;
 #if !USE_CUSTOM_SORTEDLIST
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 #endif
@@ -50,7 +49,11 @@ namespace Axiom.Collections
 	/// <summary>
 	///	Serves as a basis for strongly typed collections in the engine.
 	/// </summary>
-	public class AxiomCollection<T> : ConcurrentDictionary<string, T>
+#if NET_40
+	public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
+#else
+    public class AxiomCollection<T> : Dictionary<string, T>
+#endif
 	{
 		#region Constants
 
@@ -88,7 +91,11 @@ namespace Axiom.Collections
 		/// </summary>
 		/// <param name="parent"></param>
 		protected AxiomCollection( Object parent )
+#if NET_40
 			: base(Environment.ProcessorCount, InitialCapacity)
+#else
+            : base( InitialCapacity )
+#endif
 		{
 			this.parent = parent;
 			this.typeName = typeof( T ).Name;
