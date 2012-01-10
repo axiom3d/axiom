@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Axiom</id>
+    <version>0.8.120107.2918</version>
+    <title>Axiom 3D Rendering Engine</title>
+    <authors>Axiom 3D Project Team</authors>
+    <owners>Michael Cummings</owners>
+    <licenseUrl>http://axiom3d.net/wiki/license</licenseUrl>
+    <projectUrl>http://axiom3d.net/</projectUrl>
+    <iconUrl>http://axiom3d.net/images/logos_axiom/axiomlogo_small.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Installs the core assemblies needed for creating applications and games using Axiom.</description>
+    <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
+  </metadata>
+</package>
