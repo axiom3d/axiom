@@ -80,8 +80,7 @@
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
     </Reference>
-    <Reference Include="Tao.DevIl, Version=1.6.8.3, Culture=neutral, PublicKeyToken=7ec4053013524957">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Tao.DevIl">
       <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.DevIl.dll</HintPath>
     </Reference>
   </ItemGroup>

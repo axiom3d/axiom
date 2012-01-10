@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright Â© 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -232,6 +232,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				// create window
 				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer, GraphicsMode.Default.Stencil, FSAA );
+				
 				_window = new NativeWindow( width, height, title, WindowFlags.Default, graphicsMode, displayDevice );
 				glContext = new OpenTKGLContext( graphicsMode, _window.WindowInfo );
 
