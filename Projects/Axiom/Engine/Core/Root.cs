@@ -823,6 +823,16 @@ namespace Axiom.Core
 			return this.sceneManagerEnumerator.GetSceneManager( instanceName );
 		}
 
+        /// <summary>
+        /// Determines if a given SceneManager already exists
+        /// </summary>
+        /// <param name="instanceName">The name of the instance to retrieve.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public bool HasSceneManager( string instanceName )
+        {
+            return sceneManagerEnumerator.HasSceneManager( instanceName );
+        }
+
 		/// <summary>
 		///    Initializes the renderer.
 		/// </summary>
