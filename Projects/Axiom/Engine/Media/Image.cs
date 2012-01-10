@@ -494,6 +494,20 @@ namespace Axiom.Media
             return image;
         }
 
+        public static Image FromFile( string fileName, string groupName )
+        {
+            var pos = fileName.LastIndexOf( "." );
+
+            if ( pos == -1 )
+                throw new AxiomException( "Unable to load image file '{0}' due to missing extension.", fileName );
+
+            // grab the extension from the filename
+            var ext = fileName.Substring( pos + 1, fileName.Length - pos - 1 );
+
+            var encoded = ResourceGroupManager.Instance.OpenResource( fileName, groupName );
+            return Image.FromStream( encoded, ext );
+        }
+
         /// <summary>
         ///    Loads raw image data from memory.
         /// </summary>
@@ -569,7 +583,7 @@ namespace Axiom.Media
             if ( numFaces == 6 )
                 this.flags |= ImageFlags.CubeMap;
             if ( numFaces != 6 && numFaces != 1 )
-                throw new Exception( "Number of faces currently must be 6 or 1." );
+                throw new AxiomException( "Number of faces currently must be 6 or 1." );
 
             this.size = CalculateSize( numMipMaps, numFaces, width, height, depth, format );
 
@@ -636,20 +650,20 @@ namespace Axiom.Media
         {
             if ( this.buffer == null )
             {
-                throw new Exception( "No image data loaded" );
+                throw new AxiomException( "No image data loaded" );
             }
 
             var strExt = "";
             var pos = filename.LastIndexOf( "." );
             if ( pos == -1 )
-                throw new Exception( "Unable to save image file '" + filename + "' - invalid extension." );
+                throw new AxiomException( "Unable to save image file '{0}' - invalid extension.", filename );
 
             while ( pos != filename.Length - 1 )
                 strExt += filename[ ++pos ];
 
             var pCodec = CodecManager.Instance.GetCodec( strExt );
             if ( pCodec == null )
-                throw new Exception( "Unable to save image file '" + filename + "' - invalid extension." );
+                throw new AxiomException( "Unable to save image file '{0}' - invalid extension.", filename );
 
             var imgData = new ImageCodec.ImageData();
             imgData.format = Format;
@@ -713,7 +727,15 @@ namespace Axiom.Media
             }
         }
 
+        public PixelBox GetPixelBox()
+        {
+            return this.GetPixelBox( 0, 0 );
+        }
 
+        public PixelBox GetPixelBox( int face )
+        {
+            return this.GetPixelBox( face, 0 );
+        }
 
         /// <summary>
         ///    Checks if the specified flag is set on this image.

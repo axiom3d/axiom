@@ -133,8 +133,8 @@ namespace Axiom.Samples.Terrain
             {
                 for ( ushort x = 0; x < terrain.LayerBlendMapSize; x++ )
                 {
-                    float tx = 0;
-                    float ty = 0;
+                    Real tx = 0;
+                    Real ty = 0;
                     blendMap0.ConvertImageToTerrainSpace( x, y, ref tx, ref ty );
                     Real height = terrain.GetHeightAtTerrainPosition( tx, ty );
                     Real val = ( height - minHeight0 ) / fadeDist0;

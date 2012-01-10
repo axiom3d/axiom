@@ -297,5 +297,21 @@ namespace Axiom.Media
 
 			return format;
 		}
-	}
+
+        /// <summary>
+        /// Gives the bit shifts for R, G, B and A component
+        /// </summary>
+        /// <remarks>
+        /// Only valid for native endian formats
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        public static void GetBitShifts( PixelFormat format, ref byte[] rgba )
+        {
+            PixelConverter.PixelFormatDescription des = PixelConverter.GetDescriptionFor( format );
+            rgba[ 0 ] = des.rshift;
+            rgba[ 1 ] = des.gshift;
+            rgba[ 2 ] = des.bshift;
+            rgba[ 3 ] = des.ashift;
+        }
+    }
 }
