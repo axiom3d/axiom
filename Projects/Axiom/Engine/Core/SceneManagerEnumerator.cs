@@ -375,6 +375,16 @@ namespace Axiom.Core
 			return sceneManager;
 		}
 
+        /// <summary>
+        /// Identify if a SceneManager instance already exists.
+        /// </summary>
+        /// <param name="instanceName">The name of the instance to retrieve.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public bool HasSceneManager( string instanceName )
+        {
+            return _instances.ContainsKey( instanceName );
+        }
+
 		/// <summary>
 		///		Gets more information about a given type of SceneManager.
 		/// </summary>
