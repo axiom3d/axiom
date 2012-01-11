@@ -333,7 +333,7 @@ namespace Axiom.Components.Paging
         public virtual void DestroyContentCollection(PageContentCollection coll)
         {
             DetachContentCollection(coll);
-            Manager.DestroyContentenCollection(coll);
+            Manager.DestroyContentCollection(ref coll);
         }
         
         /// <summary>

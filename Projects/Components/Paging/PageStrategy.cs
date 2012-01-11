@@ -43,7 +43,7 @@ namespace Axiom.Components.Paging
 	/// when Page instances are requested for addition and removal from the 
     /// paging system.
     /// </summary>
-    public class PageStrategy
+    public class PageStrategy : DisposableObject
     {
         /// <summary>
         /// 
@@ -75,6 +75,7 @@ namespace Axiom.Components.Paging
         /// <param name="name"></param>
         /// <param name="manager"></param>
         public PageStrategy(string name, PageManager manager)
+            : base()
         {
             mName = name;
             mManager = manager;

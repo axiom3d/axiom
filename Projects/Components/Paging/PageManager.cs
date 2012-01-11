@@ -29,713 +29,852 @@
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using Axiom.Serialization;
 using Axiom.Core;
+using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
-    public class PageManager
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Dictionary<string, PageWorld> mWorlds = new Dictionary<string, PageWorld>();
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Dictionary<string, PageStrategy> mStrategies = new Dictionary<string, PageStrategy>();
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Dictionary<string, IPageContentCollectionFactory> mContentCollectionFactories = new Dictionary<string, IPageContentCollectionFactory>();
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Dictionary<string, IPageContentFactory> mContentFactories = new Dictionary<string, IPageContentFactory>();
-        /// <summary>
-        /// 
-        /// </summary>
-        protected NameGenerator<PageWorld> mWorldNameGenerator;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected PageRequestQueue mQueue;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected PageProvider mPageProvider;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string mPageResourceGroup;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected List<Camera> mCameraList = new List<Camera>();
-        /// <summary>
-        /// 
-        /// </summary>
-        protected EventRouter mEventRouter;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected uint mDebugDisplayLvl;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected Grid2PageStrategy mGrid2DPageStrategy;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected SimplePageContentCollectionFactory mSimpleCollectionFactory;
+	/// <summary>
+	/// The PageManager is the entry point through which you load all PagedWorld instances, 
+	/// and the place where PageStrategy instances and factory classes are
+	/// registered to customise the paging behaviour.
+	/// </summary>
+	/// <remarks>
+	/// To get started, the minimum you need is a PagedWorld with at least one PagedWorldSection
+	/// within it, and at least one Camera being tracked (see addCamera).
+	/// </remarks>
+	public class PageManager : DisposableObject
+	{
+		protected Dictionary<string, PageWorld> mWorlds = new Dictionary<string, PageWorld>();
+		protected Dictionary<string, PageStrategy> mStrategies = new Dictionary<string, PageStrategy>();
+		protected Dictionary<string, IPageContentCollectionFactory> mContentCollectionFactories = new Dictionary<string, IPageContentCollectionFactory>();
+		protected Dictionary<string, PagedWorldSectionFactory> mWorldSectionFactories = new Dictionary<string, PagedWorldSectionFactory>();
+		protected Dictionary<string, IPageContentFactory> mContentFactories = new Dictionary<string, IPageContentFactory>();
+		protected NameGenerator<PageWorld> mWorldNameGenerator = new NameGenerator<PageWorld>( "World" );
+		protected PageProvider mPageProvider;
+		protected string mPageResourceGroup;
+		protected List<Camera> mCameraList = new List<Camera>();
+		protected EventRouter mEventRouter;
+		protected uint mDebugDisplayLvl;
+		protected Grid2PageStrategy mGrid2DPageStrategy;
+		protected SimplePageContentCollectionFactory mSimpleCollectionFactory;
 
-        /// <summary>
-        /// Set the PageProvider which can provide streams for any Page.
-        /// </summary>
-        public PageProvider PageProvider
-        {
-            set { mPageProvider = value; }
-            get { return mPageProvider; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, IPageContentFactory> Factories
-        {
-            get { return mContentFactories; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, PageStrategy> Strategies
-        {
-            get
-            {
-                return mStrategies;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dictionary<string, PageWorld> Worlds
-        {
-            get { return mWorlds; }
-        }
-        /// <summary>
-        /// Set the debug display level.
-        /// </summary>
-        public uint DebugDisplayLevel
-        {
-            set { mDebugDisplayLvl = value; }
-            get { return mDebugDisplayLvl; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public List<Camera> CameraList
-        {
-            get
-            {
-                return mCameraList;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string PageResourceGroup
-        {
-            set { mPageResourceGroup = value; }
-            get { return mPageResourceGroup; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public PageRequestQueue Queue
-        {
-            get
-            {
-                return mQueue;
-            }
-        }
+		/// <summary>
+		/// Get/Set the PageProvider which can provide streams for any Page.
+		/// </summary>
+		public PageProvider PageProvider
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mPageProvider; }
 
-        /// <summary>
-        /// The PageManager is the entry point through which you load all PagedWorld instances, 
+			/// <remarks>
+			/// This is the top-level way that you can direct how Page data is loaded. 
+			/// When data for a Page is requested for a PagedWorldSection, the following
+			/// sequence of classes will be checked to see if they have a provider willing
+			/// to supply the stream: PagedWorldSection, PagedWorld, PageManager.
+			/// If none of these do, then the default behaviour is to look for a file
+			/// called worldname_sectionname_pageID.page. 
+			/// </remarks>
+			[OgreVersion( 1, 7, 2 )]
+			set { mPageProvider = value; }
+		}
+
+		public Dictionary<string, IPageContentFactory> ContentFactories
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mContentFactories; }
+		}
+
+		public Dictionary<string, IPageContentCollectionFactory> ContentCollectionFactories
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return mContentCollectionFactories;
+			}
+		}
+
+		public Dictionary<string, PagedWorldSectionFactory> WorldSectionFactories
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return mWorldSectionFactories;
+			}
+		}
+
+		public Dictionary<string, PageStrategy> Strategies
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return mStrategies;
+			}
+		}
+
+		/// <summary>
+		/// Get a reference to the worlds that are currently loaded.
+		/// </summary>
+		public Dictionary<string, PageWorld> Worlds
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mWorlds; }
+		}
+
+		/// <summary>
+		/// Set the debug display level.
+		/// </summary>
+		public uint DebugDisplayLevel
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mDebugDisplayLvl; }
+
+			/// <remarks>
+			/// This setting controls how much debug information is displayed in the scene.
+			/// The exact interpretation of this value depends on the PageStrategy you're
+			/// using, and whether the PageContent decides to also display debug information.
+			/// Generally speaking, 0 means no debug display, 1 means simple debug
+			/// display (usually the PageStrategy) and anything more than that is
+			/// up to the classes involved. 
+			/// </remarks>
+			[OgreVersion( 1, 7, 2 )]
+			set { mDebugDisplayLvl = value; }
+		}
+
+		/// <summary>
+		/// Returns a list of camerasl being tracked.
+		/// </summary>
+		public List<Camera> CameraList
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return mCameraList;
+			}
+		}
+
+		/// <summary>
+		/// Get/Set the resource group that will be used to read/write files when the
+		//  default load routines are used. 
+		/// </summary>
+		public string PageResourceGroup
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mPageResourceGroup; }
+
+			[OgreVersion( 1, 7, 2 )]
+			set { mPageResourceGroup = value; }
+		}
+
+		/// <summary>
+		/// Get/set whether paging operations are currently allowed to happen.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public bool ArePagingOperationsEnabled
+		{
+			get;
+
+			// Using this method you can stop pages being loaded or unloaded for a
+			// period of time, 'freezing' the current page state as it is. 
+			set;
+		}
+
+		/// <summary>
+		/// The PageManager is the entry point through which you load all PagedWorld instances, 
 		/// and the place where PageStrategy instances and factory classes are
 		/// registered to customise the paging behaviour.
-        /// </summary>
-        public PageManager()
-        {
-            mQueue = new PageRequestQueue(this);
-            mPageResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public PageManager()
+			: base()
+		{
+			mPageResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
+			this.ArePagingOperationsEnabled = true;
 
-            mEventRouter = new EventRouter();
-            mEventRouter.pManager = this;
-            mEventRouter.pWorlds = mWorlds;
+			mEventRouter = new EventRouter();
+			mEventRouter.pManager = this;
+			mEventRouter.pWorlds = mWorlds;
+			mEventRouter.pCameraList = mCameraList;
 
-            Root.Instance.FrameStarted += mEventRouter.FrameStarted;
-            Root.Instance.FrameEnded += mEventRouter.FrameEnded;
+			Root.Instance.FrameStarted += mEventRouter.FrameStarted;
+			Root.Instance.FrameEnded += mEventRouter.FrameEnded;
 
-            CreateStandardStrategies();
-            CreateStandardContentFactories();
-        }
+			CreateStandardStrategies();
+			CreateStandardContentFactories();
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public PageWorld CreateWorld()
-        {
-            return CreateWorld(string.Empty);
-        }
-        /// <summary>
-        /// Create a new PagedWorld instance. 
-        /// </summary>
-        /// <param name="name">name Optionally give a name to the world (if no name is given, one
+		[OgreVersion( 1, 7, 2, "~PageManager" )]
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					Root.Instance.FrameStarted -= mEventRouter.FrameStarted;
+					Root.Instance.FrameEnded -= mEventRouter.FrameEnded;
+
+					mGrid2DPageStrategy.Dispose();
+					mSimpleCollectionFactory.Dispose();
+				}
+			}
+
+			base.dispose( disposeManagedResources );
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		protected void CreateStandardStrategies()
+		{
+			mGrid2DPageStrategy = new Grid2PageStrategy( this );
+			AddStrategy( mGrid2DPageStrategy );
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		protected void CreateStandardContentFactories()
+		{
+			// collection
+			mSimpleCollectionFactory = new SimplePageContentCollectionFactory();
+			AddContentCollectionFactory( mSimpleCollectionFactory );
+		}
+
+		public PageWorld CreateWorld()
+		{
+			return CreateWorld( string.Empty );
+		}
+
+		/// <summary>
+		/// Create a new PagedWorld instance. 
+		/// </summary>
+		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		///	will be generated).</param>
-        /// <returns></returns>
-        public PageWorld CreateWorld(string name)
-        {
-            string theName = name;
-            if (theName == string.Empty)
-            {
-                do
-                {
-                    theName = mWorldNameGenerator.GetNextUniqueName();
-                }
-                while (!mWorlds.ContainsKey(theName));
-            }
-            else if (mWorlds.ContainsKey(theName))
-            {
-                throw new Exception("World named '" + theName + "' allready exists!" +
-                    "PageManager.CreateWorld");
-            }
+		[OgreVersion( 1, 7, 2 )]
+		public PageWorld CreateWorld( string name )
+		{
+			string theName = name;
+			if ( theName == string.Empty )
+			{
+				do
+				{
+					theName = mWorldNameGenerator.GetNextUniqueName();
+				}
+				while ( !mWorlds.ContainsKey( theName ) );
+			}
+			else if ( mWorlds.ContainsKey( theName ) )
+			{
+				throw new AxiomException( "World named '{0}' allready exists! PageManager.CreateWorld", theName );
+			}
 
-            PageWorld ret = new PageWorld(theName, this);
-            mWorlds.Add(theName, ret);
-            return ret;
-        }
-        /// <summary>
-        /// Destroy a world.
-        /// </summary>
-        /// <param name="name"></param>
-        public void DestroyWorld(string name)
-        {
-            PageWorld world;
-            if (mWorlds.TryGetValue(name, out world))
-                DestroyWorld(world);
-        }
-        /// <summary>
-        /// Destroy a world.
-        /// </summary>
-        /// <param name="world"></param>
-        public void DestroyWorld(PageWorld world)
-        {
-            mWorlds.Remove(world.Name);
-            world = null;
-        }
-        /// <summary>
-        /// Attach a pre-created PagedWorld instance to this manager. 
-        /// </summary>
-        /// <param name="world"></param>
-        public void AttachWorld(PageWorld world)
-        {
-            if (mWorlds.ContainsKey(world.Name))
-            {
-                throw new Exception("World named '" + world.Name + "' allready exists!" +
-                    "PageManager.AttachWorld");
-            }
+			PageWorld ret = new PageWorld( theName, this );
+			mWorlds.Add( theName, ret );
 
-            mWorlds.Add(world.Name, world);
-        }
-        /// <summary>
-        /// Detach a PagedWorld instance from this manager (note: the caller then
-		///	becomes responsible for the correct destruction of this instance)
-        /// </summary>
-        /// <param name="world"></param>
-        public void DetachWorld(PageWorld world)
-        {
-            mWorlds.Remove(world.Name);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public PageWorld LoadWorld(Stream stream)
-        {
-            return LoadWorld(stream, string.Empty);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public PageWorld LoadWorld(Stream stream, string name)
-        {
-            PageWorld ret = CreateWorld(name);
+			return ret;
+		}
 
-            ret.Load(stream);
+		/// <summary>
+		/// Destroy a world.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyWorld( string name )
+		{
+			if ( mWorlds.ContainsKey( name ) )
+			{
+				mWorlds[ name ].Dispose();
+				mWorlds.Remove( name );
+			}
+		}
 
-            return ret;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public PageWorld LoadWorld(string fileName)
-        {
-            return LoadWorld(fileName, string.Empty);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public PageWorld LoadWorld(string fileName, string name)
-        {
-            PageWorld ret = CreateWorld(name);
+		/// <summary>
+		/// Destroy a world.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyWorld( PageWorld world )
+		{
+			this.DestroyWorld( world.Name );
+		}
 
-            StreamSerializer ser = ReadWorldStream(fileName);
-            ret.Load(ser);
-            ser = null;
+		/// <summary>
+		/// Load a new PagedWorld from a file. 
+		/// </summary>
+		/// <param name="fileName">The name of the file to load (standard is .world)</param>
+		/// <param name="name">Optionally give a name to the world (if no name is given, one
+		/// will be generated).</param>
+		[OgreVersion( 1, 7, 2 )]
+		public PageWorld LoadWorld( string fileName, string name )
+		{
+			PageWorld ret = CreateWorld( name );
 
-            return ret;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        public void SaveWorld(PageWorld world, string fileName)
-        {
-            world.Save(fileName);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="name"></param>
-        public void SaveWorld(PageWorld world, Stream stream)
-        {
-            world.Save(stream);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="strategy"></param>
-        public void AddStrategy(PageStrategy strategy)
-        {
-            // note - deliberately allowing overriding
-            if (mStrategies.ContainsKey(strategy.Name))
-            {
-                mStrategies.Remove(strategy.Name);
-            }
-            mStrategies.Add(strategy.Name, strategy);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="strategy"></param>
-        public void RemoveStrategy(PageStrategy strategy)
-        {
-            mStrategies.Remove(strategy.Name);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="f"></param>
-        public void AddContentCollectionFactory(IPageContentCollectionFactory f)
-        {
-            // note - deliberately allowing overriding
-            if (mContentCollectionFactories.ContainsKey(f.Name))
-                mContentCollectionFactories.Remove(f.Name);
+			StreamSerializer ser = ReadWorldStream( fileName );
+			ret.Load( ser );
+			ser.Dispose();
+			ser = null;
 
-            mContentCollectionFactories.Add(f.Name, f);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="f"></param>
-        public void RemoveContentCollectionFactory(IPageContentCollectionFactory f)
-        {
-            mContentCollectionFactories.Remove(f.Name);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="f"></param>
-        public IPageContentCollectionFactory GetContentCollectionFactory(string name)
-        {
-            IPageContentCollectionFactory factory;
-            mContentCollectionFactories.TryGetValue(name, out factory);
-            return factory;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public PageContentCollection CreateContentCollection(string typeName)
-        {
-            IPageContentCollectionFactory fact = GetContentCollectionFactory(typeName);
-            if (fact == null)
-                throw new Exception(typeName + " is not the of a valid PageContentCollectionFactory!" +
-                    "PageManager.CreateContentCollection");
+			return ret;
+		}
 
-            return fact.CreateInstance();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="f"></param>
-        public void AddContentFactory(IPageContentFactory f)
-        {
-            // note - deliberately allowing overriding
-            if (mContentFactories.ContainsKey(f.Name))
-                mContentFactories.Remove(f.Name);
+		public PageWorld LoadWorld( string fileName )
+		{
+			return LoadWorld( fileName, string.Empty );
+		}
 
-            mContentFactories.Add(f.Name, f);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="f"></param>
-        public void RemoveContentFactory(IPageContentFactory f)
-        {
-            mContentFactories.Remove(f.Name);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public IPageContentFactory GetContentFactory(string name)
-        {
-            IPageContentFactory f;
-            mContentFactories.TryGetValue(name, out f);
-            return f;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="coll"></param>
-        public void DestroyContentenCollection(PageContentCollection coll)
-        {
-            IPageContentCollectionFactory fact = GetContentCollectionFactory(coll.Type);
-            if (fact != null)
-                fact.DestroyInstance(ref coll);
-            else
-                coll = null; //normally a safe fallback
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public PageWorld GetWorld(string name)
-        {
-            PageWorld ret = null;
+		/// <summary>
+		/// Load a new PagedWorld from a stream. 
+		/// </summary>
+		/// <param name="stream">A stream from which to load the world data</param>
+		/// <param name="name">Optionally give a name to the world (if no name is given, one
+		/// will be generated).</param>
+		[OgreVersion( 1, 7, 2 )]
+		public PageWorld LoadWorld( Stream stream, string name )
+		{
+			PageWorld ret = CreateWorld( name );
 
-            mWorlds.TryGetValue(name, out ret);
+			ret.Load( stream );
 
-            return ret;
-                
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public bool PrepareProcedualPage(Page page, PagedWorldSection section)
-        {
-            bool generated = false;
-            if (mPageProvider != null)
-                generated = mPageProvider.PrepareProcedualPage(page, section);
+			return ret;
+		}
 
-            return generated;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public bool LoadProcedualPage(Page page, PagedWorldSection section)
-        {
-            bool generated = false;
-            if (mPageProvider != null)
-                generated = mPageProvider.LoadProcedualPage(page, section);
+		public PageWorld LoadWorld( Stream stream )
+		{
+			return LoadWorld( stream, string.Empty );
+		}
 
-            return generated;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public bool UnloadProcedualPage(Page page, PagedWorldSection section)
-        {
-            bool generated = false;
-            if (mPageProvider != null)
-                generated = mPageProvider.UnloadProcedualPage(page, section);
+		/// <summary>
+		/// Save a PagedWorld instance to a file. 
+		/// </summary>
+		/// <param name="world">The world to be saved</param>
+		/// <param name="fileName">The filename to save the data to</param>
+		[OgreVersion( 1, 7, 2 )]
+		public void SaveWorld( PageWorld world, string fileName )
+		{
+			world.Save( fileName );
+		}
 
-            return generated;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public bool UnPrepareProcedualPage(Page page, PagedWorldSection section)
-        {
-            bool generated = false;
+		/// <summary>
+		/// Save a PagedWorld instance to a file. 
+		/// </summary>
+		/// <param name="world">The world to be saved</param>
+		/// <param name="stream">The stream to save the data to</param>
+		[OgreVersion( 1, 7, 2 )]
+		public void SaveWorld( PageWorld world, Stream stream )
+		{
+			world.Save( stream );
+		}
 
-            if (mPageProvider != null)
-                generated = mPageProvider.UnPrepareProcedualPage(page, section);
+		/// <summary>
+		/// Get a named world.
+		/// </summary>
+		/// <param name="name">The name of the world (not a filename, the identifying name)</param>
+		/// <returns>The world, or null if the world doesn't exist.</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public PageWorld GetWorld( string name )
+		{
+			PageWorld ret = null;
 
-            return generated;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pageId"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public StreamSerializer ReadPageStream(PageID pageId, PagedWorldSection section)
-        {
-            StreamSerializer ser = null;
-            if (mPageProvider != null)
-                ser = mPageProvider.ReadPageStream(pageId, section);
-            if (ser == null)
-            {
-                // use default implementation
-                string nameStr = string.Empty;
-                nameStr += section.World.Name + "_" + section.Name + "_" + pageId.Value + ".page";
-                Stream stream = ResourceGroupManager.Instance.OpenResource(nameStr);
+			mWorlds.TryGetValue( name, out ret );
 
-                ser = new StreamSerializer(stream);
-            }
+			return ret;
+		}
 
-            return ser;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pageId"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public StreamSerializer WritePageStream(PageID pageId, PagedWorldSection section)
-        {
-            StreamSerializer ser = null;
+		/// <summary>
+		/// Add a new PageStrategy implementation. 
+		/// </summary>
+		/// <remarks>
+		/// The caller remains resonsible for destruction of this instance.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void AddStrategy( PageStrategy strategy )
+		{
+			// note - deliberately allowing overriding
+			if ( mStrategies.ContainsKey( strategy.Name ) )
+			{
+				mStrategies[ strategy.Name ] = strategy;
+				return;
+			}
 
-            if (mPageProvider != null)
-                ser = mPageProvider.WritePageStream(pageId, section);
-            if (ser == null)
-            {
-                // use default implementation
-                string nameStr = string.Empty;
-                nameStr += section.World.Name + "_" + section.Name + "_" + pageId.Value + ".page";
+			mStrategies.Add( strategy.Name, strategy );
+		}
 
-                // create file, overwrite if necessary
-                
-                
-            }
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public StreamSerializer ReadWorldStream(string fileName)
-        {
-            StreamSerializer ser = null;
-            if (mPageProvider != null)
-                ser = mPageProvider.ReadWorldStream(fileName);
-            if (ser == null)
-            {
-                Stream stream = ResourceGroupManager.Instance.OpenResource(fileName);
+		/// <summary>
+		/// Remove a PageStrategy implementation.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void RemoveStrategy( PageStrategy strategy )
+		{
+			if ( mStrategies.ContainsKey( strategy.Name ) )
+				mStrategies.Remove( strategy.Name );
+		}
 
-                ser = new StreamSerializer(stream);
-            }
+		/// <summary>
+		/// Get a PageStrategy.
+		/// </summary>
+		/// <param name="stratName">The name of the strategy to retrieve</param>
+		/// <returns>Pointer to a PageStrategy, or null if the strategy was not found.</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public PageStrategy GetStrategy( string stratName )
+		{
+			PageStrategy ret;
 
-            return ser;
-        }
-        public StreamSerializer WriteWorldStream(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stratName"></param>
-        /// <returns></returns>
-        public PageStrategy GetStrategy(string stratName)
-        {
-            PageStrategy ret;
+			mStrategies.TryGetValue( stratName, out ret );
 
-            mStrategies.TryGetValue(stratName, out ret);
+			return ret;
+		}
 
-            return ret;
-        }
+		/// <summary>
+		/// Add a new PageContentCollectionFactory implementation.
+		/// </summary>
+		/// <remarks>
+		/// The caller remains resonsible for destruction of this instance.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void AddContentCollectionFactory( IPageContentCollectionFactory f )
+		{
+			// note - deliberately allowing overriding
+			if ( mContentCollectionFactories.ContainsKey( f.Name ) )
+			{
+				mContentCollectionFactories[ f.Name ] = f;
+				return;
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c"></param>
-        public void AddCamera(Camera c)
-        {
-#warning implement camera events
-           // c.OnPreRenderScene += mEventRouter.OnPreRenderScene;
-        //    c.OnPostRenderScene += mEventRouter.OnPostRenderScene;
-        //    c.OnCameraDestroyed += mEventRouter.OnCameraDestroyed;
-            mCameraList.Add(c);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c"></param>
-        public void RemoveCamera(Camera c)
-        {
-            if (mCameraList.Contains(c))
-            {
-#warning implement camera events
-                ///     c.OnPreRenderScene -= mEventRouter.OnPreRenderScene;
-            //    c.OnPostRenderScene -= mEventRouter.OnPostRenderScene;
-            //    c.OnCameraDestroyed -= mEventRouter.OnCameraDestroyed;
-                mCameraList.Remove(c);
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public bool HasCamera(Camera c)
-        {
-            return mCameraList.Contains(c);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public PageContent CreateContent(string typeName)
-        {
-            IPageContentFactory fact = GetContentFactory(typeName);
-            if (fact == null)
-                throw new Exception(typeName + " is not the name of a valid PageContentFactory!" +
-                    "PageManager.CreateContent");
+			mContentCollectionFactories.Add( f.Name, f );
+		}
 
-            return fact.CreateInstance();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeName"></param>
-        public void DestroyContent(PageContent c)
-        {
-            IPageContentFactory fact = GetContentFactory(c.Type);
-            if (fact != null)
-                fact.DestroyInstance(c);
-            else
-                c = null;// normally a safe fallback
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        protected void CreateStandardStrategies()
-        {
-            mGrid2DPageStrategy = new Grid2PageStrategy(this);
-            AddStrategy(mGrid2DPageStrategy);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        protected void CreateStandardContentFactories()
-        {
-            mSimpleCollectionFactory = new SimplePageContentCollectionFactory();
-            AddContentCollectionFactory(mSimpleCollectionFactory);
-        }
-        protected class EventRouter
-        {
-            public PageManager pManager;
-            public Dictionary<string, PageWorld> pWorlds = new Dictionary<string, PageWorld>();
-            public EventRouter() { }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="evt"></param>
-            /// <returns></returns>
-            public void FrameStarted(object source, FrameEventArgs e)
-            {
-                foreach (PageWorld world in pWorlds.Values)
-                {
-                    world.FrameStart(e.TimeSinceLastFrame);
-                }
+		/// <summary>
+		/// Remove a PageContentCollectionFactory implementation. 
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void RemoveContentCollectionFactory( IPageContentCollectionFactory f )
+		{
+			if ( mContentCollectionFactories.ContainsKey( f.Name ) )
+				mContentCollectionFactories.Remove( f.Name );
+		}
 
-                pManager.Queue.ProcessRenderThreadsRequest();
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="evt"></param>
-            /// <returns></returns>
-            public void FrameEnded(object source, FrameEventArgs e)
-            {
-                foreach (PageWorld world in pWorlds.Values)
-                {
-                    world.FrameEnd(e.TimeSinceLastFrame);
-                }
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="camera"></param>
-            public void OnPreRenderScene(Camera camera)
-            {
-                foreach (PageWorld world in pWorlds.Values)
-                {
-                    world.NotifyCamera(camera);
-                }
-            }
+		/// <summary>
+		/// Get a PageContentCollectionFactory.
+		/// </summary>
+		/// <param name="name">The name of the factory to retrieve</param>
+		/// <returns>Pointer to a PageContentCollectionFactory, or null if the ContentCollection was not found.</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public IPageContentCollectionFactory GetContentCollectionFactory( string name )
+		{
+			IPageContentCollectionFactory factory;
+			mContentCollectionFactories.TryGetValue( name, out factory );
+			return factory;
+		}
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="camera"></param>
-            public void OnPostRenderScene(Camera camera)
-            {
-            }
+		/// <summary>
+		/// Create a new instance of PageContentCollection using the registered factories.
+		/// </summary>
+		/// <param name="typeName">The name of the type of collection to create</param>
+		[OgreVersion( 1, 7, 2 )]
+		public PageContentCollection CreateContentCollection( string typeName )
+		{
+			IPageContentCollectionFactory fact = GetContentCollectionFactory( typeName );
+			if ( fact == null )
+				throw new AxiomException( "{0} is not the of a valid PageContentCollectionFactory! PageManager.CreateContentCollection", typeName );
 
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <param name="camera"></param>
-            public void OnCameraDestroyed(Camera camera)
-            {
-                pManager.RemoveCamera(camera);
-            }
-        }
+			return fact.CreateInstance();
+		}
 
-        public bool ArePagingOperationsEnabled
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-    }
+		/// <summary>
+		/// Destroy an instance of PageContentCollection.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyContentCollection( ref PageContentCollection coll )
+		{
+			IPageContentCollectionFactory fact = GetContentCollectionFactory( coll.Type );
+			if ( fact != null )
+				fact.DestroyInstance( ref coll );
+			else
+				coll.Dispose(); //normally a safe fallback
+		}
+
+		/// <summary>
+		/// Add a new PageContentFactory implementation.
+		/// </summary>
+		/// <remarks>The caller remains resonsible for destruction of this instance.</remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void AddContentFactory( IPageContentFactory f )
+		{
+			// note - deliberately allowing overriding
+			if ( mContentFactories.ContainsKey( f.Name ) )
+			{
+				mContentFactories[ f.Name ] = f;
+				return;
+			}
+
+			mContentFactories.Add( f.Name, f );
+		}
+
+		/// <summary>
+		/// Remove a PageContentFactory implementation. 
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void RemoveContentFactory( IPageContentFactory f )
+		{
+			if ( mContentFactories.ContainsKey( f.Name ) )
+				mContentFactories.Remove( f.Name );
+		}
+
+		/// <summary>
+		/// Get a PageContentFactory.
+		/// </summary>
+		/// <param name="name">The name of the factory to retrieve</param>
+		/// <returns>Pointer to a PageContentFactory, or null if the Content was not found.</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public IPageContentFactory GetContentFactory( string name )
+		{
+			IPageContentFactory f;
+			mContentFactories.TryGetValue( name, out f );
+			return f;
+		}
+
+		/// <summary>
+		/// Create a new instance of PageContent using the registered factories.
+		/// </summary>
+		/// <param name="typeName">The name of the type of content to create</param>
+		[OgreVersion( 1, 7, 2 )]
+		public PageContent CreateContent( string typeName )
+		{
+			IPageContentFactory fact = GetContentFactory( typeName );
+			if ( fact == null )
+				throw new AxiomException( "{0} is not the name of a valid PageContentFactory! PageManager.CreateContent", typeName );
+
+			return fact.CreateInstance();
+		}
+
+		/// <summary>
+		/// Destroy an instance of PageContent.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyContent( ref PageContent c )
+		{
+			IPageContentFactory fact = GetContentFactory( c.Type );
+			if ( fact != null )
+				fact.DestroyInstance( ref c );
+			else
+				c.Dispose();// normally a safe fallback
+		}
+
+		/// <summary>
+		/// Add a new PagedWorldSectionFactory implementation.
+		/// </summary>
+		/// <remarks>The caller remains resonsible for destruction of this instance.</remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void AddWorldSectionFactory( PagedWorldSectionFactory f )
+		{
+			// note - deliberately allowing overriding
+			if ( mWorldSectionFactories.ContainsKey( f.Name ) )
+			{
+				mWorldSectionFactories[ f.Name ] = f;
+				return;
+			}
+
+			mWorldSectionFactories.Add( f.Name, f );
+		}
+
+		/// <summary>
+		/// Remove a PagedWorldSectionFactory implementation.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void RemoveWorldSectionFactory( PagedWorldSectionFactory f )
+		{
+			if ( mWorldSectionFactories.ContainsKey( f.Name ) )
+				mWorldSectionFactories.Remove( f.Name );
+		}
+
+		/// <summary>
+		/// Get a PagedWorldSectionFactory.
+		/// </summary>
+		/// <param name="name">The name of the factory to retrieve</param>
+		/// <returns>Pointer to a PagedWorldSectionFactory, or null if the WorldSection was not found.</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public PagedWorldSectionFactory GetWorldSectionFactory( string name )
+		{
+			PagedWorldSectionFactory ret;
+			mWorldSectionFactories.TryGetValue( name, out ret );
+			return ret;
+		}
+
+		/// <summary>
+		/// Create a new instance of PagedWorldSection using the registered factories.
+		/// </summary>
+		/// <param name="typeName">The name of the type of collection to create</param>
+		/// <param name="name">The instance name</param>
+		/// <param name="parent">The parent world</param>
+		/// <param name="sm">The SceneManager to use (can be null if this is to be loaded)</param>
+		[OgreVersion( 1, 7, 2 )]
+		public PagedWorldSection CreateWorldSection( string typeName, string name, PageWorld parent, SceneManager sm )
+		{
+			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( typeName );
+			if ( fact == null )
+				throw new AxiomException( "{0} is not the name of a valid PagedWorldSectionFactory PageManager.CreateWorldSection", typeName );
+
+			return fact.CreateInstance( name, parent, sm );
+		}
+
+		/// <summary>
+		/// Destroy an instance of PagedWorldSection.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyWorldSection( ref PagedWorldSection coll )
+		{
+			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( coll.Type );
+			if ( fact != null )
+				fact.DestroyInstance( ref coll );
+			else
+				coll.Dispose(); // normally a safe fallback
+		}
+
+		/// <summary>
+		/// Get a serialiser set up to read Page data for the given PageID.
+		/// </summary>
+		/// <param name="pageId">The ID of the page being requested</param>
+		/// <param name="section">The parent section to which this page will belong</param>
+		/// <remarks>The StreamSerialiser returned is the responsibility of the caller to delete.</remarks>
+		[OgreVersion( 1, 7, 2 )]
+		internal StreamSerializer ReadPageStream( PageID pageId, PagedWorldSection section )
+		{
+			StreamSerializer ser = null;
+			if ( mPageProvider != null )
+				ser = mPageProvider.ReadPageStream( pageId, section );
+			if ( ser == null )
+			{
+				// use default implementation
+				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId.Value );
+				var stream = ResourceGroupManager.Instance.OpenResource( nameStr );
+				ser = new StreamSerializer( stream );
+			}
+
+			return ser;
+		}
+
+		/// <summary>
+		/// Get a serialiser set up to write Page data for the given PageID.
+		/// </summary>
+		/// <param name="pageId">The ID of the page being requested</param>
+		/// <param name="section">The parent section to which this page will belong</param>
+		/// <remarks>The StreamSerialiser returned is the responsibility of the caller to delete.</remarks>
+		[OgreVersion( 1, 7, 2 )]
+		internal StreamSerializer WritePageStream( PageID pageId, PagedWorldSection section )
+		{
+			StreamSerializer ser = null;
+
+			if ( mPageProvider != null )
+				ser = mPageProvider.WritePageStream( pageId, section );
+			
+			if ( ser == null )
+			{
+				// use default implementation
+				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId.Value );
+				// create file, overwrite if necessary
+				var stream = ResourceGroupManager.Instance.CreateResource( nameStr, mPageResourceGroup, true );
+				ser = new StreamSerializer( stream );
+			}
+
+			return ser;
+		}
+
+		/// <summary>
+		/// Get a serialiser set up to read PagedWorld data for the given world name.
+		/// </summary>
+		/// <remarks>The StreamSerialiser returned is the responsibility of the caller to delete.</remarks>
+		[OgreVersion( 1, 7, 2 )]
+		internal StreamSerializer ReadWorldStream( string fileName )
+		{
+			StreamSerializer ser = null;
+			if ( mPageProvider != null )
+				ser = mPageProvider.ReadWorldStream( fileName );
+			
+			if ( ser == null )
+			{
+				// use default implementation
+				Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
+				ser = new StreamSerializer( stream );
+			}
+
+			return ser;
+		}
+
+		/// <summary>
+		/// Get a serialiser set up to write PagedWorld data.
+		/// </summary>
+		/// <reremarks>The StreamSerialiser returned is the responsibility of the caller to	delete.</reremarks>
+		[OgreVersion( 1, 7, 2 )]
+		internal StreamSerializer WriteWorldStream( string fileName )
+		{
+			StreamSerializer ser = null;
+			if ( mPageProvider != null )
+				ser = mPageProvider.WriteWorldStream( fileName );
+			
+			if ( ser == null )
+			{
+				// use default implementation
+				// create file, overwrite if necessary
+				var stream = ResourceGroupManager.Instance.CreateResource( fileName, mPageResourceGroup, true );
+				ser = new StreamSerializer( stream );
+			}
+
+			return ser;
+		}
+
+		/// <summary>
+		/// Give a provider the opportunity to prepare page content procedurally.
+		/// </summary>
+		/// <remarks>
+		/// You should not call this method directly. This call may well happen in 
+		/// a separate thread so it should not access GPU resources, use _loadProceduralPage for that
+		/// </remarks>
+		/// <returns>true if the page was populated, false otherwise</returns>
+		[OgreVersion( 1, 7, 2 )]
+		internal bool PrepareProcedualPage( Page page, PagedWorldSection section )
+		{
+			bool generated = false;
+			if ( mPageProvider != null )
+				generated = mPageProvider.PrepareProcedualPage( page, section );
+
+			return generated;
+		}
+
+		/// <summary>
+		/// Give a provider the opportunity to prepare page content procedurally. 
+		/// </summary>
+		/// <remarks>
+		/// You should not call this method directly. This call will happen in 
+		/// the main render thread so it can access GPU resources. Use _prepareProceduralPage
+		/// for background preparation.
+		/// </remarks>
+		/// <returns>true if the page was populated, false otherwise</returns>
+		[OgreVersion( 1, 7, 2 )]
+		internal bool LoadProcedualPage( Page page, PagedWorldSection section )
+		{
+			bool generated = false;
+			if ( mPageProvider != null )
+				generated = mPageProvider.LoadProcedualPage( page, section );
+
+			return generated;
+		}
+
+		/// <summary>
+		/// Give a manager the opportunity to unprepare page content procedurally.
+		/// </summary>
+		/// <remarks>
+		/// You should not call this method directly. This call may well happen in 
+		/// a separate thread so it should not access GPU resources, use _unloadProceduralPage for that
+		/// </remarks>
+		/// <returns>true if the page was unpopulated, false otherwise</returns>
+		[OgreVersion( 1, 7, 2 )]
+		internal bool UnPrepareProcedualPage( Page page, PagedWorldSection section )
+		{
+			bool generated = false;
+
+			if ( mPageProvider != null )
+				generated = mPageProvider.UnPrepareProcedualPage( page, section );
+
+			return generated;
+		}
+
+		/// <summary>
+		/// Give a manager  the opportunity to unload page content procedurally.
+		/// </summary>
+		/// <remarks>
+		/// You should not call this method directly. This call will happen in 
+		/// the main render thread so it can access GPU resources. Use _unprepareProceduralPage
+		/// for background preparation.
+		/// </remarks>
+		/// <returns>true if the page was populated, false otherwise</returns>
+		[OgreVersion( 1, 7, 2 )]
+		internal bool UnloadProcedualPage( Page page, PagedWorldSection section )
+		{
+			bool generated = false;
+			if ( mPageProvider != null )
+				generated = mPageProvider.UnloadProcedualPage( page, section );
+
+			return generated;
+		}
+
+		/// <summary>
+		/// Tells the paging system to start tracking a given camera.
+		/// </summary>
+		/// <remarks>
+		/// In order for the paging system to funciton it needs to know which
+		/// Cameras to track. You may not want to have all your cameras affect
+		/// the paging system, so just add the cameras you want it to keep track of	here.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void AddCamera( Camera c )
+		{
+			if ( !mCameraList.Contains( c ) )
+			{
+				mCameraList.Add( c );
+				c.CameraPreRenderScene += mEventRouter.OnPreRenderScene;
+				c.CameraDestroyed += mEventRouter.OnCameraDestroyed;
+			}
+		}
+
+		/// <summary>
+		/// Tells the paging system to stop tracking a given camera.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void RemoveCamera( Camera c )
+		{
+			if ( mCameraList.Contains( c ) )
+			{
+				c.CameraPreRenderScene -= mEventRouter.OnPreRenderScene;
+				c.CameraDestroyed -= mEventRouter.OnCameraDestroyed;
+				mCameraList.Remove( c );
+			}
+		}
+
+		/// <summary>
+		/// Returns whether or not a given camera is being watched by the paging system.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public bool HasCamera( Camera c )
+		{
+			return mCameraList.Contains( c );
+		}
+
+		protected class EventRouter
+		{
+			public PageManager pManager;
+			public Dictionary<string, PageWorld> pWorlds;
+			public List<Camera> pCameraList;
+
+			[OgreVersion( 1, 7, 2 )]
+			public void FrameStarted( object source, FrameEventArgs e )
+			{
+				foreach ( var world in pWorlds.Values )
+				{
+					world.FrameStart( e.TimeSinceLastFrame );
+
+					// Notify of all active cameras
+					// Previously we did this in cameraPreRenderScene, but that had the effect
+					// of causing unnecessary unloading of pages if a camera was rendered
+					// intermittently, so we assume that all cameras we're told to watch are 'active'
+					foreach ( var c in pCameraList )
+						world.NotifyCamera( c );
+				}
+			}
+
+			[OgreVersion( 1, 7, 2 )]
+			public void FrameEnded( object source, FrameEventArgs e )
+			{
+				foreach ( var world in pWorlds.Values )
+					world.FrameEnd( e.TimeSinceLastFrame );
+			}
+
+			[OgreVersion( 1, 7, 2 )]
+			public void OnPreRenderScene( Camera.CameraEventArgs e )
+			{
+			}
+
+			[OgreVersion( 1, 7, 2 )]
+			public void OnCameraDestroyed( Camera.CameraEventArgs e )
+			{
+				pManager.RemoveCamera( e.Source );
+			}
+		}
+	}
 }

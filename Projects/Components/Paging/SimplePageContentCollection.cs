@@ -90,7 +90,7 @@ namespace Axiom.Components.Paging
         public virtual void DestroyContent(PageContent pcont)
         {
             DetachContent(pcont);
-            Manager.DestroyContent(pcont);
+            Manager.DestroyContent(ref pcont);
         }
 
         /// <summary>

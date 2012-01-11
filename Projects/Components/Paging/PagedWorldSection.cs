@@ -228,7 +228,7 @@ namespace Axiom.Components.Paging
         /// Construct a new instance, specifying just the parent and the scene manager.
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        public PagedWorldSection( string name, PageWorld parent, SceneManager sm )
+        internal PagedWorldSection( string name, PageWorld parent, SceneManager sm )
             : base()
         {
             mName = name;
@@ -726,5 +726,20 @@ namespace Axiom.Components.Paging
         {
             return string.Format( "PagedWorldSection({0}, world:{1})", mName, this.World.Name );
         }
+    };
+
+    /// <summary>
+    /// A factory class for creating types of world section.
+    /// </summary>
+    public abstract class PagedWorldSectionFactory
+    {
+        [OgreVersion( 1, 7, 2 )]
+        public abstract string Name { get; }
+
+        [OgreVersion( 1, 7, 2 )]
+        public abstract PagedWorldSection CreateInstance( string name, PageWorld parent, SceneManager sm );
+
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void DestroyInstance( ref PagedWorldSection p );
     };
 }

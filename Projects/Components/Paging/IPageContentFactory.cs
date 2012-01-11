@@ -62,7 +62,7 @@ namespace Axiom.Components.Paging
         /// 
         /// </summary>
         /// <param name="content"></param>
-        void DestroyInstance(PageContent content);
+        void DestroyInstance(ref PageContent content);
 
     }
 }

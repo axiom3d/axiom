@@ -117,5 +117,10 @@ namespace Axiom.Components.Paging
         {
             return null;
         }
+
+        internal StreamSerializer WriteWorldStream( string fileName )
+        {
+            throw new NotImplementedException();
+        }
     }
 }
