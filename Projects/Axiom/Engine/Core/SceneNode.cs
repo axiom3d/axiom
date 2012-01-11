@@ -1043,20 +1043,20 @@ namespace Axiom.Core
 
 				targetOrientation = rotationQuat * orientation;
 			}
-
+            //use Orientatin property to ensure call of NeedsUpdate
 			if ( relativeTo == TransformSpace.Local || parent != null )
 			{
-				orientation = targetOrientation;
+				Orientation = targetOrientation;
 			}
 			else
 			{
 				if ( relativeTo == TransformSpace.Parent )
 				{
-					orientation = targetOrientation * parent.Orientation.Inverse();
+					Orientation = targetOrientation * parent.Orientation.Inverse();
 				}
 				else if ( relativeTo == TransformSpace.World )
 				{
-					orientation = targetOrientation * parent.DerivedOrientation.Inverse();
+					Orientation = targetOrientation * parent.DerivedOrientation.Inverse();
 				}
 			}
 		}
