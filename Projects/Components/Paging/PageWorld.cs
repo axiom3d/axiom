@@ -49,27 +49,14 @@ namespace Axiom.Components.Paging
         #endregion - constants -
         
         #region - fields -
-        /// <summary>
-        /// 
-        /// </summary>
+
         protected string mName;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected PageManager mManger;
-        /// <summary>
-        /// 
-        /// </summary>
+        protected PageManager mManager;
         protected PageProvider mPageProvider;
-        /// <summary>
-        /// 
-        /// </summary>
         protected Dictionary<string, PagedWorldSection> mSections = new Dictionary<string, PagedWorldSection>();
-        /// <summary>
-        /// 
-        /// </summary>
         protected NameGenerator<PagedWorldSection> mSectionNameGenerator;
-        #endregion
+
+        #endregion - fields -
 
         #region - properties -
         /// <summary>
@@ -117,7 +104,7 @@ namespace Axiom.Components.Paging
         {
             get
             {
-                return mManger;
+                return mManager;
             }
         }
         #endregion
@@ -132,7 +119,7 @@ namespace Axiom.Components.Paging
             : base()
         {
             mName = name;
-            mManger = manager;
+            mManager = manager;
             mSectionNameGenerator = new NameGenerator<PagedWorldSection>("Section");
         }
         /// <summary>
@@ -148,7 +135,7 @@ namespace Axiom.Components.Paging
         /// <param name="fileName"></param>
         public void Load(string fileName)
         {
-            StreamSerializer stream = mManger.ReadWorldStream(fileName);
+            StreamSerializer stream = mManager.ReadWorldStream(fileName);
             Load(stream);
             stream = null;
         }
@@ -198,7 +185,7 @@ namespace Axiom.Components.Paging
         /// <param name="fileName"></param>
         public void Save(string fileName)
         {
-            StreamSerializer stream = mManger.WriteWorldStream(fileName);
+            StreamSerializer stream = mManager.WriteWorldStream(fileName);
             Save(stream);
             stream = null;
         }
@@ -244,10 +231,35 @@ namespace Axiom.Components.Paging
         /// with PageManager), or blank to use the default type (simple grid)</param>
         /// <param name="sectionName">An optional name to give the section (if none is
         /// provided, one will be generated)</param>
-        /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName, string sectionName )
         {
-            throw new System.NotImplementedException();
+            string theName = sectionName;
+            if ( theName == string.Empty )
+            {
+                do
+                {
+                    theName = mSectionNameGenerator.GetNextUniqueName();
+                } while ( !mSections.ContainsKey( theName ) );
+            }
+            else if ( mSections.ContainsKey( theName ) )
+                throw new AxiomException( "World section named '{0}' already exists! PagedWorld.CreateSection", theName );
+
+            PagedWorldSection ret = null;
+            if ( typeName == "General" )
+                ret = new PagedWorldSection( theName, this, sceneMgr );
+            else
+            {
+                PagedWorldSectionFactory fact = mManager.GetWorldSectionFactory( typeName );
+                if ( fact == null )
+                    throw new AxiomException( "World section type '{0}' does not exist! PagedWorld::createSection", typeName );
+
+                ret = fact.CreateInstance( theName, this, sceneMgr );
+
+            }
+            mSections.Add( theName, ret );
+
+            return ret;
         }
 
         public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName )
@@ -270,10 +282,12 @@ namespace Axiom.Components.Paging
         /// <param name="sceneMgr">The SceneManager to use for this section</param>
         /// <param name="sectionName">An optional name to give the section (if none is
         /// provided, one will be generated)</param>
-        /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr, string sectionName )
         {
-            throw new System.NotImplementedException();
+            // get the strategy
+            PageStrategy strategy = mManager.GetStrategy( strategyName );
+            return this.CreateSection( strategy, sceneMgr, sectionName );
         }
 
         public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr )
@@ -295,10 +309,12 @@ namespace Axiom.Components.Paging
         /// <param name="sceneMgr">The SceneManager to use for this section</param>
         /// <param name="sectionName">An optional name to give the section (if none is
         ///provided, one will be generated)</param>
-        /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr, string sectionName )
         {
-            throw new System.NotImplementedException();
+            PagedWorldSection ret = this.CreateSection( sceneMgr, "General", sectionName );
+            ret.Strategy = strategy;
+            return ret;
         }
 
         public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr )
@@ -351,7 +367,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 generated = mPageProvider.PrepareProcedualPage(page, section);
             if (!generated)
-                generated = mManger.PrepareProcedualPage(page, section);
+                generated = mManager.PrepareProcedualPage(page, section);
 
             return generated;
         }
@@ -367,7 +383,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 generated = mPageProvider.LoadProcedualPage(page, section);
             if (!generated)
-                generated = mManger.LoadProcedualPage(page, section);
+                generated = mManager.LoadProcedualPage(page, section);
 
             return generated;
         }
@@ -383,7 +399,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 generated = mPageProvider.UnloadProcedualPage(page, section);
             if (!generated)
-                generated = mManger.UnloadProcedualPage(page, section);
+                generated = mManager.UnloadProcedualPage(page, section);
 
             return generated;
         }
@@ -399,7 +415,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 generated = mPageProvider.UnPrepareProcedualPage(page, section);
             if (!generated)
-                generated = mManger.UnPrepareProcedualPage(page, section);
+                generated = mManager.UnPrepareProcedualPage(page, section);
 
             return generated;
         }
@@ -415,7 +431,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 ser = mPageProvider.ReadPageStream(pageId, section);
             if (ser == null)
-                ser = mManger.ReadPageStream(pageId, section);
+                ser = mManager.ReadPageStream(pageId, section);
 
             return ser;
         }
@@ -431,7 +447,7 @@ namespace Axiom.Components.Paging
             if (mPageProvider != null)
                 ser = mPageProvider.WritePageStream(pageId, section);
             if (ser == null)
-                ser = mManger.WritePageStream(pageId, section);
+                ser = mManager.WritePageStream(pageId, section);
 
             return ser;
         }
