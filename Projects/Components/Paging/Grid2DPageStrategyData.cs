@@ -30,8 +30,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
 
@@ -370,7 +368,7 @@ namespace Axiom.Components.Paging
         /// <param name="gridPos"></param>
         /// <param name="row"></param>
         /// <param name="col"></param>
-        public void DetermineGridLocation(Vector2 gridPos, ref int row, ref int col)
+        public void DetermineGridLocation(Vector2 gridPos, out int row, out int col)
         {
             // get distance from bottom-left (indexing start)
             Vector2 localpos = gridPos - mBottomLeft;
@@ -479,6 +477,11 @@ namespace Axiom.Components.Paging
             {
                 throw new NotImplementedException();
             }
+        }
+
+        internal void CalculateCell( PageID pageID, out int x, out int y )
+        {
+            throw new NotImplementedException();
         }
     }
 }

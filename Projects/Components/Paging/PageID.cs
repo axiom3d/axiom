@@ -33,7 +33,7 @@
 
 namespace Axiom.Components.Paging
 {
-    public class PageID
+    public struct PageID
     {
         private uint mValue;
         
