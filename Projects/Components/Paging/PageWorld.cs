@@ -38,7 +38,7 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-    public class PageWorld
+    public class PageWorld: DisposableObject
     {
         #region - constanst -
 
@@ -129,6 +129,7 @@ namespace Axiom.Components.Paging
         /// <param name="name"></param>
         /// <param name="manager"></param>
         public PageWorld(string name, PageManager manager)
+            : base()
         {
             mName = name;
             mManger = manager;

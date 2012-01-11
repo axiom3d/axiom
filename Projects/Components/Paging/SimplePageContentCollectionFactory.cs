@@ -29,16 +29,13 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
-    public class SimplePageContentCollectionFactory : IPageContentCollectionFactory
+    public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
     {
         public static string FACTORY_NAME = "Simple";
         /// <summary>
