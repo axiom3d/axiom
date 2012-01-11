@@ -29,25 +29,27 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
     public class PageID
     {
-        private int mValue;
-        public int Value
+        private uint mValue;
+        
+        public uint Value
         {
             get { return mValue; }
         }
-        public PageID(int pageId)
+
+        public PageID( uint pageId )
         {
             mValue = pageId;
+        }
+
+        public override string ToString()
+        {
+            return mValue.ToString();
         }
     }
 }

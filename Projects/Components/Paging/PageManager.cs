@@ -642,7 +642,7 @@ namespace Axiom.Components.Paging
 			if ( ser == null )
 			{
 				// use default implementation
-				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId.Value );
+				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId );
 				var stream = ResourceGroupManager.Instance.OpenResource( nameStr );
 				ser = new StreamSerializer( stream );
 			}
@@ -667,7 +667,7 @@ namespace Axiom.Components.Paging
 			if ( ser == null )
 			{
 				// use default implementation
-				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId.Value );
+				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId );
 				// create file, overwrite if necessary
 				var stream = ResourceGroupManager.Instance.CreateResource( nameStr, mPageResourceGroup, true );
 				ser = new StreamSerializer( stream );

@@ -91,6 +91,7 @@
     <Compile Include="TerrainLayerBlendMap.cs" />
     <Compile Include="TerrainMaterialGenerator.cs" />
     <Compile Include="TerrainMaterialGeneratorA.cs" />
+    <Compile Include="TerrainPagedWorldSection.cs" />
     <Compile Include="TerrainQuadTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +115,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Paging\Axiom.Components.Paging.2010.csproj">
+      <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
+      <Name>Axiom.Components.Paging.2010</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
