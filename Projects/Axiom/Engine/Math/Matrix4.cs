@@ -659,6 +659,16 @@ namespace Axiom.Math
 			rotation.m12 = axis.y;
 			rotation.m22 = axis.z;
 
+            /* http://www.robertblum.com/articles/2005/02/14/decomposing-matrices check to support transforms with negative scaling */
+            //thanks sebj for the info
+            if (rotation.Determinant < 0)
+            {
+                rotation.m00 = -rotation.m00;
+                rotation.m10 = -rotation.m10;
+                rotation.m20 = -rotation.m20;
+                scale.x = -scale.x;
+            }
+
 			orientation = Quaternion.FromRotationMatrix( rotation );
 			translation = this.Translation;
 		}
