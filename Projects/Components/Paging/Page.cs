@@ -20,11 +20,18 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
@@ -37,9 +44,10 @@ namespace Axiom.Components.Paging
         public static ushort CHUNK_VERSION = 1;
         protected PageID mID;
         protected PagedWorldSection mParent;
-        protected uint mFrameLastHeld;
+        protected int mFrameLastHeld;
         protected List<PageContentCollection> mContentCollections = new List<PageContentCollection>();
         protected SceneNode mDebugNode;
+        protected bool mDeferredProcessInProgress;
 
         /// <summary>
         /// Get the ID of this page, unique withing the parent
@@ -62,7 +70,7 @@ namespace Axiom.Components.Paging
         /// A Page that has not been requested to be loaded or held in the recent
 		///	past will be a candidate for removal. 
         /// </remarks>
-        public virtual uint FrameLastHeld
+        public virtual int FrameLastHeld
         {
             get { return mFrameLastHeld; }
         }
@@ -116,30 +124,94 @@ namespace Axiom.Components.Paging
         {
             get { return mParent.SceneManager; }
         }
-        #region - constructor, destructor -
+
+        /// <summary>
+        /// If true, it's not safe to access this Page at this time, contents may be changing
+        /// </summary>
+        public bool IsDeferredProcessInProgress
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return mDeferredProcessInProgress;
+            }
+        }
+
+        #region - constructor -
         /// <summary>
         /// Page class
         /// </summary>
-        /// <param name="pageID"></param>
-        public Page(PageID pageID)
+        public Page( PageID pageID, PagedWorldSection parent )
+            : base()
         {
             mID = pageID;
+            mParent = parent;
+
+#if WORKQUEUE_IMPLEMENTED
+		    WorkQueue* wq = Root::getSingleton().getWorkQueue();
+		    mWorkQueueChannel = wq->getChannel("Axiom/Page");
+		    wq->addRequestHandler(mWorkQueueChannel, this);
+		    wq->addResponseHandler(mWorkQueueChannel, this);
+#endif
             Touch();
         }
-        ~Page()
+
+        #endregion - constructor -
+
+        [OgreVersion( 1, 7, 2, "~Page" )]
+        protected override void dispose( bool disposeManagedResources )
         {
-            Destroy();
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+#if WORKQUEUE_IMPLEMENTED
+                    WorkQueue* wq = Root::getSingleton().getWorkQueue();
+		            wq->removeRequestHandler(mWorkQueueChannel, this);
+		            wq->removeResponseHandler(mWorkQueueChannel, this);
+#endif
+                    DestroyAllContentCollections();
+
+                    if ( mDebugNode != null )
+                    {
+                        // destroy while we have the chance
+                        for ( int i = 0; i < mDebugNode.ObjectCount; ++i )
+                            mParent.SceneManager.DestroyMovableObject( mDebugNode.GetObject( i ) );
+
+                        mDebugNode.RemoveAndDestroyAllChildren();
+                        mParent.SceneManager.DestroySceneNode( mDebugNode );
+
+                        mDebugNode = null;
+                    }
+                }
+            }
+            
+            base.dispose( disposeManagedResources );
+        }
+
+        /// <summary>
+        /// Destroy all PageContentCollections within this page.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void DestroyAllContentCollections()
+        {
+            foreach ( var i in mContentCollections )
+            {
+                if ( !i.IsDisposed )
+                    i.Dispose();
+            }
             mContentCollections.Clear();
         }
-        #endregion
+
         /// <summary>
         /// 'Touch' the page to let it know it's being used
         /// </summary>
+        [OgreVersion( 1, 7, 2 )]
         public void Touch()
         {
-#warning implement NextFrameNumber
-            mFrameLastHeld = 1;// Root.Instance.NextFrameNumber + 1;
+            mFrameLastHeld = Root.Instance.NextFrameNumber;
         }
+
         /// <summary>
         /// Internal method to notify a page that it is attached
         /// </summary>
@@ -173,10 +245,22 @@ namespace Axiom.Components.Paging
                 coll.NotifyCamera(cam);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
+
+        [OgreVersion( 1, 7, 2 )]
+        public override void Load( bool synchronous )
+        {
+            if ( !mDeferredProcessInProgress )
+            {
+                DestroyAllContentCollections();
+                mDeferredProcessInProgress = true;
+#if WORKQUEUE_IMPLEMENTED
+                PageRequest req(this);
+			    Root::getSingleton().getWorkQueue()->addRequest(mWorkQueueChannel, WORKQUEUE_PREPARE_REQUEST, 
+				    Any(req), 0, synchronous);
+#endif
+            }
+        }
+
         public virtual void Save(StreamSerializer stream)
         {
             stream.WriteChunkBegin(CHUNK_ID, CHUNK_VERSION);
@@ -192,11 +276,22 @@ namespace Axiom.Components.Paging
 
             stream.WriteChunkEnd(CHUNK_ID);
         }
+
+        /// <summary>
+        /// Save page data to an automatically generated file name
+        /// </summary>
+        public virtual void Save()
+        {
+            throw new System.NotImplementedException();
+            //String filename = generateFilename();
+            //save( filename );
+        }
+
         /// <summary>
         /// Called when the frame starts
         /// </summary>
         /// <param name="timeSinceLastFrame"></param>
-        public virtual void FrameStart(float timeSinceLastFrame)
+        public virtual void FrameStart(Real timeSinceLastFrame)
         {
             UpdateDebugDisplay();
 

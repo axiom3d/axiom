@@ -20,9 +20,15 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Axiom.Core;
@@ -35,9 +41,13 @@ namespace Axiom.Components.Paging
     public class PageWorld
     {
         #region - constanst -
-        public static uint CHUNK_ID = StreamSerializer.MakeIdentifier("PWLD");
+
+        public static uint CHUNK_ID = StreamSerializer.MakeIdentifier( "PWLD" );
+        public static uint CHUNK_SECTIONDECLARATION_ID = StreamSerializer.MakeIdentifier( "PWLS" );
         public static ushort CHUNK_VERSION = 1;
-        #endregion
+        
+        #endregion - constants -
+        
         #region - fields -
         /// <summary>
         /// 
@@ -141,6 +151,7 @@ namespace Axiom.Components.Paging
             Load(stream);
             stream = null;
         }
+
         /// <summary>
         /// Load world data from a stream
         /// </summary>
@@ -153,29 +164,30 @@ namespace Axiom.Components.Paging
         /// <summary>
         /// Load world data from a serialiser (returns true if successful)
         /// </summary>
-        /// <param name="stream"></param>
-        public bool Load(StreamSerializer stream)
+        [OgreVersion( 1, 7, 2 )]
+        public bool Load( StreamSerializer stream )
         {
-            if (stream.ReadChunkBegin(CHUNK_ID, CHUNK_VERSION, "PageWorld") == null)
+            if ( stream.ReadChunkBegin( CHUNK_ID, CHUNK_VERSION, "PageWorld" ) == null )
                 return false;
 
             //name
-            stream.Read(out mName);
+            stream.Read( out mName );
             //sections
-            while (stream.NextChunkId == PagedWorldSection.CHUNK_ID)
+            while ( stream.NextChunkId == PageWorld.CHUNK_SECTIONDECLARATION_ID )
             {
-                PagedWorldSection sec = new PagedWorldSection(this);
-                bool sectionOk = sec.Load(stream);
-                if (sectionOk)
-                    mSections.Add(sec.Name, sec);
-                else
-                {
-                    sec = null;
-                    break;
-                }
+                stream.ReadChunkBegin();
+                string sectionType, sectionName;
+                stream.Read( out sectionType );
+                stream.Read( out sectionName );
+                stream.ReadChunkEnd( CHUNK_SECTIONDECLARATION_ID );
+                // Scene manager will be loaded
+                PagedWorldSection sec = CreateSection( null, sectionType, sectionName );
+                bool sectionOk = sec.Load( stream );
+                if ( !sectionOk )
+                    DestroySection( sec );
             }
 
-            stream.ReadChunkEnd(CHUNK_ID);
+            stream.ReadChunkEnd( CHUNK_ID );
 
             return true;
         }
@@ -214,70 +226,85 @@ namespace Axiom.Components.Paging
 
             stream.WriteChunkEnd(CHUNK_ID);
         }
-        /// <summary>
-        /// Create a new section of the world.
-        /// </summary>
-        /// <param name="strategyName"></param>
-        /// <param name="sceneMgr"></param>
-        /// <returns></returns>
-        PagedWorldSection CreateSection(string strategyName, SceneManager sceneMgr)
-        {
-            return CreateSection(strategyName, sceneMgr, string.Empty);
-        }
-        /// <summary>
-        /// Create a new section of the world.
-        /// </summary>
-        /// <param name="strategyName"></param>
-        /// <param name="sceneMgr"></param>
-        /// <param name="sectionName"></param>
-        /// <returns></returns>
-        PagedWorldSection CreateSection(string strategyName, SceneManager sceneMgr,
-            string sectionName)
-        {
-            //get the strategy
-            PageStrategy strategy = mManger.GetStrategy(strategyName);
 
-            return CreateSection(strategy, sceneMgr, sectionName);
-        }
         /// <summary>
-        /// Create a new section of the world.
+        /// Create a new section of the world based on a specialised type.
         /// </summary>
-        /// <param name="strategyName"></param>
-        /// <param name="sceneMgr"></param>
+        /// <remarks>
+        /// World sections are areas of the world that use a particular
+        /// PageStrategy, with a certain set of parameters specific to that
+        /// strategy, and potentially some other rules. 
+        /// So you would have more than one section in a world only 
+        /// if you needed different simultaneous paging strategies, or you 
+        /// wanted the same strategy but parameterised differently.
+        /// </remarks>
+        /// <param name="sceneMgr">The SceneManager to use for this section.</param>
+        /// <param name="typeName">The type of section to use (must be registered	
+        /// with PageManager), or blank to use the default type (simple grid)</param>
+        /// <param name="sectionName">An optional name to give the section (if none is
+        /// provided, one will be generated)</param>
         /// <returns></returns>
-        PagedWorldSection CreateSection(PageStrategy strategy, SceneManager sceneMgr)
+        public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName, string sectionName )
         {
-            return CreateSection(strategy, sceneMgr, string.Empty);
+            throw new System.NotImplementedException();
         }
-        /// <summary>
-        /// Create a new section of the world.
-        /// </summary>
-        /// <param name="strategyName"></param>
-        /// <param name="sceneMgr"></param>
-        /// <param name="sectionName"></param>
-        /// <returns></returns>
-        PagedWorldSection CreateSection(PageStrategy strategy, SceneManager sceneMgr,
-            string sectionName)
-        {
-            string theName = sectionName;
-            if (theName == string.Empty)
-            {
-                do
-                {
-                    theName = mSectionNameGenerator.GetNextUniqueName();
-                }
-                while (!mSections.ContainsKey(theName));
-            }
-            else if (mSections.ContainsKey(theName))
-            {
-                throw new Exception("World section named '" + theName + "' allready exists!" + 
-                "[PageWorld.CreateSection]");
-            }
 
-            PagedWorldSection ret = new PagedWorldSection(theName, this, strategy, sceneMgr);
-            mSections.Add(theName, ret);
-            return ret;
+        public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName )
+        {
+            return this.CreateSection( sceneMgr, typeName, string.Empty );
         }
+
+        /// <summary>
+        /// Create a new manually defined section of the world.
+        /// </summary>
+        /// <remarks>
+        /// World sections are areas of the world that use a particular
+        /// PageStrategy, with a certain set of parameters specific to that
+        /// strategy. So you would have more than one section in a world only 
+        /// if you needed different simultaneous paging strategies, or you 
+        /// wanted the same strategy but parameterised differently.
+        /// </remarks>
+        /// <param name="strategyName">The name of the strategy to use (must be registered	
+        /// with PageManager)</param>
+        /// <param name="sceneMgr">The SceneManager to use for this section</param>
+        /// <param name="sectionName">An optional name to give the section (if none is
+        /// provided, one will be generated)</param>
+        /// <returns></returns>
+        public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr, string sectionName )
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr )
+        {
+            return this.CreateSection( strategyName, sceneMgr, string.Empty );
+        }
+
+        /// <summary>
+        /// Create a manually defined new section of the world.
+        /// </summary>
+        /// <remarks>
+        /// World sections are areas of the world that use a particular
+        /// PageStrategy, with a certain set of parameters specific to that
+        /// strategy. So you would have more than one section in a world only 
+        /// if you needed different simultaneous paging strategies, or you 
+        /// wanted the same strategy but parameterised differently.
+        /// </remarks>
+        /// <param name="strategy">The strategy to use</param>
+        /// <param name="sceneMgr">The SceneManager to use for this section</param>
+        /// <param name="sectionName">An optional name to give the section (if none is
+        ///provided, one will be generated)</param>
+        /// <returns></returns>
+        public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr, string sectionName )
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr )
+        {
+            return this.CreateSection( strategy, sceneMgr, string.Empty );
+        }
+        
         /// <summary>
         /// Destroy a section of world.
         /// </summary>

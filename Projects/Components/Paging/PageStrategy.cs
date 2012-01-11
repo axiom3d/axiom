@@ -20,6 +20,13 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
@@ -82,7 +89,7 @@ namespace Axiom.Components.Paging
         /// </summary>
         /// <param name="timeSinceLastFrame"></param>
         /// <param name="section"></param>
-        public virtual void FrameStart(float timeSinceLastFrame, PagedWorldSection section) { }
+        public virtual void FrameStart(Real timeSinceLastFrame, PagedWorldSection section) { }
 
         /// <summary>
         /// Called when the frame ends
