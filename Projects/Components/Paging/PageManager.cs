@@ -59,7 +59,7 @@ namespace Axiom.Components.Paging
 		protected string mPageResourceGroup;
 		protected List<Camera> mCameraList = new List<Camera>();
 		protected EventRouter mEventRouter;
-		protected uint mDebugDisplayLvl;
+		protected byte mDebugDisplayLvl;
 		protected Grid2PageStrategy mGrid2DPageStrategy;
 		protected SimplePageContentCollectionFactory mSimpleCollectionFactory;
 
@@ -128,7 +128,7 @@ namespace Axiom.Components.Paging
 		/// <summary>
 		/// Set the debug display level.
 		/// </summary>
-		public uint DebugDisplayLevel
+		public byte DebugDisplayLevel
 		{
 			[OgreVersion( 1, 7, 2 )]
 			get { return mDebugDisplayLvl; }

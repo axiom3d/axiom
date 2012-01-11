@@ -547,6 +547,7 @@ namespace Axiom.Core
 
 		protected readonly Dictionary<string, MovableObjectCollection> movableObjectCollectionMap =
 			new Dictionary<string, MovableObjectCollection>();
+        protected NameGenerator<MovableObject> movableNameGenerator = new NameGenerator<MovableObject>();
 
 		#endregion MovableObjectfactory fields
 
@@ -943,28 +944,56 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Overloaded method.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public virtual BillboardSet CreateBillboardSet( string name )
-		{
-			// return new billboardset with a default pool size of 20
-			return this.CreateBillboardSet( name, 20 );
-		}
-
-		/// <summary>
-		///		Creates a billboard set which can be uses for particles, sprites, etc.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="poolSize"></param>
-		/// <returns></returns>
-		public virtual BillboardSet CreateBillboardSet( string name, int poolSize )
-		{
-			var param = new NamedParameterList();
+        ///	Creates a new BillboardSet for use with this scene manager.
+        /// </summary>
+        /// <remarks>
+        /// This method creates a new BillboardSet which is registered with
+        /// the SceneManager. The SceneManager will destroy this object when
+        /// it shuts down or when the SceneManager::clearScene method is
+        /// called, so the caller does not have to worry about destroying
+        /// this object (in fact, it definitely should not do this).
+        /// @par
+        /// See the BillboardSet documentations for full details of the
+        /// returned class.
+        /// </remarks>
+        /// <param name="name">The name to give to this billboard set. Must be unique.</param>
+        /// <param name="poolSize">The initial size of the pool of billboards (see BillboardSet for more information)</param>
+        /// <see cref="BillboardSet"/>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual BillboardSet CreateBillboardSet( string name, uint poolSize )
+        {
+            var param = new NamedParameterList();
 			param.Add( "poolSize", poolSize.ToString() );
 			return (BillboardSet)this.CreateMovableObject( name, BillboardSetFactory.TypeName, param );
 		}
+
+        /// <summary>
+        /// Creates a new BillboardSet for use with this scene manager, with a generated name.
+        /// </summary>
+        /// <param name="poolSize">The initial size of the pool of billboards (see BillboardSet for more information)</param>
+        /// <see cref="BillboardSet"/>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual BillboardSet CreateBillboardSet( uint poolSize )
+        {
+            string name = movableNameGenerator.GetNextUniqueName();
+            return this.CreateBillboardSet( name, poolSize );
+        }
+
+        public BillboardSet CreateBillboardSet()
+        {
+            return this.CreateBillboardSet( 20 );
+        }
+
+        /// <summary>
+        ///		Overloaded method.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public virtual BillboardSet CreateBillboardSet( string name )
+        {
+            // return new billboardset with a default pool size of 20
+            return this.CreateBillboardSet( name, 20 );
+        }
 
 		/// <summary>
 		///		Creates a camera to be managed by this scene manager.
@@ -1048,11 +1077,21 @@ namespace Axiom.Core
 		///		existence.
 		/// </remarks>
 		/// <param name="name">Name of the light to create.</param>
-		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public virtual Light CreateLight( string name )
 		{
 			return (Light)this.CreateMovableObject( name, LightFactory.TypeName, null );
 		}
+
+        /// <summary>
+        ///  Creates a light with a generated name.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual Light CreateLight()
+        {
+            string name = movableNameGenerator.GetNextUniqueName();
+            return this.CreateLight( name );
+        }
 
 		/// <summary>
 		///     Create MovableText, 3D floating text which can me moved around your scene
@@ -1095,10 +1134,22 @@ namespace Axiom.Core
 		/// <param name="name">
 		///     The name to be given to the object (must be unique).
 		/// </param>
-		public ManualObject CreateManualObject( string name )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual ManualObject CreateManualObject( string name )
 		{
 			return (ManualObject)this.CreateMovableObject( name, ManualObjectFactory.TypeName, null );
 		}
+
+        /// <summary>
+        /// Create a ManualObject, an object which you populate with geometry
+        /// manually through a GL immediate-mode style interface, generating the name.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual ManualObject CreateManualObject()
+        {
+            string name = movableNameGenerator.GetNextUniqueName();
+            return this.CreateManualObject( name );
+        }
 
 		/// <summary>
 		///     Retrieves the named ManualObject.
@@ -3173,10 +3224,27 @@ namespace Axiom.Core
 
 		#region RibbonTrail Management
 
+        /// <summary>
+        /// Create a RibbonTrail, an object which you can use to render
+        /// a linked chain of billboards which follows one or more nodes.
+        /// </summary>
+        /// <param name="name">The name to be given to the object (must be unique).</param>
+        [OgreVersion( 1, 7, 2 )]
 		public virtual RibbonTrail CreateRibbonTrail( string name )
 		{
 			return (RibbonTrail)this.CreateMovableObject( name, RibbonTrailFactory.TypeName, null );
 		}
+
+        /// <summary>
+        /// Create a RibbonTrail, an object which you can use to render
+		/// a linked chain of billboards which follows one or more nodes, generating the name.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual RibbonTrail CreateRibbonTrail()
+        {
+            string name = movableNameGenerator.GetNextUniqueName();
+            return this.CreateRibbonTrail( name );
+        }
 
 		public virtual RibbonTrail GetRibbonTrail( string name )
 		{
@@ -7113,7 +7181,19 @@ namespace Axiom.Core
 			}
 		}
 
-		public MovableObject CreateMovableObject( string name, string typeName, NamedParameterList para )
+        /// <summary>
+        /// Create a movable object of the type specified.
+        /// </summary>
+        /// <remarks>
+        /// This is the generalised form of MovableObject creation where you can
+        /// create a MovableObject of any specialised type generically, including
+        /// any new types registered using plugins.
+        /// </remarks>
+        /// <param name="name">The name to give the object. Must be unique within type.</param>
+        /// <param name="typeName">The type of object to create</param>
+        /// <param name="para">Optional name/value pair list to give extra parameters to the created object.</param>
+        [OgreVersion( 1, 7, 2 )]
+		public virtual MovableObject CreateMovableObject( string name, string typeName, NamedParameterList para )
 		{
 			// Nasty hack to make generalized Camera functions work without breaking add-on SMs
 			if ( typeName == "Camera" )
@@ -7127,7 +7207,7 @@ namespace Axiom.Core
 
 			if ( objectMap.ContainsKey( name ) )
 			{
-				throw new AxiomException( "An object with the name " + name + " already exists in the list." );
+				throw new AxiomException( "An object with the name {0} already exists in the list.", name );
 			}
 
 			var factory = Root.Instance.GetMovableObjectFactory( typeName );
@@ -7136,6 +7216,28 @@ namespace Axiom.Core
 			objectMap.Add( name, newObj );
 			return newObj;
 		}
+
+        public MovableObject CreateMovableObject( string name, string typeName )
+        {
+            return this.CreateMovableObject( name, typeName, null );
+        }
+
+        /// <summary>
+        /// Create a movable object of the type specified without a name.
+        /// </summary>
+        /// <remarks>
+        /// This is the generalised form of MovableObject creation where you can
+		/// create a MovableObject of any specialised type generically, including
+		/// any new types registered using plugins. The name is generated automatically.
+        /// </remarks>
+        /// <param name="typeName">The type of object to create</param>
+        /// <param name="para">Optional name/value pair list to give extra parameters to the created object.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual MovableObject CreateMovableObject( string typeName, NamedParameterList para )
+        {
+            string name = movableNameGenerator.GetNextUniqueName();
+            return this.CreateMovableObject( name, typeName, para );
+        }
 
 		public void DestroyMovableObject( string name, string typeName )
 		{
