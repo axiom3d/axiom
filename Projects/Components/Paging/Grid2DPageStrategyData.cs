@@ -382,15 +382,21 @@ namespace Axiom.Components.Paging
             col = (int)localpos.x;
             row = (int)localpos.y;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="col"></param>
-        /// <returns></returns>
-        public PageID CalculatePageID(int row, int col)
+
+        public PageID CalculatePageID(int x, int y)
         {
-            return new PageID(row * mGridExtentsHorz + col);
+            // Convert to signed 16-bit so sign bit is in bit 15
+            Int16 xs16 = (Int16)x;
+            Int16 ys16 = (Int16)y;
+
+            // convert to unsigned because we do not want to propagate sign bit to 32-bits
+            UInt16 x16 = (UInt16)xs16;
+            UInt16 y16 = (UInt16)ys16;
+
+            uint key = 0;
+            key = (uint)( ( x16 << 16 ) | y16 );
+
+            return new PageID( key );
         }
         /// <summary>
         /// 
@@ -401,8 +407,8 @@ namespace Axiom.Components.Paging
         public void CalculateRowCol(PageID inPageID, ref int row, ref int col)
         {
             // inverse of calculatePageID
-            row = inPageID.Value / mGridExtentsHorz;
-            col = inPageID.Value % mGridExtentsHorz;
+            row = (int)( inPageID.Value / mGridExtentsHorz );
+            col = (int)( inPageID.Value % mGridExtentsHorz );
         }
         /// <summary>
         /// 
@@ -417,5 +423,62 @@ namespace Axiom.Components.Paging
 
 
 
+
+        public void SetCellRange( int minX, int minY, int maxX, int maxY )
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CellRangeMinX
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CellRangeMinY
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CellRangeMaxX
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int CellRangeMaxY
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

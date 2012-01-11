@@ -228,7 +228,7 @@ namespace Axiom.Components.Paging
         /// Construct a new instance, specifying just the parent and the scene manager.
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        internal PagedWorldSection( string name, PageWorld parent, SceneManager sm )
+        public PagedWorldSection( string name, PageWorld parent, SceneManager sm )
             : base()
         {
             mName = name;
@@ -250,6 +250,7 @@ namespace Axiom.Components.Paging
                     if ( mStrategy != null )
                     {
                         mStrategy.DestroyData( mStrategyData );
+                        mStrategy.Dispose();
                         mStrategyData = null;
                     }
 
