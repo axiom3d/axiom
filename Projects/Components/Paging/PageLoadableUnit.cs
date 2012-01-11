@@ -20,12 +20,18 @@
 //THE SOFTWARE.
 #endregion License
 
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
@@ -71,7 +77,7 @@ namespace Axiom.Components.Paging
     /// <summary>
     /// 
     /// </summary>
-    public abstract class PageLoadableUnit
+    public abstract class PageLoadableUnit : DisposableObject
     {
         /// <summary>
         /// presents the current unit status.
@@ -124,23 +130,26 @@ namespace Axiom.Components.Paging
             return ret;
         }
 
+        public void Load()
+        {
+            this.Load( false );
+        }
+
         /// <summary>
         /// Finalise the loading of the data.
         /// </summary>
         /// <returns></returns>
-        public virtual bool Load() 
+        public virtual void Load( bool synchronous ) 
         {
             if (Status == UnitStatus.Unloaded)
                 throw new Exception("Cannot load befor Prepare() is performed, PageLoadableUnit.Load()");
 
             if (!ChangeStatus(UnitStatus.Prepared, UnitStatus.Loading))
-                return false;
+                return;
 
             LoadImpl();
 
             mStatus = UnitStatus.Loaded;
-
-            return true;
         }
 
         /// <summary>
