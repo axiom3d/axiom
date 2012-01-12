@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PagedWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\..\Axiom\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
@@ -86,7 +87,6 @@
     <Compile Include="PageProvider.cs" />
     <Compile Include="PageRequestQueue.cs" />
     <Compile Include="PageStrategy.cs" />
-    <Compile Include="PageWorld.cs" />
     <Compile Include="SimplePageContentCollection.cs" />
     <Compile Include="SimplePageContentCollectionFactory.cs" />
   </ItemGroup>

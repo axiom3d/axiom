@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -91,6 +91,7 @@
     <Compile Include="Page.cs" />
     <Compile Include="PageContent.cs" />
     <Compile Include="PageContentCollection.cs" />
+    <Compile Include="PagedWorld.cs" />
     <Compile Include="PagedWorldSection.cs" />
     <Compile Include="PageID.cs" />
     <Compile Include="PageLoadableUnit.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="PageProvider.cs" />
     <Compile Include="PageRequestQueue.cs" />
     <Compile Include="PageStrategy.cs" />
-    <Compile Include="PageWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimplePageContentCollection.cs" />
     <Compile Include="SimplePageContentCollectionFactory.cs" />
