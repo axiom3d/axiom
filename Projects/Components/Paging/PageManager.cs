@@ -49,12 +49,12 @@ namespace Axiom.Components.Paging
 	/// </remarks>
 	public class PageManager : DisposableObject
 	{
-		protected Dictionary<string, PageWorld> mWorlds = new Dictionary<string, PageWorld>();
+		protected Dictionary<string, PagedWorld> mWorlds = new Dictionary<string, PagedWorld>();
 		protected Dictionary<string, PageStrategy> mStrategies = new Dictionary<string, PageStrategy>();
 		protected Dictionary<string, IPageContentCollectionFactory> mContentCollectionFactories = new Dictionary<string, IPageContentCollectionFactory>();
 		protected Dictionary<string, PagedWorldSectionFactory> mWorldSectionFactories = new Dictionary<string, PagedWorldSectionFactory>();
 		protected Dictionary<string, IPageContentFactory> mContentFactories = new Dictionary<string, IPageContentFactory>();
-		protected NameGenerator<PageWorld> mWorldNameGenerator = new NameGenerator<PageWorld>( "World" );
+		protected NameGenerator<PagedWorld> mWorldNameGenerator = new NameGenerator<PagedWorld>( "World" );
 		protected PageProvider mPageProvider;
 		protected string mPageResourceGroup;
 		protected List<Camera> mCameraList = new List<Camera>();
@@ -119,7 +119,7 @@ namespace Axiom.Components.Paging
 		/// <summary>
 		/// Get a reference to the worlds that are currently loaded.
 		/// </summary>
-		public Dictionary<string, PageWorld> Worlds
+		public Dictionary<string, PagedWorld> Worlds
 		{
 			[OgreVersion( 1, 7, 2 )]
 			get { return mWorlds; }
@@ -240,7 +240,7 @@ namespace Axiom.Components.Paging
 			AddContentCollectionFactory( mSimpleCollectionFactory );
 		}
 
-		public PageWorld CreateWorld()
+		public PagedWorld CreateWorld()
 		{
 			return CreateWorld( string.Empty );
 		}
@@ -251,7 +251,7 @@ namespace Axiom.Components.Paging
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		///	will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
-		public PageWorld CreateWorld( string name )
+		public PagedWorld CreateWorld( string name )
 		{
 			string theName = name;
 			if ( theName == string.Empty )
@@ -267,7 +267,7 @@ namespace Axiom.Components.Paging
 				throw new AxiomException( "World named '{0}' allready exists! PageManager.CreateWorld", theName );
 			}
 
-			PageWorld ret = new PageWorld( theName, this );
+			PagedWorld ret = new PagedWorld( theName, this );
 			mWorlds.Add( theName, ret );
 
 			return ret;
@@ -290,7 +290,7 @@ namespace Axiom.Components.Paging
 		/// Destroy a world.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public void DestroyWorld( PageWorld world )
+		public void DestroyWorld( PagedWorld world )
 		{
 			this.DestroyWorld( world.Name );
 		}
@@ -302,9 +302,9 @@ namespace Axiom.Components.Paging
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		/// will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
-		public PageWorld LoadWorld( string fileName, string name )
+		public PagedWorld LoadWorld( string fileName, string name )
 		{
-			PageWorld ret = CreateWorld( name );
+			PagedWorld ret = CreateWorld( name );
 
 			StreamSerializer ser = ReadWorldStream( fileName );
 			ret.Load( ser );
@@ -314,7 +314,7 @@ namespace Axiom.Components.Paging
 			return ret;
 		}
 
-		public PageWorld LoadWorld( string fileName )
+		public PagedWorld LoadWorld( string fileName )
 		{
 			return LoadWorld( fileName, string.Empty );
 		}
@@ -326,16 +326,16 @@ namespace Axiom.Components.Paging
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		/// will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
-		public PageWorld LoadWorld( Stream stream, string name )
+		public PagedWorld LoadWorld( Stream stream, string name )
 		{
-			PageWorld ret = CreateWorld( name );
+			PagedWorld ret = CreateWorld( name );
 
 			ret.Load( stream );
 
 			return ret;
 		}
 
-		public PageWorld LoadWorld( Stream stream )
+		public PagedWorld LoadWorld( Stream stream )
 		{
 			return LoadWorld( stream, string.Empty );
 		}
@@ -346,7 +346,7 @@ namespace Axiom.Components.Paging
 		/// <param name="world">The world to be saved</param>
 		/// <param name="fileName">The filename to save the data to</param>
 		[OgreVersion( 1, 7, 2 )]
-		public void SaveWorld( PageWorld world, string fileName )
+		public void SaveWorld( PagedWorld world, string fileName )
 		{
 			world.Save( fileName );
 		}
@@ -357,7 +357,7 @@ namespace Axiom.Components.Paging
 		/// <param name="world">The world to be saved</param>
 		/// <param name="stream">The stream to save the data to</param>
 		[OgreVersion( 1, 7, 2 )]
-		public void SaveWorld( PageWorld world, Stream stream )
+		public void SaveWorld( PagedWorld world, Stream stream )
 		{
 			world.Save( stream );
 		}
@@ -368,12 +368,10 @@ namespace Axiom.Components.Paging
 		/// <param name="name">The name of the world (not a filename, the identifying name)</param>
 		/// <returns>The world, or null if the world doesn't exist.</returns>
 		[OgreVersion( 1, 7, 2 )]
-		public PageWorld GetWorld( string name )
+		public PagedWorld GetWorld( string name )
 		{
-			PageWorld ret = null;
-
+			PagedWorld ret = null;
 			mWorlds.TryGetValue( name, out ret );
-
 			return ret;
 		}
 
@@ -415,9 +413,7 @@ namespace Axiom.Components.Paging
 		public PageStrategy GetStrategy( string stratName )
 		{
 			PageStrategy ret;
-
 			mStrategies.TryGetValue( stratName, out ret );
-
 			return ret;
 		}
 
@@ -605,7 +601,7 @@ namespace Axiom.Components.Paging
 		/// <param name="parent">The parent world</param>
 		/// <param name="sm">The SceneManager to use (can be null if this is to be loaded)</param>
 		[OgreVersion( 1, 7, 2 )]
-		public PagedWorldSection CreateWorldSection( string typeName, string name, PageWorld parent, SceneManager sm )
+		public PagedWorldSection CreateWorldSection( string typeName, string name, PagedWorld parent, SceneManager sm )
 		{
 			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( typeName );
 			if ( fact == null )
@@ -839,7 +835,7 @@ namespace Axiom.Components.Paging
 		protected class EventRouter
 		{
 			public PageManager pManager;
-			public Dictionary<string, PageWorld> pWorlds;
+			public Dictionary<string, PagedWorld> pWorlds;
 			public List<Camera> pCameraList;
 
 			[OgreVersion( 1, 7, 2 )]
