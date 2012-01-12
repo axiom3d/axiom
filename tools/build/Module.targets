@@ -8,12 +8,13 @@
   <!-- Custom Tasks -->
   
   <PropertyGroup>
+	<RootDir Condition="'$(RootDir)'==''">..\..</RootDir>
     <MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>    
+	<AxiomBuildTasksPath>$(RootDir)\tools\build</AxiomBuildTasksPath>
   </PropertyGroup>
   
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />   
-  <UsingTask TaskName="ParseVersion" AssemblyFile="Gallio.BuildTools.Tasks.dll" />
-  <UsingTask TaskName="SGenMultipleTypes" AssemblyFile="Gallio.BuildTools.Tasks.dll" />             
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />              
+  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Tasks.Targets" />              
   
   <!-- Item Definitions -->
   
@@ -96,6 +97,25 @@
       <VSDocsDir />
       <WebDocsDir />
     </NDoc>
+	
+	<CodePlexRelease>
+	  <Project />
+	  <Name />
+	  <Default />
+	  <ShowToPublic />
+      <Description />
+	  <ReleaseDate />
+	  <ReleaseStatus />
+	  <User />
+	  <Password />
+	  <ReleaseFiles />
+	</CodePlexRelease>
+	<ReleaseFile>
+		<Release />
+		<MimeType />
+		<FileType />
+	</ReleaseFile>
+	
   </ItemDefinitionGroup>
   
   <!-- External Properties -->
@@ -159,6 +179,7 @@
 	<ImageDependsOn>Precondition;PrintImageBanner;CreateBuildTree;CreateModuleBuildTree;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
 	<DistDependsOn>Precondition;PrintDistBanner;CreateBuildTree;CreateModuleBuildTree;BeforeDist;CoreDist;AfterDist</DistDependsOn>
 	<TestDependsOn>Precondition;PrintTestBanner;CreateBuildTree;CreateModuleBuildTree;BeforeTest;CoreTest;AfterTest</TestDependsOn>
+	<PublishDependsOn>Precondition;PrintPublishBanner;CreateBuildTree;CreateModuleBuildTree;BeforePublish;CorePublish;AfterPublish</PublishDependsOn>
   </PropertyGroup>
   
   <Target Name="Precondition"
@@ -173,6 +194,8 @@
           DependsOnTargets="$(DistDependsOn)" />
   <Target Name="Test"
           DependsOnTargets="$(TestDependsOn)" />
+  <Target Name="Publish"
+          DependsOnTargets="$(PublishDependsOn)" />
 
   <!-- Overridable Targets -->
   
@@ -188,11 +211,13 @@
   <Target Name="AfterDist" />
   <Target Name="BeforeTest" />
   <Target Name="AfterTest" />
+  <Target Name="BeforePublish" />
+  <Target Name="AfterPublish" />
 
   <!-- Preconditions -->
   
   <Target Name="MainPrecondition"
-          DependsOnTargets="VerifyRootDirIsSet;VerifyProjectsSynchronized" />
+          DependsOnTargets="VerifyRootDirIsSet;VerifyProjectsSynchronized;BuildCustomTasks" />
   
   <Target Name="VerifyRootDirIsSet">
     <Error Condition="'$(RootDir)'==''"
@@ -212,6 +237,13 @@
     
     <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items.%0D%0ASkip this with '/p:SkipSyncProjects=true'."
            Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
+  </Target>  
+
+  <Target Name="BuildCustomTasks">
+    <MSBuild Projects="$(RootDir)\tools\build\AxiomBuildTasks\AxiomBuildTasks.csproj"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Build" />
   </Target>  
   
   <!-- Banner Text -->
@@ -245,6 +277,11 @@
     <Message Importance="High" Text="%0A[Test]%0A"
              Condition="'$(Main)'=='true'" />
     <Message Importance="Normal" Text="Test: $(ModuleName)" />
+  </Target>
+  <Target Name="PrintPublishBanner">
+    <Message Importance="High" Text="%0A[Publish]%0A"
+             Condition="'$(Main)'=='true'" />
+    <Message Importance="Normal" Text="Publish: $(ModuleName)" />
   </Target>
   
   <!-- Core Targets -->
@@ -293,6 +330,9 @@
         RecursiveTest;
         TestWithGallio;
     </CoreTestDependsOn>
+    <CorePublishDependsOn>
+        RecursivePublish;
+    </CorePublishDependsOn>
   </PropertyGroup>
   
   <Target Name="CorePrecondition"
@@ -307,6 +347,8 @@
           DependsOnTargets="$(CoreDistDependsOn)" />
   <Target Name="CoreTest"
           DependsOnTargets="$(CoreTestDependsOn)" />
+  <Target Name="CorePublish"
+          DependsOnTargets="$(CorePublishDependsOn)" />
   
   <!-- Recursive Targets -->
 
@@ -423,6 +465,18 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Test" />
+             
+    <OnError ExecuteTargets="ModuleError" />
+  </Target>  
+
+  <Target Name="RecursivePublish"
+          DependsOnTargets="PopulateRecursiveModules">
+    <MSBuild Projects="@(RecursiveModule)"
+             Properties="$(RecursiveProperties)"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Condition="'@(RecursiveModule)'!=''"
+             Targets="Publish" />
              
     <OnError ExecuteTargets="ModuleError" />
   </Target>  

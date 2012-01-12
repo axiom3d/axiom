@@ -7,6 +7,9 @@
     <AxiomBuildTasksLib>$(AxiomBuildTasksPath)\Axiom.Build.Tasks.dll</AxiomBuildTasksLib>
     <CodePlexWebServicesTasksLib>$(AxiomBuildTasksPath)\CodePlex.WebServices.Client.dll</CodePlexWebServicesTasksLib>
 	  <AssemblyFile>$(CodePlexWebServicesTasksLib)</AssemblyFile>
+	  
+	<WebPublishScriptFile />
+	<FRSPublishScriptFile />
   </PropertyGroup>
 
   <Import Project="AxiomBuildTasks\AxiomBuildTasks.csproj"/>
@@ -14,4 +17,46 @@
   <UsingTask TaskName="CreateRelease" AssemblyFile="$(CodePlexWebServicesTasksLib)" />
   <UsingTask TaskName="UploadFiles" AssemblyFile="$(AxiomBuildTasksLib)" />
   
+  <ItemDefinitionGroup>
+	<SourceForge>
+		<WebProjectPath />
+		<FRSProjectPath />
+		<Username />
+		<Password />
+	</SourceForge>
+	
+	<SourceForgeWebFile>
+		<SourcePath />
+		<DestinationPath />
+	</SourceForgeWebFile>
+	<SourceForgeFRSFile />
+	
+  </ItemDefinitionGroup>
+  
+  <Target Name="PublishToSourceForge" 
+		  Condition="'@(SourceForge)'!=''"
+		  DependsOnTargets="PublishSFWebFiles;PublishSFFRSFiles" />
+		  
+  <Target Name="PublishSFWebFiles" DependsOnTargets="PrepareForWebPublish"
+		  Condition="'@(SourceForgeWebFile)'!=''" >
+
+    <Exec Command="&quot;$(ToolsDir)\putty\psftp.exe&quot; -pw %(SourceForge.Password) %(SourceForge.Username)@frs.sourceforge.net -batch -b &quot;%(SourceForge.Identity)&quot;"
+		  IgnoreExitCode="true"
+		  WorkingDirectory="$(SourceDir)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+    </Exec>
+  </Target>
+
+  <Target Name="PrepareForWebPublish" >
+
+    <WriteLinesToFile File="%(SourceForge.Identity)"
+                      Lines="cd %(SourceForge.WebProjectPath)"
+                      Overwrite="true" />
+    <WriteLinesToFile File="%(SourceForge.Identity)"
+                      Lines="@(SourceForgeWebFile -> 'put -r &quot;%(SourcePath)\%(Identity)&quot; &quot;%(DestinationPath)&quot;')"
+                      Overwrite="false" />
+  </Target>
+  <Target Name="PublishSFFRSFiles" DependsOnTargets="PrepareForFRSPublish" > 
+  </Target>
+  <Target Name="PrepareForFRSPublish" />  
 </Project>
