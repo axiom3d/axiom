@@ -18,9 +18,9 @@
 		<Modules Condition="'$(Modules)'==''">packages\Axiom SDK.package</Modules>
 		
 		<SkipInstaller>true</SkipInstaller>
-		<SkipSourceServer>false</SkipSourceServer>
+		<SkipSourceServer>true</SkipSourceServer>
 		<SkipILMerge>true</SkipILMerge>
-		<SkipNDoc>false</SkipNDoc>
+		<SkipNDoc>true</SkipNDoc>
 	</PropertyGroup>
 
 	<Target Name="Build">
@@ -35,6 +35,6 @@
 							 SkipSourceServer=$(SkipSourceServer);
 							 NoILMerge=$(SkipILMerge);
 							 SkipNDoc=$(SkipNDoc);"
-				 Targets="Clean;Compile;Image;Test;Dist" />
+				 Targets="Publish" />
 	</Target>
 </Project>

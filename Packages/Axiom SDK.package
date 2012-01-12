@@ -24,7 +24,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ReleaseImageArchive Include="AxiomSDK-$(FileVersion).zip" />
+    <ReleaseImageArchive Include="Axiom-SDK-$(FileVersion).zip" />
     <ReleaseDebugSymbols Include="Symbols\$(FileVersion)" />
     
     <Installer Include="GallioBundle" />
@@ -39,6 +39,91 @@
       <VSDocsDir>$(ModuleImageDir)\doc\vs</VSDocsDir>
       <WebDocsDir>$(ModuleImageDir)\doc\$(FileVersion)</WebDocsDir>
     </NDoc>
+	
+    <NDoc Include="$(SourceDir)\Axiom\axiom.ndoc">
+      <CHMDocsDir>$(ModuleDistDir)\doc</CHMDocsDir>
+      <VSDocsDir>$(ModuleDistDir)\doc\vs</VSDocsDir>
+      <WebDocsDir>$(ModuleDistDir)\doc\$(FileVersion)</WebDocsDir>
+    </NDoc>
+	
   </ItemGroup>
+
+  <ItemGroup>
+	<ReleaseFile Include="$(ModuleDistDir)\Axiom-SDK-$(FileVersion).zip">
+		<Release>v$(FileVersion)</Release>
+		<MimeType>application/zip</MimeType>
+		<FileType>RuntimeBinary</FileType>
+	</ReleaseFile>
+  </ItemGroup>
+  <ItemGroup>  
+	<CodePlexRelease Include="1">
+	  <Name>v$(FileVersion)</Name>
+	  <Default>false</Default>
+	  <ShowToPublic>false</ShowToPublic>
+      <Description>testing</Description>
+	  <ReleaseDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ReleaseDate>
+	  <ReleaseStatus>Stable</ReleaseStatus>
+	</CodePlexRelease>
+  </ItemGroup>
+  
+  <ItemGroup>
+	<SourceForge Include="$(ModuleTempDir)\axiomengine.scr">
+		<WebProjectPath>/home/project-web/axiomengine/htdocs</WebProjectPath>
+		<FRSProjectPath>/home/frs/project/a/ax/axiomengine</FRSProjectPath>
+		<Username></Username>
+		<Password></Password>
+	</SourceForge>
+	<SourceForgeWebFile Include="@(ReleaseDebugSymbols)">
+		<SourcePath>$(ModuleDistDir)</SourcePath>
+		<DestinationPath>Symbols/$(FileVersion)</DestinationPath>
+	</SourceForgeWebFile>
+  </ItemGroup>
+  
+	<PropertyGroup>
+	  <_CPUsername></_CPUsername>
+	  <_CPPassword></_CPPassword>
+	  <_CPProject>Axiom</_CPProject>
+	  <_ReleaseName>%(CodePlexRelease.Name)</_ReleaseName>
+	</PropertyGroup>
+  
+  <Target Name="AfterPublish"
+		  DependsOnTargets="PublishToCodeplex;" />
+		  
+  <Target Name="PublishToCodeplex"
+		  DependsOnTargets="EnsureCodePlexCredentials;CreateCodePlexReleases;UploadReleaseFiles"
+          Condition="'@(CodePlexRelease)'!=''" />
+
+  <Target Name="EnsureCodePlexCredentials" >
+	<Prompt Text="CodePlex Username:" Condition="'$(_CPUsername)'==''" >
+              <Output TaskParameter="UserInput" PropertyName="_CPUsername" />
+    </Prompt>
+    <Prompt Text="CodePlex Password:" Condition="'$(_CPPassword)'==''" >
+              <Output TaskParameter="UserInput" PropertyName="_CPPassword" />
+    </Prompt>
+  </Target>
+  
+  <Target Name="CreateCodePlexReleases" >
+    <CreateRelease ProjectName="$(_CPProject)"
+				   ReleaseName="%(CodePlexRelease.Name)"
+				   IsDefaultRelease="%(CodePlexRelease.Default)"
+				   ShowToPublic="%(CodePlexRelease.ShowToPublic)"
+				   Description="%(CodePlexRelease.Description)"
+				   ReleaseDate="%(CodePlexRelease.ReleaseDate)"
+				   ReleaseStatus="%(CodePlexRelease.ReleaseStatus)"
+				   Username="$(_CPUsername)"
+				   Password="$(_CPPassword)" ContinueOnError="true"/>
+				   
+  </Target>
+  <Target Name="UploadReleaseFiles" >
+    <UploadFiles ProjectName="$(_CPProject)" 
+		         ReleaseName="%(ReleaseFile.Release)" 
+				 ReleaseFiles="@(ReleaseFile)"
+				 Username="$(_CPUsername)"
+				 Password="$(_CPPassword)" />
+  </Target>
+  
+  <Target Name="UploadSymbolFiles" DependsOnTargets="">
+	<!-- Upload dist\Symbols to SF.Net website -->
+  </Target>
   
 </Project>

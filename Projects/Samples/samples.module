@@ -47,10 +47,10 @@
     Name="SamplesImage_FixConfig">
 	
 	<FileUpdate Files="$(ModuleImageDir)\samples\win32\Axiom.Samples.Browser.exe.config"
-               Regex="\.\./\.\./"
-               ReplacementText="../" />
+               Regex="\.\./\.\./M"
+               ReplacementText="../m" />
     <FileUpdate Files="$(ModuleImageDir)\samples\linux\Axiom.Samples.Browser.exe.config"
-               Regex="\.\./\.\./"
-               ReplacementText="../" />			   
+               Regex="\.\./\.\./M"
+               ReplacementText="../m" />			   
   </Target>
 </Project>
