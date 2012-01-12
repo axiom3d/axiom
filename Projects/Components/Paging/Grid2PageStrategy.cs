@@ -85,7 +85,7 @@ namespace Axiom.Components.Paging
 
             Vector3 pos = cam.DerivedPosition;
             Vector2 gridpos = Vector2.Zero;
-            stratData.ConvetWorldToGridSpace(pos, ref gridpos);
+            stratData.ConvertWorldToGridSpace(pos, ref gridpos);
             int x, y;
             stratData.DetermineGridLocation(gridpos, out x, out y);
 
@@ -101,9 +101,6 @@ namespace Axiom.Components.Paging
             int xmax = stratData.CellRangeMaxX;
             int ymin = stratData.CellRangeMinY;
             int ymax = stratData.CellRangeMaxY;
-
-            int clampRowAt = stratData.CellCountVert - 1;
-            int clampColAt = stratData.CellCountHorz - 1;
 
             // Round UP max, round DOWN min
             xmin = fxmin < xmin ? xmin : (int)System.Math.Floor( fxmin );
@@ -234,7 +231,7 @@ namespace Axiom.Components.Paging
             Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)section.StrategyData;
 
             Vector2 gridpos = Vector2.Zero;
-            stratData.ConvetWorldToGridSpace( worldPos, ref gridpos );
+            stratData.ConvertWorldToGridSpace( worldPos, ref gridpos );
             int x, y;
             stratData.DetermineGridLocation( gridpos, out x, out y );
             return stratData.CalculatePageID( x, y );

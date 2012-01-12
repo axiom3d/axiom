@@ -29,9 +29,6 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
@@ -47,13 +44,13 @@ namespace Axiom.Components.Paging
         /// <summary>
         /// Load this data from a stream (returns true if successful)
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        bool Load(StreamSerializer stream);
+        [OgreVersion( 1, 7, 2 )]
+        bool Load( StreamSerializer stream );
+
         /// <summary>
         /// Save this data to a stream
         /// </summary>
-        /// <param name="stream"></param>
-        void Save(StreamSerializer stream);
+        [OgreVersion( 1, 7, 2 )]
+        void Save( StreamSerializer stream );
     }
 }
