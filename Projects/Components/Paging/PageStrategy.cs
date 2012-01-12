@@ -29,8 +29,6 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Math;
 
