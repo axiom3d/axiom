@@ -78,7 +78,7 @@ namespace Axiom.Components.Paging
         protected Dictionary<PageID, Page> mPages = new Dictionary<PageID, Page>();
         protected string mName;
         protected AxisAlignedBox mAABB;
-        protected PageWorld mParent;
+        protected PagedWorld mParent;
         protected PageStrategy mStrategy;
         protected IPageStrategyData mStrategyData;
         protected PageProvider mPageProvider;
@@ -160,7 +160,7 @@ namespace Axiom.Components.Paging
         /// <summary>
         /// Get the parent world
         /// </summary>
-        public virtual PageWorld World
+        public virtual PagedWorld World
         {
             [OgreVersion( 1, 7, 2 )]
             get { return mParent; }
@@ -228,7 +228,7 @@ namespace Axiom.Components.Paging
         /// Construct a new instance, specifying just the parent and the scene manager.
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        public PagedWorldSection( string name, PageWorld parent, SceneManager sm )
+        public PagedWorldSection( string name, PagedWorld parent, SceneManager sm )
             : base()
         {
             mName = name;
@@ -738,7 +738,7 @@ namespace Axiom.Components.Paging
         public abstract string Name { get; }
 
         [OgreVersion( 1, 7, 2 )]
-        public abstract PagedWorldSection CreateInstance( string name, PageWorld parent, SceneManager sm );
+        public abstract PagedWorldSection CreateInstance( string name, PagedWorld parent, SceneManager sm );
 
         [OgreVersion( 1, 7, 2 )]
         public abstract void DestroyInstance( ref PagedWorldSection p );

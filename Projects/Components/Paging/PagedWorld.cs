@@ -38,7 +38,7 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-    public class PageWorld: DisposableObject
+    public class PagedWorld: DisposableObject
     {
         #region - constanst -
 
@@ -115,7 +115,7 @@ namespace Axiom.Components.Paging
         /// </summary>
         /// <param name="name"></param>
         /// <param name="manager"></param>
-        public PageWorld(string name, PageManager manager)
+        public PagedWorld(string name, PageManager manager)
             : base()
         {
             mName = name;
@@ -125,7 +125,7 @@ namespace Axiom.Components.Paging
         /// <summary>
         /// Destructor.
         /// </summary>
-        ~PageWorld()
+        ~PagedWorld()
         {
         }
         #endregion
@@ -161,7 +161,7 @@ namespace Axiom.Components.Paging
             //name
             stream.Read( out mName );
             //sections
-            while ( stream.NextChunkId == PageWorld.CHUNK_SECTIONDECLARATION_ID )
+            while ( stream.NextChunkId == PagedWorld.CHUNK_SECTIONDECLARATION_ID )
             {
                 stream.ReadChunkBegin();
                 string sectionType, sectionName;

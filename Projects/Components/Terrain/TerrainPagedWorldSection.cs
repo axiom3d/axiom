@@ -226,7 +226,7 @@ namespace Axiom.Components.Terrain
         /// <param name="parent">The parent world</param>
         /// <param name="sm">The SceneManager to use (can be left as null if to be loaded)</param>
         [OgreVersion( 1, 7, 2 )]
-        public TerrainPagedWorldSection( string name, PageWorld parent, SceneManager sm )
+        public TerrainPagedWorldSection( string name, PagedWorld parent, SceneManager sm )
             : base( name, parent, sm )
         {
             // we always use a grid strategy
