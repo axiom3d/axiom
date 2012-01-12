@@ -38,112 +38,104 @@ using Axiom.Math;
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    /// Defines the interface to a strategy class which is responsible for deciding
+	/// <summary>
+	/// Defines the interface to a strategy class which is responsible for deciding
 	/// when Page instances are requested for addition and removal from the 
-    /// paging system.
-    /// </summary>
-    public class PageStrategy : DisposableObject
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string mName;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected PageManager mManager;
+	/// paging system.
+	/// </summary>
+	/// <remarks>
+	/// The interface is deliberately light, with no specific mention of requesting
+	/// new Page instances. It is entirely up to the PageStrategy to respond
+	/// to the events raised on it and to call methods on other classes (such as
+	/// requesting new pages).
+	/// </remarks>
+	public abstract class PageStrategy : DisposableObject
+	{
+		protected string mName;
+		protected PageManager mManager;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Name
-        {
-            get { return mName; }
-        }
+		public string Name
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mName; }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public PageManager Manager
-        {
-            get { return mManager; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="manager"></param>
-        public PageStrategy(string name, PageManager manager)
-            : base()
-        {
-            mName = name;
-            mManager = manager;
-        }
-        /// <summary>
-        /// Destructor.
-        /// </summary>
-        public PageStrategy(){}
+		public PageManager Manager
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mManager; }
+		}
 
-        /// <summary>
-        /// Called when the frame starts
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        /// <param name="section"></param>
-        public virtual void FrameStart(Real timeSinceLastFrame, PagedWorldSection section) { }
+		[OgreVersion( 1, 7, 2 )]
+		public PageStrategy( string name, PageManager manager )
+			: base()
+		{
+			mName = name;
+			mManager = manager;
+		}
 
-        /// <summary>
-        /// Called when the frame ends
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        /// <param name="section"></param>
-        public virtual void FrameEnd(float timeElapsed, PagedWorldSection section) { }
+		/// <summary>
+		/// Called when the frame starts
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual void FrameStart( Real timeSinceLastFrame, PagedWorldSection section ) { }
 
-        /// <summary>
-        /// Called when a camera is used for any kind of rendering.
-        /// </summary>
-        /// <param name="cam"></param>
-        /// <param name="section"></param>
-        public virtual void NotifyCamera(Camera cam, PagedWorldSection section) { }
+		/// <summary>
+		/// Called when the frame ends
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual void FrameEnd( Real timeElapsed, PagedWorldSection section ) { }
 
-        /// <summary>
-        /// Create a PageStrategyData instance containing the data specific to this
+		/// <summary>
+		/// Called when a camera is used for any kind of rendering.
+		/// </summary>
+		/// <remarks>
+		/// This is probably the primary way in which the strategy will request	new pages.
+		/// </remarks>
+		/// <param name="cam">Camera which is being used for rendering. Class should not
+		/// rely on this pointer remaining valid permanently because no notification 
+		/// will be given when the camera is destroyed.</param>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual void NotifyCamera( Camera cam, PagedWorldSection section ) { }
+
+		/// <summary>
+		/// Create a PageStrategyData instance containing the data specific to this
 		///	PageStrategy. 
-        /// </summary>
-        /// <returns></returns>
-        public virtual IPageStrategyData CreateData()
-        {
-            throw new NotImplementedException();
-        }
+		/// </summary>
+		/// <remarks>
+		/// This data will be held by a given PagedWorldSection and the structure of
+		/// the data will be specific to the PageStrategy subclass.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract IPageStrategyData CreateData();
 
-        /// <summary>
-        /// Destroy a PageStrategyData instance containing the data specific to this
+		/// <summary>
+		/// Destroy a PageStrategyData instance containing the data specific to this
 		/// PageStrategy. 
-        /// </summary>
-        /// <param name="data"></param>
-        public virtual void DestroyData(IPageStrategyData data)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Update the contents of the passed in SceneNode to reflect the 
-        /// debug display of a given page. 
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="n"></param>
-        public virtual void UpdateDebugDisplay(Page p, SceneNode n)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Get the page ID for a given world position. 
-        /// </summary>
-        /// <param name="worldPos"></param>
-        /// <param name="section"></param>
-        /// <returns></returns>
-        public virtual PageID GetPageID(Vector3 worldPos, PagedWorldSection section)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		/// </summary>
+		/// <remarks>
+		/// This data will be held by a given PagedWorldSection and the structure of
+		/// the data will be specific to the PageStrategy subclass.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void DestroyData( IPageStrategyData d );
+
+		/// <summary>
+		/// Update the contents of the passed in SceneNode to reflect the 
+		/// debug display of a given page. 
+		/// </summary>
+		/// <remarks>
+		/// The PageStrategy is to have complete control of the contents of this
+		/// SceneNode, it must not be altered / added to by others.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void UpdateDebugDisplay( Page p, SceneNode sn );
+
+		/// <summary>
+		/// Get the page ID for a given world position. 
+		/// </summary>
+		/// <returns>The page ID</returns>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract PageID GetPageID( Vector3 worldPos, PagedWorldSection section );
+	}
 }
