@@ -29,9 +29,9 @@
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
@@ -40,147 +40,156 @@ namespace Axiom.Components.Paging
 {
     /// <summary>
     ///  Specialisation of PageContentCollection which just provides a simple list
-	///	 of PageContent instances. 
+    ///	 of PageContent instances. 
     /// </summary>
+    /// <remarks>
+    /// @par
+    /// The data format for this in a file is:<br/>
+    /// <b>SimplePageContentCollectionData (Identifier 'SPCD')</b>\n
+    /// [Version 1]
+    /// <table>
+    /// <tr>
+    /// <td><b>Name</b></td>
+    /// <td><b>Type</b></td>
+    /// <td><b>Description</b></td>
+    /// </tr>
+    /// <tr>
+    /// <td>Nested contents</td>
+    /// <td>Nested chunk list</td>
+    /// <td>A sequence of nested PageContent chunks</td>
+    /// </tr>
+    /// </table>
+    /// </remarks>
     public class SimplePageContentCollection : PageContentCollection
     {
-        public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier("SPCD");
+        public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier( "SPCD" );
         public static ushort SUBCLASS_CHUNK_VERSION = 1;
+
         protected List<PageContent> mContentList;
 
         /// <summary>
-        /// 
+        /// Get const access to the list of content
         /// </summary>
         public List<PageContent> ContentList
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return mContentList; }
         }
 
-        #region - constructor, destructor -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="factory"></param>
-        public SimplePageContentCollection(SimplePageContentCollectionFactory factory)
-            :base(factory){ }
-
-        ~SimplePageContentCollection() 
+        [OgreVersion( 1, 7, 2 )]
+        public SimplePageContentCollection( SimplePageContentCollectionFactory creator )
+            : base( creator )
         {
-            Destroy();
-            mContentList.Clear();
         }
-        #endregion
+
+        [OgreVersion( 1, 7, 2, "~SimplePageContentCollection" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    foreach ( var i in mContentList )
+                        i.Dispose();
+
+                    mContentList.Clear();
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
         /// <summary>
-        /// 
+        /// Create a new PageContent within this collection.
         /// </summary>
-        /// <param name="typeName"></param>
-        /// <returns></returns>
-        public virtual PageContent CreateContent(string typeName)
+        /// <param name="typeName">The name of the type of content  (see PageManager::getContentFactories)</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual PageContent CreateContent( string typeName )
         {
-            PageContent c = Manager.CreateContent(typeName);
-            AttachContent(c);
+            var c = Manager.CreateContent( typeName );
+            mContentList.Add( c );
             return c;
         }
 
         /// <summary>
-        /// 
+        /// Destroy a PageContent within this page.
+        /// This is equivalent to calling detachContent and 
+        /// PageManager::destroyContent.
         /// </summary>
-        /// <param name="pcont"></param>
-        public virtual void DestroyContent(PageContent pcont)
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void DestroyContent( PageContent c )
         {
-            DetachContent(pcont);
-            Manager.DestroyContent(ref pcont);
+            if ( mContentList.Contains( c ) )
+                mContentList.Remove( c );
+
+            Manager.DestroyContent( ref c );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        public virtual void AttachContent(PageContent content)
+        [OgreVersion( 1, 7, 2 )]
+        public override void Save( StreamSerializer stream )
         {
-            mContentList.Add(content);
+            stream.WriteChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION );
+
+            foreach ( var c in mContentList )
+                c.Save( stream );
+
+            stream.WriteChunkEnd( SUBCLASS_CHUNK_ID );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        public virtual void DetachContent(PageContent content)
+        [OgreVersion( 1, 7, 2 )]
+        public override void FrameStart( Real timeSinceLastFrame )
         {
-            mContentList.Remove(content);
+            foreach ( var c in mContentList )
+                c.FrameStart( timeSinceLastFrame );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void Save(StreamSerializer stream)
+        [OgreVersion( 1, 7, 2 )]
+        public override void FrameEnd( Real timeElapsed )
         {
-            stream.WriteChunkBegin(SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION);
-
-            foreach (PageContent c in mContentList)
-                c.Save(stream);
-
-            stream.WriteChunkEnd(SUBCLASS_CHUNK_ID);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        public override void FrameStart(float timeSinceLastFrame)
-        {
-            foreach (PageContent c in mContentList)
-                c.FrameStart(timeSinceLastFrame);
+            foreach ( var c in mContentList )
+                c.FrameEnd( timeElapsed );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeElapsed"></param>
-        public override void FrameEnd(float timeElapsed)
+        [OgreVersion( 1, 7, 2 )]
+        public override void NotifyCamera( Camera camera )
         {
-            foreach (PageContent c in mContentList)
-                c.FrameEnd(timeElapsed);
+            foreach ( var c in mContentList )
+                c.NotifyCamera( camera );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        public override void NotifyCamera(Camera camera)
+        [OgreVersion( 1, 7, 2 )]
+        public override bool Prepare( StreamSerializer stream )
         {
-            foreach (PageContent c in mContentList)
-                c.NotifyCamera(camera);
+            if ( stream.ReadChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION, "SimplePageContentCollection" ) == null )
+                return false;
+
+            bool ret = true;
+            foreach ( var i in mContentList )
+                ret &= i.Prepare( stream );
+
+            stream.ReadChunkEnd( SUBCLASS_CHUNK_ID );
+            return ret;
         }
 
-        /// <summary>
-        /// Finalising the load of the data.
-        /// </summary>
-        protected override void LoadImpl()
+        [OgreVersion( 1, 7, 2 )]
+        public override void Load()
         {
-            foreach (PageContent c in mContentList)
-                c.Load();
+            foreach ( var i in mContentList )
+                i.Load();
         }
 
-        /// <summary>
-        /// Unload the unit, deallocating any GPU resources.
-        /// </summary>
-        protected override void UnLoadImpl()
+        [OgreVersion( 1, 7, 2 )]
+        public override void UnLoad()
         {
-            foreach (PageContent c in mContentList)
-                c.Unload();
+            foreach ( var i in mContentList )
+                i.UnLoad();
         }
 
-        /// <summary>
-        /// Deallocate any background resources.
-        /// </summary>
-        /// <returns></returns>
-        protected override void UnPrepareImpl()
+        [OgreVersion( 1, 7, 2 )]
+        public override void UnPrepare()
         {
-            foreach (PageContent c in mContentList)
-                c.UnPrepare();
+            foreach ( var i in mContentList )
+                i.UnPrepare();
         }
-
-    }
+    };
 }
