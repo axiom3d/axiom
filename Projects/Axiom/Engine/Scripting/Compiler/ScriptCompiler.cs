@@ -1072,6 +1072,7 @@ namespace Axiom.Scripting.Compiler
 			_keywordMap[ "sawtooth" ] = (uint)Keywords.ID_SAWTOOTH;
 			_keywordMap[ "square" ] = (uint)Keywords.ID_SQUARE;
 			_keywordMap[ "inverse_sawtooth" ] = (uint)Keywords.ID_INVERSE_SAWTOOTH;
+            _keywordMap["pulse_width_modulation"] = (uint)Keywords.ID_PULSE_WIDTH_MODULATION;
 			_keywordMap[ "transform" ] = (uint)Keywords.ID_TRANSFORM;
 			_keywordMap[ "binding_type" ] = (uint)Keywords.ID_BINDING_TYPE;
 			_keywordMap[ "vertex" ] = (uint)Keywords.ID_VERTEX;
