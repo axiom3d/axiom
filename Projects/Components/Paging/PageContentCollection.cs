@@ -29,102 +29,130 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
-    public class PageContentCollection : PageLoadableUnit
-    {
-        public static uint CHUNK_ID = StreamSerializer.MakeIdentifier("PGCC");
-        public static ushort CHUNK_VERSION = 1;
+	/// <summary>
+	/// Definition of the interface for a collection of PageContent instances.
+	/// </summary>
+	/// <remarks>
+	/// This class acts as a grouping level for PageContent instances. Rather than 
+	/// PageContent instances being held in a list directly under Page, which might 
+	/// be the most obvious solution, this intermediate class is here to allow
+	/// the collection of relevant PageContent instances to be modified at runtime
+	/// if required. For example, potentially you might want to define Page-level LOD
+	/// in which different collections of PageContent are loaded at different times.
+	/// </remarks>
+	public abstract class PageContentCollection : DisposableObject
+	{
+		public static uint CHUNK_ID = StreamSerializer.MakeIdentifier( "PGCC" );
+		public static ushort CHUNK_VERSION = 1;
 
-        #region - fields -
-        protected IPageContentCollectionFactory mCreator;
-        protected Page mParent;
-        #endregion
+		#region - fields -
+		
+		protected IPageContentCollectionFactory mCreator;
+		protected Page mParent;
+		
+		#endregion - fields -
 
-        #region - properties -
+		#region - properties -
+
+		public PageManager Manager
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mParent.Manager; }
+		}
+
+		/// <summary>
+		/// Get the type of the collection, which will match it's factory
+		/// </summary>
+		public virtual string Type
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return mCreator.Name;
+			}
+		}
+
+		public SceneManager SceneManager
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get { return mParent.SceneManager; }
+		}
+
+		#endregion - properties -
+
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public PageContentCollection( IPageContentCollectionFactory creator )
+			: base()
+		{
+			mCreator = creator;
+		}
+
+		/// <summary>
+		/// Internal method to notify a collection that it is attached
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		internal virtual void NotifyAttached( Page page )
+		{
+			mParent = page;
+		}
+
         /// <summary>
-        /// 
+        /// Save the collection to a stream
         /// </summary>
-        public PageManager Manager
-        {
-            get { return mParent.Manager; }
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void Save( StreamSerializer stream );
+
+		/// <summary>
+        /// Called when the frame starts
+		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void FrameStart( Real timeSinceLastFrame );
+
+		/// <summary>
+        /// Called when the frame ends
+		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void FrameEnd( Real timeElapsed );
+
+		/// <summary>
+        /// Notify a section of the current camera
+		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void NotifyCamera( Camera camera );
+
         /// <summary>
-        /// 
+        /// Prepare data - may be called in the background
         /// </summary>
-        public SceneManager SceneManager
-        {
-            get { return mParent.SceneManager; }
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public abstract bool Prepare( StreamSerializer ser );
+
         /// <summary>
-        /// 
+        /// Load - will be called in main thread
         /// </summary>
-        public string Type
-        {
-            get
-            {
-                return mCreator.Name;
-            }
-        }
-        #endregion
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void Load();
+
         /// <summary>
-        /// Definition of the interface for a collection of PageContent instances. 
+        /// UnLoad - will be called in main thread
         /// </summary>
-        /// <remarks>
-        /// This class acts as a grouping level for PageContent instances. Rather than 
-		/// PageContent instances being held in a list directly under Page, which might 
-		/// be the most obvious solution, this intermediate class is here to allow
-		/// the collection of relevant PageContent instances to be modified at runtime
-		/// if required. For example, potentially you might want to define Page-level LOD
-		/// in which different collections of PageContent are loaded at different times.
-        /// </remarks>
-        /// <param name="creator"></param>
-        public PageContentCollection(IPageContentCollectionFactory creator)
-        {
-            mCreator = creator;
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void UnLoad();
+
         /// <summary>
-        /// 
+        /// UnPrepare date - may be called in the background
         /// </summary>
-        /// <param name="page"></param>
-        public virtual void NotifyAttached(Page page)
-        {
-            mParent = page;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        public virtual void FrameStart(float timeSinceLastFrame)
-        {
-        }
-        /// <summary>
-        /// /
-        /// </summary>
-        /// <param name="timeElapsed"></param>
-        public virtual void FrameEnd(float timeElapsed)
-        {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        public virtual void NotifyCamera(Camera camera)
-        {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        public virtual void Save(StreamSerializer stream)
-        {
-        }
-    }
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void UnPrepare();
+	};
 }

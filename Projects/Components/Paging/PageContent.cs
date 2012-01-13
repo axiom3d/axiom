@@ -29,97 +29,108 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Serialization;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
 {
-    public class PageContent : PageLoadableUnit
+    /// <summary>
+    /// Interface definition for a unit of content within a page.
+    /// </summary>
+    public abstract class PageContent : DisposableObject
     {
-        IPageContentFactory mCreator;
-        PageContentCollection mParent;
+        protected IPageContentFactory mCreator;
+        protected PageContentCollection mParent;
 
         #region - properties -
-        /// <summary>
-        /// 
-        /// </summary>
+
+        public PageManager Manager
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return mParent.Manager; }
+        }
+
+        public SceneManager SceneManager
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return mParent.SceneManager; }
+        }
+
         public string Type
         {
+            [OgreVersion( 1, 7, 2 )]
             get
             {
                 return mCreator.Name;
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        public PageManager Manager
-        {
-            get { return mParent.Manager; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneManager SceneManager
-        {
-            get { return mParent.SceneManager; }
-        }
-        #endregion
 
-        #region - constructor, destructor -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="creator"></param>
-        public PageContent(IPageContentFactory creator)
+        #endregion - properties -
+
+        [OgreVersion( 1, 7, 2 )]
+        public PageContent( IPageContentFactory creator )
         {
             mCreator = creator;
         }
-        #endregion
 
         /// <summary>
         /// Internal method to notify a page that it is attached
         /// </summary>
-        /// <param name="parent"></param>
-        public virtual void NotifyAttached(PageContentCollection parent)
+        [OgreVersion( 1, 7, 2 )]
+        internal virtual void NotifyAttached( PageContentCollection parent )
         {
             mParent = parent;
         }
+
         /// <summary>
         /// Save content to a stream
         /// </summary>
-        /// <param name="stream"></param>
-        public virtual void Save(StreamSerializer stream)
-        {
-            throw new NotImplementedException();
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void Save( StreamSerializer stream );
 
         /// <summary>
         /// Called when the frame starts.
         /// </summary>
-        /// <param name="timeSinceLastFrame"></param>
-        public virtual void FrameStart(float timeSinceLastFrame)
-        {
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void FrameStart( Real timeSinceLastFrame ) { }
 
         /// <summary>
         /// Called when the frame ends.
         /// </summary>
-        /// <param name="timeElapsed"></param>
-        public virtual void FrameEnd(float timeElapsed)
-        {
-        }
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void FrameEnd( Real timeElapsed ) { }
 
         /// <summary>
         /// Notify a section of the current camera.
         /// </summary>
-        /// <param name="camera"></param>
-        public virtual void NotifyCamera(Camera camera)
-        {
-        }
-    }
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void NotifyCamera( Camera camera ) { }
+
+        /// <summary>
+        /// Prepare data - may be called in the background
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract bool Prepare( StreamSerializer ser );
+
+        /// <summary>
+        /// Load - will be called in main thread
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void Load();
+
+        /// <summary>
+        /// UnLoad - will be called in main thread
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void UnLoad();
+
+        /// <summary>
+        /// UnPrepare date - may be called in the background
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void UnPrepare();
+    };
 }
