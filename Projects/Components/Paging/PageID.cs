@@ -47,9 +47,14 @@ namespace Axiom.Components.Paging
             mValue = pageId;
         }
 
+        public static implicit operator PageID( uint val )
+        {
+            return new PageID( val );
+        }
+
         public override string ToString()
         {
             return mValue.ToString();
         }
-    }
+    };
 }

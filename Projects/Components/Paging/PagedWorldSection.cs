@@ -75,7 +75,7 @@ namespace Axiom.Components.Paging
 
 		#region - fields -
 
-		protected Dictionary<PageID, Page> mPages = new Dictionary<PageID, Page>();
+        protected Dictionary<PageID, Page> mPages = new Dictionary<PageID, Page>();
 		protected string mName;
 		protected AxisAlignedBox mAABB;
 		protected PagedWorld mParent;
@@ -371,7 +371,7 @@ namespace Axiom.Components.Paging
 		/// Get the page ID for a given world position. */
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual PageID GetPageID( Vector3 worldPos )
+        public virtual PageID GetPageID( Vector3 worldPos )
 		{
 			return mStrategy.GetPageID( worldPos, this );
 		}
@@ -388,7 +388,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Page LoadOrCreatePage( Vector3 worldPos )
 		{
-			PageID id = GetPageID( worldPos );
+            PageID id = GetPageID( worldPos );
 			// this will create a Page instance no matter what, even if load fails
 			// we force the load attempt to happen immediately (forceSynchronous)
 			LoadPage( id, true );
@@ -406,7 +406,7 @@ namespace Axiom.Components.Paging
 		/// on whether threading is enabled.
 		/// </remarks>
 		/// <param name="pageID">The page ID to load</param>
-		public void LoadPage( PageID pageID )
+        public void LoadPage( PageID pageID )
 		{
 			LoadPage( pageID, false );
 		}
@@ -424,7 +424,7 @@ namespace Axiom.Components.Paging
 		/// <param name="pageID">The page ID to load</param>
 		/// <param name="forceSynchronous">If true, the page will always be loaded synchronously</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void LoadPage( PageID pageID, bool forceSynchronous )
+        public virtual void LoadPage( PageID pageID, bool forceSynchronous )
 		{
 			if ( !mParent.Manager.ArePagingOperationsEnabled )
 				return;
@@ -449,7 +449,7 @@ namespace Axiom.Components.Paging
 		/// <param name="pageID">The page ID to unload</param>
 		/// <param name="forceSynchonous">If true, the page will always be unloaded synchronously</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void UnloadPage( PageID pageID, bool forceSynchonous )
+        public virtual void UnloadPage( PageID pageID, bool forceSynchonous )
 		{
 			if ( !mParent.Manager.ArePagingOperationsEnabled )
 				return;
@@ -463,7 +463,7 @@ namespace Axiom.Components.Paging
 			}
 		}
 
-		public void UnloadPage( PageID pageId )
+        public void UnloadPage( PageID pageId )
 		{
 			UnloadPage( pageId, false );
 		}
@@ -588,7 +588,7 @@ namespace Axiom.Components.Paging
 		/// deemed a candidate for unloading.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void HoldPage( PageID pageID )
+        public virtual void HoldPage( PageID pageID )
 		{
 			Page page;
 			if ( mPages.TryGetValue( pageID, out page ) )
@@ -603,7 +603,7 @@ namespace Axiom.Components.Paging
 		/// will return null if a page is not loaded. 
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual Page GetPage( PageID pageID )
+        public virtual Page GetPage( PageID pageID )
 		{
 			Page page;
 			mPages.TryGetValue( pageID, out page );
@@ -646,7 +646,7 @@ namespace Axiom.Components.Paging
 		public virtual void FrameEnd( Real timeElapsed )
 		{
 			mStrategy.FrameEnd( timeElapsed, this );
-			PageID[] ids = new PageID[ mPages.Count ];
+            PageID[] ids = new PageID[ mPages.Count ];
 			mPages.Keys.CopyTo( ids, 0 );
 
 			for ( int i = 0; i < mPages.Count; ++i )
@@ -659,7 +659,7 @@ namespace Axiom.Components.Paging
 					UnloadPage( p );
 
 					// update indices since unloading will invalidate it
-					ids = new PageID[ mPages.Count ];
+                    ids = new PageID[ mPages.Count ];
 					mPages.Keys.CopyTo( ids, 0 );
 
 					// pre-decrement since unloading will remove it
@@ -691,7 +691,7 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		/// <param name="pageID">The ID of the page being requested</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual StreamSerializer ReadPageStream( PageID pageID )
+        public virtual StreamSerializer ReadPageStream( PageID pageID )
 		{
 			StreamSerializer stream = null;
 			if ( mPageProvider != null )
@@ -711,7 +711,7 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		/// <param name="pageID">The ID of the page being requested</param>
 		[OgreVersion( 1, 7, 2 )]
-		public StreamSerializer WritePageStream( PageID pageID )
+        public StreamSerializer WritePageStream( PageID pageID )
 		{
 			StreamSerializer stream = null;
 			if ( mPageProvider != null )
