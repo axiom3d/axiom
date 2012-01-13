@@ -57,6 +57,7 @@ using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler;
 using Axiom.Graphics.Collections;
+using System.IO;
 
 #endregion Namespace Declarations
 
@@ -1612,6 +1613,138 @@ namespace Axiom.Core
 		public int NextFrameNumber { get; private set; }
 
 		#endregion MovableObjectFactory methods
+
+        /// <summary>
+        /// Helper method to assist you in creating writeable file streams.
+        /// </summary>
+        /// <remarks>
+        /// This is a high-level utility method which you can use to find a place to 
+        /// save a file more easily. If the filename you specify is either an
+        /// absolute or relative filename (ie it includes path separators), then
+        /// the file will be created in the normal filesystem using that specification.
+        /// If it doesn't, then the method will look for a writeable resource location
+        /// via ResourceGroupManager::createResource using the other params provided.
+        /// </remarks>
+        /// <param name="fileName">The name of the file to create. If it includes path separators, 
+        /// the filesystem will be accessed direct. If no path separators are
+        /// present the resource system is used, falling back on the raw filesystem after.</param>
+        /// <param name="groupName">The name of the group in which to create the file, if the 
+        /// resource system is used</param>
+        /// <param name="overwrite">If true, an existing file will be overwritten, if false
+        /// an error will occur if the file already exists</param>
+        /// <param name="locationPattern">If the resource group contains multiple locations, 
+        /// then usually the file will be created in the first writable location. If you 
+        /// want to be more specific, you can include a location pattern here and 
+        /// only locations which match that pattern (as determined by StringUtil::match)
+        /// will be considered candidates for creation.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public Stream CreateFileStream( string fileName, string groupName, bool overwrite, string locationPattern )
+        {
+            // Does this file include path specifiers?
+            string path = Path.GetDirectoryName( fileName );
+            string basename = Path.GetFileName( fileName );
+
+            // no path elements, try the resource system first
+            Stream stream = null;
+            if ( string.IsNullOrEmpty( path ) )
+            {
+                try
+                {
+                    stream = ResourceGroupManager.Instance.CreateResource( fileName, groupName, overwrite, locationPattern );
+                }
+                catch
+                { }
+            }
+
+            if ( stream == null )
+            {
+                // save direct in filesystem
+                try
+                {
+#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
+                    stream = File.Create( fileName, 1, FileOptions.RandomAccess );
+#else
+					stream = File.Create( fileName, 1 );
+#endif
+                }
+                catch ( Exception ex )
+                {
+                    throw new AxiomException( "Can't open '{0}' for writing", ex, fileName );
+                }
+            }
+
+            return stream;
+        }
+
+        public Stream CreateFileStream( string fileName )
+        {
+            return this.CreateFileStream( fileName, ResourceGroupManager.DefaultResourceGroupName, false, string.Empty );
+        }
+
+        public Stream CreateFileStream( string fileName, string groupName )
+        {
+            return this.CreateFileStream( fileName, groupName, false, string.Empty );
+        }
+
+        public Stream CreateFileStream( string fileName, string groupName, bool overwrite )
+        {
+            return this.CreateFileStream( fileName, groupName, overwrite, string.Empty );
+        }
+
+        /// <summary>
+        /// Helper method to assist you in accessing readable file streams.
+        /// </summary>
+        /// <remarks>
+        /// This is a high-level utility method which you can use to find a place to 
+        /// open a file more easily. It checks the resource system first, and if
+        /// that fails falls back on accessing the file system directly.
+        /// </remarks>
+        /// <param name="filename">The name of the file to open.</param>
+        /// <param name="groupName">The name of the group in which to create the file, if the 
+        /// resource system is used</param>
+        /// <param name="locationPattern">
+        /// If the resource group contains multiple locations, 
+        /// then usually the file will be created in the first writable location. If you 
+        /// want to be more specific, you can include a location pattern here and 
+        /// only locations which match that pattern (as determined by StringUtil::match)
+        /// will be considered candidates for creation.
+        /// </param>
+        [OgreVersion( 1, 7, 2 )]
+        public Stream OpenFileStream( string filename, string groupName, string locationPattern )
+        {
+            Stream stream = null;
+            if ( ResourceGroupManager.Instance.ResourceExists( groupName, filename ) )
+            {
+                stream = ResourceGroupManager.Instance.OpenResource( filename, groupName );
+            }
+            else
+            {
+                // try direct
+                if ( !File.Exists( filename ) )
+                    throw new AxiomException( "'{0}' file not found!", filename );
+
+                try
+                {
+                    stream = File.Open( filename, FileMode.Open );
+                }
+                catch ( Exception ex )
+                {
+                    throw new AxiomException( "Can't open file '{0}' for reading", ex, filename );
+                }
+            }
+
+            return stream;
+        }
+
+        public Stream OpenFileStream( string filename )
+        {
+            return this.OpenFileStream( filename, ResourceGroupManager.DefaultResourceGroupName, string.Empty );
+        }
+
+        public Stream OpenFileStream( string filename, string groupName )
+        {
+            return this.OpenFileStream( filename, groupName, string.Empty );
+        }
 	}
 
 	#region Frame Events
