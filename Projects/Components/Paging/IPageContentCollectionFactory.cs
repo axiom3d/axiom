@@ -29,11 +29,6 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Paging
@@ -44,23 +39,16 @@ namespace Axiom.Components.Paging
     /// </summary>
     public interface IPageContentCollectionFactory
     {
-        /// <summary>
-        /// 
-        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
         string Name
         {
             get;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+
+        [OgreVersion( 1, 7, 2 )]
         PageContentCollection CreateInstance();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="collection"></param>
-        void DestroyInstance(ref PageContentCollection collection);
-    }
+        [OgreVersion( 1, 7, 2 )]
+        void DestroyInstance( ref PageContentCollection collection );
+    };
 }
