@@ -55,12 +55,14 @@ namespace Axiom.Controllers.Canned
 		protected Real frequency = 1.0f;
 		protected Real phase; //[FXCop Optimization : Do not initialize unnecessarily]
 		protected Real amplitude = 1.0f;
-
+        protected float dutyCycle = 0.5f;
 		#endregion
 
 		#region Constructors
 
+
 		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude, bool useDelta )
+
 			: base( useDelta )
 		{
 			this.type = type;
@@ -68,6 +70,7 @@ namespace Axiom.Controllers.Canned
 			this.frequency = frequency;
 			this.phase = phase;
 			this.amplitude = amplitude;
+            this.deltaCount = phase;
 		}
 
 		public WaveformControllerFunction( WaveformType type, Real baseVal )
@@ -119,6 +122,13 @@ namespace Axiom.Controllers.Canned
 			var input = AdjustInput( sourceValue * frequency ) % 1f;
 			var output = 0.0f;
 
+            //For simplicity, factor input down to {0,1}
+            //Use looped subtract rather than divide / round
+            while (input >= 1.0)
+                input -= 1.0f;
+            while (input < 0.0)
+                input += 1.0f;
+
 			// first, get output in range [-1,1] (typical for waveforms)
 			switch ( type )
 			{
@@ -150,6 +160,12 @@ namespace Axiom.Controllers.Canned
 				case WaveformType.InverseSawtooth:
 					output = -( ( input * 2 ) - 1 );
 					break;
+                case WaveformType.PulseWidthModulation:
+                    if (input <= dutyCycle)
+                        output = 1.0f;
+                    else
+                        output = -1.0f;
+                    break;
 
 			} // end switch
 
