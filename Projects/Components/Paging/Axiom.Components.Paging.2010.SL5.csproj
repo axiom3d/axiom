@@ -82,10 +82,8 @@
     <Compile Include="PageContentCollection.cs" />
     <Compile Include="PagedWorldSection.cs" />
     <Compile Include="PageID.cs" />
-    <Compile Include="PageLoadableUnit.cs" />
     <Compile Include="PageManager.cs" />
     <Compile Include="PageProvider.cs" />
-    <Compile Include="PageRequestQueue.cs" />
     <Compile Include="PageStrategy.cs" />
     <Compile Include="SimplePageContentCollection.cs" />
     <Compile Include="SimplePageContentCollectionFactory.cs" />
