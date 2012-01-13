@@ -84,10 +84,10 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-#if AXIOM_MULTITHREADED
+#if AXIOM_THREAD_SUPPORT
 		private object _autoMutex = new object();
 #endif
-		protected object _loadingStatusMutex = new object();
+        protected object _loadingStatusMutex = new object();
 
 		#region Creator Property
 
@@ -596,12 +596,12 @@ namespace Axiom.Core
 			}
 
 			try
-			{
-#if AXIOM_MULTITHREADED
+            {
+#if AXIOM_THREAD_SUPPORT
 				// Scope loack for actual load
 				lock ( _autoMutex )
 #endif
-				{
+                {
 					preLoad();
 
 					if ( _isManuallyLoaded )
@@ -684,13 +684,13 @@ namespace Axiom.Core
 					return; // nothing to do
 
 				_loadingState = LoadingState.Unloading;
-			}
+            }
 
-#if AXIOM_MULTITHREADED
+#if AXIOM_THREAD_SUPPORT
 			// Scope lock for actual unload
 			lock ( _autoMutex )
 #endif
-			{
+            {
 				preUnload();
 				unload();
 				postUnload();
@@ -715,11 +715,11 @@ namespace Axiom.Core
 		/// loaded. If it is not loaded already, then nothing happens.
 		/// </remarks>
 		public virtual void Reload()
-		{
-#if AXIOM_MULTITHREADED
+        {
+#if AXIOM_THREAD_SUPPORT
 			lock( _autoMutex )
 #endif
-			{
+            {
 				if ( _loadingState == LoadingState.Loaded )
 				{
 					Unload();
@@ -732,11 +732,11 @@ namespace Axiom.Core
 		///		Indicates this resource has been used.
 		/// </summary>
 		public virtual void Touch()
-		{
-#if AXIOM_MULTITHREADED
+        {
+#if AXIOM_THREAD_SUPPORT
 			lock( _autoMutex )
 #endif
-			{
+            {
 				Load();
 
 				if ( _creator != null )
