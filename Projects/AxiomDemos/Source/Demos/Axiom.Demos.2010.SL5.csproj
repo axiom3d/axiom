@@ -61,6 +61,9 @@
     <Reference Include="System.Windows.Data, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="XdotNet.mscorlib, Version=5.0.5.0, Culture=neutral, PublicKeyToken=cc171c5cb255363b, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -152,10 +155,6 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
-      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
-      <Name>XdotNet.mscorlib.SL5</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.2010.SL5</Name>

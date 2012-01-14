@@ -4,7 +4,7 @@
     <WindowSettings Title="Axiom.Demos.Browser.Silverlight.2010 Application" />
   </OutOfBrowserSettings.WindowSettings>
   <OutOfBrowserSettings.SecuritySettings>
-    <SecuritySettings ElevatedPermissions="NotRequired" />
+    <SecuritySettings ElevatedPermissions="Required" />
   </OutOfBrowserSettings.SecuritySettings>
   <OutOfBrowserSettings.Icons />
 </OutOfBrowserSettings>
