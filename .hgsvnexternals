@@ -1,3 +1,0 @@
-[Lib/Managed/XPlatform]
- -r 73034 https://imagetools.svn.codeplex.com/svn ImageTools
- -r 19 https://xdotnet.googlecode.com/svn/trunk XdotNet

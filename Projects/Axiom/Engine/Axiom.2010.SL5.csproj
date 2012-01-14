@@ -75,6 +75,21 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Browser" />
+    <Reference Include="XdotNet.mscorlib">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="XdotNet.System">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.dll</HintPath>
+    </Reference>
+    <Reference Include="XdotNet.System.Core">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="XdotNet.System.Drawing">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="XdotNet.System.Xml">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Xml.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ICopyable.cs" />
@@ -843,22 +858,6 @@
     <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpZipLib.Silverlight\SharpZipLib.2010.SL5.csproj">
       <Project>{8B7CF854-73A1-4882-B317-07625C13A425}</Project>
       <Name>SharpZipLib.2010.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.SL5.csproj">
-      <Project>{BA031A72-F9F4-4147-9EAC-C6905104DB0A}</Project>
-      <Name>XdotNet.mscorlib.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Drawing.SL5.csproj">
-      <Project>{48DAC37B-3264-4042-BDCB-3BF46DE07C8B}</Project>
-      <Name>XdotNet.System.Drawing.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.SL5.csproj">
-      <Project>{DAA8D7C6-F439-467B-85BB-0CFC613457D5}</Project>
-      <Name>XdotNet.System.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Xml.SL5.csproj">
-      <Project>{80BFFE68-E30D-4DFB-B26B-3CAC865EFE10}</Project>
-      <Name>XdotNet.System.Xml.SL5</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
