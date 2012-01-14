@@ -61,6 +61,7 @@ namespace Axiom.Controllers
         /// <summary>Gradual steady decrease from max to min over the period, with an instant return to max at the end. </summary>
         [ScriptEnum("inverse_sawtooth")]
         InverseSawtooth,
+        /// <summary>Works like Square, except the high to low transition is controlled by duty cycle. With a duty cycle of 50% (0.5) will give the same output as Square. </summary>
         [ScriptEnum("pulse_width_modulation")]
         PulseWidthModulation
     };
