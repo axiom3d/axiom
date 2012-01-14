@@ -97,7 +97,7 @@ namespace Axiom.Demos
 			//Entity iraqf = scene.CreateEntity("iraqf", "iraq-f.mesh");
 
 			// Pre-load the mesh so that we can tweak it with a manual animation
-			Mesh mesh = (Mesh)MeshManager.Instance.Load( "facial.mesh", ResourceGroupManager.DefaultResourceGroupName, null );
+            Mesh mesh = (Mesh)MeshManager.Instance.Load( "facial.mesh", ResourceGroupManager.DefaultResourceGroupName );
 			Animation anim = mesh.CreateAnimation( "manual", 0 );
 			VertexAnimationTrack track = anim.CreateVertexTrack( 4, VertexAnimationType.Pose );
 			manualKeyFrame = track.CreateVertexPoseKeyFrame( 0 );

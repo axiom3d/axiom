@@ -352,62 +352,103 @@ namespace Axiom.Core
 
 		#endregion Create Method
 
-		#region Load Method
-
-		//TODO : Look at generics method for implementing this.
-
-		/// <overloads>
-		/// <summary>
-		/// Generic load method, used to create a Resource specific to this
-		/// ResourceManager without using one of the specialised 'load' methods
-		/// (containing per-Resource-type parameters).
-		/// </summary>
-		/// <param name="name">The name of the Resource</param>
-		/// <param name="group">The resource group to which this resource will belong</param>
-		/// <returns></returns>
-		/// </overloads>
-		public virtual Resource Load( string name, string group )
-		{
-			return Load( name, group, null );
-		}
-
+        #region Prepare Method
+        /// <summary>
+        /// Generic prepare method, used to create a Resource specific to this 
+        /// ResourceManager without using one of the specialised 'prepare' methods
+        /// (containing per-Resource-type parameters).
+        /// </summary>
         /// <param name="name">The name of the Resource</param>
         /// <param name="group">The resource group to which this resource will belong</param>
-		/// <param name="loadParams">
-		///     Optional pointer to a list of name/value pairs
-		///     containing loading parameters for this type of resource.
-		/// </param>
-		public virtual Resource Load( string name, string group, NameValuePairList loadParams )
-		{
-			return Load( name, group, false, null, null );
-		}
+        /// <param name="isManual">Is the resource to be manually loaded? If so, you should
+        /// provide a value for the loader parameter</param>
+        /// <param name="loader">The manual loader which is to perform the required actions
+        /// when this resource is loaded; only applicable when you specify true
+        /// for the previous parameter</param>
+        /// <param name="loadParams">Optional pointer to a list of name/value pairs 
+        /// containing loading parameters for this type of resource.</param>
+        /// <param name="backgroundThread">Optional boolean which lets the load routine know if it
+        /// is being run on the background resource loading thread</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader,
+            NameValuePairList loadParams, bool backgroundThread )
+        {
+            var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+            // ensure prepared
+            r.Prepare( backgroundThread );
+            return r;
+        }
 
+        public Resource Prepare( string name, string group )
+        {
+            return this.Prepare( name, group, false, null, null, false );
+        }
+
+        public Resource Prepare( string name, string group, bool isManual )
+        {
+            return this.Prepare( name, group, isManual, null, null, false );
+        }
+
+        public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader )
+        {
+            return this.Prepare( name, group, isManual, loader, null, false );
+        }
+
+        public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+        {
+            return this.Prepare( name, group, isManual, loader, loadParams, false );
+        }
+        #endregion Prepare Method
+
+        #region Load Method
+
+        //TODO : Look at generics method for implementing this.
+
+        /// <summary>
+        /// Generic load method, used to create a Resource specific to this 
+        /// ResourceManager without using one of the specialised 'load' methods
+        /// (containing per-Resource-type parameters).
+        /// </summary>
         /// <param name="name">The name of the Resource</param>
         /// <param name="group">The resource group to which this resource will belong</param>
-		/// <param name="isManual">
-		///     Is the resource to be manually loaded? If so, you should
-		///     provide a value for the loader parameter
-		/// </param>
-		/// <param name="loader">
-		///     The manual loader which is to perform the required actions
-		///     when this resource is loaded; only applicable when you specify true
-		///     for the previous parameter
-		/// </param>
-		/// <param name="loadParams">
-		///     Optional pointer to a list of name/value pairs
-		///     containing loading parameters for this type of resource.
-		/// </param>
-		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
-		{
-			var ret = this[ name ];
-			if ( ret == null )
-			{
-				ret = Create( name, group, isManual, loader, loadParams );
-			}
-			// ensure loaded
-			ret.Load();
-			return ret;
-		}
+        /// <param name="isManual">Is the resource to be manually loaded? If so, you should
+        /// provide a value for the loader parameter</param>
+        /// <param name="loader">The manual loader which is to perform the required actions
+        /// when this resource is loaded; only applicable when you specify true
+        /// for the previous parameter</param>
+        /// <param name="loadParams">Optional pointer to a list of name/value pairs 
+        /// containing loading parameters for this type of resource.</param>
+        /// <param name="backgroundThread">Optional boolean which lets the load routine know if it
+        /// is being run on the background resource loading thread</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
+            NameValuePairList loadParams, bool backgroundThread )
+        {
+            var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+            // ensure loaded
+            r.Load( backgroundThread );
+            return r;
+        }
+
+        public Resource Load( string name, string group )
+        {
+            return this.Load( name, group, false, null, null, false );
+        }
+
+        public Resource Load( string name, string group, bool isManual )
+        {
+            return this.Load( name, group, isManual, null, null, false );
+        }
+
+        public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader )
+        {
+            return this.Load( name, group, isManual, loader, null, false );
+        }
+
+        public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+        {
+            return this.Load( name, group, isManual, loader, loadParams, false );
+        }
 
 		#endregion Load Method
 
@@ -812,5 +853,5 @@ namespace Axiom.Core
 		#endregion LoadingOrder Property
 
 		#endregion IScriptLoader Members
-	}
+    };
 }

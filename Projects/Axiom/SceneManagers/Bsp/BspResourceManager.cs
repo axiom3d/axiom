@@ -162,7 +162,8 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="loader"></param>
         /// <param name="loadParams"></param>
         /// <returns></returns>
-		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+        public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
+            NameValuePairList loadParams, bool backgroundThread )
 		{
 			RemoveAll(); // Only one level at a time.
 
