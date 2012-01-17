@@ -52,7 +52,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>AXIOM_THREAD_SUPPORT;DEBUG;TRACE;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Debug\Axiom.XML</DocumentationFile>
@@ -141,13 +141,17 @@
   <ItemGroup>
     <None Include="axiom.module" />
     <Compile Include="Core\ICopyable.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
+    <Compile Include="Core\WorkQueue\RequestID.cs" />
+    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
+    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
     <Compile Include="CrossPlatform\Buffer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CrossPlatform\ExtensionMethods.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CrossPlatform\SafeDirectoryCatalog.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
@@ -934,6 +938,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
     <PreBuildEvent>
