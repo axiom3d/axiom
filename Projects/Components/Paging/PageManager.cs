@@ -240,18 +240,17 @@ namespace Axiom.Components.Paging
 			AddContentCollectionFactory( mSimpleCollectionFactory );
 		}
 
-		public PagedWorld CreateWorld()
-		{
-			return CreateWorld( string.Empty );
-		}
-
 		/// <summary>
 		/// Create a new PagedWorld instance. 
 		/// </summary>
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		///	will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public PagedWorld CreateWorld( string name = "" )
+#else
 		public PagedWorld CreateWorld( string name )
+#endif
 		{
 			string theName = name;
 			if ( theName == string.Empty )
@@ -273,7 +272,15 @@ namespace Axiom.Components.Paging
 			return ret;
 		}
 
-		/// <summary>
+#if !NET_40
+        /// <see cref="PagedWorld.CreateWorld(string)"/>
+        public PagedWorld CreateWorld()
+        {
+            return CreateWorld( string.Empty );
+        }
+#endif
+
+        /// <summary>
 		/// Destroy a world.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
@@ -302,7 +309,11 @@ namespace Axiom.Components.Paging
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		/// will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public PagedWorld LoadWorld( string fileName, string name = "" )
+#else
 		public PagedWorld LoadWorld( string fileName, string name )
+#endif
 		{
 			PagedWorld ret = CreateWorld( name );
 
@@ -314,10 +325,13 @@ namespace Axiom.Components.Paging
 			return ret;
 		}
 
+#if !NET_40
+        /// <see cref="PagedWorld.LoadWorld(string, string)"/>
 		public PagedWorld LoadWorld( string fileName )
 		{
 			return LoadWorld( fileName, string.Empty );
 		}
+#endif
 
 		/// <summary>
 		/// Load a new PagedWorld from a stream. 
@@ -326,7 +340,11 @@ namespace Axiom.Components.Paging
 		/// <param name="name">Optionally give a name to the world (if no name is given, one
 		/// will be generated).</param>
 		[OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public PagedWorld LoadWorld( Stream stream, string name = "" )
+#else
 		public PagedWorld LoadWorld( Stream stream, string name )
+#endif
 		{
 			PagedWorld ret = CreateWorld( name );
 
@@ -335,10 +353,13 @@ namespace Axiom.Components.Paging
 			return ret;
 		}
 
+#if !NET_40
+        /// <see cref="PagedWorld.LoadWorld(Stream, string)"/>
 		public PagedWorld LoadWorld( Stream stream )
 		{
 			return LoadWorld( stream, string.Empty );
 		}
+#endif
 
 		/// <summary>
 		/// Save a PagedWorld instance to a file. 

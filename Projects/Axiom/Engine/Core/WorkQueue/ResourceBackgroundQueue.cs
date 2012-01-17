@@ -683,18 +683,14 @@ namespace Axiom.Core
 
 		#region IRequestHandler Members
 
-		/// <summary>
-		/// Implementation for WorkQueue.IRequestHandler
-		/// </summary>
+        /// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
 			return true;
 		}
 
-		/// <summary>
-		/// Implementation for WorkQueue.IRequestHandler
-		/// </summary>
+        /// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
@@ -799,18 +795,14 @@ namespace Axiom.Core
 
 		#region IResponseHandler Members
 
-		/// <summary>
-		/// Implementation for WorkQueue.IResponseHandler
-		/// </summary>
+        /// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			return true;
 		}
 
-		/// <summary>
-		/// Implementation for WorkQueue.IResponseHandler
-		/// </summary>
+        /// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{

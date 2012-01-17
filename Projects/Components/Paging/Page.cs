@@ -29,6 +29,7 @@
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Axiom.Core;
@@ -39,7 +40,7 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-	public class Page : DisposableObject
+	public class Page : DisposableObject, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
 	{
 		public static uint CHUNK_ID = StreamSerializer.MakeIdentifier( "PAGE" );
 		public static ushort CHUNK_VERSION = 1;
@@ -54,6 +55,7 @@ namespace Axiom.Components.Paging
 		protected SceneNode mDebugNode;
 		protected bool mDeferredProcessInProgress;
 		protected bool mModified;
+		protected ushort workQueueChannel;
 
 		protected struct PageData
 		{
@@ -188,12 +190,10 @@ namespace Axiom.Components.Paging
 			mID = pageID;
 			mParent = parent;
 
-#if WORKQUEUE_IMPLEMENTED
-WorkQueue* wq = Root::getSingleton().getWorkQueue();
-mWorkQueueChannel = wq->getChannel("Axiom/Page");
-wq->addRequestHandler(mWorkQueueChannel, this);
-wq->addResponseHandler(mWorkQueueChannel, this);
-#endif
+			WorkQueue wq = Root.Instance.WorkQueue;
+			workQueueChannel = wq.GetChannel( "Axiom/Page" );
+			wq.AddRequestHandler( workQueueChannel, this );
+			wq.AddResponseHandler( workQueueChannel, this );
 			Touch();
 		}
 
@@ -204,11 +204,10 @@ wq->addResponseHandler(mWorkQueueChannel, this);
 			{
 				if ( disposeManagedResources )
 				{
-#if WORKQUEUE_IMPLEMENTED
-WorkQueue* wq = Root::getSingleton().getWorkQueue();
-wq->removeRequestHandler(mWorkQueueChannel, this);
-wq->removeResponseHandler(mWorkQueueChannel, this);
-#endif
+					WorkQueue wq = Root.Instance.WorkQueue;
+					wq.RemoveRequestHandler( workQueueChannel, this );
+					wq.RemoveResponseHandler( workQueueChannel, this );
+
 					DestroyAllContentCollections();
 
 					if ( mDebugNode != null )
@@ -316,10 +315,7 @@ wq->removeResponseHandler(mWorkQueueChannel, this);
 				PageRequest req = new PageRequest( this );
 				mDeferredProcessInProgress = true;
 
-#if WORKQUEUE_IMPLEMENTED
-				Root::getSingleton().getWorkQueue()->addRequest(mWorkQueueChannel, WORKQUEUE_PREPARE_REQUEST, 
-				Any(req), 0, synchronous);
-#endif
+				Root.Instance.WorkQueue.AddRequest( workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
 			}
 		}
 
@@ -331,80 +327,6 @@ wq->removeResponseHandler(mWorkQueueChannel, this);
 		{
 			DestroyAllContentCollections();
 		}
-
-#if WORKQUEUE_IMPLEMENTED
-		bool Page::canHandleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
-		{
-			PageRequest preq = any_cast<PageRequest>(req->getData());
-			// only deal with own requests
-			// we do this because if we delete a page we want any pending tasks to be discarded
-			if (preq.srcPage != this)
-				return false;
-			else
-				return RequestHandler::canHandleRequest(req, srcQ);
-
-		}
-
-		bool Page::canHandleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ)
-		{
-			PageRequest preq = any_cast<PageRequest>(res->getRequest()->getData());
-			// only deal with own requests
-			// we do this because if we delete a page we want any pending tasks to be discarded
-			if (preq.srcPage != this)
-				return false;
-			else
-				return true;
-		}
-
-		WorkQueue::Response* Page::handleRequest(const WorkQueue::Request* req, const WorkQueue* srcQ)
-		{
-			// Background thread (maybe)
-
-			PageRequest preq = any_cast<PageRequest>(req->getData());
-			// only deal with own requests; we shouldn't ever get here though
-			if (preq.srcPage != this)
-				return 0;
-
-			PageResponse res;
-			res.pageData = OGRE_NEW PageData();
-			WorkQueue::Response* response = 0;
-			try
-			{
-				prepareImpl(res.pageData);
-				response = OGRE_NEW WorkQueue::Response(req, true, Any(res));
-			}
-			catch (Exception& e)
-			{
-				// oops
-				response = OGRE_NEW WorkQueue::Response(req, false, Any(res), 
-					e.getFullDescription());
-			}
-
-			return response;
-		}
-
-		void Page::handleResponse(const WorkQueue::Response* res, const WorkQueue* srcQ)
-		{
-			// Main thread
-			PageResponse pres = any_cast<PageResponse>(res->getData());
-			PageRequest preq = any_cast<PageRequest>(res->getRequest()->getData());
-
-			// only deal with own requests
-			if (preq.srcPage!= this)
-				return;
-
-			// final loading behaviour
-			if (res->succeeded())
-			{
-				std::swap(mContentCollections, pres.pageData->collectionsToAdd);
-				loadImpl();
-			}
-
-			OGRE_DELETE pres.pageData;
-
-			mDeferredProcessInProgress = false;
-		}
-#endif
 
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual bool PrepareImpl( ref PageData dataToPopulate )
@@ -585,5 +507,91 @@ wq->removeResponseHandler(mWorkQueueChannel, this);
 			str.AppendFormat( "{0}.page", mID.Value.ToString( "X" ).PadLeft( 8, '0' ) );
 			return str.ToString();
 		}
+
+		#region IRequestHandler Members
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
+		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		{
+			PageRequest preq = (PageRequest)req.Data;
+			// only deal with own requests
+			// we do this because if we delete a page we want any pending tasks to be discarded
+			if ( preq.srcPage != this )
+				return false;
+			else
+				return !req.Aborted;
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
+		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		{
+			// Background thread (maybe)
+
+			PageRequest preq = (PageRequest)req.Data;
+			// only deal with own requests; we shouldn't ever get here though
+			if ( preq.srcPage != this )
+				return new WorkQueue.Response();
+
+			PageResponse res = new PageResponse();
+			res.pageData = new PageData();
+			WorkQueue.Response response;
+			try
+			{
+				PrepareImpl( ref res.pageData );
+				response = new WorkQueue.Response( req, true, res );
+			}
+			catch ( Exception e )
+			{
+				// oops
+				response = new WorkQueue.Response( req, false, res, e.Message );
+			}
+
+			return response;
+		}
+
+		#endregion IRequestHandler Members
+
+		#region IResponseHandler Members
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
+		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
+		{
+			PageRequest preq = (PageRequest)res.Request.Data;
+			// only deal with own requests
+			// we do this because if we delete a page we want any pending tasks to be discarded
+			if ( preq.srcPage != this )
+				return false;
+			else
+				return true;
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
+		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
+		{
+			// Main thread
+			PageResponse pres = (PageResponse)res.Data;
+			PageRequest preq = (PageRequest)res.Request.Data;
+
+			// only deal with own requests
+			if ( preq.srcPage != this )
+				return;
+
+			// final loading behaviour
+			if ( res.Succeeded )
+			{
+				var tmp = new List<PageContentCollection>( mContentCollections );
+				mContentCollections = pres.pageData.collectionsToAdd;
+				pres.pageData.collectionsToAdd = tmp;
+				LoadImpl();
+			}
+
+			mDeferredProcessInProgress = false;
+		}
+
+		#endregion IResponseHandler Members
 	};
 }
