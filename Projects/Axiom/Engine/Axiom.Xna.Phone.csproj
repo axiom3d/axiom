@@ -27,7 +27,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)XnaWP7\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)XnaWP7\</IntermediateOutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkVersion)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
