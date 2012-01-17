@@ -154,6 +154,27 @@ namespace Axiom.Core
 
 				ResourceGroupManager.Instance.Initialize();
 
+                // WorkQueue (note: users can replace this if they want)
+                DefaultWorkQueue defaultQ = new DefaultWorkQueue( "Root" );
+                // never process responses in main thread for longer than 10ms by default
+                defaultQ.ResponseProcessingTimeLimit = 10;
+
+#if AXIOM_THREAD_SUPPORT
+                var threadCount = Environment.ProcessorCount;
+                if ( threadCount == 0 )
+                    threadCount = 1;
+
+                defaultQ.WorkerThreadCount = threadCount;
+                // only allow workers to access rendersystem if threadsupport is 1
+                if ( Axiom.Configuration.Config.AxiomThreadLevel == 1 )
+                    defaultQ.WorkersCanAccessRenderSystem = true;
+                else
+                    defaultQ.WorkersCanAccessRenderSystem = false;
+#endif
+                _workQueue = defaultQ;
+
+                var resBack = new ResourceBackgroundQueue();
+
 				this.sceneManagerEnumerator = SceneManagerEnumerator.Instance;
 
 				var mat = MaterialManager.Instance;
@@ -348,6 +369,13 @@ namespace Axiom.Core
 		private MovableTextFactory movableTextFactory;
 
 		#endregion MovableObjectFactory fields
+
+        /// <summary>
+        /// Are we initialised yet?
+        /// </summary>
+        private bool _isInitialized;
+
+        private WorkQueue _workQueue;
 
 		#endregion Fields
 
@@ -600,62 +628,60 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion Properties
+        /// <summary>
+        ///		Gets the number of frames drawn since startup.
+        /// </summary>
+        public ulong CurrentFrameCount
+        {
+            get
+            {
+                return this.currentFrameCount;
+            }
+        }
 
-		/// <summary>
-		///		Gets the number of frames drawn since startup.
-		/// </summary>
-		public ulong CurrentFrameCount
-		{
-			get
-			{
-				return this.currentFrameCount;
-			}
-		}
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public float CurrentFPS
+        {
+            get
+            {
+                return this.currentFPS;
+            }
+        }
 
-		/// <summary>
-		///		Exposes FPS stats to anyone who cares.
-		/// </summary>
-		public float CurrentFPS
-		{
-			get
-			{
-				return this.currentFPS;
-			}
-		}
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public float BestFPS
+        {
+            get
+            {
+                return this.highestFPS;
+            }
+        }
 
-		/// <summary>
-		///		Exposes FPS stats to anyone who cares.
-		/// </summary>
-		public float BestFPS
-		{
-			get
-			{
-				return this.highestFPS;
-			}
-		}
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public float WorstFPS
+        {
+            get
+            {
+                return this.lowestFPS;
+            }
+        }
 
-		/// <summary>
-		///		Exposes FPS stats to anyone who cares.
-		/// </summary>
-		public float WorstFPS
-		{
-			get
-			{
-				return this.lowestFPS;
-			}
-		}
-
-		/// <summary>
-		///		Exposes FPS stats to anyone who cares.
-		/// </summary>
-		public float AverageFPS
-		{
-			get
-			{
-				return this.averageFPS;
-			}
-		}
+        /// <summary>
+        ///		Exposes FPS stats to anyone who cares.
+        /// </summary>
+        public float AverageFPS
+        {
+            get
+            {
+                return this.averageFPS;
+            }
+        }
         /// <summary>
         /// Axiom by default gives you the raw frame time, but can 
         /// optionally smooth it out over several frames, in order to reduce the
@@ -669,20 +695,69 @@ namespace Axiom.Core
             get { return frameSmoothingTime; }
             set { frameSmoothingTime = value; }
         }
-		/// <summary>
-		///	    Exposes the mechanism to suspend rendering
-		/// </summary>
-		public bool SuspendRendering
-		{
-			get
-			{
-				return this.suspendRendering;
-			}
-			set
-			{
-				this.suspendRendering = value;
-			}
-		}
+
+        /// <summary>
+        ///	    Exposes the mechanism to suspend rendering
+        /// </summary>
+        public bool SuspendRendering
+        {
+            get
+            {
+                return this.suspendRendering;
+            }
+            set
+            {
+                this.suspendRendering = value;
+            }
+        }
+
+        /// <summary>
+        /// Get/Set the WorkQueue for processing background tasks.
+        /// You are free to add new requests and handlers to this queue to
+        /// process your custom background tasks using the shared thread pool. 
+        /// However, you must remember to assign yourself a new channel through 
+        /// which to process your tasks.
+        /// </summary>
+        /// <remarks>
+        /// Root will delete this work queue
+        /// at shutdown, so do not destroy it yourself.
+        /// </remarks>
+        public WorkQueue WorkQueue
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return _workQueue;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                if ( _workQueue != value )
+                {
+                    // delete old one (will shut down)
+                    _workQueue.Dispose();
+                    _workQueue = value;
+
+                    if ( _isInitialized )
+                        _workQueue.Startup();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the system is initialised or not.
+        /// </summary>
+        public bool IsInitialized
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return _isInitialized;
+            }
+        }
+
+		#endregion Properties
 
 		/// <summary>
 		///		Registers a new SceneManagerFactory, a factory object for creating instances
@@ -914,7 +989,7 @@ namespace Axiom.Core
 															};
 								});
 #endif
-
+            _isInitialized = true;
 			return this.autoWindow;
 		}
 
@@ -925,6 +1000,10 @@ namespace Axiom.Core
 		{
 			if ( this.firstTimePostWindowInit )
 			{
+                // Background loader
+                ResourceBackgroundQueue.Instance.Initialize();
+                _workQueue.Startup();
+
 				// init material manager singleton, which parse sources for materials
 				if ( MaterialManager.Instance == null )
 					new MaterialManager();
@@ -1084,16 +1163,15 @@ namespace Axiom.Core
 		/// </summary>
 		public void Shutdown()
 		{
-			//_isIntialized = false;
-			LogManager.Instance.Write( "*-*-* Axiom Shutdown Initiated." );
-
+            LogManager.Instance.Write( "*-*-* Axiom Shutdown Initiated." );
 			SceneManagerEnumerator.Instance.ShutdownAll();
 
 			// destroy all auto created GPU programs
 			ShadowVolumeExtrudeProgram.Shutdown();
+            ResourceGroupManager.Instance.ShutdownAll();
 
 			// ResourceBackGroundPool.Instance.Shutdown();
-			ResourceGroupManager.Instance.ShutdownAll();
+            _isInitialized = false;
 		}
 
 		/// <summary>
@@ -1203,6 +1281,13 @@ namespace Axiom.Core
 			{
 				ResourceGroupManager.Instance.Dispose();
 			}
+
+            // Note: The dispose method implementation of both ResourceBackgroundQueue and
+            // DefaultWorkQueue internally calls Shutdown, so the direct call to Shutdown methods
+            // isn't necessary in Root.Shutdown.
+            ResourceBackgroundQueue.Instance.Dispose();
+            _workQueue.Dispose();
+            _workQueue = null;
 
 			if ( CodecManager.Instance != null )
 			{
@@ -1471,6 +1556,10 @@ namespace Axiom.Core
 			{
 				HardwareBufferManager.Instance.ReleaseBufferCopies( false );
 			}
+
+            // Tell the queue to process responses
+            _workQueue.ProcessResponses();
+
 			return !e.StopRendering;
 		}
 
