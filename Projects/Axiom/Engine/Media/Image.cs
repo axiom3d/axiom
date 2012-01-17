@@ -242,6 +242,25 @@ namespace Axiom.Media
             : base()
         {
         }
+
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="img"></param>
+        public Image( Image img )
+            : base()
+        {
+            width = img.width;
+            height = img.height;
+            depth = img.depth;
+            size = img.size;
+            numMipMaps = img.numMipMaps;
+            flags = img.flags;
+            format = img.format;
+            buffer = img.buffer;
+            //TODO
+            //m_bAutoDelete
+        }
         #endregion Construction and Destruction
 
         #region Methods

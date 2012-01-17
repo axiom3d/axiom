@@ -85,6 +85,8 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
+        private static readonly object _autoMutex = new object();
+
 		#region Resources Property
 
 		private readonly Dictionary<string, Resource> _resources = new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
@@ -643,6 +645,7 @@ namespace Axiom.Core
 
 		/// <summary>Notify this manager that a resource which it manages has been 'touched', ie used. </summary>
 		/// <param name="res">the resource</param>
+        [OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceTouched( Resource res )
 		{
 			// TODO
@@ -650,16 +653,24 @@ namespace Axiom.Core
 
 		/// <summary> Notify this manager that a resource which it manages has been loaded. </summary>
 		/// <param name="res">the resource</param>
+        [OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceLoaded( Resource res )
 		{
-			_memoryUsage += res.Size;
+            lock ( _autoMutex )
+            {
+                _memoryUsage += res.Size;
+            }
 		}
 
 		/// <summary>Notify this manager that a resource which it manages has been unloaded.</summary>
 		/// <param name="res">the resource</param>
+        [OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceUnloaded( Resource res )
 		{
-			_memoryUsage -= res.Size;
+            lock ( _autoMutex )
+            {
+                _memoryUsage -= res.Size;
+            }
 		}
 
 		/// <summary>

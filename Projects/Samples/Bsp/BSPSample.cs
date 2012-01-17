@@ -23,7 +23,7 @@
 using Axiom.Core;
 using Axiom.Math;
 
-namespace Axiom.Samples
+namespace Axiom.Samples.Bsp
 {
 	public class BSPSample : SdkSample
 	{

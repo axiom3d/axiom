@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,9 +37,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\samples\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Axiom.Samples.BezierPatch.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -55,9 +55,9 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\samples\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_40</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -75,9 +75,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\samples\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Axiom.Samples.BezierPatch.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -93,9 +93,9 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\samples\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_40</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -112,7 +112,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <CodeAnalysisLogFile>bin\Debug\Axiom.Samples.BezierPatch.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -128,9 +128,9 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
+    <OutputPath>..\bin\samples\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;NET_40</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -156,6 +156,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
+      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
+      <Name>Axiom.2010.v4.0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.v4.0.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.2010.v4.0</Name>

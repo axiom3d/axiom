@@ -654,12 +654,12 @@ namespace Axiom.Core
 
 			// Notify manager
 			if ( _creator != null )
-				_creator.NotifyResourceLoaded( this );
+                _creator.NotifyResourceLoaded( this );
 
-			// TODO: Fire (deferred) events
-			//if ( _isBackgroundLoaded )
-			//    queueFireBackgroundLoadingComplete();
-		}
+            // Fire events, if not background
+            if ( !background )
+                FireLoadingComplete( false );
+        }
 
 		/// <summary>
 		///		Unloads the resource data, but retains enough info. to be able to recreate it
@@ -728,21 +728,33 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Indicates this resource has been used.
-		/// </summary>
-		public virtual void Touch()
+        /// <summary>
+        ///	'Touches' the resource to indicate it has been used.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void Touch()
         {
-#if AXIOM_THREAD_SUPPORT
-			lock( _autoMutex )
-#endif
-            {
-				Load();
+            // make sure loaded
+            Load();
 
-				if ( _creator != null )
-					_creator.NotifyResourceTouched( this );
-			}
-		}
+            if ( _creator != null )
+                _creator.NotifyResourceTouched( this );
+        }
+
+        internal virtual void FireLoadingComplete( bool wasBackgroundLoaded )
+        {
+            //TODO
+        }
+
+        internal virtual void FirePreparingComplete( bool wasBackgroundLoaded )
+        {
+            //TODO
+        }
+
+        internal virtual void FireUnloadingComplete( bool wasBackgroundLoaded )
+        {
+            //TODO
+        }
 
 		/// <summary>
 		/// Calculate the size of a resource; this will only be called after 'load'

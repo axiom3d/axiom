@@ -275,6 +275,14 @@ namespace Axiom.Math
 			return left + right;
 		}
 
+        /// <summary>
+        /// Add a scalar to a Vector3
+        /// </summary>
+        public static Vector3 Add( Vector3 v, Real fScalar )
+        {
+            return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
+        }
+
 		/// <summary>
 		///		Used when a Vector3 is added to another Vector3.
 		/// </summary>
@@ -285,6 +293,11 @@ namespace Axiom.Math
 		{
 			return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
 		}
+
+        public static Vector3 operator +( Vector3 v, Real fScalar )
+        {
+            return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
+        }
 
 		/// <summary>
 		///		Used when a Vector3 is multiplied by a scalar value.
@@ -417,11 +430,6 @@ namespace Axiom.Math
 			return false;
 		}
 
-		/// <summary>
-		///    
-		/// </summary>
-		/// <param name="vec3"></param>
-		/// <returns></returns>
 		public static explicit operator Vector4( Vector3 vec3 )
 		{
 			return new Vector4( vec3.x, vec3.y, vec3.z, 1.0f );

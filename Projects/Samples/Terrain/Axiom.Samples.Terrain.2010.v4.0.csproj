@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -161,6 +161,10 @@
     <Compile Include="TerrainSample.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
+      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
+      <Name>Axiom.2010.v4.0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Components\Terrain\Axiom.Components.Terrain.2010.v4.0.csproj">
       <Project>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</Project>
       <Name>Axiom.Components.Terrain.2010.v4.0</Name>

@@ -227,12 +227,10 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T RemoveAt( int index )
 		{
-			this._count--;
 			if ( index >= this._count )
-			{
-				throw new
-					ArgumentOutOfRangeException( "index" );
-			}
+				throw new ArgumentOutOfRangeException( "index" );
+
+            this._count--;
 			var i = ( this._head + index ) % this._capacity;
 			var item = this._data[ i ];
 			if ( i < this._head )

@@ -36,7 +36,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -57,6 +56,16 @@ namespace Axiom.Collections
 			: base( new CaseInsensitiveStringComparer() )
 		{
 		}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameValuePairList"/> class that contains elements copied from
+        /// the specified <see cref="NameValuePairList"/> and uses the default equality comparer for the key type.
+        /// </summary>
+        /// <param name="parameters">The <see cref="NameValuePairList"/> whose elements are copied to the new <see cref="NameValuePairList"/>.</param>
+        public NameValuePairList( NameValuePairList parameters )
+            : base( parameters as IDictionary<string, string> )
+        {
+        }
 
 		#endregion Constructors
 	}
