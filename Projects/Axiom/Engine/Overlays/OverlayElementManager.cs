@@ -289,7 +289,7 @@ namespace Axiom.Overlays
 
 			if ( !elements.ContainsKey( name ) )
 			{
-				LogManager.Instance.Write( string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
+                LogManager.Instance.Write( "OverlayElement with the name'{0}' was not found.", name );
 				return null;
 			}
 			else

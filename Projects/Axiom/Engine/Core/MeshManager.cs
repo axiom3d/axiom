@@ -48,7 +48,6 @@ namespace Axiom.Core
 	/// </summary>
 	public class MeshManager : ResourceManager, IManualResourceLoader
 	{
-
 		#region Enumerations and Structures
 
 		/// <summary>
@@ -1134,17 +1133,46 @@ namespace Axiom.Core
 
 		#region IManualResourceLoader Implementation
 
+        /// <see cref="IManualResourceLoader.LoadResource"/>
 		public void LoadResource( Resource resource )
 		{
 			var mesh = (Mesh)resource;
 
+            // attempt to create a prefab mesh
 			var prefab = PrefabFactory.Create( mesh );
 
-			if ( !prefab )
-			{
-				var mbp = _meshBuildParams[ mesh ];
-				_loadManual( mesh, mbp );
-			}
+            // the mesh was not a prefab..
+            if ( !prefab )
+            {
+                // Find build parameters
+                if ( !_meshBuildParams.ContainsKey( mesh ) )
+                    throw new AxiomException( "Cannot find build parameters for {0}", mesh.Name );
+
+                var parameters = _meshBuildParams[ mesh ];
+
+                switch ( parameters.Type )
+                {
+                    case MeshBuildType.Plane:
+                        //TODO
+                        //loadManualPlane(msh, parameters);
+                        break;
+
+                    case MeshBuildType.CurvedIllusionPlane:
+                        //TODO
+                        //loadManualCurvedIllusionPlane(msh, parameters);
+                        break;
+
+                    case MeshBuildType.CurvedPlane:
+                        //TODO
+                        //loadManualCurvedPlane(msh, parameters);
+                        break;
+
+                    default:
+                        throw new AxiomException( "Unknown build parameters for {0}", mesh.Name );
+                }
+
+                _loadManual( mesh, parameters );
+            }
 		}
 
 		#endregion IManualResourceLoader Implementation

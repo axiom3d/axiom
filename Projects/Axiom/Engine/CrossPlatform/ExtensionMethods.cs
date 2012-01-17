@@ -95,10 +95,10 @@ namespace Axiom.Core
 #if WINDOWS_PHONE || SILVERLIGHT
 				var catalogs = new AggregateCatalog(NeighborsCatalog(folder, filter).ToArray());
 #else
-				var catalogs = new SafeDirectoryCatalog(folder ?? Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), filter ?? "*.dll");
+                var catalogs = new DirectoryCatalog( folder ?? Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ), filter ?? "*.dll" );
 #endif
-				var container = new CompositionContainer(catalogs);
-				container.ComposeParts(obj);
+                var container = new CompositionContainer( catalogs );
+                container.ComposeParts( obj );
 			}
 			catch (ReflectionTypeLoadException e)
 			{
@@ -578,6 +578,7 @@ namespace Axiom.Core
 
 namespace System
 {
+
 	namespace ComponentModel
 	{
 		namespace Composition
@@ -599,15 +600,16 @@ namespace System
 				}
 			}
 #endif
-
-			namespace Hosting
+            
+            namespace Hosting
 			{
 				public class _dummy { public byte dummy; }
 			}
 		}
 	}
 
-	namespace Drawing
+
+    namespace Drawing
 	{
 		public class _dummy { public byte dummy; }
 	}

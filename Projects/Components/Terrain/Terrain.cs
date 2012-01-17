@@ -151,7 +151,7 @@ namespace Axiom.Components.Terrain
     /// Structure encapsulating import data that you may use to bootstrap 
     /// the terrain without loading from a native data stream. 
     /// </summary>
-    public class ImportData
+    public class ImportData : DisposableObject
     {
         /// <summary>
         /// The alignment of the terrain
@@ -5222,6 +5222,11 @@ WorkQueue* wq = Root::getSingleton().getWorkQueue();
         public void SetNeighbour( NeighbourIndex index, Terrain neighbour )
         {
             SetNeighbour( index, neighbour, false, true );
+        }
+
+        public void SetNeighbour( NeighbourIndex index, Terrain neighbour, bool recalculate)
+        {
+            SetNeighbour( index, neighbour, recalculate, true );
         }
 
         public void SetNeighbour( NeighbourIndex index, Terrain neighbour, bool recalculate, bool notifyOther )
