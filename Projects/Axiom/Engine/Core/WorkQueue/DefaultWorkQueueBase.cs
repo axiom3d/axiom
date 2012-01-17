@@ -160,6 +160,8 @@ namespace Axiom.Core
 			set
 			{
 				workerThreadCount = value;
+                if ( workerThreadCount == 0 )
+                    workerThreadCount = 1;
 			}
 		}
 

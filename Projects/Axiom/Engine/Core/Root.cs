@@ -160,11 +160,10 @@ namespace Axiom.Core
                 defaultQ.ResponseProcessingTimeLimit = 10;
 
 #if AXIOM_THREAD_SUPPORT
-                var threadCount = Environment.ProcessorCount;
-                if ( threadCount == 0 )
-                    threadCount = 1;
 
-                defaultQ.WorkerThreadCount = threadCount;
+#if !WINDOWS_PHONE
+                defaultQ.WorkerThreadCount = Environment.ProcessorCount;
+#endif
                 // only allow workers to access rendersystem if threadsupport is 1
                 if ( Axiom.Configuration.Config.AxiomThreadLevel == 1 )
                     defaultQ.WorkersCanAccessRenderSystem = true;

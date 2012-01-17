@@ -48,9 +48,9 @@ namespace Axiom.Collections
 {
 	/// <summary>
 	///	Serves as a basis for strongly typed collections in the engine.
-	/// </summary>
-#if NET_40
-	public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
+    /// </summary>
+#if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
+    public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
 #else
     public class AxiomCollection<T> : Dictionary<string, T>
 #endif
@@ -77,22 +77,16 @@ namespace Axiom.Collections
 
 		#region Constructors
 
-		/// <summary>
-		///
-		/// </summary>
 		public AxiomCollection()
+            : base()
 		{
 			this.parent = null;
 			this.typeName = typeof( T ).Name;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="parent"></param>
 		protected AxiomCollection( Object parent )
-#if NET_40
-			: base(Environment.ProcessorCount, InitialCapacity)
+#if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
+            : base(Environment.ProcessorCount, InitialCapacity)
 #else
             : base( InitialCapacity )
 #endif

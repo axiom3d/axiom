@@ -142,7 +142,7 @@ namespace Axiom.Core
 		};
 
 		protected ushort workQueueChannel;
-		protected HashSet<RequestID> outstandingRequestSet = new HashSet<RequestID>();
+		protected List<RequestID> outstandingRequestSet = new List<RequestID>();
 
 		public ResourceBackgroundQueue()
 			: base()
