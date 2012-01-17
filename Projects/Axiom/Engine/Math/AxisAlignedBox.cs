@@ -95,49 +95,107 @@ namespace Axiom.Math
 		#region Public methods
 
 		/// <summary>
-		/// 
+        /// Transforms the box according to the matrix supplied.
 		/// </summary>
-		/// <param name="matrix"></param>
+		/// <remarks>
+        /// By calling this method you get the axis-aligned box which
+		/// surrounds the transformed version of this box. Therefore each
+		/// corner of the box is transformed by the matrix, then the
+		/// extents are mapped back onto the axes to produce another
+		/// AABB. Useful when you have a local AABB for an object which
+		/// is then transformed.
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public void Transform( Matrix4 matrix )
 		{
 			// do nothing for a null box
 			if ( isNull || isInfinite )
 				return;
 
-			Vector3 min;
-			Vector3 max;
-			Vector3 temp;
+			Vector3 oldMin, oldMax, currentCorner;
 
-			temp = matrix * corners[ 0 ];
-			min = max = temp;
+            // Getting the old values so that we can use the existing merge method.
+            oldMin = minVector;
+            oldMax = maxVector;
 
-			for ( var i = 1; i < corners.Length; i++ )
-			{
-				// Transform and check extents
-				temp = matrix * corners[ i ];
+            // reset
+            IsNull = true;
 
-				if ( temp.x > max.x )
-					max.x = temp.x;
-				else if ( temp.x < min.x )
-					min.x = temp.x;
+            // We sequentially compute the corners in the following order :
+            // 0, 6, 5, 1, 2, 4 ,7 , 3
+            // This sequence allows us to only change one member at a time to get at all corners.
 
-				if ( temp.y > max.y )
-					max.y = temp.y;
-				else if ( temp.y < min.y )
-					min.y = temp.y;
+            // For each one, we transform it using the matrix
+            // Which gives the resulting point and merge the resulting point.
 
-				if ( temp.z > max.z )
-					max.z = temp.z;
-				else if ( temp.z < min.z )
-					min.z = temp.z;
-			}
+            // First corner 
+            // min min min
+            currentCorner = oldMin;
+            Merge( matrix * currentCorner );
 
-			SetExtents( min, max );
+            // min,min,max
+            currentCorner.z = oldMax.z;
+            Merge( matrix * currentCorner );
+
+            // min max max
+            currentCorner.y = oldMax.y;
+            Merge( matrix * currentCorner );
+
+            // min max min
+            currentCorner.z = oldMin.z;
+            Merge( matrix * currentCorner );
+
+            // max max min
+            currentCorner.x = oldMax.x;
+            Merge( matrix * currentCorner );
+
+            // max max max
+            currentCorner.z = oldMax.z;
+            Merge( matrix * currentCorner );
+
+            // max min max
+            currentCorner.y = oldMin.y;
+            Merge( matrix * currentCorner );
+
+            // max min min
+            currentCorner.z = oldMin.z;
+            Merge( matrix * currentCorner );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
+        /// <summary>
+        /// Transforms the box according to the affine matrix supplied.
+        /// </summary>
+        /// <remarks>
+        /// By calling this method you get the axis-aligned box which
+		/// surrounds the transformed version of this box. Therefore each
+		/// corner of the box is transformed by the matrix, then the
+		/// extents are mapped back onto the axes to produce another
+		/// AABB. Useful when you have a local AABB for an object which
+		/// is then transformed.
+		/// @note
+		/// The matrix must be an affine matrix. <see cref="Matrix4.IsAffine"/>.
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        public void TransformAffine( Matrix4 m )
+        {
+            Debug.Assert( m.IsAffine );
+
+            // Do nothing if current null or infinite
+            if ( isNull || isInfinite )
+                return;
+
+            Vector3 centre = this.Center;
+            Vector3 halfSize = this.HalfSize;
+
+            Vector3 newCentre = m.TransformAffine( centre );
+            Vector3 newHalfSize = new Vector3(
+                Utility.Abs( m[ 0, 0 ] ) * halfSize.x + Utility.Abs( m[ 0, 1 ] ) * halfSize.y + Utility.Abs( m[ 0, 2 ] ) * halfSize.z,
+                Utility.Abs( m[ 1, 0 ] ) * halfSize.x + Utility.Abs( m[ 1, 1 ] ) * halfSize.y + Utility.Abs( m[ 1, 2 ] ) * halfSize.z,
+                Utility.Abs( m[ 2, 0 ] ) * halfSize.x + Utility.Abs( m[ 2, 1 ] ) * halfSize.y + Utility.Abs( m[ 2, 2 ] ) * halfSize.z );
+
+            SetExtents( newCentre - newHalfSize, newCentre + newHalfSize );
+        }
+
 		private void UpdateCorners()
 		{
 			// The order of these items is, using right-handed co-ordinates:
