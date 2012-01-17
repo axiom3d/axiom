@@ -983,13 +983,8 @@ namespace Axiom.Components.Terrain
             switch ( Alignment )
             {
                 case Alignment.Align_X_Y:
-                    Real t1 = localRayDir.x, t2 = localRayDir.z;
-                    _swap( t1, t2 );
-                    localRayDir = new Vector3( t1, localRayDir.y, t2 );
-                    t1 = offset.x;
-                    t2 = offset.z;
-                    _swap( t1, t2 );
-                    offset = new Vector3( t1, offset.y, t2 );
+                    Utility.Swap<Real>( ref localRayDir.x, ref localRayDir.z );
+                    Utility.Swap<Real>( ref offset.x, ref offset.z );
                     break;
 
                 case Alignment.Align_Y_Z:
@@ -1462,18 +1457,6 @@ namespace Axiom.Components.Terrain
 
             stream.ReadChunkEnd( ChunkID );
         }
-
-		/// <summary>
-		/// Swaps to objects. be sure they have the same type
-		/// </summary>
-		/// <param name="oba"></param>
-		/// <param name="obb"></param>
-		private void _swap( Real oba, Real obb )
-		{
-			Real tmp = oba;
-			oba = obb;
-			obb = tmp;
-		}
 
         #endregion Methods
 

@@ -335,7 +335,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get the minimum height of the node
         /// </summary>
-        public float MinHeight
+        public Real MinHeight
         {
             [OgreVersion( 1, 7, 2 )]
             get
@@ -356,7 +356,7 @@ namespace Axiom.Components.Terrain
         /// <summary>
         /// Get the maximum height of the node
         /// </summary>
-        public float MaxHeight
+        public Real MaxHeight
         {
             [OgreVersion( 1, 7, 2 )]
             get

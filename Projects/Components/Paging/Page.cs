@@ -583,9 +583,7 @@ namespace Axiom.Components.Paging
 			// final loading behaviour
 			if ( res.Succeeded )
 			{
-				var tmp = new List<PageContentCollection>( mContentCollections );
-				mContentCollections = pres.pageData.collectionsToAdd;
-				pres.pageData.collectionsToAdd = tmp;
+                Utility.Swap<List<PageContentCollection>>( ref mContentCollections, ref pres.pageData.collectionsToAdd );
 				LoadImpl();
 			}
 
