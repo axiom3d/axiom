@@ -27,12 +27,13 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)XnaWP7\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)XnaWP7\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS_PHONE;AXIOM_SAFE_ONLY;$(TargetFrameworkVersion)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>false</XnaCompressContent>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Windows Phone' ">
     <DebugType>pdbonly</DebugType>
@@ -866,6 +867,13 @@
       <Project>{6A009556-30DD-4930-A7E7-F51F7C8CA26C}</Project>
       <Name>SharpZipLib.Xna.Phone</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
+    <Compile Include="Core\WorkQueue\RequestID.cs" />
+    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
+    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
