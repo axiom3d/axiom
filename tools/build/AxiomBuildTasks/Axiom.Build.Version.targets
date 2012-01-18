@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- $Id:$ -->
+
+  <!--
+  - Update Global Assembly Information
+  - These tasks enable the project to modify the GlobalAssemblyInfo.cs file
+  - with a version number that fits this pattern:
+  - { Major.Minor.YYMMDD.SvnRevision }
+  -->
+  
+  <PropertyGroup>
+    <AxiomBuildTasksPath Condition="'$(AxiomBuildTasksPath)' == ''">$(MSBuildExtensionsPath)\AxiomBuildTasks</AxiomBuildTasksPath>
+    <AxiomBuildTasksLib>$(AxiomBuildTasksPath)\Axiom.Build.Tasks.dll</AxiomBuildTasksLib>
+  </PropertyGroup>
+  <UsingTask TaskName="SvnAssemblyInfo" AssemblyFile="$(AxiomBuildTasksLib)" />
+
+  <ItemDefinitionGroup>
+    <!-- Defines a file containg the version metafields or the metafields directly -->
+    <Version>
+      <Major />
+      <Minor />
+      <Build />
+      <Revision />
+    </Version>
+    
+    <!-- Define the Subversion Repository -->
+    <Svn />
+    
+    <!-- Defines a file containing assembly attributes -->
+    <AssemblyInfoTemplate>
+      <OutputFile />
+    </AssemblyInfoTemplate>
+
+    <AssemblyInfoFile />
+    
+  </ItemDefinitionGroup>
+
+  <!-- Re-define CoreCompileDependsOn to ensure the assemblyinfo files are updated before compilation. -->
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      $( CoreCompileDependsOn );
+      UpdateAssemblyInfoFiles
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="UpdateAssemblyInfoFiles"             
+          Inputs="$(MSBuildAllProjects);
+                @(Compile);
+                @(ManifestResourceWithNoCulture);
+                $(ApplicationIcon);
+                $(AssemblyOriginatorKeyFile);
+                @(ManifestNonResxWithNoCultureOnDisk);
+                @(ReferencePath);
+                @(CompiledLicenseFile);
+                @(EmbeddedDocumentation);                
+                @(CustomAdditionalCompileInputs);
+                @(AssemblyInfoTemplate)"
+            Outputs="@(AssemblyInfoFile);@(IntermediateAssembly)">
+
+
+    <ItemGroup>
+      <AssemblyInfoFile Include="@( AssemblyInfoTemplate -> %OutputFile )" />
+    </ItemGroup>
+    
+    <Message Importance="high" Text="Transforming AssemblyInfoFiles. @( AssemblyInfoTemplate )" />
+    
+    <!-- Read Major/Minor version from version.txt -->
+    <!-- Read revision from SVN Repository -->
+    <!-- Format version into Major.Minor.Revision.YYMMDD -->
+    <SvnAssemblyInfo AssemblyInfoFiles="@( AssemblyInfoTemplate )" WorkingCopy="C:\Projects\Axiom\v0.8.0.0-test" />
+   
+  </Target>
+  
+</Project>

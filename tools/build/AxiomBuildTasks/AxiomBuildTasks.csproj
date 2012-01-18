@@ -38,12 +38,21 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\Axiom.Build.Tasks.Targets">
-      <Link>Axiom.Build.Tasks.Targets</Link>
-    </None>
     <None Include="App.config" />
+    <Content Include="Axiom.Build.Tasks.Targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Axiom.Build.Version.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfoFile.cs" />
+    <Compile Include="SvnAssemblyInfo.cs" />
+    <Compile Include="SvnInformation.cs" />
+    <Compile Include="TokenFormatter.cs" />
     <Compile Include="UploadFiles.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,7 +61,11 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities" />
+    <Reference Include="SharpSvn">
+      <HintPath>..\..\SharpSVN\x86\SharpSvn.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
