@@ -67,7 +67,7 @@
   </ItemGroup>
   
   <ItemGroup>
-	<SourceForge Include="$(ModuleTempDir)\axiomengine.scr">
+	<SourceForge Include="$(ModuleTempDir)\axiomengine.sf">
 		<WebProjectPath>/home/project-web/axiomengine/htdocs</WebProjectPath>
 		<FRSProjectPath>/home/frs/project/a/ax/axiomengine</FRSProjectPath>
 		<Username></Username>

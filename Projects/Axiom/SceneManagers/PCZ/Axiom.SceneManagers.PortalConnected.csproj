@@ -70,6 +70,16 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+	<AxiomBuildTasksPath>$(ProjectDir)..\..\..\..\tools\build</AxiomBuildTasksPath>
+  </PropertyGroup>
+  <ItemGroup>
+	<Svn Include="$(ProjectDir)..\..\..\.." />
+	<AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in" >
+		<OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
+	</AssemblyInfoTemplate>
+  </ItemGroup>
+  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
