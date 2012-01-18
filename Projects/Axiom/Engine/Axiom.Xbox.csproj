@@ -487,4 +487,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" Condition="" />
+  <PropertyGroup>
+	<AxiomBuildTasksPath>$(ProjectDir)..\..\..\tools\build</AxiomBuildTasksPath>
+  </PropertyGroup>
+  <ItemGroup>
+	<Svn Include="$(ProjectDir)..\..\.." />
+	<AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in" >
+		<OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
+	</AssemblyInfoTemplate>
+  </ItemGroup>
+  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />
 </Project>

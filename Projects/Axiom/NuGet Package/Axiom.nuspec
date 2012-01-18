@@ -13,4 +13,8 @@
     <description>Installs the core assemblies needed for creating applications and games using Axiom.</description>
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
   </metadata>
+  <!-- Libraries -->
+  <files />
+  <!-- Source -->
+  <files />
 </package>
