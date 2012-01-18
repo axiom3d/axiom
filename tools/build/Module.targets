@@ -1,23 +1,22 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5"
-  DefaultTargets="Compile;Image;Dist;Test">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5" DefaultTargets="Compile;Image;Dist;Test">
   <!-- 
     Build system targets for modules.
     Refer to the wiki for documentation.
   -->
 
   <!-- Custom Tasks -->
-  
+
   <PropertyGroup>
-	<RootDir Condition="'$(RootDir)'==''">..\..</RootDir>
-    <MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>    
-	<AxiomBuildTasksPath>$(RootDir)\tools\build</AxiomBuildTasksPath>
+    <RootDir Condition="'$(RootDir)'==''">..\..</RootDir>
+    <MSBuildCommunityTasksPath>$(RootDir)\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>
+    <AxiomBuildTasksPath>$(RootDir)\tools\build</AxiomBuildTasksPath>
   </PropertyGroup>
-  
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />              
-  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Tasks.Targets" />              
-  
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Tasks.Targets" />
+
   <!-- Item Definitions -->
-  
+
   <ItemDefinitionGroup>
     <CSharpProject>
       <ImageContentPath />
@@ -28,22 +27,22 @@
       <ImageContentPath />
       <ImageOutputPath />
     </VBProject>
-    
+
     <JSharpProject>
       <ImageContentPath />
       <ImageOutputPath />
     </JSharpProject>
-    
+
     <VisualCProject>
       <ImageContentPath />
       <ImageOutputPath />
     </VisualCProject>
-	
+
     <SolutionToBuild>
       <ImageContentPath />
       <ImageOutputPath />
     </SolutionToBuild>
-	
+
     <File>
       <ImagePath>.</ImagePath>
     </File>
@@ -64,7 +63,7 @@
     <PluginFile>
       <ImagePath>.</ImagePath>
     </PluginFile>
-    
+
     <ConfigFile>
       <ImagePath>.</ImagePath>
     </ConfigFile>
@@ -72,54 +71,54 @@
     <LicenseFile>
       <ImagePath>.</ImagePath>
     </LicenseFile>
-    
+
     <Zip>
       <BaseDir />
       <ImagePath>.</ImagePath>
     </Zip>
-    
+
     <ExportArchive>
       <ImagePath>.</ImagePath>
     </ExportArchive>
-    
+
     <TestAssembly />
-    
+
     <ReleaseImageArchive />
 
     <DebugSymbol />
     <ReleaseDebugSymbols />
-    
+
     <Feature />
     <Installer />
-    
+
     <NDoc>
       <CHMDocsDir />
       <VSDocsDir />
       <WebDocsDir />
     </NDoc>
-	
-	<CodePlexRelease>
-	  <Project />
-	  <Name />
-	  <Default />
-	  <ShowToPublic />
+
+    <CodePlexRelease>
+      <Project />
+      <Name />
+      <Default />
+      <ShowToPublic />
       <Description />
-	  <ReleaseDate />
-	  <ReleaseStatus />
-	  <User />
-	  <Password />
-	  <ReleaseFiles />
-	</CodePlexRelease>
-	<ReleaseFile>
-		<Release />
-		<MimeType />
-		<FileType />
-	</ReleaseFile>
-	
+      <ReleaseDate />
+      <ReleaseStatus />
+      <User />
+      <Password />
+      <ReleaseFiles />
+    </CodePlexRelease>
+    <ReleaseFile>
+      <Release />
+      <MimeType />
+      <FileType />
+    </ReleaseFile>
+
   </ItemDefinitionGroup>
-  
+
   <!-- External Properties -->
-  
+
   <PropertyGroup>
     <StartDir Condition="'$(StartDir)'==''">$(MSBuildStartupDirectory)</StartDir>
     <SourceDir Condition="'$(SourceDir)'==''">$(RootDir)\Projects</SourceDir>
@@ -128,17 +127,17 @@
     <TempDir Condition="'$(TempDir)'==''">$(BuildDir)\temp</TempDir>
     <ReportDir Condition="'$(ReportDir)'==''">$(BuildDir)\report</ReportDir>
     <ModulesDir Condition="'$(ModulesDir)'==''">$(BuildDir)\modules</ModulesDir>
-  
+
     <ModuleDir>$(MSBuildProjectDirectory)</ModuleDir>
     <ModuleName>$(MSBuildProjectName)</ModuleName>
-    
+
     <ModuleBuildDir>$(ModulesDir)\$(ModuleName)</ModuleBuildDir>
     <ModuleTempDir>$(ModuleBuildDir)\temp</ModuleTempDir>
     <ModuleReportDir>$(ModuleBuildDir)\report</ModuleReportDir>
     <ModuleImageDir>$(ModuleBuildDir)\image</ModuleImageDir>
     <ModuleMetaDir>$(ModuleBuildDir)\meta</ModuleMetaDir>
     <ModuleDistDir>$(ModuleBuildDir)\dist</ModuleDistDir>
-    
+
     <SkipDependencies Condition="'$(SkipDependencies)'==''">false</SkipDependencies>
     <SkipSyncProjects Condition="'$(SkipSyncProjects)'==''">false</SkipSyncProjects>
     <SkipILMerge Condition="'$(SkipILMerge)'==''">false</SkipILMerge>
@@ -150,38 +149,38 @@
     <SkipCodeCoverage Condition="'$(SkipCodeCoverage)'==''">false</SkipCodeCoverage>
 
     <IgnoreTestFailures Condition="'$(IgnoreTestFailures)'==''">false</IgnoreTestFailures>
-   
+
     <BuildInParallel Condition="'$(BuildInParallel)'==''">true</BuildInParallel>
     <StopOnFirstFailure Condition="'$(StopOnFirstFailure)'==''">true</StopOnFirstFailure>
-    
+
     <AssemblyVersion Condition="'$(AssemblyVersion)'==''">0.0.0.0</AssemblyVersion>
     <FileVersion Condition="'$(FileVersion)'==''">0.0.0.0</FileVersion>
-    
+
     <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'=='' and Exists('$(SystemRoot)\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe')">4.0</DotNetFrameworkVersion>
     <DotNetFrameworkVersion Condition="'$(DotNetFrameworkVersion)'==''">3.5</DotNetFrameworkVersion>
-    
+
     <ProjectVariant></ProjectVariant>
     <ProjectVariant Condition="'$(DotNetFrameworkVersion)'=='4.0'">.2010</ProjectVariant>
     <ProjectVariantExplicit></ProjectVariantExplicit>
     <ProjectVariantExplicit Condition="'$(DotNetFrameworkVersion)'=='4.0'">.vs2010</ProjectVariantExplicit>
-    
+
     <TestRunnerType Condition="'$(TestRunnerType)'=='' and '$(SkipCodeCoverage)'=='true'">IsolatedProcess</TestRunnerType>
     <TestRunnerType Condition="'$(TestRunnerType)'==''">NCover3</TestRunnerType>
     <TestReportTypes>Xml;Html-Condensed</TestReportTypes>
   </PropertyGroup>
-  
+
   <!-- External Targets -->
-  
+
   <PropertyGroup>
-	<PreconditionDependsOn>PrintPreconditionBanner;MainPrecondition;BeforePrecondition;CorePrecondition;AfterPrecondition</PreconditionDependsOn>
-	<CleanDependsOn>Precondition;PrintCleanBanner;BeforeClean;CoreClean;AfterClean;DeleteModuleBuildTree;DeleteBuildTree</CleanDependsOn>
-	<CompileDependsOn>Precondition;PrintCompileBanner;CreateBuildTree;CreateModuleBuildTree;BeforeCompile;CoreCompile;AfterCompile</CompileDependsOn>
-	<ImageDependsOn>Precondition;PrintImageBanner;CreateBuildTree;CreateModuleBuildTree;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
-	<DistDependsOn>Precondition;PrintDistBanner;CreateBuildTree;CreateModuleBuildTree;BeforeDist;CoreDist;AfterDist</DistDependsOn>
-	<TestDependsOn>Precondition;PrintTestBanner;CreateBuildTree;CreateModuleBuildTree;BeforeTest;CoreTest;AfterTest</TestDependsOn>
-	<PublishDependsOn>Precondition;PrintPublishBanner;CreateBuildTree;CreateModuleBuildTree;BeforePublish;CorePublish;AfterPublish</PublishDependsOn>
+    <PreconditionDependsOn>PrintPreconditionBanner;MainPrecondition;BeforePrecondition;CorePrecondition;AfterPrecondition</PreconditionDependsOn>
+    <CleanDependsOn>Precondition;PrintCleanBanner;BeforeClean;CoreClean;AfterClean;DeleteModuleBuildTree;DeleteBuildTree</CleanDependsOn>
+    <CompileDependsOn>Precondition;PrintCompileBanner;CreateBuildTree;CreateModuleBuildTree;BeforeCompile;CoreCompile;AfterCompile</CompileDependsOn>
+    <ImageDependsOn>Precondition;PrintImageBanner;CreateBuildTree;CreateModuleBuildTree;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
+    <DistDependsOn>Precondition;PrintDistBanner;CreateBuildTree;CreateModuleBuildTree;BeforeDist;CoreDist;AfterDist</DistDependsOn>
+    <TestDependsOn>Precondition;PrintTestBanner;CreateBuildTree;CreateModuleBuildTree;BeforeTest;CoreTest;AfterTest</TestDependsOn>
+    <PublishDependsOn>Precondition;PrintPublishBanner;CreateBuildTree;CreateModuleBuildTree;BeforePublish;CorePublish;AfterPublish</PublishDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="Precondition"
           DependsOnTargets="$(PreconditionDependsOn)" />
   <Target Name="Clean"
@@ -198,7 +197,7 @@
           DependsOnTargets="$(PublishDependsOn)" />
 
   <!-- Overridable Targets -->
-  
+
   <Target Name="BeforePrecondition" />
   <Target Name="AfterPrecondition" />
   <Target Name="BeforeClean" />
@@ -215,15 +214,15 @@
   <Target Name="AfterPublish" />
 
   <!-- Preconditions -->
-  
+
   <Target Name="MainPrecondition"
           DependsOnTargets="VerifyRootDirIsSet;VerifyProjectsSynchronized;BuildCustomTasks" />
-  
+
   <Target Name="VerifyRootDirIsSet">
     <Error Condition="'$(RootDir)'==''"
 	       Text="RootDir must be set." />
-  </Target>  
-  
+  </Target>
+
   <Target Name="VerifyProjectsSynchronized"
           Condition="'$(Main)'=='true' and '$(SkipSyncProjects)'!='true'">
     <Message Text="Verifying that all VS 2008 and VS 2010 projects are synchronized...%0D%0ASkip this with '/p:SkipSyncProjects=true'."
@@ -234,20 +233,20 @@
 		  WorkingDirectory="$(SourceDir)">
       <Output TaskParameter="ExitCode" PropertyName="ExitCode" />
     </Exec>
-    
+
     <Error Text="There appear to be some differences between the project items of the VS 2008 projects and those of the VS 2010 projects.  Please run 'Sync VS2010 Projects.bat' to synchronize project items.%0D%0ASkip this with '/p:SkipSyncProjects=true'."
            Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
-  </Target>  
+  </Target>
 
   <Target Name="BuildCustomTasks">
     <MSBuild Projects="$(RootDir)\tools\build\AxiomBuildTasks\AxiomBuildTasks.csproj"
              BuildInParallel="$(BuildInParallel)"
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Targets="Build" />
-  </Target>  
-  
+  </Target>
+
   <!-- Banner Text -->
-  
+
   <Target Name="PrintPreconditionBanner">
     <Message Importance="High" Text="%0A[Precondition]%0A"
              Condition="'$(Main)'=='true'" />
@@ -283,64 +282,64 @@
              Condition="'$(Main)'=='true'" />
     <Message Importance="Normal" Text="Publish: $(ModuleName)" />
   </Target>
-  
+
   <!-- Core Targets -->
-  
+
   <PropertyGroup>
     <CorePreconditionDependsOn>
-        RecursivePrecondition;
+      RecursivePrecondition;
     </CorePreconditionDependsOn>
     <CoreCleanDependsOn>
-        RecursiveClean;
-        PopulateCommonProjects;
-        CleanCommonProjects;
-        CleanInstaller;
+      RecursiveClean;
+      PopulateCommonProjects;
+      CleanCommonProjects;
+      CleanInstaller;
     </CoreCleanDependsOn>
     <CoreCompileDependsOn>
-        RecursiveCompile;
-        PopulateCommonProjects;
-        CompileCommonProjects;
+      RecursiveCompile;
+      PopulateCommonProjects;
+      CompileCommonProjects;
     </CoreCompileDependsOn>
     <CoreImageDependsOn>
-        RecursiveImage;
-        ImageInheritedModules;
-        PopulateCommonProjects;
-        ImageCommonProjects;
-        MapFilesToCopy;
-        ImageFilesToCopy;
-        ImagePdbFiles;
-        ImageZips;
-        ImageExportArchives;
-        ImagePluginFiles;
-        ImageConfigFiles;
-        ImageDocumentation;
-        WriteTestAssemblyItemsToMeta;
-        WriteXmlDocFileItemsToMeta;
-        WriteFeatureItemsToMeta;
-        WriteDebugSymbolItemsToMeta;
+      RecursiveImage;
+      ImageInheritedModules;
+      PopulateCommonProjects;
+      ImageCommonProjects;
+      MapFilesToCopy;
+      ImageFilesToCopy;
+      ImagePdbFiles;
+      ImageZips;
+      ImageExportArchives;
+      ImagePluginFiles;
+      ImageConfigFiles;
+      ImageDocumentation;
+      WriteTestAssemblyItemsToMeta;
+      WriteXmlDocFileItemsToMeta;
+      WriteFeatureItemsToMeta;
+      WriteDebugSymbolItemsToMeta;
     </CoreImageDependsOn>
     <CoreDistDependsOn>
-        RecursiveDist;
-        DistInheritedModules;
-        DistReleaseImageArchive;
-        DistReleaseDebugSymbols;
-        DistInstaller;
+      RecursiveDist;
+      DistInheritedModules;
+      DistReleaseImageArchive;
+      DistReleaseDebugSymbols;
+      DistInstaller;
     </CoreDistDependsOn>
     <CoreTestDependsOn>
-        RecursiveTest;
-        TestWithGallio;
+      RecursiveTest;
+      TestWithGallio;
     </CoreTestDependsOn>
     <CorePublishDependsOn>
-        RecursivePublish;
+      RecursivePublish;
     </CorePublishDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="CorePrecondition"
           DependsOnTargets="$(CorePreconditionDependsOn)" />
   <Target Name="CoreClean"
-          DependsOnTargets="$(CoreCleanDependsOn)" />  
+          DependsOnTargets="$(CoreCleanDependsOn)" />
   <Target Name="CoreCompile"
-          DependsOnTargets="$(CoreCompileDependsOn)" />  
+          DependsOnTargets="$(CoreCompileDependsOn)" />
   <Target Name="CoreImage"
           DependsOnTargets="$(CoreImageDependsOn)" />
   <Target Name="CoreDist"
@@ -349,34 +348,34 @@
           DependsOnTargets="$(CoreTestDependsOn)" />
   <Target Name="CorePublish"
           DependsOnTargets="$(CorePublishDependsOn)" />
-  
+
   <!-- Recursive Targets -->
 
   <PropertyGroup>
     <Main Condition="'$(Main)'==''">true</Main>
-    
+
     <RecursiveProperties>
-        Main=false;
-        RootDir=$(RootDir);
-        StartDir=$(StartDir);
-        SourceDir=$(SourceDir);
-        BuildDir=$(BuildDir);
-        ToolsDir=$(ToolsDir);
-        SkipModules=$(SkipModules);
-        FileVersion=$(FileVersion);
-        AssemblyVersion=$(AssemblyVersion);
-        DotNetFrameworkVersion=$(DotNetFrameworkVersion);
+      Main=false;
+      RootDir=$(RootDir);
+      StartDir=$(StartDir);
+      SourceDir=$(SourceDir);
+      BuildDir=$(BuildDir);
+      ToolsDir=$(ToolsDir);
+      SkipModules=$(SkipModules);
+      FileVersion=$(FileVersion);
+      AssemblyVersion=$(AssemblyVersion);
+      DotNetFrameworkVersion=$(DotNetFrameworkVersion);
     </RecursiveProperties>
-    
+
     <Recurse>false</Recurse>
     <Recurse Condition="'$(SkipDependencies)'!='true' or '$(Main)'=='true'">true</Recurse>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <SkipModule Include="$(SkipModules)"
                 Condition="'$(SkipModules)'!=''" />
   </ItemGroup>
-  
+
   <Target Name="PopulateRecursiveModules"
           Condition="'@(Module)'!='' and $(Recurse)">
     <FindInList List="@(Module)"
@@ -390,13 +389,13 @@
     <Message Importance="High"
              Text="Skipping modules: @(_SkippedModule->'%(FileName)', ' ')"
              Condition="'@(_SkippedModule)'!=''" />
-    
+
     <ItemGroup>
       <RecursiveModule Include="@(Module)" />
       <RecursiveModule Remove="@(_SkippedModule)" Condition="'@(_SkippedModule)'!=''" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="RecursivePrecondition"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -405,10 +404,10 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Precondition" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
   </Target>
-  
+
   <Target Name="RecursiveClean"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -417,10 +416,10 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Clean" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
   </Target>
-  
+
   <Target Name="RecursiveCompile"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -429,10 +428,10 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Compile" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
   </Target>
-  
+
   <Target Name="RecursiveImage"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -441,10 +440,10 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Image" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
   </Target>
-  
+
   <Target Name="RecursiveDist"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -453,10 +452,10 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Dist" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
   </Target>
-  
+
   <Target Name="RecursiveTest"
           DependsOnTargets="PopulateRecursiveModules">
     <MSBuild Projects="@(RecursiveModule)"
@@ -465,9 +464,9 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Test" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
-  </Target>  
+  </Target>
 
   <Target Name="RecursivePublish"
           DependsOnTargets="PopulateRecursiveModules">
@@ -477,35 +476,35 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Condition="'@(RecursiveModule)'!=''"
              Targets="Publish" />
-             
+
     <OnError ExecuteTargets="ModuleError" />
-  </Target>  
-  
+  </Target>
+
   <Target Name="ModuleError">
     <Error Text="One or more modules failed to build.%0D%0ASkip these modules with '/p:SkipModules=Module1;Module2;...'."
            Condition="'$(Main)'=='true'" />
   </Target>
-  
+
   <!-- Build Tree Setup / TearDown Targets -->
-  
+
   <Target Name="CreateBuildTree"
           Condition="'$(Main)'=='true'">
     <MakeDir Directories="$(BuildDir);$(TempDir);$(ReportDir);$(ModulesDir)" />
   </Target>
-  
+
   <Target Name="DeleteBuildTree"
           Condition="'$(Main)'=='true'">
     <RemoveDir Directories="$(BuildDir)" />
   </Target>
-  
+
   <Target Name="CreateModuleBuildTree">
     <MakeDir Directories="$(ModuleBuildDir);$(ModuleTempDir);$(ModuleReportDir);$(ModuleImageDir);$(ModuleMetaDir);$(ModuleDistDir)" />
   </Target>
-  
+
   <Target Name="DeleteModuleBuildTree">
     <RemoveDir Directories="$(ModuleBuildDir)" />
   </Target>
-  
+
   <!-- Modules -->
 
   <Target Name="ImageInheritedModules"
@@ -518,7 +517,7 @@
                 Condition="'%(Module.Inherit)'=='true'">
       <Output TaskParameter="Include" ItemName="_InheritedMetaFile" />
     </CreateItem>
-  
+
     <Copy SourceFiles="@(_InheritedImageFile)"
           DestinationFiles="@(_InheritedImageFile->'$(ModuleImageDir)\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"
@@ -528,22 +527,22 @@
           SkipUnchangedFiles="true"
           Condition="'@(_InheritedMetaFile)'!=''" />
   </Target>
-  
+
   <Target Name="DistInheritedModules"
           Condition="'@(Module)'!=''">
     <CreateItem Include="$(ModulesDir)\%(Module.FileName)\dist\**\*"
                 Condition="'%(Module.Inherit)'=='true'">
       <Output TaskParameter="Include" ItemName="_InheritedDistFile" />
     </CreateItem>
-  
+
     <Copy SourceFiles="@(_InheritedDistFile)"
           DestinationFiles="@(_InheritedDistFile->'$(ModuleDistDir)\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true"
           Condition="'@(_InheritedDistFile)'!=''" />
   </Target>
-  
+
   <!-- Projects -->
-  
+
   <PropertyGroup>
     <CommonProjectProperties>
       RootDir=$(RootDir);
@@ -552,13 +551,13 @@
       ProjectAssemblyVersion=$(AssemblyVersion);
     </CommonProjectProperties>
   </PropertyGroup>
-  
+
   <Target Name="PopulateCommonProjects">
     <ItemGroup>
       <CommonProject Include="@(CSharpProject);@(VBProject);@(JSharpProject);@(VisualCProject);@(SolutionToBuild)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="CleanCommonProjects"
           Condition="'@(CommonProject)'!=''">
     <MSBuild Projects="@(CommonProject)"
@@ -567,7 +566,7 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Targets="Clean" />
   </Target>
-  
+
   <Target Name="CompileCommonProjects"
           Condition="'@(CommonProject)'!=''">
     <MSBuild Projects="@(CommonProject)"
@@ -576,11 +575,11 @@
              StopOnFirstFailure="$(StopOnFirstFailure)"
              Targets="Build" />
   </Target>
-  
+
   <Target Name="ImageCommonProjects"
           DependsOnTargets="CopyCommonProjectContentToImage;CopyCommonProjectOutputToImage"
           Condition="'@(CommonProject)'!=''" />
-  
+
   <Target Name="CopyCommonProjectContentToImage"
           Outputs="%(CommonProject.ImageContentPath)">
     <MSBuild Projects="@(CommonProject)"
@@ -624,15 +623,15 @@
 
     <ItemGroup>
       <CommonProjectOutputToCopy Remove="@(CommonProjectOutputToCopy)" />
-    </ItemGroup>    
+    </ItemGroup>
   </Target>
-  
+
   <Target Name="MapFilesToCopy">
     <ItemGroup>
       <_FileToCopy Include="@(File);@(AssemblyFile);@(XmlDocFile);@(ConfigFile);@(PluginFile);@(LicenseFile)" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="ImageFilesToCopy"
           Condition="'@(_FileToCopy)'!=''">
     <MakeDir Directories="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)')" />
@@ -641,7 +640,7 @@
           DestinationFiles="@(_FileToCopy->'$(ModuleImageDir)\%(ImagePath)\%(RecursiveDir)%(Filename)%(Extension)')"
           SkipUnchangedFiles="true" />
   </Target>
-  
+
   <Target Name="ImageZips"
           Condition="'@(Zip)'!=''">
     <Zip Files="@(Zip)"
@@ -689,54 +688,54 @@
                 Regex="0\.0\.0\.0"
                 ReplacementText="$(AssemblyVersion)" />
   </Target>
-  
+
   <Target Name="ImageConfigFiles"
           Condition="'@(ConfigFile)'!=''">
     <FileUpdate Files="@(ConfigFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
                 Regex="0\.0\.0\.0"
                 ReplacementText="$(AssemblyVersion)" />
   </Target>
-  
+
   <!-- Run Tests -->
 
   <PropertyGroup>
     <GallioInstallDir Condition="'$(GallioInstallDir)'==''">$(ModuleImageDir)</GallioInstallDir>
-	
-	<!-- Work around the fact that MSBuild runs as an x86 process on x64 so we see the 32bit registry view. -->
-	<NCoverInstallDir Condition="'$(NCoverInstallDir)'=='' and Exists('C:\Program Files\NCover\Build Task Plugins\NCover.MSBuildTasks.dll')">C:\Program Files\NCover</NCoverInstallDir>
+
+    <!-- Work around the fact that MSBuild runs as an x86 process on x64 so we see the 32bit registry view. -->
+    <NCoverInstallDir Condition="'$(NCoverInstallDir)'=='' and Exists('C:\Program Files\NCover\Build Task Plugins\NCover.MSBuildTasks.dll')">C:\Program Files\NCover</NCoverInstallDir>
     <NCoverInstallDir Condition="'$(NCoverInstallDir)'==''">$(Registry:HKEY_LOCAL_MACHINE\Software\Gnoso\NCover\@InstallDir)</NCoverInstallDir>
   </PropertyGroup>
   <UsingTask TaskName="NCover.MSBuildTasks.NCoverReporting"
              AssemblyFile="$(NCoverInstallDir)\Build Task Plugins\NCover.MSBuildTasks.dll" />
   <UsingTask TaskName="Gallio.MSBuildTasks.Gallio"
              AssemblyFile="$(GallioInstallDir)\bin\Gallio.MSBuildTasks.dll" />
-  
+
   <Target Name="WriteTestAssemblyItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).testassemblies"
                       Lines="@(TestAssembly->'%(FullPath)')"
                       Overwrite="true" />
   </Target>
-  
+
   <Target Name="ReadMergedTestAssemblyItemsFromMeta">
     <ItemGroup>
       <_TestAssembliesFile Include="$(ModuleMetaDir)\*.testassemblies" />
     </ItemGroup>
-  
+
     <ReadLinesFromFile File="%(_TestAssembliesFile.FullPath)"
                        Condition="'@(_TestAssembliesFile)'!=''">
       <Output TaskParameter="Lines" ItemName="_MergedTestAssembly" />
     </ReadLinesFromFile>
-    
+
     <RemoveDuplicates Inputs="@(_MergedTestAssembly)">
       <Output TaskParameter="Filtered" ItemName="MergedTestAssembly" />
     </RemoveDuplicates>
   </Target>
-  
+
   <Target Name="TestWithGallio"
           DependsOnTargets="ReadMergedTestAssemblyItemsFromMeta;RunMergedTestAssemblyItemsWithGallio"
           Condition="'$(Main)'=='true'">
   </Target>
-  
+
   <Target Name="RunMergedTestAssemblyItemsWithGallio"
           Condition="'$(Main)'=='true' and '@(MergedTestAssembly)'!=''">
     <PropertyGroup>
@@ -744,26 +743,26 @@
       </_TestCoverageFilters>
       <_TestSatisfactoryCoverage>
         <Threshold>
-            <CoverageMetric>SymbolCoverage</CoverageMetric>
-            <Value>95.0</Value>
+          <CoverageMetric>SymbolCoverage</CoverageMetric>
+          <Value>95.0</Value>
         </Threshold>
         <Threshold>
-            <CoverageMetric>MethodCoverage</CoverageMetric>
-            <Value>70</Value>
+          <CoverageMetric>MethodCoverage</CoverageMetric>
+          <Value>70</Value>
         </Threshold>
         <Threshold>
-            <CoverageMetric>BranchCoverage</CoverageMetric>
-            <Value>75</Value>
+          <CoverageMetric>BranchCoverage</CoverageMetric>
+          <Value>75</Value>
         </Threshold>
       </_TestSatisfactoryCoverage>
       <_TestCoverageFile>$(ModuleTempDir)\Coverage.xml</_TestCoverageFile>
     </PropertyGroup>
-    
+
     <Message Text="Running tests..."
              Importance="High" />
 
     <Delete Files="$(_TestCoverageFile)"
-            Condition="Exists('$(_TestCoverageFile)')" />   
+            Condition="Exists('$(_TestCoverageFile)')" />
 
     <Gallio Files="@(MergedTestAssembly)"
             ReportDirectory="$(ModuleReportDir)"
@@ -788,7 +787,7 @@
                      MaxTopUncoveredToReport="20"
                      CoverageFilters="$(_TestCoverageFilters)"
                      SatisfactoryCoverage="$(_TestSatisfactoryCoverage)" />
-                     
+
     <!--
     <Exec Command="cscript //nologo &quot;$(BinDir)\Run.vbs&quot; &quot;'$(NCoverInstallDir)\NCover.Explorer.exe' $(_TestCoverageFile)&quot;"
           Condition="$(ShowReports) and $(Coverage) and Exists('Coverage.xml')" />
@@ -797,51 +796,51 @@
     <Error Text="Some tests failed!"
              Condition="'$(ExitCode)'!='0' and ! $(IgnoreTestFailures)" />
     <Warning Text="Some tests failed!"
-             Condition="'$(ExitCode)'!='0' and $(IgnoreTestFailures)" />    
+             Condition="'$(ExitCode)'!='0' and $(IgnoreTestFailures)" />
   </Target>
-  
+
   <!-- Generate Documentation -->
-  
+
   <PropertyGroup>
     <NDocPath>$(ProgramFiles)\NDoc</NDocPath>
     <NDocHelpFileBuilderPath>$(SHFBROOT)</NDocHelpFileBuilderPath>
-    
+
     <HTMLHelpCompilerPath>$(ProgramFiles)\HTML Help Workshop\hhc.exe</HTMLHelpCompilerPath>
-    
+
     <VSIPSDKHelpPath>$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\10.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
     <VSIPSDKHelpPath Condition="! Exists('$(VSIPSDKHelpPath)')">$(Registry:HKEY_LOCAL_MACHINE\Software\Microsoft\VisualStudio\VSIP\9.0\@InstallDir)\HelpIntegrationWizard\MSHelp2</VSIPSDKHelpPath>
   </PropertyGroup>
-  
+
   <Target Name="WriteXmlDocFileItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).xmldocfiles"
                       Lines="@(XmlDocFile->'%(FullPath)')"
                       Overwrite="true" />
   </Target>
-  
+
   <Target Name="ReadMergedXmlDocFileItemsFromMeta">
     <ItemGroup>
       <_XmlDocFilesFile Include="$(ModuleMetaDir)\*.xmldocfiles" />
     </ItemGroup>
-  
+
     <ReadLinesFromFile File="%(_XmlDocFilesFile.FullPath)"
                        Condition="'@(_XmlDocFilesFile)'!=''">
       <Output TaskParameter="Lines" ItemName="_MergedXmlDocFile" />
     </ReadLinesFromFile>
-    
+
     <RemoveDuplicates Inputs="@(_MergedXmlDocFile)">
       <Output TaskParameter="Filtered" ItemName="MergedXmlDocFile" />
     </RemoveDuplicates>
   </Target>
-  
+
   <Target Name="ImageDocumentation"
           DependsOnTargets="ImageDocumentation_NDoc;ImageDocumentation_SkipNDoc" />
-  
+
   <Target Name="ImageDocumentation_NDoc"
           DependsOnTargets="ImageDocumentation_NDocPreprocess;ImageDocumentation_NDocProcess" />
 
   <Target Name="ImageDocumentation_NDocPreprocess"
           DependsOnTargets="ReadMergedXmlDocFileItemsFromMeta"
-          Condition="'$(SkipNDoc)'!='true' and '@(NDoc)'!=''"> 
+          Condition="'$(SkipNDoc)'!='true' and '@(NDoc)'!=''">
 
     <Error Text="Microsoft HTML Help Workshop must be installed so that Compiled HTML help (CHM) documentation can be generated.  Look in tools\Setup Files for the Microsoft HTML Help Workshop installer.%0D%0ASkip this with '/p:SkipNDoc=true'."
            Condition="! Exists('$(HTMLHelpCompilerPath)')" />
@@ -852,7 +851,7 @@
       <_NDocDocumentedAssembly Include="@(MergedXmlDocFile->'%(RootDir)%(Directory)%(FileName).exe')"
                                      Condition="Exists('%(RootDir)%(Directory)%(FileName).exe')" />
     </ItemGroup>
-           
+
     <PropertyGroup>
       <_NDocAssemblies>@(_NDocDocumentedAssembly->'&lt;assembly location=&quot;%(FullPath)&quot; documentation=&quot;%(RootDir)%(Directory)%(Filename).xml&quot; /&gt;', '')</_NDocAssemblies>
       <_NDocProjectPath>%(NDoc.FullPath)</_NDocProjectPath>
@@ -864,17 +863,17 @@
       <_NDocIntellisensePath>$(_NDocTempDir)\docs\intellisense</_NDocIntellisensePath>
       <_NDocCHMDocsDir>%(NDoc.CHMDocsDir)</_NDocCHMDocsDir>
       <_NDocVSDocsDir>%(NDoc.VSDocsDir)</_NDocVSDocsDir>
-      <_NDocWebDocsDir>%(NDoc.WebDocsDir)</_NDocWebDocsDir>	  
+      <_NDocWebDocsDir>%(NDoc.WebDocsDir)</_NDocWebDocsDir>
     </PropertyGroup>
   </Target>
-  
+
   <Target Name="ImageDocumentation_NDocProcess"
           Inputs="@(MergedXmlDocFile);@(_NDocDocumentedAssembly);@(NDoc)"
           Outputs="$(ModuleTempDir)\NDocDone.flag"
-          Condition="'$(SkipNDoc)'!='true' and '@(NDoc)'!=''"> 
+          Condition="'$(SkipNDoc)'!='true' and '@(NDoc)'!=''">
     <Message Text="Building Documentation with NDoc..."
              Importance="High" />
-             
+
     <!-- Patch the project file's DocumentationSources and build it. -->
 
     <MakeDir Directories="$(_NDocTempDir)" />
@@ -883,27 +882,27 @@
                 SingleLine="true"
                 Regex="&lt;assemblies&gt;.*&lt;/assemblies&gt;"
                 ReplacementText="&lt;assemblies&gt;$(_NDocAssemblies)&lt;/assemblies&gt;" />
-				
+
     <FileUpdate Files="$(_NDocPatchedProjectPath)"
                 SingleLine="true"
 				RegEx='&lt;property name="OutputDirectory" value=".*?" /&gt;'
 				ReplacementText='&lt;property name="OutputDirectory" value="$(_NDocOutputPath)"/&gt;' />
 
-	<Exec Command="$(ToolsDir)\ndoc3\bin\NDoc3Console -documenter=MSDN -project=$(_NDocPatchedProjectPath) -verbose" />
+    <Exec Command="$(ToolsDir)\ndoc3\bin\NDoc3Console -documenter=MSDN -project=$(_NDocPatchedProjectPath) -verbose" />
 
     <!-- Copy the CHM documentation resources to the right place. -->
     <!-- Note: We don't delete the CHM so it will be available for the Web docs too. -->
-    
+
     <ItemGroup>
       <_NDocCHMDocsFile Include="$(_NDocOutputPath)\*.chm" />
     </ItemGroup>
-          
+
     <MakeDir Directories="$(_NDocCHMDocsDir)" />
     <Copy SourceFiles="@(_NDocCHMDocsFile)"
           DestinationFolder="$(_NDocCHMDocsDir)" />
 
     <!-- Move the Visual Studio documentation resources to the right place. -->
-               
+
     <ItemGroup>
       <_NDocVSDocsFile Include="$(_NDocOutputPath)\*.Hx?" />
       <_NDocVSDocsFile Include="$(_NDocOutputPath)\*_H2Reg.ini" />
@@ -915,31 +914,31 @@
           DestinationFolder="$(_NDocVSDocsDir)" />
 
     <!-- Move everything else (including a copy of the CHM) to the Web docs dir. -->
-    
+
     <RemoveDir Directories="$(_NDocWebDocsDir)" />
     <MakeDir Directories="$(_NDocWebDocsDir)\.." />
-    <Exec Command="move /y &quot;$(_NDocOutputPath)&quot; &quot;$(_NDocWebDocsDir)&quot;" />    
-          
+    <Exec Command="move /y &quot;$(_NDocOutputPath)&quot; &quot;$(_NDocWebDocsDir)&quot;" />
+
     <!-- Move Intellisense XML documentation to the image. -->
-    
-    <MakeDir Directories="@(XmlDocFile->'$(ModuleImageDir)\%(ImagePath)')" />    
+
+    <MakeDir Directories="@(XmlDocFile->'$(ModuleImageDir)\%(ImagePath)')" />
     <Delete Files="@(XmlDocFile->'$(ModuleImageDir)\bin\%(ImagePath)\%(Filename)%(Extension)')" />
     <Move SourceFiles="@(XmlDocFile->'$(_NDocIntellisensePath)\%(Filename)%(Extension)')"
           DestinationFiles="@(XmlDocFile->'$(ModuleImageDir)\bin\%(ImagePath)\%(Filename)%(Extension)')" />
-          
+
     <!-- Leave a flag file behind to indicate that we did the work. -->
-    
+
     <Touch Files="$(ModuleTempDir)\NDocDone.flag"
            AlwaysCreate="true" />
   </Target>
-  
+
   <Target Name="ImageDocumentation_SkipNDoc"
           Condition="'$(SkipNDoc)'=='true' and '@(NDoc)'!=''">
     <!-- Nothing to do just now because XML documentation is already present. -->
   </Target>
-  
+
   <!-- Generate Release Archive -->
-  
+
   <Target Name="DistReleaseImageArchive"
           Condition="'@(ReleaseImageArchive)'!=''">
     <Message Text="Build redistributable Zip archive @(ReleaseImageArchive)..."
@@ -954,9 +953,9 @@
          ZipFileName="$(ModuleDistDir)\%(ReleaseImageArchive.Identity)"
          ZipLevel="9" />
   </Target>
-  
+
   <!-- Generate Installer -->
-  
+
   <PropertyGroup>
     <InstallerWixProperties>
       Configuration=Release;
@@ -972,23 +971,23 @@
     <InstallerSourceDir>$(SourceDir)\Installer</InstallerSourceDir>
     <InstallerFeatureFile>$(InstallerSourceDir)\Features.wxi</InstallerFeatureFile>
   </PropertyGroup>
-  
+
   <Target Name="WriteFeatureItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).features"
                       Lines="@(Feature)"
                       Overwrite="true" />
   </Target>
-  
+
   <Target Name="ReadMergedFeatureItemsFromMeta">
     <ItemGroup>
       <_FeaturesFile Include="$(ModuleMetaDir)\*.features" />
     </ItemGroup>
-  
+
     <ReadLinesFromFile File="%(_FeaturesFile.FullPath)"
                        Condition="'@(_FeaturesFile)'!=''">
       <Output TaskParameter="Lines" ItemName="_MergedFeature" />
     </ReadLinesFromFile>
-    
+
     <RemoveDuplicates Inputs="@(_MergedFeature)">
       <Output TaskParameter="Filtered" ItemName="MergedFeature" />
     </RemoveDuplicates>
@@ -1021,7 +1020,7 @@
         $(InstallerWixProperties);
         MajorVersion=$(_InstallerMajorVersion);
         MinorVersion=$(_InstallerMinorVersion);
-        BuildNumber=$(_InstallerBuildNumber)     
+        BuildNumber=$(_InstallerBuildNumber)
       </InstallerWixProperties>
     </PropertyGroup>
   </Target>
@@ -1067,31 +1066,31 @@
              Targets="Clean"
              Properties="$(InstallerWixProperties);Platform=x64" />
   </Target>
-  
+
   <!-- PDBs and Source Server -->
-  
+
   <PropertyGroup>
     <SourceServerIndexerPath>$(ProgramFiles)\Debugging Tools for Windows\sdk\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">$(ProgramFiles)\Debugging Tools for Windows (x86)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
     <SourceServerIndexerPath Condition="! Exists('$(SourceServerIndexerPath)')">C:\Program Files\Debugging Tools for Windows (x64)\srcsrv\ssindex.cmd</SourceServerIndexerPath>
   </PropertyGroup>
-  
+
   <Target Name="ImagePdbFiles"
           Condition="'@(PdbFile)'!=''"
           DependsOnTargets="ImagePdbFiles_SourceServer;ImagePdbFiles_SkipSourceServer">
     <MakeDir Directories="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)')"
              Condition="'%(PdbFile.ExcludeFromImage)'!='true'" />
-             
+
     <Copy SourceFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')"
           DestinationFiles="@(PdbFile->'$(ModuleImageDir)\%(ImagePath)\%(Filename)%(Extension)')"
           Condition="'%(PdbFile.ExcludeFromImage)'!='true'"
           SkipUnchangedFiles="true" />
-          
+
     <ItemGroup>
       <DebugSymbol Include="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
     </ItemGroup>
   </Target>
-  
+
   <Target Name="ImagePdbFiles_SourceServer"
           Condition="'$(SkipSourceServer)'!='true' and '@(PdbFile)'!=''"
           Inputs="@(PdbFile)"
@@ -1101,44 +1100,44 @@
 
     <Error Text="The Debugging Tools for Windows must be installed along with the Source Source SDK in order to embed Source Server indexing information in the PDBs.%0D%0ASkip this with '/p:SkipSourceServer=true'."
              Condition="! Exists('$(SourceServerIndexerPath)')" />
-          
+
     <MakeDir Directories="$(ModuleTempDir)\pdbs" />
-    
+
     <Copy SourceFiles="@(PdbFile)"
           DestinationFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
-          
+
     <Exec Command="&quot;$(SourceServerIndexerPath)&quot; -System=svn -Ini=&quot;$(SourceDir)\srcsrv.ini&quot; -Source=&quot;$(SourceDir)&quot; -Symbols=&quot;$(ModuleTempDir)\pdbs&quot;"
           Condition="Exists('$(SourceServerIndexerPath)')" />
   </Target>
-  
+
   <Target Name="ImagePdbFiles_SkipSourceServer"
           Condition="'$(SkipSourceServer)'=='true' and '@(PdbFile)'!=''"
           Inputs="@(PdbFile)"
           Outputs="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')">
     <MakeDir Directories="$(ModuleTempDir)\pdbs" />
-    
+
     <Copy SourceFiles="@(PdbFile)"
           DestinationFiles="@(PdbFile->'$(ModuleTempDir)\pdbs\%(Filename)%(Extension)')" />
   </Target>
-  
+
   <!-- Debug Symbols -->
-  
+
   <Target Name="WriteDebugSymbolItemsToMeta">
     <WriteLinesToFile File="$(ModuleMetaDir)\$(ModuleName).debugsymbols"
                       Lines="@(DebugSymbol->'%(FullPath)')"
                       Overwrite="true" />
   </Target>
-  
+
   <Target Name="ReadMergedDebugSymbolItemsFromMeta">
     <ItemGroup>
       <_DebugSymbolsFile Include="$(ModuleMetaDir)\*.debugsymbols" />
     </ItemGroup>
-  
+
     <ReadLinesFromFile File="%(_DebugSymbolsFile.FullPath)"
                        Condition="'@(_DebugSymbolsFile)'!=''">
       <Output TaskParameter="Lines" ItemName="_MergedDebugSymbols" />
     </ReadLinesFromFile>
-    
+
     <RemoveDuplicates Inputs="@(_MergedDebugSymbols)">
       <Output TaskParameter="Filtered" ItemName="MergedDebugSymbols" />
     </RemoveDuplicates>
@@ -1148,7 +1147,7 @@
           DependsOnTargets="ReadMergedDebugSymbolItemsFromMeta"
           Condition="'@(ReleaseDebugSymbols)'!=''">
     <MakeDir Directories="$(ModuleDistDir)\%(ReleaseDebugSymbols.Identity)" />
-          
+
     <Copy SourceFiles="@(MergedDebugSymbols)"
           DestinationFolder="$(ModuleDistDir)\%(ReleaseDebugSymbols.Identity)"
           SkipUnchangedFiles="true" />
