@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web.UI;
 
@@ -11,7 +10,7 @@ namespace Axiom.Build.Tasks
 	// Nabbed from : http://haacked.com/archive/2009/01/14/named-formats-redux.aspx
 	public static class TokenFormatter
 	{
-		public static int GetWeekNumber( this DateTime dtPassed )
+		private static int GetWeekNumber( DateTime dtPassed )
 		{
 			CultureInfo ciCurr = CultureInfo.CurrentCulture;
 			int weekNum = ciCurr.Calendar.GetWeekOfYear( dtPassed, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday );
@@ -50,8 +49,8 @@ namespace Axiom.Build.Tasks
 						if ( value.GetType() == typeof( DateTime ) )
 						{
 							var year = String.Format( "{0:yy}", value );
-							var week = ( (DateTime)value ).GetWeekNumber();
-							var day = (int)((DateTime)value).DayOfWeek;
+							var week = GetWeekNumber( (DateTime)value );
+							var day = (int)( (DateTime)value ).DayOfWeek;
 							return String.Format( "{0}{1:D2}{2}", year, week, day );
 						}
 					}
@@ -70,7 +69,7 @@ namespace Axiom.Build.Tasks
 			}
 		}
 
-		public static string FormatToken( this string format, object source )
+		public static string FormatToken( string format, object source )
 		{
 			if ( format == null )
 			{

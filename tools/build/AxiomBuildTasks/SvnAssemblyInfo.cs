@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -30,7 +29,7 @@ namespace Axiom.Build.Tasks
 				foreach ( var file in releaseFiles )
 				{
 					var fullText = File.ReadAllText( file.Template, Encoding.ASCII );
-					fullText = fullText.FormatToken( svn );
+					fullText = TokenFormatter.FormatToken( fullText, svn );
 					File.WriteAllText( file.OutputFile, fullText, Encoding.ASCII );
 				}
 				return true;
