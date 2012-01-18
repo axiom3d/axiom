@@ -75,6 +75,12 @@ namespace Axiom.Core
 	/// <param name="view"></param>
 	public delegate void FindVisibleObjectsEvent( SceneManager manager, IlluminationRenderStage stage, Viewport view );
 
+    /// <summary>
+    /// Delegate for scenemanager destroyed events
+    /// </summary>
+    /// <param name="manager"></param>
+    public delegate void SceneManagerDestroyedEvent( SceneManager manager );
+
 	#endregion Delegate declarations
 
 	/// <summary>
@@ -705,6 +711,11 @@ namespace Axiom.Core
 		/// <summary>Will fire after FindVisibleObjects is called</summary>
 		public event FindVisibleObjectsEvent PostFindVisibleObjects;
 
+        /// <summary>
+        /// Event notifying the listener of the SceneManager's destruction.
+        /// </summary>
+        public event SceneManagerDestroyedEvent SceneManagerDestroyed;
+
 		#endregion Public events
 
 		#region Constructors
@@ -769,6 +780,9 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
+                    if ( this.SceneManagerDestroyed != null )
+                        this.SceneManagerDestroyed( this );
+
 					this.ClearScene();
 					this.RemoveAllCameras();
 
