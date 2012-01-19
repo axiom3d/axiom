@@ -133,7 +133,7 @@ namespace Axiom.Samples.Ocean
             {
                 selectMenu.AddItem( materialControlsContainer[ i ].DisplayName );
             }
-            selectMenu.SelectedIndexChanged += new System.EventHandler( selectMenu_SelectedIndexChanged );
+            selectMenu.SelectedIndexChanged += selectMenu_SelectedIndexChanged;
             CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "SpinLightButton", "Spin Light", 175 );
             box.IsChecked = true;
             box.CheckChanged += new CheckChangedHandler( box_CheckChanged );
@@ -149,9 +149,9 @@ namespace Axiom.Samples.Ocean
             TrayManager.ShowCursor();
         }
 
-        void box_CheckChanged( object sender, CheckBox box )
+        void box_CheckChanged( CheckBox sender )
         {
-            spinLight = box.IsChecked;
+            spinLight = sender.IsChecked;
         }
 
         void btn_CursorPressed( object sender, Vector2 cursorPosition )
@@ -161,12 +161,11 @@ namespace Axiom.Samples.Ocean
                 ChangePage( -1 );
         }
 
-        void selectMenu_SelectedIndexChanged( object sender, System.EventArgs e )
+        void selectMenu_SelectedIndexChanged( SelectMenu sender )
         {
-            SelectMenu menu = sender as SelectMenu;
-            if ( menu != null )
+            if ( sender != null )
             {
-                currentMaterial = menu.SelectionIndex;
+                currentMaterial = sender.SelectionIndex;
                 activeMaterial = (Material)MaterialManager.Instance.GetByName( materialControlsContainer[ currentMaterial ].MaterialName );
                 activeMaterial.Load();
                 int numShaders = materialControlsContainer[ currentMaterial ].ShaderControlsCount;

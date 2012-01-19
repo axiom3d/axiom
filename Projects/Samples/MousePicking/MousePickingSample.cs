@@ -223,7 +223,7 @@ namespace Axiom.Samples.MousePicking
 			selectionModeMenu.AddItem( "Mouse Select" );
 			selectionModeMenu.AddItem( "Selection Box" );
 			selectionModeMenu.SelectItem( 0 );
-			selectionModeMenu.SelectedIndexChanged += new System.EventHandler( selectionModeMenu_SelectedIndexChanged );
+			selectionModeMenu.SelectedIndexChanged += selectionModeMenu_SelectedIndexChanged;
 
 			MouseLocationLabel = TrayManager.CreateLabel( TrayLocation.TopLeft, "Mouse Location", "", 350 );
 
@@ -235,14 +235,10 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		/// <param name="sender">SelectMenu object</param>
 		/// <param name="e">EventArgs</param>
-		void selectionModeMenu_SelectedIndexChanged( object sender, System.EventArgs e )
+        void selectionModeMenu_SelectedIndexChanged( SelectMenu sender )
 		{
-			SelectMenu menu = sender as SelectMenu;
-			if ( menu != null )
-			{
-				_MouseSelector.SelectionMode = (MouseSelector.SelectionModeType)menu.SelectionIndex;
-			}
-
+			if ( sender != null )
+				_MouseSelector.SelectionMode = (MouseSelector.SelectionModeType)sender.SelectionIndex;
 		}
 	}
 }

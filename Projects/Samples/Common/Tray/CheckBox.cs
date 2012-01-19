@@ -28,7 +28,7 @@ using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
-	public delegate void CheckChangedHandler( object sender, CheckBox box );
+	public delegate void CheckChangedHandler( CheckBox box );
 	/// <summary>
 	/// Basic check box widget.
 	/// </summary>
@@ -141,7 +141,7 @@ namespace Axiom.Samples
 			if ( listener != null && notifyListener )
 				listener.CheckboxToggled( this );
 
-			OnCheckChanged( this, this );
+			OnCheckChanged( this );
 		}
 
 		/// <summary>
@@ -176,7 +176,7 @@ namespace Axiom.Samples
 		public void Uncheck( bool notifyListener )
 		{
 			this.SetChecked( false, notifyListener );
-			OnCheckChanged( this, this );
+			OnCheckChanged( this );
 		}
 
 		/// <summary>
@@ -250,10 +250,10 @@ namespace Axiom.Samples
 			base.OnLostFocus();
 		}
 
-		public void OnCheckChanged( object sender, CheckBox box )
+		public void OnCheckChanged( CheckBox sender )
 		{
 			if ( CheckChanged != null )
-				CheckChanged( sender, box );
+				CheckChanged( sender );
 		}
 		#endregion
 	}

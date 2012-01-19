@@ -977,10 +977,13 @@ namespace Axiom.Core
 		/// <returns>A shared pointer to a hardware pixel buffer</returns>
 		public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
 
+        /// <see cref="Texture.GetBuffer(int, int)"/>
 		public HardwarePixelBuffer GetBuffer( int face )
 		{
 			return GetBuffer( face, 0 );
 		}
+
+        /// <see cref="Texture.GetBuffer(int, int)"/>
 		public HardwarePixelBuffer GetBuffer()
 		{
 			return GetBuffer( 0, 0 );
@@ -1014,6 +1017,51 @@ namespace Axiom.Core
 			}
 		}
 
+        /// <summary>
+        /// Populate an Image with the contents of this texture.
+        /// </summary>
+        /// <param name="destImage">The target image (contents will be overwritten)</param>
+        /// <param name="includeMipMaps">Whether to embed mipmaps in the image</param>
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public virtual void ConvertToImage( out Image destImage, bool includeMipMaps = false )
+#else
+        public virtual void ConvertToImage( out Image destImage, bool includeMipMaps )
+#endif
+        {
+            var numMips = includeMipMaps ? this.MipmapCount + 1 : 1;
+            var dataSize = Image.CalculateSize( numMips, this.faceCount, this.Width, this.Height, this.Depth, this.Format );
+
+            var pixData = new byte[ dataSize ];
+            // if there are multiple faces and mipmaps we must pack them into the data
+            // faces, then mips
+            var currentPixData = Memory.PinObject( pixData );
+            for ( int face = 0; face < this.faceCount; ++face )
+            {
+                for ( int mip = 0; mip < numMips; ++mip )
+                {
+                    var mipDataSize = PixelUtil.GetMemorySize( this.Width, this.Height, this.Depth, this.Format );
+
+                    var pixBox = new PixelBox( this.Width, this.Height, this.Depth, this.Format, currentPixData );
+                    GetBuffer( face, mip ).BlitToMemory( pixBox );
+
+                    currentPixData += mipDataSize;
+                }
+            }
+
+            // load, and tell Image to delete the memory when it's done.
+            destImage = ( new Image() ).FromDynamicImage( pixData, this.Width, this.Height, this.Depth, this.Format, true, this.faceCount, numMips - 1 );
+            Memory.UnpinObject( pixData );
+        }
+
+#if !NET_40
+        /// <see cref="Texture.ConvertToImage(out Image, bool)"/>
+        public void ConvertToImage( out Image destImage )
+        {
+            ConvertToImage( out destImage, false );
+        }
+#endif
+
 		#endregion Methods
 
 		#region Implementation of Resource
@@ -1030,5 +1078,5 @@ namespace Axiom.Core
 
 
 		#endregion Implementation of Resource
-	}
+    }
 }

@@ -48,8 +48,12 @@ using Axiom.Media;
 namespace Axiom.Plugins.FreeImageCodecs
 {
 	/// <summary>
-	/// 
+    /// Codec specialized in images loaded using FreeImage.
 	/// </summary>
+    /// <remarks>
+    /// The users implementing subclasses of ImageCodec are required to return
+    ///a valid pointer to a ImageData class from the decode(...) function.
+    /// </remarks>
 	public class FreeImageCodec : ImageCodec
 	{
 		private string _type;
@@ -560,6 +564,23 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FreeImage.Unload( fiBitMap );
 		}
 
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            var ptr = Memory.PinObject( magicBuf );
+            FI.FIMEMORY fiMem = FI.FreeImage.OpenMemory( ptr.Pin(), (uint)maxbytes );
+
+            FI.FREE_IMAGE_FORMAT fif = FI.FreeImage.GetFileTypeFromMemory( fiMem, maxbytes );
+            FI.FreeImage.CloseMemory( fiMem );
+            Memory.UnpinObject( magicBuf );
+
+            if ( fif != FI.FREE_IMAGE_FORMAT.FIF_UNKNOWN )
+                return FI.FreeImage.GetFormatFromFIF( fif ).ToLower();
+            else
+                return string.Empty;
+        }
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -576,6 +597,5 @@ namespace Axiom.Plugins.FreeImageCodecs
 			LogManager.Instance.Write( "FreeImage error: '" + message + "'" +
 				( string.IsNullOrEmpty( format ) ? "." : " when loading format " + format ) );
 		}
-
-	}
+    }
 }

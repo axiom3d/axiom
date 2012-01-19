@@ -83,7 +83,7 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		/// <returns>true if the page was populated, false otherwise</returns>
 		[OgreVersion( 1, 7, 2 )]
-		public bool UnloadProcedualPage( Page page, PagedWorldSection section )
+		public virtual bool UnloadProcedualPage( Page page, PagedWorldSection section )
 		{
 			return false;
 		}
@@ -98,7 +98,7 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		/// <returns>true if the page was unpopulated, false otherwise</returns>
 		[OgreVersion( 1, 7, 2 )]
-		public bool UnPrepareProcedualPage( Page page, PagedWorldSection section )
+		public virtual bool UnPrepareProcedualPage( Page page, PagedWorldSection section )
 		{
 			return false;
 		}

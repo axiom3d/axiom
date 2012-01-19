@@ -36,20 +36,26 @@ namespace Axiom.Samples
 	public class SelectMenu : Widget
     {
         #region events
+
+        /// <summary>
+        /// Delegate used by SelectedIndexChanged event
+        /// </summary>
+        /// <param name="sender"></param>
+        public delegate void SelectionChangedHandler( SelectMenu sender );
+
         /// <summary>
         /// Occours when the selcted index has changed.
         /// </summary>
-        public event EventHandler SelectedIndexChanged;
+        public event SelectionChangedHandler SelectedIndexChanged;
 
         /// <summary>
         /// Raises the Selected Index Changed event.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public virtual void OnSelectedIndexChanged( object sender, EventArgs e )
+        public virtual void OnSelectedIndexChanged( SelectMenu sender )
         {
             if ( SelectedIndexChanged != null )
-                SelectedIndexChanged( sender, e );
+                SelectedIndexChanged( sender );
         }
         #endregion
 
@@ -426,7 +432,7 @@ namespace Axiom.Samples
 			if ( listener != null && notifyListener )
 				listener.ItemSelected( this );
 
-            OnSelectedIndexChanged( this, new EventArgs() );
+            OnSelectedIndexChanged( this );
 		}
 
 		/// <summary>

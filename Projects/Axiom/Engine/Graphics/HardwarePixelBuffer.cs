@@ -224,6 +224,7 @@ namespace Axiom.Graphics
 		///    case scaling is done.
 		///    Only call this function when the buffer is unlocked. 
 		///</remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public abstract void BlitToMemory( BasicBox srcBox, PixelBox dst );
 
 		#endregion Abstract Methods
@@ -391,6 +392,7 @@ namespace Axiom.Graphics
 		///<remarks>
 		///    Only call this function when the buffer is unlocked. 
 		///</remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public void BlitToMemory( PixelBox dst )
 		{
 			BlitToMemory( new BasicBox( 0, 0, 0, _width, _height, _depth ), dst );

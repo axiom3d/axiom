@@ -190,8 +190,9 @@ namespace Axiom.Serialization
 		/// <summary>
 		/// Reports whether the stream is at the end of file
 		/// </summary>
-		public bool Eof
+		public virtual bool Eof
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
 				CheckStream();
@@ -247,10 +248,12 @@ namespace Axiom.Serialization
 		/// or getCurrentChunkDepth to determine if a chunk is active.</remarks>
 		public int OffsetFromChunkStart
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
 				this.CheckStream( false, false, false );
-				if ( mChunkStack.Count == 0 )
+				
+                if ( mChunkStack.Count == 0 )
 				{
 					return 0;
 				}
@@ -373,12 +376,14 @@ namespace Axiom.Serialization
 		/// you're writing (since when reading this is picked up from the file), 
 		/// and can only be changed if autoHeader is true, since real format is stored in the header. 
 		/// Defaults to float unless you're using AXIOM_DOUBLE_PRECISION.</param>
+        [OgreVersion( 1, 7, 2 )]
 		public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader, RealStorageFormat realFormat )
             : base()
 		{
 			mStream = stream;
 			mEndian = endianMode;
 			mReadWriteHeader = autoHeader;
+            mRealFormat = realFormat;
 
 			if ( mEndian != Endian.Auto )
 			{
@@ -394,8 +399,6 @@ namespace Axiom.Serialization
 				}
 #endif
 			}
-
-			mRealFormat = realFormat;
 
 			this.CheckStream();
 		}
@@ -446,21 +449,18 @@ namespace Axiom.Serialization
 		/// the stack.
 		/// </remarks>
 		/// <returns>The Chunk that comes next</returns>
-		public Chunk ReadChunkBegin()
+        [OgreVersion( 1, 7, 2 )]
+		public virtual Chunk ReadChunkBegin()
 		{
 			// Have we figured out the endian mode yet?
 			if ( mReadWriteHeader )
-			{
 				ReadHeader();
-			}
 
 			if ( mEndian == Endian.Auto )
-			{
-				throw new Exception( "Endian mode has not been determined, did you disable header without setting?" );
-			}
+				throw new AxiomException( "Endian mode has not been determined, did you disable header without setting?" );
 
 			var chunk = ReadChunk();
-			mChunkStack.AddToHead( chunk );
+			mChunkStack.Add( chunk );
 
 			return chunk;
 		}
@@ -527,7 +527,8 @@ namespace Axiom.Serialization
 		/// skipping over it (which <see cref="ReadChunkEnd"/> would do), you want to backtrack
 		/// and give something else an opportunity to read it. </remarks>
 		/// <param name="id">The id of the chunk that you were reading (for validation purposes)</param>
-		public void UndoReadChunk( uint id )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual void UndoReadChunk( uint id )
 		{
 			var c = PopChunk( id );
 
@@ -544,7 +545,8 @@ namespace Axiom.Serialization
 		/// not read to the end of a chunk, this method will automatically skip 
 		/// over the remainder of the chunk and position the stream just after it.</remarks>
 		/// <param name="id">The id of the chunk that you were reading (for validation purposes)</param>
-		public void ReadChunkEnd( uint id )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual void ReadChunkEnd( uint id )
 		{
 			var c = PopChunk( id );
 
@@ -584,48 +586,40 @@ namespace Axiom.Serialization
 		/// <param name="id">The identifier of the new chunk. Any value that's unique in the
 		/// file context is valid, except for the numbers 0x0001 and 0x1000 which are reserved
 		/// for internal header identification use.</param>
-		public void WriteChunkBegin( uint id )
-		{
-			WriteChunkBegin( id, 1 );
-		}
-
-		/// <summary>
-		/// Begin writing a new chunk.
-		/// </summary>
-		/// <remarks>
-		/// This starts the process of writing a new chunk to the stream. This will 
-		/// write the chunk header for you, and store a pointer so that the
-		/// class can automatically go back and fill in the size for you later
-		/// should you need it to. If you have already begun a chunk without ending
-		/// it, then this method will start a nested chunk within it. Once written, 
-		/// you can then start writing chunk-specific data into your stream.</remarks>
-		/// <param name="id">The identifier of the new chunk. Any value that's unique in the
-		/// file context is valid, except for the numbers 0x0001 and 0x1000 which are reserved
-		/// for internal header identification use.</param>
 		/// <param name="version">The version of the chunk you're writing</param>
-		public void WriteChunkBegin( uint id, UInt16 version )
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public virtual void WriteChunkBegin( uint id, UInt16 version = 1 )
+#else
+		public virtual void WriteChunkBegin( uint id, UInt16 version )
+#endif
 		{
 			CheckStream( false, false, true );
 
 			if ( mReadWriteHeader )
-			{
 				WriteHeader();
-			}
 
 			if ( mEndian == Endian.Auto )
-			{
-				throw new Exception( "Endian mode has not been determined, did you disable header without setting?" );
-			}
+				throw new AxiomException( "Endian mode has not been determined, did you disable header without setting?" );
 
 			WriteChunk( id, version );
 		}
+
+#if !NET_40
+        /// <see cref="StreamSerializer.WriteChunkBegin(uint, UInt16)"/>
+        public void WriteChunkBegin( uint id )
+        {
+            WriteChunkBegin( id, 1 );
+        }
+#endif
 
 		/// <summary>
 		/// End writing a chunk.
 		/// </summary>
 		/// <param name="id">The identifier of the chunk - this is really just a safety check, 
 		/// since you can only end the chunk you most recently started.</param>
-		public void WriteChunkEnd( uint id )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual void WriteChunkEnd( uint id )
 		{
 			CheckStream( false, false, true );
 
@@ -759,18 +753,15 @@ namespace Axiom.Serialization
 
 		#region Protected Methods
 
-		protected Chunk PopChunk( uint id )
+        [OgreVersion( 1, 7, 2 )]
+		protected virtual Chunk PopChunk( uint id )
 		{
 			if ( mChunkStack.Count == 0 )
-			{
-				throw new Exception( "No active chunk!" );
-			}
+				throw new AxiomException( "No active chunk!" );
 
 			var chunk = mChunkStack.PeekTail();
 			if ( chunk.id != id )
-			{
-				throw new Exception( "Incorrect chunk id!" );
-			}
+				throw new AxiomException( "Incorrect chunk id!" );
 
 			var c = mChunkStack.RemoveFromTail();
 			return c;
@@ -835,10 +826,7 @@ namespace Axiom.Serialization
 			mReadWriteHeader = false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		protected Chunk ReadChunk()
 		{
 			var chunk = new Chunk();
@@ -854,7 +842,7 @@ namespace Axiom.Serialization
 			{
 				// no good, this is an invalid chunk
 				var off = chunk.offset;
-				throw new Exception( "Corrupt chunk detected in stream at byte " + off );
+				throw new AxiomException( "Corrupt chunk detected in stream at byte {0}", off );
 			}
 			else
 			{
@@ -862,10 +850,7 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		protected void WriteChunk( uint id, ushort version )
 		{
 			var c = new Chunk();
@@ -874,7 +859,7 @@ namespace Axiom.Serialization
 			c.offset = (uint)mStream.Position;
 			c.length = 0;
 
-			mChunkStack.AddToHead( c );
+			mChunkStack.Add( c );
 
 			Write( c.id );
 			Write( c.version );
@@ -883,41 +868,43 @@ namespace Axiom.Serialization
 			Write( c.length );
 		}
 
-		/// <summary>
-		/// </summary>
-		protected void CheckStream()
-		{
-			this.CheckStream( false, false, false );
-		}
-
-		/// <summary>
-		/// </summary>
-		protected void CheckStream( bool failOnEof, bool validateReadable, bool validateWriteable )
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        protected virtual void CheckStream( bool failOnEof = false, bool validateReadable = false, bool validateWriteable = false )
+#else
+		protected virtual void CheckStream( bool failOnEof, bool validateReadable, bool validateWriteable )
+#endif
 		{
 			if ( mStream == null )
-			{
-				throw new Exception( "Invalid operation, stream is null" );
-			}
+				throw new AxiomException( "Invalid operation, stream is null" );
 
 			if ( failOnEof && mStream.Position == mStream.Length )
-			{
-				throw new Exception( "Invalid operation, end of file on stream" );
-			}
+				throw new AxiomException( "Invalid operation, end of file on stream" );
 
 			if ( validateReadable && !mStream.CanRead )
-			{
-				throw new Exception( "Invalid operation, file is not readable" );
-			}
+				throw new AxiomException( "Invalid operation, file is not readable" );
 
 			if ( validateWriteable && !mStream.CanWrite )
-			{
-				throw new Exception( "Invalid operation, file is not writeable" );
-			}
+				throw new AxiomException( "Invalid operation, file is not writeable" );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+#if !NET_40
+        protected void CheckStream()
+        {
+            this.CheckStream( false, false, false );
+        }
+
+        protected void CheckStream( bool failOnEof )
+        {
+            this.CheckStream( failOnEof, false, false );
+        }
+
+        protected void CheckStream( bool failOnEof, bool validateReadable )
+        {
+            this.CheckStream( failOnEof, validateReadable, false );
+        }
+#endif
+
 		protected void DetermineEndianness()
 		{
 #if AXIOM_ENDIAN_BIG
@@ -943,7 +930,8 @@ namespace Axiom.Serialization
 		/// <param name="buf">Array of bytes to read into</param>
 		/// <param name="size">The size of each element to read; each will be endian-flipped if necessary</param>
 		/// <param name="count">The number of elements to read</param>
-		protected void ReadData( byte[] buf, int size, int count )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual void ReadData( byte[] buf, int size, int count )
 		{
 			CheckStream( true, true, false );
 
@@ -962,7 +950,8 @@ namespace Axiom.Serialization
 		/// <param name="buf">Array of bytes to write</param>
 		/// <param name="size">The size of each element to write; each will be endian-flipped if necessary</param>
 		/// <param name="count">The number of elements to write</param>
-		protected void WriteData( byte[] buf, int size, int count )
+        [OgreVersion( 1, 7, 2 )]
+		public virtual void WriteData( byte[] buf, int size, int count )
 		{
 			CheckStream( false, false, true );
 

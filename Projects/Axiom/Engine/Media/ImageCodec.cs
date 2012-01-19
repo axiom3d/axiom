@@ -55,6 +55,7 @@ namespace Axiom.Media
 		public abstract object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
 		public abstract void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
 		public abstract void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
+        public abstract string MagicNumberToFileExt( byte[] magicBuf, int maxbytes );
 
 		public abstract String Type
 		{

@@ -119,12 +119,6 @@ namespace Axiom.Plugins.DevILCodecs
 			return data;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="dest"></param>
-		/// <param name="args"></param>
 		public override void Encode( System.IO.Stream source, System.IO.Stream dest, params object[] args )
 		{
 			throw new NotImplementedException( "BMP encoding is not yet implemented." );
@@ -153,6 +147,14 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 		}
 
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            //TODO
+            return string.Empty;
+        }
+
 		#endregion ILImageCodec Implementation
-	}
+
+    }
 }
