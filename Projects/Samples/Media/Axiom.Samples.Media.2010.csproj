@@ -11,9 +11,9 @@
     <RootNamespace>Axiom.Samples.Media</RootNamespace>
     <AssemblyName>Axiom.Samples.Media</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -66,6 +66,9 @@
     <None Include="Archives\skybox.zip" />
     <None Include="Materials\Aurora.material" />
     <None Include="Materials\BumpyMetal.material" />
+    <None Include="Materials\CloudyNoonSkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Materials\CloudySkyBox.material" />
     <None Include="Materials\EveningSkyBox.material" />
     <None Include="Materials\Droplet.material" />
@@ -82,9 +85,18 @@
     <None Include="Materials\Rockwall.material" />
     <None Include="Materials\SphereMappedRustySteel.material" />
     <None Include="Materials\StormySkyBox.material" />
+    <None Include="Materials\TudorHouse.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Meshes\ogrehead.mesh" />
     <None Include="Meshes\penguin.mesh" />
     <None Include="Meshes\penguin.skeleton" />
+    <None Include="Meshes\sphere.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Meshes\tudorhouse.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Particles\Aureola.particle" />
     <None Include="Particles\Fireworks.particle" />
     <None Include="Particles\GreenyNimbus.particle" />
@@ -207,6 +219,7 @@
     <Content Include="Textures\flare.png" />
     <Content Include="Textures\flaretrail.png" />
     <Content Include="Textures\frost.png" />
+    <Content Include="Textures\fw12b.jpg" />
     <Content Include="Textures\GreenSkin.jpg" />
     <Content Include="Textures\penguin.jpg" />
     <Content Include="Textures\RustySteel.jpg" />

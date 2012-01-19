@@ -50,6 +50,8 @@ namespace Axiom.Plugins.DevILCodecs
 	/// </summary>
 	public class DDSCodec : ILImageCodec
 	{
+        public const int DDS_MAGIC = ( 'D' | ( 'D' << 8 ) | ( 'S' << 16 ) | ( ' ' << 24 ) );
+
 		public DDSCodec()
 		{
 		}
@@ -66,6 +68,22 @@ namespace Axiom.Plugins.DevILCodecs
 		{
 			throw new NotImplementedException( "DDS file encoding is not yet supported." );
 		}
+
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            if ( maxbytes >= sizeof( int ) )
+            {
+                int fileType = BitConverter.ToInt32( magicBuf, 0 );
+                //TODO
+                //flipEndian(&fileType, sizeof(uint32), 1);
+
+                if ( DDS_MAGIC == fileType )
+                    return "dds";
+            }
+
+            return string.Empty;
+        }
 
 		/// <summary>
 		///    DDS enum value.
@@ -91,5 +109,6 @@ namespace Axiom.Plugins.DevILCodecs
 
 
 		#endregion ILImageCodec Implementation
-	}
+       
+    }
 }

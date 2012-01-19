@@ -11,10 +11,10 @@
     <RootNamespace>Axiom.Samples.Terrain</RootNamespace>
     <AssemblyName>Axiom.Samples.Terrain</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -66,6 +66,12 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.19608, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.DirectX">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.DirectX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -82,6 +88,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Components\Paging\Axiom.Components.Paging.2010.csproj">
+      <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
+      <Name>Axiom.Components.Paging.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Components\Terrain\Axiom.Components.Terrain.2010.csproj">
       <Project>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</Project>

@@ -78,21 +78,14 @@ namespace Axiom.Core.Collections
 	{
 	}
 
-	/// <summary>
-	/// </summary>
 	public class MeshLodUsageList : List<MeshLodUsage>
 	{
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
 	public class LodValueList : List<Real>
 	{
 	}
 
-	/// <summary>
-	/// </summary>
 	public class IntList : List<int>
 	{
 		public void Resize( int size )
@@ -105,14 +98,12 @@ namespace Axiom.Core.Collections
 		}
 	}
 
-	/// <summary>
-	/// </summary>
-	public class FloatList : List<float>
+	public class RealList : List<Real>
 	{
 		public void Resize( int size )
 		{
 			var data = this.ToArray();
-			var newData = new float[ size ];
+			var newData = new Real[ size ];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );

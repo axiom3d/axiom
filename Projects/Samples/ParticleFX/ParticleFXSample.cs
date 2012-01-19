@@ -108,10 +108,10 @@ namespace Axiom.Samples.ParticleFX
             box.IsChecked = false;
         }
 
-        void box_CheckChanged( object sender, CheckBox box )
+        void box_CheckChanged( CheckBox sender )
         {
-            if ( ParticleSystemManager.Instance.ParticleSystems.ContainsKey( box.Name.GetHashCode() ) )
-                ParticleSystemManager.Instance.ParticleSystems[ box.Name.GetHashCode() ].IsVisible = box.IsChecked;
+            if ( ParticleSystemManager.Instance.ParticleSystems.ContainsKey( sender.Name.GetHashCode() ) )
+                ParticleSystemManager.Instance.ParticleSystems[ sender.Name.GetHashCode() ].IsVisible = sender.IsChecked;
         }
     }
 }

@@ -83,5 +83,18 @@ namespace Axiom.Media
 		{
 			get;
 		}
-	}
+
+        /// <summary>
+        /// Maps a magic number header to a file extension, if this codec recognises it.
+        /// </summary>
+        /// <param name="magicBuf">
+        /// Pointer to a stream of bytes which should identify the file.
+        /// Note that this may be more than needed - each codec may be looking for 
+        /// a different size magic number.
+        /// </param>
+        /// <param name="maxbytes">The number of bytes passed</param>
+        /// <returns>A blank string if the magic number was unknown, or a file extension.</returns>
+        [OgreVersion( 1, 7, 2 )]
+        string MagicNumberToFileExt( byte[] magicBuf, int maxbytes );
+    }
 }

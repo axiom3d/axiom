@@ -22,142 +22,118 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using Axiom.Math;
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Components.Terrain
 {
+    /// <summary>
+    /// Options class which just stores default options for the terrain.
+    /// </summary>
+    /// <remarks>
+    /// None of these options are stored with the terrain when saved. They are
+    /// options that you can use to modify the behaviour of the terrain when it
+    /// is loaded or created. 
+    /// @note
+    /// You should construct a single instance of this class per application and
+    /// do so before you start working with any other terrain classes.
+    /// </remarks>
     public class TerrainGlobalOptions
     {
         //no instantiation
         protected TerrainGlobalOptions() { }
 
         #region - fields -
-        protected static string mResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static float mSkirtSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static Vector3 msLightMapDir = Vector3.Zero;
-        /// <summary>
-        /// 
-        /// </summary>
+
+        protected static Real mSkirtSize = 30;
+        protected static Vector3 msLightMapDir = new Vector3( 1, -1, 0 ).ToNormalized();
         protected static bool msCastsShadows;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static float msMaxPixelError;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static RenderQueueGroupID msRenderQueueGroup;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static bool msUseRayBoxDistanceCalculation;
-        /// <summary>
-        /// 
-        /// </summary>
+        protected static Real msMaxPixelError = 3.0;
+        protected static RenderQueueGroupID mRenderQueueGroup = RenderQueueGroupID.Main;
+        protected static uint msVisibililityFlags = 0xFFFFFFFF;
+        protected static uint mQueryFlags = 0xFFFFFFFF;
+        protected static bool mUseRayBoxDistanceCalculation;
         protected static TerrainMaterialGenerator msDefaultMaterialGenerator;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ushort msLayerBlendMapSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static float msDefaultLayerTextureWorldSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ushort msDefaultGlobalColourMapSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ushort msLightmapSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ushort msCompositeMapSize;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ColorEx msCompositeMapAmbient;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static ColorEx msCompositeMapDiffuse;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static float msCompositeMapDistance;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static uint msVisibililityFlags;
-        /// <summary>
-        /// 
-        /// </summary>
-        protected static uint msQueryFlags;
-        #endregion
+        protected static ushort msLayerBlendMapSize = 1024;
+        protected static Real msDefaultLayerTextureWorldSize = 10;
+        protected static ushort msDefaultGlobalColourMapSize = 1024;
+        protected static ushort msLightmapSize = 1024;
+        protected static ushort mCompositeMapSize = 1024;
+        protected static ColorEx msCompositeMapAmbient = ColorEx.White;
+        protected static ColorEx msCompositeMapDiffuse = ColorEx.White;
+        protected static Real msCompositeMapDistance = 4000;
+        protected static string mResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
+
+        #endregion - fields -
 
         #region - properties -
-        public static string ResourceGroup
-        {
-            get { return mResourceGroup; }
-            set { mResourceGroup = value; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public static uint QueryFlags
-        {
-            get { return msQueryFlags; }
-            set { msQueryFlags = value; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public static uint VisibilityFlags
-        {
-            get { return msVisibililityFlags; }
-            set { msVisibililityFlags = value; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public static ushort LightMapSize
-        {
-            get { return msLightmapSize; }
-            set { msLightmapSize = value; }
-        }
+
         /// <summary>
         /// Static method - the default size of 'skirts' used to hide terrain cracks
-        /// (default 10)
+        /// (default 30)
         /// </summary>
         /// <remarks>
         /// Changing this value only applies to Terrain instances loaded / reloaded afterwards.
         /// </remarks>
-        public static float SkirtSize
+        public static Real SkirtSize
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return mSkirtSize; }
+
+            [OgreVersion( 1, 7, 2 )]
             set { mSkirtSize = value; }
         }
+
         /// <summary>
         /// Get' or set's the shadow map light direction to use (world space)
         /// </summary>
         public static Vector3 LightMapDirection
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return msLightMapDir; }
+
+            [OgreVersion( 1, 7, 2 )]
             set { msLightMapDir = value; }
         }
+
+        /// <summary>
+        /// Get's or set's  the composite map ambient light to use 
+        /// </summary>
+        public static ColorEx CompositeMapAmbient
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return msCompositeMapAmbient; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msCompositeMapAmbient = value; }
+        }
+
+        /// <summary>
+        /// Get's or set's the composite map diffuse light to use 
+        /// </summary>
+        public static ColorEx CompositeMapDiffuse
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return msCompositeMapDiffuse; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msCompositeMapDiffuse = value; }
+        }
+
+        /// <summary>
+        ///  Get's or set's the distance at which to start using a composite map if present
+        /// </summary>
+        public static Real CompositeMapDistance
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return msCompositeMapDistance; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msCompositeMapDistance = value; }
+        }
+
         /// <summary>
         /// Whether the terrain will be able to cast shadows (texture shadows
         /// only are supported, and you must be using depth shadow maps).
@@ -167,41 +143,61 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public static bool CastsDynamicShadows
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return msCastsShadows; }
+
+            [OgreVersion( 1, 7, 2 )]
             set { msCastsShadows = value; }
         }
-        /// <summary>
-        /// Get's or set's  the composite map ambient light to use 
-        /// </summary>
-        public static ColorEx CompositeMapAmbient
-        {
-            set { msCompositeMapAmbient = value; }
-            get { return msCompositeMapAmbient; }
-        }
-        /// <summary>
-        /// Get's or set's the composite map iffuse light to use 
-        /// </summary>
-        public static ColorEx CompositeMapDiffuse
-        {
-            set { msCompositeMapDiffuse = value; }
-            get { return msCompositeMapDiffuse; }
-        }
+
         /// <summary>
         /// Get' or Set's the maximum screen pixel error that should be allowed when rendering.
         /// </summary>
-        public static float MaxPixelError
+        public static Real MaxPixelError
         {
-            set { msMaxPixelError = value; }
+            [OgreVersion( 1, 7, 2 )]
             get { return msMaxPixelError; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msMaxPixelError = value; }
         }
+
         /// <summary>
         /// Get's or set's the render queue group that this terrain will be rendered into
         /// </summary>
-        public static RenderQueueGroupID RenderQueueGroupID
+        public static RenderQueueGroupID RenderQueueGroup
         {
-            set { msRenderQueueGroup = value; }
-            get { return msRenderQueueGroup; }
+            [OgreVersion( 1, 7, 2 )]
+            get { return mRenderQueueGroup; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { mRenderQueueGroup = value; }
         }
+
+        /// <summary>
+        /// Get/set the visbility flags that terrains will be rendered with
+        /// </summary>
+        public static uint VisibilityFlags
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return msVisibililityFlags; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msVisibililityFlags = value; }
+        }
+
+        /// <summary>
+        /// Get/Set the default query flags for terrains.
+        /// </summary>
+        public static uint QueryFlags
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get { return mQueryFlags; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { mQueryFlags = value; }
+        }
+
         /// <summary>
         /// Get's - whether or not to use an accurate calculation of camera distance
         ///	from a terrain tile (ray / AABB intersection) or whether to use the
@@ -218,27 +214,38 @@ namespace Axiom.Components.Terrain
         ///	the max pixel error as a guide, the actual error will vary above and
         ///	below that. The default is not to use the ray/box approach.
         /// </summary>
-        public static bool IsUseRayBoxDistanceCalculation
+        public static bool UseRayBoxDistanceCalculation
         {
-            get { return msUseRayBoxDistanceCalculation; }
-            set { msUseRayBoxDistanceCalculation = value; }
+            [OgreVersion( 1, 7, 2 )]
+            get { return mUseRayBoxDistanceCalculation; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { mUseRayBoxDistanceCalculation = value; }
         }
+
         /// <summary>
         ///  Get's or set's the default material generator.
         /// </summary>
         public static TerrainMaterialGenerator DefaultMaterialGenerator
         {
-            set { msDefaultMaterialGenerator = value; }
+            [OgreVersion( 1, 7, 2 )]
             get
             {
-                if (msDefaultMaterialGenerator == null)
+                if ( msDefaultMaterialGenerator == null )
                 {
                     //default
                     msDefaultMaterialGenerator = new TerrainMaterialGeneratorA();
                 }
                 return msDefaultMaterialGenerator;
             }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                msDefaultMaterialGenerator = value;
+            }
         }
+
         /// <summary>
         /// Set's  - the default size of blend maps for a new terrain.
         /// This is the resolution of each blending layer for a new terrain. 
@@ -248,17 +255,25 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public static ushort LayerBlendMapSize
         {
-            set { msLayerBlendMapSize = value; }
+            [OgreVersion( 1, 7, 2 )]
             get { return msLayerBlendMapSize; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msLayerBlendMapSize = value; }
         }
+
         /// <summary>
         /// Get's or Set's the default world size for a layer 'splat' texture to cover. 
         /// </summary>
-        public static float DefaultLayerTextureWorldSize
+        public static Real DefaultLayerTextureWorldSize
         {
-            set { msDefaultLayerTextureWorldSize = value; }
+            [OgreVersion( 1, 7, 2 )]
             get { return msDefaultLayerTextureWorldSize; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msDefaultLayerTextureWorldSize = value; }
         }
+
         /// <summary>
         /// Get's - the default size of the terrain global colour map for a new terrain.
         /// Set's -the default size of the terrain global colour map for a new terrain. 
@@ -266,33 +281,67 @@ namespace Axiom.Components.Terrain
         /// </summary>
         public static ushort DefaultGlobalColorMapSize
         {
-            set { msDefaultGlobalColourMapSize = value; }
+            [OgreVersion( 1, 7, 2 )]
             get { return msDefaultGlobalColourMapSize; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { msDefaultGlobalColourMapSize = value; }
         }
+
         /// <summary>
-        /// Get' or set's the default size of the lightmaps for a new terrain. 
+        /// Get/Set the default size of the lightmaps for a new terrain.
         /// </summary>
-        public static ushort LightsMapCount
+        public static ushort LightMapSize
         {
+            [OgreVersion( 1, 7, 2 )]
             get { return msLightmapSize; }
+
+            [OgreVersion( 1, 7, 2 )]
             set { msLightmapSize = value; }
         }
+
         /// <summary>
         /// Get's or set's the default size of the composite maps for a new terrain. 
         /// </summary>
         public static ushort CompositeMapSize
         {
-            set { msCompositeMapSize = value; }
-            get { return msCompositeMapSize; }
+            [OgreVersion( 1, 7, 2 )]
+            get { return mCompositeMapSize; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { mCompositeMapSize = value; }
         }
+
         /// <summary>
-        ///  Get's or set's the distance at which to start using a composite map if present
+        /// Get/Set the default resource group to use to load / save terrains.
         /// </summary>
-        public static float CompositeMapDistance
+        public static string DefaultResourceGroup
         {
-            get { return msCompositeMapDistance; }
-            set { msCompositeMapDistance = value; }
+            [OgreVersion( 1, 7, 2 )]
+            get { return mResourceGroup; }
+
+            [OgreVersion( 1, 7, 2 )]
+            set { mResourceGroup = value; }
         }
-        #endregion
-    }
+
+        #endregion - properties -
+
+        /// <summary>
+        /// As setQueryFlags, except the flags passed as parameters are appended to the existing flags on this object.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static void AddQueryFlags( uint flags )
+        {
+            mQueryFlags |= flags;
+        }
+
+        /// <summary>
+        /// As setQueryFlags, except the flags passed as parameters are removed from the existing flags on this object.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static void RemoveQueryFlags( uint flags )
+        {
+            mQueryFlags &= ~flags;
+        }
+    };
 }

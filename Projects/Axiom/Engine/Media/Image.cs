@@ -476,7 +476,7 @@ namespace Axiom.Media
             }
 
             // grab the extension from the filename
-            var ext = fileName.Substring( pos + 1, fileName.Length - pos - 1 );
+            var ext = fileName.Substring( pos + 1 );
 
             // find a registered codec for this type
             var codec = CodecManager.Instance.GetCodec( ext );
@@ -513,15 +513,13 @@ namespace Axiom.Media
             return image;
         }
 
+        [OgreVersion( 1, 7, 2 )]
         public static Image FromFile( string fileName, string groupName )
         {
             var pos = fileName.LastIndexOf( "." );
 
-            if ( pos == -1 )
-                throw new AxiomException( "Unable to load image file '{0}' due to missing extension.", fileName );
-
             // grab the extension from the filename
-            var ext = fileName.Substring( pos + 1, fileName.Length - pos - 1 );
+            var ext = fileName.Substring( pos + 1 );
 
             var encoded = ResourceGroupManager.Instance.OpenResource( fileName, groupName );
             return Image.FromStream( encoded, ext );
@@ -557,59 +555,98 @@ namespace Axiom.Media
             stream.Read( buffer, 0, size );
             return ( new Image() ).FromDynamicImage( buffer, width, height, depth, format );
         }
-        /// <summary>
-        ///    Loads raw image data from a byte array.
-        /// </summary>
-        /// <param name="buffer">Raw image buffer.</param>
-        /// <param name="width">Width of this image data (in pixels).</param>
-        /// <param name="height">Height of this image data (in pixels).</param>
-        /// <param name="format">Pixel format used in this texture.</param>
-        /// <returns>A new instance of Image containing the raw data supplied.</returns>
-        public Image FromDynamicImage( byte[] buffer, int width, int height, PixelFormat format )
-        {
-            return FromDynamicImage( buffer, width, height, 1, format );
-        }
 
         /// <summary>
-        ///    Loads raw image data from a byte array.
+        /// Stores a pointer to raw data in memory. The pixel format has to be specified.
         /// </summary>
-        /// <param name="buffer">Raw image buffer.</param>
-        /// <param name="width">Width of this image data (in pixels).</param>
-        /// <param name="height">Height of this image data (in pixels).</param>
-        /// <param name="depth"></param>
-        /// <param name="format">Pixel format used in this texture.</param>
-        /// <returns>A new instance of Image containing the raw data supplied.</returns>
-        public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format )
+        /// <remarks>
+        /// This method loads an image into memory held in the object. The 
+        /// pixel format will be either greyscale or RGB with an optional
+        /// Alpha component.
+        /// The type can be determined by calling getFormat().             
+        /// @note
+        /// Whilst typically your image is likely to be a simple 2D image,
+        /// you can define complex images including cube maps, volume maps,
+        /// and images including custom mip levels. The layout of the 
+        /// internal memory should be:
+        /// <ul><li>face 0, mip 0 (top), width x height (x depth)</li>
+        /// <li>face 0, mip 1, width/2 x height/2 (x depth/2)</li>
+        /// <li>face 0, mip 2, width/4 x height/4 (x depth/4)</li>
+        /// <li>.. remaining mips for face 0 .. </li>
+        /// <li>face 1, mip 0 (top), width x height (x depth)</li
+        /// <li>.. and so on. </li>
+        /// </ul>
+        /// Of course, you will never have multiple faces (cube map) and
+        /// depth too.
+        /// </remarks>
+        /// <param name="pData">The data pointer</param>
+        /// <param name="uWidth">Width of image</param>
+        /// <param name="uHeight">Height of image</param>
+        /// <param name="depth">Image Depth (in 3d images, numbers of layers, otherwhise 1)</param>
+        /// <param name="eFormat">Pixel Format</param>
+        /// <param name="autoDelete">if memory associated with this buffer is to be destroyed
+        /// with the Image object. Note: it's important that if you set
+        /// this option to true, that you allocated the memory using OGRE_ALLOC_T
+        /// with a category of MEMCATEGORY_GENERAL ensure the freeing of memory 
+        /// matches up.</param>
+        /// <param name="numFaces">the number of faces the image data has inside (6 for cubemaps, 1 otherwise)</param>
+        /// <param name="numMipMaps">the number of mipmaps the image data has inside</param>
+        [OgreVersion( 1, 7, 2, "Original name was LoadDynamicImage" )]
+        public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat,
+#if NET_40
+            bool autoDelete = false, int numFaces = 1, int numMipMaps = 0 )
+#else
+            bool autoDelete, int numFaces, int numMipMaps )
+#endif
         {
-            return FromDynamicImage( buffer, width, height, depth, format, true, 1, 0 );
-        }
-
-        public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format, bool autoDelete, int numFaces, int numMipMaps )
-        {
-
-            this.width = width;
-            this.height = height;
+            // Set image metadata
+            this.width = uWidth;
+            this.height = uHeight;
             this.depth = depth;
-            this.format = format;
+            this.format = eFormat;
 
             this.numMipMaps = numMipMaps;
-
             this.flags = 0;
-            if ( PixelUtil.IsCompressed( format ) )
+            // Set flags
+            if ( PixelUtil.IsCompressed( eFormat ) )
                 this.flags |= ImageFlags.Compressed;
-            if ( depth != 1 )
+
+            if ( this.depth != 1 )
                 this.flags |= ImageFlags.Volume;
+
             if ( numFaces == 6 )
                 this.flags |= ImageFlags.CubeMap;
+
             if ( numFaces != 6 && numFaces != 1 )
                 throw new AxiomException( "Number of faces currently must be 6 or 1." );
 
-            this.size = CalculateSize( numMipMaps, numFaces, width, height, depth, format );
-
-            SetBuffer( buffer );
+            size = CalculateSize( numMipMaps, numFaces, uWidth, uHeight, depth, eFormat );
+            this.SetBuffer( pData );
+            //TODO
+            //m_bAutoDelete = autoDelete;
 
             return this;
         }
+
+#if !NET_40
+        /// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+        public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat )
+        {
+            return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, false, 1, 0 );
+        }
+
+        /// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+        public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete )
+        {
+            return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, autoDelete, 1, 0 );
+        }
+
+        /// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+        public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete, int numFaces )
+        {
+            return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, autoDelete, numFaces, 0 );
+        }
+#endif
 
         /// <summary>
         ///    Loads an image from a stream.
@@ -626,7 +663,28 @@ namespace Axiom.Media
         public static Image FromStream( Stream stream, string type )
         {
             // find the codec for this file type
-            var codec = CodecManager.Instance.GetCodec( type );
+
+            ICodec codec = null;
+
+            if ( !string.IsNullOrEmpty( type ) )
+            {
+                // use named codec
+                codec = CodecManager.Instance.GetCodec( type );
+            }
+            else
+            {
+                // derive from magic number
+                // read the first 32 bytes or file size, if less
+                var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
+                byte[] magicBuf = new byte[ 32 ];
+                stream.Read( magicBuf, 0, magicLen );
+                // return to start
+                stream.Position = 0;
+                codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
+            }
+
+            if ( codec == null )
+                throw new AxiomException( "Unable to load image: Image format is unknown. Unable to identify codec. Check it or specify format explicitly." );
 
             var decoded = new MemoryStream();
 
@@ -677,8 +735,7 @@ namespace Axiom.Media
             if ( pos == -1 )
                 throw new AxiomException( "Unable to save image file '{0}' - invalid extension.", filename );
 
-            while ( pos != filename.Length - 1 )
-                strExt += filename[ ++pos ];
+            strExt = filename.Substring( pos + 1 );
 
             var pCodec = CodecManager.Instance.GetCodec( strExt );
             if ( pCodec == null )
@@ -985,7 +1042,7 @@ namespace Axiom.Media
                 }
             }
 
-            return ( new Image() ).FromDynamicImage( dstData, width, height, source.Format );
+            return ( new Image() ).FromDynamicImage( dstData, width, height, 1, source.Format );
         }
 
         #endregion Methods

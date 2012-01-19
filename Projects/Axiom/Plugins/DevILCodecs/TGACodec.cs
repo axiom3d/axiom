@@ -187,6 +187,13 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 		}
 
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            //TODO
+            return string.Empty;
+        }
+
 		#endregion ILImageCodec Implementation
 	}
 }

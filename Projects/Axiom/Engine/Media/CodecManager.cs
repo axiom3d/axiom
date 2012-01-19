@@ -139,6 +139,38 @@ namespace Axiom.Media
 			return (ICodec)codecs[ extension ];
 		}
 
+        /// <summary>
+        /// Gets the codec that can handle the given 'magic' identifier.
+        /// </summary>
+        /// <param name="magicBuf">
+        /// Pointer to a stream of bytes which should identify the file.
+        /// Note that this may be more than needed - each codec may be looking for 
+        /// a different size magic number.
+        /// </param>
+        /// <param name="magicLen">The number of bytes passed</param>
+        [OgreVersion( 1, 7, 2 )]
+        public ICodec GetCodec( byte[] magicBuf, int magicLen )
+        {
+            foreach ( var i in codecs )
+            {
+                var ext = i.Value.MagicNumberToFileExt( magicBuf, magicLen );
+
+                if ( !string.IsNullOrEmpty( ext ) )
+                {
+                    // check codec type matches
+                    // if we have a single codec class that can handle many types, 
+                    // and register many instances of it against different types, we
+                    // can end up matching the wrong one here, so grab the right one
+                    if ( ext == i.Value.Type )
+                        return i.Value;
+                    else
+                        return GetCodec( ext );
+                }
+            }
+
+            return null;
+        }
+
 		/// <summary>
 		/// Checks whether a codec is aviable or not.
 		/// </summary>
@@ -158,7 +190,7 @@ namespace Axiom.Media
 			if ( codecs.ContainsKey( codec.Type ) )
 				codecs.Remove( codec.Type );
 		}
-	}
+    }
 
 	public class NullCodec : ICodec
 	{
@@ -190,5 +222,11 @@ namespace Axiom.Media
 				return _type;
 			}
 		}
-	}
+
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        public string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            return string.Empty;
+        }
+    }
 }

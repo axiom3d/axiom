@@ -209,9 +209,9 @@ namespace Axiom.Samples.BezierPatch
 			}
 		}
 
-		void box_CheckChanged( object sender, CheckBox box )
+		void box_CheckChanged( CheckBox sender )
 		{
-			patchPass.PolygonMode = ( box.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
+			patchPass.PolygonMode = ( sender.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
 		}
 
 		void slider_SliderMoved( object sender, Slider slider )

@@ -93,7 +93,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// <summary>
 		///     Storage container for constants defined in source.
 		/// </summary>
-		protected FloatList constants = new FloatList();
+		protected RealList constants = new RealList();
 		/// <summary>
 		///     Active Contexts pattern used in pass 1 to determine which tokens are valid for a certain context.
 		/// </summary>
