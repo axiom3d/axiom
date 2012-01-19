@@ -12,6 +12,7 @@
   <PropertyGroup>
     <AxiomBuildTasksPath Condition="'$(AxiomBuildTasksPath)' == ''">$(MSBuildExtensionsPath)\AxiomBuildTasks</AxiomBuildTasksPath>
     <AxiomBuildTasksLib>$(AxiomBuildTasksPath)\Axiom.Build.Tasks.dll</AxiomBuildTasksLib>
+	<RootDir Condition="'$(RootDir)' ==''">$(SolutionDir)</RootDir>
   </PropertyGroup>
   <UsingTask TaskName="SvnAssemblyInfo" AssemblyFile="$(AxiomBuildTasksLib)" />
 
@@ -60,15 +61,15 @@
 
 
     <ItemGroup>
-      <AssemblyInfoFile Include="@( AssemblyInfoTemplate -> %OutputFile )" />
+      <AssemblyInfoFile Include="%(AssemblyInfoTemplate.OutputFile)" />
     </ItemGroup>
     
-    <Message Importance="high" Text="Transforming AssemblyInfoFiles. @( AssemblyInfoTemplate )" />
+    <Message Importance="high" Text="Transforming AssemblyInfoFiles. @( AssemblyInfoTemplate ) -> @( AssemblyInfoFile )" />
     
     <!-- Read Major/Minor version from version.txt -->
     <!-- Read revision from SVN Repository -->
     <!-- Format version into Major.Minor.Revision.YYMMDD -->
-    <SvnAssemblyInfo AssemblyInfoFiles="@( AssemblyInfoTemplate )" WorkingCopy="C:\Projects\Axiom\v0.8.0.0-test" />
+    <SvnAssemblyInfo AssemblyInfoFiles="@( AssemblyInfoTemplate )" WorkingCopy="$(RootDir)" />
    
   </Target>
   
