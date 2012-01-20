@@ -344,7 +344,6 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public override bool KeyPressed( SIS.KeyEventArgs evt )
 		{
-
 			switch ( evt.Key )
 			{
 				case SIS.KeyCode.Key_S:

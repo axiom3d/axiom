@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -107,6 +107,8 @@
     <Compile Include="TerrainLayerBlendMap.cs" />
     <Compile Include="TerrainMaterialGenerator.cs" />
     <Compile Include="TerrainMaterialGeneratorA.cs" />
+    <Compile Include="TerrainPagedWorldSection.cs" />
+    <Compile Include="TerrainPaging.cs" />
     <Compile Include="TerrainQuadTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +132,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
       <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Paging\Axiom.Components.Paging.2010.v4.0.csproj">
+      <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
+      <Name>Axiom.Components.Paging.2010.v4.0</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

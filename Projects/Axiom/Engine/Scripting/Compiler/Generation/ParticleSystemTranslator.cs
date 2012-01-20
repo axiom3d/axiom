@@ -99,9 +99,7 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				_System.Origin = obj.File;
-
 				_System.RemoveAllEmitters();
-				;
 				_System.RemoveAllAffectors();
 
 				obj.Context = _System;

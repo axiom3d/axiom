@@ -35,4 +35,9 @@ particle_system Examples/Snow
 		height	200
 		depth	1
 	}
+
+	affector DirectionRandomizer
+	{
+		randomness	10
+	}
 }

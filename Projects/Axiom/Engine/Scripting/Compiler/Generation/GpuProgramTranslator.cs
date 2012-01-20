@@ -137,7 +137,6 @@ namespace Axiom.Scripting.Compiler
 					if ( i is PropertyAbstractNode )
 					{
 						var prop = (PropertyAbstractNode)i;
-                        LogManager.Instance.Write("TranslateProgramParameters {0}", (Keywords)prop.Id);
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_SHARED_PARAMS_REF

@@ -965,7 +965,7 @@ namespace Axiom.ParticleSystems
 
 		public bool SetParameter( string attr, string val )
 		{
-			var id = attr.GetHashCode();
+			var id = attr.ToLower().GetHashCode();
 			if ( attribParsers.ContainsKey( id ) )
 			{
 				var args = new object[ 2 ];
