@@ -389,17 +389,17 @@ namespace Axiom.ParticleSystems
 		///		factories. Applications should use the ParticleSystem.AddAffector method instead,
 		///		which calls this method to create an instance.
 		/// </remarks>
-        /// <param name="affectorType">string name of the affector type to be created. A factory of this type must have been registered.</param>
-		internal ParticleAffector CreateAffector( string affectorType )
+        /// <param name="affectorType">name of the affector type to be created. A factory of this type must have been registered.</param>
+        /// <param name="psys">The particle system it is being created for</param>
+        [OgreVersion( 1, 7, 2 )]
+		internal ParticleAffector CreateAffector( string affectorType, ParticleSystem psys )
 		{
 			var factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType.ToLower().GetHashCode() ];
 
 			if ( factory == null )
-			{
 				throw new AxiomException( "Cannot find requested affector '{0}'.", affectorType );
-			}
 
-			return factory.Create();
+            return factory.CreateAffector( psys );
 		}
 
 		/// <summary>

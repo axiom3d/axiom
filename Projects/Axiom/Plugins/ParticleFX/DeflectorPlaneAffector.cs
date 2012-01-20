@@ -101,8 +101,9 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		/// Default Costructor
 		/// </summary>
-		public DeflectorPlaneAffector()
-		{
+        public DeflectorPlaneAffector( ParticleSystem psys )
+            : base( psys )
+        {
 			this.type = "DeflectorPlane";
 
 			// defaults
@@ -111,7 +112,7 @@ namespace Axiom.ParticleFX
 			_bounce = 1.0f;
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			// precalculate distance of plane from origin
 			float planeDistance = -_planeNormal.Dot( _planePoint ) / Utility.Sqrt( _planeNormal.Dot( _planeNormal ) );

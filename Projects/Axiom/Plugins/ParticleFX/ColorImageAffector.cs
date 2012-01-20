@@ -56,23 +56,25 @@ namespace Axiom.ParticleFX
 
 		const float div_255 = 1.0f / 255.0f;
 
-		public ColorImageAffector()
-		{
-			this.type = "ColourImage";
-		}
+        public ColorImageAffector( ParticleSystem psys )
+            : base( psys )
+        {
+            this.type = "ColourImage";
+        }
 
 		public String ColorImageName
 		{
 			get
-			{
-				return colorImageName;
-			}
-			set
-			{
-				colorImageName = value;
-				}
-			}
+            {
+                return colorImageName;
+            }
+            set
+            {
+                colorImageName = value;
+            }
+        }
 
+        /// <see cref="ParticleAffector.InitParticle"/>
 		public override void InitParticle( ref Particle particle )
 		{
 			if ( !colorImageLoaded )
@@ -83,7 +85,8 @@ namespace Axiom.ParticleFX
 			particle.Color = colorImage.GetColorAt( 0, 0, 0 );
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+        /// <see cref="ParticleAffector.AffectParticles"/>
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			if ( !colorImageLoaded )
 			{
@@ -144,16 +147,15 @@ namespace Axiom.ParticleFX
 
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		private void loadImage()
 		{
-			colorImage = Image.FromFile( colorImageName );
+			colorImage = Image.FromFile( colorImageName, parent.ResourceGroupName );
 
-			PixelFormat format = colorImage.Format;
+			var format = colorImage.Format;
 
 			if ( !PixelUtil.IsAccessible( format ) )
-			{
-				throw new NotSupportedException( "Error: Image is not accessible (rgba) image." );
-			}
+				throw new AxiomException( "Error: Image is not accessible (rgba) image." );
 
 			colorImageLoaded = true;
 		}

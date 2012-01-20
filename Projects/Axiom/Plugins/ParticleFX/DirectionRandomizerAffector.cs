@@ -107,12 +107,10 @@ namespace Axiom.ParticleFX
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		public DirectionRandomizerAffector()
-		{
-			this.type = "DirectionRandomizer";
+        public DirectionRandomizerAffector( ParticleSystem psys )
+            : base( psys )
+        {
+            this.type = "DirectionRandomizer";
 
 			// defaults
 			_randomness = 1.0f;
@@ -130,7 +128,7 @@ namespace Axiom.ParticleFX
 		/// </remarks>
 		/// <param name="system">Reference to a ParticleSystem to affect.</param>
 		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float length = 0.0f;
 

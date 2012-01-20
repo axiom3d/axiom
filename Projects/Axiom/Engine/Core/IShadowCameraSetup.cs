@@ -77,5 +77,5 @@ namespace Axiom.Core
 		/// <param name="textureCamera"></param>
 		/// <param name="iteration"></param>
 		void GetShadowCamera( SceneManager sceneManager, Camera camera, Viewport viewport, Light light, Camera textureCamera, int iteration );
-	}
+	};
 }

@@ -33,9 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-using Axiom.ParticleSystems.Collections;
+
 
 #endregion Namespace Declarations
 
@@ -89,8 +87,8 @@ namespace Axiom.ParticleSystems
 		/// <remarks>
 		///		Subclasses MUST add a reference to the affectorList.
 		/// </remarks>
-		/// <returns></returns>
-		public abstract ParticleAffector Create();
+        [OgreVersion( 1, 7, 2 )]
+        public abstract ParticleAffector CreateAffector( ParticleSystem psys );
 
 		/// <summary>
 		///		Destroys the affector referenced by the parameter.

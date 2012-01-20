@@ -33,11 +33,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
 using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -54,7 +53,8 @@ namespace Axiom.ParticleFX
 		protected float greenAdjust;
 		protected float blueAdjust;
 
-		public ColorFaderAffector()
+		public ColorFaderAffector( ParticleSystem psys)
+            : base( psys )
 		{
 			this.type = "ColourFader";
 		}
@@ -124,7 +124,7 @@ namespace Axiom.ParticleFX
 		{
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float da, dr, dg, db;
 

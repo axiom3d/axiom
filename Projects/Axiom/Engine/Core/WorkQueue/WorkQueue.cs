@@ -110,7 +110,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// General purpose request structure.
 		/// </summary>
-		public struct Request
+		public class Request
 		{
 			// Note - There's no need to mark following fields as protected like in Ogre implementation of this struct,
 			// because there's no inheritance for C# structs.
@@ -242,6 +242,14 @@ namespace Axiom.Core
 
 			public static bool operator ==( Request lr, Request rr )
 			{
+                // If both are null, or both are same instance, return true.
+                if ( System.Object.ReferenceEquals( lr, rr ) )
+                    return true;
+
+                // If one is null, but not both, return false.
+                if ( ( (object)lr == null ) || ( (object)rr == null ) )
+                    return false;
+
 				return lr._channel == rr._channel &&
 					lr._type == rr._type &&
 					lr._data == rr._data &&
@@ -267,7 +275,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// General purpose response structure.
 		/// </summary>
-		public struct Response
+		public class Response
 		{
 			/// <summary>
 			/// Pointer to the request that this response is in relation to
@@ -488,7 +496,6 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public abstract void AddResponseHandler( ushort channel, IResponseHandler rh );
 
-		/// <summary>
 		/// Remove a Response handler.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]

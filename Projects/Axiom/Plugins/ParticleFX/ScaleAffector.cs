@@ -51,7 +51,8 @@ namespace Axiom.ParticleFX
 	{
 		protected float scaleAdjust;
 
-		public ScaleAffector()
+        public ScaleAffector( ParticleSystem psys )
+            : base( psys )
 		{
 			this.type = "Scaler";
 			scaleAdjust = 0;
@@ -69,7 +70,7 @@ namespace Axiom.ParticleFX
 			}
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float ds;
 

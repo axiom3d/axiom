@@ -54,9 +54,10 @@ namespace Axiom.ParticleFX
 		internal ColorEx[] colorAdj = new ColorEx[ MAX_STAGES ];
 		internal float[] timeAdj = new float[ MAX_STAGES ];
 
-		public ColorInterpolatorAffector()
-		{
-			this.type = "ColourInterpolator";
+        public ColorInterpolatorAffector( ParticleSystem psys )
+            : base( psys )
+        {
+            this.type = "ColourInterpolator";
 			ColorEx init;
 			init.a = init.r = init.g = 0.5f;
 			init.b = 0.0f;
@@ -68,7 +69,7 @@ namespace Axiom.ParticleFX
 			}
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )

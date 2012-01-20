@@ -39,9 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Core;
 using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
@@ -61,9 +59,9 @@ namespace Axiom.ParticleFX.Factories
             }
         }
 
-        public override ParticleAffector Create()
+        public override ParticleAffector CreateAffector( ParticleSystem psys )
         {
-            ParticleAffector p = new ColorImageAffector();
+            ParticleAffector p = new ColorImageAffector( psys );
             affectorList.Add( p );
             return p;
         }

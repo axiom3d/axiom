@@ -33,10 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
@@ -48,9 +45,9 @@ namespace Axiom.ParticleFX.Factories
     /// </summary>
     public class DirectionRandomizerAffectorFactory : ParticleAffectorFactory
     {
-        public override ParticleAffector Create()
+        public override ParticleAffector CreateAffector( ParticleSystem psys )
         {
-            ParticleAffector p = new DirectionRandomizerAffector();
+            ParticleAffector p = new DirectionRandomizerAffector( psys );
             affectorList.Add( p );
             return p;
         }

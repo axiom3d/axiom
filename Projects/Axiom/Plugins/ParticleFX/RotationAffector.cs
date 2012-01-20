@@ -70,10 +70,11 @@ namespace Axiom.ParticleFX
 
 		#endregion Fields
 
-		public RotationAffector()
-		{
-			this.type = "Rotator";
-			rotationSpeedRangeStart = 0;
+        public RotationAffector( ParticleSystem psys )
+            : base( psys )
+        {
+            this.type = "Rotator";
+            rotationSpeedRangeStart = 0;
 			rotationSpeedRangeEnd = 0;
 			rotationRangeStart = 0;
 			rotationRangeEnd = 0;
@@ -85,7 +86,7 @@ namespace Axiom.ParticleFX
 			particle.RotationSpeed = rotationSpeedRangeStart + ( Utility.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float ds;
 

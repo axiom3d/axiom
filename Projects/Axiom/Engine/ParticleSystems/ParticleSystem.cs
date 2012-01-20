@@ -99,6 +99,19 @@ namespace Axiom.ParticleSystems
 				return affectorList;
 			}
 		}
+
+        /// <summary>
+        /// Return the resource group to be used to load dependent resources
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public string ResourceGroupName
+        {
+            get
+            {
+                return resourceGroupName;
+            }
+        }
+
 		/// <summary>Cached for less memory usage during emitter processing.</summary>
 		/// <note>EmitterList is a list of _counts_, not a list of emitters</note>
 		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
@@ -314,9 +327,10 @@ namespace Axiom.ParticleSystems
 		///		Affector types can be extended by plugin authors.
 		/// </param>
 		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public ParticleAffector AddAffector( string affectorType )
 		{
-			var affector = ParticleSystemManager.Instance.CreateAffector( affectorType );
+			var affector = ParticleSystemManager.Instance.CreateAffector( affectorType, this );
 			affectorList.Add( affector );
 			return affector;
 		}
@@ -1238,6 +1252,8 @@ namespace Axiom.ParticleSystems
 			{
 				return materialName;
 			}
+
+            [OgreVersion( 1, 7, 2 )]
 			set
 			{
 				materialName = value;

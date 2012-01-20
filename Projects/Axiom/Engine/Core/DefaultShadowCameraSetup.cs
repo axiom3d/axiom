@@ -40,25 +40,30 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
+    /// <summary>
+    /// Implements default shadow camera setup
+    /// </summary>
+    /// <remarks>
+    /// This implements the default shadow camera setup algorithm.  This is what might
+    /// be referred to as "normal" shadow mapping.
+    /// </remarks>
 	public class DefaultShadowCameraSetup : IShadowCameraSetup
 	{
 		/// <summary>
 		/// Gets a default implementation of a ShadowCamera.
 		/// </summary>
-		/// <param name="sceneManager"></param>
-		/// <param name="camera"></param>
-		/// <param name="viewport"></param>
-		/// <param name="light"></param>
-		/// <param name="textureCamera"></param>
-		/// <param name="iteration"></param>
+        /// <see cref="IShadowCameraSetup.GetShadowCamera"/>
+        [OgreVersion( 1, 7, 2 )]
 		public void GetShadowCamera( SceneManager sceneManager, Camera camera, Viewport viewport, Light light, Camera textureCamera, int iteration )
 		{
 			Vector3 pos, dir;
-			Quaternion q;
+            Quaternion q;
 
 			// reset custom view / projection matrix in case already set
 			textureCamera.SetCustomViewMatrix( false );
 			textureCamera.SetCustomProjectionMatrix( false );
+            textureCamera.Near = light.DeriveShadowNearClipDistance( camera );
+            textureCamera.Far = light.DeriveShadowFarClipDistance( camera );
 
 
 			// get the shadow frustum's far distance
@@ -68,7 +73,7 @@ namespace Axiom.Core
 				// need a shadow distance, make one up
 				shadowDist = camera.Near * 300;
 			}
-			Real shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
+			var shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
 
 			// Directional lights
 			if ( light.Type == LightType.Directional )
@@ -100,7 +105,7 @@ namespace Axiom.Core
 				//~ pos.x -= fmod(pos.x, worldTexelSize);
 				//~ pos.y -= fmod(pos.y, worldTexelSize);
 				//~ pos.z -= fmod(pos.z, worldTexelSize);
-				Real worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
+				var worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
 
 				//get texCam orientation
 
@@ -136,16 +141,12 @@ namespace Axiom.Core
 				// Set perspective projection
 				textureCamera.ProjectionType = Projection.Perspective;
 				// set FOV slightly larger than the spotlight range to ensure coverage
-				Radian fovy = light.SpotlightOuterAngle * 1.2;
+				var fovy = light.SpotlightOuterAngle * 1.2;
 
 				// limit angle
 				if ( fovy.InDegrees > 175 )
 					fovy = (Degree)( 175 );
 				textureCamera.FieldOfView = fovy;
-
-				// set near clip the same as main camera, since they are likely
-				// to both reflect the nature of the scene
-				textureCamera.Near = camera.Near;
 
 				// Calculate position, which same as spotlight position
 				pos = light.GetDerivedPosition();
@@ -161,9 +162,6 @@ namespace Axiom.Core
 				textureCamera.ProjectionType = Projection.Perspective;
 				// Use 120 degree FOV for point light to ensure coverage more area
 				textureCamera.FieldOfView = 120.0f;
-				// set near clip the same as main camera, since they are likely
-				// to both reflect the nature of the scene
-				textureCamera.Near = camera.Near;
 
 				// Calculate look at position
 				// We want to look at a spot shadowOffset away from near plane
@@ -180,7 +178,22 @@ namespace Axiom.Core
 			// Finally set position
 			textureCamera.Position = pos;
 
-			// Calculate orientation based on direction calculated above
+            // Calculate orientation based on direction calculated above
+            /*
+            // Next section (camera oriented shadow map) abandoned
+            // Always point in the same direction, if we don't do this then
+            // we get 'shadow swimming' as camera rotates
+            // As it is, we get swimming on moving but this is less noticeable
+
+            // calculate up vector, we want it aligned with cam direction
+            Vector3 up = cam->getDerivedDirection();
+            // Check it's not coincident with dir
+            if (up.dotProduct(dir) >= 1.0f)
+            {
+            // Use camera up
+            up = cam->getUp();
+            }
+            */
 			var up2 = Vector3.UnitY;
 
 			// Check it's not coincident with dir

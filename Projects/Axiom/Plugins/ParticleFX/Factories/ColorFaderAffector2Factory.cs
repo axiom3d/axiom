@@ -61,9 +61,9 @@ namespace Axiom.ParticleFX.Factories
             }
         }
 
-        public override ParticleAffector Create()
+        public override ParticleAffector CreateAffector( ParticleSystem psys )
         {
-            ParticleAffector p = new ColorFaderAffector2();
+            ParticleAffector p = new ColorFaderAffector2( psys );
             affectorList.Add( p );
             return p;
         }
