@@ -33,11 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Axiom.Core;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -116,13 +114,27 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		///    Registers a new codec that can handle a particular type of media files.
+        /// Registers a new codec in the database.
 		/// </summary>
-		/// <param name="codec"></param>
+        [OgreVersion( 1, 7, 2 )]
 		public void RegisterCodec( ICodec codec )
 		{
+            if ( codecs.ContainsKey( codec.Type ) )
+                throw new AxiomException( "{0} already has a registered codec.", codec.Type );
+
 			codecs[ codec.Type ] = codec;
 		}
+
+        /// <summary>
+        /// Gets the file extension list for the registered codecs.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public string[] GetExtensions()
+        {
+            var result = new string[ codecs.Count ];
+            codecs.Keys.CopyTo( result, 0 );
+            return result;
+        }
 
 		/// <summary>
 		///    Gets the codec registered for the passed in file extension.
@@ -130,13 +142,20 @@ namespace Axiom.Media
 		/// <returns></returns>
 		public ICodec GetCodec( string extension )
 		{
-			if ( !codecs.ContainsKey( extension ) )
+            if ( !codecs.ContainsKey( extension ) )
 			{
-				LogManager.Instance.Write( "No codec available for media with extension .{0}", extension );
+                var formats = string.Empty;
+                if ( codecs.Count == 0 )
+                    formats = "There are no formats supported (no codecs registered).";
+                else
+                    formats = string.Format( "Supported formats are: {0}.", string.Join( " ", GetExtensions() ) );
+
+                //romeoxbm: At this point, an exception should be thrown (instead of the log message) and the NullCodec should not be registered.
+				LogManager.Instance.Write( "Can not find codec for '{0}' image format\n{1}", extension, formats );
 				RegisterCodec( new NullCodec( extension ) );
 			}
 
-			return (ICodec)codecs[ extension ];
+            return (ICodec)codecs[ extension ];
 		}
 
         /// <summary>
@@ -172,19 +191,20 @@ namespace Axiom.Media
         }
 
 		/// <summary>
-		/// Checks whether a codec is aviable or not.
+        /// Return whether a codec is registered already.
 		/// </summary>
 		/// <param name="extension">codec to check for</param>
-		/// <returns></returns>
-		public bool IsCodecAviable( string extension )
-		{
-			return codecs.ContainsKey( extension );
-	}
+        [OgreVersion( 1, 7, 2 )]
+        public bool IsCodecRegistered( string extension )
+        {
+            return codecs.ContainsKey( extension );
+        }
 
 		/// <summary>
-		///  URegisters a new codec that can handle a particular type of media files.
+        ///  Unregisters a codec from the database.
 		/// </summary>
 		/// <param name="codec">codec to unrerigster</param>
+        [OgreVersion( 1, 7, 2 )]
 		public void UnregisterCodec( ICodec codec )
 		{
 			if ( codecs.ContainsKey( codec.Type ) )

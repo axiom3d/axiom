@@ -100,7 +100,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 					// FreeImage 3.13 lists many formats twice: once under their own codec and
 					// once under the "RAW" codec, which is listed last. Avoid letting the RAW override
 					// the dedicated codec!
-					if ( !CodecManager.Instance.IsCodecAviable( extension ) )
+					if ( !CodecManager.Instance.IsCodecRegistered( extension ) )
 					{
 						ImageCodec codec = new FreeImageCodec( extension, (FI.FREE_IMAGE_TYPE)i );
 						_codecList.Add( codec );
