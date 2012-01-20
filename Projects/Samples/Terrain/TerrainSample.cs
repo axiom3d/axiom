@@ -190,7 +190,6 @@ namespace Axiom.Samples.Terrain
 									else
 										newheight = terrain.GetHeightAtPoint( x, y ) - addedHeight;
 									terrain.SetHeightAtPoint( x, y, newheight );
-
 								}
 							}
 							if ( heightUpdateCountDown == 0 )
@@ -231,7 +230,6 @@ namespace Axiom.Samples.Terrain
 										val = layer.GetBlendValue( x, imgY ) - paint;
 									val = Utility.Clamp( val, 1.0f, 0.0f );
 									layer.SetBlendValue( x, imgY, val );
-
 								}
 							}
 
@@ -297,7 +295,6 @@ namespace Axiom.Samples.Terrain
 					newy = Utility.Max( rayResult.Position.y + distanceAboveTerrain, newy );
 					Camera.Position = new Vector3( camPos.x, newy, camPos.z );
 				}
-
 			}
 
 			if ( heightUpdateCountDown > 0 )
@@ -341,37 +338,37 @@ namespace Axiom.Samples.Terrain
 		}
 
 #if !( WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
-		[OgreVersion( 1, 7, 2 )]
-		public override bool KeyPressed( SIS.KeyEventArgs evt )
-		{
-			switch ( evt.Key )
-			{
-				case SIS.KeyCode.Key_S:
-					// CTRL-S to save
-					if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_LCONTROL ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_RCONTROL ) )
-						SaveTerrains( true );
-					else
-						return base.KeyPressed( evt );
-					break;
+        [OgreVersion( 1, 7, 2 )]
+        public override bool KeyPressed( SIS.KeyEventArgs evt )
+        {
+            switch ( evt.Key )
+            {
+                case SIS.KeyCode.Key_S:
+                    // CTRL-S to save
+                    if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_LCONTROL ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_RCONTROL ) )
+                        SaveTerrains( true );
+                    else
+                        return base.KeyPressed( evt );
+                    break;
 
-				case SIS.KeyCode.Key_F10:
-					//dump
-					var tkey = 0;
-					foreach ( var ts in terrainGroup.TerrainSlots )
-					{
-						if ( ts.Instance != null && ts.Instance.IsLoaded )
-							ts.Instance.DumpTextures( "terrain_" + tkey, ".png" );
+                case SIS.KeyCode.Key_F10:
+                    //dump
+                    var tkey = 0;
+                    foreach ( var ts in terrainGroup.TerrainSlots )
+                    {
+                        if ( ts.Instance != null && ts.Instance.IsLoaded )
+                            ts.Instance.DumpTextures( "terrain_" + tkey, ".png" );
 
-						tkey++;
-					}
-					break;
+                        tkey++;
+                    }
+                    break;
 
-				default:
-					return base.KeyPressed( evt );
-			}
+                default:
+                    return base.KeyPressed( evt );
+            }
 
-			return true;
-		}
+            return true;
+        }
 #endif
 
 		[OgreVersion( 1, 7, 2 )]
@@ -420,7 +417,7 @@ namespace Axiom.Samples.Terrain
 				}
 				else
 				{
-					Image img = _getTerrainImage( x % 2 != 0, y % 2 != 0 );
+					var img = _getTerrainImage( x % 2 != 0, y % 2 != 0 );
 					terrainGroup.DefineTerrain( x, y, img );
 					terrainsImported = true;
 				}

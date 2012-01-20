@@ -1803,10 +1803,14 @@ namespace Axiom.Components.Terrain
             {
                 LodLevel ll = mLodLevels[ lod ];
 
-                if ( !ll.GpuIndexData.IsDisposed )
-                    ll.GpuIndexData.Dispose();
+                if ( ll.GpuIndexData != null )
+                {
+                    if ( !ll.GpuIndexData.IsDisposed )
+                        ll.GpuIndexData.Dispose();
 
-                ll.GpuIndexData = null;
+                    ll.GpuIndexData = null;
+                }
+                
                 mLodLevels[ lod ] = ll;
             }
         }
