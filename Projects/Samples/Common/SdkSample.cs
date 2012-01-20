@@ -27,7 +27,6 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Samples;
 
 using SIS = SharpInputSystem;
 
@@ -52,6 +51,7 @@ namespace Axiom.Samples
 				return dragLook;
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			set
 			{
 				if ( value )
@@ -126,6 +126,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Manually update the cursor position after being unpaused.
 		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public override void Unpaused()
 		{
 			this.TrayManager.RefreshCursor();
@@ -134,7 +135,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Automatically saves position and orientation for free-look cameras.
 		/// </summary>
-		/// <param name="state"></param>
+        [OgreVersion( 1, 7, 2 )]
 		public override void SaveState( NameValuePairList state )
 		{
 			if ( this.CameraManager.getStyle() == CameraStyle.FreeLook )
@@ -147,7 +148,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Automatically restores position and orientation for free-look cameras.
 		/// </summary>
-		/// <param name="state"></param>
+        [OgreVersion( 1, 7, 2 )]
 		public override void RestoreState( NameValuePairList state )
 		{
 			if ( state.ContainsKey( "CameraPosition" ) && state.ContainsKey( "CameraOrientation" ) )
@@ -163,6 +164,7 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns>true if we should stop rendering!</returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			this.TrayManager.FrameRenderingQueued( evt );
@@ -186,13 +188,10 @@ namespace Axiom.Samples
 			return false;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="rw"></param>
+        [OgreVersion( 1, 7, 2 )]
 		public override void WindowResized( RenderWindow rw )
 		{
-			this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / this.Viewport.ActualHeight;
+            this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
 		}
 
 		/// <summary>
@@ -303,11 +302,7 @@ namespace Axiom.Samples
 			return true;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="evt"></param>
-		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override bool KeyReleased( SIS.KeyEventArgs evt )
 		{
 			this.CameraManager.injectKeyUp( evt );
@@ -323,8 +318,7 @@ namespace Axiom.Samples
 		/// to filter out any interface-related mouse events before processing them in your scene.
 		/// If the tray manager handler returns true, the event was meant for the trays, not you.
 		/// </remarks>
-		/// <param name="evt"></param>
-		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override bool MouseMoved( SIS.MouseEventArgs evt )
 		{
 			if ( this.TrayManager.InjectMouseMove( evt ) )
@@ -346,10 +340,17 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
 			if ( this.TrayManager.InjectMouseDown( evt, id ) )
 				return true;
+
+            if ( dragLook && id == SIS.MouseButtonID.Left )
+            {
+                CameraManager.setStyle( CameraStyle.FreeLook );
+                TrayManager.HideCursor();
+            }
 
 			this.CameraManager.injectMouseDown( evt, id );
 
@@ -367,10 +368,17 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
 			if ( this.TrayManager.InjectMouseUp( evt, id ) )
 				return true;
+
+            if ( dragLook && id == SIS.MouseButtonID.Left )
+            {
+                CameraManager.setStyle( CameraStyle.Manual );
+                TrayManager.ShowCursor();
+            }
 
 			this.CameraManager.injectMouseUp( evt, id );
 
