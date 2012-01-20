@@ -61,13 +61,14 @@ namespace Axiom.ParticleFX
 		protected ForceApplication forceApp = ForceApplication.Add;
 		protected Vector3 forceVector = Vector3.Zero;
 
-		public LinearForceAffector()
-		{
-			// HACK: See if there is better way to do this
+        public LinearForceAffector( ParticleSystem psys )
+            : base( psys )
+        {
+            // HACK: See if there is better way to do this
 			this.type = "LinearForce";
 		}
 
-		public override void AffectParticles( ParticleSystem system, float timeElapsed )
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			Vector3 scaledVector = Vector3.Zero;
 

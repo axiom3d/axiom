@@ -38,9 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Reflection;
 using Axiom.Collections;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -76,6 +76,7 @@ namespace Axiom.ParticleSystems
 		protected string type;
 
 		protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
+        protected ParticleSystem parent;
 
 		#endregion Fields
 
@@ -84,8 +85,9 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor
 		/// </summary>
-		public ParticleAffector()
+        public ParticleAffector( ParticleSystem parent )
 		{
+            this.parent = parent;
 			RegisterCommands();
 		}
 
@@ -122,12 +124,8 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="system">Reference to a ParticleSystem to affect.</param>
 		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-		public abstract void AffectParticles( ParticleSystem system, float timeElapsed );
+		public abstract void AffectParticles( ParticleSystem system, Real timeElapsed );
 
-		/// <summary>
-		///
-		/// </summary>
-        /// <param name="affector"></param>
 		public virtual void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance

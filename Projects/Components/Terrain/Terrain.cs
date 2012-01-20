@@ -6102,8 +6102,8 @@ namespace Axiom.Components.Terrain
 
 			DerivedDataRequest ddr = (DerivedDataRequest)req.Data;
 			// only deal with own requests; we shouldn't ever get here though
-			if ( ddr.Terrain != this )
-				return new WorkQueue.Response();
+            if ( ddr.Terrain != this )
+                return null;
 
 			DerivedDataResponse ddres = new DerivedDataResponse();
 			ddr.TypeMask = (byte)( ddr.TypeMask & DERIVED_DATA_ALL );

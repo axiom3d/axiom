@@ -98,11 +98,11 @@ namespace Axiom.Core
 			/// </summary>
 			/// <returns>Valid response if processed, null otherwise</returns>
 			[OgreVersion( 1, 7, 2 )]
-			public Response? HandleRequest( Request req, WorkQueue srcQ )
+			public Response HandleRequest( Request req, WorkQueue srcQ )
 			{
 				// Read mutex so that multiple requests can be processed by the
 				// same handler in parallel if required
-				Response? response = null;
+				Response response = null;
 				lock ( _mutex )
 				{
 					if ( _handler != null )
@@ -575,7 +575,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void ProcessNextRequest()
 		{
-			Request? request = null;
+			Request request = null;
 			// scoped to only lock while retrieving the next request
 			lock ( processMutex )
 			{
@@ -584,13 +584,13 @@ namespace Axiom.Core
 					if ( requestQueue.Count > 0 )
 					{
 						request = requestQueue.RemoveFromHead();
-						processQueue.Add( request.Value );
+						processQueue.Add( request );
 					}
 				}
 			}
 
 			if ( request != null )
-				ProcessRequestResponse( request.Value, false );
+				ProcessRequestResponse( request, false );
 		}
 
 		/// <summary>
@@ -600,8 +600,7 @@ namespace Axiom.Core
 
 		protected void ProcessRequestResponse( Request r, bool synchronous )
 		{
-			Response response;
-			bool hasResponse = ProcessRequest( r, out response );
+			var response = ProcessRequest( r );
 
 			lock ( processMutex )
 			{
@@ -614,7 +613,7 @@ namespace Axiom.Core
 					}
 				}
 
-				if ( hasResponse )
+				if ( response != null )
 				{
 					if ( !response.Succeeded )
 					{
@@ -672,7 +671,7 @@ namespace Axiom.Core
 			// keep going until we run out of responses or out of time
 			while ( true )
 			{
-				Response? response = null;
+				Response response = null;
 				lock ( responseMutex )
 				{
 					if ( responseQueue.Count == 0 )
@@ -683,7 +682,7 @@ namespace Axiom.Core
 
 				if ( response != null )
 				{
-					ProcessResponse( response.Value );
+					ProcessResponse( response );
 					response = null;
 				}
 
@@ -697,13 +696,11 @@ namespace Axiom.Core
 			}
 		}
 
-		//Original method declaration was protected Response ProcessRequest(Request r)
 		[OgreVersion( 1, 7, 2 )]
-		protected bool ProcessRequest( Request r, out Response response )
+		protected Response ProcessRequest( Request r )
 		{
 			Dictionary<ushort, List<RequestHandlerHolder>> handlerListCopy;
-			bool retValue = false;
-			response = new Response();
+            Response response = null;
 
 			// lock the list only to make a copy of it, to maximise parallelism
 			lock ( requestHandlerMutex )
@@ -725,14 +722,10 @@ namespace Axiom.Core
 				for ( int j = handlers.Count - 1; j >= 0; --j )
 				{
 					// threadsafe call which tests canHandleRequest and calls it if so
-					Response? res = handlers[ j ].HandleRequest( r, this );
-					retValue = res.HasValue;
+					response = handlers[ j ].HandleRequest( r, this );
 
-					if ( retValue )
-					{
-						response = res.Value;
+					if ( response != null )
 						break;
-					}
 				}
 			}
 
@@ -742,10 +735,10 @@ namespace Axiom.Core
 				"DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}",
 				name,
 				dbgMsg.ToString(),
-				retValue
+				response != null
 				);
 
-			return retValue;
+			return response;
 		}
 
 		[OgreVersion( 1, 7, 2 )]

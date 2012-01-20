@@ -531,8 +531,8 @@ namespace Axiom.Components.Paging
 
 			PageRequest preq = (PageRequest)req.Data;
 			// only deal with own requests; we shouldn't ever get here though
-			if ( preq.srcPage != this )
-				return new WorkQueue.Response();
+            if ( preq.srcPage != this )
+                return null;
 
 			PageResponse res = new PageResponse();
 			res.pageData = new PageData();

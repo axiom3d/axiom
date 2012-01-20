@@ -163,7 +163,8 @@ namespace Axiom.Core
 
 		protected Real powerScale = 1.0f;
 		protected bool ownShadowFarDistance = false;
-		protected Real shadowFarDistance = 0.0f;
+        protected Real shadowNearDistance = -1;
+		protected Real shadowFarDistance = -1;
 		protected Real shadowFarDistanceSquared = 0.0f;
 
 		#endregion Fields
@@ -450,7 +451,30 @@ namespace Axiom.Core
 			}
 		}
 
-		public float ShadowFarDistance
+        /// <summary>
+        /// Get the near clip plane distance to be used by the shadow camera, if
+        /// this light casts texture shadows.
+        /// <remarks>
+        /// May be zero if the light doesn't have it's own near distance set;
+        /// use _deriveShadowNearDistance for a version guaranteed to give a result.
+        /// </remarks>
+        /// </summary>
+        public Real ShadowNearDistance
+        {
+            [OgreVersion( 1, 7, 2 )]
+            get
+            {
+                return shadowNearDistance;
+            }
+
+            [OgreVersion( 1, 7, 2 )]
+            set
+            {
+                shadowNearDistance = value;
+            }
+        }
+
+		public Real ShadowFarDistance
 		{
 			get
 			{
@@ -1406,6 +1430,37 @@ namespace Axiom.Core
         internal void UpdateCustomGpuParameter( ushort paramIndex, GpuProgramParameters.AutoConstantEntry constantEntry, GpuProgramParameters parameters )
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Derive a shadow camera near distance from either the light, or
+        ///from the main camera if the light doesn't have its own setting.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        internal Real DeriveShadowNearClipDistance( Camera camera )
+        {
+            if ( shadowNearDistance > 0 )
+                return shadowNearDistance;
+            else
+                return camera.Near;
+        }
+
+        /// <summary>
+        /// Derive a shadow camera far distance from either the light, or
+		/// from the main camera if the light doesn't have its own setting.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        internal Real DeriveShadowFarClipDistance( Camera camera )
+        {
+            if ( shadowFarDistance >= 0 )
+                return shadowFarDistance;
+            else
+            {
+                if ( type == LightType.Directional )
+                    return 0;
+                else
+                    return range;
+            }
         }
     }
 

@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Utilities;
@@ -390,6 +389,20 @@ namespace Axiom.Media
         /// <summary>
         /// Flips (mirrors) the image around the Y-axis. 
         /// </summary>
+        /// <remarks>
+        /// An example of an original and flipped image:
+        /// <pre>
+        ///        flip axis
+        ///            |
+        /// originalimg|gmilanigiro
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// </pre>
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
         public void FlipAroundY()
         {
             if ( buffer == null )
@@ -436,6 +449,20 @@ namespace Axiom.Media
         ///		Flips this image around the X axis.
         ///     This will invalidate any 
         /// </summary>
+        /// <remarks>
+        /// An example of an original and flipped image:
+        /// <pre>
+        ///        flip axis
+        ///            |
+        /// originalimg|gmilanigiro
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// 00000000000|00000000000
+        /// </pre>
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
         public void FlipAroundX()
         {
             if ( buffer == null )
@@ -461,58 +488,18 @@ namespace Axiom.Media
         }
 
         /// <summary>
-        ///    Loads an image file from the file system.
+        /// Loads an image file.
         /// </summary>
-        /// <param name="fileName">Full path to the image file on disk.</param>
-        public static Image FromFile( string fileName )
-        {
-            Contract.RequiresNotEmpty( fileName, "fileName" );
-
-            var pos = fileName.LastIndexOf( "." );
-
-            if ( pos == -1 )
-            {
-                throw new AxiomException( "Unable to load image file '{0}' due to missing extension.", fileName );
-            }
-
-            // grab the extension from the filename
-            var ext = fileName.Substring( pos + 1 );
-
-            // find a registered codec for this type
-            var codec = CodecManager.Instance.GetCodec( ext );
-
-            var encoded = ResourceGroupManager.Instance.OpenResource( fileName );
-            if ( encoded == null )
-            {
-                throw new FileNotFoundException( fileName );
-            }
-
-            // decode the image data
-            var decoded = new MemoryStream();
-            var data = (ImageCodec.ImageData)codec.Decode( encoded, decoded );
-            encoded.Close();
-
-            var image = new Image();
-
-            // copy the image data
-            image.height = data.height;
-            image.width = data.width;
-            image.depth = data.depth;
-            image.format = data.format;
-            image.flags = data.flags;
-            image.numMipMaps = data.numMipMaps;
-
-            // stuff the image data into an array
-            var buffer = new byte[ decoded.Length ];
-            decoded.Position = 0;
-            decoded.Read( buffer, 0, buffer.Length );
-            decoded.Close();
-
-            image.SetBuffer( buffer );
-
-            return image;
-        }
-
+        /// <remarks>
+        ///  This method loads an image into memory. Any format for which 
+        /// and associated ImageCodec is registered can be loaded. 
+        /// This can include complex formats like DDS with embedded custom 
+        /// mipmaps, cube faces and volume textures.
+        /// The type can be determined by calling getFormat().
+        /// </remarks>
+        /// <param name="fileName">Name of a file file to load.</param>
+        /// <param name="groupName">Name of the resource group to search for the image</param>
+        /// <note>The memory associated with this buffer is destroyed with the Image object.</note>
         [OgreVersion( 1, 7, 2 )]
         public static Image FromFile( string fileName, string groupName )
         {
@@ -649,21 +636,33 @@ namespace Axiom.Media
 #endif
 
         /// <summary>
-        ///    Loads an image from a stream.
+        /// Loads an image from a stream.
         /// </summary>
         /// <remarks>
-        ///    This method allows loading an image from a stream, which is helpful for when
-        ///    images are being decompressed from an archive into a stream, which needs to be
-        ///    loaded as is.
+        /// This method works in the same way as the filename-based load 
+        /// method except it loads the image from a DataStream object. 
+        /// This DataStream is expected to contain the 
+        /// encoded data as it would be held in a file. 
+        /// Any format for which and associated ImageCodec is registered 
+        /// can be loaded. 
+        /// This can include complex formats like DDS with embedded custom 
+        /// mipmaps, cube faces and volume textures.
+        /// The type can be determined by calling getFormat().
         /// </remarks>
         /// <param name="stream">Stream serving as the data source.</param>
         /// <param name="type">
-        ///    Type (i.e. file format) of image.  Used to decide which image decompression codec to use.
+        /// The type of the image. Used to decide what decompression
+        /// codec to use. Can be left blank if the stream data includes
+        /// a header to identify the data.
         /// </param>
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public static Image FromStream( Stream stream, string type = "" )
+#else
         public static Image FromStream( Stream stream, string type )
+#endif
         {
             // find the codec for this file type
-
             ICodec codec = null;
 
             if ( !string.IsNullOrEmpty( type ) )
@@ -676,7 +675,7 @@ namespace Axiom.Media
                 // derive from magic number
                 // read the first 32 bytes or file size, if less
                 var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
-                byte[] magicBuf = new byte[ 32 ];
+                byte[] magicBuf = new byte[ magicLen ];
                 stream.Read( magicBuf, 0, magicLen );
                 // return to start
                 stream.Position = 0;
@@ -699,9 +698,11 @@ namespace Axiom.Media
                 height = data.height,
                 width = data.width,
                 depth = data.depth,
-                format = data.format,
-                flags = data.flags,
+                size = data.size,
                 numMipMaps = data.numMipMaps,
+                flags = data.flags,
+                // Get the format and compute the pixel size
+                format = data.format,
             };
 
             // stuff the image data into an array
@@ -714,6 +715,14 @@ namespace Axiom.Media
 
             return image;
         }
+
+#if !NET_40
+        /// <see cref="Image.FromStream(Stream, string)"/>
+        public static Image FromStream( Stream stream )
+        {
+            return FromStream( stream, string.Empty );
+        }
+#endif
 
         /// <summary>
         /// Saves the Image as a file
