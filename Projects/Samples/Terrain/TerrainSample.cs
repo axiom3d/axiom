@@ -721,6 +721,7 @@ namespace Axiom.Samples.Terrain
 			TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "Help", 100, names ).SetParamValue( 0, "H/F1" );
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		protected override void SetupContent()
 		{
 			bool blankTerrain = false;
