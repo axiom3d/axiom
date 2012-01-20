@@ -103,6 +103,14 @@ namespace Axiom.RenderSystems.Xna
             get { return imageExtension; }
         }
 
+        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            //TODO
+            return string.Empty;
+        }
+
         #endregion Overrides of ImageCodec
+        
     }
 }

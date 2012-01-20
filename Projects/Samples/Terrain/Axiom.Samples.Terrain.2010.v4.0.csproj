@@ -147,6 +147,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.19608, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.DirectX, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\SharpInputSystem.DirectX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -164,6 +170,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
       <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Components\Paging\Axiom.Components.Paging.2010.v4.0.csproj">
+      <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
+      <Name>Axiom.Components.Paging.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Components\Terrain\Axiom.Components.Terrain.2010.v4.0.csproj">
       <Project>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</Project>
