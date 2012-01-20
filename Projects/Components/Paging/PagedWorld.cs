@@ -295,13 +295,13 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName, string sectionName )
 		{
-			string theName = sectionName;
+			var theName = sectionName;
 			if ( theName == string.Empty )
 			{
 				do
 				{
 					theName = mSectionNameGenerator.GetNextUniqueName();
-				} while ( !mSections.ContainsKey( theName ) );
+				} while ( mSections.ContainsKey( theName ) );
 			}
 			else if ( mSections.ContainsKey( theName ) )
 				throw new AxiomException( "World section named '{0}' already exists! PagedWorld.CreateSection", theName );

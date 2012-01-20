@@ -92,6 +92,7 @@
     <Compile Include="TerrainMaterialGenerator.cs" />
     <Compile Include="TerrainMaterialGeneratorA.cs" />
     <Compile Include="TerrainPagedWorldSection.cs" />
+    <Compile Include="TerrainPaging.cs" />
     <Compile Include="TerrainQuadTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
