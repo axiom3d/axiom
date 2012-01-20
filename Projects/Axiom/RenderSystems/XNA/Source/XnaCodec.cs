@@ -59,7 +59,8 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// Codes the data from the input chunk into the output chunk.
         /// </summary>
-        /// <param name="input">Input stream (encoded data).</param><param name="output">Output stream (decoded data).</param><param name="args">Variable number of extra arguments.</param>
+        /// <param name="input">Input stream (encoded data).</param><param name="output">Output stream (decoded data).</param>
+        /// <param name="args">Variable number of extra arguments.</param>
         /// <returns>
         /// An object that holds data specific to the media format which this codec deal with.
         ///     For example, an image codec might return a structure that has image related details,
@@ -80,7 +81,8 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// Encodes the data in the input stream and saves the result in the output stream.
         /// </summary>
-        /// <param name="input">Input stream (decoded data).</param><param name="output">Output stream (encoded data).</param><param name="args">Variable number of extra arguments.</param>
+        /// <param name="input">Input stream (decoded data).</param><param name="output">Output stream (encoded data).</param>
+        /// <param name="args">Variable number of extra arguments.</param>
         public override void Encode( Stream input, Stream output, params object[] args )
         {
             throw new NotImplementedException();
@@ -89,7 +91,8 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// Encodes data to a file.
         /// </summary>
-        /// <param name="input">Stream containing data to write.</param><param name="fileName">Filename to output to.</param><param name="codecData">Extra data to use in order to describe the codec data.</param>
+        /// <param name="input">Stream containing data to write.</param><param name="fileName">Filename to output to.</param>
+        /// <param name="codecData">Extra data to use in order to describe the codec data.</param>
         public override void EncodeToFile( Stream input, string fileName, object codecData )
         {
             throw new NotImplementedException();
