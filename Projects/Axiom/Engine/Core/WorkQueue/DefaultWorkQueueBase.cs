@@ -160,8 +160,8 @@ namespace Axiom.Core
 			set
 			{
 				workerThreadCount = value;
-                if ( workerThreadCount == 0 )
-                    workerThreadCount = 1;
+				if ( workerThreadCount == 0 )
+					workerThreadCount = 1;
 			}
 		}
 
@@ -604,11 +604,11 @@ namespace Axiom.Core
 
 			lock ( processMutex )
 			{
-				foreach ( var it in processQueue )
+				for ( int i = 0; i < processQueue.Count; ++i )
 				{
-					if ( it == r )
+					if ( processQueue[ i ] == r )
 					{
-						processQueue.Remove( it );
+						processQueue.RemoveAt( i );
 						break;
 					}
 				}
@@ -700,7 +700,7 @@ namespace Axiom.Core
 		protected Response ProcessRequest( Request r )
 		{
 			Dictionary<ushort, List<RequestHandlerHolder>> handlerListCopy;
-            Response response = null;
+			Response response = null;
 
 			// lock the list only to make a copy of it, to maximise parallelism
 			lock ( requestHandlerMutex )

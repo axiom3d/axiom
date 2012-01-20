@@ -259,7 +259,7 @@ namespace Axiom.Components.Paging
 				{
 					theName = mWorldNameGenerator.GetNextUniqueName();
 				}
-				while ( !mWorlds.ContainsKey( theName ) );
+				while ( mWorlds.ContainsKey( theName ) );
 			}
 			else if ( mWorlds.ContainsKey( theName ) )
 			{

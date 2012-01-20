@@ -53,17 +53,16 @@ namespace Axiom.Samples.Terrain
 		const float TerrainWorldSize = 12000f;
 		const int TerrainSize = 513;
 
-		const long TerrainPageMinX = 0;
-		const long TerrainPageMinY = 0;
-		const long TerrainPageMaxX = 0;
-		const long TerrainPageMaxY = 0;
+		const int TerrainPageMinX = 0;
+		const int TerrainPageMinY = 0;
+		const int TerrainPageMaxX = 0;
+		const int TerrainPageMaxY = 0;
 
 		protected TerrainGlobalOptions terrainGlobals;
 		protected TerrainGroup terrainGroup;
 		protected bool paging;
 
-		//TODO
-		//protected TerrainPaging terrainPaging;
+		protected TerrainPaging terrainPaging;
 		protected PageManager pageManager;
 
 #if PAGING
@@ -84,6 +83,7 @@ namespace Axiom.Samples.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			public override bool UnPrepareProcedualPage( Page page, PagedWorldSection section ) { return true; }
 		};
+
 		protected DummyPageProvider dummyPageProvider;
 #endif
 
@@ -336,7 +336,7 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void SaveTerrains( bool onlyIfModified )
 		{
-			//TODO
+            //TODO
 			//terrainGroup.SaveAllTerrains( onlyIfModified );
 		}
 
@@ -758,17 +758,17 @@ namespace Axiom.Samples.Terrain
 
 			_configureTerrainDefaults( l );
 #if PAGING
-		    // Paging setup
-		    pageManager = new PageManager();
-		    // Since we're not loading any pages from .page files, we need a way just 
-		    // to say we've loaded them without them actually being loaded
-		    pageManager.PageProvider = dummyPageProvider;
-		    pageManager.AddCamera(Camera);
-		    mTerrainPaging = OGRE_NEW TerrainPaging(pageManager);
-		    PagedWorld world = pageManager.CreateWorld();
-		    mTerrainPaging->createWorldSection(world, terrainGroup, 2000, 3000, 
-			    TERRAIN_PAGE_MIN_X, TERRAIN_PAGE_MIN_Y, 
-			    TERRAIN_PAGE_MAX_X, TERRAIN_PAGE_MAX_Y);
+            // Paging setup
+            pageManager = new PageManager();
+            // Since we're not loading any pages from .page files, we need a way just 
+            // to say we've loaded them without them actually being loaded
+            pageManager.PageProvider = dummyPageProvider;
+            pageManager.AddCamera( Camera );
+            terrainPaging = new TerrainPaging( pageManager );
+            PagedWorld world = pageManager.CreateWorld();
+            terrainPaging.CreateWorldSection( world, terrainGroup, 2000, 3000,
+                TerrainPageMinX, TerrainPageMinY,
+                TerrainPageMaxX, TerrainPageMaxY );
 #else
 			for ( long x = TerrainPageMinX; x <= TerrainPageMaxX; ++x )
 			{
@@ -815,18 +815,19 @@ namespace Axiom.Samples.Terrain
 			sn.AttachObject( e );
 			houseList.Add( e );
 
-            //SceneManager.SetSkyDome( true, "Examples/CloudyNoonSkyBox", 5000, 8 );
+			//SceneManager.SetSkyDome( true, "Examples/CloudyNoonSkyBox", 5000, 8 );
 			SceneManager.SetSkyDome( true, "Examples/CloudySky", 5000, 8 );
 		}
 
+		[OgreVersion( 1, 7, 2 )]
 		public override void Shutdown()
 		{
-			//if ( terrainPaging != null )
-			//{
-			//    OGRE_DELETE mTerrainPaging;
-			//    OGRE_DELETE mPageManager;
-			//}
-			//else
+			if ( terrainPaging != null )
+			{
+				terrainPaging.Dispose();
+				pageManager.Dispose();
+			}
+			else
 			{
 				if ( terrainGroup != null )
 				{
