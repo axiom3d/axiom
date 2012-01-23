@@ -725,6 +725,26 @@ namespace Axiom.Media
 #endif
 
         /// <summary>
+        /// Static function to get an image type string from a stream via magic numbers
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public static string GetFileExtFromMagic( Stream stream )
+        {
+            // read the first 32 bytes or file size, if less
+            var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
+            byte[] magicBuf = new byte[ magicLen ];
+            stream.Read( magicBuf, 0, magicLen );
+            // return to start
+            stream.Position = 0;
+            var codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
+
+            if ( codec != null )
+                return codec.Type;
+
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Saves the Image as a file
         /// </summary>
         /// <remarks>
