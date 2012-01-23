@@ -218,7 +218,7 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void Dirty()
         {
-            Rectangle rect = new Rectangle();
+            var rect = new Rectangle();
             rect.Top = 0; rect.Bottom = mBuffer.Height;
             rect.Left = 0; rect.Right = mBuffer.Width;
             DirtyRect( rect );
@@ -260,14 +260,11 @@ namespace Axiom.Components.Terrain
                 unsafe
 #endif
                 {
-                    // Upload data
-                    //fixed (float* pmDataF = mData)
-                    // {
                     var mDataPtr = Memory.PinObject( mData );
                     var pmData = mDataPtr.ToFloatPointer();
                     var pSrcBase = mDataPtr + ( mDirtyBox.Top * mBuffer.Width + mDirtyBox.Left );
                     Debug.Assert( mDirtyBox.Depth == 1 );
-                    PixelBox pBox = mBuffer.Lock( mDirtyBox, BufferLocking.Normal );
+                    var pBox = mBuffer.Lock( mDirtyBox, BufferLocking.Normal );
                     var pDstBase = pBox.Data;
                     pDstBase += mChannelOffset;
                     int dstInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
@@ -285,13 +282,12 @@ namespace Axiom.Components.Terrain
                     mBuffer.Unlock();
 
                     mDirty = false;
-                    // }
                 }
 
                 // make sure composite map is updated
                 // mDirtyBox is in image space, convert to terrain units
-                Rectangle compositeMapRect = new Rectangle();
-                float blendToTerrain = (float)mParent.Size / (float)mBuffer.Width;
+                var compositeMapRect = new Rectangle();
+                var blendToTerrain = (float)mParent.Size / (float)mBuffer.Width;
                 compositeMapRect.Left = (long)( mDirtyBox.Left * blendToTerrain );
                 compositeMapRect.Right = (long)( mDirtyBox.Right * blendToTerrain + 1 );
                 compositeMapRect.Top = (long)( ( mBuffer.Height - mDirtyBox.Bottom ) * blendToTerrain );
@@ -322,14 +318,13 @@ namespace Axiom.Components.Terrain
             if ( srcBox.Width != dstBox.Width || srcBox.Height != dstBox.Height )
             {
                 // we need to rescale src to dst size first (also confvert format)
-                float[] tmpData = new float[ dstBox.Width * dstBox.Height ];
+                var tmpData = new float[ dstBox.Width * dstBox.Height ];
                 srcBox = new PixelBox( dstBox.Width, dstBox.Height, 1, PixelFormat.L8, BufferBase.Wrap( tmpData ) );
                 Image.Scale( src, srcBox );
             }
 
             //pixel conversion
-            PixelBox dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8,
-                                              BufferBase.Wrap( mData ) );
+            var dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8, BufferBase.Wrap( mData ) );
             PixelConverter.BulkPixelConversion( src, dstMemBox );
 
             if (srcBox != src)
@@ -337,7 +332,7 @@ namespace Axiom.Components.Terrain
                 // free temp
                 srcBox = null;
             }
-            Rectangle dRect = new Rectangle( dstBox.Left, dstBox.Top, dstBox.Right, dstBox.Bottom );
+            var dRect = new Rectangle( dstBox.Left, dstBox.Top, dstBox.Right, dstBox.Bottom );
             DirtyRect( dRect );
         }
 
@@ -353,8 +348,8 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void LoadImage( Image img )
         {
-            PixelBox pBox = img.GetPixelBox();
-            Blit(ref pBox);
+            var pBox = img.GetPixelBox();
+            Blit( ref pBox );
         }
         
         /// <summary>
@@ -398,14 +393,14 @@ namespace Axiom.Components.Terrain
                 var pDst = Memory.PinObject( mData ).ToFloatPointer();
                 var pDstIdx = 0;
                 //download data
-                BasicBox box = new BasicBox( 0, 0, mBuffer.Width, mBuffer.Height );
-                PixelBox pBox = mBuffer.Lock( box, BufferLocking.ReadOnly );
+                var box = new BasicBox( 0, 0, mBuffer.Width, mBuffer.Height );
+                var pBox = mBuffer.Lock( box, BufferLocking.ReadOnly );
                 var pSrc = pBox.Data.ToBytePointer();
                 int pSrcIdx = mChannelOffset;
                 int srcInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
-                for ( int y = box.Top; y < box.Bottom; y++ )
+                for ( int y = box.Top; y < box.Bottom; ++y )
                 {
-                    for ( int x = box.Left; x < box.Right; x++ )
+                    for ( int x = box.Left; x < box.Right; ++x )
                     {
                         pDst[ pDstIdx++ ] = (float)( ( pSrc[ pSrcIdx ] )/255.0f );
                         pSrcIdx += srcInc;
