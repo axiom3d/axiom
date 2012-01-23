@@ -140,7 +140,9 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="axiom.module" />
+    <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\ICopyable.cs" />
+    <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
     <Compile Include="Core\WorkQueue\RequestID.cs" />

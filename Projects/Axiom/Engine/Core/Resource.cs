@@ -51,16 +51,38 @@ namespace Axiom.Core
 	/// <summary>
 	/// Enum identifying the loading state of the resource
 	/// </summary>
+    [OgreVersion( 1, 7, 2 )]
 	public enum LoadingState
 	{
-		/// Not loaded
+		/// <summary>
+        /// Not loaded
+		/// </summary>
 		Unloaded,
-		/// Loading is in progress
+
+		/// <summary>
+        /// Loading is in progress
+		/// </summary>
 		Loading,
-		/// Fully loaded
+
+		/// <summary>
+        /// Fully loaded
+		/// </summary>
 		Loaded,
-		/// Currently unloading
-		Unloading
+
+		/// <summary>
+        /// Currently unloading
+		/// </summary>
+		Unloading,
+
+        /// <summary>
+        /// Fully prepared
+        /// </summary>
+        Prepared,
+
+        /// <summary>
+        /// Preparing is in progress
+        /// </summary>
+        Preparing
 	};
 
 	/// <summary>
@@ -495,6 +517,22 @@ namespace Axiom.Core
 		protected virtual void postUnload()
 		{
 		}
+
+        /// <summary>
+        /// Internal implementation of the meat of the 'prepare' action.
+        /// </summary>
+        protected virtual void prepare()
+        {
+        }
+
+        /// <summary>
+        /// Internal function for undoing the 'prepare' action.  Called when
+        /// the load is completed, and when resources are unloaded when they
+        /// are prepared but not yet loaded.
+        /// </summary>
+        protected virtual void unPrepare()
+        {
+        }
 
 		#endregion Load/Unload Stage Notifiers
 

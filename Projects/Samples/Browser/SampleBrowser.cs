@@ -20,6 +20,8 @@
 //THE SOFTWARE.
 #endregion License
 
+#region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,8 @@ using Axiom.Math;
 using Axiom.Overlays;
 
 using SIS = SharpInputSystem;
+
+#endregion Namespace Declaration
 
 namespace Axiom.Samples
 {

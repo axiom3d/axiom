@@ -670,7 +670,7 @@ namespace Axiom.Components.Terrain
 		/// primary thread (default false, operations are threaded if possible)</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-		public void LoadAllTerrains( bool synchronous = false )
+		public virtual void LoadAllTerrains( bool synchronous = false )
 #else
 		public virtual void LoadAllTerrains( bool synchronous )
 #endif
@@ -790,7 +790,7 @@ namespace Axiom.Components.Terrain
 				// Use shared pool of buffers
 				slot.Instance.GpuBufferAllocator = BufferAllocator;
 
-				LoadRequest req = new LoadRequest();
+				var req = new LoadRequest();
 				req.Slot = slot;
 				req.Origin = this;
 				Root.Instance.WorkQueue.AddRequest( _workQueueChannel, WORKQUEUE_LOAD_REQUEST, req, 0, synchronous );
@@ -1211,12 +1211,12 @@ namespace Axiom.Components.Terrain
         public uint PackIndex( long x, long y )
         {
             // Convert to signed 16-bit so sign bit is in bit 15
-            Int16 xs16 = (Int16)x;
-            Int16 ys16 = (Int16)y;
+            var xs16 = (Int16)x;
+            var ys16 = (Int16)y;
 
             // convert to unsigned because we do not want to propagate sign bit to 32-bits
-            UInt16 x16 = (UInt16)xs16;
-            UInt16 y16 = (UInt16)ys16;
+            var x16 = (UInt16)xs16;
+            var y16 = (UInt16)ys16;
 
             uint key = 0;
             key = (uint)( ( x16 << 16 ) | y16 );
@@ -1232,8 +1232,8 @@ namespace Axiom.Components.Terrain
         {
             // inverse of packIndex
             // unsigned versions
-            UInt16 y16 = (UInt16)( key & 0xFFFF );
-            UInt16 x16 = (UInt16)( ( key >> 16 ) & 0xFFFF );
+            var y16 = (UInt16)( key & 0xFFFF );
+            var x16 = (UInt16)( ( key >> 16 ) & 0xFFFF );
 
             x = x16;
             y = x16;

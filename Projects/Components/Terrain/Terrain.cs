@@ -1923,7 +1923,7 @@ namespace Axiom.Components.Terrain
 					mCpuLightmapStorage = new byte[ sz * sz ];
 					stream.Read( out mCpuLightmapStorage );
 				}
-				else if ( name == "compositemape" )
+				else if ( name == "compositemap" )
 				{
 					mCompositeMapRequired = true;
 					mCompositeMapSize = sz;
@@ -1937,7 +1937,7 @@ namespace Axiom.Components.Terrain
 			//Load delta data
 			float[] deltaData = new float[ sizeof( float ) * numVertices ];
 			stream.Read( out deltaData );
-			mDeltaDataPtr = BufferBase.Wrap( deltaData );
+			mDeltaDataPtr = Memory.PinObject( deltaData );
 
 			//Create and load quadtree
 			this.QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
