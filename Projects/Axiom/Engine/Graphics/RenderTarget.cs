@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -543,7 +539,7 @@ namespace Axiom.Graphics
 
 		#endregion Fields and Properties
 
-		#region Constructor
+		#region Constructors
 
 		[OgreVersion(1, 7, 2790)]
 		protected RenderTarget()
@@ -553,6 +549,7 @@ namespace Axiom.Graphics
 
 		[AxiomHelper(0, 8, "Default initializes name")]
 		protected RenderTarget(string name)
+            : base()
 		{
 			this.name = name;
 			priority = RenderTargetPriority.Default;
@@ -562,11 +559,11 @@ namespace Axiom.Graphics
 			ResetStatistics();
 		}
 
-		#endregion
+        #endregion Constructors
 
-		#region Event Handling
+        #region Event Handling
 
-		/// <summary>
+        /// <summary>
 		///    Gets fired before this RenderTarget is going to update.  Handling this event is ideal
 		///    in situation, such as RenderTextures, where before rendering the scene to the texture,
 		///    you would like to show/hide certain entities to avoid rendering more than was necessary
@@ -1114,11 +1111,11 @@ namespace Axiom.Graphics
 			return retVal;
 		}
 
-		#endregion
+        #endregion AttachDepthBuffer
 
-		#region DetachDepthBuffer
+        #region DetachDepthBuffer
 
-		[OgreVersion(1, 7, 2790)]
+        [OgreVersion(1, 7, 2790)]
 		public virtual void DetachDepthBuffer()
 		{
 			if (depthBuffer == null)
@@ -1128,11 +1125,11 @@ namespace Axiom.Graphics
 			depthBuffer = null;
 		}
 
-		#endregion
+        #endregion DetachDepthBuffer
 
-		#region _DetachDepthBuffer
+        #region _DetachDepthBuffer
 
-		/// <summary>
+        /// <summary>
 		/// Detaches DepthBuffer without notifying it from the detach.
 		/// Useful when called from the DepthBuffer while it iterates through attached
 		/// RenderTargets <see cref="Axiom.Graphics.DepthBuffer.PoolId"/>
@@ -1143,25 +1140,11 @@ namespace Axiom.Graphics
 			depthBuffer = null;
 		}
 
-		#endregion
+        #endregion _DetachDepthBuffer
 
-		#region Update
+        #region Update
 
-		/// <summary>
-		///		Updates the window contents.
-		/// </summary>
-		/// <remarks>
-		///		The window is updated by telling each camera which is supposed
-		///		to render into this window to render it's view, and then
-		///		the window buffers are swapped via SwapBuffers()
-		///	</remarks>
-		[AxiomHelper(0, 8, "defaulting overload")]
-		public void Update()
-		{
-			Update(true);
-		}
-
-		/// <summary>
+        /// <summary>
 		///		Updates the window contents.
 		/// </summary>
 		/// <remarks>
@@ -1180,7 +1163,11 @@ namespace Axiom.Graphics
 		///	control over your windows, such as for externally created windows.
 		///	</param>
 		[OgreVersion(1, 7, 2790)]
-		public virtual void Update(bool swapBuffers)
+#if NET_40
+        public virtual void Update( bool swapBuffers = true )
+#else
+        public virtual void Update( bool swapBuffers )
+#endif
 		{
 			// call implementation
 			UpdateImpl();
@@ -1193,23 +1180,32 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
+        [AxiomHelper( 0, 8, "defaulting overload" )]
+        public void Update()
+        {
+            Update( true );
+        }
+#endif
 
-		#region UpdateImpl
+        #endregion Update
 
-		[OgreVersion(1, 7, 2790)]
+        #region UpdateImpl
+
+        [OgreVersion(1, 7, 2790)]
 		protected virtual void UpdateImpl()
 		{
 			BeginUpdate();
-			UpdateAutoUpdatedViewports(true);
+            UpdateAutoUpdatedViewports( true );
 			EndUpdate();
 		}
 
-		#endregion
+        #endregion UpdateImpl
 
-		#region BeginUpdate
+        #region BeginUpdate
 
-		/// <summary>
+        /// <summary>
 		/// Method for manual management of rendering : fires 'preRenderTargetUpdate'
 		/// and initializes statistics etc.
 		/// </summary>
@@ -1243,11 +1239,11 @@ namespace Axiom.Graphics
 			stats.BatchCount = 0;
 		}
 
-		#endregion
+        #endregion BeginUpdate
 
-		#region UpdateViewport
+        #region UpdateViewport
 
-		/// <summary>
+        /// <summary>
 		/// Method for manual management of rendering - renders the given 
 		/// viewport (even if it is not autoupdated)
 		/// </summary>
@@ -1297,23 +1293,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+        #endregion UpdateViewport
 
-		#region UpdateAutoUpdatedViewports
-		/// <summary>
-		/// Method for manual management of rendering - renders only viewports that are auto updated
-		/// </summary>
-		/// <remarks>
-		/// This also fires preViewportUpdate and postViewportUpdate, and manages statistics.
-		/// You should call it between <see cref="BeginUpdate"/> and 
-		/// <see cref="EndUpdate"/>.
-		/// </remarks>
-		[OgreVersion(1, 7, 2790)]
-		public void UpdateAutoUpdatedViewports()
-		{
-			UpdateAutoUpdatedViewports( true );
-		}
-
+        #region UpdateAutoUpdatedViewports
 		/// <summary>
 		/// Method for manual management of rendering - renders only viewports that are auto updated
 		/// </summary>
@@ -1324,7 +1306,11 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="updateStatistics"></param>
 		[OgreVersion(1, 7, 2790)]
-		public virtual void UpdateAutoUpdatedViewports(bool updateStatistics )
+#if NET_40
+        public virtual void UpdateAutoUpdatedViewports( bool updateStatistics = true )
+#else
+        public virtual void UpdateAutoUpdatedViewports( bool updateStatistics )
+#endif
 		{
 			// Go through viewports in Z-order
 			// Tell each to refresh
@@ -1338,11 +1324,19 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderTarget.UpdateAutoUpdatedViewports(bool)"/>
+        public void UpdateAutoUpdatedViewports()
+        {
+            UpdateAutoUpdatedViewports( true );
+        }
+#endif
 
-		#region EndUpdate
+        #endregion UpdateAutoUpdatedViewports
 
-		/// <summary>
+        #region EndUpdate
+
+        /// <summary>
 		/// Method for manual management of rendering - finishes statistics calculation
 		/// and fires 'postRenderTargetUpdate'.
 		/// </summary>
@@ -1359,11 +1353,11 @@ namespace Axiom.Graphics
 			UpdateStatistics();
 		}
 
-		#endregion
+        #endregion EndUpdate
 
-		#region NotifyCameraRemoved
+        #region NotifyCameraRemoved
 
-		/// <summary>
+        /// <summary>
 		///	Utility method to notify a render target that a camera has been removed, 
 		/// incase it was referring to it as a viewer.
 		/// </summary>
@@ -1386,11 +1380,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+        #endregion NotifyCameraRemoved
 
-		#region GetMetrics
+        #region GetMetrics
 
-		/// <summary>
+        /// <summary>
 		/// Retrieve information about the render target.
 		/// </summary>
 		[OgreVersion(1, 7, 2790)]
@@ -1401,11 +1395,11 @@ namespace Axiom.Graphics
 			ncolorDepth = colorDepth;
 		}
 
-		#endregion
+        #endregion GetMetrics
 
-		#region WriteContentsToFile
+        #region WriteContentsToFile
 
-		/// <summary>
+        /// <summary>
 		/// Saves window contents to file (i.e. screenshot);
 		/// </summary>
 		[OgreVersion(1, 7, 2790)]
@@ -1422,11 +1416,11 @@ namespace Axiom.Graphics
 			(new Image()).FromDynamicImage(data, Width, Height, 1, pf, false, 1, 0).Save(fileName);
 		}
 
-		#endregion
+        #endregion WriteContentsToFile
 
-		#region WriteContentsToTimestampedFile
+        #region WriteContentsToTimestampedFile
 
-		/// <summary>
+        /// <summary>
 		/// Writes the current contents of the render target to the (PREFIX)(time-stamp)(SUFFIX) file.
 		/// </summary>
 		/// <returns>the name of the file used.</returns>
@@ -1440,15 +1434,9 @@ namespace Axiom.Graphics
 			return filename;
 		}
 
-		#endregion
+        #endregion WriteContentsToTimestampedFile
 
-		#region CopyContentsToMemory
-
-		[AxiomHelper(0, 8, "default overload")]
-		public void CopyContentsToMemory(PixelBox pb)
-		{
-			CopyContentsToMemory(pb, FrameBuffer.Auto);
-		}
+        #region CopyContentsToMemory
 
 		/// <summary>
 		/// Copies the current contents of the render target to a pixelbox. 
@@ -1459,13 +1447,24 @@ namespace Axiom.Graphics
 		/// results will be converted.
 		/// </remarks>
 		[OgreVersion(1, 7, 2790)]
-		public abstract void CopyContentsToMemory(PixelBox pb, FrameBuffer buffer);
+#if NET_40
+        public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer = FrameBuffer.Auto );
+#else
+        public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
 
-		#endregion
+        /// <see cref="Axiom.Graphics.RenderTarget.CopyContentsToMemory(PixelBox, FrameBuffer)"/>
+        [AxiomHelper( 0, 8, "default overload" )]
+        public void CopyContentsToMemory( PixelBox pb )
+        {
+            CopyContentsToMemory( pb, FrameBuffer.Auto );
+        }
+#endif
 
-		#region SuggestPixelFormat
+        #endregion CopyContentsToMemory
 
-		/// <summary>
+        #region SuggestPixelFormat
+
+        /// <summary>
 		/// Suggests a pixel format to use for extracting the data in this target, when calling 
 		/// <see cref="CopyContentsToMemory(PixelBox, FrameBuffer)"/>.
 		/// </summary>
@@ -1475,10 +1474,11 @@ namespace Axiom.Graphics
 			return PixelFormat.BYTE_RGBA;
 		}
 
-		#endregion
+        #endregion SuggestPixelFormat
 
-		#region SwapBuffers
-		/// <summary>
+        #region SwapBuffers
+
+        /// <summary>
 		///		Swaps the frame buffers to display the next frame.
 		/// </summary>
 		/// <remarks>
@@ -1501,45 +1501,25 @@ namespace Axiom.Graphics
 		///		in the progress of drawing the last frame). 
 		///</param>
 		[OgreVersion(1, 7, 2790)]
-		public void SwapBuffers()
-		{
-			SwapBuffers( true );
-		}
+#if NET_40
+        public virtual void SwapBuffers( bool waitForVSync = true ) { }
+#else
+        public virtual void SwapBuffers( bool waitForVSync ) { }
 
-		/// <summary>
-		///		Swaps the frame buffers to display the next frame.
-		/// </summary>
-		/// <remarks>
-		///		For targets that are double-buffered so that no
-		///     'in-progress' versions of the scene are displayed
-		///     during rendering. Once rendering has completed (to
-		///		an off-screen version of the window) the buffers
-		///		are swapped to display the new frame.
-		///	</remarks>
-		/// <param name="waitForVSync">
-		///		If true, the system waits for the
-		///		next vertical blank period (when the CRT beam turns off
-		///		as it travels from bottom-right to top-left at the
-		///		end of the pass) before flipping. If false, flipping
-		///		occurs no matter what the beam position. Waiting for
-		///		a vertical blank can be slower (and limits the
-		///		framerate to the monitor refresh rate) but results
-		///		in a steadier image with no 'tearing' (a flicker
-		///		resulting from flipping buffers when the beam is
-		///		in the progress of drawing the last frame). 
-		///</param>
-		[OgreVersion(1, 7, 2790)]
-		public virtual void SwapBuffers(bool waitForVSync )
-		{
-		}
+        /// <see cref="Axiom.Graphics.RenderTarget.SwapBuffers(bool)"/>
+        public void SwapBuffers()
+        {
+            SwapBuffers( true );
+        }
+#endif
 
-		#endregion
+        #endregion SwapBuffers
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
+        /// <summary>
 		/// Class level dispose method
 		/// </summary>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
