@@ -1,28 +1,24 @@
-﻿#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+﻿#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -33,33 +29,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Graphics;
 using Axiom.Configuration;
-using Axiom.Utilities;
 using Axiom.Core;
-
-using DX = SlimDX;
-using D3D = SlimDX.Direct3D9;
+using Axiom.Graphics;
 using Axiom.Media;
+using Axiom.Utilities;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	class D3DMultiRenderTarget : MultiRenderTarget
+	public sealed class D3DMultiRenderTarget : MultiRenderTarget
 	{
 		#region Fields and Properties
 
-		protected D3DHardwarePixelBuffer[] _targets = new D3DHardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
+		private D3DHardwarePixelBuffer[] _renderTargets = new D3DHardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
+        [OgreVersion( 1, 7, 2 )]
 		public D3DMultiRenderTarget( string name )
 			: base( name )
 		{
@@ -79,50 +70,61 @@ namespace Axiom.RenderSystems.DirectX9
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format
 		/// </remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public override void BindSurface( int attachment, RenderTexture target )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
 
 			// Get buffer and surface to bind to
-			D3DHardwarePixelBuffer buffer = (D3DHardwarePixelBuffer)( target[ "BUFFER" ] );
+			var buffer = (D3DHardwarePixelBuffer)( target[ "BUFFER" ] );
 			Proclaim.NotNull( buffer );
 
 			// Find first non null target
 			int y;
-			for ( y = 0; y < Config.MaxMultipleRenderTargets && this._targets[ y ] == null; y++ )
-				;
+            for ( y = 0; y < Config.MaxMultipleRenderTargets && _renderTargets[ y ] == null; ++y ) ;
 
 			if ( y != Config.MaxMultipleRenderTargets )
 			{
-				if ( this._targets[ y ].Width != buffer.Width
-					&& this._targets[ y ].Height != buffer.Height
-					&& PixelUtil.GetNumElemBits( this._targets[ y ].Format ) != PixelUtil.GetNumElemBits( this._targets[ y ].Format ) )
+                // If there is another target bound, compare sizes
+				if ( _renderTargets[ y ].Width != buffer.Width ||
+                    _renderTargets[ y ].Height != buffer.Height )
 				{
-					throw new AxiomException( "MultiRenderTarget surfaces are not the same size or bit depth." );
+					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
+
+                if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths )
+                    && ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
+                {
+                    throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
+                }
 			}
 
-			this._targets[ attachment ] = buffer;
-			this.CheckAndUpdate();
+			_renderTargets[ attachment ] = buffer;
+			_checkAndUpdate();
 		}
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
-		/// <param name="attachment"></param>
+        [OgreVersion( 1, 7, 2 )]
 		public override void UnbindSurface( int attachment )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
-			this._targets[ attachment ] = null;
-			this.CheckAndUpdate();
+			_renderTargets[ attachment ].SafeDispose();
+            _renderTargets[ attachment ] = null;
+			_checkAndUpdate();
 		}
 
-		private void CheckAndUpdate()
+        /// <summary>
+        /// Check surfaces and update RenderTarget extent
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+		private void _checkAndUpdate()
 		{
-			if ( this._targets[ 0 ] != null )
+			if ( _renderTargets[ 0 ] != null )
 			{
-				this.width = this._targets[ 0 ].Width;
-				this.height = this._targets[ 0 ].Height;
+				this.width = _renderTargets[ 0 ].Width;
+				this.height = _renderTargets[ 0 ].Height;
 			}
 			else
 			{
@@ -135,8 +137,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderTarget Implementation
 
+        /// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
         [OgreVersion(1, 7, 2790)]
-        public override void Update(bool swapBuffers)
+        public override void Update( bool swapBuffers )
         {
             var deviceManager = D3DRenderSystem.DeviceManager;
             var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
@@ -155,7 +158,6 @@ namespace Axiom.RenderSystems.DirectX9
                         deviceManager.ActiveRenderTargetDevice = device;
                         base.Update( swapBuffers );
                         deviceManager.ActiveRenderTargetDevice = null;
-                        ;
                     }
                 }
             }
@@ -163,16 +165,17 @@ namespace Axiom.RenderSystems.DirectX9
 
 	    public override object this[ string attribute ]
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( attribute == "DDBACKBUFFER" )
+				if ( attribute.ToUpper() == "DDBACKBUFFER" )
 				{
 					var surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
 					// Transfer surfaces
-					for ( var x = 0; x < Config.MaxMultipleRenderTargets; x++ )
+					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{
-						if ( this._targets[ x ] != null )
-							surfaces[ x ] = this._targets[ x ].Surface;
+						if ( _renderTargets[ x ] != null )
+                            surfaces[ x ] = _renderTargets[ x ].GetSurface( D3DRenderSystem.ActiveD3D9Device );
 					}
 					return surfaces;
 				}
@@ -191,5 +194,5 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion RenderTarget Implementation
-	}
+	};
 }
