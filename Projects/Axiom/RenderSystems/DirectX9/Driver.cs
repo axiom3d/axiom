@@ -29,6 +29,7 @@
 
 #region Namespace Declarations
 
+using Axiom.Core;
 using SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -38,7 +39,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	///	Helper class for dealing with D3D Devices.
 	/// </summary>
-	public class Driver
+	public class Driver : DisposableObject
 	{
 		#region Constructors
 
@@ -47,12 +48,14 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
         public Driver()
+            : base()
         {
         }
 
         [OgreVersion( 1, 7, 2 )]
 	    public Driver( int adapterNumber, Capabilities deviceCaps,
                 AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode)
+            : base()
 	    {
             _adapterNumber = adapterNumber;
             _d3D9DeviceCaps = deviceCaps;
@@ -66,6 +69,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
         public Driver( Driver ob )
+            : base()
         {
             _adapterNumber = ob._adapterNumber;
             _d3D9DeviceCaps = ob._d3D9DeviceCaps;
@@ -75,6 +79,19 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
 		#endregion Constructors
+
+        #region dispose
+
+        [OgreVersion( 1, 7, 2, "~D3D9Driver" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed && disposeManagedResources )
+                _videoModeList.SafeDispose();
+
+            base.dispose( disposeManagedResources );
+        }
+
+        #endregion dispose
 
         #region Properties
 
@@ -163,8 +180,9 @@ namespace Axiom.RenderSystems.DirectX9
 			get
 			{
                 if (_videoModeList == null)
-                    _videoModeList = new VideoModeCollection();
-				return _videoModeList;
+                    _videoModeList = new VideoModeCollection( this );
+				
+                return _videoModeList;
 			}
 		}
 
