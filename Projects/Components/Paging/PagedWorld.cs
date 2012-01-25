@@ -181,7 +181,7 @@ namespace Axiom.Components.Paging
 		{
 			StreamSerializer stream = mManager.ReadWorldStream( fileName );
 			Load( stream );
-			stream.Dispose();
+			stream.SafeDispose();
 		}
 
 		/// <summary>
@@ -237,7 +237,7 @@ namespace Axiom.Components.Paging
 		{
 			StreamSerializer stream = mManager.WriteWorldStream( fileName );
 			Save( stream );
-			stream.Dispose();
+			stream.SafeDispose();
 		}
 
 		/// <summary>
@@ -391,7 +391,7 @@ namespace Axiom.Components.Paging
 		{
 			if ( mSections.ContainsKey( name ) )
 			{
-				mSections[ name ].Dispose();
+				mSections[ name ].SafeDispose();
 				mSections.Remove( name );
 			}
 		}
@@ -412,7 +412,7 @@ namespace Axiom.Components.Paging
 		public void DestroyAllSections()
 		{
 			foreach ( var i in mSections.Values )
-				i.Dispose();
+				i.SafeDispose();
 
 			mSections.Clear();
 		}

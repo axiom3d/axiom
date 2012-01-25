@@ -236,7 +236,7 @@ namespace Axiom.Components.Paging
 			foreach ( var i in mContentCollections )
 			{
 				if ( !i.IsDisposed )
-					i.Dispose();
+					i.SafeDispose();
 			}
 			mContentCollections.Clear();
 		}

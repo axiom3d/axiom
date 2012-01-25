@@ -58,7 +58,7 @@ namespace Axiom.Components.Paging
         [OgreVersion( 1, 7, 2 )]
         public void DestroyInstance( ref PageContentCollection c )
         {
-            c.Dispose();
+            c.SafeDispose();
         }
     };
 }

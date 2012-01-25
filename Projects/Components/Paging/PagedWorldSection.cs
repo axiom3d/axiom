@@ -250,7 +250,7 @@ namespace Axiom.Components.Paging
 					if ( mStrategy != null )
 					{
 						mStrategy.DestroyData( mStrategyData );
-						mStrategy.Dispose();
+						mStrategy.SafeDispose();
 						mStrategyData = null;
 					}
 
@@ -459,7 +459,7 @@ namespace Axiom.Components.Paging
 				Page page = mPages[ pageID ];
 				mPages.Remove( pageID );
 				page.UnLoad();
-				page.Dispose();
+				page.SafeDispose();
 			}
 		}
 
@@ -623,7 +623,7 @@ namespace Axiom.Components.Paging
 				return;
 
 			foreach ( var page in mPages.Values )
-				page.Dispose();
+				page.SafeDispose();
 
 			mPages.Clear();
 		}

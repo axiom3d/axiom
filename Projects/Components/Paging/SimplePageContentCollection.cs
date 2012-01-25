@@ -90,7 +90,7 @@ namespace Axiom.Components.Paging
                 if ( disposeManagedResources )
                 {
                     foreach ( var i in mContentList )
-                        i.Dispose();
+                        i.SafeDispose();
 
                     mContentList.Clear();
                 }
