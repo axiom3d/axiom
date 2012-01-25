@@ -217,8 +217,8 @@ namespace Axiom.Components.Paging
 					Root.Instance.FrameStarted -= mEventRouter.FrameStarted;
 					Root.Instance.FrameEnded -= mEventRouter.FrameEnded;
 
-					mGrid2DPageStrategy.Dispose();
-					mSimpleCollectionFactory.Dispose();
+					mGrid2DPageStrategy.SafeDispose();
+					mSimpleCollectionFactory.SafeDispose();
 				}
 			}
 
@@ -288,7 +288,7 @@ namespace Axiom.Components.Paging
 		{
 			if ( mWorlds.ContainsKey( name ) )
 			{
-				mWorlds[ name ].Dispose();
+				mWorlds[ name ].SafeDispose();
 				mWorlds.Remove( name );
 			}
 		}
@@ -319,7 +319,7 @@ namespace Axiom.Components.Paging
 
 			StreamSerializer ser = ReadWorldStream( fileName );
 			ret.Load( ser );
-			ser.Dispose();
+			ser.SafeDispose();
 			ser = null;
 
 			return ret;
@@ -504,7 +504,7 @@ namespace Axiom.Components.Paging
 			if ( fact != null )
 				fact.DestroyInstance( ref coll );
 			else
-				coll.Dispose(); //normally a safe fallback
+				coll.SafeDispose(); //normally a safe fallback
 		}
 
 		/// <summary>
@@ -571,7 +571,7 @@ namespace Axiom.Components.Paging
 			if ( fact != null )
 				fact.DestroyInstance( ref c );
 			else
-				c.Dispose();// normally a safe fallback
+				c.SafeDispose();// normally a safe fallback
 		}
 
 		/// <summary>
@@ -641,7 +641,7 @@ namespace Axiom.Components.Paging
 			if ( fact != null )
 				fact.DestroyInstance( ref coll );
 			else
-				coll.Dispose(); // normally a safe fallback
+				coll.SafeDispose(); // normally a safe fallback
 		}
 
 		/// <summary>
