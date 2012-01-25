@@ -23,7 +23,7 @@
 #region SVN Version Information
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: Driver.cs 884 2006-09-14 06:32:07Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
