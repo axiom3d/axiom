@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -34,31 +30,93 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-
-using Axiom.Collections;
+using System.Linq;
+using Axiom.Core;
+using D3D9 = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// Summary description for VideoModeCollection.
-	/// </summary>
-	public class VideoModeCollection : List<VideoMode>
-	{
-		public VideoMode this[ string description ]
-		{
-			get
-			{
-				foreach ( VideoMode mode in this )
-				{
-					if ( mode.ToString() == description )
-						return mode;
-				}
-				return null;
-			}
-		}
-	}
+    /// <summary>
+    /// Summary description for VideoModeCollection.
+    /// </summary>
+    public class VideoModeCollection : List<VideoMode>, IDisposable
+    {
+        private Driver _mpDriver;
+
+        [OgreVersion( 1, 7, 2, "D3D9VideoModeList::item( const String &name )" )]
+        public VideoMode this[ string description ]
+        {
+            get
+            {
+                return this.FirstOrDefault( x => x.Description == description );
+            }
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public VideoModeCollection( Driver pDriver )
+            : base()
+        {
+            if ( pDriver == null )
+                throw new AxiomException( "pDriver parameter is NULL" );
+
+            _mpDriver = pDriver;
+            Enumerate();
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public void Dispose()
+        {
+            _mpDriver = null;
+            this.Clear();
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public bool Enumerate()
+        {
+            _enumerateByFormat( D3D9.Format.R5G6B5 );
+            _enumerateByFormat( D3D9.Format.X8R8G8B8 );
+
+            return true;
+        }
+
+        [AxiomHelper( 0, 9 )]
+        private void _enumerateByFormat( D3D9.Format format )
+        {
+            var pD3D = D3DRenderSystem.Direct3D9;
+            var adapter = _mpDriver.AdapterNumber;
+
+            for ( var iMode = 0; iMode < pD3D.GetAdapterModeCount( adapter, format ); iMode++ )
+            {
+                var displayMode = pD3D.EnumerateAdapterModes( adapter, format, iMode );
+
+                // Filter out low-resolutions
+                if ( displayMode.Width < 640 || displayMode.Height < 400 )
+                    continue;
+
+                // Check to see if it is already in the list (to filter out refresh rates)
+                var found = false;
+                for ( var it = 0; it < this.Count; it++ )
+                {
+                    var oldDisp = this[ it ].DisplayMode;
+                    if ( oldDisp.Width == displayMode.Width &&
+                        oldDisp.Height == displayMode.Height &&
+                        oldDisp.Format == displayMode.Format )
+                    {
+                        // Check refresh rate and favour higher if poss
+                        if ( oldDisp.RefreshRate < displayMode.RefreshRate )
+                            this[ it ].RefreshRate = displayMode.RefreshRate;
+
+                        found = true;
+                        break;
+                    }
+                }
+
+                if ( !found )
+                    this.Add( new VideoMode( displayMode ) );
+            }
+        }
+    };
 }
