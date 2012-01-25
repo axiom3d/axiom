@@ -2990,7 +2990,7 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     // programmable clips in clip space (ugh)
                     // must transform worldspace planes by view/proj
-                    var xform = DX.Matrix.Multiply( MakeD3DMatrix( viewMatrix ), MakeD3DMatrix( this.ProjectionMatrix ) );
+                    var xform = DX.Matrix.Multiply( _makeD3DMatrix( _viewMatrix ), _makeD3DMatrix( this.ProjectionMatrix ) );
                     xform = DX.Matrix.Invert( xform );
                     xform = DX.Matrix.Transpose( xform );
                     plane = DX.Plane.Transform( plane, xform );
