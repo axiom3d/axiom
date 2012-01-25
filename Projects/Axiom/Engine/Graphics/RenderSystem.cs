@@ -1936,11 +1936,11 @@ it says it's incompatible with that RT" );
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram );
 
-		#endregion
+        #endregion ApplyObliqueDepthProjection
 
-		#region BeginFrame
+        #region BeginFrame
 
-		/// <summary>
+        /// <summary>
 		/// Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
 		/// several times per complete frame if multiple viewports exist.
 		/// </summary>
@@ -2284,24 +2284,6 @@ it says it's incompatible with that RT" );
 		#endregion
 
 		#region MakeOrthoMatrix
-		/// <summary>
-		/// Builds an orthographic projection matrix suitable for this render system.
-		/// </summary>
-		/// <remarks>
-		/// Because different APIs have different requirements (some incompatible) for the
-		/// projection matrix, this method allows each to implement their own correctly and pass
-		/// back a generic Matrix4 for storage in the engine.
-		/// </remarks>
-		/// <param name="fov">Field of view angle.</param>
-		/// <param name="aspectRatio">Aspect ratio.</param>
-		/// <param name="near">Near clipping plane distance.</param>
-		/// <param name="far">Far clipping plane distance.</param>
-		/// <param name="dest"></param>
-		[OgreVersion( 1, 7, 2790 )]
-		public void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
-		{
-			MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
-		}
 
 		/// <summary>
 		/// Builds an orthographic projection matrix suitable for this render system.
@@ -2318,29 +2300,25 @@ it says it's incompatible with that RT" );
 		/// <param name="dest"></param>
 		/// <param name="forGpuPrograms"></param>
 		[OgreVersion( 1, 7, 2790 )]
+#if NET_40
+        public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
+#else
 		public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms );
+#endif
 
-		#endregion
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderSystem.MakeOrthoMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
+        public void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+        {
+            MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
+        }
+#endif
 
-		#region ConvertProjectionMatrix
+        #endregion MakeOrthoMatrix
 
-		/// <summary>
-		/// Converts a uniform projection matrix to one suitable for this render system.
-		/// </summary>
-		/// <remarks>
-		/// Because different APIs have different requirements (some incompatible) for the
-		/// projection matrix, this method allows each to implement their own correctly and pass
-		/// back a generic Matrix4 for storage in the engine.
-		/// </remarks>
-		/// <param name="matrix"></param>
-		/// <param name="dest"></param>
-		[OgreVersion( 1, 7, 2790 )]
-		public void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest )
-		{
-			ConvertProjectionMatrix( matrix, out dest, false );
-		}
+        #region ConvertProjectionMatrix
 
-		/// <summary>
+        /// <summary>
 		/// Converts a uniform projection matrix to one suitable for this render system.
 		/// </summary>
 		/// <remarks>
@@ -2352,30 +2330,23 @@ it says it's incompatible with that RT" );
 		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram );
+#if NET_40
+		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram = false );
+#else
+        public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram );
+#endif
 
-		#endregion
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderSystem.ConvertProjectionMatrix(Matrix4, out Matrix4, bool)"/>
+        public void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest )
+        {
+            ConvertProjectionMatrix( matrix, out dest, false );
+        }
+#endif
 
-		#region MakeProjectionMatrix
+        #endregion ConvertProjectionMatrix
 
-		/// <summary>
-		/// Builds a perspective projection matrix suitable for this render system.
-		/// </summary>
-		/// <remarks>
-		/// Because different APIs have different requirements (some incompatible) for the
-		/// projection matrix, this method allows each to implement their own correctly and pass
-		/// back a generic Matrix4 for storage in the engine.
-		/// </remarks>
-		/// <param name="fov">Field of view angle.</param>
-		/// <param name="aspectRatio">Aspect ratio.</param>
-		/// <param name="near">Near clipping plane distance.</param>
-		/// <param name="far">Far clipping plane distance.</param>
-		/// <param name="dest"></param>
-		[OgreVersion( 1, 7, 2790 )]
-		public void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
-		{
-			MakeProjectionMatrix( fov, aspectRatio, near, far, out dest, false );
-		}
+        #region MakeProjectionMatrix
 
 		/// <summary>
 		/// Builds a perspective projection matrix suitable for this render system.
@@ -2392,7 +2363,19 @@ it says it's incompatible with that RT" );
 		/// <param name="dest"></param>
 		/// <param name="forGpuProgram"></param>
 		[OgreVersion( 1, 7, 2790 )]
+#if NET_40
+        public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false );
+#else
 		public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram );
+#endif
+
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
+        public void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+        {
+            MakeProjectionMatrix( fov, aspectRatio, near, far, out dest, false );
+        }
+#endif
 
 		/// <summary>
 		/// Builds a perspective projection matrix for the case when frustum is
@@ -2403,27 +2386,26 @@ it says it's incompatible with that RT" );
 		/// at the origin.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest )
-		{
-			MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
-		}
+		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest, 
+#if NET_40
+            bool forGpuProgram = false );
+#else
+            bool forGpuProgram );
+#endif
 
-		/// <summary>
-		/// Builds a perspective projection matrix for the case when frustum is
-		/// not centered around camera.
-		/// </summary>
-		/// <remarks>
-		/// Viewport coordinates are in camera coordinate frame, i.e. camera is 
-		/// at the origin.
-		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram );
+#if !NET_40
+        /// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Real, Real, Real, Real, Real, Real, out Matrix4, bool)"/>
+        public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest )
+        {
+            MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
+        }
+#endif
 
-		#endregion
+        #endregion MakeProjectionMatrix
 
-		#region SetAlphaRejectSettings
+        #region SetAlphaRejectSettings
 
-		/// <summary>
+        /// <summary>
 		///  Sets the global alpha rejection approach for future renders.
 		/// </summary>
 		/// <param name="func">The comparison function which must pass for a pixel to be written.</param>
