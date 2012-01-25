@@ -9,7 +9,9 @@
     <projectUrl>http://axiom3d.net/</projectUrl>
     <iconUrl>http://axiom3d.net/images/logos_axiom/axiomlogo_small.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Installs the core assemblies needed for creating applications and games using Axiom.</description>
+    <description>$description$</description>
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
-  </metadata>
+    <dependencies>
+      <dependency id="Axiom" version="$version$" />
+    </dependencies>
 </package>
