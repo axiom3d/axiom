@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -33,9 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using DX = SlimDX;
+using Axiom.Core;
 using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -45,20 +39,21 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// Summary description for D3DVideoMode.
 	/// </summary>
-	public class VideoMode
+	public class VideoMode : DisposableObject
 	{
 		#region Member variables
 
 		private D3D.DisplayMode displayMode;
 		private int modeNum;
-		static int modeCount = 0;
+		private static int modeCount = 0;
 
 		#endregion Member variables
 
 		#region Constructors
 		/// <summary>
-		///		Default constructor.
+		///	Default constructor.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public VideoMode()
 		{
 			modeNum = ++modeCount;
@@ -66,8 +61,9 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Accepts a existing D3DVideoMode object.
+		///	Accepts a existing D3DVideoMode object.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public VideoMode( VideoMode videoMode )
 		{
 			modeNum = ++modeCount;
@@ -75,7 +71,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Accepts a existing Direct3D.DisplayMode object.
+		///	Accepts a existing Direct3D.DisplayMode object.
 		/// </summary>
 		public VideoMode( D3D.DisplayMode videoMode )
 		{
@@ -83,21 +79,34 @@ namespace Axiom.RenderSystems.DirectX9
 			displayMode = videoMode;
 		}
 
-		/// <summary>
-		///		Destructor.
-		/// </summary>
-		~VideoMode()
+		#endregion Constructors
+
+		[OgreVersion( 1, 7, 2, "~D3D9VideoMode" )]
+		protected override void dispose( bool disposeManagedResources )
 		{
-			modeCount--;
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+					modeCount--;
+			}
+			base.dispose( disposeManagedResources );
 		}
 
-		#endregion Constructors
+		/// <summary>
+		///	Returns a string representation of this video mode.
+		/// </summary>
+		[OgreVersion( 1, 7, 2, "getDescription" )]
+		public override string ToString()
+		{
+			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+		}
 
 		#region Properties
 
 		/// <summary>
-		///		Width of this video mode.
+		///	Width of this video mode.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public int Width
 		{
 			get
@@ -107,8 +116,9 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Height of this video mode.
+		///	Height of this video mode.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public int Height
 		{
 			get
@@ -118,8 +128,9 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Format of this video mode.
+		///	Format of this video mode.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public D3D.Format Format
 		{
 			get
@@ -129,39 +140,49 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Refresh rate of this video mode.
+		///	Refresh rate of this video mode.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public int RefreshRate
 		{
+			[OgreVersion( 1, 7, 2 )]
 			get
 			{
 				return displayMode.RefreshRate;
 			}
-		}
 
-		/// <summary>
-		///		Color depth of this video mode.
-		/// </summary>
-		public int ColorDepth
-		{
-			get
+			[OgreVersion( 1, 7, 2, "increaseRefreshRate" )]
+			set
 			{
-				if ( displayMode.Format == D3D.Format.X8R8G8B8 ||
-					displayMode.Format == D3D.Format.A8R8G8B8 ||
-					displayMode.Format == D3D.Format.R8G8B8 )
-				{
-					return 32;
-				}
-				else
-				{
-					return 16;
-				}
+				displayMode.RefreshRate = value;
 			}
 		}
 
 		/// <summary>
-		///		Gets the Direct3D.DisplayMode object associated with this video mode.
+		///	Color depth of this video mode.
 		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public int ColorDepth
+		{
+			get
+			{
+				var colorDepth = 16;
+
+				if ( displayMode.Format == D3D.Format.X8R8G8B8 ||
+					displayMode.Format == D3D.Format.A8R8G8B8 ||
+					displayMode.Format == D3D.Format.R8G8B8 )
+				{
+					colorDepth = 32;
+				}
+
+				return colorDepth;
+			}
+		}
+
+		/// <summary>
+		///	Gets the Direct3D.DisplayMode object associated with this video mode.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public D3D.DisplayMode DisplayMode
 		{
 			get
@@ -171,14 +192,17 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Returns a string representation of this video mode.
+		/// Returns a string representation of this video mode.
 		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
+		[OgreVersion( 1, 7, 2 )]
+		public string Description
 		{
-			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+			get
+			{
+				return this.ToString();
+			}
 		}
 
 		#endregion Properties
-	}
+	};
 }
