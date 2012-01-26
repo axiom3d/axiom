@@ -1,41 +1,67 @@
-﻿using System.Collections;
+﻿#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Graphics;
 using Capabilities = SlimDX.Direct3D9.Capabilities;
+
+using D3D9 = SlimDX.Direct3D9;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	[OgreVersion( 1, 7, 2790 )]
-	public class D3D9DeviceManager : DisposableObject, IEnumerable<D3D9Device>
+	/// <summary>
+	/// Device manager interface.
+	/// </summary>
+	public sealed class D3D9DeviceManager : DisposableObject, IEnumerable<D3D9Device>
 	{
-		#region inner classes
+        #region _renderDevices
 
-		class DeviceList : List<D3D9Device>
-		{
-		}
+        [OgreVersion( 1, 7, 2790 )]
+        private readonly List<D3D9Device> _renderDevices = new List<D3D9Device>();
 
-		#endregion
+        #endregion _renderDevices
 
-		#region _renderDevices
+        #region ActiveDevice
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly DeviceList _renderDevices = new DeviceList();
-
-		#endregion
-
-		#region ActiveDevice
-
-		[OgreVersion( 1, 7, 2790 )]
+        [OgreVersion( 1, 7, 2790 )]
 		private D3D9Device _activeDevice;
-
-		[OgreVersion( 1, 7, 2790 )]
+		
 		public D3D9Device ActiveDevice
 		{
+            [OgreVersion( 1, 7, 2790 )]
 			get
 			{
 				if ( _activeDevice == null )
@@ -43,6 +69,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 				return _activeDevice;
 			}
+
+            [OgreVersion( 1, 7, 2790 )]
 			set
 			{
 				if ( _activeDevice == value )
@@ -68,20 +96,22 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		#endregion
+        #endregion ActiveDevice
 
-		#region ActiveRenderTargetDevice
+        #region ActiveRenderTargetDevice
 
-		[OgreVersion( 1, 7, 2790 )]
+        [OgreVersion( 1, 7, 2790 )]
 		private D3D9Device _activeRenderWindowDevice;
-
-		[OgreVersion( 1, 7, 2790 )]
+		
 		public D3D9Device ActiveRenderTargetDevice
 		{
+            [OgreVersion( 1, 7, 2790 )]
 			get
 			{
 				return _activeRenderWindowDevice;
 			}
+
+            [OgreVersion( 1, 7, 2790 )]
 			set
 			{
 				_activeRenderWindowDevice = value;
@@ -90,11 +120,11 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		#endregion
+        #endregion ActiveRenderTargetDevice
 
-		#region DeviceCount
+        #region DeviceCount
 
-		[OgreVersion( 1, 7, 2790 )]
+        [OgreVersion( 1, 7, 2790 )]
 		public int DeviceCount
 		{
 			get
@@ -103,19 +133,44 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		#endregion
+        #endregion DeviceCount
 
-		#region indexer (GetDevice)
+        #region indexer (GetDevice)
 
-		public D3D9Device this[ int index ]
+        public D3D9Device this[ int index ]
 		{
+            [OgreVersion( 1, 7, 2, "D3D9DeviceManager::getDevice(UINT index)" )]
 			get
 			{
 				return _renderDevices[ index ];
 			}
 		}
 
-		#endregion
+        #endregion _renderDevices
+
+        #region Methods
+
+        #region dispose
+
+        [OgreVersion( 1, 7, 2790, "~D3D9DeviceManager" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    while ( _renderDevices.Count != 0 )
+                        _renderDevices[ 0 ].Destroy();
+
+                    _activeDevice = null;
+                    _activeRenderWindowDevice = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
+
+        #endregion
 
 		#region LinkRenderWindow
 
@@ -130,7 +185,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var renderWindowsGroup = new D3D9RenderWindowList();
 
 			// Select new device for this window.        
-			renderDevice = SelectDevice( renderWindow, renderWindowsGroup );
+			renderDevice = _selectDevice( renderWindow, renderWindowsGroup );
 
 			// Link the windows group to the new device.
 			for ( var i = 0; i < renderWindowsGroup.Count; ++i )
@@ -147,11 +202,281 @@ namespace Axiom.RenderSystems.DirectX9
 				ActiveDevice = renderDevice;
 		}
 
-		#endregion
+        #endregion LinkRenderWindow
 
-		#region DestroyInactiveRenderDevices
+        #region _selectDevice
 
-		[OgreVersion( 1, 7, 2790 )]
+        [OgreVersion( 1, 7, 2790 )]
+        private D3D9Device _selectDevice( D3DRenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup )
+        {
+            var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
+            D3D9Device renderDevice = null;
+            var direct3D9 = D3DRenderSystem.Direct3D9;
+            var nAdapterOrdinal = 0; // D3DADAPTER_DEFAULT
+            var devType = D3D9.DeviceType.Hardware;
+            D3D9.CreateFlags extraFlags = 0;
+            var driverList = renderSystem.Direct3DDrivers;
+            var nvAdapterFound = false;
+
+            // Default group includes at least the given render window.
+            renderWindowsGroup.Add( renderWindow );
+
+            // Case we use nvidia performance HUD, override the device settings. 
+            if ( renderWindow.IsNvPerfHUDEnable )
+            {
+                // Look for 'NVIDIA NVPerfHUD' adapter (<= v4)
+                // or 'NVIDIA PerfHUD' (v5)
+                // If it is present, override default settings
+                for ( var adapter = 0; adapter < direct3D9.AdapterCount; ++adapter )
+                {
+                    var currDriver = driverList[ adapter ];
+
+                    if ( !currDriver.DriverDescription.Contains( "PerfHUD" ) )
+                        continue;
+
+                    // renderDevice = null;
+                    nAdapterOrdinal = adapter;
+                    renderSystem._activeD3DDriver = currDriver;
+                    devType = SlimDX.Direct3D9.DeviceType.Reference;
+                    nvAdapterFound = true;
+                    break;
+                }
+            }
+
+            // No special adapter should be used.
+            if ( nvAdapterFound == false )
+            {
+                renderSystem._activeD3DDriver = _findDriver( renderWindow );
+                nAdapterOrdinal = renderSystem._activeD3DDriver.AdapterNumber;
+
+                var bTryUsingMultiheadDevice = false;
+
+                if ( renderWindow.IsFullScreen )
+                {
+                    bTryUsingMultiheadDevice = true;
+
+                    var osVersionInfo = System.Environment.OSVersion;
+
+                    // XP and below - multi-head will cause artifacts when vsync is on.
+                    if ( osVersionInfo.Version.Major <= 5 && renderWindow.IsVSync )
+                    {
+                        bTryUsingMultiheadDevice = false;
+                        LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes horizontal line when used in XP + VSync combination" );
+                    }
+
+                    // Vista and SP1 or SP2 - multi-head device can not be reset - it causes memory corruption.
+                    if ( osVersionInfo.Version.Major == 6 &&
+                        ( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) ||
+                         osVersionInfo.ServicePack.Contains( "Service Pack 2" ) ) )
+                    {
+                        bTryUsingMultiheadDevice = false;
+                        LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes application run time crashes when used in Vista + SP 1 or 2 combination" );
+                    }
+                }
+
+                // Check if we can create a group of render windows 
+                // on the same device using the multi-head feature.
+                if ( bTryUsingMultiheadDevice )
+                {
+                    var targetAdapterCaps = renderSystem._activeD3DDriver.D3D9DeviceCaps;
+                    Capabilities masterAdapterCaps = null;
+
+                    // Find the master device caps.
+                    if ( targetAdapterCaps.MasterAdapterOrdinal == targetAdapterCaps.AdapterOrdinal )
+                    {
+                        masterAdapterCaps = targetAdapterCaps;
+                    }
+                    else
+                    {
+                        foreach ( var currDriver in driverList )
+                        {
+                            var currDeviceCaps = currDriver.D3D9DeviceCaps;
+
+                            if ( currDeviceCaps.AdapterOrdinal != targetAdapterCaps.MasterAdapterOrdinal )
+                                continue;
+
+                            masterAdapterCaps = currDeviceCaps;
+                            break;
+                        }
+                    }
+
+                    // Case the master adapter can handle multiple adapters.
+                    if ( masterAdapterCaps.NumberOfAdaptersInGroup > 1 )
+                    {
+                        // Create empty list of render windows composing this group.
+                        renderWindowsGroup.Clear();
+                        while ( renderWindowsGroup.Count < masterAdapterCaps.NumberOfAdaptersInGroup )
+                            renderWindowsGroup.Add( null );
+                        
+                        // Assign the current render window to it's place in the group.
+                        renderWindowsGroup[ targetAdapterCaps.AdapterOrdinalInGroup ] = renderWindow;
+
+
+                        // For each existing window - check if it belongs to the group.
+                        foreach ( var currRenderWindow in renderSystem.renderWindows )
+                        {
+                            if ( !currRenderWindow.IsFullScreen )
+                                continue;
+
+                            var currDriver = _findDriver( currRenderWindow );
+                            var currDeviceCaps = currDriver.D3D9DeviceCaps;
+
+                            if ( currDeviceCaps.MasterAdapterOrdinal != masterAdapterCaps.AdapterOrdinal )
+                                continue;
+
+                            renderWindowsGroup[ currDeviceCaps.AdapterOrdinalInGroup ] = currRenderWindow;
+                            break;
+                        }
+
+                        var bDeviceGroupFull = true;
+
+
+                        // Check if render windows group is full and ready to be driven by
+                        // the master device.
+                        for ( var i = 0; i < renderWindowsGroup.Count; ++i )
+                        {
+                            // This group misses required window -> go back to default.
+                            if ( renderWindowsGroup[ i ] != null )
+                                continue;
+
+                            bDeviceGroupFull = false;
+                            renderWindowsGroup.Clear();
+                            renderWindowsGroup.Add( renderWindow );
+                            break;
+                        }
+
+                        // Case device group is full -> we can use multi head device.
+                        if ( bDeviceGroupFull )
+                        {
+                            var validateAllDevices = false;
+
+                            for ( var i = 0; i < renderWindowsGroup.Count; ++i )
+                            {
+                                var currRenderWindow = renderWindowsGroup[ i ];
+                                var currDevice = currRenderWindow.Device;
+
+                                // This is the master window
+                                if ( i == 0 )
+                                {
+                                    // If master device exists - just release it.
+                                    if ( currDevice != null )
+                                    {
+                                        renderDevice = currDevice;
+                                        renderDevice.Release();
+                                    }
+                                }
+
+                                // This is subordinate window.
+                                else
+                                {
+                                    // If subordinate device exists - destroy it.
+                                    if ( currDevice != null )
+                                    {
+                                        currDevice.Destroy();
+                                        validateAllDevices = true;
+                                    }
+                                }
+                            }
+
+                            // In case some device was destroyed - make sure all other devices are valid.
+                            // A possible scenario is that full screen window has been destroyed and it's handle
+                            // was used and the shared focus handle. All other devices used this handle and must be
+                            // recreated using other handles otherwise create device will fail. 
+                            if ( validateAllDevices )
+                            {
+                                foreach ( var dev in _renderDevices )
+                                    dev.ValidateFocusWindow();
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // Do we want to preserve the FPU mode? Might be useful for scientific apps
+            var options = renderSystem.ConfigOptions;
+
+            ConfigOption opti;
+            if ( options.TryGetValue( "Floating-point mode", out opti ) && opti.Value == "Consistent" )
+                extraFlags |= D3D9.CreateFlags.FpuPreserve;
+
+#if AXIOM_THREAD_SUPPORT
+            if ( Configuration.Config.AxiomThreadLevel == 1 )
+                extraFlags |= D3D9.CreateFlags.Multithreaded;
+#endif
+
+            // Try to find a matching device from current device list.
+            if ( renderDevice == null )
+            {
+                foreach ( var currDevice in _renderDevices )
+                {
+                    if ( currDevice.AdapterNumber != nAdapterOrdinal || currDevice.DeviceType != devType )
+                        continue;
+
+                    renderDevice = currDevice;
+                    break;
+                }
+            }
+
+            // No matching device found -> try reference device type (might have been 
+            // previously created as a fallback, but don't change devType because HAL
+            // should be preferred on creation)
+            if ( renderDevice == null )
+            {
+                foreach ( var currDevice in _renderDevices )
+                {
+                    if ( currDevice.AdapterNumber != nAdapterOrdinal ||
+                         currDevice.DeviceType != D3D9.DeviceType.Reference )
+                        continue;
+
+                    renderDevice = currDevice;
+                    break;
+                }
+            }
+
+            // No matching device found -> create new one.
+            if ( renderDevice == null )
+            {
+                renderDevice = new D3D9Device( this, nAdapterOrdinal, direct3D9.GetAdapterMonitor( nAdapterOrdinal ), devType, extraFlags );
+                _renderDevices.Add( renderDevice );
+                if ( _activeDevice == null )
+                    ActiveDevice = renderDevice;
+            }
+
+            return renderDevice;
+        }
+
+        #endregion _selectDevice
+
+        #region _findDriver
+
+        [OgreVersion( 1, 7, 2790 )]
+        private D3D9Driver _findDriver( D3DRenderWindow renderWindow )
+        {
+            var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
+            var direct3D9 = D3DRenderSystem.Direct3D9;
+            var driverList = renderSystem.Direct3DDrivers;
+
+            // Find the monitor this render window belongs to.
+            var hRenderWindowMonitor = SlimDX.Windows.DisplayMonitor.FromWindow( renderWindow.WindowHandle ).Handle;
+
+            // Find the matching driver using window monitor handle.
+            foreach ( var currDriver in driverList )
+            {
+                var hCurrAdpaterMonitor = direct3D9.GetAdapterMonitor( currDriver.AdapterNumber );
+
+                if ( hCurrAdpaterMonitor == hRenderWindowMonitor )
+                    return currDriver;
+            }
+
+            return null;
+        }
+
+        #endregion _findDriver
+
+        #region DestroyInactiveRenderDevices
+
+        [OgreVersion( 1, 7, 2790 )]
 		public void DestroyInactiveRenderDevices()
 		{
 			foreach ( var itDevice in _renderDevices )
@@ -179,313 +504,32 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( device == _activeDevice )
 				_activeDevice = null;
 
-			var itDevice = _renderDevices.IndexOf( device );
-			if ( itDevice >= 0 )
-			{
-				device.Dispose();
-				_renderDevices.RemoveAt( itDevice );
-			}
+            if ( _renderDevices.Contains( device ) )
+            {
+                var itDevice = _renderDevices.IndexOf( device );
+                device.SafeDispose();
+                _renderDevices.RemoveAt( itDevice );
+            }
 
 			if ( _activeDevice == null )
-			{
 				_activeDevice = _renderDevices.FirstOrDefault();
-			}
 		}
 
-		#endregion
+        #endregion NotifyOnDeviceDestroy
 
-		#region GetDeviceFromD3D9Device
+        #region GetDeviceFromD3D9Device
 
-		[OgreVersion( 1, 7, 2790 )]
+        [OgreVersion( 1, 7, 2790 )]
 		public D3D9Device GetDeviceFromD3D9Device( SlimDX.Direct3D9.Device d3D9Device )
 		{
 			return _renderDevices.FirstOrDefault( x => x.D3DDevice == d3D9Device );
 		}
 
-		#endregion
+        #endregion GetDeviceFromD3D9Device
 
-		#region SelectDevice
+        #region IEnumerable<Device>
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected D3D9Device SelectDevice( D3DRenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup )
-		{
-			var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
-			D3D9Device renderDevice = null;
-			var direct3D9 = D3DRenderSystem.Direct3D9;
-			var nAdapterOrdinal = 0; // D3DADAPTER_DEFAULT
-			var devType = SlimDX.Direct3D9.DeviceType.Hardware;
-			SlimDX.Direct3D9.CreateFlags extraFlags = 0;
-			var driverList = renderSystem.Direct3DDrivers;
-			var nvAdapterFound = false;
-
-			// Default group includes at least the given render window.
-			renderWindowsGroup.Add( renderWindow );
-
-			// Case we use nvidia performance HUD, override the device settings. 
-			if ( renderWindow.IsNvPerfHUDEnable )
-			{
-				// Look for 'NVIDIA NVPerfHUD' adapter (<= v4)
-				// or 'NVIDIA PerfHUD' (v5)
-				// If it is present, override default settings
-				for ( var adapter = 0; adapter < direct3D9.AdapterCount; ++adapter )
-				{
-					var currDriver = driverList[ adapter ];
-
-					if ( !currDriver.DriverDescription.Contains( "PerfHUD" ) )
-						continue;
-
-					// renderDevice = null;
-					nAdapterOrdinal = adapter;
-					renderSystem._activeD3DDriver = currDriver;
-					devType = SlimDX.Direct3D9.DeviceType.Reference;
-					nvAdapterFound = true;
-					break;
-				}
-			}
-
-			// No special adapter should be used.
-			if ( nvAdapterFound == false )
-			{
-				renderSystem._activeD3DDriver = FindDriver( renderWindow );
-				nAdapterOrdinal = renderSystem._activeD3DDriver.AdapterNumber;
-
-				var bTryUsingMultiheadDevice = false;
-
-				if ( renderWindow.IsFullScreen )
-				{
-					bTryUsingMultiheadDevice = true;
-
-					var osVersionInfo = System.Environment.OSVersion;
-
-
-
-
-					// XP and below - multi-head will cause artifacts when vsync is on.
-					if ( osVersionInfo.Version.Major <= 5 && renderWindow.IsVSync )
-					{
-						bTryUsingMultiheadDevice = false;
-						LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes horizontal line when used in XP + VSync combination" );
-					}
-
-
-					// Vista and SP1 or SP2 - multi-head device can not be reset - it causes memory corruption.
-					if ( osVersionInfo.Version.Major == 6 &&
-						( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) ||
-						 osVersionInfo.ServicePack.Contains( "Service Pack 2" ) ) )
-					{
-						bTryUsingMultiheadDevice = false;
-						LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes application run time crashes when used in Vista + SP 1 or 2 combination" );
-					}
-				}
-
-
-				// Check if we can create a group of render windows 
-				// on the same device using the multi-head feature.
-				if ( bTryUsingMultiheadDevice )
-				{
-					var targetAdapterCaps = renderSystem._activeD3DDriver.D3D9DeviceCaps;
-					Capabilities masterAdapterCaps = null;
-
-					// Find the master device caps.
-					if ( targetAdapterCaps.MasterAdapterOrdinal == targetAdapterCaps.AdapterOrdinal )
-					{
-						masterAdapterCaps = targetAdapterCaps;
-					}
-					else
-					{
-						foreach ( var currDriver in driverList )
-						{
-							var currDeviceCaps = currDriver.D3D9DeviceCaps;
-
-							if ( currDeviceCaps.AdapterOrdinal != targetAdapterCaps.MasterAdapterOrdinal )
-								continue;
-
-							masterAdapterCaps = currDeviceCaps;
-							break;
-						}
-					}
-
-					// Case the master adapter can handle multiple adapters.
-					if ( masterAdapterCaps.NumberOfAdaptersInGroup > 1 )
-					{
-						// Create empty list of render windows composing this group.
-						renderWindowsGroup.Clear();
-						while ( renderWindowsGroup.Count < masterAdapterCaps.NumberOfAdaptersInGroup )
-							renderWindowsGroup.Add( null );
-
-
-						// Assign the current render window to it's place in the group.
-						renderWindowsGroup[ targetAdapterCaps.AdapterOrdinalInGroup ] = renderWindow;
-
-
-						// For each existing window - check if it belongs to the group.
-						foreach ( var currRenderWindow in renderSystem.renderWindows )
-						{
-							if ( !currRenderWindow.IsFullScreen )
-								continue;
-
-							var currDriver = FindDriver( currRenderWindow );
-							var currDeviceCaps = currDriver.D3D9DeviceCaps;
-
-							if ( currDeviceCaps.MasterAdapterOrdinal != masterAdapterCaps.AdapterOrdinal )
-								continue;
-
-							renderWindowsGroup[ currDeviceCaps.AdapterOrdinalInGroup ] = currRenderWindow;
-							break;
-						}
-
-						var bDeviceGroupFull = true;
-
-
-						// Check if render windows group is full and ready to be driven by
-						// the master device.
-						for ( var i = 0; i < renderWindowsGroup.Count; ++i )
-						{
-							// This group misses required window -> go back to default.
-							if ( renderWindowsGroup[ i ] != null )
-								continue;
-
-							bDeviceGroupFull = false;
-							renderWindowsGroup.Clear();
-							renderWindowsGroup.Add( renderWindow );
-							break;
-						}
-
-						// Case device group is full -> we can use multi head device.
-						if ( bDeviceGroupFull )
-						{
-							var validateAllDevices = false;
-
-							for ( var i = 0; i < renderWindowsGroup.Count; ++i )
-							{
-								var currRenderWindow = renderWindowsGroup[ i ];
-								var currDevice = currRenderWindow.Device;
-
-								// This is the master window
-								if ( i == 0 )
-								{
-									// If master device exists - just release it.
-									if ( currDevice != null )
-									{
-										renderDevice = currDevice;
-										renderDevice.Release();
-									}
-								}
-
-								// This is subordinate window.
-								else
-								{
-									// If subordinate device exists - destroy it.
-									if ( currDevice != null )
-									{
-										currDevice.Destroy();
-										validateAllDevices = true;
-									}
-								}
-							}
-
-							// In case some device was destroyed - make sure all other devices are valid.
-							// A possible scenario is that full screen window has been destroyed and it's handle
-							// was used and the shared focus handle. All other devices used this handle and must be
-							// recreated using other handles otherwise create device will fail. 
-							if ( validateAllDevices )
-							{
-								foreach ( var dev in _renderDevices )
-									dev.ValidateFocusWindow();
-							}
-						}
-					}
-				}
-			}
-
-
-			// Do we want to preserve the FPU mode? Might be useful for scientific apps
-			var options = renderSystem.ConfigOptions;
-
-			ConfigOption opti;
-			if ( options.TryGetValue( "Floating-point mode", out opti ) && opti.Value == "Consistent" )
-				extraFlags |= SlimDX.Direct3D9.CreateFlags.FpuPreserve;
-
-#if AXIOM_THREAD_SUPPORT
-			extraFlags |= SlimDX.Direct3D9.CreateFlags.Multithreaded;
-#endif
-
-
-			// Try to find a matching device from current device list.
-			if ( renderDevice == null )
-			{
-				foreach ( var currDevice in _renderDevices )
-				{
-					if ( currDevice.AdapterNumber != nAdapterOrdinal || currDevice.DeviceType != devType ||
-						 currDevice.IsFullScreen != renderWindow.IsFullScreen )
-						continue;
-
-					renderDevice = currDevice;
-					break;
-				}
-			}
-
-			// No matching device found -> try reference device type (might have been 
-			// previously created as a fallback, but don't change devType because HAL
-			// should be preferred on creation)
-			if ( renderDevice == null )
-			{
-				foreach ( var currDevice in _renderDevices )
-				{
-					if ( currDevice.AdapterNumber != nAdapterOrdinal ||
-						 currDevice.DeviceType != SlimDX.Direct3D9.DeviceType.Reference )
-						continue;
-
-					renderDevice = currDevice;
-					break;
-				}
-			}
-
-			// No matching device found -> create new one.
-			if ( renderDevice == null )
-			{
-				renderDevice = new D3D9Device( this, nAdapterOrdinal, direct3D9.GetAdapterMonitor( nAdapterOrdinal ), devType, extraFlags );
-				_renderDevices.Add( renderDevice );
-				if ( _activeDevice == null )
-					ActiveDevice = renderDevice;
-			}
-
-			return renderDevice;
-		}
-
-		#endregion
-
-		#region FindDriver
-
-		[OgreVersion( 1, 7, 2790 )]
-		private D3D9Driver FindDriver( D3DRenderWindow renderWindow )
-		{
-			var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
-			var direct3D9 = D3DRenderSystem.Direct3D9;
-			var driverList = renderSystem.Direct3DDrivers;
-
-			// Find the monitor this render window belongs to.
-			var hRenderWindowMonitor = SlimDX.Windows.DisplayMonitor.FromWindow( renderWindow.WindowHandle ).Handle;
-
-			// Find the matching driver using window monitor handle.
-			foreach ( var currDriver in driverList )
-			{
-				var hCurrAdpaterMonitor = direct3D9.GetAdapterMonitor( currDriver.AdapterNumber );
-
-				if ( hCurrAdpaterMonitor == hRenderWindowMonitor )
-				{
-					return currDriver;
-				}
-			}
-
-			return null;
-		}
-
-		#endregion
-
-		#region IEnumerable<Device>
-
-		public IEnumerator<D3D9Device> GetEnumerator()
+        public IEnumerator<D3D9Device> GetEnumerator()
 		{
 			return _renderDevices.GetEnumerator();
 		}
@@ -493,26 +537,10 @@ namespace Axiom.RenderSystems.DirectX9
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
-		}
+        }
 
-		#endregion
+        #endregion IEnumerable<Device>
 
-		#region dispose
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( disposeManagedResources )
-			{
-				while ( _renderDevices.Count != 0 )
-					_renderDevices[ 0 ].Destroy();
-			}
-			_activeDevice = null;
-			_activeRenderWindowDevice = null;
-
-			base.dispose( disposeManagedResources );
-		}
-
-		#endregion
-	}
+        #endregion Methods
+    };
 }
