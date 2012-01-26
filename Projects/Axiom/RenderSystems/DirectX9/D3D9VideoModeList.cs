@@ -42,12 +42,12 @@ namespace Axiom.RenderSystems.DirectX9
     /// <summary>
     /// Summary description for VideoModeCollection.
     /// </summary>
-    public class VideoModeCollection : List<VideoMode>, IDisposable
+    public class D3D9VideoModeList : List<D3D9VideoMode>, IDisposable
     {
-        private Driver _mpDriver;
+        private D3D9Driver _mpDriver;
 
         [OgreVersion( 1, 7, 2, "D3D9VideoModeList::item( const String &name )" )]
-        public VideoMode this[ string description ]
+        public D3D9VideoMode this[ string description ]
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         [OgreVersion( 1, 7, 2 )]
-        public VideoModeCollection( Driver pDriver )
+        public D3D9VideoModeList( D3D9Driver pDriver )
             : base()
         {
             if ( pDriver == null )
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
 
                 if ( !found )
-                    this.Add( new VideoMode( displayMode ) );
+                    this.Add( new D3D9VideoMode( displayMode ) );
             }
         }
     };

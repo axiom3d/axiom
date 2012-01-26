@@ -458,7 +458,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region FindDriver
 
 		[OgreVersion( 1, 7, 2790 )]
-		private Driver FindDriver( D3DRenderWindow renderWindow )
+		private D3D9Driver FindDriver( D3DRenderWindow renderWindow )
 		{
 			var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
 			var direct3D9 = D3DRenderSystem.Direct3D9;

@@ -180,7 +180,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region _activeD3DDriver
 
 		[OgreVersion(1, 7, 2790)]
-		internal Driver _activeD3DDriver;
+		internal D3D9Driver _activeD3DDriver;
 
 		#endregion
 

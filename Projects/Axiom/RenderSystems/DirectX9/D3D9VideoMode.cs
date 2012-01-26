@@ -39,7 +39,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// Summary description for D3DVideoMode.
 	/// </summary>
-	public class VideoMode : DisposableObject
+	public class D3D9VideoMode : DisposableObject
 	{
 		#region Member variables
 
@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///	Default constructor.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public VideoMode()
+		public D3D9VideoMode()
 		{
 			modeNum = ++modeCount;
 			displayMode = new D3D.DisplayMode();
@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///	Accepts a existing D3DVideoMode object.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public VideoMode( VideoMode videoMode )
+		public D3D9VideoMode( D3D9VideoMode videoMode )
 		{
 			modeNum = ++modeCount;
 			displayMode = videoMode.displayMode;
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///	Accepts a existing Direct3D.DisplayMode object.
 		/// </summary>
-		public VideoMode( D3D.DisplayMode videoMode )
+		public D3D9VideoMode( D3D.DisplayMode videoMode )
 		{
 			modeNum = ++modeCount;
 			displayMode = videoMode;
