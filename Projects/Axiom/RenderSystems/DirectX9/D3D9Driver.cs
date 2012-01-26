@@ -39,7 +39,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	///	Helper class for dealing with D3D Devices.
 	/// </summary>
-	public class Driver : DisposableObject
+	public class D3D9Driver : DisposableObject
 	{
 		#region Constructors
 
@@ -47,13 +47,13 @@ namespace Axiom.RenderSystems.DirectX9
         /// Default constructor
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        public Driver()
+        public D3D9Driver()
             : base()
         {
         }
 
         [OgreVersion( 1, 7, 2 )]
-	    public Driver( int adapterNumber, Capabilities deviceCaps,
+	    public D3D9Driver( int adapterNumber, Capabilities deviceCaps,
                 AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode)
             : base()
 	    {
@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// Copy constructor
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        public Driver( Driver ob )
+        public D3D9Driver( D3D9Driver ob )
             : base()
         {
             _adapterNumber = ob._adapterNumber;
@@ -172,15 +172,15 @@ namespace Axiom.RenderSystems.DirectX9
 		#region VideoModes Property
 
         [OgreVersion(1, 7, 2790)]
-		private VideoModeCollection _videoModeList;
+		private D3D9VideoModeList _videoModeList;
 		
         [OgreVersion(1, 7, 2790)]
-		public VideoModeCollection VideoModeList
+		public D3D9VideoModeList VideoModeList
 		{
 			get
 			{
                 if (_videoModeList == null)
-                    _videoModeList = new VideoModeCollection( this );
+                    _videoModeList = new D3D9VideoModeList( this );
 				
                 return _videoModeList;
 			}

@@ -39,10 +39,10 @@ using D3D9 = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	public class D3D9DriverList : List<Driver>, IDisposable
+	public class D3D9DriverList : List<D3D9Driver>, IDisposable
 	{
 		[OgreVersion( 1, 7, 2, "D3D9DriverList::item( const String &name )" )]
-		public Driver this[ string description ]
+		public D3D9Driver this[ string description ]
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
 				var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
 
-				this.Add( new Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
+				this.Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
 			}
 
 			LogManager.Instance.Write( "D3D9: Driver Detection Ends" );

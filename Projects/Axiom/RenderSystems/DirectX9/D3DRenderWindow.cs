@@ -101,12 +101,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Driver Property
 
-		private Driver _driver;
+		private D3D9Driver _driver;
 
 		/// <summary>
 		/// Get the current Driver
 		/// </summary>
-		public Driver Driver
+		public D3D9Driver Driver
 		{
 			get
 			{
@@ -242,7 +242,7 @@ namespace Axiom.RenderSystems.DirectX9
 		///
 		/// </summary>
 		/// <param name="driver">The root driver</param>
-		public D3DRenderWindow( Driver driver )
+		public D3DRenderWindow( D3D9Driver driver )
             : base()
 		{
 			_driver = driver;
@@ -253,7 +253,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		/// <param name="driver">The root driver</param>
 		/// <param name="deviceIfSwapChain">The existing D3D device to create an additional swap chain from, if this is not	the first window.</param>
-		public D3DRenderWindow( Driver driver, D3D.Device deviceIfSwapChain )
+		public D3DRenderWindow( D3D9Driver driver, D3D.Device deviceIfSwapChain )
 			: this( driver )
 		{
 			_isSwapChain = ( deviceIfSwapChain != null );
