@@ -61,6 +61,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         [OgreVersion(1, 7, 2790)]
         public D3D9ResourceManager()
+            : base()
         {
             CreationPolicy = ResourceCreationPolicy.CreateOnAllDevices;
         }

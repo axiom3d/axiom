@@ -286,6 +286,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion(1, 7, 2790)]
 		public D3DRenderSystem()
+            : base()
 		{
 			LogManager.Instance.Write("D3D9 : {0} created.", Name);
 
@@ -2300,7 +2301,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			}
 
-			var driverList = D3DHelper.GetDriverInfo(_pD3D);
+            var driverList = new DriverCollection();
 			foreach (var driver in driverList)
 			{
 				optDevice.PossibleValues.Add(driver.AdapterNumber, driver.DriverDescription);
@@ -2654,13 +2655,14 @@ namespace Axiom.RenderSystems.DirectX9
 					case D3D9ResourceManager.ResourceCreationPolicy.CreateOnActiveDevice:
 						yield return ActiveD3D9Device;
 						break;
+
 					case D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices:
 						foreach ( var dev in _D3D9RenderSystem._deviceManager.Select( x => x.D3DDevice ) )
 							yield return dev;
 						break;
+
 					default:
 						throw new AxiomException( "Invalid resource creation policy !!!" );
-						break;
 				}
 			}
 		}
