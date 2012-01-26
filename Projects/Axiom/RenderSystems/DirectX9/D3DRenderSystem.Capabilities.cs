@@ -610,7 +610,7 @@ namespace Axiom.RenderSystems.DirectX9
             WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
             // Init using current settings
-            _activeD3DDriver = D3DHelper.GetDriverInfo(_pD3D)[ConfigOptions["Rendering Device"].Value];
+            _activeD3DDriver = _driverList[ ConfigOptions[ "Rendering Device" ].Value ];
             if (_activeD3DDriver == null)
                 throw new ArgumentException("Problems finding requested Direct3D driver!");
 

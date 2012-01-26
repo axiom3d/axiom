@@ -1,117 +1,90 @@
-﻿using System;
-using System.Collections;
+﻿#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Axiom.Core;
-using SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    [OgreVersion(1, 7, 2790)]
-    public class D3D9DriverList : DisposableObject, IEnumerable<Driver>
-    {
-        #region _driverList
+	public class D3D9DriverList : List<Driver>, IDisposable
+	{
+		[OgreVersion( 1, 7, 2, "D3D9DriverList::item( const String &name )" )]
+		public Driver this[ string description ]
+		{
+			get
+			{
+				return this.FirstOrDefault( x => x.DriverDescription == description );
+			}
+		}
 
-        [OgreVersion(1, 7, 2790)]
-        private readonly List<Driver> _driverList = new List<Driver>();
+		[OgreVersion( 1, 7, 2 )]
+		public D3D9DriverList()
+			: base()
+		{
+			Enumerate();
+		}
 
-        #endregion
+		[OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
+		public void Dispose()
+		{
+			foreach ( var it in this )
+				it.SafeDispose();
 
-        #region Constructor
+			this.Clear();
+		}
 
-        [OgreVersion(1, 7, 2790)]
-        public D3D9DriverList()
-        {
-            Enumerate();
-        }
+		[OgreVersion( 1, 7, 2 )]
+		public bool Enumerate()
+		{
+			var lpD3D9 = D3DRenderSystem.Direct3D9;
 
-        #endregion
+			LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
 
-        #region dispose
+			for ( var iAdapter = 0; iAdapter < lpD3D9.AdapterCount; ++iAdapter )
+			{
+				var adapterIdentifier = lpD3D9.GetAdapterIdentifier( iAdapter );
+				var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
+				var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
 
-        [OgreVersion(1, 7, 2790)]
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!IsDisposed)
-                _driverList.Clear();
-        }
+				this.Add( new Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
+			}
 
-        #endregion
+			LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
 
-        #region Enumerate
-
-        [OgreVersion(1, 7, 2790, "Update D3DDriver constructor")]
-        public bool Enumerate()
-        {
-            var d3D = D3DRenderSystem.Direct3D9;
-
-            LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
-            for (var iAdaptor = 0; iAdaptor < d3D.AdapterCount; iAdaptor++)
-            {
-                
-                var adapterIdentifier = d3D.GetAdapterIdentifier( iAdaptor );
-                var d3Ddm = d3D.GetAdapterDisplayMode( iAdaptor );
-                var d3Dcaps9 = d3D.GetDeviceCaps( iAdaptor, DeviceType.Hardware );
-
-                _driverList.Add(new Driver(iAdaptor, d3Dcaps9, adapterIdentifier, d3Ddm));
-            }
-
-            LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
-            return true;
-        }
-
-        #endregion
-
-        #region Count
-
-        [OgreVersion(1, 7, 2790)]
-        public int Count
-        {
-            get
-            {
-                return _driverList.Count;
-            }
-        }
-
-        #endregion
-
-        #region Indexer
-
-        [OgreVersion(1, 7, 2790)]
-        public Driver this[int index]
-        {
-            get
-            {
-                return _driverList[ index ];
-            }
-        }
-
-        [OgreVersion(1, 7, 2790)]
-        public Driver this[string name]
-        {
-            get
-            {
-                return _driverList.FirstOrDefault(d => d.DriverDescription == name);
-            }
-        }
-
-        #endregion
-
-        #region IEnumerable
-
-        [AxiomHelper(0, 8)]
-        public IEnumerator<Driver> GetEnumerator()
-        {
-            return _driverList.GetEnumerator();
-        }
-
-        [AxiomHelper(0, 8)]
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
-    }
+			return true;
+		}
+	};
 }

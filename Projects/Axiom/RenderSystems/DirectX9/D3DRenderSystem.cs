@@ -736,11 +736,8 @@ namespace Axiom.RenderSystems.DirectX9
 				_deviceManager = null;
 			}
 
-			if (_driverList != null)
-			{
-				_driverList.Dispose();
-				_driverList = null;
-			}
+            _driverList.SafeDispose();
+            _driverList = null;
 
 			if (textureManager != null)
 			{
@@ -2301,7 +2298,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			}
 
-            var driverList = new DriverCollection();
+            var driverList = new D3D9DriverList();
 			foreach (var driver in driverList)
 			{
 				optDevice.PossibleValues.Add(driver.AdapterNumber, driver.DriverDescription);
@@ -2382,7 +2379,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion(1, 7, 2790)]
 		private void RefreshD3DSettings()
 		{
-			var drivers = D3DHelper.GetDriverInfo( _pD3D );
+            var drivers = new D3D9DriverList();
 
 			var optDevice = ConfigOptions[ "Rendering Device" ];
 			var driver = drivers[ optDevice.Value ];
