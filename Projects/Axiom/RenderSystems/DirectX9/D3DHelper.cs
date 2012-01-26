@@ -87,54 +87,6 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <summary>
-		///		Enumerates driver information and their supported display modes.
-		/// </summary>
-		public static DriverCollection GetDriverInfo( D3D.Direct3D manager )
-		{
-			DriverCollection driverList = new DriverCollection();
-
-			foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
-			{
-				List<D3D.DisplayMode> displaymodeList = new List<D3D.DisplayMode>();
-				Driver driver = new Driver( adapterInfo.Adapter,
-					adapterInfo.GetCaps( DeviceType.Hardware ), adapterInfo.Details, adapterInfo.CurrentDisplayMode );
-
-				int lastWidth = 0, lastHeight = 0;
-				D3D.Format lastFormat = 0;
-
-				// 32bit Modes
-				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
-				{
-					displaymodeList.Add( mode );
-				}
-
-				// 16Bit modes
-				foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
-				{
-					displaymodeList.Add( mode );
-				}
-
-				foreach ( D3D.DisplayMode mode in displaymodeList )
-				{
-					// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-					if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-						( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
-					{
-						// add the video mode to the list
-						driver.VideoModeList.Add( new VideoMode( mode ) );
-
-						// save current mode settings for comparison on the next iteraion
-						lastWidth = mode.Width;
-						lastHeight = mode.Height;
-						lastFormat = mode.Format;
-					}
-				}
-				driverList.Add( driver );
-			}
-			return driverList;
-		}
-
-		/// <summary>
 		///
 		/// </summary>
 		/// <param name="type"></param>
