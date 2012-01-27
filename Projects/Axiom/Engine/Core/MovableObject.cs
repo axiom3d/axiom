@@ -242,7 +242,6 @@ namespace Axiom.Core
 		/// <summary>
 		///		See if this object is attached to another node.
 		/// </summary>
-		[Obsolete( "This property has been superceded by the IsInScene property" )]
 		public bool IsAttached { get { return ( this.parentNode != null ); } }
 
 		/// <summary>
@@ -379,7 +378,7 @@ namespace Axiom.Core
 		/// <param name="void"></param>
 		virtual public void DetachFromParent()
 		{
-			if( IsInScene )
+			if( IsAttached )
 			{
 				if( parentIsTagPoint )
 				{
