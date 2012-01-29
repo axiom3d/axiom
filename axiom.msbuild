@@ -18,7 +18,7 @@
 		<Modules Condition="'$(Modules)'==''">packages\Axiom SDK.package</Modules>
 		
 		<SkipInstaller>true</SkipInstaller>
-		<SkipSourceServer>false</SkipSourceServer>
+		<SkipSourceServer>true</SkipSourceServer>
 		<SkipILMerge>true</SkipILMerge>
 		<SkipNDoc>false</SkipNDoc>
 	</PropertyGroup>
