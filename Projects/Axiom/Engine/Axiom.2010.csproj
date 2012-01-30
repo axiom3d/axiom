@@ -84,6 +84,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
