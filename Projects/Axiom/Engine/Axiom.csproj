@@ -30,10 +30,10 @@
     <Version>
     </Version>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>http://localhost/Axiom/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -115,6 +115,7 @@
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
+    <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
@@ -130,6 +131,12 @@
     <Compile Include="Core\StaticGeometry\StaticGeometry.cs" />
     <Compile Include="Core\StringExtensions.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
+    <Compile Include="Core\AtomicWrappers.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
+    <Compile Include="Core\WorkQueue\RequestID.cs" />
+    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
+    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />

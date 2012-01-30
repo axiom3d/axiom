@@ -160,6 +160,7 @@
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
     <Compile Include="Core\ICopyable.cs" />
+    <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\StringInterface.cs" />
     <Compile Include="CrossPlatform\Buffer.cs" />

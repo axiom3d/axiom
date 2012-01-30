@@ -219,6 +219,7 @@
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Node.cs" />
     <Compile Include="Core\ObjectCreator.cs" />
+    <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\ObjectTextDisplay.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PatchMesh.cs" />
