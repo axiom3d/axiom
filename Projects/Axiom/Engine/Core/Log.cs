@@ -108,7 +108,7 @@ namespace Axiom.Core
 	/// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
-	public sealed class Log : IDisposable
+	public sealed class Log : DisposableObject
 	{
 		#region Fields
 
@@ -131,10 +131,6 @@ namespace Axiom.Core
 		///     Debug output enabled?
 		/// </summary>
 		private bool debugOutput;
-		/// <summary>
-		///		flag to indicate object already disposed.
-		/// </summary>
-		private bool _isDisposed;
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
@@ -163,6 +159,7 @@ namespace Axiom.Core
 		/// <param name="fileName">Name of the log file to open.</param>
 		/// <param name="debugOutput">Write log messages to the debug output?</param>
 		public Log( string fileName, bool debugOutput )
+            : base()
 		{
 			this.mLogName = fileName;
 			this.MessageLogged = null;
@@ -194,11 +191,6 @@ namespace Axiom.Core
 				}
 			}
 
-		}
-
-		~Log()
-		{
-			Dispose(false);
 		}
 
 		#endregion Constructors
@@ -270,7 +262,7 @@ namespace Axiom.Core
 		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
-			if ( _isDisposed )
+			if ( this.IsDisposed )
 				return;
 
 			if ( message == null )
@@ -321,23 +313,11 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region IDisposable Members
+		#region DisposableObject Members
 
-		/// <summary>
-		///     Called to dispose of this objects resources.
-		/// </summary>
-		/// <remarks>
-		///     For the log, closes any open file streams and file writers.
-		/// </remarks>
-        public void Dispose()
+        protected override void dispose(bool disposeManagedResources)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected void Dispose(bool disposeManagedResources)
-        {
-            if (!_isDisposed)
+            if (!this.IsDisposed)
             {
                 if (disposeManagedResources)
                 {
@@ -363,10 +343,11 @@ namespace Axiom.Core
                 // There are no unmanaged resources to release, but
                 // if we add them, they need to be released here.
             }
-            _isDisposed = true;
+
+            base.dispose( disposeManagedResources );
         }
 
-		#endregion IDisposable Members
-	}
+        #endregion DisposableObject Members
+    }
 	#endregion Log Class
 }
