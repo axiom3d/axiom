@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -110,7 +110,7 @@ namespace Axiom.Media
 					case PixelFormat.DXT5:
 						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
 					default:
-						throw new Exception( "Invalid compressed pixel format" );
+						throw new AxiomException( "Invalid compressed pixel format" );
 				}
 			}
 			else
@@ -198,6 +198,23 @@ namespace Axiom.Media
 			return PixelFormat.Unknown;
 		}
 
+        /// <summary>
+        /// Returns the similar format but acoording with given bit depths.
+        /// </summary>
+        /// <param name="format">The original format.</param>
+        /// <param name="integerBits">
+        /// Preferred bit depth (pixel bits) for integer pixel format.
+        /// Available values: 0, 16 and 32, where 0 (the default) means as it is.
+        /// </param>
+        /// <param name="floatBits">
+        /// Preferred bit depth (channel bits) for float pixel format.
+        /// Available values: 0, 16 and 32, where 0 (the default) means as it is.
+        /// </param>
+        /// <returns>
+        /// The format that similar original format with bit depth according
+        /// with preferred bit depth, or original format if no convertion occuring.
+        /// </returns>
+        [OgreVersion( 1, 7, 2 )]
 		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
 		{
 			switch ( integerBits )
