@@ -713,7 +713,67 @@ namespace Axiom.Media
 				16, 16, 16, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
-				)
+				),
+            //-----------------------------------------------------------------------
+            new PixelFormatDescription(
+                "PF_PVRTC_RGB2",
+                PixelFormat.PVRTC_RGB2,
+                /* Bytes per element */
+                0,
+                /* Flags */
+                PixelFormatFlags.Compressed,
+                /* Component type and count */
+                PixelComponentType.Byte, 3,
+                /* rbits, gbits, bbits, abits */
+                0, 0, 0, 0,
+                /* Masks and shifts */
+                0, 0, 0, 0, 0, 0, 0, 0
+                ),
+            //-----------------------------------------------------------------------
+		    new PixelFormatDescription(
+                "PF_PVRTC_RGBA2",
+                PixelFormat.PVRTC_RGBA2,
+                /* Bytes per element */
+                0,
+                /* Flags */
+                PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha,
+                /* Component type and count */
+                PixelComponentType.Byte, 4,
+                /* rbits, gbits, bbits, abits */
+                0, 0, 0, 0,
+                /* Masks and shifts */
+                0, 0, 0, 0, 0, 0, 0, 0
+                ),
+            //-----------------------------------------------------------------------
+		    new PixelFormatDescription(
+                "PF_PVRTC_RGB4",
+                PixelFormat.PVRTC_RGB4,
+                /* Bytes per element */
+                0,
+                /* Flags */
+                PixelFormatFlags.Compressed,
+                /* Component type and count */
+                PixelComponentType.Byte, 3,
+                /* rbits, gbits, bbits, abits */
+                0, 0, 0, 0,
+                /* Masks and shifts */
+                0, 0, 0, 0, 0, 0, 0, 0
+                ),
+            //-----------------------------------------------------------------------
+		    new PixelFormatDescription(
+                "PF_PVRTC_RGBA4",
+                PixelFormat.PVRTC_RGBA4,
+                /* Bytes per element */
+                0,
+                /* Flags */
+                PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha,
+                /* Component type and count */
+                PixelComponentType.Byte, 4,
+                /* rbits, gbits, bbits, abits */
+                0, 0, 0, 0,
+                /* Masks and shifts */
+                0, 0, 0, 0, 0, 0, 0, 0
+                )
 		};
 
 		protected static PixelFormatDescription[] IndexedPixelFormats = null;
