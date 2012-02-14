@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using Axiom.Core;
+using Axiom.Math;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -47,6 +49,7 @@ namespace Axiom.Media
 		/// </summary>
 		/// <param name="format">Pixel format to test.</param>
 		/// <returns>Size in bytes.</returns>
+        [OgreVersion( 1, 7, 2 )]
 		public static int GetNumElemBytes( PixelFormat format )
 		{
 			return PixelConverter.GetDescriptionFor( format ).elemBytes;
@@ -57,30 +60,62 @@ namespace Axiom.Media
 		/// </summary>
 		/// <param name="format">Pixel format to test.</param>
 		/// <returns>Size in bits.</returns>
+        [OgreVersion( 1, 7, 2 )]
 		public static int GetNumElemBits( PixelFormat format )
 		{
 			return GetNumElemBytes( format ) * 8;
 		}
 
+        /// <summary>
+        /// Gives the number of bits (RGBA) for a format. See remarks.
+        /// </summary>
+        /// <remarks>For non-colour formats (dxt, depth) this returns [0,0,0,0].</remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public static int[] GetBitDepths( PixelFormat format )
 		{
 			var rgba = new int[ 4 ];
-			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rbits;
-			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gbits;
-			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bbits;
-			rgba[ 3 ] = PixelConverter.GetDescriptionFor( format ).abits;
+            var des = PixelConverter.GetDescriptionFor( format );
+			rgba[ 0 ] = des.rbits;
+			rgba[ 1 ] = des.gbits;
+			rgba[ 2 ] = des.bbits;
+			rgba[ 3 ] = des.abits;
 			return rgba;
 		}
 
+        /// <summary>
+        /// Gives the masks for the R, G, B and A component
+        /// </summary>
+        /// <remarks>Only valid for native endian formats</remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
 			var rgba = new uint[ 4 ];
-			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rmask;
-			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gmask;
-			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bmask;
-			rgba[ 3 ] = PixelConverter.GetDescriptionFor( format ).amask;
+            var des = PixelConverter.GetDescriptionFor( format );
+			rgba[ 0 ] = des.rmask;
+			rgba[ 1 ] = des.gmask;
+			rgba[ 2 ] = des.bmask;
+			rgba[ 3 ] = des.amask;
 			return rgba;
 		}
+
+        /// <summary>
+        /// Gives the bit shifts for R, G, B and A component
+        /// </summary>
+        /// <remarks>
+        /// Only valid for native endian formats
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        public static byte[] GetBitShifts( PixelFormat format )
+        {
+            var rgba = new byte[ 4 ];
+            var des = PixelConverter.GetDescriptionFor( format );
+            rgba[ 0 ] = des.rshift;
+            rgba[ 1 ] = des.gshift;
+            rgba[ 2 ] = des.bshift;
+            rgba[ 3 ] = des.ashift;
+
+            return rgba;
+        }
 
 		///<summary>
 		///    Returns the size in memory of a region with the given extents and pixel
@@ -96,6 +131,7 @@ namespace Axiom.Media
 		///    width * height * depth * PixelConverter.GetNumElemBytes(format). In the compressed
 		///    case, this does serious magic.
 		///</remarks>
+        [OgreVersion( 1, 7, 2 )]
 		public static int GetMemorySize( int width, int height, int depth, PixelFormat format )
 		{
 			if ( IsCompressed( format ) )
@@ -104,14 +140,29 @@ namespace Axiom.Media
 				{
 					case PixelFormat.DXT1:
 						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 8 * depth;
-					case PixelFormat.DXT2:
-					case PixelFormat.DXT3:
-					case PixelFormat.DXT4:
-					case PixelFormat.DXT5:
-						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
-					default:
-						throw new AxiomException( "Invalid compressed pixel format" );
-				}
+
+                    case PixelFormat.DXT2:
+                    case PixelFormat.DXT3:
+                    case PixelFormat.DXT4:
+                    case PixelFormat.DXT5:
+                        return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
+
+                    // Size calculations from the PVRTC OpenGL extension spec
+                    // http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
+                    // Basically, 32 bytes is the minimum texture size.  Smaller textures are padded up to 32 bytes
+                    case PixelFormat.PVRTC_RGB2:
+                    case PixelFormat.PVRTC_RGBA2:
+                        Contract.Requires( depth == 1 );
+                        return ( Utility.Max( width, 16 ) * Utility.Max( height, 8 ) * 2 + 7 ) / 8;
+
+                    case PixelFormat.PVRTC_RGB4:
+                    case PixelFormat.PVRTC_RGBA4:
+                        Contract.Requires( depth == 1 );
+                        return ( Utility.Max( width, 8 ) * Utility.Max( height, 8 ) * 4 + 7 ) / 8;
+
+                    default:
+                        throw new AxiomException( "Invalid compressed pixel format" );
+                }
 			}
 			else
 			{
@@ -119,6 +170,14 @@ namespace Axiom.Media
 			}
 		}
 
+        /// <summary>
+        /// Returns wether the format can be packed or unpacked with the packColour()
+        /// and unpackColour() functions. This is generally not true for compressed and
+        /// depth formats as they are special. It can only be true for formats with a
+        /// fixed element size.
+        /// </summary>
+        /// <returns>true if yes, otherwise false</returns>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool IsAccessible( PixelFormat format )
 		{
 			if ( format == PixelFormat.Unknown )
@@ -127,52 +186,71 @@ namespace Axiom.Media
 			return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
 		}
 
+        /// <summary>
+        /// Shortcut method to determine if the format is compressed
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool IsCompressed( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Compressed ) > 0;
 		}
 
+        /// <summary>
+        /// Shortcut method to determine if the format is floating point
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool IsFloatingPoint( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Float ) > 0;
 		}
 
+        /// <summary>
+        /// Shortcut method to determine if the format has an alpha component
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool HasAlpha( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.HasAlpha ) > 0;
 		}
 
+        /// <summary>
+        /// Shortcut method to determine if the format is a luminance format.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool IsLuminance( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Luminance ) > 0;
 		}
 
+        /// <summary>
+        /// Shortcut method to determine if the format is in native endian format.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool IsNativeEndian( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.NativeEndian ) > 0;
 		}
 
+        /// <summary>
+        /// Gets the name of an image format
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static string GetFormatName( PixelFormat format )
 		{
 			return PixelConverter.GetDescriptionFor( format ).name;
 		}
 
+        /// <summary>
+        /// Returns the component type for a certain pixel format. Returns <see cref="PixelComponentType.Byte"/>
+        /// in case there is no clear component type like with compressed formats.
+        /// This is one of <see cref="PixelComponentType.Byte"/>, <see cref="PixelComponentType.Short"/>,
+        /// <see cref="PixelComponentType.Float16"/>, <see cref="PixelComponentType.Float32"/>.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public static PixelComponentType GetComponentType( PixelFormat format )
 		{
 			return PixelConverter.GetDescriptionFor( format ).componentType;
 		}
-
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name )
-        {
-            return GetFormatFromName( name, false, false );
-        }
-
-        /// <see cref="GetFormatFromName(string, bool, bool)"/>
-        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
-        {
-            return GetFormatFromName( name, accessibleOnly, false );
-        }
 
 		/// <summary>
 		/// Gets the format from given name.
@@ -181,7 +259,12 @@ namespace Axiom.Media
 		/// <param name="accessibleOnly">If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid.</param>
 		/// <param name="caseSensitive">Should be set true if string match should use case sensitivity.</param>
 		/// <returns>The format match the format name, or <see cref="PixelFormat.Unknown"/> if is invalid name.</returns>
-		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive )
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly = false, bool caseSensitive = false )
+#else
+        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly, bool caseSensitive )
+#endif
 		{
 			// We are storing upper-case format names.
 			var tmp = caseSensitive ? name : name.ToUpper();
@@ -197,6 +280,20 @@ namespace Axiom.Media
 			}
 			return PixelFormat.Unknown;
 		}
+
+#if !NET_40
+        /// <see cref="GetFormatFromName(string, bool, bool)"/>
+        public static PixelFormat GetFormatFromName( string name )
+        {
+            return GetFormatFromName( name, false, false );
+        }
+
+        /// <see cref="GetFormatFromName(string, bool, bool)"/>
+        public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
+        {
+            return GetFormatFromName( name, accessibleOnly, false );
+        }
+#endif
 
         /// <summary>
         /// Returns the similar format but acoording with given bit depths.
@@ -314,21 +411,5 @@ namespace Axiom.Media
 
 			return format;
 		}
-
-        /// <summary>
-        /// Gives the bit shifts for R, G, B and A component
-        /// </summary>
-        /// <remarks>
-        /// Only valid for native endian formats
-        /// </remarks>
-        [OgreVersion( 1, 7, 2 )]
-        public static void GetBitShifts( PixelFormat format, ref byte[] rgba )
-        {
-            PixelConverter.PixelFormatDescription des = PixelConverter.GetDescriptionFor( format );
-            rgba[ 0 ] = des.rshift;
-            rgba[ 1 ] = des.gshift;
-            rgba[ 2 ] = des.bshift;
-            rgba[ 3 ] = des.ashift;
-        }
-    }
+    };
 }
