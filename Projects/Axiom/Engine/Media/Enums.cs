@@ -272,10 +272,30 @@ namespace Axiom.Media
 		/// </summary>
 		SHORT_RGB = 37,
 
+        /// <summary>
+        /// PVRTC (PowerVR) RGB 2 bpp
+        /// </summary>
+        PVRTC_RGB2 = 38,
+
+        /// <summary>
+        /// PVRTC (PowerVR) RGBA 2 bpp
+        /// </summary>
+        PVRTC_RGBA2 = 39,
+
+        /// <summary>
+        /// PVRTC (PowerVR) RGB 4 bpp
+        /// </summary>
+        PVRTC_RGB4 = 40,
+
+        /// <summary>
+        /// PVRTC (PowerVR) RGBA 4 bpp
+        /// </summary>
+        PVRTC_RGBA4 = 41,
+
 		/// <summary>
 		///    The last one, used to size arrays of PixelFormat.  Don't add anything after this one!
 		/// </summary>
-		Count = 38
+		Count = 42
 	}
 
 	/// <summary>

@@ -4369,11 +4369,10 @@ namespace Axiom.Components.Terrain
 			var srcBuffer = GetLayerBlendTexture( srcIndex ).GetBuffer();
 			var destBuffer = GetLayerBlendTexture( destIndex ).GetBuffer();
 
-			byte[] rgbaShift = new byte[ 4 ];
 			var box = new BasicBox( 0, 0, destBuffer.Width, destBuffer.Height );
 
 			var pDestBase = destBuffer.Lock( box, BufferLocking.Normal ).Data;
-			PixelUtil.GetBitShifts( destBuffer.Format, ref rgbaShift );
+			var rgbaShift = PixelUtil.GetBitShifts( destBuffer.Format );
 			var pDest = pDestBase + rgbaShift[ destChannel ] / 8;
 			var destInc = PixelUtil.GetNumElemBytes( destBuffer.Format );
 
@@ -4388,7 +4387,7 @@ namespace Axiom.Components.Terrain
 			else
 			{
 				pSrc = srcBuffer.Lock( box, BufferLocking.ReadOnly ).Data;
-				PixelUtil.GetBitShifts( srcBuffer.Format, ref rgbaShift );
+				rgbaShift = PixelUtil.GetBitShifts( srcBuffer.Format );
 				pSrc += rgbaShift[ srcChannel ] / 8;
 				srcInc = PixelUtil.GetNumElemBytes( srcBuffer.Format );
 			}
@@ -4416,11 +4415,10 @@ namespace Axiom.Components.Terrain
 		{
 			var buffer = GetLayerBlendTexture( index ).GetBuffer();
 
-			byte[] rgbaShift = new byte[ 4 ];
 			var box = new BasicBox( 0, 0, buffer.Width, buffer.Height );
 
 			var pData = buffer.Lock( box, BufferLocking.Normal ).Data;
-			PixelUtil.GetBitShifts( buffer.Format, ref rgbaShift );
+			var rgbaShift = PixelUtil.GetBitShifts( buffer.Format );
 			pData += rgbaShift[ channel ] / 8;
 			var inc = PixelUtil.GetNumElemBytes( buffer.Format );
 

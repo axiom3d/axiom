@@ -107,9 +107,8 @@ namespace Axiom.Components.Terrain
 
             // we know which of RGBA we need to look at, now find it in the format
             // because we can't guarantee what precise format the RS gives us
-            byte[] rgbaShift = new byte[ 4 ];
             PixelFormat fmt = mBuffer.Format;
-            PixelUtil.GetBitShifts( fmt, ref rgbaShift );
+            var rgbaShift = PixelUtil.GetBitShifts( fmt );
             mChannelOffset = (byte)( rgbaShift[ mChannel ] / 8 ); // /8 convert to bytes
 #if AXIOM_ENDIAN == AXIOM_ENDIAN_BIG
             // invert (dealing bytewise)
