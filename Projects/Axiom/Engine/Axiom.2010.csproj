@@ -853,8 +853,12 @@
   </PropertyGroup>
   <ItemGroup>
 	<Svn Include="$(ProjectDir)..\..\.." />
+	<Version Include="..\version.txt" />
 	<AssemblyInfoTemplate Include="..\GlobalAssemblyInfo.cs.in" >
 		<OutputFile>..\GlobalAssemblyInfo.cs</OutputFile>
+	</AssemblyInfoTemplate>
+	<AssemblyInfoTemplate Include="..\version.txt.in" >
+		<OutputFile>..\version.txt</OutputFile>
 	</AssemblyInfoTemplate>
   </ItemGroup>
   <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />

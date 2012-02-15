@@ -20,7 +20,7 @@
 		<SkipInstaller>true</SkipInstaller>
 		<SkipSourceServer>true</SkipSourceServer>
 		<SkipILMerge>true</SkipILMerge>
-		<SkipNDoc>false</SkipNDoc>
+		<SkipNDoc>true</SkipNDoc>
 	</PropertyGroup>
 
 	<Target Name="Build">

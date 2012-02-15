@@ -2517,7 +2517,18 @@
             <summary>Describes a win32 window.</summary>
         </member>
         <member name="T:OpenTK.Platform.IWindowInfo">
-            <summary>Descibes an OS window.</summary>
+            <summary>Describes an OS window.</summary>
+        </member>
+        <member name="P:OpenTK.Platform.IWindowInfo.WindowHandle">
+            <summary>
+            returns an IntPtr to the NativeWindow
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.IWindowInfo.Parent">
+            <summary>
+            returns an IntPtr to the Parent of this Window
+            Can be null;
+            </summary>
         </member>
         <member name="M:OpenTK.Platform.Windows.WinWindowInfo.#ctor">
             <summary>
@@ -59252,6 +59263,26 @@
             Gets a value indicating whether this instance refers to a System.Windows.Forms.Control.
             </summary>
         </member>
+        <member name="P:OpenTK.Platform.MacOS.CarbonWindowInfo.WindowHandle">
+            <summary>
+            returns an IntPtr to the NativeWindow
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.MacOS.CarbonWindowInfo.Parent">
+            <summary>
+             returns an IntPtr to the windows Parent info
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.Egl.EglWindowInfo.WindowHandle">
+            <summary>
+            returns an IntPtr to the NativeWindow
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.Egl.EglWindowInfo.Parent">
+            <summary>
+            returns an IntPtr to the Parent Window Info
+            </summary>
+        </member>
         <member name="T:OpenTK.Half">
             <summary>
             The name Half is derived from half-precision floating-point number.
@@ -64634,6 +64665,16 @@
         <member name="P:OpenTK.KeyPressEventArgs.KeyChar">
             <summary>
             Gets a <see cref="T:System.Char"/> that defines the ASCII character that was typed.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.Dummy.DummyWindowInfo.WindowHandle">
+            <summary>
+            returns an IntPtr to the NativeWindow
+            </summary>
+        </member>
+        <member name="P:OpenTK.Platform.Dummy.DummyWindowInfo.Parent">
+            <summary>
+            returns an IntPtr to the  Parent Window Info
             </summary>
         </member>
         <member name="T:OpenTK.Vector4">

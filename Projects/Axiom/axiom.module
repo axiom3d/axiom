@@ -1,5 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(RootDir)\tools\build\Module.targets" />
+  <Import Project="axiom.common.version.module" />
   
   <ItemGroup>
     <CSharpProject Include="Engine\Axiom$(ProjectVariant).csproj" />
@@ -38,17 +39,17 @@
 	<AssemblyFile Include="$(RootDir)\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll" >
       <ImagePath>bin\Net35</ImagePath>
 	</AssemblyFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.dll">
-      <ImagePath>bin\Xbox</ImagePath>
-    </AssemblyFile>
 	<ConfigFile Include="Engine\bin\x86\Axiom.dll.config" >
       <ImagePath>bin\Net35</ImagePath>
 	</ConfigFile>
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.dll">
+      <ImagePath>bin\Xbox</ImagePath>
+    </AssemblyFile>
     <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.pdb">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
 	<AssemblyFile Include="$(RootDir)\Lib\Managed\CompactFramework\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll" >
-      <ImagePath>bin\Net35</ImagePath>
+      <ImagePath>bin\Xbox</ImagePath>
 	</AssemblyFile>
     <XmlDocFile Include="Engine\bin\x86\Axiom.xml">
       <ImagePath>bin</ImagePath>
@@ -279,23 +280,12 @@
     </LicenseFile>
     -->
 
-	</ItemGroup>
+  </ItemGroup>
   
   <Target 
     Name="BeforeImage" 
     DependsOnTargets="AxiomImage_ILMerge;AxiomImage_NoILMerge" />
   
-  <ItemGroup>
-    <AxiomMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\ICSharpCode.SharpZipLib.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Gallio.ReflectionShim.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataHelper.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataModel.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.PdbReader.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.PeReader.dll" />
-    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
-  </ItemGroup>
-
   <Target 
     Name="AxiomImage_ILMerge"
     Condition="'$(NoILMerge)'!='true'"
@@ -310,6 +300,36 @@
       Command="&quot;$(ToolsDir)\ILMerge\ILMerge.exe&quot; &quot;Gallio\bin\Gallio.dll&quot; @(AxiomMergeDependency->'&quot;%(Identity)&quot;', ' ') /internalize &quot;/out:$(ModuleTempDir)\Axiom.dll&quot;" />
 	      
   </Target>
+
+  <Target 
+    Name="AxiomImage_NoILMerge"
+    Condition="'$(NoILMerge)'=='true'">
+    
+    <Copy 
+      SourceFiles="@(Axiom_x86_SourceFile)"
+	  
+      DestinationFolder="$(ModuleTempDir)\x86\" />
+	  
+    <Copy 
+      SourceFiles="@(Axiom_Xbox_SourceFile)"
+      DestinationFolder="$(ModuleTempDir)\Xbox\" />
+
+	  <Copy 
+      SourceFiles="@(GallioMergeDependency)"
+      DestinationFolder="$(ModuleImageDir)\bin" />
+      
+  </Target>
+
+  <ItemGroup>
+    <AxiomMergeDependency Include="Gallio\bin\Mono.Cecil.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\ICSharpCode.SharpZipLib.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Gallio.ReflectionShim.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataHelper.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.MetadataModel.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.PdbReader.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.PeReader.dll" />
+    <AxiomMergeDependency Include="Gallio\bin\Microsoft.Cci.SourceModel.dll" />
+  </ItemGroup>
 
   <ItemGroup>
 	<Axiom_x86_SourceFile Include="Engine\bin\x86\Axiom.dll" />
@@ -361,22 +381,50 @@
 	<Axiom_Xbox_SourceFile Include="Plugins\ParticleFX\bin\Xbox\Axiom.Plugins.ParticleFX.pdb" />
   </ItemGroup>
   
-  <Target 
-    Name="AxiomImage_NoILMerge"
-    Condition="'$(NoILMerge)'=='true'">
+  <Target Name="BeforeDist"
+		  DependsOnTargets="AxiomDist_NuGetPackage" />
+		  
+  <ItemGroup>
+    <Axiom_NuGetPackage Include="NuGet Package\*.nuspec" />
+  </ItemGroup>
+  
+  <Target Name="AxiomDist_NuGetPackage" >
+	<!-- 
+		  Inputs="@(Axiom_NuGetPackage)"
+		  Outputs="@(Axiom_NuGetPackage->'$(ModuleTempDir)\packages\%(Identity)')"
+	-->
     
-    <Copy 
-      SourceFiles="@(Axiom_x86_SourceFile)"
-	  
-      DestinationFolder="$(ModuleTempDir)\x86\" />
-	  
-    <Copy 
-      SourceFiles="@(Axiom_Xbox_SourceFile)"
-      DestinationFolder="$(ModuleTempDir)\Xbox\" />
+    <Copy SourceFiles="@(Axiom_NuGetPackage)"
+		  DestinationFolder="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)" />
+    <Version VersionFile="version.txt" >
+		<Output TaskParameter="Major" PropertyName="Major" />
+		<Output TaskParameter="Minor" PropertyName="Minor" />
+		<Output TaskParameter="Build" PropertyName="Revision" />
+		<Output TaskParameter="Revision" PropertyName="BuildDate" />
+    </Version>
+	
+    <Message Text="Version from file: $(Major).$(Minor).$(Revision).$(BuildDate)"/>
 
-	  <Copy 
-      SourceFiles="@(GallioMergeDependency)"
-      DestinationFolder="$(ModuleImageDir)\bin" />
-      
+    <FileUpdate Files="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)\%(Axiom_NuGetPackage.Filename).nuspec"
+				RegEx='\$id\$'
+				ReplacementText='%(Axiom_NuGetPackage.Filename)' />
+				
+    <FileUpdate Files="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)\%(Axiom_NuGetPackage.Filename).nuspec"
+				RegEx='\$version\$'
+				ReplacementText='$(Major).$(Minor).$(Revision).$(BuildDate)' />
+
+    <FileUpdate Files="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)\%(Axiom_NuGetPackage.Filename).nuspec"
+				RegEx='\$author\$'
+				ReplacementText='Axiom Project Team' />	
+				
+    <FileUpdate Files="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)\%(Axiom_NuGetPackage.Filename).nuspec"
+				RegEx='\$description\$'
+				ReplacementText='%(Axiom_NuGetPackage.Filename)' />	
+	
+	<MakeDir Directories="$(ModuleDistDir)\Packages" />
+	
+	<EXEC WorkingDirectory="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)"
+		  Command="$(ToolsDir)\Nuget\Nuget.exe pack $(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)\%(Axiom_NuGetPackage.Filename).nuspec -OutputDirectory $(ModuleDistDir)\Packages" />
   </Target>
+		  
 </Project>

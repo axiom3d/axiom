@@ -16,8 +16,7 @@
     </dependencies>
   </metadata>
   <files>
-		<file src="..\..\..\..\Framework\image\bin\net35\Axiom.Framework.dll" target="lib\net35\Axiom.Framework.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll" target="lib\net35\SharpInputSystem.Core.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\Common.Logging.dll" target="lib\net35\Common.Logging.dll" /> 
-  </files>
+		<file src="..\..\x86\Axiom.Platforms.OpenTK.dll" target="lib\net35\Axiom.Platforms.OpenTK.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll" target="lib\net35\OpenTK.dll" /> 
+  </files>  
 </package>

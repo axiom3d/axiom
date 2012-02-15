@@ -43,9 +43,9 @@ using System.Runtime.InteropServices;
 [assembly: ComVisibleAttribute( false )]
 [assembly: CLSCompliantAttribute( false )]
 #if DEBUG
-[assembly: AssemblyConfiguration("http://svn.axiom3d.net/svnroot/axiomengine/branches/v0.8.0.0/Projects/, Local Modifications, Debug")]
+[assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/branches/v0.8.0.0/, Mixed Revisions, Local Modifications, Debug")]
 #else
-[assembly: AssemblyConfiguration("http://svn.axiom3d.net/svnroot/axiomengine/branches/v0.8.0.0/Projects/, Local Modifications, Release")]
+[assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/branches/v0.8.0.0/, Mixed Revisions, Local Modifications, Release")]
 #endif
 [assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
 [assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
@@ -61,9 +61,9 @@ using System.Runtime.InteropServices;
 //      YearWeekDayOfWeek
 //
 
-[assembly: AssemblyVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3012.12041" )]
+[assembly: AssemblyVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]
 #if !( XBOX || XBOX360 )
-[assembly: AssemblyFileVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3012.12041" )]
+[assembly: AssemblyFileVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]
 #endif
 
-[assembly: AssemblyInformationalVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3012.12041" )]
+[assembly: AssemblyInformationalVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]

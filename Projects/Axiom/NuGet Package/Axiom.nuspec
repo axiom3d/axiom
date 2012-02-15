@@ -13,7 +13,9 @@
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
   </metadata>
   <files>
-		<file src="..\..\x86\SharpInputSystem.Core.dll" target="lib\net35\SharpInputSystem.Core.dll" /> 
-		<file src="..\..\x86\zlib1.dll" target="lib\net35\zlib1.dll" /> 
+		<file src="..\..\x86\Axiom.dll" target="lib\net35\Axiom.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll" target="lib\net35\ICSharpCode.SharpZipLib.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\freetype6.dll" target="lib\net35\freetype6.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\zlib1.dll" target="lib\net35\zlib1.dll" /> 
   </files>
 </package>

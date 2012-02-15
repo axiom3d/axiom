@@ -11,11 +11,13 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
-  </metadata>
     <dependencies>
       <dependency id="Axiom" version="$version$" />
     </dependencies>
+  </metadata>
   <files>
-		<file src="..\..\x86\FreeImage.dll" target="lib\net35\FreeImage.dll" /> 
+		<file src="..\..\x86\Axiom.Plugins.FreeImageCodecs.dll" target="lib\net35\Axiom.Plugins.FreeImageCodecs.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\freeimage.dll" target="lib\net35\freeimage.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\FreeImage\FreeImageNET.dll" target="lib\net35\FreeImageNet.dll" /> 
   </files>
 </package>

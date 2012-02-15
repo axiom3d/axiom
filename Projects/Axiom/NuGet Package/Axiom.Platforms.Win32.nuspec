@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <package >
-	<metadata>
-	<id>$id$</id>
-	<version>$version$</version>
-	<authors>$author$</authors>
-	<owners>$author$</owners>
-	<licenseUrl>http://axiom3d.net/wiki/index.php/License.txt</licenseUrl>
-	<projectUrl>http://axiom3d.net/</projectUrl>
-	<iconUrl>http://axiom3d.net/images/logos_axiom/axiomlogo_small.png</iconUrl>
-	<requireLicenseAcceptance>true</requireLicenseAcceptance>
-	<description>$description$</description>
-	<tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
-	</metadata>
-	<dependencies>
-	  <dependency id="Axiom" version="$version$" />
-	</dependencies>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://axiom3d.net/wiki/index.php/License.txt</licenseUrl>
+    <projectUrl>http://axiom3d.net/</projectUrl>
+    <iconUrl>http://axiom3d.net/images/logos_axiom/axiomlogo_small.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>$description$</description>
+    <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
+    <dependencies>
+      <dependency id="Axiom" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files>
+		<file src="..\..\x86\Axiom.Platforms.Win32.dll" target="lib\net35\Axiom.Platforms.Win32.dll" /> 
+  </files>  
 </package>
