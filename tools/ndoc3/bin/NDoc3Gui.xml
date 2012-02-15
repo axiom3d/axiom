@@ -4,189 +4,34 @@
         <name>NDoc3Gui</name>
     </assembly>
     <members>
-        <member name="T:NDoc3.Gui.AboutForm">
+        <member name="T:NDoc3.Gui.WarningForm">
             <summary>
-            Summary description for AboutForm.
+            Form used to diaply warning messages to the user
             </summary>
         </member>
-        <member name="F:NDoc3.Gui.AboutForm.components">
+        <member name="F:NDoc3.Gui.WarningForm.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.AboutForm.#ctor">
+        <member name="M:NDoc3.Gui.WarningForm.ShowWarning(System.String,System.String,System.Windows.Forms.Control)">
             <summary>
-            
+            Shows the warning form
             </summary>
+            <param name="title">The Form's title</param>
+            <param name="message">The warning</param>
+            <param name="parent">The Form's parent</param>
         </member>
-        <member name="M:NDoc3.Gui.AboutForm.Dispose(System.Boolean)">
+        <member name="M:NDoc3.Gui.WarningForm.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.AboutForm.InitializeComponent">
+        <member name="M:NDoc3.Gui.WarningForm.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
-        </member>
-        <member name="T:NDoc3.Gui.App">
-            <summary>
-            Static class with the Main method and application properties
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.App.Main(System.String[])">
-            <summary>
-            Application entry point
-            </summary>
-            <param name="args">Command line arguments</param>
-        </member>
-        <member name="M:NDoc3.Gui.App.GetSourceTreePath(System.String)">
-            <summary>
-            Returns a path to a file based resource that
-            is sompatible with the source tree structure, rather than the
-            deploymeed strucutre
-            </summary>
-            <param name="fileName">The file to build a path for</param>
-            <returns>Relative path to the file in the source tree</returns>
-        </member>
-        <member name="M:NDoc3.Gui.App.GetInnermostException(System.Exception)">
-            <summary>
-            Given an <see cref="T:System.Exception"/> returns the deepest
-            non-null InnerException
-            </summary>
-            <param name="e">The top Exception</param>
-            <returns>The innermost Exception</returns>
-        </member>
-        <member name="M:NDoc3.Gui.App.DumpException(System.Text.StringBuilder,System.Exception)">
-            <summary>
-            Streams an exception
-            </summary>
-            <param name="strBld">A StringBuilder to hold the exception details</param>
-            <param name="ex">The Exception</param>
-        </member>
-        <member name="M:NDoc3.Gui.App.BuildTraceError(System.Exception)">
-            <summary>
-            Dumps the details of an exception to the Trace window
-            </summary>
-            <param name="ex">The Exception</param>
-        </member>
-        <member name="P:NDoc3.Gui.App.WebSiteUri">
-            <summary>
-            The NDoc3 SourceForge URI
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.App.RuntimeLocation">
-            <summary>
-            The location where the application is running 
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.App.LicenseFilePath">
-            <summary>
-            The path to the license file
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.App.HelpFilePath">
-            <summary>
-            The path to the help file
-            </summary>
-        </member>
-        <member name="T:NDoc3.Gui.AssemblyListControl">
-            <summary>
-            Control that displays the Assemblies in a project
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.#ctor">
-            <summary>
-            Creates an isntance of the class
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.Refresh">
-            <summary>
-            See <see cref="M:System.Windows.Forms.Control.Refresh"/>
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.deleteButton_Click(System.Object,System.EventArgs)">
-            <summary>
-            Removes the selected assembly and /doc file pair from the listview.
-            </summary>
-            <remarks>
-            If the row being deleted was the only one left in the listview then
-            the documentation buttons are disabled.
-            </remarks>
-            <param name="sender">The sender (not used).</param>
-            <param name="e">The event arguments (not used).</param>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.OnEditNamespaces">
-            <summary>
-            Raises the <see cref="E:NDoc3.Gui.AssemblyListControl.EditNamespaces"/> event
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.namespaceSummariesButton_Click(System.Object,System.EventArgs)">
-            <summary>
-            Brings up the form for entering namespace summaries.
-            </summary>
-            <remarks>
-            Calls XmlDocumenter to build an XML file documenting the assemblies
-            currently in the project.  This file is used to discover all of the
-            namespaces currently being documented in case any new ones have been
-            added.  A <see cref="T:System.Collections.Hashtable"/> with the namespace
-            names as keys and any existing summaries as values is passed in to
-            a form which allows editing of the namespace summaries.  If the ok button
-            is selected in the form then the Hashtable becomes the main one used by
-            NDoc3 and passed into documenters for building documentation.
-            </remarks>
-            <param name="sender">The sender (not used).</param>
-            <param name="e">The event arguments (not used).</param>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblyListControl.OnDetailsViewChanged">
-            <summary>
-            Raises the <see cref="E:NDoc3.Gui.AssemblyListControl.DetailsViewChanged"/> event
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.AssemblyListControl.AssemblySlashDocs">
-            <summary>
-            Gets the collection of assemblies and documentation comment XML files in the project.
-            </summary>
-            <value>An <see cref="T:NDoc3.Core.AssemblySlashDocCollection"/>.</value>
-        </member>
-        <member name="E:NDoc3.Gui.AssemblyListControl.EditNamespaces">
-            <summary>
-            Event raised when the "Edit Namespace" button is clicked
-            </summary>
-        </member>
-        <member name="E:NDoc3.Gui.AssemblyListControl.DetailsViewChanged">
-            <summary>
-            Event raised when the <see cref="P:NDoc3.Gui.AssemblyListControl.DetailsView"/> property changes
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.AssemblyListControl.DetailsView">
-            <summary>
-            Determines if the ListView is in report or list mode
-            </summary>
-        </member>
-        <member name="T:NDoc3.Gui.AssemblySlashDocForm">
-            <summary>
-               This form allows the user to select an assembly and it's matching /doc file.
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblySlashDocForm.#ctor">
-            <summary>Initializes a new instance of the AssemblySlashDocForm class.</summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblySlashDocForm.Dispose(System.Boolean)">
-            <summary>Clean up any resources being used.</summary>
-        </member>
-        <member name="M:NDoc3.Gui.AssemblySlashDocForm.InitializeComponent">
-            <summary>
-               Required method for Designer support - do not modify
-               the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.AssemblySlashDocForm.AssySlashDoc">
-            <summary>
-            Gets or sets the AssemblySlashDoc.
-            </summary>
-            <value></value>
         </member>
         <member name="T:NDoc3.Gui.BuildWorker">
             <summary>
@@ -262,6 +107,67 @@
             <param name="files">The files dropped</param>
             <returns>The path stored in the first location or the files array</returns>
         </member>
+        <member name="T:NDoc3.Gui.App">
+            <summary>
+            Static class with the Main method and application properties
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.App.Main(System.String[])">
+            <summary>
+            Application entry point
+            </summary>
+            <param name="args">Command line arguments</param>
+        </member>
+        <member name="M:NDoc3.Gui.App.GetSourceTreePath(System.String)">
+            <summary>
+            Returns a path to a file based resource that
+            is sompatible with the source tree structure, rather than the
+            deploymeed strucutre
+            </summary>
+            <param name="fileName">The file to build a path for</param>
+            <returns>Relative path to the file in the source tree</returns>
+        </member>
+        <member name="M:NDoc3.Gui.App.GetInnermostException(System.Exception)">
+            <summary>
+            Given an <see cref="T:System.Exception"/> returns the deepest
+            non-null InnerException
+            </summary>
+            <param name="e">The top Exception</param>
+            <returns>The innermost Exception</returns>
+        </member>
+        <member name="M:NDoc3.Gui.App.DumpException(System.Text.StringBuilder,System.Exception)">
+            <summary>
+            Streams an exception
+            </summary>
+            <param name="strBld">A StringBuilder to hold the exception details</param>
+            <param name="ex">The Exception</param>
+        </member>
+        <member name="M:NDoc3.Gui.App.BuildTraceError(System.Exception)">
+            <summary>
+            Dumps the details of an exception to the Trace window
+            </summary>
+            <param name="ex">The Exception</param>
+        </member>
+        <member name="P:NDoc3.Gui.App.WebSiteUri">
+            <summary>
+            The NDoc3 SourceForge URI
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.App.RuntimeLocation">
+            <summary>
+            The location where the application is running 
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.App.LicenseFilePath">
+            <summary>
+            The path to the license file
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.App.HelpFilePath">
+            <summary>
+            The path to the help file
+            </summary>
+        </member>
         <member name="T:NDoc3.Gui.ErrorForm">
             <summary>
             Form used to display errors to the user
@@ -298,33 +204,148 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="T:NDoc3.Gui.IBuildStatus">
+        <member name="T:NDoc3.Gui.TextBoxWriter">
             <summary>
-            Interface for receiving status notification during a build
+            A <see cref="T:System.IO.TextWriter"/> that writes to a text box
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.IBuildStatus.BuildException(System.Exception)">
+        <member name="M:NDoc3.Gui.TextBoxWriter.#ctor(System.Windows.Forms.TextBoxBase)">
             <summary>
-            An exception occurred during the build
+            creates a new instance of the class
             </summary>
-            <param name="e">The exception</param>
+            <param name="b">The <see cref="T:System.Windows.Forms.TextBoxBase"/> that will be written to</param>
         </member>
-        <member name="M:NDoc3.Gui.IBuildStatus.BuildComplete">
+        <member name="M:NDoc3.Gui.TextBoxWriter.Write(System.String)">
             <summary>
-            The build is completed
+            Write a string to the trace window
             </summary>
-            <remarks>This is called on succes, failure and cancellation</remarks>
+            <param name="message">The string to write</param>
         </member>
-        <member name="M:NDoc3.Gui.IBuildStatus.BuildCancelled">
+        <member name="M:NDoc3.Gui.TextBoxWriter.WriteLine(System.String)">
             <summary>
-            Called when the build is cancelled
+            Writes a string and a new line to the text box
+            </summary>
+            <param name="message">The string to write</param>
+        </member>
+        <member name="P:NDoc3.Gui.TextBoxWriter.Encoding">
+            <summary>
+            Get's the encoding of the stream
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.IBuildStatus.ReportProgress(NDoc3.Core.ProgressArgs)">
+        <member name="T:NDoc3.Gui.WaitCursor">
             <summary>
-            Reports build progress
+            Manages the wait cursor
             </summary>
-            <param name="e">Build progress arguments</param>
+        </member>
+        <member name="M:NDoc3.Gui.WaitCursor.#ctor(System.Windows.Forms.Control)">
+            <summary>
+            Constructing this class casues the cursor to be set to the wait cursor
+            and resets it at disposal
+            </summary>
+            <param name="parent">The control whose cursor to set</param>
+        </member>
+        <member name="M:NDoc3.Gui.WaitCursor.#ctor(System.Windows.Forms.Control,System.Windows.Forms.Cursor)">
+            <summary>
+            Constructing this class casues the cursor to be set to the specified cursor
+            and resets it at disposal
+            </summary>
+            <param name="parent">The control whose cursor to set</param>
+            <param name="cursor">The cursor</param>
+        </member>
+        <member name="M:NDoc3.Gui.WaitCursor.Dispose">
+            <summary>
+            Restores the cursor to the default
+            </summary>
+        </member>
+        <member name="T:NDoc3.Gui.TraceWindowControl">
+            <summary>
+            TraceWindow is a class that will connect to trace events and display trace outputs in a text box
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.#ctor">
+            <summary>
+            Creates a new instance of the TraceWindowControl class
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.Clear">
+            <summary>
+            Clears the contents of the window
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.OnVisibleChanged(System.EventArgs)">
+            <summary>
+            Raises the VisibleChanged event
+            </summary>
+            <param name="e">event arguments</param>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.Connect">
+            <summary>
+            Connects the control to trace events
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.Disconnect">
+            <summary>
+            Disconnects the control from trace events
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.TraceWindowControl.OnCloseClick">
+            <summary>
+            Raises the <see cref="E:NDoc3.Gui.TraceWindowControl.CloseClick"/> event
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.TraceWindowControl.Text">
+            <summary>
+            Gets/Set the window caption
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.TraceWindowControl.TraceText">
+            <summary>
+            Gets/Sets the test displayed in the trace window
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.TraceWindowControl.AutoConnect">
+            <summary>
+            Determines whether the control will connect to trace events when it becomes visible, and disconnect when it is hidden
+            </summary>
+        </member>
+        <member name="E:NDoc3.Gui.TraceWindowControl.CloseClick">
+            <summary>
+            Raised when the close button is clicked
+            </summary>
+        </member>
+        <member name="T:NDoc3.Gui.AssemblySlashDocForm">
+            <summary>
+               This form allows the user to select an assembly and it's matching /doc file.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.AssemblySlashDocForm.#ctor">
+            <summary>Initializes a new instance of the AssemblySlashDocForm class.</summary>
+        </member>
+        <member name="M:NDoc3.Gui.AssemblySlashDocForm.Dispose(System.Boolean)">
+            <summary>Clean up any resources being used.</summary>
+        </member>
+        <member name="M:NDoc3.Gui.AssemblySlashDocForm.InitializeComponent">
+            <summary>
+               Required method for Designer support - do not modify
+               the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.AssemblySlashDocForm.AssySlashDoc">
+            <summary>
+            Gets or sets the AssemblySlashDoc.
+            </summary>
+            <value></value>
         </member>
         <member name="T:NDoc3.Gui.MainForm">
             <summary>The main application form.</summary>
@@ -353,6 +374,34 @@
             a property grid.  You can edit the properties of the selected
             documenter via this property grid.</para>
             </remarks>
+        </member>
+        <member name="T:NDoc3.Gui.IBuildStatus">
+            <summary>
+            Interface for receiving status notification during a build
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.IBuildStatus.BuildException(System.Exception)">
+            <summary>
+            An exception occurred during the build
+            </summary>
+            <param name="e">The exception</param>
+        </member>
+        <member name="M:NDoc3.Gui.IBuildStatus.BuildComplete">
+            <summary>
+            The build is completed
+            </summary>
+            <remarks>This is called on succes, failure and cancellation</remarks>
+        </member>
+        <member name="M:NDoc3.Gui.IBuildStatus.BuildCancelled">
+            <summary>
+            Called when the build is cancelled
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.IBuildStatus.ReportProgress(NDoc3.Core.ProgressArgs)">
+            <summary>
+            Reports build progress
+            </summary>
+            <param name="e">Build progress arguments</param>
         </member>
         <member name="M:NDoc3.Gui.MainForm.#ctor(System.String)">
             <summary>Initializes the main application form, locates
@@ -477,42 +526,79 @@
             </summary>
             <param name="e">progress arguments</param>
         </member>
-        <member name="T:NDoc3.Gui.NamespaceSummariesForm">
+        <member name="T:NDoc3.Gui.AssemblyListControl">
             <summary>
-               Summary description for NamespaceSummariesForm.
+            Control that displays the Assemblies in a project
             </summary>
         </member>
-        <member name="F:NDoc3.Gui.NamespaceSummariesForm.cancelButton">
+        <member name="M:NDoc3.Gui.AssemblyListControl.#ctor">
             <summary>
-               Required designer variable.
+            Creates an isntance of the class
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.NamespaceSummariesForm.#ctor(NDoc3.Core.Project)">
-            <summary>Allows the user to associate a summaries with the
-            namespaces found in the assemblies that are being 
-            documented.</summary>
-        </member>
-        <member name="M:NDoc3.Gui.NamespaceSummariesForm.InitializeComponent">
+        <member name="M:NDoc3.Gui.AssemblyListControl.Refresh">
             <summary>
-               Required method for Designer support - do not modify
-               the contents of this method with the code editor.
+            See <see cref="M:System.Windows.Forms.Control.Refresh"/>
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.NamespaceSummariesForm.okButton_Click(System.Object,System.EventArgs)">
+        <member name="M:NDoc3.Gui.AssemblyListControl.deleteButton_Click(System.Object,System.EventArgs)">
             <summary>
-            Saves the summary text for the currently selected namespace
-            before exiting the form.
+            Removes the selected assembly and /doc file pair from the listview.
             </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
+            <remarks>
+            If the row being deleted was the only one left in the listview then
+            the documentation buttons are disabled.
+            </remarks>
+            <param name="sender">The sender (not used).</param>
+            <param name="e">The event arguments (not used).</param>
         </member>
-        <member name="M:NDoc3.Gui.NamespaceSummariesForm.namespaceComboBox_SelectedIndexChanged(System.Object,System.EventArgs)">
+        <member name="M:NDoc3.Gui.AssemblyListControl.OnEditNamespaces">
             <summary>
-            Saves the currently entered text with the appropriate namespace
-            and then puts the newly selected namespace's summary in the edit box.
+            Raises the <see cref="E:NDoc3.Gui.AssemblyListControl.EditNamespaces"/> event
             </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
+        </member>
+        <member name="M:NDoc3.Gui.AssemblyListControl.namespaceSummariesButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            Brings up the form for entering namespace summaries.
+            </summary>
+            <remarks>
+            Calls XmlDocumenter to build an XML file documenting the assemblies
+            currently in the project.  This file is used to discover all of the
+            namespaces currently being documented in case any new ones have been
+            added.  A <see cref="T:System.Collections.Hashtable"/> with the namespace
+            names as keys and any existing summaries as values is passed in to
+            a form which allows editing of the namespace summaries.  If the ok button
+            is selected in the form then the Hashtable becomes the main one used by
+            NDoc3 and passed into documenters for building documentation.
+            </remarks>
+            <param name="sender">The sender (not used).</param>
+            <param name="e">The event arguments (not used).</param>
+        </member>
+        <member name="M:NDoc3.Gui.AssemblyListControl.OnDetailsViewChanged">
+            <summary>
+            Raises the <see cref="E:NDoc3.Gui.AssemblyListControl.DetailsViewChanged"/> event
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.AssemblyListControl.AssemblySlashDocs">
+            <summary>
+            Gets the collection of assemblies and documentation comment XML files in the project.
+            </summary>
+            <value>An <see cref="T:NDoc3.Core.AssemblySlashDocCollection"/>.</value>
+        </member>
+        <member name="E:NDoc3.Gui.AssemblyListControl.EditNamespaces">
+            <summary>
+            Event raised when the "Edit Namespace" button is clicked
+            </summary>
+        </member>
+        <member name="E:NDoc3.Gui.AssemblyListControl.DetailsViewChanged">
+            <summary>
+            Event raised when the <see cref="P:NDoc3.Gui.AssemblyListControl.DetailsView"/> property changes
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.AssemblyListControl.DetailsView">
+            <summary>
+            Determines if the ListView is in report or list mode
+            </summary>
         </member>
         <member name="T:NDoc3.Gui.NDocOptions">
             <summary>
@@ -543,6 +629,37 @@
         <member name="P:NDoc3.Gui.NDocOptions.MRUSize">
             <summary>
             Get/Set the MRUSize property
+            </summary>
+        </member>
+        <member name="T:NDoc3.Gui.SolutionForm">
+            <summary>
+            Summary description for SolutionForm.
+            </summary>
+        </member>
+        <member name="F:NDoc3.Gui.SolutionForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.SolutionForm.#ctor">
+            <summary>
+            Initializes a new instance of the SolutionForm class.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.SolutionForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:NDoc3.Gui.SolutionForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:NDoc3.Gui.SolutionForm.ConfigList">
+            <summary>
+            Listbox of solution's configurations.
             </summary>
         </member>
         <member name="T:NDoc3.Gui.OptionsForm">
@@ -582,181 +699,64 @@
             Returns the Options
             </summary>
         </member>
-        <member name="T:NDoc3.Gui.SolutionForm">
+        <member name="T:NDoc3.Gui.NamespaceSummariesForm">
             <summary>
-            Summary description for SolutionForm.
+               Summary description for NamespaceSummariesForm.
             </summary>
         </member>
-        <member name="F:NDoc3.Gui.SolutionForm.components">
+        <member name="F:NDoc3.Gui.NamespaceSummariesForm.cancelButton">
             <summary>
-            Required designer variable.
+               Required designer variable.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.SolutionForm.#ctor">
+        <member name="M:NDoc3.Gui.NamespaceSummariesForm.#ctor(NDoc3.Core.Project)">
+            <summary>Allows the user to associate a summaries with the
+            namespaces found in the assemblies that are being 
+            documented.</summary>
+        </member>
+        <member name="M:NDoc3.Gui.NamespaceSummariesForm.InitializeComponent">
             <summary>
-            Initializes a new instance of the SolutionForm class.
+               Required method for Designer support - do not modify
+               the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.SolutionForm.Dispose(System.Boolean)">
+        <member name="M:NDoc3.Gui.NamespaceSummariesForm.okButton_Click(System.Object,System.EventArgs)">
             <summary>
-            Clean up any resources being used.
+            Saves the summary text for the currently selected namespace
+            before exiting the form.
             </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
         </member>
-        <member name="M:NDoc3.Gui.SolutionForm.InitializeComponent">
+        <member name="M:NDoc3.Gui.NamespaceSummariesForm.namespaceComboBox_SelectedIndexChanged(System.Object,System.EventArgs)">
             <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
+            Saves the currently entered text with the appropriate namespace
+            and then puts the newly selected namespace's summary in the edit box.
             </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
         </member>
-        <member name="P:NDoc3.Gui.SolutionForm.ConfigList">
+        <member name="T:NDoc3.Gui.AboutForm">
             <summary>
-            Listbox of solution's configurations.
+            Summary description for AboutForm.
             </summary>
         </member>
-        <member name="T:NDoc3.Gui.TextBoxWriter">
-            <summary>
-            A <see cref="T:System.IO.TextWriter"/> that writes to a text box
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TextBoxWriter.#ctor(System.Windows.Forms.TextBoxBase)">
-            <summary>
-            creates a new instance of the class
-            </summary>
-            <param name="b">The <see cref="T:System.Windows.Forms.TextBoxBase"/> that will be written to</param>
-        </member>
-        <member name="M:NDoc3.Gui.TextBoxWriter.Write(System.String)">
-            <summary>
-            Write a string to the trace window
-            </summary>
-            <param name="message">The string to write</param>
-        </member>
-        <member name="M:NDoc3.Gui.TextBoxWriter.WriteLine(System.String)">
-            <summary>
-            Writes a string and a new line to the text box
-            </summary>
-            <param name="message">The string to write</param>
-        </member>
-        <member name="P:NDoc3.Gui.TextBoxWriter.Encoding">
-            <summary>
-            Get's the encoding of the stream
-            </summary>
-        </member>
-        <member name="T:NDoc3.Gui.TraceWindowControl">
-            <summary>
-            TraceWindow is a class that will connect to trace events and display trace outputs in a text box
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.#ctor">
-            <summary>
-            Creates a new instance of the TraceWindowControl class
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.Clear">
-            <summary>
-            Clears the contents of the window
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.OnVisibleChanged(System.EventArgs)">
-            <summary>
-            Raises the VisibleChanged event
-            </summary>
-            <param name="e">event arguments</param>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.Connect">
-            <summary>
-            Connects the control to trace events
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.Disconnect">
-            <summary>
-            Disconnects the control from trace events
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.TraceWindowControl.OnCloseClick">
-            <summary>
-            Raises the <see cref="E:NDoc3.Gui.TraceWindowControl.CloseClick"/> event
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.TraceWindowControl.Text">
-            <summary>
-            Gets/Set the window caption
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.TraceWindowControl.TraceText">
-            <summary>
-            Gets/Sets the test displayed in the trace window
-            </summary>
-        </member>
-        <member name="P:NDoc3.Gui.TraceWindowControl.AutoConnect">
-            <summary>
-            Determines whether the control will connect to trace events when it becomes visible, and disconnect when it is hidden
-            </summary>
-        </member>
-        <member name="E:NDoc3.Gui.TraceWindowControl.CloseClick">
-            <summary>
-            Raised when the close button is clicked
-            </summary>
-        </member>
-        <member name="T:NDoc3.Gui.WaitCursor">
-            <summary>
-            Manages the wait cursor
-            </summary>
-        </member>
-        <member name="M:NDoc3.Gui.WaitCursor.#ctor(System.Windows.Forms.Control)">
-            <summary>
-            Constructing this class casues the cursor to be set to the wait cursor
-            and resets it at disposal
-            </summary>
-            <param name="parent">The control whose cursor to set</param>
-        </member>
-        <member name="M:NDoc3.Gui.WaitCursor.#ctor(System.Windows.Forms.Control,System.Windows.Forms.Cursor)">
-            <summary>
-            Constructing this class casues the cursor to be set to the specified cursor
-            and resets it at disposal
-            </summary>
-            <param name="parent">The control whose cursor to set</param>
-            <param name="cursor">The cursor</param>
-        </member>
-        <member name="M:NDoc3.Gui.WaitCursor.Dispose">
-            <summary>
-            Restores the cursor to the default
-            </summary>
-        </member>
-        <member name="T:NDoc3.Gui.WarningForm">
-            <summary>
-            Form used to diaply warning messages to the user
-            </summary>
-        </member>
-        <member name="F:NDoc3.Gui.WarningForm.components">
+        <member name="F:NDoc3.Gui.AboutForm.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.WarningForm.ShowWarning(System.String,System.String,System.Windows.Forms.Control)">
+        <member name="M:NDoc3.Gui.AboutForm.#ctor">
             <summary>
-            Shows the warning form
+            
             </summary>
-            <param name="title">The Form's title</param>
-            <param name="message">The warning</param>
-            <param name="parent">The Form's parent</param>
         </member>
-        <member name="M:NDoc3.Gui.WarningForm.Dispose(System.Boolean)">
+        <member name="M:NDoc3.Gui.AboutForm.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:NDoc3.Gui.WarningForm.InitializeComponent">
+        <member name="M:NDoc3.Gui.AboutForm.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.

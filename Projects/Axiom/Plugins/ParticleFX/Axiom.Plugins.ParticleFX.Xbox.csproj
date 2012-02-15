@@ -180,6 +180,7 @@
   </PropertyGroup>
   <ItemGroup>
 	<Svn Include="$(ProjectDir)..\..\..\.." />
+	<Version Include="..\..\version.txt" />
 	<AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in" >
 		<OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
 	</AssemblyInfoTemplate>

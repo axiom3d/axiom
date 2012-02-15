@@ -147,7 +147,8 @@
     <SkipArchive Condition="'$(SkipArchive)'==''">false</SkipArchive>
     <SkipInstaller Condition="'$(SkipInstaller)'==''">false</SkipInstaller>
     <SkipCodeCoverage Condition="'$(SkipCodeCoverage)'==''">false</SkipCodeCoverage>
-
+	<SkipAssemblyInfoUpdate Condition="'$(SkipAssemblyInfoUpdate)'==''">false</SkipAssemblyInfoUpdate>
+	
     <IgnoreTestFailures Condition="'$(IgnoreTestFailures)'==''">false</IgnoreTestFailures>
 
     <BuildInParallel Condition="'$(BuildInParallel)'==''">true</BuildInParallel>
