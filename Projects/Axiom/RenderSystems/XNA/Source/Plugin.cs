@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
-        private RenderSystem renderSystem = new XnaRenderSystem();
+        private RenderSystem _renderSystem;
 
         #endregion Fields
 
@@ -66,8 +66,12 @@ namespace Axiom.RenderSystems.Xna
 
         public void Initialize()
         {
+            // Render system creation has been moved here since the Plugin.ctor is called twice
+            // during startup
+            _renderSystem = new XnaRenderSystem();
+
             // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "Xna", renderSystem );
+            Root.Instance.RenderSystems.Add( "Xna", _renderSystem );
 
             ResourceGroupManager.Instance.Initialize( new[]
                                                       {
@@ -80,8 +84,8 @@ namespace Axiom.RenderSystems.Xna
         public void Shutdown()
         {
             // nothing at the moment
-            renderSystem.Shutdown();
-            renderSystem = null;
+            _renderSystem.Shutdown();
+            _renderSystem = null;
         }
 
         #endregion Implementation of IPlugin
