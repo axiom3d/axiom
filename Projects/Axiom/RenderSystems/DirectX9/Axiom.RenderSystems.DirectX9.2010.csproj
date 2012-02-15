@@ -129,10 +129,13 @@
     <Compile Include="D3D9DepthBuffer.cs" />
     <Compile Include="D3D9Device.cs" />
     <Compile Include="D3D9DeviceManager.cs" />
+    <Compile Include="D3D9Driver.cs" />
     <Compile Include="D3D9DriverList.cs" />
     <Compile Include="D3D9RenderWindowList.cs" />
     <Compile Include="D3D9Resource.cs" />
     <Compile Include="D3D9ResourceManager.cs" />
+    <Compile Include="D3D9VideoMode.cs" />
+    <Compile Include="D3D9VideoModeList.cs" />
     <Compile Include="D3DHardwarePixelBuffer.cs" />
     <Compile Include="D3DMultiRenderTarget.cs" />
     <Compile Include="D3DRenderSystem.Capabilities.cs" />
@@ -141,7 +144,6 @@
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="D3DTextureStageDesc.cs" />
     <Compile Include="D3DTextureType.cs" />
-    <Compile Include="DriverCollection.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="hlsl\OptimizationLevel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -183,19 +185,10 @@
     <Compile Include="DefaultForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Driver.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Plugin.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SilenceSlimDX.cs" />
-    <Compile Include="VideoMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VideoModeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="hlsl\HLSLProgram.cs">
       <SubType>Code</SubType>
     </Compile>
