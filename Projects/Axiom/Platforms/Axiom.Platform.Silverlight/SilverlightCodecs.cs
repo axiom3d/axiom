@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Namespace Declarations
+
+using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
@@ -9,13 +11,14 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using ImageTools;
-using ImageTools.Filtering;
 using ImageTools.IO;
 using ImageTools.IO.Bmp;
 using ImageTools.IO.Gif;
 using ImageTools.IO.Jpeg;
 using ImageTools.IO.Png;
 using Image = System.Windows.Controls.Image;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Platform.Silverlight
 {
@@ -78,7 +81,13 @@ namespace Axiom.Platform.Silverlight
 		public virtual void EncodeToFile(Stream input, string fileName, object codecData)
 		{
 		}
-	}
+
+        public string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        {
+            //TODO
+            return string.Empty;
+        }
+    }
 
 	public class ImageToolsCodec : BaseCodec
 	{
