@@ -1,27 +1,35 @@
-﻿using System;
+﻿#region Namespace Declarations
+
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Axiom.Core;
+
+#endregion Namespace Declarations
 
 namespace Axiom.CrossPlatform
 {
 	public interface ITypePointer<T>
 	{
-		T this[int index] { get; set; }
+		T this[ int index ] { get; set; }
 	}
 
 	[StructLayout( LayoutKind.Explicit )]
 	public struct TwoByte
 	{
-		[FieldOffset( 0 )] public short Short;
-		[FieldOffset( 0 )] public ushort UShort;
+		[FieldOffset( 0 )]
+		public short Short;
+		[FieldOffset( 0 )]
+		public ushort UShort;
 
 #if BIG_ENDIAN
 		[FieldOffset( 1 )] public byte b0;
 		[FieldOffset( 0 )] public byte b1;
 #else
-		[FieldOffset( 0 )] public byte b0;
-		[FieldOffset( 1 )] public byte b1;
+		[FieldOffset( 0 )]
+		public byte b0;
+		[FieldOffset( 1 )]
+		public byte b1;
 
 		public byte[] Bytes
 		{
@@ -44,9 +52,12 @@ namespace Axiom.CrossPlatform
 	[StructLayout( LayoutKind.Explicit )]
 	public struct FourByte
 	{
-		[FieldOffset( 0 )] public float Float;
-		[FieldOffset( 0 )] public int Int;
-		[FieldOffset( 0 )] public uint UInt;
+		[FieldOffset( 0 )]
+		public float Float;
+		[FieldOffset( 0 )]
+		public int Int;
+		[FieldOffset( 0 )]
+		public uint UInt;
 
 #if BIG_ENDIAN
 		[FieldOffset( 3 )] public byte b0;
@@ -54,10 +65,14 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 1 )] public byte b2;
 		[FieldOffset( 0 )] public byte b3;
 #else
-		[FieldOffset( 0 )] public byte b0;
-		[FieldOffset( 1 )] public byte b1;
-		[FieldOffset( 2 )] public byte b2;
-		[FieldOffset( 3 )] public byte b3;
+		[FieldOffset( 0 )]
+		public byte b0;
+		[FieldOffset( 1 )]
+		public byte b1;
+		[FieldOffset( 2 )]
+		public byte b2;
+		[FieldOffset( 3 )]
+		public byte b3;
 #endif
 
 		public byte[] Bytes
@@ -82,9 +97,12 @@ namespace Axiom.CrossPlatform
 	[StructLayout( LayoutKind.Explicit )]
 	public struct EightByte
 	{
-		[FieldOffset( 0 )] public double Double;
-		[FieldOffset( 0 )] public long Long;
-		[FieldOffset( 0 )] public ulong ULong;
+		[FieldOffset( 0 )]
+		public double Double;
+		[FieldOffset( 0 )]
+		public long Long;
+		[FieldOffset( 0 )]
+		public ulong ULong;
 
 #if BIG_ENDIAN
 		[FieldOffset( 7 )] public byte b0;
@@ -96,14 +114,22 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 1 )] public byte b6;
 		[FieldOffset( 0 )] public byte b7;
 #else
-		[FieldOffset( 0 )] public byte b0;
-		[FieldOffset( 1 )] public byte b1;
-		[FieldOffset( 2 )] public byte b2;
-		[FieldOffset( 3 )] public byte b3;
-		[FieldOffset( 4 )] public byte b4;
-		[FieldOffset( 5 )] public byte b5;
-		[FieldOffset( 6 )] public byte b6;
-		[FieldOffset( 7 )] public byte b7;
+		[FieldOffset( 0 )]
+		public byte b0;
+		[FieldOffset( 1 )]
+		public byte b1;
+		[FieldOffset( 2 )]
+		public byte b2;
+		[FieldOffset( 3 )]
+		public byte b3;
+		[FieldOffset( 4 )]
+		public byte b4;
+		[FieldOffset( 5 )]
+		public byte b5;
+		[FieldOffset( 6 )]
+		public byte b6;
+		[FieldOffset( 7 )]
+		public byte b7;
 #endif
 
 		public byte[] Bytes
@@ -128,140 +154,135 @@ namespace Axiom.CrossPlatform
 			}
 		}
 	}
-  
-	public abstract class BufferBase
-		: IDisposable
-		  , ICloneable
+
+	public abstract class BufferBase : DisposableObject, ICloneable
 	{
-		~BufferBase()
-		{
-			Dispose(false);
-		}
+		#region Fields
+
+		protected GCHandle PinHandle;
+		protected int PinCount;
+		private static readonly object _mutex = new object();
+
+		#endregion Fields
 
 		public abstract int Ptr { get; set; }
 
-		public BufferBase Offset(int offset)
+		public BufferBase Offset( int offset )
 		{
 			Ptr += offset;
 			return this;
 		}
 
-		protected bool Disposed;
-
-		public static BufferBase operator +(BufferBase buffer, int offset)
+		public static BufferBase operator +( BufferBase buffer, int offset )
 		{
 			var buf = (BufferBase)buffer.Clone();
 			buf.Ptr += offset;
 			return buf;
 		}
 
-		public static BufferBase operator +(BufferBase buffer, long offset)
+		public static BufferBase operator +( BufferBase buffer, long offset )
 		{
 			var buf = (BufferBase)buffer.Clone();
 			buf.Ptr += (int)offset;
 			return buf;
 		}
 
-		public static BufferBase operator ++(BufferBase buffer)
+		public static BufferBase operator ++( BufferBase buffer )
 		{
 			buffer.Ptr++;
 			return buffer;
 		}
 
-		public void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			Dispose(true);
-		}
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
 
-		public virtual void Dispose(bool dispose)
-		{
-			if (Disposed)
-			{
-				return;
+				UnPin( true );
 			}
-			Disposed = true;
-			if (dispose)
-			{
-				GC.SuppressFinalize(this);
-			}
-			UnPin(true);
+
+			base.dispose( disposeManagedResources );
 		}
 
 		public abstract object Clone();
 
-		public abstract void Copy(BufferBase src, int srcOffset, int destOffset, int length);
-
-		protected GCHandle PinHandle;
-		protected int PinCount;
+		public abstract void Copy( BufferBase src, int srcOffset, int destOffset, int length );
 
 		//#if !AXIOM_SAFE_ONLY
 		public abstract IntPtr Pin();
 
-		public void UnPin()
+#if NET_40
+		public void UnPin( bool all = false )
+#else
+		public void UnPin( bool all )
+#endif
 		{
-			UnPin(false);
-		}
-
-		public void UnPin(bool all)
-		{
-			if (!PinHandle.IsAllocated || !(all || Interlocked.Decrement(ref PinCount) == 0))
-			{
+			if ( !PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref PinCount ) == 0 ) )
 				return;
-			}
 
-			lock (this)
+			lock ( _mutex )
 			{
 				PinHandle.Free();
 				PinCount = 0;
 			}
 		}
 
+#if !NET_40
+		public void UnPin()
+		{
+			UnPin( false );
+		}
+#endif
+
 		//#endif
 
 #if AXIOM_SAFE_MIX
-		public static BufferBase Wrap(byte[] buffer)
+		public static BufferBase Wrap( byte[] buffer )
 		{
-			return new ManagedBuffer(buffer);
+			return new ManagedBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(object buffer)
+		public static BufferBase Wrap( object buffer )
 		{
-			return new UnsafeBuffer(buffer);
+			return new UnsafeBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(IntPtr buffer, int size)
+		public static BufferBase Wrap( IntPtr buffer, int size )
 		{
-			return new UnsafeBuffer(buffer);
+			return new UnsafeBuffer( buffer );
 		}
 #elif AXIOM_SAFE_ONLY
-		public static BufferBase Wrap(byte[] buffer)
+		public static BufferBase Wrap( byte[] buffer )
 		{
-			return new ManagedBuffer(buffer);
+			return new ManagedBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(object buffer)
+		public static BufferBase Wrap( object buffer )
 		{
-			return new ManagedBuffer(buffer);
+			return new ManagedBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(IntPtr buffer, int size)
+		public static BufferBase Wrap( IntPtr buffer, int size )
 		{
-			return new ManagedBuffer(buffer, size);
+			return new ManagedBuffer( buffer, size );
 		}
 #else
-		public static BufferBase Wrap(byte[] buffer)
+		public static BufferBase Wrap( byte[] buffer )
 		{
-			return new UnsafeBuffer(buffer);
+			return new UnsafeBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(IntPtr buffer, int size)
+		public static BufferBase Wrap( IntPtr buffer, int size )
 		{
-			return new UnsafeBuffer(buffer);
+			return new UnsafeBuffer( buffer );
 		}
 
-		public static BufferBase Wrap(object buffer)
+		public static BufferBase Wrap( object buffer )
 		{
-			return new UnsafeBuffer(buffer);
+			return new UnsafeBuffer( buffer );
 		}
 #endif
 
@@ -313,47 +334,47 @@ namespace Axiom.CrossPlatform
 #else
 		public unsafe byte* ToBytePointer()
 		{
-			return (byte*) Pin();
+			return (byte*)Pin();
 		}
 
 		public unsafe short* ToShortPointer()
 		{
-			return (short*) Pin();
+			return (short*)Pin();
 		}
 
 		public unsafe ushort* ToUShortPointer()
 		{
-			return (ushort*) Pin();
+			return (ushort*)Pin();
 		}
 
 		public unsafe int* ToIntPointer()
 		{
-			return (int*) Pin();
+			return (int*)Pin();
 		}
 
 		public unsafe uint* ToUIntPointer()
 		{
-			return (uint*) Pin();
+			return (uint*)Pin();
 		}
 
 		public unsafe long* ToLongPointer()
 		{
-			return (long*) Pin();
+			return (long*)Pin();
 		}
 
 		public unsafe ulong* ToULongPointer()
 		{
-			return (ulong*) Pin();
+			return (ulong*)Pin();
 		}
 
 		public unsafe float* ToFloatPointer()
 		{
-			return (float*) Pin();
+			return (float*)Pin();
 		}
 
 		public unsafe double* ToDoublePointer()
 		{
-			return (double*) Pin();
+			return (double*)Pin();
 		}
 #endif
 	}
@@ -373,6 +394,7 @@ namespace Axiom.CrossPlatform
 		protected internal readonly byte[] Buf;
 		protected internal int IdxPtr;
 		private object obj;
+		private static readonly object _pinMutex = new object();
 
 		public override int Ptr
 		{
@@ -386,18 +408,18 @@ namespace Axiom.CrossPlatform
 			}
 		}
 
-		public ManagedBuffer(ManagedBuffer buffer)
+		public ManagedBuffer( ManagedBuffer buffer )
 		{
 			Buf = buffer.Buf;
 			IdxPtr = buffer.IdxPtr;
 		}
 
-		public ManagedBuffer(byte[] buffer)
+		public ManagedBuffer( byte[] buffer )
 		{
 			Buf = buffer;
 		}
 
-		public ManagedBuffer(object buffer)
+		public ManagedBuffer( object buffer )
 		{
 			obj = buffer;
 			int size;
@@ -406,8 +428,8 @@ namespace Axiom.CrossPlatform
 			{
 				var buf = (Array)obj;
 				var te = t.GetElementType();
-				size = buf.Length*te.Size();
-				Buf = new byte[size];
+				size = buf.Length * te.Size();
+				Buf = new byte[ size ];
 				if ( te.IsPrimitive )
 				{
 					Buffer.BlockCopy( buf, 0, Buf, 0, size );
@@ -417,70 +439,61 @@ namespace Axiom.CrossPlatform
 				return;
 			}
 			size = t.Size();
-			Buf = new byte[size];
+			Buf = new byte[ size ];
 			Buf.CopyFrom( obj );
 		}
 
-		public ManagedBuffer(IntPtr buffer, int size)
+		public ManagedBuffer( IntPtr buffer, int size )
 		{
 			obj = buffer;
-			Buf = new byte[size];
-			Marshal.Copy(buffer, Buf, 0, size);
+			Buf = new byte[ size ];
+			Marshal.Copy( buffer, Buf, 0, size );
 		}
 
-		public override void Dispose(bool dispose)
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if (Disposed)
+			if ( !this.IsDisposed )
 			{
-				return;
-			}
-			Disposed = true;
-			if (dispose)
-			{
-				GC.SuppressFinalize(this);
-				if (obj != null)
+				if ( disposeManagedResources && obj != null )
 				{
-					if (obj is IntPtr)
-					{
-						Marshal.Copy(Buf, 0, (IntPtr)obj, Buf.Length);
-					}
+					if ( obj is IntPtr )
+						Marshal.Copy( Buf, 0, (IntPtr)obj, Buf.Length );
 					else
 					{
 						var t = obj.GetType();
-						if (t.IsArray)
+						if ( t.IsArray )
 						{
-							if (t.GetElementType().IsPrimitive)
-								Buffer.BlockCopy(Buf, 0, (Array)obj, 0, Buf.Length);
+							if ( t.GetElementType().IsPrimitive )
+								Buffer.BlockCopy( Buf, 0, (Array)obj, 0, Buf.Length );
 							else
-								Buf.CopyTo((Array)obj);
+								Buf.CopyTo( (Array)obj );
 						}
 						else
-						{
-							Buf.CopyTo(ref obj);
-						}
+							Buf.CopyTo( ref obj );
 					}
 					obj = null;
 				}
 			}
-			UnPin(true);
+
+			base.dispose( disposeManagedResources );
 		}
 
 		public override object Clone()
 		{
-			return new ManagedBuffer(this);
+			return new ManagedBuffer( this );
 		}
 
-		public override void Copy(BufferBase src, int srcOffset, int destOffset, int length)
+		public override void Copy( BufferBase src, int srcOffset, int destOffset, int length )
 		{
-			if (src is ManagedBuffer)
+			if ( src is ManagedBuffer )
 			{
-				Buffer.BlockCopy((src as ManagedBuffer).Buf, (src as ManagedBuffer).IdxPtr + srcOffset,
-								  Buf, IdxPtr + destOffset, length);
+				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset,
+								  Buf, IdxPtr + destOffset, length );
 			}
 #if !AXIOM_SAFE_ONLY
-			else if (src is UnsafeBuffer)
+			else if ( src is UnsafeBuffer )
 			{
-				Marshal.Copy( (IntPtr)((int)src.Pin() + srcOffset), Buf, IdxPtr + destOffset, length );
+				Marshal.Copy( (IntPtr)( (int)src.Pin() + srcOffset ), Buf, IdxPtr + destOffset, length );
 				src.UnPin();
 			}
 #endif
@@ -488,34 +501,34 @@ namespace Axiom.CrossPlatform
 
 		public override IntPtr Pin()
 		{
-			if (Interlocked.Increment(ref PinCount) > 0)
+			if ( Interlocked.Increment( ref PinCount ) > 0 )
 			{
-				lock (this)
+				lock ( _pinMutex )
 				{
-					return new IntPtr((PinHandle.IsAllocated
+					return new IntPtr( ( PinHandle.IsAllocated
 											 ? PinHandle
-											 : PinHandle = GCHandle.Alloc(Buf, GCHandleType.Pinned)).
-										   AddrOfPinnedObject().ToInt32() + IdxPtr);
+											 : PinHandle = GCHandle.Alloc( Buf, GCHandleType.Pinned ) ).
+										   AddrOfPinnedObject().ToInt32() + IdxPtr );
 				}
 			}
-			throw new Exception("LockCount <= 0");
+			throw new AxiomException( "LockCount <= 0" );
 		}
 
 		//---------------------------------------------------------------------
 
-		byte ITypePointer<byte>.this[int index]
+		byte ITypePointer<byte>.this[ int index ]
 		{
 			get
 			{
-				return Buf[index + IdxPtr];
+				return Buf[ index + IdxPtr ];
 			}
 			set
 			{
-				Buf[index + IdxPtr] = value;
+				Buf[ index + IdxPtr ] = value;
 			}
 		}
 
-		short ITypePointer<short>.this[int index]
+		short ITypePointer<short>.this[ int index ]
 		{
 			get
 			{
@@ -523,8 +536,8 @@ namespace Axiom.CrossPlatform
 				index <<= 1;
 				return new TwoByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
 				}.Short;
 			}
 			set
@@ -535,12 +548,12 @@ namespace Axiom.CrossPlatform
 				{
 					Short = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
 			}
 		}
 
-		ushort ITypePointer<ushort>.this[int index]
+		ushort ITypePointer<ushort>.this[ int index ]
 		{
 			get
 			{
@@ -548,8 +561,8 @@ namespace Axiom.CrossPlatform
 				index <<= 1;
 				return new TwoByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
 				}.UShort;
 			}
 			set
@@ -560,12 +573,12 @@ namespace Axiom.CrossPlatform
 				{
 					UShort = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
 			}
 		}
 
-		int ITypePointer<int>.this[int index]
+		int ITypePointer<int>.this[ int index ]
 		{
 			get
 			{
@@ -573,10 +586,10 @@ namespace Axiom.CrossPlatform
 				index <<= 2;
 				return new FourByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
 				}.Int;
 			}
 			set
@@ -587,14 +600,14 @@ namespace Axiom.CrossPlatform
 				{
 					Int = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
 			}
 		}
 
-		uint ITypePointer<uint>.this[int index]
+		uint ITypePointer<uint>.this[ int index ]
 		{
 			get
 			{
@@ -602,10 +615,10 @@ namespace Axiom.CrossPlatform
 				index <<= 2;
 				return new FourByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
 				}.UInt;
 			}
 			set
@@ -616,14 +629,14 @@ namespace Axiom.CrossPlatform
 				{
 					UInt = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
 			}
 		}
 
-		long ITypePointer<long>.this[int index]
+		long ITypePointer<long>.this[ int index ]
 		{
 			get
 			{
@@ -631,14 +644,14 @@ namespace Axiom.CrossPlatform
 				index <<= 3;
 				return new EightByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
-					b4 = buf[++index],
-					b5 = buf[++index],
-					b6 = buf[++index],
-					b7 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
+					b4 = buf[ ++index ],
+					b5 = buf[ ++index ],
+					b6 = buf[ ++index ],
+					b7 = buf[ ++index ],
 				}.Long;
 			}
 			set
@@ -649,18 +662,18 @@ namespace Axiom.CrossPlatform
 				{
 					Long = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
-				buf[++index] = v.b4;
-				buf[++index] = v.b5;
-				buf[++index] = v.b6;
-				buf[++index] = v.b7;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
 			}
 		}
 
-		ulong ITypePointer<ulong>.this[int index]
+		ulong ITypePointer<ulong>.this[ int index ]
 		{
 			get
 			{
@@ -668,14 +681,14 @@ namespace Axiom.CrossPlatform
 				index <<= 3;
 				return new EightByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
-					b4 = buf[++index],
-					b5 = buf[++index],
-					b6 = buf[++index],
-					b7 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
+					b4 = buf[ ++index ],
+					b5 = buf[ ++index ],
+					b6 = buf[ ++index ],
+					b7 = buf[ ++index ],
 				}.ULong;
 			}
 			set
@@ -686,18 +699,18 @@ namespace Axiom.CrossPlatform
 				{
 					ULong = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
-				buf[++index] = v.b4;
-				buf[++index] = v.b5;
-				buf[++index] = v.b6;
-				buf[++index] = v.b7;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
 			}
 		}
 
-		float ITypePointer<float>.this[int index]
+		float ITypePointer<float>.this[ int index ]
 		{
 			get
 			{
@@ -705,10 +718,10 @@ namespace Axiom.CrossPlatform
 				index <<= 2;
 				return new FourByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
 				}.Float;
 			}
 			set
@@ -719,14 +732,14 @@ namespace Axiom.CrossPlatform
 				{
 					Float = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
 			}
 		}
 
-		double ITypePointer<double>.this[int index]
+		double ITypePointer<double>.this[ int index ]
 		{
 			get
 			{
@@ -734,14 +747,14 @@ namespace Axiom.CrossPlatform
 				index <<= 3;
 				return new EightByte
 				{
-					b0 = buf[index += IdxPtr],
-					b1 = buf[++index],
-					b2 = buf[++index],
-					b3 = buf[++index],
-					b4 = buf[++index],
-					b5 = buf[++index],
-					b6 = buf[++index],
-					b7 = buf[++index],
+					b0 = buf[ index += IdxPtr ],
+					b1 = buf[ ++index ],
+					b2 = buf[ ++index ],
+					b3 = buf[ ++index ],
+					b4 = buf[ ++index ],
+					b5 = buf[ ++index ],
+					b6 = buf[ ++index ],
+					b7 = buf[ ++index ],
 				}.Double;
 			}
 			set
@@ -752,14 +765,14 @@ namespace Axiom.CrossPlatform
 				{
 					Double = value
 				};
-				buf[index += IdxPtr] = v.b0;
-				buf[++index] = v.b1;
-				buf[++index] = v.b2;
-				buf[++index] = v.b3;
-				buf[++index] = v.b4;
-				buf[++index] = v.b5;
-				buf[++index] = v.b6;
-				buf[++index] = v.b7;
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
 			}
 		}
 	}
@@ -775,158 +788,158 @@ namespace Axiom.CrossPlatform
 		  , ITypePointer<float>
 		  , ITypePointer<double>
 	{
-		public BitConvertBuffer(ManagedBuffer buffer)
-			: base(buffer)
+		public BitConvertBuffer( ManagedBuffer buffer )
+			: base( buffer )
 		{
 		}
 
-		public BitConvertBuffer(byte[] buffer)
-			: base(buffer)
+		public BitConvertBuffer( byte[] buffer )
+			: base( buffer )
 		{
 		}
 
-		public BitConvertBuffer(object buffer)
-			: base(buffer)
+		public BitConvertBuffer( object buffer )
+			: base( buffer )
 		{
 		}
 
-		public BitConvertBuffer(IntPtr buffer, int size)
-			: base(buffer, size)
+		public BitConvertBuffer( IntPtr buffer, int size )
+			: base( buffer, size )
 		{
 		}
 
-		short ITypePointer<short>.this[int index]
+		short ITypePointer<short>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToInt16(Buf, (index << 1) + IdxPtr);
+				return BitConverter.ToInt16( Buf, ( index << 1 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 2) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(short); ++i, ++index)
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( short ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		ushort ITypePointer<ushort>.this[int index]
+		ushort ITypePointer<ushort>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToUInt16(Buf, (index << 1) + IdxPtr);
+				return BitConverter.ToUInt16( Buf, ( index << 1 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 2) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(ushort); ++i, ++index)
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( ushort ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		int ITypePointer<int>.this[int index]
+		int ITypePointer<int>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToInt32(Buf, (index << 2) + IdxPtr);
+				return BitConverter.ToInt32( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 2) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(int); ++i, ++index)
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( int ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		uint ITypePointer<uint>.this[int index]
+		uint ITypePointer<uint>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToUInt32(Buf, (index << 2) + IdxPtr);
+				return BitConverter.ToUInt32( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 2) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(uint); ++i, ++index)
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( uint ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		long ITypePointer<long>.this[int index]
+		long ITypePointer<long>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToInt64(Buf, (index << 3) + IdxPtr);
+				return BitConverter.ToInt64( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 3) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(long); ++i, ++index)
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( long ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		ulong ITypePointer<ulong>.this[int index]
+		ulong ITypePointer<ulong>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToUInt64(Buf, (index << 3) + IdxPtr);
+				return BitConverter.ToUInt64( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 3) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(ulong); ++i, ++index)
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( ulong ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		float ITypePointer<float>.this[int index]
+		float ITypePointer<float>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToSingle(Buf, (index << 2) + IdxPtr);
+				return BitConverter.ToSingle( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 2) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(float); ++i, ++index)
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( float ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		double ITypePointer<double>.this[int index]
+		double ITypePointer<double>.this[ int index ]
 		{
 			get
 			{
-				return BitConverter.ToDouble(Buf, (index << 3) + IdxPtr);
+				return BitConverter.ToDouble( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
-				index = (index << 3) + IdxPtr;
-				var v = BitConverter.GetBytes(value);
-				for (var i = 0; i < sizeof(double); ++i, ++index)
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof( double ); ++i, ++index )
 				{
-					Buf[index] = v[i];
+					Buf[ index ] = v[ i ];
 				}
 			}
 		}
@@ -954,7 +967,7 @@ namespace Axiom.CrossPlatform
 			{
 				unsafe
 				{
-					return (int) (PtrBuf - Buf);
+					return (int)( PtrBuf - Buf );
 				}
 			}
 			set
@@ -966,17 +979,17 @@ namespace Axiom.CrossPlatform
 			}
 		}
 
-		public UnsafeBuffer(object buffer)
+		public UnsafeBuffer( object buffer )
 		{
 			unsafe
 			{
-				Buf = (byte*)(PinHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned)).AddrOfPinnedObject();
+				Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
 				PinCount = 1;
 				PtrBuf = Buf;
 			}
 		}
 
-		public UnsafeBuffer(IntPtr buffer)
+		public UnsafeBuffer( IntPtr buffer )
 		{
 			unsafe
 			{
@@ -989,22 +1002,22 @@ namespace Axiom.CrossPlatform
 		{
 			unsafe
 			{
-				return new UnsafeBuffer((IntPtr) Buf) { Ptr = Ptr };
+				return new UnsafeBuffer( (IntPtr)Buf ) { Ptr = Ptr };
 			}
 		}
 
-		public override void Copy(BufferBase src, int srcOffset, int destOffset, int length)
+		public override void Copy( BufferBase src, int srcOffset, int destOffset, int length )
 		{
 			unsafe
 			{
-				if (src is ManagedBuffer)
-					Marshal.Copy((src as ManagedBuffer).Buf, (src as ManagedBuffer).IdxPtr + srcOffset,
-								 (IntPtr) (PtrBuf + destOffset), length);
-				else if (src is UnsafeBuffer)
+				if ( src is ManagedBuffer )
+					Marshal.Copy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset,
+								 (IntPtr)( PtrBuf + destOffset ), length );
+				else if ( src is UnsafeBuffer )
 				{
 					var pSrc = (byte*)src.Pin() + srcOffset;
 					var pDest = (byte*)Pin() + destOffset;
-					for (var i = 0; i < length; i++)
+					for ( var i = 0; i < length; i++ )
 						*pDest++ = *pSrc++;
 					UnPin();
 					src.UnPin();
@@ -1016,59 +1029,39 @@ namespace Axiom.CrossPlatform
 		{
 			unsafe
 			{
-				Interlocked.Increment(ref PinCount);
-				return (IntPtr) PtrBuf;
+				Interlocked.Increment( ref PinCount );
+				return (IntPtr)PtrBuf;
 			}
 		}
 
 		//---------------------------------------------------------------------
 
-		byte ITypePointer<byte>.this[int index]
+		byte ITypePointer<byte>.this[ int index ]
 		{
 			get
 			{
 				unsafe
 				{
-					return *(PtrBuf + index);
+					return *( PtrBuf + index );
 				}
 			}
 			set
 			{
 				unsafe
 				{
-					*(PtrBuf + index) = value;
+					*( PtrBuf + index ) = value;
 				}
 			}
 		}
 
-		short ITypePointer<short>.this[int index]
+		short ITypePointer<short>.this[ int index ]
 		{
 			get
 			{
 				unsafe
 				{
 					index <<= 1;
-					return *(short*) (PtrBuf + index);
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 1;
-					*(short*) (PtrBuf + index) = value;
-				}
-			}
-		}
-
-		ushort ITypePointer<ushort>.this[int index]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 1;
-					return *(ushort*)(PtrBuf + index);
+					return *(short*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1076,19 +1069,39 @@ namespace Axiom.CrossPlatform
 				unsafe
 				{
 					index <<= 1;
-					*(ushort*)(PtrBuf + index) = value;
+					*(short*)( PtrBuf + index ) = value;
 				}
 			}
 		}
 
-		int ITypePointer<int>.this[int index]
+		ushort ITypePointer<ushort>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 1;
+					return *(ushort*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 1;
+					*(ushort*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		int ITypePointer<int>.this[ int index ]
 		{
 			get
 			{
 				unsafe
 				{
 					index <<= 2;
-					return *(int*) (PtrBuf + index);
+					return *(int*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1096,79 +1109,19 @@ namespace Axiom.CrossPlatform
 				unsafe
 				{
 					index <<= 2;
-					*(int*) (PtrBuf + index) = value;
+					*(int*)( PtrBuf + index ) = value;
 				}
 			}
 		}
 
-		uint ITypePointer<uint>.this[int index]
+		uint ITypePointer<uint>.this[ int index ]
 		{
 			get
 			{
 				unsafe
 				{
 					index <<= 2;
-					return *(uint*)(PtrBuf + index);
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 2;
-					*(uint*)(PtrBuf + index) = value;
-				}
-			}
-		}
-
-		long ITypePointer<long>.this[int index]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 3;
-					return *(long*) (PtrBuf + index);
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 3;
-					*(long*) (PtrBuf + index) = value;
-				}
-			}
-		}
-
-		ulong ITypePointer<ulong>.this[int index]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 3;
-					return *(ulong*)(PtrBuf + index);
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 3;
-					*(ulong*)(PtrBuf + index) = value;
-				}
-			}
-		}
-
-		float ITypePointer<float>.this[int index]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 2;
-					return *(float*) (PtrBuf + index);
+					return *(uint*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1176,19 +1129,19 @@ namespace Axiom.CrossPlatform
 				unsafe
 				{
 					index <<= 2;
-					*(float*) (PtrBuf + index) = value;
+					*(uint*)( PtrBuf + index ) = value;
 				}
 			}
 		}
 
-		double ITypePointer<double>.this[int index]
+		long ITypePointer<long>.this[ int index ]
 		{
 			get
 			{
 				unsafe
 				{
 					index <<= 3;
-					return *(double*) (PtrBuf + index);
+					return *(long*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1196,7 +1149,67 @@ namespace Axiom.CrossPlatform
 				unsafe
 				{
 					index <<= 3;
-					*(double*) (PtrBuf + index) = value;
+					*(long*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		ulong ITypePointer<ulong>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 3;
+					return *(ulong*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 3;
+					*(ulong*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		float ITypePointer<float>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 2;
+					return *(float*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 2;
+					*(float*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		double ITypePointer<double>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 3;
+					return *(double*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 3;
+					*(double*)( PtrBuf + index ) = value;
 				}
 			}
 		}
