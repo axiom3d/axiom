@@ -12,7 +12,7 @@ namespace Axiom.CrossPlatform
 	public interface ITypePointer<T>
 	{
 		T this[ int index ] { get; set; }
-	}
+	};
 
 	[StructLayout( LayoutKind.Explicit )]
 	public struct TwoByte
@@ -47,7 +47,7 @@ namespace Axiom.CrossPlatform
 			}
 		}
 #endif
-	}
+	};
 
 	[StructLayout( LayoutKind.Explicit )]
 	public struct FourByte
@@ -92,7 +92,7 @@ namespace Axiom.CrossPlatform
 				b3 = value[ 3 ];
 			}
 		}
-	}
+	};
 
 	[StructLayout( LayoutKind.Explicit )]
 	public struct EightByte
@@ -153,7 +153,7 @@ namespace Axiom.CrossPlatform
 				b7 = value[ 7 ];
 			}
 		}
-	}
+	};
 
 	public abstract class BufferBase : DisposableObject, ICloneable
 	{
@@ -377,7 +377,7 @@ namespace Axiom.CrossPlatform
 			return (double*)Pin();
 		}
 #endif
-	}
+	};
 
 	public class ManagedBuffer
 		: BufferBase
@@ -409,17 +409,20 @@ namespace Axiom.CrossPlatform
 		}
 
 		public ManagedBuffer( ManagedBuffer buffer )
+            : base()
 		{
 			Buf = buffer.Buf;
 			IdxPtr = buffer.IdxPtr;
 		}
 
 		public ManagedBuffer( byte[] buffer )
+            : base()
 		{
 			Buf = buffer;
 		}
 
 		public ManagedBuffer( object buffer )
+            : base()
 		{
 			obj = buffer;
 			int size;
@@ -444,6 +447,7 @@ namespace Axiom.CrossPlatform
 		}
 
 		public ManagedBuffer( IntPtr buffer, int size )
+            : base()
 		{
 			obj = buffer;
 			Buf = new byte[ size ];
@@ -775,7 +779,7 @@ namespace Axiom.CrossPlatform
 				buf[ ++index ] = v.b7;
 			}
 		}
-	}
+	};
 
 	public class BitConvertBuffer
 		: ManagedBuffer
@@ -943,7 +947,7 @@ namespace Axiom.CrossPlatform
 				}
 			}
 		}
-	}
+	};
 
 #if !AXIOM_SAFE_ONLY
 	public class UnsafeBuffer
@@ -980,6 +984,7 @@ namespace Axiom.CrossPlatform
 		}
 
 		public UnsafeBuffer( object buffer )
+            : base()
 		{
 			unsafe
 			{
@@ -990,6 +995,7 @@ namespace Axiom.CrossPlatform
 		}
 
 		public UnsafeBuffer( IntPtr buffer )
+            : base()
 		{
 			unsafe
 			{
@@ -1213,6 +1219,6 @@ namespace Axiom.CrossPlatform
 				}
 			}
 		}
-	}
+	};
 #endif
 }
