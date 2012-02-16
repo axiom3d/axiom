@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -49,13 +45,13 @@ namespace Axiom.Core
 	/// </remarks>
 	public class PrefabFactory
 	{
-
 		/// <summary>
 		/// If the given mesh has a known prefab resource name (e.g "Prefab_Plane")
 		/// then this prefab will be created as a submesh of the given mesh.
 		/// </summary>
 		/// <param name="mesh">The mesh that the potential prefab will be created in.</param>
 		/// <returns><c>true</c> if a prefab has been created, otherwise <c>false</c>.</returns>
+        [OgreVersion( 1, 7, 2 )]
 		public static bool Create( Mesh mesh )
 		{
 			switch ( mesh.Name )
@@ -77,6 +73,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Creates a plane as a submesh of the given mesh
 		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		private static void _createPlane( Mesh mesh )
 		{
 			var sub = mesh.CreateSubMesh();
@@ -129,6 +126,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Creates a 100x100x100 cube as a submesh of the given mesh
 		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		private static void _createCube( Mesh mesh )
 		{
 			var sub = mesh.CreateSubMesh();
@@ -286,12 +284,12 @@ namespace Axiom.Core
 												   new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
 
 			mesh.BoundingSphereRadius = CUBE_HALF_SIZE;
-
 		}
 
 		/// <summary>
 		/// Creates a sphere with a diameter of 100 units as a submesh of the given mesh
 		/// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		private static void _createSphere( Mesh mesh )
 		{
 			// sphere creation code taken from the DeferredShading sample, originally from the [Ogre] wiki
@@ -361,9 +359,7 @@ namespace Axiom.Core
                         pVertex[iVertex++] = y0;
                         pVertex[iVertex++] = z0;
 
-						var vNormal = new Vector3( x0, y0, z0 );
-						vNormal.Normalize();
-
+						var vNormal = new Vector3( x0, y0, z0 ).ToNormalized();
                         pVertex[iVertex++] = vNormal.x;
                         pVertex[iVertex++] = vNormal.y;
                         pVertex[iVertex++] = vNormal.z;
@@ -400,6 +396,5 @@ namespace Axiom.Core
 			mesh.BoundingSphereRadius = SPHERE_RADIUS;
 
 		}
-
-	}
+	};
 }
