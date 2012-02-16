@@ -34,17 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Collections.ObjectModel;
-using Axiom.CrossPlatform;
-
-//using System.Reflection.Emit;
 
 #endregion Namespace Declarations
 
@@ -92,7 +87,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		List of loaded plugins.
 		/// </summary>
-		private List<IPlugin> _plugins = new List<IPlugin>();
+		private static List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
@@ -177,7 +172,7 @@ namespace Axiom.Core
 		}
 
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
-		[ImportMany(typeof(IPlugin))]
+        [System.ComponentModel.Composition.ImportMany( typeof( IPlugin ) )]
 		public IEnumerable<IPlugin> plugins { private get; set; }
 #endif
 
@@ -265,6 +260,17 @@ namespace Axiom.Core
 		{
 			try
 			{
+                // Avoid duplicates of plugins of the same type.
+                var byTypePlugins = from p in _plugins
+                                    where p.GetType() == creator.CreatedType
+                                    select p;
+
+                if ( byTypePlugins.Count() > 0 )
+                {
+                    LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
+                    return null;
+                }
+
 				// create and start the plugin
 				var plugin = creator.CreateInstance<IPlugin>();
 
