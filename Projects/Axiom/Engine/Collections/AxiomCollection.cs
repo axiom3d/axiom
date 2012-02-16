@@ -36,6 +36,8 @@
 #region Namespace Declarations
 
 using System;
+using System.Linq;
+
 #if !USE_CUSTOM_SORTEDLIST
 using System.Collections;
 using System.Collections.Generic;
@@ -147,15 +149,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				foreach ( var item in Values )
-				{
-					if ( index == 0 )
-					{
-						return item;
-					}
-					index--;
-				}
-				return default( T );
+                return Values.Skip( index ).FirstOrDefault();
 			}
 		}
 

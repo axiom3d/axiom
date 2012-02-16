@@ -34,10 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -52,11 +52,24 @@ namespace Axiom.Core
 		private Assembly _assembly;
 		private Type _type;
 
+        public Type CreatedType
+        {
+            get
+            {
+                return _type;
+            }
+        }
+
 		public ObjectCreator( Type type )
+            : this( type.Assembly, type )
 		{
-			_assembly = type.Assembly;
-			this._type = type;
 		}
+
+        public ObjectCreator( Assembly assembly, Type type )
+        {
+            _assembly = assembly;
+            _type = type;
+        }
 
 		public ObjectCreator( string assemblyName, string className )
 		{
@@ -81,12 +94,6 @@ namespace Axiom.Core
 		{
 			_assembly = Assembly.GetExecutingAssembly();
 			_type = _assembly.GetType( className );
-		}
-
-		public ObjectCreator( Assembly assembly, Type type )
-		{
-			_assembly = assembly;
-			_type = type;
 		}
 
 		public string GetAssemblyTitle()
@@ -138,6 +145,7 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
+        private static readonly object _mutex = new object();
 		private string _assemblyFilename;
 		private Assembly _assembly;
 
@@ -170,7 +178,7 @@ namespace Axiom.Core
 		{
 			if ( _assembly == null )
 			{
-				lock ( this )
+				lock ( _mutex )
 				{
 					if ( String.IsNullOrEmpty( _assemblyFilename ) )
 					{
