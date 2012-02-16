@@ -261,14 +261,17 @@ namespace Axiom.Core
 			try
 			{
                 // Avoid duplicates of plugins of the same type.
-                var byTypePlugins = from p in _plugins
-                                    where p.GetType() == creator.CreatedType
-                                    select p;
-
-                if ( byTypePlugins.Count() > 0 )
+                if ( _plugins.Count > 0 )
                 {
-                    LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
-                    return null;
+                    var byTypePlugins = from p in _plugins
+                                        where p.GetType() == creator.CreatedType
+                                        select p;
+
+                    if ( byTypePlugins.Count() > 0 )
+                    {
+                        LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
+                        return null;
+                    }
                 }
 
 				// create and start the plugin
