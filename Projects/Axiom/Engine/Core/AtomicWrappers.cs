@@ -30,7 +30,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Threading;
 
 #endregion Namespace Declarations
 
@@ -92,7 +91,7 @@ namespace Axiom.Core
                 var n = Convert.ToInt64( nu );
 
 #if !WINDOWS_PHONE
-                var result = Interlocked.CompareExchange( ref f, o, n ).Equals( o );
+                var result = System.Threading.Interlocked.CompareExchange( ref f, o, n ).Equals( o );
 #else
                 bool result = false;
                 lock ( _mutex )
@@ -150,7 +149,7 @@ namespace Axiom.Core
             {
                 var v = Convert.ToInt64( value.Value );
 #if !WINDOWS_PHONE
-                Interlocked.Increment( ref v );
+                System.Threading.Interlocked.Increment( ref v );
 #else
                 lock ( _mutex )
                 {
@@ -169,7 +168,7 @@ namespace Axiom.Core
             {
                 var v = Convert.ToInt64( value.Value );
 #if !WINDOWS_PHONE
-                Interlocked.Decrement( ref v );
+                System.Threading.Interlocked.Decrement( ref v );
 #else
                 lock ( _mutex )
                 {
