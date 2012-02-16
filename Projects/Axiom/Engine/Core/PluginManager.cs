@@ -154,7 +154,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="file">The file to check</param>
 		/// <returns>True if the module contains CLR data</returns>
-		private bool IsValidModule(string file)
+		private bool _isValidModule(string file)
 		{
 			using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
@@ -211,7 +211,7 @@ namespace Axiom.Core
 						continue;
 					var fullPath = Path.GetFullPath( file );
 
-					if ( !IsValidModule( fullPath ) )
+					if ( !_isValidModule( fullPath ) )
 					{
 						Debug.WriteLine( String.Format( "Skipped {0} [Not managed]", fullPath ) );
 						continue;
@@ -311,5 +311,4 @@ namespace Axiom.Core
 
 		#endregion IDisposable Implementation
 	}
-
 }
