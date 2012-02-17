@@ -70,7 +70,8 @@ namespace Axiom.RenderSystems.DirectX9
 
         public void Shutdown()
         {
-            _renderSystem.Shutdown();
+            _renderSystem.SafeDispose();
+            _renderSystem = null;
         }
 
         #endregion Implementation of IPlugin
