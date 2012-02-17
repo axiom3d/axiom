@@ -34,9 +34,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Axiom.Configuration;
 using Axiom.Core;
-using Capabilities = SlimDX.Direct3D9.Capabilities;
 
+using Capabilities = SlimDX.Direct3D9.Capabilities;
 using D3D9 = SlimDX.Direct3D9;
+using D3D9RenderWindowList = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.D3D9RenderWindow>;
 
 #endregion Namespace Declarations
 
