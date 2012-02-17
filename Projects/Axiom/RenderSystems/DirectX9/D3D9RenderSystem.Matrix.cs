@@ -203,12 +203,12 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return D3DHelper.ConvertD3DMatrix( ref _dxWorldMat );
+                return D3D9Helper.ConvertD3DMatrix( ref _dxWorldMat );
             }
             set
             {
                 // save latest matrix
-                _dxWorldMat = D3DHelper.MakeD3DMatrix( value );
+                _dxWorldMat = D3D9Helper.MakeD3DMatrix( value );
                 ActiveD3D9Device.SetTransform( D3D9.TransformState.World, _dxWorldMat );
             }
         }
@@ -241,7 +241,7 @@ namespace Axiom.RenderSystems.DirectX9
                 _viewMatrix.m22 = -_viewMatrix.m22;
                 _viewMatrix.m23 = -_viewMatrix.m23;
 
-                var dxView = D3DHelper.MakeD3DMatrix( _viewMatrix );
+                var dxView = D3D9Helper.MakeD3DMatrix( _viewMatrix );
                 ActiveD3D9Device.SetTransform( D3D9.TransformState.View, dxView );
 
                 // also mark clip planes dirty
@@ -262,12 +262,12 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return D3DHelper.ConvertD3DMatrix( ref _dxProjMat );
+                return D3D9Helper.ConvertD3DMatrix( ref _dxProjMat );
             }
             set
             {
                 // save latest matrix
-                _dxProjMat = D3DHelper.MakeD3DMatrix( value );
+                _dxProjMat = D3D9Helper.MakeD3DMatrix( value );
 
                 if ( activeRenderTarget.RequiresTextureFlipping )
                 {
@@ -393,10 +393,10 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // convert our matrix to D3D format
-            var d3dMat = D3DHelper.MakeD3DMatrix( newMat );
+            var d3dMat = D3D9Helper.MakeD3DMatrix( newMat );
 
             // set the matrix if it is not the identity
-            if ( !D3DHelper.IsIdentity( ref d3dMat ) )
+            if ( !D3D9Helper.IsIdentity( ref d3dMat ) )
             {
                 //It's seems D3D automatically add a texture coordinate with value 1,
                 //and fill up the remaining texture coordinates with 0 for the input

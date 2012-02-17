@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.DirectX9
     /// Updated on 12/7/2004 by Chris McGuirk
     /// Updated on 4/8/2005 by Tuan Kuranes email: tuan.kuranes@free.fr
     /// </remarks>
-    public class D3DHardwareOcclusionQuery : HardwareOcclusionQuery, ID3D9Resource
+    public class D3D9HardwareOcclusionQuery : HardwareOcclusionQuery, ID3D9Resource
     {
         #region Fields
 
@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///	Default constructor.
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
-        public D3DHardwareOcclusionQuery()
+        public D3D9HardwareOcclusionQuery()
             : base()
         {
         }

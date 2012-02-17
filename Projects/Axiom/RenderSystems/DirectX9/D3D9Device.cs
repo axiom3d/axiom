@@ -1350,7 +1350,7 @@ namespace Axiom.RenderSystems.DirectX9
                 }
             }
 
-            var format = D3DHelper.ConvertEnum( desc.Format );
+            var format = D3D9Helper.ConvertEnum( desc.Format );
 
             if ( format == PixelFormat.Unknown )
             {

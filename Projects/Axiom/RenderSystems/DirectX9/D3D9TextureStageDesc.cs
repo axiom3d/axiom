@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// Texture
         /// </summary>
         public D3D9.BaseTexture Tex;
-        
+
         /// <summary>
         /// Vertex texture
         /// </summary>

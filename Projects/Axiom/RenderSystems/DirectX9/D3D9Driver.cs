@@ -36,12 +36,12 @@ using SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	///	Helper class for dealing with D3D Devices.
-	/// </summary>
-	public class D3D9Driver : DisposableObject
-	{
-		#region Constructors
+    /// <summary>
+    ///	Helper class for dealing with D3D Devices.
+    /// </summary>
+    public class D3D9Driver : DisposableObject
+    {
+        #region Constructors
 
         /// <summary>
         /// Default constructor
@@ -53,16 +53,16 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         [OgreVersion( 1, 7, 2 )]
-	    public D3D9Driver( int adapterNumber, Capabilities deviceCaps,
-                AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode)
+        public D3D9Driver( int adapterNumber, Capabilities deviceCaps,
+                AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode )
             : base()
-	    {
+        {
             _adapterNumber = adapterNumber;
             _d3D9DeviceCaps = deviceCaps;
-		    _adapterIdentifier	= adapterIdentifier;
-		    _desktopDisplayMode = desktopDisplayMode;
-		    _videoModeList		= null;			
-	    }
+            _adapterIdentifier = adapterIdentifier;
+            _desktopDisplayMode = desktopDisplayMode;
+            _videoModeList = null;
+        }
 
         /// <summary>
         /// Copy constructor
@@ -75,10 +75,10 @@ namespace Axiom.RenderSystems.DirectX9
             _d3D9DeviceCaps = ob._d3D9DeviceCaps;
             _adapterIdentifier = ob._adapterIdentifier;
             _desktopDisplayMode = ob._desktopDisplayMode;
-            _videoModeList = null;	
+            _videoModeList = null;
         }
 
-		#endregion Constructors
+        #endregion Constructors
 
         #region dispose
 
@@ -97,115 +97,115 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region DriverName
 
-        [OgreVersion(1, 7, 2790)]
-		public string DriverName
-		{
-			get
-			{
-				return _adapterIdentifier.DriverName;
-			}
-		}
-		#endregion Name Property
+        [OgreVersion( 1, 7, 2790 )]
+        public string DriverName
+        {
+            get
+            {
+                return _adapterIdentifier.DriverName;
+            }
+        }
+        #endregion Name Property
 
-		#region DriverDescription
+        #region DriverDescription
 
         [OgreVersion( 1, 7, 2 )]
-		public string DriverDescription
-		{
-			get
-			{
+        public string DriverDescription
+        {
+            get
+            {
                 return string.Format( "Monitor-{0}-{1}", _adapterNumber + 1, _adapterIdentifier.Description );
-			}
-		}
-		#endregion Description Property
+            }
+        }
+        #endregion Description Property
 
-		#region AdapterNumber Property
+        #region AdapterNumber Property
 
-        [OgreVersion(1, 7, 2790)]
-		private readonly int _adapterNumber;
+        [OgreVersion( 1, 7, 2790 )]
+        private readonly int _adapterNumber;
 
         /// <summary>
         /// Get the adapter number
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
-		public int AdapterNumber
-		{
-			get
-			{
+        [OgreVersion( 1, 7, 2790 )]
+        public int AdapterNumber
+        {
+            get
+            {
                 return _adapterNumber;
-			}
-		}
-		#endregion AdapterNumber Property
+            }
+        }
+        #endregion AdapterNumber Property
 
-		#region AdapterIdentifier Property
+        #region AdapterIdentifier Property
 
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         private readonly AdapterDetails _adapterIdentifier;
 
-        [OgreVersion(1, 7, 2790)]
-		public AdapterDetails AdapterIdentifier
-		{
-			get
-			{
-				return _adapterIdentifier;
-			}
-		}
+        [OgreVersion( 1, 7, 2790 )]
+        public AdapterDetails AdapterIdentifier
+        {
+            get
+            {
+                return _adapterIdentifier;
+            }
+        }
 
-		#endregion AdapterIdentifier Property
+        #endregion AdapterIdentifier Property
 
-		#region DesktopMode Property
+        #region DesktopMode Property
 
-        [OgreVersion(1, 7, 2790)]
-		private readonly DisplayMode _desktopDisplayMode;
+        [OgreVersion( 1, 7, 2790 )]
+        private readonly DisplayMode _desktopDisplayMode;
 
-        [OgreVersion(1, 7, 2790)]
-		public DisplayMode DesktopMode
-		{
-			get
-			{
-				return _desktopDisplayMode;
-			}
-		}
+        [OgreVersion( 1, 7, 2790 )]
+        public DisplayMode DesktopMode
+        {
+            get
+            {
+                return _desktopDisplayMode;
+            }
+        }
 
-		#endregion DesktopMode Property
+        #endregion DesktopMode Property
 
-		#region VideoModes Property
+        #region VideoModes Property
 
-        [OgreVersion(1, 7, 2790)]
-		private D3D9VideoModeList _videoModeList;
-		
-        [OgreVersion(1, 7, 2790)]
-		public D3D9VideoModeList VideoModeList
-		{
-			get
-			{
-                if (_videoModeList == null)
+        [OgreVersion( 1, 7, 2790 )]
+        private D3D9VideoModeList _videoModeList;
+
+        [OgreVersion( 1, 7, 2790 )]
+        public D3D9VideoModeList VideoModeList
+        {
+            get
+            {
+                if ( _videoModeList == null )
                     _videoModeList = new D3D9VideoModeList( this );
-				
-                return _videoModeList;
-			}
-		}
 
-		#endregion VideoModes Property
+                return _videoModeList;
+            }
+        }
+
+        #endregion VideoModes Property
 
         #region D3D9DeviceCaps
 
-        [OgreVersion(1, 7, 2790)]
-	    private readonly Capabilities _d3D9DeviceCaps;
+        [OgreVersion( 1, 7, 2790 )]
+        private readonly Capabilities _d3D9DeviceCaps;
 
         /// <summary>
         /// Get device capabilities
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
-	    public Capabilities D3D9DeviceCaps
-	    {
-	        get
-	        {
-		        return _d3D9DeviceCaps;
-	        }
+        [OgreVersion( 1, 7, 2790 )]
+        public Capabilities D3D9DeviceCaps
+        {
+            get
+            {
+                return _d3D9DeviceCaps;
+            }
         }
 
-        #endregion
+        #endregion D3D9DeviceCaps
 
         #endregion Properties
     };

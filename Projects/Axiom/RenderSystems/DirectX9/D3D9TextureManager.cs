@@ -33,7 +33,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using D3D = SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -76,20 +76,20 @@ namespace Axiom.RenderSystems.DirectX9
         public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
         {
             // Basic filtering
-            var d3dPF = D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( format ) );
+            var d3dPF = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( format ) );
 
             // Calculate usage
-            var d3dusage = D3D.Usage.None;
-            var pool = D3D.Pool.Managed;
+            var d3dusage = D3D9.Usage.None;
+            var pool = D3D9.Pool.Managed;
             if ( ( usage & TextureUsage.RenderTarget ) != 0 )
             {
-                d3dusage |= D3D.Usage.RenderTarget;
-                pool = D3D.Pool.Default;
+                d3dusage |= D3D9.Usage.RenderTarget;
+                pool = D3D9.Pool.Default;
             }
             if ( ( usage & TextureUsage.Dynamic ) != 0 )
             {
-                d3dusage |= D3D.Usage.Dynamic;
-                pool = D3D.Pool.Default;
+                d3dusage |= D3D9.Usage.Dynamic;
+                pool = D3D9.Pool.Default;
             }
 
             var curDevice = D3D9RenderSystem.ActiveD3D9Device;
@@ -99,20 +99,20 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    var tReqs = D3D.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    var tReqs = D3D9.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = tReqs.Format;
                     break;
                 case TextureType.ThreeD:
-                    var volReqs = D3D.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = volReqs.Format;
                     break;
                 case TextureType.CubeMap:
-                    var cubeReqs = D3D.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = cubeReqs.Format;
                     break;
             }
 
-            return D3DHelper.ConvertEnum( d3dPF );
+            return D3D9Helper.ConvertEnum( d3dPF );
         }
 
         /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>

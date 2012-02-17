@@ -370,7 +370,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             for ( var pf = PixelFormat.L8; pf < PixelFormat.Count; ++pf )
             {
-                var fmt = D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( pf ) );
+                var fmt = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( pf ) );
                 if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format,
                                                D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
                     continue;
@@ -632,7 +632,7 @@ namespace Axiom.RenderSystems.DirectX9
             _hardwareBufferManager = new D3D9HardwareBufferManager();
 
             // Create the GPU program manager    
-            _gpuProgramManager = new D3DGpuProgramManager();
+            _gpuProgramManager = new D3D9GpuProgramManager();
 
             // Create & register HLSL factory
             _hlslProgramFactory = new D3D9HLSLProgramFactory();
@@ -659,7 +659,7 @@ namespace Axiom.RenderSystems.DirectX9
                     // match exactly, but in windowed mode we can allow for arbitrary window sized, so we only need
                     // to match the colour values
                     if ( fullScreen && ( temp == vm ) ||
-                        !fullScreen && ( colorDepth  == bpp ) )
+                        !fullScreen && ( colorDepth == bpp ) )
                     {
                         videoMode = currVideoMode;
                         break;
