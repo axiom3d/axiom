@@ -125,7 +125,14 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion Properties
 
-        #region dispose
+        #region Contruction and destruction
+
+        [OgreVersion( 1, 7, 2 )]
+        public D3D9VertexDeclaration()
+            : base()
+        {
+            D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
+        }
 
         [OgreVersion( 1, 7, 2, "~D3D9VertexDeclaration" )]
         protected override void dispose( bool disposeManagedResources )
@@ -135,6 +142,7 @@ namespace Axiom.RenderSystems.DirectX9
                 if ( disposeManagedResources )
                 {
                     _releaseDeclaration();
+                    D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
                 }
 
                 // There are no unmanaged resources to release, but
@@ -146,7 +154,7 @@ namespace Axiom.RenderSystems.DirectX9
             base.dispose( disposeManagedResources );
         }
 
-        #endregion dispose
+        #endregion Contruction and destruction
 
         #region Methods
 

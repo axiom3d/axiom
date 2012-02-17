@@ -155,11 +155,13 @@ namespace Axiom.RenderSystems.DirectX9
 			_systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
 
 			// Case we have to create this buffer resource on loading.
-			if ( D3D9RenderSystem.ResourceManager.CreationPolicy != D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
-				return;
+            if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
+            {
+                foreach ( var d3d9Device in D3D9RenderSystem.ResourceCreationDevices )
+                    CreateBuffer( d3d9Device, _bufferDesc.Pool );
+            }
 
-			foreach ( var d3d9Device in D3D9RenderSystem.ResourceCreationDevices )
-				CreateBuffer( d3d9Device, _bufferDesc.Pool );
+            D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
@@ -182,6 +184,8 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 					_mapDeviceToBufferResources.Clear();
 					_systemMemoryBuffer.SafeDispose();
+
+                    D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 
 					//Leaving critical section
 					this.UnlockDeviceAccess();
