@@ -148,7 +148,6 @@
     <Compile Include="D3D9DeviceManager.cs" />
     <Compile Include="D3D9Driver.cs" />
     <Compile Include="D3D9DriverList.cs" />
-    <Compile Include="D3D9RenderWindowList.cs" />
     <Compile Include="D3D9ResourceManager.cs" />
     <Compile Include="D3D9VideoMode.cs" />
     <Compile Include="D3D9VideoModeList.cs" />
