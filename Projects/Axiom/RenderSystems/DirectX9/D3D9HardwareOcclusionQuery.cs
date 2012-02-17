@@ -71,6 +71,7 @@ namespace Axiom.RenderSystems.DirectX9
         public D3D9HardwareOcclusionQuery()
             : base()
         {
+            D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
         }
 
         [OgreVersion( 1, 7, 2, "~D3D9HardwareOcclusionQuery" )]
@@ -84,6 +85,7 @@ namespace Axiom.RenderSystems.DirectX9
                         it.SafeDispose();
 
                     _mapDeviceToQuery.Clear();
+                    D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
                 }
             }
 

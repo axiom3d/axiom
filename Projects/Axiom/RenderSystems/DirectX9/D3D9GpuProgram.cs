@@ -103,6 +103,7 @@ namespace Axiom.RenderSystems.DirectX9
 		protected D3D9GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+            D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -112,6 +113,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( disposeManagedResources )
 				{
 					externalMicrocode.SafeDispose();
+                    D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 				}
 
 				// There are no unmanaged resources to release, but

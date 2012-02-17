@@ -620,7 +620,6 @@ namespace Axiom.RenderSystems.DirectX9
 
             ClearDeviceStreams();
 
-
             // Reset the device using the presentation parameters.
             hr = pDevice.Reset( PresentationParams );
 
@@ -632,8 +631,7 @@ namespace Axiom.RenderSystems.DirectX9
                 // Don't continue
                 return false;
             }
-            /*else*/
-            if ( hr.IsFailure )
+            else if ( hr.IsFailure )
             {
                 throw new AxiomException( "Cannot reset device!" );
             }
