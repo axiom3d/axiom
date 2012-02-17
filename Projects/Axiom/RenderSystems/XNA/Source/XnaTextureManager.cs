@@ -118,5 +118,16 @@ namespace Axiom.RenderSystems.Xna
             }
             LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
         }
-    }
+
+        /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+#if NET_40
+        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
+#else
+        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+#endif
+        {
+            //TODO
+            return false;
+        }
+    };
 }

@@ -68,37 +68,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="type"></param>
 		/// <param name="numIndices"></param>
 		/// <param name="usage"></param>
-		/// <returns></returns>
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			return CreateIndexBuffer( type, numIndices, usage, false );
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
-			indexBuffers.Add( buffer );
-			return buffer;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
-		{
-			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
+            var buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
+            lock ( IndexBuffersMutex )
+                indexBuffers.Add( buffer );
+            return buffer;
 		}
 
 		/// <summary>
@@ -109,12 +87,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
-		{
-			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
-			vertexBuffers.Add( buffer );
-			return buffer;
-		}
+        [OgreVersion( 1, 7, 2 )]
+        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        {
+            var buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
+            lock ( VertexBuffersMutex )
+                vertexBuffers.Add( buffer );
+            return buffer;
+        }
 
 
 		#endregion

@@ -399,9 +399,7 @@ namespace Axiom.Graphics
 		private void CreateGlobalTextures()
 		{
 			if ( supportedTechniques.Count == 0 )
-			{
 				return;
-			}
 
 			//To make sure that we are consistent, it is demanded that all composition
 			//techniques define the same set of global textures.
@@ -416,17 +414,14 @@ namespace Axiom.Graphics
 				{
 					//Check that this is a legit global texture
 					if ( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
-					{
 						throw new AxiomException( "Global compositor texture definition can not be a reference." );
-					}
-					if ( def.Width == 0 || def.Height == 0 )
-					{
+
+                    if ( def.Width == 0 || def.Height == 0 )
 						throw new AxiomException( "Global compositor texture definition must have absolute size." );
-					}
-					if ( def.Pooled )
-					{
+
+                    if ( def.Pooled )
 						LogManager.Instance.Write( "Pooling global compositor textures has no effect", null );
-					}
+					
 					globalTextureNames.Add( def.Name );
 
 					//TODO GSOC : Heavy copy-pasting from CompositorInstance. How to we solve it?
@@ -434,16 +429,15 @@ namespace Axiom.Graphics
 					RenderTarget renderTarget = null;
 					if ( def.PixelFormats.Count > 1 )
 					{
-						var MRTBaseName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
-						var mrt =
-							Root.Instance.RenderSystem.CreateMultiRenderTarget( MRTBaseName );
+                        var MRTBaseName = string.Format( "c{0}/{1}/{2}", autoNumber++.ToString(), _name, def.Name );
+						var mrt = Root.Instance.RenderSystem.CreateMultiRenderTarget( MRTBaseName );
 						globalMRTs.Add( def.Name, mrt );
 
 						// create and bind individual surfaces
 						var atch = 0;
 						foreach ( var p in def.PixelFormats )
 						{
-							var texName = MRTBaseName + "/" + atch.ToString();
+                            var texName = string.Format( "{0}/{1}", MRTBaseName, atch.ToString() );
 							var tex =
 								TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
 																	 TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null,

@@ -56,20 +56,16 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public RenderTexture( string name, HardwarePixelBuffer buffer, int zOffset )
-			: base( name )
-		{
-			pixelBuffer = buffer;
-			this.zOffset = zOffset;
-			Priority = RenderTargetPriority.RenderToTexture;
-			width = buffer.Width;
-			height = buffer.Height;
-			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
-		}
-
+        [OgreVersion( 1, 7, 2 )]
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
-            :this(string.Empty, buffer, zOffset)
+            : base()
 		{
+            pixelBuffer = buffer;
+            this.zOffset = zOffset;
+            Priority = RenderTargetPriority.RenderToTexture;
+            width = buffer.Width;
+            height = buffer.Height;
+            colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#endregion Constructors

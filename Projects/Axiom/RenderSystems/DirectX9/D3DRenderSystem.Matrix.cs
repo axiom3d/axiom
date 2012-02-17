@@ -32,8 +32,7 @@
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using SlimDX;
-using SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
 using Plane = Axiom.Math.Plane;
 using TextureTransform = SlimDX.Direct3D9.TextureTransform;
 using Vector4 = Axiom.Math.Vector4;
@@ -43,7 +42,7 @@ using Vector4 = Axiom.Math.Vector4;
 namespace Axiom.RenderSystems.DirectX9
 {
     // Matrix and projection related routines
-    public partial class D3DRenderSystem
+    public partial class D3D9RenderSystem
     {
         #region MakeOrthoMatrix
 
@@ -204,13 +203,13 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return _convertD3DMatrix( ref _dxWorldMat );
+                return D3DHelper.ConvertD3DMatrix( ref _dxWorldMat );
             }
             set
             {
                 // save latest matrix
-                _dxWorldMat = _makeD3DMatrix( value );
-                ActiveD3D9Device.SetTransform( TransformState.World, _dxWorldMat );
+                _dxWorldMat = D3DHelper.MakeD3DMatrix( value );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.World, _dxWorldMat );
             }
         }
 
@@ -242,8 +241,8 @@ namespace Axiom.RenderSystems.DirectX9
                 _viewMatrix.m22 = -_viewMatrix.m22;
                 _viewMatrix.m23 = -_viewMatrix.m23;
 
-                var dxView = _makeD3DMatrix( _viewMatrix );
-                ActiveD3D9Device.SetTransform( TransformState.View, dxView );
+                var dxView = D3DHelper.MakeD3DMatrix( _viewMatrix );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.View, dxView );
 
                 // also mark clip planes dirty
                 if ( clipPlanes.Count != 0 )
@@ -263,12 +262,12 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return _convertD3DMatrix( ref _dxProjMat );
+                return D3DHelper.ConvertD3DMatrix( ref _dxProjMat );
             }
             set
             {
                 // save latest matrix
-                _dxProjMat = _makeD3DMatrix( value );
+                _dxProjMat = D3DHelper.MakeD3DMatrix( value );
 
                 if ( activeRenderTarget.RequiresTextureFlipping )
                 {
@@ -278,7 +277,7 @@ namespace Axiom.RenderSystems.DirectX9
                     _dxProjMat.M42 = -_dxProjMat.M42;
                 }
 
-                ActiveD3D9Device.SetTransform( TransformState.Projection, _dxProjMat );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, _dxProjMat );
 
                 // also mark clip planes dirty
                 if ( clipPlanes.Count != 0 )
@@ -298,18 +297,18 @@ namespace Axiom.RenderSystems.DirectX9
             var newMat = xform;
 
             // cache this since it's used often
-            var autoTexCoordType = _texStageDesc[ stage ].autoTexCoordType;
+            var autoTexCoordType = _texStageDesc[ stage ].AutoTexCoordType;
 
             // if a vertex program is bound, we mustn't set texture transforms
             if ( vertexProgramBound )
             {
-                SetTextureStageState( stage, TextureStage.TextureTransformFlags, (int)TextureTransform.Disable );
+                _setTextureStageState( stage, D3D9.TextureStage.TextureTransformFlags, (int)TextureTransform.Disable );
                 return;
             }
 
             if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
             {
-                if ( ( _deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & VertexProcessingCaps.TexGenSphereMap ) == VertexProcessingCaps.TexGenSphereMap )
+                if ( ( _deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) == D3D9.VertexProcessingCaps.TexGenSphereMap )
                 {
                     // inverts the texture for a spheremap
                     var matEnvMap = Matrix4.Identity;
@@ -371,14 +370,14 @@ namespace Axiom.RenderSystems.DirectX9
                 if ( texProjRelative )
                 {
                     Matrix4 viewMatrix;
-                    _texStageDesc[ stage ].frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out viewMatrix );
+                    _texStageDesc[ stage ].Frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out viewMatrix );
                     newMat = viewMatrix * newMat;
                 }
                 else
                 {
-                    newMat = _texStageDesc[ stage ].frustum.ViewMatrix * newMat;
+                    newMat = _texStageDesc[ stage ].Frustum.ViewMatrix * newMat;
                 }
-                newMat = _texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
+                newMat = _texStageDesc[ stage ].Frustum.ProjectionMatrix * newMat;
                 newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
                 newMat = xform * newMat;
             }
@@ -394,7 +393,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // convert our matrix to D3D format
-            var d3dMat = _makeD3DMatrix( newMat );
+            var d3dMat = D3DHelper.MakeD3DMatrix( newMat );
 
             // set the matrix if it is not the identity
             if ( !D3DHelper.IsIdentity( ref d3dMat ) )
@@ -414,7 +413,7 @@ namespace Axiom.RenderSystems.DirectX9
                     //FIXME: The actually input texture coordinate dimensions should
                     //be determine by texture coordinate vertex element. Now, just trust
                     //user supplied texture type matchs texture coordinate vertex element.
-                    if ( _texStageDesc[ stage ].texType == D3DTextureType.Normal )
+                    if ( _texStageDesc[ stage ].TexType == D3D9TextureType.Normal )
                     {
                         /* It's 2D input texture coordinate:
 
@@ -445,9 +444,9 @@ namespace Axiom.RenderSystems.DirectX9
                     //divide u, v by q. The w and q just ignored as it wasn't used by
                     //rasterizer.
 
-                    switch ( _texStageDesc[ stage ].texType )
+                    switch ( _texStageDesc[ stage ].TexType )
                     {
-                        case D3DTextureType.Normal:
+                        case D3D9TextureType.Normal:
                             Utility.Swap( ref d3dMat.M13, ref d3dMat.M14 );
                             Utility.Swap( ref d3dMat.M23, ref d3dMat.M24 );
                             Utility.Swap( ref d3dMat.M33, ref d3dMat.M34 );
@@ -456,8 +455,8 @@ namespace Axiom.RenderSystems.DirectX9
                             texCoordDim = TextureTransform.Projected | TextureTransform.Count3;
                             break;
 
-                        case D3DTextureType.Cube:
-                        case D3DTextureType.Volume:
+                        case D3D9TextureType.Cube:
+                        case D3D9TextureType.Volume:
                             // Yes, we support 3D projective texture.
                             texCoordDim = TextureTransform.Projected | TextureTransform.Count4;
                             break;
@@ -465,14 +464,14 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 else
                 {
-                    switch ( _texStageDesc[ stage ].texType )
+                    switch ( _texStageDesc[ stage ].TexType )
                     {
-                        case D3DTextureType.Normal:
+                        case D3D9TextureType.Normal:
                             texCoordDim = TextureTransform.Count2;
                             break;
 
-                        case D3DTextureType.Cube:
-                        case D3DTextureType.Volume:
+                        case D3D9TextureType.Cube:
+                        case D3D9TextureType.Volume:
                             texCoordDim = TextureTransform.Count3;
                             break;
                     }
@@ -480,16 +479,16 @@ namespace Axiom.RenderSystems.DirectX9
 
                 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                SetTextureStageState( stage, TextureStage.TextureTransformFlags, (int)texCoordDim );
+                _setTextureStageState( stage, D3D9.TextureStage.TextureTransformFlags, (int)texCoordDim );
 
                 // set the manually calculated texture matrix
-                var d3DTransType = (TransformState)( (int)( TransformState.Texture0 ) + stage );
+                var d3DTransType = (D3D9.TransformState)( (int)( D3D9.TransformState.Texture0 ) + stage );
                 ActiveD3D9Device.SetTransform( d3DTransType, d3dMat );
             }
             else
             {
                 // disable texture transformation
-                SetTextureStageState( stage, TextureStage.TextureTransformFlags, (int)TextureTransform.Disable );
+                _setTextureStageState( stage, D3D9.TextureStage.TextureTransformFlags, (int)TextureTransform.Disable );
 
                 // Needless to sets texture transform here, it's never used at all
             }
@@ -501,7 +500,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         /// <see cref="Axiom.Graphics.RenderSystem.ApplyObliqueDepthProjection"/>
         [OgreVersion( 1, 7, 2790 )]
-        public override void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram )
+        public override void ApplyObliqueDepthProjection( ref Matrix4 matrix, Plane plane, bool forGpuProgram )
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
@@ -515,18 +514,18 @@ namespace Axiom.RenderSystems.DirectX9
                 Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
             */
             var q = new Vector4();
-            q.x = System.Math.Sign( plane.Normal.x ) / projMatrix.m00;
-            q.y = System.Math.Sign( plane.Normal.y ) / projMatrix.m11;
+            q.x = System.Math.Sign( plane.Normal.x ) / matrix.m00;
+            q.y = System.Math.Sign( plane.Normal.y ) / matrix.m11;
             q.z = 1.0f;
 
             // flip the next bit from Lengyel since we're right-handed
             if ( forGpuProgram )
             {
-                q.w = ( 1.0f - projMatrix.m22 ) / projMatrix.m23;
+                q.w = ( 1.0f - matrix.m22 ) / matrix.m23;
             }
             else
             {
-                q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
+                q.w = ( 1.0f + matrix.m22 ) / matrix.m23;
             }
 
             // Calculate the scaled plane vector
@@ -535,87 +534,22 @@ namespace Axiom.RenderSystems.DirectX9
             var c = clipPlane4D * ( 1.0f / ( clipPlane4D.Dot( q ) ) );
 
             // Replace the third row of the projection matrix
-            projMatrix.m20 = c.x;
-            projMatrix.m21 = c.y;
+            matrix.m20 = c.x;
+            matrix.m21 = c.y;
 
             // flip the next bit from Lengyel since we're right-handed
             if ( forGpuProgram )
             {
-                projMatrix.m22 = c.z;
+                matrix.m22 = c.z;
             }
             else
             {
-                projMatrix.m22 = -c.z;
+                matrix.m22 = -c.z;
             }
 
-            projMatrix.m23 = c.w;
+            matrix.m23 = c.w;
         }
 
         #endregion ApplyObliqueDepthProjection
-
-        #region _makeD3DMatrix
-
-        [OgreVersion( 1, 7, 2 )]
-        private Matrix _makeD3DMatrix( Matrix4 matrix )
-        {
-            var dxMat = new Matrix();
-
-            // set it to a transposed matrix since DX uses row vectors
-            dxMat.M11 = matrix.m00;
-            dxMat.M12 = matrix.m10;
-            dxMat.M13 = matrix.m20;
-            dxMat.M14 = matrix.m30;
-            dxMat.M21 = matrix.m01;
-            dxMat.M22 = matrix.m11;
-            dxMat.M23 = matrix.m21;
-            dxMat.M24 = matrix.m31;
-            dxMat.M31 = matrix.m02;
-            dxMat.M32 = matrix.m12;
-            dxMat.M33 = matrix.m22;
-            dxMat.M34 = matrix.m32;
-            dxMat.M41 = matrix.m03;
-            dxMat.M42 = matrix.m13;
-            dxMat.M43 = matrix.m23;
-            dxMat.M44 = matrix.m33;
-
-            return dxMat;
-        }
-
-        #endregion _makeD3DMatrix
-
-        #region _convertD3DMatrix
-
-        /// <summary>
-        /// Helper method that converts a DX Matrix to our Matrix4.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        private Matrix4 _convertD3DMatrix( ref Matrix d3DMat )
-        {
-            var mat = Matrix4.Zero;
-
-            mat.m00 = d3DMat.M11;
-            mat.m10 = d3DMat.M12;
-            mat.m20 = d3DMat.M13;
-            mat.m30 = d3DMat.M14;
-
-            mat.m01 = d3DMat.M21;
-            mat.m11 = d3DMat.M22;
-            mat.m21 = d3DMat.M23;
-            mat.m31 = d3DMat.M24;
-
-            mat.m02 = d3DMat.M31;
-            mat.m12 = d3DMat.M32;
-            mat.m22 = d3DMat.M33;
-            mat.m32 = d3DMat.M34;
-
-            mat.m03 = d3DMat.M41;
-            mat.m13 = d3DMat.M42;
-            mat.m23 = d3DMat.M43;
-            mat.m33 = d3DMat.M44;
-
-            return mat;
-        }
-
-        #endregion _convertD3DMatrix
     };
 }

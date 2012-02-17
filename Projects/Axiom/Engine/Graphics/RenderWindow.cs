@@ -258,11 +258,10 @@ namespace Axiom.Graphics
 		public abstract void Resize( int width, int height );
 
 		/// <summary>
-		///		Reposition the window.
+		///	Reposition the window.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		public abstract void Reposition( int left, int right );
+        [OgreVersion( 1, 7, 2 )]
+		public abstract void Reposition( int left, int top );
 
 		/// <summary>
 		/// Notify that the window has been resized
@@ -288,6 +287,27 @@ namespace Axiom.Graphics
 
 
 		#endregion
+
+        /// <summary>
+        /// Alter fullscreen mode options.
+        /// </summary>
+        /// <remarks>
+        /// Nothing will happen unless the settings here are different from the
+        /// current settings.
+        /// </remarks>
+        /// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
+        /// <param name="width">The new width to use</param>
+        /// <param name="height">The new height to use</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual void SetFullScreen( bool fullScreen, int width, int height )
+        {
+        }
+
+        /// <summary>
+        /// Destroys the window.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void Destroy();
 
 	}
 

@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				_activeDevice = value;
 
-				var renderSystem = (D3DRenderSystem)( Root.Instance.RenderSystem );
+				var renderSystem = (D3D9RenderSystem)( Root.Instance.RenderSystem );
 				var driverList = renderSystem.Direct3DDrivers;
 
 				// Update the active driver member.
@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region LinkRenderWindow
 
 		[OgreVersion( 1, 7, 2790 )]
-		public void LinkRenderWindow( D3DRenderWindow renderWindow )
+		public void LinkRenderWindow( D3D9RenderWindow renderWindow )
 		{
 			// Detach from previous device.
 			var renderDevice = renderWindow.Device;
@@ -207,11 +207,11 @@ namespace Axiom.RenderSystems.DirectX9
         #region _selectDevice
 
         [OgreVersion( 1, 7, 2790 )]
-        private D3D9Device _selectDevice( D3DRenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup )
+        private D3D9Device _selectDevice( D3D9RenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup )
         {
-            var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
             D3D9Device renderDevice = null;
-            var direct3D9 = D3DRenderSystem.Direct3D9;
+            var direct3D9 = D3D9RenderSystem.Direct3D9;
             var nAdapterOrdinal = 0; // D3DADAPTER_DEFAULT
             var devType = D3D9.DeviceType.Hardware;
             D3D9.CreateFlags extraFlags = 0;
@@ -313,18 +313,18 @@ namespace Axiom.RenderSystems.DirectX9
 
 
                         // For each existing window - check if it belongs to the group.
-                        foreach ( var currRenderWindow in renderSystem.renderWindows )
+                        foreach ( var currRenderWindow in renderSystem.RenderWindows )
                         {
                             if ( !currRenderWindow.IsFullScreen )
                                 continue;
 
-                            var currDriver = _findDriver( currRenderWindow );
+                            var currDriver = _findDriver( (D3D9RenderWindow)currRenderWindow );
                             var currDeviceCaps = currDriver.D3D9DeviceCaps;
 
                             if ( currDeviceCaps.MasterAdapterOrdinal != masterAdapterCaps.AdapterOrdinal )
                                 continue;
 
-                            renderWindowsGroup[ currDeviceCaps.AdapterOrdinalInGroup ] = currRenderWindow;
+                            renderWindowsGroup[ currDeviceCaps.AdapterOrdinalInGroup ] = (D3D9RenderWindow)currRenderWindow;
                             break;
                         }
 
@@ -451,10 +451,10 @@ namespace Axiom.RenderSystems.DirectX9
         #region _findDriver
 
         [OgreVersion( 1, 7, 2790 )]
-        private D3D9Driver _findDriver( D3DRenderWindow renderWindow )
+        private D3D9Driver _findDriver( D3D9RenderWindow renderWindow )
         {
-            var renderSystem = (D3DRenderSystem)Root.Instance.RenderSystem;
-            var direct3D9 = D3DRenderSystem.Direct3D9;
+            var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var direct3D9 = D3D9RenderSystem.Direct3D9;
             var driverList = renderSystem.Direct3DDrivers;
 
             // Find the monitor this render window belongs to.

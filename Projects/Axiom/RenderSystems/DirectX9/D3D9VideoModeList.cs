@@ -66,11 +66,18 @@ namespace Axiom.RenderSystems.DirectX9
             Enumerate();
         }
 
+        ~D3D9VideoModeList()
+        {
+            this.Dispose();
+        }
+
         [OgreVersion( 1, 7, 2 )]
         public void Dispose()
         {
             _mpDriver = null;
             this.Clear();
+
+            GC.SuppressFinalize( this );
         }
 
         [OgreVersion( 1, 7, 2 )]
@@ -85,7 +92,7 @@ namespace Axiom.RenderSystems.DirectX9
         [AxiomHelper( 0, 9 )]
         private void _enumerateByFormat( D3D9.Format format )
         {
-            var pD3D = D3DRenderSystem.Direct3D9;
+            var pD3D = D3D9RenderSystem.Direct3D9;
             var adapter = _mpDriver.AdapterNumber;
 
             for ( var iMode = 0; iMode < pD3D.GetAdapterModeCount( adapter, format ); iMode++ )

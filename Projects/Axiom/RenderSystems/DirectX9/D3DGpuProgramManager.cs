@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -34,72 +30,73 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 using Axiom.Graphics;
+using D3D9 = SlimDX.Direct3D9;
 using ResourceHandle = System.UInt64;
-
-using DX = SlimDX;
-using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
 	/// <summary>
-	/// 	Summary description for D3DGpuProgramManager.
+	/// Summary description for D3DGpuProgramManager.
 	/// </summary>
 	public class D3DGpuProgramManager : GpuProgramManager
 	{
-		protected D3D.Device device;
-
-        /*
-		internal D3DGpuProgramManager( D3D.Device device )
+		[OgreVersion( 1, 7, 2 )]
+		internal D3DGpuProgramManager()
+			: base()
 		{
-			this.device = device;
-		}*/
+			// Superclass sets up members 
 
-		/// <summary>
-		///    Returns a specialized version of GpuProgramParameters.
-		/// </summary>
-		/// <returns></returns>
-		public override GpuProgramParameters CreateParameters()
+			// Register with resource group manager
+			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+		}
+
+		[OgreVersion( 1, 7, 2, "~D3D9GpuProgramManager" )]
+		protected override void dispose( bool disposeManagedResources )
 		{
-			return new GpuProgramParameters();
+			if ( !this.IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Unregister with resource group manager
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+				}
+			}
+
+			base.dispose( disposeManagedResources );
 		}
 
 		#region GpuProgramManager Implementation
 
+		/// <see cref="Axiom.Core.ResourceManager._create(string, ResourceHandle, string, bool, IManualResourceLoader, NameValuePairList)"/>
+		[OgreVersion( 1, 7, 2 )]
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			if ( createParams == null || !createParams.ContainsKey( "type" ) )
+				throw new AxiomException( "You must supply a 'type' parameter." );
+
+			if ( createParams[ "type" ] == "vertex_program" )
+				return new D3D9GpuVertexProgram( this, name, handle, group, isManual, loader );
+			else
+				return new D3D9GpuFragmentProgram( this, name, handle, group, isManual, loader );
+		}
+
+		/// <summary>
+		/// Specialised create method with specific parameters
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			if ( type == GpuProgramType.Vertex )
-			{
-				return new D3DVertexProgram( this, name, handle, group, isManual, loader, device );
-			}
+				return new D3D9GpuVertexProgram( this, name, handle, group, isManual, loader );
 			else
-			{
-				return new D3DFragmentProgram( this, name, handle, group, isManual, loader, device );
-			}
-		}
-
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			if ( !createParams.ContainsKey( "type" ) )
-			{
-				throw new Exception( "You must supply a 'type' parameter." );
-			}
-
-			if ( createParams[ "type" ] == "vertex_program" )
-			{
-				return new D3DVertexProgram( this, name, handle, group, isManual, loader, device );
-			}
-			else
-			{
-				return new D3DFragmentProgram( this, name, handle, group, isManual, loader, device );
-			}
+				return new D3D9GpuFragmentProgram( this, name, handle, group, isManual, loader );
 		}
 
 		#endregion GpuProgramManager Implementation
-	}
+	};
 }

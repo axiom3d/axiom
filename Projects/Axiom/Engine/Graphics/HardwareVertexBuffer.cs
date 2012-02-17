@@ -59,8 +59,9 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region Constructors
+		#region Construction and destruction
 
+        [OgreVersion( 1, 7, 2 )]
 		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
@@ -80,12 +81,28 @@ namespace Axiom.Graphics
 			useCount = 0;
 		}
 
-		#endregion
+        [OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( this.Manager != null )
+                        this.Manager.NotifyVertexBufferDestroyed( this );
 
-		#region Properties
-        /// <summary>
-        /// 
-        /// </summary>
+                    shadowBuffer.SafeDispose();
+                    shadowBuffer = null;
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
+
+        #endregion Construction and destruction
+
+        #region Properties
+
         public VertexDeclaration VertexDeclaration
         {
             get
@@ -94,9 +111,6 @@ namespace Axiom.Graphics
             }
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public int VertexSize
 		{
 			get

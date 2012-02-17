@@ -93,30 +93,30 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Get width
 			Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_WIDTH, out value );
-			Width = value;
+			width = value;
 
 			// Get height
 			if ( _target == Gl.GL_TEXTURE_1D )
 				value = 1;	// Height always 1 for 1D textures
 			else
 				Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_HEIGHT, out value );
-			Height = value;
+			height = value;
 
 			// Get depth
 			if ( _target != Gl.GL_TEXTURE_3D )
 				value = 1; // Depth always 1 for non-3D textures
 			else
 				Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_DEPTH, out value );
-			Depth = value;
+			depth = value;
 
 			// Get format
 			Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_INTERNAL_FORMAT, out value );
 			GLFormat = value;
-			Format = GLPixelUtil.GetClosestPixelFormat( value );
+			format = GLPixelUtil.GetClosestPixelFormat( value );
 
 			// Default
-			RowPitch = Width;
-			SlicePitch = Height * Width;
+			rowPitch = Width;
+			slicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			// Set up pixel box

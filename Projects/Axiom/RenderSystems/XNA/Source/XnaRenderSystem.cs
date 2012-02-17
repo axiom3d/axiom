@@ -2580,23 +2580,23 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion
 
-		#region CreateDepthBufferFor
+        //#region CreateDepthBufferFor
 
-		/// <summary>
-		/// Creates a DepthBuffer that can be attached to the specified RenderTarget
-		/// </summary>
-		/// <remarks>
-		/// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
-		/// Caller is responsible for putting this buffer into the right pool, for
-		/// attaching, and deleting it. Here's where API-specific magic happens.
-		/// Don't call this directly unless you know what you're doing.
-		/// </remarks>
-		public override DepthBuffer CreateDepthBufferFor(Graphics.RenderTarget renderTarget)
-		{
-			throw new NotImplementedException();
-		}
+        ///// <summary>
+        ///// Creates a DepthBuffer that can be attached to the specified RenderTarget
+        ///// </summary>
+        ///// <remarks>
+        ///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
+        ///// Caller is responsible for putting this buffer into the right pool, for
+        ///// attaching, and deleting it. Here's where API-specific magic happens.
+        ///// Don't call this directly unless you know what you're doing.
+        ///// </remarks>
+        //public override DepthBuffer CreateDepthBufferFor(Graphics.RenderTarget renderTarget)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-		#endregion
+        //#endregion
 
 		#region SetConfigOption
 
@@ -3132,7 +3132,7 @@ namespace Axiom.RenderSystems.Xna
 #if !SILVERLIGHT
 					_device.GraphicsProfile == GraphicsProfile.Reach && 
 #endif
-					!texture.IsPowerOfTwo)
+                    !( (XnaTexture)texture ).IsPowerOfTwo )
 				{
 					state.AddressU = TextureAddressMode.Clamp;
 					state.AddressV = TextureAddressMode.Clamp;

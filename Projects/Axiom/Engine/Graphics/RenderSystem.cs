@@ -101,11 +101,8 @@ namespace Axiom.Graphics
 		/// Dummy structure for render system contexts - implementing RenderSystems can extend
 		/// as needed
 		/// </summary>
-		public class RenderSystemContext : IDisposable
+		public class RenderSystemContext : DisposableObject
 		{
-			public virtual void Dispose()
-			{
-			}
 		}
 
 		public class DepthBufferVec : List<DepthBuffer>
@@ -596,11 +593,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
+                // return a COPY of the current config options
 				return configOptions;
 			}
 		}
 
-		#endregion
+		#endregion ConfigOptions
 
 		#region FaceCount
 
@@ -1204,54 +1202,54 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region SetDepthBufferFor
+//        #region SetDepthBufferFor
 
-		/// <summary>
-		/// Retrieves an existing DepthBuffer or creates a new one suited for the given RenderTarget and sets it.
-		/// </summary>
-		/// <remarks>
-		/// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
-		/// </remarks>
-		/// <param name="renderTarget"></param>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual void SetDepthBufferFor( RenderTarget renderTarget )
-		{
-			var poolId = renderTarget.DepthBufferPool;
-			//Find a depth buffer in the pool
+//        /// <summary>
+//        /// Retrieves an existing DepthBuffer or creates a new one suited for the given RenderTarget and sets it.
+//        /// </summary>
+//        /// <remarks>
+//        /// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
+//        /// </remarks>
+//        /// <param name="renderTarget"></param>
+//        [OgreVersion( 1, 7, 2790 )]
+//        public virtual void SetDepthBufferFor( RenderTarget renderTarget )
+//        {
+//            var poolId = renderTarget.DepthBufferPool;
+//            //Find a depth buffer in the pool
 
-			// Axiom: emulate std::map [] access
-			if ( !depthBufferPool.ContainsKey( poolId ) )
-				depthBufferPool[ poolId ] = new DepthBufferVec();
+//            // Axiom: emulate std::map [] access
+//            if ( !depthBufferPool.ContainsKey( poolId ) )
+//                depthBufferPool[ poolId ] = new DepthBufferVec();
 
-			var itor = depthBufferPool[ poolId ].GetEnumerator();
+//            var itor = depthBufferPool[ poolId ].GetEnumerator();
 
-			var bAttached = false;
-			while ( itor.MoveNext() && !bAttached )
-				bAttached = renderTarget.AttachDepthBuffer( itor.Current );
+//            var bAttached = false;
+//            while ( itor.MoveNext() && !bAttached )
+//                bAttached = renderTarget.AttachDepthBuffer( itor.Current );
 
-			//Not found yet? Create a new one!
-			if ( !bAttached )
-			{
-				var newDepthBuffer = CreateDepthBufferFor( renderTarget );
+//            //Not found yet? Create a new one!
+//            if ( !bAttached )
+//            {
+//                var newDepthBuffer = CreateDepthBufferFor( renderTarget );
 
-				if ( newDepthBuffer != null )
-				{
-					newDepthBuffer.SetPoolId( poolId );
-					depthBufferPool[ poolId ].Add( newDepthBuffer );
+//                if ( newDepthBuffer != null )
+//                {
+//                    newDepthBuffer.SetPoolId( poolId );
+//                    depthBufferPool[ poolId ].Add( newDepthBuffer );
 
-					bAttached = renderTarget.AttachDepthBuffer( newDepthBuffer );
+//                    bAttached = renderTarget.AttachDepthBuffer( newDepthBuffer );
 
-					Debug.Assert( bAttached,
-								  @"A new DepthBuffer for a RenderTarget was created, but after creation
-it says it's incompatible with that RT" );
-				}
-				else
-					LogManager.Instance.Write( "WARNING: Couldn't create a suited DepthBuffer for RT: {0}",
-											   renderTarget.Name );
-			}
-		}
+//                    Debug.Assert( bAttached,
+//                                  @"A new DepthBuffer for a RenderTarget was created, but after creation
+//it says it's incompatible with that RT" );
+//                }
+//                else
+//                    LogManager.Instance.Write( "WARNING: Couldn't create a suited DepthBuffer for RT: {0}",
+//                                               renderTarget.Name );
+//            }
+//        }
 
-		#endregion
+//        #endregion
 
 		#region SetDepthBias
 
@@ -1793,7 +1791,7 @@ it says it's incompatible with that RT" );
 		{
 			// Remove occlusion queries
 			foreach ( var i in hwOcclusionQueries )
-				i.Dispose();
+				i.SafeDispose();
 			hwOcclusionQueries.Clear();
 
 			CleanupDepthBuffers();
@@ -1806,15 +1804,12 @@ it says it's incompatible with that RT" );
 				if ( primary == null && it.Value.IsPrimary )
 					primary = it.Value;
 				else
-					it.Value.Dispose();
+					it.Value.SafeDispose();
 			}
 
-			if ( primary != null )
-				primary.Dispose();
+            primary.SafeDispose();
 			renderTargets.Clear();
 			prioritizedRenderTargets.Clear();
-			if ( !IsDisposed )
-				Dispose();
 		}
 
 		#endregion
@@ -1908,35 +1903,6 @@ it says it's incompatible with that RT" );
 		}
 
 		#endregion
-
-		#region ApplyObliqueDepthProjection
-
-		/// <summary>
-		/// Update a perspective projection matrix to use 'oblique depth projection'.
-		/// </summary>
-		/// <remarks>
-		/// This method can be used to change the nature of a perspective 
-		/// transform in order to make the near plane not perpendicular to the 
-		/// camera view direction, but to be at some different orientation. 
-		/// This can be useful for performing arbitrary clipping (e.g. to a 
-		/// reflection plane) which could otherwise only be done using user
-		/// clip planes, which are more expensive, and not necessarily supported
-		/// on all cards.
-		/// </remarks>
-		/// <param name="projMatrix">
-		/// The existing projection matrix. Note that this must be a
-		/// perspective transform (not orthographic), and must not have already
-		/// been altered by this method. The matrix will be altered in-place.
-		/// </param>
-		/// <param name="plane">
-		/// The plane which is to be used as the clipping plane. This
-		/// plane must be in CAMERA (view) space.
-		/// </param>
-		/// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function transforms?</param>
-		[OgreVersion( 1, 7, 2790 )]
-		public abstract void ApplyObliqueDepthProjection( ref Matrix4 projMatrix, Plane plane, bool forGpuProgram );
-
-        #endregion ApplyObliqueDepthProjection
 
         #region BeginFrame
 
@@ -2110,11 +2076,11 @@ it says it's incompatible with that RT" );
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams );
 
-		#endregion
+        #endregion CreateRenderWindow
 
-		#region CreateRenderWindows
+        #region CreateRenderWindows
 
-		/// <summary>
+        /// <summary>
 		/// Creates multiple rendering windows.
 		/// </summary>
 		/// <param name="renderWindowDescriptions">
@@ -2176,11 +2142,11 @@ it says it's incompatible with that RT" );
 			return true;
 		}
 
-		#endregion
+        #endregion CreateRenderWindows
 
-		#region CreateMultiRenderTarget
+        #region CreateMultiRenderTarget
 
-		/// <summary>
+        /// <summary>
 		/// Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures at once.
 		/// </summary>
 		/// <Remarks>
@@ -2273,33 +2239,33 @@ it says it's incompatible with that RT" );
 
 		#endregion
 
-		#region CreateRenderSystemCapabilities
+        #region CreateRenderSystemCapabilities
 
-		/// <summary>
-		/// Query the real capabilities of the GPU and driver in the RenderSystem
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
+        /// <summary>
+        /// Query the real capabilities of the GPU and driver in the RenderSystem
+        /// </summary>
+        [OgreVersion( 1, 7, 2790 )]
+        public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
 
-		#endregion
+        #endregion
 
-		#region MakeOrthoMatrix
+        #region MakeOrthoMatrix
 
-		/// <summary>
-		/// Builds an orthographic projection matrix suitable for this render system.
-		/// </summary>
-		/// <remarks>
-		/// Because different APIs have different requirements (some incompatible) for the
-		/// projection matrix, this method allows each to implement their own correctly and pass
-		/// back a generic Matrix4 for storage in the engine.
-		/// </remarks>
-		/// <param name="fov">Field of view angle.</param>
-		/// <param name="aspectRatio">Aspect ratio.</param>
-		/// <param name="near">Near clipping plane distance.</param>
-		/// <param name="far">Far clipping plane distance.</param>
-		/// <param name="dest"></param>
-		/// <param name="forGpuPrograms"></param>
-		[OgreVersion( 1, 7, 2790 )]
+        /// <summary>
+        /// Builds an orthographic projection matrix suitable for this render system.
+        /// </summary>
+        /// <remarks>
+        /// Because different APIs have different requirements (some incompatible) for the
+        /// projection matrix, this method allows each to implement their own correctly and pass
+        /// back a generic Matrix4 for storage in the engine.
+        /// </remarks>
+        /// <param name="fov">Field of view angle.</param>
+        /// <param name="aspectRatio">Aspect ratio.</param>
+        /// <param name="near">Near clipping plane distance.</param>
+        /// <param name="far">Far clipping plane distance.</param>
+        /// <param name="dest"></param>
+        /// <param name="forGpuPrograms"></param>
+        [OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
 #else
@@ -2315,6 +2281,34 @@ it says it's incompatible with that RT" );
 #endif
 
         #endregion MakeOrthoMatrix
+
+        #region ApplyObliqueDepthProjection
+
+        /// <summary>
+        /// Update a perspective projection matrix to use 'oblique depth projection'.
+        /// </summary>
+        /// <remarks>
+        /// This method can be used to change the nature of a perspective 
+        /// transform in order to make the near plane not perpendicular to the 
+        /// camera view direction, but to be at some different orientation. 
+        /// This can be useful for performing arbitrary clipping (e.g. to a 
+        /// reflection plane) which could otherwise only be done using user
+        /// clip planes, which are more expensive, and not necessarily supported
+        /// on all cards.
+        /// </remarks>
+        /// <param name="matrix">The existing projection matrix. Note that this must be a
+        /// perspective transform (not orthographic), and must not have already
+        /// been altered by this method. The matrix will be altered in-place.
+        /// </param>
+        /// <param name="plane">
+        /// The plane which is to be used as the clipping plane. This
+        /// plane must be in CAMERA (view) space.
+        /// </param>
+        /// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function</param>
+        [OgreVersion( 1, 7, 2 )]
+        public abstract void ApplyObliqueDepthProjection( ref Matrix4 matrix, Plane plane, bool forGpuProgram );
+
+        #endregion ApplyObliqueDepthProjection
 
         #region ConvertProjectionMatrix
 
@@ -2427,21 +2421,21 @@ it says it's incompatible with that RT" );
 
 		#endregion
 
-		#region CreateDepthBufferFor
+        //#region CreateDepthBufferFor
 
-		/// <summary>
-		/// Creates a DepthBuffer that can be attached to the specified RenderTarget
-		/// </summary>
-		/// <remarks>
-		/// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
-		/// Caller is responsible for putting this buffer into the right pool, for
-		/// attaching, and deleting it. Here's where API-specific magic happens.
-		/// Don't call this directly unless you know what you're doing.
-		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		public abstract DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget );
+        ///// <summary>
+        ///// Creates a DepthBuffer that can be attached to the specified RenderTarget
+        ///// </summary>
+        ///// <remarks>
+        ///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
+        ///// Caller is responsible for putting this buffer into the right pool, for
+        ///// attaching, and deleting it. Here's where API-specific magic happens.
+        ///// Don't call this directly unless you know what you're doing.
+        ///// </remarks>
+        //[OgreVersion( 1, 7, 2790 )]
+        //public abstract DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget );
 
-		#endregion
+        //#endregion
 
 		#region CleanupDepthBuffers
 
@@ -3328,20 +3322,16 @@ it says it's incompatible with that RT" );
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
-		[AxiomHelper( 0, 8 )]
+        [OgreVersion( 1, 7, 2, "~RenderSystem" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( textureManager != null )
-					{
-						if ( !textureManager.IsDisposed )
-							textureManager.Dispose();
-
-						textureManager = null;
-					}
+                    Shutdown();
+                    realCapabilities = null;
+                    currentCapabilities = null;
 				}
 
 				// There are no unmanaged resources to release, but

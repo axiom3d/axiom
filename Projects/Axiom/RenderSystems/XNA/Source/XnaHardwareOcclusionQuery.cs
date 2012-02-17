@@ -102,19 +102,20 @@ namespace Axiom.RenderSystems.Xna
         /// if just want to test if the result is available.
         /// </remarks>
         /// <returns>the resulting number of fragments.</returns>
-        public override int PullResults()
+        public override bool PullResults( out int NumOfFragments )
         {
             // default to returning a high count.  will be set otherwise if the query runs
-            LastFragmentCount = 100000;
+            NumOfFragments = LastFragmentCount = 100000;
 
 #if !SILVERLIGHT
             if ( device.GraphicsProfile == GraphicsProfile.HiDef && oQuery.IsComplete )
             {
                 LastFragmentCount = oQuery.PixelCount;
+                NumOfFragments = LastFragmentCount;
             }
 #endif
 
-            return LastFragmentCount;
+            return true;
         }
 
         /// <summary>

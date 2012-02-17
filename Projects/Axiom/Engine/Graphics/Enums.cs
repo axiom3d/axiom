@@ -58,77 +58,94 @@ namespace Axiom.Graphics
 	}
 
 	/// <summary>
-	///		Describes how a vertex buffer should act when it is locked.
+	///	Describes how a vertex buffer should act when it is locked.
 	/// </summary>
+    [OgreVersion( 1, 7, 2 )]
 	public enum BufferLocking
 	{
 		/// <summary>
-		/// 
+        /// Normal mode, ie allows read/write and contents are preserved.
 		/// </summary>
 		Normal,
+
 		/// <summary>
-		///		Discards the <em>entire</em> buffer while locking; this allows optimisation to be 
-		///		performed because synchronisation issues are relaxed. Only allowed on buffers 
-		///		created with the Dynamic flag. 
+		///	Discards the <em>entire</em> buffer while locking; this allows optimisation to be 
+		///	performed because synchronisation issues are relaxed. Only allowed on buffers 
+		///	created with the Dynamic flag. 
 		/// </summary>
 		Discard,
+
 		/// <summary>
-		///		Lock the buffer for reading only. Not allowed in buffers which are created with WriteOnly. 
-		///		Mandatory on static buffers, ie those created without the Dynamic flag.
+		///	Lock the buffer for reading only. Not allowed in buffers which are created with WriteOnly. 
+		///	Mandatory on static buffers, ie those created without the Dynamic flag.
 		/// </summary>
 		ReadOnly,
-		/// <summary>
-		///    Potential optimization for some API's.
-		/// </summary>
-		NoOverwrite
+
+        /// <summary>
+        /// As Normal, except the application guarantees not to overwrite any 
+        /// region of the buffer which has already been used in this frame, can allow
+        /// some optimisation on some APIs.
+        /// </summary>
+        NoOverwrite
 	}
 
 	/// <summary>
 	///	Describes how a vertex buffer is to be used, and affects how it is created.
 	/// </summary>
 	[Flags]
+    [OgreVersion( 1, 7, 2 )]
 	public enum BufferUsage
-	{
+    {
+        /// <summary>
+        /// Static buffer which the application rarely modifies once created. Modifying 
+        /// the contents of this buffer will involve a performance hit.
+        /// </summary>
+        Static = 1,
+
 		/// <summary>
-		/// 
-		/// </summary>
-		Static = 1,
-		/// <summary>
-		///		Indicates the application would like to modify this buffer with the CPU
-		///		sometimes. Absence of this flag means the application will never modify. 
-		///		Buffers created with this flag will typically end up in AGP memory rather 
-		///		than video memory.
+		///	Indicates the application would like to modify this buffer with the CPU
+		///	sometimes. Absence of this flag means the application will never modify. 
+		///	Buffers created with this flag will typically end up in AGP memory rather 
+		///	than video memory.
 		/// </summary>
 		Dynamic = 2,
+
 		/// <summary>
-		///		Indicates the application will never read the contents of the buffer back, 
-		///		it will only ever write data. Locking a buffer with this flag will ALWAYS 
-		///		return a pointer to new, blank memory rather than the memory associated 
-		///		with the contents of the buffer; this avoids DMA stalls because you can 
-		///		write to a new memory area while the previous one is being used
+		///	Indicates the application will never read the contents of the buffer back, 
+		///	it will only ever write data. Locking a buffer with this flag will ALWAYS 
+		///	return a pointer to new, blank memory rather than the memory associated 
+		///	with the contents of the buffer; this avoids DMA stalls because you can 
+		///	write to a new memory area while the previous one is being used
 		/// </summary>
 		WriteOnly = 4,
+
 		/// <summary>
-		///     Indicates that the application will be refilling the contents
-		///     of the buffer regularly (not just updating, but generating the
-		///     contents from scratch), and therefore does not mind if the contents 
-		///     of the buffer are lost somehow and need to be recreated. This
-		///     allows and additional level of optimisation on the buffer.
-		///     This option only really makes sense when combined with 
-		///     DynamicWriteOnly.
+		/// Indicates that the application will be refilling the contents
+		/// of the buffer regularly (not just updating, but generating the
+		/// contents from scratch), and therefore does not mind if the contents 
+		/// of the buffer are lost somehow and need to be recreated. This
+		/// allows and additional level of optimisation on the buffer.
+		/// This option only really makes sense when combined with 
+		/// DynamicWriteOnly.
 		/// </summary>
 		Discardable = 8,
+
 		/// <summary>
-		///    Combination of Static and WriteOnly
+		/// Combination of Static and WriteOnly
 		/// </summary>
 		StaticWriteOnly = 5,
+
 		/// <summary>
-		///    Combination of Dynamic and WriteOnly. If you use 
-		///    this, strongly consider using DynamicWriteOnlyDiscardable
-		///    instead if you update the entire contents of the buffer very 
-		///    regularly. 
+		/// Combination of Dynamic and WriteOnly. If you use 
+		/// this, strongly consider using DynamicWriteOnlyDiscardable
+		/// instead if you update the entire contents of the buffer very 
+		/// regularly. 
 		/// </summary>
 		DynamicWriteOnly = 6,
+
+        /// <summary>
+        /// Combination of Dynamic, WriteOnly and Discardable
+        /// </summary>
 		DynamicWriteOnlyDiscardable = 14
 	}
 

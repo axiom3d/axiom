@@ -33,9 +33,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Graphics;
 using Axiom.Utilities;
 
@@ -74,7 +71,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format
 		/// </remarks>
-		public override void BindSurface( int attachment, RenderTexture target )
+        [OgreVersion( 1, 7, 2 )]
+		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
 			GLFrameBufferObject fbObject = (GLFrameBufferObject)target[ "FBO" ];
@@ -87,14 +85,13 @@ namespace Axiom.RenderSystems.OpenGL
 			// Set width and height
 			this.width = this._fbo.Width;
 			this.height = this._fbo.Height;
-
 		}
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
-		/// <param name="attachment"></param>
-		public override void UnbindSurface( int attachment )
+        [OgreVersion( 1, 7, 2 )]
+		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			this._fbo.UnbindSurface( attachment );
 			this.width = this._fbo.Width;

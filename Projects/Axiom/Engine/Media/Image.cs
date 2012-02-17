@@ -782,6 +782,7 @@ namespace Axiom.Media
             pCodec.EncodeToFile( wrapper, filename, imgData );
         }
 
+        [OgreVersion( 1, 7, 2 )]
         public ColorEx GetColorAt( int x, int y, int z )
         {
             return PixelConverter.UnpackColor( Format, this.bufPtr + PixelUtil.GetNumElemBytes( format ) * ( z * Width * Height + Width * y + x ) );

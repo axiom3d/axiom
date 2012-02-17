@@ -38,10 +38,8 @@ using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
-using SlimDX.Direct3D9;
-using D3D = SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
 using ResourceHandle = System.UInt64;
-using ResourceManager = Axiom.Core.ResourceManager;
 
 #endregion Namespace Declarations
 
@@ -95,7 +93,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
-        protected D3D.ShaderBytecode microcode;
+        protected D3D9.ShaderBytecode microcode;
 
         /// <summary>
         /// the preprocessor definitions to use to compile the program
@@ -227,7 +225,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                     );
 
                 // set the microcode for this program
-                ( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
+                ( (D3D9GpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
             }
         }
 
@@ -326,61 +324,61 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
         private void CompileMicrocode()
         {
-            ConstantTable constantTable = null;
+            D3D9.ConstantTable constantTable = null;
             string errors = null;
             var defines = buildDefines( preprocessorDefines );
 
-            var compileFlags = ShaderFlags.None;
-            var parseFlags = ShaderFlags.None;
+            var compileFlags = D3D9.ShaderFlags.None;
+            var parseFlags = D3D9.ShaderFlags.None;
 
-            parseFlags |= columnMajorMatrices ? ShaderFlags.PackMatrixColumnMajor : ShaderFlags.PackMatrixRowMajor;
+            parseFlags |= columnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
 
 #if DEBUG
-            compileFlags |= ShaderFlags.Debug;
-            parseFlags |= ShaderFlags.Debug;
+            compileFlags |= D3D9.ShaderFlags.Debug;
+            parseFlags |= D3D9.ShaderFlags.Debug;
 #endif
             switch ( optimizationLevel )
             {
                 case OptimizationLevel.Default:
-                    compileFlags |= ShaderFlags.OptimizationLevel1;
-                    parseFlags |= ShaderFlags.OptimizationLevel1;
+                    compileFlags |= D3D9.ShaderFlags.OptimizationLevel1;
+                    parseFlags |= D3D9.ShaderFlags.OptimizationLevel1;
                     break;
                 case OptimizationLevel.None:
-                    compileFlags |= ShaderFlags.SkipOptimization;
-                    parseFlags |= ShaderFlags.SkipOptimization;
+                    compileFlags |= D3D9.ShaderFlags.SkipOptimization;
+                    parseFlags |= D3D9.ShaderFlags.SkipOptimization;
                     break;
                 case OptimizationLevel.LevelZero:
-                    compileFlags |= ShaderFlags.OptimizationLevel0;
-                    parseFlags |= ShaderFlags.OptimizationLevel0;
+                    compileFlags |= D3D9.ShaderFlags.OptimizationLevel0;
+                    parseFlags |= D3D9.ShaderFlags.OptimizationLevel0;
                     break;
                 case OptimizationLevel.LevelOne:
-                    compileFlags |= ShaderFlags.OptimizationLevel1;
-                    parseFlags |= ShaderFlags.OptimizationLevel1;
+                    compileFlags |= D3D9.ShaderFlags.OptimizationLevel1;
+                    parseFlags |= D3D9.ShaderFlags.OptimizationLevel1;
                     break;
                 case OptimizationLevel.LevelTwo:
-                    compileFlags |= ShaderFlags.OptimizationLevel2;
-                    parseFlags |= ShaderFlags.OptimizationLevel2;
+                    compileFlags |= D3D9.ShaderFlags.OptimizationLevel2;
+                    parseFlags |= D3D9.ShaderFlags.OptimizationLevel2;
                     break;
                 case OptimizationLevel.LevelThree:
-                    compileFlags |= ShaderFlags.OptimizationLevel3;
-                    parseFlags |= ShaderFlags.OptimizationLevel3;
+                    compileFlags |= D3D9.ShaderFlags.OptimizationLevel3;
+                    parseFlags |= D3D9.ShaderFlags.OptimizationLevel3;
                     break;
             }
 
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
-            var effectCompiler = new EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
+            var effectCompiler = new D3D9.EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
 
 
             try
             {
-                microcode = effectCompiler.CompileShader( new EffectHandle( entry ),
+                microcode = effectCompiler.CompileShader( new D3D9.EffectHandle( entry ),
                                                           target,
                                                           compileFlags,
                                                           out errors,
                                                           out constantTable );
             }
-            catch ( Direct3D9Exception ex )
+            catch ( D3D9.Direct3D9Exception ex )
             {
                 throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name );
             }
@@ -495,7 +493,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         #region ProcessParamElement
 
         [OgreVersion( 1, 7, 2790 )]
-        protected void ProcessParamElement( ConstantTable constantTable, EffectHandle parent, string prefix, int index )
+        protected void ProcessParamElement( D3D9.ConstantTable constantTable, D3D9.EffectHandle parent, string prefix, int index )
         {
             var constant = constantTable.GetConstant( parent, index );
 
@@ -518,7 +516,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
 
-            if ( desc.Class == ParameterClass.Struct )
+            if ( desc.Class == D3D9.ParameterClass.Struct )
             {
                 // work out a new prefix for the nextest members if its an array, we need the index
                 prefix = prefix + paramName + ".";
@@ -531,9 +529,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             else
             {
                 // process params
-                if ( desc.Type == ParameterType.Float ||
-                     desc.Type == ParameterType.Int ||
-                     desc.Type == ParameterType.Bool )
+                if ( desc.Type == D3D9.ParameterType.Float ||
+                     desc.Type == D3D9.ParameterType.Int ||
+                     desc.Type == D3D9.ParameterType.Bool )
                 {
 
                     var paramIndex = desc.RegisterIndex;
@@ -591,12 +589,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         #region PopulateDef
 
         [OgreVersion( 1, 7, 2790 )]
-        protected void PopulateDef( ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
+        protected void PopulateDef( D3D9.ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
         {
             def.ArraySize = d3DDesc.Elements;
             switch ( d3DDesc.Type )
             {
-                case ParameterType.Int:
+                case D3D9.ParameterType.Int:
                     switch ( d3DDesc.Columns )
                     {
                         case 1:
@@ -613,14 +611,14 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                             break;
                     } // columns
                     break;
-                case ParameterType.Float:
+                case D3D9.ParameterType.Float:
                     switch ( d3DDesc.Class )
                     {
-                        case ParameterClass.MatrixColumns:
-                        case ParameterClass.MatrixRows:
+                        case D3D9.ParameterClass.MatrixColumns:
+                        case D3D9.ParameterClass.MatrixRows:
                             {
                                 var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
-                                var secondDim = d3DDesc.Class == ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
+                                var secondDim = d3DDesc.Class == D3D9.ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
 
                                 switch ( firstDim )
                                 {
@@ -679,8 +677,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                                 } // firstDim
                             }
                             break;
-                        case ParameterClass.Scalar:
-                        case ParameterClass.Vector:
+                        case D3D9.ParameterClass.Scalar:
+                        case D3D9.ParameterClass.Vector:
                             switch ( d3DDesc.Columns )
                             {
                                 case 1:
@@ -711,14 +709,14 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
         #endregion
 
-        private List<D3D.Macro> buildDefines( string defines )
+        private List<D3D9.Macro> buildDefines( string defines )
         {
-            List<D3D.Macro> definesList = new List<D3D.Macro>();
-            D3D.Macro macro;
+            List<D3D9.Macro> definesList = new List<D3D9.Macro>();
+            D3D9.Macro macro;
             string[] tmp = defines.Split( ' ', ',', ';' );
             foreach ( string define in tmp )
             {
-                macro = new D3D.Macro();
+                macro = new D3D9.Macro();
                 if ( define.Contains( "=" ) )
                 {
                     macro.Name = define.Split( '=' )[ 0 ];

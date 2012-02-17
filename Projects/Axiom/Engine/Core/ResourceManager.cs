@@ -183,9 +183,23 @@ namespace Axiom.Core
 
 		#endregion ResourceType Property
 
-		#region Indexer Properties
+        #region Verbose Property
 
-		public Resource GetByName( string name )
+        /// <summary>
+        /// Gets/Sets whether this manager and its resources habitually produce log output
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual bool Verbose
+        {
+            get;
+            set;
+        }
+
+        #endregion Verbose Property
+
+        #region Indexer Properties
+
+        public Resource GetByName( string name )
 		{
 			return this[ name ];
 		}

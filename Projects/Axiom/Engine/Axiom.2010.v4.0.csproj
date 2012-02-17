@@ -52,7 +52,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>AXIOM_THREAD_SUPPORT;DEBUG;TRACE;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Debug\Axiom.XML</DocumentationFile>

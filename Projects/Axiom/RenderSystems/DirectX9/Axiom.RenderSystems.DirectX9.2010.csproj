@@ -113,9 +113,7 @@
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=2.0.11.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=$(Platform)">
-      <HintPath>..\..\..\..\..\Externals\SlimDX\net20\$(Platform)\SlimDX.dll</HintPath>
-    </Reference>
+    <Reference Include="SlimDX, Version=2.0.12.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -132,7 +130,6 @@
     <Compile Include="D3D9Driver.cs" />
     <Compile Include="D3D9DriverList.cs" />
     <Compile Include="D3D9RenderWindowList.cs" />
-    <Compile Include="D3D9Resource.cs" />
     <Compile Include="D3D9ResourceManager.cs" />
     <Compile Include="D3D9VideoMode.cs" />
     <Compile Include="D3D9VideoModeList.cs" />
@@ -146,6 +143,7 @@
     <Compile Include="D3DTextureType.cs" />
     <Compile Include="hlsl\HLSLIncludeHandler.cs" />
     <Compile Include="hlsl\OptimizationLevel.cs" />
+    <Compile Include="ID3D9Resource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

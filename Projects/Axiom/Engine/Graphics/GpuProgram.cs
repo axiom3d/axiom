@@ -47,7 +47,7 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
     /// <summary>
-    ///     Defines a program which runs on the GPU such as a vertex or fragment program.
+    /// Defines a program which runs on the GPU such as a vertex or fragment program.
     /// </summary>
     public abstract class GpuProgram : Resource
     {

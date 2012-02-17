@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -173,15 +174,23 @@ namespace Axiom.CrossPlatform
 			return this;
 		}
 
-		public static BufferBase operator +( BufferBase buffer, int offset )
-		{
-			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += offset;
-			return buf;
-		}
+        public static BufferBase operator +( BufferBase buffer, int offset )
+        {
+            // avoid useless clones
+            if ( offset == 0 )
+                return buffer;
+
+            var buf = (BufferBase)buffer.Clone();
+            buf.Ptr += offset;
+            return buf;
+        }
 
 		public static BufferBase operator +( BufferBase buffer, long offset )
 		{
+            // avoid useless clones
+            if ( offset == 0 )
+                return buffer;
+
 			var buf = (BufferBase)buffer.Clone();
 			buf.Ptr += (int)offset;
 			return buf;

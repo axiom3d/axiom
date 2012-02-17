@@ -108,23 +108,25 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override int PullResults()
+        public override bool PullResults( out int NumOfFragments )
 		{
 			// note: flush doesn't apply to GL
 
 			// default to returning a high count.  will be set otherwise if the query runs
-			lastFragmentCount = 100000;
+            NumOfFragments = 100000;
 
 			if ( isSupportedNV )
 			{
-				Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount );
+                Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_NV, out NumOfFragments );
+                return true;
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glGetQueryObjectivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out lastFragmentCount );
+                Gl.glGetQueryObjectivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out NumOfFragments );
+                return true;
 			}
 
-			return lastFragmentCount;
+			return false;
 		}
 
 		public override bool IsStillOutstanding()

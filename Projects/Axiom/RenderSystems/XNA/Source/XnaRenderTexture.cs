@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.Xna
     public class XnaRenderTexture : RenderTexture
     {
         public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
-            : base( name, buffer, 0 )
+            : base( buffer, 0 )
         {
         }
 

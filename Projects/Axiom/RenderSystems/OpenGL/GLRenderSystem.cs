@@ -1955,41 +1955,41 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-	    public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
-	    {
-	        GLDepthBuffer retVal = null;
+        //public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
+        //{
+        //    GLDepthBuffer retVal = null;
 
-		    //Only FBO & pbuffer support different depth buffers, so everything
-		    //else creates dummy (empty) containers
-		    //retVal = mRTTManager->_createDepthBufferFor( renderTarget );
-            var fbo = (GLFrameBufferObject)renderTarget["FBO"];
+        //    //Only FBO & pbuffer support different depth buffers, so everything
+        //    //else creates dummy (empty) containers
+        //    //retVal = mRTTManager->_createDepthBufferFor( renderTarget );
+        //    var fbo = (GLFrameBufferObject)renderTarget["FBO"];
 
-		    if( fbo != null )
-		    {
-			    //Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
-			    //Find best depth & stencil format suited for the RT's format
-		        int depthFormat;
-                int stencilFormat;
-			    ((GLFBORTTManager)(rttManager)).GetBestDepthStencil( fbo.Format,
-																		    out depthFormat, out stencilFormat );
+        //    if( fbo != null )
+        //    {
+        //        //Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
+        //        //Find best depth & stencil format suited for the RT's format
+        //        int depthFormat;
+        //        int stencilFormat;
+        //        ((GLFBORTTManager)(rttManager)).GetBestDepthStencil( fbo.Format,
+        //                                                                    out depthFormat, out stencilFormat );
 
-			    var depthBuffer = new GLRenderBuffer( depthFormat, fbo.Width,
-																    fbo.Height, fbo.FSAA );
+        //        var depthBuffer = new GLRenderBuffer( depthFormat, fbo.Width,
+        //                                                            fbo.Height, fbo.FSAA );
 
-			    var stencilBuffer = depthBuffer;
-			    if( depthFormat != Gl.GL_DEPTH24_STENCIL8_EXT && stencilBuffer != null ) /* Gl.GL_NONE */
-			    {
-				    stencilBuffer = new GLRenderBuffer( stencilFormat, fbo.Width,
-													    fbo.Height, fbo.FSAA );
-			    }
+        //        var stencilBuffer = depthBuffer;
+        //        if( depthFormat != Gl.GL_DEPTH24_STENCIL8_EXT && stencilBuffer != null ) /* Gl.GL_NONE */
+        //        {
+        //            stencilBuffer = new GLRenderBuffer( stencilFormat, fbo.Width,
+        //                                                fbo.Height, fbo.FSAA );
+        //        }
 
-			    //No "custom-quality" multisample for now in GL
-			    retVal = new GLDepthBuffer( 0, this, _currentContext, depthBuffer, stencilBuffer,
-										    fbo.Width, fbo.Height, fbo.FSAA, 0, false );
-		    }
+        //        //No "custom-quality" multisample for now in GL
+        //        retVal = new GLDepthBuffer( 0, this, _currentContext, depthBuffer, stencilBuffer,
+        //                                    fbo.Width, fbo.Height, fbo.FSAA, 0, false );
+        //    }
 
-		    return retVal;
-	    }
+        //    return retVal;
+        //}
 
 	    #endregion
 
@@ -3064,7 +3064,8 @@ namespace Axiom.RenderSystems.OpenGL
 			        {
 				        //Depth is automatically managed and there is no depth buffer attached to this RT
 				        //or the Current context doesn't match the one this Depth buffer was created with
-				        SetDepthBufferFor( value );
+				        //SetDepthBufferFor( value );
+                        throw new NotImplementedException();
 			        }
 
                     // Bind frame buffer object

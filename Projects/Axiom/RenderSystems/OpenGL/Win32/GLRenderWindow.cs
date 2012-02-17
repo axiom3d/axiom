@@ -512,5 +512,10 @@ namespace Axiom.RenderSystems.OpenGL
         {
             get { return false; }
         }
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

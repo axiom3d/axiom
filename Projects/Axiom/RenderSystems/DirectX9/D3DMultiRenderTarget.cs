@@ -40,18 +40,18 @@ using D3D = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	public sealed class D3DMultiRenderTarget : MultiRenderTarget
+	public sealed class D3D9MultiRenderTarget : MultiRenderTarget
 	{
 		#region Fields and Properties
 
-		private D3DHardwarePixelBuffer[] _renderTargets = new D3DHardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
+		private D3D9HardwarePixelBuffer[] _renderTargets = new D3D9HardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
         [OgreVersion( 1, 7, 2 )]
-		public D3DMultiRenderTarget( string name )
+		public D3D9MultiRenderTarget( string name )
 			: base( name )
 		{
 		}
@@ -71,12 +71,12 @@ namespace Axiom.RenderSystems.DirectX9
 		/// - Not all bound surfaces have the same internal format
 		/// </remarks>
         [OgreVersion( 1, 7, 2 )]
-		public override void BindSurface( int attachment, RenderTexture target )
+		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
 
 			// Get buffer and surface to bind to
-			var buffer = (D3DHardwarePixelBuffer)( target[ "BUFFER" ] );
+			var buffer = (D3D9HardwarePixelBuffer)( target[ "BUFFER" ] );
 			Proclaim.NotNull( buffer );
 
 			// Find first non null target
@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Unbind Attachment
 		/// </summary>
         [OgreVersion( 1, 7, 2 )]
-		public override void UnbindSurface( int attachment )
+		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
 			_renderTargets[ attachment ].SafeDispose();
@@ -141,7 +141,7 @@ namespace Axiom.RenderSystems.DirectX9
         [OgreVersion(1, 7, 2790)]
         public override void Update( bool swapBuffers )
         {
-            var deviceManager = D3DRenderSystem.DeviceManager;
+            var deviceManager = D3D9RenderSystem.DeviceManager;
             var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
 
             if ( currRenderWindowDevice != null )
@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.DirectX9
 					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{
 						if ( _renderTargets[ x ] != null )
-                            surfaces[ x ] = _renderTargets[ x ].GetSurface( D3DRenderSystem.ActiveD3D9Device );
+                            surfaces[ x ] = _renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
 					}
 					return surfaces;
 				}

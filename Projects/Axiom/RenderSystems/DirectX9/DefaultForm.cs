@@ -35,23 +35,73 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Windows.Forms;
-using IO = System.IO;
-using SWF = System.Windows.Forms;
-
 using Axiom.Core;
 using Axiom.Graphics;
+using IO = System.IO;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-
-	public class DefaultForm : Form
+	public sealed class DefaultForm : Form
 	{
 	    private readonly WindowClassStyle _classStyle;
 	    private readonly WindowsExtendedStyle _dwStyleEx;
-	    private readonly WindowStyles _windowStyle;
-	    private RenderWindow _renderWindow;
+	    
+        #region RenderWindow
+
+        private RenderWindow _renderWindow;
+
+        /// <summary>
+        ///	Get/Set the RenderWindow associated with this form.
+        /// </summary>
+        public RenderWindow RenderWindow
+        {
+            get
+            {
+                return _renderWindow;
+            }
+            set
+            {
+                _renderWindow = value;
+            }
+        }
+
+        #endregion RenderWindow
+
+        #region WindowStyles
+
+        private WindowStyles _windowStyle;
+
+        /// <summary>
+        /// Get/Set window styles
+        /// </summary>
+        public WindowStyles WindowStyles
+        {
+            get
+            {
+                return _windowStyle;
+            }
+
+            set
+            {
+                _windowStyle = value;
+            }
+        }
+
+        #endregion WindowStyles
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.Style = (int)_windowStyle;
+                cp.ExStyle = (int)_dwStyleEx;
+                cp.ClassStyle = (int)_classStyle;
+                return cp;
+            }
+        }
 
 	    public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title, 
             WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
@@ -73,97 +123,56 @@ namespace Axiom.RenderSystems.DirectX9
             if (parentHWnd != null)
 	            Parent = parentHWnd;
 
-            Load += DefaultFormLoad;
-            Deactivate += DefaultFormDeactivate;
-            Activated += DefaultFormActivated;
-            Closing += DefaultFormClose;
-            Resize += DefaultFormResize;
+            Load += _defaultFormLoad;
+            Deactivate += _defaultFormDeactivate;
+            Activated += _defaultFormActivated;
+            Closing += _defaultFormClose;
+            Resize += _defaultFormResize;
 
             ResumeLayout(false);
 	    }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                var cp = base.CreateParams;
-                cp.Style = (int)_windowStyle;
-                cp.ExStyle = (int)_dwStyleEx;
-                cp.ClassStyle = (int)_classStyle;
-                return cp;
-            }
-        }
-
+        
 	    protected override void WndProc( ref Message m )
 		{
 			if ( !Win32MessageHandling.WndProc( _renderWindow, ref m ) )
 				base.WndProc( ref m );
 		}
 
-		/// <summary>
-		/// </summary>
-		public void DefaultFormDeactivate( object source, EventArgs e )
+		public void _defaultFormDeactivate( object source, EventArgs e )
 		{
 			if ( _renderWindow != null )
-			{
 				_renderWindow.IsActive = false;
-			}
 		}
 
-		/// <summary>
-		/// </summary>
-		public void DefaultFormActivated( object source, EventArgs e )
+        public void _defaultFormActivated( object source, EventArgs e )
 		{
 			if ( _renderWindow != null )
-			{
 				_renderWindow.IsActive = true;
-			}
 		}
 
-		/// <summary>
-		/// </summary>
-		public void DefaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
+		public void _defaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
 			if ( _renderWindow != null )
-			{
 				_renderWindow.IsActive = false;
-			}
 		}
 
-		private void DefaultFormLoad( object sender, EventArgs e )
+		private void _defaultFormLoad( object sender, EventArgs e )
 		{
 			try
 			{
 				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
-				{
 					Icon = new System.Drawing.Icon( strm );
-				}
 			}
 			catch ( IO.FileNotFoundException )
 			{
 			}
 		}
 
-		private void DefaultFormResize( object sender, EventArgs e )
+		private void _defaultFormResize( object sender, EventArgs e )
 		{
 			Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
 		}
-
-		/// <summary>
-		///		Get/Set the RenderWindow associated with this form.
-		/// </summary>
-		public RenderWindow RenderWindow
-		{
-			get
-			{
-				return _renderWindow;
-			}
-			set
-			{
-				_renderWindow = value;
-			}
-		}
-	}
+	};
 }

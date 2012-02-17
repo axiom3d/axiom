@@ -1,233 +1,425 @@
-#region LGPL License
-
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
-
 // <file>
-//     <copyright see="prj:///doc/copyright.txt"/>
-//     <license see="prj:///doc/license.txt"/>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
-
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Threading;
+using System.Diagnostics;
+using System.Linq;
 using Axiom.Core;
 using Axiom.CrossPlatform;
-using SlimDX.Direct3D9;
-using Root = Axiom.Core.Root;
 using Axiom.Graphics;
 using Axiom.Media;
-
+using D3D9 = SlimDX.Direct3D9;
 using DX = SlimDX;
-using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
 	/// <summary>
-	/// 	DirectX implementation of HardwarePixelBuffer
+	/// DirectX9 implementation of HardwarePixelBuffer
 	/// </summary>
-	public class D3DHardwarePixelBuffer : HardwarePixelBuffer
+	public class D3D9HardwarePixelBuffer : HardwarePixelBuffer
 	{
+		#region Nested Types
+
+		[OgreVersion( 1, 7, 2 )]
+		protected class BufferResources : DisposableObject
+		{
+			/// <summary>
+			/// Surface abstracted by this buffer
+			/// </summary>
+			public D3D9.Surface Surface;
+
+			/// <summary>
+			/// AA Surface abstracted by this buffer
+			/// </summary>
+			public D3D9.Surface FsaaSurface;
+
+			/// <summary>
+			/// Volume abstracted by this buffer
+			/// </summary>
+			public D3D9.Volume Volume;
+
+			/// <summary>
+			/// Temporary surface in main memory if direct locking of mSurface is not possible
+			/// </summary>
+			public D3D9.Surface TempSurface;
+
+			/// <summary>
+			/// Temporary volume in main memory if direct locking of mVolume is not possible
+			/// </summary>
+			public D3D9.Volume TempVolume;
+
+			/// <summary>
+			/// Mip map texture.
+			/// </summary>
+			public D3D9.BaseTexture MipTex;
+
+			protected override void dispose( bool disposeManagedResources )
+			{
+				if ( !this.IsDisposed )
+				{
+					if ( disposeManagedResources )
+					{
+						this.Surface.SafeDispose();
+						this.Surface = null;
+
+						this.Volume.SafeDispose();
+						this.Volume = null;
+					}
+				}
+
+				base.dispose( disposeManagedResources );
+			}
+		};
+
+		#endregion Nested Types
+
 		#region Fields
 
-		///<summary>
-		///    D3DDevice pointer
-		///</summary>
-		protected D3D.Device device;
-		///<summary>
-		///    Surface abstracted by this buffer
-		///</summary>
-		protected D3D.Surface surface;
-		///<summary>
-		///    FSAA Surface abstracted by this buffer
-		///</summary>
-		protected D3D.Surface fsaaSurface;
-		///<summary>
-		///    Volume abstracted by this buffer
-		///</summary>
-		protected D3D.Volume volume;
-		///<summary>
-		///    Temporary surface in main memory if direct locking of mSurface is not possible
-		///</summary>
-		protected D3D.Surface tempSurface;
-		///<summary>
-		///    Temporary volume in main memory if direct locking of mVolume is not possible
-		///</summary>
-		protected D3D.Volume tempVolume;
-		///<summary>
-		///    Doing Mipmapping?
-		///</summary>
+		/// <summary>
+		/// Map between device to buffer resources.
+		/// </summary>
+		protected Dictionary<D3D9.Device, BufferResources> mapDeviceToBufferResources = new Dictionary<D3D9.Device, BufferResources>();
+
+		/// <summary>
+		/// Doing Mipmapping?
+		/// </summary>
 		protected bool doMipmapGen;
-		///<summary>
-		///    Hardware Mipmaps?
-		///</summary>
+
+		/// <summary>
+		/// Hardware Mipmaps?
+		/// </summary>
 		protected bool HWMipmaps;
-		///<summary>
-		///    The Mipmap texture?
-		///</summary>
-		protected D3D.BaseTexture mipTex;
-		///<summary>
-		///    Render targets
-		///</summary>
-		protected List<RenderTexture> sliceTRT;
+
+		/// <summary>
+		/// Render target
+		/// </summary>
+		protected RenderTexture renderTexture;
+
+		/// <summary>
+		/// The owner texture if exists.
+		/// </summary>
+		protected D3D9Texture ownerTexture;
+
+		/// <summary>
+		/// The current lock flags of this surface.
+		/// </summary>
+		protected D3D9.LockFlags lockFlags;
+
+
+#if AXIOM_THREAD_SUPPORT
+		private static readonly object deviceLockMutex = new object();
+#endif
 
 		#endregion Fields
 
-		#region Constructors
-
-		public D3DHardwarePixelBuffer( BufferUsage usage )
-			: base( 0, 0, 0, Axiom.Media.PixelFormat.Unknown, usage, false, false )
+		[OgreVersion( 1, 7, 2 )]
+		public D3D9HardwarePixelBuffer( BufferUsage usage, D3D9Texture ownerTexture )
+			: base( 0, 0, 0, Media.PixelFormat.Unknown, usage, false, false )
 		{
-			device = null;
-			surface = null;
-			volume = null;
-			tempSurface = null;
-			tempVolume = null;
-			doMipmapGen = false;
-			HWMipmaps = false;
-			mipTex = null;
-			sliceTRT = new List<RenderTexture>();
+			this.ownerTexture = ownerTexture;
 		}
 
-		#endregion Constructors
-
-		#region Properties
-
-		///<summary>
-		///    Accessor for surface
-		///</summary>
-		public D3D.Surface FSAASurface
+		[OgreVersion( 1, 7, 2, "~D3D9HardwarePixelBuffer" )]
+		protected override void dispose( bool disposeManagedResources )
 		{
-			get
+			if ( !this.IsDisposed )
 			{
-				return fsaaSurface;
-			}
-		}
+				if ( disposeManagedResources )
+				{
+					//Entering critical section
+					LockDeviceAccess();
 
-		///<summary>
-		///    Accessor for surface
-		///</summary>
-		public D3D.Surface Surface
-		{
-			get
-			{
-				return surface;
-			}
-		}
+					DestroyRenderTexture();
 
-		#endregion Properties
+					foreach ( var it in mapDeviceToBufferResources.Values )
+						it.SafeDispose();
+
+					mapDeviceToBufferResources.Clear();
+
+					//Leaving critical section
+					UnlockDeviceAccess();
+				}
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
 		#region Methods
 
 		///<summary>
-		///    Call this to associate a D3D surface with this pixel buffer
+		/// Call this to associate a D3D surface with this pixel buffer
 		///</summary>
-		public void Bind( D3D.Device device, D3D.Surface surface, bool update )
+		[OgreVersion( 1, 7, 2 )]
+		public void Bind( D3D9.Device dev, D3D9.Surface surface, D3D9.Surface fsaaSurface, bool writeGamma, int fsaa, string srcName, D3D9.BaseTexture mipTex )
 		{
-			this.device = device;
-			this.surface = surface;
+			//Entering critical section
+			LockDeviceAccess();
 
-			D3D.SurfaceDescription desc = surface.Description;
-			Width = desc.Width;
-			Height = desc.Height;
-			Depth = 1;
-			Format = D3DHelper.ConvertEnum( desc.Format );
+			var bufferResources = GetBufferResources( dev );
+			var isNewBuffer = false;
+
+			if ( bufferResources == null )
+			{
+				bufferResources = new BufferResources();
+				mapDeviceToBufferResources.Add( dev, bufferResources );
+				isNewBuffer = true;
+			}
+
+			bufferResources.MipTex = mipTex;
+			bufferResources.Surface = surface;
+			bufferResources.FsaaSurface = fsaaSurface;
+
+			var desc = surface.Description;
+			width = desc.Width;
+			height = desc.Height;
+			depth = 1;
+			format = D3DHelper.ConvertEnum( desc.Format );
 			// Default
-			RowPitch = Width;
-			SlicePitch = Height * Width;
+			rowPitch = Width;
+			slicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-				CreateRenderTextures( update );
+				UpdateRenderTexture( writeGamma, fsaa, srcName );
+
+			if ( isNewBuffer && ownerTexture.IsManuallyLoaded )
+			{
+				foreach ( var it in mapDeviceToBufferResources )
+				{
+					if ( it.Value != bufferResources &&
+						it.Value.Surface != null &&
+						it.Key.TestCooperativeLevel().IsSuccess &&
+						dev.TestCooperativeLevel().IsSuccess )
+					{
+						var fullBufferBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
+						var dstBox = new PixelBox( fullBufferBox, Format );
+
+						var data = new byte[ sizeInBytes ];
+						dstBox.Data = Memory.PinObject( data );
+						BlitToMemory( fullBufferBox, dstBox, it.Value, it.Key );
+						BlitFromMemory( dstBox, fullBufferBox, bufferResources );
+						Array.Clear( data, 0, sizeInBytes );
+						Memory.UnpinObject( data );
+						break;
+					}
+				}
+			}
+
+			//Leaving critical section
+			UnlockDeviceAccess();
 		}
 
 		///<summary>
-		///    Call this to associate a D3D volume with this pixel buffer
+		/// Call this to associate a D3D volume with this pixel buffer
 		///</summary>
-		public void Bind( D3D.Device device, D3D.Volume volume, bool update )
+		[OgreVersion( 1, 7, 2 )]
+		public void Bind( D3D9.Device dev, D3D9.Volume volume, D3D9.BaseTexture mipTex )
 		{
-			this.device = device;
-			this.volume = volume;
+			//Entering critical section
+			LockDeviceAccess();
 
-			D3D.VolumeDescription desc = volume.Description;
-			Width = desc.Width;
-			Height = desc.Height;
-			Depth = desc.Depth;
-			Format = D3DHelper.ConvertEnum( desc.Format );
+			var bufferResources = GetBufferResources( dev );
+			var isNewBuffer = false;
+
+			if ( bufferResources == null )
+			{
+				bufferResources = new BufferResources();
+				mapDeviceToBufferResources.Add( dev, bufferResources );
+				isNewBuffer = true;
+			}
+
+			bufferResources.MipTex = mipTex;
+			bufferResources.Volume = volume;
+
+			var desc = volume.Description;
+			width = desc.Width;
+			height = desc.Height;
+			depth = desc.Depth;
+			format = D3DHelper.ConvertEnum( desc.Format );
 			// Default
-			RowPitch = Width;
-			SlicePitch = Height * Width;
+			rowPitch = Width;
+			slicePitch = Height * Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-				CreateRenderTextures( update );
+			if ( isNewBuffer && ownerTexture.IsManuallyLoaded )
+			{
+				foreach ( var it in mapDeviceToBufferResources )
+				{
+					if ( it.Value != bufferResources &&
+						it.Value.Volume != null &&
+						it.Key.TestCooperativeLevel().IsSuccess &&
+						dev.TestCooperativeLevel().IsSuccess )
+					{
+						var fullBufferBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
+						var dstBox = new PixelBox( fullBufferBox, Format );
+
+						var data = new byte[ sizeInBytes ];
+						dstBox.Data = Memory.PinObject( data );
+						BlitToMemory( fullBufferBox, dstBox, it.Value, it.Key );
+						BlitFromMemory( dstBox, fullBufferBox, bufferResources );
+						Array.Clear( data, 0, sizeInBytes );
+						Memory.UnpinObject( data );
+						break;
+					}
+				}
+			}
+
+			//Leaving critical section
+			UnlockDeviceAccess();
 		}
 
-		///<summary>
-		///    Util functions to convert a D3D locked rectangle to a pixel box
-		///</summary>
-		protected static void FromD3DLock( PixelBox rval, DX.DataRectangle rectangle )
+		[OgreVersion( 1, 7, 2 )]
+		protected BufferResources GetBufferResources( D3D9.Device d3d9Device )
 		{
-			rval.RowPitch = rectangle.Pitch / PixelUtil.GetNumElemBytes( rval.Format );
-			rval.SlicePitch = rval.RowPitch * rval.Height;
-			Debug.Assert( ( rectangle.Pitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
-            rval.Data = BufferBase.Wrap(rectangle.Data.DataPointer, rectangle.Pitch * rval.Height);
+			if ( mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+				return mapDeviceToBufferResources[ d3d9Device ];
+
+			return null;
 		}
 
-		///<summary>
-		///    Util functions to convert a D3D LockedBox to a pixel box
-		///</summary>
-		protected static void FromD3DLock( PixelBox rval, DX.DataBox stream )
+		/// <summary>
+		/// Destroy resources associated with the given device.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyBufferResources( D3D9.Device d3d9Device )
 		{
-			rval.RowPitch = stream.RowPitch / PixelUtil.GetNumElemBytes( rval.Format );
-			rval.SlicePitch = stream.SlicePitch / PixelUtil.GetNumElemBytes( rval.Format );
-			Debug.Assert( ( stream.RowPitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
-			Debug.Assert( ( stream.SlicePitch % PixelUtil.GetNumElemBytes( rval.Format ) ) == 0 );
-            rval.Data = BufferBase.Wrap(stream.Data.DataPointer, stream.RowPitch * rval.Height);
+			//Entering critical section
+			LockDeviceAccess();
+
+			if ( mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+			{
+				mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
+				mapDeviceToBufferResources.Remove( d3d9Device );
+			}
+
+			//Leaving critical section
+			UnlockDeviceAccess();
+		}
+
+		/// <summary>
+		/// Called when device state is changing. Access to any device should be locked.
+		/// Relevant for multi thread application.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public static void LockDeviceAccess()
+		{
+#if AXIOM_THREAD_SUPPORT
+			if ( Configuration.Config.AxiomThreadLevel == 1 )
+				System.Threading.Monitor.Enter( deviceLockMutex );
+#endif
+		}
+
+		/// <summary>
+		/// Called when device state change completed. Access to any device is allowed.
+		/// Relevant for multi thread application.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public static void UnlockDeviceAccess()
+		{
+#if AXIOM_THREAD_SUPPORT
+			if ( Configuration.Config.AxiomThreadLevel == 1 )
+				System.Threading.Monitor.Exit( deviceLockMutex );
+#endif
 		}
 
 		///<summary>
-		///    Convert Axiom integer Box to D3D rectangle
+		/// Util functions to convert a D3D locked rectangle to a pixel box
 		///</summary>
+		[OgreVersion( 1, 7, 2 )]
+		protected static void FromD3DLock( PixelBox rval, DX.DataRectangle lrect )
+		{
+			var bpp = PixelUtil.GetNumElemBytes( rval.Format );
+			var size = 0;
+
+			if ( bpp != 0 )
+			{
+				rval.RowPitch = lrect.Pitch / bpp;
+				rval.SlicePitch = rval.RowPitch * rval.Height;
+				Debug.Assert( ( lrect.Pitch % bpp ) == 0 );
+				size = lrect.Pitch * rval.Height;
+			}
+			else if ( PixelUtil.IsCompressed( rval.Format ) )
+			{
+				rval.RowPitch = rval.Width;
+				rval.SlicePitch = rval.Width * rval.Height;
+				size = rval.Width * rval.Height;
+			}
+			else
+				throw new AxiomException( "Invalid pixel format" );
+
+			rval.Data = BufferBase.Wrap( lrect.Data.DataPointer, size );
+		}
+
+		///<summary>
+		/// Util functions to convert a D3D LockedBox to a pixel box
+		///</summary>
+		[OgreVersion( 1, 7, 2 )]
+		protected static void FromD3DLock( PixelBox rval, DX.DataBox lbox )
+		{
+			var bpp = PixelUtil.GetNumElemBytes( rval.Format );
+			var size = 0;
+
+			if ( bpp != 0 )
+			{
+				rval.RowPitch = lbox.RowPitch / bpp;
+				rval.SlicePitch = lbox.SlicePitch / bpp;
+				Debug.Assert( ( lbox.RowPitch % bpp ) == 0 );
+				Debug.Assert( ( lbox.SlicePitch % bpp ) == 0 );
+				size = lbox.RowPitch * rval.Height;
+			}
+			else if ( PixelUtil.IsCompressed( rval.Format ) )
+			{
+				rval.RowPitch = rval.Width;
+				rval.SlicePitch = rval.Width * rval.Height;
+				size = rval.Width * rval.Height;
+			}
+			else
+				throw new AxiomException( "Invalid pixel format" );
+
+			rval.Data = BufferBase.Wrap( lbox.Data.DataPointer, size );
+		}
+
+		///<summary>
+		/// Convert Axiom integer Box to D3D rectangle
+		///</summary>
+		[OgreVersion( 1, 7, 2 )]
 		protected static System.Drawing.Rectangle ToD3DRectangle( BasicBox lockBox )
 		{
 			Debug.Assert( lockBox.Depth == 1 );
-			System.Drawing.Rectangle r = new System.Drawing.Rectangle();
+			var r = new System.Drawing.Rectangle();
 			r.X = lockBox.Left;
 			r.Width = lockBox.Width;
 			r.Y = lockBox.Top;
@@ -236,11 +428,12 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    Convert Axiom Box to D3D box
+		/// Convert Axiom Box to D3D box
 		///</summary>
-		protected static D3D.Box ToD3DBox( BasicBox lockBox )
+		[OgreVersion( 1, 7, 2 )]
+		protected static D3D9.Box ToD3DBox( BasicBox lockBox )
 		{
-			D3D.Box pbox = new D3D.Box();
+			var pbox = new D3D9.Box();
 			pbox.Left = lockBox.Left;
 			pbox.Right = lockBox.Right;
 			pbox.Top = lockBox.Top;
@@ -251,12 +444,13 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    Convert Axiom PixelBox extent to D3D rectangle
+		/// Convert Axiom PixelBox extent to D3D rectangle
 		///</summary>
+		[OgreVersion( 1, 7, 2 )]
 		protected static System.Drawing.Rectangle ToD3DRectangleExtent( PixelBox lockBox )
 		{
 			Debug.Assert( lockBox.Depth == 1 );
-			System.Drawing.Rectangle r = new System.Drawing.Rectangle();
+			var r = new System.Drawing.Rectangle();
 			r.X = 0;
 			r.Width = lockBox.Width;
 			r.X = 0;
@@ -265,11 +459,12 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    Convert Axiom PixelBox extent to D3D box
+		/// Convert Axiom PixelBox extent to D3D box
 		///</summary>
-		protected static D3D.Box ToD3DBoxExtent( PixelBox lockBox )
+		[OgreVersion( 1, 7, 2 )]
+		protected static D3D9.Box ToD3DBoxExtent( PixelBox lockBox )
 		{
-			D3D.Box pbox = new D3D.Box();
+			var pbox = new D3D9.Box();
 			pbox.Left = 0;
 			pbox.Right = lockBox.Width;
 			pbox.Top = 0;
@@ -280,323 +475,488 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    Lock a box
+		/// Lock a box
 		///</summary>
+		[OgreVersion( 1, 7, 2 )]
 		protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
 		{
+			//Entering critical section
+			LockDeviceAccess();
+
 			// Check for misuse
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
-			// Set extents and format
-			PixelBox rval = new PixelBox( lockBox, Format );
+				throw new AxiomException( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
+
 			// Set locking flags according to options
-			D3D.LockFlags flags = D3D.LockFlags.None;
-			switch ( options )
-			{
-				case BufferLocking.Discard:
-					// D3D only likes D3D.LockFlags.Discard if you created the texture with D3DUSAGE_DYNAMIC
-					// debug runtime flags this up, could cause problems on some drivers
-					if ( ( usage & BufferUsage.Dynamic ) != 0 )
-						flags |= D3D.LockFlags.Discard;
-					break;
-				case BufferLocking.ReadOnly:
-					flags |= D3D.LockFlags.ReadOnly;
-					break;
-				default:
-					break;
-			}
+			var flags = D3DHelper.ConvertEnum( options, usage );
 
-			if ( surface != null )
+			if ( mapDeviceToBufferResources.Count == 0 )
+				throw new AxiomException( "There are no resources attached to this pixel buffer !!" );
+
+			lockedBox = lockBox;
+			lockFlags = flags;
+
+			var bufferResources = mapDeviceToBufferResources.First().Value;
+
+			// Lock the source buffer.
+			var lockedBuf = LockBuffer( bufferResources, lockBox, flags );
+
+			//Leaving critical section
+			UnlockDeviceAccess();
+
+			return lockedBuf;
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		protected PixelBox LockBuffer( BufferResources bufferResources, BasicBox lockBox, D3D9.LockFlags flags )
+		{
+			// Set extents and format
+			// Note that we do not carry over the left/top/front here, since the returned
+			// PixelBox will be re-based from the locking point onwards
+			var rval = new PixelBox( lockBox.Width, lockBox.Height, lockBox.Depth, this.Format );
+
+			if ( bufferResources.Surface != null )
 			{
-				// Surface
-				DX.DataRectangle data = null;
-				try
+				//Surface
+				DX.DataRectangle lrect; // Filled in by D3D
+
+				if ( lockBox.Left == 0 && lockBox.Top == 0
+					&& lockBox.Right == this.Width && lockBox.Bottom == this.Height )
 				{
-					if ( lockBox.Left == 0 && lockBox.Top == 0 &&
-						 lockBox.Right == Width && lockBox.Bottom == Height )
-					{
-						// Lock whole surface
-						data = surface.LockRectangle( flags );
-					}
-					else
-					{
-						System.Drawing.Rectangle prect = ToD3DRectangle( lockBox ); // specify range to lock
-						data = surface.LockRectangle( prect, flags );
-					}
+					// Lock whole surface
+					lrect = bufferResources.Surface.LockRectangle( flags );
 				}
-				catch ( Exception e )
+				else
 				{
-					throw new Exception( "Surface locking failed.", e );
+					var prect = ToD3DRectangle( lockBox );
+					lrect = bufferResources.Surface.LockRectangle( prect, flags );
 				}
 
-				FromD3DLock( rval, data );
+				FromD3DLock( rval, lrect );
 			}
-			else
+			else if ( bufferResources.Volume != null )
 			{
 				// Volume
-				D3D.Box pbox = ToD3DBox( lockBox ); // specify range to lock
-
-				DX.DataBox data = volume.LockBox( pbox, flags );
-				FromD3DLock( rval, data );
+				var pbox = ToD3DBox( lockBox ); // specify range to lock
+				var lbox = bufferResources.Volume.LockBox( pbox, flags );
+				FromD3DLock( rval, lbox );
 			}
+
 			return rval;
 		}
 
 		///<summary>
-		///    Unlock a box
+		/// Unlock a box
 		///</summary>
+		[OgreVersion( 1, 7, 2 )]
 		protected override void UnlockImpl()
 		{
-			if ( surface != null )
-				// Surface
-				surface.UnlockRectangle();
-			else
-				// Volume
-				volume.UnlockBox();
+			//Entering critical section
+			LockDeviceAccess();
 
+			if ( mapDeviceToBufferResources.Count == 0 )
+				throw new AxiomException( "There are no resources attached to this pixel buffer !!" );
+
+			// 1. Update duplicates buffers.
+			foreach ( var it in mapDeviceToBufferResources )
+			{
+				var bufferResources = it.Value;
+
+				// Update duplicated buffer from the from the locked buffer content.
+				BlitFromMemory( CurrentLock, lockedBox, bufferResources );
+			}
+
+			// 2. Unlock the locked buffer.
+			var bufferRes = mapDeviceToBufferResources.First().Value;
+			UnlockBuffer( bufferRes );
 			if ( doMipmapGen )
-				GenMipmaps();
+				GenMipmaps( bufferRes.MipTex );
+
+			//Leaving critical section
+			UnlockDeviceAccess();
 		}
 
-		///<summary>
-		///    Create (or update) render textures for slices
-		///</summary>
-		///<param name="update">are we updating an existing texture</param>
-		protected void CreateRenderTextures( bool update )
+		[OgreVersion( 1, 7, 2 )]
+		protected void UnlockBuffer( BufferResources bufferResources )
 		{
-			if ( update )
+			if ( bufferResources.Surface != null )
 			{
-				Debug.Assert( sliceTRT.Count == Depth );
-				foreach ( D3DRenderTexture trt in sliceTRT )
-					trt.Rebind( this );
-				return;
+				// Surface
+				bufferResources.Surface.UnlockRectangle();
 			}
-
-			DestroyRenderTextures();
-			if ( surface == null )
-				throw new Exception( "Rendering to 3D slices not supported yet for Direct3D; in " +
-									"D3DHardwarePixelBuffer.CreateRenderTexture" );
-			// Create render target for each slice
-			sliceTRT.Clear();
-			Debug.Assert( Depth == 1 );
-			for ( int zoffset = 0; zoffset < Depth; ++zoffset )
+			else if ( bufferResources.Volume != null )
 			{
-				string name = "rtt/" + this.ID;
-				RenderTexture trt = new D3DRenderTexture( name, this );
-				sliceTRT.Add( trt );
-				Root.Instance.RenderSystem.AttachRenderTarget( trt );
+				// Volume
+				bufferResources.Volume.UnlockBox();
 			}
 		}
 
 		///<summary>
-		///    Destroy render textures for slices
+		/// Copies a box from another PixelBuffer to a region of the
+		/// this PixelBuffer.
 		///</summary>
-		protected void DestroyRenderTextures()
-		{
-			if ( sliceTRT.Count == 0 )
-				return;
-			// Delete all render targets that are not yet deleted via _clearSliceRTT
-			for ( int i = 0; i < sliceTRT.Count; ++i )
-			{
-				RenderTexture trt = sliceTRT[ i ];
-				if ( trt != null )
-					Root.Instance.RenderSystem.DestroyRenderTarget( trt.Name );
-			}
-			// sliceTRT.Clear();
-		}
-
-		///<summary>
-		///    Copies a box from another PixelBuffer to a region of the
-		///    this PixelBuffer.
-		///</summary>
-		///<param name="src">Source/dest pixel buffer</param>
+		///<param name="rsrc">Source/dest pixel buffer</param>
 		///<param name="srcBox">Image.BasicBox describing the source region in this buffer</param>
 		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
 		///<remarks>
-		///    The source and destination regions dimensions don't have to match, in which
-		///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
-		///    but it is faster to pass the source image in the right dimensions.
-		///    Only call this function when both buffers are unlocked.
+		/// The source and destination regions dimensions don't have to match, in which
+		/// case scaling is done. This scaling is generally done using a bilinear filter in hardware,
+		/// but it is faster to pass the source image in the right dimensions.
+		/// Only call this function when both buffers are unlocked.
 		///</remarks>
-		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
+		[OgreVersion( 1, 7, 2 )]
+		public override void Blit( HardwarePixelBuffer rsrc, BasicBox srcBox, BasicBox dstBox )
 		{
-			D3DHardwarePixelBuffer _src = (D3DHardwarePixelBuffer)src;
-			if ( surface != null && _src.surface != null )
+			//Entering critical section
+			LockDeviceAccess();
+
+			var _src = (D3D9HardwarePixelBuffer)rsrc;
+			foreach ( var it in mapDeviceToBufferResources )
+			{
+				var srcBufferResources = ( (D3D9HardwarePixelBuffer)rsrc ).GetBufferResources( it.Key );
+				var dstBufferResources = it.Value;
+
+				if ( srcBufferResources == null )
+					throw new AxiomException( "There are no matching resources attached to the source pixel buffer !!" );
+
+				Blit( it.Key, rsrc, srcBox, dstBox, srcBufferResources, dstBufferResources );
+			}
+
+			//Leaving critical section
+			UnlockDeviceAccess();
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		protected void Blit( D3D9.Device d3d9Device, HardwarePixelBuffer rsrc, BasicBox srcBox, BasicBox dstBox,
+			BufferResources srcBufferResources, BufferResources dstBufferResources )
+		{
+			if ( dstBufferResources.Surface != null && srcBufferResources.Surface != null )
 			{
 				// Surface-to-surface
-				System.Drawing.Rectangle dsrcRect = ToD3DRectangle( srcBox );
-				System.Drawing.Rectangle ddestRect = ToD3DRectangle( dstBox );
-				// D3DXLoadSurfaceFromSurface
-				D3D.Surface.FromSurface( surface, _src.surface, D3D.Filter.None, 0, dsrcRect, ddestRect );
+				var dsrcRect = ToD3DRectangle( srcBox );
+				var ddestRect = ToD3DRectangle( dstBox );
+
+				var srcDesc = srcBufferResources.Surface.Description;
+
+				// If we're blitting from a RTT, try GetRenderTargetData
+				// if we're going to try to use GetRenderTargetData, need to use system mem pool
+
+				// romeoxbm: not used even in Ogre
+				//var tryGetRenderTargetData = false;
+
+				if ( ( srcDesc.Usage & D3D9.Usage.RenderTarget ) != 0
+					&& srcDesc.MultisampleType == D3D9.MultisampleType.None )
+				{
+					// Temp texture
+					var tmptex = new D3D9.Texture(
+						d3d9Device,
+						srcDesc.Width, srcDesc.Height,
+						1, // 1 mip level ie topmost, generate no mipmaps
+						0, srcDesc.Format, D3D9.Pool.SystemMemory );
+
+					var tmpsurface = tmptex.GetSurfaceLevel( 0 );
+
+					if ( d3d9Device.GetRenderTargetData( srcBufferResources.Surface, tmpsurface ).IsSuccess )
+					{
+						// Hey, it worked
+						// Copy from this surface instead
+						var res = D3D9.Surface.FromSurface( dstBufferResources.Surface, tmpsurface, D3D9.Filter.Default, 0, dsrcRect, ddestRect );
+						if ( res.IsFailure )
+						{
+							tmpsurface.SafeDispose();
+							tmptex.SafeDispose();
+							throw new AxiomException( "D3D9.Surface.FromSurface failed in D3D9HardwarePixelBuffer.Blit" );
+						}
+						tmpsurface.SafeDispose();
+						tmptex.SafeDispose();
+						return;
+					}
+				}
+
+				// Otherwise, try the normal method
+				var res2 = D3D9.Surface.FromSurface( dstBufferResources.Surface, srcBufferResources.Surface, D3D9.Filter.Default, 0, dsrcRect, ddestRect );
+				if ( res2.IsFailure )
+					throw new AxiomException( "D3D9.Surface.FromSurface failed in D3D9HardwarePixelBuffer.Blit" );
 			}
-			else if ( volume != null && _src.volume != null )
+			else if ( dstBufferResources.Volume != null && srcBufferResources.Volume != null )
 			{
 				// Volume-to-volume
-				D3D.Box dsrcBox = ToD3DBox( srcBox );
-				D3D.Box ddestBox = ToD3DBox( dstBox );
-				// D3DXLoadVolumeFromVolume
-				D3D.Volume.FromVolume( volume, _src.volume, D3D.Filter.None, 0, dsrcBox, ddestBox );
+				var dsrcBox = ToD3DBox( srcBox );
+				var ddestBox = ToD3DBox( dstBox );
+
+				var res = D3D9.Volume.FromVolume( dstBufferResources.Volume, srcBufferResources.Volume, D3D9.Filter.Default, 0, dsrcBox, ddestBox );
+				if ( res.IsFailure )
+					throw new AxiomException( "D3D9.Volume.FromVolume failed in D3D9HardwarePixelBuffer.Blit" );
 			}
 			else
+			{
 				// Software fallback
-				base.Blit( _src, srcBox, dstBox );
+				base.Blit( rsrc, srcBox, dstBox );
+			}
 		}
 
 		///<summary>
-		///    Copies a region from normal memory to a region of this pixelbuffer. The source
-		///    image can be in any pixel format supported by Axiom, and in any size.
+		/// Copies a region from normal memory to a region of this pixelbuffer. The source
+		/// image can be in any pixel format supported by Axiom, and in any size.
 		///</summary>
 		///<param name="src">PixelBox containing the source pixels and format in memory</param>
 		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
 		///<remarks>
-		///    The source and destination regions dimensions don't have to match, in which
-		///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
-		///    but it is faster to pass the source image in the right dimensions.
-		///    Only call this function when both  buffers are unlocked.
+		/// The source and destination regions dimensions don't have to match, in which
+		/// case scaling is done. This scaling is generally done using a bilinear filter in hardware,
+		/// but it is faster to pass the source image in the right dimensions.
+		/// Only call this function when both  buffers are unlocked.
 		///</remarks>
+		[OgreVersion( 1, 7, 2 )]
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
-			// TODO: This currently does way too many copies.  We copy
-			// from src to a converted buffer (if needed), then from
-			// converted to a byte array, then into the temporary surface,
-			// and finally from the temporary surface to the real surface.
-			PixelBox converted = src;
-			GCHandle bufGCHandle = new GCHandle();
-			int bufSize = 0;
+			//Entering critical section
+			LockDeviceAccess();
+
+			foreach ( var it in mapDeviceToBufferResources )
+				BlitFromMemory( src, dstBox, it.Value );
+
+			//Leaving critical section
+			UnlockDeviceAccess();
+		}
+
+		protected void BlitFromMemory( PixelBox src, BasicBox dstBox, BufferResources dstBufferResources )
+		{
+			// for scoped deletion of conversion buffer
+			var converted = src;
+			var bufSize = 0;
 
 			// convert to pixelbuffer's native format if necessary
-			if ( D3DHelper.ConvertEnum(src.Format) == D3D.Format.Unknown )
+			if ( D3DHelper.ConvertEnum( src.Format ) == D3D9.Format.Unknown )
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
-				byte[] newBuffer = new byte[ bufSize ];
-                converted = new PixelBox(src.Width, src.Height, src.Depth, Format, BufferBase.Wrap(newBuffer));
+				var newBuffer = new byte[ bufSize ];
+				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, BufferBase.Wrap( newBuffer ) );
 				PixelConverter.BulkPixelConversion( src, converted );
 			}
 
-			//int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
-			using ( D3D.Surface tmpSurface = D3D.Surface.CreateOffscreenPlain( device, converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch ) )
-			{ 
-				int pitch;
-				// Ideally I would be using the Array mechanism here, but that doesn't seem to work
-				DX.DataRectangle buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock );
+			int rowWidth = 0;
+			if ( PixelUtil.IsCompressed( converted.Format ) )
+			{
+				rowWidth = converted.RowPitch / 4;
+				// D3D wants the width of one row of cells in bytes
+				if ( converted.Format == PixelFormat.DXT1 )
 				{
-					buf.Data.Position = 0; // Ensure starting Position
-					bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-					byte[] ugh = new byte[ bufSize ];
-					Memory.Copy( converted.Data, BufferBase.Wrap(ugh), bufSize );
-					buf.Data.Write( ugh, 0, bufSize );
-				}
-				tmpSurface.UnlockRectangle();
-
-				if ( surface != null )
-				{
-					// I'm trying to write to surface using the data in converted
-					System.Drawing.Rectangle srcRect = ToD3DRectangleExtent( converted );
-					System.Drawing.Rectangle destRect = ToD3DRectangle( dstBox );
-					D3D.Surface.FromSurface( surface, tmpSurface, D3D.Filter.None, 0, srcRect, destRect );
+					// 64 bits (8 bytes) per 4x4 block
+					rowWidth *= 8;
 				}
 				else
 				{
-					throw new NotSupportedException( "BlitFromMemory on Volume Textures not supported." );
-					//D3D.Box srcBox = ToD3DBoxExtent( converted );
-					//D3D.Box destBox = ToD3DBox( dstBox );
-					//D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
-					//D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
+					// 128 bits (16 bytes) per 4x4 block
+					rowWidth *= 16;
+				}
+			}
+			else
+				rowWidth = converted.RowPitch * PixelUtil.GetNumElemBytes( converted.Format );
+
+			if ( dstBufferResources.Surface != null )
+			{
+				var srcRect = ToD3DRectangle( converted );
+				var destRect = ToD3DRectangle( dstBox );
+
+				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
+				var data = new byte[ bufSize ];
+				Memory.Copy( converted.Data, BufferBase.Wrap( data ), bufSize );
+
+				try
+				{
+					D3D9.Surface.FromMemory( dstBufferResources.Surface, data, D3D9.Filter.Default, 0,
+						D3DHelper.ConvertEnum( converted.Format ), rowWidth, srcRect, destRect );
+				}
+				catch ( Exception e )
+				{
+					throw new AxiomException( "D3D9.Surface.FromMemory failed in D3D9HardwarePixelBuffer.BlitFromMemory", e );
+				}
+			}
+			else if ( dstBufferResources.Volume != null )
+			{
+				var srcBox = ToD3DBox( converted );
+				var destBox = ToD3DBox( dstBox );
+				int sliceWidth = 0;
+				if ( PixelUtil.IsCompressed( converted.Format ) )
+				{
+					sliceWidth = converted.SlicePitch / 16;
+					// D3D wants the width of one slice of cells in bytes
+					if ( converted.Format == PixelFormat.DXT1 )
+					{
+						// 64 bits (8 bytes) per 4x4 block
+						sliceWidth *= 8;
+					}
+					else
+					{
+						// 128 bits (16 bytes) per 4x4 block
+						sliceWidth *= 16;
+					}
+				}
+				else
+					sliceWidth = converted.SlicePitch * PixelUtil.GetNumElemBytes( converted.Format );
+
+				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
+				var data = new byte[ bufSize ];
+				Memory.Copy( converted.Data, BufferBase.Wrap( data ), bufSize );
+
+				//TODO note sliceWidth and rowWidth are ignored..
+				D3D9.ImageInformation info;
+				try
+				{
+					D3D9.Volume.FromFileInMemory( dstBufferResources.Volume, data, D3D9.Filter.Default, 0, srcBox, destBox, null, out info );
+				}
+				catch ( Exception e )
+				{
+					throw new AxiomException( "D3D9.Volume.FromFileInMemory failed in D3D9HardwarePixelBuffer.BlitFromMemory", e );
 				}
 			}
 
-			// If we allocated a buffer for the temporary conversion, free it here
-			// If I used bufPtr to store my temporary data while I converted
-			// it, I need to free it here.  This invalidates converted.
-			// My data has already been copied to tmpSurface and then to the
-			// real surface.
-			if ( bufGCHandle.IsAllocated )
-				bufGCHandle.Free();
-
 			if ( doMipmapGen )
-				GenMipmaps();
+				GenMipmaps( dstBufferResources.MipTex );
 		}
 
 		///<summary>
-		///    Copies a region of this pixelbuffer to normal memory.
+		/// Copies a region of this pixelbuffer to normal memory.
 		///</summary>
 		///<param name="srcBox">BasicBox describing the source region of this buffer</param>
 		///<param name="dst">PixelBox describing the destination pixels and format in memory</param>
 		///<remarks>
-		///    The source and destination regions don't have to match, in which
-		///    case scaling is done.
-		///    Only call this function when the buffer is unlocked.
+		/// The source and destination regions don't have to match, in which
+		/// case scaling is done.
+		/// Only call this function when the buffer is unlocked.
 		///</remarks>
+		[OgreVersion( 1, 7, 2 )]
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
+		{
+			//Entering critical section
+			LockDeviceAccess();
+
+			var pair = mapDeviceToBufferResources.First();
+			BlitToMemory( srcBox, dst, pair.Value, pair.Key );
+
+			//Leaving critical section
+			UnlockDeviceAccess();
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		protected void BlitToMemory( BasicBox srcBox, PixelBox dst, BufferResources srcBufferResources, D3D9.Device d3d9Device )
 		{
 			// Decide on pixel format of temp surface
 			PixelFormat tmpFormat = Format;
-			if ( D3DHelper.ConvertEnum( dst.Format ) == D3D.Format.Unknown )
+			if ( D3DHelper.ConvertEnum( dst.Format ) != D3D9.Format.Unknown )
 				tmpFormat = dst.Format;
-			if ( surface != null )
+
+			if ( srcBufferResources.Surface != null )
 			{
 				Debug.Assert( srcBox.Depth == 1 && dst.Depth == 1 );
-				// Create temp texture
-				D3D.Texture tmp =
-					new D3D.Texture( device, dst.Width, dst.Height,
-									1, // 1 mip level ie topmost, generate no mipmaps
-									0, D3DHelper.ConvertEnum( tmpFormat ),
-									D3D.Pool.Scratch );
-				D3D.Surface subSurface = tmp.GetSurfaceLevel( 0 );
-				// Copy texture to this temp surface
-				System.Drawing.Rectangle destRect, srcRect;
-				srcRect = ToD3DRectangle( srcBox );
-				destRect = ToD3DRectangleExtent( dst );
+				var srcDesc = srcBufferResources.Surface.Description;
+				var temppool = D3D9.Pool.Scratch;
 
-				D3D.Surface.FromSurface( subSurface, surface, D3D.Filter.None, 0, srcRect, destRect );
+				// if we're going to try to use GetRenderTargetData, need to use system mem pool
+				var tryGetRenderTargetData = false;
+				if ( ( ( srcDesc.Usage & D3D9.Usage.RenderTarget ) != 0 ) &&
+					( srcBox.Width == dst.Width ) && ( srcBox.Height == dst.Height ) &&
+					( srcBox.Width == this.Width ) && ( srcBox.Height == this.Height ) &&
+					( this.Format == tmpFormat ) )
+				{
+					tryGetRenderTargetData = true;
+					temppool = D3D9.Pool.SystemMemory;
+				}
+
+				// Create temp texture
+				var tmp = new D3D9.Texture(
+					d3d9Device,
+					dst.Width, dst.Height,
+					1, // 1 mip level ie topmost, generate no mipmaps
+					0, D3DHelper.ConvertEnum( tmpFormat ), temppool );
+
+				var surface = tmp.GetSurfaceLevel( 0 );
+
+				// Copy texture to this temp surface
+				var srcRect = ToD3DRectangle( srcBox );
+				var destRect = ToD3DRectangle( dst );
+
+				// Get the real temp surface format
+				var dstDesc = surface.Description;
+				tmpFormat = D3DHelper.ConvertEnum( dstDesc.Format );
+
+				// Use fast GetRenderTargetData if we are in its usage conditions
+				var fastLoadSuccess = false;
+				if ( tryGetRenderTargetData )
+				{
+					var result = d3d9Device.GetRenderTargetData( srcBufferResources.Surface, surface );
+					fastLoadSuccess = result.IsSuccess;
+				}
+				if ( !fastLoadSuccess )
+				{
+					var res = D3D9.Surface.FromSurface( surface, srcBufferResources.Surface, D3D9.Filter.Default, 0, srcRect, destRect );
+					if ( res.IsFailure )
+					{
+						surface.SafeDispose();
+						tmp.SafeDispose();
+						throw new AxiomException( "D3D9.Surface.FromSurface failed in D3D9HardwarePixelBuffer.BlitToMemory" );
+					}
+				}
 
 				// Lock temp surface and copy it to memory
-				int pitch; // Filled in by D3D
-				DX.DataRectangle data = subSurface.LockRectangle( D3D.LockFlags.ReadOnly );
+				var lrect = surface.LockRectangle( D3D9.LockFlags.ReadOnly );
+
 				// Copy it
-				PixelBox locked = new PixelBox( dst.Width, dst.Height, dst.Depth, tmpFormat );
-				FromD3DLock( locked, data );
+				var locked = new PixelBox( dst.Width, dst.Height, dst.Depth, tmpFormat );
+				FromD3DLock( locked, lrect );
 				PixelConverter.BulkPixelConversion( locked, dst );
-				subSurface.UnlockRectangle();
+				surface.UnlockRectangle();
 				// Release temporary surface and texture
-				subSurface.Dispose();
-				tmp.Dispose();
+				surface.SafeDispose();
+				tmp.SafeDispose();
 			}
-			else
+			else if ( srcBufferResources.Volume != null )
 			{
 				// Create temp texture
-				D3D.VolumeTexture tmp =
-					new D3D.VolumeTexture( device, dst.Width, dst.Height, dst.Depth,
-										   0, D3D.Usage.None,
-										   D3DHelper.ConvertEnum( tmpFormat ),
-										   D3D.Pool.Scratch );
-				D3D.Volume subVolume = tmp.GetVolumeLevel( 0 );
-				// Volume
-				D3D.Box ddestBox = ToD3DBoxExtent( dst );
-				D3D.Box dsrcBox = ToD3DBox( srcBox );
+				var tmp = new D3D9.VolumeTexture(
+					d3d9Device,
+					dst.Width,
+					dst.Height,
+					dst.Depth, 0,
+					0, D3DHelper.ConvertEnum( tmpFormat ), D3D9.Pool.Scratch );
 
-				D3D.Volume.FromVolume( subVolume, volume, D3D.Filter.None, 0, dsrcBox, ddestBox );
+				var surface = tmp.GetVolumeLevel( 0 );
+
+				// Volume
+				var ddestBox = ToD3DBoxExtent( dst );
+				var dsrcBox = ToD3DBox( srcBox );
+
+				var res = D3D9.Volume.FromVolume( surface, srcBufferResources.Volume, D3D9.Filter.Default, 0, dsrcBox, ddestBox );
+				if ( res.IsFailure )
+				{
+					surface.SafeDispose();
+					tmp.SafeDispose();
+					throw new AxiomException( "D3D9.Surface.FromVolume failed in D3D9HardwarePixelBuffer.BlitToMemory" );
+				}
+
 				// Lock temp surface and copy it to memory
-				//D3D.LockedBox lbox; // Filled in by D3D
-				DX.DataBox data = subVolume.LockBox( D3D.LockFlags.ReadOnly );
+				var lbox = surface.LockBox( D3D9.LockFlags.ReadOnly ); // Filled in by D3D
 
 				// Copy it
-				PixelBox locked = new PixelBox( dst.Width, dst.Height, dst.Depth, tmpFormat );
-				FromD3DLock( locked, data );
+				var locked = new PixelBox( dst.Width, dst.Height, dst.Depth, tmpFormat );
+				FromD3DLock( locked, lbox );
 				PixelConverter.BulkPixelConversion( locked, dst );
-				subVolume.UnlockBox();
+				surface.UnlockBox();
 				// Release temporary surface and texture
-				subVolume.Dispose();
-				tmp.Dispose();
+				surface.SafeDispose();
+				tmp.SafeDispose();
 			}
 		}
 
 		///<summary>
-		///    Internal function to update mipmaps on update of level 0
+		/// Internal function to update mipmaps on update of level 0
 		///</summary>
-		public void GenMipmaps()
+		[OgreVersion( 1, 7, 2 )]
+		internal void GenMipmaps( D3D9.BaseTexture mipTex )
 		{
 			Debug.Assert( mipTex != null );
+
 			// Mipmapping
 			if ( HWMipmaps )
 			{
@@ -606,75 +966,120 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// Software mipmaps
-				mipTex.FilterTexture( 0, D3D.Filter.Box );
+				mipTex.FilterTexture( (int)D3D9.Filter.Default, D3D9.Filter.Default );
 			}
 		}
 
 		///<summary>
-		///    Function to set mipmap generation
+		/// Function to set mipmap generation
 		///</summary>
-		public void SetMipmapping( bool doMipmapGen, bool HWMipmaps, D3D.BaseTexture mipTex )
+		[OgreVersion( 1, 7, 2 )]
+		internal void SetMipmapping( bool doMipmapGen, bool HWMipmaps )
 		{
 			this.doMipmapGen = doMipmapGen;
 			this.HWMipmaps = HWMipmaps;
-			this.mipTex = mipTex;
 		}
 
 		///<summary>
-		///    Get rendertarget for z slice
+		/// Notify TextureBuffer of destruction of render target
 		///</summary>
+		[OgreVersion( 1, 7, 2 )]
+		public override void ClearSliceRTT( int zoffset )
+		{
+			renderTexture = null;
+		}
+
+		/// <summary>
+		/// Release surfaces held by this pixel buffer.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void ReleaseSurfaces( D3D9.Device d3d9Device )
+		{
+			var bufferResources = GetBufferResources( d3d9Device );
+			if ( bufferResources != null )
+			{
+				bufferResources.Surface.SafeDispose();
+				bufferResources.Surface = null;
+
+				bufferResources.Volume.SafeDispose();
+				bufferResources.Volume = null;
+			}
+		}
+
+		/// <summary>
+		/// Accessor for surface
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public D3D9.Surface GetSurface( D3D9.Device d3d9Device )
+		{
+			var bufferResources = GetBufferResources( d3d9Device );
+
+			if ( bufferResources != null )
+			{
+				ownerTexture.CreateTextureResources( d3d9Device );
+				bufferResources = GetBufferResources( d3d9Device );
+			}
+
+			return bufferResources.Surface;
+		}
+
+		/// <summary>
+		/// Accessor for AA surface
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public D3D9.Surface GetFSAASurface( D3D9.Device d3d9Device )
+		{
+			var bufferResources = GetBufferResources( d3d9Device );
+
+			if ( bufferResources != null )
+			{
+				ownerTexture.CreateTextureResources( d3d9Device );
+				bufferResources = GetBufferResources( d3d9Device );
+			}
+
+			return bufferResources.FsaaSurface;
+		}
+
+		/// <summary>
+		/// Get rendertarget for z slice
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		public override RenderTexture GetRenderTarget( int zoffset )
 		{
 			Debug.Assert( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 );
-			Debug.Assert( zoffset < Depth );
-			return sliceTRT[ zoffset ];
+			Debug.Assert( renderTexture != null );
+			return renderTexture;
 		}
 
-		///<summary>
-		///    Notify TextureBuffer of destruction of render target
-		///</summary>
-		public override void ClearSliceRTT( int zoffset )
+		/// <summary>
+		/// Updates render texture.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		protected void UpdateRenderTexture( bool writeGamma, int fsaa, string srcName )
 		{
-			sliceTRT[ zoffset ] = null;
-		}
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
+			if ( renderTexture == null )
 			{
-				if ( disposeManagedResources )
-				{
-				}
-				DestroyRenderTextures();
+				//romeoxbm: in Ogre, there was an (int)this instead of that this.ID
+				// Check if we should use that id or, alternatively, the hashcode
+				var name = string.Format( "rtt/{0}/{1}", this.ID, srcName );
+				renderTexture = new D3D9RenderTexture( name, this, writeGamma, fsaa );
+				Root.Instance.RenderSystem.AttachRenderTarget( renderTexture );
 			}
+		}
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
+		/// <summary>
+		/// Destroy render texture.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		protected void DestroyRenderTexture()
+		{
+			if ( renderTexture != null )
+			{
+				Root.Instance.RenderSystem.DestroyRenderTarget( renderTexture.Name );
+				renderTexture = null;
+			}
 		}
 
 		#endregion Methods
-
-        #region Locking
-
-        internal static readonly object DeviceAccessMutex = new object();
-
-	    public static void LockDeviceAccess()
-	    {
-	        Monitor.Enter( DeviceAccessMutex );
-	    }
-
-        #endregion
-
-	    public static void UnlockDeviceAccess()
-	    {
-            Monitor.Exit(DeviceAccessMutex);
-	    }
-
-	    public Surface GetSurface( Device d3D9Device )
-	    {
-            // TODO: implement this as in 2.7.2790
-	        return Surface;
-	    }
-	}
+	};
 }

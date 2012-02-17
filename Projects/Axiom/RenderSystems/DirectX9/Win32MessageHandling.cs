@@ -34,11 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
 using Axiom.Core;
 using Axiom.Graphics;
-using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -78,16 +77,18 @@ namespace Axiom.RenderSystems.DirectX9
 			Menu = 0x12
 		}
 
+        [StructLayout( LayoutKind.Sequential )]
 		struct Msg
 		{
-			public int hWnd;
-			public int Message;
-			public int wParam;
-			public int lParam;
-			public int time;
+			public IntPtr hWnd;
+			public uint Message;
+			public IntPtr wParam;
+			public IntPtr lParam;
+			public uint time;
 			public POINTAPI pt;
 		}
 
+        [StructLayout( LayoutKind.Sequential )]
 		struct POINTAPI
 		{
 			public int x;
@@ -96,9 +97,19 @@ namespace Axiom.RenderSystems.DirectX9
 			// Just to get rid of Warning CS0649.
 			public POINTAPI( int x, int y )
 			{
-				this.x = x;
-				this.y = y;
-			}
+                this.x = x;
+                this.y = y;
+            }
+
+            public static implicit operator System.Drawing.Point( POINTAPI p )
+            {
+                return new System.Drawing.Point( p.x, p.y );
+            }
+
+            public static implicit operator POINTAPI( System.Drawing.Point p )
+            {
+                return new POINTAPI( p.X, p.Y );
+            }
 		}
 
 		/// <summary>
@@ -108,8 +119,8 @@ namespace Axiom.RenderSystems.DirectX9
 		const string USER_DLL = "user32.dll";
 
 		/// <summary>
-		///		The PeekMessage function dispatches incoming sent messages, checks the thread message
-		///		queue for a posted message, and retrieves the message (if any exist).
+		///	The PeekMessage function dispatches incoming sent messages, checks the thread message
+		///	queue for a posted message, and retrieves the message (if any exist).
 		/// </summary>
 		/// <param name="msg">A <see cref="Msg"/> structure that receives message information.</param>
 		/// <param name="handle"></param>
@@ -117,35 +128,33 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="msgFilterMax"></param>
 		/// <param name="removeMsg"></param>
 		[DllImport( USER_DLL )]
-		private static extern int PeekMessage( out Msg msg, IntPtr handle, int msgFilterMin, int msgFilterMax, int removeMsg );
+        [return: MarshalAs( UnmanagedType.Bool )]
+        private static extern bool PeekMessage( out Msg msg, IntPtr handle, uint msgFilterMin, uint msgFilterMax, uint removeMsg );
 
 		/// <summary>
-		///		The TranslateMessage function translates virtual-key messages into character messages.
+		///	The TranslateMessage function translates virtual-key messages into character messages.
 		/// </summary>
 		/// <param name="msg">
-		///		an MSG structure that contains message information retrieved from the calling thread's message queue
-		///		by using the GetMessage or <see cref="PeekMessage"/> function.
+		///	an MSG structure that contains message information retrieved from the calling thread's message queue
+		///	by using the GetMessage or <see cref="PeekMessage"/> function.
 		/// </param>
 		[DllImport( USER_DLL )]
-		private static extern void TranslateMessage( ref Msg msg );
+        [return: MarshalAs( UnmanagedType.Bool )]
+		private static extern bool TranslateMessage( ref Msg msg );
 
 		/// <summary>
-		///		The DispatchMessage function dispatches a message to a window procedure.
+		///	The DispatchMessage function dispatches a message to a window procedure.
 		/// </summary>
 		/// <param name="msg">A <see cref="Msg"/> structure containing the message.</param>
 		[DllImport( USER_DLL )]
-		private static extern void DispatchMessage( ref Msg msg );
+		private static extern IntPtr DispatchMessage( ref Msg msg );
 
 		#endregion P/Invoke Declarations
-
-		#region Fields and Properties
-		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		public Win32MessageHandling()
 		{
-
 		}
 
 		#endregion Construction and Destruction
@@ -155,7 +164,6 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Internal winProc (RenderWindow's use this when creating the Win32 Window)
 		/// </summary>
-		/// <param name="m"></param>
 		static public bool WndProc( RenderWindow win, ref Message m )
 		{
 			switch ( (WindowMessage)m.Msg )
@@ -221,7 +229,7 @@ namespace Axiom.RenderSystems.DirectX9
 			Msg msg;
 
 			// pump those events!
-			while ( !( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) == 0 ) )
+            while ( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) )
 			{
 				TranslateMessage( ref msg );
 				DispatchMessage( ref msg );
@@ -229,5 +237,5 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion Methods
-	}
+	};
 }
