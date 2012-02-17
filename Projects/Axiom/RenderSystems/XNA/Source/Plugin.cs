@@ -84,7 +84,7 @@ namespace Axiom.RenderSystems.Xna
         public void Shutdown()
         {
             // nothing at the moment
-            _renderSystem.Shutdown();
+            _renderSystem.SafeDispose();
             _renderSystem = null;
         }
 
