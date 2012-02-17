@@ -651,10 +651,15 @@ namespace Axiom.Graphics
             {
                 if ( disposeManagedResources )
                 {
-                    // Clear vertex/index buffer list first, avoid destroyed notify do
-                    // unnecessary work, and we'll destroy everything here.
-                    vertexBuffers.Clear();
-                    indexBuffers.Clear();
+                    // Differently from Ogre, we need to Dispose all buffers stored.
+                    // No need to clear lists, 'cause every disposed buffer removes itself
+                    // from its list when disposing via NotifyVertexBufferDestroyed ( or 
+                    // NotifyIndexBufferDestroyed for index buffers ).
+                    while ( vertexBuffers.Count > 0 )
+                        vertexBuffers[ 0 ].SafeDispose();
+
+                    while ( indexBuffers.Count > 0 )
+                        indexBuffers[ 0 ].SafeDispose();
 
                     // Destroy everything
                     DestroyAllDeclarations();
