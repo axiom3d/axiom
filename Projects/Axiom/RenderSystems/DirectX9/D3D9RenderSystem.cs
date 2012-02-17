@@ -807,10 +807,10 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( !this.IsDisposed )
 			{
+                base.dispose( disposeManagedResources );
+
 				if ( disposeManagedResources )
 				{
-					Shutdown();
-
 					// Deleting the HLSL program factory
 					if ( _hlslProgramFactory != null )
 					{
@@ -833,8 +833,6 @@ namespace Axiom.RenderSystems.DirectX9
 					_D3D9RenderSystem = null;
 				}
 			}
-
-			base.dispose( disposeManagedResources );
 		}
 
 		#endregion Construction and Destruction

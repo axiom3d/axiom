@@ -644,35 +644,24 @@ namespace Axiom.Graphics
         /// <summary>
         /// Class level dispose method
         /// </summary>
+        [OgreVersion( 1, 7, 2, "~HardwareBufferManagerBase" )]
         protected override void dispose( bool disposeManagedResources )
         {
             if ( !this.IsDisposed )
             {
                 if ( disposeManagedResources )
                 {
-                    // Destroy all necessary objects
-
-                    foreach ( var buffer in vertexDeclarations )
-                        buffer.SafeDispose();
-
-                    vertexDeclarations.Clear();
-
-                    foreach ( var bind in vertexBufferBindings )
-                        bind.SafeDispose();
-
-                    vertexBufferBindings.Clear();
-
-                    // destroy all vertex buffers
-                    foreach ( HardwareBuffer buffer in vertexBuffers )
-                        buffer.SafeDispose();
-
+                    // Clear vertex/index buffer list first, avoid destroyed notify do
+                    // unnecessary work, and we'll destroy everything here.
                     vertexBuffers.Clear();
-
-                    // destroy all index buffers
-                    foreach ( HardwareBuffer buffer in indexBuffers )
-                        buffer.SafeDispose();
-
                     indexBuffers.Clear();
+
+                    // Destroy everything
+                    DestroyAllDeclarations();
+                    DestroyAllBindings();
+                    // No need to destroy main buffers - they will be destroyed by removal of bindings
+
+                    // No need to destroy temp buffers - they will be destroyed automatically.
                 }
             }
 
