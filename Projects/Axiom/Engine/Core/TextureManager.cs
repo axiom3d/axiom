@@ -310,7 +310,7 @@ namespace Axiom.Core
 			ret.Height = height;
 			ret.Depth = depth;
 			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
-			ret.Format = format;
+            ret.SetFormat( format );
 			ret.Usage = usage;
 			ret.HardwareGammaEnabled = hwGammaCorrection;
 			ret.SetFSAA( fsaa, fsaaHint );
@@ -472,7 +472,7 @@ namespace Axiom.Core
 				// set bit depth and gamma
 				texture.Gamma = gamma;
 				texture.TreatLuminanceAsAlpha = isAlpha;
-				texture.Format = desiredFormat;
+                texture.SetFormat( desiredFormat );
 			}
 			texture.Load();
 
@@ -521,7 +521,7 @@ namespace Axiom.Core
 			texture.Gamma = gamma;
 
 			texture.TreatLuminanceAsAlpha = isAlpha;
-			texture.Format = desiredFormat;
+            texture.SetFormat( desiredFormat );
 
 			// load image data
 			texture.LoadImage( image );
@@ -598,18 +598,7 @@ namespace Axiom.Core
 				throw new NotImplementedException();
 			}
 		}
-        /// <summary>
-        /// Returns whether this render system has hardware filtering supported for the
-        /// texture format requested with the given usage options.
-        /// </summary>
-        /// <param name="ttype">The texture type requested</param>
-        /// <param name="format">The pixel format requested</param>
-        /// <param name="usage">the kind of usage this texture is intended for, a combination of the TextureUsage flags.</param>
-        /// <returns>true if the texture filtering is supported.</returns>
-        public virtual bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage)
-        {
-            return IsHardwareFilteringSupported(ttype, format, usage);
-        }
+
         /// <summary>
         /// Returns whether this render system has hardware filtering supported for the
         /// texture format requested with the given usage options.
@@ -624,10 +613,21 @@ namespace Axiom.Core
         /// check if in fallback mode.
         /// </param>
         /// <returns>true if the texture filtering is supported.</returns>
-        public virtual bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage, bool preciseFormatOnly)
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false );
+#else
+        public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly );
+#endif
+
+#if !NET_40
+        /// <see cref="IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+        public bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
         {
-            throw new NotImplementedException();
+            return IsHardwareFilteringSupported( ttype, format, usage, false );
         }
-		#endregion Methods
-	}
+#endif
+		
+        #endregion Methods
+	};
 }

@@ -201,13 +201,13 @@ namespace Axiom.RenderSystems.Xna
             this.surface = surface;
             mipLevel = miplevel;
 
-            Width = surface.Width/(int)Utility.Pow( 2, mipLevel );
-            Height = surface.Height/(int)Utility.Pow( 2, mipLevel );
-            Depth = 1;
-            Format = XnaHelper.Convert( surface.Format );
+            width = surface.Width/(int)Utility.Pow( 2, mipLevel );
+            height = surface.Height/(int)Utility.Pow( 2, mipLevel );
+            depth = 1;
+            format = XnaHelper.Convert( surface.Format );
             // Default
-            RowPitch = Width * PixelUtil.GetNumElemBytes(Format);
-            SlicePitch = Height * RowPitch;
+            rowPitch = Width * PixelUtil.GetNumElemBytes(Format);
+            slicePitch = Height * RowPitch;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
@@ -221,13 +221,13 @@ namespace Axiom.RenderSystems.Xna
             this.face = (CubeMapFace)face;
             mipLevel = miplevel;
 
-            Width = cube.Size/(int)Utility.Pow( 2, mipLevel );
-            Height = cube.Size/(int)Utility.Pow( 2, mipLevel );
-            Depth = 1;
-            Format = XnaHelper.Convert( cube.Format );
+            width = cube.Size/(int)Utility.Pow( 2, mipLevel );
+            height = cube.Size/(int)Utility.Pow( 2, mipLevel );
+            depth = 1;
+            format = XnaHelper.Convert( cube.Format );
             // Default
-            RowPitch = Width;
-            SlicePitch = Height*Width;
+            rowPitch = Width;
+            slicePitch = Height*Width;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
@@ -241,13 +241,13 @@ namespace Axiom.RenderSystems.Xna
             this.device = device;
             renderTarget = surface;
 
-            Width = surface.Width/(int)Utility.Pow( 2, mipLevel );
-            Height = surface.Height/(int)Utility.Pow( 2, mipLevel );
-            Depth = 1;
-            Format = XnaHelper.Convert( surface.Format );
+            width = surface.Width/(int)Utility.Pow( 2, mipLevel );
+            height = surface.Height/(int)Utility.Pow( 2, mipLevel );
+            depth = 1;
+            format = XnaHelper.Convert( surface.Format );
             // Default
-            RowPitch = Width;
-            SlicePitch = Height*Width;
+            rowPitch = Width;
+            slicePitch = Height*Width;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
@@ -263,13 +263,13 @@ namespace Axiom.RenderSystems.Xna
             this.device = device;
             this.volume = volume;
 
-            Width = volume.Width;
-            Height = volume.Height;
-            Depth = volume.Depth;
-            Format = XnaHelper.Convert( volume.Format );
+            width = volume.Width;
+            height = volume.Height;
+            depth = volume.Depth;
+            format = XnaHelper.Convert( volume.Format );
             // Default
-            RowPitch = Width;
-            SlicePitch = Height*Width;
+            rowPitch = Width;
+            slicePitch = Height*Width;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )

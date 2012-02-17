@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -42,40 +38,96 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///		Describes the graphics API independent functionality required by a hardware
-	///		index buffer.  
+	///	Describes the graphics API independent functionality required by a hardware
+	///	index buffer.  
 	/// </summary>
+    /// <remarks>
+    /// NB subclasses should override lock, unlock, readData, writeData
+    /// </remarks>
 	public abstract class HardwareIndexBuffer : HardwareBuffer
 	{
 		#region Fields
+
 		protected HardwareBufferManagerBase Manager;
 
-		/// <summary>
-		///		Type of index (16 or 32 bit).
-		/// </summary>
-		protected IndexType type;
-		/// <summary>
-		///		Number of indices in this buffer.
-		/// </summary>
-		protected int numIndices;
-		/// <summary>
-		///     Size of each index.
-		/// </summary>
-		protected int indexSize;
+		#endregion Fields
 
-		#endregion
+        #region Properties and Fields
 
-		#region Constructors
+        #region Type
 
-	    /// <summary>
-	    ///		Constructor.
+        /// <summary>
+        ///	Type of index (16 or 32 bit).
+        /// </summary>
+        protected IndexType type;
+
+        /// <summary>
+        ///	Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
+        /// </summary>
+        public IndexType Type
+        {
+            get
+            {
+                return type;
+            }
+        }
+
+        #endregion Type
+
+        #region IndexCount
+        
+        /// <summary>
+        ///	Number of indices in this buffer.
+        /// </summary>
+        protected int numIndices;
+
+        /// <summary>
+        ///	Gets the number of indices in this buffer.
+        /// </summary>
+        public int IndexCount
+        {
+            get
+            {
+                return numIndices;
+            }
+        }
+
+        #endregion IndexCount
+
+        #region IndexSize
+
+        /// <summary>
+        /// Size of each index.
+        /// </summary>
+        protected int indexSize;
+
+        /// <summary>
+        /// Gets the size (in bytes) of each index element.
+        /// </summary>
+        /// <value></value>
+        public int IndexSize
+        {
+            get
+            {
+                return indexSize;
+            }
+        }
+
+        #endregion IndexSize
+
+        #endregion Properties and Fields
+
+        #region Construction and Destruction
+
+        /// <summary>
+	    ///	Constructor.
 	    /// </summary>
-	    ///<param name="manager"></param>
 	    ///<param name="type">Type of index (16 or 32 bit).</param>
 	    /// <param name="numIndices">Number of indices to create in this buffer.</param>
 	    /// <param name="usage">Buffer usage.</param>
 	    /// <param name="useSystemMemory">Create in system memory?</param>
 	    /// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
+        [OgreVersion( 1, 7, 2 )]
 	    public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
@@ -103,44 +155,24 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion
+        [OgreVersion( 1, 7, 2, "~HardwareIndexBuffer" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( this.Manager != null )
+                        this.Manager.NotifyIndexBufferDestroyed( this );
 
-		#region Properties
+                    shadowBuffer.SafeDispose();
+                    shadowBuffer = null;
+                }
+            }
 
-		/// <summary>
-		///		Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
-		/// </summary>
-		public IndexType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
+            base.dispose( disposeManagedResources );
+        }
 
-		/// <summary>
-		///		Gets the number of indices in this buffer.
-		/// </summary>
-		public int IndexCount
-		{
-			get
-			{
-				return numIndices;
-			}
-		}
-
-		/// <summary>
-		///     Gets the size (in bytes) of each index element.
-		/// </summary>
-		/// <value></value>
-		public int IndexSize
-		{
-			get
-			{
-				return indexSize;
-			}
-		}
-
-		#endregion
-	}
+        #endregion Construction and Destruction
+	};
 }

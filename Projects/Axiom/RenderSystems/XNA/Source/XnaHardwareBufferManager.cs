@@ -99,29 +99,19 @@ namespace Axiom.RenderSystems.Xna
             base.dispose( disposeManagedResources );
         }
 
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-        {
-            // call overloaded method with no shadow buffer
-            return CreateIndexBuffer( type, numIndices, usage, false );
-        }
-
         public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
             var buffer = new XnaHardwareIndexBuffer( this, type, numIndices, usage, _device, false, useShadowBuffer );
-            indexBuffers.Add( buffer );
+            lock ( IndexBuffersMutex )
+                indexBuffers.Add( buffer );
             return buffer;
-        }
-
-        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
-        {
-            // call overloaded method with no shadow buffer
-            return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
         }
 
         public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
         {
             var buffer = new XnaHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, _device, false, useShadowBuffer );
-            vertexBuffers.Add( buffer );
+            lock ( VertexBuffersMutex )
+                vertexBuffers.Add( buffer );
             return buffer;
         }
 

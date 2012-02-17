@@ -26,7 +26,7 @@ namespace Axiom.Demos
     public class HardwareOcclusion : TechDemo
 	{
 		/// <summary>
-		///		An instance of a hardware occlusion query.
+		///	An instance of a hardware occlusion query.
 		/// </summary>
 		private HardwareOcclusionQuery query;
 
@@ -103,7 +103,8 @@ namespace Axiom.Demos
 			}
 
 			// get the fragment count from the query
-			int count = query.PullResults();
+			int count;
+            query.PullResults( out count );
 
 			// report the results
 			if ( count <= 0 )

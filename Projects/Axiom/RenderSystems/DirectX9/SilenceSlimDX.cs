@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region Namespace Declarations
+
+using Axiom.Core;
+
+#endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
@@ -10,13 +14,14 @@ namespace Axiom.RenderSystems.DirectX9
     ///     .. unchecked code ...
     ///  }
     /// </summary>
-    [AxiomHelper(0, 8)]
-    public class SilenceSlimDX: IDisposable
+    [AxiomHelper( 0, 8 )]
+    public class SilenceSlimDX : DisposableObject
     {
         private static SilenceSlimDX _instance = new SilenceSlimDX();
         private bool _original;
 
         private SilenceSlimDX()
+            : base()
         {
         }
 
@@ -31,12 +36,16 @@ namespace Axiom.RenderSystems.DirectX9
 
         public void Begin()
         {
-            _original = SlimDX.Configuration.ThrowOnError = false;
+            _original = SlimDX.Configuration.ThrowOnError;
+            SlimDX.Configuration.ThrowOnError = false;
         }
 
-        public void Dispose()
+        protected override void dispose( bool disposeManagedResources )
         {
-            SlimDX.Configuration.ThrowOnError = _original;
+            if ( !this.IsDisposed && disposeManagedResources )
+                SlimDX.Configuration.ThrowOnError = _original;
+
+            base.dispose( disposeManagedResources );
         }
-    }
+    };
 }

@@ -10,7 +10,7 @@ namespace Axiom.Graphics
         public uint Width;
         public uint Height;
         public bool UseFullScreen;
-        public NameValuePairList MiscParams;
+        public NamedParameterList MiscParams;
     }
 
     public class RenderWindowDescriptionList: List<RenderWindowDescription>

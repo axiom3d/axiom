@@ -42,12 +42,13 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <AssemblyName>Axiom.RenderSystems.DirectX9</AssemblyName>
+    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AXIOM_SAFE_MIX;AXIOM_D3D_MANAGE_BUFFERS;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\Axiom.RenderSystems.DirectX9.XML</DocumentationFile>
@@ -64,7 +65,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;AXIOM_SAFE_MIX;AXIOM_D3D_MANAGE_BUFFERS;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\Axiom.RenderSystems.DirectX9.XML</DocumentationFile>
@@ -122,7 +123,9 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX" />
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System">
     </Reference>
     <Reference Include="System.ComponentModel.Composition">
@@ -135,6 +138,9 @@
     </Reference>
     <Reference Include="System.Xml">
     </Reference>
+    <Reference Include="Tao.Platform.Windows">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.Platform.Windows\bin\Debug\Tao.Platform.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="D3D9DepthBuffer.cs" />
@@ -143,7 +149,6 @@
     <Compile Include="D3D9Driver.cs" />
     <Compile Include="D3D9DriverList.cs" />
     <Compile Include="D3D9RenderWindowList.cs" />
-    <Compile Include="D3D9Resource.cs" />
     <Compile Include="D3D9ResourceManager.cs" />
     <Compile Include="D3D9VideoMode.cs" />
     <Compile Include="D3D9VideoModeList.cs" />
@@ -155,6 +160,7 @@
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="D3DTextureStageDesc.cs" />
     <Compile Include="D3DTextureType.cs" />
+    <Compile Include="ID3D9Resource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -227,10 +233,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.Platform.Windows\Tao.Platform.Windows.csproj">
-      <Project>{228201EB-1A36-4E25-B59F-52255CBBE270}</Project>
-      <Name>Tao.Platform.Windows</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Engine\Axiom.2010.v4.0.csproj">
       <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
       <Name>Axiom.2010.v4.0</Name>

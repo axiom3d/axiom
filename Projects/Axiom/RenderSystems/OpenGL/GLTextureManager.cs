@@ -129,7 +129,12 @@ namespace Axiom.RenderSystems.OpenGL
 			return format;
 		}
 
-		bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+        /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+#if NET_40
+        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
+#else
+        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+#endif
 		{
 			if ( format == PixelFormat.Unknown )
 				return false;
@@ -237,5 +242,5 @@ namespace Axiom.RenderSystems.OpenGL
 			base.dispose( disposeManagedResources );
 
 		}
-	}
+	};
 }

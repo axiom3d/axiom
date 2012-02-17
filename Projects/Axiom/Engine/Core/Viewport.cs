@@ -644,6 +644,7 @@ namespace Axiom.Core
 		/// <param name="height">Height</param>
 		/// <param name="zOrder">Relative Z-order on the target. Lower = further to the front.</param>
 		public Viewport( Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder )
+            : base()
 		{
 			LogManager.Instance.Write( "Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
 				camera.Name, left, top, width, height, zOrder );

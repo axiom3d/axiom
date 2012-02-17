@@ -203,6 +203,15 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+        public bool IsPowerOfTwo
+        {
+            [AxiomHelper( 0, 9 )]
+            get
+            {
+                return ( width & ( width - 1 ) ) == 0 && ( height & ( height - 1 ) ) == 0;
+            }
+        }
+
 		//public XFG.DepthStencilBuffer DepthStencil
 		//{
 		//    get
@@ -289,10 +298,10 @@ namespace Axiom.RenderSystems.Xna
 			// Make sure number of mips is right
 			if ( Usage != TextureUsage.RenderTarget )
 			{
-				_mipmapCount = _texture.LevelCount - 1;
+				mipmapCount = _texture.LevelCount - 1;
 			}
 			//#if SILVERLIGHT
-			if (_mipmapCount < 0) _mipmapCount = 0;
+			if (mipmapCount < 0) mipmapCount = 0;
 			//#endif
 
 			// Need to know static / dynamic
@@ -312,12 +321,12 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// If we already have the right number of surfaces, just update the old list
-			var updateOldList = ( _surfaceList.Count == ( faceCount * ( MipmapCount + 1 ) ) );
+			var updateOldList = ( _surfaceList.Count == ( FaceCount * ( MipmapCount + 1 ) ) );
 			if ( !updateOldList )
 			{
 				// Create new list of surfaces
 				ClearSurfaceList();
-				for ( var face = 0; face < faceCount; ++face )
+				for ( var face = 0; face < FaceCount; ++face )
 				{
 					for ( var mip = 0; mip <= MipmapCount; ++mip )
 					{
@@ -384,9 +393,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// Set autogeneration of mipmaps for each face of the texture, if it is enabled
-			if ( ( RequestedMipmapCount != 0 ) && ( ( Usage & TextureUsage.AutoMipMap ) != 0 ) )
+			if ( ( requestedMipmapCount != 0 ) && ( ( Usage & TextureUsage.AutoMipMap ) != 0 ) )
 			{
-				for ( var face = 0; face < faceCount; ++face )
+				for ( var face = 0; face < FaceCount; ++face )
 				{
 					GetSurfaceAtLevel( face, 0 ).SetMipmapping( true, MipmapsHardwareGenerated, _texture );
 				}
@@ -413,8 +422,8 @@ namespace Axiom.RenderSystems.Xna
 			// through Width and Height. Take those values.
 			if ( SrcWidth == 0 || SrcHeight == 0 )
 			{
-				SrcWidth = Width;
-				SrcHeight = Height;
+				srcWidth = Width;
+				srcHeight = Height;
 			}
 
 			// Determine D3D pool to use
@@ -700,7 +709,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				renderTarget =
 					(Microsoft.Xna.Framework.Graphics.Texture)
-					( new RenderTargetCube( _device, SrcWidth, _mipmapCount > 0 ? true : false, xnaPixelFormat,
+					( new RenderTargetCube( _device, SrcWidth, mipmapCount > 0 ? true : false, xnaPixelFormat,
 											DepthFormat.Depth24Stencil8 ) ) as RenderTarget2D;
 				_cubeTexture = ( (Microsoft.Xna.Framework.Graphics.Texture)renderTarget ) as RenderTargetCube;
 
@@ -709,7 +718,7 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				// create the cube texture
-				_cubeTexture = new TextureCube( _device, SrcWidth, ( _mipmapCount > 0 ) ? true : false, xnaPixelFormat );
+				_cubeTexture = new TextureCube( _device, SrcWidth, ( mipmapCount > 0 ) ? true : false, xnaPixelFormat );
 				// store base reference to the texture
 			}
 
@@ -899,10 +908,9 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="format"></param>
 		private void SetSrcAttributes( int width, int height, int depth, PixelFormat format )
 		{
-			SrcWidth = width;
-			SrcHeight = height;
+			srcWidth = width;
+			srcHeight = height;
 			srcBpp = PixelUtil.GetNumElemBits( format );
-			HasAlpha = PixelUtil.HasAlpha( format );
 
 			// say to the world what we are doing
 			const string RenderTargetFormat = "[XNA] : Creating {0} RenderTarget, name : '{1}' with {2} mip map levels.";
@@ -973,7 +981,7 @@ namespace Axiom.RenderSystems.Xna
 			Height = height;
 			Width = width;
 			Depth = depth;
-			Format = format;
+			this.format = format;
 
 			// Update size (the final size, not including temp space)
 			// this is needed in Resource class

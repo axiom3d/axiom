@@ -1028,5 +1028,10 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion IGraphicsDeviceService Members
-	}
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

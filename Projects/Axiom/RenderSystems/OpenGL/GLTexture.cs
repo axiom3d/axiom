@@ -409,8 +409,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 				Image.ApplyGamma( tempData, Gamma, newImageSize, srcBpp );
 
-				SrcWidth = Width = newWidth;
-				SrcHeight = Height = newHeight;
+				srcWidth = Width = newWidth;
+				srcHeight = Height = newHeight;
 			}
 			else
 			{
@@ -454,7 +454,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// only when mipmap generation is desired.
 			bool doSoftware = wantGeneratedMips && !MipmapsHardwareGenerated && MipmapCount != 0;
 
-			for ( int face = 0; face < this.faceCount; face++ )
+			for ( int face = 0; face < this.FaceCount; face++ )
 			{
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
@@ -479,11 +479,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 
 			// Adjust format if required
-			Format = TextureManager.Instance.GetNativeFormat( TextureType, Format, Usage );
+			this.format = TextureManager.Instance.GetNativeFormat( TextureType, Format, Usage );
 
 			// Check requested number of mipmaps
 			int maxMips = GLPixelUtil.GetMaxMipmaps( Width, Height, Depth, Format );
-			MipmapCount = RequestedMipmapCount;
+			MipmapCount = requestedMipmapCount;
 			if ( MipmapCount > maxMips )
 				MipmapCount = maxMips;
 
@@ -503,9 +503,9 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
 
 			// If we can do automip generation and the user desires this, do so
-			MipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps );
+			mipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps );
 			if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) &&
-				RequestedMipmapCount != 0 && MipmapsHardwareGenerated )
+				requestedMipmapCount != 0 && MipmapsHardwareGenerated )
 			{
 				Gl.glTexParameteri( GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
 			}
@@ -551,7 +551,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			_createSurfaceList();
 			// Get final internal format
-			Format = GetBuffer( 0, 0 ).Format;
+			this.format = GetBuffer( 0, 0 ).Format;
 		}
 
 		protected override void freeInternalResources()
@@ -570,7 +570,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
 		{
-			if ( face >= this.faceCount )
+			if ( face >= this.FaceCount )
 				throw new IndexOutOfRangeException( "Face index out of range" );
 			if ( mipmap > MipmapCount )
 				throw new IndexOutOfRangeException( "MipMap index out of range" );

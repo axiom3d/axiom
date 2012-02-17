@@ -33,7 +33,7 @@ namespace Axiom.RenderSystems.DirectX9
     ///	Enum identifying D3D9 texture types
     /// </summary>
     [OgreVersion( 1, 7, 2 )]
-    public enum D3DTextureType
+    public enum D3D9TextureType
     {
         /// <summary>
         /// Standard texture

@@ -712,7 +712,7 @@ namespace Axiom.Media
 				16, 16, 16, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
-				),
+                ),
             //-----------------------------------------------------------------------
             new PixelFormatDescription(
                 "PF_PVRTC_RGB2",
@@ -729,7 +729,7 @@ namespace Axiom.Media
                 0, 0, 0, 0, 0, 0, 0, 0
                 ),
             //-----------------------------------------------------------------------
-		    new PixelFormatDescription(
+            new PixelFormatDescription(
                 "PF_PVRTC_RGBA2",
                 PixelFormat.PVRTC_RGBA2,
                 /* Bytes per element */
@@ -744,7 +744,7 @@ namespace Axiom.Media
                 0, 0, 0, 0, 0, 0, 0, 0
                 ),
             //-----------------------------------------------------------------------
-		    new PixelFormatDescription(
+            new PixelFormatDescription(
                 "PF_PVRTC_RGB4",
                 PixelFormat.PVRTC_RGB4,
                 /* Bytes per element */
@@ -759,7 +759,7 @@ namespace Axiom.Media
                 0, 0, 0, 0, 0, 0, 0, 0
                 ),
             //-----------------------------------------------------------------------
-		    new PixelFormatDescription(
+            new PixelFormatDescription(
                 "PF_PVRTC_RGBA4",
                 PixelFormat.PVRTC_RGBA4,
                 /* Bytes per element */

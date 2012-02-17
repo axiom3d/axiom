@@ -41,7 +41,7 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	Summary description for GpuProgramManager.
+	/// Summary description for GpuProgramManager.
 	/// </summary>
 	public abstract class GpuProgramManager : ResourceManager
 	{
@@ -317,7 +317,7 @@ namespace Axiom.Graphics
 		#region ResourceManager Implementation
 
 		/// <summary>
-		///     Gets a GpuProgram with the specified name.
+		/// Gets a GpuProgram with the specified name.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>

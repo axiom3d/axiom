@@ -399,5 +399,10 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion RenderWindow Members
-	}
+
+        public override void Destroy()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -33,160 +29,157 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Graphics;
 using Axiom.Core;
-using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
-
-using DX = SlimDX.Direct3D9;
-using D3D = SlimDX.Direct3D9;
+using Axiom.Graphics;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
+    /// <summary>
+    /// Should we ask D3D to manage vertex/index buffers automatically?
+    /// Doing so avoids lost devices, but also has a performance impact
+    /// which is unacceptably bad when using very large buffers
+    /// </summary>
+    /// AXIOM_D3D_MANAGE_BUFFERS
+
 	/// <summary>
-	/// 	Summary description for D3DHardwareBufferManager.
+    /// Implementation of HardwareBufferManager for D3D9.
 	/// </summary>
-	public class D3DHardwareBufferManagerBase : HardwareBufferManagerBase
+	public class D3D9HardwareBufferManagerBase : HardwareBufferManagerBase
 	{
-		#region Member variables
+        #region Constructors
 
-		protected D3D.Device device;
-
-		#endregion Member variables
-
-		#region Constructors
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="device"></param>
-		public D3DHardwareBufferManagerBase( D3D.Device device )
+        [OgreVersion( 1, 7, 2 )]
+        public D3D9HardwareBufferManagerBase()
+            : base()
 		{
-			this.device = device;
 		}
+
+        [OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManagerBase" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    DestroyAllDeclarations();
+                    DestroyAllBindings();
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion Constructors
 
 		#region Methods
 
-		public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateIndexBuffer( type, numIndices, usage, false );
-		}
+        /// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateVertexBuffer(VertexDeclaration, int, BufferUsage, bool)"/>
+        [OgreVersion( 1, 7, 2)]
+        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        {
+            Contract.Requires( numVerts > 0 );
 
-		public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-		{
-			D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( this, type, numIndices, usage, device, false, useShadowBuffer );
-			indexBuffers.Add( buffer );
-			return buffer;
-		}
+#if AXIOM_D3D_MANAGE_BUFFERS
+            // Override shadow buffer setting; managed buffers are automatically
+            // backed by system memory
+            // Don't override shadow buffer if discardable, since then we use
+            // unmanaged buffers for speed (avoids write-through overhead)
+            if ( useShadowBuffer && ( usage & BufferUsage.Discardable ) == 0 )
+            {
+                useShadowBuffer = false;
+                // Also drop any WRITE_ONLY so we can read direct
+                if ( usage == BufferUsage.DynamicWriteOnly )
+                    usage = BufferUsage.Dynamic;
 
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateVertexBuffer( vertexDeclaration, numVerts, usage, false );
-		}
+                else if ( usage == BufferUsage.StaticWriteOnly )
+                    usage = BufferUsage.Static;
+            }
+#endif
+            var vbuf = new D3D9HardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, false, useShadowBuffer );
+            lock ( VertexBuffersMutex )
+            {
+                vertexBuffers.Add( vbuf );
+            }
+            
+            return vbuf;
+        }
 
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
-		{
-			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, device, false, useShadowBuffer );
-			vertexBuffers.Add( buffer );
-			return buffer;
-		}
+        /// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateIndexBuffer(IndexType, int, BufferUsage, bool)"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        {
+            Contract.Requires( numIndices > 0 );
 
-		public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
-		{
-			VertexDeclaration decl = new D3DVertexDeclaration();
-			vertexDeclarations.Add( decl );
-			return decl;
-		}
+#if AXIOM_D3D_MANAGE_BUFFERS
+            // Override shadow buffer setting; managed buffers are automatically
+            // backed by system memory
+            if ( useShadowBuffer )
+            {
+                useShadowBuffer = false;
+                // Also drop any WRITE_ONLY so we can read direct
+                if ( usage == BufferUsage.DynamicWriteOnly )
+                    usage = BufferUsage.Dynamic;
 
-		//-----------------------------------------------------------------------
-		public void ReleaseDefaultPoolResources()
-		{
-			int iCount = 0;
-			int vCount = 0;
+                else if ( usage == BufferUsage.StaticWriteOnly )
+                    usage = BufferUsage.Static;
+            }
+#endif
+            var idxBuf = new D3D9HardwareIndexBuffer( this, type, numIndices, usage, false, useShadowBuffer );
+            lock ( IndexBuffersMutex )
+            {
+                indexBuffers.Add( idxBuf );
+            }
 
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
-			{
-				if ( buffer.ReleaseIfDefaultPool() )
-					vCount++;
-			}
+            return idxBuf;
+        }
 
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
-			{
-				if ( buffer.ReleaseIfDefaultPool() )
-					iCount++;
-			}
+        //TODO
+        //public override RenderToVertexBuffer CreateRenderToVertexBuffer()
+        //{
+        //    throw new AxiomException( "Direct3D9 does not support render to vertex buffer objects" );
+        //}
 
-			LogManager.Instance.Write( "D3DHardwareBufferManager released:" );
-			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
-			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
-		}
+        [OgreVersion( 1, 7, 2 )]
+        protected override VertexDeclaration CreateVertexDeclarationImpl()
+        {
+            return new D3D9VertexDeclaration();
+        }
 
-		//-----------------------------------------------------------------------
-		public void RecreateDefaultPoolResources()
-		{
-			int iCount = 0;
-			int vCount = 0;
-
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
-			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
-					vCount++;
-			}
-
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
-			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
-					iCount++;
-			}
-
-			LogManager.Instance.Write( "D3DHardwareBufferManager recreated:" );
-			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
-			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
-		}
-
-		// TODO: Disposal
+        [OgreVersion( 1, 7, 2 )]
+        protected override void DestroyVertexDeclarationImpl( VertexDeclaration decl )
+        {
+            decl.SafeDispose();
+        }
 
 		#endregion Methods
+	};
 
-		#region Properties
-
-		#endregion Properties
-
-	}
-
-	public class D3DHardwareBufferManager : HardwareBufferManager
+    /// <summary>
+    /// D3D9HardwareBufferManagerBase as a Singleton
+    /// </summary>
+	public class D3D9HardwareBufferManager : HardwareBufferManager
 	{
-		public D3DHardwareBufferManager()
-			: base( new D3DHardwareBufferManagerBase( null ) )
+        [OgreVersion( 1, 7, 2 )]
+		public D3D9HardwareBufferManager()
+            : base( new D3D9HardwareBufferManagerBase() )
 		{
 		}
 
-		public void ReleaseDefaultPoolResources()
-		{
-			( (D3DHardwareBufferManagerBase)_baseInstance ).ReleaseDefaultPoolResources();
-		}
-
-		public void RecreateDefaultPoolResources()
-		{
-			( (D3DHardwareBufferManagerBase)_baseInstance ).RecreateDefaultPoolResources();
-		}
-
+        [OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
-			{
-				_baseInstance.Dispose();
-				_baseInstance = null;
-			}
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    _baseInstance.SafeDispose();
+                }
+            }
+
 			base.dispose( disposeManagedResources );
 		}
-
-	}
+	};
 }

@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -33,119 +29,102 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
-using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	///     Summary description for D3DTextureManager.
-	/// </summary>
-	public class D3DTextureManager : TextureManager
-	{
-		/// <summary>Reference to the D3D device.</summary>
-		private D3D.Device device;
-		/// <summary>
-		/// Reference to the Direct3D object
-		/// </summary>
-		private D3D.Direct3D manager;
+    public class D3D9TextureManager : TextureManager
+    {
+        [OgreVersion( 1, 7, 2 )]
+        public D3D9TextureManager()
+            : base()
+        {
+            // register with group manager
+            ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+        }
 
-		/*
-		public D3DTextureManager(D3D.Direct3D manager, D3D.Device device)
-		{
-		   
-		}
-		 */
-		 
+        [OgreVersion( 1, 7, 2, "~D3D9TextureManager" )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // unregister with group manager
+                    ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+                }
+            }
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			// temporary hack
-			manager = D3DRenderSystem.Direct3D9;
-			device = D3DRenderSystem.ActiveD3D9Device;
-			return new D3DTexture( this, name, handle, group, isManual, loader, this.device, this.manager );
-		}
+            base.dispose( disposeManagedResources );
+        }
 
-		// This ends up just discarding the format passed in; the C# methods don't let you supply
-		// a "recommended" format.  Ah well.
-		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
-		{
-			// Basic filtering
-			D3D.Format d3dPF = D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( format ) );
+        [OgreVersion( 1, 7, 2 )]
+        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+        {
+            return new D3D9Texture( this, name, handle, group, isManual, loader );
+        }
 
-			// Calculate usage
-			D3D.Usage d3dusage = 0;
-			D3D.Pool pool = D3D.Pool.Managed;
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
-			{
-				d3dusage |= D3D.Usage.RenderTarget;
-				pool = D3D.Pool.Default;
-			}
-			if ( ( usage & TextureUsage.Dynamic ) != 0 )
-			{
-				d3dusage |= D3D.Usage.Dynamic;
-				pool = D3D.Pool.Default;
-			}
+        // This ends up just discarding the format passed in; the C# methods don't let you supply
+        // a "recommended" format.  Ah well.
+        [OgreVersion( 1, 7, 2 )]
+        public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
+        {
+            // Basic filtering
+            var d3dPF = D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( format ) );
 
-			// Use D3DX to adjust pixel format
-			switch ( ttype )
-			{
-				case TextureType.OneD:
-				case TextureType.TwoD:
-					D3D.TextureRequirements tReqs = D3D.Texture.CheckRequirements( device, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
-					d3dPF = tReqs.Format;
-					break;
-				case TextureType.ThreeD:
-					D3D.VolumeTextureRequirements volReqs = D3D.VolumeTexture.CheckRequirements( device, 0, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
-					d3dPF = volReqs.Format;
-					break;
-				case TextureType.CubeMap:
-					D3D.CubeTextureRequirements cubeReqs = D3D.CubeTexture.CheckRequirements( device, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
-					d3dPF = cubeReqs.Format;
-					break;
-			}
-			return D3DHelper.ConvertEnum( d3dPF );
-		}
+            // Calculate usage
+            var d3dusage = D3D.Usage.None;
+            var pool = D3D.Pool.Managed;
+            if ( ( usage & TextureUsage.RenderTarget ) != 0 )
+            {
+                d3dusage |= D3D.Usage.RenderTarget;
+                pool = D3D.Pool.Default;
+            }
+            if ( ( usage & TextureUsage.Dynamic ) != 0 )
+            {
+                d3dusage |= D3D.Usage.Dynamic;
+                pool = D3D.Pool.Default;
+            }
 
+            var curDevice = D3D9RenderSystem.ActiveD3D9Device;
 
-		public void ReleaseDefaultPoolResources()
-		{
-			int count = 0;
-			foreach ( D3DTexture tex in Resources )
-			{
-				if ( tex.ReleaseIfDefaultPool() )
-					count++;
-			}
-			LogManager.Instance.Write( "D3DTextureManager released: \n\t{0} unmanaged textures.", count );
-		}
+            // Use D3DX to adjust pixel format
+            switch ( ttype )
+            {
+                case TextureType.OneD:
+                case TextureType.TwoD:
+                    var tReqs = D3D.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    d3dPF = tReqs.Format;
+                    break;
+                case TextureType.ThreeD:
+                    var volReqs = D3D.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    d3dPF = volReqs.Format;
+                    break;
+                case TextureType.CubeMap:
+                    var cubeReqs = D3D.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3DHelper.ConvertEnum( format ), pool );
+                    d3dPF = cubeReqs.Format;
+                    break;
+            }
 
-		public void RecreateDefaultPoolResources()
-		{
-			int count = 0;
-			foreach ( D3DTexture tex in Resources )
-			{
-				if ( tex.RecreateIfDefaultPool( device ) )
-					count++;
-			}
-			LogManager.Instance.Write( "D3DTextureManager recreated: \n\t{0} unmanaged textures.", count );
-		}
+            return D3DHelper.ConvertEnum( d3dPF );
+        }
 
+        /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+        {
+            if ( !preciseFormatOnly )
+                format = GetNativeFormat( ttype, format, usage );
 
-		public override int AvailableTextureMemory
-		{
-			get
-			{
-				return (int)device.AvailableTextureMemory;
-			}
-		}
-	}
+            var rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
+
+            return rs.CheckTextureFilteringSupported( ttype, format, usage );
+        }
+    };
 }

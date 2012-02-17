@@ -40,7 +40,7 @@ namespace Axiom.RenderSystems.DirectX9
         #region renderSystem
 
         [OgreVersion(1, 7, 2790)]
-        protected D3DRenderSystem renderSystem;
+        protected D3D9RenderSystem renderSystem;
 
         #endregion
 
@@ -72,7 +72,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Constructor
 
-        public D3D9DepthBuffer( PoolId poolId, D3DRenderSystem renderSystem,
+        public D3D9DepthBuffer( PoolId poolId, D3D9RenderSystem renderSystem,
             Device creator, Surface depthBufferSurf,
             Format fmt, int width, int height,
             MultisampleType fsaa, int multiSampleQuality,
@@ -135,7 +135,7 @@ namespace Axiom.RenderSystems.DirectX9
             //This is the same function used to create them. Note results are usually cached so this should
             //be quick
             var fmt = renderSystem.GetDepthStencilFormatFor( srfDesc.Format );
-            var activeDevice = D3DRenderSystem.ActiveD3D9Device;
+            var activeDevice = D3D9RenderSystem.ActiveD3D9Device;
 
             return creator == activeDevice &&
                    fmt == d3dFormat &&
@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         #endregion
-    }
+    };
 }
 
 // ReSharper restore InconsistentNaming

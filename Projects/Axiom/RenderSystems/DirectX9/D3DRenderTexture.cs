@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -51,34 +47,33 @@ using Axiom.Configuration;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-
 	/// <summary>
-	///     Summary description for D3DRenderTexture.
+	/// RenderTexture implementation for D3D9
 	/// </summary>
-	public class D3DRenderTexture : RenderTexture
+	public class D3D9RenderTexture : RenderTexture
 	{
+        [OgreVersion( 1, 7, 2 )]
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
+        [OgreVersion( 1, 7, 2 )]
+		public D3D9RenderTexture( string name, D3D9HardwarePixelBuffer buffer, bool writeGamma, int fsaa )
 			: base( buffer, 0 )
 		{
 			this.name = name;
+            hwGamma = writeGamma;
+            this.fsaa = fsaa;
 		}
 
-		public void Rebind( D3DHardwarePixelBuffer buffer )
-		{
-			pixelBuffer = buffer;
-			this.width = pixelBuffer.Width;
-			this.height = pixelBuffer.Height;
-			this.colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
-		}
-
-		#region Axiom.Graphics.RenderTexture Implementation
-
-
-        [OgreVersion(1, 7, 2790)]
-        public override void Update(bool swapBuffers)
+        [OgreVersion( 1, 7, 2790 )]
+        public override void Update( bool swapBuffers )
         {
-            var deviceManager = D3DRenderSystem.DeviceManager;
+            var deviceManager = D3D9RenderSystem.DeviceManager;
             var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
 
             if ( currRenderWindowDevice != null )
@@ -100,77 +95,58 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-	    public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToUpper() )
-				{
-					case "DDBACKBUFFER":
-						var surface = new Surface[ Config.MaxMultipleRenderTargets ];
-						if ( this.FSAA > 0 )
-						{
-							surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
-						}
-						else
-						{
-							surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
-						}
-						return surface;
-					case "HWND":
-						return null;
-					case "BUFFER":
-						return (HardwarePixelBuffer)pixelBuffer;
-					default:
-						return null;
-				}
-				return null;
-			}
-		}
+        [OgreVersion( 1, 7, 2 )]
+        public override object this[ string attribute ]
+        {
+            get
+            {
+                switch ( attribute.ToUpper() )
+                {
+                    case "DDBACKBUFFER":
+                        var surface = new Surface[ Config.MaxMultipleRenderTargets ];
+                        if ( fsaa> 0 )
+                            surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetFSAASurface( D3D9RenderSystem.ActiveD3D9Device );
+                        else
+                            surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetSurface( D3D9RenderSystem.ActiveD3D9Device );
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+                        return surface;
 
-        [OgreVersion(1, 7, 2790)]
+                    case "HWND":
+                        return null;
+
+                    case "BUFFER":
+                        return (HardwarePixelBuffer)pixelBuffer;
+
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Override needed to deal with FSAA
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
 		public override void SwapBuffers( bool waitForVSync )
-		{
-			// Only needed if we have to blit from AA surface
-		    if (fsaa> 0)
-		    {
-			    var deviceManager = D3DRenderSystem.DeviceManager;     					
-			    var buf = (D3DHardwarePixelBuffer)(pixelBuffer);
+        {
+            // Only needed if we have to blit from AA surface
+            if ( fsaa > 0 )
+            {
+                var deviceManager = D3D9RenderSystem.DeviceManager;
+                var buf = (D3D9HardwarePixelBuffer)( pixelBuffer );
 
-                foreach (var device in deviceManager)
-			    {				 				
-				    if (device.IsDeviceLost == false)
-				    {
-					    var d3D9Device = device.D3DDevice;
-				        d3D9Device.StretchRectangle( buf.FSAASurface, buf.GetSurface( d3D9Device ), TextureFilter.None );
-				    }								
-			    }																		
-		    }			
-		}
+                foreach ( var device in deviceManager )
+                {
+                    if ( device.IsDeviceLost == false )
+                    {
+                        var d3d9Device = device.D3DDevice;
+                        var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ), TextureFilter.None );
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
-			}
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
-
-		#endregion Axiom.Graphics.RenderTexture Implementation
-	}
+                        if ( res.IsFailure )
+                            throw new AxiomException( "Unable to copy AA buffer to final buffer: {0}", res.Description );
+                    }
+                }
+            }
+        }
+	};
 }

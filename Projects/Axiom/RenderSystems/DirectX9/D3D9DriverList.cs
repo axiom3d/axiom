@@ -57,6 +57,11 @@ namespace Axiom.RenderSystems.DirectX9
 			Enumerate();
 		}
 
+        ~D3D9DriverList()
+        {
+            this.Dispose();
+        }
+
 		[OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
 		public void Dispose()
 		{
@@ -64,12 +69,13 @@ namespace Axiom.RenderSystems.DirectX9
 				it.SafeDispose();
 
 			this.Clear();
+            GC.SuppressFinalize( this );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public bool Enumerate()
 		{
-			var lpD3D9 = D3DRenderSystem.Direct3D9;
+			var lpD3D9 = D3D9RenderSystem.Direct3D9;
 
 			LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
 

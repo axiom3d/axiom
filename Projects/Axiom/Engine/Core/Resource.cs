@@ -182,24 +182,28 @@ namespace Axiom.Core
 		#region IsLoad* Properties
 
 		/// <summary>
-		///		Has this resource been loaded yet?
+		///	Has this resource been loaded yet?
 		/// </summary>
 		public bool IsLoaded
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _loadingState == LoadingState.Loaded;
+                // No lock required to read this state since no modify
+				return _loadingState.Value == LoadingState.Loaded;
 			}
 		}
 
 		/// <summary>
-		///		Has this resource been loaded yet?
+		///	Returns whether the resource is currently in the process of
+        /// background loading.
 		/// </summary>
 		public bool IsLoading
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _loadingState == LoadingState.Loading;
+				return _loadingState.Value == LoadingState.Loading;
 			}
 		}
 
@@ -333,7 +337,10 @@ namespace Axiom.Core
 
 		#region LoadingState Property
 
-		volatile private LoadingState _loadingState = LoadingState.Unloaded;
+        /// <summary>
+        /// Is the resource currently loaded?
+        /// </summary>
+        protected AtomicScalar<LoadingState> _loadingState = new AtomicScalar<LoadingState>( LoadingState.Unloaded );
 
 		/// <summary>
 		/// Returns whether the resource is currently in the process of	background loading.
@@ -342,11 +349,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _loadingState;
-			}
-			protected set
-			{
-				_loadingState = value;
+				return _loadingState.Value;
 			}
 		}
 
@@ -539,15 +542,6 @@ namespace Axiom.Core
 		/// <summary>
 		/// Prepares the resource for load, if it is not already.
 		/// </summary>
-		/// <see cref="Resource.Prepare(bool)"/>
-		public void Prepare()
-		{
-			this.Prepare( false );
-		}
-
-		/// <summary>
-		/// Prepares the resource for load, if it is not already.
-		/// </summary>
 		/// <remarks>
 		/// One can call prepare() before load(), but this is not required as load() will call prepare() 
 		/// itself, if needed.  When OGRE_THREAD_SUPPORT==1 both load() and prepare() 
@@ -562,10 +556,25 @@ namespace Axiom.Core
 		/// the main render thread to do and thus increase FPS.
 		/// </remarks>
 		/// <param name="background">Whether this is occurring in a background thread</param>
-		public virtual void Prepare( bool background )
+#if NET_40
+		public virtual void Prepare( bool background = false )
+#else
+        public virtual void Prepare( bool background )
+#endif
 		{
 			throw new NotImplementedException();
 		}
+
+#if !NET_40
+        /// <summary>
+        /// Prepares the resource for load, if it is not already.
+        /// </summary>
+        /// <see cref="Resource.Prepare(bool)"/>
+        public void Prepare()
+        {
+            this.Prepare( false );
+        }
+#endif
 
 		/// <summary>
 		/// Escalates the loading of a background loaded resource.
@@ -610,6 +619,7 @@ namespace Axiom.Core
 		/// </remarks>
 		/// <param name="background">Indicates whether the caller of this method is
 		/// the background resource loading thread.</param>
+        [OgreVersion( 1, 7, 2, "Just missing _dirtyState implementation" )]
 		public virtual void Load( bool background )
 		{
 			// Early-out without lock (mitigate perf cost of ensuring loaded)
@@ -618,32 +628,69 @@ namespace Axiom.Core
 			// 2. Another thread is loading right now
 			// 3. We're marked for background loading and this is not the background
 			//    loading thread we're being called by
-			if ( _loadingState != LoadingState.Unloaded || ( _isBackgroundLoaded && !background ) )
+            if ( _isBackgroundLoaded && !background )
 				return;
 
-			// Scope lock over load status
-			lock ( _loadingStatusMutex )
-			{
-				// Check again just in case status changed (since we didn't lock above)
-				if ( _loadingState != LoadingState.Unloaded || ( _isBackgroundLoaded && !background ) )
-				{
-					// no loading to be done
-					return;
-				}
-				_loadingState = LoadingState.Loading;
-			}
+            // This next section is to deal with cases where 2 threads are fighting over
+            // who gets to prepare / load - this will only usually happen if loading is escalated
+            var keepChecking = true;
+            var old = LoadingState.Unloaded;
+            while ( keepChecking )
+            {
+                // quick check that avoids any synchronisation
+                old = _loadingState.Value;
 
+                if ( old == LoadingState.Preparing )
+                {
+                    while ( _loadingState.Value == LoadingState.Preparing )
+                    {
+#if AXIOM_THREAD_SUPPORT
+				        lock ( _autoMutex ) { }
+#endif
+                    }
+                    old = _loadingState.Value;
+                }
+
+                if ( old != LoadingState.Unloaded && old != LoadingState.Prepared && old != LoadingState.Loading )
+                    return;
+
+                // atomically do slower check to make absolutely sure,
+                // and set the load state to LOADING
+                if ( old == Core.LoadingState.Loading || !_loadingState.Cas( old, Core.LoadingState.Loading ) )
+                {
+                    while ( _loadingState.Value == LoadingState.Loading )
+                    {
+#if AXIOM_THREAD_SUPPORT
+				        lock ( _autoMutex ) { }
+#endif
+                    }
+
+                    var state = _loadingState.Value;
+                    if ( state == LoadingState.Prepared || state == LoadingState.Preparing )
+                    {
+                        // another thread is preparing, loop around
+                        continue;
+                    }
+                    else if ( state != LoadingState.Loaded )
+                    {
+                        throw new AxiomException( "Another thread failed in resource operation" );
+                    }
+                }
+                keepChecking = false;
+            }
+
+            // Scope lock for actual loading
 			try
             {
 #if AXIOM_THREAD_SUPPORT
-				// Scope loack for actual load
+				// Scope lock for actual load
 				lock ( _autoMutex )
 #endif
                 {
-					preLoad();
-
 					if ( _isManuallyLoaded )
 					{
+                        preLoad();
+
 						// Load from manual loader
 						if ( _loader != null )
 						{
@@ -655,40 +702,46 @@ namespace Axiom.Core
 							LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " +
 														"will be lost if it has to be reloaded.", _creator.ResourceType, _name );
 						}
+                        postLoad();
 					}
 					else
 					{
+                        if ( old == LoadingState.Unloaded )
+                            prepare();
+
+                        preLoad();
+
+                        old = LoadingState.Prepared;
+
 						if ( Group == ResourceGroupManager.AutoDetectResourceGroupName )
 						{
 							// Derive resource group
 							Group = ResourceGroupManager.Instance.FindGroupContainingResource( Name );
 						}
 						load();
+                        postLoad();
 					}
 
 					// Calculate resource size
 					_size = calculateSize();
-
-					postLoad();
 				}
-			}
-			catch ( Exception ex )
-			{
-				// Reset loading in-progress flag in case failed for some reason
-				lock ( _loadingStatusMutex )
-				{
-					_loadingState = LoadingState.Unloaded;
-					// Re-throw
-					LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-					throw;
-				}
-			}
+            }
+            catch ( Exception ex )
+            {
+                // Reset loading in-progress flag, in case failed for some reason.
+                // We reset it to UNLOADED because the only other case is when
+                // old == PREPARED in which case the loadImpl should wipe out
+                // any prepared data since it might be invalid.
+                _loadingState.Value = LoadingState.Unloaded;
+                // Re-throw
+                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+                throw;
+            }
 
-			// Scope lock for loading progress
-			lock ( _loadingStatusMutex )
-			{
-				_loadingState = LoadingState.Loaded;
-			}
+            _loadingState.Value = LoadingState.Loaded;
+
+            //TODO
+            //_dirtyState();
 
 			// Notify manager
 			if ( _creator != null )
@@ -713,15 +766,15 @@ namespace Axiom.Core
 			lock ( _loadingStatusMutex )
 			{
 				// Check again just in case status changed (since we didn't lock above)
-				if ( _loadingState == LoadingState.Loading )
+				if ( _loadingState.Value == LoadingState.Loading )
 				{
 					throw new Exception( "Cannot unload resource " + Name + " whilst loading is in progress!" );
 				}
 
-				if ( _loadingState != LoadingState.Loaded )
+				if ( _loadingState.Value != LoadingState.Loaded )
 					return; // nothing to do
 
-				_loadingState = LoadingState.Unloading;
+				_loadingState.Value = LoadingState.Unloading;
             }
 
 #if AXIOM_THREAD_SUPPORT
@@ -737,7 +790,7 @@ namespace Axiom.Core
 			// Scope lock over load status
 			lock ( _loadingStatusMutex )
 			{
-				_loadingState = LoadingState.Unloaded;
+				_loadingState.Value = LoadingState.Unloaded;
 			}
 
 			// Notify manager
@@ -758,7 +811,7 @@ namespace Axiom.Core
 			lock( _autoMutex )
 #endif
             {
-				if ( _loadingState == LoadingState.Loaded )
+				if ( _loadingState.Value == LoadingState.Loaded )
 				{
 					Unload();
 					Load();

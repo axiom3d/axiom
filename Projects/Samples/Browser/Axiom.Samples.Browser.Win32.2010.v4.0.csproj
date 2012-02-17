@@ -152,10 +152,6 @@
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
       <Name>Axiom.Plugins.CgProgramManager.2010.v4.0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.v4.0.csproj">
-      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
-      <Name>Axiom.Plugins.DevILCodecs.2010.v4.0</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.v4.0.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
       <Name>Axiom.Plugins.OctreeZone.2010.v4.0</Name>

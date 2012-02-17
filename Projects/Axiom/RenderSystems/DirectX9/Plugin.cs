@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             // Render system creation has been moved here ( like Ogre does in Install method )
             // since the Plugin.ctor is called twice during startup.
-            _renderSystem = new D3DRenderSystem();
+            _renderSystem = new D3D9RenderSystem();
 
             // add an instance of this plugin to the list of available RenderSystems
             Root.Instance.RenderSystems.Add( "DirectX9", _renderSystem );
@@ -70,7 +70,6 @@ namespace Axiom.RenderSystems.DirectX9
 
         public void Shutdown()
         {
-            // nothing at the moment
             _renderSystem.Shutdown();
         }
 

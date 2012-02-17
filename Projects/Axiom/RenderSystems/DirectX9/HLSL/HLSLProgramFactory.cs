@@ -45,7 +45,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	/// <summary>
 	/// Summary description for HLSLProgramFactory.
 	/// </summary>
-	public class HLSLProgramFactory : HighLevelGpuProgramFactory
+	public class D3D9HLSLProgramFactory : HighLevelGpuProgramFactory
 	{
 		#region Fields
 

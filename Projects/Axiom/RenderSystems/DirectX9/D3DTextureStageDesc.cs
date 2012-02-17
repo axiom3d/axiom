@@ -31,7 +31,7 @@
 
 using Axiom.Core;
 using Axiom.Graphics;
-using SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -41,36 +41,36 @@ namespace Axiom.RenderSystems.DirectX9
     ///	Structure holding texture unit settings for every stage
     /// </summary>
     [OgreVersion( 1, 7, 2 )]
-    internal struct D3DTextureStageDesc
+    internal struct D3D9TextureStageDesc
     {
         /// <summary>
         /// The type of the texture
         /// </summary>
-        public D3DTextureType texType;
+        public D3D9TextureType TexType;
 
         /// <summary>
         /// Which texCoordIndex to use
         /// </summary>
-        public int coordIndex;
+        public int CoordIndex;
 
         /// <summary>
         /// Type of auto tex. calc. used
         /// </summary>
-        public TexCoordCalcMethod autoTexCoordType;
+        public TexCoordCalcMethod AutoTexCoordType;
 
         /// <summary>
         /// Frustum, used if the above is projection
         /// </summary>
-        public Frustum frustum;
+        public Frustum Frustum;
 
         /// <summary>
         /// Texture
         /// </summary>
-        public BaseTexture tex;
+        public D3D9.BaseTexture Tex;
         
         /// <summary>
         /// Vertex texture
         /// </summary>
-        public BaseTexture vertexTex;
+        public D3D9.BaseTexture VertexTex;
     };
 }
