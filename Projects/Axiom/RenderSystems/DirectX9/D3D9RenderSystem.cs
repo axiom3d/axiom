@@ -216,7 +216,7 @@ namespace Axiom.RenderSystems.DirectX9
 		private readonly Dictionary<D3D9.Format, D3D9.Format> _depthStencilHash = new Dictionary<D3D9.Format, D3D9.Format>();
 
 		[OgreVersion( 1, 7, 2790 )]
-		private D3DGpuProgramManager _gpuProgramManager;
+		private D3D9GpuProgramManager _gpuProgramManager;
 
 		[OgreVersion( 1, 7, 2790, "write only accessed in Ogre" )]
 		private int _fsaaSamples;
@@ -267,7 +267,7 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2790 )]
 			set
 			{
-				_setRenderState( D3D9.RenderState.Ambient, D3DHelper.ToColor( _ambientLight = value ) );
+				_setRenderState( D3D9.RenderState.Ambient, D3D9Helper.ToColor( _ambientLight = value ) );
 			}
 		}
 
@@ -287,7 +287,7 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2790 )]
 			set
 			{
-				_setRenderState( D3D9.RenderState.ShadeMode, (int)D3DHelper.ConvertEnum( _shadingType = value ) );
+				_setRenderState( D3D9.RenderState.ShadeMode, (int)D3D9Helper.ConvertEnum( _shadingType = value ) );
 			}
 		}
 
@@ -332,7 +332,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				var flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
 
-				_setRenderState( D3D9.RenderState.CullMode, (int)D3DHelper.ConvertEnum( value, flip ) );
+				_setRenderState( D3D9.RenderState.CullMode, (int)D3D9Helper.ConvertEnum( value, flip ) );
 			}
 		}
 
@@ -368,7 +368,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			set
 			{
-				_setRenderState( D3D9.RenderState.ZFunc, (int)D3DHelper.ConvertEnum( value ) );
+				_setRenderState( D3D9.RenderState.ZFunc, (int)D3D9Helper.ConvertEnum( value ) );
 			}
 		}
 
@@ -387,7 +387,7 @@ namespace Axiom.RenderSystems.DirectX9
 			set
 			{
 				_polygonMode = value;
-				_setRenderState( D3D9.RenderState.FillMode, (int)D3DHelper.ConvertEnum( value ) );
+				_setRenderState( D3D9.RenderState.FillMode, (int)D3D9Helper.ConvertEnum( value ) );
 			}
 		}
 
@@ -477,9 +477,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			set
 			{
-                // romeoxbm: when disposing the viewport...
-                if ( value == null )
-                    return;
+				// romeoxbm: when disposing the viewport...
+				if ( value == null )
+					return;
 
 				if ( activeViewport != value || value.IsUpdated )
 				{
@@ -772,7 +772,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// update singleton access pointer.
 			_D3D9RenderSystem = this;
 
-            // Create the resource manager.
+			// Create the resource manager.
 			_resourceManager = new D3D9ResourceManager();
 
 			// Create our Direct3D object
@@ -1170,7 +1170,7 @@ namespace Axiom.RenderSystems.DirectX9
 		internal bool CheckTextureFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
 			// Gets D3D format
-			var d3Dpf = D3DHelper.ConvertEnum( format );
+			var d3Dpf = D3D9Helper.ConvertEnum( format );
 			if ( d3Dpf == D3D9.Format.Unknown )
 				return false;
 
@@ -1313,8 +1313,8 @@ namespace Axiom.RenderSystems.DirectX9
 				} // switch
 
 				// light colors
-				d3dLight.Diffuse = D3DHelper.ToColor( light.Diffuse );
-				d3dLight.Specular = D3DHelper.ToColor( light.Specular );
+				d3dLight.Diffuse = D3D9Helper.ToColor( light.Diffuse );
+				d3dLight.Specular = D3D9Helper.ToColor( light.Specular );
 
 				Vector3 vec;
 
@@ -1345,10 +1345,10 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking )
 		{
 			var mat = new D3D9.Material();
-			mat.Diffuse = D3DHelper.ToColor( diffuse );
-			mat.Ambient = D3DHelper.ToColor( ambient );
-			mat.Specular = D3DHelper.ToColor( specular );
-			mat.Emissive = D3DHelper.ToColor( emissive );
+			mat.Diffuse = D3D9Helper.ToColor( diffuse );
+			mat.Ambient = D3D9Helper.ToColor( ambient );
+			mat.Specular = D3D9Helper.ToColor( specular );
+			mat.Emissive = D3D9Helper.ToColor( emissive );
 			mat.Power = shininess;
 
 			// set the current material
@@ -1411,7 +1411,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 					// set stage description
 					_texStageDesc[ stage ].Tex = ptex;
-					_texStageDesc[ stage ].TexType = D3DHelper.ConvertEnum( dxTexture.TextureType );
+					_texStageDesc[ stage ].TexType = D3D9Helper.ConvertEnum( dxTexture.TextureType );
 
 					// Set gamma now too
 					_setSamplerState( stage, D3D9.SamplerState.SrgbTexture, dxTexture.HardwareGammaEnabled );
@@ -1485,7 +1485,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Record settings
 			_texStageDesc[ stage ].CoordIndex = index;
 			_setTextureStageState( stage, D3D9.TextureStage.TexCoordIndex,
-								  ( D3DHelper.ConvertEnum( _texStageDesc[ stage ].AutoTexCoordType,
+								  ( D3D9Helper.ConvertEnum( _texStageDesc[ stage ].AutoTexCoordType,
 														   _deviceManager.ActiveDevice.D3D9DeviceCaps ) | index ) );
 		}
 
@@ -1497,7 +1497,7 @@ namespace Axiom.RenderSystems.DirectX9
 			_texStageDesc[ stage ].Frustum = frustum;
 
 			_setTextureStageState( stage, D3D9.TextureStage.TexCoordIndex,
-								  D3DHelper.ConvertEnum( method, _deviceManager.ActiveDevice.D3D9DeviceCaps ) |
+								  D3D9Helper.ConvertEnum( method, _deviceManager.ActiveDevice.D3D9DeviceCaps ) |
 								  _texStageDesc[ stage ].CoordIndex );
 		}
 
@@ -1522,15 +1522,15 @@ namespace Axiom.RenderSystems.DirectX9
 			var caps = _deviceManager.ActiveDevice.D3D9DeviceCaps;
 
 			// set the device sampler states accordingly
-			_setSamplerState( stage, D3D9.SamplerState.AddressU, (int)D3DHelper.ConvertEnum( uvw.U, caps ) );
-			_setSamplerState( stage, D3D9.SamplerState.AddressV, (int)D3DHelper.ConvertEnum( uvw.V, caps ) );
-			_setSamplerState( stage, D3D9.SamplerState.AddressW, (int)D3DHelper.ConvertEnum( uvw.W, caps ) );
+			_setSamplerState( stage, D3D9.SamplerState.AddressU, (int)D3D9Helper.ConvertEnum( uvw.U, caps ) );
+			_setSamplerState( stage, D3D9.SamplerState.AddressV, (int)D3D9Helper.ConvertEnum( uvw.V, caps ) );
+			_setSamplerState( stage, D3D9.SamplerState.AddressW, (int)D3D9Helper.ConvertEnum( uvw.W, caps ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			_setSamplerState( stage, D3D9.SamplerState.BorderColor, D3DHelper.ToColor( borderColor ).ToArgb() );
+			_setSamplerState( stage, D3D9.SamplerState.BorderColor, D3D9Helper.ToColor( borderColor ).ToArgb() );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1558,7 +1558,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_setRenderState( D3D9.RenderState.TextureFactor, new DX.Color4( bm.blendFactor, 0.0f, 0.0f, 0.0f ) );
 
 			// set operation  
-			_setTextureStageState( stage, tss, (int)D3DHelper.ConvertEnum( bm.operation, _deviceManager.ActiveDevice.D3D9DeviceCaps ) );
+			_setTextureStageState( stage, tss, (int)D3D9Helper.ConvertEnum( bm.operation, _deviceManager.ActiveDevice.D3D9DeviceCaps ) );
 
 			// choose source 1
 			switch ( bm.blendType )
@@ -1594,7 +1594,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 			// set source 1
-			_setTextureStageState( stage, tss, (int)D3DHelper.ConvertEnum( bm.source1, currentCapabilities.HasCapability( Graphics.Capabilities.PerStageConstant ) ) );
+			_setTextureStageState( stage, tss, (int)D3D9Helper.ConvertEnum( bm.source1, currentCapabilities.HasCapability( Graphics.Capabilities.PerStageConstant ) ) );
 
 			// choose source 2
 			switch ( bm.blendType )
@@ -1626,7 +1626,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Now set source 2
-			_setTextureStageState( stage, tss, (int)D3DHelper.ConvertEnum( bm.source2, currentCapabilities.HasCapability( Graphics.Capabilities.PerStageConstant ) ) );
+			_setTextureStageState( stage, tss, (int)D3D9Helper.ConvertEnum( bm.source2, currentCapabilities.HasCapability( Graphics.Capabilities.PerStageConstant ) ) );
 
 			// Set interpolation factor if lerping
 			if ( bm.operation != LayerBlendOperationEx.BlendDiffuseColor ||
@@ -1659,12 +1659,12 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_setRenderState( D3D9.RenderState.AlphaBlendEnable, true );
 				_setRenderState( D3D9.RenderState.SeparateAlphaBlendEnable, false );
-				_setRenderState( D3D9.RenderState.SourceBlend, (int)D3DHelper.ConvertEnum( src ) );
-				_setRenderState( D3D9.RenderState.DestinationBlend, (int)D3DHelper.ConvertEnum( dest ) );
+				_setRenderState( D3D9.RenderState.SourceBlend, (int)D3D9Helper.ConvertEnum( src ) );
+				_setRenderState( D3D9.RenderState.DestinationBlend, (int)D3D9Helper.ConvertEnum( dest ) );
 			}
 
-			_setRenderState( D3D9.RenderState.BlendOperation, (int)D3DHelper.ConvertEnum( op ) );
-			_setRenderState( D3D9.RenderState.BlendOperationAlpha, (int)D3DHelper.ConvertEnum( op ) );
+			_setRenderState( D3D9.RenderState.BlendOperation, (int)D3D9Helper.ConvertEnum( op ) );
+			_setRenderState( D3D9.RenderState.BlendOperationAlpha, (int)D3D9Helper.ConvertEnum( op ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1680,14 +1680,14 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_setRenderState( D3D9.RenderState.AlphaBlendEnable, true );
 				_setRenderState( D3D9.RenderState.SeparateAlphaBlendEnable, true );
-				_setRenderState( D3D9.RenderState.SourceBlend, (int)D3DHelper.ConvertEnum( sourceFactor ) );
-				_setRenderState( D3D9.RenderState.DestinationBlend, (int)D3DHelper.ConvertEnum( destFactor ) );
-				_setRenderState( D3D9.RenderState.SourceBlendAlpha, (int)D3DHelper.ConvertEnum( sourceFactorAlpha ) );
-				_setRenderState( D3D9.RenderState.DestinationBlendAlpha, (int)D3DHelper.ConvertEnum( destFactorAlpha ) );
+				_setRenderState( D3D9.RenderState.SourceBlend, (int)D3D9Helper.ConvertEnum( sourceFactor ) );
+				_setRenderState( D3D9.RenderState.DestinationBlend, (int)D3D9Helper.ConvertEnum( destFactor ) );
+				_setRenderState( D3D9.RenderState.SourceBlendAlpha, (int)D3D9Helper.ConvertEnum( sourceFactorAlpha ) );
+				_setRenderState( D3D9.RenderState.DestinationBlendAlpha, (int)D3D9Helper.ConvertEnum( destFactorAlpha ) );
 			}
 
-			_setRenderState( D3D9.RenderState.BlendOperation, (int)D3DHelper.ConvertEnum( op ) );
-			_setRenderState( D3D9.RenderState.BlendOperationAlpha, (int)D3DHelper.ConvertEnum( alphaOp ) );
+			_setRenderState( D3D9.RenderState.BlendOperation, (int)D3D9Helper.ConvertEnum( op ) );
+			_setRenderState( D3D9.RenderState.BlendOperationAlpha, (int)D3D9Helper.ConvertEnum( alphaOp ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1704,7 +1704,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_setRenderState( D3D9.RenderState.AlphaTestEnable, false );
 
 			// Set always just be sure
-			_setRenderState( D3D9.RenderState.AlphaFunc, (int)D3DHelper.ConvertEnum( func ) );
+			_setRenderState( D3D9.RenderState.AlphaFunc, (int)D3D9Helper.ConvertEnum( func ) );
 			_setRenderState( D3D9.RenderState.AlphaRef, value );
 
 			// Alpha to coverage
@@ -1811,9 +1811,9 @@ namespace Axiom.RenderSystems.DirectX9
 				// Allow fog
 				_setRenderState( D3D9.RenderState.FogEnable, true );
 				_setRenderState( fogTypeNot, (int)FogMode.None );
-				_setRenderState( fogType, (int)D3DHelper.ConvertEnum( mode ) );
+				_setRenderState( fogType, (int)D3D9Helper.ConvertEnum( mode ) );
 
-				_setRenderState( D3D9.RenderState.FogColor, D3DHelper.ToColor( color ).ToArgb() );
+				_setRenderState( D3D9.RenderState.FogColor, D3D9Helper.ToColor( color ).ToArgb() );
 				_setFloatRenderState( D3D9.RenderState.FogStart, start );
 				_setFloatRenderState( D3D9.RenderState.FogEnd, end );
 				_setFloatRenderState( D3D9.RenderState.FogDensity, density );
@@ -1839,9 +1839,9 @@ namespace Axiom.RenderSystems.DirectX9
 				flip = ( invertVertexWinding && activeRenderTarget.RequiresTextureFlipping ) ||
 					( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
 
-				_setRenderState( D3D9.RenderState.CcwStencilFail, (int)D3DHelper.ConvertEnum( stencilFailOp, !flip ) );
-				_setRenderState( D3D9.RenderState.CcwStencilZFail, (int)D3DHelper.ConvertEnum( depthFailOp, !flip ) );
-				_setRenderState( D3D9.RenderState.CcwStencilPass, (int)D3DHelper.ConvertEnum( passOp, !flip ) );
+				_setRenderState( D3D9.RenderState.CcwStencilFail, (int)D3D9Helper.ConvertEnum( stencilFailOp, !flip ) );
+				_setRenderState( D3D9.RenderState.CcwStencilZFail, (int)D3D9Helper.ConvertEnum( depthFailOp, !flip ) );
+				_setRenderState( D3D9.RenderState.CcwStencilPass, (int)D3D9Helper.ConvertEnum( passOp, !flip ) );
 			}
 			else
 			{
@@ -1850,21 +1850,21 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// configure standard version of the stencil operations
-			_setRenderState( D3D9.RenderState.StencilFunc, (int)D3DHelper.ConvertEnum( function ) );
+			_setRenderState( D3D9.RenderState.StencilFunc, (int)D3D9Helper.ConvertEnum( function ) );
 			_setRenderState( D3D9.RenderState.StencilRef, refValue );
 			_setRenderState( D3D9.RenderState.StencilMask, mask );
-			_setRenderState( D3D9.RenderState.StencilFail, (int)D3DHelper.ConvertEnum( stencilFailOp, flip ) );
-			_setRenderState( D3D9.RenderState.StencilZFail, (int)D3DHelper.ConvertEnum( depthFailOp, flip ) );
-			_setRenderState( D3D9.RenderState.StencilPass, (int)D3DHelper.ConvertEnum( passOp, flip ) );
+			_setRenderState( D3D9.RenderState.StencilFail, (int)D3D9Helper.ConvertEnum( stencilFailOp, flip ) );
+			_setRenderState( D3D9.RenderState.StencilZFail, (int)D3D9Helper.ConvertEnum( depthFailOp, flip ) );
+			_setRenderState( D3D9.RenderState.StencilPass, (int)D3D9Helper.ConvertEnum( passOp, flip ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
 		{
 			var texType = _texStageDesc[ stage ].TexType;
-			var texFilter = D3DHelper.ConvertEnum( type, filter, _deviceManager.ActiveDevice.D3D9DeviceCaps, texType );
+			var texFilter = D3D9Helper.ConvertEnum( type, filter, _deviceManager.ActiveDevice.D3D9DeviceCaps, texType );
 
-			_setSamplerState( stage, D3DHelper.ConvertEnum( type ), (int)texFilter );
+			_setSamplerState( stage, D3D9Helper.ConvertEnum( type ), (int)texFilter );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -2389,7 +2389,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// programmable clips in clip space (ugh)
 					// must transform worldspace planes by view/proj
-					var xform = DX.Matrix.Multiply( D3DHelper.MakeD3DMatrix( _viewMatrix ), D3DHelper.MakeD3DMatrix( this.ProjectionMatrix ) );
+					var xform = DX.Matrix.Multiply( D3D9Helper.MakeD3DMatrix( _viewMatrix ), D3D9Helper.MakeD3DMatrix( this.ProjectionMatrix ) );
 					xform = DX.Matrix.Invert( xform );
 					xform = DX.Matrix.Transpose( xform );
 					dx9ClipPlane = DX.Plane.Transform( dx9ClipPlane, xform );
@@ -2458,7 +2458,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			var query = new D3DHardwareOcclusionQuery();
+			var query = new D3D9HardwareOcclusionQuery();
 			hwOcclusionQueries.Add( query );
 			return query;
 		}

@@ -206,7 +206,7 @@ namespace Axiom.RenderSystems.DirectX9
 			width = desc.Width;
 			height = desc.Height;
 			depth = 1;
-			format = D3DHelper.ConvertEnum( desc.Format );
+			format = D3D9Helper.ConvertEnum( desc.Format );
 			// Default
 			rowPitch = Width;
 			slicePitch = Height * Width;
@@ -268,7 +268,7 @@ namespace Axiom.RenderSystems.DirectX9
 			width = desc.Width;
 			height = desc.Height;
 			depth = desc.Depth;
-			format = D3DHelper.ConvertEnum( desc.Format );
+			format = D3D9Helper.ConvertEnum( desc.Format );
 			// Default
 			rowPitch = Width;
 			slicePitch = Height * Width;
@@ -488,7 +488,7 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
 
 			// Set locking flags according to options
-			var flags = D3DHelper.ConvertEnum( options, usage );
+			var flags = D3D9Helper.ConvertEnum( options, usage );
 
 			if ( mapDeviceToBufferResources.Count == 0 )
 				throw new AxiomException( "There are no resources attached to this pixel buffer !!" );
@@ -727,7 +727,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var bufSize = 0;
 
 			// convert to pixelbuffer's native format if necessary
-			if ( D3DHelper.ConvertEnum( src.Format ) == D3D9.Format.Unknown )
+			if ( D3D9Helper.ConvertEnum( src.Format ) == D3D9.Format.Unknown )
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 				var newBuffer = new byte[ bufSize ];
@@ -766,7 +766,7 @@ namespace Axiom.RenderSystems.DirectX9
 				try
 				{
 					D3D9.Surface.FromMemory( dstBufferResources.Surface, data, D3D9.Filter.Default, 0,
-						D3DHelper.ConvertEnum( converted.Format ), rowWidth, srcRect, destRect );
+						D3D9Helper.ConvertEnum( converted.Format ), rowWidth, srcRect, destRect );
 				}
 				catch ( Exception e )
 				{
@@ -844,7 +844,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// Decide on pixel format of temp surface
 			PixelFormat tmpFormat = Format;
-			if ( D3DHelper.ConvertEnum( dst.Format ) != D3D9.Format.Unknown )
+			if ( D3D9Helper.ConvertEnum( dst.Format ) != D3D9.Format.Unknown )
 				tmpFormat = dst.Format;
 
 			if ( srcBufferResources.Surface != null )
@@ -869,7 +869,7 @@ namespace Axiom.RenderSystems.DirectX9
 					d3d9Device,
 					dst.Width, dst.Height,
 					1, // 1 mip level ie topmost, generate no mipmaps
-					0, D3DHelper.ConvertEnum( tmpFormat ), temppool );
+					0, D3D9Helper.ConvertEnum( tmpFormat ), temppool );
 
 				var surface = tmp.GetSurfaceLevel( 0 );
 
@@ -879,7 +879,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// Get the real temp surface format
 				var dstDesc = surface.Description;
-				tmpFormat = D3DHelper.ConvertEnum( dstDesc.Format );
+				tmpFormat = D3D9Helper.ConvertEnum( dstDesc.Format );
 
 				// Use fast GetRenderTargetData if we are in its usage conditions
 				var fastLoadSuccess = false;
@@ -919,7 +919,7 @@ namespace Axiom.RenderSystems.DirectX9
 					dst.Width,
 					dst.Height,
 					dst.Depth, 0,
-					0, D3DHelper.ConvertEnum( tmpFormat ), D3D9.Pool.Scratch );
+					0, D3D9Helper.ConvertEnum( tmpFormat ), D3D9.Pool.Scratch );
 
 				var surface = tmp.GetVolumeLevel( 0 );
 

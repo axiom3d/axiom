@@ -48,37 +48,37 @@ namespace Axiom.RenderSystems.DirectX9
 	/// The Direct3D implementation of the RenderWindow class.
 	/// </summary>
 	public sealed class D3D9RenderWindow : RenderWindow
-    {
-        #region Nested Types
+	{
+		#region Nested Types
 
-        [StructLayout( LayoutKind.Sequential )]
-        private struct RECT
-        {
-            public Int32 Left;
-            public Int32 Top;
-            public Int32 Right;
-            public Int32 Bottom;
+		[StructLayout( LayoutKind.Sequential )]
+		private struct RECT
+		{
+			public Int32 Left;
+			public Int32 Top;
+			public Int32 Right;
+			public Int32 Bottom;
 
-            public RECT( Int32 left, Int32 top, Int32 right, Int32 bottom )
-            {
-                this.Left = left;
-                this.Top = top;
-                this.Right = right;
-                this.Bottom = bottom;
-            }
+			public RECT( Int32 left, Int32 top, Int32 right, Int32 bottom )
+			{
+				this.Left = left;
+				this.Top = top;
+				this.Right = right;
+				this.Bottom = bottom;
+			}
 
-            public override string ToString()
-            {
-                return string.Format( "RECT: Left:{0} Top:{1} Right:{2} Bottom:{3}",
-                    this.Left, this.Top, this.Right, this.Bottom );
-            }
-        };
+			public override string ToString()
+			{
+				return string.Format( "RECT: Left:{0} Top:{1} Right:{2} Bottom:{3}",
+					this.Left, this.Top, this.Right, this.Bottom );
+			}
+		};
 
-        #endregion Nested Types
+		#endregion Nested Types
 
-        #region Fields and Properties
+		#region Fields and Properties
 
-        /// <summary>
+		/// <summary>
 		/// Window style currently used for this window.
 		/// </summary>
 		private WindowStyles _style;
@@ -183,30 +183,30 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-                switch ( attribute.ToUpper() )
-                {
-                    case "D3DDEVICE":
-                        return D3DDevice;
+				switch ( attribute.ToUpper() )
+				{
+					case "D3DDEVICE":
+						return D3DDevice;
 
-                    case "WINDOW":
-                        return _windowCtrl.Handle;
+					case "WINDOW":
+						return _windowCtrl.Handle;
 
-                    case "ISTEXTURE":
-                        return false;
+					case "ISTEXTURE":
+						return false;
 
-                    case "D3DZBUFFER":
-                        return _device.GetDepthBuffer( this );
+					case "D3DZBUFFER":
+						return _device.GetDepthBuffer( this );
 
-                    case "DDBACKBUFFER":
-                        {
-                            var ret = new D3D9.Surface[ 8 ];
-                            ret[ 0 ] = _device.GetBackBuffer( this );
-                            return ret;
-                        }
+					case "DDBACKBUFFER":
+						{
+							var ret = new D3D9.Surface[ 8 ];
+							ret[ 0 ] = _device.GetBackBuffer( this );
+							return ret;
+						}
 
-                    case "DDFRONTBUFFER":
-                        return _device.GetBackBuffer( this );
-                }
+					case "DDFRONTBUFFER":
+						return _device.GetBackBuffer( this );
+				}
 				return new NotSupportedException( "There is no D3D9 RenderWindow custom attribute named " + attribute );
 			}
 		}
@@ -306,23 +306,23 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        #region WindowHandle
+		#region WindowHandle
 
-        public IntPtr WindowHandle
-        {
-            get
-            {
-                return _windowCtrl.Handle;
-            }
-        }
+		public IntPtr WindowHandle
+		{
+			get
+			{
+				return _windowCtrl.Handle;
+			}
+		}
 
-        #endregion WindowHandle
+		#endregion WindowHandle
 
-        #endregion Fields and Properties
+		#endregion Fields and Properties
 
-        #region Construction and destruction
+		#region Construction and destruction
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public D3D9RenderWindow()
 			: base()
 		{
@@ -346,7 +346,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Methods
 
-        [OgreVersion( 1, 7, 2790, "Check for fsaa settings, like suggested in http://axiom3d.net/forums/viewtopic.php?f=1&t=1309" )]
+		[OgreVersion( 1, 7, 2790, "Check for fsaa settings, like suggested in http://axiom3d.net/forums/viewtopic.php?f=1&t=1309" )]
 		public override void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
 			SWF.Control parentHWnd = null;
@@ -449,7 +449,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// FSAA type
 				if ( miscParams.TryGetValue( "FSAA", out opt ) )
-                    _fsaaType = (D3D9.MultisampleType)opt;
+					_fsaaType = (D3D9.MultisampleType)opt;
 
 				if ( miscParams.TryGetValue( "FSAAHint", out opt ) )
 					fsaaHint = (string)opt;
@@ -646,7 +646,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		/// <see cref="Axiom.Graphics.RenderWindow.SetFullScreen"/>
-        [OgreVersion( 1, 7, 2, "Still some todo left" )]
+		[OgreVersion( 1, 7, 2, "Still some todo left" )]
 		public override void SetFullScreen( bool fullScreen, int width, int height )
 		{
 			if ( fullScreen != isFullScreen || width != this.width || height != this.height )
@@ -790,7 +790,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-        public void BuildPresentParameters( D3D9.PresentParameters presentParams )
+		public void BuildPresentParameters( D3D9.PresentParameters presentParams )
 		{
 			// Set up the presentation parameters		
 			var pD3D = D3D9RenderSystem.Direct3D9;
@@ -804,7 +804,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//ZeroMemory( presentParams, sizeof(D3DPRESENT_PARAMETERS) );
 
 			presentParams.Windowed = !isFullScreen;
-            presentParams.SwapEffect = D3D9.SwapEffect.Discard;
+			presentParams.SwapEffect = D3D9.SwapEffect.Discard;
 			// triple buffer if VSync is on
 			presentParams.BackBufferCount = _vSync ? 2 : 1;
 			presentParams.EnableAutoDepthStencil = isDepthBuffered;
@@ -828,26 +828,26 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						case 1:
 						default:
-                            presentParams.PresentationInterval = D3D9.PresentInterval.One;
+							presentParams.PresentationInterval = D3D9.PresentInterval.One;
 							break;
 						case 2:
-                            presentParams.PresentationInterval = D3D9.PresentInterval.Two;
+							presentParams.PresentationInterval = D3D9.PresentInterval.Two;
 							break;
 						case 3:
-                            presentParams.PresentationInterval = D3D9.PresentInterval.Three;
+							presentParams.PresentationInterval = D3D9.PresentInterval.Three;
 							break;
 						case 4:
-                            presentParams.PresentationInterval = D3D9.PresentInterval.Four;
+							presentParams.PresentationInterval = D3D9.PresentInterval.Four;
 							break;
 					};
 					// check that the interval was supported, revert to 1 to be safe otherwise
 					var caps = pD3D.GetDeviceCaps( _device.AdapterNumber, devType );
 					if ( ( caps.PresentationIntervals & presentParams.PresentationInterval ) == 0 )
-                        presentParams.PresentationInterval = D3D9.PresentInterval.One;
+						presentParams.PresentationInterval = D3D9.PresentInterval.One;
 				}
 				else
 				{
-                    presentParams.PresentationInterval = D3D9.PresentInterval.One;
+					presentParams.PresentationInterval = D3D9.PresentInterval.One;
 				}
 
 			}
@@ -863,47 +863,47 @@ namespace Axiom.RenderSystems.DirectX9
 						"disabling VSync in windowed mode can cause timing issues at lower " +
 						"frame rates, turn VSync on if you observe this problem." );
 				}
-                presentParams.PresentationInterval = D3D9.PresentInterval.Immediate;
+				presentParams.PresentationInterval = D3D9.PresentInterval.Immediate;
 			}
 
 			presentParams.BackBufferFormat = D3D9.Format.R5G6B5;
 			if ( colorDepth > 16 )
-                presentParams.BackBufferFormat = D3D9.Format.X8R8G8B8;
+				presentParams.BackBufferFormat = D3D9.Format.X8R8G8B8;
 
 			if ( colorDepth > 16 )
 			{
 				// Try to create a 32-bit depth, 8-bit stencil
 
 				if ( !pD3D.CheckDeviceFormat( _device.AdapterNumber,
-                    devType, presentParams.BackBufferFormat, D3D9.Usage.DepthStencil,
-                    D3D9.ResourceType.Surface, D3D9.Format.D24S8 ) )
+					devType, presentParams.BackBufferFormat, D3D9.Usage.DepthStencil,
+					D3D9.ResourceType.Surface, D3D9.Format.D24S8 ) )
 				{
 					// Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
 					if ( !pD3D.CheckDeviceFormat( _device.AdapterNumber,
-                        devType, presentParams.BackBufferFormat, D3D9.Usage.DepthStencil,
-                        D3D9.ResourceType.Surface, D3D9.Format.D32 ) )
+						devType, presentParams.BackBufferFormat, D3D9.Usage.DepthStencil,
+						D3D9.ResourceType.Surface, D3D9.Format.D32 ) )
 					{
 						// Jeez, what a naff card. Fall back on 16-bit depth buffering
-                        presentParams.AutoDepthStencilFormat = D3D9.Format.D16;
+						presentParams.AutoDepthStencilFormat = D3D9.Format.D16;
 					}
 					else
-                        presentParams.AutoDepthStencilFormat = D3D9.Format.D32;
+						presentParams.AutoDepthStencilFormat = D3D9.Format.D32;
 				}
 				else
 				{
 					// Woohoo!
 					if ( pD3D.CheckDepthStencilMatch( _device.AdapterNumber, devType,
-                        presentParams.BackBufferFormat, presentParams.BackBufferFormat, D3D9.Format.D24S8 ) )
+						presentParams.BackBufferFormat, presentParams.BackBufferFormat, D3D9.Format.D24S8 ) )
 					{
-                        presentParams.AutoDepthStencilFormat = D3D9.Format.D24S8;
+						presentParams.AutoDepthStencilFormat = D3D9.Format.D24S8;
 					}
 					else
-                        presentParams.AutoDepthStencilFormat = D3D9.Format.D24X8;
+						presentParams.AutoDepthStencilFormat = D3D9.Format.D24X8;
 				}
 			}
 			else
 				// 16-bit depth, software stencil
-                presentParams.AutoDepthStencilFormat = D3D9.Format.D16;
+				presentParams.AutoDepthStencilFormat = D3D9.Format.D16;
 
 
 			var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
@@ -1076,10 +1076,10 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( windowHandle == null )
 				return null;
 
-            if ( tmp is SWF.Form )
+			if ( tmp is SWF.Form )
 				return (SWF.Form)tmp;
 
-            do
+			do
 			{
 				tmp = tmp.Parent;
 			}
@@ -1096,8 +1096,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// properties get populated, instead of Rectangle.Right and Rectangle.Bottom.
 		/// </remarks>
 		[DllImport( "user32.dll", SetLastError = true )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-        private static extern bool AdjustWindowRect( ref RECT lpRect, WindowStyles dwStyle, [MarshalAs( UnmanagedType.Bool )]bool bMenu );
+		[return: MarshalAs( UnmanagedType.Bool )]
+		private static extern bool AdjustWindowRect( ref RECT lpRect, WindowStyles dwStyle, [MarshalAs( UnmanagedType.Bool )]bool bMenu );
 
 		#endregion Methods
 	};

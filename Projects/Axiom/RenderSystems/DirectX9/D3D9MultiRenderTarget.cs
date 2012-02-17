@@ -34,7 +34,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Utilities;
-using D3D = SlimDX.Direct3D9;
+using D3D9 = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -50,7 +50,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Construction and Destruction
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public D3D9MultiRenderTarget( string name )
 			: base( name )
 		{
@@ -70,7 +70,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format
 		/// </remarks>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
@@ -81,22 +81,22 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Find first non null target
 			int y;
-            for ( y = 0; y < Config.MaxMultipleRenderTargets && _renderTargets[ y ] == null; ++y ) ;
+			for ( y = 0; y < Config.MaxMultipleRenderTargets && _renderTargets[ y ] == null; ++y ) ;
 
 			if ( y != Config.MaxMultipleRenderTargets )
 			{
-                // If there is another target bound, compare sizes
+				// If there is another target bound, compare sizes
 				if ( _renderTargets[ y ].Width != buffer.Width ||
-                    _renderTargets[ y ].Height != buffer.Height )
+					_renderTargets[ y ].Height != buffer.Height )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
 
-                if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths )
-                    && ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
-                {
-                    throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
-                }
+				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths )
+					&& ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
+				{
+					throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
+				}
 			}
 
 			_renderTargets[ attachment ] = buffer;
@@ -106,19 +106,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
 			_renderTargets[ attachment ].SafeDispose();
-            _renderTargets[ attachment ] = null;
+			_renderTargets[ attachment ] = null;
 			_checkAndUpdate();
 		}
 
-        /// <summary>
-        /// Check surfaces and update RenderTarget extent
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		/// <summary>
+		/// Check surfaces and update RenderTarget extent
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
 		private void _checkAndUpdate()
 		{
 			if ( _renderTargets[ 0 ] != null )
@@ -137,45 +137,45 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region RenderTarget Implementation
 
-        /// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
-        [OgreVersion(1, 7, 2790)]
-        public override void Update( bool swapBuffers )
-        {
-            var deviceManager = D3D9RenderSystem.DeviceManager;
-            var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
-
-            if ( currRenderWindowDevice != null )
-            {
-                if ( currRenderWindowDevice.IsDeviceLost == false )
-                    base.Update( swapBuffers );
-            }
-            else
-            {
-                foreach ( var device in deviceManager )
-                {
-                    if ( device.IsDeviceLost == false )
-                    {
-                        deviceManager.ActiveRenderTargetDevice = device;
-                        base.Update( swapBuffers );
-                        deviceManager.ActiveRenderTargetDevice = null;
-                    }
-                }
-            }
-        }
-
-	    public override object this[ string attribute ]
+		/// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
+		[OgreVersion(1, 7, 2790)]
+		public override void Update( bool swapBuffers )
 		{
-            [OgreVersion( 1, 7, 2 )]
+			var deviceManager = D3D9RenderSystem.DeviceManager;
+			var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
+
+			if ( currRenderWindowDevice != null )
+			{
+				if ( currRenderWindowDevice.IsDeviceLost == false )
+					base.Update( swapBuffers );
+			}
+			else
+			{
+				foreach ( var device in deviceManager )
+				{
+					if ( device.IsDeviceLost == false )
+					{
+						deviceManager.ActiveRenderTargetDevice = device;
+						base.Update( swapBuffers );
+						deviceManager.ActiveRenderTargetDevice = null;
+					}
+				}
+			}
+		}
+
+		public override object this[ string attribute ]
+		{
+			[OgreVersion( 1, 7, 2 )]
 			get
 			{
 				if ( attribute.ToUpper() == "DDBACKBUFFER" )
 				{
-					var surfaces = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
+					var surfaces = new D3D9.Surface[ Config.MaxMultipleRenderTargets ];
 					// Transfer surfaces
 					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{
 						if ( _renderTargets[ x ] != null )
-                            surfaces[ x ] = _renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
+							surfaces[ x ] = _renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
 					}
 					return surfaces;
 				}
@@ -184,7 +184,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion(1, 7, 2790)]
 		public override bool RequiresTextureFlipping
 		{
 			get

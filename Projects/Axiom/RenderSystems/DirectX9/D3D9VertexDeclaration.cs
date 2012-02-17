@@ -77,8 +77,8 @@ namespace Axiom.RenderSystems.DirectX9
                         d3dElements[ idx ].Method = D3D9.DeclarationMethod.Default;
                         d3dElements[ idx ].Offset = (short)element.Offset;
                         d3dElements[ idx ].Stream = element.Source;
-                        d3dElements[ idx ].Type = D3DHelper.ConvertEnum( element.Type );
-                        d3dElements[ idx ].Usage = D3DHelper.ConvertEnum( element.Semantic );
+                        d3dElements[ idx ].Type = D3D9Helper.ConvertEnum( element.Type );
+                        d3dElements[ idx ].Usage = D3D9Helper.ConvertEnum( element.Semantic );
                         // NB force index if colours since D3D uses the same usage for 
                         // diffuse & specular
                         switch ( element.Semantic )

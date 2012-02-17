@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// needed to store data between prepareImpl and loadImpl
 		/// </summary>
 		private MemoryStream[] _loadedStreams;
-		
+
 		/// <summary>
 		/// The memory pool being used
 		/// </summary>
@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Dynamic textures?
 		/// </summary>
 		private bool _dynamicTextures;
-		
+
 		/// <summary>
 		/// List of subsurfaces
 		/// </summary>
@@ -421,7 +421,7 @@ namespace Axiom.RenderSystems.DirectX9
 			Array.Copy( _loadedStreams, LoadedStreams, _loadedStreams.Length );
 
 			// load based on tex.type
-			switch(this.TextureType)
+			switch ( this.TextureType )
 			{
 				case Graphics.TextureType.OneD:
 				case Graphics.TextureType.TwoD:
@@ -707,7 +707,7 @@ namespace Axiom.RenderSystems.DirectX9
 				Debug.Assert( _loadedStreams.Length == 1 );
 
 				var d3dUsage = D3D9.Usage.None;
-				var numMips = requestedMipmapCount == (int)TextureMipmap.Unlimited ? -1 :  this.requestedMipmapCount + 1;
+				var numMips = requestedMipmapCount == (int)TextureMipmap.Unlimited ? -1 : this.requestedMipmapCount + 1;
 				var device = D3D9RenderSystem.DeviceManager.GetDeviceFromD3D9Device( d3d9Device );
 				var rkCurCaps = device.D3D9DeviceCaps;
 
@@ -758,8 +758,8 @@ namespace Axiom.RenderSystems.DirectX9
 				var texDesc = textureResources.CubeTexture.GetLevelDescription( 0 );
 				_d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
-				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3DHelper.ConvertEnum( texDesc.Format ) );
-				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1, D3DHelper.ConvertEnum( texDesc.Format ) );
+				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
+				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
 
 				if ( hwGamma )
 				{
@@ -841,7 +841,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// romeoxbm: this statement is not present in Ogre implementation,
 					// but maybe it should be..
-					freeInternalResources(); 
+					freeInternalResources();
 					throw new AxiomException( "Can't create volume texture.", ex );
 				}
 
@@ -854,8 +854,8 @@ namespace Axiom.RenderSystems.DirectX9
 				var texDesc = textureResources.VolumeTexture.GetLevelDescription( 0 );
 				_d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
-				_setSrcAttributes( texDesc.Width, texDesc.Height, texDesc.Depth, D3DHelper.ConvertEnum( texDesc.Format ) );
-				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, texDesc.Depth, D3DHelper.ConvertEnum( texDesc.Format ) );
+				_setSrcAttributes( texDesc.Width, texDesc.Height, texDesc.Depth, D3D9Helper.ConvertEnum( texDesc.Format ) );
+				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, texDesc.Depth, D3D9Helper.ConvertEnum( texDesc.Format ) );
 
 				if ( hwGamma )
 				{
@@ -937,7 +937,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					textureResources.NormalTexture = D3D9.Texture.FromMemory(
 						d3d9Device,
-						loadedStreams[0].GetBuffer(),
+						loadedStreams[ 0 ].GetBuffer(),
 						-1, -1, // dims
 						numMips,
 						d3dUsage,
@@ -965,8 +965,8 @@ namespace Axiom.RenderSystems.DirectX9
 				var texDesc = textureResources.NormalTexture.GetLevelDescription( 0 );
 				_d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
-				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3DHelper.ConvertEnum( texDesc.Format ) );
-				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1, D3DHelper.ConvertEnum( texDesc.Format ) );
+				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
+				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
 
 				if ( hwGamma )
 				{
@@ -1101,7 +1101,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Use D3DX to help us create the texture, this way it can adjust any relevant sizes
 			var d3dUsage = ( this.usage & TextureUsage.RenderTarget ) != 0 ? D3D9.Usage.RenderTarget : 0;
 			var numMips = requestedMipmapCount == (int)TextureMipmap.Unlimited ? -1 : requestedMipmapCount + 1;
-			
+
 			// Check dynamic textures
 			if ( ( this.usage & TextureUsage.Dynamic ) != 0 )
 			{
@@ -1194,7 +1194,7 @@ namespace Axiom.RenderSystems.DirectX9
 				textureResources.FSAASurface = D3D9.Surface.CreateRenderTarget( d3d9Device, desc.Width, desc.Height, d3dPF, _fsaaType, _fsaaQuality, false );
 			}
 
-			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
+			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3D9Helper.ConvertEnum( desc.Format ) );
 
 			// Set best filter type
 			if ( mipmapsHardwareGenerated )
@@ -1260,7 +1260,7 @@ namespace Axiom.RenderSystems.DirectX9
 			mipmapsHardwareGenerated = false;
 			if ( ( rkCurCaps.TextureCaps & D3D9.TextureCaps.MipCubeMap ) != 0 )
 			{
-				if ( (this.usage & TextureUsage.AutoMipMap) != 0 && requestedMipmapCount != 0)
+				if ( ( this.usage & TextureUsage.AutoMipMap ) != 0 && requestedMipmapCount != 0 )
 				{
 					// use auto.gen. if available;
 					mipmapsHardwareGenerated = _canAutoGenMipMaps( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture, d3dPF );
@@ -1312,7 +1312,7 @@ namespace Axiom.RenderSystems.DirectX9
 				textureResources.FSAASurface = D3D9.Surface.CreateRenderTarget( d3d9Device, desc.Width, desc.Height, d3dPF, _fsaaType, _fsaaQuality, false );
 			}
 
-			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
+			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3D9Helper.ConvertEnum( desc.Format ) );
 
 			// Set best filter type
 			if ( mipmapsHardwareGenerated )
@@ -1415,7 +1415,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// they may differ from the source image !!!
 			var desc = textureResources.VolumeTexture.GetLevelDescription( 0 );
 
-			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
+			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, desc.Depth, D3D9Helper.ConvertEnum( desc.Format ) );
 
 			if ( mipmapsHardwareGenerated )
 				textureResources.BaseTexture.AutoMipGenerationFilter = _getBestFilterMethod( d3d9Device );
@@ -1637,7 +1637,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Choose closest supported D3D format as a D3D format
-			return D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( Format ) );
+			return D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( Format ) );
 		}
 
 		/// <summary>

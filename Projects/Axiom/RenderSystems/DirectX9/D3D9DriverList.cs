@@ -39,58 +39,58 @@ using D3D9 = SlimDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	public class D3D9DriverList : List<D3D9Driver>, IDisposable
-	{
-		[OgreVersion( 1, 7, 2, "D3D9DriverList::item( const String &name )" )]
-		public D3D9Driver this[ string description ]
-		{
-			get
-			{
-				return this.FirstOrDefault( x => x.DriverDescription == description );
-			}
-		}
+    public class D3D9DriverList : List<D3D9Driver>, IDisposable
+    {
+        [OgreVersion( 1, 7, 2, "D3D9DriverList::item( const String &name )" )]
+        public D3D9Driver this[ string description ]
+        {
+            get
+            {
+                return this.FirstOrDefault( x => x.DriverDescription == description );
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public D3D9DriverList()
-			: base()
-		{
-			Enumerate();
-		}
+        [OgreVersion( 1, 7, 2 )]
+        public D3D9DriverList()
+            : base()
+        {
+            Enumerate();
+        }
 
         ~D3D9DriverList()
         {
             this.Dispose();
         }
 
-		[OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
-		public void Dispose()
-		{
-			foreach ( var it in this )
-				it.SafeDispose();
+        [OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
+        public void Dispose()
+        {
+            foreach ( var it in this )
+                it.SafeDispose();
 
-			this.Clear();
+            this.Clear();
             GC.SuppressFinalize( this );
-		}
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public bool Enumerate()
-		{
-			var lpD3D9 = D3D9RenderSystem.Direct3D9;
+        [OgreVersion( 1, 7, 2 )]
+        public bool Enumerate()
+        {
+            var lpD3D9 = D3D9RenderSystem.Direct3D9;
 
-			LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
+            LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
 
-			for ( var iAdapter = 0; iAdapter < lpD3D9.AdapterCount; ++iAdapter )
-			{
-				var adapterIdentifier = lpD3D9.GetAdapterIdentifier( iAdapter );
-				var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
-				var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
+            for ( var iAdapter = 0; iAdapter < lpD3D9.AdapterCount; ++iAdapter )
+            {
+                var adapterIdentifier = lpD3D9.GetAdapterIdentifier( iAdapter );
+                var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
+                var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
 
-				this.Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
-			}
+                this.Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
+            }
 
-			LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
+            LogManager.Instance.Write( "D3D9: Driver Detection Ends" );
 
-			return true;
-		}
-	};
+            return true;
+        }
+    };
 }

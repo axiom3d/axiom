@@ -35,7 +35,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-using SlimDX.Direct3D9;
 using D3D9 = SlimDX.Direct3D9;
 using ResourceHandle = System.UInt64;
 using ResourceManager = Axiom.Core.ResourceManager;
@@ -136,14 +135,14 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void load()
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			foreach ( var dev in D3D9RenderSystem.ResourceCreationDevices )
 				LoadImpl( dev );
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion loadImpl
@@ -154,7 +153,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Loads this program to specified device
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		protected void LoadImpl( Device d3D9Device )
+		protected void LoadImpl( D3D9.Device d3D9Device )
 		{
 			if ( externalMicrocode != null )
 			{
@@ -189,33 +188,33 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region LoadFromSource
 
-        [OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 2790 )]
 		protected override void LoadFromSource()
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			foreach ( var dev in D3D9RenderSystem.ResourceCreationDevices )
 				LoadFromSource( dev );
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
-        [OgreVersion( 1, 7, 2790 )]
-		protected void LoadFromSource( Device d3D9Device )
+		[OgreVersion( 1, 7, 2790 )]
+		protected void LoadFromSource( D3D9.Device d3D9Device )
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			string errors = string.Empty;
-			ShaderBytecode microcode = null;
+			D3D9.ShaderBytecode microcode = null;
 
 			// Create the shader
 			// Assemble source into microcode
 			try
 			{
-				microcode = ShaderBytecode.Assemble(
+				microcode = D3D9.ShaderBytecode.Assemble(
 					Source,
 					null,   // no #define support
 					null,   // no #include support
@@ -232,8 +231,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			microcode.SafeDispose();
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion LoadFromSource
@@ -241,7 +240,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region LoadFromMicrocode
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected abstract void LoadFromMicrocode( Device d3D9Device, ShaderBytecode microcode );
+		protected abstract void LoadFromMicrocode( D3D9.Device d3D9Device, D3D9.ShaderBytecode microcode );
 
 		#endregion LoadFromMicrocode
 
@@ -342,7 +341,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Fields
 
 		[OgreVersion( 1, 7, 2790 )]
-		private readonly Dictionary<Device, D3D9.VertexShader> _mapDeviceToVertexShader = new Dictionary<Device, D3D9.VertexShader>();
+		private readonly Dictionary<D3D9.Device, D3D9.VertexShader> _mapDeviceToVertexShader = new Dictionary<D3D9.Device, D3D9.VertexShader>();
 
 		#endregion Fields
 
@@ -354,7 +353,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Used internally by the D3DRenderSystem to get a reference to the underlying
 		/// VertexShader object.
 		/// </summary>
-		internal VertexShader VertexShader
+		internal D3D9.VertexShader VertexShader
 		{
 			[OgreVersion( 1, 7, 2 )]
 			get
@@ -411,7 +410,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region LoadFromMicrocode
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void LoadFromMicrocode( Device d3D9Device, ShaderBytecode microcode )
+		protected override void LoadFromMicrocode( D3D9.Device d3D9Device, D3D9.ShaderBytecode microcode )
 		{
 			D3D9.VertexShader vertexShader;
 			var shaderWasFound = _mapDeviceToVertexShader.TryGetValue( d3D9Device, out vertexShader );
@@ -442,8 +441,8 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			foreach ( var it in _mapDeviceToVertexShader )
 				it.SafeDispose();
@@ -451,8 +450,8 @@ namespace Axiom.RenderSystems.DirectX9
 			_mapDeviceToVertexShader.Clear();
 			base.unload();
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion unload
@@ -461,10 +460,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override void NotifyOnDeviceDestroy( Device d3d9Device )
+		public override void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			// Find the shader of this device.
 			D3D9.VertexShader it;
@@ -476,8 +475,8 @@ namespace Axiom.RenderSystems.DirectX9
 				_mapDeviceToVertexShader.Remove( d3d9Device );
 			}
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion ID3D9Resource Members
@@ -491,7 +490,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Fields
 
 		[OgreVersion( 1, 7, 2790 )]
-		private readonly Dictionary<Device, D3D9.PixelShader> _mapDeviceToPixelShader = new Dictionary<Device, D3D9.PixelShader>();
+		private readonly Dictionary<D3D9.Device, D3D9.PixelShader> _mapDeviceToPixelShader = new Dictionary<D3D9.Device, D3D9.PixelShader>();
 
 		#endregion Fields
 
@@ -561,7 +560,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region LoadFromMicrocode
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void LoadFromMicrocode( Device d3D9Device, ShaderBytecode microcode )
+		protected override void LoadFromMicrocode( D3D9.Device d3D9Device, D3D9.ShaderBytecode microcode )
 		{
 			D3D9.PixelShader pixelShader;
 			var shaderWasFound = _mapDeviceToPixelShader.TryGetValue( d3D9Device, out pixelShader );
@@ -592,8 +591,8 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			foreach ( var it in _mapDeviceToPixelShader )
 				it.SafeDispose();
@@ -601,8 +600,8 @@ namespace Axiom.RenderSystems.DirectX9
 			_mapDeviceToPixelShader.Clear();
 			base.unload();
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion unload
@@ -611,10 +610,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override void NotifyOnDeviceDestroy( Device d3d9Device )
+		public override void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
 		{
-            //Entering critical section
-            this.LockDeviceAccess();
+			//Entering critical section
+			this.LockDeviceAccess();
 
 			// Find the shader of this device.
 			D3D9.PixelShader it;
@@ -626,8 +625,8 @@ namespace Axiom.RenderSystems.DirectX9
 				_mapDeviceToPixelShader.Remove( d3d9Device );
 			}
 
-            //Leaving critical section
-            this.UnlockDeviceAccess();
+			//Leaving critical section
+			this.UnlockDeviceAccess();
 		}
 
 		#endregion ID3D9Resource Members
