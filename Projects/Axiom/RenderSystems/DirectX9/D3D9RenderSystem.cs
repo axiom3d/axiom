@@ -106,8 +106,9 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2, " D3D9RenderSystem::ZBufferIdentifierComparator::operator()" )]
 			public bool Equals( ZBufferIdentifier z0, ZBufferIdentifier z1 )
 			{
-				if ( Memory.PinObject( z0.Device ).Ptr < Memory.PinObject( z1.Device ).Ptr )
-					return true;
+                //TODO
+                //if ( Memory.PinObject( z0.Device ).Ptr < Memory.PinObject( z1.Device ).Ptr )
+                //    return true;
 
 				if ( z0.Device == z1.Device )
 				{
@@ -2518,8 +2519,14 @@ namespace Axiom.RenderSystems.DirectX9
 			zBufferIdentifier.MultisampleType = multisample;
 			zBufferIdentifier.Device = ActiveD3D9Device;
 
-			var zBuffers = _zbufferHash[ zBufferIdentifier ];
-			if ( zBuffers.Count != 0 )
+            Deque<ZBufferRef> zBuffers;
+            if ( !_zbufferHash.TryGetValue( zBufferIdentifier, out zBuffers ) )
+            {
+                zBuffers = new Deque<ZBufferRef>();
+                _zbufferHash.Add( zBufferIdentifier, zBuffers );
+            }
+
+            if ( zBuffers.Count > 0 )
 			{
 				var zBuffer = zBuffers.PeekHead();
 				// Check if size is larger or equal
@@ -2847,34 +2854,6 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 	
 		#endregion Class Methods
-
-		//[OgreVersion( 1, 7, 2790 )]
-		//public override DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget )
-		//{
-		//    var pBack = (D3D9.Surface[])renderTarget[ "DDBACKBUFFER" ];
-
-		//    if ( pBack[ 0 ] == null )
-		//        return null;
-
-		//    var srfDesc = pBack[ 0 ].Description;
-
-		//    //Find an appropiarte format for this depth buffer that best matches the RenderTarget's
-		//    var dsfmt = GetDepthStencilFormatFor( srfDesc.Format );
-
-		//    //Create the depthstencil surface
-		//    var activeDevice = ActiveD3D9Device;
-
-		//    var depthBufferSurface = D3D9.Surface.CreateDepthStencil( activeDevice, srfDesc.Width, srfDesc.Height, dsfmt,
-		//                                                         srfDesc.MultisampleType, srfDesc.MultisampleQuality,
-		//                                                         true );
-
-		//    var newDepthBuffer = new D3D9DepthBuffer( PoolId.Default, this,
-		//                                            activeDevice, depthBufferSurface,
-		//                                            dsfmt, srfDesc.Width, srfDesc.Height,
-		//                                            srfDesc.MultisampleType, srfDesc.MultisampleQuality, false );
-
-		//    return newDepthBuffer;
-		//}
 	};
 }
 
