@@ -15,4 +15,7 @@
       <dependency id="Axiom" version="$version$" />
     </dependencies>
   </metadata>
+  <files>
+		<file src="..\..\x86\Axiom.RenderSystems.DirectX9.dll" target="lib\net35\Axiom.RenderSystems.DirectX9.dll" /> 
+  </files>
 </package>

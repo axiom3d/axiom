@@ -15,4 +15,7 @@
       <dependency id="Axiom" version="$version$" />
     </dependencies>
   </metadata>
+  <files>
+		<file src="..\..\x86\Axiom.SceneManagers.Octree.dll" target="lib\net35\Axiom.SceneManagers.Octree.dll" /> 
+  </files>
 </package>

@@ -13,10 +13,12 @@
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
     <dependencies>
       <dependency id="Axiom" version="$version$" />
-	  <dependency id="Axiom.SceneManagers.PCZSM" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-		<file src="..\..\x86\Axiom.Plugins.OctreeZone.dll" target="lib\net35\Axiom.Plugins.OctreeZone.dll" /> 
+		<file src="..\..\x86\Axiom.Plugins.DevIL.dll" target="lib\net35\Axiom.Plugins.DevIL.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\DevIL.dll" target="lib\net35\devil.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\IL.dll" target="lib\net35\il.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILU.dll" target="lib\net35\ilu.dll" /> 
   </files>
 </package>
