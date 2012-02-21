@@ -1,5 +1,6 @@
 @echo off
-SET PATH=..\..\..\..\..\Tools\Nuget\;%PATH%
+SET PATH=..\..\..\Tools\Nuget\;%PATH%
+path
 mkdir ..\..\dist\nuspec
 
 nuget pack Axiom.nuspec -OutputDirectory ..\..\dist\nuspec
