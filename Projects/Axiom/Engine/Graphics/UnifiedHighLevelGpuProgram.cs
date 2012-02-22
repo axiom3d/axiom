@@ -302,48 +302,29 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override bool SetParam( string name, string val )
-		{
-			switch ( name )
-			{
-				case "delegate":
-					AddDelegateProgram( val );
-					return true;
-			}
-			return false;
-		}
-
+        [OgreVersion( 1, 7, 2 )]
 		public override void Load( bool background )
 		{
 			if ( Delegate != null )
 				Delegate.Load( background );
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		protected override void CreateLowLevelImpl()
 		{
-			throw new Exception( "The method or operation is not implemented." );
+            throw new AxiomException( "This method should never get called!" );
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		protected override void UnloadHighLevelImpl()
 		{
-			throw new Exception( "The method or operation is not implemented." );
+            throw new AxiomException( "This method should never get called!" );
 		}
 
+        [OgreVersion( 1, 7, 2 )]
 		protected override void LoadFromSource()
 		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
-		public override int SamplerCount
-		{
-			get
-			{
-				if ( Delegate != null )
-				{
-					return Delegate.SamplerCount;
-				}
-				return 0;
-			}
+            throw new AxiomException( "This method should never get called!" );
 		}
 
 		#endregion HighLevelGpuProgram Implementation

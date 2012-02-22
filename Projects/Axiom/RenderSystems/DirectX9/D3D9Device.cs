@@ -609,7 +609,6 @@ namespace Axiom.RenderSystems.DirectX9
             // wasn't need at all.
             HardwareBufferManager.Instance.ReleaseBufferCopies( true );
 
-
             // Cleanup depth stencils surfaces.
             renderSystem.CleanupDepthStencils( pDevice );
 

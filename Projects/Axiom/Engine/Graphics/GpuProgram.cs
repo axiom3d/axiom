@@ -78,6 +78,19 @@ namespace Axiom.Graphics
         /// </summary>
         protected bool LoadFromFile { get; set; }
 
+        /// <summary>
+        /// Returns a string that specifies the language of the gpu programs as specified
+        /// in a material script. ie: asm, cg, hlsl, glsl
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual string Language
+        {
+            get
+            {
+                return "asm";
+            }
+        }
+
         #region SourceFile Property
 
         /// <summary>
@@ -163,16 +176,6 @@ namespace Axiom.Graphics
                 syntaxCode = value;
             }
         }
-
-        #endregion SyntaxCode Property
-
-        #region Language Property
-
-        /// <summary>
-        ///    Gets the language of this program
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public virtual string Language { get { return "asm"; } }
 
         #endregion SyntaxCode Property
 
@@ -476,20 +479,6 @@ namespace Axiom.Graphics
 
         #endregion IsSupported Property
 
-        #region SamplerCount Property
-
-        /// <summary>
-        /// Returns the maximum number of samplers that this fragment program has access
-        /// to, based on the fragment program profile it uses.
-        /// </summary>
-        [Obsolete( "Not existing in ogre anymore?" )]
-        public abstract int SamplerCount
-        {
-            get;
-        }
-
-        #endregion SamplerCount Property
-
         #region CompilerError Property
 
         /// <summary>
@@ -697,7 +686,8 @@ namespace Axiom.Graphics
         [OgreVersion( 1, 7, 2790 )]
         public virtual GpuProgramParameters CreateParameters()
         {
-            var newParams = GpuProgramManager.Instance.CreateParameters();
+            // Default implementation simply returns standard parameters.
+            var ret = GpuProgramManager.Instance.CreateParameters();
 
             // optionally load manually supplied named constants
             if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !_loadedManualNamedConstants )
@@ -716,21 +706,20 @@ namespace Axiom.Graphics
                 _loadedManualNamedConstants = true;
             }
 
-
             // set up named parameters, if any
-            if ( constantDefs.Map.Count != 0 )
+            if (constantDefs != null && constantDefs.Map.Count > 0 )
             {
-                newParams.NamedConstants = constantDefs;
+                ret.NamedConstants = constantDefs;
             }
             // link shared logical / physical map for low-level use
-            newParams.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
+            ret.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
 
 
             // Copy in default parameters if present
             if ( defaultParams != null )
-                newParams.CopyConstantsFrom( defaultParams );
+                ret.CopyConstantsFrom( defaultParams );
 
-            return newParams;
+            return ret;
         }
 
         #endregion

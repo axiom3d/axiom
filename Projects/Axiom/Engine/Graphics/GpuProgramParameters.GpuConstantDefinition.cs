@@ -1,5 +1,8 @@
-﻿using System;
-using Axiom.Core;
+﻿#region Namespace Declarations
+
+using System;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
@@ -106,10 +109,10 @@ namespace Axiom.Graphics
             /// <returns>
             /// true when the curent ConstantType is a float based type
             /// </returns>
-            [OgreVersion(1, 7, 2790, "IsFloat overload in OGRE")]
-            public static bool IsFloatConst(GpuConstantType c)
+            [OgreVersion( 1, 7, 2790, "IsFloat overload in OGRE" )]
+            public static bool IsFloatConst( GpuConstantType c )
             {
-                switch (c)
+                switch ( c )
                 {
                     case GpuConstantType.Int1:
                     case GpuConstantType.Int2:
@@ -124,7 +127,7 @@ namespace Axiom.Graphics
                         return false;
                     default:
                         return true;
-                }
+                };
             }
 
             #endregion
@@ -286,5 +289,5 @@ namespace Axiom.Graphics
                 return result;
             }
         }
-    }
+    };
 }

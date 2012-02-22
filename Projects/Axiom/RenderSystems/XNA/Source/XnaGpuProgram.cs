@@ -161,35 +161,7 @@ namespace Axiom.RenderSystems.Xna
         }
 
         #endregion GpuProgram Members
-
-        #region Properties
-
-        public override int SamplerCount
-        {
-            get
-            {
-                //switch (target)
-                //{
-                //    case "ps_1_1":
-                //    case "ps_1_2":
-                //    case "ps_1_3":
-                return 4;
-                //case "ps_1_4":
-                //    return 6;
-                //case "ps_2_0":
-                //case "ps_2_x":
-                //case "ps_3_0":
-                //case "ps_3_x":
-                //    return 16;
-                //default:
-                //    throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
-                //}
-
-                // return 0;
-            }
-        }
-		#endregion
-    }
+    };
 
     /// <summary>
     ///    Xna implementation of low-level vertex programs.

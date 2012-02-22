@@ -480,14 +480,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         #region HighLevelGpuProgram Implementation
 
-        public override int SamplerCount
-		{
-			get
-			{
-				return 0;
-			}
-		}
-
         #region CreateLowLevelImpl
 
         [OgreVersion(1, 7, 2790)]
@@ -543,22 +535,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
         #endregion
 
-        /// <summary>
-		///		Set a custom param for this high level gpu program.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="val"></param>
-		/// <returns></returns>
-		public override bool SetParam( string name, string val )
-		{
-		    IPropertyCommand cmd;
-		    if (!_commandTable.TryGetValue( name, out cmd ))
-			    return false;
-
-            cmd.Set( this, val );
-		    return true;
-		}
-
 		protected override void UnloadHighLevelImpl()
 		{
             // just clearing the reference here
@@ -590,5 +566,5 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
             base.dispose( disposeManagedResources );
         }
-	}
+	};
 }

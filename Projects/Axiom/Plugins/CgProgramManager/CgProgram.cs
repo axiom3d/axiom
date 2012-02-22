@@ -765,36 +765,6 @@ namespace Axiom.CgPrograms
 			}
 		}
 
-		public override int SamplerCount
-		{
-			get
-			{
-				switch ( selectedProfile )
-				{
-					case "ps_1_1":
-					case "ps_1_2":
-					case "ps_1_3":
-					case "fp20":
-						return 4;
-					
-                    case "ps_1_4":
-						return 6;
-
-					case "ps_2_0":
-					case "ps_2_x":
-					case "ps_3_0":
-					case "ps_3_x":
-					case "arbfp1":
-					case "fp30":
-					case "fp40":
-						return 16;
-
-					default:
-						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", selectedProfile );
-				}
-			}
-		}
-
 	    public string CompileArguments { get; set; }
 
 		#endregion Properties
@@ -877,23 +847,5 @@ namespace Axiom.CgPrograms
         #endregion CompileArgumentsCommand
 
         #endregion Custom Parameters
-
-        #region IConfigurable Members
-
-        /// <summary>
-		///    Method for passing parameters into the CgProgram.
-		/// </summary>
-		/// <param name="name">
-		///    Param name.
-		/// </param>
-		/// <param name="val">
-		///    Param value.
-		/// </param>
-		public override bool SetParam( string name, string val )
-		{
-            return true;
-		}
-
-		#endregion IConfigurable Members
-	}
+	};
 }

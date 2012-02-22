@@ -156,16 +156,6 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-
-		public override int SamplerCount
-		{
-			get
-			{
-				//TODO: SamplerCount is not implimented
-				return 0;
-			}
-		}
-
 		#endregion Properties
 
 		internal virtual bool IsAttributeValid( VertexElementSemantic semantic, uint index )

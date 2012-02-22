@@ -377,14 +377,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion
 
-		public override int SamplerCount
-		{
-			get
-			{
-				throw new AxiomException( "Attempted to query sample count for vertex shader." );
-			}
-		}
-
 		#endregion Properties
 
 		#region Construction and Destruction
@@ -525,15 +517,6 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion
-
-		public override int SamplerCount
-		{
-			get
-			{
-				//throw new AxiomException( "Attempted to query sample count for D3D Fragment Program." );
-				return 1;
-			}
-		}
 
 		#endregion Properties
 

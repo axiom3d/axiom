@@ -185,5 +185,5 @@ namespace Axiom.Serialization
 		}
 
 		#endregion Methods
-	}
+	};
 }

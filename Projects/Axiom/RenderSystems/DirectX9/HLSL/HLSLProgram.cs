@@ -458,34 +458,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
         }
 
-        /// <summary>
-        /// Returns the maximum number of samplers that this fragment program has access
-        /// to, based on the fragment program profile it uses.
-        /// </summary>
-        public override int SamplerCount
-        {
-            get
-            {
-                switch ( target )
-                {
-                    case "ps_1_1":
-                    case "ps_1_2":
-                    case "ps_1_3":
-                        return 4;
-                    case "ps_1_4":
-                        return 6;
-                    case "ps_2_0":
-                    case "ps_2_x":
-                    case "ps_3_0":
-                    case "ps_3_x":
-                        return 16;
-                    default:
-                        throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", target );
-                }
-
-                // return 0;
-            }
-        }
         #endregion GpuProgram Members
 
         #region Methods
@@ -929,51 +901,5 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
         #endregion AssemblerCodeCommand
 
         #endregion Command Objects
-
-        #region IConfigurable Members
-
-        /// <summary>
-        ///     Sets a param for this HLSL program.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public override bool SetParam( string name, string val )
-        {
-            bool handled = true;
-
-            switch ( name )
-            {
-                case "entry_point":
-                    entry = val;
-                    break;
-
-                case "target":
-                    target = val.Split( ' ' )[ 0 ];
-                    break;
-
-                case "preprocessor_defines":
-                    preprocessorDefines = val;
-                    break;
-
-                case "column_major_matrices":
-                    columnMajorMatrices = StringConverter.ParseBool( val );
-                    break;
-
-                case "optimisation_level":
-                case "optimization_level":
-                    optimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof( OptimizationLevel ) );
-                    break;
-
-                default:
-                    LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
-                    handled = false;
-                    break;
-            }
-
-            return handled;
-        }
-
-        #endregion IConfigurable Members
-    }
+    };
 }
