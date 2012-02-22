@@ -141,30 +141,24 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		}
 
 		/// <summary>
-		///     Called to pass parameters to the Nvparse program.
+		/// Called to pass parameters to the Nvparse program.
 		/// </summary>
-		/// <param name="parms"></param>
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+        [OgreVersion( 1, 7, 2 )]
+        public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
 			// Register combiners uses 2 constants per texture stage (0 and 1)
-			// We have stored these as (stage * 2) + const_index
-			if ( parms.HasFloatConstants )
-			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
-				{
-					var entry = parms.GetFloatPointer( index );
+            // We have stored these as (stage * 2) + const_index in the physical buffer
+            // There are no other parameters in a register combiners shader
+            var floatList = parms.GetFloatConstantList();
+            var index = 0;
 
-					{
-						int combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
-						int pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
+            for ( var i = 0; i < floatList.Length; ++i, ++index )
+            {
+                var combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
+                var pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
 
-						// send the params 4 at a time
-                        throw new AxiomException("Update this!");
-						Gl.glCombinerStageParameterfvNV( combinerStage, pname, entry.Pointer.Pin() );
-                        entry.Pointer.UnPin();
-                    }
-				}
-			}
+                Gl.glCombinerStageParameterfvNV( combinerStage, pname, ref floatList[ i ] );
+            }
 		}
 
 		#endregion GLGpuProgram Members

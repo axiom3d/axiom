@@ -197,7 +197,7 @@ namespace Axiom.RenderSystems.OpenGL
 		        if ((i.Value.Variability & mask) != 0)
 		        {
 			        var logicalIndex = i.Key;
-		            var pFloat = parms.GetFloatPointer();
+		            var pFloat = parms.GetFloatConstantList();
 		            var ptr = i.Value.PhysicalIndex;
 			        {
                         for (var j = 0; j < i.Value.CurrentSize; j += 4)
