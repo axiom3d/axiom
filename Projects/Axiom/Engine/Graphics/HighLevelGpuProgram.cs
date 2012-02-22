@@ -67,7 +67,7 @@ namespace Axiom.Graphics
 	///    can query on the available custom parameters and get/set them without having to 
 	///    link specifically with it.
 	/// </remarks>
-	public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
+	public abstract class HighLevelGpuProgram : GpuProgram
 	{
 		/// <summary>
 		///    Whether the high-level program (and it's parameter defs) is loaded.
@@ -102,7 +102,7 @@ namespace Axiom.Graphics
 		#region constructor
 
 		/// <summary>
-		///    Default constructor.
+		/// Default constructor.
 		/// </summary>
 		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
@@ -378,17 +378,6 @@ namespace Axiom.Graphics
         }
 
         #endregion
-
-        #region IConfigurable Members
-
-        /// <summary>
-		///    Must be implemented by subclasses.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="val"></param>
-		public abstract bool SetParam( string name, string val );
-
-		#endregion
 	}
 
 	/// <summary>
@@ -427,7 +416,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// For HighLevelGpuPrograms this simply returns the Language.
 		/// </summary>
-		public string Type
+		public override string Type
 		{
 			get
 			{
@@ -441,17 +430,15 @@ namespace Axiom.Graphics
 		/// <param name="name"></param>
 		/// <returns></returns>
 		/// <remarks>This method cannot be used to create an instance of a HighLevelGpuProgram use CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader ) instead.</remarks>
-		public HighLevelGpuProgram CreateInstance( string name )
+		public override HighLevelGpuProgram CreateInstance( string name )
 		{
-			throw new Exception( "Cannot create a HighLevelGpuProgram without specifing the GpuProgramType." );
+			throw new AxiomException( "Cannot create a HighLevelGpuProgram without specifing the GpuProgramType." );
 		}
 
-		public virtual void DestroyInstance( HighLevelGpuProgram obj )
+		public override void DestroyInstance( ref HighLevelGpuProgram obj )
 		{
-            if (!obj.IsDisposed)
-			    obj.Dispose();
-
-			obj = null;
+            obj.SafeDispose();
+            base.DestroyInstance( ref obj );
 		}
 
 		#endregion AbstractFactory<HighLevelGpuProgram> Implementation

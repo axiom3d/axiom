@@ -1,11 +1,14 @@
-﻿using System;
+﻿#region Namespace Declarations
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using Axiom.Core;
 using Axiom.CrossPlatform;
+using Axiom.Utilities;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
@@ -15,43 +18,28 @@ namespace Axiom.Graphics
         /// This class emulates the behaviour of a vector&lt;T&gt;
         /// allowing T* access as IntPtr of a specified element
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        [AxiomHelper(0, 8)]
-        public class OffsetArray<T>: IList<T>
+        [AxiomHelper( 0, 9 )]
+        public abstract class OffsetArray<T> : DisposableObject, IList<T>
         {
-            public T[] Data { get; protected set; } 
-
-            public struct FixedPointer : IDisposable
-            {
-                public BufferBase Pointer;
-                internal T[] Owner;
-
-                public void Dispose()
-                {
-                    Memory.UnpinObject(Owner);
-                }
-            }
+            #region Fields
 
             private FixedPointer _ptr;
+            private readonly int _size = Memory.SizeOf( typeof( T ) );
 
-            private readonly int _size = Memory.SizeOf(typeof(T));
+            #endregion Fields
 
-            public FixedPointer Fix(int offset)
-            {
-                _ptr.Owner = Data;
-                _ptr.Pointer = Memory.PinObject(_ptr.Owner).Offset(_size * offset);
-                return _ptr;
+            #region Properties
+
+            public T[] Data
+            { 
+                get;
+                protected set;
             }
 
-            public IEnumerator<T> GetEnumerator()
+            public int Count
             {
-                for (var i = 0; i < Count; i++ )
-                    yield return Data[i];
-            }
-
-            public OffsetArray()
-            {
-                Data = new T[16];
+                get;
+                private set;
             }
 
             public int Capacity
@@ -62,30 +50,97 @@ namespace Axiom.Graphics
                 }
             }
 
-            private void Grow()
+            public bool IsReadOnly
+            {
+                get
+                {
+                    return false;
+                }
+            }
+
+            public T this[ int index ]
+            {
+                get
+                {
+                    return Data[ index ];
+                }
+
+                set
+                {
+                    Data[ index ] = value;
+                }
+            }
+
+            #endregion Properties
+
+            #region Nested types
+
+            public struct FixedPointer : IDisposable
+            {
+                public BufferBase Pointer;
+                internal T[] Owner;
+
+                public void Dispose()
+                {
+                    Memory.UnpinObject( Owner );
+                }
+            };
+
+            #endregion Nested types
+
+            public OffsetArray()
+                : base()
+            {
+                Data = new T[ 16 ];
+            }
+
+            protected override void dispose( bool disposeManagedResources )
+            {
+                if ( !this.IsDisposed && disposeManagedResources )
+                    _ptr.SafeDispose();
+
+                base.dispose( disposeManagedResources );
+            }
+
+            public FixedPointer Fix( int offset )
+            {
+                _ptr.Owner = Data;
+                _ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size * offset );
+                return _ptr;
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                for ( var i = 0; i < Count; i++ )
+                    yield return Data[ i ];
+            }
+
+            private void _grow()
             {
                 var tmp = Data;
                 Array.Resize( ref tmp, Capacity + 16 );
                 Data = tmp;
             }
 
-            public void AddRange(IEnumerable<T> floatEntries)
+            public void AddRange( IEnumerable<T> entries )
             {
-                foreach (var v in floatEntries)
+                foreach ( var v in entries )
                     Add( v );
             }
 
-            public void RemoveRange(int index, int count)
+            public void RemoveRange( int index, int count )
             {
                 var behind = Count - index - 1; // number of elements behind the to be moved region
                 var next = index + count;       // index of the first element behind
                 var todo = behind < count ? behind : count; // number of elements to shift down
 
-                for (var i = 0; i < todo; i++)
+                for ( var i = 0; i < todo; i++ )
                     Data[ index + i ] = Data[ next + i ];
-                
+
                 Count -= count;
             }
+
+            public abstract void Resize( int size );
 
             #region IList<T> implementation
 
@@ -96,8 +151,8 @@ namespace Axiom.Graphics
 
             public void Add( T item )
             {
-                if (Count == Capacity)
-                    Grow();
+                if ( Count == Capacity )
+                    _grow();
                 Data[ Count++ ] = item;
             }
 
@@ -108,22 +163,8 @@ namespace Axiom.Graphics
 
             public void CopyTo( T[] array, int arrayIndex )
             {
-                for (var i = 0; i < Count; i++)
+                for ( var i = 0; i < Count; i++ )
                     array[ arrayIndex + i ] = Data[ i ];
-            }
-
-            public int Count 
-            { 
-                get;
-                private set;
-            }
-
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return false;
-                }
             }
 
             public void RemoveAt( int index )
@@ -131,27 +172,14 @@ namespace Axiom.Graphics
                 RemoveRange( index, 1 );
             }
 
-            public T this[int index]
-            {
-                get
-                {
-                    return Data[index];
-                }
-                set
-                {
-                    Data[index] = value;
-                }
-            }
-
-
             #region unimplemented operations
 
-            public bool Contains(T item)
+            public bool Contains( T item )
             {
                 throw new NotImplementedException();
             }
 
-            public bool Remove(T item)
+            public bool Remove( T item )
             {
                 throw new NotImplementedException();
             }
@@ -167,55 +195,52 @@ namespace Axiom.Graphics
             }
 
             #endregion
-           
 
-            #endregion
-        }
+            #endregion IList<T> implementation
+        };
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public class FloatConstantList : OffsetArray<float>
         {
-            public void Resize( int size )
-            {
-                while ( Count < size )
-                {
-                    Add( 0.0f );
-                }
-            }
-
             public FloatConstantList()
+                : base()
             {
             }
 
-            public FloatConstantList(FloatConstantList other)
+            public FloatConstantList( FloatConstantList other )
             {
                 Data = (float[])other.Data.Clone();
             }
-        }
+
+            public override void Resize( int size )
+            {
+                Contract.Requires( size > Count );
+                AddRange( Enumerable.Repeat( 0.0f, size - Count ) );
+            }
+        };
 
         /// <summary>
         /// </summary>
-        [OgreVersion(1, 7, 2790)]
+        [OgreVersion( 1, 7, 2790 )]
         public class IntConstantList : OffsetArray<int>
         {
-            public void Resize( int size )
-            {
-                while ( Count < size )
-                {
-                    Add( 0 );
-                }
-            }
-
             public IntConstantList()
+                : base()
             {
             }
 
-            public IntConstantList(IntConstantList other)
+            public IntConstantList( IntConstantList other )
             {
                 Data = (int[])other.Data.Clone();
             }
-        }
+
+            public override void Resize( int size )
+            {
+                Contract.Requires( size > Count );
+                AddRange( Enumerable.Repeat( 0, size - Count ) );
+            }
+        };
     }
 }

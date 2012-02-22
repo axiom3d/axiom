@@ -148,76 +148,9 @@ namespace Axiom.RenderSystems.Xna.HLSL
             }
         }
 
-        public override int SamplerCount
-        {
-            get
-            {
-                switch ( target )
-                {
-                    case "ps_1_1":
-                    case "ps_1_2":
-                    case "ps_1_3":
-                        return 4;
-                    case "ps_1_4":
-                        return 6;
-                    case "ps_2_0":
-                    case "ps_2_x":
-                    case "ps_3_0":
-                    case "ps_3_x":
-                        return 16;
-                    default:
-                        throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).",
-                                                  target );
-                }
-
-                // return 0;
-            }
-        }
-
-        #region IConfigurable Members
-
-        /// <summary>
-        ///     Sets a param for this HLSL program.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public override bool SetParam( string name, string val )
-        {
-            var handled = true;
-
-            switch ( name )
-            {
-                case "entry_point":
-                    entry = val;
-                    break;
-
-                case "target":
-                    target = val.Split( ' ' )[ 0 ];
-                    break;
-
-                case "preprocessor_defines":
-                    preprocessorDefines = val;
-                    break;
-
-                case "includes_skeletal_animation":
-                    IsSkeletalAnimationIncluded = true;
-                    break;
-
-                default:
-                    LogManager.Instance.Write( "HLSLProgram: Unrecognized parameter '{0}'", name );
-                    handled = false;
-                    break;
-            }
-
-            return handled;
-        }
-
-        #endregion IConfigurable Members
-
         protected override void BuildConstantDefinitions()
         {
             throw new NotImplementedException();
         }
-    }
+    };
 }

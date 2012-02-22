@@ -319,5 +319,5 @@ namespace Axiom.Core
 		}
 
 		#endregion IDisposable Implementation
-	}
+	};
 }

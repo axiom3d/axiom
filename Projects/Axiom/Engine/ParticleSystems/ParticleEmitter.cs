@@ -73,7 +73,7 @@ namespace Axiom.ParticleSystems
 	///		with literally infinite combinations of emitter and affector types, and parameters within those
 	///		types.
 	/// </remarks>
-	public abstract class ParticleEmitter : Particle, IConfigurable
+	public abstract class ParticleEmitter : Particle
 	{
 		#region Fields
 
@@ -947,9 +947,6 @@ namespace Axiom.ParticleSystems
 
 		#region Script parser methods
 
-		/// <summary>
-		///
-		/// </summary>
 		public bool SetParam( string name, string val )
 		{
 			if ( commandTable.ContainsKey( name ) )
@@ -1417,5 +1414,5 @@ namespace Axiom.ParticleSystems
 		}
 
 		#endregion Command definitions
-	}
+	};
 }

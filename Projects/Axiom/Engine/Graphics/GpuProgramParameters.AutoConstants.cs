@@ -949,7 +949,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="name">The name of the auto constant</param>
         /// <param name="def"></param>
-        /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public static bool GetAutoConstantDefinition( string name, out AutoConstantDefinition def )
         {
             // find a constant definition that matches name by iterating through the 
@@ -978,7 +978,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="idx">The auto constant index</param>
         /// <param name="def"></param>
-        /// <returns></returns>
+        [OgreVersion( 1, 7, 2 )]
         public static bool GetAutoConstantDefinition( int idx, out AutoConstantDefinition def )
         {
             def = new AutoConstantDefinition();

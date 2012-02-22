@@ -347,7 +347,6 @@ namespace Axiom.Graphics
                 GpuConstantDefinition def;
                 if (NamedConstants.Map.TryGetValue(name, out def))
                 {
-
                     var count = Utility.Min(value.Length, def.ElementSize * def.ArraySize);
 
                     for (var v = 0; v < count; v++)
@@ -442,5 +441,5 @@ namespace Axiom.Graphics
 
             #endregion
         }
-	}
+	};
 }

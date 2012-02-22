@@ -215,8 +215,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                                                     GpuProgramType.Vertex );
             LogManager.Instance.Write( "Created VertexShader {0}", "VS_" + shaderCount );
             vs.Source = shaderSource;
-            vs.SetParam( "entry_point", vertexProgramName );
-            vs.SetParam( "target", shaderGenerator.VPTarget );
+            vs.Properties[ "entry_point" ] = vertexProgramName;
+            vs.Properties[ "target" ] = shaderGenerator.VPTarget;
             vs.Load();
 
             vertexProgramUsage.Program = vs;
@@ -228,8 +228,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                                                     GpuProgramType.Fragment );
             LogManager.Instance.Write( "Created FragmentProgram {0}", "FS_" + shaderCount );
             fs.Source = shaderSource;
-            fs.SetParam( "entry_point", fragmentProgramName );
-            fs.SetParam( "target", shaderGenerator.FPTarget );
+            fs.Properties[ "entry_point" ] = fragmentProgramName;
+            fs.Properties[ "target" ] = shaderGenerator.FPTarget;
             fs.Load();
 
             fragmentProgramUsage.Program = fs;

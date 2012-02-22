@@ -82,15 +82,6 @@ namespace Axiom.Graphics
         {
         }
 
-
-        [OgreVersion(1, 7, 2790)]
-        public override bool SetParam( string name, string val )
-        {
-            // always silently ignore all parameters so as not to report errors on
-            // unsupported platforms
-            return true;
-        }
-
         /// <summary>
         /// Overridden from GpuProgram - never supported
         /// </summary>
@@ -102,12 +93,7 @@ namespace Axiom.Graphics
                 return false;
             }
         }
-
-        public override int SamplerCount
-        {
-            get { return 0; }
-        }
-    }
+    };
 
     public class NullProgramFactory : HighLevelGpuProgramFactory
     {
@@ -123,5 +109,5 @@ namespace Axiom.Graphics
         {
             return new NullProgram( creator, name, handle, group, isManual, loader );
         }
-    }
+    };
 }

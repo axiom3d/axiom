@@ -207,10 +207,7 @@ namespace Axiom.Serialization
 						var param = entry.Key;
 						var val = entry.Value;
 
-						if ( !hgp.SetParam( param, val ) )
-						{
-							LogParseError( scriptContext, "Error in program {0} parameter {1} is not valid.", def.name, param );
-						}
+                        hgp.Properties[ param ] = val;
 					}
 				}
 				catch ( Exception ex )
