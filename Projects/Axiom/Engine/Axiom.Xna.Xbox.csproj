@@ -189,7 +189,6 @@
     <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ICloneable.cs" />
-    <Compile Include="Core\IConfigurable.cs" />
     <Compile Include="Core\ILodListener.cs" />
     <Compile Include="Core\IPlatformManager.cs" />
     <Compile Include="Core\IPlugin.cs" />

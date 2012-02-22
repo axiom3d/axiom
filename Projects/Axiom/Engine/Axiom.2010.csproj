@@ -354,9 +354,6 @@
     <Compile Include="Core\Frustum.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\IConfigurable.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\IPlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
