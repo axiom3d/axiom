@@ -133,6 +133,7 @@
     <Compile Include="Controllers\IControllerFunction.cs" />
     <Compile Include="Controllers\IControllerValue.cs" />
     <Compile Include="Core\AbstractFactory~1.cs" />
+    <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\AxiomException.cs" />
     <Compile Include="Core\Billboard.cs" />
     <Compile Include="Core\BillboardChain.cs" />
@@ -420,7 +421,7 @@
     <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramSharedParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
