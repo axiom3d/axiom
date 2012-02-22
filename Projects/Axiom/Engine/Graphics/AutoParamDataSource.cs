@@ -1619,14 +1619,14 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///		Get / Sets the constant extrusion distance for directional lights.
+        ///	Get / Sets the constant extrusion distance for directional lights.
         /// </summary>
-        public virtual Real ShadowDirLightExtrusionDistance
+        public virtual Real ShadowExtrusionDistance
         {
             [OgreVersion( 1, 7, 2 )]
             get
             {
-                Light l = this.GetLight( 0 ); // only ever applies to one light at once
+                var l = this.GetLight( 0 ); // only ever applies to one light at once
                 if ( l.Type == LightType.Directional )
                 {
                     // use constant
@@ -1636,7 +1636,7 @@ namespace Axiom.Graphics
                 {
                     // Calculate based on object space light distance
                     // compared to light attenuation range
-                    Vector3 objPos = this.InverseWorldMatrix.TransformAffine( l.GetDerivedPosition( true ) );
+                    var objPos = this.InverseWorldMatrix.TransformAffine( l.GetDerivedPosition( true ) );
                     return l.AttenuationRange - objPos.Length;
                 }
             }

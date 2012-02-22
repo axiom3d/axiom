@@ -5048,7 +5048,7 @@ namespace Axiom.Core
             this.autoParamDataSource.SetCurrentCamera( camera, cameraRelativeRendering );
 
 			// Set autoparams for finite dir light extrusion
-            this.autoParamDataSource.ShadowDirLightExtrusionDistance = this.shadowDirLightExtrudeDist;
+            this.autoParamDataSource.ShadowExtrusionDistance = this.shadowDirLightExtrudeDist;
 
 			// sets the current ambient light color for use in auto GPU program params
 			this.autoParamDataSource.AmbientLight = this.ambientColor;
