@@ -386,6 +386,7 @@
 		  
   <ItemGroup>
     <Axiom_NuGetPackage Include="NuGet Package\*.nuspec" />
+	<Axiom_Package_Tool Include="NuGet Package\tools\*.*" />
   </ItemGroup>
   
   <Target Name="AxiomDist_NuGetPackage" >
@@ -396,6 +397,9 @@
     
     <Copy SourceFiles="@(Axiom_NuGetPackage)"
 		  DestinationFolder="$(ModuleTempDir)\packages\%(Axiom_NuGetPackage.Filename)" />
+    <Copy SourceFiles="@(Axiom_Package_Tool)"
+		  DestinationFolder="$(ModuleTempDir)\packages\tools" />
+
     <Version VersionFile="version.txt" >
 		<Output TaskParameter="Major" PropertyName="Major" />
 		<Output TaskParameter="Minor" PropertyName="Minor" />
