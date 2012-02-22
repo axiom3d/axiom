@@ -13,11 +13,13 @@
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
     <dependencies>
       <dependency id="Axiom" version="$version$" />
+      <dependency id="Axiom.RenderSystems.DirectX9" version="$version$" />
+      <dependency id="Axiom.Platforms.Win32" version="$version$" />
+      <dependency id="Axiom.Plugins.CgProgramManager" version="$version$" />
+      <dependency id="Axiom.Plugins.DevILCodecs" version="$version$" />
+      <dependency id="Axiom.Plugins.FreeImageCodecs" version="$version$" />
+      <dependency id="Axiom.Plugins.ParticleFX" version="$version$" />
+      <dependency id="Axiom.Plugins.SystemDrawingCodecs" version="$version$" />
     </dependencies>
   </metadata>
-  <files>
-		<file src="..\..\..\..\Framework\image\bin\net35\Axiom.Framework.dll" target="lib\net35\Axiom.Framework.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll" target="lib\net35\SharpInputSystem.Core.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\Common.Logging.dll" target="lib\net35\Common.Logging.dll" /> 
-  </files>
 </package>

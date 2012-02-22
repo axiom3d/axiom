@@ -16,7 +16,9 @@
     </dependencies>
   </metadata>
   <files>
-		<file src="..\..\x86\Axiom.Platforms.OpenTK.dll" target="lib\net35\Axiom.Platforms.OpenTK.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll" target="lib\net35\OpenTK.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\OpenTK.Compatibility.dll" target="lib\net35\OpenTK.Compatibility.dll" />
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\OpenTK.GLControl.dll" target="lib\net35\OpenTK.GLControl.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.DevIL.dll" target="lib\net35\Tao.DevIL.dll" /> 
   </files>  
 </package>
