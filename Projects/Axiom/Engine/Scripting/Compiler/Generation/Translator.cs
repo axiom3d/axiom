@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -47,28 +48,28 @@ namespace Axiom.Scripting.Compiler
 	{
 		public abstract class Translator
 		{
-			/// <summary>
-			/// Internal method that checks if this Translator is the right translator for the node
-			/// supplied by the <see cref="ScriptTranslatorManager"/>.
-			/// </summary>
-			/// <param name="nodeId">The Id of the node</param>
-			/// <param name="parentId">The Id of the node's parent (if any)</param>
-			/// <returns></returns>
-			internal abstract bool CheckFor( Keywords nodeId, Keywords parentId );
+            /// <summary>
+            /// Internal method that checks if this Translator is the right translator for the node
+            /// supplied by the <see cref="ScriptTranslatorManager"/>.
+            /// </summary>
+            /// <param name="nodeId">The Id of the node</param>
+            /// <param name="parentId">The Id of the node's parent (if any)</param>
+            [AxiomHelper( 0, 9 )]
+            internal abstract bool CheckFor( Keywords nodeId, Keywords parentId );
 
 			/// <summary>
 			/// This function translates the given node into Ogre resource(s).
 			/// </summary>
 			/// <param name="compiler">The compiler invoking this translator</param>
 			/// <param name="node">The current AST node to be translated</param>
+            [OgreVersion( 1, 7, 2 )]
 			public abstract void Translate( ScriptCompiler compiler, AbstractNode node );
 
 			/// <summary>
 			/// Retrieves a new translator from the factories and uses it to process the give node
 			/// </summary>
-			/// <param name="compiler"></param>
-			/// <param name="node"></param>
-			protected void _processNode( ScriptCompiler compiler, AbstractNode node )
+            [OgreVersion( 1, 7, 2 )]
+			protected void processNode( ScriptCompiler compiler, AbstractNode node )
 			{
 				if ( !(node is ObjectAbstractNode) )
 					return;
@@ -94,9 +95,7 @@ namespace Axiom.Scripting.Compiler
 			/// <summary>
 			/// Retrieves the node iterator at the given index
 			/// </summary>
-			/// <param name="nodes"></param>
-			/// <param name="index"></param>
-			/// <returns></returns>
+            [OgreVersion( 1, 7, 2 )]
 			protected static AbstractNode getNodeAt( IList<AbstractNode> nodes, int index )
 			{
 				if ( nodes == null )
@@ -111,9 +110,8 @@ namespace Axiom.Scripting.Compiler
 			/// <summary>
 			/// Converts the node to a boolean and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
 			/// <returns>true if successful</returns>
+            [OgreVersion( 1, 7, 2 )]
 			protected static bool getBoolean( AbstractNode node, out bool result )
 			{
 				result = false;
@@ -135,9 +133,8 @@ namespace Axiom.Scripting.Compiler
 			/// <summary>
 			/// Converts the node to a string and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
 			/// <returns>true if successful</returns>
+            [OgreVersion( 1, 7, 2 )]
 			protected static bool getString( AbstractNode node, out String result )
 			{
 				result = string.Empty;
@@ -245,7 +242,6 @@ namespace Axiom.Scripting.Compiler
 
 				return false;
 			}
-
 			
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result )
 			{
@@ -396,7 +392,75 @@ namespace Axiom.Scripting.Compiler
 				return success;
 			}
 
-			//static bool getConstantType(AbstractNodeList::const_iterator i, GpuConstantType *op); 
+            /// <summary>
+            /// Converts the node to a GpuConstantType enum and returns true if successful
+            /// </summary>
+            [OgreVersion( 1, 7, 2 )]
+            protected static bool getConstantType( AbstractNode i, out GpuProgramParameters.GpuConstantType op )
+            {
+                op = GpuProgramParameters.GpuConstantType.Unknown;
+                string val;
+                getString( i, out val );
+
+                if ( val.Contains( "float" ) )
+                {
+                    var count = 1;
+                    if ( val.Length == 6 )
+                        count = int.Parse( val.Substring( 5 ) );
+                    else if ( val.Length > 6 )
+                        return false;
+
+                    if ( count > 4 || count == 0 )
+                        return false;
+
+                    op = GpuProgramParameters.GpuConstantType.Float1 + count - 1;
+                }
+                else if ( val.Contains( "int" ) )
+                {
+                    var count = 1;
+                    if ( val.Length == 4 )
+                        count = int.Parse( val.Substring( 3 ) );
+                    else if ( val.Length > 4 )
+                        return false;
+
+                    if ( count > 4 || count == 0 )
+                        return false;
+
+                    op = GpuProgramParameters.GpuConstantType.Int1 + count - 1;
+                }
+                else if ( val.Contains( "matrix" ) )
+                {
+                    int count1, count2;
+
+                    if ( val.Length == 9 )
+                    {
+                        count1 = int.Parse( val.Substring( 6, 1 ) );
+                        count2 = int.Parse( val.Substring( 8, 1 ) );
+                    }
+                    else
+                        return false;
+
+                    if ( count1 > 4 || count1 < 2 || count2 > 4 || count2 < 2 )
+                        return false;
+
+                    switch(count1)
+                    {
+                        case 2:
+                            op = GpuProgramParameters.GpuConstantType.Matrix_2X2 + count2 - 2;
+                            break;
+
+                        case 3:
+                            op = GpuProgramParameters.GpuConstantType.Matrix_3X2 + count2 - 2;
+                            break;
+
+                        case 4:
+                            op = GpuProgramParameters.GpuConstantType.Matrix_4X2 + count2 - 2;
+                            break;
+                    };
+                }
+
+                return true;
+            }
 
 			/// <summary>
 			/// Converts the node to an enum of type T and returns true if successful
@@ -441,11 +505,6 @@ namespace Axiom.Scripting.Compiler
 
 				return false;
 			}
-
-			public Translator()
-			{
-			}
 		}
-
-	}
+	};
 }

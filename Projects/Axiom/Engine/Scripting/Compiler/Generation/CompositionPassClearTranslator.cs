@@ -48,12 +48,6 @@ namespace Axiom.Scripting.Compiler
 		{
 			protected CompositionPass _Pass;
 
-			public CompositionPassClearTranslator()
-				: base()
-			{
-				_Pass = null;
-			}
-
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
@@ -79,7 +73,7 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( i is ObjectAbstractNode )
 					{
-						_processNode( compiler, i );
+						processNode( compiler, i );
 					}
 					else if ( i is PropertyAbstractNode )
 					{

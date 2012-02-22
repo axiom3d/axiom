@@ -185,7 +185,7 @@ namespace Axiom.Scripting.Compiler
 					}
 					else
 					{
-						_processNode( compiler, i );
+						processNode( compiler, i );
 					}
 				}
 			}

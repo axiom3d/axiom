@@ -201,7 +201,6 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		#endregion IScriptLoader Implementation
-
 	}
 
 	/// <summary>
@@ -265,7 +264,7 @@ namespace Axiom.Scripting.Compiler
 			//TODO uncomment following file when ExternalTextureSourceManager is being implemented
 			//_translators.Add( new ScriptCompiler.TextureSourceTranslator() );
 			_translators.Add( new ScriptCompiler.GpuProgramTranslator() );
-			//TODO add here SharedParamsTranslator
+            _translators.Add( new ScriptCompiler.SharedParametersTranslator() );
 
 			/**************************************************************************
 			* Particle System section

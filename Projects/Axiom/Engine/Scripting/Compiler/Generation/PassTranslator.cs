@@ -52,7 +52,6 @@ namespace Axiom.Scripting.Compiler
 			public PassTranslator()
 				: base()
 			{
-				_pass = null;
 			}
 
 			#region Translator Implementation
@@ -425,8 +424,7 @@ namespace Axiom.Scripting.Compiler
 										if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 )
 											&& getEnumeration<SceneBlendFactor>( i2, compiler, out sbf2 ) && getEnumeration<SceneBlendFactor>( i3, compiler, out sbf3 ) )
 										{
-											//TODO
-											//mPass->setSeparateSceneBlending(sbf0, sbf1, sbf2, sbf3);
+                                            _pass.SetSeparateSceneBlending( sbf0, sbf1, sbf2, sbf3 );
 										}
 										else
 										{
@@ -1735,14 +1733,16 @@ namespace Axiom.Scripting.Compiler
 								break;
 
 							default:
-								_processNode( compiler, i );
+								processNode( compiler, i );
 								break;
 						}
 					}
 				}
 			}
-			#endregion Translator Implementation
+            
+            #endregion Translator Implementation
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1759,6 +1759,7 @@ namespace Axiom.Scripting.Compiler
 				}
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1775,6 +1776,7 @@ namespace Axiom.Scripting.Compiler
 				}
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateGeometryProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1791,6 +1793,7 @@ namespace Axiom.Scripting.Compiler
 				}
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateShadowCasterVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1802,13 +1805,13 @@ namespace Axiom.Scripting.Compiler
 				pass.SetShadowCasterVertexProgram( createdProgramName );
 
 				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
-				{
-#warning this need GpuProgramParametersShared implementation
-					//    GpuProgramParametersSharedPtr params = pass->getShadowCasterVertexProgramParameters();
-					//    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                {
+                    var parameters = pass.ShadowCasterVertexProgramParameters;
+                    GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateShadowReceiverVertexProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1821,12 +1824,12 @@ namespace Axiom.Scripting.Compiler
 
 				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//    GpuProgramParametersSharedPtr params = pass->getShadowReceiverVertexProgramParameters();
-					//    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                    var parameters = pass.ShadowReceiverVertexProgramParameters;
+                    GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
+            [OgreVersion( 1, 7, 2 )]
 			protected void _translateShadowReceiverFragmentProgramRef( ScriptCompiler compiler, ObjectAbstractNode node )
 			{
 				string createdProgramName;
@@ -1839,12 +1842,12 @@ namespace Axiom.Scripting.Compiler
 
 				if ( GpuProgramManager.Instance.GetByName( createdProgramName ).IsSupported )
 				{
-#warning this need GpuProgramParametersShared implementation
-					//    GpuProgramParametersSharedPtr params = pass->getShadowReceiverFragmentProgramParameters();
-					//    GpuProgramTranslator::translateProgramParameters(compiler, params, node);
+                    var parameters = pass.ShadowReceiverFragmentProgramParameters;
+                    GpuProgramTranslator.TranslateProgramParameters( compiler, parameters, node );
 				}
 			}
 
+            [AxiomHelper( 0, 9 )]
 			private Pass _commonProgramChecks( ScriptCompiler compiler, ObjectAbstractNode node, out string createdProgramName )
 			{
 				createdProgramName = string.Empty;
@@ -1871,6 +1874,6 @@ namespace Axiom.Scripting.Compiler
 				return pass;
 			}
 		}
-	}
+	};
 }
 
