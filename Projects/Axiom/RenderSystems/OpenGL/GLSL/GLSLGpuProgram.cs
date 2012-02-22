@@ -340,5 +340,5 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         #endregion
 
         #endregion GpuProgram Implementation
-    }
+    };
 }

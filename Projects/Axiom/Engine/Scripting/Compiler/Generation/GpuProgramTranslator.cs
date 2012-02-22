@@ -152,8 +152,7 @@ namespace Axiom.Scripting.Compiler
 
                                 try
                                 {
-                                    //TODO
-                                    //parameters.AddSharedParameters( atom0.Value );
+                                    parameters.AddSharedParameters( atom0.Value );
                                 }
                                 catch ( AxiomException e )
                                 {

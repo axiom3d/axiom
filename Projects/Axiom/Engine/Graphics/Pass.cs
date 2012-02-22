@@ -115,6 +115,8 @@ namespace Axiom.Graphics
 
 		#region Fields and Properties
 
+        private static readonly object _gpuProgramChangeMutex = new object();
+
 		public int passId;
 
 		// <summary>
@@ -1302,16 +1304,16 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public string VertexProgramName
 		{
+            [OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( this.HasVertexProgram )
-				{
-					return _vertexProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
+                lock ( _gpuProgramChangeMutex )
+                {
+                    if ( this.HasVertexProgram )
+                        return _vertexProgramUsage.ProgramName;
+                    else
+                        return string.Empty;
+                }
 			}
 			set
 			{
@@ -2821,32 +2823,70 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		public void SetVertexProgram( string name )
+        /// <summary>
+        /// Sets the details of the vertex program to use.
+        /// </summary>
+        /// <remarks>
+        /// Only applicable to programmable passes, this sets the details of
+        /// the vertex program to use in this pass. The program will not be
+        /// loaded until the parent Material is loaded.
+        /// </remarks>
+        /// <param name="name">
+        /// The name of the program - this must have been
+        /// created using GpuProgramManager by the time that this Pass
+        /// is loaded. If this parameter is blank, any vertex program in this pass is disabled.
+        /// </param>
+        /// <param name="resetParams">
+        /// If true, this will create a fresh set of parameters from the
+        /// new program being linked, so if you had previously set parameters
+        /// you will have to set them again. If you set this to false, you must
+        /// be absolutely sure that the parameters match perfectly, and in the
+        /// case of named parameters refers to the indexes underlying them,
+        /// not just the names.
+        /// </param>
+        [OgreVersion( 1, 7, 2, "Some todo left" )]
+#if NET_40
+		public void SetVertexProgram( string name, bool resetParams = true )
+#else
+        public void SetVertexProgram( string name, bool resetParams )
+#endif
 		{
-			SetVertexProgram( name, true );
+            lock ( _gpuProgramChangeMutex )
+            {
+                if ( this.VertexProgramName == name )
+                    return;
+
+                // turn off vertex programs when the name is set to null
+                if ( string.IsNullOrEmpty( name ) )
+                {
+                    _vertexProgramUsage.SafeDispose();
+                    _vertexProgramUsage = null;
+                }
+                else
+                {
+                    // create a new usage object
+                    if ( !this.HasVertexProgram )
+                        _vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+
+                    _vertexProgramUsage.SetProgramName( name, resetParams );
+                }
+
+                // needs recompilation
+                _parent.NotifyNeedsRecompile();
+
+                //TODO
+                //if( Pass::getHashFunction() == Pass::getBuiltinHashFunction( Pass::MIN_GPU_PROGRAM_CHANGE ) )
+                //    _dirtyHash();
+            }
 		}
 
-		public void SetVertexProgram( string name, bool resetParams )
-		{
-			// turn off vertex programs when the name is set to null
-			if ( name.Length == 0 )
-			{
-				_vertexProgramUsage = null;
-			}
-			else
-			{
-				// create a new usage object
-				if ( !this.HasVertexProgram )
-				{
-					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
-				}
-
-			    _vertexProgramUsage.SetProgramName( name, resetParams );
-			}
-
-			// needs recompilation
-			_parent.NotifyNeedsRecompile();
-		}
+#if !NET_40
+        /// <see cref="SetVertexProgram(string, bool)"/>
+        public void SetVertexProgram( string name )
+        {
+            SetVertexProgram( name, true );
+        }
+#endif
 
 		public void SetShadowCasterVertexProgram( string name )
 		{
