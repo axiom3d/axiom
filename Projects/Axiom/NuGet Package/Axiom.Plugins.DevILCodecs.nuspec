@@ -15,7 +15,7 @@
       <dependency id="Axiom" version="$version$" />
     </dependencies>
   </metadata>
-  <files>>
+  <files>
 		<file src="..\..\x86\Axiom.Plugins.DevILCodecs.dll" target="lib\net35\Axiom.Plugins.DevILCodecs.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\DevIL.dll" target="native\x86\devil.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILU.dll" target="native\x86\ilu.dll" /> 
