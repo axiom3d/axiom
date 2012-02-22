@@ -17,5 +17,6 @@
 		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll" target="lib\net35\ICSharpCode.SharpZipLib.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\freetype6.dll" target="native\x86\freetype6.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\zlib1.dll" target="native\x86\zlib1.dll" /> 
+		<file src="..\tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>
