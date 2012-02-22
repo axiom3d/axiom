@@ -352,9 +352,6 @@
     <Compile Include="Core\Frustum.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\IConfigurable.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Core\IPlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -782,7 +779,7 @@
     <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramSharedParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
@@ -834,7 +831,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Serialization\StreamSerializer.cs" />
-	<Compile Include="Core\AtomicWrappers.cs" />
+    <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
     <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
     <Compile Include="Core\WorkQueue\RequestID.cs" />
