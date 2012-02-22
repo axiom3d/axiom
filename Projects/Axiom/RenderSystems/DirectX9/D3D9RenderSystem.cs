@@ -2280,7 +2280,7 @@ namespace Axiom.RenderSystems.DirectX9
 							if ( ( i.Value.Variability & variability ) != 0 )
 							{
 								var logicalIndex = i.Key;
-								var pFloat = parms.GetFloatPointer();
+								var pFloat = parms.GetFloatConstantList();
 								var slotCount = i.Value.CurrentSize / 4;
 								Contract.Requires( i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9" );
 								ActiveD3D9Device.SetVertexShaderConstant( logicalIndex, pFloat, i.Value.PhysicalIndex, slotCount );
@@ -2296,7 +2296,7 @@ namespace Axiom.RenderSystems.DirectX9
 							if ( ( i.Value.Variability & variability ) != 0 )
 							{
 								var logicalIndex = i.Key;
-								var pInt = parms.GetIntPointer();
+								var pInt = parms.GetIntConstantList();
 								var slotCount = i.Value.CurrentSize / 4;
 								Contract.Requires( i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9" );
 								ActiveD3D9Device.SetVertexShaderConstant( logicalIndex, pInt, i.Value.PhysicalIndex, slotCount );
@@ -2316,7 +2316,7 @@ namespace Axiom.RenderSystems.DirectX9
 							if ( ( i.Value.Variability & variability ) != 0 )
 							{
 								var logicalIndex = i.Key;
-								var pFloat = parms.GetFloatPointer();
+								var pFloat = parms.GetFloatConstantList();
 								var slotCount = i.Value.CurrentSize / 4;
 								Contract.Requires( i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9" );
 								ActiveD3D9Device.SetPixelShaderConstant( logicalIndex, pFloat, i.Value.PhysicalIndex, slotCount );
@@ -2332,7 +2332,7 @@ namespace Axiom.RenderSystems.DirectX9
 							if ( ( i.Value.Variability & variability ) != 0 )
 							{
 								var logicalIndex = i.Key;
-								var pInt = parms.GetIntPointer();
+								var pInt = parms.GetIntConstantList();
 								var slotCount = i.Value.CurrentSize / 4;
 								Contract.Requires( i.Value.CurrentSize % 4 == 0, "Should not have any elements less than 4 wide for D3D9" );
 								ActiveD3D9Device.SetPixelShaderConstant( logicalIndex, pInt, i.Value.PhysicalIndex, slotCount );
@@ -2357,7 +2357,7 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						physicalIndex = activeVertexGpuProgramParameters.PassIterationNumberIndex;
 						logicalIndex = activeVertexGpuProgramParameters.GetFloatLogicalIndexForPhysicalIndex( physicalIndex );
-						var pFloat = activeVertexGpuProgramParameters.GetFloatPointer();
+						var pFloat = activeVertexGpuProgramParameters.GetFloatConstantList();
 
 						ActiveD3D9Device.SetVertexShaderConstant( logicalIndex, pFloat, physicalIndex, 1 );
 					}
@@ -2368,7 +2368,7 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						physicalIndex = activeFragmentGpuProgramParameters.PassIterationNumberIndex;
 						logicalIndex = activeFragmentGpuProgramParameters.GetFloatLogicalIndexForPhysicalIndex( physicalIndex );
-						var pFloat = activeFragmentGpuProgramParameters.GetFloatPointer();
+						var pFloat = activeFragmentGpuProgramParameters.GetFloatConstantList();
 
 						ActiveD3D9Device.SetPixelShaderConstant( logicalIndex, pFloat, physicalIndex, 1 );
 					}
@@ -2462,7 +2462,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return query;
 		}
 
-		[OgreVersion( 1, 7, 2790, "Needs review" )]
+		[OgreVersion( 1, 7, 2790 )]
 		public D3D9.Format GetDepthStencilFormatFor( D3D9.Format fmt )
 		{
 			D3D9.Format dsfmt;

@@ -121,7 +121,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         protected void _updateParameter( GpuProgramParameters programParameters, String paramName, Object value,
                                          int sizeInBytes )
         {
-            programParameters.AutoAddParamName = true;
+            //programParameters.AutoAddParamName = true;
             var idx = programParameters.FindNamedConstantDefinition( paramName ).LogicalIndex;
 
             if ( value is Matrix4 )

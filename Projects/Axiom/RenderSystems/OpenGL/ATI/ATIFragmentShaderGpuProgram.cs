@@ -104,21 +104,28 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			Gl.glBindFragmentShaderATI( programId );
 		}
 
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+        [OgreVersion( 1, 7, 2 )]
+        public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
-			// program constants done internally by compiler for local
-			if ( parms.HasFloatConstants )
-			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
-				{
-                    using (var entry = parms.GetFloatPointer(index))
+            // only supports float constants
+            var floatStruct = parms.FloatLogicalBufferStruct;
+
+            foreach ( var i in floatStruct.Map )
+            {
+                if ( ( i.Value.Variability & mask ) != 0 )
+                {
+                    var logicalIndex = i.Key;
+                    var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
+                    // Iterate over the params, set in 4-float chunks (low-level)
+                    for ( var j = 0; j < i.Value.CurrentSize; j += 4 )
                     {
-                        // send the params 4 at a time
-                        throw new AxiomException( "Update this!" );
-                        Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + index, entry.Pointer.Pin() );
+                        Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin() );
+                        pFloat.UnPin();
+                        pFloat += 4;
+                        ++logicalIndex;
                     }
-				}
-			}
+                }
+            }
 		}
 
 		public override void Unbind()

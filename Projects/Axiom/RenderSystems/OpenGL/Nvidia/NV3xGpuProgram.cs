@@ -166,19 +166,20 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		/// <param name="parms"></param>
         public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
-			if ( parms.HasFloatConstants )
-			{
-				for ( int index = 0; index < parms.FloatConstantCount; index++ )
-				{
-					using (var entry = parms.GetFloatPointer( index ))
-					{
-						// send the params 4 at a time
-					    throw new AxiomException( "Update this!" );
-						Gl.glProgramParameter4fvNV( programType, index, entry.Pointer.Pin() );
-                        entry.Pointer.UnPin();
-                    }
-				}
-			}
+            //TODO
+            //if ( parms.HasFloatConstants )
+            //{
+            //    for ( int index = 0; index < parms.FloatConstantCount; index++ )
+            //    {
+            //        using (var entry = parms.GetFloatPointer( index ))
+            //        {
+            //            // send the params 4 at a time
+            //            throw new AxiomException( "Update this!" );
+            //            Gl.glProgramParameter4fvNV( programType, index, entry.Pointer.Pin() );
+            //            entry.Pointer.UnPin();
+            //        }
+            //    }
+            //}
 		}
 
 		/// <summary>
