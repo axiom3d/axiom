@@ -17,5 +17,6 @@
   </metadata>  
   <files>
 		<file src="..\..\x86\Axiom.Platforms.Win32.dll" target="lib\net35\Axiom.Platforms.Win32.dll" /> 
+		<file src="..\tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>

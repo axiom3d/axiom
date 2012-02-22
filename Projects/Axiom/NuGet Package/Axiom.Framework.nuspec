@@ -18,5 +18,6 @@
   <files>
 		<file src="..\..\..\..\Framework\image\bin\net35\Axiom.Framework.dll" target="lib\net35\Axiom.Framework.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll" target="lib\net35\ICSharpCode.SharpZipLib.dll" /> 
+		<file src="..\tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>

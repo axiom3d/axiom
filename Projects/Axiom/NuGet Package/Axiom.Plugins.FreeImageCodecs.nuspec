@@ -19,5 +19,6 @@
 		<file src="..\..\x86\Axiom.Plugins.FreeImageCodecs.dll" target="lib\net35\Axiom.Plugins.FreeImageCodecs.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\freeimage.dll" target="native\x86\freeimage.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\FreeImage\FreeImageNET.dll" target="lib\FreeImageNet.dll" /> 
+		<file src="..\tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>
