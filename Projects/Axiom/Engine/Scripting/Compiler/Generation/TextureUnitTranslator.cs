@@ -1662,7 +1662,7 @@ namespace Axiom.Scripting.Compiler
 					}
 					else if ( i is ObjectAbstractNode )
 					{
-						_processNode( compiler, i );
+						processNode( compiler, i );
 					}
 				}
 			}

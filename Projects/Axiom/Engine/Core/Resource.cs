@@ -39,10 +39,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
-using ResourceHandle = System.UInt64;
-
+using System.Collections.Generic;
 using Axiom.Scripting;
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -104,12 +103,64 @@ namespace Axiom.Core
 	/// </remarks>
 	public abstract class Resource : ScriptableObject
 	{
+        public interface IListener
+        {
+            /// <summary>
+            /// Callback to indicate that background loading has completed.
+            /// </summary>
+            [OgreVersion( 1, 7, 2 )]
+            [Obsolete( "Use LoadingComplete instead" )]
+            void BackgroundLoadingComplete( Resource res );
+
+            /// <summary>
+            /// Callback to indicate that background preparing has completed.
+            /// </summary>
+            [OgreVersion( 1, 7, 2 )]
+            [Obsolete( "Use PreparingComplete instead." )]
+            void BackgroundPreparingComplete( Resource res );
+
+            /// <summary>
+            /// Called whenever the resource finishes loading.
+            /// </summary>
+            /// <remarks>
+            /// If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded), 
+            /// the call does not itself occur in the thread which is doing the loading;
+            /// when loading is complete a response indicator is placed with the
+            /// ResourceGroupManager, which will then be sent back to the 
+            /// listener as part of the application's primary frame loop thread.
+            /// </remarks>
+            [OgreVersion( 1, 7, 2 )]
+            void LoadingComplete( Resource res );
+
+            /// <summary>
+            /// Called whenever the resource finishes preparing (paging into memory).
+            /// </summary>
+            /// <remarks>
+            /// If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded)
+            /// the call does not itself occur in the thread which is doing the preparing;
+            /// when preparing is complete a response indicator is placed with the
+            /// ResourceGroupManager, which will then be sent back to the 
+            /// listener as part of the application's primary frame loop thread.
+            /// </remarks>
+            [OgreVersion( 1, 7, 2 )]
+            void PreparingComplete( Resource res );
+
+            /// <summary>
+            /// Called whenever the resource has been unloaded.
+            /// </summary>
+            [OgreVersion( 1, 7, 2 )]
+            void UnloadingComplete( Resource res );
+        };
+
 		#region Fields and Properties
 
 #if AXIOM_THREAD_SUPPORT
 		private object _autoMutex = new object();
 #endif
         protected object _loadingStatusMutex = new object();
+        
+        protected static readonly object listenerListMutex = new object();
+        protected List<IListener> listenerList = new List<IListener>();
 
 		#region Creator Property
 
@@ -595,20 +646,6 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Loads the resource, if not loaded already.
-		/// </summary>
-		/// <remarks>
-		/// If the resource is loaded from a file, loading is automatic. If not,
-		/// if for example this resource gained it's data from procedural calls
-		/// rather than loading from a file, then this resource will not reload
-		/// on it's own
-		/// </remarks>
-		public void Load()
-		{
-			Load( false );
-		}
-
-		/// <summary>
 		/// Loads the resource, if not loaded already.
 		/// </summary>
 		/// <remarks>
@@ -620,7 +657,11 @@ namespace Axiom.Core
 		/// <param name="background">Indicates whether the caller of this method is
 		/// the background resource loading thread.</param>
         [OgreVersion( 1, 7, 2, "Just missing _dirtyState implementation" )]
-		public virtual void Load( bool background )
+#if NET_40
+		public virtual void Load( bool background = false )
+#else
+        public virtual void Load( bool background )
+#endif
 		{
 			// Early-out without lock (mitigate perf cost of ensuring loaded)
 			// Don't load if:
@@ -752,7 +793,15 @@ namespace Axiom.Core
                 FireLoadingComplete( false );
         }
 
-		/// <summary>
+#if !NET_40
+        /// <see cref="Load(bool)"/>
+        public void Load()
+        {
+            Load( false );
+        }
+#endif
+
+        /// <summary>
 		///		Unloads the resource data, but retains enough info. to be able to recreate it
 		///		on demand.
 		/// </summary>
@@ -832,19 +881,104 @@ namespace Axiom.Core
                 _creator.NotifyResourceTouched( this );
         }
 
+        /// <summary>
+        /// Register a listener on this resource.
+        /// <seealso cref="Resource.IListener"/>
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public void AddListener( IListener lis )
+        {
+            lock ( listenerListMutex )
+            {
+                listenerList.Add( lis );
+            }
+        }
+
+        /// <summary>
+        /// Remove a listener on this resource.
+        /// <seealso cref="Resource.IListener"/>
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public void RemoveListener( IListener lis )
+        {
+            lock ( listenerListMutex )
+            {
+                listenerList.Remove( lis );
+            }
+        }
+
+        /// <summary>
+        /// Firing of loading complete event
+        /// </summary>
+        /// <remarks>
+        /// You should call this from the thread that runs the main frame loop 
+        /// to avoid having to make the receivers of this event thread-safe.
+        /// If you use Axiom's built in frame loop you don't need to call this
+        /// yourself.
+        /// </remarks>
+        /// <param name="wasBackgroundLoaded">Whether this was a background loaded event</param>
+        [OgreVersion( 1, 7, 2 )]
         internal virtual void FireLoadingComplete( bool wasBackgroundLoaded )
         {
-            //TODO
+            // Lock the listener list
+            lock ( listenerListMutex )
+            {
+                foreach ( var i in listenerList )
+                {
+                    // deprecated call
+                    if ( wasBackgroundLoaded )
+                        i.BackgroundLoadingComplete( this );
+
+                    i.LoadingComplete( this );
+                }
+            }
         }
 
+        /// <summary>
+        /// Firing of preparing complete event
+        /// </summary>
+        /// <remarks>
+        /// You should call this from the thread that runs the main frame loop 
+        /// to avoid having to make the receivers of this event thread-safe.
+        /// If you use Axiom's built in frame loop you don't need to call this
+        /// yourself.
+        /// </remarks>
+        /// <param name="wasBackgroundLoaded">Whether this was a background loaded event</param>
+        [OgreVersion( 1, 7, 2 )]
         internal virtual void FirePreparingComplete( bool wasBackgroundLoaded )
         {
-            //TODO
+            // Lock the listener list
+            lock ( listenerListMutex )
+            {
+                foreach ( var i in listenerList )
+                {
+                    // deprecated call
+                    if ( wasBackgroundLoaded )
+                        i.BackgroundPreparingComplete( this );
+
+                    i.PreparingComplete( this );
+                }
+            }
         }
 
-        internal virtual void FireUnloadingComplete( bool wasBackgroundLoaded )
+        /// <summary>
+        /// Firing of unloading complete event
+        /// </summary>
+        /// <remarks>
+        /// You should call this from the thread that runs the main frame loop 
+		/// to avoid having to make the receivers of this event thread-safe.
+		/// If you use Axiom's built in frame loop you don't need to call this
+		/// yourself.
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        internal virtual void FireUnloadingComplete()
         {
-            //TODO
+            // Lock the listener list
+            lock ( listenerListMutex )
+            {
+                foreach ( var i in listenerList )
+                    i.UnloadingComplete( this );
+            }
         }
 
 		/// <summary>
@@ -896,7 +1030,7 @@ namespace Axiom.Core
 
 
 		#endregion IDisposable Implementation
-	}
+	};
 
 	/// <summary>
 	/// Interface describing a manual resource loader.
@@ -931,5 +1065,5 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="resource">The resource which wishes to load</param>
 		void LoadResource( Resource resource );
-	}
+	};
 }

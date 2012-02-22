@@ -228,8 +228,7 @@ namespace Axiom.Graphics
         /// This is useful for registering an existing buffer as a temporary buffer
         /// which can be allocated just like a copy.
         /// </remarks>
-        /// <param name="sourceBuffer"></param>
-        /// <param name="copy"></param>
+        [OgreVersion( 1, 7, 2 )]
         public virtual void RegisterVertexBufferSourceAndCopy( HardwareVertexBuffer sourceBuffer, HardwareVertexBuffer copy )
         {
             lock ( TempBuffersMutex )
@@ -507,9 +506,9 @@ namespace Axiom.Graphics
                 }
 
                 // Erase the free copies
-                var freeCopies = from m in freeTempVertexBufferMap
-                                 where m.Key == sourceBuffer && m.Value.UseCount <= 1
-                                 select m.Key;
+                var freeCopies = ( from m in freeTempVertexBufferMap
+                                   where m.Key == sourceBuffer && m.Value.UseCount <= 1
+                                   select m.Key ).ToList();
 
                 foreach ( var v in freeCopies )
                 {
@@ -638,9 +637,6 @@ namespace Axiom.Graphics
         }
 #endif
 
-        #endregion
-
-        #region IDisposable Implementation
         /// <summary>
         /// Class level dispose method
         /// </summary>
@@ -672,14 +668,8 @@ namespace Axiom.Graphics
 
             base.dispose( disposeManagedResources );
         }
-        
-        #endregion IDisposable Implementation
 
-        public void DisposeIndexBuffer( HardwareIndexBuffer buffer )
-        {
-            indexBuffers.Remove( buffer );
-            buffer.Dispose();
-        }
+        #endregion Methods
 
 
 

@@ -326,7 +326,7 @@ namespace Axiom.Scripting.Compiler
 					} // end of if ( i is PropertyAbstractNode )
 					else if ( i is ObjectAbstractNode )
 					{
-						_processNode( compiler, i );
+						processNode( compiler, i );
 					}
 				}
 			}

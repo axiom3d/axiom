@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System.Collections.Generic;
 using Axiom.Core;
 using ResourceHandle = System.UInt64;
 
@@ -45,20 +46,26 @@ namespace Axiom.Graphics
 	/// </summary>
 	public abstract class GpuProgramManager : ResourceManager
 	{
+        private static readonly object _autoMutex = new object();
+
+        protected Dictionary<string, GpuProgramParameters.GpuSharedParameters> sharedParametersMap = 
+            new Dictionary<string, GpuProgramParameters.GpuSharedParameters>();
+
 		#region Singleton implementation
 
 		/// <summary>
-		///     Singleton instance of this class.
+		/// Singleton instance of this class.
 		/// </summary>
 		private static GpuProgramManager _instance;
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		/// Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		/// <remarks>
-		///     Protected internal because this singleton will actually hold the instance of a subclass
-		///     created by a render system plugin.
+		/// Protected internal because this singleton will actually hold the instance of a subclass
+		/// created by a render system plugin.
 		/// </remarks>
+        [OgreVersion( 1, 7, 2 )]
 		protected internal GpuProgramManager()
 			: base()
 		{
@@ -78,7 +85,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		/// Gets the singleton instance of this class.
 		/// </summary>
 		public static GpuProgramManager Instance
 		{
@@ -91,27 +98,6 @@ namespace Axiom.Graphics
 		#endregion Singleton implementation
 
 		#region Methods
-
-		/// <summary>
-		///    Creates a new GpuProgram.
-		/// </summary>
-		/// <param name="name">
-		///    Name of the program to create.
-		/// </param>
-		/// <param name="group"></param>
-		/// <param name="type">
-		///    Type of the program to create, i.e. vertex or fragment.
-		/// </param>
-		/// <param name="syntaxCode">
-		///    Syntax of the program, i.e. vs_1_1, arbvp1, etc.
-		/// </param>
-		/// <returns>
-		///    A new instance of GpuProgram.
-		/// </returns>
-		public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode )
-		{
-			return Create( name, group, type, syntaxCode, false, null );
-		}
 
 	    /// <summary>
 	    ///    Creates a new GpuProgram.
@@ -131,7 +117,12 @@ namespace Axiom.Graphics
 	    /// <returns>
 	    ///    A new instance of GpuProgram.
 	    /// </returns>
-	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual = false, IManualResourceLoader loader = null )
+#else
+        public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+#endif
 		{
 			// Call creation implementation
 			var ret = (GpuProgram)_create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, type, syntaxCode );
@@ -141,6 +132,20 @@ namespace Axiom.Graphics
 			ResourceGroupManager.Instance.notifyResourceCreated( ret );
 			return ret;
 		}
+
+#if !NET_40
+        /// <see cref="Create(string, string, GpuProgramType, string, bool, IManualResourceLoader)"/>
+        public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode )
+        {
+            return Create( name, group, type, syntaxCode, false, null );
+        }
+
+        /// <see cref="Create(string, string, GpuProgramType, string, bool, IManualResourceLoader)"/>
+        public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual )
+        {
+            return Create( name, group, type, syntaxCode, isManual, null );
+        }
+#endif
 
 		/// <summary>
 		/// Internal method for created programs, must be implemented by subclasses
@@ -153,6 +158,7 @@ namespace Axiom.Graphics
 		/// <param name="type">Type of the program to create, i.e. vertex or fragment.</param>
 		/// <param name="syntaxCode">Syntax of the program, i.e. vs_1_1, arbvp1, etc.</param>
 		/// <returns>A new instance of GpuProgram.</returns>
+        [OgreVersion( 1, 7, 2 )]
 		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
 	    /// <summary>
@@ -176,10 +182,11 @@ namespace Axiom.Graphics
 	    /// <returns>
 	    ///    An unloaded GpuProgram instance.
 	    /// </returns>
+        [OgreVersion( 1, 7, 2 )]
 	    public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
-
+            // Set all prarmeters (create does not set, just determines factory)
 			program.Type = type;
 			program.SyntaxCode = syntaxCode;
 			program.SourceFile = fileName;
@@ -206,10 +213,11 @@ namespace Axiom.Graphics
 	    ///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
 	    /// </param>
 	    /// <returns>An unloaded GpuProgram instance.</returns>
+        [OgreVersion( 1, 7, 2 )]
 	    public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
-
+            // Set all prarmeters (create does not set, just determines factory)
 			program.Type = type;
 			program.SyntaxCode = syntaxCode;
 			program.Source = source;
@@ -218,34 +226,21 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Creates a new GpuProgramParameters instance which can be used to bind parameters 
-		///    to your programs.
-		/// </summary>
-		/// <remarks>
-		///    Program parameters can be shared between multiple programs if you wish.
-		/// </remarks>
-		/// <returns></returns>
-		public virtual GpuProgramParameters CreateParameters()
-		{
-			return new GpuProgramParameters();
-		}
-
-		/// <summary>
 		///    Returns whether a given syntax code (e.g. "ps_1_3", "fp20", "arbvp1") is supported. 
 		/// </summary>
 		/// <param name="syntaxCode"></param>
-		/// <returns></returns>
-		public bool IsSyntaxSupported( string syntaxCode )
-		{
-        	// Use the current render system
-        	  var rs =  Root.Instance.RenderSystem;
+        [OgreVersion( 1, 7, 2 )]
+        public bool IsSyntaxSupported( string syntaxCode )
+        {
+            // Use the current render system
+            var rs = Root.Instance.RenderSystem;
 
             // Get the supported syntaxed from RenderSystemCapabilities 
             return rs.Capabilities.IsShaderProfileSupported( syntaxCode );
-		}
+        }
 
 	    /// <summary>
-	    ///    Loads a GPU program from a file of assembly.
+	    /// Loads a GPU program from a file of assembly.
 	    /// </summary>
 	    /// <remarks>
 	    ///    This method creates a new program of the type specified as the second parameter.
@@ -265,17 +260,19 @@ namespace Axiom.Graphics
 	    /// <param name="syntaxCode">
 	    ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 	    /// </param>
+        [OgreVersion( 1, 7, 2 )]
 	    public virtual GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
-			var program = GetByName( name );
+            lock ( _autoMutex )
+            {
+                var program = GetByName( name );
 
-			if ( program == null )
-			{
-				program = CreateProgram( name, group, fileName, type, syntaxCode );
-			}
+                if ( program == null )
+                    program = CreateProgram( name, group, fileName, type, syntaxCode );
 
-			program.Load();
-			return program;
+                program.Load();
+                return program;
+            }
 		}
 
 	    /// <summary>
@@ -299,17 +296,19 @@ namespace Axiom.Graphics
 	    /// <param name="syntaxCode">
 	    ///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 	    /// </param>
+        [OgreVersion( 1, 7, 2 )]
 	    public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
-			var program = GetByName( name );
+            lock ( _autoMutex )
+            {
+                var program = GetByName( name );
 
-			if ( program == null )
-			{
-				program = CreateProgramFromString( name, group, source, type, syntaxCode );
-			}
+                if ( program == null )
+                    program = CreateProgramFromString( name, group, source, type, syntaxCode );
 
-			program.Load();
-			return program;
+                program.Load();
+                return program;
+            }
 		}
 
 		#endregion
@@ -319,22 +318,71 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Gets a GpuProgram with the specified name.
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public new GpuProgram GetByName( string name )
+        [OgreVersion( 1, 7, 2 )]
+#if NET_40
+        public GpuProgram GetByName( string name, bool preferHighLevelPrograms = true )
+#else
+        public GpuProgram GetByName( string name, bool preferHighLevelPrograms )
+#endif
 		{
-			// look for a high level program first
-			GpuProgram program = HighLevelGpuProgramManager.Instance[ name ];
+            if ( preferHighLevelPrograms )
+            {
+                var ret = (GpuProgram)HighLevelGpuProgramManager.Instance.GetByName( name );
+                if ( ret != null )
+                    return ret;
+            }
 
-			// return if found
-			if ( program != null )
-			{
-				return program;
-			}
-
-			// return low level program
-			return (GpuProgram)base[ name ];
+            return (GpuProgram)base.GetByName( name );
 		}
+
+#if !NET_40
+        /// <see cref="GetByName(string, bool)"/>
+        public new GpuProgram GetByName( string name )
+        {
+            return this.GetByName( name, true );
+        }
+#endif
+        /// <summary>
+        /// Creates a new GpuProgramParameters instance which can be used to bind
+        /// parameters to your programs.
+        /// </summary>
+        /// <remarks>
+        /// Program parameters can be shared between multiple programs if you wish.
+        /// </remarks>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual GpuProgramParameters CreateParameters()
+        {
+            return new GpuProgramParameters();
+        }
+
+        /// <summary>
+        /// Create a new set of shared parameters, which can be used across many 
+        /// GpuProgramParameters objects of different structures.
+        /// </summary>
+        /// <param name="name">The name to give the shared parameters so you can refer to them later.</param>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual GpuProgramParameters.GpuSharedParameters CreateSharedParameters( string name )
+        {
+            if ( sharedParametersMap.ContainsKey( name ) )
+                throw new AxiomException( "The shared parameter set '{0}' already exists!" );
+
+            var ret = new GpuProgramParameters.GpuSharedParameters( name );
+            sharedParametersMap.Add( name, ret );
+            return ret;
+        }
+
+        /// <summary>
+        /// Retrieve a set of shared parameters, which can be used across many 
+		/// GpuProgramParameters objects of different structures.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public virtual GpuProgramParameters.GpuSharedParameters GetSharedParameters( string name )
+        {
+            if ( !sharedParametersMap.ContainsKey( name ) )
+                throw new AxiomException( "No shared parameter set with name '{0}'!", name );
+
+            return sharedParametersMap[ name ];
+        }
 
 		/// <summary>
 		///     Called when the engine is shutting down.
@@ -373,5 +421,5 @@ namespace Axiom.Graphics
         {
             throw new System.NotImplementedException();
         }
-    }
+    };
 }

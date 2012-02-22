@@ -274,7 +274,7 @@ namespace Axiom.Scripting.Compiler
 						} //end of switch statement
 					}
 					else if ( i is ObjectAbstractNode )
-						_processNode( compiler, i );
+						processNode( compiler, i );
 				}
 
 				// Apply the texture aliases
