@@ -16,7 +16,7 @@
     </dependencies>
   </metadata>
   <files>
-		<file src="..\..\x86\Axiom.Plugins.CgProgramManager.dll" target="lib\net35\Axiom.Plugins.CgProgramManager.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\cg.dll" target="lib\net35\cg.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.Cg.dll" target="lib\net35\Tao.Cg.dll" /> 
   </files>
 </package>
