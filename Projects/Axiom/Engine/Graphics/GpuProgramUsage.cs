@@ -70,10 +70,8 @@ namespace Axiom.Graphics
 	/// 	Just incase it wasn't clear from the above, this class provides linkage to both 
 	/// 	GpuProgram and HighLevelGpuProgram, despite its name.
 	/// </remarks>
-    public class GpuProgramUsage: DisposableObject
+    public class GpuProgramUsage: DisposableObject, Resource.IListener
 	{
-        // TODO: Resource::Listener implementation!
-
 		#region Member variables
 
         #region type
@@ -132,6 +130,7 @@ namespace Axiom.Graphics
 	    /// <param name="parent"></param>
         [OgreVersion(1, 7, 2790)]
 	    public GpuProgramUsage( GpuProgramType type, Pass parent )
+            : base()
 		{
 			this.type = type;
 	        this.parent = parent;
@@ -143,7 +142,8 @@ namespace Axiom.Graphics
         /// Copy constructor
         /// </summary>
         [OgreVersion(1, 7, 2790)]
-        public GpuProgramUsage(GpuProgramUsage oth, Pass parent)
+        public GpuProgramUsage( GpuProgramUsage oth, Pass parent )
+            : base()
         {
             type = oth.type;
             this.parent = parent;
@@ -160,12 +160,15 @@ namespace Axiom.Graphics
         [OgreVersion(1, 7, 2790)]
         protected override void dispose(bool disposeManagedResources)
         {
-            if (disposeManagedResources)
+            if ( !this.IsDisposed )
             {
-                // Listener not in place yet
-                //if (program != null)
-                //    program.RemoveListener( this );
+                if ( disposeManagedResources )
+                {
+                    if ( program != null )
+                        program.RemoveListener( this );
+                }
             }
+
             base.dispose(disposeManagedResources);
         }
 
@@ -244,44 +247,38 @@ namespace Axiom.Graphics
 
         #region SetProgramName
 
-		/// <summary>
-        ///    Sets the name of the program we're trying to link to.
-        /// </summary>
-        /// <remarks>
-        ///    Note that this will create a fresh set of parameters from the 
-        ///    new program being linked, so if you had previously set parameters 
-        ///    you will have to set them again. 
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
-        public void SetProgramName( string name )
-        {
-			SetProgramName( name, true );
-		}
         /// <summary>
-        ///    Sets the name of the program we're trying to link to.
+        /// Sets the name of the program to use.
         /// </summary>
-        /// <remarks>
-        ///    Note that this will create a fresh set of parameters from the 
-        ///    new program being linked, so if you had previously set parameters 
-        ///    you will have to set them again. 
-        /// </remarks>
-        [OgreVersion(1, 7, 2790)]
+        /// <param name="name">The name of the program to use</param>
+        /// <param name="resetParams">
+        /// If true, this will create a fresh set of parameters from the
+        /// new program being linked, so if you had previously set parameters
+        /// you will have to set them again. If you set this to false, you must
+        /// be absolutely sure that the parameters match perfectly, and in the
+        /// case of named parameters refers to the indexes underlying them, 
+        /// not just the names.
+        /// </param>
+        [OgreVersion( 1, 7, 2790 )]
+#if NET_40
+        public void SetProgramName( string name, bool resetParams = true )
+#else
         public void SetProgramName( string name, bool resetParams )
+#endif
         {
-
             if ( program != null )
             {
-                // Listener not in place, yet
-                //program.RemoveListener( this );
-                //recreateParams = true;
+                program.RemoveListener( this );
+                recreateParams = true;
             }
 
             // get a reference to the gpu program
-            program = GpuProgramManager.Instance.GetByName(name);
+            program = GpuProgramManager.Instance.GetByName( name );
 
             if ( program == null )
             {
-                throw new Exception(string.Format("Unable to locate gpu program named '{0}'", name));
+                var progType = type == GpuProgramType.Vertex ? "vertex" : type == GpuProgramType.Geometry ? "geometry" : "fragment";
+                throw new AxiomException( "Unable to locate {0} program called '{1}'", progType, name );
             }
 
             // Reset parameters 
@@ -290,11 +287,17 @@ namespace Axiom.Graphics
                 RecreateParameters();
             }
 
-            // Listener not in place, yet
             // Listen in on reload events so we can regenerate params
-            //program.AddListener( this );
-
+            program.AddListener( this );
         }
+
+#if !NET_40
+        /// <see cref="SetProgramName(string, bool)"/>
+        public void SetProgramName( string name )
+        {
+            SetProgramName( name, true );
+        }
+#endif
 
         #endregion
 
@@ -355,10 +358,8 @@ namespace Axiom.Graphics
         {
             get
             {
-                if (parameters == null)
-                {
-                    throw new Exception("A program must be loaded before its parameters can be retreived.");
-                }
+                if ( parameters == null )
+                    throw new AxiomException( "A program must be loaded before its parameters can be retreived." );
 
                 return parameters;
             }
@@ -387,5 +388,38 @@ namespace Axiom.Graphics
         #endregion
 
         #endregion
-    }
+
+        #region Resource.IListener Members
+
+        public void BackgroundLoadingComplete( Resource res )
+        {
+            //NOTHING TO DO
+        }
+
+        public void BackgroundPreparingComplete( Resource res )
+        {
+            //NOTHING TO DO
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public void LoadingComplete( Resource res )
+        {
+            // Need to re-create parameters
+            if ( recreateParams )
+                RecreateParameters();
+        }
+
+        public void PreparingComplete( Resource res )
+        {
+            //NOTHING TO DO
+        }
+
+        [OgreVersion( 1, 7, 2 )]
+        public void UnloadingComplete( Resource res )
+        {
+            recreateParams = true;
+        }
+
+        #endregion Resource.IListener Members
+    };
 }

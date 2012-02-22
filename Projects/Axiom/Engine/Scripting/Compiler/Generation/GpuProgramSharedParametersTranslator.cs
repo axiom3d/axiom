@@ -81,6 +81,7 @@ namespace Axiom.Scripting.Compiler
                 {
                     if ( !( i is PropertyAbstractNode ) )
                         continue;
+
                     var prop = (PropertyAbstractNode)i;
 
                     switch ( (Keywords)prop.Id )
