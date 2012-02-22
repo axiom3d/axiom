@@ -15,4 +15,7 @@
       <dependency id="Axiom" version="$version$" />
     </dependencies>
   </metadata>  
+  <files>
+		<file src="..\..\x86\Axiom.Platforms.Win32.dll" target="lib\net35\Axiom.Platforms.Win32.dll" /> 
+  </files>
 </package>
