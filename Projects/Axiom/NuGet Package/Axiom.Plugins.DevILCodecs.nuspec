@@ -15,9 +15,10 @@
       <dependency id="Axiom" version="$version$" />
     </dependencies>
   </metadata>
-  <files>
-		<file src="..\..\..\..\..\..\Lib\Native\Win32\DevIL.dll" target="lib\net35\devil.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILU.dll" target="lib\net35\ilu.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILUT.dll" target="lib\net35\ilut.dll" /> 
+  <files>>
+		<file src="..\..\x86\Axiom.Plugins.DevILCodecs.dll" target="lib\net35\Axiom.Plugins.DevILCodecs.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\DevIL.dll" target="native\x86\devil.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILU.dll" target="native\x86\ilu.dll" /> 
+		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILUT.dll" target="native\x86\ilut.dll" /> 
   </files>
 </package>

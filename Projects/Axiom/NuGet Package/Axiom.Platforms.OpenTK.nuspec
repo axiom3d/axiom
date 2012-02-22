@@ -16,7 +16,7 @@
     </dependencies>
   </metadata>
   <files>
+		<file src="..\..\x86\Axiom.dll" target="lib\net35\Axiom.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\OpenTK.dll" target="lib\net35\OpenTK.dll" /> 
-		<file src="..\..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.DevIL.dll" target="lib\net35\Tao.DevIL.dll" /> 
   </files>  
 </package>
