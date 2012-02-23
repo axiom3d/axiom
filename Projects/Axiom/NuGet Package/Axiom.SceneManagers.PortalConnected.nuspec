@@ -13,7 +13,6 @@
     <tags>3D DirectX XNA OpenGL Mono MacOS Android iOS iPhone iPad WindowsPhone7 Linux</tags>
     <dependencies>
       <dependency id="Axiom" version="$version$" />
-      <dependency id="Axiom.Plugins.OctreeZone" version="$version$" />
     </dependencies>
   </metadata>
   <files>
