@@ -21,5 +21,6 @@
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILU.dll" target="native\x86\ilu.dll" /> 
 		<file src="..\..\..\..\..\..\Lib\Native\Win32\ILUT.dll" target="native\x86\ilut.dll" />
 		<file src="..\tools\install.ps1" target="tools\install.ps1" /> 
+		<file src="..\tools\install.ps1" target="tools\uninstall.ps1" />
   </files>
 </package>
