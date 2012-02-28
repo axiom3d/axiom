@@ -265,11 +265,8 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     var renderWindowResources = it.Value;
 
-                    if ( renderWindowResources.AdapterOrdinalInGroupIndex > 0 &&
-                        it.Key.IsFullScreen )
-                    {
+                    if ( renderWindowResources.AdapterOrdinalInGroupIndex > 0 && it.Key.IsFullScreen )
                         return true;
-                    }
                 }
                 return false;
             }
@@ -343,7 +340,6 @@ namespace Axiom.RenderSystems.DirectX9
             get
             {
                 var hr = pDevice.TestCooperativeLevel();
-
                 return hr == D3D9.ResultCode.DeviceLost || hr == D3D9.ResultCode.DeviceNotReset;
             }
         }
@@ -540,9 +536,7 @@ namespace Axiom.RenderSystems.DirectX9
         public void SetAdapterOrdinalIndex( D3D9RenderWindow renderWindow, int adapterOrdinalInGroupIndex )
         {
             var it = _mapRenderWindowToResources[ renderWindow ];
-
             it.AdapterOrdinalInGroupIndex = adapterOrdinalInGroupIndex;
-
             UpdateRenderWindowsIndices();
         }
 
@@ -745,13 +739,9 @@ namespace Axiom.RenderSystems.DirectX9
             var pD3D9 = D3D9RenderSystem.Direct3D9;
 
             if ( IsMultihead )
-            {
                 BehaviorFlags |= D3D9.CreateFlags.AdapterGroupDevice;
-            }
             else
-            {
                 BehaviorFlags &= ~D3D9.CreateFlags.AdapterGroupDevice;
-            }
 
             using ( SilenceSlimDX.Instance )
             {
@@ -797,9 +787,7 @@ namespace Axiom.RenderSystems.DirectX9
                                           BehaviorFlags, PresentationParams );
 
                     if ( SlimDX.Result.Last.IsFailure )
-                    {
                         throw new AxiomException( "Cannot create device!" );
-                    }
                 }
             }
 
@@ -1056,9 +1044,7 @@ namespace Axiom.RenderSystems.DirectX9
                 NotifyDeviceLost();
             }
             else if ( SlimDX.Result.Last.IsFailure )
-            {
                 throw new AxiomException( "Error Presenting surfaces" );
-            }
             else
                 LastPresentFrame = Root.Instance.NextFrameNumber;
         }
@@ -1146,7 +1132,6 @@ namespace Axiom.RenderSystems.DirectX9
         protected bool IsSwapChainWindow( D3D9RenderWindow renderWindow )
         {
             var it = _mapRenderWindowToResources[ renderWindow ];
-
             return it.PresentParametersIndex != 0 && !renderWindow.IsFullScreen;
         }
 
@@ -1214,16 +1199,15 @@ namespace Axiom.RenderSystems.DirectX9
             var resources = _mapRenderWindowToResources[ renderWindow ];
             var swapChain = IsSwapChainWindow( renderWindow );
 
-            if ( ( dst.Left < 0 ) || ( dst.Right > renderWindow.Width ) ||
-                ( dst.Top < 0 ) || ( dst.Bottom > renderWindow.Height ) ||
+            if ( ( dst.Left < 0 ) || ( dst.Right > renderWindow.Width ) || ( dst.Top < 0 ) || ( dst.Bottom > renderWindow.Height ) ||
                 ( dst.Front != 0 ) || ( dst.Back != 1 ) )
             {
                 throw new AxiomException( "Invalid box." );
             }
 
-            var desc = new SlimDX.Direct3D9.SurfaceDescription();
+            var desc = new D3D9.SurfaceDescription();
             SlimDX.DataRectangle lockedRect;
-            SlimDX.Direct3D9.Surface pTempSurf = null, pSurf = null;
+            D3D9.Surface pTempSurf = null, pSurf = null;
 
             if ( buffer == RenderTarget.FrameBuffer.Auto )
                 buffer = RenderTarget.FrameBuffer.Front;
@@ -1250,9 +1234,7 @@ namespace Axiom.RenderSystems.DirectX9
                     using ( SilenceSlimDX.Instance )
                     {
                         if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) && ( dst.Bottom == renderWindow.Height ) )
-                        {
                             lockedRect = pTempSurf.LockRectangle( D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
-                        }
                         else
                         {
                             var rect = new System.Drawing.Rectangle( dst.Left, dst.Top, dst.Right - dst.Left, dst.Bottom - dst.Top );
@@ -1356,14 +1338,18 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             var data = new byte[ lockedRect.Data.Length ];
-            var buf = BufferBase.Wrap( data );
-            Memory.Copy( BufferBase.Wrap( lockedRect.Data ), buf, data.Length );
+            using ( var dest = BufferBase.Wrap( data ) )
+            {
+                using ( var wrapSrc = BufferBase.Wrap( lockedRect.Data.DataPointer, (int)lockedRect.Data.Length ) )
+                    Memory.Copy( wrapSrc, dest, data.Length );
 
-            var src = new PixelBox( dst.Width, dst.Height, 1, format, buf );
-            src.RowPitch = lockedRect.Pitch / PixelUtil.GetNumElemBytes( format );
-            src.SlicePitch = desc.Height * src.RowPitch;
+                var src = new PixelBox( dst.Width, dst.Height, 1, format, dest );
 
-            PixelConverter.BulkPixelConversion( src, dst );
+                src.RowPitch = lockedRect.Pitch / PixelUtil.GetNumElemBytes( format );
+                src.SlicePitch = desc.Height * src.RowPitch;
+
+                PixelConverter.BulkPixelConversion( src, dst );
+            }
 
             pTempSurf.SafeDispose();
             pSurf.SafeDispose();

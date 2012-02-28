@@ -69,7 +69,7 @@ namespace Axiom.Graphics
     ///    on certain boundaries, e.g. in sets of 4 values for example. Again, see
     ///    Capabilities for full details.
     /// </remarks>
-    public partial class GpuProgramParameters
+    public partial class GpuProgramParameters : DisposableObject
     {
         #region Nested types
 
@@ -359,19 +359,21 @@ namespace Axiom.Graphics
 
         #endregion Properties
 
-        #region Constructors
+        #region Construction and destruction
 
         /// <summary>
         ///	Default constructor.
         /// </summary>
         [OgreVersion( 1, 7, 2 )]
         public GpuProgramParameters()
+            : base()
         {
             _combinedVariability = GpuParamVariability.Global;
             activePassIterationIndex = int.MaxValue;
         }
 
         public GpuProgramParameters( GpuProgramParameters other )
+            : base()
         {
             // let compiler perform shallow copies of structures 
             // AutoConstantEntry, RealConstantEntry, IntConstantEntry
@@ -394,7 +396,21 @@ namespace Axiom.Graphics
             activePassIterationIndex = other.activePassIterationIndex;
         }
 
-        #endregion Constructors
+        #endregion Construction and destruction
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    floatConstants.SafeDispose();
+                    intConstants.SafeDispose();
+                }
+            }
+
+            base.dispose( disposeManagedResources );
+        }
 
         #region Methods
 
