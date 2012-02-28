@@ -61,9 +61,7 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				foreach ( var codec in args )
-				{
-					CodecManager.Instance.RegisterCodec( new XnaCodec( (string)codec ) );
-				}
+					Codec.RegisterCodec( new XnaCodec( (string)codec ) );
 			}
 			return true;
 		}
@@ -78,7 +76,7 @@ namespace Axiom.RenderSystems.Xna
 
 			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
 			{
-				if ( CodecManager.Instance.GetCodec( extension ).GetType().Name != "NullCodec" )
+				if ( Codec.GetCodec( extension ).GetType().Name != "NullCodec" )
 				{
 					var acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "" );
 #if SILVERLIGHT

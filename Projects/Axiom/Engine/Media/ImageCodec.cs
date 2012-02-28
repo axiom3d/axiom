@@ -1,28 +1,24 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
@@ -33,46 +29,50 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
 	/// <summary>
-	/// Summary description for ImageCodec.
+    /// Codec specialized in images.
 	/// </summary>
-	public abstract class ImageCodec : ICodec
+    /// <remarks>
+    /// The users implementing subclasses of ImageCodec are required to return
+    /// a valid pointer to a ImageData class from the decode(...) function.
+    /// </remarks>
+	public abstract class ImageCodec : Codec
 	{
-		public ImageCodec()
-		{
-		}
+        [OgreVersion( 1, 7, 2 )]
+        public override string DataType
+        {
+            get
+            {
+                return "ImageData";
+            }
+        }
 
-		#region ICodec Members
+        /// <summary>
+        /// Codec return class for images. Has information about the size and the
+        /// pixel format of the image.
+        /// </summary>
+        public class ImageData : CodecData
+        {
+            [OgreVersion( 1, 7, 2 )]
+            public override string DataType
+            {
+                get
+                {
+                    return "ImageData";
+                }
+            }
 
-		// Note: Redefining as abstract to force subclasses to implement, since interface methods must still be included
-		// in abstract base classes
-		public abstract object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-		public abstract void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args );
-		public abstract void EncodeToFile( System.IO.Stream input, string fileName, object codecData );
-        public abstract string MagicNumberToFileExt( byte[] magicBuf, int maxbytes );
-
-		public abstract String Type
-		{
-			get;
-		}
-
-		#endregion
-
-		public class ImageData
-		{
-			public int width;
-			public int height;
-			public int depth;
-			public int size;
-			public ImageFlags flags;
-			public int numMipMaps;
-			public PixelFormat format;
-		}
-	}
+            public int width;
+            public int height;
+            public int depth = 1;
+            public int size;
+            public ImageFlags flags;
+            public int numMipMaps;
+            public PixelFormat format;
+        };
+	};
 }

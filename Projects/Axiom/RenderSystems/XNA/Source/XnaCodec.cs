@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2010 Axiom Project Team
+Copyright (C) 2003-2012 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -47,66 +47,49 @@ namespace Axiom.RenderSystems.Xna
 {
     internal class XnaCodec : ImageCodec
     {
-        private readonly string imageExtension;
+        private readonly string _imageExtension;
 
         public XnaCodec( string extension )
         {
-            imageExtension = extension;
+            _imageExtension = extension;
         }
 
         #region Overrides of ImageCodec
 
-        /// <summary>
-        /// Codes the data from the input chunk into the output chunk.
-        /// </summary>
-        /// <param name="input">Input stream (encoded data).</param><param name="output">Output stream (decoded data).</param>
-        /// <param name="args">Variable number of extra arguments.</param>
-        /// <returns>
-        /// An object that holds data specific to the media format which this codec deal with.
-        ///     For example, an image codec might return a structure that has image related details,
-        ///     such as height, width, etc.
-        /// </returns>
-        public override object Decode( Stream input, Stream output, params object[] args )
+        /// <see cref="Axiom.Media.Codec.Type"/>
+        public override string Type
         {
-            var data = new byte[input.Length];
+            get { return _imageExtension; }
+        }
+
+        /// <see cref="Axiom.Media.Codec.Encode"/>
+        public override Stream Encode( Stream input, Codec.CodecData data )
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <see cref="Axiom.Media.Codec.EncodeToFile"/>
+        public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <see cref="Axiom.Media.Codec.Decode"/>
+        [AxiomHelper( 0, 9 )]
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            var data = new byte[ input.Length ];
             input.Read( data, 0, (int)input.Length );
+            var output = new MemoryStream();
             output.Write( data, 0, (int)input.Length );
-            if ( input.GetType() == typeof ( XnaImageCodecStream ) )
-            {
-                return ( (XnaImageCodecStream)input ).ImageData;
-            }
+
+            if ( input.GetType() == typeof( XnaImageCodecStream ) )
+                return new Codec.DecodeResult( output, ( (XnaImageCodecStream)input ).ImageData );
+
             return null;
         }
 
-        /// <summary>
-        /// Encodes the data in the input stream and saves the result in the output stream.
-        /// </summary>
-        /// <param name="input">Input stream (decoded data).</param><param name="output">Output stream (encoded data).</param>
-        /// <param name="args">Variable number of extra arguments.</param>
-        public override void Encode( Stream input, Stream output, params object[] args )
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Encodes data to a file.
-        /// </summary>
-        /// <param name="input">Stream containing data to write.</param><param name="fileName">Filename to output to.</param>
-        /// <param name="codecData">Extra data to use in order to describe the codec data.</param>
-        public override void EncodeToFile( Stream input, string fileName, object codecData )
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the type of data that this codec is meant to handle, typically a file extension.
-        /// </summary>
-        public override string Type
-        {
-            get { return imageExtension; }
-        }
-
-        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
+        /// <see cref="Axiom.Media.Codec.MagicNumberToFileExt"/>
         public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
         {
             //TODO
@@ -114,6 +97,5 @@ namespace Axiom.RenderSystems.Xna
         }
 
         #endregion Overrides of ImageCodec
-        
-    }
+    };
 }

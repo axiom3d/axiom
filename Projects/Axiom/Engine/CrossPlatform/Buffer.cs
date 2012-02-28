@@ -23,11 +23,11 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 0 )]
 		public ushort UShort;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 		[FieldOffset( 1 )] public byte b0;
 		[FieldOffset( 0 )] public byte b1;
 #else
-		[FieldOffset( 0 )]
+        [FieldOffset( 0 )]
 		public byte b0;
 		[FieldOffset( 1 )]
 		public byte b1;
@@ -60,13 +60,13 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 0 )]
 		public uint UInt;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 		[FieldOffset( 3 )] public byte b0;
 		[FieldOffset( 2 )] public byte b1;
 		[FieldOffset( 1 )] public byte b2;
 		[FieldOffset( 0 )] public byte b3;
 #else
-		[FieldOffset( 0 )]
+        [FieldOffset( 0 )]
 		public byte b0;
 		[FieldOffset( 1 )]
 		public byte b1;
@@ -105,7 +105,7 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 0 )]
 		public ulong ULong;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 		[FieldOffset( 7 )] public byte b0;
 		[FieldOffset( 6 )] public byte b1;
 		[FieldOffset( 5 )] public byte b2;
@@ -115,7 +115,7 @@ namespace Axiom.CrossPlatform
 		[FieldOffset( 1 )] public byte b6;
 		[FieldOffset( 0 )] public byte b7;
 #else
-		[FieldOffset( 0 )]
+        [FieldOffset( 0 )]
 		public byte b0;
 		[FieldOffset( 1 )]
 		public byte b1;
@@ -181,20 +181,14 @@ namespace Axiom.CrossPlatform
                 return buffer;
 
             var buf = (BufferBase)buffer.Clone();
-            buf.Ptr += offset;
+            buf.Ptr += (int)offset;
             return buf;
         }
 
-		public static BufferBase operator +( BufferBase buffer, long offset )
-		{
-            // avoid useless clones
-            if ( offset == 0 )
-                return buffer;
-
-			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += (int)offset;
-			return buf;
-		}
+        public static BufferBase operator +( BufferBase buffer, long offset )
+        {
+            return buffer + (int)offset;
+        }
 
 		public static BufferBase operator ++( BufferBase buffer )
 		{

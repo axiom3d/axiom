@@ -31,94 +31,90 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Monitors the object lifetime of objects that are in control of unmanaged resources
-	/// </summary>
-	internal class ObjectManager : Singleton<ObjectManager>
-	{
-		private struct ObjectEntry
-		{
-			public WeakReference Instance;
-			public string ConstructionStack;
-		}
+#if DEBUG
+    /// <summary>
+    /// Monitors the object lifetime of objects that are in control of unmanaged resources.
+    /// 
+    /// WARNING: AXIOM_ENABLE_LOG_STACKTRACE may have significant impact on overall engine performances,
+    /// due to the large amount of <see cref="DisposableObject"/>s created during Axiom's lifecycle, so
+    /// please consider to enable it ONLY if really necessary.
+    /// </summary>
+    internal class ObjectManager : Singleton<ObjectManager>
+    {
+        private struct ObjectEntry
+        {
+            public WeakReference Instance;
+            public string ConstructionStack;
+        };
 
-		private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
+        private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
-	    /// <summary>
-	    /// Add an object to be monitored
-	    /// </summary>
-	    /// <param name="instance">
-	    /// A <see cref="DisposableObject"/> to monitor for proper disposal
-	    /// </param>
-	    /// <param name="stackTrace"></param>
-	    public void Add( DisposableObject instance, string stackTrace )
-		{
-			var objectList = GetOrCreateObjectList( instance.GetType() );
+        /// <summary>
+        /// Add an object to be monitored
+        /// </summary>
+        /// <param name="instance">
+        /// A <see cref="DisposableObject"/> to monitor for proper disposal
+        /// </param>
+        /// <param name="stackTrace">Creation stacktrace of the <see cref="DisposableObject"/> being tracked.</param>
+        [AxiomHelper( 0, 9 )]
+        public void Add( DisposableObject instance, string stackTrace )
+        {
+            var objectList = _getOrCreateObjectList( instance.GetType() );
 
-			objectList.Add( new ObjectEntry
-			{
-				Instance = new WeakReference( instance ),
-				ConstructionStack = stackTrace
-			} );
-		}
+            objectList.Add( new ObjectEntry
+            {
+                Instance = new WeakReference( instance ),
+                ConstructionStack = stackTrace
+            } );
+        }
 
-		private List<ObjectEntry> GetOrCreateObjectList( Type type )
-		{
-			List<ObjectEntry> objectList;
-			if ( _objects.ContainsKey( type ) )
-			{
-				objectList = _objects[ type ];
-			}
-			else
-			{
-				objectList = new List<ObjectEntry>();
-				_objects.Add( type, objectList );
-			}
-			return objectList;
-		}
+        [AxiomHelper( 0, 9 )]
+        private List<ObjectEntry> _getOrCreateObjectList( Type type )
+        {
+            List<ObjectEntry> objectList;
+            if ( !_objects.TryGetValue( type, out objectList ) )
+            {
+                objectList = new List<ObjectEntry>();
+                _objects.Add( type, objectList );
+            }
+            return objectList;
+        }
 
-		#region Singleton<ObjectManager> Implementation
+        [AxiomHelper( 0, 9 )]
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    long objectCount = 0;
+                    var perTypeCount = new Dictionary<string, int>();
 
-		#endregion Singleton<ObjectManager> Implementation
-
-		#region IDisposable Implementation
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					long objectCount = 0;
-					var perTypeCount = new Dictionary<string, int>();
-
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
-					var msg = new StringBuilder();
+#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
+                    var msg = new StringBuilder();
 #endif
-
                     // Dispose managed resources.
-					foreach ( var item in this._objects )
-					{
+                    foreach ( var item in _objects )
+                    {
                         var typeName = item.Key.Name;
                         var objectList = item.Value;
-                        foreach (var objectEntry in objectList)
+                        foreach ( var objectEntry in objectList )
                         {
-                            if (objectEntry.Instance.IsAlive && !((DisposableObject)objectEntry.Instance.Target).IsDisposed)
+                            if ( objectEntry.Instance.IsAlive && !( (DisposableObject)objectEntry.Instance.Target ).IsDisposed )
                             {
-                                if (perTypeCount.ContainsKey(typeName))
-                                    perTypeCount[typeName]++;
+                                if ( perTypeCount.ContainsKey( typeName ) )
+                                    perTypeCount[ typeName ]++;
                                 else
-                                    perTypeCount.Add(typeName, 1);
+                                    perTypeCount.Add( typeName, 1 );
 
                                 objectCount++;
 
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
                                 msg.AppendLine( string.Format( "An instance of {0} was not disposed properly, creation stacktrace:", typeName ) );
                                 msg.AppendLine( objectEntry.ConstructionStack );
                                 msg.AppendLine();
@@ -127,7 +123,7 @@ namespace Axiom.Core
                         }
                     }
 
-                    Log report = LogManager.Instance.CreateLog( "AxiomDisposalReport.log" );
+                    var report = LogManager.Instance.CreateLog( "AxiomDisposalReport.log" );
                     report.Write( "[ObjectManager] Axiom Disposal Report:" );
 
                     if ( objectCount > 0 )
@@ -138,103 +134,111 @@ namespace Axiom.Core
                         foreach ( var currentPair in perTypeCount )
                             report.Write( "{0} occurrence of type {1}", currentPair.Value, currentPair.Key );
 
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
                         report.Write( "Creation Stacktraces:" );
                         report.Write( msg.ToString() );
+#else
+                        report.Write( string.Empty ); // new line
+                        report.Write( "Cannot get stacktrace informations about undisposed objects." );
+                        report.Write( "Maybe AXIOM_ENABLE_LOG_STACKTRACE directive is not defined or your current platfrom doesn't allow to retrieve them." );
 #endif
                     }
                     else
                         report.Write( "Everything went right! Congratulations!!" );
-				}
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
+    };
+#endif
 
-		#endregion IDisposable Implementation
-	}
-
-	public abstract class DisposableObject : IDisposable
-	{
-		protected DisposableObject()
-		{
-			IsDisposed = false;
+    public abstract class DisposableObject : IDisposable
+    {
+        [AxiomHelper( 0, 9 )]
+        protected DisposableObject()
+        {
+            IsDisposed = false;
 #if DEBUG
-#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID)
-			ObjectManager.Instance.Add( this, Environment.StackTrace );
-#else
-			ObjectManager.Instance.Add( this, String.Empty );
+            var stackTrace = string.Empty;
+    #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
+			stackTrace = Environment.StackTrace;
+    #endif
+            ObjectManager.Instance.Add( this, stackTrace );
 #endif
-#endif
-		}
+        }
 
-		~DisposableObject()
-		{
-			if ( !IsDisposed )
-				dispose( false );
-		}
+        [AxiomHelper( 0, 9 )]
+        ~DisposableObject()
+        {
+            if ( !IsDisposed )
+                dispose( false );
+        }
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		public bool IsDisposed
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        [AxiomHelper( 0, 9 )]
+        public bool IsDisposed
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !IsDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !IsDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        [AxiomHelper( 0, 9 )]
+        protected virtual void dispose( bool disposeManagedResources )
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			IsDisposed = true;
-		}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            IsDisposed = true;
+        }
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
+        [AxiomHelper( 0, 9 )]
+        public void Dispose()
+        {
+            dispose( true );
+            GC.SuppressFinalize( this );
+        }
 
-		#endregion IDisposable Implementation
-    }
+        #endregion IDisposable Implementation
+    };
 }

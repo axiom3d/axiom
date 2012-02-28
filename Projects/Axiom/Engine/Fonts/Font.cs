@@ -321,6 +321,8 @@ namespace Axiom.Fonts
 
 		#endregion showLines Property
 
+        protected List<KeyValuePair<int, int>> codePointRange = new List<KeyValuePair<int, int>>();
+
 		#endregion Fields and Properties
 
 		#region Constructors and Destructor
@@ -565,7 +567,13 @@ namespace Axiom.Fonts
 		#endregion Implementation of Resource
 
 		#region Implementation of IManualResourceLoader
-		public void LoadResource( Resource resource )
+
+        /// <summary>
+        /// Implementation of ManualResourceLoader::loadResource, called
+        /// when the Texture that this font creates needs to (re)load.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+		public void LoadResource( Resource res )
 		{
 			// TODO : Revisit after checking current Imaging support in Mono.
 #if !(XBOX || XBOX360 || ANDROID || IPHONE || SILVERLIGHT)
@@ -582,34 +590,26 @@ namespace Axiom.Fonts
 
 			// Locate ttf file, load it pre-buffered into memory by wrapping the
 			// original DataStream in a MemoryDataStream
-			var fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group );
+			var fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group, true, this );
 
-			var data = new byte[ fileStream.Length ];
-			fileStream.Read( data, 0, data.Length );
+			var ttfchunk = new byte[ fileStream.Length ];
+			fileStream.Read( ttfchunk, 0, ttfchunk.Length );
+
 			//Load font
-			var success = FT.FT_New_Memory_Face( ftLibrary, data, data.Length, 0, out face );
-			if ( success != 0 )
-			{
+			if ( FT.FT_New_Memory_Face( ftLibrary, ttfchunk, ttfchunk.Length, 0, out face ) != 0 )
 				throw new AxiomException( "Could not open font face!" );
-			}
 
 			// Convert our point size to freetype 26.6 fixed point format
-			var ttfSize = _ttfSize * ( 1 << 6 );
+			var ftSize = _ttfSize * ( 1 << 6 );
 
-			success = FT.FT_Set_Char_Size( face, ttfSize, 0, (uint)_ttfResolution, (uint)_ttfResolution );
-			if ( success != 0 )
-			{
-				{
-					throw new AxiomException( "Could not set char size!" );
-				}
-			}
+            if ( FT.FT_Set_Char_Size( face, ftSize, 0, (uint)_ttfResolution, (uint)_ttfResolution ) != 0 )
+                throw new AxiomException( "Could not set char size!" );
+
 			int max_height = 0, max_width = 0;
-			var codePointRange = new List<KeyValuePair<int, int>>();
+            
 			// Backwards compatibility - if codepoints not supplied, assume 33-166
 			if ( codePointRange.Count == 0 )
-			{
 				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
-			}
 
 			// Calculate maximum width, height and bearing
 			var glyphCount = 0;
@@ -630,13 +630,11 @@ namespace Axiom.Fonts
 
 					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
 						max_width = ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 );
-
 				}
 			}
 
 			// Now work out how big our texture needs to be
-			var rawSize = ( max_width + char_space ) *
-						  ( ( max_height >> 6 ) + char_space ) * glyphCount;
+            var rawSize = ( max_width + char_space ) * ( ( max_height >> 6 ) + char_space ) * glyphCount;
 
 			var tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -644,133 +642,132 @@ namespace Axiom.Fonts
 			tex_side += System.Math.Max( max_width, ( max_height >> 6 ) );
 			// Now round up to nearest power of two
 			var roundUpSize = (int)Bitwise.FirstPO2From( (uint)tex_side );
-			// Would we benefit from using a non-square texture (2X width(
+			// Would we benefit from using a non-square texture (2X width)
 			int finalWidth = 0, finalHeight = 0;
-			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
-			{
-				finalHeight = (int)( roundUpSize * 0.5 );
-			}
+
+            if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+                finalHeight = (int)( roundUpSize * 0.5 );
 			else
-			{
 				finalHeight = roundUpSize;
-			}
-			finalWidth = roundUpSize;
+
+            finalWidth = roundUpSize;
 
 			var textureAspec = (Real)finalWidth / (Real)finalHeight;
 			var pixelBytes = 2;
 			var dataWidth = finalWidth * pixelBytes;
-			var data_size = finalWidth * finalHeight * pixelBytes;
+			var dataSize = finalWidth * finalHeight * pixelBytes;
 
-			LogManager.Instance.Write( "Font " + _name + " using texture size " + finalWidth.ToString() + "x" +
-									   finalHeight.ToString() );
+            LogManager.Instance.Write( "Font {0} using texture size {1}x{2}", _name, finalWidth.ToString(), finalHeight.ToString() );
 
-			var imageData = new byte[ data_size ];
-			for ( var i = 0; i < data_size; i += pixelBytes )
+			var imageData = new byte[ dataSize ];
+            // Reset content (White, transparent)
+			for ( var i = 0; i < dataSize; i += pixelBytes )
 			{
 				imageData[ i + 0 ] = 0xff; // luminance
 				imageData[ i + 1 ] = 0x00; // alpha
 			}
 
-
 			int l = 0, m = 0;
 			foreach ( var r in codePointRange )
 			{
-				var range = r;
-				for ( var cp = range.Key; cp <= range.Value; ++cp )
-				{
-					var result = FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
-					if ( result != 0 )
-					{
-						// problem loading this glyph, continue
-						LogManager.Instance.Write( "Info: cannot load character '" +
+                var range = r;
+                for ( var cp = range.Key; cp <= range.Value; ++cp )
+                {
+                    // Load & render glyph
+                    var ftResult = FT.FT_Load_Char( face, (uint)cp, 4 ); //4 == FT_LOAD_RENDER
+                    if ( ftResult != 0 )
+                    {
+                        // problem loading this glyph, continue
+                        LogManager.Instance.Write( "Info: cannot load character '{0}' in font {1}.",
 #if (SILVERLIGHT || WINDOWS_PHONE)
-												   cp
+							cp,
 #else
-												   char.ConvertFromUtf32( cp )
+                            char.ConvertFromUtf32( cp ),
 #endif
-												   + "' in font " + _name + "." );
-						continue;
-					}
+                            _name );
 
-					var rec = face.PtrToStructure<FT_FaceRec>();
-					var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
-					var advance = glyp.advance.x >> 6;
+                        continue;
+                    }
+
+                    var rec = face.PtrToStructure<FT_FaceRec>();
+                    var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
+                    var advance = glyp.advance.x >> 6;
+
+                    if ( glyp.bitmap.buffer == IntPtr.Zero )
+                    {
+                        LogManager.Instance.Write( "Info: Freetype returned null for character '{0} in font {1}.",
+#if (SILVERLIGHT || WINDOWS_PHONE)
+							cp,
+#else
+                            char.ConvertFromUtf32( cp ),
+#endif
+                            _name );
+                        continue;
+                    }
+
 #if !AXIOM_SAFE_ONLY
 					unsafe
 #endif
-					{
-						if ( glyp.bitmap.buffer == IntPtr.Zero )
-						{
-							LogManager.Instance.Write( "Info: Freetype returned null for character '" +
-#if (SILVERLIGHT || WINDOWS_PHONE)
-													   cp
-#else
-													   char.ConvertFromUtf32( cp )
-#endif
-													   + "' in font " + _name + "." );
-							continue;
-						}
+                    {
+                        var buffer = BufferBase.Wrap( glyp.bitmap.buffer, glyp.bitmap.rows * glyp.bitmap.pitch );
+                        var bufferPtr = buffer.ToBytePointer();
+                        var idx = 0;
+                        var imageDataBuffer = BufferBase.Wrap( imageData );
+                        var imageDataPtr = imageDataBuffer.ToBytePointer();
+                        var y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
+                        var x_bearing = glyp.metrics.horiBearingX >> 6;
 
-						var buffer = BufferBase.Wrap(glyp.bitmap.buffer, glyp.bitmap.rows * glyp.bitmap.pitch).ToBytePointer();
-						var idx = 0;
-						var imageDataPtr = Memory.PinObject( imageData ).ToBytePointer();
-						var y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
-						var x_bearing = glyp.metrics.horiBearingX >> 6;
+                        for ( var j = 0; j < glyp.bitmap.rows; j++ )
+                        {
+                            var row = j + m + y_bearing;
+                            var pDest = ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes;
+                            for ( var k = 0; k < glyp.bitmap.width; k++ )
+                            {
+                                if ( AntialiasColor )
+                                {
+                                    // Use the same greyscale pixel for all components RGBA
+                                    imageDataPtr[ pDest++ ] = bufferPtr[ idx ];
+                                }
+                                else
+                                {
+                                    // Always white whether 'on' or 'off' pixel, since alpha
+                                    // will turn off
+                                    imageDataPtr[ pDest++ ] = (byte)0xFF;
+                                }
+                                // Always use the greyscale value for alpha
+                                imageDataPtr[ pDest++ ] = bufferPtr[ idx++ ];
+                            } //end k
+                        } //end j
 
-						for ( var j = 0; j < glyp.bitmap.rows; j++ )
-						{
-							var row = j + m + y_bearing;
-							var pDest = ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes;
-							for ( var k = 0; k < glyp.bitmap.width; k++ )
-							{
-								if ( AntialiasColor )
-								{
-									// Use the same greyscale pixel for all components RGBA
-									imageDataPtr[ pDest++ ] = buffer[ idx ];
-								}
-								else
-								{
-									// Always white whether 'on' or 'off' pixel, since alpha
-									// will turn off
-									imageDataPtr[ pDest++ ] = (byte)0xFF;
-								}
-								// Always use the greyscale value for alpha
-								imageDataPtr[ pDest++ ] = buffer[ idx++ ];
-							} //end k
-						} //end j
-						//
-						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
-												(Real)m / (Real)finalHeight, //v1
-												(Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
-												( m + ( max_height >> 6 ) ) / (Real)finalHeight, textureAspec ); //v2
-						//    textureAspec );
-						//SetGlyphTexCoords( c, u1, v1, u2, v2 );
-						//Glyphs.Add( new KeyValuePair<CodePoint, GlyphInfo>( (uint)cp,
-						//    new GlyphInfo( (uint)cp,
-						//        new UVRect(
-						//            (Real)l / (Real)finalWidth,//u1
-						//    (Real)m / (Real)finalHeight,//v1
-						//    (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
-						//    ( m + ( max_height >> 6 ) ) / (Real)finalHeight //v2
-						//    ), textureAspec ) ) );
+                        buffer.Dispose();
+                        imageDataBuffer.Dispose();
 
-						// Advance a column
-						l += ( advance + char_space );
+                        this.SetGlyphTexCoords( (uint)cp,
+                            (Real)l / (Real)finalWidth, //u1
+                            (Real)m / (Real)finalHeight, //v1
+                            (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+                            ( m + ( max_height >> 6 ) ) / (Real)finalHeight, //v2
+                            textureAspec ); 
 
-						// If at end of row
-						if ( finalWidth - 1 < l + ( advance ) )
-						{
-							m += ( max_height >> 6 ) + char_space;
-							l = 0;
-						}
-					}
-				}
-			} //end foreach
+                        // Advance a column
+                        l += ( advance + char_space );
+
+                        // If at end of row
+                        if ( finalWidth - 1 < l + ( advance ) )
+                        {
+                            m += ( max_height >> 6 ) + char_space;
+                            l = 0;
+                        }
+                    }
+                }
+            } //end foreach
 
 			var memStream = new MemoryStream( imageData );
 			var img = Image.FromRawStream( memStream, finalWidth, finalHeight, PixelFormat.BYTE_LA );
 
-			var tex = (Texture)resource;
+			var tex = (Texture)res;
+            // Call internal _loadImages, not loadImage since that's external and 
+            // will determine load status etc again, and this is a manual loader inside load()
 			var images = new Image[ 1 ];
 			images[ 0 ] = img;
 			tex.LoadImages( images );

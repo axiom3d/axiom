@@ -32,15 +32,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-
-using SDI = System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Media;
+using SDI = System.Drawing.Imaging;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.SystemDrawingCodecs
@@ -50,62 +50,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 	/// </summary>
 	public abstract class SDImageCodec : ImageCodec
 	{
-		/// <summary>
-		///     Encodes data to a file.
-		/// </summary>
-		/// <param name="input">Stream containing data to write.</param>
-		/// <param name="fileName">Filename to output to.</param>
-		/// <param name="codecData">Extra data to use in order to describe the codec data.</param>
-		public override void EncodeToFile( Stream input, string fileName, object codecData )
-		{
-			ImageData data = (ImageData)codecData;
-
-			// save the image to file
-			SDI.PixelFormat pf;
-			int bpp;
-
-			switch ( data.format )
-			{
-				case Axiom.Media.PixelFormat.B8G8R8:
-					pf = SDI.PixelFormat.Format24bppRgb;
-					bpp = 3;
-					break;
-				case Axiom.Media.PixelFormat.A8B8G8R8:
-					pf = SDI.PixelFormat.Format32bppRgb;
-					bpp = 4;
-					break;
-
-				default:
-					throw new ArgumentException( "Unsupported Pixel Format " + data.format );
-
-			}
-			Bitmap image = new Bitmap( data.width, data.height, pf );
-
-			//Create a BitmapData and Lock all pixels to be written
-			SDI.BitmapData imagedta = image.LockBits(
-								 new Rectangle( 0, 0, image.Width, image.Height ),
-								 SDI.ImageLockMode.WriteOnly, image.PixelFormat );
-
-			byte[] buffer = new byte[ input.Length ];
-			input.Read( buffer, 0, buffer.Length );
-
-			for ( int c = 0; c < buffer.Length - bpp; c += bpp )
-			{
-				byte tmp = buffer[ c ];
-				buffer[ c ] = buffer[ c + 2 ];
-				buffer[ c + 2 ] = tmp;
-			}
-
-			//Copy the data from the byte array into BitmapData.Scan0
-			Marshal.Copy( buffer, 0, imagedta.Scan0, buffer.Length );
-
-			//Unlock the pixels
-			image.UnlockBits( imagedta );
-
-			image.Save( fileName, ConvertImageFormat( fileName ) );
-		}
-
-		private ImageFormat ConvertImageFormat( string name )
+		private ImageFormat _convertImageFormat( string name )
 		{
 			if ( string.IsNullOrEmpty( name ) )
 				throw new ArgumentNullException( "name" );
@@ -120,131 +65,183 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				case ".jpg":
 				case ".jpeg":
 					return ImageFormat.Jpeg;
+
 				case ".bmp":
 					return ImageFormat.Bmp;
+
 				case ".gif":
 					return ImageFormat.Gif;
+
 				case ".png":
 					return ImageFormat.Png;
+
 				case ".tiff":
 					return ImageFormat.Tiff;
-
 			}
 			return ImageFormat.Png;
 		}
 
-		/// <summary>
-		///    Codes the data from the input chunk into the output chunk.
-		/// </summary>
-		/// <param name="input">Input stream (encoded data).</param>
-		/// <param name="output">Output stream (decoded data).</param>
-		/// <param name="args">Variable number of extra arguments.</param>
-		/// <returns>
-		///    An object that holds data specific to the media format which this codec deal with.
-		///    For example, an image codec might return a structure that has image related details,
-		///    such as height, width, etc.
-		/// </returns>
-		public override object Decode( Stream input, Stream output, params object[] args )
-		{
-			ImageData data = new ImageData();
-			Bitmap CurrentBitmap = null;
-			int bytesPerPixel;
-			bool gray = false; // gray image is used by terrain's heightmap
+        public override Stream Encode( Stream input, Codec.CodecData data )
+        {
+            throw new NotImplementedException();
+        }
 
-			try
-			{
-				CurrentBitmap = new Bitmap( input );
-				if ( ( CurrentBitmap.Flags & 64 ) != 0 ) // if grayscale
-				{
-					gray = true;
-				}
+        public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData codecData )
+        {
+            var data = (ImageData)codecData;
 
-				switch ( CurrentBitmap.PixelFormat )
-				{
-					case SDI.PixelFormat.Format24bppRgb:
-						bytesPerPixel = 3;
-						break;
-					case SDI.PixelFormat.Format32bppRgb:
-					case SDI.PixelFormat.Format32bppArgb:
-						bytesPerPixel = 4;
-						break;
+            // save the image to file
+            SDI.PixelFormat pf;
+            int bpp;
 
-					default:
-						throw new ArgumentException( "Unsupported Pixel Format " + CurrentBitmap.PixelFormat );
-				}
+            switch ( data.format )
+            {
+                case Axiom.Media.PixelFormat.B8G8R8:
+                    pf = SDI.PixelFormat.Format24bppRgb;
+                    bpp = 3;
+                    break;
 
-				SDI.BitmapData Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
+                case Axiom.Media.PixelFormat.A8B8G8R8:
+                    pf = SDI.PixelFormat.Format32bppRgb;
+                    bpp = 4;
+                    break;
 
-				// populate the image data
-				data.width = Data.Width;
-				data.height = Data.Height;
-				data.depth = 1;
-				data.numMipMaps = 0;
-				if ( gray )
-				{
-					data.format = Axiom.Media.PixelFormat.L8;
-					data.size = data.width * data.height;
-				}
-				else
-				{
-					data.format = Axiom.Media.PixelFormat.A8B8G8R8;
-					data.size = data.width * data.height * 4;
-				}
+                default:
+                    throw new ArgumentException( "Unsupported Pixel Format " + data.format );
+            }
 
-				// get the decoded data
-				byte[] buffer = new byte[ data.size ];
+            var image = new Bitmap( data.width, data.height, pf );
 
-				// copy the data into the byte array
-				unsafe
-				{
-					int qw = 0;
-					byte* imgPtr = (byte*)( Data.Scan0 );
+            //Create a BitmapData and Lock all pixels to be written
+            SDI.BitmapData imagedta = image.LockBits(
+                                 new Rectangle( 0, 0, image.Width, image.Height ),
+                                 SDI.ImageLockMode.WriteOnly, image.PixelFormat );
 
-					if ( gray == false )
-					{
-						for ( int i = 0; i < Data.Height; i++ )
-						{
-							for ( int j = 0; j < Data.Width; j++ )
-							{
-								buffer[ qw++ ] = *( imgPtr + 2 );
-								buffer[ qw++ ] = *( imgPtr + 1 );
-								buffer[ qw++ ] = *( imgPtr + 0 );
+            var buffer = new byte[ input.Length ];
+            input.Read( buffer, 0, buffer.Length );
 
-								if ( bytesPerPixel == 3 )
-									buffer[ qw++ ] = 255;
-								else
-									buffer[ qw++ ] = *( imgPtr + 3 ); // alpha
-								imgPtr += bytesPerPixel;
-							}
-							imgPtr += Data.Stride - Data.Width * bytesPerPixel;
-						}
+            for ( var c = 0; c < buffer.Length - bpp; c += bpp )
+            {
+                var tmp = buffer[ c ];
+                buffer[ c ] = buffer[ c + 2 ];
+                buffer[ c + 2 ] = tmp;
+            }
 
-					}
-					else
-					{
-						for ( int i = 0; i < Data.Height; i++ )
-						{
-							for ( int j = 0; j < Data.Width; j++ )
-							{
-								buffer[ qw++ ] = *( imgPtr );
-								imgPtr += bytesPerPixel;
-							}
-							imgPtr += Data.Stride - Data.Width * bytesPerPixel;
-						}
-					}
-				}
+            //Copy the data from the byte array into BitmapData.Scan0
+            Marshal.Copy( buffer, 0, imagedta.Scan0, buffer.Length );
 
-				// write the decoded data to the output stream
-				output.Write( buffer, 0, buffer.Length );
+            //Unlock the pixels
+            image.UnlockBits( imagedta );
 
-				CurrentBitmap.UnlockBits( Data );
-			}
-			catch ( Exception e )
-			{
-				throw new ArgumentException( "Texture loading error.", e );
-			}
+            image.Save( outFileName, _convertImageFormat( outFileName ) );
+        }
 
-			return data;
-		}
-	}
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            var data = new ImageData();
+            Bitmap CurrentBitmap = null;
+            int bytesPerPixel;
+            var gray = false; // gray image is used by terrain's heightmap
+            byte[] buffer;
+
+            try
+            {
+                CurrentBitmap = new Bitmap( input );
+                if ( ( CurrentBitmap.Flags & 64 ) != 0 ) // if grayscale
+                    gray = true;
+
+                switch ( CurrentBitmap.PixelFormat )
+                {
+                    case SDI.PixelFormat.Format24bppRgb:
+                        bytesPerPixel = 3;
+                        break;
+
+                    case SDI.PixelFormat.Format32bppRgb:
+                    case SDI.PixelFormat.Format32bppArgb:
+                        bytesPerPixel = 4;
+                        break;
+
+                    default:
+                        throw new ArgumentException( "Unsupported Pixel Format " + CurrentBitmap.PixelFormat );
+                }
+
+                var Data = CurrentBitmap.LockBits(
+                    new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ),
+                    SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
+
+                // populate the image data
+                data.width = Data.Width;
+                data.height = Data.Height;
+                data.depth = 1;
+                data.numMipMaps = 0;
+                if ( gray )
+                {
+                    data.format = Axiom.Media.PixelFormat.L8;
+                    data.size = data.width * data.height;
+                }
+                else
+                {
+                    data.format = Axiom.Media.PixelFormat.A8B8G8R8;
+                    data.size = data.width * data.height * 4;
+                }
+
+                // get the decoded data
+                buffer = new byte[ data.size ];
+
+                // copy the data into the byte array
+                unsafe
+                {
+                    int qw = 0;
+                    byte* imgPtr = (byte*)( Data.Scan0 );
+
+                    if ( gray == false )
+                    {
+                        for ( int i = 0; i < Data.Height; i++ )
+                        {
+                            for ( int j = 0; j < Data.Width; j++ )
+                            {
+                                buffer[ qw++ ] = *( imgPtr + 2 );
+                                buffer[ qw++ ] = *( imgPtr + 1 );
+                                buffer[ qw++ ] = *( imgPtr + 0 );
+
+                                if ( bytesPerPixel == 3 )
+                                    buffer[ qw++ ] = 255;
+                                else
+                                    buffer[ qw++ ] = *( imgPtr + 3 ); // alpha
+                                imgPtr += bytesPerPixel;
+                            }
+                            imgPtr += Data.Stride - Data.Width * bytesPerPixel;
+                        }
+
+                    }
+                    else
+                    {
+                        for ( int i = 0; i < Data.Height; i++ )
+                        {
+                            for ( int j = 0; j < Data.Width; j++ )
+                            {
+                                buffer[ qw++ ] = *( imgPtr );
+                                imgPtr += bytesPerPixel;
+                            }
+                            imgPtr += Data.Stride - Data.Width * bytesPerPixel;
+                        }
+                    }
+                }
+
+                CurrentBitmap.UnlockBits( Data );
+            }
+            catch ( Exception e )
+            {
+                throw new ArgumentException( "Texture loading error.", e );
+            }
+
+            return new DecodeResult( new MemoryStream( buffer ), data );
+        }
+
+        public override string MagicNumberToFileExt( byte[] magicNumberBuf, int maxbytes )
+        {
+            //TODO
+            return string.Empty;
+        }
+    };
 }

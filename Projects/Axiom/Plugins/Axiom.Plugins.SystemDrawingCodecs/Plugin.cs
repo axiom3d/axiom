@@ -42,12 +42,12 @@ using Axiom.Media;
 
 namespace Axiom.Plugins.SystemDrawingCodecs
 {
-    [Export(typeof(IPlugin))]
+    [Export( typeof( IPlugin ) )]
     class Plugin : Axiom.Core.IPlugin
-	{
-		#region Implementation of IPlugin
+    {
+        #region Implementation of IPlugin
 
-		/// <summary>
+        /// <summary>
 		/// Unique name for the plugin
 		/// </summary>
 		string Name
@@ -84,11 +84,9 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// </remarks>
 		public void Initialize()
 		{
-			CodecManager codecMgr = CodecManager.Instance;
-
-			codecMgr.RegisterCodec( new SDImageLoader( "BMP" ) );
-			codecMgr.RegisterCodec( new SDImageLoader( "JPG" ) );
-			codecMgr.RegisterCodec( new SDImageLoader( "PNG" ) );
+			Codec.RegisterCodec( new SDImageLoader( "BMP" ) );
+            Codec.RegisterCodec( new SDImageLoader( "JPG" ) );
+            Codec.RegisterCodec( new SDImageLoader( "PNG" ) );
 		}
 
 		/// <summary>

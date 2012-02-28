@@ -110,7 +110,7 @@ namespace Axiom.Components.Terrain
             PixelFormat fmt = mBuffer.Format;
             var rgbaShift = PixelUtil.GetBitShifts( fmt );
             mChannelOffset = (byte)( rgbaShift[ mChannel ] / 8 ); // /8 convert to bytes
-#if AXIOM_ENDIAN == AXIOM_ENDIAN_BIG
+#if AXIOM_BIG_ENDIAN
             // invert (dealing bytewise)
             mChannelOffset = (byte)( PixelUtil.GetNumElemBytes( fmt ) - mChannelOffset - 1 );
 #endif
@@ -129,7 +129,7 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void ConverWorldToUVSpace( Vector3 worldPost, ref Real outX, ref Real outY )
         {
-            Vector3 terrainSpace = Vector3.Zero;
+            var terrainSpace = Vector3.Zero;
             mParent.GetTerrainPosition( worldPost, ref terrainSpace );
             outX = terrainSpace.x;
             outY = 1.0f - terrainSpace.y;
@@ -255,31 +255,30 @@ namespace Axiom.Components.Terrain
         {
             if ( mData != null && mDirty )
             {
-#if !AXIOM_SAFE_ONLY
-                unsafe
-#endif
+                using ( var mDataBuf = BufferBase.Wrap( mData ) )
                 {
-                    var mDataPtr = Memory.PinObject( mData );
-                    var pmData = mDataPtr.ToFloatPointer();
-                    var pSrcBase = mDataPtr + ( mDirtyBox.Top * mBuffer.Width + mDirtyBox.Left );
-                    Debug.Assert( mDirtyBox.Depth == 1 );
-                    var pBox = mBuffer.Lock( mDirtyBox, BufferLocking.Normal );
-                    var pDstBase = pBox.Data;
+                    var pSrcBase = mDataBuf + ( mDirtyBox.Top * mBuffer.Width + mDirtyBox.Left );
+                    var pDstBase = mBuffer.Lock( mDirtyBox, BufferLocking.Normal ).Data;
                     pDstBase += mChannelOffset;
-                    int dstInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
-                    for ( int y = 0; y < mDirtyBox.Height; ++y )
+                    var dstInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
+
+#if !AXIOM_SAFE_ONLY
+                    unsafe
+#endif
                     {
-                        var pSrc = ( pSrcBase + ( y * mBuffer.Width ) * sizeof( float ) ).ToFloatPointer();
-                        var pDst = pDstBase + ( y * mBuffer.Width * dstInc );
-                        for ( int x = 0; x < mDirtyBox.Width; ++x )
+                        for ( int y = 0; y < mDirtyBox.Height; ++y )
                         {
-                            pDst.ToBytePointer()[ 0 ] = (byte)( pSrc[ x ] * 255 );
-                            pDst += dstInc;
+                            var pSrc = ( pSrcBase + ( y * mBuffer.Width ) * sizeof( float ) ).ToFloatPointer();
+                            var pDst = pDstBase + ( y * mBuffer.Width * dstInc );
+                            for ( int x = 0; x < mDirtyBox.Width; ++x )
+                            {
+                                pDst.ToBytePointer()[ 0 ] = (byte)( pSrc[ x ] * 255 );
+                                pDst += dstInc;
+                            }
                         }
                     }
 
                     mBuffer.Unlock();
-
                     mDirty = false;
                 }
 
@@ -312,7 +311,7 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void Blit( ref PixelBox src, BasicBox dstBox )
         {
-            PixelBox srcBox = src;
+            var srcBox = src;
 
             if ( srcBox.Width != dstBox.Width || srcBox.Height != dstBox.Height )
             {
@@ -359,7 +358,7 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void LoadImage( Stream stream, string extension )
         {
-            Image img = Image.FromStream( stream, extension );
+            var img = Image.FromStream( stream, extension );
             LoadImage( img );
         }
         
@@ -378,7 +377,7 @@ namespace Axiom.Components.Terrain
         [OgreVersion( 1, 7, 2 )]
         public void LoadImage( string fileName, string groupName )
         {
-            Image img = Image.FromFile( fileName, groupName );
+            var img = Image.FromFile( fileName, groupName );
             LoadImage( img );
         }
        
@@ -389,24 +388,26 @@ namespace Axiom.Components.Terrain
             unsafe
 #endif
             {
-                var pDst = Memory.PinObject( mData ).ToFloatPointer();
-                var pDstIdx = 0;
-                //download data
-                var box = new BasicBox( 0, 0, mBuffer.Width, mBuffer.Height );
-                var pBox = mBuffer.Lock( box, BufferLocking.ReadOnly );
-                var pSrc = pBox.Data.ToBytePointer();
-                int pSrcIdx = mChannelOffset;
-                int srcInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
-                for ( int y = box.Top; y < box.Bottom; ++y )
+                using ( var pDst = BufferBase.Wrap( mData ) )
                 {
-                    for ( int x = box.Left; x < box.Right; ++x )
+                    var pDstPtr = pDst.ToFloatPointer();
+                    var pDstIdx = 0;
+                    //download data
+                    var box = new BasicBox( 0, 0, mBuffer.Width, mBuffer.Height );
+                    var pBox = mBuffer.Lock( box, BufferLocking.ReadOnly );
+                    var pSrc = pBox.Data.ToBytePointer();
+                    var pSrcIdx = (int)mChannelOffset;
+                    var srcInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
+                    for ( var y = box.Top; y < box.Bottom; ++y )
                     {
-                        pDst[ pDstIdx++ ] = (float)( ( pSrc[ pSrcIdx ] )/255.0f );
-                        pSrcIdx += srcInc;
+                        for ( var x = box.Left; x < box.Right; ++x )
+                        {
+                            pDstPtr[ pDstIdx++ ] = (float)( ( pSrc[ pSrcIdx ] ) / 255.0f );
+                            pSrcIdx += srcInc;
+                        }
                     }
+                    mBuffer.Unlock();
                 }
-                mBuffer.Unlock();
-                Memory.UnpinObject( mData );
             }
         }
 

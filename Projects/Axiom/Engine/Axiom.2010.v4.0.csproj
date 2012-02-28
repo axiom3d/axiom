@@ -97,7 +97,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;MONO;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;MONO;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Debug\Axiom.XML</DocumentationFile>
@@ -120,7 +120,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono-Release|AnyCPU'">
     <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>TRACE;MONO;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;NET_40</DefineConstants>
+    <DefineConstants>TRACE;MONO;AXIOM_USENEWCOMPILERS;AXIOM_SAFE_MIX;$(TargetFrameworkDefine)</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\x86v4.0Release\Axiom.xml</DocumentationFile>
@@ -264,6 +264,9 @@
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\RenderWindowDescription.cs" />
+    <Compile Include="Media\DDSCodec.cs" />
+    <Compile Include="Media\NullCodec.cs" />
+    <Compile Include="Media\PVRTCCodec.cs" />
     <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
@@ -734,9 +737,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Media\Bitwise.cs" />
-    <Compile Include="Media\CodecManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Media\Enums.cs">
       <SubType>Code</SubType>
     </Compile>
