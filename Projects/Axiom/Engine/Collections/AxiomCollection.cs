@@ -88,7 +88,7 @@ namespace Axiom.Collections
 
 		protected AxiomCollection( Object parent )
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
-            : base(Environment.ProcessorCount, InitialCapacity)
+            : base( Environment.ProcessorCount, InitialCapacity )
 #else
             : base( InitialCapacity )
 #endif
@@ -116,6 +116,22 @@ namespace Axiom.Collections
 			(this as IDictionary<string, T>).Remove(key);
 		}
 
+        public virtual bool TryRemove( string key )
+        {
+#if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
+            T val;
+            return base.TryRemove( key, out val );
+#else
+            if ( base.ContainsKey( key ) )
+            {
+                base.Remove( key );
+                return true;
+            }
+
+            return false;
+#endif
+        }
+
 		/// <summary>
 		///	Adds an unnamed object to the <see cref="AxiomCollection{T}"/> and names it manually.
 		/// </summary>
@@ -140,7 +156,7 @@ namespace Axiom.Collections
 		/// Returns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
 		/// </summary>
 		/// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
-		public new virtual IEnumerator GetEnumerator()
+		public new virtual IEnumerator<T> GetEnumerator()
 		{
 			return Values.GetEnumerator();
 		}
@@ -162,10 +178,9 @@ namespace Axiom.Collections
 			set
 			{
 				if ( this.ContainsKey( key ) )
-				{
-					this.Remove( key );
-				}
-				this.Add( key, value );
+					base[ key ] = value;
+                else
+                    this.Add( key, value );
 			}
 		}
 

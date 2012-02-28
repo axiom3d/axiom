@@ -128,6 +128,7 @@ namespace Axiom.RenderSystems.DirectX9
             Activated += _defaultFormActivated;
             Closing += _defaultFormClose;
             Resize += _defaultFormResize;
+            Cursor.Hide();
 
             ResumeLayout(false);
 	    }
