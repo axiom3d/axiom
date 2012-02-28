@@ -188,6 +188,10 @@
     <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\RenderWindowDescription.cs" />
+    <Compile Include="Media\Codec.cs" />
+    <Compile Include="Media\DDSCodec.cs" />
+    <Compile Include="Media\NullCodec.cs" />
+    <Compile Include="Media\PVRTCCodec.cs" />
     <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ICloneable.cs" />
     <Compile Include="Core\ILodListener.cs" />
@@ -362,9 +366,7 @@
     <Compile Include="Math\Vector3.cs" />
     <Compile Include="Math\Vector4.cs" />
     <Compile Include="Media\Bitwise.cs" />
-    <Compile Include="Media\CodecManager.cs" />
     <Compile Include="Media\Enums.cs" />
-    <Compile Include="Media\ICodec.cs" />
     <Compile Include="Media\Image.cs" />
     <Compile Include="Media\ImageCodec.cs" />
     <Compile Include="Media\LinearResampler.Byte.cs" />
