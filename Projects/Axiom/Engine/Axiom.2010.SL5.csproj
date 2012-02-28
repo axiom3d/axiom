@@ -102,6 +102,10 @@
     <Compile Include="FileSystem\XapArchive.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Media\Codec.cs" />
+    <Compile Include="Media\DDSCodec.cs" />
+    <Compile Include="Media\NullCodec.cs" />
+    <Compile Include="Media\PVRTCCodec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
@@ -675,13 +679,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Media\Bitwise.cs" />
-    <Compile Include="Media\CodecManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Media\Enums.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Media\ICodec.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Media\Image.cs">
