@@ -668,7 +668,7 @@ namespace Axiom.Media
             if ( !string.IsNullOrEmpty( type ) )
             {
                 // use named codec
-                codec = Codec.GetCodec( type );
+                codec = CodecManager.Instance.GetCodec( type );
             }
             else
             {
@@ -679,7 +679,7 @@ namespace Axiom.Media
                 stream.Read( magicBuf, 0, magicLen );
                 // return to start
                 stream.Position = 0;
-                codec = Codec.GetCodec( magicBuf, magicLen );
+                codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
             }
 
             if ( codec == null )
@@ -736,7 +736,7 @@ namespace Axiom.Media
             stream.Read( magicBuf, 0, magicLen );
             // return to start
             stream.Position = 0;
-            var codec = Codec.GetCodec( magicBuf, magicLen );
+            var codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
 
             if ( codec != null )
                 return codec.Type;
@@ -766,7 +766,7 @@ namespace Axiom.Media
 
             strExt = filename.Substring( pos + 1 );
 
-            var pCodec = Codec.GetCodec( strExt );
+            var pCodec = CodecManager.Instance.GetCodec( strExt );
             if ( pCodec == null )
                 throw new AxiomException( "Unable to save image file '{0}' - invalid extension.", filename );
 

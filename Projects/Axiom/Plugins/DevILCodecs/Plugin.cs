@@ -164,20 +164,20 @@ namespace Axiom.Plugins.DevILCodecs
 
             foreach ( var str in ext )
             {
-                if ( Codec.IsCodecRegistered( str ) )
+                if ( CodecManager.Instance.IsCodecRegistered( str ) )
                     continue;
 
                 var ilType = _IlTypeFromExt( str );
                 var codec = new ILImageCodec( str, ilType );
-                Codec.RegisterCodec( codec );
+                CodecManager.Instance.RegisterCodec( codec );
                 codecList.Add( codec );
             }
 
             // Raw format, missing in image formats string
-            if ( !Codec.IsCodecRegistered( "raw" ) )
+            if ( !CodecManager.Instance.IsCodecRegistered( "raw" ) )
             {
                 var cod = new ILImageCodec( "raw", Il.IL_RAW );
-                Codec.RegisterCodec( cod );
+                CodecManager.Instance.RegisterCodec( cod );
                 codecList.Add( cod );
                 ilExtensions += "raw";
             }
@@ -193,7 +193,7 @@ namespace Axiom.Plugins.DevILCodecs
         public void Shutdown()
         {
             foreach ( var i in codecList )
-                Codec.UnregisterCodec( i );
+                CodecManager.Instance.UnregisterCodec( i );
 
             codecList.Clear();
         }

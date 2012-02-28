@@ -1,43 +1,39 @@
-﻿#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+﻿#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel.Composition;
-using System.Text;
 using Axiom.Core;
 using Axiom.Media;
+using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.SystemDrawingCodecs
@@ -58,18 +54,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			}
 		}
 
-		/// <summary>
-		/// Perform the plugin initial installation sequence.
-		/// </summary>
-		/// <remarks>
-		/// An implementation must be supplied for this method. It must perform
-		/// the startup tasks necessary to install any rendersystem customizations
-		/// or anything else that is not dependent on system initialization, ie
-		/// only dependent on the core of Axiom. It must not perform any
-		/// operations that would create rendersystem-specific objects at this stage,
-		/// that should be done in Initialize().
-		/// </remarks>
-		//void Install();
+        private static RegisteredCodec _codecList;
 
 		/// <summary>
 		/// Perform any tasks the plugin needs to perform on full system initialization.
@@ -82,12 +67,22 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// time. You can use this hook to create any resources which are
 		/// dependent on a rendersystem or have rendersystem-specific implementations.
 		/// </remarks>
-		public void Initialize()
-		{
-			Codec.RegisterCodec( new SDImageLoader( "BMP" ) );
-            Codec.RegisterCodec( new SDImageLoader( "JPG" ) );
-            Codec.RegisterCodec( new SDImageLoader( "PNG" ) );
-		}
+        public void Initialize()
+        {
+            if ( _codecList == null )
+            {
+                _codecList = new RegisteredCodec();
+                _codecList.Add( new SDImageLoader( "BMP" ) );
+                _codecList.Add( new SDImageLoader( "JPG" ) );
+                _codecList.Add( new SDImageLoader( "PNG" ) );
+
+                foreach ( var i in _codecList )
+                {
+                    if ( !CodecManager.Instance.IsCodecRegistered( i.Type ) )
+                        CodecManager.Instance.RegisterCodec( i );
+                }
+            }
+        }
 
 		/// <summary>
 		/// Perform any tasks the plugin needs to perform when the system is shut down.
@@ -101,8 +96,19 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		/// </remarks>
 		public void Shutdown()
 		{
+            if ( _codecList != null )
+            {
+                foreach ( var i in _codecList )
+                {
+                    if ( CodecManager.Instance.IsCodecRegistered( i.Type ) )
+                        CodecManager.Instance.UnregisterCodec( i );
+                }
+
+                _codecList.Clear();
+                _codecList = null;
+            }
 		}
 
 		#endregion Implementation of IPlugin
-	}
+	};
 }
