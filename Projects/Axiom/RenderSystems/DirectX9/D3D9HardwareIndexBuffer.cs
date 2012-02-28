@@ -374,11 +374,13 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "Cannot lock D3D9 index buffer!", ex );
 			}
 
-			Memory.Copy(
-				systemMemoryBuffer + bufferResources.LockOffset,
-				BufferBase.Wrap( dstBytes.DataPointer, (int)dstBytes.Length ),
-				bufferResources.LockLength
-				);
+            using ( var src = systemMemoryBuffer + bufferResources.LockOffset )
+            {
+                using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, (int)dstBytes.Length ) )
+                {
+                    Memory.Copy( src, dest, bufferResources.LockLength );
+                }
+            }
 
 			// Unlock the buffer.
 			var hr = bufferResources.IndexBuffer.Unlock();
