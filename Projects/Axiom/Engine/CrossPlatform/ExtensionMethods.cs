@@ -1,3 +1,5 @@
+#region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,14 +17,16 @@ using System.Linq.Expressions;
 using Expression = System.Linq.Expressions.Expression;
 #endif
 
+#endregion Namespace Declarations
+
 namespace Axiom.Core
 {
 	public static class AssemblyEx
 	{
-		public static string SafePath(this string path)
-		{
-			return path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
-		}
+        public static string SafePath( this string path )
+        {
+            return path.Replace( '\\', Path.DirectorySeparatorChar ).Replace( '/', Path.DirectorySeparatorChar );
+        }
 
 #if !SILVERLIGHT || WINDOWS_PHONE
 		public static IEnumerable<Assembly> Neighbors(IEnumerable<string> names)
@@ -130,37 +134,47 @@ namespace Axiom.Core
 		}
 #endif
 
-		public static int Size(this Type type)
-		{
-			return Size( type, null );
-		}
+        public static int Size( this Type type )
+        {
+            return Size( type, null );
+        }
 
-		public static int Size(this Type type, FieldInfo field)
+        public static int Size( this Type type, FieldInfo field )
 		{
 #if SILVERLIGHT || WINDOWS_PHONE
-			if ( type == typeof ( byte ) )
-				return 1;
-			if ( type == typeof ( short ) || type == typeof ( ushort ) )
-				return 2;
-			if ( type == typeof ( int ) || type == typeof ( uint ) || type == typeof ( float ) )
-				return 4;
-			if ( type == typeof ( long ) || type == typeof ( ulong ) || type == typeof ( double ) )
-				return 8;
-			if ( type.IsValueType )
-				return ( from fld in
-							 type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
-						 select fld.FieldType.Size( fld ) ).Sum();
-			if ( field != null )
-			{
-				var attributes = field.GetCustomAttributes( typeof ( MarshalAsAttribute ), false );
-				var marshal = (MarshalAsAttribute)attributes[ 0 ];
-				if ( type.IsArray )
-					return marshal.SizeConst*type.GetElementType().Size();
-				if ( type == typeof ( string ) )
-					return marshal.SizeConst;
-			}
+            if ( type.IsPrimitive )
+            {
+                if ( type == typeof( byte ) || type == typeof( SByte ) || type == typeof( bool ) )
+                    return 1;
+
+                if ( type == typeof( short ) || type == typeof( ushort ) || type == typeof( char ) )
+                    return 2;
+
+                if ( type == typeof( int ) || type == typeof( uint ) || type == typeof( float ) )
+                    return 4;
+
+                if ( type == typeof( long ) || type == typeof( ulong ) || type == typeof( double ) || type == typeof( IntPtr ) || type == typeof( UIntPtr ) )
+                    return 8;
+            }
+            else
+            {
+                if ( type.IsValueType )
+                    return ( from fld in
+                                 type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
+                             select fld.FieldType.Size( fld ) ).Sum();
+
+                if ( field != null )
+                {
+                    var attributes = field.GetCustomAttributes( typeof( MarshalAsAttribute ), false );
+                    var marshal = (MarshalAsAttribute)attributes[ 0 ];
+                    if ( type.IsArray )
+                        return marshal.SizeConst * type.GetElementType().Size();
+                    if ( type == typeof( string ) )
+                        return marshal.SizeConst;
+                }
+            }
 #endif
-			return Marshal.SizeOf(type);
+            return Marshal.SizeOf( type );
 		}
 
 		public struct Field
