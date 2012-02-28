@@ -147,9 +147,11 @@ namespace Axiom.Core
 #if SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
 #endif
+                // Register image codecs
+                DDSCodec.Initialize();
+                PVRTCCodec.Initialize();
 
 				new ResourceGroupManager();
-				new CodecManager();
 				new HighLevelGpuProgramManager();
 
 				ResourceGroupManager.Instance.Initialize();
@@ -1209,77 +1211,30 @@ namespace Axiom.Core
 		/// <summary>
 		///		Called to shutdown the engine and dispose of all it's resources.
 		/// </summary>
-		public void Dispose()
-		{
-			// force the engine to shutdown
-			this.Shutdown();
+        public void Dispose()
+        {
+            // force the engine to shutdown
+            this.Shutdown();
 
-			if ( CompositorManager.Instance != null )
-			{
-				CompositorManager.Instance.Dispose();
-			}
+            DDSCodec.Shutdown();
+            PVRTCCodec.Shutdown();
 
-			if ( OverlayManager.Instance != null )
-			{
-				OverlayManager.Instance.Dispose();
-			}
+            CompositorManager.Instance.SafeDispose();
+            OverlayManager.Instance.SafeDispose();
+            OverlayElementManager.Instance.SafeDispose();
+            FontManager.Instance.SafeDispose();
+            ArchiveManager.Instance.SafeDispose();
+            SkeletonManager.Instance.SafeDispose();
+            MeshManager.Instance.SafeDispose();
+            MaterialManager.Instance.SafeDispose();
+            ParticleSystemManager.Instance.SafeDispose();
+            ControllerManager.Instance.SafeDispose();
+            HighLevelGpuProgramManager.Instance.SafeDispose();
+            PluginManager.Instance.SafeDispose();
 
-			if ( OverlayElementManager.Instance != null )
-			{
-				OverlayElementManager.Instance.Dispose();
-			}
+            Pass.ProcessPendingUpdates();
 
-			if ( FontManager.Instance != null )
-			{
-				FontManager.Instance.Dispose();
-			}
-
-			if ( ArchiveManager.Instance != null )
-			{
-				ArchiveManager.Instance.Dispose();
-			}
-
-			if ( SkeletonManager.Instance != null )
-			{
-				SkeletonManager.Instance.Dispose();
-			}
-
-			if ( MeshManager.Instance != null )
-			{
-				MeshManager.Instance.Dispose();
-			}
-
-			if ( MaterialManager.Instance != null )
-			{
-				MaterialManager.Instance.Dispose();
-			}
-
-			if ( ParticleSystemManager.Instance != null )
-			{
-				ParticleSystemManager.Instance.Dispose();
-			}
-
-			if ( ControllerManager.Instance != null )
-			{
-				ControllerManager.Instance.Dispose();
-			}
-
-			if ( HighLevelGpuProgramManager.Instance != null )
-			{
-				HighLevelGpuProgramManager.Instance.Dispose();
-			}
-
-			if ( PluginManager.Instance != null )
-			{
-				PluginManager.Instance.Dispose();
-			}
-
-			Pass.ProcessPendingUpdates();
-
-			if ( ResourceGroupManager.Instance != null )
-			{
-				ResourceGroupManager.Instance.Dispose();
-			}
+            ResourceGroupManager.Instance.SafeDispose();
 
             // Note: The dispose method implementation of both ResourceBackgroundQueue and
             // DefaultWorkQueue internally calls Shutdown, so the direct call to Shutdown methods
@@ -1288,37 +1243,18 @@ namespace Axiom.Core
             _workQueue.Dispose();
             _workQueue = null;
 
-			if ( CodecManager.Instance != null )
-			{
-				if ( !CodecManager.Instance.IsDisposed )
-					CodecManager.Instance.Dispose();
-			}
-
 #if !XBOX360
-			if ( PlatformManager.Instance != null )
-			{
-				PlatformManager.Instance.Dispose();
-			}
+            PlatformManager.Instance.SafeDispose();
 #endif
+            this.activeRenderSystem = null;
 
-			this.activeRenderSystem = null;
+            WindowEventMonitor.Instance.SafeDispose();
+#if DEBUG
+            ObjectManager.Instance.SafeDispose();
+#endif
+            LogManager.Instance.SafeDispose();
 
-			if ( WindowEventMonitor.Instance != null )
-			{
-				WindowEventMonitor.Instance.Dispose();
-			}
-
-			if ( ObjectManager.Instance != null )
-			{
-				ObjectManager.Instance.Dispose();
-			}
-
-			if ( LogManager.Instance != null )
-			{
-				LogManager.Instance.Dispose();
-			}
-
-			instance = null;
+            instance = null;
 		}
 
 		#endregion Implementation of IDisposable

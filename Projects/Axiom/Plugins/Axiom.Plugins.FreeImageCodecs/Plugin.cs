@@ -40,7 +40,7 @@ using Axiom.Core;
 
 namespace Axiom.Plugins.FreeImageCodecs
 {
-    [Export(typeof(IPlugin))]
+    [Export( typeof( IPlugin ) )]
 	public class Plugin : IPlugin
 	{
 		/// <summary>
@@ -58,5 +58,5 @@ namespace Axiom.Plugins.FreeImageCodecs
 		{
 			FreeImageCodec.Shutdown();
 		}
-	}
+	};
 }

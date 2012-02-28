@@ -62,7 +62,7 @@ namespace Axiom.Media
     ///    The Image class usually holds uncompressed image data and is the
     ///    only object that can be loaded in a texture. Image objects handle 
     ///    image data decoding themselves by the means of locating the correct 
-    ///    ICodec implementation for each data type.
+    ///    Codec implementation for each data type.
     /// </remarks>
     public class Image : DisposableObject
     {
@@ -663,31 +663,31 @@ namespace Axiom.Media
 #endif
         {
             // find the codec for this file type
-            ICodec codec = null;
+            Codec codec = null;
 
             if ( !string.IsNullOrEmpty( type ) )
             {
                 // use named codec
-                codec = CodecManager.Instance.GetCodec( type );
+                codec = Codec.GetCodec( type );
             }
             else
             {
                 // derive from magic number
                 // read the first 32 bytes or file size, if less
                 var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
-                byte[] magicBuf = new byte[ magicLen ];
+                var magicBuf = new byte[ magicLen ];
                 stream.Read( magicBuf, 0, magicLen );
                 // return to start
                 stream.Position = 0;
-                codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
+                codec = Codec.GetCodec( magicBuf, magicLen );
             }
 
             if ( codec == null )
                 throw new AxiomException( "Unable to load image: Image format is unknown. Unable to identify codec. Check it or specify format explicitly." );
 
-            var decoded = new MemoryStream();
-
-            var data = (ImageCodec.ImageData)codec.Decode( stream, decoded );
+            var res = codec.Decode( stream );
+            var decoded = (MemoryStream)res.First;
+            var data = (ImageCodec.ImageData)res.Second;
 
             if ( data == null )
                 return null;
@@ -736,7 +736,7 @@ namespace Axiom.Media
             stream.Read( magicBuf, 0, magicLen );
             // return to start
             stream.Position = 0;
-            var codec = CodecManager.Instance.GetCodec( magicBuf, magicLen );
+            var codec = Codec.GetCodec( magicBuf, magicLen );
 
             if ( codec != null )
                 return codec.Type;
@@ -766,7 +766,7 @@ namespace Axiom.Media
 
             strExt = filename.Substring( pos + 1 );
 
-            var pCodec = CodecManager.Instance.GetCodec( strExt );
+            var pCodec = Codec.GetCodec( strExt );
             if ( pCodec == null )
                 throw new AxiomException( "Unable to save image file '{0}' - invalid extension.", filename );
 

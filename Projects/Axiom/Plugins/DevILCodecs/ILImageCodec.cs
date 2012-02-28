@@ -1,34 +1,32 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code
-contained within this library is a derivative of the open source Object Oriented
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion LGPL License
+#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: ILImageCodec.cs 1332 2008-07-28 18:28:27Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,272 +36,311 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
-using Axiom.Math.Collections;
 using Axiom.Media;
 
 using Tao.DevIl;
-using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.DevILCodecs
 {
 	/// <summary>
-	///    Base DevIL (OpenIL) implementation for loading images.
+    /// Codec specialized in images loaded using DevIL.
 	/// </summary>
-	public abstract class ILImageCodec : ImageCodec
+    /// <remarks>
+    /// The users implementing subclasses of ImageCodec are required to return
+    /// a valid pointer to a ImageData class from the decode(...) function.
+    /// </remarks>
+	public class ILImageCodec : ImageCodec
 	{
 		#region Fields
 
 		/// <summary>
-		///    Flag used to ensure DevIL gets initialized once.
+		/// Flag used to ensure DevIL gets initialized once.
 		/// </summary>
 		protected static bool isInitialized;
 
+        private string _type;
+        private int _ilType;
+
 		#endregion Fields
+
+        #region Properties
+
+        [OgreVersion( 1, 7, 2 )]
+        public override string Type
+        {
+            get
+            {
+                return _type;
+            }
+        }
+
+        #endregion Properties
 
 		#region Constructor
 
-		public ILImageCodec()
+        [OgreVersion( 1, 7, 2 )]
+        public ILImageCodec( string type, int ilType )
 		{
+            _type = type;
+            _ilType = ilType;
 			InitializeIL();
 		}
 
 		#endregion Constructor
 
-		#region ImageCodec Implementation
+        #region Methods
 
-		public override void EncodeToFile( Stream input, string fileName, object codecData )
-		{
-			int imageID;
+        /// <see cref="Axiom.Media.Codec.Encode"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override Stream Encode( Stream input, Codec.CodecData data )
+        {
+            throw new NotImplementedException( "Encode to memory not implemented" );
+        }
 
-			// create and bind a new image
-			Il.ilGenImages( 1, out imageID );
-			Il.ilBindImage( imageID );
+        /// <see cref="Axiom.Media.Codec.EncodeToFile"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData codecData )
+        {
+            int imageID;
 
-			byte[] buffer = new byte[ input.Length ];
-			input.Read( buffer, 0, buffer.Length );
+            // create and bind a new image
+            Il.ilGenImages( 1, out imageID );
+            Il.ilBindImage( imageID );
 
-			ImageData data = (ImageData)codecData;
+            var buffer = new byte[ input.Length ];
+            input.Read( buffer, 0, buffer.Length );
 
-            var bufHandle = BufferBase.Wrap(data);
-			PixelBox src = new PixelBox( data.width, data.height, data.depth, data.format, bufHandle );
+            var imgData = (ImageData)codecData;
 
-			try
-			{
-				// Convert image from Axiom to current IL image
-				ILUtil.ConvertToIL( src );
-			}
-			catch ( Exception ex )
-			{
-				LogManager.Instance.Write( "IL Failed image conversion :", ex.Message );
-			}
+            PixelBox src;
+            using ( var bufHandle = BufferBase.Wrap( buffer ) )
+                src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, bufHandle );
 
-			// flip the image
-			Ilu.iluFlipImage();
+            try
+            {
+                // Convert image from Axiom to current IL image
+                ILUtil.ConvertToIL( src );
+            }
+            catch ( Exception ex )
+            {
+                LogManager.Instance.Write( "IL Failed image conversion :", ex.Message );
+            }
 
-			// save the image to file
-			Il.ilSaveImage( fileName );
+            // flip the image
+            Ilu.iluFlipImage();
 
-			int error = Il.ilGetError();
+            // save the image to file
+            Il.ilSaveImage( outFileName );
 
-			if ( error != Il.IL_NO_ERROR )
-				LogManager.Instance.Write( "IL Error, could not save file: {0} : {1}", fileName, Ilu.iluErrorString( error ) );
-		}
+            var error = Il.ilGetError();
 
-		public override object Decode( Stream input, Stream output, params object[] args )
-		{
-			ImageData data = new ImageData();
+            if ( error != Il.IL_NO_ERROR )
+                LogManager.Instance.Write( "IL Error, could not save file: {0} : {1}", outFileName, Ilu.iluErrorString( error ) );
 
-			int imageID;
-			int format, bytesPerPixel;
+            Il.ilDeleteImages( 1, ref imageID );
+        }
 
-			// create and bind a new image
-			Il.ilGenImages( 1, out imageID );
-			Il.ilBindImage( imageID );
+        /// <see cref="Axiom.Media.Codec.Decode"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            var imgData = new ImageData();
+            var output = new MemoryStream();
 
-			// create a temp buffer and write the stream into it
-			byte[] buffer = new byte[ input.Length ];
-			input.Read( buffer, 0, buffer.Length );
+            int imageID;
+            int imageFormat, bytesPerPixel;
 
-			// load the data into DevIL
-			Il.ilLoadL( this.ILType, buffer, buffer.Length );
+            // create and bind a new image
+            Il.ilGenImages( 1, out imageID );
+            Il.ilBindImage( imageID );
 
-			// check for an error
-			int ilError = Il.ilGetError();
+            // create a temp buffer and write the stream into it
+            var buffer = new byte[ input.Length ];
+            input.Read( buffer, 0, buffer.Length );
 
-			if ( ilError != Il.IL_NO_ERROR )
-			{
-				throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
-			}
+            // Put it right side up
+            Il.ilEnable( Il.IL_ORIGIN_SET );
+            Il.ilSetInteger( Il.IL_ORIGIN_MODE, Il.IL_ORIGIN_UPPER_LEFT );
 
-			format = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
-			int imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
+            // Keep DXTC(compressed) data if present
+            Il.ilSetInteger( Il.IL_KEEP_DXTC_DATA, Il.IL_TRUE );
 
-			// Convert image if imageType is incompatible with us (double or long)
-			if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE &&
-				imageType != Il.IL_FLOAT &&
-				imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
-			{
-				Il.ilConvertImage( format, Il.IL_FLOAT );
-				imageType = Il.IL_FLOAT;
-			}
-			// Converted paletted images
-			if ( format == Il.IL_COLOR_INDEX )
-			{
-				Il.ilConvertImage( Il.IL_BGRA, Il.IL_UNSIGNED_BYTE );
-				format = Il.IL_BGRA;
-				imageType = Il.IL_UNSIGNED_BYTE;
-			}
+            // load the data into DevIL
+            Il.ilLoadL( _ilType, buffer, buffer.Length );
 
-			// populate the image data
-			bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
+            // check for an error
+            var ilError = Il.ilGetError();
 
-			data.width = Il.ilGetInteger( Il.IL_IMAGE_WIDTH );
-			data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
-			data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
-			data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
-			data.format = ILUtil.Convert( format, imageType );
-			data.size = data.width * data.height * bytesPerPixel;
+            if ( ilError != Il.IL_NO_ERROR )
+                throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
 
-			if ( data.format == PixelFormat.Unknown )
-			{
-				throw new AxiomException( "Unsupported devil format ImageFormat={0} ImageType={1}", format, imageType );
-			}
+            imageFormat = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
+            var imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
 
-			// Check for cubemap
-			int numFaces = Il.ilGetInteger( Il.IL_NUM_IMAGES ) + 1;
-			if ( numFaces == 6 )
-				data.flags |= ImageFlags.CubeMap;
-			else
-				numFaces = 1; // Support only 1 or 6 face images for now
+            // Convert image if imageType is incompatible with us (double or long)
+            if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE &&
+                imageType != Il.IL_FLOAT &&
+                imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
+            {
+                Il.ilConvertImage( imageFormat, Il.IL_FLOAT );
+                imageType = Il.IL_FLOAT;
+            }
 
-			// Keep DXT data (if present at all and the GPU supports it)
-			int dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
-			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
-			{
-				data.format = ILUtil.Convert( dxtFormat, imageType );
-				data.flags |= ImageFlags.Compressed;
+            // Converted paletted images
+            if ( imageFormat == Il.IL_COLOR_INDEX )
+            {
+                Il.ilConvertImage( Il.IL_BGRA, Il.IL_UNSIGNED_BYTE );
+                imageFormat = Il.IL_BGRA;
+                imageType = Il.IL_UNSIGNED_BYTE;
+            }
 
-				// Validate that this devil version loads DXT mipmaps
-				if ( data.numMipMaps > 0 )
-				{
-					Il.ilBindImage( imageID );
-					Il.ilActiveMipmap( 1 );
-					if ( (uint)Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT ) != dxtFormat )
-					{
-						data.numMipMaps = 0;
-						LogManager.Instance.Write( "Warning: Custom mipmaps for compressed image were ignored because they are not loaded by this DevIL version." );
-					}
-				}
-			}
+            // populate the image data
+            bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
 
-			// Calculate total size from number of mipmaps, faces and size
-			data.size = Image.CalculateSize( data.numMipMaps, numFaces, data.width, data.height, data.depth, data.format );
+            imgData.format = ILUtil.Convert( imageFormat, imageType );
+            imgData.width = Il.ilGetInteger( Il.IL_IMAGE_WIDTH );
+            imgData.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
+            imgData.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
+            imgData.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
 
-			// get the decoded data
-			BufferBase BufferHandle;
-			IntPtr pBuffer;
+            if ( imgData.format == PixelFormat.Unknown )
+                throw new AxiomException( "Unsupported devil format ImageFormat={0} ImageType={1}", imageFormat, imageType );
 
-			// Dimensions of current mipmap
-			int width = data.width;
-			int height = data.height;
-			int depth = data.depth;
+            // Check for cubemap
+            var numFaces = Il.ilGetInteger( Il.IL_NUM_IMAGES ) + 1;
+            if ( numFaces == 6 )
+                imgData.flags |= ImageFlags.CubeMap;
+            else
+                numFaces = 1; // Support only 1 or 6 face images for now
 
-			// Transfer data
-			for ( int mip = 0; mip <= data.numMipMaps; ++mip )
-			{
-				for ( int i = 0; i < numFaces; ++i )
-				{
-					Il.ilBindImage( imageID );
-					if ( numFaces > 1 )
-						Il.ilActiveImage( i );
-					if ( data.numMipMaps > 0 )
-						Il.ilActiveMipmap( mip );
+            // Keep DXT data (if present at all and the GPU supports it)
+            var dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
+            if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
+            {
+                imgData.format = ILUtil.Convert( dxtFormat, imageType );
+                imgData.flags |= ImageFlags.Compressed;
 
-					/// Size of this face
-					int imageSize = PixelUtil.GetMemorySize( width, height, depth, data.format );
-					buffer = new byte[ imageSize ];
+                // Validate that this devil version loads DXT mipmaps
+                if ( imgData.numMipMaps > 0 )
+                {
+                    Il.ilBindImage( imageID );
+                    Il.ilActiveMipmap( 1 );
+                    if ( (uint)Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT ) != dxtFormat )
+                    {
+                        imgData.numMipMaps = 0;
+                        LogManager.Instance.Write( "Warning: Custom mipmaps for compressed image were ignored because they are not loaded by this DevIL version." );
+                    }
+                }
+            }
 
-					if ( ( data.flags & ImageFlags.Compressed ) != 0 )
-					{
+            // Calculate total size from number of mipmaps, faces and size
+            imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth, imgData.format );
 
-						// Compare DXT size returned by DevIL with our idea of the compressed size
-						if ( imageSize == Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ) )
-						{
-							// Retrieve data from DevIL
-                            BufferHandle = BufferBase.Wrap(buffer);
-							Il.ilGetDXTCData( BufferHandle.Pin(), imageSize, dxtFormat );
-							BufferHandle.UnPin();
-						}
-						else
-						{
-							LogManager.Instance.Write( "Warning: compressed image size mismatch, devilsize={0} oursize={1}", Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ), imageSize );
-						}
-					}
-					else
-					{
-						/// Retrieve data from DevIL
-                        BufferHandle = BufferBase.Wrap(buffer);
-                        PixelBox dst = new PixelBox(width, height, depth, data.format, BufferHandle);
-						ILUtil.ConvertFromIL( dst );
-					}
+            // get the decoded data
+            BufferBase BufferHandle;
 
-					// write the decoded data to the output stream
-					output.Write( buffer, 0, buffer.Length );
-				}
-				/// Next mip
-				if ( width != 1 )
-					width /= 2;
-				if ( height != 1 )
-					height /= 2;
-				if ( depth != 1 )
-					depth /= 2;
-			}
+            // Dimensions of current mipmap
+            var width = imgData.width;
+            var height = imgData.height;
+            var depth = imgData.depth;
 
-			// Restore IL state
-			Il.ilDisable( Il.IL_ORIGIN_SET );
-			Il.ilDisable( Il.IL_FORMAT_SET );
+            // Transfer data
+            for ( var mip = 0; mip <= imgData.numMipMaps; ++mip )
+            {
+                for ( var i = 0; i < numFaces; ++i )
+                {
+                    Il.ilBindImage( imageID );
+                    if ( numFaces > 1 )
+                        Il.ilActiveImage( i );
+                    if ( imgData.numMipMaps > 0 )
+                        Il.ilActiveMipmap( mip );
 
-			Il.ilDeleteImages( 1, ref imageID );
+                    // Size of this face
+                    var imageSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
+                    buffer = new byte[ imageSize ];
 
-			return data;
-		}
+                    if ( ( imgData.flags & ImageFlags.Compressed ) != 0 )
+                    {
+                        // Compare DXT size returned by DevIL with our idea of the compressed size
+                        if ( imageSize == Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ) )
+                        {
+                            // Retrieve data from DevIL
+                            using ( BufferHandle = BufferBase.Wrap( buffer ) )
+                            {
+                                Il.ilGetDXTCData( BufferHandle.Pin(), imageSize, dxtFormat );
+                                BufferHandle.UnPin();
+                            }
+                        }
+                        else
+                            LogManager.Instance.Write( "Warning: compressed image size mismatch, devilsize={0} oursize={1}", Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ), imageSize );
+                    }
+                    else
+                    {
+                        // Retrieve data from DevIL
+                        using ( BufferHandle = BufferBase.Wrap( buffer ) )
+                        {
+                            var dst = new PixelBox( width, height, depth, imgData.format, BufferHandle );
+                            ILUtil.ConvertFromIL( dst );
+                        }
+                    }
 
-		#endregion ImageCodec Implementation
+                    // write the decoded data to the output stream
+                    output.Write( buffer, 0, buffer.Length );
+                }
 
-		#region Methods
+                // Next mip
+                if ( width != 1 )
+                    width /= 2;
 
-		/// <summary>
-		///    One time DevIL initialization.
-		/// </summary>
-		public void InitializeIL()
-		{
-			if ( !isInitialized )
-			{
-				// fire it up!
-				Il.ilInit();
+                if ( height != 1 )
+                    height /= 2;
 
-				// enable automatic file overwriting
-				Il.ilEnable( Il.IL_FILE_OVERWRITE );
+                if ( depth != 1 )
+                    depth /= 2;
+            }
 
-				isInitialized = true;
-			}
-		}
+            // Restore IL state
+            Il.ilDisable( Il.IL_ORIGIN_SET );
+            Il.ilDisable( Il.IL_FORMAT_SET );
+
+            Il.ilDeleteImages( 1, ref imageID );
+
+            return new DecodeResult( output, imgData );
+        }
+
+        /// <summary>
+        /// One time DevIL initialization.
+        /// </summary>
+        [OgreVersion( 1, 7, 2 )]
+        public void InitializeIL()
+        {
+            if ( !isInitialized )
+            {
+                // fire it up!
+                Il.ilInit();
+
+                // enable automatic file overwriting
+                Il.ilEnable( Il.IL_FILE_OVERWRITE );
+
+                isInitialized = true;
+            }
+        }
+
+        /// <see cref="Axiom.Media.Codec.MagicNumberToFileExt"/>
+        [OgreVersion( 1, 7, 2 )]
+        public override string MagicNumberToFileExt( byte[] magicNumberBuf, int maxbytes )
+        {
+            // DevIL uses magic internally to determine file types when
+            // necessary but does not expose the code in its API.
+            // This makes it difficult to implement this function, but also
+            // reduces its importance. Just for now, here is a kludge to 
+            // get Axiom to build and ensure that it always tries to load files
+            // that DevIL might be able to load.
+            return "jpg";
+        }
 
 		#endregion Methods
-
-		#region Properties
-
-		/// <summary>
-		///    Implemented by subclasses to return the IL type enum value for this
-		///    images file type.
-		/// </summary>
-		public abstract int ILType
-		{
-			get;
-		}
-
-		#endregion Properties
-	}
+    };
 }

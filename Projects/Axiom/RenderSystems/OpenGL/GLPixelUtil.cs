@@ -161,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_UNSIGNED_SHORT_4_4_4_4_REV;
 				case PixelFormat.L16:
 					return Gl.GL_UNSIGNED_SHORT;
-#if !LITTLE_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
 					return Gl.GL_UNSIGNED_INT_8_8_8_8_REV;
@@ -173,7 +173,7 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.R8G8B8A8:
 					return Gl.GL_UNSIGNED_BYTE;
 #else
-			case PixelFormat.X8B8G8R8:
+                case PixelFormat.X8B8G8R8:
 			case PixelFormat.A8B8G8R8:
                 return Gl.GL_UNSIGNED_BYTE;
 			case PixelFormat.X8R8G8B8:

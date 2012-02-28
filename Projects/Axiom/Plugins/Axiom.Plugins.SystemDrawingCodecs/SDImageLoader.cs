@@ -70,17 +70,6 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		#region SDImageCodec Implementation
 
 		/// <summary>
-		///    Encodes the data in the input stream and saves the result in the output stream.
-		/// </summary>
-		/// <param name="input">Input stream (decoded data).</param>
-		/// <param name="output">Output stream (encoded data).</param>
-		/// <param name="args">Variable number of extra arguments.</param>
-		public override void Encode( System.IO.Stream source, System.IO.Stream dest, params object[] args )
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
 		///    Gets the type of data that this codec is meant to handle, typically a file extension.
 		/// </summary>
 		public override String Type
@@ -90,13 +79,6 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				return this.extension;
 			}
 		}
-
-        /// <see cref="Axiom.Media.ICodec.MagicNumberToFileExt"/>
-        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
-        {
-            //TODO
-            return string.Empty;
-        }
 
 		#endregion SDImageCodec Implementation
 

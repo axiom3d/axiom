@@ -386,14 +386,14 @@ namespace Axiom.Serialization
             mRealFormat = realFormat;
 
 			if ( mEndian != Endian.Auto )
-			{
-#if AXIOM_ENDIAN_BIG
+            {
+#if AXIOM_BIG_ENDIAN
 				if ( mEndian == Endian.Little )
 				{
 					mFlipEndian = true;
 				}
 #else
-				if ( mEndian == Endian.Big )
+                if ( mEndian == Endian.Big )
 				{
 					mFlipEndian = true;
 				}
@@ -906,14 +906,14 @@ namespace Axiom.Serialization
 #endif
 
 		protected void DetermineEndianness()
-		{
-#if AXIOM_ENDIAN_BIG
+        {
+#if AXIOM_BIG_ENDIAN
 			if (mFlipEndian)
 				mEndian = Endian.Little;
 			else
 				mEndian = Endian.Big;
 #else
-			if ( mFlipEndian )
+            if ( mFlipEndian )
 			{
 				mEndian = Endian.Big;
 			}

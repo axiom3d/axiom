@@ -583,7 +583,7 @@ namespace Axiom.Media
 
                     int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
@@ -610,11 +610,11 @@ namespace Axiom.Media
 					//int xshift = 8, yshift = 16, zshift = 24, ashift = 0; //BUG: NRSC: Alpha was on wrong side
                     int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[offset] = ((uint) (0xFF << ashift)) | (((uint) inp.x) << zshift) |
+                    outputPtr[offset] = ((uint) (0xFF << ashift)) | (((uint) inp.x) << zshift) |
                                         (((uint) inp.y) << yshift) | (((uint) inp.z) << xshift);
 #endif
                 }
@@ -636,7 +636,7 @@ namespace Axiom.Media
 
                     int xshift = 24, yshift = 16, zshift = 8, ashift = 0;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
@@ -682,7 +682,7 @@ namespace Axiom.Media
 
                     int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
@@ -708,7 +708,7 @@ namespace Axiom.Media
 
                     int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
@@ -734,7 +734,7 @@ namespace Axiom.Media
 
                     int xshift = 8, yshift = 16, zshift = 24, ashift = 0;
 
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
 				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
                                           ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else

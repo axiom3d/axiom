@@ -175,7 +175,7 @@ namespace Axiom.Media
                         break;
                     case 3:
                         var d = dest.ToBytePointer();
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
                         d[0] = (byte)((value >> 16) & 0xFF);
                         d[1] = (byte)((value >> 8) & 0xFF);
                         d[2] = (byte)(value & 0xFF);
@@ -209,7 +209,7 @@ namespace Axiom.Media
                         return src.ToUShortPointer()[0];
                     case 3:
                         var s = src.ToBytePointer();
-#if BIG_ENDIAN
+#if AXIOM_BIG_ENDIAN
                         return (uint) (s[0] << 16 |
                                        (s[1] << 8) |
                                        (s[2]));

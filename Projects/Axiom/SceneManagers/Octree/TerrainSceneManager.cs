@@ -143,12 +143,12 @@ namespace Axiom.SceneManagers.Octree
 					for ( ulong i = 0; i < (ulong)worldSize; ++i )
 					{
 						if ( is16bit )
-						{
-#if OGRE_ENDIAN_BIG
+                        {
+#if AXIOM_BIG_ENDIAN
 							ushort val = (ushort)(src[srcIndex++] << 8);
 							val += src[srcIndex++];
 #else
-							ushort val = src[ srcIndex++ ];
+                            ushort val = src[ srcIndex++ ];
 							val += (ushort)( src[ srcIndex++ ] << 8 );
 #endif
 							dest[ dstIndex++ ] = new Real( val ) * invScale;
