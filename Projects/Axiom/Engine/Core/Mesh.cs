@@ -1236,7 +1236,7 @@ namespace Axiom.Core
 				var vertSize = origBuffer.VertexSize;
 
 				// size of the element to skip
-				var elemSize = Memory.SizeOf( typeof( float ) ) * 3;
+                var elemSize = sizeof( float ) * 3;
 
 				for ( int i = 0, srcOffset = 0, dstOffset = 0; i < vertexData.vertexCount; i++ )
 				{
@@ -1247,7 +1247,7 @@ namespace Axiom.Core
 					dstOffset += vertSize;
 
 					// Set the new part to 0 since we'll accumulate in this
-					Memory.Set( destPtr, dstOffset, elemSize );
+					Memory.Set( destPtr, 0, elemSize );
 					dstOffset += elemSize;
 				}
 
