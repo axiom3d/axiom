@@ -20,21 +20,31 @@
 //THE SOFTWARE.
 #endregion License
 
-using System;
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
+
 using System.ComponentModel.Composition;
 using Axiom.Core;
 
+#endregion Namespace Declarations
+
 namespace Axiom.Samples.Primitives
 {
-	[Export(typeof(IPlugin))]
-	public class Plugin : SamplePlugin
-	{
-		private PrimitivesSample sample;
-		public override void Initialize()
-		{
-			sample = new PrimitivesSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
-		}
-	}
+    [Export( typeof( IPlugin ) )]
+    public class Plugin : SamplePlugin
+    {
+        private PrimitivesSample sample;
+        public override void Initialize()
+        {
+            sample = new PrimitivesSample();
+            Name = sample.Metadata[ "Title" ] + " Sample";
+            AddSample( sample );
+        }
+    };
 }
