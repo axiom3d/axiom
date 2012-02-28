@@ -363,7 +363,7 @@ namespace Axiom.Plugins.DevILCodecs
 
             var ilfmt = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
             var src = Il.ilGetData();
-            var srcend = Il.ilGetData() + Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA );
+            var srcend = Il.ilGetData().Offset( Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
             var elemSize = PixelUtil.GetNumElemBytes( fmt );
 
             while ( (int)src < (int)srcend )
@@ -378,21 +378,21 @@ namespace Axiom.Plugins.DevILCodecs
                             r = srcPtr[ 0 ];
                             g = srcPtr[ 1 ];
                             b = srcPtr[ 2 ];
-                            src += 3;
+                            src = src.Offset( 3 );
                             break;
 
                         case Il.IL_BGR:
                             b = srcPtr[ 0 ];
                             g = srcPtr[ 1 ];
                             r = srcPtr[ 2 ];
-                            src += 3;
+                            src = src.Offset( 3 );
                             break;
 
                         case Il.IL_LUMINANCE:
                             r = srcPtr[ 0 ];
                             g = srcPtr[ 0 ];
                             b = srcPtr[ 0 ];
-                            src += 1;
+                            src = src.Offset( 1 );
                             break;
 
                         case Il.IL_LUMINANCE_ALPHA:
@@ -400,7 +400,7 @@ namespace Axiom.Plugins.DevILCodecs
                             g = srcPtr[ 0 ];
                             b = srcPtr[ 0 ];
                             a = srcPtr[ 1 ];
-                            src += 2;
+                            src = src.Offset( 2 );
                             break;
 
                         case Il.IL_RGBA:
@@ -408,7 +408,7 @@ namespace Axiom.Plugins.DevILCodecs
                             g = srcPtr[ 1 ];
                             b = srcPtr[ 2 ];
                             a = srcPtr[ 3 ];
-                            src += 4;
+                            src = src.Offset( 4 );
                             break;
 
                         case Il.IL_BGRA:
@@ -416,7 +416,7 @@ namespace Axiom.Plugins.DevILCodecs
                             g = srcPtr[ 1 ];
                             r = srcPtr[ 2 ];
                             a = srcPtr[ 3 ];
-                            src += 4;
+                            src = src.Offset( 4 );
                             break;
 
                         default:
