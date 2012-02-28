@@ -51,7 +51,7 @@ namespace Axiom.Core
 			return p + offset;
 #endif
         }
-	}
+	};
 
 	/// <summary>
 	///	Utility class for dealing with memory.

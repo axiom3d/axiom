@@ -207,6 +207,9 @@
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\RenderWindowDescription.cs" />
+    <Compile Include="Media\Codec.cs" />
+    <Compile Include="Media\DDSCodec.cs" />
+    <Compile Include="Media\PVRTCCodec.cs" />
     <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\RenderQueueInvocation.cs" />
@@ -677,13 +680,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Media\Bitwise.cs" />
-    <Compile Include="Media\CodecManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Media\Enums.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Media\ICodec.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Media\Image.cs">
