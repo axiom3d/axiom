@@ -20,16 +20,17 @@
 //THE SOFTWARE.
 #endregion License
 
-using System;
+#region Namespace Declarations
 
-using Axiom.Samples;
+using System.Collections.Generic;
+using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Animating;
 using Axiom.Media;
 using Axiom.ParticleSystems;
-using System.Collections.Generic;
+
+#endregion Namespace Declarations
 
 namespace Axiom.Samples.DynamicTexture
 {
@@ -56,20 +57,20 @@ namespace Axiom.Samples.DynamicTexture
 			Metadata[ "Description" ] = "Demonstrates how to create and use dynamically changing textures.";
 			Metadata[ "Thumbnail" ] = "thumb_dyntex.png";
 			Metadata[ "Category" ] = "Unsorted";
-			Metadata["Help"] = "Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
+            Metadata[ "Help" ] = "Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			// shoot a ray from the cursor to the plane
-			Ray ray = TrayManager.GetCursorRay( Camera );
+			var ray = TrayManager.GetCursorRay( Camera );
 			mCursorQuery.Ray = ray;
-			IList<RaySceneQueryResultEntry> result = mCursorQuery.Execute();
+			var result = mCursorQuery.Execute();
 
 			if ( result.Count != 0 )
 			{
 				// using the point of intersection, find the corresponding texel on our texture
-				Vector3 pt = ray.GetPoint( result[ result.Count - 1].Distance );
+				var pt = ray.GetPoint( result[ result.Count - 1].Distance );
 				mBrushPos = ( ( new Vector2( pt.x, -pt.y ) ) * ( 1.0f / mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) ) * TEXTURE_SIZE;
 			}
 
@@ -122,7 +123,7 @@ namespace Axiom.Samples.DynamicTexture
 			TrayManager.ShowCursor();
 
 			// create our dynamic texture with 8-bit luminance texels
-			Texture tex = TextureManager.Instance.CreateManual( "thaw", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8, TextureUsage.DynamicWriteOnly );
+			var tex = TextureManager.Instance.CreateManual( "thaw", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8, TextureUsage.DynamicWriteOnly );
 
 			mTexBuf = tex.GetBuffer();  // save off the texture buffer
 
@@ -132,7 +133,7 @@ namespace Axiom.Samples.DynamicTexture
 			mTexBuf.Unlock();
 
 			// create a penguin and attach him to our penguin node
-			Entity penguin = SceneManager.CreateEntity( "Penguin", "penguin.mesh" );
+			var penguin = SceneManager.CreateEntity( "Penguin", "penguin.mesh" );
 			mPenguinNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			mPenguinNode.AttachObject( penguin );
 
@@ -141,14 +142,14 @@ namespace Axiom.Samples.DynamicTexture
 			mPenguinAnimState.IsEnabled = true;
 
 			// create a snowstorm over the scene, and fast forward it a little
-			ParticleSystem ps = ParticleSystemManager.Instance.CreateSystem( "Snow", "Examples/Snow" );
+			var ps = ParticleSystemManager.Instance.CreateSystem( "Snow", "Examples/Snow" );
 			SceneManager.RootSceneNode.AttachObject( ps );
 			ps.FastForward( 30 );
 
 			// create a frosted screen in front of the camera, using our dynamic texture to "thaw" certain areas
-			Entity ent = SceneManager.CreateEntity( "Plane", PrefabEntity.Plane );
+			var ent = SceneManager.CreateEntity( "Plane", PrefabEntity.Plane );
 			ent.MaterialName = "Examples/Frost";
-			SceneNode node = SceneManager.RootSceneNode.CreateChildSceneNode();
+			var node = SceneManager.RootSceneNode.CreateChildSceneNode();
 			node.Position = new Vector3( 0, 0, 50 );
 			node.AttachObject( ent );
 
@@ -169,14 +170,16 @@ namespace Axiom.Samples.DynamicTexture
 			int temperature;
 			Real sqrDistToBrush;
 			int dataIdx = 0;
-			unsafe
+#if !AXIOM_SAFE_ONLY
+            unsafe
+#endif
 			{
 				var data = dataPtr.ToBytePointer();
 				{
 					// go through every texel...
-					for ( int y = 0; y < TEXTURE_SIZE; y++ )
+					for ( var y = 0; y < TEXTURE_SIZE; y++ )
 					{
-						for ( int x = 0; x < TEXTURE_SIZE; x++ )
+						for ( var x = 0; x < TEXTURE_SIZE; x++ )
 						{
 							if ( freezeAmount != 0 )
 							{
@@ -203,13 +206,11 @@ namespace Axiom.Samples.DynamicTexture
 			}
 			mTexBuf.Unlock();
 		}
-		/// <summary>
-		/// 
-		/// </summary>
+
 		protected override void CleanupContent()
 		{
 			TextureManager.Instance.Remove( "thaw" );
             ParticleSystemManager.Instance.RemoveSystem( "Snow" );
 		}
-	}
+	};
 }
