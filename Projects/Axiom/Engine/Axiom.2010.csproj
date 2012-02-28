@@ -208,6 +208,7 @@
     <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="Media\Codec.cs" />
+    <Compile Include="Media\CodecManager.cs" />
     <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\PVRTCCodec.cs" />
     <Compile Include="OgreVersionAttribute.cs" />

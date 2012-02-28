@@ -128,11 +128,11 @@ namespace Axiom.Plugins.FreeImageCodecs
 					// FreeImage 3.13 lists many formats twice: once under their own codec and
 					// once under the "RAW" codec, which is listed last. Avoid letting the RAW override
 					// the dedicated codec!
-					if ( !Codec.IsCodecRegistered( ext ) )
+                    if ( !CodecManager.Instance.IsCodecRegistered( ext ) )
 					{
 						var codec = new FreeImageCodec( ext, (FI.FREE_IMAGE_TYPE)i );
 						_codecList.Add( codec );
-						Codec.RegisterCodec( codec );
+                        CodecManager.Instance.RegisterCodec( codec );
 					}
 				}
 			}
@@ -148,7 +148,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		public static void Shutdown()
 		{
 			foreach ( var codec in _codecList )
-				Codec.UnregisterCodec( codec );
+                CodecManager.Instance.UnregisterCodec( codec );
 
 			_codecList.Clear();
 			FI.FreeImageEngine.Message -= _freeImageLoadErrorHandler;
@@ -201,25 +201,16 @@ namespace Axiom.Plugins.FreeImageCodecs
                         if ( PixelUtil.HasAlpha( determiningFormat ) )
                         {
                             if ( FI.FreeImageEngine.IsLittleEndian )
-                            {
                                 requiredFormat = PixelFormat.BYTE_BGRA;
-                            }
                             else
-                            {
                                 requiredFormat = PixelFormat.BYTE_RGBA;
-                            }
-
                         }
                         else
                         {
                             if ( FI.FreeImageEngine.IsLittleEndian )
-                            {
                                 requiredFormat = PixelFormat.BYTE_BGR;
-                            }
                             else
-                            {
                                 requiredFormat = PixelFormat.BYTE_RGB;
-                            }
                         }
                         imageType = FI.FREE_IMAGE_TYPE.FIT_BITMAP;
                         break;
@@ -310,13 +301,10 @@ namespace Axiom.Plugins.FreeImageCodecs
                     {
                         // drop to 24 bit (lose alpha)
                         if ( FI.FreeImage.IsLittleEndian() )
-                        {
                             requiredFormat = PixelFormat.BYTE_BGR;
-                        }
                         else
-                        {
                             requiredFormat = PixelFormat.BYTE_RGB;
-                        }
+
                         bpp = 24;
                     }
                     else if ( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )

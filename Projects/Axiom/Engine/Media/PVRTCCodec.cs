@@ -120,7 +120,7 @@ namespace Axiom.Media
 			{
 				LogManager.Instance.Write( "PVRTC codec registering" );
 				_instance = new PVRTCCodec();
-				Codec.RegisterCodec( _instance );
+                CodecManager.Instance.RegisterCodec( _instance );
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace Axiom.Media
 		{
 			if ( _instance != null )
 			{
-				Codec.UnregisterCodec( _instance );
+                CodecManager.Instance.UnregisterCodec( _instance );
 				_instance = null;
 			}
 		}

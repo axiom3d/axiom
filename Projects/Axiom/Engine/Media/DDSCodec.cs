@@ -324,7 +324,7 @@ namespace Axiom.Media
             {
                 LogManager.Instance.Write( "DDS codec registering" );
                 _instance = new DDSCodec();
-                Codec.RegisterCodec( _instance );
+                CodecManager.Instance.RegisterCodec( _instance );
             }
         }
 
@@ -336,7 +336,7 @@ namespace Axiom.Media
         {
             if ( _instance != null )
             {
-                Codec.UnregisterCodec( _instance );
+                CodecManager.Instance.UnregisterCodec( _instance );
                 _instance = null;
             }
         }

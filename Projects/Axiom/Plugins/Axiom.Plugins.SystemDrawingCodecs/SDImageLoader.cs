@@ -70,7 +70,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		#region SDImageCodec Implementation
 
 		/// <summary>
-		///    Gets the type of data that this codec is meant to handle, typically a file extension.
+		/// Gets the type of data that this codec is meant to handle, typically a file extension.
 		/// </summary>
 		public override String Type
 		{
@@ -81,6 +81,5 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		}
 
 		#endregion SDImageCodec Implementation
-
-	}
+	};
 }

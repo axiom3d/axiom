@@ -147,12 +147,13 @@ namespace Axiom.Core
 #if SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
 #endif
+				new ResourceGroupManager();
+                new CodecManager();
+				new HighLevelGpuProgramManager();
+
                 // Register image codecs
                 DDSCodec.Initialize();
                 PVRTCCodec.Initialize();
-
-				new ResourceGroupManager();
-				new HighLevelGpuProgramManager();
 
 				ResourceGroupManager.Instance.Initialize();
 
@@ -1242,6 +1243,8 @@ namespace Axiom.Core
             ResourceBackgroundQueue.Instance.Dispose();
             _workQueue.Dispose();
             _workQueue = null;
+
+            CodecManager.Instance.SafeDispose();
 
 #if !XBOX360
             PlatformManager.Instance.SafeDispose();

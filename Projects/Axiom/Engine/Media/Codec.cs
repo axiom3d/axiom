@@ -30,8 +30,6 @@
 #region Namespace Declarations
 
 using System.IO;
-using Axiom.Collections;
-using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -51,7 +49,7 @@ namespace Axiom.Media
     /// </remarks>
     public abstract class Codec
 	{
-        protected static AxiomCollection<Codec> mapCodecs = new AxiomCollection<Codec>();
+        #region Nested Types
 
         public class CodecData
         {
@@ -97,19 +95,7 @@ namespace Axiom.Media
             }
         };
 
-        /// <summary>
-        /// Gets the file extension list for the registered codecs.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public static string[] Extensions
-        {
-            get
-            {
-                var res = new string[ mapCodecs.Count ];
-                mapCodecs.Keys.CopyTo( res, 0 );
-                return res;
-            }
-        }
+        #endregion Nested Types
 
         /// <summary>
         /// Returns the type of the codec as a String
@@ -127,90 +113,6 @@ namespace Axiom.Media
         public abstract string DataType
         {
             get;
-        }
-
-        /// <summary>
-        /// Registers a new codec in the database.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public static void RegisterCodec( Codec codec )
-        {
-            if ( mapCodecs.ContainsKey( codec.Type ) )
-                throw new AxiomException( "{0} already has a registered codec.", codec.Type );
-
-            mapCodecs[ codec.Type ] = codec;
-        }
-
-        /// <summary>
-        /// Return whether a codec is registered already.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public static bool IsCodecRegistered( string codecType )
-        {
-            return mapCodecs.ContainsKey( codecType );
-        }
-
-        /// <summary>
-        /// Unregisters a codec from the database.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public static void UnregisterCodec( Codec codec )
-        {
-            mapCodecs.TryRemove( codec.Type );
-        }
-
-        /// <summary>
-        /// Gets the codec registered for the passed in file extension.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public static Codec GetCodec( string extension )
-        {
-            var lwrcase = extension.ToLower();
-            if ( !mapCodecs.ContainsKey( lwrcase ) )
-            {
-                var formatStr = string.Empty;
-                if ( mapCodecs.Count == 0 )
-                    formatStr = "There are no formats supported (no codecs registered).";
-                else
-                    formatStr = "Supported formats are: " + string.Join( ", ", Extensions );
-
-                throw new AxiomException( "Can not find codec for '{0}' image format.\n{1}", extension, formatStr );
-            }
-
-            return mapCodecs[ lwrcase ];
-        }
-
-        /// <summary>
-        /// Gets the codec that can handle the given 'magic' identifier.
-        /// </summary>
-        /// <param name="magicNumberBuf">
-        /// Pointer to a stream of bytes which should identify the file.
-        /// <note>
-        /// Note that this may be more than needed - each codec may be looking for 
-        /// a different size magic number.
-        /// </note>
-        /// </param>
-        /// <param name="maxBytes">The number of bytes passed</param>
-        [OgreVersion( 1, 7, 2 )]
-        public static Codec GetCodec( byte[] magicNumberBuf, int maxBytes )
-        {
-            foreach ( var i in mapCodecs )
-            {
-                var ext = i.MagicNumberToFileExt( magicNumberBuf, maxBytes );
-                if ( !string.IsNullOrEmpty( ext ) )
-                {
-                    // check codec type matches
-                    // if we have a single codec class that can handle many types, 
-                    // and register many instances of it against different types, we
-                    // can end up matching the wrong one here, so grab the right one
-                    if ( ext == i.Type )
-                        return i;
-                    else
-                        return GetCodec( ext );
-                }
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -249,9 +151,9 @@ namespace Axiom.Media
         /// </param>
         /// <param name="maxBytes">The number of bytes passed</param>
         [OgreVersion( 1, 7, 2 )]
-        public virtual bool MagicNumberMatch( byte[] magicNumberBuf, int maxbytes )
+        public virtual bool MagicNumberMatch( byte[] magicNumberBuf, int maxBytes )
         {
-            return !string.IsNullOrEmpty( MagicNumberToFileExt( magicNumberBuf, maxbytes ) );
+            return !string.IsNullOrEmpty( MagicNumberToFileExt( magicNumberBuf, maxBytes ) );
         }
 
         /// <summary>
@@ -262,9 +164,9 @@ namespace Axiom.Media
         /// Note that this may be more than needed - each codec may be looking for 
         /// a different size magic number.
         /// </param>
-        /// <param name="maxbytes">The number of bytes passed</param>
+        /// <param name="maxBytes">The number of bytes passed</param>
         /// <returns>A blank string if the magic number was unknown, or a file extension.</returns>
         [OgreVersion( 1, 7, 2 )]
-        public abstract string MagicNumberToFileExt( byte[] magicNumberBuf, int maxbytes );
+        public abstract string MagicNumberToFileExt( byte[] magicNumberBuf, int maxBytes );
     };
 }

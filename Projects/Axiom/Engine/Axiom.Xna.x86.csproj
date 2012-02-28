@@ -403,6 +403,7 @@
     <Compile Include="Math\Vector4.cs" />
     <Compile Include="Media\Bitwise.cs" />
     <Compile Include="Media\Codec.cs" />
+    <Compile Include="Media\CodecManager.cs" />
     <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\Enums.cs" />
     <Compile Include="Media\Image.cs" />

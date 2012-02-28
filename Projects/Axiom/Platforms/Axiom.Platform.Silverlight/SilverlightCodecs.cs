@@ -1,4 +1,33 @@
-﻿#region Namespace Declarations
+﻿#region MIT/X11 License
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+#endregion License
+
+#region SVN Version Information
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.ComponentModel.Composition;
@@ -17,116 +46,155 @@ using ImageTools.IO.Gif;
 using ImageTools.IO.Jpeg;
 using ImageTools.IO.Png;
 using Image = System.Windows.Controls.Image;
+using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Platform.Silverlight
 {
-	/// <summary>
-	///    Main plugin class.
-	/// </summary>
-	[Export(typeof (IPlugin))]
-	public class Plugin : IPlugin
-	{
-		public void Initialize()
-		{
-			Decoders.AddDecoder<JpegDecoder>();
-			Decoders.AddDecoder<PngDecoder>();
-			Decoders.AddDecoder<BmpDecoder>();
-			Decoders.AddDecoder<GifDecoder>();
+    /// <summary>
+    /// Main plugin class.
+    /// </summary>
+    [Export( typeof( IPlugin ) )]
+    public class SLCodecsPlugin : IPlugin
+    {
+        private static RegisteredCodec _codecList;
 
-			CodecManager.Instance.RegisterCodec(new ImageToolsCodec("jpg"));
-			CodecManager.Instance.RegisterCodec(new ImageToolsCodec("png"));
-			CodecManager.Instance.RegisterCodec(new ImageToolsCodec("bmp"));
-			CodecManager.Instance.RegisterCodec(new ImageToolsCodec("gif"));
+        public void Initialize()
+        {
+            if ( _codecList == null )
+            {
+                Decoders.AddDecoder<JpegDecoder>();
+                Decoders.AddDecoder<PngDecoder>();
+                Decoders.AddDecoder<BmpDecoder>();
+                Decoders.AddDecoder<GifDecoder>();
 
-			CodecManager.Instance.RegisterCodec(new UnsupportedImageToolsCodec("tga"));
-			CodecManager.Instance.RegisterCodec(new UnsupportedImageToolsCodec("RT"));
-		}
+                _codecList = new RegisteredCodec();
+                _codecList.Add( new ImageToolsCodec( "jpg" ) );
+                _codecList.Add( new ImageToolsCodec( "png" ) );
+                _codecList.Add( new ImageToolsCodec( "bmp" ) );
+                _codecList.Add( new ImageToolsCodec( "gif" ) );
 
-		public void Shutdown()
-		{
-		}
-	}
+                _codecList.Add( new UnsupportedImageToolsCodec( "tga" ) );
+                _codecList.Add( new UnsupportedImageToolsCodec( "RT" ) );
 
-	public abstract class BaseCodec : ICodec
-	{
-		private readonly string _type;
+                foreach ( var i in _codecList )
+                {
+                    if ( !CodecManager.Instance.IsCodecRegistered( i.Type ) )
+                        CodecManager.Instance.RegisterCodec( i );
+                }
+            }
+        }
 
-		public string Type
-		{
-			get { return _type; }
-		}
+        public void Shutdown()
+        {
+            if ( _codecList != null )
+            {
+                foreach ( var i in _codecList )
+                {
+                    if ( CodecManager.Instance.IsCodecRegistered( i.Type ) )
+                        CodecManager.Instance.UnregisterCodec( i );
+                }
 
-		protected BaseCodec(string extension)
-		{
-			_type = extension;
-		}
+                _codecList.Clear();
+                _codecList = null;
+            }
+        }
+    };
 
-		public double ClosestPowerOfTwo(int v)
-		{
-			if ((v & (v - 1)) == 0)
-				return v;
-			var max = System.Math.Pow(2, System.Math.Ceiling(System.Math.Log(v, 2)));
-			var min = max/2;
-			return (max - v) > (v - min) ? min : max;
-		}
+    public abstract class BaseSLCodec : ImageCodec
+    {
+        private readonly string _type;
 
-		public abstract object Decode(Stream input, Stream output, params object[] args);
+        public override string Type
+        {
+            get { return _type; }
+        }
 
-		public virtual void Encode(Stream input, Stream output, params object[] args)
-		{
-		}
+        protected BaseSLCodec( string extension )
+        {
+            _type = extension;
+        }
 
-		public virtual void EncodeToFile(Stream input, string fileName, object codecData)
-		{
-		}
+        public double ClosestPowerOfTwo( int v )
+        {
+            if ( ( v & ( v - 1 ) ) == 0 )
+                return v;
+            var max = System.Math.Pow( 2, System.Math.Ceiling( System.Math.Log( v, 2 ) ) );
+            var min = max / 2;
+            return ( max - v ) > ( v - min ) ? min : max;
+        }
 
-        public string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
+        public override Stream Encode( Stream input, Codec.CodecData data )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
         {
             //TODO
             return string.Empty;
         }
-    }
+    };
 
-	public class ImageToolsCodec : BaseCodec
-	{
-		public ImageToolsCodec(string extension)
-			: base(extension)
-		{
-		}
+    public class ImageToolsCodec : BaseSLCodec
+    {
+        public ImageToolsCodec( string extension )
+            : base( extension )
+        {
+        }
 
-		private static readonly IImageResizer Resizer = new BilinearResizer();
+        private static readonly IImageResizer Resizer = new BilinearResizer();
 
-		protected object Decode(ExtendedImage input, Stream output, params object[] args)
-		{
-			var w = (int) ClosestPowerOfTwo(input.PixelWidth);
-			var h = (int) ClosestPowerOfTwo(input.PixelHeight);
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            var wait = new ManualResetEvent( false );
+            var its = new ExtendedImage();
+            its.LoadingCompleted += ( s, e ) => wait.Set();
+            its.LoadingFailed += ( s, e ) =>
+                                    {
+                                        Debug.WriteLine( e.ExceptionObject.ToString() );
+                                        wait.Set();
+                                    };
+            its.SetSource( input );
+            wait.WaitOne();
+            return Decode( its );
+        }
 
-			var id = new ImageCodec.ImageData
-			         	{
-			         		width = w,
-			         		height = h,
-			         		depth = 1,
-			         		size = 0,
-			         		numMipMaps = -1,
-			         		format = PixelFormat.A8B8G8R8
-			         	};
+        protected DecodeResult Decode( ExtendedImage input )
+        {
+            var w = (int)ClosestPowerOfTwo( input.PixelWidth );
+            var h = (int)ClosestPowerOfTwo( input.PixelHeight );
 
-			for (int i = System.Math.Min(w, h), s = w*h; i > 0; i >>= 1, s >>= 2, id.numMipMaps++)
-				id.size += s;
+            var id = new ImageCodec.ImageData
+            {
+                width = w,
+                height = h,
+                depth = 1,
+                size = 0,
+                numMipMaps = -1,
+                format = PixelFormat.A8B8G8R8
+            };
 
-			var bp = new byte[id.size*4];
-			var ofs = 0;
+            for ( int i = System.Math.Min( w, h ), s = w * h; i > 0; i >>= 1, s >>= 2, id.numMipMaps++ )
+                id.size += s;
+
+            var bp = new byte[ id.size * 4 ];
+            var ofs = 0;
 
 #if DEBUGMIPMAPS
 						var cval = new[] { 0xFFF00000, 0xFF00F100, 0xFF0000F2, 0xFFF3F300, 0xFF00F4F4, 0xFFF500F5, 0xFFF6F6F6 };
 						var cidx = 0;
 #endif
 
-			while (ofs < bp.Length)
-			{
-				var wb = ExtendedImage.Resize(input, w, h, Resizer);
+            while ( ofs < bp.Length )
+            {
+                var wb = ExtendedImage.Resize( input, w, h, Resizer );
 #if DEBUGMIPMAPS
 							var c=(int)cval[cidx%cval.Length];
 							for (var i = 0; i < wb.Pixels.Length; i++)
@@ -134,90 +202,74 @@ namespace Axiom.Platform.Silverlight
 							cidx++;
 #endif
 
-				var len = w*h*4;
-				Buffer.BlockCopy(wb.Pixels, 0, bp, ofs, len);
-				ofs += len;
+                var len = w * h * 4;
+                Buffer.BlockCopy( wb.Pixels, 0, bp, ofs, len );
+                ofs += len;
 
-				w >>= 1;
-				h >>= 1;
-			}
+                w >>= 1;
+                h >>= 1;
+            }
 
-			output.Write(bp, 0, bp.Length);
-			return id;
-		}
+            return new DecodeResult( new MemoryStream( bp ), id );
+        }
+    };
 
-		public override object Decode(Stream input, Stream output, params object[] args)
-		{
-			var wait = new ManualResetEvent(false);
-			var its = new ExtendedImage();
-			its.LoadingCompleted += (s, e) => wait.Set();
-			its.LoadingFailed += (s, e) =>
-			                     	{
-			                     		Debug.WriteLine(e.ExceptionObject.ToString());
-			                     		wait.Set();
-			                     	};
-			its.SetSource(input);
-			wait.WaitOne();
-			return Decode(its, output, args);
-		}
-	}
+    public class UnsupportedImageToolsCodec : ImageToolsCodec
+    {
+        public UnsupportedImageToolsCodec( string extension )
+            : base( extension )
+        {
+        }
 
-	public class UnsupportedImageToolsCodec : ImageToolsCodec
-	{
-		public UnsupportedImageToolsCodec(string extension)
-			: base(extension)
-		{
-		}
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            return base.Decode( new MemoryStream( SpotShadowFadePng.SPOT_SHADOW_FADE_PNG ) );
+        }
+    };
 
-		public override object Decode(Stream input, Stream output, params object[] args)
-		{
-			return base.Decode(new MemoryStream(SpotShadowFadePng.SPOT_SHADOW_FADE_PNG), output, args);
-		}
-	}
+    public class WriteableBitmapCodec : BaseSLCodec
+    {
+        public WriteableBitmapCodec( string extension )
+            : base( extension )
+        {
+        }
 
-	public class WriteableBitmapCodec : BaseCodec
-	{
-		public WriteableBitmapCodec(string extension)
-			: base(extension)
-		{
-		}
+        protected DecodeResult Decode( WriteableBitmap input )
+        {
+            var img = new Image { Source = input };
 
-		protected object Decode(WriteableBitmap input, Stream output, params object[] args)
-		{
-			var img = new Image {Source = input};
+            var w = (int)ClosestPowerOfTwo( input.PixelWidth );
+            var h = (int)ClosestPowerOfTwo( input.PixelHeight );
 
-			var w = (int) ClosestPowerOfTwo(input.PixelWidth);
-			var h = (int) ClosestPowerOfTwo(input.PixelHeight);
+            var id = new ImageCodec.ImageData
+                        {
+                            width = w,
+                            height = h,
+                            depth = 1,
+                            size = 0,
+                            numMipMaps = -1,
+                            format = PixelFormat.BYTE_BGRA
+                        };
 
-			var id = new ImageCodec.ImageData
-			         	{
-			         		width = w,
-			         		height = h,
-			         		depth = 1,
-			         		size = 0,
-			         		numMipMaps = -1,
-			         		format = PixelFormat.BYTE_BGRA
-			         	};
+            for ( int i = System.Math.Min( w, h ), s = w * h; i > 0; i >>= 1, s >>= 2, id.numMipMaps++ )
+                id.size += s;
 
-			for (int i = System.Math.Min(w, h), s = w*h; i > 0; i >>= 1, s >>= 2, id.numMipMaps++)
-				id.size += s;
-
-			var bp = new byte[id.size*4];
-			var ofs = 0;
+            var bp = new byte[ id.size * 4 ];
+            var ofs = 0;
 
 #if DEBUGMIPMAPS
 			var cval = new[] { 0xFFF00000, 0xFF00F100, 0xFF0000F2, 0xFFF3F300, 0xFF00F4F4, 0xFFF500F5, 0xFFF6F6F6 };
 			var cidx = 0;
 #endif
 
-			while (ofs < bp.Length)
-			{
-				var wb = new WriteableBitmap(img, new ScaleTransform
-				                                  	{
-				                                  		ScaleX = ((double) w)/input.PixelWidth,
-				                                  		ScaleY = ((double) h)/input.PixelHeight
-				                                  	});
-				wb.Invalidate();
+            while ( ofs < bp.Length )
+            {
+                var wb = new WriteableBitmap( img, new ScaleTransform
+                                                    {
+                                                        ScaleX = ( (double)w ) / input.PixelWidth,
+                                                        ScaleY = ( (double)h ) / input.PixelHeight
+                                                    } );
+                wb.Invalidate();
 
 #if DEBUGMIPMAPS
 				var c=(int)cval[cidx%cval.Length];
@@ -226,42 +278,41 @@ namespace Axiom.Platform.Silverlight
 				cidx++;
 #endif
 
-				var len = w*h*4;
-				Buffer.BlockCopy(wb.Pixels, 0, bp, ofs, len);
-				ofs += len;
+                var len = w * h * 4;
+                Buffer.BlockCopy( wb.Pixels, 0, bp, ofs, len );
+                ofs += len;
 
-				w >>= 1;
-				h >>= 1;
-			}
+                w >>= 1;
+                h >>= 1;
+            }
 
-			output.Write(bp, 0, bp.Length);
-			return id;
-		}
+            return new DecodeResult( new MemoryStream( bp ), id );
+        }
 
-		public override object Decode(Stream input, Stream output, params object[] args)
-		{
-			return ThreadUI.Invoke(
-				delegate
-					{
-						var wbs = new WriteableBitmap(0, 0);
-						wbs.SetSource(input);
-						wbs.Invalidate();
-						input.Close();
-						return Decode(wbs, output, args);
-					});
-		}
-	}
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            return ThreadUI.Invoke(
+                delegate
+                {
+                    var wbs = new WriteableBitmap( 0, 0 );
+                    wbs.SetSource( input );
+                    wbs.Invalidate();
+                    input.Close();
+                    return Decode( wbs );
+                } );
+        }
+    };
 
-	public class UnsupportedWriteableBitmapCodec : WriteableBitmapCodec
-	{
-		public UnsupportedWriteableBitmapCodec(string extension)
-			: base(extension)
-		{
-		}
+    public class UnsupportedWriteableBitmapCodec : WriteableBitmapCodec
+    {
+        public UnsupportedWriteableBitmapCodec( string extension )
+            : base( extension )
+        {
+        }
 
-		public override object Decode(Stream input, Stream output, params object[] args)
-		{
-			return base.Decode(new MemoryStream(SpotShadowFadePng.SPOT_SHADOW_FADE_PNG), output, args);
-		}
-	}
+        public override Codec.DecodeResult Decode( Stream input )
+        {
+            return base.Decode( new MemoryStream( SpotShadowFadePng.SPOT_SHADOW_FADE_PNG ) );
+        }
+    };
 }
