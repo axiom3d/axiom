@@ -293,8 +293,7 @@ namespace Axiom.Samples
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_F9 ) // take a screenshot
 			{
-				String path = "screenshots\\screenshot_";
-				Window.WriteContentsToFile( path + Root.CurrentFrameCount + ".jpg" );
+                Window.WriteContentsToTimestampedFile( "screenshot", ".png" );
 			}
 
 			this.CameraManager.injectKeyDown( evt );

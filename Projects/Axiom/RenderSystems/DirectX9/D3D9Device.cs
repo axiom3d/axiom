@@ -1337,14 +1337,9 @@ namespace Axiom.RenderSystems.DirectX9
                 throw new AxiomException( "Unsupported format" );
             }
 
-            var data = new byte[ lockedRect.Data.Length ];
-            using ( var dest = BufferBase.Wrap( data ) )
+            using ( var data = BufferBase.Wrap( lockedRect.Data.DataPointer, lockedRect.Pitch * dst.Height ) )
             {
-                using ( var wrapSrc = BufferBase.Wrap( lockedRect.Data.DataPointer, (int)lockedRect.Data.Length ) )
-                    Memory.Copy( wrapSrc, dest, data.Length );
-
-                var src = new PixelBox( dst.Width, dst.Height, 1, format, dest );
-
+                var src = new PixelBox( dst.Width, dst.Height, 1, format, data );
                 src.RowPitch = lockedRect.Pitch / PixelUtil.GetNumElemBytes( format );
                 src.SlicePitch = desc.Height * src.RowPitch;
 

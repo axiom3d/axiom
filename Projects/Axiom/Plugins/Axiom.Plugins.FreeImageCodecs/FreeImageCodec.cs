@@ -560,7 +560,7 @@ namespace Axiom.Plugins.FreeImageCodecs
             // Bind output buffer
             var outputData = new byte[ imgData.size ];
 
-            using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), (int)FI.FreeImage.GetDIBSize( fiBitmap ) ) )
+            using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), imgData.height * srcPitch ) )
             {
                 var pDst = BufferBase.Wrap( outputData );
 

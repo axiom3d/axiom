@@ -1396,20 +1396,21 @@ namespace Axiom.Graphics
 
         /// <summary>
 		/// Saves window contents to file (i.e. screenshot);
-		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		public void WriteContentsToFile(string fileName)
-		{
-			var pf = SuggestPixelFormat();
+        /// </summary>
+        [OgreVersion( 1, 7, 2790 )]
+        public void WriteContentsToFile( string fileName )
+        {
+            var pf = SuggestPixelFormat();
 
-			var data = new byte[Width * Height * PixelUtil.GetNumElemBytes(pf)];
-		    var buf = BufferBase.Wrap(data);
-			var pb = new PixelBox(Width, Height, 1, pf, buf);
+            var data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+            var buf = BufferBase.Wrap( data );
+            var pb = new PixelBox( Width, Height, 1, pf, buf );
 
-			CopyContentsToMemory(pb);
+            CopyContentsToMemory( pb );
 
-			(new Image()).FromDynamicImage(data, Width, Height, 1, pf, false, 1, 0).Save(fileName);
-		}
+            ( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
+            buf.Dispose();
+        }
 
         #endregion WriteContentsToFile
 
@@ -1419,15 +1420,15 @@ namespace Axiom.Graphics
 		/// Writes the current contents of the render target to the (PREFIX)(time-stamp)(SUFFIX) file.
 		/// </summary>
 		/// <returns>the name of the file used.</returns>
-		[OgreVersion(1, 7, 2790)]
-		public virtual String WriteContentsToTimestampedFile(String filenamePrefix, String filenameSuffix)
-		{
-			var filename = string.Format("{2}{0:MMddyyyyHHmmss}{1:D3}{3}",
-				DateTime.Now, _timer.Milliseconds % 1000,
-				filenamePrefix, filenameSuffix);
-			WriteContentsToFile(filename);
-			return filename;
-		}
+        [OgreVersion( 1, 7, 2790 )]
+        public virtual String WriteContentsToTimestampedFile( String filenamePrefix, String filenameSuffix )
+        {
+            var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}",
+                DateTime.Now, _timer.Milliseconds % 1000,
+                filenamePrefix, filenameSuffix );
+            WriteContentsToFile( filename );
+            return filename;
+        }
 
         #endregion WriteContentsToTimestampedFile
 

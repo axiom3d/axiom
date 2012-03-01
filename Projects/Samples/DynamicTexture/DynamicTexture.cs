@@ -84,7 +84,7 @@ namespace Axiom.Samples.DynamicTexture
 				freezeAmount += 0x04;
 			}
 
-			UpdateTexture( freezeAmount );  // rebuild texture contents
+			_updateTexture( freezeAmount );  // rebuild texture contents
 
 			mPenguinAnimState.AddTime( evt.TimeSinceLastFrame );  // increment penguin idle animation time
 			mPenguinNode.Yaw( (Real)( new Radian( (Real)evt.TimeSinceLastFrame ) ) );   // spin the penguin around
@@ -161,7 +161,7 @@ namespace Axiom.Samples.DynamicTexture
 			mWiping = false;
 		}
 
-		private void UpdateTexture( byte freezeAmount )
+		private void _updateTexture( byte freezeAmount )
 		{
 			mTexBuf.Lock( BufferLocking.Discard );
 			var dataPtr = mTexBuf.CurrentLock.Data;
