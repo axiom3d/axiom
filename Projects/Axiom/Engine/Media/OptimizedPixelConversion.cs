@@ -995,7 +995,7 @@ namespace Axiom.Media
 
 		public static bool DoOptimizedConversion( PixelBox src, PixelBox dst )
 		{
-			var conversion = ( (int)src.Format << 8 ) + (int)dst.Format;
+			var conversion = ( (int)src.Format << 8 ) | (int)dst.Format;
 
 			if ( _supportedConversions.ContainsKey( conversion ) )
 			{

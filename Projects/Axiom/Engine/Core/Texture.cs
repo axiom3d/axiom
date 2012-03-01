@@ -1047,10 +1047,11 @@ namespace Axiom.Core
             var pixData = new byte[ dataSize ];
             // if there are multiple faces and mipmaps we must pack them into the data
             // faces, then mips
-            var currentPixData = Memory.PinObject( pixData );
-            for ( int face = 0; face < this.FaceCount; ++face )
+            var currentPixData = BufferBase.Wrap( pixData );
+
+            for ( var face = 0; face < this.FaceCount; ++face )
             {
-                for ( int mip = 0; mip < numMips; ++mip )
+                for ( var mip = 0; mip < numMips; ++mip )
                 {
                     var mipDataSize = PixelUtil.GetMemorySize( this.Width, this.Height, this.Depth, this.Format );
 
@@ -1061,9 +1062,10 @@ namespace Axiom.Core
                 }
             }
 
+            currentPixData.Dispose();
+
             // load, and tell Image to delete the memory when it's done.
             destImage = ( new Image() ).FromDynamicImage( pixData, this.Width, this.Height, this.Depth, this.Format, true, this.FaceCount, numMips - 1 );
-            Memory.UnpinObject( pixData );
         }
 
 #if !NET_40
