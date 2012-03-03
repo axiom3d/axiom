@@ -72,7 +72,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=2.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9">
+    <Reference Include="SlimDX">
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
