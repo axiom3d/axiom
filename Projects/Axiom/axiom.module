@@ -125,10 +125,11 @@
     <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.pdb">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
+<!--
     <XmlDocFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.xml">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
-
+-->
     <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.Content.dll">
       <ImagePath>bin\Net35</ImagePath>
     </AssemblyFile>
@@ -141,9 +142,11 @@
     <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.Content.pdb">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
+<!--
     <XmlDocFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.xml">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
+-->
 	
 	<!-- SceneManagers -->
     <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.SceneManagers.PortalConnected.dll">
