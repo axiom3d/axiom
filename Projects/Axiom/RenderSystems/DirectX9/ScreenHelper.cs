@@ -63,5 +63,15 @@ namespace Axiom.RenderSystems.DirectX9.Helpers
             var s = Screen.FromPoint( p );
             return new IntPtr( s.GetHashCode() );
         }
+
+        /// <summary>
+        /// Returns the handle of a Screen from a window handle
+        /// </summary>
+        [AxiomHelper( 0, 9 )]
+        public static IntPtr GetHandle( IntPtr windowHandle )
+        {
+            var s = ScreenHelper.FromHandle( windowHandle );
+            return new IntPtr( s.GetHashCode() );
+        }
     };
 }

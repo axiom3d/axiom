@@ -998,10 +998,10 @@ namespace Axiom.RenderSystems.DirectX9
             // Find the monitor this render window belongs to.
             // Note: In Ogre, there was MONITOR_DEFAULTTONULL as flag of the MonitorFromWindow method,
             // while Screen.FromHandle method always use MONITOR_DEFAULTTONEAREST flag.
-            var hRenderWindowMonitor = new IntPtr( ScreenHelper.FromHandle( renderWindow.WindowHandle ).GetHashCode() );
+            var hRenderWindowMonitor = ScreenHelper.GetHandle( renderWindow.WindowHandle );
             
             // This window doesn't intersect with any of the display monitor
-            if ( hRenderWindowMonitor == null || hRenderWindowMonitor == IntPtr.Zero )
+            if ( hRenderWindowMonitor == IntPtr.Zero )
                 return false;
 
             // Case this window changed monitor.
