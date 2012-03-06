@@ -458,7 +458,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var driverList = renderSystem.Direct3DDrivers;
 
 			// Find the monitor this render window belongs to.
-            var hRenderWindowMonitor = new IntPtr( ScreenHelper.FromHandle( renderWindow.WindowHandle ).GetHashCode() );
+            var hRenderWindowMonitor = ScreenHelper.GetHandle( renderWindow.WindowHandle );
 
 			// Find the matching driver using window monitor handle.
 			foreach ( var currDriver in driverList )
