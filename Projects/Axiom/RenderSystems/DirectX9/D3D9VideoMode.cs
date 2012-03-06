@@ -30,7 +30,7 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-using D3D = SlimDX.Direct3D9;
+using D3D = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 

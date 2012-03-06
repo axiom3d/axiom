@@ -29,14 +29,15 @@
 
 #region Namespace Declarations
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Axiom.Configuration;
 using Axiom.Core;
-
-using Capabilities = SlimDX.Direct3D9.Capabilities;
-using D3D9 = SlimDX.Direct3D9;
+using Axiom.RenderSystems.DirectX9.Helpers;
+using Capabilities = SharpDX.Direct3D9.Capabilities;
+using D3D9 = SharpDX.Direct3D9;
 using D3D9RenderWindowList = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.D3D9RenderWindow>;
 
 #endregion Namespace Declarations
@@ -238,7 +239,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// renderDevice = null;
 					nAdapterOrdinal = adapter;
 					renderSystem._activeD3DDriver = currDriver;
-					devType = SlimDX.Direct3D9.DeviceType.Reference;
+					devType = D3D9.DeviceType.Reference;
 					nvAdapterFound = true;
 					break;
 				}
@@ -255,7 +256,6 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( renderWindow.IsFullScreen )
 				{
 					bTryUsingMultiheadDevice = true;
-
 					var osVersionInfo = System.Environment.OSVersion;
 
 					// XP and below - multi-head will cause artifacts when vsync is on.
@@ -266,8 +266,7 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 
 					// Vista and SP1 or SP2 - multi-head device can not be reset - it causes memory corruption.
-					if ( osVersionInfo.Version.Major == 6 &&
-						( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) ||
+                    if ( osVersionInfo.Version.Major == 6 && ( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) ||
 						 osVersionInfo.ServicePack.Contains( "Service Pack 2" ) ) )
 					{
 						bTryUsingMultiheadDevice = false;
@@ -280,7 +279,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( bTryUsingMultiheadDevice )
 				{
 					var targetAdapterCaps = renderSystem._activeD3DDriver.D3D9DeviceCaps;
-					Capabilities masterAdapterCaps = null;
+					var masterAdapterCaps = new Capabilities();
 
 					// Find the master device caps.
 					if ( targetAdapterCaps.MasterAdapterOrdinal == targetAdapterCaps.AdapterOrdinal )
@@ -459,7 +458,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var driverList = renderSystem.Direct3DDrivers;
 
 			// Find the monitor this render window belongs to.
-			var hRenderWindowMonitor = SlimDX.Windows.DisplayMonitor.FromWindow( renderWindow.WindowHandle ).Handle;
+            var hRenderWindowMonitor = new IntPtr( ScreenHelper.FromHandle( renderWindow.WindowHandle ).GetHashCode() );
 
 			// Find the matching driver using window monitor handle.
 			foreach ( var currDriver in driverList )
@@ -521,7 +520,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region GetDeviceFromD3D9Device
 
 		[OgreVersion( 1, 7, 2790 )]
-		public D3D9Device GetDeviceFromD3D9Device( SlimDX.Direct3D9.Device d3D9Device )
+		public D3D9Device GetDeviceFromD3D9Device( D3D9.Device d3D9Device )
 		{
 			return _renderDevices.FirstOrDefault( x => x.D3DDevice == d3D9Device );
 		}

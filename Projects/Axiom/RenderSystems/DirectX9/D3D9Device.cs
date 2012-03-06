@@ -37,9 +37,10 @@ using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Media;
-using SlimDX.Windows;
-using Capabilities = SlimDX.Direct3D9.Capabilities;
-using D3D9 = SlimDX.Direct3D9;
+using Axiom.RenderSystems.DirectX9.Helpers;
+using Capabilities = SharpDX.Direct3D9.Capabilities;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using RenderWindowToResourcesMap = System.Collections.Generic.Dictionary<Axiom.RenderSystems.DirectX9.D3D9RenderWindow,
                                             Axiom.RenderSystems.DirectX9.D3D9Device.RenderWindowResources>;
 
@@ -307,8 +308,8 @@ namespace Axiom.RenderSystems.DirectX9
                         primaryPresentationParams.BackBufferWidth != PresentationParams[ i ].BackBufferWidth ||
                         primaryPresentationParams.BackBufferFormat != PresentationParams[ i ].BackBufferFormat ||
                         primaryPresentationParams.AutoDepthStencilFormat != PresentationParams[ i ].AutoDepthStencilFormat ||
-                        primaryPresentationParams.MultisampleQuality != PresentationParams[ i ].MultisampleQuality ||
-                        primaryPresentationParams.Multisample != PresentationParams[ i ].Multisample )
+                        primaryPresentationParams.MultiSampleQuality != PresentationParams[ i ].MultiSampleQuality ||
+                        primaryPresentationParams.MultiSampleType != PresentationParams[ i ].MultiSampleType )
                     {
                         return false;
                     }
@@ -614,7 +615,8 @@ namespace Axiom.RenderSystems.DirectX9
             ClearDeviceStreams();
 
             // Reset the device using the presentation parameters.
-            hr = pDevice.Reset( PresentationParams );
+            //TODO SharpDX device reset does not support presentationparameters array
+            hr = pDevice.Reset( ref PresentationParams[ 0 ] );
 
             if ( hr == D3D9.ResultCode.DeviceLost )
             {
@@ -624,10 +626,8 @@ namespace Axiom.RenderSystems.DirectX9
                 // Don't continue
                 return false;
             }
-            else if ( hr.IsFailure )
-            {
+            else if ( hr.Failure )
                 throw new AxiomException( "Cannot reset device!" );
-            }
 
             DeviceLost = false;
 
@@ -673,7 +673,7 @@ namespace Axiom.RenderSystems.DirectX9
                     var renderWindowResources = it.Value;
 
                     // Ask the render window to build it's own parameters.
-                    renderWindow.BuildPresentParameters( renderWindowResources.PresentParameters );
+                    renderWindow.BuildPresentParameters( ref renderWindowResources.PresentParameters );
 
                     // Update shared focus window handle.
                     if ( renderWindow.IsFullScreen &&
@@ -690,8 +690,8 @@ namespace Axiom.RenderSystems.DirectX9
             // Case we have to cancel auto depth stencil.
             if ( IsMultihead && !IsAutoDepthStencil )
             {
-                foreach ( var t in PresentationParams )
-                    t.EnableAutoDepthStencil = false;
+                for ( var i = 0; i < PresentationParams.Length; i++ )
+                    PresentationParams[ i ].EnableAutoDepthStencil = false;
             }
         }
 
@@ -704,14 +704,14 @@ namespace Axiom.RenderSystems.DirectX9
             for ( var stage = 0; stage < D3D9DeviceCaps.MaxSimultaneousTextures; ++stage )
             {
                 var hr = pDevice.SetTexture( stage, null );
-                if ( hr.IsFailure )
+                if ( hr.Failure )
                     throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
 
                 var dwCurValue = pDevice.GetTextureStageState<D3D9.TextureOperation>( stage, D3D9.TextureStage.ColorOperation );
                 if ( dwCurValue != D3D9.TextureOperation.Disable )
                 {
                     hr = pDevice.SetTextureStageState( stage, D3D9.TextureStage.ColorOperation, D3D9.TextureOperation.Disable );
-                    if ( hr.IsFailure )
+                    if ( hr.Failure )
                         throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
                 }
 
@@ -743,53 +743,59 @@ namespace Axiom.RenderSystems.DirectX9
             else
                 BehaviorFlags &= ~D3D9.CreateFlags.AdapterGroupDevice;
 
-            using ( SilenceSlimDX.Instance )
+            // Try to create the device with hardware vertex processing.
+            BehaviorFlags |= D3D9.CreateFlags.HardwareVertexProcessing;
+
+            var keepTrying = true;
+            var loopCount = 0;
+
+            LogManager.Instance.Write( "Creating D3D9 Device..." );
+            while ( keepTrying )
             {
-                // Try to create the device with hardware vertex processing.
-                BehaviorFlags |= D3D9.CreateFlags.HardwareVertexProcessing;
-                pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow,
-                                      BehaviorFlags, PresentationParams );
-
-                if ( SlimDX.Result.Last.IsFailure )
+                try
                 {
-                    // Try a second time, may fail the first time due to back buffer count,
-                    // which will be corrected down to 1 by the runtime
-                    pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow,
-                                          BehaviorFlags, PresentationParams );
+                    pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow, BehaviorFlags, PresentationParams );
+                    keepTrying = false;
                 }
-
-                // Case hardware vertex processing failed.
-                if ( SlimDX.Result.Last.IsFailure )
+                catch ( DX.SharpDXException ex )
                 {
-                    // Try to create the device with mixed vertex processing.
-                    BehaviorFlags &= ~D3D9.CreateFlags.HardwareVertexProcessing;
-                    BehaviorFlags |= D3D9.CreateFlags.MixedVertexProcessing;
+                    LogManager.Instance.Write( "FAIL!" );
+                    switch ( loopCount )
+                    {
+                        case 0:
+                            // Try a second time, may fail the first time due to back buffer count,
+                            // which will be corrected down to 1 by the runtime
+                            LogManager.Instance.Write( "Trying to create the device a second time.." );
+                            break;
 
-                    pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow,
-                                          BehaviorFlags, PresentationParams );
+                        case 1:
+                            // Case hardware vertex processing failed.
+                            // Try to create the device with mixed vertex processing.
+                            BehaviorFlags &= ~D3D9.CreateFlags.HardwareVertexProcessing;
+                            BehaviorFlags |= D3D9.CreateFlags.MixedVertexProcessing;
+                            LogManager.Instance.Write( "Trying to create the device with mixed vertex processing.." );
+                            break;
+
+                        case 2:
+                            // try to create the device with software vertex processing.
+                            BehaviorFlags &= ~D3D9.CreateFlags.MixedVertexProcessing;
+                            BehaviorFlags |= D3D9.CreateFlags.SoftwareVertexProcessing;
+                            LogManager.Instance.Write( "Trying to create the device with software vertex processing.." );
+                            break;
+
+                        case 3:
+                            // try reference device
+                            DeviceType = D3D9.DeviceType.Reference;
+                            LogManager.Instance.Write( "Trying to create a reference device.." );
+                            break;
+
+                        default:
+                            throw new AxiomException( "Cannot create device!", ex );
+                    };
+
+                    loopCount++;
                 }
-
-                if ( SlimDX.Result.Last.IsFailure )
-                {
-                    // try to create the device with software vertex processing.
-                    BehaviorFlags &= ~D3D9.CreateFlags.MixedVertexProcessing;
-                    BehaviorFlags |= D3D9.CreateFlags.SoftwareVertexProcessing;
-
-                    pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow,
-                                          BehaviorFlags, PresentationParams );
-                }
-
-                if ( SlimDX.Result.Last.IsFailure )
-                {
-                    // try reference device
-                    DeviceType = D3D9.DeviceType.Reference;
-                    pDevice = new D3D9.Device( pD3D9, AdapterNumber, DeviceType, _focusWindow,
-                                          BehaviorFlags, PresentationParams );
-
-                    if ( SlimDX.Result.Last.IsFailure )
-                        throw new AxiomException( "Cannot create device!" );
-                }
-            }
+            };
 
             // Get current device caps.
             d3d9DeviceCaps = pDevice.Capabilities;
@@ -888,8 +894,8 @@ namespace Axiom.RenderSystems.DirectX9
         public void ValidateFocusWindow()
         {
             // Focus window changed -> device should be re-acquired.
-            if ( ( SharedFocusWindow != IntPtr.Zero && creationParams.Window != SharedFocusWindow ) ||
-                 ( SharedFocusWindow == IntPtr.Zero && creationParams.Window != PrimaryWindow.WindowHandle ) )
+            if ( ( SharedFocusWindow != IntPtr.Zero && creationParams.HFocusWindow != SharedFocusWindow ) ||
+                 ( SharedFocusWindow == IntPtr.Zero && creationParams.HFocusWindow != PrimaryWindow.WindowHandle ) )
             {
                 // Lock access to rendering device.
                 D3D9RenderSystem.ResourceManager.LockDeviceAccess();
@@ -910,7 +916,7 @@ namespace Axiom.RenderSystems.DirectX9
             var hr = pDevice.TestCooperativeLevel();
 
             // Case device is not valid for rendering. 
-            if ( hr.IsFailure )
+            if ( hr.Failure )
             {
                 // device lost, and we can't reset
                 // can't do anything about it here, wait until we get 
@@ -989,18 +995,17 @@ namespace Axiom.RenderSystems.DirectX9
             if ( renderWindow.IsFullScreen )
                 return true;
 
-            //RenderWindowToResorucesIterator it = getRenderWindowIterator(renderWindow);
-            //HMONITOR    hRenderWindowMonitor = NULL;
-
             // Find the monitor this render window belongs to.
-            var hRenderWindowMonitor = DisplayMonitor.FromWindow( renderWindow.WindowHandle,
-                                                                  MonitorSearchFlags.DefaultToNull );
+            // Note: In Ogre, there was MONITOR_DEFAULTTONULL as flag of the MonitorFromWindow method,
+            // while Screen.FromHandle method always use MONITOR_DEFAULTTONEAREST flag.
+            var hRenderWindowMonitor = new IntPtr( ScreenHelper.FromHandle( renderWindow.WindowHandle ).GetHashCode() );
+            
             // This window doesn't intersect with any of the display monitor
-            if ( hRenderWindowMonitor == null && hRenderWindowMonitor.Handle != IntPtr.Zero )
+            if ( hRenderWindowMonitor == null || hRenderWindowMonitor == IntPtr.Zero )
                 return false;
 
             // Case this window changed monitor.
-            if ( hRenderWindowMonitor.Handle != _monitor )
+            if ( hRenderWindowMonitor != _monitor )
             {
                 // Lock access to rendering device.
                 D3D9RenderSystem.ResourceManager.LockDeviceAccess();
@@ -1025,7 +1030,7 @@ namespace Axiom.RenderSystems.DirectX9
             if ( DeviceLost || renderWindowResources.Acquired == false || IsDeviceLost )
                 return;
 
-            using ( SilenceSlimDX.Instance )
+            try
             {
                 if ( IsMultihead )
                 {
@@ -1036,17 +1041,19 @@ namespace Axiom.RenderSystems.DirectX9
                 }
                 else
                     renderWindowResources.SwapChain.Present( 0 );
-            }
-            
-            if ( SlimDX.Result.Last == D3D9.ResultCode.DeviceLost )
-            {
-                ReleaseRenderWindowResources( renderWindowResources );
-                NotifyDeviceLost();
-            }
-            else if ( SlimDX.Result.Last.IsFailure )
-                throw new AxiomException( "Error Presenting surfaces" );
-            else
+
                 LastPresentFrame = Root.Instance.NextFrameNumber;
+            }
+            catch ( DX.SharpDXException ex )
+            {
+                if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
+                {
+                    ReleaseRenderWindowResources( renderWindowResources );
+                    NotifyDeviceLost();
+                }
+                else
+                    throw new AxiomException( "Error Presenting surfaces", ex );
+            }
         }
 
         [OgreVersion( 1, 7, 2790 )]
@@ -1060,12 +1067,12 @@ namespace Axiom.RenderSystems.DirectX9
             // Create additional swap chain
             if ( IsSwapChainWindow( renderWindow ) && !IsMultihead )
             {
-                using ( SilenceSlimDX.Instance )
+                try
                 {
                     // Create swap chain
                     renderWindowResources.SwapChain = new D3D9.SwapChain( pDevice, renderWindowResources.PresentParameters );
                 }
-                if ( SlimDX.Result.Last.IsFailure )
+                catch ( DX.SharpDXException )
                 {
                     // Try a second time, may fail the first time due to back buffer count,
                     // which will be corrected by the runtime
@@ -1109,8 +1116,8 @@ namespace Axiom.RenderSystems.DirectX9
                             pDevice,
                             targetWidth, targetHeight,
                             renderWindowResources.PresentParameters.AutoDepthStencilFormat,
-                            renderWindowResources.PresentParameters.Multisample,
-                            renderWindowResources.PresentParameters.MultisampleQuality,
+                            renderWindowResources.PresentParameters.MultiSampleType,
+                            renderWindowResources.PresentParameters.MultiSampleQuality,
                             ( renderWindowResources.PresentParameters.PresentFlags & D3D9.PresentFlags.DiscardDepthStencil ) != 0
                             );
 
@@ -1166,7 +1173,7 @@ namespace Axiom.RenderSystems.DirectX9
                     foreach ( var it in _mapRenderWindowToResources )
                     {
                         //This "if" handles the common case of a single device
-                        if ( it.Key.WindowHandle == creationParams.Window )
+                        if ( it.Key.WindowHandle == creationParams.HFocusWindow )
                         {
                             deviceFocusWindow = it.Key;
                             it.Value.PresentParametersIndex = nextPresParamIndex;
@@ -1206,7 +1213,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             var desc = new D3D9.SurfaceDescription();
-            SlimDX.DataRectangle lockedRect;
+            DX.DataRectangle lockedRect;
             D3D9.Surface pTempSurf = null, pSurf = null;
 
             if ( buffer == RenderTarget.FrameBuffer.Auto )
@@ -1221,17 +1228,23 @@ namespace Axiom.RenderSystems.DirectX9
                 desc.Format = D3D9.Format.A8R8G8B8;
 
                 pTempSurf = D3D9.Surface.CreateOffscreenPlain( pDevice, desc.Width, desc.Height, desc.Format, D3D9.Pool.SystemMemory );
-                var hr = swapChain ? resources.SwapChain.GetFrontBufferData( pTempSurf ) : pDevice.GetFrontBufferData( 0, pTempSurf );
 
-                if ( hr.IsFailure )
+                try
                 {
+                    if ( swapChain )
+                        resources.SwapChain.GetFrontBufferData( pTempSurf );
+                    else
+                        pTempSurf = pDevice.GetFrontBufferData( 0 );
+                }
+                catch ( DX.SharpDXException ex )
+                { 
                     pTempSurf.SafeDispose();
-                    throw new AxiomException( "Can't get front buffer: {0}", hr.Description );
+                    throw new AxiomException( "Can't get front buffer: {0}", ex.Message );
                 }
 
                 if ( renderWindow.IsFullScreen )
                 {
-                    using ( SilenceSlimDX.Instance )
+                    try
                     {
                         if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) && ( dst.Bottom == renderWindow.Height ) )
                             lockedRect = pTempSurf.LockRectangle( D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
@@ -1241,7 +1254,7 @@ namespace Axiom.RenderSystems.DirectX9
                             lockedRect = pTempSurf.LockRectangle( rect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
                         }
                     }
-                    if ( SlimDX.Result.Last.IsFailure )
+                    catch
                     {
                         pTempSurf.SafeDispose();
                         throw new AxiomException( "Can't lock rect" );
@@ -1260,11 +1273,11 @@ namespace Axiom.RenderSystems.DirectX9
                     desc.Width = srcRect.Right - srcRect.Left;
                     desc.Height = srcRect.Bottom - srcRect.Top;
 
-                    using ( SilenceSlimDX.Instance )
+                    try
                     {
                         lockedRect = pTempSurf.LockRectangle( srcRect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
                     }
-                    if ( SlimDX.Result.Last.IsFailure )
+                    catch
                     {
                         pTempSurf.SafeDispose();
                         throw new AxiomException( "Can't lock rect" );
@@ -1279,10 +1292,10 @@ namespace Axiom.RenderSystems.DirectX9
 
                 pTempSurf = D3D9.Surface.CreateOffscreenPlain( pDevice, desc.Width, desc.Height, desc.Format, D3D9.Pool.SystemMemory );
 
-                if ( desc.MultisampleType == D3D9.MultisampleType.None )
+                if ( desc.MultiSampleType == D3D9.MultisampleType.None )
                 {
                     var hr = pDevice.GetRenderTargetData( pSurf, pTempSurf );
-                    if ( hr.IsFailure )
+                    if ( hr.Failure )
                     {
                         pTempSurf.SafeDispose();
                         throw new AxiomException( "Can't get render target data" );
@@ -1292,7 +1305,7 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     var pStretchSurf = D3D9.Surface.CreateRenderTarget( pDevice, desc.Width, desc.Height, desc.Format, D3D9.MultisampleType.None, 0, false );
                     var hr = pDevice.StretchRectangle( pSurf, pStretchSurf, D3D9.TextureFilter.None );
-                    if ( hr.IsFailure )
+                    if ( hr.Failure )
                     {
                         pTempSurf.SafeDispose();
                         pStretchSurf.SafeDispose();
@@ -1300,7 +1313,7 @@ namespace Axiom.RenderSystems.DirectX9
                     }
 
                     hr = pDevice.GetRenderTargetData( pStretchSurf, pTempSurf );
-                    if ( hr.IsFailure )
+                    if ( hr.Failure )
                     {
                         pTempSurf.SafeDispose();
                         pStretchSurf.SafeDispose();
@@ -1310,7 +1323,7 @@ namespace Axiom.RenderSystems.DirectX9
                     pStretchSurf.SafeDispose();
                 }
 
-                using ( SilenceSlimDX.Instance )
+                try
                 {
                     if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) && ( dst.Bottom == renderWindow.Height ) )
                     {
@@ -1322,7 +1335,7 @@ namespace Axiom.RenderSystems.DirectX9
                         lockedRect = pTempSurf.LockRectangle( rect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
                     }
                 }
-                if ( SlimDX.Result.Last.IsFailure )
+                catch
                 {
                     pTempSurf.SafeDispose();
                     throw new AxiomException( "Can't lock rect" );
@@ -1337,7 +1350,7 @@ namespace Axiom.RenderSystems.DirectX9
                 throw new AxiomException( "Unsupported format" );
             }
 
-            using ( var data = BufferBase.Wrap( lockedRect.Data.DataPointer, lockedRect.Pitch * dst.Height ) )
+            using ( var data = BufferBase.Wrap( lockedRect.DataPointer, lockedRect.Pitch * dst.Height ) )
             {
                 var src = new PixelBox( dst.Width, dst.Height, 1, format, data );
                 src.RowPitch = lockedRect.Pitch / PixelUtil.GetNumElemBytes( format );

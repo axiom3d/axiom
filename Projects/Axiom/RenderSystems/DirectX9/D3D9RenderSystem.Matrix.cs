@@ -32,9 +32,10 @@
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using Plane = Axiom.Math.Plane;
-using TextureTransform = SlimDX.Direct3D9.TextureTransform;
+using TextureTransform = SharpDX.Direct3D9.TextureTransform;
 using Vector4 = Axiom.Math.Vector4;
 
 #endregion Namespace Declarations
@@ -195,7 +196,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region WorldMatrix
 
-        private SlimDX.Matrix _dxWorldMat;
+        private DX.Matrix _dxWorldMat;
 
         /// <see cref="Axiom.Graphics.RenderSystem.WorldMatrix"/>
         [OgreVersion( 1, 7, 2790 )]
@@ -209,7 +210,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 // save latest matrix
                 _dxWorldMat = D3D9Helper.MakeD3DMatrix( value );
-                ActiveD3D9Device.SetTransform( D3D9.TransformState.World, _dxWorldMat );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.World, ref _dxWorldMat );
             }
         }
 
@@ -242,7 +243,7 @@ namespace Axiom.RenderSystems.DirectX9
                 _viewMatrix.m23 = -_viewMatrix.m23;
 
                 var dxView = D3D9Helper.MakeD3DMatrix( _viewMatrix );
-                ActiveD3D9Device.SetTransform( D3D9.TransformState.View, dxView );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.View, ref dxView );
 
                 // also mark clip planes dirty
                 if ( clipPlanes.Count != 0 )
@@ -254,7 +255,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region ProjectionMatrix
 
-        private SlimDX.Matrix _dxProjMat;
+        private DX.Matrix _dxProjMat;
 
         /// <see cref="Axiom.Graphics.RenderSystem.ProjectionMatrix"/>
         [OgreVersion( 1, 7, 2790 )]
@@ -277,7 +278,7 @@ namespace Axiom.RenderSystems.DirectX9
                     _dxProjMat.M42 = -_dxProjMat.M42;
                 }
 
-                ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, _dxProjMat );
+                ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, ref _dxProjMat );
 
                 // also mark clip planes dirty
                 if ( clipPlanes.Count != 0 )
@@ -483,7 +484,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 // set the manually calculated texture matrix
                 var d3DTransType = (D3D9.TransformState)( (int)( D3D9.TransformState.Texture0 ) + stage );
-                ActiveD3D9Device.SetTransform( d3DTransType, d3dMat );
+                ActiveD3D9Device.SetTransform( d3DTransType, ref d3dMat );
             }
             else
             {
@@ -520,13 +521,9 @@ namespace Axiom.RenderSystems.DirectX9
 
             // flip the next bit from Lengyel since we're right-handed
             if ( forGpuProgram )
-            {
                 q.w = ( 1.0f - matrix.m22 ) / matrix.m23;
-            }
             else
-            {
                 q.w = ( 1.0f + matrix.m22 ) / matrix.m23;
-            }
 
             // Calculate the scaled plane vector
             var clipPlane4D = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
@@ -539,13 +536,9 @@ namespace Axiom.RenderSystems.DirectX9
 
             // flip the next bit from Lengyel since we're right-handed
             if ( forGpuProgram )
-            {
                 matrix.m22 = c.z;
-            }
             else
-            {
                 matrix.m22 = -c.z;
-            }
 
             matrix.m23 = c.w;
         }

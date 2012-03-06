@@ -29,11 +29,10 @@
 
 #region Namespace Declarations
 
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -134,8 +133,8 @@ namespace Axiom.RenderSystems.DirectX9
 						var d3d9Device = device.D3DDevice;
 						var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ), D3D9.TextureFilter.None );
 
-						if ( res.IsFailure )
-							throw new AxiomException( "Unable to copy AA buffer to final buffer: {0}", res.Description );
+						if ( res.Failure )
+							throw new AxiomException( "Unable to copy AA buffer to final buffer: {0}", res.ToString() );
 					}
 				}
 			}

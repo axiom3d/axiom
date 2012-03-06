@@ -45,8 +45,8 @@ using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.HLSL;
 using Axiom.Utilities;
 using Capabilities = Axiom.Graphics.Capabilities;
-using D3D9 = SlimDX.Direct3D9;
-using DX = SlimDX;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using FogMode = Axiom.Graphics.FogMode;
 using Light = Axiom.Core.Light;
 using LightType = Axiom.Graphics.LightType;
@@ -456,7 +456,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// Request a depth stencil that is compatible with the format, multisample type and
 					// dimensions of the render target.
 					var srfDesc = pBack[ 0 ].Description;
-					pDepth = GetDepthStencilFor( srfDesc.Format, srfDesc.MultisampleType, srfDesc.MultisampleQuality, srfDesc.Width, srfDesc.Height );
+					pDepth = GetDepthStencilFor( srfDesc.Format, srfDesc.MultiSampleType, srfDesc.MultiSampleQuality, srfDesc.Width, srfDesc.Height );
 				}
 
 				// Bind render targets
@@ -464,10 +464,8 @@ namespace Axiom.RenderSystems.DirectX9
 				for ( var x = 0; x < count; ++x )
 				{
 					var hr = ActiveD3D9Device.SetRenderTarget( x, pBack[ x ] );
-					if ( hr.IsFailure )
-					{
-						throw new AxiomException( "Failed to setRenderTarget : {0}", hr.Description );
-					}
+					if ( hr.Failure )
+						throw new AxiomException( "Failed to setRenderTarget : {0}", hr.ToString() );
 				}
 				ActiveD3D9Device.DepthStencilSurface = pDepth;
 			}
@@ -1335,7 +1333,7 @@ namespace Axiom.RenderSystems.DirectX9
 				d3dLight.Attenuation1 = light.AttenuationLinear;
 				d3dLight.Attenuation2 = light.AttenuationQuadratic;
 
-				ActiveD3D9Device.SetLight( index, d3dLight );
+				ActiveD3D9Device.SetLight( index, ref d3dLight );
 				ActiveD3D9Device.EnableLight( index, true );
 			} // if
 		}
@@ -1439,7 +1437,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( _texStageDesc[ stage ].VertexTex != null )
 				{
 					var result = ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, null );
-					if ( result.IsFailure )
+					if ( result.Failure )
 						throw new AxiomException( "Unable to disable vertex texture '{0}' in D3D9.", stage );
 				}
 
@@ -1457,7 +1455,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( _texStageDesc[ stage ].VertexTex != ptex )
 				{
 					var result = ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, ptex );
-					if ( result.IsFailure )
+					if ( result.Failure )
 						throw new AxiomException( "Unable to set vertex texture '{0}' in D3D9.", texture.Name );
 				}
 
@@ -1704,7 +1702,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Set always just be sure
 			_setRenderState( D3D9.RenderState.AlphaFunc, (int)D3D9Helper.ConvertEnum( func ) );
-			_setRenderState( D3D9.RenderState.AlphaRef, value );
+			_setRenderState( D3D9.RenderState.AlphaRef, (int)value );
 
 			// Alpha to coverage
 			if ( !Capabilities.HasCapability( Graphics.Capabilities.AlphaToCoverage ) )
@@ -2032,7 +2030,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Build identifier and return
 			var zBufferIdentifier = new ZBufferIdentifier();
 			zBufferIdentifier.Format = dsfmt;
-			zBufferIdentifier.MultisampleType = srfDesc.MultisampleType;
+			zBufferIdentifier.MultisampleType = srfDesc.MultiSampleType;
 			zBufferIdentifier.Device = ActiveD3D9Device;
 			return zBufferIdentifier;
 		}
@@ -2174,7 +2172,7 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 
 					// draw the indexed primitives
-					ActiveD3D9Device.DrawIndexedPrimitives( primType,
+					ActiveD3D9Device.DrawIndexedPrimitive( primType,
 						op.vertexData.vertexStart,
 						0, // Min vertex index - assume we can go right down to 0 
 						op.vertexData.vertexCount,
@@ -2394,7 +2392,8 @@ namespace Axiom.RenderSystems.DirectX9
 					dx9ClipPlane = DX.Plane.Transform( dx9ClipPlane, xform );
 				}
 
-				ActiveD3D9Device.SetClipPlane( i, dx9ClipPlane );
+                //TODO Re-activate CliPlane features
+				//ActiveD3D9Device.SetClipPlane( i, dx9ClipPlane );
 			}
 			var bits = ( 1ul << ( planes.Count + 1 ) ) - 1;
 			_setRenderState( D3D9.RenderState.ClipPlaneEnable, (int)bits );
@@ -2409,30 +2408,23 @@ namespace Axiom.RenderSystems.DirectX9
 				ActiveD3D9Device.ScissorRect = new System.Drawing.Rectangle( left, top, right - left, bottom - top );
 			}
 			else
-			{
 				_setRenderState( D3D9.RenderState.ScissorTestEnable, false );
-			}
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
 		{
-			D3D9.ClearFlags flags = 0;
+            var flags = D3D9.ClearFlags.None;
 
 			if ( ( buffers & FrameBufferType.Color ) > 0 )
-			{
 				flags |= D3D9.ClearFlags.Target;
-			}
-			if ( ( buffers & FrameBufferType.Depth ) > 0 )
-			{
+
+            if ( ( buffers & FrameBufferType.Depth ) > 0 )
 				flags |= D3D9.ClearFlags.ZBuffer;
-			}
-			// Only try to clear the stencil buffer if supported
-			if ( ( buffers & FrameBufferType.Stencil ) > 0
-				&& Capabilities.HasCapability( Graphics.Capabilities.StencilBuffer ) )
-			{
+
+            // Only try to clear the stencil buffer if supported
+            if ( ( buffers & FrameBufferType.Stencil ) > 0 && Capabilities.HasCapability( Graphics.Capabilities.StencilBuffer ) )
 				flags |= D3D9.ClearFlags.Stencil;
-			}
 
 			// clear the device using the specified params
 			ActiveD3D9Device.Clear( flags, color.ToARGB(), depth, stencil );
@@ -2441,7 +2433,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetClipPlane( ushort index, Real a, Real b, Real c, Real d )
 		{
-			ActiveD3D9Device.SetClipPlane( index, new SlimDX.Plane( a, b, c, d ) );
+            var plane = new float[] { a, b, c, d };
+            //TODO Re-activate CliPlane features
+			//ActiveD3D9Device.SetClipPlane( index, plane);// new DX.Plane( a, b, c, d ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -2784,6 +2778,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case "Rendering Device":
 					_refreshD3DSettings();
 					break;
+
 				case "Full Screen":
 					{
 						// Video mode is applicable
@@ -2795,6 +2790,7 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 					break;
+
 				case "FSAA":
 					{
 						var values = value.Split( new[] { ' ' } );
@@ -2823,6 +2819,7 @@ namespace Axiom.RenderSystems.DirectX9
 						case "Create on active device":
 							_resourceManager.CreationPolicy = D3D9ResourceManager.ResourceCreationPolicy.CreateOnActiveDevice;
 							break;
+
 						case "Create on all devices":
 							_resourceManager.CreationPolicy = D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices;
 							break;
@@ -2835,6 +2832,7 @@ namespace Axiom.RenderSystems.DirectX9
 						case "Use minimum system memory":
 							_resourceManager.AutoHardwareBufferManagement = false;
 							break;
+
 						case "Auto hardware buffers management":
 							_resourceManager.AutoHardwareBufferManagement = true;
 							break;

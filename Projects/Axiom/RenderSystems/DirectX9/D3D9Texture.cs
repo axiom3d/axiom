@@ -36,7 +36,7 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -249,13 +249,9 @@ namespace Axiom.RenderSystems.DirectX9
 					this.LockDeviceAccess();
 
 					if ( IsLoaded )
-					{
 						Unload();
-					}
 					else
-					{
 						FreeInternalResources();
-					}
 
 					// Free memory allocated per device.
 					foreach ( var it in _mapDeviceToTextureResources.Values )
@@ -316,14 +312,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 					// do the blit, it's called StretchRect in D3D9 :)
 					var res = it.Key.StretchRectangle( srcSurface, new System.Drawing.Rectangle(), dstSurface, dstRC, D3D9.TextureFilter.None );
-					if ( res.IsFailure )
+					if ( res.Failure )
 					{
 						srcSurface.SafeDispose();
 						srcSurface = null;
 
 						dstSurface.SafeDispose();
 						dstSurface = null;
-						throw new AxiomException( "Couldn't blit : {0}", res.Description );
+						throw new AxiomException( "Couldn't blit : {0}", res.ToString() );
 					}
 
 					// release temp. surfaces
@@ -348,14 +344,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 						// do the blit, it's called StretchRect in D3D9 :)
 						var res = it.Key.StretchRectangle( srcSurface, new System.Drawing.Rectangle(), dstSurface, dstRC, D3D9.TextureFilter.None );
-						if ( res.IsFailure )
+						if ( res.Failure )
 						{
 							srcSurface.SafeDispose();
 							srcSurface = null;
 
 							dstSurface.SafeDispose();
 							dstSurface = null;
-							throw new AxiomException( "Couldn't blit : {0}", res.Description );
+							throw new AxiomException( "Couldn't blit : {0}", res.ToString() );
 						}
 
 						// release temp. surfaces
@@ -1019,13 +1015,9 @@ namespace Axiom.RenderSystems.DirectX9
 		private void _determinePool()
 		{
 			if ( UseDefaultPool() )
-			{
 				_d3dPool = D3D9.Pool.Default;
-			}
 			else
-			{
 				_d3dPool = D3D9.Pool.Managed;
-			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]

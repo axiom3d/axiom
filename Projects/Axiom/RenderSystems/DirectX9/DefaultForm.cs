@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -103,25 +104,23 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-	    public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title, 
+        public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
             WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
-	    {
-	        _classStyle = classStyle;
-	        _dwStyleEx = dwStyleEx;
-	        _windowStyle = windowStyle;
+        {
+            _classStyle = classStyle;
+            _dwStyleEx = dwStyleEx;
+            _windowStyle = windowStyle;
 
-	        SuspendLayout();
-           
-            AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            BackColor = System.Drawing.Color.Black;
-            ClientSize = new System.Drawing.Size(640, 480);
+            SuspendLayout();
+
+            BackColor = Color.Black;
             Name = title;
-	        Left = left;
-	        Top = top;
-	        Width = winWidth;
-	        Height = winHeight;
-            if (parentHWnd != null)
-	            Parent = parentHWnd;
+            Left = left;
+            Top = top;
+            Width = winWidth;
+            Height = winHeight;
+            if ( parentHWnd != null )
+                Parent = parentHWnd;
 
             Load += _defaultFormLoad;
             Deactivate += _defaultFormDeactivate;
@@ -130,8 +129,8 @@ namespace Axiom.RenderSystems.DirectX9
             Resize += _defaultFormResize;
             Cursor.Hide();
 
-            ResumeLayout(false);
-	    }
+            ResumeLayout( false );
+        }
         
 	    protected override void WndProc( ref Message m )
 		{
@@ -164,7 +163,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
-					Icon = new System.Drawing.Icon( strm );
+					Icon = new Icon( strm );
 			}
 			catch ( IO.FileNotFoundException )
 			{

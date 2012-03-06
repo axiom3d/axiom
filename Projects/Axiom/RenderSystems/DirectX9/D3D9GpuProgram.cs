@@ -29,13 +29,13 @@
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using ResourceHandle = System.UInt64;
 using ResourceManager = Axiom.Core.ResourceManager;
 
@@ -209,24 +209,21 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			string errors = string.Empty;
 			D3D9.ShaderBytecode microcode = null;
 
 			// Create the shader
-			// Assemble source into microcode
-			try
+            // Assemble source into microcode
+            try
+            {
+                microcode = D3D9.ShaderBytecode.Assemble(
+                    Source,
+                    null,   // no #define support
+                    null,   // no #include support
+                    0 );    // standard compile options
+            }
+			catch ( DX.CompilationException e )
 			{
-				microcode = D3D9.ShaderBytecode.Assemble(
-					Source,
-					null,   // no #define support
-					null,   // no #include support
-					0,      // standard compile options
-					out errors
-					);
-			}
-			catch ( Exception e )
-			{
-				throw new AxiomException( "Cannot assemble D3D9 shader {0} Errors:\n{1}", e, Name, errors );
+				throw new AxiomException( "Cannot assemble D3D9 shader {0} Errors:\n{1}", e, Name, e.Message );
 			}
 
 			LoadFromMicrocode( d3D9Device, microcode );

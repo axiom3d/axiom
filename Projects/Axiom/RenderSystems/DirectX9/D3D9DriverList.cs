@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Axiom.Core;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
