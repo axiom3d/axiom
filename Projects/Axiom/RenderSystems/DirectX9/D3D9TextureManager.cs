@@ -33,7 +33,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -102,10 +102,12 @@ namespace Axiom.RenderSystems.DirectX9
                     var tReqs = D3D9.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = tReqs.Format;
                     break;
+
                 case TextureType.ThreeD:
                     var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = volReqs.Format;
                     break;
+
                 case TextureType.CubeMap:
                     var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
                     d3dPF = cubeReqs.Format;
@@ -123,7 +125,6 @@ namespace Axiom.RenderSystems.DirectX9
                 format = GetNativeFormat( ttype, format, usage );
 
             var rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
-
             return rs.CheckTextureFilteringSupported( ttype, format, usage );
         }
     };

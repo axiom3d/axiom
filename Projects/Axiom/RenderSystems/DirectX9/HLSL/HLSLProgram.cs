@@ -29,13 +29,13 @@
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -209,9 +209,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                         macro.Definition = split[ 1 ];
                     }
                     else
-                    {
                         macro.Definition = "1";
-                    }
 
                     if ( !string.IsNullOrEmpty( macro.Name ) )
                         defines.Add( macro );
@@ -260,39 +258,34 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             // Compile & assemble into microcode
             var effectCompiler = new D3D9.EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
 
-            string errors = null;
+            var errors = string.Empty;
 
             try
             {
                 this.MicroCode = effectCompiler.CompileShader( new D3D9.EffectHandle( this.EntryPoint ),
                                                           this.Target,
                                                           compileFlags,
-                                                          out errors,
                                                           out constTable );
             }
-            catch ( D3D9.Direct3D9Exception ex )
+            catch ( DX.SharpDXException ex )
             {
-                throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name );
-            }
-            finally
-            {
+                if ( ex is DX.CompilationException )
+                    errors = ex.Message;
+
                 // check for errors
-                if ( !String.IsNullOrEmpty( errors ) )
+                if ( !string.IsNullOrEmpty( errors ) )
                 {
                     if ( this.MicroCode != null )
                     {
                         if ( LogManager.Instance != null )
-                        {
-                            LogManager.Instance.Write( "HLSL: Warnings while compiling high level shader {0}:\n{1}",
-                                                       Name, errors );
-                        }
+                            LogManager.Instance.Write( "HLSL: Warnings while compiling high level shader {0}:\n{1}", Name, errors );
                     }
                     else
-                    {
                         throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
-                    }
                 }
-
+            }
+            finally
+            {
                 effectCompiler.Dispose();
                 includeHandler.Dispose();
             }
@@ -373,7 +366,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             if ( paramName.EndsWith( "[0]" ) )
                 paramName.Remove( paramName.Length - 3 );
 
-
             if ( desc.Class == D3D9.ParameterClass.Struct )
             {
                 // work out a new prefix for the nextest members if its an array, we need the index
@@ -449,12 +441,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                         case 1:
                             def.ConstantType = GpuProgramParameters.GpuConstantType.Int1;
                             break;
+
                         case 2:
                             def.ConstantType = GpuProgramParameters.GpuConstantType.Int2;
                             break;
+
                         case 3:
                             def.ConstantType = GpuProgramParameters.GpuConstantType.Int3;
                             break;
+
                         case 4:
                             def.ConstantType = GpuProgramParameters.GpuConstantType.Int4;
                             break;
@@ -478,10 +473,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X2;
                                                 def.ElementSize = 8; // HLSL always packs
                                                 break;
+
                                             case 3:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X3;
                                                 def.ElementSize = 8; // HLSL always packs
                                                 break;
+
                                             case 4:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X4;
                                                 def.ElementSize = 8;
@@ -495,10 +492,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X2;
                                                 def.ElementSize = 12; // HLSL always packs
                                                 break;
+
                                             case 3:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X3;
                                                 def.ElementSize = 12; // HLSL always packs
                                                 break;
+
                                             case 4:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X4;
                                                 def.ElementSize = 12;
@@ -512,10 +511,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X2;
                                                 def.ElementSize = 16; // HLSL always packs
                                                 break;
+
                                             case 3:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X3;
                                                 def.ElementSize = 16; // HLSL always packs
                                                 break;
+
                                             case 4:
                                                 def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X4;
                                                 def.ElementSize = 16;
@@ -533,12 +534,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
                                 case 1:
                                     def.ConstantType = GpuProgramParameters.GpuConstantType.Float1;
                                     break;
+
                                 case 2:
                                     def.ConstantType = GpuProgramParameters.GpuConstantType.Float2;
                                     break;
+
                                 case 3:
                                     def.ConstantType = GpuProgramParameters.GpuConstantType.Float3;
                                     break;
+
                                 case 4:
                                     def.ConstantType = GpuProgramParameters.GpuConstantType.Float4;
                                     break;
@@ -601,7 +605,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion EntryPointCommand
 
         #region TargetCommand
@@ -624,7 +628,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion TargetCommand
 
         #region PreProcessorDefinesCommand
@@ -647,7 +651,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion PreProcessorDefinesCommand
 
         #region ColumnMajorMatricesCommand
@@ -670,7 +674,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion ColumnMajorMatricesCommand
 
         #region OptimisationCommand
@@ -695,7 +699,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion OptimizationCommand
 
         #region MicrocodeCommand
@@ -729,7 +733,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion MicrocodeCommand
 
         #region AssemblerCodeCommand
@@ -771,7 +775,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
             }
 
             #endregion IPropertyCommand Members
-        }
+        };
         #endregion AssemblerCodeCommand
 
         #endregion Command Objects

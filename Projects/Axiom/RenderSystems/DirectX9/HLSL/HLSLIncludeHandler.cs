@@ -23,7 +23,7 @@
 #region SVN Version Information
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id $"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 
@@ -31,7 +31,7 @@
 
 using System.IO;
 using Axiom.Core;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -40,6 +40,19 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	public class HLSLIncludeHandler : DisposableObject, D3D9.Include
 	{
 		protected Resource program;
+
+        public System.IDisposable Shadow
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
 
 		[OgreVersion( 1, 7, 2 )]
 		public HLSLIncludeHandler( Resource sourceProgram )
@@ -64,14 +77,14 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
 		}
 
-		public void Open( D3D9.IncludeType includeType, string fileName, Stream parentStream, out Stream stream )
-		{
-			stream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
-		}
+        public Stream Open( D3D9.IncludeType type, string fileName, Stream parentStream )
+        {
+            return ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+        }
 
 		public void Close( Stream fileStream )
 		{
 			fileStream.Close();
 		}
-	};
+    };
 }

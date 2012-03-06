@@ -37,8 +37,8 @@ using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Utilities;
-using D3D9 = SlimDX.Direct3D9;
-using DX = SlimDX;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 
 #endregion Namespace Declarations
 
@@ -384,8 +384,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Unlock the buffer.
 			var hr = bufferResources.IndexBuffer.Unlock();
-			if ( hr.IsFailure )
-				throw new AxiomException( "Cannot unlock D3D9 index buffer: {0}", hr.Description );
+			if ( hr.Failure )
+				throw new AxiomException( "Cannot unlock D3D9 index buffer: {0}", hr.ToString() );
 
 			bufferResources.IsOutOfDate = false;
 			bufferResources.LockOffset = sizeInBytes;

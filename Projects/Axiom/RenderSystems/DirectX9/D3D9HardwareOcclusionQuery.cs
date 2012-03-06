@@ -32,7 +32,8 @@
 using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 
 #endregion Namespace Declarations
 
@@ -154,23 +155,26 @@ namespace Axiom.RenderSystems.DirectX9
             // in case you didn't check if query arrived and want the result now.
             if ( isQueryResultStillOutstanding )
             {
-                // Loop until the data becomes available
-                while ( !pOccQuery.CheckStatus( true ) ) ;
-
                 int pixels = 0;
-
-                using ( SilenceSlimDX.Instance )
-                    pixels = pOccQuery.GetData<int>( true );
-
-                if ( SlimDX.Result.Last.IsSuccess )
+                // Loop until the data becomes available
+                while ( true )
                 {
-                    this.LastFragmentCount = pixels;
-                    NumOfFragments = pixels;
-                }
-                else
-                {
-                    this.LastFragmentCount = NumOfFragments = 0;
-                    pOccQuery.SafeDispose();
+                    try
+                    {
+                        pixels = pOccQuery.GetData<int>( true );
+                        this.LastFragmentCount = pixels;
+                        NumOfFragments = pixels;
+                        break;
+                    }
+                    catch ( DX.SharpDXException ex )
+                    {
+                        if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
+                        {
+                            this.LastFragmentCount = NumOfFragments = 0;
+                            pOccQuery.SafeDispose();
+                            break;
+                        }
+                    }
                 }
 
                 isQueryResultStillOutstanding = false;
@@ -202,21 +206,39 @@ namespace Axiom.RenderSystems.DirectX9
             if ( !queryWasFound || pOccQuery == null )
                 return false;
 
-            return pOccQuery.CheckStatus( true );
+            try
+            {
+                var pixels = pOccQuery.GetData<int>( false );
+                this.LastFragmentCount = pixels;
+                isQueryResultStillOutstanding = false;
+
+                return false;
+            }
+            catch ( DX.SharpDXException ex )
+            {
+                if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
+                {
+                    this.LastFragmentCount = 100000;
+                    pOccQuery.SafeDispose();
+                }
+
+                return true;
+            }
         }
 
         [OgreVersion( 1, 7, 2 )]
         private void _createQuery( D3D9.Device d3d9Device )
         {
             // Check if query supported.
-            if ( !d3d9Device.IsQuerySupported( D3D9.QueryType.Occlusion ) )
+            try
+            {
+                // create the occlusion query.
+                _mapDeviceToQuery[ d3d9Device ] = new D3D9.Query( d3d9Device, D3D9.QueryType.Occlusion );
+            }
+            catch
             {
                 _mapDeviceToQuery[ d3d9Device ] = null;
-                return;
             }
-
-            // create the occlusion query.
-            _mapDeviceToQuery[ d3d9Device ] = new D3D9.Query( d3d9Device, D3D9.QueryType.Occlusion );
         }
 
         [OgreVersion( 1, 7, 2 )]

@@ -38,8 +38,8 @@ using Axiom.Math;
 using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.HLSL;
 using Axiom.Utilities;
-using D3D9 = SlimDX.Direct3D9;
-using DX = SlimDX;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 
 #endregion Namespace Declarations
 
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.DirectX9
                 {
                     new D3D9.Query( d3D9Device, D3D9.QueryType.Occlusion );
                 }
-                catch ( D3D9.Direct3D9Exception )
+                catch ( DX.SharpDXException )
                 {
                     rsc.UnsetCapability( Graphics.Capabilities.HardwareOcculusion );
                 }
@@ -239,25 +239,32 @@ namespace Axiom.RenderSystems.DirectX9
                 case 0x10DE:
                     rsc.Vendor = GPUVendor.Nvidia;
                     break;
+
                 case 0x1002:
                     rsc.Vendor = GPUVendor.Ati;
                     break;
+
                 case 0x163C:
                 case 0x8086:
                     rsc.Vendor = GPUVendor.Intel;
                     break;
+
                 case 0x5333:
                     rsc.Vendor = GPUVendor.S3;
                     break;
+
                 case 0x3D3D:
                     rsc.Vendor = GPUVendor._3DLabs;
                     break;
+
                 case 0x102B:
                     rsc.Vendor = GPUVendor.Matrox;
                     break;
+
                 case 0x1039:
                     rsc.Vendor = GPUVendor.Sis;
                     break;
+
                 default:
                     rsc.Vendor = GPUVendor.Unknown;
                     break;
@@ -335,6 +342,7 @@ namespace Axiom.RenderSystems.DirectX9
                             rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
                         }
                         break;
+
                     case GPUVendor.Ati:
                         // There is no check on ATI, we have to assume SM3 == support
                         rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
@@ -377,8 +385,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 // cool, at least one supported
                 anySupported = true;
-                LogManager.Instance.Write( "D3D9: Vertex texture format supported - {0}",
-                                           PixelUtil.GetFormatName( pf ) );
+                LogManager.Instance.Write( "D3D9: Vertex texture format supported - {0}", PixelUtil.GetFormatName( pf ) );
             }
 
             return anySupported;
@@ -389,7 +396,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             var major = 0xFF;
             var minor = 0xFF;
-            D3D9.Capabilities minPsCaps = null;
+            var minPsCaps = new D3D9.Capabilities();
 
             // Find the device with the lowest vertex shader caps.
             foreach ( var pCurDriver in _driverList )
@@ -453,6 +460,7 @@ namespace Axiom.RenderSystems.DirectX9
                     // but they are entered as floats
                     rsc.FragmentProgramConstantFloatCount = 8;
                     break;
+
                 case 2:
                     // 16 boolean params allowed
                     rsc.FragmentProgramConstantBoolCount = 16;
@@ -461,6 +469,7 @@ namespace Axiom.RenderSystems.DirectX9
                     // float params, always 4D
                     rsc.FragmentProgramConstantFloatCount = 32;
                     break;
+
                 case 3:
                     // 16 boolean params allowed
                     rsc.FragmentProgramConstantBoolCount = 16;
@@ -511,7 +520,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             var major = 0xFF;
             var minor = 0xFF;
-            D3D9.Capabilities minVsCaps = null;
+            var minVsCaps = new D3D9.Capabilities();
 
             // Find the device with the lowest vertex shader caps.
             foreach ( var pCurDriver in _driverList )
@@ -563,23 +572,25 @@ namespace Axiom.RenderSystems.DirectX9
                     // No integer params allowed
                     rsc.VertexProgramConstantIntCount = 0;
                     // float params, always 4D
-                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConstants;
+                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConst;
                     break;
+
                 case 2:
                     // 16 boolean params allowed
                     rsc.VertexProgramConstantBoolCount = 16;
                     // 16 integer params allowed, 4D
                     rsc.VertexProgramConstantIntCount = 16;
                     // float params, always 4D
-                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConstants;
+                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConst;
                     break;
+
                 case 3:
                     // 16 boolean params allowed
                     rsc.VertexProgramConstantBoolCount = 16;
                     // 16 integer params allowed, 4D
                     rsc.VertexProgramConstantIntCount = 16;
                     // float params, always 4D
-                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConstants;
+                    rsc.VertexProgramConstantFloatCount = minVsCaps.MaxVertexShaderConst;
                     break;
             }
 
@@ -589,6 +600,7 @@ namespace Axiom.RenderSystems.DirectX9
                 case 3:
                     rsc.AddShaderProfile( "vs_3_0" );
                     goto case 2;
+
                 case 2:
                     if ( vs2x )
                         rsc.AddShaderProfile( "vs_2_x" );
@@ -597,6 +609,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                     rsc.AddShaderProfile( "vs_2_0" );
                     goto case 1;
+
                 case 1:
                     rsc.AddShaderProfile( "vs_1_1" );
                     rsc.SetCapability( Graphics.Capabilities.VertexPrograms );
@@ -702,19 +715,12 @@ namespace Axiom.RenderSystems.DirectX9
             // call superclass method
             base.Initialize( autoCreateWindow, windowTitle );
 
-            // Configure SlimDX
-            DX.Configuration.ThrowOnError = true;
-            DX.Configuration.AddResultWatch( D3D9.ResultCode.DeviceLost, DX.ResultWatchFlags.AlwaysIgnore );
-            DX.Configuration.AddResultWatch( D3D9.ResultCode.WasStillDrawing, DX.ResultWatchFlags.AlwaysIgnore );
+            // Configure SharpDX
+            DX.Configuration.ThrowOnShaderCompileError = true;
 
 #if DEBUG
-            DX.Configuration.DetectDoubleDispose = false;
             DX.Configuration.EnableObjectTracking = true;
-#else
-            DX.Configuration.DetectDoubleDispose = false;
-            DX.Configuration.EnableObjectTracking = false;
 #endif
-
             return autoWindow;
         }
 

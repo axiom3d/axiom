@@ -30,7 +30,7 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-using SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -53,8 +53,8 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         [OgreVersion( 1, 7, 2 )]
-        public D3D9Driver( int adapterNumber, Capabilities deviceCaps,
-                AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode )
+        public D3D9Driver( int adapterNumber, D3D9.Capabilities deviceCaps,
+                D3D9.AdapterDetails adapterIdentifier, D3D9.DisplayMode desktopDisplayMode )
             : base()
         {
             _adapterNumber = adapterNumber;
@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             get
             {
-                return _adapterIdentifier.DriverName;
+                return _adapterIdentifier.Driver;
             }
         }
         #endregion Name Property
@@ -140,10 +140,10 @@ namespace Axiom.RenderSystems.DirectX9
         #region AdapterIdentifier Property
 
         [OgreVersion( 1, 7, 2790 )]
-        private readonly AdapterDetails _adapterIdentifier;
+        private readonly D3D9.AdapterDetails _adapterIdentifier;
 
         [OgreVersion( 1, 7, 2790 )]
-        public AdapterDetails AdapterIdentifier
+        public D3D9.AdapterDetails AdapterIdentifier
         {
             get
             {
@@ -156,10 +156,10 @@ namespace Axiom.RenderSystems.DirectX9
         #region DesktopMode Property
 
         [OgreVersion( 1, 7, 2790 )]
-        private readonly DisplayMode _desktopDisplayMode;
+        private readonly D3D9.DisplayMode _desktopDisplayMode;
 
         [OgreVersion( 1, 7, 2790 )]
-        public DisplayMode DesktopMode
+        public D3D9.DisplayMode DesktopMode
         {
             get
             {
@@ -191,13 +191,13 @@ namespace Axiom.RenderSystems.DirectX9
         #region D3D9DeviceCaps
 
         [OgreVersion( 1, 7, 2790 )]
-        private readonly Capabilities _d3D9DeviceCaps;
+        private readonly D3D9.Capabilities _d3D9DeviceCaps;
 
         /// <summary>
         /// Get device capabilities
         /// </summary>
         [OgreVersion( 1, 7, 2790 )]
-        public Capabilities D3D9DeviceCaps
+        public D3D9.Capabilities D3D9DeviceCaps
         {
             get
             {

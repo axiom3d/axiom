@@ -32,8 +32,8 @@
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using D3D9 = SlimDX.Direct3D9;
-using DX = SlimDX;
+using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 
 #endregion Namespace Declarations
 
@@ -666,10 +666,9 @@ namespace Axiom.RenderSystems.DirectX9
 #endif
 			}
 			if ( ( usage & BufferUsage.WriteOnly ) != 0 )
-			{
 				ret |= D3D9.Usage.WriteOnly;
-			}
-			return ret;
+
+            return ret;
 		}
 
 		/// <summary>
@@ -1114,13 +1113,10 @@ namespace Axiom.RenderSystems.DirectX9
 				matrix.M43 == 0.0f &&
 				matrix.M44 == 1.0f )
 			{
-
 				return true;
 			}
 			else
-			{
 				return false;
-			}
 		}
 
 		/// <summary>

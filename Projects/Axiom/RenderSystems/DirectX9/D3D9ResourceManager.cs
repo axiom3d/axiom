@@ -35,7 +35,7 @@ using System;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Utilities;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 using ResourceContainer = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.ID3D9Resource>;
 
 #endregion Namespace Declarations

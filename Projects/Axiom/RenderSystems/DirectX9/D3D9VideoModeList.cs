@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Axiom.Core;
-using D3D9 = SlimDX.Direct3D9;
+using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             for ( var iMode = 0; iMode < pD3D.GetAdapterModeCount( adapter, format ); iMode++ )
             {
-                var displayMode = pD3D.EnumerateAdapterModes( adapter, format, iMode );
+                var displayMode = pD3D.EnumAdapterModes( adapter, format, iMode );
 
                 // Filter out low-resolutions
                 if ( displayMode.Width < 640 || displayMode.Height < 400 )
