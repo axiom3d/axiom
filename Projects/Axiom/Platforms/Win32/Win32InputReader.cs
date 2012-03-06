@@ -37,8 +37,8 @@ using System;
 using System.Collections.Generic;
 using SWF = System.Windows.Forms;
 
-using DX = SlimDX;
-using DI = SlimDX.DirectInput;
+using DX = SharpDX;
+using DI = SharpDX.DirectInput;
 
 using Axiom.Core;
 using Axiom.Input;
@@ -496,7 +496,7 @@ namespace Axiom.Platforms.Win32
 			keyboardDevice = new DI.Keyboard( dinput );
 
 			// grab the keyboard non-exclusively
-			keyboardDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Nonexclusive | DI.CooperativeLevel.Background );
+			keyboardDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.NonExclusive | DI.CooperativeLevel.Background );
 
 			// Set the data format to the keyboard pre-defined format.
 			//keyboardDevice.SetDataFormat( DI.DeviceDataFormat.Keyboard );
@@ -523,7 +523,7 @@ namespace Axiom.Platforms.Win32
 			//keyboardDevice.SetDataFormat( DI.DeviceDataFormat.Keyboard );
 
 			// grab the keyboard non-exclusively
-			keyboardDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Nonexclusive | DI.CooperativeLevel.Background );
+			keyboardDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.NonExclusive | DI.CooperativeLevel.Background );
 
 			// set the buffer size to use for input
 			keyboardDevice.Properties.BufferSize = BufferSize;
@@ -559,7 +559,7 @@ namespace Axiom.Platforms.Win32
 			}
 			else
 			{
-				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.Nonexclusive | DI.CooperativeLevel.Background );
+				mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevel.NonExclusive | DI.CooperativeLevel.Background );
 			}
 
 			// note: dont acquire yet, wait till capture
@@ -579,28 +579,20 @@ namespace Axiom.Platforms.Win32
 		private void ReadBufferedKeyboardData()
 		{
 			// grab the collection of buffered data
-			IEnumerable<DI.KeyboardState> bufferedData = keyboardDevice.GetBufferedData();
+			var bufferedData = keyboardDevice.GetBufferedData();
 
 			// please tell me why this would ever come back null, rather than an empty collection...
 			if ( bufferedData == null )
-			{
 				return;
-			}
 
-			foreach ( DI.KeyboardState packet in bufferedData )
-			{
-				foreach ( DI.Key key in packet.PressedKeys )
-				{
-					KeyChanged( ConvertKeyEnum( key ), true );
+            foreach ( var packet in bufferedData )
+            {
+                if ( packet.IsPressed )
+                    KeyChanged( ConvertKeyEnum( packet.Key ), true );
 
-				}
-				foreach ( DI.Key key in packet.ReleasedKeys )
-				{
-
-					KeyChanged( ConvertKeyEnum( key ), false );
-				}
-
-			}
+                if ( packet.IsReleased )
+                    KeyChanged( ConvertKeyEnum( packet.Key ), false );
+            }
 		}
 
 		/// <summary>
@@ -656,7 +648,7 @@ namespace Axiom.Platforms.Win32
 			mouseRelY = mouseState.Y;
 			mouseRelZ = mouseState.Z;
 
-			bool[] buttons = mouseState.GetButtons();
+			var buttons = mouseState.Buttons;
 
 			// clear the flags
 			mouseButtons = 0;
@@ -664,9 +656,7 @@ namespace Axiom.Platforms.Win32
 			for ( int i = 0; i < buttons.Length; i++ )
 			{
 				if ( buttons[ i ] == true )
-				{
 					mouseButtons |= ( 1 << i );
-				}
 			}
 		}
 
@@ -800,16 +790,16 @@ namespace Axiom.Platforms.Win32
 					dinputKey = DI.Key.Z;
 					break;
 				case KeyCodes.Left:
-					dinputKey = DI.Key.LeftArrow;
+                    dinputKey = DI.Key.Left;
 					break;
 				case KeyCodes.Right:
-					dinputKey = DI.Key.RightArrow;
+					dinputKey = DI.Key.Right;
 					break;
 				case KeyCodes.Up:
 					dinputKey = DI.Key.UpArrow;
 					break;
 				case KeyCodes.Down:
-					dinputKey = DI.Key.DownArrow;
+					dinputKey = DI.Key.Down;
 					break;
 				case KeyCodes.Escape:
 					dinputKey = DI.Key.Escape;
@@ -926,7 +916,7 @@ namespace Axiom.Platforms.Win32
 					dinputKey = DI.Key.Equals;
 					break;
 				case KeyCodes.Backspace:
-					dinputKey = DI.Key.Backspace;
+					dinputKey = DI.Key.Back;
 					break;
 				case KeyCodes.Delete:
 					dinputKey = DI.Key.Delete;
@@ -1088,16 +1078,16 @@ namespace Axiom.Platforms.Win32
 				case DI.Key.Z:
 					axiomKey = Axiom.Input.KeyCodes.Z;
 					break;
-				case DI.Key.LeftArrow:
+				case DI.Key.Left:
 					axiomKey = Axiom.Input.KeyCodes.Left;
 					break;
-				case DI.Key.RightArrow:
+				case DI.Key.Right:
 					axiomKey = Axiom.Input.KeyCodes.Right;
 					break;
 				case DI.Key.UpArrow:
 					axiomKey = Axiom.Input.KeyCodes.Up;
 					break;
-				case DI.Key.DownArrow:
+				case DI.Key.Down:
 					axiomKey = Axiom.Input.KeyCodes.Down;
 					break;
 				case DI.Key.Escape:
@@ -1214,7 +1204,7 @@ namespace Axiom.Platforms.Win32
 				case DI.Key.Equals:
 					axiomKey = Axiom.Input.KeyCodes.Add;
 					break;
-				case DI.Key.Backspace:
+				case DI.Key.Back:
 					axiomKey = Axiom.Input.KeyCodes.Backspace;
 					break;
 				case DI.Key.Delete:
@@ -1294,5 +1284,5 @@ namespace Axiom.Platforms.Win32
 		#endregion Keycode Conversions
 
 		#endregion Helper Methods
-	}
+	};
 }
