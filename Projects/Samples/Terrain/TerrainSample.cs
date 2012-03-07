@@ -151,7 +151,7 @@ namespace Axiom.Samples.Terrain
 
         public void DoTerrainModify( Axiom.Components.Terrain.Terrain terrain, Vector3 centrepos, Real timeElapsed )
         {
-            Vector3 tsPos = Vector3.Zero;
+            var tsPos = Vector3.Zero;
             terrain.GetTerrainPosition( centrepos, ref tsPos );
 
 #if !( WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
@@ -199,7 +199,7 @@ namespace Axiom.Samples.Terrain
 
                     case Mode.EditBlend:
                         {
-                            TerrainLayerBlendMap layer = terrain.GetLayerBlendMap( layerEdit );
+                            var layer = terrain.GetLayerBlendMap( layerEdit );
                             // we need image coords
                             Real imgSize = terrain.LayerBlendMapSize;
                             var startx = (long)( ( tsPos.x - brushSizeTerrainSpace ) * imgSize );
@@ -210,9 +210,9 @@ namespace Axiom.Samples.Terrain
                             starty = Utility.Max( starty, 0L );
                             endx = Utility.Min( endx, (long)imgSize );
                             endy = Utility.Min( endy, (long)imgSize );
-                            for ( int y = (int)starty; y <= endy; ++y )
+                            for ( var y = (int)starty; y <= endy; ++y )
                             {
-                                for ( int x = (int)startx; x <= endx; ++x )
+                                for ( var x = (int)startx; x <= endx; ++x )
                                 {
                                     Real tsXdist = ( x / imgSize ) - tsPos.x;
                                     Real tsYdist = ( y / imgSize ) - tsPos.y;
@@ -255,7 +255,7 @@ namespace Axiom.Samples.Terrain
                 Ray ray;
                 ray = TrayManager.GetCursorRay( Camera );
 
-                TerrainGroup.RayResult rayResult = terrainGroup.RayIntersects( ray );
+                var rayResult = terrainGroup.RayIntersects( ray );
                 if ( rayResult.Hit )
                 {
                     editMarker.IsVisible = true;
@@ -263,8 +263,8 @@ namespace Axiom.Samples.Terrain
 
                     // figure out which terrains this affects
                     List<Axiom.Components.Terrain.Terrain> terrainList;
-                    Real brushSizeWorldSpace = TerrainWorldSize * brushSizeTerrainSpace;
-                    Sphere sphere = new Sphere( rayResult.Position, brushSizeWorldSpace );
+                    var brushSizeWorldSpace = TerrainWorldSize * brushSizeTerrainSpace;
+                    var sphere = new Sphere( rayResult.Position, brushSizeWorldSpace );
                     terrainGroup.SphereIntersects( sphere, out terrainList );
 
                     foreach ( var ti in terrainList )
@@ -448,18 +448,18 @@ namespace Axiom.Samples.Terrain
         [OgreVersion( 1, 7, 2 )]
         private void _initBlendMaps( Axiom.Components.Terrain.Terrain terrain )
         {
-            TerrainLayerBlendMap blendMap0 = terrain.GetLayerBlendMap( 1 );
-            TerrainLayerBlendMap blendMap1 = terrain.GetLayerBlendMap( 2 );
+            var blendMap0 = terrain.GetLayerBlendMap( 1 );
+            var blendMap1 = terrain.GetLayerBlendMap( 2 );
             Real minHeight0 = 70;
             Real fadeDist0 = 40;
             Real minHeight1 = 70;
             Real fadeDist1 = 15;
 
-            float[] pBlend1 = blendMap1.BlendPointer;
-            int blendIdx = 0;
-            for ( ushort y = 0; y < terrain.LayerBlendMapSize; y++ )
+            var pBlend1 = blendMap1.BlendPointer;
+            var blendIdx = 0;
+            for ( var y = 0; y < terrain.LayerBlendMapSize; y++ )
             {
-                for ( ushort x = 0; x < terrain.LayerBlendMapSize; x++ )
+                for ( var x = 0; x < terrain.LayerBlendMapSize; x++ )
                 {
                     Real tx = 0;
                     Real ty = 0;
@@ -492,7 +492,7 @@ namespace Axiom.Samples.Terrain
             TerrainGlobalOptions.CompositeMapDiffuse = l.Diffuse;
 
             // Configure default import settings for if we use imported image
-            ImportData defaultImp = terrainGroup.DefaultImportSettings;
+            var defaultImp = terrainGroup.DefaultImportSettings;
             defaultImp.TerrainSize = TerrainSize;
             defaultImp.WorldSize = TerrainWorldSize;
             defaultImp.InputScale = 600;
@@ -535,29 +535,29 @@ namespace Axiom.Samples.Terrain
         private void _addTextureDebugOverlay( TrayLocation loc, string texname, int i )
         {
             // Create material
-            string matName = "Axiom/DebugTexture" + i;
-            Material debugMat = (Material)MaterialManager.Instance.GetByName( matName );
+            var matName = "Axiom/DebugTexture" + i;
+            var debugMat = (Material)MaterialManager.Instance.GetByName( matName );
             if ( debugMat == null )
                 debugMat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.DefaultResourceGroupName );
 
-            Pass p = debugMat.GetTechnique( 0 ).GetPass( 0 );
+            var p = debugMat.GetTechnique( 0 ).GetPass( 0 );
             p.RemoveAllTextureUnitStates();
             p.LightingEnabled = false;
-            TextureUnitState t = p.CreateTextureUnitState( texname );
+            var t = p.CreateTextureUnitState( texname );
             t.SetTextureAddressingMode( TextureAddressing.Clamp );
 
             // create template
             if ( OverlayManager.Instance.Elements.GetElement( "Axiom/DebugTexOverlay", true ) == null )
             {
-                OverlayElement e = OverlayManager.Instance.Elements.CreateElement( "Panel", "Axiom/DebugTexOverlay", true );
+                var e = OverlayManager.Instance.Elements.CreateElement( "Panel", "Axiom/DebugTexOverlay", true );
                 e.MetricsMode = MetricsMode.Pixels;
                 e.Width = 128;
                 e.Height = 128;
             }
 
             // add widget
-            string widgetName = "DebugTex" + i;
-            Widget w = TrayManager.GetWidget( widgetName );
+            var widgetName = "DebugTex" + i;
+            var w = TrayManager.GetWidget( widgetName );
             if ( w == null )
                 w = TrayManager.CreateDecorWidget( loc, widgetName, "", "Axiom/DebugTexOverlay" );
 
@@ -566,7 +566,7 @@ namespace Axiom.Samples.Terrain
 
         private void _addTextureShadowDebugOverlay( TrayLocation loc, int num )
         {
-            for ( int i = 0; i < num; ++i )
+            for ( var i = 0; i < num; ++i )
             {
                 //TODO
                 //Texture shadowTex = this.SceneManager.GetShadowTexture( i );
@@ -676,9 +676,7 @@ namespace Axiom.Samples.Terrain
             Camera.Far = 50000;
 
             if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Graphics.Capabilities.InfiniteFarPlane ) )
-            {
                 Camera.Far = 0;// enable infinite far clip distance if we can
-            }
         }
 
         [OgreVersion( 1, 7, 2 )]
@@ -711,7 +709,7 @@ namespace Axiom.Samples.Terrain
             shadowsMenu.SelectItem( 0 );
             shadowsMenu.SelectedIndexChanged += _itemSelected;
 
-            IList<string> names = new List<string>();
+            var names = new List<string>();
             names.Add( "Help" );
             //a friendly reminder
             TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "Help", 100, names ).SetParamValue( 0, "H/F1" );
@@ -720,7 +718,7 @@ namespace Axiom.Samples.Terrain
         [OgreVersion( 1, 7, 2 )]
         protected override void SetupContent()
         {
-            bool blankTerrain = false;
+            var blankTerrain = false;
 
             editMarker = SceneManager.CreateEntity( "editMarker", "sphere.mesh" );
             editNode = SceneManager.RootSceneNode.CreateChildSceneNode();
@@ -738,10 +736,10 @@ namespace Axiom.Samples.Terrain
 
             SceneManager.SetFog( FogMode.Linear, new ColorEx( 0.07f, 0.07f, 0.08f ), 0, 10000, 25000 );
 
-            Vector3 lightDir = new Vector3( 0.55f, 0.3f, 0.75f );
+            var lightDir = new Vector3( 0.55f, 0.3f, 0.75f );
             lightDir.Normalize();
 
-            Light l = SceneManager.CreateLight( "tsLight" );
+            var l = SceneManager.CreateLight( "tsLight" );
             l.Type = LightType.Directional;
             l.Direction = lightDir;
             l.Diffuse = ColorEx.White;
@@ -825,5 +823,5 @@ namespace Axiom.Samples.Terrain
 
             base.Shutdown();
         }
-    }
+    };
 }

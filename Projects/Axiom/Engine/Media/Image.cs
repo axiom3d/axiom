@@ -260,6 +260,56 @@ namespace Axiom.Media
             //TODO
             //m_bAutoDelete
         }
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        /// 
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        /// 	isDisposed = true;
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !this.IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    bufPtr.SafeDispose();
+                    buffer = null;
+                }
+
+#if !AXIOM_SAFE_ONLY
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+                //if ( bufferPinnedHandle.IsAllocated )
+                //{
+                //    bufferPinnedHandle.Free();
+                //}
+#endif
+            }
+
+            base.dispose( disposeManagedResources );
+        }
+
         #endregion Construction and Destruction
 
         #region Methods
@@ -755,9 +805,7 @@ namespace Axiom.Media
         public void Save( String filename )
         {
             if ( this.buffer == null )
-            {
                 throw new AxiomException( "No image data loaded" );
-            }
 
             var strExt = "";
             var pos = filename.LastIndexOf( "." );
@@ -1076,59 +1124,7 @@ namespace Axiom.Media
         }
 
         #endregion Methods
-
-        #region IDisposable Implementation
-        /// <summary>
-        /// Class level dispose method
-        /// </summary>
-        /// <remarks>
-        /// When implementing this method in an inherited class the following template should be used;
-        /// protected override void dispose( bool disposeManagedResources )
-        /// {
-        /// 	if ( !isDisposed )
-        /// 	{
-        /// 		if ( disposeManagedResources )
-        /// 		{
-        /// 			// Dispose managed resources.
-        /// 		}
-        /// 
-        /// 		// There are no unmanaged resources to release, but
-        /// 		// if we add them, they need to be released here.
-        /// 	}
-        /// 	isDisposed = true;
-        ///
-        /// 	// If it is available, make the call to the
-        /// 	// base class's Dispose(Boolean) method
-        /// 	base.dispose( disposeManagedResources );
-        /// }
-        /// </remarks>
-        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                }
-
-#if !AXIOM_SAFE_ONLY
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-                //if ( bufferPinnedHandle.IsAllocated )
-                //{
-                //    bufferPinnedHandle.Free();
-                //}
-#endif
-                // Set large fields to null.
-                bufPtr = null;
-                buffer = null;
-            }
-
-            base.dispose( disposeManagedResources );
-        }
-        #endregion IDisposable Implementation
-    }
+    };
 }
 
 
