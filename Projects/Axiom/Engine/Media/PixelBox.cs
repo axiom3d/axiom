@@ -549,6 +549,5 @@ namespace Axiom.Media
 		}
 
 		#endregion Methods
-
-	}
+	};
 }

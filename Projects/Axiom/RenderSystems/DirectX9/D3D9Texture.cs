@@ -482,7 +482,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			Debug.Assert( this.TextureType == Graphics.TextureType.CubeMap );
 
-			List<MemoryStream> loadedStreams = new List<MemoryStream>();
+			var loadedStreams = new List<MemoryStream>();
 			// DDS load?
 			if ( GetSourceFileType() == "dds" )
 			{
@@ -692,7 +692,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this.UnlockDeviceAccess();
 		}
 
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+		[OgreVersion( 1, 7, 2 )]
 		private void _loadCubeTexture( D3D9.Device d3d9Device, MemoryStream[] loadedStreams )
 		{
 			Debug.Assert( this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap" );
@@ -746,10 +746,7 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "Can't create cube texture.", ex );
 				}
 
-				//TODO
-				//hr = textureResources->pCubeTex->QueryInterface( IID_IDirect3DBaseTexture9, (void**)&textureResources->pBaseTex );
-				// romeoxbm: maybe solved with this following statement..?
-				textureResources.BaseTexture = textureResources.CubeTexture;
+                textureResources.BaseTexture = textureResources.CubeTexture.QueryInterface<D3D9.BaseTexture>();
 
 				var texDesc = textureResources.CubeTexture.GetLevelDescription( 0 );
 				_d3dPool = texDesc.Pool;
@@ -783,7 +780,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+		[OgreVersion( 1, 7, 2 )]
 		private void _loadVolumeTexture( D3D9.Device d3d9Device, MemoryStream[] loadedStreams )
 		{
 			Debug.Assert( this.TextureType == TextureType.ThreeD );
@@ -841,10 +838,7 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "Can't create volume texture.", ex );
 				}
 
-				//TODO
-				//hr = textureResources->pVolumeTex->QueryInterface( IID_IDirect3DBaseTexture9, (void**)&textureResources->pBaseTex );
-				// romeoxbm: maybe solved with this following statement..?
-				textureResources.BaseTexture = textureResources.VolumeTexture;
+				textureResources.BaseTexture = textureResources.VolumeTexture.QueryInterface<D3D9.BaseTexture>();
 
 				// set src and dest attributes to the same, we can't know
 				var texDesc = textureResources.VolumeTexture.GetLevelDescription( 0 );
@@ -887,7 +881,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+		[OgreVersion( 1, 7, 2 )]
 		private void _loadNormalTexture( D3D9.Device d3d9Device, MemoryStream[] loadedStreams )
 		{
 			Debug.Assert( TextureType == TextureType.OneD || TextureType == TextureType.TwoD );
@@ -952,10 +946,7 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "Can't create texture.", ex );
 				}
 
-				// TODO
-				//hr = textureResources->pNormTex->QueryInterface(IID_IDirect3DBaseTexture9, (void **)&textureResources->pBaseTex);
-				// romeoxbm: maybe solved with this following statement..?
-				textureResources.BaseTexture = textureResources.NormalTexture;
+				textureResources.BaseTexture = textureResources.NormalTexture.QueryInterface<D3D9.BaseTexture>();
 
 				// set src and dest attributes to the same, we can't know
 				var texDesc = textureResources.NormalTexture.GetLevelDescription( 0 );
@@ -974,7 +965,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			else
 			{
-
 				// find & load resource data intro stream to allow resource group changes if required
 				Debug.Assert( loadedStreams.Length == 1 );
 
@@ -1077,7 +1067,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// internal method, create a blank normal 1D/2D texture
 		/// </summary>
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+		[OgreVersion( 1, 7, 2 )]
 		private void _createNormalTexture( D3D9.Device d3d9Device )
 		{
 			// we must have those defined here
@@ -1172,9 +1162,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// set the base texture we'll use in the render system
-			//TODO
-			//hr = textureResources->pNormTex->QueryInterface( IID_IDirect3DBaseTexture9, (void**)&textureResources->pBaseTex );
-			textureResources.BaseTexture = textureResources.NormalTexture;
+			textureResources.BaseTexture = textureResources.NormalTexture.QueryInterface<D3D9.BaseTexture>();
 
 			// set final tex. attributes from tex. description
 			// they may differ from the source image !!!
@@ -1196,7 +1184,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// internal method, create a blank cube texture
 		/// </summary>
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+        [OgreVersion( 1, 7, 2 )]
 		private void _createCubeTexture( D3D9.Device d3d9Device )
 		{
 			// we must have those defined here
@@ -1290,9 +1278,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_d3dPool );
 
 			// set the base texture we'll use in the render system
-			//TODO
-			//hr = textureResources->pCubeTex->QueryInterface( IID_IDirect3DBaseTexture9, (void**)&textureResources->pBaseTex );
-			textureResources.BaseTexture = textureResources.CubeTexture;
+			textureResources.BaseTexture = textureResources.CubeTexture.QueryInterface<D3D9.BaseTexture>();
 
 			// set final tex. attributes from tex. description
 			// they may differ from the source image !!!
@@ -1314,7 +1300,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// internal method, create a blank cube texture
 		/// </summary>
-		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
+		[OgreVersion( 1, 7, 2 )]
 		private void _createVolumeTexture( D3D9.Device d3d9Device )
 		{
 			Debug.Assert( Width > 0 && Height > 0 && Depth > 0 );
@@ -1399,9 +1385,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_d3dPool );
 
 			// set the base texture we'll use in the render system
-			//TODO
-			//hr = textureResources->pVolumeTex->QueryInterface( IID_IDirect3DBaseTexture9, (void**)&textureResources->pBaseTex );
-			textureResources.BaseTexture = textureResources.VolumeTexture;
+			textureResources.BaseTexture = textureResources.VolumeTexture.QueryInterface<D3D9.BaseTexture>();
 
 			// set final tex. attributes from tex. description
 			// they may differ from the source image !!!
@@ -1607,7 +1591,7 @@ namespace Axiom.RenderSystems.DirectX9
 				srcType,
 				srcFormat );
 
-				// this HR could a SUCCES
+				// this HR could a SUCCESS
 				// but mip maps will not be generated
 				return hr;
 			}
@@ -1648,18 +1632,12 @@ namespace Axiom.RenderSystems.DirectX9
 			// Need to know static / dynamic
 			BufferUsage bufusage;
 			if ( ( ( Usage & TextureUsage.Dynamic ) != 0 ) && _dynamicTextures )
-			{
 				bufusage = BufferUsage.Dynamic;
-			}
 			else
-			{
 				bufusage = BufferUsage.Static;
-			}
 
 			if ( ( Usage & TextureUsage.RenderTarget ) != 0 )
-			{
 				bufusage = (BufferUsage)( (int)bufusage | (int)TextureUsage.RenderTarget );
-			}
 
 			var surfaceCount = this.FaceCount * ( mipmapCount + 1 );
 			var updateOldList = _surfaceList.Count == surfaceCount;
