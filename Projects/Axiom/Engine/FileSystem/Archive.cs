@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,6 +48,7 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem
 {
+
 	#region FileInfo Class and Collection
 
 	/// <summary>Information about a file/directory within the archive will be returned using a FileInfo struct.</summary>
@@ -56,26 +61,30 @@ namespace Axiom.FileSystem
 		/// The archive in which the file has been found (for info when performing
 		/// multi-Archive searches, note you should still open through ResourceGroupManager)
 		public Archive Archive;
-		/// The file's fully qualified name
-		public String Filename;
-		/// Path name; separated by '/' and ending with '/'
-		public String Path;
+
 		/// Base filename
 		public String Basename;
+
 		/// Compressed size
 		public long CompressedSize;
+
+		/// The file's fully qualified name
+		public String Filename;
+
+		/// Last modification time
+		public DateTime ModifiedTime;
+
+		/// Path name; separated by '/' and ending with '/'
+		public String Path;
+
 		/// Uncompressed size
 		public long UncompressedSize;
-        /// Last modification time
-        public DateTime ModifiedTime;
 	};
 
 	/// <ogre name="FileInfoList">
 	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
-	public class FileInfoList : List<FileInfo>
-	{
-	}
+	public class FileInfoList : List<FileInfo> { }
 
 	#endregion FileInfo Class and Collection
 
@@ -106,60 +115,26 @@ namespace Axiom.FileSystem
 
 		#region Name Property
 
-		private string _name;
 		/// Archive name
-		public string Name
-		{
-			get
-			{
-				return _name;
-			}
-			protected set
-			{
-				_name = value;
-			}
-		}
+		public string Name { get; protected set; }
 
 		#endregion Name Property
 
 		#region Type Property
 
-		private string _type;
 		/// Archive type code
-		public string Type
-		{
-			get
-			{
-				return _type;
-			}
-			protected set
-			{
-				_type = value;
-			}
-		}
+		public string Type { get; protected set; }
 
 		#endregion Type Property
 
 		#region IsReadOnly Property
-		private bool _isReadOnly;
-		public bool IsReadOnly
-		{
-			get
-			{
-				return _isReadOnly;
-			}
-			protected set
-			{
-				_isReadOnly = value;
-			}
-		}
+
+		public bool IsReadOnly { get; protected set; }
+
 		#endregion IsReadOnly Property
 
 		/// Is this archive case sensitive in the way it matches files
-		public abstract bool IsCaseSensitive
-		{
-			get;
-		}
+		public abstract bool IsCaseSensitive { get; }
 
 		/// <summary>
 		/// Is this archive capable of being monitored for additions, changes and deletions
@@ -182,11 +157,10 @@ namespace Axiom.FileSystem
 		/// <param name="name"></param>
 		/// <param name="archType"></param>
 		public Archive( string name, string archType )
-            : base()
 		{
-			_name = name;
-			_type = archType;
-			_isReadOnly = true;
+			this.Name = name;
+			this.Type = archType;
+			this.IsReadOnly = true;
 		}
 
 		#endregion Constructors
@@ -276,6 +250,56 @@ namespace Axiom.FileSystem
 			throw new AxiomException( "This archive does not support removal of files." );
 		}
 
+		/// <summary>
+		/// Find out if the named file exists
+		/// </summary>
+		/// <param name="fileName">fully qualified filename</param>
+		/// <returns></returns>
+		public abstract bool Exists( string fileName );
+
+		/// <summary>
+		/// Retrieve the modification time of a given file
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		public virtual DateTime GetModifiedTime( string fileName )
+		{
+			FileInfoList list = ListFileInfo();
+
+			foreach ( FileInfo currentInfo in list )
+			{
+				if ( currentInfo.Basename.ToLower() != fileName.ToLower() )
+				{
+					continue;
+				}
+
+				return currentInfo.ModifiedTime;
+			}
+
+			return DateTime.MinValue;
+		}
+
+		#region FindFileInfo Method
+
+		/// <overloads>
+		/// <summary>
+		/// Find all files matching a given pattern in this archive and get 
+		/// some detailed information about them.
+		/// </summary>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <returns>A list of file information structures for all files matching the criteria.</returns>
+		/// </overloads>
+		public FileInfoList FindFileInfo( string pattern )
+		{
+			return FindFileInfo( pattern, true );
+		}
+
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
+		public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
+
+		#endregion FindFileInfo Method
+
 		#region List Method
 
 		/// <overloads>
@@ -332,63 +356,16 @@ namespace Axiom.FileSystem
 			return Find( pattern );
 		}
 
-        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
 		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
 		public abstract List<string> Find( string pattern, bool recursive );
 
 		#endregion Find Method
 
-		/// <summary>
-		/// Find out if the named file exists
-		/// </summary>
-        /// <param name="fileName">fully qualified filename</param>
-		/// <returns></returns>
-		public abstract bool Exists( string fileName );
-
-        /// <summary>
-        /// Retrieve the modification time of a given file
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public virtual DateTime GetModifiedTime(string fileName)
-        {
-            var list = this.ListFileInfo();
-
-            foreach (var currentInfo in list)
-            {
-                if (currentInfo.Basename.ToLower() != fileName.ToLower())
-                    continue;
-
-                return currentInfo.ModifiedTime;
-            }
-
-            return DateTime.MinValue;
-        }
-
-		#region FindFileInfo Method
-
-		/// <overloads>
-		/// <summary>
-		/// Find all files matching a given pattern in this archive and get 
-		/// some detailed information about them.
-		/// </summary>
-		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <returns>A list of file information structures for all files matching the criteria.</returns>
-		/// </overloads>
-		public FileInfoList FindFileInfo( string pattern )
-		{
-			return FindFileInfo( pattern, true );
-		}
-
-        /// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <param name="recursive">Whether all paths of the archive are searched (if the archive has a concept of that)</param>
-		public abstract FileInfoList FindFileInfo( string pattern, bool recursive );
-
-		#endregion FindFileInfo Method
-
 		#endregion Methods
 
 		#region IDisposable Implementation
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -415,7 +392,7 @@ namespace Axiom.FileSystem
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -426,11 +403,11 @@ namespace Axiom.FileSystem
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
-        #endregion IDisposable Implementation
-    }
+		#endregion IDisposable Implementation
+	}
 
 	/// <summary>
 	/// 	abstract class for plugin developers to override to create 
@@ -453,9 +430,7 @@ namespace Axiom.FileSystem
 	/// <ogre name="ArchiveFactory">
 	///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
-	public class ArchiveFactory : AbstractFactory<Archive>
-	{
-	}
+	public class ArchiveFactory : AbstractFactory<Archive> { }
 
 	#endregion Archive Abstract Class and Factory
 }

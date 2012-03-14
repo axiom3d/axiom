@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.ParticleSystems;
@@ -14,9 +14,9 @@ namespace Axiom.Demos
 	/// 	Summary description for Particles.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class ParticleFX : TechDemo
+	public class ParticleFX : TechDemo
 	{
 		#region Member variables
 
@@ -28,7 +28,6 @@ namespace Axiom.Demos
 
 		public override void CreateScene()
 		{
-
 			// set some ambient light
 			scene.AmbientLight = ColorEx.Gray;
 
@@ -48,18 +47,18 @@ namespace Axiom.Demos
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( fireWorks );
 
 			// shared node for the 2 fountains
-			fountainNode = scene.RootSceneNode.CreateChildSceneNode();
+			this.fountainNode = scene.RootSceneNode.CreateChildSceneNode();
 
 			// create the first fountain
 			ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem( "Fountain1", "ParticleSystems/Fountain" );
-			SceneNode node = fountainNode.CreateChildSceneNode();
+			SceneNode node = this.fountainNode.CreateChildSceneNode();
 			node.Translate( new Vector3( 200, -100, 0 ) );
 			node.Rotate( Vector3.UnitZ, 20 );
 			node.AttachObject( fountain1 );
 
 			// create the second fountain
 			ParticleSystem fountain2 = ParticleSystemManager.Instance.CreateSystem( "Fountain2", "ParticleSystems/Fountain" );
-			node = fountainNode.CreateChildSceneNode();
+			node = this.fountainNode.CreateChildSceneNode();
 			node.Translate( new Vector3( -200, -100, 0 ) );
 			node.Rotate( Vector3.UnitZ, -20 );
 			node.AttachObject( fountain2 );
@@ -80,12 +79,11 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// rotate fountains
-			fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
+			this.fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
 			// call base method
 			base.OnFrameStarted( source, evt );
 		}
-
 
 		#endregion Methods
 
@@ -93,5 +91,4 @@ namespace Axiom.Demos
 
 		#endregion Properties
 	}
-
 }

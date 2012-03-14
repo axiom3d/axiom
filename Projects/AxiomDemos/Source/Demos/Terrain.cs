@@ -1,9 +1,10 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Input;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -14,15 +15,15 @@ namespace Axiom.Demos
 	/// Summary description for Terrain.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class Terrain : TechDemo
+	public class Terrain : TechDemo
 	{
-		SceneNode waterNode;
-		float flowAmount;
-		bool flowUp = true;
-		const float FLOW_HEIGHT = 0.8f;
-		const float FLOW_SPEED = 0.2f;
+		private SceneNode waterNode;
+		private float flowAmount;
+		private bool flowUp = true;
+		private const float FLOW_HEIGHT = 0.8f;
+		private const float FLOW_SPEED = 0.2f;
 
 		public override void ChooseSceneManager()
 		{
@@ -54,24 +55,16 @@ namespace Axiom.Demos
 			scene.SetFog( FogMode.Exp2, ColorEx.White, .008f, 0, 250 );
 
 			// water plane setup
-			Plane waterPlane = new Plane( Vector3.UnitY, 1.5f );
+			var waterPlane = new Plane( Vector3.UnitY, 1.5f );
 
-			MeshManager.Instance.CreatePlane(
-				"WaterPlane",
-				ResourceGroupManager.DefaultResourceGroupName,
-				waterPlane,
-				2800, 2800,
-				20, 20,
-				true, 1,
-				10, 10,
-				Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "WaterPlane", ResourceGroupManager.DefaultResourceGroupName, waterPlane, 2800, 2800, 20, 20, true, 1, 10, 10, Vector3.UnitZ );
 
 			Entity waterEntity = scene.CreateEntity( "Water", "WaterPlane" );
 			waterEntity.MaterialName = "Terrain/WaterPlane";
 
-			waterNode = scene.RootSceneNode.CreateChildSceneNode( "WaterNode" );
-			waterNode.AttachObject( waterEntity );
-			waterNode.Translate( new Vector3( 1000, 0, 1000 ) );
+			this.waterNode = scene.RootSceneNode.CreateChildSceneNode( "WaterNode" );
+			this.waterNode.AttachObject( waterEntity );
+			this.waterNode.Translate( new Vector3( 1000, 0, 1000 ) );
 		}
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
@@ -81,44 +74,48 @@ namespace Axiom.Demos
 
 			base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
 			moveScale = 10 * evt.TimeSinceLastFrame;
 			waterFlow = FLOW_SPEED * evt.TimeSinceLastFrame;
 
-			if ( waterNode != null )
+			if ( this.waterNode != null )
 			{
-				if ( flowUp )
+				if ( this.flowUp )
 				{
-					flowAmount += waterFlow;
+					this.flowAmount += waterFlow;
 				}
 				else
 				{
-					flowAmount -= waterFlow;
+					this.flowAmount -= waterFlow;
 				}
 
-				if ( flowAmount >= FLOW_HEIGHT )
+				if ( this.flowAmount >= FLOW_HEIGHT )
 				{
-					flowUp = false;
+					this.flowUp = false;
 				}
-				else if ( flowAmount <= 0.0f )
+				else if ( this.flowAmount <= 0.0f )
 				{
-					flowUp = true;
+					this.flowUp = true;
 				}
 
-				waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
+				this.waterNode.Translate( new Vector3( 0, this.flowUp ? waterFlow : -waterFlow, 0 ) );
 			}
-			if ( input.IsMousePressed( Axiom.Input.MouseButtons.Left ) )
+			if ( input.IsMousePressed( MouseButtons.Left ) )
 			{
-				float mouseX = (float)input.AbsoluteMouseX / (float)window.Width;
-				float mouseY = (float)input.AbsoluteMouseY / (float)window.Height;
+				float mouseX = input.AbsoluteMouseX / (float)window.Width;
+				float mouseY = input.AbsoluteMouseY / (float)window.Height;
 
 				Ray ray = camera.GetCameraToViewportRay( mouseX, mouseY );
 				RaySceneQuery r = scene.CreateRayQuery( ray );
 				foreach ( RaySceneQueryResultEntry re in r.Execute() )
 				{
 					if ( re.worldFragment != null )
+					{
 						debugText = re.worldFragment.SingleIntersection.ToString();
+					}
 				}
 			}
 		}

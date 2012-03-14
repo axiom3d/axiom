@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -28,38 +29,41 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
+
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math.Collections
 {
-    /// <summary>
-    /// 	A simple container class for returning a pair of objects from a method call 
-    /// 	(similar to std::pair, minus the templates).
-    /// </summary>
-    /// <remarks>
-    /// </remarks>
-    public class Pair
-    {
-        public object first;
-        public object second;
+	/// <summary>
+	/// 	A simple container class for returning a pair of objects from a method call 
+	/// 	(similar to std::pair, minus the templates).
+	/// </summary>
+	/// <remarks>
+	/// </remarks>
+	public class Pair
+	{
+		public object first;
+		public object second;
 
-        public Pair( object first, object second )
-        {
-            this.first = first;
-            this.second = second;
-        }
-    }
+		public Pair( object first, object second )
+		{
+			this.first = first;
+			this.second = second;
+		}
+	}
 }

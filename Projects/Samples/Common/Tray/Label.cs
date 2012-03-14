@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,13 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
 
 using Axiom.Math;
 using Axiom.Overlays;
-using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
@@ -34,17 +35,21 @@ namespace Axiom.Samples
 	public class Label : Widget
 	{
 		#region fields
-		/// <summary>
-		/// 
-		/// </summary>
-		public OverlayElement textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isFitToTray;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public OverlayElement textArea;
+
 		#endregion
 
 		#region properties
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -67,9 +72,10 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return isFitToTray;
+				return this.isFitToTray;
 			}
 		}
+
 		#endregion properties
 
 		/// <summary>
@@ -81,11 +87,13 @@ namespace Axiom.Samples
 		public Label( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Label", "BorderPanel", name );
-			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
+			this.textArea = ( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
 			this.textArea.Text = caption;
-			this.Caption = caption;
+			Caption = caption;
 			if ( width <= 0 )
+			{
 				this.isFitToTray = true;
+			}
 			else
 			{
 				this.isFitToTray = false;
@@ -100,7 +108,9 @@ namespace Axiom.Samples
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
 			if ( listener != null && IsCursorOver( element, cursorPos, 3 ) )
+			{
 				listener.LabelHit( this );
+			}
 			base.OnCursorPressed( cursorPos );
 		}
 	}

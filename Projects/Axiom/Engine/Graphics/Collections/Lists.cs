@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Lists.cs -1   $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -43,85 +45,57 @@ namespace Axiom.Graphics.Collections
 {
 	/// <summary>
 	/// </summary>
-	public class VertexElementList : List<VertexElement>
-	{
-	}
+	public class VertexElementList : List<VertexElement> { }
 
 	/// <summary>
 	/// </summary>
-	public class TextureEffectList : List<TextureEffect>
-	{
-	}
+	public class TextureEffectList : List<TextureEffect> { }
 
 	/// <summary>
 	/// </summary>
-	public class RenderTextureList : List<RenderTexture>
-	{
-	}
+	public class RenderTextureList : List<RenderTexture> { }
 
 	/// <summary>
 	/// </summary>
-	public class PassList : List<Pass>
-	{
-	}
+	public class PassList : List<Pass> { }
 
 	/// <summary>
 	/// </summary>
-	public class TechniqueList : List<Technique>
-	{
-	}
+	public class TechniqueList : List<Technique> { }
 
 	/// <summary>
 	/// </summary>
-	public class TextureUnitStateList : List<TextureUnitState>
-	{
-	}
+	public class TextureUnitStateList : List<TextureUnitState> { }
 
 	/// <summary>
 	/// </summary>
-	public class RenderableList : List<IRenderable>
-	{
-	}
+	public class RenderableList : List<IRenderable> { }
 
 	/// <summary>
 	/// </summary>
-	public class TriangleList : List<EdgeData.Triangle>
-	{
-	}
+	public class TriangleList : List<EdgeData.Triangle> { }
 
 	/// <summary>
 	/// </summary>
-	public class EdgeList : List<EdgeData.Edge>
-	{
-	}
+	public class EdgeList : List<EdgeData.Edge> { }
 
 	/// <summary>
 	/// </summary>
-	public class EdgeGroupList : List<EdgeData.EdgeGroup>
-	{
-	}
+	public class EdgeGroupList : List<EdgeData.EdgeGroup> { }
 
 	/// <summary>
 	/// </summary>
-	public class VertexDataList : List<VertexData>
-	{
-	}
+	public class VertexDataList : List<VertexData> { }
 
 	/// <summary>
 	/// </summary>
-	public class IndexDataList : List<IndexData>
-	{
-	}
+	public class IndexDataList : List<IndexData> { }
 
 	/// <summary>
 	/// </summary>
-	public class ShadowRenderableList : List<ShadowRenderable>
-	{
-	}
+	public class ShadowRenderableList : List<ShadowRenderable> { }
 
 	/// <summary>
 	/// </summary>
-	public class OperationTypeList : List<OperationType>
-	{
-	}
+	public class OperationTypeList : List<OperationType> { }
 }

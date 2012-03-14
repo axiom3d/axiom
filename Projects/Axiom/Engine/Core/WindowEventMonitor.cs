@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: WindowEventMonitor.cs 1617 2009-06-02 20:04:03Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 
 using Axiom.Graphics;
@@ -73,22 +76,31 @@ namespace Axiom.Core
 
 	public class WindowEventMonitor : DisposableObject // Singleton<WindowMonitor>
 	{
+		#region Delegates
+
+		/// <summary>
+		///
+		/// </summary>
+		public delegate void MessagePumpDelegate();
+
+		#endregion
+
+		private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
+		public MessagePumpDelegate MessagePump;
+
 		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
 		private List<RenderWindow> _windows = new List<RenderWindow>();
+
+		private WindowEventMonitor() { }
+
 		public IEnumerable<RenderWindow> Windows
 		{
 			get
 			{
-				return _windows;
+				return this._windows;
 			}
 		}
 
-		private WindowEventMonitor()
-            : base()
-		{
-		}
-
-		private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
 		/// <summary>
 		/// Singleton Instance of the class
 		/// </summary>
@@ -99,12 +111,6 @@ namespace Axiom.Core
 				return _instance;
 			}
 		}
-
-		/// <summary>
-		///
-		/// </summary>
-		public delegate void MessagePumpDelegate();
-		public MessagePumpDelegate MessagePump;
 
 		/// <summary>
 		/// Add a listener to listen to renderwindow events (multiple listener's per renderwindow is fine)
@@ -118,11 +124,11 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( !_listeners.ContainsKey( window ) )
+			if ( !this._listeners.ContainsKey( window ) )
 			{
-				_listeners.Add( window, new List<IWindowEventListener>() );
+				this._listeners.Add( window, new List<IWindowEventListener>() );
 			}
-			_listeners[ window ].Add( listener );
+			this._listeners[ window ].Add( listener );
 		}
 
 		/// <summary>
@@ -135,9 +141,9 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( _listeners.ContainsKey( window ) )
+			if ( this._listeners.ContainsKey( window ) )
 			{
-				_listeners[ window ].Remove( listener );
+				this._listeners[ window ].Remove( listener );
 			}
 		}
 
@@ -150,8 +156,8 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			_windows.Add( window );
-			_listeners.Add( window, new List<IWindowEventListener>() );
+			this._windows.Add( window );
+			this._listeners.Add( window, new List<IWindowEventListener>() );
 		}
 
 		/// <summary>
@@ -163,15 +169,15 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
-				_windows.Remove( window );
+				this._windows.Remove( window );
 			}
 
-			if ( _listeners.ContainsKey( window ) )
+			if ( this._listeners.ContainsKey( window ) )
 			{
-				_listeners[ window ].Clear();
-				_listeners.Remove( window );
+				this._listeners[ window ].Clear();
+				this._listeners.Remove( window );
 			}
 		}
 
@@ -184,13 +190,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of focus change
 				window.IsActive = hasFocus;
 
 				// Notify listeners of focus change
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in this._listeners[ window ] )
 				{
 					listener.WindowFocusChange( window );
 				}
@@ -207,13 +213,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in this._listeners[ window ] )
 				{
 					listener.WindowMoved( window );
 				}
@@ -224,18 +230,18 @@ namespace Axiom.Core
 		/// <summary>
 		/// Window has changed size
 		/// </summary>
-        /// <param name="window">RenderWindow that caused the event</param>
+		/// <param name="window">RenderWindow that caused the event</param>
 		public void WindowResized( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in this._listeners[ window ] )
 				{
 					listener.WindowResized( window );
 				}
@@ -251,10 +257,10 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify listeners of close
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in this._listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
@@ -266,35 +272,31 @@ namespace Axiom.Core
 			}
 		}
 
-		#region DisposableObject Members
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this._listeners != null )
+					{
+						foreach ( var list in this._listeners.Values )
+						{
+							list.Clear();
+						}
+						this._listeners.Clear();
+						this._listeners = null;
+					}
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (_listeners != null)
-                    {
-                        foreach (var list in _listeners.Values)
-                        {
-                            list.Clear();
-                        }
-                        _listeners.Clear();
-                        _listeners = null;
-                    }
+					if ( this._windows != null )
+					{
+						this._windows.Clear();
+						this._windows = null;
+					}
+				}
+			}
 
-                    if (_windows != null)
-                    {
-                        _windows.Clear();
-                        _windows = null;
-                    }
-                }
-            }
-
-            base.dispose(disposeManagedResources);
-        }
-
-        #endregion DisposableObject Members
-    }
+			base.dispose( disposeManagedResources );
+		}
+	}
 }

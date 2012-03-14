@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,18 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <id value="$Id: Timer.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Runtime.InteropServices;
 
 using System.Diagnostics;
 
@@ -51,7 +52,7 @@ namespace Axiom.Core
 	{
 		#region Private Fields
 
-		private Stopwatch _timer = new Stopwatch();
+		private readonly Stopwatch _timer = new Stopwatch();
 
 		#endregion Private Fields
 
@@ -62,12 +63,13 @@ namespace Axiom.Core
 		/// </summary>
 		public void Start()
 		{
-			_timer.Start();
+			this._timer.Start();
 		}
 
 		#endregion Methods
 
 		#region Public Properties
+
 		/// <summary>
 		/// Gets a <see cref="System.Int64" /> representing the 
 		/// current tick count of the timer.
@@ -76,7 +78,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedTicks;
+				return this._timer.ElapsedTicks;
 			}
 		}
 
@@ -100,7 +102,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.IsRunning;
+				return this._timer.IsRunning;
 			}
 		}
 
@@ -112,7 +114,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( (float)1.0 / (float)Frequency );
+				return ( (float)1.0 / this.Frequency );
 			}
 		}
 
@@ -138,15 +140,15 @@ namespace Axiom.Core
 		public void Reset()
 		{
 			// reset by restarting the timer
-			_timer.Reset();
-			_timer.Start();
+			this._timer.Reset();
+			this._timer.Start();
 		}
 
 		public long Microseconds
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds / 10;
+				return this._timer.ElapsedMilliseconds / 10;
 			}
 		}
 
@@ -154,7 +156,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds;
+				return this._timer.ElapsedMilliseconds;
 			}
 		}
 

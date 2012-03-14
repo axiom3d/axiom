@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,169 +50,177 @@ using System.Collections;
 
 namespace Axiom.Math.Collections
 {
-    /// <summary>
-    ///		Serves as a basis for strongly typed collections in the math lib.
-    /// </summary>
-    /// <remarks>
-    ///		Can't wait for Generics in .Net Framework 2.0!   
-    /// </remarks>
-    public abstract class BaseCollection : ICollection, IEnumerable, IEnumerator
-    {
-        /// <summary></summary>
-        protected ArrayList objectList;
-        //		protected int nextUniqueKeyCounter;
+	/// <summary>
+	///		Serves as a basis for strongly typed collections in the math lib.
+	/// </summary>
+	/// <remarks>
+	///		Can't wait for Generics in .Net Framework 2.0!   
+	/// </remarks>
+	public abstract class BaseCollection : ICollection, IEnumerable, IEnumerator
+	{
+		//		protected int nextUniqueKeyCounter;
 
-        const int INITIAL_CAPACITY = 50;
+		private const int INITIAL_CAPACITY = 50;
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public BaseCollection()
-        {
-            objectList = new ArrayList( INITIAL_CAPACITY );
-        }
+		/// <summary>
+		///		
+		/// </summary>
+		public BaseCollection()
+		{
+			this.objectList = new ArrayList( INITIAL_CAPACITY );
+		}
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public object this[ int index ]
-        {
-            get
-            {
-                return objectList[ index ];
-            }
-            set
-            {
-                objectList[ index ] = value;
-            }
-        }
+		/// <summary></summary>
+		protected ArrayList objectList;
 
-        /// <summary>
-        ///		Adds an item to the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        protected void Add( object item )
-        {
-            objectList.Add( item );
-        }
+		/// <summary>
+		///		
+		/// </summary>
+		public object this[ int index ]
+		{
+			get
+			{
+				return this.objectList[ index ];
+			}
+			set
+			{
+				this.objectList[ index ] = value;
+			}
+		}
 
-        /// <summary>
-        ///		Clears all objects from the collection.
-        /// </summary>
-        public void Clear()
-        {
-            objectList.Clear();
-        }
+		/// <summary>
+		///		Adds an item to the collection.
+		/// </summary>
+		/// <param name="item"></param>
+		protected void Add( object item )
+		{
+			this.objectList.Add( item );
+		}
 
-        /// <summary>
-        ///		Removes the item from the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Remove( object item )
-        {
-            var index = objectList.IndexOf( item );
+		/// <summary>
+		///		Clears all objects from the collection.
+		/// </summary>
+		public void Clear()
+		{
+			this.objectList.Clear();
+		}
 
-            if ( index != -1 )
-                objectList.RemoveAt( index );
-        }
+		/// <summary>
+		///		Removes the item from the collection.
+		/// </summary>
+		/// <param name="item"></param>
+		public void Remove( object item )
+		{
+			int index = this.objectList.IndexOf( item );
 
-        #region Implementation of ICollection
+			if ( index != -1 )
+			{
+				this.objectList.RemoveAt( index );
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        public void CopyTo( System.Array array, int index )
-        {
-            objectList.CopyTo( array, index );
-        }
+		#region Implementation of ICollection
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsSynchronized
-        {
-            get
-            {
-                return objectList.IsSynchronized;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="array"></param>
+		/// <param name="index"></param>
+		public void CopyTo( Array array, int index )
+		{
+			this.objectList.CopyTo( array, index );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                return objectList.Count;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public bool IsSynchronized
+		{
+			get
+			{
+				return this.objectList.IsSynchronized;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public object SyncRoot
-        {
-            get
-            {
-                return objectList.SyncRoot;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public int Count
+		{
+			get
+			{
+				return this.objectList.Count;
+			}
+		}
 
-        #endregion
+		/// <summary>
+		/// 
+		/// </summary>
+		public object SyncRoot
+		{
+			get
+			{
+				return this.objectList.SyncRoot;
+			}
+		}
 
-        #region Implementation of IEnumerable
+		#endregion
 
-        public System.Collections.IEnumerator GetEnumerator()
-        {
-            return (IEnumerator)this;
-        }
+		#region Implementation of IEnumerable
 
-        #endregion
+		public IEnumerator GetEnumerator()
+		{
+			return this;
+		}
 
-        #region Implementation of IEnumerator
+		#endregion
 
-        private int position = -1;
+		#region Implementation of IEnumerator
 
-        /// <summary>
-        ///		Resets the in progress enumerator.
-        /// </summary>
-        public void Reset()
-        {
-            // reset the enumerator position
-            position = -1;
-        }
+		private int position = -1;
 
-        /// <summary>
-        ///		Moves to the next item in the enumeration if there is one.
-        /// </summary>
-        /// <returns></returns>
-        public bool MoveNext()
-        {
-            position += 1;
+		/// <summary>
+		///		Resets the in progress enumerator.
+		/// </summary>
+		public void Reset()
+		{
+			// reset the enumerator position
+			this.position = -1;
+		}
 
-            if ( position >= objectList.Count )
-                return false;
-            else
-                return true;
-        }
+		/// <summary>
+		///		Moves to the next item in the enumeration if there is one.
+		/// </summary>
+		/// <returns></returns>
+		public bool MoveNext()
+		{
+			this.position += 1;
 
-        /// <summary>
-        ///		Returns the current object in the enumeration.
-        /// </summary>
-        public object Current
-        {
-            get
-            {
-                return objectList[ position ];
-            }
-        }
-        #endregion
-    }
+			if ( this.position >= this.objectList.Count )
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		///		Returns the current object in the enumeration.
+		/// </summary>
+		public object Current
+		{
+			get
+			{
+				return this.objectList[ this.position ];
+			}
+		}
+
+		#endregion
+	}
 }

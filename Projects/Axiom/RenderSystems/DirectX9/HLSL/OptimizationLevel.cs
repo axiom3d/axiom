@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -46,26 +50,31 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		[ScriptEnum( "default" )]
 		Default,
+
 		/// <summary>
 		/// No optimization
 		/// </summary>
 		[ScriptEnum( "none" )]
 		None,
+
 		/// <summary>
 		/// Optimization level 0
 		/// </summary>
 		[ScriptEnum( "0" )]
 		LevelZero,
+
 		/// <summary>
 		/// Optimization level 1
 		/// </summary>
 		[ScriptEnum( "1" )]
 		LevelOne,
+
 		/// <summary>
 		/// Optimization level 2
 		/// </summary>
 		[ScriptEnum( "2" )]
 		LevelTwo,
+
 		/// <summary>
 		/// Optimization level 3
 		/// </summary>

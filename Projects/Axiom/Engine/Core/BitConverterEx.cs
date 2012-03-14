@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+
+using Axiom.CrossPlatform;
+
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -23,20 +28,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Memory.cs 1663 2009-06-12 21:27:34Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System.Reflection;
-using System.Runtime.InteropServices;
-using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -55,7 +59,7 @@ namespace Axiom.Core
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
 				Marshal.StructureToPtr( value, dst.Pin(), true );
-			    dst.UnPin();
+				dst.UnPin();
 			}
 			else
 			{
@@ -63,7 +67,7 @@ namespace Axiom.Core
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
 
-                var src = Memory.PinObject(value as Array);
+				BufferBase src = Memory.PinObject( value as Array );
 				Memory.Copy( src, dst, size );
 				Memory.UnpinObject( value );
 			}
@@ -75,20 +79,20 @@ namespace Axiom.Core
 
 		public static T SetBytes<T>( byte[] buffer )
 		{
-			var size = Memory.SizeOf( typeof( T ) );
-			var src = Memory.PinObject( buffer );
-            var retStruct = src.Pin().PtrToStructure<T>();
-		    src.UnPin();
+			int size = Memory.SizeOf( typeof( T ) );
+			BufferBase src = Memory.PinObject( buffer );
+			var retStruct = src.Pin().PtrToStructure<T>();
+			src.UnPin();
 			Memory.UnpinObject( buffer );
 			return retStruct;
 		}
 
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
-			var size = buffer.Length / Memory.SizeOf( typeof( T ) );
+			int size = buffer.Length / Memory.SizeOf( typeof( T ) );
 			dest = new T[ size ];
-            var src = Memory.PinObject(buffer);
-            var dst = Memory.PinObject(dest);
+			BufferBase src = Memory.PinObject( buffer );
+			BufferBase dst = Memory.PinObject( dest );
 			Memory.Copy( src, dst, buffer.Length );
 			Memory.UnpinObject( buffer );
 			Memory.UnpinObject( dest );

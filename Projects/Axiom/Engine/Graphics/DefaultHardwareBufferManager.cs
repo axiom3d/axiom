@@ -27,18 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Axiom.Core;
+
 
 #endregion Namespace Declarations
 
@@ -47,9 +46,7 @@ namespace Axiom.Graphics
 	public class DefaultHardwareBufferManager : HardwareBufferManager
 	{
 		public DefaultHardwareBufferManager()
-			: base( new DefaultHardwareBufferManagerBase() )
-		{
-		}
+			: base( new DefaultHardwareBufferManagerBase() ) { }
 
 		protected override void dispose( bool disposeManagedResources )
 		{

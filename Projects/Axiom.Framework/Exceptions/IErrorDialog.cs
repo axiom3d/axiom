@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,21 +19,22 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
 
 namespace Axiom.Framework.Exceptions
 {
-    /// <summary>
-    /// Interface for a display of error
-    /// </summary>
-    public interface IErrorDialog
-    {
-        /// <summary>
-        /// Causes the exception to be displayed on the screen
-        /// </summary>
-        /// <param name="exception">The exception to display</param>
-        void Show( Exception exception );
-    }
+	/// <summary>
+	/// Interface for a display of error
+	/// </summary>
+	public interface IErrorDialog
+	{
+		/// <summary>
+		/// Causes the exception to be displayed on the screen
+		/// </summary>
+		/// <param name="exception">The exception to display</param>
+		void Show( Exception exception );
+	}
 }

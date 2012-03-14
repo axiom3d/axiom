@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -29,17 +31,12 @@ namespace Axiom.Framework.Configuration
 	/// </summary>
 	public abstract class ConfigurationManagerBase : IConfigurationManager
 	{
-
 		#region Fields and Properties
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected string ConfigurationFile
-		{
-			get;
-			set;
-		}
+		protected string ConfigurationFile { get; set; }
 
 		#endregion Fields and Properties
 
@@ -51,7 +48,7 @@ namespace Axiom.Framework.Configuration
 		/// <param name="configurationFilename"></param>
 		protected ConfigurationManagerBase( string configurationFilename )
 		{
-			this.ConfigurationFile = configurationFilename;
+			ConfigurationFile = configurationFilename;
 		}
 
 		#endregion Construction and Destruction
@@ -61,11 +58,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// 
 		/// </summary>
-		public virtual string LogFilename
-		{
-			get;
-			protected set;
-		}
+		public virtual string LogFilename { get; protected set; }
 
 		/// <summary>
 		/// 

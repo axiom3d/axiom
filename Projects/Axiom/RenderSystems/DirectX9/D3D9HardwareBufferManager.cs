@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,7 +47,6 @@ namespace Axiom.RenderSystems.DirectX9
 	/// which is unacceptably bad when using very large buffers
 	/// </summary>
 	/// AXIOM_D3D_MANAGE_BUFFERS
-
 	/// <summary>
 	/// Implementation of HardwareBufferManager for D3D9.
 	/// </summary>
@@ -52,15 +55,12 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Constructors
 
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9HardwareBufferManagerBase()
-			: base()
-		{
-		}
+		public D3D9HardwareBufferManagerBase() { }
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManagerBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -92,10 +92,14 @@ namespace Axiom.RenderSystems.DirectX9
 				useShadowBuffer = false;
 				// Also drop any WRITE_ONLY so we can read direct
 				if ( usage == BufferUsage.DynamicWriteOnly )
+				{
 					usage = BufferUsage.Dynamic;
+				}
 
 				else if ( usage == BufferUsage.StaticWriteOnly )
+				{
 					usage = BufferUsage.Static;
+				}
 			}
 #endif
 			var vbuf = new D3D9HardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, false, useShadowBuffer );
@@ -121,10 +125,14 @@ namespace Axiom.RenderSystems.DirectX9
 				useShadowBuffer = false;
 				// Also drop any WRITE_ONLY so we can read direct
 				if ( usage == BufferUsage.DynamicWriteOnly )
+				{
 					usage = BufferUsage.Dynamic;
+				}
 
 				else if ( usage == BufferUsage.StaticWriteOnly )
+				{
 					usage = BufferUsage.Static;
+				}
 			}
 #endif
 			var idxBuf = new D3D9HardwareIndexBuffer( this, type, numIndices, usage, false, useShadowBuffer );
@@ -164,14 +172,12 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManager()
-			: base( new D3D9HardwareBufferManagerBase() )
-		{
-		}
+			: base( new D3D9HardwareBufferManagerBase() ) { }
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

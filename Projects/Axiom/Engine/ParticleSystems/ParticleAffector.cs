@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Reflection;
+
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -72,11 +73,11 @@ namespace Axiom.ParticleSystems
 	{
 		#region Fields
 
+		protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
+		protected ParticleSystem parent;
+
 		/// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
 		protected string type;
-
-		protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
-        protected ParticleSystem parent;
 
 		#endregion Fields
 
@@ -85,9 +86,9 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor
 		/// </summary>
-        public ParticleAffector( ParticleSystem parent )
+		public ParticleAffector( ParticleSystem parent )
 		{
-            this.parent = parent;
+			this.parent = parent;
 			RegisterCommands();
 		}
 
@@ -102,11 +103,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -129,10 +130,10 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( var key in commandTable.Keys )
+			foreach ( string key in this.commandTable.Keys )
 			{
 				// get the value of the param from this instance
-				var val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
+				string val = ( this.commandTable[ key ] ).Get( this );
 
 				// set the param on the target instance
 				affector.SetParam( key, val );
@@ -147,7 +148,7 @@ namespace Axiom.ParticleSystems
 		///		The affector is expected to apply it's effect to some or all of the particles in the system
 		///		passed to it, depending on the affector's approach.
 		/// </remarks>
-        /// <param name="particle">Reference to a ParticleSystem to affect.</param>
+		/// <param name="particle">Reference to a ParticleSystem to affect.</param>
 		public virtual void InitParticle( ref Particle particle )
 		{
 			// do nothing by default
@@ -162,9 +163,9 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public bool SetParam( string name, string val )
 		{
-			if ( commandTable.ContainsKey( name ) )
+			if ( this.commandTable.ContainsKey( name ) )
 			{
-				var command = (IPropertyCommand)commandTable[ name ];
+				IPropertyCommand command = this.commandTable[ name ];
 
 				command.Set( this, val );
 
@@ -182,28 +183,27 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		protected void RegisterCommands()
 		{
-			var baseType = GetType();
+			Type baseType = GetType();
 
 			do
 			{
-				var types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
+				Type[] types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
 
 				// loop through all methods and look for ones marked with attributes
-				for ( var i = 0; i < types.Length; i++ )
+				for ( int i = 0; i < types.Length; i++ )
 				{
 					// get the current method in the loop
-					var type = types[ i ];
+					Type type = types[ i ];
 
 					// get as many command attributes as there are on this type
-					var commandAtts =
-						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true );
+					var commandAtts = (ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof( ScriptablePropertyAttribute ), true );
 
 					// loop through each one we found and register its command
-					for ( var j = 0; j < commandAtts.Length; j++ )
+					for ( int j = 0; j < commandAtts.Length; j++ )
 					{
-						var commandAtt = commandAtts[ j ];
+						ScriptablePropertyAttribute commandAtt = commandAtts[ j ];
 
-						commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
+						this.commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
 					} // for
 				} // for
 

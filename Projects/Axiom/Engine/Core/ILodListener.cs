@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: ILodListener.cs 1762 2009-09-13 19:00:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
+
 
 #endregion Namespace Declarations
 
@@ -49,6 +52,7 @@ namespace Axiom.Core
 		/// The movable object whose level of detail has changed.
 		/// </summary>
 		public MovableObject MovableObject;
+
 		/// <summary>
 		/// The camera with respect to which the level of detail has changed.
 		/// </summary>
@@ -61,25 +65,29 @@ namespace Axiom.Core
 	public struct EntityMeshLodChangedEvent
 	{
 		/// <summary>
-		/// The entity whose level of detail has changed.
-		/// </summary>
-		public Entity Entity;
-		/// <summary>
 		/// The camera with respect to which the level of detail has changed.
 		/// </summary>
 		public Camera Camera;
+
+		/// <summary>
+		/// The entity whose level of detail has changed.
+		/// </summary>
+		public Entity Entity;
+
 		/// <summary>
 		/// Lod value as determined by lod strategy.
 		/// </summary>
 		public float LodValue;
-		/// <summary>
-		/// Previous level of detail index.
-		/// </summary>
-		public int PreviousLodIndex;
+
 		/// <summary>
 		/// New level of detail index.
 		/// </summary>
 		public int NewLodIndex;
+
+		/// <summary>
+		/// Previous level of detail index.
+		/// </summary>
+		public int PreviousLodIndex;
 	}
 
 	/// <summary>
@@ -88,25 +96,29 @@ namespace Axiom.Core
 	public struct EntityMaterialLodChangedEvent
 	{
 		/// <summary>
-		/// The sub-entity whose material's level of detail has changed.
-		/// </summary>
-		public SubEntity SubEntity;
-		/// <summary>
 		/// The camera with respect to which the level of detail has changed.
 		/// </summary>
 		public Camera Camera;
+
 		/// <summary>
 		/// Lod value as determined by lod strategy.
 		/// </summary>
 		public float LodValue;
-		/// <summary>
-		/// Previous level of detail index.
-		/// </summary>
-		public int PreviousLodIndex;
+
 		/// <summary>
 		/// New level of detail index.
 		/// </summary>
 		public int NewLodIndex;
+
+		/// <summary>
+		/// Previous level of detail index.
+		/// </summary>
+		public int PreviousLodIndex;
+
+		/// <summary>
+		/// The sub-entity whose material's level of detail has changed.
+		/// </summary>
+		public SubEntity SubEntity;
 	}
 
 	/// <summary>

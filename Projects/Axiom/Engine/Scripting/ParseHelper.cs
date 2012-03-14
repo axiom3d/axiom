@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,7 +43,6 @@ using System.IO;
 using System.Text;
 
 using Axiom.Core;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -63,9 +66,9 @@ namespace Axiom.Scripting
 		{
 			var sb = new StringBuilder();
 
-			for ( var i = start; i < end; i++ )
+			for ( int i = start; i < end; i++ )
 			{
-				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
+				sb.AppendFormat( CultureInfo.CurrentCulture, "{0} ", items[ i ] );
 			}
 
 			return sb.ToString( 0, sb.Length - 1 );
@@ -77,7 +80,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void LogParserError( string attribute, string context, string reason )
 		{
-			var error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
+			string error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
 
 			LogManager.Instance.Write( error );
 		}
@@ -90,7 +93,7 @@ namespace Axiom.Scripting
 		/// <returns></returns>
 		public static string ReadLine( TextReader reader )
 		{
-			var line = reader.ReadLine();
+			string line = reader.ReadLine();
 
 			if ( line != null )
 			{
@@ -105,12 +108,12 @@ namespace Axiom.Scripting
 
 				var sb = new StringBuilder();
 
-				var values = line.Split( ' ' );
+				string[] values = line.Split( ' ' );
 
 				// reduce big space gaps between values down to a single space
-				for ( var i = 0; i < values.Length; i++ )
+				for ( int i = 0; i < values.Length; i++ )
 				{
-					var val = values[ i ];
+					string val = values[ i ];
 
 					if ( val.Length != 0 )
 					{
@@ -145,7 +148,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void SkipToNextOpenBrace( TextReader reader )
 		{
-			var line = "";
+			string line = "";
 			while ( line != null && line != "{" )
 			{
 				line = ReadLine( reader );
@@ -158,7 +161,7 @@ namespace Axiom.Scripting
 		/// <param name="reader"></param>
 		public static void SkipToNextCloseBrace( TextReader reader )
 		{
-			var line = "";
+			string line = "";
 			while ( line != null && line != "}" )
 			{
 				line = ReadLine( reader );

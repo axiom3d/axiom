@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -51,7 +55,7 @@ namespace Axiom.Core
 	/// <para />
 	/// Axiom is provided with several alternative shadow camera setups, including
 	/// LiSPSM (<see name="LiSPSMShadowCameraSetup"/>) and Plane Optimal
-    /// (<see name="PlaneOptimalShadowCameraSetup"/>).
+	/// (<see name="PlaneOptimalShadowCameraSetup"/>).
 	/// Others can of course be written to incorporate other algorithms. All you
 	/// have to do is instantiate one of these classes and enable it using
 	/// <see cref="SceneManager.ShadowCameraSetup"/> (global) or

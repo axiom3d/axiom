@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,12 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region Namespace Declarations
 
-using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 #endregion Namespace Declarations
 
@@ -37,5 +37,6 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+
 [assembly: AssemblyTitle( "Axiom System.Drawing Codecs Plugin" )]
 [assembly: AssemblyDescription( "Plugin capable of loading image files using the System.Drawing API." )]

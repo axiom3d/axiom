@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -25,32 +26,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 /*
  * Many thanks to the folks at Multiverse for providing the initial port for this class
  */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 using Axiom.Core;
-using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-
 	///<summary>
 	///    Object representing one pass or operation in a composition sequence. This provides a 
 	///    method to conviently interleave RenderSystem commands between Render Queues.
@@ -58,20 +57,26 @@ namespace Axiom.Graphics
 	public class CompositionTargetPass : DisposableObject
 	{
 		#region Fields and Properties
-        ///<summary>
-        ///    Parent technique
-        ///</summary>
-        protected CompositionTechnique parent;
-        #region Parent Property
-        /// <summary>
-        /// Gets Parent CompositionTechnique
-        /// </summary>
-        public CompositionTechnique Parent
-        {
-            get { return parent; }
-        }
-        #endregion
-        
+
+		///<summary>
+		///    Parent technique
+		///</summary>
+		protected CompositionTechnique parent;
+
+		#region Parent Property
+
+		/// <summary>
+		/// Gets Parent CompositionTechnique
+		/// </summary>
+		public CompositionTechnique Parent
+		{
+			get
+			{
+				return this.parent;
+			}
+		}
+
+		#endregion
 
 		#region InputMode Property
 
@@ -79,6 +84,7 @@ namespace Axiom.Graphics
 		///    Input mode
 		///</summary>
 		protected CompositorInputMode inputMode;
+
 		///<summary>
 		///    Input mode
 		///</summary>
@@ -86,11 +92,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return inputMode;
+				return this.inputMode;
 			}
 			set
 			{
-				inputMode = value;
+				this.inputMode = value;
 			}
 		}
 
@@ -102,6 +108,7 @@ namespace Axiom.Graphics
 		///    (local) output texture
 		///</summary>
 		protected string outputName;
+
 		///<summary>
 		///    (local) output texture
 		///</summary>
@@ -109,11 +116,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return outputName;
+				return this.outputName;
 			}
 			set
 			{
-				outputName = value;
+				this.outputName = value;
 			}
 		}
 
@@ -125,6 +132,7 @@ namespace Axiom.Graphics
 		///    Passes
 		///</summary>
 		protected List<CompositionPass> passes;
+
 		///<summary>
 		///    Passes
 		///</summary>
@@ -132,7 +140,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return passes;
+				return this.passes;
 			}
 		}
 
@@ -145,6 +153,7 @@ namespace Axiom.Graphics
 		///    has been enabled.
 		///</summary>
 		protected bool onlyInitial;
+
 		///<summary>
 		///    This target pass is only executed initially after the effect
 		///    has been enabled.
@@ -153,11 +162,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return onlyInitial;
+				return this.onlyInitial;
 			}
 			set
 			{
-				onlyInitial = value;
+				this.onlyInitial = value;
 			}
 		}
 
@@ -169,6 +178,7 @@ namespace Axiom.Graphics
 		///    Visibility mask for this render
 		///</summary>
 		protected ulong visibilityMask;
+
 		///<summary>
 		///    Visibility mask for this render
 		///</summary>
@@ -176,11 +186,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return visibilityMask;
+				return this.visibilityMask;
 			}
 			set
 			{
-				visibilityMask = value;
+				this.visibilityMask = value;
 			}
 		}
 
@@ -192,6 +202,7 @@ namespace Axiom.Graphics
 		///    LOD bias of this render
 		///</summary>
 		protected float lodBias;
+
 		///<summary>
 		///    LOD bias of this render
 		///</summary>
@@ -199,11 +210,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return lodBias;
+				return this.lodBias;
 			}
 			set
 			{
-				lodBias = value;
+				this.lodBias = value;
 			}
 		}
 
@@ -215,6 +226,7 @@ namespace Axiom.Graphics
 		///    Material scheme name
 		///</summary>
 		protected string materialScheme;
+
 		///<summary>
 		///    Material scheme name
 		///</summary>
@@ -222,11 +234,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return materialScheme;
+				return this.materialScheme;
 			}
 			set
 			{
-				materialScheme = value;
+				this.materialScheme = value;
 			}
 		}
 
@@ -235,23 +247,9 @@ namespace Axiom.Graphics
 		#region ShadowsEnabled Property
 
 		/// <summary>
-		/// Shadows option
-		/// </summary>
-		private bool shadowsEnabled;
-		/// <summary>
 		/// Get's or Set's  whether shadows are enabled in this target pass.
 		/// </summary>
-		public bool ShadowsEnabled
-		{
-			get
-			{
-				return this.shadowsEnabled;
-			}
-			set
-			{
-				this.shadowsEnabled = value;
-			}
-		}
+		public bool ShadowsEnabled { get; set; }
 
 		#endregion ShadowsEnabled Property
 
@@ -263,10 +261,12 @@ namespace Axiom.Graphics
 			get
 			{
 				// A target pass is supported if all passes are supported
-				foreach ( var pass in passes )
+				foreach ( CompositionPass pass in this.passes )
 				{
 					if ( !pass.IsSupported )
+					{
 						return false;
+					}
 				}
 				return true;
 			}
@@ -279,18 +279,18 @@ namespace Axiom.Graphics
 		public CompositionTargetPass( CompositionTechnique parent )
 		{
 			this.parent = parent;
-			inputMode = CompositorInputMode.None;
-			passes = new List<CompositionPass>();
-			onlyInitial = false;
-			visibilityMask = 0xFFFFFFFF;
-			lodBias = 1.0f;
-			materialScheme = MaterialManager.DefaultSchemeName;
-			this.shadowsEnabled = true;
+			this.inputMode = CompositorInputMode.None;
+			this.passes = new List<CompositionPass>();
+			this.onlyInitial = false;
+			this.visibilityMask = 0xFFFFFFFF;
+			this.lodBias = 1.0f;
+			this.materialScheme = MaterialManager.DefaultSchemeName;
+			this.ShadowsEnabled = true;
 
-            if (Root.Instance.RenderSystem != null)
-            {
-                materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
-            }
+			if ( Root.Instance.RenderSystem != null )
+			{
+				this.materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
+			}
 		}
 
 		#endregion Constructors
@@ -303,39 +303,43 @@ namespace Axiom.Graphics
 		public CompositionPass CreatePass()
 		{
 			var t = new CompositionPass( this );
-			passes.Add( t );
+			this.passes.Add( t );
 			return t;
 		}
-        public void RemovePass(int index)
-        {
-            Debug.Assert(index < passes.Count, "Index out of bounds.");
-            passes[index].Dispose();
-            passes[index] = null;
-        }
-        public void RemoveAllPasses()
-        {
-            for (int i = 0; i < passes.Count; i++)
-            {
-                passes[i].Dispose();
-                passes[i] = null;
-            }
-        }
-      
+
+		public void RemovePass( int index )
+		{
+			Debug.Assert( index < this.passes.Count, "Index out of bounds." );
+			this.passes[ index ].Dispose();
+			this.passes[ index ] = null;
+		}
+
+		public void RemoveAllPasses()
+		{
+			for ( int i = 0; i < this.passes.Count; i++ )
+			{
+				this.passes[ i ].Dispose();
+				this.passes[ i ] = null;
+			}
+		}
+
 		#endregion Methods
 
-        #region DisposableObject
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    return;
-                    RemoveAllPasses();
-                }
-            }
-            base.dispose(disposeManagedResources);
-        }
-        #endregion
-    }
+		#region DisposableObject
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					return;
+					RemoveAllPasses();
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion
+	}
 }

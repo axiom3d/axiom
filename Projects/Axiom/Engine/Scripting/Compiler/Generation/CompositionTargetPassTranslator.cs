@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,14 +46,15 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: CompositionTargetPassTranslator
+
 		public class CompositionTargetPassTranslator : Translator
 		{
 			protected CompositionTargetPass _Target;
 
 			public CompositionTargetPassTranslator()
-				: base()
 			{
-				_Target = null;
+				this._Target = null;
 			}
 
 			#region Translator Implementation
@@ -68,17 +73,19 @@ namespace Axiom.Scripting.Compiler
 				var technique = (CompositionTechnique)obj.Parent.Context;
 				if ( obj.Id == (uint)Keywords.ID_TARGET )
 				{
-					_Target = technique.CreateTargetPass();
+					this._Target = technique.CreateTargetPass();
 					if ( !string.IsNullOrEmpty( obj.Name ) )
-						_Target.OutputName = obj.Name;
+					{
+						this._Target.OutputName = obj.Name;
+					}
 				}
 				else if ( obj.Id == (uint)Keywords.ID_TARGET_OUTPUT )
 				{
-					_Target = technique.OutputTarget;
+					this._Target = technique.OutputTarget;
 				}
-				obj.Context = _Target;
+				obj.Context = this._Target;
 
-				foreach ( var i in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -90,6 +97,7 @@ namespace Axiom.Scripting.Compiler
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_INPUT
+
 							case Keywords.ID_INPUT:
 								if ( prop.Values.Count == 0 )
 								{
@@ -109,11 +117,11 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
-												_Target.InputMode = CompositorInputMode.None;
+												this._Target.InputMode = CompositorInputMode.None;
 												break;
 
 											case Keywords.ID_PREVIOUS:
-												_Target.InputMode = CompositorInputMode.Previous;
+												this._Target.InputMode = CompositorInputMode.Previous;
 												break;
 
 											default:
@@ -127,9 +135,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_INPUT
 
 							#region ID_ONLY_INITIAL
+
 							case Keywords.ID_ONLY_INITIAL:
 								if ( prop.Values.Count == 0 )
 								{
@@ -143,10 +153,10 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									var val = false;
+									bool val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_Target.OnlyInitial = val;
+										this._Target.OnlyInitial = val;
 									}
 									else
 									{
@@ -154,9 +164,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_ONLY_INITIAL
 
 							#region ID_VISIBILITY_MASK
+
 							case Keywords.ID_VISIBILITY_MASK:
 								if ( prop.Values.Count == 0 )
 								{
@@ -173,7 +185,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										_Target.VisibilityMask = val;
+										this._Target.VisibilityMask = val;
 									}
 									else
 									{
@@ -181,9 +193,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_VISIBILITY_MASK
 
 							#region ID_LOD_BIAS
+
 							case Keywords.ID_LOD_BIAS:
 								if ( prop.Values.Count == 0 )
 								{
@@ -200,7 +214,7 @@ namespace Axiom.Scripting.Compiler
 									float val;
 									if ( getFloat( prop.Values[ 0 ], out val ) )
 									{
-										_Target.LodBias = val;
+										this._Target.LodBias = val;
 									}
 									else
 									{
@@ -208,9 +222,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_LOD_BIAS
 
 							#region ID_MATERIAL_SCHEME
+
 							case Keywords.ID_MATERIAL_SCHEME:
 								if ( prop.Values.Count == 0 )
 								{
@@ -227,7 +243,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										_Target.MaterialScheme = val;
+										this._Target.MaterialScheme = val;
 									}
 									else
 									{
@@ -235,9 +251,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_MATERIAL_SCHEME
 
 							#region ID_SHADOWS_ENABLED
+
 							case Keywords.ID_SHADOWS_ENABLED:
 								if ( prop.Values.Count == 0 )
 								{
@@ -254,7 +272,7 @@ namespace Axiom.Scripting.Compiler
 									bool val;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_Target.ShadowsEnabled = val;
+										this._Target.ShadowsEnabled = val;
 									}
 									else
 									{
@@ -262,11 +280,11 @@ namespace Axiom.Scripting.Compiler
 									}
 								}
 								break;
+
 							#endregion ID_SHADOWS_ENABLED
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}
@@ -275,6 +293,7 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+
+		#endregion
 	}
 }
-

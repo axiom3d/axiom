@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLRTTManager.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
-using Axiom.Core;
-using Axiom.Media;
 using Axiom.Graphics;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -51,12 +52,13 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal abstract class GLRTTManager : IDisposable
 	{
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
+
 		public BaseGLSupport GLSupport
 		{
 			get
 			{
-				return _glSupport;
+				return this._glSupport;
 			}
 		}
 
@@ -79,7 +81,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( _instance == null )
 			{
 				_instance = this;
-				_glSupport = glSupport;
+				this._glSupport = glSupport;
 			}
 		}
 
@@ -145,7 +147,9 @@ namespace Axiom.RenderSystems.OpenGL
 		public virtual PixelFormat GetSupportedAlternative( PixelFormat format )
 		{
 			if ( CheckFormat( format ) )
+			{
 				return format;
+			}
 			/// Find first alternative
 			PixelComponentType pct = PixelUtil.GetComponentType( format );
 			switch ( pct )
@@ -164,37 +168,32 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 			}
 			if ( CheckFormat( format ) )
+			{
 				return format;
+			}
 
 			/// If none at all, return to default
 			return PixelFormat.A8R8G8B8;
-
 		}
 
 		#endregion Methods
 
 		#region IDisposable Implementation
 
-
 		#region isDisposed Property
 
-		private bool _disposed = false;
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -227,8 +226,10 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this == GLRTTManager.Instance )
+					if ( this == Instance )
+					{
 						_instance = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
@@ -237,13 +238,6 @@ namespace Axiom.RenderSystems.OpenGL
 			isDisposed = true;
 		}
 
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
-
 		#endregion IDisposable Implementation
-
 	}
 }

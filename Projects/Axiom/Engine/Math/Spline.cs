@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,45 +23,43 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
-using Axiom.Graphics;
 using System.Collections.Generic;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math
 {
-	abstract public class Spline<T>
+	public abstract class Spline<T>
 	{
 		#region Fields and Properties
 
-		readonly protected Matrix4 hermitePoly = new Matrix4(
-			2, -2, 1, 1,
-			-3, 3, -2, -1,
-			0, 0, 1, 0,
-			1, 0, 0, 0 );
-
-		/// <summary>Collection of control points.</summary>
-		protected List<T> pointList;
-		/// <summary>Collection of generated tangents for the spline controls points.</summary>
-		protected List<T> tangentList;
+		protected readonly Matrix4 hermitePoly = new Matrix4( 2, -2, 1, 1, -3, 3, -2, -1, 0, 0, 1, 0, 1, 0, 0, 0 );
 
 		/// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
 		protected bool autoCalculateTangents;
+
+		/// <summary>Collection of control points.</summary>
+		protected List<T> pointList;
+
+		/// <summary>Collection of generated tangents for the spline controls points.</summary>
+		protected List<T> tangentList;
+
 		/// <summary>
 		///		Specifies whether or not to recalculate tangents as each control point is added.
 		/// </summary>
@@ -68,11 +67,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return autoCalculateTangents;
+				return this.autoCalculateTangents;
 			}
 			set
 			{
-				autoCalculateTangents = value;
+				this.autoCalculateTangents = value;
 			}
 		}
 
@@ -83,7 +82,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return pointList.Count;
+				return this.pointList.Count;
 			}
 		}
 
@@ -94,11 +93,11 @@ namespace Axiom.Math
 		public Spline()
 		{
 			// intialize the vector collections
-			pointList = new List<T>();
-			tangentList = new List<T>();
+			this.pointList = new List<T>();
+			this.tangentList = new List<T>();
 
 			// do not auto calculate tangents by default
-			autoCalculateTangents = false;
+			this.autoCalculateTangents = false;
 		}
 
 		#endregion Construction and Destruction
@@ -111,11 +110,13 @@ namespace Axiom.Math
 		/// <param name="point"></param>
 		public void AddPoint( T point )
 		{
-			pointList.Add( point );
+			this.pointList.Add( point );
 
 			// recalc tangents if necessary
-			if ( autoCalculateTangents )
+			if ( this.autoCalculateTangents )
+			{
 				RecalculateTangents();
+			}
 		}
 
 		/// <summary>
@@ -123,8 +124,8 @@ namespace Axiom.Math
 		/// </summary>
 		public void Clear()
 		{
-			pointList.Clear();
-			tangentList.Clear();
+			this.pointList.Clear();
+			this.tangentList.Clear();
 		}
 
 		/// <summary>
@@ -134,9 +135,9 @@ namespace Axiom.Math
 		/// <returns>Vector3 containing the point data.</returns>
 		public T GetPoint( int index )
 		{
-			Contract.Requires( index < pointList.Count );
+			Contract.Requires( index < this.pointList.Count );
 
-			return pointList[ index ];
+			return this.pointList[ index ];
 		}
 
 
@@ -147,7 +148,7 @@ namespace Axiom.Math
 		///		If you tell the spline not to update on demand by setting AutoCalculate to false,
 		///		then you must call this after completing your updates to the spline points.
 		/// </remarks>
-		abstract public void RecalculateTangents();
+		public abstract void RecalculateTangents();
 
 		/// <summary>
 		///		Returns an interpolated point based on a parametric value over the whole series.
@@ -158,7 +159,7 @@ namespace Axiom.Math
 		/// </remarks>
 		/// <param name="t">Parametric value.</param>
 		/// <returns>An interpolated point along the spline.</returns>
-		abstract public T Interpolate( Real t );
+		public abstract T Interpolate( Real t );
 
 		/// <summary>
 		///		Interpolates a single segment of the spline given a parametric value.
@@ -166,7 +167,7 @@ namespace Axiom.Math
 		/// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
 		/// <param name="t">Parametric value</param>
 		/// <returns>An interpolated point along the spline.</returns>
-		abstract public T Interpolate( int index, Real t );
+		public abstract T Interpolate( int index, Real t );
 
 		#endregion Methods
 	}

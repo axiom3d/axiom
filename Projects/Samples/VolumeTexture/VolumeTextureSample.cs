@@ -1,20 +1,25 @@
-﻿using Axiom.CrossPlatform;
-using Axiom.Math;
+﻿using Axiom.Animating;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
-using Axiom.Animating;
+using Axiom.Math;
 using Axiom.Media;
-using Axiom.Overlays;
+
 namespace Axiom.Samples.VolumeTexture
 {
 	public class VolumeTextureSample : SdkSample
 	{
-		protected Texture ptex;
-		protected SimpleRenderable vrend;
-		protected SimpleRenderable trend;
-		protected SceneNode snode, fnode;
 		protected AnimationState animState;
-		protected float globalReal, globalImag, globalTheta, xtime;
+		protected SceneNode fnode;
+		protected float globalImag;
+		protected float globalReal;
+		protected float globalTheta;
+		protected Texture ptex;
+		protected SceneNode snode;
+		protected SimpleRenderable trend;
+		protected SimpleRenderable vrend;
+		protected float xtime;
+
 		public VolumeTextureSample()
 		{
 			Metadata[ "Title" ] = "Volume Textures";
@@ -30,7 +35,9 @@ namespace Axiom.Samples.VolumeTexture
 		public override void TestCapabilities( RenderSystemCapabilities capabilities )
 		{
 			if ( !capabilities.HasCapability( Capabilities.Texture3D ) )
+			{
 				throw new AxiomException( "Your card does not support 3D textures, so cannot run this demo. Sorry!" );
+			}
 		}
 
 		/// <summary>
@@ -43,24 +50,24 @@ namespace Axiom.Samples.VolumeTexture
 			Camera.Position = new Vector3( 220, -2, 176 );
 			Camera.LookAt( Vector3.Zero );
 			Camera.Near = 5;
-            Camera.PolygonMode = PolygonMode.Wireframe;
+			Camera.PolygonMode = PolygonMode.Wireframe;
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			xtime += evt.TimeSinceLastFrame;
-			xtime = (float)System.Math.IEEERemainder( xtime, 10 );
-			( (ThingRendable)trend ).AddTime( evt.TimeSinceLastFrame * 0.05f );
-			animState.AddTime( evt.TimeSinceLastFrame );
+			this.xtime += evt.TimeSinceLastFrame;
+			this.xtime = (float)System.Math.IEEERemainder( this.xtime, 10 );
+			( (ThingRendable)this.trend ).AddTime( evt.TimeSinceLastFrame * 0.05f );
+			this.animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected override void SetupContent()
 		{
-			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName,
-				 TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8, TextureUsage.Default, null );
+			this.ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.ThreeD, 64, 64, 64, 0, PixelFormat.A8R8G8B8, TextureUsage.Default, null );
 
 			SceneManager.AmbientLight = new ColorEx( 0.6f, 0.6f, 0.6f );
 			SceneManager.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
@@ -72,36 +79,36 @@ namespace Axiom.Samples.VolumeTexture
 			SceneManager.RootSceneNode.AttachObject( light );
 
 			// Create volume renderable
-			snode = SceneManager.RootSceneNode.CreateChildSceneNode( Vector3.Zero );
+			this.snode = SceneManager.RootSceneNode.CreateChildSceneNode( Vector3.Zero );
 
-			vrend = new VolumeRendable( 32, 750, "DynaTex" );
-			snode.AttachObject( vrend );
+			this.vrend = new VolumeRendable( 32, 750, "DynaTex" );
+			this.snode.AttachObject( this.vrend );
 
-			trend = new ThingRendable( 90, 32, 7.5f );
-			trend.Material = (Material)MaterialManager.Instance.GetByName( "Examples/VTDarkStuff" );
-            trend.Material.Load();
-			snode.AttachObject( trend );
+			this.trend = new ThingRendable( 90, 32, 7.5f );
+			this.trend.Material = (Material)MaterialManager.Instance.GetByName( "Examples/VTDarkStuff" );
+			this.trend.Material.Load();
+			this.snode.AttachObject( this.trend );
 
-			fnode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.fnode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			Entity head = SceneManager.CreateEntity( "head", "ogrehead.mesh" );
-			fnode.AttachObject( head );
+			this.fnode.AttachObject( head );
 
 			Animation anim = SceneManager.CreateAnimation( "OgreTrack", 10 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 
-			NodeAnimationTrack track = anim.CreateNodeTrack( 0, fnode );
+			NodeAnimationTrack track = anim.CreateNodeTrack( 0, this.fnode );
 			TransformKeyFrame key = track.CreateNodeKeyFrame( 0 );
 			key.Translate = new Vector3( 0, -15, 0 );
 			key = track.CreateNodeKeyFrame( 5 );
 			key.Translate = new Vector3( 0, 15, 0 );
 			key = track.CreateNodeKeyFrame( 10 );
 			key.Translate = new Vector3( 0, -15, 0 );
-			animState = SceneManager.CreateAnimationState( "OgreTrack" );
-			animState.IsEnabled = true;
+			this.animState = SceneManager.CreateAnimationState( "OgreTrack" );
+			this.animState.IsEnabled = true;
 
-			globalReal = 0.4f;
-			globalImag = 0.6f;
-			globalTheta = 0.0f;
+			this.globalReal = 0.4f;
+			this.globalImag = 0.6f;
+			this.globalTheta = 0.0f;
 
 			CreateControls();
 
@@ -111,48 +118,47 @@ namespace Axiom.Samples.VolumeTexture
 		}
 
 
-
 		protected void CreateControls()
 		{
-            TrayManager.CreateLabel( TrayLocation.TopLeft, "JuliaParamLabel", "Julia Parameters", 200 );
-            Slider sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "RealSlider", "Real", 200, 80, -1, 1, 50 );
-            sl.SetValue( globalReal, false );
-            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
-            sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ImagSlider", "Imag", 200, 80, -1, 1, 50 );
-            sl.SetValue( globalImag, false );
-            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
-            sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ThetaSlider", "Theta", 200, 80, -1, 1, 50 );
-            sl.SetValue( globalTheta, false );
-            sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
+			TrayManager.CreateLabel( TrayLocation.TopLeft, "JuliaParamLabel", "Julia Parameters", 200 );
+			Slider sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "RealSlider", "Real", 200, 80, -1, 1, 50 );
+			sl.SetValue( this.globalReal, false );
+			sl.SliderMoved += sl_SliderMoved;
+			sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ImagSlider", "Imag", 200, 80, -1, 1, 50 );
+			sl.SetValue( this.globalImag, false );
+			sl.SliderMoved += sl_SliderMoved;
+			sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ThetaSlider", "Theta", 200, 80, -1, 1, 50 );
+			sl.SetValue( this.globalTheta, false );
+			sl.SliderMoved += sl_SliderMoved;
 
-            TrayManager.ShowCursor();
+			TrayManager.ShowCursor();
 		}
 
-        void sl_SliderMoved( object sender, Slider slider )
-        {
-            switch ( slider.Name )
-            {
-                case "RealSlider":
-                    globalReal = slider.Value;
-                    break;
-                case "ImagSlider":
-                    globalImag = slider.Value;
-                    break;
-                case "ThetaSlider":
-                    globalTheta = slider.Value;
-                    break;
-            }
-            Generate();
-        }
+		private void sl_SliderMoved( object sender, Slider slider )
+		{
+			switch ( slider.Name )
+			{
+				case "RealSlider":
+					this.globalReal = slider.Value;
+					break;
+				case "ImagSlider":
+					this.globalImag = slider.Value;
+					break;
+				case "ThetaSlider":
+					this.globalTheta = slider.Value;
+					break;
+			}
+			Generate();
+		}
 
 		protected void Generate()
 		{
-			Julia julia = new Julia( globalReal, globalImag, globalTheta );
+			var julia = new Julia( this.globalReal, this.globalImag, this.globalTheta );
 			float scale = 2.5f;
 			float vcut = 29.0f;
 			float vscale = 1.0f / vcut;
 
-			HardwarePixelBuffer buffer = ptex.GetBuffer( 0, 0 );
+			HardwarePixelBuffer buffer = this.ptex.GetBuffer( 0, 0 );
 
 			LogManager.Instance.Write( "Volume Texture Sample [info]: HardwarePixelBuffer " + buffer.Width + "x" + buffer.Height );
 
@@ -163,36 +169,33 @@ namespace Axiom.Samples.VolumeTexture
 
 			unsafe
 			{
-                var pbptr = (BufferBase)pb.Data.Clone();
+				var pbptr = (BufferBase)pb.Data.Clone();
 				for ( int z = pb.Front; z < pb.Back; z++ )
 				{
 					for ( int y = pb.Top; y < pb.Bottom; y++ )
 					{
-                        pbptr += pb.Left * sizeof(uint);
+						pbptr += pb.Left * sizeof( uint );
 						for ( int x = pb.Left; x < pb.Right; x++ )
 						{
-							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) ||
-								x == pb.Left || x == ( pb.Right - 1 ) )
+							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) || x == pb.Left || x == ( pb.Right - 1 ) )
 							{
-                                pbptr.ToUIntPointer()[0] = 0;
+								pbptr.ToUIntPointer()[ 0 ] = 0;
 							}
 							else
 							{
-								float val = julia.Eval( ( (float)x / pb.Width - 0.5f ) * scale,
-								( (float)y / pb.Height - 0.5f ) * scale,
-								( (float)z / pb.Depth - 0.5f ) * scale );
+								float val = julia.Eval( ( (float)x / pb.Width - 0.5f ) * scale, ( (float)y / pb.Height - 0.5f ) * scale, ( (float)z / pb.Depth - 0.5f ) * scale );
 								if ( val > vcut )
+								{
 									val = vcut;
+								}
 
-							    PixelConverter.PackColor( (float)x/pb.Width, (float)y/pb.Height, (float)z/pb.Depth,
-							                              ( 1.0f - ( val*vscale ) )*0.7f, PixelFormat.A8R8G8B8,
-							                              pbptr );
+								PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, pbptr );
 							}
-						    pbptr++;
+							pbptr++;
 						}
-                        pbptr += (pb.RowPitch - pb.Right) * sizeof(uint);
+						pbptr += ( pb.RowPitch - pb.Right ) * sizeof( uint );
 					}
-                    pbptr += pb.SliceSkip * sizeof(uint);
+					pbptr += pb.SliceSkip * sizeof( uint );
 				}
 				buffer.Unlock();
 			}

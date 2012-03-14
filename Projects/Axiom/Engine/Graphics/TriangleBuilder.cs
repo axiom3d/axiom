@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Collections;
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -53,7 +55,6 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class TriangleListBuilder : AnyBuilder
 	{
-
 		#region Methods
 
 		public IEnumerable<TriangleVertices> Build()
@@ -61,15 +62,14 @@ namespace Axiom.Graphics
 			var triangles = new List<TriangleVertices>();
 
 			//Iterate index sets
-			for ( var indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
+			for ( int indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
 			{
-				var indexData = indexDataList[ indexSet ];
-				var vertexData =
-				vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
-				var indexType = indexData.indexBuffer.Type;
-				var opType = operationTypes[ indexSet ];
+				IndexData indexData = indexDataList[ indexSet ];
+				VertexData vertexData = vertexDataList[ indexDataVertexDataSetList[ indexSet ] ];
+				IndexType indexType = indexData.indexBuffer.Type;
+				OperationType opType = operationTypes[ indexSet ];
 
-				var iterations = 0;
+				int iterations = 0;
 
 				switch ( opType )
 				{
@@ -89,93 +89,87 @@ namespace Axiom.Graphics
 				triangles.Capacity = triangles.Count + iterations;
 
 				//Get the vertex buffer
-				var posElement = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				var vertexBuffer = vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
+				VertexElement posElement = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				HardwareVertexBuffer vertexBuffer = vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
 
 				//Lock buffers
-				var vxPtr = vertexBuffer.Lock( BufferLocking.ReadOnly );
+				BufferBase vxPtr = vertexBuffer.Lock( BufferLocking.ReadOnly );
 				try
 				{
-					var idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
+					BufferBase idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
 					try
 					{
 #if !AXIOM_SAFE_ONLY
 						unsafe
 #endif
 						{
-							var pVertexPos = vxPtr + posElement.Offset; // positional element of the base vertex
+							BufferBase pVertexPos = vxPtr + posElement.Offset; // positional element of the base vertex
 							//float* pReal;										 // for vector component retrieval
-							var icount = 0;										 // index into the index buffer
-							int index;											 // index into the vertex buffer
-                            var p16Idx = idxPtr.ToShortPointer();
-                            var p32Idx = idxPtr.ToIntPointer();
+							int icount = 0; // index into the index buffer
+							int index; // index into the vertex buffer
+							short* p16Idx = idxPtr.ToShortPointer();
+							int* p32Idx = idxPtr.ToIntPointer();
 
 							// iterate over all the groups of 3 indices
-							for ( var t = 0; t < iterations; t++ )
+							for ( int t = 0; t < iterations; t++ )
 							{
 								var v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
 
 								//assemble a triangle
-                                for (var i = 0; i < 3; i++)
-                                {
-                                    // standard 3-index read for tri list or first tri in strip / fan
-                                    if (opType == OperationType.TriangleList || t == 0)
-                                    {
-                                        if (indexType == IndexType.Size32)
-                                        {
-                                            index = p32Idx[icount++];
-                                        }
-                                        else
-                                        {
-                                            index = p16Idx[icount++];
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Strips and fans are formed from last 2 indexes plus the
-                                        // current one for triangles after the first
+								for ( int i = 0; i < 3; i++ )
+								{
+									// standard 3-index read for tri list or first tri in strip / fan
+									if ( opType == OperationType.TriangleList || t == 0 )
+									{
+										if ( indexType == IndexType.Size32 )
+										{
+											index = p32Idx[ icount++ ];
+										}
+										else
+										{
+											index = p16Idx[ icount++ ];
+										}
+									}
+									else
+									{
+										// Strips and fans are formed from last 2 indexes plus the
+										// current one for triangles after the first
 
-                                        if (indexType == IndexType.Size32)
-                                        {
-                                            index = p32Idx[icount + i -
-                                                           2];
-                                        }
-                                        else
-                                        {
-                                            index = p16Idx[icount + i -
-                                                           2];
-                                        }
+										if ( indexType == IndexType.Size32 )
+										{
+											index = p32Idx[ icount + i - 2 ];
+										}
+										else
+										{
+											index = p16Idx[ icount + i - 2 ];
+										}
 
-                                        if (i == 2)
-                                        {
-                                            icount++;
-                                        }
-                                    }
+										if ( i == 2 )
+										{
+											icount++;
+										}
+									}
 
-                                    //retrieve vertex position
-                                    var pReal = (pVertexPos + (index*vertexBuffer.VertexSize)).ToFloatPointer();
-                                    v[i].x = pReal[0];
-                                    v[i].y = pReal[1];
-                                    v[i].z = pReal[2];
-                                }
+									//retrieve vertex position
+									float* pReal = ( pVertexPos + ( index * vertexBuffer.VertexSize ) ).ToFloatPointer();
+									v[ i ].x = pReal[ 0 ];
+									v[ i ].y = pReal[ 1 ];
+									v[ i ].z = pReal[ 2 ];
+								}
 
-							    // Put the points in in counter-clockwise order
-								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
-								- ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
+								// Put the points in in counter-clockwise order
+								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
 								{
 									// Clockwise, so reverse points 1 and 2
-									var tmp = v[ 1 ];
+									Vector3 tmp = v[ 1 ];
 									v[ 1 ] = v[ 2 ];
 									v[ 2 ] = tmp;
 								}
 
-								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) -
-												( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
-												"Failed to arrange triangle points counter-clockwise." );
+								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0, "Failed to arrange triangle points counter-clockwise." );
 
 								// Add to the list of triangles
 								triangles.Add( new TriangleVertices( v ) );
-
 							} // for iterations
 						} // unsafe
 					}
@@ -194,12 +188,12 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Methods
-
 	}
 
 	public class TriangleVertices
 	{
 		protected Vector3[] vertices;
+
 		public TriangleVertices( Vector3[] vertices )
 		{
 			this.vertices = vertices;
@@ -209,18 +203,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertices;
+				return this.vertices;
 			}
 		}
 	}
 
 	public class TriangleIntersector
 	{
-		//changes:
-		// instead of 'Vector3 modelBase' utilizes Matrix4 specifying
-		// transforms that need to be applied to each triangle before testing for
-		// intersection.
-
 		#region Fields
 
 		protected List<TriangleVertices> triangles;
@@ -240,21 +229,20 @@ namespace Axiom.Graphics
 
 		public bool ClosestRayIntersection( Ray ray, Vector3 modelBase, float ignoreDistance, out Vector3 intersection )
 		{
-			var intersects = false;
+			bool intersects = false;
 			intersection = Vector3.Zero;
-			var minDistSquared = float.MaxValue;
-			var ignoreDistanceSquared = ignoreDistance * ignoreDistance;
-			var where = Vector3.Zero;
+			float minDistSquared = float.MaxValue;
+			float ignoreDistanceSquared = ignoreDistance * ignoreDistance;
+			Vector3 where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( int i = 0; i < this.triangles.Count; i++ )
 			{
-				var t = triangles[ i ];
+				TriangleVertices t = this.triangles[ i ];
 				if ( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared &&
-						 distSquared < minDistSquared )
+					if ( distSquared > ignoreDistanceSquared && distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;
@@ -267,21 +255,20 @@ namespace Axiom.Graphics
 
 		public bool ClosestRayIntersection( Ray ray, Matrix4 transform, float ignoreDistance, out Vector3 intersection )
 		{
-			var intersects = false;
+			bool intersects = false;
 			intersection = Vector3.Zero;
-			var minDistSquared = float.MaxValue;
-			var ignoreDistanceSquared = ignoreDistance * ignoreDistance;
-			var where = Vector3.Zero;
+			float minDistSquared = float.MaxValue;
+			float ignoreDistanceSquared = ignoreDistance * ignoreDistance;
+			Vector3 where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( int i = 0; i < this.triangles.Count; i++ )
 			{
-				var t = triangles[ i ];
+				TriangleVertices t = this.triangles[ i ];
 				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared &&
-						distSquared < minDistSquared )
+					if ( distSquared > ignoreDistanceSquared && distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;
@@ -297,28 +284,34 @@ namespace Axiom.Graphics
 		protected bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices, ref Vector3 modelBase, ref Vector3 where )
 		{
 			// Place the end beyond any conceivable triangle, 1000 meters away
-			var a = modelBase + Vertices[ 0 ];
-			var b = modelBase + Vertices[ 1 ];
-			var c = modelBase + Vertices[ 2 ];
-			var start = ray.Origin;
-			var end = start + ray.Direction * 1000000f;
-			var pq = end - start;
-			var pa = a - start;
-			var pb = b - start;
-			var pc = c - start;
+			Vector3 a = modelBase + Vertices[ 0 ];
+			Vector3 b = modelBase + Vertices[ 1 ];
+			Vector3 c = modelBase + Vertices[ 2 ];
+			Vector3 start = ray.Origin;
+			Vector3 end = start + ray.Direction * 1000000f;
+			Vector3 pq = end - start;
+			Vector3 pa = a - start;
+			Vector3 pb = b - start;
+			Vector3 pc = c - start;
 			// Test if pq is inside the edges bc, ca and ab. Done by testing
 			// that the signed tetrahedral volumes, computed using scalar triple
 			// products, are all positive
 			float u = pq.Cross( pc ).Dot( pb );
 			if ( u < 0.0f )
+			{
 				return false;
+			}
 			float v = pq.Cross( pa ).Dot( pc );
 			if ( v < 0.0f )
+			{
 				return false;
+			}
 			float w = pq.Cross( pb ).Dot( pa );
 			if ( w < 0.0f )
+			{
 				return false;
-			var denom = 1.0f / ( u + v + w );
+			}
+			float denom = 1.0f / ( u + v + w );
 			// Finally fill in the intersection point
 			where = ( u * a + v * b + w * c ) * denom;
 			return true;
@@ -329,28 +322,34 @@ namespace Axiom.Graphics
 		protected bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices, ref Matrix4 transform, ref Vector3 where )
 		{
 			// Place the end beyond any conceivable triangle, 1000 meters away
-			var a = transform * Vertices[ 0 ];
-			var b = transform * Vertices[ 1 ];
-			var c = transform * Vertices[ 2 ];
-			var start = ray.Origin;
-			var end = start + ray.Direction * 1000000f;
-			var pq = end - start;
-			var pa = a - start;
-			var pb = b - start;
-			var pc = c - start;
+			Vector3 a = transform * Vertices[ 0 ];
+			Vector3 b = transform * Vertices[ 1 ];
+			Vector3 c = transform * Vertices[ 2 ];
+			Vector3 start = ray.Origin;
+			Vector3 end = start + ray.Direction * 1000000f;
+			Vector3 pq = end - start;
+			Vector3 pa = a - start;
+			Vector3 pb = b - start;
+			Vector3 pc = c - start;
 			// Test if pq is inside the edges bc, ca and ab. Done by testing
 			// that the signed tetrahedral volumes, computed using scalar triple
 			// products, are all positive
 			float u = pq.Cross( pc ).Dot( pb );
 			if ( u < 0.0f )
+			{
 				return false;
+			}
 			float v = pq.Cross( pa ).Dot( pc );
 			if ( v < 0.0f )
+			{
 				return false;
+			}
 			float w = pq.Cross( pb ).Dot( pa );
 			if ( w < 0.0f )
+			{
 				return false;
-			var denom = 1.0f / ( u + v + w );
+			}
+			float denom = 1.0f / ( u + v + w );
 			// Finally fill in the intersection point
 			where = ( u * a + v * b + w * c ) * denom;
 			return true;
@@ -358,6 +357,9 @@ namespace Axiom.Graphics
 
 		#endregion Protected Methods
 
+		//changes:
+		// instead of 'Vector3 modelBase' utilizes Matrix4 specifying
+		// transforms that need to be applied to each triangle before testing for
+		// intersection.
 	}
 }
-

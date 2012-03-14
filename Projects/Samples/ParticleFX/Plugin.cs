@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,34 +19,38 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Samples.ParticleFX
 {
-    [Export( typeof( IPlugin ) )]
+	[Export( typeof( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
-        private ParticleFXSample _sample;
+		private ParticleFXSample _sample;
 
 		public override void Initialize()
 		{
-			_sample = new ParticleFXSample();
-			Name = _sample.Metadata[ "Title" ] + " Sample";
-			AddSample( _sample );
+			this._sample = new ParticleFXSample();
+			Name = this._sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this._sample );
 		}
 	};
 }

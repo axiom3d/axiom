@@ -40,13 +40,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Axiom.Collections;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
-using IO = System.IO;
+
+using FileInfo = Axiom.FileSystem.FileInfo;
 
 #endregion Namespace Declarations
 
@@ -105,7 +108,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="scriptName"></param>
 		/// <param name="skipped"></param>
-		void ScriptParseEnded(string scriptName, bool skipped);
+		void ScriptParseEnded( string scriptName, bool skipped );
 
 		/// <summary>
 		/// This event is fired when a resource group finished parsing scripts.
@@ -233,46 +236,60 @@ namespace Axiom.Core
 	///	</summary>
 	public class ResourceGroupManager : DisposableObject, ISingleton<ResourceGroupManager>
 	{
-		#region Delegates
-
-		/// <summary>
-		/// This event is fired when a resource group begins parsing scripts.
-		/// </summary>
-		/// <param name="groupName">The name of the group</param>
-		/// <param name="scriptCount">The number of scripts which will be parsed</param>
-		private delegate void ResourceGroupScriptingStarted( string groupName, int scriptCount );
+		private ResourceGroupLoadEnded _resourceGroupLoadEnded;
+		private ResourceGroupLoadStarted _resourceGroupLoadStarted;
+		private ResourceGroupScriptingEnded _resourceGroupScriptingEnded;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		private ResourceGroupScriptingStarted _resourceGroupScriptingStarted;
 
-		/// <summary>
-		/// This event is fired when a script is about to be parsed.
-		/// </summary>
-		/// <param name="scriptName">Name of the to be parsed</param>
-		/// <param name="skipThisScript">A boolean passed by reference which is by default set to 
-		///	false. If the event sets this to true, the script will be skipped and not
-		///	parsed. Note that in this case the scriptParseEnded event will not be raised
-		///	for this script.</param>
-		private delegate void ScriptParseStarted( string scriptName, ref bool skipThisScript );
-
+		private ResourceLoadEnded _resourceLoadEnded;
+		private ResourceLoadStarted _resourceLoadStarted;
+		private ScriptParseEnded _scriptParseEnded;
 		private ScriptParseStarted _scriptParseStarted;
 
+		private WorldGeometryStageEnded _worldGeometryStageEnded;
+		private WorldGeometryStageStarted _worldGeometryStageStarted;
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// delete all resource groups
+					foreach ( var pair in resourceGroups )
+					{
+						ResourceGroup rg = pair.Value;
+						_deleteGroup( rg );
+					}
+					resourceGroups.Clear();
+					this._currentGroup = null;
+
+					instance = null;
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		#region Nested type: ResourceGroupLoadEnded
+
 		/// <summary>
-		/// This event is fired when the script has been fully parsed.
+		/// This event is fired when a resource group finished loading.
 		/// </summary>
-		private delegate void ScriptParseEnded( string scriptName, bool skipped );
+		private delegate void ResourceGroupLoadEnded( string groupName );
 
-		private ScriptParseEnded _scriptParseEnded;
+		#endregion
 
-		/// <summary>
-		/// This event is fired when a resource group finished parsing scripts.
-		/// </summary>
-		/// <param name="groupName">The name of the group</param>
-		private delegate void ResourceGroupScriptingEnded( string groupName );
-
-		private ResourceGroupScriptingEnded _resourceGroupScriptingEnded;
+		#region Nested type: ResourceGroupLoadStarted
 
 		/// <summary>
 		/// This event is fired  when a resource group begins loading.
@@ -284,72 +301,9 @@ namespace Axiom.Core
 		/// </param>
 		private delegate void ResourceGroupLoadStarted( string groupName, int resourceCount );
 
-		private ResourceGroupLoadStarted _resourceGroupLoadStarted;
+		#endregion
 
-		/// <summary>
-		/// This event is fired when a declared resource is about to be loaded.
-		/// </summary>
-		/// <param name="resource">Weak reference to the resource loaded</param>
-		private delegate void ResourceLoadStarted( Resource resource );
-
-		private ResourceLoadStarted _resourceLoadStarted;
-
-		/// <summary>
-		/// This event is fired when the resource has been loaded.
-		/// </summary>
-		private delegate void ResourceLoadEnded();
-
-		private ResourceLoadEnded _resourceLoadEnded;
-
-		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// is about to start. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
-		/// </summary>
-		/// <param name="description">Text description of what was just loaded</param>
-		private delegate void WorldGeometryStageStarted( string description );
-
-		private WorldGeometryStageStarted _worldGeometryStageStarted;
-
-		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// has been completed. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
-		/// </summary>
-		private delegate void WorldGeometryStageEnded();
-
-		private WorldGeometryStageEnded _worldGeometryStageEnded;
-
-		/// <summary>
-		/// This event is fired when a resource group finished loading.
-		/// </summary>
-		private delegate void ResourceGroupLoadEnded( string groupName );
-
-		private ResourceGroupLoadEnded _resourceGroupLoadEnded;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="groupName"></param>
-		/// <param name="resourceCount"></param>
-		private delegate void ResourceGroupPrepareStarted( string groupName, int resourceCount );
-
-		// private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="resource"></param>
-		private delegate void ResourcePrepareStarted( Resource resource );
-
-		// private ResourcePrepareStarted _resourcePrepareStarted;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private delegate void ResourcePrepareEnded();
-
-		//private ResourcePrepareEnded _resourcePrepareEnded;
+		#region Nested type: ResourceGroupPrepareEnded
 
 		/// <summary>
 		/// 
@@ -357,120 +311,113 @@ namespace Axiom.Core
 		/// <param name="groupName"></param>
 		private delegate void ResourceGroupPrepareEnded( string groupName );
 
-		// private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
-
-		#endregion Delegates
+		#endregion
 
 		#region Collection Declarations
 
-		/// List of resource declarations
-		//         typedef std::list<ResourceDeclaration> ResourceDeclarationList;
-		public class ResourceDeclarationList : List<ResourceDeclaration>
-		{
-		} ;
+		#region Nested type: LoadResourceOrderMap
 
-		/// <summary>Map of resource types (strings) to ResourceManagers, used to notify them to load / unload group contents</summary>
-		//          typedef std::map<String, ResourceManager*> ResourceManagerMap;
-		public class ResourceManagerMap : Dictionary<String, ResourceManager>
-		{
-		} ;
+		/// <summary>Map of loading order (float) to LoadUnLoadResourceList  used to order resource loading</summary>
+		public class LoadResourceOrderMap : Dictionary<float, LoadUnloadResourceList> { };
 
-		/// <summary>Map of loading order (Real) to ScriptLoader, used to order script parsing</summary>
-		//          typedef std::multimap<Real, ScriptLoader*> ScriptLoaderOrderMap;
-		public class ScriptLoaderOrderMap : AxiomSortedCollection<float, List<IScriptLoader>>
-		{
-		} ;
+		#endregion
 
-		/// <summary></summary>
-		//          typedef std::vector<ResourceGroupListener*> ResourceGroupListenerList;
-		public class ResourceGroupListenerList : List<IResourceGroupListener>
-		{
-		} ;
-
-		/// <summary>Resource index entry, resourcename->location </summary>
-		//          typedef std::map<String, Archive*> ResourceLocationIndex;
-		public class ResourceLocationIndex : Dictionary<String, Archive>
-		{
-		} ;
-
-		/// <summary>List of possible file locations</summary>
-		//          typedef std::list<ResourceLocation*> LocationList;
-		public class LocationList : List<ResourceLocation>
-		{
-		} ;
+		#region Nested type: LoadUnloadResourceList
 
 		/// <summary>List of resources which can be loaded / unloaded </summary>
 		//          typedef std::list<ResourcePtr> LoadUnloadResourceList;
-		public class LoadUnloadResourceList : List<Resource>
-		{
-		} ;
+		public class LoadUnloadResourceList : List<Resource> { };
+
+		#endregion
+
+		#region Nested type: LocationList
+
+		/// <summary>List of possible file locations</summary>
+		//          typedef std::list<ResourceLocation*> LocationList;
+		public class LocationList : List<ResourceLocation> { };
+
+		#endregion
+
+		#region Nested type: ResourceDeclarationList
+
+		/// List of resource declarations
+		//         typedef std::list<ResourceDeclaration> ResourceDeclarationList;
+		public class ResourceDeclarationList : List<ResourceDeclaration> { };
+
+		#endregion
+
+		#region Nested type: ResourceGroupListenerList
+
+		/// <summary></summary>
+		//          typedef std::vector<ResourceGroupListener*> ResourceGroupListenerList;
+		public class ResourceGroupListenerList : List<IResourceGroupListener> { };
+
+		#endregion
+
+		#region Nested type: ResourceGroupMap
 
 		/// <summary>Map from resource group names to groups </summary>
 		//          typedef std::map<String, ResourceGroup*> ResourceGroupMap;
 		public class ResourceGroupMap : Dictionary<String, ResourceGroup>
 		{
 			public ResourceGroupMap()
-				: base( new CaseInsensitiveStringComparer() )
-			{
-			}
-		} ;
+				: base( new CaseInsensitiveStringComparer() ) { }
+		};
+
+		#endregion
+
+		#region Nested type: ResourceLocationIndex
+
+		/// <summary>Resource index entry, resourcename->location </summary>
+		//          typedef std::map<String, Archive*> ResourceLocationIndex;
+		public class ResourceLocationIndex : Dictionary<String, Archive> { };
+
+		#endregion
+
+		#region Nested type: ResourceManagerMap
+
+		/// <summary>Map of resource types (strings) to ResourceManagers, used to notify them to load / unload group contents</summary>
+		//          typedef std::map<String, ResourceManager*> ResourceManagerMap;
+		public class ResourceManagerMap : Dictionary<String, ResourceManager> { };
+
+		#endregion
+
+		#region Nested type: ScriptLoaderOrderMap
+
+		/// <summary>Map of loading order (Real) to ScriptLoader, used to order script parsing</summary>
+		//          typedef std::multimap<Real, ScriptLoader*> ScriptLoaderOrderMap;
+		public class ScriptLoaderOrderMap : AxiomSortedCollection<float, List<IScriptLoader>> { };
+
+		#endregion
 
 		//          typedef std::map<Real, LoadUnloadResourceList*> LoadResourceOrderMap;
-		/// <summary>Map of loading order (float) to LoadUnLoadResourceList  used to order resource loading</summary>
-		public class LoadResourceOrderMap : Dictionary<float, LoadUnloadResourceList>
-		{
-		} ;
 
 		#endregion Collection Declarations
 
 		#region Nested Types
 
+		#region Nested type: ResourceDeclaration
+
 		/// Nested struct defining a resource declaration
 		public struct ResourceDeclaration
 		{
-			public string ResourceName;
-			public string ResourceType;
 			public IManualResourceLoader Loader;
 			public NameValuePairList Parameters;
-		} ;
+			public string ResourceName;
+			public string ResourceType;
+		};
 
-		/// <summary>Resource location entry</summary>
-		public struct ResourceLocation
-		{
-			/// <summary>Pointer to the archive which is the destination</summary>
-			public Archive Archive;
+		#endregion
 
-			/// <summary>Pointer to the watcher which is monitoring the archive location</summary>
-			public Watcher Watcher;
-
-			/// <summary>Whether this location and it's children are searched for files</summary>
-			public bool Recursive;
-
-			/// <summary>Whether this location is be monitored for new files</summary>
-			public bool Monitor;
-		} ;
+		#region Nested type: ResourceGroup
 
 		/// Resource group entry
 		public class ResourceGroup : DisposableObject
 		{
 			//OGRE_AUTO_MUTEX
-			/// <summary>Group name </summary>
-			public string Name;
 
 			/// <summary>Whether group has been initialised </summary>
 			public bool Initialized;
-
-			/// <summary>List of possible locations to search </summary>
-			public LocationList LocationList = new LocationList();
-
-			/// <summary>Index of resource names to locations, built for speedy access (case sensitive archives) </summary>
-			public ResourceLocationIndex ResourceIndexCaseSensitive = new ResourceLocationIndex();
-
-			/// <summary>Index of resource names to locations, built for speedy access (case insensitive archives) </summary>
-			public ResourceLocationIndex ResourceIndexCaseInsensitive = new ResourceLocationIndex();
-
-			/// <summary>Pre-declared resources, ready to be created </summary>
-			public ResourceDeclarationList ResourceDeclarations = new ResourceDeclarationList();
 
 			/// <summary>
 			/// Created resources which are ready to be loaded / unloaded
@@ -478,6 +425,21 @@ namespace Axiom.Core
 			/// (e.g. skeletons and materials before meshes)
 			/// </summary>
 			public LoadResourceOrderMap LoadResourceOrders = new LoadResourceOrderMap();
+
+			/// <summary>List of possible locations to search </summary>
+			public LocationList LocationList = new LocationList();
+
+			/// <summary>Group name </summary>
+			public string Name;
+
+			/// <summary>Pre-declared resources, ready to be created </summary>
+			public ResourceDeclarationList ResourceDeclarations = new ResourceDeclarationList();
+
+			/// <summary>Index of resource names to locations, built for speedy access (case insensitive archives) </summary>
+			public ResourceLocationIndex ResourceIndexCaseInsensitive = new ResourceLocationIndex();
+
+			/// <summary>Index of resource names to locations, built for speedy access (case sensitive archives) </summary>
+			public ResourceLocationIndex ResourceIndexCaseSensitive = new ResourceLocationIndex();
 
 			/// <summary>Linked world geometry, as passed to setWorldGeometry </summary>
 			public string WorldGeometry;
@@ -506,7 +468,7 @@ namespace Axiom.Core
 
 				if ( !arch.IsCaseSensitive )
 				{
-					var lcase = filename.ToLower();
+					string lcase = filename.ToLower();
 					if ( this.ResourceIndexCaseInsensitive.ContainsKey( filename ) )
 					{
 						this.ResourceIndexCaseInsensitive.Remove( filename );
@@ -525,7 +487,7 @@ namespace Axiom.Core
 						keys.Add( kvp.Key );
 					}
 				}
-				foreach ( var key in keys )
+				foreach ( string key in keys )
 				{
 					this.ResourceIndexCaseSensitive.Remove( key );
 				}
@@ -538,37 +500,55 @@ namespace Axiom.Core
 						keys.Add( kvp.Key );
 					}
 				}
-				foreach ( var key in keys )
+				foreach ( string key in keys )
 				{
 					this.ResourceIndexCaseInsensitive.Remove( key );
 				}
 			}
 
-			#region IDisposable Members
-
-			protected override void dispose(bool disposeManagedResources)
+			protected override void dispose( bool disposeManagedResources )
 			{
-				if (!this.IsDisposed)
+				if ( !IsDisposed )
 				{
-					if (disposeManagedResources)
+					if ( disposeManagedResources )
 					{
-						Initialized = false;
-						LocationList.Clear();
-						ResourceIndexCaseInsensitive.Clear();
-						ResourceIndexCaseSensitive.Clear();
-						ResourceDeclarations.Clear();
-						LoadResourceOrders.Clear();
-						WorldGeometrySceneManager = null;
-						WorldGeometry = "";
-						Name = "";
+						this.Initialized = false;
+						this.LocationList.Clear();
+						this.ResourceIndexCaseInsensitive.Clear();
+						this.ResourceIndexCaseSensitive.Clear();
+						this.ResourceDeclarations.Clear();
+						this.LoadResourceOrders.Clear();
+						this.WorldGeometrySceneManager = null;
+						this.WorldGeometry = "";
+						this.Name = "";
 					}
 				}
 
-				base.dispose(disposeManagedResources);
+				base.dispose( disposeManagedResources );
 			}
+		};
 
-			#endregion IDisposable Members
-		} ;
+		#endregion
+
+		#region Nested type: ResourceLocation
+
+		/// <summary>Resource location entry</summary>
+		public struct ResourceLocation
+		{
+			/// <summary>Pointer to the archive which is the destination</summary>
+			public Archive Archive;
+
+			/// <summary>Whether this location is be monitored for new files</summary>
+			public bool Monitor;
+
+			/// <summary>Whether this location and it's children are searched for files</summary>
+			public bool Recursive;
+
+			/// <summary>Pointer to the watcher which is monitoring the archive location</summary>
+			public Watcher Watcher;
+		};
+
+		#endregion
 
 		#endregion Nested Types
 
@@ -605,13 +585,13 @@ namespace Axiom.Core
 
 		#region ResourceManagers Property
 
-		private ResourceManagerMap _resourceManagers = new ResourceManagerMap();
+		private readonly ResourceManagerMap _resourceManagers = new ResourceManagerMap();
 
 		public ResourceManagerMap ResourceManagers
 		{
 			get
 			{
-				return _resourceManagers;
+				return this._resourceManagers;
 			}
 		}
 
@@ -619,13 +599,13 @@ namespace Axiom.Core
 
 		#region scriptLoaders Property
 
-		private ScriptLoaderOrderMap _scriptLoaderOrders = new ScriptLoaderOrderMap();
+		private readonly ScriptLoaderOrderMap _scriptLoaderOrders = new ScriptLoaderOrderMap();
 
 		protected ScriptLoaderOrderMap scriptLoaderOrders
 		{
 			get
 			{
-				return _scriptLoaderOrders;
+				return this._scriptLoaderOrders;
 			}
 		}
 
@@ -633,13 +613,13 @@ namespace Axiom.Core
 
 		#region resourceGroupListeners Property
 
-		private ResourceGroupListenerList _resourceGroupListeners = new ResourceGroupListenerList();
+		private readonly ResourceGroupListenerList _resourceGroupListeners = new ResourceGroupListenerList();
 
 		protected ResourceGroupListenerList resourceGroupListeners
 		{
 			get
 			{
-				return _resourceGroupListeners;
+				return this._resourceGroupListeners;
 			}
 		}
 
@@ -647,22 +627,19 @@ namespace Axiom.Core
 
 		#region resourceGroups Property
 
-		private ResourceGroupMap _resourceGroups = new ResourceGroupMap();
+		private readonly ResourceGroupMap _resourceGroups = new ResourceGroupMap();
 
 		protected ResourceGroupMap resourceGroups
 		{
 			get
 			{
-				return _resourceGroups;
+				return this._resourceGroups;
 			}
 		}
 
 		#endregion resourceGroups Property
 
 		#region WorldResourceGroupName Property
-
-		/// <summary>Group name for world resources</summary>
-		private String _worldGroupName;
 
 		/// <summary>
 		/// Gets/Sets the resource group that 'world' resources will use.
@@ -672,24 +649,14 @@ namespace Axiom.Core
 		///    world geometry when looking for their resources. Defaults to the
 		///    DefaultResourceGroupName but this can be altered.
 		/// </remarks>
-		public String WorldResourceGroupName
-		{
-			get
-			{
-				return _worldGroupName;
-			}
-			set
-			{
-				_worldGroupName = value;
-			}
-		}
+		public String WorldResourceGroupName { get; set; }
 
 		#endregion WorldResourceGroupName Property
 
 		#region currentGroup Property
 
 		/// Stored current group - optimization for when bulk loading a group
-		private ResourceGroup _currentGroup = null;
+		private ResourceGroup _currentGroup;
 
 		/// <summary>
 		/// Stored current group - optimization for when bulk loading a group
@@ -698,11 +665,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _currentGroup;
+				return this._currentGroup;
 			}
 			set
 			{
-				_currentGroup = value;
+				this._currentGroup = value;
 			}
 		}
 
@@ -723,7 +690,7 @@ namespace Axiom.Core
 			}
 
 			// default world group to the default group
-			_worldGroupName = DefaultResourceGroupName;
+			this.WorldResourceGroupName = DefaultResourceGroupName;
 		}
 
 		~ResourceGroupManager()
@@ -740,9 +707,9 @@ namespace Axiom.Core
 		/// <param name="scriptCount"></param>
 		private void _fireResourceGroupScriptingStarted( string groupName, int scriptCount )
 		{
-			if ( _resourceGroupScriptingStarted != null )
+			if ( this._resourceGroupScriptingStarted != null )
 			{
-				_resourceGroupScriptingStarted( groupName, scriptCount );
+				this._resourceGroupScriptingStarted( groupName, scriptCount );
 			}
 		}
 
@@ -753,9 +720,9 @@ namespace Axiom.Core
 		/// <param name="skipThisScript"></param>
 		private void _fireScriptStarted( string scriptName, ref bool skipThisScript )
 		{
-			if ( _scriptParseStarted != null )
+			if ( this._scriptParseStarted != null )
 			{
-				_scriptParseStarted( scriptName, ref skipThisScript);
+				this._scriptParseStarted( scriptName, ref skipThisScript );
 			}
 		}
 
@@ -764,11 +731,11 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="scriptName"></param>
 		/// <param name="skipped"></param>
-		private void _fireScriptEnded(string scriptName, bool skipped)
+		private void _fireScriptEnded( string scriptName, bool skipped )
 		{
-			if ( _scriptParseEnded != null )
+			if ( this._scriptParseEnded != null )
 			{
-				_scriptParseEnded(scriptName, skipped);
+				this._scriptParseEnded( scriptName, skipped );
 			}
 		}
 
@@ -778,9 +745,9 @@ namespace Axiom.Core
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupScriptingEnded( string groupName )
 		{
-			if ( _resourceGroupScriptingEnded != null )
+			if ( this._resourceGroupScriptingEnded != null )
 			{
-				_resourceGroupScriptingEnded( groupName );
+				this._resourceGroupScriptingEnded( groupName );
 			}
 		}
 
@@ -789,9 +756,9 @@ namespace Axiom.Core
 		/// <param name="resourceCount"></param>
 		private void _fireResourceGroupLoadStarted( string groupName, int resourceCount )
 		{
-			if ( _resourceGroupLoadStarted != null )
+			if ( this._resourceGroupLoadStarted != null )
 			{
-				_resourceGroupLoadStarted( groupName, resourceCount );
+				this._resourceGroupLoadStarted( groupName, resourceCount );
 			}
 		}
 
@@ -801,9 +768,9 @@ namespace Axiom.Core
 		/// <param name="resource"></param>
 		private void _fireResourceStarted( Resource resource )
 		{
-			if ( _resourceLoadStarted != null )
+			if ( this._resourceLoadStarted != null )
 			{
-				_resourceLoadStarted( resource );
+				this._resourceLoadStarted( resource );
 			}
 		}
 
@@ -812,9 +779,9 @@ namespace Axiom.Core
 		/// </summary>
 		private void _fireResourceEnded()
 		{
-			if ( _resourceLoadEnded != null )
+			if ( this._resourceLoadEnded != null )
 			{
-				_resourceLoadEnded();
+				this._resourceLoadEnded();
 			}
 		}
 
@@ -824,9 +791,9 @@ namespace Axiom.Core
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupLoadEnded( string groupName )
 		{
-			if ( _resourceGroupLoadEnded != null )
+			if ( this._resourceGroupLoadEnded != null )
 			{
-				_resourceGroupLoadEnded( groupName );
+				this._resourceGroupLoadEnded( groupName );
 			}
 		}
 
@@ -979,7 +946,7 @@ namespace Axiom.Core
 		public void InitializeResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Initializing resource group {0}.", groupName );
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}.", groupName );
@@ -989,12 +956,12 @@ namespace Axiom.Core
 			{
 				// Set current group
 				_parseResourceGroupScripts( grp );
-				_currentGroup = grp;
+				this._currentGroup = grp;
 				_createDeclaredResources( grp );
 				grp.Initialized = true;
 
 				// Reset current group
-				_currentGroup = null;
+				this._currentGroup = null;
 			}
 			LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
 		}
@@ -1008,246 +975,32 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Initializing all resource groups:" );
 
 			// Initialize Built-in groups first
-			InitializeResourceGroup( ResourceGroupManager.AutoDetectResourceGroupName );
-			if ( resourceGroups.ContainsKey( ResourceGroupManager.BootstrapResourceGroupName ) )
+			InitializeResourceGroup( AutoDetectResourceGroupName );
+			if ( resourceGroups.ContainsKey( BootstrapResourceGroupName ) )
 			{
-				InitializeResourceGroup( ResourceGroupManager.BootstrapResourceGroupName );
+				InitializeResourceGroup( BootstrapResourceGroupName );
 			}
 
 			// Intialize all declared resource groups
 			foreach ( var pair in resourceGroups )
 			{
-				var grp = pair.Value;
+				ResourceGroup grp = pair.Value;
 
 				if ( !grp.Initialized )
 				{
 					LogManager.Instance.Write( "Initializing resource group {0}.", grp.Name );
 					// Set current group
 					_parseResourceGroupScripts( grp );
-					_currentGroup = grp;
+					this._currentGroup = grp;
 					_createDeclaredResources( grp );
 					grp.Initialized = true;
 
 					// Reset current group
-					_currentGroup = null;
+					this._currentGroup = null;
 					LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
 				}
 			}
 		}
-
-		#region PrepareResourceGroup
-		/// <summary>
-		/// Prepares a resource group.
-		/// </summary>
-		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
-		public void PrepareResourceGroup( string name )
-		{
-			this.PrepareResourceGroup( name, true, true );
-		}
-
-		/// <summary>
-		/// Prepares a resource group.
-		/// </summary>
-		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
-		public void PrepareResourceGroup( string name, bool prepareMainResources )
-		{
-			this.PrepareResourceGroup( name, prepareMainResources, true );
-		}
-
-		/// <summary>
-		/// Prepares a resource group.
-		/// </summary>
-		/// <remarks>Prepares any created resources which are part of the named group.
-		///	Note that resources must have already been created by calling
-		///	ResourceManager::create, or declared using declareResource() or
-		///	in a script (such as .material and .overlay). The latter requires
-		///	that initialiseResourceGroup has been called. 
-		///
-		///	When this method is called, this class will callback any ResourceGroupListeners
-		///	which have been registered to update them on progress.
-		///	</remarks>
-		/// <param name="name">The name of the resource group to prepare.</param>
-		/// <param name="prepareMainResources">If true, prepares normal resources associated 
-		///	with the group (you might want to set this to false if you wanted
-		///	to just prepare world geometry in bulk)</param>
-		/// <param name="prepareWorldGeom">If true, prepares any linked world geometry
-		///	<see cref="ResourceGroupManager.LinkWorldGeometryToResourceGroup"/></param>
-		public void PrepareResourceGroup( string name, bool prepareMainResources, bool prepareWorldGeom )
-		{
-			LogManager.Instance.Write( "Preparing resource group '{0}' - Resources: {1}, World Geometry: {2}", name, prepareMainResources, prepareWorldGeom );
-			
-			// load all created resources
-			var grp = this.getResourceGroup( name );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", name );
-			}
-
-			// Set current group
-			this._currentGroup = grp;
-
-			// Count up resources for starting event
-			var resourceCount = 0;
-			if ( prepareMainResources )
-			{
-				foreach ( var pair in grp.LoadResourceOrders )
-				{
-					var lurl = pair.Value;
-					resourceCount += lurl.Count;
-				}
-			}
-			// Estimate world geometry size
-			if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
-			{
-				resourceCount += grp.WorldGeometrySceneManager.EstimateWorldGeometry( grp.WorldGeometry );
-			}
-
-			_fireResourceGroupPrepareStarted( name, resourceCount );
-
-			// Now load for real
-			if ( prepareMainResources )
-			{
-				var keys = new float[ grp.LoadResourceOrders.Count ];
-				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
-
-				for ( ushort i = 0; i < keys.Length; i++ )
-				{
-					var lurl = grp.LoadResourceOrders[ keys[ i ] ];
-					foreach ( var res in lurl )
-					{
-						// Fire resource events no matter whether resource needs preparing
-						// or not. This ensures that the number of callbacks
-						// matches the number originally estimated, which is important
-						// for progress bars.
-						_fireResourcePrepareStarted( res );
-
-						// If preparing one of these resources cascade-prepares another resource, 
-						// the list will get longer! But these should be prepared immediately
-						// Call prepare regardless, already prepared or loaded resources will be skipped
-						res.Prepare();
-
-						_fireResourcePrepareEnded();
-					}
-				}
-			}
-			// Load World Geometry
-			if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
-			{
-				grp.WorldGeometrySceneManager.PrepareWorldGeometry( grp.WorldGeometry );
-			}
-			_fireResourceGroupPrepareEnded( name );
-
-			// reset current group
-			this._currentGroup = null;
-
-			LogManager.Instance.Write( "Finished preparing resource group " + name );
-		}
-		#endregion PrepareResourceGroup
-
-		#region LoadResourceGroup Method
-
-		/// <overloads>
-		/// <summary>Loads a resource group.</summary>
-		/// <remarks>
-		/// Loads any created resources which are part of the named group.
-		/// Note that resources must have already been created by calling
-		/// ResourceManager::create, or declared using declareResource() or
-		/// in a script (such as .material and .overlay). The latter requires
-		/// that initialiseResourceGroup has been called.
-		///
-		/// When this method is called, this class will callback any ResourceGroupListeners
-		/// which have been registered to update them on progress.
-		/// </remarks>
-		/// <param name="name">The name to of the resource group to load.</param>
-		/// </overloads>
-		public void LoadResourceGroup( string name )
-		{
-			LoadResourceGroup( name, true, true );
-		}
-
-		/// <param name="loadMainResources">If true, loads normal resources associated
-		/// with the group (you might want to set this to false if you wanted
-		/// to just load world geometry in bulk)</param>
-		/// <param name="name"></param>
-		/// <param name="loadWorldGeom">If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see></param>
-		public void LoadResourceGroup( string name, bool loadMainResources, bool loadWorldGeom )
-		{
-			// Can only bulk-load one group at a time (reasonable limitation I think)
-			//OGRE_LOCK_AUTO_MUTEX
-			LogManager.Instance.Write( "Loading resource group '{0}' - Resources: {1} World Geometry: {2}", name,
-									   loadMainResources, loadWorldGeom );
-			// load all created resources
-			var grp = getResourceGroup( name );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", name );
-			}
-
-			// Set current group
-			_currentGroup = grp;
-
-			// Count up resources for starting event
-			var resourceCount = 0;
-			if ( loadMainResources )
-			{
-				foreach ( var pair in grp.LoadResourceOrders )
-				{
-					var lurl = pair.Value;
-					resourceCount += lurl.Count;
-				}
-			}
-			// Estimate world geometry size
-			if ( grp.WorldGeometrySceneManager != null && loadWorldGeom )
-			{
-				resourceCount += grp.WorldGeometrySceneManager.EstimateWorldGeometry( grp.WorldGeometry );
-			}
-
-			_fireResourceGroupLoadStarted( name, resourceCount );
-
-			// Now load for real
-			if ( loadMainResources )
-			{
-				var keys = new float[ grp.LoadResourceOrders.Count ];
-				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
-
-				for ( ushort i = 0; i < keys.Length; i++ )
-				{
-					var lurl = grp.LoadResourceOrders[ keys[ i ] ];
-					foreach ( var res in lurl )
-					{
-						// Fire resource events no matter whether resource is already
-						// loaded or not. This ensures that the number of callbacks
-						// matches the number originally estimated, which is important
-						// for progress bars.
-						_fireResourceStarted( res );
-
-						// If loading one of these resources cascade-loads another resource,
-						// the list will get longer! But these should be loaded immediately
-						// Call load regardless, already loaded resources will be skipped
-						res.Load();
-
-						_fireResourceEnded();
-					}
-				}
-			}
-			// Load World Geometry
-			if ( grp.WorldGeometrySceneManager != null && loadWorldGeom )
-			{
-				grp.WorldGeometrySceneManager.SetWorldGeometry( grp.WorldGeometry );
-			}
-			_fireResourceGroupLoadEnded( name );
-
-			#warning TODO
-			// group is loaded
-			//grp->groupStatus = ResourceGroup::LOADED;
-
-			// reset current group
-			_currentGroup = null;
-
-			LogManager.Instance.Write( "Finished loading resource group {0}.", name );
-		}
-
-		#endregion LoadResourceGroup Method
 
 		/// <summary>Unloads a resource group.</summary>
 		/// <remarks>
@@ -1276,21 +1029,21 @@ namespace Axiom.Core
 		public void UnloadResourceGroup( string groupName, bool reloadableOnly )
 		{
 			LogManager.Instance.Write( "Unloading resource group {0}.", groupName );
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// Set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 
-			var grpKeys = new float[grp.LoadResourceOrders.Count];
-			grp.LoadResourceOrders.Keys.CopyTo(grpKeys, 0);
-			
-			for (var i = grp.LoadResourceOrders.Count - 1; i >= 0; i--)
+			var grpKeys = new float[ grp.LoadResourceOrders.Count ];
+			grp.LoadResourceOrders.Keys.CopyTo( grpKeys, 0 );
+
+			for ( int i = grp.LoadResourceOrders.Count - 1; i >= 0; i-- )
 			{
-				var lurl = grp.LoadResourceOrders[grpKeys[i]];
-				foreach ( var res in lurl )
+				LoadUnloadResourceList lurl = grp.LoadResourceOrders[ grpKeys[ i ] ];
+				foreach ( Resource res in lurl )
 				{
 					if ( !reloadableOnly || res.IsReloadable )
 					{
@@ -1301,7 +1054,7 @@ namespace Axiom.Core
 			}
 
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 			LogManager.Instance.Write( "Finished unloading resource group {0}.", groupName );
 		}
 
@@ -1351,18 +1104,18 @@ namespace Axiom.Core
 		public void ClearResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Clearing resource group {0}", groupName );
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 			_dropGroupContents( grp );
 			// clear initialised flag
 			grp.Initialized = false;
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 			LogManager.Instance.Write( "Finished clearing resource group {0}", groupName );
 		}
 
@@ -1375,20 +1128,791 @@ namespace Axiom.Core
 		public void DestroyResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Destroying resource group " + groupName );
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 			UnloadResourceGroup( groupName, false ); // will throw an exception if name not valid
 			_dropGroupContents( grp );
 			_deleteGroup( grp );
 			resourceGroups.Remove( groupName );
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 		}
+
+		/// <summary>Undeclare a resource.</summary>
+		/// <remarks>
+		/// Note that this will not cause it to be unloaded
+		/// if it is already loaded, nor will it destroy a resource which has
+		/// already been created if InitialiseResourceGroup has been called already.
+		/// Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup
+		/// will do that.
+		/// </remarks>
+		/// <param name="name">The name of the resource. </param>
+		/// <param name="groupName">The name of the group this resource was declared in.</param>
+		public void UndeclareResource( string name, string groupName )
+		{
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			foreach ( ResourceDeclaration resDec in grp.ResourceDeclarations )
+			{
+				if ( resDec.ResourceName == name )
+				{
+					grp.ResourceDeclarations.Remove( resDec );
+					break;
+				}
+			}
+		}
+
+		/// <summary>List all file names in a resource group.</summary>
+		/// <remarks>
+		/// This method only returns filenames, you can also retrieve other information using listFileInfo.
+		/// </remarks>
+		/// <param name="groupName">The name of the group</param>
+		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		public List<string> ListResourceNames( string groupName )
+		{
+			var vec = new List<string>();
+
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			// Iterate over the archives
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				List<string> lst = rl.Archive.List( rl.Recursive );
+				vec.AddRange( lst );
+			}
+
+			return vec;
+		}
+
+		/// <summary>List all files in a resource group with accompanying information.</summary>
+		/// <param name="groupName">The name of the group</param>
+		/// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
+		public FileInfoList ListResourceFileInfo( string groupName )
+		{
+			var vec = new FileInfoList();
+
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			// Iterate over the archives
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				FileInfoList lst = rl.Archive.ListFileInfo( rl.Recursive );
+				vec.AddRange( lst );
+			}
+
+			return vec;
+		}
+
+		/// <summary>
+		/// Retrieve the modification time of a given file
+		/// </summary>
+		/// <see cref="ResourceGroupManager.ResourceModifiedTime(ResourceGroup, string)"/>
+		public DateTime ResourceModifiedTime( string groupName, string resourceName )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			return ResourceModifiedTime( grp, resourceName );
+		}
+
+		/// <summary>
+		/// Retrieve the modification time of a given file
+		/// </summary>
+		/// <param name="group"></param>
+		/// <param name="resourceName"></param>
+		/// <returns></returns>
+		public DateTime ResourceModifiedTime( ResourceGroup group, string resourceName )
+		{
+			if ( group.ResourceIndexCaseSensitive.ContainsKey( resourceName ) )
+			{
+				return group.ResourceIndexCaseSensitive[ resourceName ].GetModifiedTime( resourceName );
+			}
+			else
+			{
+				// try case insensitive
+				string lcResourceName = resourceName.ToLower();
+				if ( group.ResourceIndexCaseInsensitive.ContainsKey( lcResourceName ) )
+				{
+					return group.ResourceIndexCaseInsensitive[ lcResourceName ].GetModifiedTime( resourceName );
+				}
+				else
+				{
+					// Search the hard way
+					foreach ( ResourceLocation rl in group.LocationList )
+					{
+						Archive arch = rl.Archive;
+						DateTime testTime = arch.GetModifiedTime( resourceName );
+
+						if ( testTime > DateTime.MinValue )
+						{
+							return testTime;
+						}
+					}
+				}
+			}
+
+			return DateTime.MinValue;
+		}
+
+		/// <summary>
+		/// Find all file names matching a given pattern in a resource group.
+		/// </summary>
+		/// <remarks>
+		/// This method only returns filenames, you can also retrieve other
+		/// information using findFileInfo.
+		/// </remarks>
+		/// <param name="groupName">The name of the group</param>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		public List<string> FindResourceNames( string groupName, string pattern )
+		{
+			var vec = new List<string>();
+
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			// Iterate over the archives
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				List<string> lst = rl.Archive.Find( pattern, rl.Recursive );
+				vec.AddRange( lst );
+			}
+
+			return vec;
+		}
+
+		/// <summary>Find out if the named file exists in a group. </summary>
+		/// <param name="group">The name of the resource group</param>
+		/// <param name="filename">Fully qualified name of the file to test for</param>
+		public bool ResourceExists( string group, string filename )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( group );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", group );
+			}
+
+			return ResourceExists( grp, filename );
+		}
+
+		/// <summary>Find out if the named file exists in a group. </summary>
+		/// <param name="group">the resource group</param>
+		/// <param name="filename">Fully qualified name of the file to test for</param>
+		public bool ResourceExists( ResourceGroup group, string filename )
+		{
+			if ( group.ResourceIndexCaseSensitive.ContainsKey( filename ) )
+			{
+				return true;
+			}
+			else
+			{
+				string lc = filename.ToLower();
+				if ( group.ResourceIndexCaseInsensitive.ContainsKey( lc ) )
+				{
+					return true;
+				}
+				else
+				{
+					foreach ( ResourceLocation rl in group.LocationList )
+					{
+						Archive arch = rl.Archive;
+						if ( arch.Exists( filename ) )
+						{
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Find all files matching a given pattern in a group and get
+		/// some detailed information about them.
+		/// </summary>
+		/// <param name="groupName">The name of the resource group</param>
+		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
+		/// <returns>A list of file information structures for all files matching the criteria.</returns>
+		public FileInfoList FindResourceFileInfo( string groupName, string pattern )
+		{
+			var vec = new FileInfoList();
+
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			// Iterate over the archives
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				FileInfoList lst = rl.Archive.FindFileInfo( pattern, rl.Recursive );
+				vec.AddRange( lst );
+			}
+
+			return vec;
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <returns></returns>
+		public string FindGroupContainingResource( string filename )
+		{
+			ResourceGroup grp = _findGroupContainingResourceImpl( filename );
+
+			if ( grp == null )
+			{
+				throw new Exception( "Unable to derive resource group for " + filename + " automatically since the resource was not found." );
+			}
+			return grp.Name;
+		}
+
+		/// <summary>
+		/// Adds a ResourceGroupListener which will be called back during
+		/// resource loading events.
+		/// </summary>
+		/// <param name="rgl"></param>
+		public void AddResourceGroupListener( IResourceGroupListener rgl )
+		{
+			if ( rgl != null )
+			{
+				this._resourceGroupListeners.Add( rgl );
+				this._resourceGroupScriptingStarted += rgl.ResourceGroupScriptingStarted;
+				this._resourceGroupScriptingEnded += rgl.ResourceGroupScriptingEnded;
+				this._resourceGroupLoadStarted += rgl.ResourceGroupLoadStarted;
+				this._resourceGroupLoadEnded += rgl.ResourceGroupLoadEnded;
+				this._resourceLoadStarted += rgl.ResourceLoadStarted;
+				this._resourceLoadEnded += rgl.ResourceLoadEnded;
+				this._scriptParseStarted += rgl.ScriptParseStarted;
+				this._scriptParseEnded += rgl.ScriptParseEnded;
+				this._worldGeometryStageStarted += rgl.WorldGeometryStageStarted;
+				this._worldGeometryStageEnded += rgl.WorldGeometryStageEnded;
+			}
+		}
+
+		/// <summary>
+		/// Removes a ResourceGroupListener
+		/// </summary>
+		/// <param name="rgl"></param>
+		public void RemoveResourceGroupListener( IResourceGroupListener rgl )
+		{
+			if ( rgl != null )
+			{
+				this._resourceGroupListeners.Remove( rgl );
+				this._resourceGroupScriptingStarted -= rgl.ResourceGroupScriptingStarted;
+				this._resourceGroupScriptingEnded -= rgl.ResourceGroupScriptingEnded;
+				this._resourceGroupLoadStarted -= rgl.ResourceGroupLoadStarted;
+				this._resourceGroupLoadEnded -= rgl.ResourceGroupLoadEnded;
+				this._resourceLoadStarted -= rgl.ResourceLoadStarted;
+				this._resourceLoadEnded -= rgl.ResourceLoadEnded;
+				this._scriptParseStarted -= rgl.ScriptParseStarted;
+				this._scriptParseEnded -= rgl.ScriptParseEnded;
+				this._worldGeometryStageStarted -= rgl.WorldGeometryStageStarted;
+				this._worldGeometryStageEnded -= rgl.WorldGeometryStageEnded;
+			}
+		}
+
+		/// <summary>
+		/// Associates some world geometry with a resource group, causing it to
+		/// be loaded / unloaded with the resource group.
+		/// </summary>
+		/// <remarks>
+		/// You would use this method to essentially defer a call to
+		/// SceneManager::setWorldGeometry to the time when the resource group
+		/// is loaded. The advantage of this is that compatible scene managers
+		/// will include the estimate of the number of loading stages for that
+		/// world geometry when the resource group begins loading, allowing you
+		/// to include that in a loading progress report.
+		/// </remarks>
+		/// <param name="groupName">The name of the resource group</param>
+		/// <param name="worldGeometry">The parameter which should be passed to setWorldGeometry</param>
+		/// <param name="sceneManager">The SceneManager which should be called</param>
+		public void LinkWorldGeometryToResourceGroup( string groupName, string worldGeometry, SceneManager sceneManager )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			grp.WorldGeometry = worldGeometry;
+			grp.WorldGeometrySceneManager = sceneManager;
+		}
+
+		/// <summary>
+		/// Clear any link to world geometry from a resource group.
+		/// </summary>
+		/// <remarks>Basically undoes a previous call to linkWorldGeometryToResourceGroup.</remarks>
+		/// <param name="groupName">The name of the resource group</param>
+		public void UnlinkWorldGeometryFromResourceGroup( string groupName )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			grp.WorldGeometry = "";
+			grp.WorldGeometrySceneManager = null;
+		}
+
+		/// <summary>
+		/// Shutdown all ResourceManagers, performed as part of clean-up.
+		/// </summary>
+		public void ShutdownAll()
+		{
+			foreach ( var pair in this._resourceManagers )
+			{
+				ResourceManager rm = pair.Value;
+				rm.UnloadAll();
+				rm.RemoveAll();
+			}
+		}
+
+		/// <summary>Get a list of the currently defined resource groups.</summary>
+		/// <remarks>
+		/// This method intentionally returns a copy rather than a reference in
+		/// order to avoid any contention issues in multithreaded applications.
+		/// </remarks>
+		/// <returns>A copy of list of currently defined groups.</returns>
+		public List<string> GetResourceGroups()
+		{
+			var vec = new List<string>();
+
+			foreach ( var pair in this._resourceGroups )
+			{
+				ResourceGroup rg = pair.Value;
+				vec.Add( rg.Name );
+			}
+
+			return vec;
+		}
+
+		/// <summary>Get the list of resource declarations for the specified group name.</summary>
+		/// <remarks>
+		/// This method intentionally returns a copy rather than a reference in
+		/// order to avoid any contention issues in multithreaded applications.
+		/// </remarks>
+		/// /// <param name="groupName">The name of the group</param>
+		/// <returns>A copy of list of currently defined resources.</returns>
+		public ResourceDeclaration[] getResourceDeclarationList( string groupName )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+			return grp.ResourceDeclarations.ToArray();
+		}
+
+		#region OpenResource Method
+
+		/** Open a single resource by name and return a DataStream
+			pointing at the source of the data.
+		@param resourceName The name of the resource to locate.
+			Even if resource locations are added recursively, you
+			must provide a fully qualified name to this method. You
+			can find out the matching fully qualified names by using the
+			find() method if you need to.
+		@param groupName The name of the resource group; this determines which
+			locations are searched.
+		@returns Shared pointer to data stream containing the data, will be
+			destroyed automatically when no longer referenced
+		*/
+
+		public Stream OpenResource( string resourceName )
+		{
+			return OpenResource( resourceName, DefaultResourceGroupName );
+		}
+
+		public Stream OpenResource( string resourceName, string groupName )
+		{
+			return OpenResource( resourceName, groupName, true );
+		}
+
+		public Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound )
+		{
+			return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
+		}
+
+		public virtual Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
+		{
+			// Try to find in resource index first
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::OpenResource", groupName );
+			}
+
+			Archive arch = null;
+			if ( grp.ResourceIndexCaseSensitive.ContainsKey( resourceName ) )
+			{
+				// Found in the index
+				arch = grp.ResourceIndexCaseSensitive[ resourceName ];
+				Stream stream = arch.Open( resourceName );
+
+				//Maybe, the stream is null 'cause we added a resource location recursively, so 
+				//we try to find the wanted resource with the following search.
+				if ( stream == null )
+				{
+					FileInfoList fileList = FindResourceFileInfo( groupName, "*" + Path.GetExtension( resourceName ) );
+					foreach ( FileInfo info in fileList )
+					{
+						if ( !info.Basename.Contains( resourceName ) )
+						{
+							continue;
+						}
+
+						stream = arch.Open( info.Basename );
+						break;
+					}
+				}
+
+				return stream;
+			}
+			else
+			{
+				// try case insensitive
+				string lc = resourceName.ToLower();
+				if ( grp.ResourceIndexCaseInsensitive.ContainsKey( lc ) )
+				{
+					// Found in the index
+					arch = grp.ResourceIndexCaseInsensitive[ lc ];
+					return arch.Open( lc );
+				}
+				else
+				{
+					// Search the hard way
+					foreach ( ResourceLocation rl in grp.LocationList )
+					{
+						arch = rl.Archive;
+						if ( arch.Exists( resourceName ) )
+						{
+							return arch.Open( resourceName );
+						}
+					}
+				}
+			}
+
+			// Not found
+			if ( searchGroupsIfNotFound )
+			{
+				grp = _findGroupContainingResourceImpl( resourceName );
+				if ( grp != null )
+				{
+					if ( resourceBeingLoaded != null )
+					{
+						resourceBeingLoaded.Group = grp.Name;
+					}
+					return OpenResource( resourceName, grp.Name, false );
+				}
+				else
+				{
+					throw new FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + " or any other group." );
+				}
+			}
+			throw new FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
+		}
+
+		#endregion OpenResource Method
+
+		#region OpenResources Method
+
+		/// <overloads>
+		/// <summary>
+		/// Open all resources matching a given pattern (which can contain
+		/// the character '*' as a wildcard), and return a collection of
+		/// DataStream objects on them.
+		/// </summary>
+		/// <param name="pattern">
+		/// The pattern to look for. If resource locations have been
+		/// added recursively, subdirectories will be searched too so this
+		/// does not need to be fully qualified.
+		/// </param>
+		/// <returns>A list of Stream objects.</returns>
+		/// </overloads>
+		public List<Stream> OpenResources( string pattern )
+		{
+			return OpenResources( pattern, DefaultResourceGroupName );
+		}
+
+		/// <param name="pattern"></param>
+		/// <param name="groupName">
+		/// The resource group; this determines which locations are searched.
+		/// </param>
+		public List<Stream> OpenResources( string pattern, string groupName )
+		{
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}", groupName );
+			}
+
+			// Iterate through all the archives and build up a combined list of
+			// streams
+			var ret = new List<Stream>();
+
+			foreach ( ResourceLocation li in grp.LocationList )
+			{
+				Archive arch = li.Archive;
+				// Find all the names based on whether this archive is recursive
+				List<string> names = arch.Find( pattern, li.Recursive );
+
+				// Iterate over the names and load a stream for each
+				foreach ( string resource in names )
+				{
+					Stream ptr = arch.Open( resource );
+					if ( ptr != null )
+					{
+						ret.Add( ptr );
+					}
+				}
+			}
+			return ret;
+		}
+
+		#endregion OpenResources Method
+
+		#region CreateResource Method
+
+		/// <summary>
+		/// Create a new resource file in a given group.
+		/// </summary>
+		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+		/// <param name="filename">The name of the file to create</param>
+		/// <returns>An open Stream</returns>
+		public Stream CreateResource( string filename )
+		{
+			return CreateResource( filename, DefaultResourceGroupName, false, String.Empty );
+		}
+
+		/// <summary>
+		/// Create a new resource file in a given group.
+		/// </summary>
+		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+		/// <param name="filename">The name of the file to create</param>
+		/// <param name="groupName">The name of the group in which to create the file</param>
+		/// <returns>An open Stream</returns>
+		public Stream CreateResource( string filename, string groupName )
+		{
+			return CreateResource( filename, groupName, false, String.Empty );
+		}
+
+		/// <summary>
+		/// Create a new resource file in a given group.
+		/// </summary>
+		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+		/// <param name="filename">The name of the file to create</param>
+		/// <param name="groupName">The name of the group in which to create the file</param>
+		/// <param name="overwrite">If true, an existing file will be overwritten, if false
+		/// an error will occur if the file already exists</param>
+		/// <returns>An open Stream</returns>
+		public Stream CreateResource( string filename, string groupName, bool overwrite )
+		{
+			return CreateResource( filename, groupName, overwrite, String.Empty );
+		}
+
+		/// <summary>
+		/// Create a new resource file in a given group.
+		/// </summary>
+		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+		/// <param name="filename">The name of the file to create</param>
+		/// <param name="groupName">The name of the group in which to create the file</param>
+		/// <param name="overwrite">If true, an existing file will be overwritten, if false
+		/// an error will occur if the file already exists</param>
+		/// <param name="locationPattern">If the resource group contains multiple locations,
+		/// then usually the file will be created in the first writable location. If you
+		/// want to be more specific, you can include a location pattern here and
+		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+		/// will be considered candidates for creation.</param>
+		/// <returns>An open Stream</returns>
+		public Stream CreateResource( string filename, string groupName, bool overwrite, string locationPattern )
+		{
+			//OGRE_LOCK_AUTO_MUTEX
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}.", groupName );
+			}
+
+			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				Archive arch = rl.Archive;
+
+				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				{
+					if ( !overwrite && arch.Exists( filename ) )
+					{
+						throw new AxiomException( "Cannot overwrite existing file " + filename );
+					}
+
+					// create it
+					Stream ret = arch.Create( filename );
+					grp.Add( filename, arch );
+
+					return ret;
+				}
+			}
+			throw new AxiomException( "Cannot find a writable location in group " + groupName );
+		}
+
+		#endregion CreateResource Method
+
+		#region DeleteResource Method
+
+		/// <summary>
+		/// Delete a single resource file.
+		/// </summary>
+		/// <param name="filename">The name of the file to delete</param>
+		public void DeleteResource( string filename )
+		{
+			DeleteResource( filename, DefaultResourceGroupName, String.Empty );
+		}
+
+		/// <summary>
+		/// Delete a single resource file.
+		/// </summary>
+		/// <param name="filename">The name of the file to delete</param>
+		/// <param name="groupName">The name of the group in which to search</param>
+		public void DeleteResource( string filename, string groupName )
+		{
+			DeleteResource( filename, groupName, String.Empty );
+		}
+
+		/// <summary>
+		/// Delete a single resource file.
+		/// </summary>
+		/// <param name="filename">The name of the file to delete</param>
+		/// <param name="groupName">The name of the group in which to search</param>
+		/// <param name="locationPattern">If the resource group contains multiple locations,
+		/// then usually first matching file found in any location will be deleted. If you
+		/// want to be more specific, you can include a location pattern here and
+		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+		/// will be considered candidates for deletion.</param>
+		public void DeleteResource( string filename, string groupName, string locationPattern )
+		{
+			//OGRE_LOCK_AUTO_MUTEX
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}.", groupName );
+			}
+
+			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				Archive arch = rl.Archive;
+
+				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				{
+					if ( arch.Exists( filename ) )
+					{
+						arch.Remove( filename );
+						grp.Remove( filename, arch );
+
+						// only remove one file
+						break;
+					}
+				}
+			}
+		}
+
+		#endregion DeleteResource Method
+
+		#region DeleteMatchingResources Method
+
+		/// <summary>
+		/// Delete all matching resource files.
+		/// </summary>
+		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+		public void DeleteMatchingResources( string filePattern )
+		{
+			DeleteMatchingResources( filePattern, DefaultResourceGroupName, String.Empty );
+		}
+
+		/// <summary>
+		/// Delete all matching resource files.
+		/// </summary>
+		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+		/// <param name="groupName">The name of the group in which to search</param>
+		public void DeleteMatchingResources( string filePattern, string groupName )
+		{
+			DeleteMatchingResources( filePattern, groupName, String.Empty );
+		}
+
+		/// <summary>
+		/// Delete all matching resource files.
+		/// </summary>
+		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+		/// <param name="groupName">The name of the group in which to search</param>
+		/// <param name="locationPattern">If the resource group contains multiple locations,
+		/// then usually all matching files in any location will be deleted. If you
+		/// want to be more specific, you can include a location pattern here and
+		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+		/// will be considered candidates for deletion.</param>
+		public void DeleteMatchingResources( string filePattern, string groupName, string locationPattern )
+		{
+			//OGRE_LOCK_AUTO_MUTEX
+			ResourceGroup grp = getResourceGroup( groupName );
+			if ( grp == null )
+			{
+				throw new AxiomException( "Cannot find a group named {0}.", groupName );
+			}
+
+			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+			foreach ( ResourceLocation rl in grp.LocationList )
+			{
+				Archive arch = rl.Archive;
+
+				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				{
+					foreach ( string f in arch.Find( filePattern ) )
+					{
+						arch.Remove( f );
+						grp.Remove( f, arch );
+					}
+				}
+			}
+		}
+
+		#endregion DeleteMatchingResources Method
 
 		#region AddResourceLocation Method
 
@@ -1461,7 +1985,7 @@ namespace Axiom.Core
 		/// <param name="monitor"></param>
 		public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
 		{
-			var grp = getResourceGroup( resGroup );
+			ResourceGroup grp = getResourceGroup( resGroup );
 			if ( grp == null )
 			{
 				CreateResourceGroup( resGroup );
@@ -1469,15 +1993,15 @@ namespace Axiom.Core
 			}
 
 			// Get archive
-			var arch = ArchiveManager.Instance.Load( name, locType );
+			Archive arch = ArchiveManager.Instance.Load( name, locType );
 			// Add to location list
 			var loc = new ResourceLocation();
 			loc.Archive = arch;
 			loc.Recursive = recursive;
 			grp.LocationList.Add( loc );
 			// Index resources
-			var vec = arch.Find( "*", recursive );
-			foreach ( var it in vec )
+			List<string> vec = arch.Find( "*", recursive );
+			foreach ( string it in vec )
 			{
 				grp.Add( it, arch );
 			}
@@ -1487,8 +2011,7 @@ namespace Axiom.Core
 				loc.Watcher = new Watcher( name, recursive );
 			}
 
-			LogManager.Instance.Write( "Added resource location '{0}' of type '{1}' to resource group '{2}'{3}", name, locType,
-									   resGroup, recursive ? " with recursive option" : "" );
+			LogManager.Instance.Write( "Added resource location '{0}' of type '{1}' to resource group '{2}'{3}", name, locType, resGroup, recursive ? " with recursive option" : "" );
 		}
 
 		#endregion AddResourceLocation Method
@@ -1511,16 +2034,16 @@ namespace Axiom.Core
 		public void RemoveResourceLocation( string locationName, string groupName )
 		{
 			LogManager.Instance.Write( "Remove Resource Location " + groupName );
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 
 			// Remove from location list
-			foreach ( var loc in grp.LocationList )
+			foreach ( ResourceLocation loc in grp.LocationList )
 			{
-				var arch = loc.Archive;
+				Archive arch = loc.Archive;
 				if ( arch.Name == locationName )
 				{
 					// Remove from index
@@ -1591,8 +2114,7 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="name"></param>
 		/// <param name="resourceType"></param>
-		public void DeclareResource( string name, string resourceType, IManualResourceLoader loader,
-									 NameValuePairList loadParameters )
+		public void DeclareResource( string name, string resourceType, IManualResourceLoader loader, NameValuePairList loadParameters )
 		{
 			DeclareResource( name, resourceType, DefaultResourceGroupName, loader, loadParameters );
 		}
@@ -1606,10 +2128,9 @@ namespace Axiom.Core
 		/// be loaded. These are specific to the resource type.
 		/// </param>
 		/// <param name="name"></param>
-		public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader,
-									 NameValuePairList loadParameters )
+		public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader, NameValuePairList loadParameters )
 		{
-			var grp = getResourceGroup( groupName );
+			ResourceGroup grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", name );
@@ -1625,778 +2146,220 @@ namespace Axiom.Core
 
 		#endregion DeclareResource Method
 
-		/// <summary>Undeclare a resource.</summary>
-		/// <remarks>
-		/// Note that this will not cause it to be unloaded
-		/// if it is already loaded, nor will it destroy a resource which has
-		/// already been created if InitialiseResourceGroup has been called already.
-		/// Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup
-		/// will do that.
-		/// </remarks>
-		/// <param name="name">The name of the resource. </param>
-		/// <param name="groupName">The name of the group this resource was declared in.</param>
-		public void UndeclareResource( string name, string groupName )
+		#region PrepareResourceGroup
+
+		/// <summary>
+		/// Prepares a resource group.
+		/// </summary>
+		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+		public void PrepareResourceGroup( string name )
 		{
-			var grp = getResourceGroup( groupName );
+			PrepareResourceGroup( name, true, true );
+		}
+
+		/// <summary>
+		/// Prepares a resource group.
+		/// </summary>
+		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+		public void PrepareResourceGroup( string name, bool prepareMainResources )
+		{
+			PrepareResourceGroup( name, prepareMainResources, true );
+		}
+
+		/// <summary>
+		/// Prepares a resource group.
+		/// </summary>
+		/// <remarks>Prepares any created resources which are part of the named group.
+		///	Note that resources must have already been created by calling
+		///	ResourceManager::create, or declared using declareResource() or
+		///	in a script (such as .material and .overlay). The latter requires
+		///	that initialiseResourceGroup has been called. 
+		///
+		///	When this method is called, this class will callback any ResourceGroupListeners
+		///	which have been registered to update them on progress.
+		///	</remarks>
+		/// <param name="name">The name of the resource group to prepare.</param>
+		/// <param name="prepareMainResources">If true, prepares normal resources associated 
+		///	with the group (you might want to set this to false if you wanted
+		///	to just prepare world geometry in bulk)</param>
+		/// <param name="prepareWorldGeom">If true, prepares any linked world geometry
+		///	<see cref="ResourceGroupManager.LinkWorldGeometryToResourceGroup"/></param>
+		public void PrepareResourceGroup( string name, bool prepareMainResources, bool prepareWorldGeom )
+		{
+			LogManager.Instance.Write( "Preparing resource group '{0}' - Resources: {1}, World Geometry: {2}", name, prepareMainResources, prepareWorldGeom );
+
+			// load all created resources
+			ResourceGroup grp = getResourceGroup( name );
 			if ( grp == null )
 			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
+				throw new AxiomException( "Cannot find a group named {0}", name );
 			}
 
-			foreach ( var resDec in grp.ResourceDeclarations )
+			// Set current group
+			this._currentGroup = grp;
+
+			// Count up resources for starting event
+			int resourceCount = 0;
+			if ( prepareMainResources )
 			{
-				if ( resDec.ResourceName == name )
+				foreach ( var pair in grp.LoadResourceOrders )
 				{
-					grp.ResourceDeclarations.Remove( resDec );
-					break;
+					LoadUnloadResourceList lurl = pair.Value;
+					resourceCount += lurl.Count;
 				}
 			}
-		}
-
-		#region OpenResource Method
-
-		/** Open a single resource by name and return a DataStream
-			pointing at the source of the data.
-		@param resourceName The name of the resource to locate.
-			Even if resource locations are added recursively, you
-			must provide a fully qualified name to this method. You
-			can find out the matching fully qualified names by using the
-			find() method if you need to.
-		@param groupName The name of the resource group; this determines which
-			locations are searched.
-		@returns Shared pointer to data stream containing the data, will be
-			destroyed automatically when no longer referenced
-		*/
-
-		public IO.Stream OpenResource( string resourceName )
-		{
-			return OpenResource( resourceName, DefaultResourceGroupName );
-		}
-
-		public IO.Stream OpenResource( string resourceName, string groupName )
-		{
-			return OpenResource( resourceName, groupName, true );
-		}
-
-		public IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound )
-		{
-			return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
-		}
-
-		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
-		{
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
+			// Estimate world geometry size
+			if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
 			{
-				throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::OpenResource", groupName );
+				resourceCount += grp.WorldGeometrySceneManager.EstimateWorldGeometry( grp.WorldGeometry );
 			}
 
-			Archive arch = null;
-			if ( grp.ResourceIndexCaseSensitive.ContainsKey( resourceName ) )
-			{
-				// Found in the index
-				arch = grp.ResourceIndexCaseSensitive[ resourceName ];
-				var stream = arch.Open( resourceName );
+			_fireResourceGroupPrepareStarted( name, resourceCount );
 
-				//Maybe, the stream is null 'cause we added a resource location recursively, so 
-				//we try to find the wanted resource with the following search.
-				if ( stream == null )
+			// Now load for real
+			if ( prepareMainResources )
+			{
+				var keys = new float[ grp.LoadResourceOrders.Count ];
+				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
+
+				for ( ushort i = 0; i < keys.Length; i++ )
 				{
-					var fileList = FindResourceFileInfo( groupName, "*" + System.IO.Path.GetExtension( resourceName ) );
-					foreach ( var info in fileList )
+					LoadUnloadResourceList lurl = grp.LoadResourceOrders[ keys[ i ] ];
+					foreach ( Resource res in lurl )
 					{
-						if ( !info.Basename.Contains( resourceName ) )
-							continue;
+						// Fire resource events no matter whether resource needs preparing
+						// or not. This ensures that the number of callbacks
+						// matches the number originally estimated, which is important
+						// for progress bars.
+						_fireResourcePrepareStarted( res );
 
-						stream = arch.Open( info.Basename );
-						break;
-					}
-				}
+						// If preparing one of these resources cascade-prepares another resource, 
+						// the list will get longer! But these should be prepared immediately
+						// Call prepare regardless, already prepared or loaded resources will be skipped
+						res.Prepare();
 
-				return stream;
-			}
-			else
-			{
-				// try case insensitive
-				var lc = resourceName.ToLower();
-				if ( grp.ResourceIndexCaseInsensitive.ContainsKey( lc ) )
-				{
-					// Found in the index
-					arch = grp.ResourceIndexCaseInsensitive[ lc ];
-					return arch.Open( lc );
-				}
-				else
-				{
-					// Search the hard way
-					foreach ( var rl in grp.LocationList )
-					{
-						arch = rl.Archive;
-						if ( arch.Exists( resourceName ) )
-						{
-							return arch.Open( resourceName );
-						}
+						_fireResourcePrepareEnded();
 					}
 				}
 			}
-
-			// Not found
-			if ( searchGroupsIfNotFound )
+			// Load World Geometry
+			if ( grp.WorldGeometrySceneManager != null && prepareWorldGeom )
 			{
-				grp = _findGroupContainingResourceImpl( resourceName );
-				if ( grp != null )
-				{
-					if ( resourceBeingLoaded != null )
-					{
-						resourceBeingLoaded.Group = grp.Name;
-					}
-					return OpenResource( resourceName, grp.Name, false );
-				}
-				else
-				{
-					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + " or any other group." );
-				}
+				grp.WorldGeometrySceneManager.PrepareWorldGeometry( grp.WorldGeometry );
 			}
-			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
+			_fireResourceGroupPrepareEnded( name );
+
+			// reset current group
+			this._currentGroup = null;
+
+			LogManager.Instance.Write( "Finished preparing resource group " + name );
 		}
 
-		#endregion OpenResource Method
+		#endregion PrepareResourceGroup
 
-		#region OpenResources Method
+		#region LoadResourceGroup Method
 
 		/// <overloads>
-		/// <summary>
-		/// Open all resources matching a given pattern (which can contain
-		/// the character '*' as a wildcard), and return a collection of
-		/// DataStream objects on them.
-		/// </summary>
-		/// <param name="pattern">
-		/// The pattern to look for. If resource locations have been
-		/// added recursively, subdirectories will be searched too so this
-		/// does not need to be fully qualified.
-		/// </param>
-		/// <returns>A list of Stream objects.</returns>
-		/// </overloads>
-		public List<IO.Stream> OpenResources( string pattern )
-		{
-			return OpenResources( pattern, DefaultResourceGroupName );
-		}
-
-		/// <param name="pattern"></param>
-		/// <param name="groupName">
-		/// The resource group; this determines which locations are searched.
-		/// </param>
-		public List<IO.Stream> OpenResources( string pattern, string groupName )
-		{
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
-			}
-
-			// Iterate through all the archives and build up a combined list of
-			// streams
-			var ret = new List<IO.Stream>();
-
-			foreach ( var li in grp.LocationList )
-			{
-				var arch = li.Archive;
-				// Find all the names based on whether this archive is recursive
-				var names = arch.Find( pattern, li.Recursive );
-
-				// Iterate over the names and load a stream for each
-				foreach ( var resource in names )
-				{
-					var ptr = arch.Open( resource );
-					if ( ptr != null )
-					{
-						ret.Add( ptr );
-					}
-				}
-			}
-			return ret;
-		}
-
-		#endregion OpenResources Method
-
-		#region CreateResource Method
-
-		/// <summary>
-		/// Create a new resource file in a given group.
-		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename )
-		{
-			return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, String.Empty );
-		}
-
-		/// <summary>
-		/// Create a new resource file in a given group.
-		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName )
-		{
-			return CreateResource( filename, groupName, false, String.Empty );
-		}
-
-		/// <summary>
-		/// Create a new resource file in a given group.
-		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <param name="overwrite">If true, an existing file will be overwritten, if false
-		/// an error will occur if the file already exists</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName, bool overwrite )
-		{
-			return CreateResource( filename, groupName, overwrite, String.Empty );
-		}
-
-		/// <summary>
-		/// Create a new resource file in a given group.
-		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <param name="overwrite">If true, an existing file will be overwritten, if false
-		/// an error will occur if the file already exists</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually the file will be created in the first writable location. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for creation.</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName, bool overwrite, string locationPattern )
-		{
-			//OGRE_LOCK_AUTO_MUTEX
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}.", groupName );
-			}
-
-			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
-
-			foreach ( var rl in grp.LocationList )
-			{
-				var arch = rl.Archive;
-
-				if ( !arch.IsReadOnly &&
-					 ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
-				{
-					if ( !overwrite && arch.Exists( filename ) )
-					{
-						throw new AxiomException( "Cannot overwrite existing file " + filename );
-					}
-
-					// create it
-					var ret = arch.Create( filename );
-					grp.Add( filename, arch );
-
-					return ret;
-				}
-			}
-			throw new AxiomException( "Cannot find a writable location in group " + groupName );
-		}
-
-		#endregion CreateResource Method
-
-		#region DeleteResource Method
-
-		/// <summary>
-		/// Delete a single resource file.
-		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
-		public void DeleteResource( string filename )
-		{
-			DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
-		}
-
-		/// <summary>
-		/// Delete a single resource file.
-		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		public void DeleteResource( string filename, string groupName )
-		{
-			DeleteResource( filename, groupName, String.Empty );
-		}
-
-		/// <summary>
-		/// Delete a single resource file.
-		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually first matching file found in any location will be deleted. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for deletion.</param>
-		public void DeleteResource( string filename, string groupName, string locationPattern )
-		{
-			//OGRE_LOCK_AUTO_MUTEX
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}.", groupName );
-			}
-
-			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
-
-			foreach ( var rl in grp.LocationList )
-			{
-				var arch = rl.Archive;
-
-				if ( !arch.IsReadOnly &&
-					 ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
-				{
-					if ( arch.Exists( filename ) )
-					{
-						arch.Remove( filename );
-						grp.Remove( filename, arch );
-
-						// only remove one file
-						break;
-					}
-				}
-			}
-		}
-
-		#endregion DeleteResource Method
-
-		#region DeleteMatchingResources Method
-
-		/// <summary>
-		/// Delete all matching resource files.
-		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-		public void DeleteMatchingResources( string filePattern )
-		{
-			DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
-		}
-
-		/// <summary>
-		/// Delete all matching resource files.
-		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		public void DeleteMatchingResources( string filePattern, string groupName )
-		{
-			DeleteMatchingResources( filePattern, groupName, String.Empty );
-		}
-
-		/// <summary>
-		/// Delete all matching resource files.
-		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually all matching files in any location will be deleted. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for deletion.</param>
-		public void DeleteMatchingResources( string filePattern, string groupName, string locationPattern )
-		{
-			//OGRE_LOCK_AUTO_MUTEX
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}.", groupName );
-			}
-
-			//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
-
-			foreach ( var rl in grp.LocationList )
-			{
-				var arch = rl.Archive;
-
-				if ( !arch.IsReadOnly &&
-					 ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
-				{
-					foreach ( var f in arch.Find( filePattern ) )
-					{
-						arch.Remove( f );
-						grp.Remove( f, arch );
-					}
-				}
-			}
-		}
-
-		#endregion DeleteMatchingResources Method
-
-		/// <summary>List all file names in a resource group.</summary>
+		/// <summary>Loads a resource group.</summary>
 		/// <remarks>
-		/// This method only returns filenames, you can also retrieve other information using listFileInfo.
-		/// </remarks>
-		/// <param name="groupName">The name of the group</param>
-		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
-		public List<string> ListResourceNames( string groupName )
-		{
-			var vec = new List<string>();
-
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
-			}
-
-			// Iterate over the archives
-			foreach ( var rl in grp.LocationList )
-			{
-				var lst = rl.Archive.List( rl.Recursive );
-				vec.AddRange( lst );
-			}
-
-			return vec;
-		}
-
-		/// <summary>List all files in a resource group with accompanying information.</summary>
-		/// <param name="groupName">The name of the group</param>
-		/// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
-		public FileInfoList ListResourceFileInfo( string groupName )
-		{
-			var vec = new FileInfoList();
-
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
-			}
-
-			// Iterate over the archives
-			foreach ( var rl in grp.LocationList )
-			{
-				var lst = rl.Archive.ListFileInfo( rl.Recursive );
-				vec.AddRange( lst );
-			}
-
-			return vec;
-		}
-
-		/// <summary>
-		/// Retrieve the modification time of a given file
-		/// </summary>
-		/// <see cref="ResourceGroupManager.ResourceModifiedTime(ResourceGroup, string)"/>
-		public DateTime ResourceModifiedTime(string groupName, string resourceName)
-		{
-			// Try to find in resource index first
-			var grp = this.getResourceGroup(groupName);
-			if (grp == null)
-			{
-				throw new AxiomException("Cannot find a group named {0}", groupName);
-			}
-
-			return this.ResourceModifiedTime(grp, resourceName);
-		}
-
-		/// <summary>
-		/// Retrieve the modification time of a given file
-		/// </summary>
-		/// <param name="group"></param>
-		/// <param name="resourceName"></param>
-		/// <returns></returns>
-		public DateTime ResourceModifiedTime(ResourceGroup group, string resourceName)
-		{
-			if (group.ResourceIndexCaseSensitive.ContainsKey(resourceName))
-			{
-				return group.ResourceIndexCaseSensitive[resourceName].GetModifiedTime(resourceName);
-			}
-			else
-			{
-				// try case insensitive
-				var lcResourceName = resourceName.ToLower();
-				if (group.ResourceIndexCaseInsensitive.ContainsKey(lcResourceName))
-				{
-					return group.ResourceIndexCaseInsensitive[lcResourceName].GetModifiedTime(resourceName);
-				}
-				else
-				{
-					// Search the hard way
-					foreach (var rl in group.LocationList)
-					{
-						var arch = rl.Archive;
-						var testTime = arch.GetModifiedTime(resourceName);
-
-						if (testTime > DateTime.MinValue)
-						{
-							return testTime;
-						}
-					}
-				}
-			}
-
-			return DateTime.MinValue;
-		}
-
-		/// <summary>
-		/// Find all file names matching a given pattern in a resource group.
-		/// </summary>
-		/// <remarks>
-		/// This method only returns filenames, you can also retrieve other
-		/// information using findFileInfo.
-		/// </remarks>
-		/// <param name="groupName">The name of the group</param>
-		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
-		public List<string> FindResourceNames( string groupName, string pattern )
-		{
-			var vec = new List<string>();
-
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
-			}
-
-			// Iterate over the archives
-			foreach ( var rl in grp.LocationList )
-			{
-				var lst = rl.Archive.Find( pattern, rl.Recursive );
-				vec.AddRange( lst );
-			}
-
-			return vec;
-		}
-
-		/// <summary>Find out if the named file exists in a group. </summary>
-		/// <param name="group">The name of the resource group</param>
-		/// <param name="filename">Fully qualified name of the file to test for</param>
-		public bool ResourceExists( string group, string filename )
-		{
-			// Try to find in resource index first
-			var grp = getResourceGroup( group );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", group );
-			}
-
-			return ResourceExists( grp, filename );
-		}
-
-		/// <summary>Find out if the named file exists in a group. </summary>
-		/// <param name="group">the resource group</param>
-		/// <param name="filename">Fully qualified name of the file to test for</param>
-		public bool ResourceExists( ResourceGroup group, string filename )
-		{
-			if ( group.ResourceIndexCaseSensitive.ContainsKey( filename ) )
-			{
-				return true;
-			}
-			else
-			{
-				var lc = filename.ToLower();
-				if ( group.ResourceIndexCaseInsensitive.ContainsKey( lc ) )
-				{
-					return true;
-				}
-				else
-				{
-					foreach ( var rl in group.LocationList )
-					{
-						var arch = rl.Archive;
-						if ( arch.Exists( filename ) )
-						{
-							return true;
-						}
-					}
-				}
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// Find all files matching a given pattern in a group and get
-		/// some detailed information about them.
-		/// </summary>
-		/// <param name="groupName">The name of the resource group</param>
-		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <returns>A list of file information structures for all files matching the criteria.</returns>
-		public FileInfoList FindResourceFileInfo( string groupName, string pattern )
-		{
-			var vec = new FileInfoList();
-
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
-			}
-
-			// Iterate over the archives
-			foreach ( var rl in grp.LocationList )
-			{
-				var lst = rl.Archive.FindFileInfo( pattern, rl.Recursive );
-				vec.AddRange( lst );
-			}
-
-			return vec;
-		}
-
-		/// <summary>
+		/// Loads any created resources which are part of the named group.
+		/// Note that resources must have already been created by calling
+		/// ResourceManager::create, or declared using declareResource() or
+		/// in a script (such as .material and .overlay). The latter requires
+		/// that initialiseResourceGroup has been called.
 		///
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <returns></returns>
-		public string FindGroupContainingResource( string filename )
-		{
-			var grp = _findGroupContainingResourceImpl( filename );
-
-            if ( grp == null )
-			{
-				throw new Exception( "Unable to derive resource group for " + filename +
-									 " automatically since the resource was not found." );
-			}
-			return grp.Name;
-		}
-
-		/// <summary>
-		/// Adds a ResourceGroupListener which will be called back during
-		/// resource loading events.
-		/// </summary>
-		/// <param name="rgl"></param>
-		public void AddResourceGroupListener( IResourceGroupListener rgl )
-		{
-			if ( rgl != null )
-			{
-				_resourceGroupListeners.Add( rgl );
-				this._resourceGroupScriptingStarted += new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				this._resourceGroupScriptingEnded += new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				this._resourceGroupLoadStarted += new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				this._resourceGroupLoadEnded += new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				this._resourceLoadStarted += new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				this._resourceLoadEnded += new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				this._scriptParseStarted += new ScriptParseStarted( rgl.ScriptParseStarted );
-				this._scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
-				this._worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				this._worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
-			}
-		}
-
-		/// <summary>
-		/// Removes a ResourceGroupListener
-		/// </summary>
-		/// <param name="rgl"></param>
-		public void RemoveResourceGroupListener( IResourceGroupListener rgl )
-		{
-			if ( rgl != null )
-			{
-				_resourceGroupListeners.Remove( rgl );
-				this._resourceGroupScriptingStarted -= new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				this._resourceGroupScriptingEnded -= new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				this._resourceGroupLoadStarted -= new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				this._resourceGroupLoadEnded -= new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				this._resourceLoadStarted -= new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				this._resourceLoadEnded -= new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				this._scriptParseStarted -= new ScriptParseStarted( rgl.ScriptParseStarted );
-				this._scriptParseEnded -= new ScriptParseEnded( rgl.ScriptParseEnded );
-				this._worldGeometryStageStarted -= new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				this._worldGeometryStageEnded -= new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
-			}
-		}
-
-		/// <summary>
-		/// Associates some world geometry with a resource group, causing it to
-		/// be loaded / unloaded with the resource group.
-		/// </summary>
-		/// <remarks>
-		/// You would use this method to essentially defer a call to
-		/// SceneManager::setWorldGeometry to the time when the resource group
-		/// is loaded. The advantage of this is that compatible scene managers
-		/// will include the estimate of the number of loading stages for that
-		/// world geometry when the resource group begins loading, allowing you
-		/// to include that in a loading progress report.
+		/// When this method is called, this class will callback any ResourceGroupListeners
+		/// which have been registered to update them on progress.
 		/// </remarks>
-		/// <param name="groupName">The name of the resource group</param>
-		/// <param name="worldGeometry">The parameter which should be passed to setWorldGeometry</param>
-		/// <param name="sceneManager">The SceneManager which should be called</param>
-		public void LinkWorldGeometryToResourceGroup( string groupName, string worldGeometry, SceneManager sceneManager )
+		/// <param name="name">The name to of the resource group to load.</param>
+		/// </overloads>
+		public void LoadResourceGroup( string name )
 		{
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
+			LoadResourceGroup( name, true, true );
+		}
+
+		/// <param name="loadMainResources">If true, loads normal resources associated
+		/// with the group (you might want to set this to false if you wanted
+		/// to just load world geometry in bulk)</param>
+		/// <param name="name"></param>
+		/// <param name="loadWorldGeom">If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see></param>
+		public void LoadResourceGroup( string name, bool loadMainResources, bool loadWorldGeom )
+		{
+			// Can only bulk-load one group at a time (reasonable limitation I think)
+			//OGRE_LOCK_AUTO_MUTEX
+			LogManager.Instance.Write( "Loading resource group '{0}' - Resources: {1} World Geometry: {2}", name, loadMainResources, loadWorldGeom );
+			// load all created resources
+			ResourceGroup grp = getResourceGroup( name );
 			if ( grp == null )
 			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
+				throw new AxiomException( "Cannot find a group named {0}", name );
 			}
 
-			grp.WorldGeometry = worldGeometry;
-			grp.WorldGeometrySceneManager = sceneManager;
-		}
+			// Set current group
+			this._currentGroup = grp;
 
-		/// <summary>
-		/// Clear any link to world geometry from a resource group.
-		/// </summary>
-		/// <remarks>Basically undoes a previous call to linkWorldGeometryToResourceGroup.</remarks>
-		/// <param name="groupName">The name of the resource group</param>
-		public void UnlinkWorldGeometryFromResourceGroup( string groupName )
-		{
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
+			// Count up resources for starting event
+			int resourceCount = 0;
+			if ( loadMainResources )
 			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
+				foreach ( var pair in grp.LoadResourceOrders )
+				{
+					LoadUnloadResourceList lurl = pair.Value;
+					resourceCount += lurl.Count;
+				}
 			}
-
-			grp.WorldGeometry = "";
-			grp.WorldGeometrySceneManager = null;
-		}
-
-		/// <summary>
-		/// Shutdown all ResourceManagers, performed as part of clean-up.
-		/// </summary>
-		public void ShutdownAll()
-		{
-			foreach ( var pair in _resourceManagers )
+			// Estimate world geometry size
+			if ( grp.WorldGeometrySceneManager != null && loadWorldGeom )
 			{
-				var rm = pair.Value;
-				rm.UnloadAll();
-				rm.RemoveAll();
+				resourceCount += grp.WorldGeometrySceneManager.EstimateWorldGeometry( grp.WorldGeometry );
 			}
-		}
 
-		/// <summary>Get a list of the currently defined resource groups.</summary>
-		/// <remarks>
-		/// This method intentionally returns a copy rather than a reference in
-		/// order to avoid any contention issues in multithreaded applications.
-		/// </remarks>
-		/// <returns>A copy of list of currently defined groups.</returns>
-		public List<string> GetResourceGroups()
-		{
-			var vec = new List<string>();
+			_fireResourceGroupLoadStarted( name, resourceCount );
 
-			foreach ( var pair in _resourceGroups )
+			// Now load for real
+			if ( loadMainResources )
 			{
-				var rg = pair.Value;
-				vec.Add( rg.Name );
+				var keys = new float[ grp.LoadResourceOrders.Count ];
+				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
+
+				for ( ushort i = 0; i < keys.Length; i++ )
+				{
+					LoadUnloadResourceList lurl = grp.LoadResourceOrders[ keys[ i ] ];
+					foreach ( Resource res in lurl )
+					{
+						// Fire resource events no matter whether resource is already
+						// loaded or not. This ensures that the number of callbacks
+						// matches the number originally estimated, which is important
+						// for progress bars.
+						_fireResourceStarted( res );
+
+						// If loading one of these resources cascade-loads another resource,
+						// the list will get longer! But these should be loaded immediately
+						// Call load regardless, already loaded resources will be skipped
+						res.Load();
+
+						_fireResourceEnded();
+					}
+				}
 			}
-
-			return vec;
-		}
-
-		/// <summary>Get the list of resource declarations for the specified group name.</summary>
-		/// <remarks>
-		/// This method intentionally returns a copy rather than a reference in
-		/// order to avoid any contention issues in multithreaded applications.
-		/// </remarks>
-		/// /// <param name="groupName">The name of the group</param>
-		/// <returns>A copy of list of currently defined resources.</returns>
-		public ResourceDeclaration[] getResourceDeclarationList( string groupName )
-		{
-			// Try to find in resource index first
-			var grp = getResourceGroup( groupName );
-			if ( grp == null )
+			// Load World Geometry
+			if ( grp.WorldGeometrySceneManager != null && loadWorldGeom )
 			{
-				throw new AxiomException( "Cannot find a group named {0}", groupName );
+				grp.WorldGeometrySceneManager.SetWorldGeometry( grp.WorldGeometry );
 			}
-			return grp.ResourceDeclarations.ToArray();
+			_fireResourceGroupLoadEnded( name );
+
+#warning TODO
+			// group is loaded
+			//grp->groupStatus = ResourceGroup::LOADED;
+
+			// reset current group
+			this._currentGroup = null;
+
+			LogManager.Instance.Write( "Finished loading resource group {0}.", name );
 		}
+
+		#endregion LoadResourceGroup Method
 
 		#endregion Public Methods
 
@@ -2409,9 +2372,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected ResourceGroup getResourceGroup( string name )
 		{
-			if ( _resourceGroups.ContainsKey( name ) )
+			if ( this._resourceGroups.ContainsKey( name ) )
 			{
-				return _resourceGroups[ name ];
+				return this._resourceGroups[ name ];
 			}
 
 			return null;
@@ -2425,7 +2388,7 @@ namespace Axiom.Core
 		protected void addCreatedResource( Resource resource, ResourceGroup group )
 		{
 			//OGRE_LOCK_MUTEX(grp.OGRE_AUTO_MUTEX_NAME)
-			var order = resource.Creator.LoadingOrder;
+			Real order = resource.Creator.LoadingOrder;
 			LoadUnloadResourceList loadList = null;
 
 			if ( !group.LoadResourceOrders.TryGetValue( order, out loadList ) )
@@ -2449,7 +2412,7 @@ namespace Axiom.Core
 		public void RegisterResourceManager( string resourceType, ResourceManager rm )
 		{
 			LogManager.Instance.Write( "Registering ResourceManager for type {0}", resourceType );
-			_resourceManagers[ resourceType ] = rm;
+			this._resourceManagers[ resourceType ] = rm;
 		}
 
 		/// <summary>
@@ -2462,9 +2425,9 @@ namespace Axiom.Core
 		public void UnregisterResourceManager( string resourceType )
 		{
 			LogManager.Instance.Write( "Unregistering ResourceManager for type {0}", resourceType );
-			if ( _resourceManagers.ContainsKey( resourceType ) )
+			if ( this._resourceManagers.ContainsKey( resourceType ) )
 			{
-				_resourceManagers.Remove( resourceType );
+				this._resourceManagers.Remove( resourceType );
 			}
 		}
 
@@ -2475,17 +2438,17 @@ namespace Axiom.Core
 		public void RegisterScriptLoader( IScriptLoader su )
 		{
 			var patterns = new StringBuilder();
-			foreach ( var pattern in su.ScriptPatterns )
+			foreach ( string pattern in su.ScriptPatterns )
 			{
 				patterns.Append( pattern + " " );
 			}
 			LogManager.Instance.Write( "Registering ScriptLoader for patterns {0}", patterns );
-			if ( !_scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+			if ( !this._scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
 			{
-				_scriptLoaderOrders.Add( su.LoadingOrder, new List<IScriptLoader>() );
+				this._scriptLoaderOrders.Add( su.LoadingOrder, new List<IScriptLoader>() );
 			}
 
-			_scriptLoaderOrders[ su.LoadingOrder ].Add( su );
+			this._scriptLoaderOrders[ su.LoadingOrder ].Add( su );
 		}
 
 		/// <summary>
@@ -2495,14 +2458,14 @@ namespace Axiom.Core
 		public void UnregisterScriptLoader( IScriptLoader su )
 		{
 			var patterns = new StringBuilder();
-			foreach ( var pattern in su.ScriptPatterns )
+			foreach ( string pattern in su.ScriptPatterns )
 			{
 				patterns.Append( pattern + " " );
 			}
 			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns.ToString() );
-			if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+			if ( this._scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
 			{
-				_scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
+				this._scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
 			}
 		}
 
@@ -2510,15 +2473,15 @@ namespace Axiom.Core
 		/// <param name="res">reference to resource</param>
 		public void notifyResourceCreated( Resource res )
 		{
-			if ( _currentGroup != null )
+			if ( this._currentGroup != null )
 			{
 				// Use current group (batch loading)
-				_addCreatedResource( res, _currentGroup );
+				_addCreatedResource( res, this._currentGroup );
 			}
 			else
 			{
 				// Find group
-				var grp = getResourceGroup( res.Group );
+				ResourceGroup grp = getResourceGroup( res.Group );
 				if ( grp != null )
 				{
 					_addCreatedResource( res, grp );
@@ -2530,23 +2493,23 @@ namespace Axiom.Core
 		/// <param name="res">reference to resource</param>
 		public void notifyResourceRemoved( Resource res )
 		{
-			if ( _currentGroup != null )
+			if ( this._currentGroup != null )
 			{
 				// Do nothing - we're batch unloading so list will be cleared
 			}
 			else
 			{
 				// Find group
-				var grp = getResourceGroup( res.Group );
+				ResourceGroup grp = getResourceGroup( res.Group );
 				if ( grp != null )
 				{
 					if ( grp.LoadResourceOrders.ContainsKey( res.Creator.LoadingOrder ) )
 					{
 						// Iterate over the resource list and remove
-						var resList = grp.LoadResourceOrders[ res.Creator.LoadingOrder ];
-						foreach ( var r in resList )
+						LoadUnloadResourceList resList = grp.LoadResourceOrders[ res.Creator.LoadingOrder ];
+						foreach ( Resource r in resList )
 						{
-							if ( IntPtr.ReferenceEquals( r, res ) )
+							if ( ReferenceEquals( r, res ) )
 							{
 								// this is the one
 								resList.Remove( r );
@@ -2563,15 +2526,15 @@ namespace Axiom.Core
 			//OGRE_LOCK_AUTO_MUTEX
 			ResourceGroup oldGrp = null;
 			// New group
-			var newGrp = getResourceGroup( resource.Group );
+			ResourceGroup newGrp = getResourceGroup( resource.Group );
 			// find old entry
-			if ( _resourceGroups.TryGetValue( oldGroup, out oldGrp ) )
+			if ( this._resourceGroups.TryGetValue( oldGroup, out oldGrp ) )
 			{
-				var order = resource.Creator.LoadingOrder;
+				Real order = resource.Creator.LoadingOrder;
 				LoadUnloadResourceList loadList = null;
 				if ( oldGrp.LoadResourceOrders.TryGetValue( order, out loadList ) )
 				{
-					foreach ( var item in loadList )
+					foreach ( Resource item in loadList )
 					{
 						if ( item == resource )
 						{
@@ -2590,18 +2553,18 @@ namespace Axiom.Core
 		{
 			int index;
 			// Iterate over all groups
-			foreach ( var rgPair in _resourceGroups )
+			foreach ( var rgPair in this._resourceGroups )
 			{
-				var rg = rgPair.Value;
+				ResourceGroup rg = rgPair.Value;
 				// Iterate over all priorities
 				foreach ( var rlPair in rg.LoadResourceOrders )
 				{
-					var rl = rlPair.Value;
+					LoadUnloadResourceList rl = rlPair.Value;
 					index = 0;
 					// Iterate over all resources
 					while ( rl.Count != 0 && index != rl.Count )
 					{
-						var res = rl[ index ];
+						Resource res = rl[ index ];
 
 						if ( res.Creator == manager )
 						{
@@ -2626,9 +2589,9 @@ namespace Axiom.Core
 		/// <param name="description"></param>
 		public void notifyWorldGeometryStageStarted( string description )
 		{
-			if ( _worldGeometryStageStarted != null )
+			if ( this._worldGeometryStageStarted != null )
 			{
-				_worldGeometryStageStarted( description );
+				this._worldGeometryStageStarted( description );
 			}
 		}
 
@@ -2640,9 +2603,9 @@ namespace Axiom.Core
 		/// </remarks>
 		public void notifyWorldGeometryStageEnded()
 		{
-			if ( _worldGeometryStageStarted != null )
+			if ( this._worldGeometryStageStarted != null )
 			{
-				_worldGeometryStageEnded();
+				this._worldGeometryStageEnded();
 			}
 		}
 
@@ -2662,26 +2625,26 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Parsing scripts for resource group " + grp.Name );
 
 			// Count up the number of scripts we have to parse
-			var scriptLoaderFileList = new List<Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>>>();
+			var scriptLoaderFileList = new List<Tuple<IScriptLoader, List<FileInfoList>>>();
 
-			var scriptCount = 0;
+			int scriptCount = 0;
 			// Iterate over script users in loading order and get streams
-			foreach ( var pairsl in _scriptLoaderOrders )
+			foreach ( var pairsl in this._scriptLoaderOrders )
 			{
-				var sl = pairsl.Value;
+				List<IScriptLoader> sl = pairsl.Value;
 
-				foreach ( var isl in sl )
+				foreach ( IScriptLoader isl in sl )
 				{
 					var fileListList = new List<FileInfoList>();
 					// Get all the patterns and search them
-					var patterns = isl.ScriptPatterns;
-					foreach ( var p in patterns )
+					List<string> patterns = isl.ScriptPatterns;
+					foreach ( string p in patterns )
 					{
-						var fileList = FindResourceFileInfo( grp.Name, p );
+						FileInfoList fileList = FindResourceFileInfo( grp.Name, p );
 						scriptCount += fileList.Count;
 						fileListList.Add( fileList );
 					}
-					scriptLoaderFileList.Add( new Axiom.Math.Tuple<IScriptLoader, List<FileInfoList>>( isl, fileListList ) );
+					scriptLoaderFileList.Add( new Tuple<IScriptLoader, List<FileInfoList>>( isl, fileListList ) );
 				}
 			}
 			// Fire scripting event
@@ -2691,14 +2654,14 @@ namespace Axiom.Core
 			// Note we respect original ordering
 			foreach ( var slfli in scriptLoaderFileList )
 			{
-				var su = slfli.First;
+				IScriptLoader su = slfli.First;
 				// Iterate over each list
-				foreach ( var flli in slfli.Second )
+				foreach ( FileInfoList flli in slfli.Second )
 				{
 					// Iterate over each item in the list
-					foreach ( var fii in flli )
+					foreach ( FileInfo fii in flli )
 					{
-						var skipScript = false;
+						bool skipScript = false;
 						_fireScriptStarted( fii.Basename, ref skipScript );
 						if ( skipScript )
 						{
@@ -2706,11 +2669,11 @@ namespace Axiom.Core
 						}
 						else
 						{
-							var stream = fii.Archive.Open( fii.Basename );
+							Stream stream = fii.Archive.Open( fii.Basename );
 							if ( stream != null )
 							{
 								LogManager.Instance.Write( "Parsing script " + fii.Basename );
-								#warning TODO
+#warning TODO
 								//if ( mLoadingListener )
 								//    mLoadingListener->resourceStreamOpened( fii->filename, grp->name, 0, stream );
 								su.ParseScript( stream, grp.Name, fii.Filename );
@@ -2729,12 +2692,12 @@ namespace Axiom.Core
 		/// <remarks>Called as part of initializeResourceGroup</remarks>
 		private void _createDeclaredResources( ResourceGroup grp )
 		{
-			foreach ( var dcl in grp.ResourceDeclarations )
+			foreach ( ResourceDeclaration dcl in grp.ResourceDeclarations )
 			{
 				// Retrieve the appropriate manager
-				var mgr = _getResourceManager( dcl.ResourceType );
+				ResourceManager mgr = _getResourceManager( dcl.ResourceType );
 				// Create the resource
-				var res = mgr.Create( dcl.ResourceName, grp.Name, dcl.Loader != null, dcl.Loader, dcl.Parameters );
+				Resource res = mgr.Create( dcl.ResourceName, grp.Name, dcl.Loader != null, dcl.Loader, dcl.Parameters );
 				// Add resource to load list
 				LoadUnloadResourceList loadList;
 				if ( grp.LoadResourceOrders.ContainsKey( mgr.LoadingOrder ) != true )
@@ -2754,7 +2717,7 @@ namespace Axiom.Core
 
 		private void _addCreatedResource( Resource res, ResourceGroup group )
 		{
-			var order = res.Creator.LoadingOrder;
+			Real order = res.Creator.LoadingOrder;
 
 			LoadUnloadResourceList loadList;
 			if ( !group.LoadResourceOrders.ContainsKey( order ) )
@@ -2776,18 +2739,18 @@ namespace Axiom.Core
 		/// <param name="grp"></param>
 		private void _dropGroupContents( ResourceGroup grp )
 		{
-			var groupSet = false;
-			if ( _currentGroup != null )
+			bool groupSet = false;
+			if ( this._currentGroup != null )
 			{
 				// Set current group to indicate ignoring of notifications
-				_currentGroup = grp;
+				this._currentGroup = grp;
 				groupSet = true;
 			}
 			// delete all the load list entries
 			foreach ( var pair in grp.LoadResourceOrders )
 			{
-				var rl = pair.Value.ToArray(); // avoid modification while enumerating
-				foreach ( var res in rl )
+				Resource[] rl = pair.Value.ToArray(); // avoid modification while enumerating
+				foreach ( Resource res in rl )
 				{
 					res.Creator.Remove( res ); // will result in call to notifyResourceRemoved()
 				}
@@ -2796,7 +2759,7 @@ namespace Axiom.Core
 
 			if ( groupSet )
 			{
-				_currentGroup = null;
+				this._currentGroup = null;
 			}
 		}
 
@@ -2811,7 +2774,7 @@ namespace Axiom.Core
 			{
 				// Don't iterate over resources to drop with ResourceManager
 				// Assume this is being done anyway since this is a shutdown method
-				var lurl = pair.Value;
+				LoadUnloadResourceList lurl = pair.Value;
 				lurl.Clear();
 			}
 
@@ -2830,11 +2793,11 @@ namespace Axiom.Core
 		private ResourceManager _getResourceManager( string resourceType )
 		{
 			//OGRE_LOCK_AUTO_MUTEX
-			if ( !this.ResourceManagers.ContainsKey( resourceType ) )
+			if ( !ResourceManagers.ContainsKey( resourceType ) )
 			{
 				throw new Exception( "Cannot locate resource manager for resource type '" + resourceType + "'." );
 			}
-			return this.ResourceManagers[ resourceType ];
+			return ResourceManagers[ resourceType ];
 		}
 
 		private ResourceGroup _findGroupContainingResourceImpl( string filename )
@@ -2842,7 +2805,7 @@ namespace Axiom.Core
 			//OGRE_LOCK_AUTO_MUTEX
 
 			// Iterate over resource groups and find
-			foreach ( var grp in _resourceGroups.Values )
+			foreach ( ResourceGroup grp in this._resourceGroups.Values )
 			{
 				//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
 
@@ -2859,12 +2822,12 @@ namespace Axiom.Core
 
 		#region ISingleton<ResourceGroupManager> implementation
 
-	    /// <summary>
-	    ///     Singleton instance of this class.
-	    /// </summary>
-	    protected static ResourceGroupManager instance = new Lazy<ResourceGroupManager>().Value;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		protected static ResourceGroupManager instance = new Lazy<ResourceGroupManager>().Value;
 
-        /// <summary>
+		/// <summary>
 		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static ResourceGroupManager Instance
@@ -2877,16 +2840,16 @@ namespace Axiom.Core
 
 		public virtual bool Initialize( params object[] args )
 		{
-			if (args.Length == 0)
+			if ( args.Length == 0 )
 			{
 				// Create the 'General' group
-				CreateResourceGroup(DefaultResourceGroupName);
+				CreateResourceGroup( DefaultResourceGroupName );
 				// Create the 'Internal' group
-				CreateResourceGroup(InternalResourceGroupName);
+				CreateResourceGroup( InternalResourceGroupName );
 				// Create the 'Bootstrap' group
-				CreateResourceGroup(BootstrapResourceGroupName);
+				CreateResourceGroup( BootstrapResourceGroupName );
 				// Create the 'AutoDetect' group
-				CreateResourceGroup(AutoDetectResourceGroupName);
+				CreateResourceGroup( AutoDetectResourceGroupName );
 			}
 			else
 			{
@@ -2897,35 +2860,126 @@ namespace Axiom.Core
 
 		#endregion ISingleton<ResourceGroupManager> implementation
 
-		#region IDisposable Members
+		#region Nested type: ResourceGroupPrepareStarted
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// delete all resource groups
-					foreach ( var pair in resourceGroups )
-					{
-						var rg = pair.Value;
-						_deleteGroup( rg );
-					}
-					resourceGroups.Clear();
-					_currentGroup = null;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="groupName"></param>
+		/// <param name="resourceCount"></param>
+		private delegate void ResourceGroupPrepareStarted( string groupName, int resourceCount );
 
-					ResourceGroupManager.instance = null;
-				}
+		#endregion
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+		#region Nested type: ResourceGroupScriptingEnded
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+		/// <summary>
+		/// This event is fired when a resource group finished parsing scripts.
+		/// </summary>
+		/// <param name="groupName">The name of the group</param>
+		private delegate void ResourceGroupScriptingEnded( string groupName );
 
-		#endregion IDisposable Members
-	} ;
+		#endregion
+
+		#region Nested type: ResourceGroupScriptingStarted
+
+		/// <summary>
+		/// This event is fired when a resource group begins parsing scripts.
+		/// </summary>
+		/// <param name="groupName">The name of the group</param>
+		/// <param name="scriptCount">The number of scripts which will be parsed</param>
+		private delegate void ResourceGroupScriptingStarted( string groupName, int scriptCount );
+
+		#endregion
+
+		#region Nested type: ResourceLoadEnded
+
+		/// <summary>
+		/// This event is fired when the resource has been loaded.
+		/// </summary>
+		private delegate void ResourceLoadEnded();
+
+		#endregion
+
+		#region Nested type: ResourceLoadStarted
+
+		/// <summary>
+		/// This event is fired when a declared resource is about to be loaded.
+		/// </summary>
+		/// <param name="resource">Weak reference to the resource loaded</param>
+		private delegate void ResourceLoadStarted( Resource resource );
+
+		#endregion
+
+		// private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
+
+		// private ResourcePrepareStarted _resourcePrepareStarted;
+
+		#region Nested type: ResourcePrepareEnded
+
+		/// <summary>
+		/// 
+		/// </summary>
+		private delegate void ResourcePrepareEnded();
+
+		#endregion
+
+		#region Nested type: ResourcePrepareStarted
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="resource"></param>
+		private delegate void ResourcePrepareStarted( Resource resource );
+
+		#endregion
+
+		#region Nested type: ScriptParseEnded
+
+		/// <summary>
+		/// This event is fired when the script has been fully parsed.
+		/// </summary>
+		private delegate void ScriptParseEnded( string scriptName, bool skipped );
+
+		#endregion
+
+		#region Nested type: ScriptParseStarted
+
+		/// <summary>
+		/// This event is fired when a script is about to be parsed.
+		/// </summary>
+		/// <param name="scriptName">Name of the to be parsed</param>
+		/// <param name="skipThisScript">A boolean passed by reference which is by default set to 
+		///	false. If the event sets this to true, the script will be skipped and not
+		///	parsed. Note that in this case the scriptParseEnded event will not be raised
+		///	for this script.</param>
+		private delegate void ScriptParseStarted( string scriptName, ref bool skipThisScript );
+
+		#endregion
+
+		#region Nested type: WorldGeometryStageEnded
+
+		/// <summary>
+		/// This event is fired when a stage of loading linked world geometry
+		/// has been completed. The number of stages required will have been
+		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		/// </summary>
+		private delegate void WorldGeometryStageEnded();
+
+		#endregion
+
+		#region Nested type: WorldGeometryStageStarted
+
+		/// <summary>
+		/// This event is fired when a stage of loading linked world geometry
+		/// is about to start. The number of stages required will have been
+		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		/// </summary>
+		/// <param name="description">Text description of what was just loaded</param>
+		private delegate void WorldGeometryStageStarted( string description );
+
+		#endregion
+
+		//private ResourcePrepareEnded _resourcePrepareEnded;
+	};
 }

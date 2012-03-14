@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
 using System.IO;
+
 using Axiom.Math;
-
-
 
 #endregion Namespace Declarations
 
@@ -66,7 +69,6 @@ namespace Axiom.Scripting
 	/// </ogre>
 	public interface IScriptLoader
 	{
-
 		/// <summary>
 		/// Gets the file patterns which should be used to find scripts for this class.
 		/// </summary>
@@ -75,21 +77,7 @@ namespace Axiom.Scripting
 		/// ResourceGroupManager::registerScriptLoader. Returns a list of file
 		/// patterns, in the order they should be searched in.
 		/// </remarks>
-		List<string> ScriptPatterns
-		{
-			get;
-		}
-
-	    /// <summary>
-	    /// Parse a script file.
-	    /// </summary>
-	    /// <param name="stream">reference to a data stream which is the source of the script</param>
-	    /// <param name="groupName">
-	    /// The name of a resource group which should be used if any resources
-	    /// are created during the parse of this script.
-	    /// </param>
-	    /// <param name="fileName"></param>
-	    void ParseScript( Stream stream, string groupName, string fileName );
+		List<string> ScriptPatterns { get; }
 
 		/// <summary>
 		/// Gets the relative loading order of scripts of this type.
@@ -100,10 +88,17 @@ namespace Axiom.Scripting
 		/// Returns a value representing the relative loading order of these scripts
 		/// compared to other script users, where higher values load later.
 		/// </remarks>
-		Real LoadingOrder
-		{
-			get;
-		}
+		Real LoadingOrder { get; }
 
+		/// <summary>
+		/// Parse a script file.
+		/// </summary>
+		/// <param name="stream">reference to a data stream which is the source of the script</param>
+		/// <param name="groupName">
+		/// The name of a resource group which should be used if any resources
+		/// are created during the parse of this script.
+		/// </param>
+		/// <param name="fileName"></param>
+		void ParseScript( Stream stream, string groupName, string fileName );
 	};
 }

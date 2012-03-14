@@ -1,11 +1,18 @@
 ﻿#region Namespace Declarations
 
+using System.Drawing;
 using System.Threading;
+using System.Windows.Forms;
+
+using Axiom.Graphics;
 using Axiom.Input;
 using Axiom.Utilities;
-using OpenTK.Input;
+
 using OpenTK;
-using Axiom.Graphics;
+using OpenTK.Input;
+
+using MouseButtons = Axiom.Input.MouseButtons;
+using NativeWindow = OpenTK.NativeWindow;
 
 #endregion Namespace Declarations
 
@@ -18,22 +25,6 @@ namespace Axiom.Platforms.OpenTK
 	{
 		#region Fields
 
-		RenderWindow parent;
-		System.Drawing.Point center;
-		bool ownMouse = false;
-		KeyboardDevice keyboard = null;
-		MouseDevice mouse = null;
-
-		/// <summary>
-		///		Is the opentk window currently visible?
-		/// </summary>
-		protected bool isVisible;
-
-		protected int oldX, oldY, oldZ;
-		protected int mouseX, mouseY;
-		protected int relMouseX, relMouseY, relMouseZ;
-		protected MouseButtons mouseButtons;
-
 		/// <summary>
 		///
 		/// </summary>
@@ -43,6 +34,23 @@ namespace Axiom.Platforms.OpenTK
 		///  Size of the arrays used to hold buffered input data.
 		/// </summary>
 		protected const int BufferSize = 16;
+
+		private Point center;
+
+		/// <summary>
+		///		Is the opentk window currently visible?
+		/// </summary>
+		protected bool isVisible;
+
+		private KeyboardDevice keyboard;
+		private MouseDevice mouse;
+		protected MouseButtons mouseButtons;
+		protected int mouseX, mouseY;
+
+		protected int oldX, oldY, oldZ;
+		private bool ownMouse;
+		private RenderWindow parent;
+		protected int relMouseX, relMouseY, relMouseZ;
 
 		#endregion Fields
 
@@ -54,7 +62,7 @@ namespace Axiom.Platforms.OpenTK
 		public OpenTKInputReader()
 		{
 			// start off assuming we are visible
-			isVisible = true;
+			this.isVisible = true;
 		}
 
 		/// <summary>
@@ -62,14 +70,12 @@ namespace Axiom.Platforms.OpenTK
 		/// </summary>
 		~OpenTKInputReader()
 		{
-			System.Windows.Forms.Cursor.Show();
-			keyboard = null;
-			mouse = null;
+			Cursor.Show();
+			this.keyboard = null;
+			this.mouse = null;
 		}
 
 		#endregion Constructor
-
-		#region InputReader Members
 
 		#region Properties
 
@@ -77,7 +83,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			get
 			{
-				return mouseX;
+				return this.mouseX;
 			}
 		}
 
@@ -85,7 +91,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			get
 			{
-				return mouseY;
+				return this.mouseY;
 			}
 		}
 
@@ -101,7 +107,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			get
 			{
-				return relMouseX;
+				return this.relMouseX;
 			}
 		}
 
@@ -109,7 +115,7 @@ namespace Axiom.Platforms.OpenTK
 		{
 			get
 			{
-				return relMouseY;
+				return this.relMouseY;
 			}
 		}
 
@@ -117,132 +123,13 @@ namespace Axiom.Platforms.OpenTK
 		{
 			get
 			{
-				return relMouseZ;
+				return this.relMouseZ;
 			}
 		}
 
 		#endregion Properties
 
 		#region Methods
-
-		/// <summary>
-		///		Capture the current state of input.
-		/// </summary>
-		public override void Capture()
-		{
-			if ( mouse == null )
-				return;
-
-			NativeWindow window = (NativeWindow)parent[ "nativewindow" ];
-
-			isVisible = window.WindowState != WindowState.Minimized && window.Focused;
-
-			// if we aren't active, wait
-			if ( window == null || !isVisible )
-			{
-				Thread.Sleep( 100 );
-				return;
-			}
-
-			if ( !useMouseEvents )
-			{
-				relMouseZ = mouse.Wheel - oldZ;
-				oldZ = mouse.Wheel;
-				mouseButtons = mouse[ MouseButton.Left ] == true ? MouseButtons.Left : 0;
-				mouseButtons = mouse[ MouseButton.Right ] == true ? MouseButtons.Right : 0;
-				mouseButtons = mouse[ MouseButton.Middle ] == true ? MouseButtons.Middle : 0;
-			}
-			if ( ownMouse )
-			{
-				int mx = System.Windows.Forms.Cursor.Position.X;
-				int my = System.Windows.Forms.Cursor.Position.Y;
-				relMouseX = mx - center.X;
-				relMouseY = my - center.Y;
-				mouseX += relMouseX;
-				mouseY += relMouseY;
-
-				System.Windows.Forms.Cursor.Position = center;
-			}
-			else
-			{
-				int mx = mouse.X;
-				int my = mouse.Y;
-				relMouseX = mx - oldX;
-				relMouseY = my - oldY;
-				mouseX += relMouseX;
-				mouseY += relMouseY;
-				oldX = mx;
-				oldY = my;
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="parent"></param>
-		/// <param name="useKeyboard"></param>
-		/// <param name="useMouse"></param>
-		/// <param name="useGamepad"></param>
-		/// <param name="ownMouse"></param>
-		public override void Initialize( Axiom.Graphics.RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse )
-		{
-			Contract.Requires( parent.GetType().Name == "OpenTKWindow", "RenderSystem", "OpenTK InputManager requires OpenTK OpenGL Renderer." );
-
-			this.parent = parent;
-
-			INativeWindow window = (INativeWindow)parent[ "nativewindow" ];
-
-			if ( window == null )
-				return;
-
-			keyboard = window.InputDriver.Keyboard[ 0 ];
-			//keyboard = window.Keyboard;
-
-			if ( useMouse )
-			{
-				mouse = window.InputDriver.Mouse[ 0 ];
-				if ( ownMouse )
-				{
-					this.ownMouse = true;
-					System.Windows.Forms.Cursor.Hide();
-				}
-				// mouse starts out in the center of the window
-				center.X = parent.Width / 2;
-				center.Y = parent.Height / 2;
-
-				if ( ownMouse )
-				{
-					center = window.PointToScreen( center );
-					System.Windows.Forms.Cursor.Position = center;
-					mouseX = oldX = center.X;
-					mouseY = oldY = center.Y;
-				}
-				else
-				{
-					System.Drawing.Point center2 = window.PointToScreen( center );
-					System.Windows.Forms.Cursor.Position = center2;
-					mouseX = oldX = center.X;
-					mouseY = oldY = center.Y;
-				}
-			}
-		}
-
-		/// <summary>
-		///		Checks the current keyboard state to see if the specified key is pressed.
-		/// </summary>
-		/// <param name="key">KeyCode to check.</param>
-		/// <returns>true if the key is down, false otherwise.</returns>
-		public override bool IsKeyPressed( KeyCodes key )
-		{
-			if ( keyboard == null )
-				return false;
-			return keyboard[ ConvertKeyEnum( key ) ] == true;
-		}
-
-		public override bool IsMousePressed( MouseButtons button )
-		{
-			return ( mouseButtons & button ) != 0;
-		}
 
 		public override bool UseKeyboardEvents
 		{
@@ -268,13 +155,134 @@ namespace Axiom.Platforms.OpenTK
 			}
 		}
 
-		public override void Dispose()
+		/// <summary>
+		///		Capture the current state of input.
+		/// </summary>
+		public override void Capture()
 		{
+			if ( this.mouse == null )
+			{
+				return;
+			}
+
+			var window = (NativeWindow)this.parent[ "nativewindow" ];
+
+			this.isVisible = window.WindowState != WindowState.Minimized && window.Focused;
+
+			// if we aren't active, wait
+			if ( window == null || !this.isVisible )
+			{
+				Thread.Sleep( 100 );
+				return;
+			}
+
+			if ( !useMouseEvents )
+			{
+				this.relMouseZ = this.mouse.Wheel - this.oldZ;
+				this.oldZ = this.mouse.Wheel;
+				this.mouseButtons = this.mouse[ MouseButton.Left ] ? MouseButtons.Left : 0;
+				this.mouseButtons = this.mouse[ MouseButton.Right ] ? MouseButtons.Right : 0;
+				this.mouseButtons = this.mouse[ MouseButton.Middle ] ? MouseButtons.Middle : 0;
+			}
+			if ( this.ownMouse )
+			{
+				int mx = Cursor.Position.X;
+				int my = Cursor.Position.Y;
+				this.relMouseX = mx - this.center.X;
+				this.relMouseY = my - this.center.Y;
+				this.mouseX += this.relMouseX;
+				this.mouseY += this.relMouseY;
+
+				Cursor.Position = this.center;
+			}
+			else
+			{
+				int mx = this.mouse.X;
+				int my = this.mouse.Y;
+				this.relMouseX = mx - this.oldX;
+				this.relMouseY = my - this.oldY;
+				this.mouseX += this.relMouseX;
+				this.mouseY += this.relMouseY;
+				this.oldX = mx;
+				this.oldY = my;
+			}
 		}
 
-		#endregion Methods
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="useKeyboard"></param>
+		/// <param name="useMouse"></param>
+		/// <param name="useGamepad"></param>
+		/// <param name="ownMouse"></param>
+		public override void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse )
+		{
+			Contract.Requires( parent.GetType().Name == "OpenTKWindow", "RenderSystem", "OpenTK InputManager requires OpenTK OpenGL Renderer." );
 
-		#endregion InputReader Members
+			this.parent = parent;
+
+			var window = (INativeWindow)parent[ "nativewindow" ];
+
+			if ( window == null )
+			{
+				return;
+			}
+
+			this.keyboard = window.InputDriver.Keyboard[ 0 ];
+			//keyboard = window.Keyboard;
+
+			if ( useMouse )
+			{
+				this.mouse = window.InputDriver.Mouse[ 0 ];
+				if ( ownMouse )
+				{
+					this.ownMouse = true;
+					Cursor.Hide();
+				}
+				// mouse starts out in the center of the window
+				this.center.X = parent.Width / 2;
+				this.center.Y = parent.Height / 2;
+
+				if ( ownMouse )
+				{
+					this.center = window.PointToScreen( this.center );
+					Cursor.Position = this.center;
+					this.mouseX = this.oldX = this.center.X;
+					this.mouseY = this.oldY = this.center.Y;
+				}
+				else
+				{
+					Point center2 = window.PointToScreen( this.center );
+					Cursor.Position = center2;
+					this.mouseX = this.oldX = this.center.X;
+					this.mouseY = this.oldY = this.center.Y;
+				}
+			}
+		}
+
+		/// <summary>
+		///		Checks the current keyboard state to see if the specified key is pressed.
+		/// </summary>
+		/// <param name="key">KeyCode to check.</param>
+		/// <returns>true if the key is down, false otherwise.</returns>
+		public override bool IsKeyPressed( KeyCodes key )
+		{
+			if ( this.keyboard == null )
+			{
+				return false;
+			}
+			return this.keyboard[ ConvertKeyEnum( key ) ];
+		}
+
+		public override bool IsMousePressed( MouseButtons button )
+		{
+			return ( this.mouseButtons & button ) != 0;
+		}
+
+		public override void Dispose() { }
+
+		#endregion Methods
 
 		#region Keycode Conversions
 

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Axiom.Core;
-using Axiom.Graphics;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -46,105 +46,107 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-	    /// <summary>
+		#region Nested type: AutoConstantEntry
+
+		/// <summary>
 		///    A structure for recording the use of automatic parameters.
 		/// </summary>
 		public class AutoConstantEntry
-        {
-            #region Type
-            /// <summary>
+		{
+			#region Type
+
+			/// <summary>
 			///    The type of the parameter.
 			/// </summary>
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantType Type;
 
-            #endregion
+			#endregion
 
-            #region PhysicalIndex
+			#region PhysicalIndex
 
-	        /// <summary>
-	        ///    The target index.
-	        /// </summary>
-	        [OgreVersion(1, 7, 2790)]
-	        public int PhysicalIndex;
+			/// <summary>
+			///    The target index.
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public int PhysicalIndex;
 
-            #endregion
+			#endregion
 
-            #region ElementCount
+			#region ElementCount
 
-            /// <summary>
-            /// The number of elements per individual entry in this constant
-            /// Used in case people used packed elements smaller than 4 (e.g. GLSL)
-            /// and bind an auto which is 4-element packed to it
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-	        public int ElementCount;
+			/// <summary>
+			/// The number of elements per individual entry in this constant
+			/// Used in case people used packed elements smaller than 4 (e.g. GLSL)
+			/// and bind an auto which is 4-element packed to it
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public int ElementCount;
 
-            #endregion
+			#endregion
 
-            #region Data
+			#region Data
 
-            /// <summary>
+			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public int Data;
 
-            #endregion
+			#endregion
 
-            #region FData
+			#region FData
 
-            /// <summary>
+			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public float FData;
 
-            #endregion
+			#endregion
 
-            #region Variability
+			#region Variability
 
-            /// <summary>
+			/// <summary>
 			/// The Variability of this parameter (see <see>GpuParamVariability</see>)
 			/// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuParamVariability Variability;
 
-            #endregion
+			#endregion
 
-            #region constructor
-            /// <summary>
-	        ///    Default constructor.
-	        /// </summary>
-	        /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
-	        /// <param name="index">Index of the param.</param>
-	        /// <param name="data">Any additional info to go with the parameter.</param>
-	        /// <param name="variability">Variability of parameter</param>
-            [OgreVersion(1, 7, 2790)]
-	        public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability ) 
-				: this( type, index, data,variability, 4)
+			#region constructor
+
+			/// <summary>
+			///    Default constructor.
+			/// </summary>
+			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+			/// <param name="index">Index of the param.</param>
+			/// <param name="data">Any additional info to go with the parameter.</param>
+			/// <param name="variability">Variability of parameter</param>
+			[OgreVersion( 1, 7, 2790 )]
+			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability )
+				: this( type, index, data, variability, 4 ) { }
+
+			/// <summary>
+			///    Default constructor.
+			/// </summary>
+			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
+			/// <param name="index">Index of the param.</param>
+			/// <param name="data">Any additional info to go with the parameter.</param>
+			/// <param name="variability">Variability of parameter</param>
+			/// <param name="elementCount"></param>
+			[OgreVersion( 1, 7, 2790 )]
+			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability, int elementCount )
 			{
-			}
+				this.Type = type;
+				this.PhysicalIndex = index;
+				this.Data = data;
+				this.Variability = variability;
+				this.ElementCount = elementCount;
 
-            /// <summary>
-	        ///    Default constructor.
-	        /// </summary>
-	        /// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
-	        /// <param name="index">Index of the param.</param>
-	        /// <param name="data">Any additional info to go with the parameter.</param>
-	        /// <param name="variability">Variability of parameter</param>
-	        /// <param name="elementCount"></param>
-            [OgreVersion(1, 7, 2790)]
-	        public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability, int elementCount )
-			{
-				Type = type;
-				PhysicalIndex = index;
-				Data = data;
-				Variability = variability;
-                ElementCount = elementCount;
-
-                // this is likeley obsolete in as ogre doesnt have this (anymore?)
-				System.Diagnostics.Debug.Assert( type != AutoConstantType.SinTime_0_X );
+				// this is likeley obsolete in as ogre doesnt have this (anymore?)
+				Debug.Assert( type != AutoConstantType.SinTime_0_X );
 			}
 
 			/// <summary>
@@ -154,12 +156,10 @@ namespace Axiom.Graphics
 			/// <param name="index">Index of the param.</param>
 			/// <param name="fdata">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-            /// <param name="elementCount"></param>
-            [OgreVersion(1, 7, 2790)]
-			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability ) 
-				: this( type, index, fdata, variability, 4 )
-			{
-			}
+			/// <param name="elementCount"></param>
+			[OgreVersion( 1, 7, 2790 )]
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability )
+				: this( type, index, fdata, variability, 4 ) { }
 
 			/// <summary>
 			///    Default constructor.
@@ -168,43 +168,47 @@ namespace Axiom.Graphics
 			/// <param name="index">Index of the param.</param>
 			/// <param name="fdata">Any additional info to go with the parameter.</param>
 			/// <param name="variability">Variability of parameter</param>
-            /// <param name="elementCount"></param>
-            [OgreVersion(1, 7, 2790)]
+			/// <param name="elementCount"></param>
+			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability, int elementCount )
 			{
-				Type = type;
-				PhysicalIndex = index;
-				FData = fdata;
-				Variability = variability;
-                ElementCount = elementCount;
+				this.Type = type;
+				this.PhysicalIndex = index;
+				this.FData = fdata;
+				this.Variability = variability;
+				this.ElementCount = elementCount;
 			}
 
-            #endregion
+			#endregion
 
-            #region Clone
+			#region Clone
 
-            [AxiomHelper(0, 8)]
-            public AutoConstantEntry Clone()
-            {
-                var n = new AutoConstantEntry(Type, PhysicalIndex, FData, Variability, ElementCount);
-                n.Data = Data;
-                return n;
-            }
+			[AxiomHelper( 0, 8 )]
+			public AutoConstantEntry Clone()
+			{
+				var n = new AutoConstantEntry( this.Type, this.PhysicalIndex, this.FData, this.Variability, this.ElementCount );
+				n.Data = this.Data;
+				return n;
+			}
 
-            #endregion
-        }
+			#endregion
+		}
 
-        [OgreVersion(1, 7, 2790)]
+		#endregion
+
+		#region Nested type: AutoConstantsList
+
+		[OgreVersion( 1, 7, 2790 )]
 		public class AutoConstantsList : List<AutoConstantEntry>
 		{
-            public AutoConstantsList()
-            {
-            }
+			public AutoConstantsList() { }
 
-            public AutoConstantsList(AutoConstantsList other)
-            {
-                AddRange( other.GetRange( 0, other.Count ) );
-            }
+			public AutoConstantsList( AutoConstantsList other )
+			{
+				AddRange( other.GetRange( 0, other.Count ) );
+			}
 		}
+
+		#endregion
 	}
 }

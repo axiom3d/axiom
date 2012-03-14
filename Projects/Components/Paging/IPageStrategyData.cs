@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -35,22 +39,22 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    /// interface representing the data held against the PagedWorldSection
-    /// which is specifically used by the PageStrategy.
-    /// </summary>
-    public interface IPageStrategyData
-    {
-        /// <summary>
-        /// Load this data from a stream (returns true if successful)
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        bool Load( StreamSerializer stream );
+	/// <summary>
+	/// interface representing the data held against the PagedWorldSection
+	/// which is specifically used by the PageStrategy.
+	/// </summary>
+	public interface IPageStrategyData
+	{
+		/// <summary>
+		/// Load this data from a stream (returns true if successful)
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		bool Load( StreamSerializer stream );
 
-        /// <summary>
-        /// Save this data to a stream
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        void Save( StreamSerializer stream );
-    }
+		/// <summary>
+		/// Save this data to a stream
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		void Save( StreamSerializer stream );
+	}
 }

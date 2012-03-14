@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Core;
 using Axiom.Math;
@@ -63,33 +65,9 @@ namespace Axiom.Graphics
 	///     details of the vertices itself, or in fact that it holds the vertex indices
 	///     itself. Everything is manipulated via pointers so if you want this
 	///     class to point into a block of geometry data it can.
-    /// </remarks>
+	/// </remarks>
 	public class StaticFaceGroup
 	{
-		/// <summary>
-		///     Type of face group.
-		/// </summary>
-		public FaceGroup type;
-
-		/// <summary>
-		///     Is this a sky surface?
-		/// </summary>
-		public bool isSky;
-
-		/// <summary>
-		///     Index into a buffer containing vertex definitions. Because we're
-		///     dealing with subsets of large levels this is likely to be part-way
-		///     through a huge vertex buffer.
-		/// </summary>
-		public int vertexStart;
-
-		/// <summary>
-		///     The range of vertices in the buffer this facegroup references.
-		///     This is really for copying purposes only, so that we know which
-		///     subset of vertices to copy from our large-level buffer into the rendering buffer.
-		/// </summary>
-		public int numVertices;
-
 		/// <summary>
 		///     Index into a buffer containing vertex indices. This buffer
 		///     may be individual to this group or shared for memory allocation
@@ -101,9 +79,9 @@ namespace Axiom.Graphics
 		public int elementStart;
 
 		/// <summary>
-		///     The number of vertex indices. This is only applicable to FaceGroup.FaceList face group types.
+		///     Is this a sky surface?
 		/// </summary>
-		public int numElements;
+		public bool isSky;
 
 		/// <summary>
 		///     Handle to material used by this group.
@@ -112,11 +90,35 @@ namespace Axiom.Graphics
 		/// </summary>
 		public ResourceHandle materialHandle;
 
-		public Plane plane;
+		/// <summary>
+		///     The number of vertex indices. This is only applicable to FaceGroup.FaceList face group types.
+		/// </summary>
+		public int numElements;
+
+		/// <summary>
+		///     The range of vertices in the buffer this facegroup references.
+		///     This is really for copying purposes only, so that we know which
+		///     subset of vertices to copy from our large-level buffer into the rendering buffer.
+		/// </summary>
+		public int numVertices;
 
 		/// <remarks>
 		///     Patch surface (only applicable when type == FaceGroup.Patch)
 		/// </remarks>
 		public PatchSurface patchSurf;
+
+		public Plane plane;
+
+		/// <summary>
+		///     Type of face group.
+		/// </summary>
+		public FaceGroup type;
+
+		/// <summary>
+		///     Index into a buffer containing vertex definitions. Because we're
+		///     dealing with subsets of large levels this is likely to be part-way
+		///     through a huge vertex buffer.
+		/// </summary>
+		public int vertexStart;
 	}
 }

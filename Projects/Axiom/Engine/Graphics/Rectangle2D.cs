@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -52,16 +53,17 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class Rectangle2D : SimpleRenderable
 	{
+		private const int POSITION = 0;
+		private const int TEXCOORD = 1;
+		private const int NORMAL = 2;
 
-		const int POSITION = 0;
-		const int TEXCOORD = 1;
-		const int NORMAL = 2;
-		static float[] texCoords = new float[] { 0, 0, 0, 1, 1, 0, 1, 1 };
+		private static readonly float[] texCoords = new float[]
+                                                    {
+                                                        0, 0, 0, 1, 1, 0, 1, 1
+                                                    };
 
 		public Rectangle2D()
-			: this( false )
-		{
-		}
+			: this( false ) { }
 
 		public Rectangle2D( bool includeTextureCoordinates )
 		{
@@ -73,44 +75,42 @@ namespace Axiom.Graphics
 			renderOperation.useIndices = false;
 			renderOperation.operationType = OperationType.TriangleStrip;
 
-			var decl = vertexData.vertexDeclaration;
-			var binding = vertexData.vertexBufferBinding;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-			var buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
 
 			decl.AddElement( NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
-			buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( NORMAL, buffer );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
-		    {
-		        var pNormBuf = buffer.Lock(BufferLocking.Discard).ToFloatPointer();
-				var pNorm = 0;
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 1.0f;
+			{
+				float* pNormBuf = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
+				int pNorm = 0;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 1.0f;
 
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 1.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 1.0f;
 
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 1.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 1.0f;
 
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm++] = 0.0f;
-                pNormBuf[pNorm] = 1.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm++ ] = 0.0f;
+				pNormBuf[ pNorm ] = 1.0f;
 
 				buffer.Unlock();
 			}
@@ -118,8 +118,7 @@ namespace Axiom.Graphics
 			{
 				decl.AddElement( TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 
-				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				binding.SetBinding( TEXCOORD, buffer );
 
@@ -131,25 +130,12 @@ namespace Axiom.Graphics
 			material.Lighting = false;
 		}
 
-		#region SimpleRenderable Members
-
 		public override Real BoundingRadius
 		{
 			get
 			{
 				return 0;
 			}
-		}
-
-		public override Real GetSquaredViewDepth( Camera camera )
-		{
-			return 0;
-		}
-
-		public override void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )
-		{
-			// return identity matrix to prevent parent transforms
-			matrices[ 0 ] = Matrix4.Identity;
 		}
 
 
@@ -185,9 +171,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-
-		#endregion SimpleRenderable Members
-
 		#region Methods
 
 		/// <summary>
@@ -201,6 +184,7 @@ namespace Axiom.Graphics
 		{
 			SetCorners( left, top, right, bottom, true );
 		}
+
 		/// <summary>
 		///		Sets the corners of the rectangle, in relative coordinates.
 		/// </summary>
@@ -211,15 +195,13 @@ namespace Axiom.Graphics
 		/// <param name="updateAABB"></param>
 		public void SetCorners( float left, float top, float right, float bottom, bool updateAABB )
 		{
-			var data = new float[] {
-				left, top, -1,
-				left, bottom, -1,
-				right, top, -1, // Fix for Issue #1187096
-				right, bottom, -1
-			};
+			var data = new[]
+                       {
+                           left, top, -1, left, bottom, -1, right, top, -1, // Fix for Issue #1187096
+                           right, bottom, -1
+                       };
 
-			var buffer =
-				vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			buffer.WriteData( 0, buffer.Size, data, true );
 
@@ -229,37 +211,50 @@ namespace Axiom.Graphics
 				box.SetExtents( new Vector3( left, top, 0 ), new Vector3( right, bottom, 0 ) );
 			}
 		}
+
 		/// <summary>
 		/// Sets the normals of the rectangle
 		/// </summary>
 		public void SetNormals( Vector3 topLeft, Vector3 bottomLeft, Vector3 topRight, Vector3 bottomRight )
 		{
-			var vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
+			HardwareVertexBuffer vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-                var pfloatBuf = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
-                var pfloat = 0;
-                pfloatBuf[pfloat++] = topLeft.x;
-                pfloatBuf[pfloat++] = topLeft.y;
-                pfloatBuf[pfloat++] = topLeft.z;
+				float* pfloatBuf = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+				int pfloat = 0;
+				pfloatBuf[ pfloat++ ] = topLeft.x;
+				pfloatBuf[ pfloat++ ] = topLeft.y;
+				pfloatBuf[ pfloat++ ] = topLeft.z;
 
-                pfloatBuf[pfloat++] = bottomLeft.x;
-                pfloatBuf[pfloat++] = bottomLeft.y;
-                pfloatBuf[pfloat++] = bottomLeft.z;
+				pfloatBuf[ pfloat++ ] = bottomLeft.x;
+				pfloatBuf[ pfloat++ ] = bottomLeft.y;
+				pfloatBuf[ pfloat++ ] = bottomLeft.z;
 
-                pfloatBuf[pfloat++] = topRight.x;
-                pfloatBuf[pfloat++] = topRight.y;
-                pfloatBuf[pfloat++] = topRight.z;
+				pfloatBuf[ pfloat++ ] = topRight.x;
+				pfloatBuf[ pfloat++ ] = topRight.y;
+				pfloatBuf[ pfloat++ ] = topRight.z;
 
-                pfloatBuf[pfloat++] = bottomRight.x;
-                pfloatBuf[pfloat++] = bottomRight.y;
-                pfloatBuf[pfloat] = bottomRight.z;
+				pfloatBuf[ pfloat++ ] = bottomRight.x;
+				pfloatBuf[ pfloat++ ] = bottomRight.y;
+				pfloatBuf[ pfloat ] = bottomRight.z;
 
 				vbuf.Unlock();
 			}
 		}
+
 		#endregion Methods
+
+		public override Real GetSquaredViewDepth( Camera camera )
+		{
+			return 0;
+		}
+
+		public override void GetWorldTransforms( Matrix4[] matrices )
+		{
+			// return identity matrix to prevent parent transforms
+			matrices[ 0 ] = Matrix4.Identity;
+		}
 	}
 }

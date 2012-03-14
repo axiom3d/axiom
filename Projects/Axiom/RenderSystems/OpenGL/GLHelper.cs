@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Graphics;
 
@@ -59,17 +61,17 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				case BufferUsage.Static:
 				case BufferUsage.StaticWriteOnly:
-					return (int)Gl.GL_STATIC_DRAW_ARB;
+					return Gl.GL_STATIC_DRAW_ARB;
 
 				case BufferUsage.Dynamic:
 				case BufferUsage.DynamicWriteOnly:
-					return (int)Gl.GL_DYNAMIC_DRAW_ARB;
+					return Gl.GL_DYNAMIC_DRAW_ARB;
 
 				case BufferUsage.DynamicWriteOnlyDiscardable:
-					return (int)Gl.GL_STREAM_DRAW_ARB;
+					return Gl.GL_STREAM_DRAW_ARB;
 
 				default:
-					return (int)Gl.GL_DYNAMIC_DRAW_ARB;
+					return Gl.GL_DYNAMIC_DRAW_ARB;
 			}
 		}
 
@@ -224,30 +226,30 @@ namespace Axiom.RenderSystems.OpenGL
 			return 0;
 		}
 
-	    public static int ConvertEnum( TextureAddressing tam )
-        {
-            var type = 0;
+		public static int ConvertEnum( TextureAddressing tam )
+		{
+			int type = 0;
 
-            switch ( tam )
-            {
-                case TextureAddressing.Wrap:
-                    type = Gl.GL_REPEAT;
-                    break;
+			switch ( tam )
+			{
+				case TextureAddressing.Wrap:
+					type = Gl.GL_REPEAT;
+					break;
 
-                case TextureAddressing.Mirror:
-                    type = Gl.GL_MIRRORED_REPEAT;
-                    break;
+				case TextureAddressing.Mirror:
+					type = Gl.GL_MIRRORED_REPEAT;
+					break;
 
-                case TextureAddressing.Clamp:
-                    type = Gl.GL_CLAMP_TO_EDGE;
-                    break;
+				case TextureAddressing.Clamp:
+					type = Gl.GL_CLAMP_TO_EDGE;
+					break;
 
-                case TextureAddressing.Border:
-                    type = Gl.GL_CLAMP_TO_BORDER;
-                    break;
-            }
+				case TextureAddressing.Border:
+					type = Gl.GL_CLAMP_TO_BORDER;
+					break;
+			}
 
-            return type;
-	    }
+			return type;
+		}
 	}
 }

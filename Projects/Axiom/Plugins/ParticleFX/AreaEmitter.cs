@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
-using Axiom.Scripting;
+using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 
@@ -59,13 +59,11 @@ namespace Axiom.ParticleFX
 		#endregion Fields
 
 		public AreaEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-		}
+			: base( ps ) { }
 
 		#region Properties
 
-		public override Axiom.Math.Vector3 Direction
+		public override Vector3 Direction
 		{
 			get
 			{
@@ -84,11 +82,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size;
+				return this.size;
 			}
 			set
 			{
-				size = value;
+				this.size = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -97,11 +95,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.x;
+				return this.size.x;
 			}
 			set
 			{
-				size.x = value;
+				this.size.x = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -110,11 +108,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.y;
+				return this.size.y;
 			}
 			set
 			{
-				size.y = value;
+				this.size.y = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -123,11 +121,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.z;
+				return this.size.z;
 			}
 			set
 			{
-				size.z = value;
+				this.size.z = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -140,9 +138,9 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 left = up.Cross( direction );
 
-			xRange = left * ( size.x * 0.5f );
-			yRange = up * ( size.y * 0.5f );
-			zRange = direction * ( size.z * 0.5f );
+			this.xRange = left * ( this.size.x * 0.5f );
+			this.yRange = up * ( this.size.y * 0.5f );
+			this.zRange = direction * ( this.size.z * 0.5f );
 		}
 
 		protected void InitDefaults( string type )
@@ -150,7 +148,7 @@ namespace Axiom.ParticleFX
 			// TODO: Revisit this
 			direction = Vector3.UnitZ;
 			up = Vector3.UnitZ;
-			this.Size = new Vector3( 50, 50, 0 );
+			Size = new Vector3( 50, 50, 0 );
 			this.type = type;
 		}
 

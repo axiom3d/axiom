@@ -38,9 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Linq;
+
 using Axiom.Collections;
 using Axiom.Core;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -67,7 +68,7 @@ namespace Axiom.Graphics
 	{
 		#region Singleton implementation
 
-        public const string NullLang = "null";
+		public const string NullLang = "null";
 
 		/// <summary>
 		///     Singleton instance of this class.
@@ -78,7 +79,6 @@ namespace Axiom.Graphics
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal HighLevelGpuProgramManager()
-			: base()
 		{
 			if ( _instance == null )
 			{
@@ -124,34 +124,34 @@ namespace Axiom.Graphics
 		/// </param>
 		public void AddFactory( HighLevelGpuProgramFactory factory )
 		{
-			factories.Add( factory.Language, factory );
+			this.factories.Add( factory.Language, factory );
 		}
 
-        /// <summary>
-        ///     Unregisters a factory
-        /// </summary>
-        public void RemoveFactory(HighLevelGpuProgramFactory factory)
-        {
-            factories.Remove( factory.Language );
-        }
+		/// <summary>
+		///     Unregisters a factory
+		/// </summary>
+		public void RemoveFactory( HighLevelGpuProgramFactory factory )
+		{
+			this.factories.Remove( factory.Language );
+		}
 
-	    /// <summary>
-	    ///    Creates a new, unloaded HighLevelGpuProgram instance.
-	    /// </summary>
-	    /// <remarks>
-	    ///    This method creates a new program of the type specified as the second and third parameters.
-	    ///    You will have to call further methods on the returned program in order to
-	    ///    define the program fully before you can load it.
-	    /// </remarks>
-	    /// <param name="name">Name of the program to create.</param>
-	    /// <param name="group"></param>
-	    /// <param name="language">HLSL language to use.</param>
-	    /// <param name="type">Type of program, i.e. vertex or fragment.</param>
-	    /// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
-	    public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
+		/// <summary>
+		///    Creates a new, unloaded HighLevelGpuProgram instance.
+		/// </summary>
+		/// <remarks>
+		///    This method creates a new program of the type specified as the second and third parameters.
+		///    You will have to call further methods on the returned program in order to
+		///    define the program fully before you can load it.
+		/// </remarks>
+		/// <param name="name">Name of the program to create.</param>
+		/// <param name="group"></param>
+		/// <param name="language">HLSL language to use.</param>
+		/// <param name="type">Type of program, i.e. vertex or fragment.</param>
+		/// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
+		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
-			var factory = GetFactory( language );
+			HighLevelGpuProgramFactory factory = GetFactory( language );
 
 			if ( factory == null )
 			{
@@ -159,7 +159,7 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			var program = factory.CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, false, null );
+			HighLevelGpuProgram program = factory.CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -175,14 +175,18 @@ namespace Axiom.Graphics
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
-			if ( !factories.ContainsKey( language ) )
+			if ( !this.factories.ContainsKey( language ) )
 			{
-                // use the null factory to create programs that will never be supported
-                if ( factories.ContainsKey( NullLang ) )
-                    return (HighLevelGpuProgramFactory)factories[ NullLang ];
+				// use the null factory to create programs that will never be supported
+				if ( this.factories.ContainsKey( NullLang ) )
+				{
+					return this.factories[ NullLang ];
+				}
 			}
-            else
-                return (HighLevelGpuProgramFactory)factories[ language ];
+			else
+			{
+				return this.factories[ language ];
+			}
 
 			// wasn't found, so return null
 			return null;
@@ -194,22 +198,12 @@ namespace Axiom.Graphics
 
 		public bool IsLanguageSupported( string language )
 		{
-			return factories.ContainsKey( language );
+			return this.factories.ContainsKey( language );
 		}
 
 		#endregion Properties
 
 		#region ResourceManager Implementation
-
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
-											 IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			if ( createParams == null || !createParams.ContainsKey( "language" ) )
-			{
-				throw new Exception( "You must supply a 'language' parameter" );
-			}
-			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, handle, group, isManual, loader );
-		}
 
 		/// <summary>
 		///     Gets a HighLevelGpuProgram with the specified name.
@@ -227,7 +221,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets a HighLevelGpuProgram with the specified handle.
 		/// </summary>
-        /// <param name="handle">Handle of the program to retrieve.</param>
+		/// <param name="handle">Handle of the program to retrieve.</param>
 		/// <returns>The high level gpu program with the specified handle.</returns>
 		public new HighLevelGpuProgram this[ ResourceHandle handle ]
 		{
@@ -235,6 +229,15 @@ namespace Axiom.Graphics
 			{
 				return (HighLevelGpuProgram)base[ handle ];
 			}
+		}
+
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			if ( createParams == null || !createParams.ContainsKey( "language" ) )
+			{
+				throw new Exception( "You must supply a 'language' parameter" );
+			}
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, handle, group, isManual, loader );
 		}
 
 		/// <summary>
@@ -245,7 +248,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

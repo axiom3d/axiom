@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,27 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Math;
-using Axiom.Graphics;
-using Axiom.Core.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
+
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -54,12 +53,19 @@ namespace Axiom.SceneManagers.Octree
 	public class OctreeNode : SceneNode
 	{
 		#region Member Variables
+
 		protected static long green = 0xFFFFFFFF;
 
-		protected short[] Indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
-		protected long[] Colors = { green, green, green, green, green, green, green, green };
-		protected Octree octant = null;
+		protected long[] Colors = {
+                                      green, green, green, green, green, green, green, green
+                                  };
+
+		protected short[] Indexes = {
+                                        0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
+                                    };
+
 		protected AxisAlignedBox localAABB = new AxisAlignedBox();
+		protected Octree octant;
 
 		#endregion Member Variables
 
@@ -72,7 +78,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return localAABB;
+				return this.localAABB;
 			}
 		}
 
@@ -83,11 +89,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return octant;
+				return this.octant;
 			}
 			set
 			{
-				octant = value;
+				this.octant = value;
 			}
 		}
 
@@ -96,14 +102,10 @@ namespace Axiom.SceneManagers.Octree
 		#region Constructors
 
 		public OctreeNode( SceneManager scene )
-			: base( scene )
-		{
-		}
+			: base( scene ) { }
 
 		public OctreeNode( SceneManager scene, string name )
-			: base( scene, name )
-		{
-		}
+			: base( scene, name ) { }
 
 		#endregion Constructors
 
@@ -130,7 +132,6 @@ namespace Axiom.SceneManagers.Octree
 		/// <param name="queue"></param>
 		public void AddToRenderQueue( Camera cam, RenderQueue queue )
 		{
-
 			int i;
 			foreach ( MovableObject obj in objectList.Values )
 			{
@@ -151,14 +152,14 @@ namespace Axiom.SceneManagers.Octree
 			//update bounds from attached objects
 			foreach ( MovableObject obj in objectList.Values )
 			{
-				localAABB.Merge( obj.BoundingBox );
+				this.localAABB.Merge( obj.BoundingBox );
 
 				worldAABB = obj.GetWorldBoundingBox( true );
 			}
 
 			if ( !worldAABB.IsNull )
 			{
-				OctreeSceneManager oManager = (OctreeSceneManager)this.creator;
+				var oManager = (OctreeSceneManager)creator;
 				oManager.UpdateOctreeNode( this );
 			}
 		}

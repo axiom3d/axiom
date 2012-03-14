@@ -27,44 +27,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Axiom.Core;
+
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// Specialization of HardwareBufferManagerBase to emulate hardware buffers.
-    /// </summary>
-    /// <remarks>
-    /// You might want to instantiate this class if you want to utilize
-    /// classes like MeshSerializer without having initialized the 
-    /// rendering system (which is required to create a 'real' hardware
-    /// buffer manager.
-    /// </remarks>
+	/// <summary>
+	/// Specialization of HardwareBufferManagerBase to emulate hardware buffers.
+	/// </summary>
+	/// <remarks>
+	/// You might want to instantiate this class if you want to utilize
+	/// classes like MeshSerializer without having initialized the 
+	/// rendering system (which is required to create a 'real' hardware
+	/// buffer manager.
+	/// </remarks>
 	public class DefaultHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
-		public DefaultHardwareBufferManagerBase()
-		{
-		}
-
-		~DefaultHardwareBufferManagerBase()
-		{
-		}
+		~DefaultHardwareBufferManagerBase() { }
 
 		/// Creates a vertex buffer
-        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
 			var vb = new DefaultHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage );
 			return vb;
@@ -79,7 +72,6 @@ namespace Axiom.Graphics
 
 		/// Create a hardware vertex buffer
 		//RenderToVertexBuffer createRenderToVertexBuffer();
-
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( disposeManagedResources )

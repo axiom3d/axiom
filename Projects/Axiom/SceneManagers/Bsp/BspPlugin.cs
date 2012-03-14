@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,43 +23,46 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
 {
-	[Export(typeof(IPlugin))]
+	[Export( typeof( IPlugin ) )]
 	public class BspPlugin : IPlugin
 	{
+		private BspSceneManagerFactory _bspSMFactory;
+
+		#region IPlugin Members
+
 		public void Initialize()
 		{
-			_bspSMFactory = new BspSceneManagerFactory();
-			Root.Instance.AddSceneManagerFactory( _bspSMFactory );
+			this._bspSMFactory = new BspSceneManagerFactory();
+			Root.Instance.AddSceneManagerFactory( this._bspSMFactory );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( _bspSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( this._bspSMFactory );
 		}
 
-		BspSceneManagerFactory _bspSMFactory;
+		#endregion
 	}
 }
-
-
-
-

@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,11 +46,11 @@ namespace Axiom.Graphics
 	/// Original Author: Lee Sandberg.
 	public abstract class HardwareOcclusionQuery : DisposableObject
 	{
-        /// <summary>
-        /// is query hasn't yet returned a result.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        protected bool isQueryResultStillOutstanding;
+		/// <summary>
+		/// is query hasn't yet returned a result.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		protected bool isQueryResultStillOutstanding;
 
 		/// <summary>
 		/// Let's you get the last pixel count with out doing the hardware occlusion test
@@ -54,45 +58,42 @@ namespace Axiom.Graphics
 		/// <remarks>
 		/// This function won't give you new values, just the old value.
 		/// </remarks>
-        [OgreVersion( 1, 7, 2, "getLastQuerysPixelcount() / mPixelCount" )]
-		public int LastFragmentCount
-		{
-			get;
-            protected set;
-        }
+		[OgreVersion( 1, 7, 2, "getLastQuerysPixelcount() / mPixelCount" )]
+		public int LastFragmentCount { get; protected set; }
 
-        /// <summary>
-        /// Starts the hardware occlusion query
-        /// </summary>
-        [OgreVersion( 1, 7, 2, "beginOcclusionQuery" )]
+		/// <summary>
+		/// Starts the hardware occlusion query
+		/// </summary>
+		[OgreVersion( 1, 7, 2, "beginOcclusionQuery" )]
 		public abstract void Begin();
 
 		/// <summary>
 		/// Ends the hardware occlusion test
 		/// </summary>
-        [OgreVersion( 1, 7, 2, "endOcclusionQuery" )]
+		[OgreVersion( 1, 7, 2, "endOcclusionQuery" )]
 		public abstract void End();
 
-        /// <summary>
-        /// Pulls the hardware occlusion query.
-        /// </summary>
-        /// <remarks>
-        /// Waits until the query result is available; use <see cref="IsStillOutstanding"/>
-        /// if just want to test if the result is available.
-        /// </remarks>
-        /// <param name="NumOfFragments">NumOfFragments will get the resulting number of fragments.</param>
-        /// <returns>True if success or false if not.</returns>
-        [OgreVersion( 1, 7, 2, "pullOcclusionQuery" )]
-        public abstract bool PullResults( out int NumOfFragments );
+		/// <summary>
+		/// Pulls the hardware occlusion query.
+		/// </summary>
+		/// <remarks>
+		/// Waits until the query result is available; use <see cref="IsStillOutstanding"/>
+		/// if just want to test if the result is available.
+		/// </remarks>
+		/// <param name="NumOfFragments">NumOfFragments will get the resulting number of fragments.</param>
+		/// <returns>True if success or false if not.</returns>
+		[OgreVersion( 1, 7, 2, "pullOcclusionQuery" )]
+		public abstract bool PullResults( out int NumOfFragments );
 
 		/// <summary>
 		/// Lets you know when query is done, or still be processed by the Hardware
 		/// </summary>
 		/// <returns>true if query isn't finished.</returns>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public abstract bool IsStillOutstanding();
 
 		#region IDisposable Implementation
+
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
@@ -119,7 +120,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -130,8 +131,9 @@ namespace Axiom.Graphics
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
+
 		#endregion IDisposable Implementation
 	};
 }

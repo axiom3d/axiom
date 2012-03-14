@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -68,7 +72,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return Utility.Sqrt( x * x + y * y );
+				return Utility.Sqrt( this.x * this.x + this.y * this.y );
 			}
 		}
 
@@ -79,7 +83,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return x * x + y * y;
+				return this.x * this.x + this.y * this.y;
 			}
 		}
 
@@ -99,6 +103,7 @@ namespace Axiom.Math
 		#region Static
 
 		private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
+
 		/// <summary>
 		///		Gets a Vector2 with all components set to 0.
 		/// </summary>
@@ -142,12 +147,12 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			var length = Utility.Sqrt( this.x * this.x + this.y * this.y );
+			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				var inverseLength = 1.0f / length;
+				Real inverseLength = 1.0f / length;
 
 				this.x *= inverseLength;
 				this.y *= inverseLength;
@@ -162,7 +167,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector2 ToNormalized()
 		{
-			var vec = this;
+			Vector2 vec = this;
 			vec.Normalize();
 
 			return vec;
@@ -217,6 +222,7 @@ namespace Axiom.Math
 		{
 			return left.x != right.x || left.y != right.y;
 		}
+
 		public override bool Equals( object obj )
 		{
 			return obj is Vector2 && this == (Vector2)obj;
@@ -332,7 +338,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return x.GetHashCode() ^ y.GetHashCode();
+			return this.x.GetHashCode() ^ this.y.GetHashCode();
 		}
 
 		public override string ToString()
@@ -348,12 +354,13 @@ namespace Axiom.Math
 		{
 			// the format is "Vector2(x, y)"
 			if ( !s.StartsWith( "Vector2(" ) )
+			{
 				throw new FormatException();
+			}
 
-			var values = s.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
+			string[] values = s.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
-			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
-							   Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
+			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ), Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

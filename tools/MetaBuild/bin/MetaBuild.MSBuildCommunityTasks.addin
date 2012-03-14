@@ -10,7 +10,9 @@
  !-->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(MetaBuildContribDir)\MSBuild Community Tasks</MSBuildCommunityTasksPath>
+    <MSBuildCommunityTasksPath>
+      $(MetaBuildContribDir)\MSBuild Community Tasks
+    </MSBuildCommunityTasksPath>
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets" />

@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 
 using Axiom.Graphics;
@@ -50,6 +49,8 @@ namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
+		#region Nested type: LODBucket
+
 		/// <summary>
 		/// A LODBucket is a collection of smaller buckets with the same LOD.
 		/// </summary>
@@ -61,17 +62,17 @@ namespace Axiom.Core
 		{
 			#region Fields and Properties
 
-			protected Region parent;
 			protected ushort lod;
-			protected Real squaredDistance;
 			protected Dictionary<string, MaterialBucket> materialBucketMap;
+			protected Region parent;
 			protected List<QueuedGeometry> queuedGeometryList;
+			protected Real squaredDistance;
 
 			public Region Parent
 			{
 				get
 				{
-					return parent;
+					return this.parent;
 				}
 			}
 
@@ -79,7 +80,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return lod;
+					return this.lod;
 				}
 			}
 
@@ -87,7 +88,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return squaredDistance;
+					return this.squaredDistance;
 				}
 			}
 
@@ -95,7 +96,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return materialBucketMap;
+					return this.materialBucketMap;
 				}
 			}
 
@@ -104,13 +105,12 @@ namespace Axiom.Core
 			#region Constructors
 
 			public LODBucket( Region parent, ushort lod, float lodDist )
-                : base()
 			{
 				this.parent = parent;
 				this.lod = lod;
 				this.squaredDistance = lodDist;
-				materialBucketMap = new Dictionary<string, MaterialBucket>();
-				queuedGeometryList = new List<QueuedGeometry>();
+				this.materialBucketMap = new Dictionary<string, MaterialBucket>();
+				this.queuedGeometryList = new List<QueuedGeometry>();
 			}
 
 			#endregion
@@ -120,30 +120,30 @@ namespace Axiom.Core
 			public void Assign( QueuedSubMesh qsm, ushort atlod )
 			{
 				var q = new QueuedGeometry();
-				queuedGeometryList.Add( q );
+				this.queuedGeometryList.Add( q );
 				q.position = qsm.position;
 				q.orientation = qsm.orientation;
 				q.scale = qsm.scale;
 				if ( qsm.geometryLodList.Count > atlod )
 				{
 					// This submesh has enough lods, use the right one
-					q.geometry = (SubMeshLodGeometryLink)qsm.geometryLodList[ atlod ];
+					q.geometry = qsm.geometryLodList[ atlod ];
 				}
 				else
 				{
 					// Not enough lods, use the lowest one we have
-					q.geometry = (SubMeshLodGeometryLink)qsm.geometryLodList[ qsm.geometryLodList.Count - 1 ];
+					q.geometry = qsm.geometryLodList[ qsm.geometryLodList.Count - 1 ];
 				}
 				// Locate a material bucket
 				MaterialBucket mbucket;
-				if ( materialBucketMap.ContainsKey( qsm.materialName ) )
+				if ( this.materialBucketMap.ContainsKey( qsm.materialName ) )
 				{
-					mbucket = materialBucketMap[ qsm.materialName ];
+					mbucket = this.materialBucketMap[ qsm.materialName ];
 				}
 				else
 				{
 					mbucket = new MaterialBucket( this, qsm.materialName );
-					materialBucketMap.Add( qsm.materialName, mbucket );
+					this.materialBucketMap.Add( qsm.materialName, mbucket );
 				}
 				mbucket.Assign( q );
 			}
@@ -151,54 +151,64 @@ namespace Axiom.Core
 			public void Build( bool stencilShadows, int logLevel )
 			{
 				// Just pass this on to child buckets
-				foreach ( var mbucket in materialBucketMap.Values )
+				foreach ( MaterialBucket mbucket in this.materialBucketMap.Values )
+				{
 					mbucket.Build( stencilShadows, logLevel );
+				}
 			}
 
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
 			{
 				// Just pass this on to child buckets
-				foreach ( var mbucket in materialBucketMap.Values )
+				foreach ( MaterialBucket mbucket in this.materialBucketMap.Values )
+				{
 					mbucket.AddRenderables( queue, group, camSquaredDistance );
+				}
 			}
 
 			public void Dump()
 			{
-				LogManager.Instance.Write( "LOD Bucket {0}", lod );
+				LogManager.Instance.Write( "LOD Bucket {0}", this.lod );
 				LogManager.Instance.Write( "------------------" );
-				LogManager.Instance.Write( "Distance: {0}", Utility.Sqrt( squaredDistance ) );
-				LogManager.Instance.Write( "Number of Materials: {0}", materialBucketMap.Count );
-				foreach ( var mbucket in materialBucketMap.Values )
+				LogManager.Instance.Write( "Distance: {0}", Utility.Sqrt( this.squaredDistance ) );
+				LogManager.Instance.Write( "Number of Materials: {0}", this.materialBucketMap.Count );
+				foreach ( MaterialBucket mbucket in this.materialBucketMap.Values )
+				{
 					mbucket.Dump();
+				}
 				LogManager.Instance.Write( "------------------" );
 			}
 
 			/// <summary>
 			///     Dispose the material buckets
 			/// </summary>
-            protected override void dispose(bool disposeManagedResources)
-            {
-                if (!this.IsDisposed)
-                {
-                    if (disposeManagedResources)
-                    {
-                        if (materialBucketMap != null)
-                        {
-                            foreach (var mbucket in materialBucketMap.Values)
-                            {
-                                if (!mbucket.IsDisposed)
-                                    mbucket.Dispose();
-                            }
-                            materialBucketMap.Clear();
-                            materialBucketMap = null;
-                        }
-                    }
-                }
+			protected override void dispose( bool disposeManagedResources )
+			{
+				if ( !IsDisposed )
+				{
+					if ( disposeManagedResources )
+					{
+						if ( this.materialBucketMap != null )
+						{
+							foreach ( MaterialBucket mbucket in this.materialBucketMap.Values )
+							{
+								if ( !mbucket.IsDisposed )
+								{
+									mbucket.Dispose();
+								}
+							}
+							this.materialBucketMap.Clear();
+							this.materialBucketMap = null;
+						}
+					}
+				}
 
-                base.dispose(disposeManagedResources);
-            }
+				base.dispose( disposeManagedResources );
+			}
 
 			#endregion
 		}
+
+		#endregion
 	}
 }

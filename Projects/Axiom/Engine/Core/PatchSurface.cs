@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,27 +23,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
-using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Math.Collections;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -61,80 +62,98 @@ namespace Axiom.Core
 		#region Fields
 
 		/// <summary>
-		///     Vertex declaration describing the control point buffer.
+		///     Constant for indicating automatic determination of subdivision level for patches.
 		/// </summary>
-		protected VertexDeclaration declaration;
-		/// <summary>
-		///     Buffer containing the system-memory control points.
-		/// </summary>
-		protected BufferBase controlPointBuffer;
-		/// <summary>
-		///     Type of surface.
-		/// </summary>
-		protected PatchSurfaceType type;
-		/// <summary>
-		///     Width in control points.
-		/// </summary>
-		protected int controlWidth;
-		/// <summary>
-		///     Height in control points.
-		/// </summary>
-		protected int controlHeight;
+		private const int AUTO_LEVEL = -1;
+
+		protected AxisAlignedBox aabb = AxisAlignedBox.Null;
+		protected float boundingSphereRadius;
+
 		/// <summary>
 		///     Total number of control level.
 		/// </summary>
 		protected int controlCount;
+
 		/// <summary>
-		///     U-direction subdivision level.
+		///     Height in control points.
 		/// </summary>
-		protected int uLevel;
+		protected int controlHeight;
+
 		/// <summary>
-		///    V-direction subdivision level.
+		///     Buffer containing the system-memory control points.
 		/// </summary>
-		protected int vLevel;
-		/// <summary>
-		///     Max U subdivision level.
-		/// </summary>
-		protected int maxULevel;
-		/// <summary>
-		///     Max V subdivision level.
-		/// </summary>
-		protected int maxVLevel;
-		/// <summary>
-		///     Width of the subdivided mesh (big enough for max level).
-		/// </summary>
-		protected int meshWidth;
-		/// <summary>
-		///     Height of the subdivided mesh (big enough for max level).
-		/// </summary>
-		protected int meshHeight;
-		/// <summary>
-		///     Which side is visible.
-		/// </summary>
-		protected VisibleSide side;
-		/// <summary>
-		///     Mesh subdivision factor.
-		/// </summary>
-		protected float subdivisionFactor;
+		protected BufferBase controlPointBuffer;
+
 		/// <summary>
 		///     List of control points.
 		/// </summary>
 		protected List<Vector3> controlPoints = new List<Vector3>();
 
-		protected HardwareVertexBuffer vertexBuffer;
-		protected HardwareIndexBuffer indexBuffer;
-		protected int vertexOffset;
-		protected int indexOffset;
-		protected int requiredVertexCount;
-		protected int requiredIndexCount;
+		/// <summary>
+		///     Width in control points.
+		/// </summary>
+		protected int controlWidth;
+
 		protected int currentIndexCount;
-		protected AxisAlignedBox aabb = AxisAlignedBox.Null;
-		protected float boundingSphereRadius;
 
 		/// <summary>
-		///     Constant for indicating automatic determination of subdivision level for patches.
+		///     Vertex declaration describing the control point buffer.
 		/// </summary>
-		const int AUTO_LEVEL = -1;
+		protected VertexDeclaration declaration;
+
+		protected HardwareIndexBuffer indexBuffer;
+		protected int indexOffset;
+
+		/// <summary>
+		///     Max U subdivision level.
+		/// </summary>
+		protected int maxULevel;
+
+		/// <summary>
+		///     Max V subdivision level.
+		/// </summary>
+		protected int maxVLevel;
+
+		/// <summary>
+		///     Height of the subdivided mesh (big enough for max level).
+		/// </summary>
+		protected int meshHeight;
+
+		/// <summary>
+		///     Width of the subdivided mesh (big enough for max level).
+		/// </summary>
+		protected int meshWidth;
+
+		protected int requiredIndexCount;
+		protected int requiredVertexCount;
+
+		/// <summary>
+		///     Which side is visible.
+		/// </summary>
+		protected VisibleSide side;
+
+		/// <summary>
+		///     Mesh subdivision factor.
+		/// </summary>
+		protected float subdivisionFactor;
+
+		/// <summary>
+		///     Type of surface.
+		/// </summary>
+		protected PatchSurfaceType type;
+
+		/// <summary>
+		///     U-direction subdivision level.
+		/// </summary>
+		protected int uLevel;
+
+		/// <summary>
+		///    V-direction subdivision level.
+		/// </summary>
+		protected int vLevel;
+
+		protected HardwareVertexBuffer vertexBuffer;
+		protected int vertexOffset;
 
 		#endregion Fields
 
@@ -145,16 +164,14 @@ namespace Axiom.Core
 		/// </summary>
 		public PatchSurface()
 		{
-			type = PatchSurfaceType.Bezier;
+			this.type = PatchSurfaceType.Bezier;
 		}
 
 		#endregion Constructor
 
 		#region Finalizer
 
-		~PatchSurface()
-		{
-		}
+		~PatchSurface() { }
 
 		#endregion Finalizer
 
@@ -205,7 +222,7 @@ namespace Axiom.Core
 		///     The array is internally treated as a contiguous memory buffer without any gaps between the elements.
 		///     The format of the buffer is defined in the VertexDeclaration parameter.
 		/// </param>
-        /// <param name="declaration">
+		/// <param name="declaration">
 		///     VertexDeclaration describing the contents of the buffer.
 		///     Note this declaration must _only_ draw on buffer source 0!
 		/// </param>
@@ -220,11 +237,9 @@ namespace Axiom.Core
 		///     If you want to manually set the top level of subdivision,
 		///     do it here, otherwise let the system decide.
 		/// </param>
-        /// <param name="visibleSide">Determines which side of the patch (or both) triangles are generated for.</param>
-		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
-			PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
+		/// <param name="visibleSide">Determines which side of the patch (or both) triangles are generated for.</param>
+		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height, PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
 		{
-
 			if ( height == 0 || width == 0 )
 			{
 				return; // Do nothing - garbage
@@ -241,63 +256,63 @@ namespace Axiom.Core
 			this.declaration = declaration;
 
 			// Copy positions into Vector3 vector
-			controlPoints.Clear();
-			var elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-			var vertSize = declaration.GetVertexSize( 0 );
+			this.controlPoints.Clear();
+			VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
+			int vertSize = declaration.GetVertexSize( 0 );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var pVert = controlPointBuffer;
-				for ( var i = 0; i < controlCount; i++ )
+				BufferBase pVert = this.controlPointBuffer;
+				for ( int i = 0; i < this.controlCount; i++ )
 				{
-					var pReal = ( pVert + (( i * vertSize ) + elem.Offset )).ToFloatPointer();
-					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
+					float* pReal = ( pVert + ( ( i * vertSize ) + elem.Offset ) ).ToFloatPointer();
+					this.controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
 				}
 			}
 			this.side = visibleSide;
 
 			// Determine max level
 			// Initialize to 100% detail
-			subdivisionFactor = 1.0f;
+			this.subdivisionFactor = 1.0f;
 
 			if ( uMaxSubdivisionLevel == AUTO_LEVEL )
 			{
-				uLevel = maxULevel = GetAutoULevel();
+				this.uLevel = this.maxULevel = GetAutoULevel();
 			}
 			else
 			{
-				uLevel = maxULevel = uMaxSubdivisionLevel;
+				this.uLevel = this.maxULevel = uMaxSubdivisionLevel;
 			}
 
 			if ( vMaxSubdivisionLevel == AUTO_LEVEL )
 			{
-				vLevel = maxVLevel = GetAutoVLevel();
+				this.vLevel = this.maxVLevel = GetAutoVLevel();
 			}
 			else
 			{
-				vLevel = maxVLevel = vMaxSubdivisionLevel;
+				this.vLevel = this.maxVLevel = vMaxSubdivisionLevel;
 			}
 
 			// Derive mesh width / height
-			meshWidth = ( LevelWidth( maxULevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
-			meshHeight = ( LevelWidth( maxVLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
+			this.meshWidth = ( LevelWidth( this.maxULevel ) - 1 ) * ( ( this.controlWidth - 1 ) / 2 ) + 1;
+			this.meshHeight = ( LevelWidth( this.maxVLevel ) - 1 ) * ( ( this.controlHeight - 1 ) / 2 ) + 1;
 
 			// Calculate number of required vertices / indexes at max resolution
-			requiredVertexCount = meshWidth * meshHeight;
-			var iterations = ( side == VisibleSide.Both ) ? 2 : 1;
-			requiredIndexCount = ( meshWidth - 1 ) * ( meshHeight - 1 ) * 2 * iterations * 3;
+			this.requiredVertexCount = this.meshWidth * this.meshHeight;
+			int iterations = ( this.side == VisibleSide.Both ) ? 2 : 1;
+			this.requiredIndexCount = ( this.meshWidth - 1 ) * ( this.meshHeight - 1 ) * 2 * iterations * 3;
 
 			// Calculate bounds based on control points
-			var min = Vector3.Zero;
-			var max = Vector3.Zero;
-			var maxSqRadius = 0.0f;
-			var first = true;
+			Vector3 min = Vector3.Zero;
+			Vector3 max = Vector3.Zero;
+			float maxSqRadius = 0.0f;
+			bool first = true;
 
-			for ( var i = 0; i < controlPoints.Count; i++ )
+			for ( int i = 0; i < this.controlPoints.Count; i++ )
 			{
-				var vec = controlPoints[ i ];
+				Vector3 vec = this.controlPoints[ i ];
 				if ( first )
 				{
 					min = max = vec;
@@ -313,8 +328,8 @@ namespace Axiom.Core
 			}
 
 			// set the bounds of the patch
-			aabb.SetExtents( min, max );
-			boundingSphereRadius = Utility.Sqrt( maxSqRadius );
+			this.aabb.SetExtents( min, max );
+			this.boundingSphereRadius = Utility.Sqrt( maxSqRadius );
 		}
 
 
@@ -335,43 +350,40 @@ namespace Axiom.Core
 		/// <param name="indexStart">The offset at which to start writing indexes for this patch.</param>
 		public void Build( HardwareVertexBuffer destVertexBuffer, int vertexStart, HardwareIndexBuffer destIndexBuffer, int indexStart )
 		{
-			if ( controlPoints.Count == 0 )
+			if ( this.controlPoints.Count == 0 )
 			{
 				return;
 			}
 
-			vertexBuffer = destVertexBuffer;
-			vertexOffset = vertexStart;
-			indexBuffer = destIndexBuffer;
-			indexOffset = indexStart;
+			this.vertexBuffer = destVertexBuffer;
+			this.vertexOffset = vertexStart;
+			this.indexBuffer = destIndexBuffer;
+			this.indexOffset = indexStart;
 
 			// lock just the region we are interested in
-			var lockedBuffer = vertexBuffer.Lock(
-				vertexOffset * declaration.GetVertexSize( 0 ),
-				requiredVertexCount * declaration.GetVertexSize( 0 ),
-				BufferLocking.NoOverwrite );
+			BufferBase lockedBuffer = this.vertexBuffer.Lock( this.vertexOffset * this.declaration.GetVertexSize( 0 ), this.requiredVertexCount * this.declaration.GetVertexSize( 0 ), BufferLocking.NoOverwrite );
 
 			DistributeControlPoints( lockedBuffer );
 
 			// subdivide the curves to the max
 			// Do u direction first, so need to step over v levels not done yet
-			var vStep = 1 << maxVLevel;
-			var uStep = 1 << maxULevel;
+			int vStep = 1 << this.maxVLevel;
+			int uStep = 1 << this.maxULevel;
 
 			// subdivide this row in u
-			for ( var v = 0; v < meshHeight; v += vStep )
+			for ( int v = 0; v < this.meshHeight; v += vStep )
 			{
-				SubdivideCurve( lockedBuffer, v * meshWidth, uStep, meshWidth / uStep, uLevel );
+				SubdivideCurve( lockedBuffer, v * this.meshWidth, uStep, this.meshWidth / uStep, this.uLevel );
 			}
 
 			// Now subdivide in v direction, this time all the u direction points are there so no step
-			for ( var u = 0; u < meshWidth; u++ )
+			for ( int u = 0; u < this.meshWidth; u++ )
 			{
-				SubdivideCurve( lockedBuffer, u, vStep * meshWidth, meshHeight / vStep, vLevel );
+				SubdivideCurve( lockedBuffer, u, vStep * this.meshWidth, this.meshHeight / vStep, this.vLevel );
 			}
 
 			// don't forget to unlock!
-			vertexBuffer.Unlock();
+			this.vertexBuffer.Unlock();
 
 			// Make triangles from mesh at this current level of detail
 			MakeTriangles();
@@ -393,11 +405,11 @@ namespace Axiom.Core
 			const float subdiv = 10;
 			int level;
 
-			var test = subdiv * subdiv;
+			float test = subdiv * subdiv;
 
-			var s = Vector3.Zero;
-			var t = Vector3.Zero;
-			var d = Vector3.Zero;
+			Vector3 s = Vector3.Zero;
+			Vector3 t = Vector3.Zero;
+			Vector3 d = Vector3.Zero;
 
 			for ( level = 0; level < maxLevels - 1; level++ )
 			{
@@ -427,82 +439,82 @@ namespace Axiom.Core
 		protected void DistributeControlPoints( BufferBase lockedBuffer )
 		{
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                // Insert original control points into expanded mesh
-                var uStep = 1 << uLevel;
-                var vStep = 1 << vLevel;
+			{
+				// Insert original control points into expanded mesh
+				int uStep = 1 << this.uLevel;
+				int vStep = 1 << this.vLevel;
 
 
-                var elemPos = declaration.FindElementBySemantic(VertexElementSemantic.Position);
-                var elemNorm = declaration.FindElementBySemantic(VertexElementSemantic.Normal);
-                var elemTex0 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
-                var elemTex1 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
-                var elemDiffuse = declaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
+				VertexElement elemPos = this.declaration.FindElementBySemantic( VertexElementSemantic.Position );
+				VertexElement elemNorm = this.declaration.FindElementBySemantic( VertexElementSemantic.Normal );
+				VertexElement elemTex0 = this.declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
+				VertexElement elemTex1 = this.declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
+				VertexElement elemDiffuse = this.declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
 
-                var pSrc = controlPointBuffer;
-                var vertexSize = declaration.GetVertexSize(0);
+				BufferBase pSrc = this.controlPointBuffer;
+				int vertexSize = this.declaration.GetVertexSize( 0 );
 
-                for (var v = 0; v < meshHeight; v += vStep)
-                {
-                    // set dest by v from base
-                    var pDest = lockedBuffer + (vertexSize*meshWidth*v);
+				for ( int v = 0; v < this.meshHeight; v += vStep )
+				{
+					// set dest by v from base
+					BufferBase pDest = lockedBuffer + ( vertexSize * this.meshWidth * v );
 
-                    for (var u = 0; u < meshWidth; u += uStep)
-                    {
-                        // Copy Position
-                        var pSrcReal = (pSrc + elemPos.Offset).ToFloatPointer();
-                        var pDestReal = (pDest + elemPos.Offset).ToFloatPointer();
-                        pDestReal[0] = pSrcReal[0];
-                        pDestReal[1] = pSrcReal[1];
-                        pDestReal[2] = pSrcReal[2];
+					for ( int u = 0; u < this.meshWidth; u += uStep )
+					{
+						// Copy Position
+						float* pSrcReal = ( pSrc + elemPos.Offset ).ToFloatPointer();
+						float* pDestReal = ( pDest + elemPos.Offset ).ToFloatPointer();
+						pDestReal[ 0 ] = pSrcReal[ 0 ];
+						pDestReal[ 1 ] = pSrcReal[ 1 ];
+						pDestReal[ 2 ] = pSrcReal[ 2 ];
 
-                        // Copy Normals
-                        if (elemNorm != null)
-                        {
-                            pSrcReal = (pSrc + elemNorm.Offset).ToFloatPointer();
-                            pDestReal = (pDest + elemNorm.Offset).ToFloatPointer();
-                            pDestReal[0] = pSrcReal[0];
-                            pDestReal[1] = pSrcReal[1];
-                            pDestReal[2] = pSrcReal[2];
-                        }
+						// Copy Normals
+						if ( elemNorm != null )
+						{
+							pSrcReal = ( pSrc + elemNorm.Offset ).ToFloatPointer();
+							pDestReal = ( pDest + elemNorm.Offset ).ToFloatPointer();
+							pDestReal[ 0 ] = pSrcReal[ 0 ];
+							pDestReal[ 1 ] = pSrcReal[ 1 ];
+							pDestReal[ 2 ] = pSrcReal[ 2 ];
+						}
 
-                        // Copy Diffuse
-                        if (elemDiffuse != null)
-                        {
-                            var pSrcRGBA = (pSrc + elemDiffuse.Offset).ToIntPointer();
-                            var pDestRGBA = (pDest + elemDiffuse.Offset).ToIntPointer();
-                            pDestRGBA[0] = pSrcRGBA[0];
-                        }
+						// Copy Diffuse
+						if ( elemDiffuse != null )
+						{
+							int* pSrcRGBA = ( pSrc + elemDiffuse.Offset ).ToIntPointer();
+							int* pDestRGBA = ( pDest + elemDiffuse.Offset ).ToIntPointer();
+							pDestRGBA[ 0 ] = pSrcRGBA[ 0 ];
+						}
 
-                        // Copy texture coords
-                        if (elemTex0 != null)
-                        {
-                            pSrcReal = (pSrc + elemTex0.Offset).ToFloatPointer();
-                            pDestReal = (pDest + elemTex0.Offset).ToFloatPointer();
-                            for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex0.Type); dim++)
-                            {
-                                pDestReal[dim] = pSrcReal[dim];
-                            }
-                        }
-                        if (elemTex1 != null)
-                        {
-                            pSrcReal = (pSrc + elemTex1.Offset).ToFloatPointer();
-                            pDestReal = (pDest + elemTex1.Offset).ToFloatPointer();
-                            for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex1.Type); dim++)
-                            {
-                                pDestReal[dim] = pSrcReal[dim];
-                            }
-                        }
+						// Copy texture coords
+						if ( elemTex0 != null )
+						{
+							pSrcReal = ( pSrc + elemTex0.Offset ).ToFloatPointer();
+							pDestReal = ( pDest + elemTex0.Offset ).ToFloatPointer();
+							for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+							{
+								pDestReal[ dim ] = pSrcReal[ dim ];
+							}
+						}
+						if ( elemTex1 != null )
+						{
+							pSrcReal = ( pSrc + elemTex1.Offset ).ToFloatPointer();
+							pDestReal = ( pDest + elemTex1.Offset ).ToFloatPointer();
+							for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+							{
+								pDestReal[ dim ] = pSrcReal[ dim ];
+							}
+						}
 
-                        // Increment source by one vertex
-                        pSrc += vertexSize;
-                        // Increment dest by 1 vertex * uStep
-                        pDest += vertexSize*uStep;
-                    } // u
-                } // v
-            }
+						// Increment source by one vertex
+						pSrc += vertexSize;
+						// Increment dest by 1 vertex * uStep
+						pDest += vertexSize * uStep;
+					} // u
+				} // v
+			}
 		}
 
 		/// <summary>
@@ -520,7 +532,7 @@ namespace Axiom.Core
 			bool firstSegment;
 
 			maxIdx = startIdx + ( numSteps * stepSize );
-			var step = stepSize;
+			int step = stepSize;
 
 			while ( iterations-- > 0 )
 			{
@@ -561,87 +573,87 @@ namespace Axiom.Core
 		protected void InterpolateVertexData( BufferBase lockedBuffer, int leftIndex, int rightIndex, int destIndex )
 		{
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                var vertexSize = declaration.GetVertexSize(0);
-                var elemPos = declaration.FindElementBySemantic(VertexElementSemantic.Position);
-                var elemNorm = declaration.FindElementBySemantic(VertexElementSemantic.Normal);
-                var elemDiffuse = declaration.FindElementBySemantic(VertexElementSemantic.Diffuse);
-                var elemTex0 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 0);
-                var elemTex1 = declaration.FindElementBySemantic(VertexElementSemantic.TexCoords, 1);
+			{
+				int vertexSize = this.declaration.GetVertexSize( 0 );
+				VertexElement elemPos = this.declaration.FindElementBySemantic( VertexElementSemantic.Position );
+				VertexElement elemNorm = this.declaration.FindElementBySemantic( VertexElementSemantic.Normal );
+				VertexElement elemDiffuse = this.declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
+				VertexElement elemTex0 = this.declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
+				VertexElement elemTex1 = this.declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
 
-                //byte* pDestChar, pLeftChar, pRightChar;
+				//byte* pDestChar, pLeftChar, pRightChar;
 
-                // Set up pointers & interpolate
-                var pDest = (lockedBuffer + (vertexSize*destIndex));
-                var pLeft = (lockedBuffer + (vertexSize*leftIndex));
-                var pRight = (lockedBuffer + (vertexSize*rightIndex));
+				// Set up pointers & interpolate
+				BufferBase pDest = ( lockedBuffer + ( vertexSize * destIndex ) );
+				BufferBase pLeft = ( lockedBuffer + ( vertexSize * leftIndex ) );
+				BufferBase pRight = ( lockedBuffer + ( vertexSize * rightIndex ) );
 
-                // Position
-                var pDestReal = (pDest + elemPos.Offset).ToFloatPointer();
-                var pLeftReal = (pLeft + elemPos.Offset).ToFloatPointer();
-                var pRightReal = (pRight + elemPos.Offset).ToFloatPointer();
+				// Position
+				float* pDestReal = ( pDest + elemPos.Offset ).ToFloatPointer();
+				float* pLeftReal = ( pLeft + elemPos.Offset ).ToFloatPointer();
+				float* pRightReal = ( pRight + elemPos.Offset ).ToFloatPointer();
 
-                pDestReal[0] = (pLeftReal[0] + pRightReal[0])*0.5f;
-                pDestReal[1] = (pLeftReal[1] + pRightReal[1])*0.5f;
-                pDestReal[2] = (pLeftReal[2] + pRightReal[2])*0.5f;
+				pDestReal[ 0 ] = ( pLeftReal[ 0 ] + pRightReal[ 0 ] ) * 0.5f;
+				pDestReal[ 1 ] = ( pLeftReal[ 1 ] + pRightReal[ 1 ] ) * 0.5f;
+				pDestReal[ 2 ] = ( pLeftReal[ 2 ] + pRightReal[ 2 ] ) * 0.5f;
 
-                if (elemNorm != null)
-                {
-                    // Normals
-                    pDestReal = (pDest + elemNorm.Offset).ToFloatPointer();
-                    pLeftReal = (pLeft + elemNorm.Offset).ToFloatPointer();
-                    pRightReal = (pRight + elemNorm.Offset).ToFloatPointer();
+				if ( elemNorm != null )
+				{
+					// Normals
+					pDestReal = ( pDest + elemNorm.Offset ).ToFloatPointer();
+					pLeftReal = ( pLeft + elemNorm.Offset ).ToFloatPointer();
+					pRightReal = ( pRight + elemNorm.Offset ).ToFloatPointer();
 
-                    var norm = Vector3.Zero;
-                    norm.x = (pLeftReal[0] + pRightReal[0])*0.5f;
-                    norm.y = (pLeftReal[1] + pRightReal[1])*0.5f;
-                    norm.z = (pLeftReal[2] + pRightReal[2])*0.5f;
-                    norm.Normalize();
+					Vector3 norm = Vector3.Zero;
+					norm.x = ( pLeftReal[ 0 ] + pRightReal[ 0 ] ) * 0.5f;
+					norm.y = ( pLeftReal[ 1 ] + pRightReal[ 1 ] ) * 0.5f;
+					norm.z = ( pLeftReal[ 2 ] + pRightReal[ 2 ] ) * 0.5f;
+					norm.Normalize();
 
-                    pDestReal[0] = norm.x;
-                    pDestReal[1] = norm.y;
-                    pDestReal[2] = norm.z;
-                }
-                if (elemDiffuse != null)
-                {
-                    // Blend each byte individually
-                    var pDestChar = (pDest + elemDiffuse.Offset).ToBytePointer();
-                    var pLeftChar = (pLeft + elemDiffuse.Offset).ToBytePointer();
-                    var pRightChar = (pRight + elemDiffuse.Offset).ToBytePointer();
+					pDestReal[ 0 ] = norm.x;
+					pDestReal[ 1 ] = norm.y;
+					pDestReal[ 2 ] = norm.z;
+				}
+				if ( elemDiffuse != null )
+				{
+					// Blend each byte individually
+					byte* pDestChar = ( pDest + elemDiffuse.Offset ).ToBytePointer();
+					byte* pLeftChar = ( pLeft + elemDiffuse.Offset ).ToBytePointer();
+					byte* pRightChar = ( pRight + elemDiffuse.Offset ).ToBytePointer();
 
-                    // 4 bytes to RGBA
-                    pDestChar[0] = (byte) ((pLeftChar[0] + pRightReal[0])*0.5f);
-                    pDestChar[1] = (byte) ((pLeftChar[1] + pRightChar[1])*0.5f);
-                    pDestChar[2] = (byte) ((pLeftChar[2] + pRightChar[2])*0.5f);
-                    pDestChar[3] = (byte) ((pLeftChar[3] + pRightChar[3])*0.5f);
-                }
-                if (elemTex0 != null)
-                {
-                    // Blend each byte individually
-                    pDestReal = (pDest + elemTex0.Offset).ToFloatPointer();
-                    pLeftReal = (pLeft + elemTex0.Offset).ToFloatPointer();
-                    pRightReal = (pRight + elemTex0.Offset).ToFloatPointer();
+					// 4 bytes to RGBA
+					pDestChar[ 0 ] = (byte)( ( pLeftChar[ 0 ] + pRightReal[ 0 ] ) * 0.5f );
+					pDestChar[ 1 ] = (byte)( ( pLeftChar[ 1 ] + pRightChar[ 1 ] ) * 0.5f );
+					pDestChar[ 2 ] = (byte)( ( pLeftChar[ 2 ] + pRightChar[ 2 ] ) * 0.5f );
+					pDestChar[ 3 ] = (byte)( ( pLeftChar[ 3 ] + pRightChar[ 3 ] ) * 0.5f );
+				}
+				if ( elemTex0 != null )
+				{
+					// Blend each byte individually
+					pDestReal = ( pDest + elemTex0.Offset ).ToFloatPointer();
+					pLeftReal = ( pLeft + elemTex0.Offset ).ToFloatPointer();
+					pRightReal = ( pRight + elemTex0.Offset ).ToFloatPointer();
 
-                    for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex0.Type); dim++)
-                    {
-                        pDestReal[dim] = (pLeftReal[dim] + pRightReal[dim])*0.5f;
-                    }
-                }
-                if (elemTex1 != null)
-                {
-                    // Blend each byte individually
-                    pDestReal = (pDest + elemTex1.Offset).ToFloatPointer();
-                    pLeftReal = (pLeft + elemTex1.Offset).ToFloatPointer();
-                    pRightReal = (pRight + elemTex1.Offset).ToFloatPointer();
+					for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+					{
+						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] ) * 0.5f;
+					}
+				}
+				if ( elemTex1 != null )
+				{
+					// Blend each byte individually
+					pDestReal = ( pDest + elemTex1.Offset ).ToFloatPointer();
+					pLeftReal = ( pLeft + elemTex1.Offset ).ToFloatPointer();
+					pRightReal = ( pRight + elemTex1.Offset ).ToFloatPointer();
 
-                    for (var dim = 0; dim < VertexElement.GetTypeCount(elemTex1.Type); dim++)
-                    {
-                        pDestReal[dim] = (pLeftReal[dim] + pRightReal[dim])*0.5f;
-                    }
-                }
-            }
+					for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+					{
+						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] ) * 0.5f;
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -653,19 +665,19 @@ namespace Axiom.Core
 			// which step over the vertices we don't need for this level of detail.
 
 			// Calculate steps
-			var vStep = 1 << ( maxVLevel - vLevel );
-			var uStep = 1 << ( maxULevel - uLevel );
-			var currentWidth = ( LevelWidth( uLevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
-			var currentHeight = ( LevelWidth( vLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
+			int vStep = 1 << ( this.maxVLevel - this.vLevel );
+			int uStep = 1 << ( this.maxULevel - this.uLevel );
+			int currentWidth = ( LevelWidth( this.uLevel ) - 1 ) * ( ( this.controlWidth - 1 ) / 2 ) + 1;
+			int currentHeight = ( LevelWidth( this.vLevel ) - 1 ) * ( ( this.controlHeight - 1 ) / 2 ) + 1;
 
-			var use32bitindexes = ( indexBuffer.Type == IndexType.Size32 );
+			bool use32bitindexes = ( this.indexBuffer.Type == IndexType.Size32 );
 
 			// The mesh is built, just make a list of indexes to spit out the triangles
 			int vInc, uInc;
 
 			int vCount, uCount, v, u, iterations;
 
-			if ( side == VisibleSide.Both )
+			if ( this.side == VisibleSide.Both )
 			{
 				iterations = 2;
 				vInc = vStep;
@@ -674,7 +686,7 @@ namespace Axiom.Core
 			else
 			{
 				iterations = 1;
-				if ( side == VisibleSide.Front )
+				if ( this.side == VisibleSide.Front )
 				{
 					vInc = vStep;
 					v = 0;
@@ -682,103 +694,92 @@ namespace Axiom.Core
 				else
 				{
 					vInc = -vStep;
-					v = meshHeight - 1;
+					v = this.meshHeight - 1;
 				}
 			}
 
 			// Calc num indexes
-			currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
+			this.currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
 
 			int v1, v2, v3;
-			var count = 0;
+			int count = 0;
 
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                // Lock just the section of the buffer we need
-                var p32 = use32bitindexes
-                              ? indexBuffer.Lock(
-                                  indexOffset*sizeof(int),
-                                  requiredIndexCount*sizeof(int),
-                                  BufferLocking.NoOverwrite).ToIntPointer()
-                              : null;
-                var p16 = !use32bitindexes
-                              ? indexBuffer.Lock(
-                                  indexOffset*sizeof(short),
-                                  requiredIndexCount*sizeof(short),
-                                  BufferLocking.NoOverwrite).ToShortPointer()
-                              : null;
+			{
+				// Lock just the section of the buffer we need
+				int* p32 = use32bitindexes ? this.indexBuffer.Lock( this.indexOffset * sizeof( int ), this.requiredIndexCount * sizeof( int ), BufferLocking.NoOverwrite ).ToIntPointer() : null;
+				short* p16 = !use32bitindexes ? this.indexBuffer.Lock( this.indexOffset * sizeof( short ), this.requiredIndexCount * sizeof( short ), BufferLocking.NoOverwrite ).ToShortPointer() : null;
 
-                while (iterations-- > 0)
-                {
-                    // Make tris in a zigzag pattern (compatible with strips)
-                    u = 0;
-                    uInc = uStep; // Start with moving +u
+				while ( iterations-- > 0 )
+				{
+					// Make tris in a zigzag pattern (compatible with strips)
+					u = 0;
+					uInc = uStep; // Start with moving +u
 
-                    vCount = currentHeight - 1;
-                    while (vCount-- > 0)
-                    {
-                        uCount = currentWidth - 1;
+					vCount = currentHeight - 1;
+					while ( vCount-- > 0 )
+					{
+						uCount = currentWidth - 1;
 
-                        while (uCount-- > 0)
-                        {
-                            // First Tri in cell
-                            // -----------------
-                            v1 = ((v + vInc)*meshWidth) + u;
-                            v2 = (v*meshWidth) + u;
-                            v3 = ((v + vInc)*meshWidth) + (u + uInc);
+						while ( uCount-- > 0 )
+						{
+							// First Tri in cell
+							// -----------------
+							v1 = ( ( v + vInc ) * this.meshWidth ) + u;
+							v2 = ( v * this.meshWidth ) + u;
+							v3 = ( ( v + vInc ) * this.meshWidth ) + ( u + uInc );
 
-                            // Output indexes
-                            if (use32bitindexes)
-                            {
-                                p32[count++] = v1;
-                                p32[count++] = v2;
-                                p32[count++] = v3;
-                            }
-                            else
-                            {
-                                p16[count++] = (short) v1;
-                                p16[count++] = (short) v2;
-                                p16[count++] = (short) v3;
-                            }
-                            // Second Tri in cell
-                            // ------------------
-                            v1 = ((v + vInc)*meshWidth) + (u + uInc);
-                            v2 = (v*meshWidth) + u;
-                            v3 = (v*meshWidth) + (u + uInc);
+							// Output indexes
+							if ( use32bitindexes )
+							{
+								p32[ count++ ] = v1;
+								p32[ count++ ] = v2;
+								p32[ count++ ] = v3;
+							}
+							else
+							{
+								p16[ count++ ] = (short)v1;
+								p16[ count++ ] = (short)v2;
+								p16[ count++ ] = (short)v3;
+							}
+							// Second Tri in cell
+							// ------------------
+							v1 = ( ( v + vInc ) * this.meshWidth ) + ( u + uInc );
+							v2 = ( v * this.meshWidth ) + u;
+							v3 = ( v * this.meshWidth ) + ( u + uInc );
 
-                            // Output indexes
-                            if (use32bitindexes)
-                            {
-                                p32[count++] = v1;
-                                p32[count++] = v2;
-                                p32[count++] = v3;
-                            }
-                            else
-                            {
-                                p16[count++] = (short) v1;
-                                p16[count++] = (short) v2;
-                                p16[count++] = (short) v3;
-                            }
+							// Output indexes
+							if ( use32bitindexes )
+							{
+								p32[ count++ ] = v1;
+								p32[ count++ ] = v2;
+								p32[ count++ ] = v3;
+							}
+							else
+							{
+								p16[ count++ ] = (short)v1;
+								p16[ count++ ] = (short)v2;
+								p16[ count++ ] = (short)v3;
+							}
 
-                            // Next column
-                            u += uInc;
-                        }
-                        // Next row
-                        v += vInc;
-                        u = 0;
-                    }
+							// Next column
+							u += uInc;
+						}
+						// Next row
+						v += vInc;
+						u = 0;
+					}
 
-                    // Reverse vInc for double sided
-                    v = meshHeight - 1;
-                    vInc = -vInc;
+					// Reverse vInc for double sided
+					v = this.meshHeight - 1;
+					vInc = -vInc;
+				}
 
-                }
-
-                // don't forget to unlock!
-                indexBuffer.Unlock();
-            }
+				// don't forget to unlock!
+				this.indexBuffer.Unlock();
+			}
 		}
 
 		/// <summary>
@@ -794,20 +795,20 @@ namespace Axiom.Core
 		{
 			// determine levels
 			// Derived from work by Bart Sekura in Rogl
-			var a = Vector3.Zero;
-			var b = Vector3.Zero;
-			var c = Vector3.Zero;
+			Vector3 a = Vector3.Zero;
+			Vector3 b = Vector3.Zero;
+			Vector3 c = Vector3.Zero;
 
-			var found = false;
+			bool found = false;
 
 			// Find u level
-			for ( var v = 0; v < controlHeight; v++ )
+			for ( int v = 0; v < this.controlHeight; v++ )
 			{
-				for ( var u = 0; u < controlWidth - 1; u += 2 )
+				for ( int u = 0; u < this.controlWidth - 1; u += 2 )
 				{
-					a = controlPoints[ v * controlWidth + u + 0 ];
-					b = controlPoints[ v * controlWidth + u + 1 ];
-					c = controlPoints[ v * controlWidth + u + 2 ];
+					a = this.controlPoints[ v * this.controlWidth + u + 0 ];
+					b = this.controlPoints[ v * this.controlWidth + u + 1 ];
+					c = this.controlPoints[ v * this.controlWidth + u + 2 ];
 
 					if ( a != c )
 					{
@@ -840,19 +841,19 @@ namespace Axiom.Core
 		/// </summary>
 		protected int GetAutoVLevel( bool forMax )
 		{
-			var a = Vector3.Zero;
-			var b = Vector3.Zero;
-			var c = Vector3.Zero;
+			Vector3 a = Vector3.Zero;
+			Vector3 b = Vector3.Zero;
+			Vector3 c = Vector3.Zero;
 
-			var found = false;
+			bool found = false;
 
-			for ( var u = 0; u < controlWidth; u++ )
+			for ( int u = 0; u < this.controlWidth; u++ )
 			{
-				for ( var v = 0; v < controlHeight - 1; v += 2 )
+				for ( int v = 0; v < this.controlHeight - 1; v += 2 )
 				{
-					a = controlPoints[ v * controlWidth + u ];
-					b = controlPoints[ ( v + 1 ) * controlWidth + u ];
-					c = controlPoints[ ( v + 2 ) * controlWidth + u ];
+					a = this.controlPoints[ v * this.controlWidth + u ];
+					b = this.controlPoints[ ( v + 1 ) * this.controlWidth + u ];
+					c = this.controlPoints[ ( v + 2 ) * this.controlWidth + u ];
 
 					if ( a != c )
 					{
@@ -885,8 +886,8 @@ namespace Axiom.Core
 
 		/// <summary>
 		///     Based on a previous call to 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
-        ///     establishes the number of vertices required
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
+		///     establishes the number of vertices required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		/// <remarks>
@@ -896,21 +897,21 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return requiredVertexCount;
+				return this.requiredVertexCount;
 			}
 		}
 
 		/// <summary>
 		///     Based on a previous call to 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
-        ///     establishes the number of indexes required
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>, 
+		///     establishes the number of indexes required
 		///     to hold this patch at the maximum detail level.
 		/// </summary>
 		public int RequiredIndexCount
 		{
 			get
 			{
-				return requiredIndexCount;
+				return this.requiredIndexCount;
 			}
 		}
 
@@ -921,7 +922,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return currentIndexCount;
+				return this.currentIndexCount;
 			}
 		}
 
@@ -932,7 +933,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return indexOffset;
+				return this.indexOffset;
 			}
 		}
 
@@ -943,32 +944,32 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return vertexOffset;
+				return this.vertexOffset;
 			}
 		}
 
 		/// <summary>
-        ///     Gets the bounds of this patch, only valid after calling 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
+		///     Gets the bounds of this patch, only valid after calling 
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
 		/// </summary>
 		public AxisAlignedBox Bounds
 		{
 			get
 			{
-				return aabb;
+				return this.aabb;
 			}
 		}
 
 		/// <summary>
-        ///     Gets the radius of the bounding sphere for this patch, only valid after 
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>
+		///     Gets the radius of the bounding sphere for this patch, only valid after 
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>
 		///     has been called.
 		/// </summary>
 		public float BoundingSphereRadius
 		{
 			get
 			{
-				return boundingSphereRadius;
+				return this.boundingSphereRadius;
 			}
 		}
 
@@ -980,22 +981,22 @@ namespace Axiom.Core
 		///     the U and V directions can have different subdivision levels, this property
 		///     takes a single float value where 0 is the minimum detail (the control points)
 		///     and 1 is the maximum detail level as supplied to the original call to
-        ///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
+		///     <see cref="DefineSurface(Array, VertexDeclaration, int, int)"/>.
 		/// </remarks>
 		public float SubdivisionFactor
 		{
 			get
 			{
-				return subdivisionFactor;
+				return this.subdivisionFactor;
 			}
 			set
 			{
 				Debug.Assert( value >= 0.0f && value <= 1.0f );
 
-				subdivisionFactor = value;
+				this.subdivisionFactor = value;
 
-				uLevel = (int)( subdivisionFactor * maxULevel );
-				vLevel = (int)( subdivisionFactor * maxVLevel );
+				this.uLevel = (int)( this.subdivisionFactor * this.maxULevel );
+				this.vLevel = (int)( this.subdivisionFactor * this.maxVLevel );
 
 				MakeTriangles();
 			}
@@ -1026,10 +1027,12 @@ namespace Axiom.Core
 		///     The side from which u goes right and v goes up (as in texture coords).
 		/// </summary>
 		Front,
+
 		/// <summary>
 		///     The side from which u goes right and v goes down (reverse of texture coords).
 		/// </summary>
 		Back,
+
 		/// <summary>
 		///     Both sides are visible - warning this creates 2x the number of triangles and adds
 		///     extra overhead for calculating normals.

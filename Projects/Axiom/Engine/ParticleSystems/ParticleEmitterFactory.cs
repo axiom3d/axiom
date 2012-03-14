@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 
-using Axiom.Collections;
-using Axiom.ParticleSystems.Collections;
 
 #endregion Namespace Declarations
 
@@ -55,7 +55,7 @@ namespace Axiom.ParticleSystems
 	///		subclasses. They must also be registered with the ParticleSystemManager. All factories have
 	///		a name which identifies them, examples might be 'Point', 'Cone', or 'Box', and these can be 
 	///		also be used from XML particle system scripts.
-    /// </remarks>
+	/// </remarks>
 	public abstract class ParticleEmitterFactory
 	{
 		#region Member variables
@@ -66,13 +66,6 @@ namespace Axiom.ParticleSystems
 
 		#region Constructors
 
-		/// <summary>
-		///		Default constructor
-		/// </summary>
-		public ParticleEmitterFactory()
-		{
-		}
-
 		#endregion
 
 		#region Properties
@@ -80,10 +73,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Returns the name of the factory, which identifies which type of emitter this factory creates.
 		/// </summary>
-		public abstract string Name
-		{
-			get;
-		}
+		public abstract string Name { get; }
 
 		#endregion
 
@@ -105,7 +95,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleEmitter emitter )
 		{
 			// remove the emitter from the list
-			emitterList.Remove( emitter );
+			this.emitterList.Remove( emitter );
 		}
 
 		#endregion

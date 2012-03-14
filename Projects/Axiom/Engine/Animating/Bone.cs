@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,29 +23,35 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 
-using Axiom.Math;
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 // <ogresynchronization>
 //     <file name="Bone.h"   revision="1.17" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 //     <file name="Bone.cpp" revision="1.22" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 // </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
@@ -61,14 +68,17 @@ namespace Axiom.Animating
 	{
 		#region Fields
 
-		/// <summary>Numeric handle of this bone.</summary>
-		protected ushort handle;
-		/// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
-		protected bool isManuallyControlled;
-		/// <summary>The skeleton that created this bone.</summary>
-		protected Skeleton creator;
 		/// <summary>The inverse derived transform of the bone in the binding pose.</summary>
 		protected Matrix4 bindDerivedInverseTransform;
+
+		/// <summary>The skeleton that created this bone.</summary>
+		protected Skeleton creator;
+
+		/// <summary>Numeric handle of this bone.</summary>
+		protected ushort handle;
+
+		/// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
+		protected bool isManuallyControlled;
 
 		#endregion Fields
 
@@ -78,7 +88,6 @@ namespace Axiom.Animating
 		///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
 		/// </summary>
 		public Bone( ushort handle, Skeleton creator )
-			: base()
 		{
 			this.handle = handle;
 			this.isManuallyControlled = false;
@@ -106,7 +115,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl()
 		{
-			return creator.CreateBone();
+			return this.creator.CreateBone();
 		}
 
 		/// <summary>
@@ -116,7 +125,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
-			return creator.CreateBone( name );
+			return this.creator.CreateBone( name );
 		}
 
 		/// <summary>
@@ -138,10 +147,10 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
 		{
-			var bone = creator.CreateBone( handle );
+			Bone bone = this.creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
-			this.AddChild( bone );
+			AddChild( bone );
 
 			return bone;
 		}
@@ -168,11 +177,7 @@ namespace Axiom.Animating
 			SetInitialState();
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
-			MakeInverseTransform(
-				this.DerivedPosition,
-				Vector3.UnitScale,
-				this.DerivedOrientation,
-				ref bindDerivedInverseTransform );
+			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref this.bindDerivedInverseTransform );
 		}
 
 		#endregion
@@ -186,11 +191,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return isManuallyControlled;
+				return this.isManuallyControlled;
 			}
 			set
 			{
-				isManuallyControlled = value;
+				this.isManuallyControlled = value;
 			}
 		}
 
@@ -201,7 +206,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return bindDerivedInverseTransform;
+				return this.bindDerivedInverseTransform;
 			}
 		}
 
@@ -212,7 +217,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return handle;
+				return this.handle;
 			}
 		}
 
@@ -231,18 +236,17 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class VertexBoneAssignment : IComparable
 	{
-		public int vertexIndex;
 		public ushort boneIndex;
+		public int vertexIndex;
 		public float weight;
 
-		public VertexBoneAssignment()
-		{
-		}
+		public VertexBoneAssignment() { }
+
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{
-			vertexIndex = other.vertexIndex;
-			boneIndex = other.boneIndex;
-			weight = other.weight;
+			this.vertexIndex = other.vertexIndex;
+			this.boneIndex = other.boneIndex;
+			this.weight = other.weight;
 		}
 
 		#region IComparable Members
@@ -253,16 +257,24 @@ namespace Axiom.Animating
 			{
 				var v = (VertexBoneAssignment)obj;
 
-				if ( weight > v.weight )
+				if ( this.weight > v.weight )
+				{
 					return 1;
-				if ( weight < v.weight )
+				}
+				if ( this.weight < v.weight )
+				{
 					return -1;
+				}
 
-				if ( vertexIndex != v.vertexIndex )
-					return vertexIndex - v.vertexIndex;
+				if ( this.vertexIndex != v.vertexIndex )
+				{
+					return this.vertexIndex - v.vertexIndex;
+				}
 
-				if ( boneIndex != v.boneIndex )
-					return boneIndex - v.boneIndex;
+				if ( this.boneIndex != v.boneIndex )
+				{
+					return this.boneIndex - v.boneIndex;
+				}
 
 				return 0;
 			}
@@ -270,32 +282,45 @@ namespace Axiom.Animating
 		}
 
 		#endregion
-
 	}
 
-	public class VertexBoneAssignmentWeightComparer : System.Collections.Generic.IComparer<VertexBoneAssignment>
+	public class VertexBoneAssignmentWeightComparer : IComparer<VertexBoneAssignment>
 	{
+		#region IComparer<VertexBoneAssignment> Members
+
 		/// <summary>Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.</summary>
 		/// <returns>Value Condition Less than zero x is less than y. Zero x equals y. Greater than zero x is greater than y. </returns>
-        /// <param name="yVba">Second object to compare. </param>
-        /// <param name="xVba">First object to compare. </param>
+		/// <param name="yVba">Second object to compare. </param>
+		/// <param name="xVba">First object to compare. </param>
 		/// <filterpriority>2</filterpriority>
 		public int Compare( VertexBoneAssignment xVba, VertexBoneAssignment yVba )
 		{
 			if ( xVba == null && yVba == null )
+			{
 				return 0;
+			}
 			else if ( xVba == null )
+			{
 				return -1;
+			}
 			else if ( yVba == null )
+			{
 				return 1;
+			}
 			else if ( xVba.weight == yVba.weight )
+			{
 				return 0;
+			}
 			else if ( xVba.weight < yVba.weight )
+			{
 				return -1;
+			}
 			else // if (xVba.weight > yVba.weight)
+			{
 				return 1;
+			}
 		}
 
+		#endregion
 	}
-
 }

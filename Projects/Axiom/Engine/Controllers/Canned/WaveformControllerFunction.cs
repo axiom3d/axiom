@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Math;
 
@@ -50,19 +52,18 @@ namespace Axiom.Controllers.Canned
 	{
 		#region Member variables
 
-		protected WaveformType type;
+		protected Real amplitude = 1.0f;
 		protected Real baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
+		protected float dutyCycle = 0.5f;
 		protected Real frequency = 1.0f;
 		protected Real phase; //[FXCop Optimization : Do not initialize unnecessarily]
-		protected Real amplitude = 1.0f;
-        protected float dutyCycle = 0.5f;
+		protected WaveformType type;
+
 		#endregion
 
 		#region Constructors
 
-
 		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude, bool useDelta )
-
 			: base( useDelta )
 		{
 			this.type = type;
@@ -70,7 +71,7 @@ namespace Axiom.Controllers.Canned
 			this.frequency = frequency;
 			this.phase = phase;
 			this.amplitude = amplitude;
-            this.deltaCount = phase;
+			deltaCount = phase;
 		}
 
 		public WaveformControllerFunction( WaveformType type, Real baseVal )
@@ -119,18 +120,22 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			var input = AdjustInput( sourceValue * frequency ) % 1f;
-			var output = 0.0f;
+			float input = AdjustInput( sourceValue * this.frequency ) % 1f;
+			float output = 0.0f;
 
-            //For simplicity, factor input down to {0,1}
-            //Use looped subtract rather than divide / round
-            while (input >= 1.0)
-                input -= 1.0f;
-            while (input < 0.0)
-                input += 1.0f;
+			//For simplicity, factor input down to {0,1}
+			//Use looped subtract rather than divide / round
+			while ( input >= 1.0 )
+			{
+				input -= 1.0f;
+			}
+			while ( input < 0.0 )
+			{
+				input += 1.0f;
+			}
 
 			// first, get output in range [-1,1] (typical for waveforms)
-			switch ( type )
+			switch ( this.type )
 			{
 				case WaveformType.Sine:
 					output = Utility.Sin( input * Utility.TWO_PI );
@@ -138,19 +143,29 @@ namespace Axiom.Controllers.Canned
 
 				case WaveformType.Triangle:
 					if ( input < 0.25f )
+					{
 						output = input * 4;
+					}
 					else if ( input >= 0.25f && input < 0.75f )
+					{
 						output = 1.0f - ( ( input - 0.25f ) * 4 );
+					}
 					else
+					{
 						output = ( ( input - 0.75f ) * 4 ) - 1.0f;
+					}
 
 					break;
 
 				case WaveformType.Square:
 					if ( input <= 0.5f )
+					{
 						output = 1.0f;
+					}
 					else
+					{
 						output = -1.0f;
+					}
 					break;
 
 				case WaveformType.Sawtooth:
@@ -160,26 +175,31 @@ namespace Axiom.Controllers.Canned
 				case WaveformType.InverseSawtooth:
 					output = -( ( input * 2 ) - 1 );
 					break;
-                case WaveformType.PulseWidthModulation:
-                    if (input <= dutyCycle)
-                        output = 1.0f;
-                    else
-                        output = -1.0f;
-                    break;
-
+				case WaveformType.PulseWidthModulation:
+					if ( input <= this.dutyCycle )
+					{
+						output = 1.0f;
+					}
+					else
+					{
+						output = -1.0f;
+					}
+					break;
 			} // end switch
 
 			// scale final output to range [0,1], and then by base and amplitude
-			return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
+			return this.baseVal + ( ( output + 1.0f ) * 0.5f * this.amplitude );
 		}
 
 		protected override Real AdjustInput( Real input )
 		{
-			var adjusted = base.AdjustInput( input );
+			Real adjusted = base.AdjustInput( input );
 
 			// if not using delta accumulation, adjust by phase value
 			if ( !useDeltaInput )
-				adjusted += phase;
+			{
+				adjusted += this.phase;
+			}
 
 			return adjusted;
 		}
@@ -189,6 +209,5 @@ namespace Axiom.Controllers.Canned
 		#region Properties
 
 		#endregion
-
 	}
 }

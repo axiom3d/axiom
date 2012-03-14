@@ -27,17 +27,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -46,30 +45,42 @@ namespace Axiom.SceneManagers.PortalConnected
 {
 	public class PCPlane
 	{
-		protected Plane plane;
 		protected Portal mPortal;
+		protected Plane plane;
 
 		public PCPlane()
 		{
-			mPortal = null;
+			this.mPortal = null;
 		}
 
 		public PCPlane( Plane plane )
 		{
 			this.plane = new Plane( plane );
-			mPortal = null;
+			this.mPortal = null;
 		}
 
 		public PCPlane( Vector3 rkNormal, Vector3 rkPoint )
 		{
 			this.plane = new Plane( rkNormal, rkPoint );
-			mPortal = null;
+			this.mPortal = null;
 		}
 
 		public PCPlane( Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2 )
 		{
 			this.plane = new Plane( rkPoint0, rkPoint1, rkPoint2 );
-			mPortal = null;
+			this.mPortal = null;
+		}
+
+		public Portal Portal
+		{
+			get
+			{
+				return this.mPortal;
+			}
+			set
+			{
+				this.mPortal = value;
+			}
 		}
 
 		public PlaneSide GetSide( AxisAlignedBox box )
@@ -99,26 +110,13 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void SetFromAxiomPlane( Plane axiomPlane )
 		{
-			this.plane = new Plane( plane );
-			mPortal = null;
-		}
-
-		public Portal Portal
-		{
-			get
-			{
-				return mPortal;
-			}
-			set
-			{
-				mPortal = value;
-			}
+			this.plane = new Plane( this.plane );
+			this.mPortal = null;
 		}
 
 		~PCPlane()
 		{
-			mPortal = null;
+			this.mPortal = null;
 		}
-
 	}
 }

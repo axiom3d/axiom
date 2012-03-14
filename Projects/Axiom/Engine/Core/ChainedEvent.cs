@@ -27,17 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -47,7 +47,8 @@ namespace Axiom.Core
 	///
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class ChainedEvent<T> where T : EventArgs
+	public class ChainedEvent<T>
+		where T : EventArgs
 	{
 		public EventHandler<T> EventSinks;
 
@@ -60,19 +61,21 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual bool Fire( object sender, T arg, Predicate<T> compare )
 		{
-			var continueChain = true;
+			bool continueChain = true;
 
 			// Assuming the multicast delegate is not null...
-			if ( EventSinks != null )
+			if ( this.EventSinks != null )
 			{
 				// Call the methods until one of them handles the event
 				// or all the methods in the delegate list are processed.
-				foreach ( EventHandler<T> sink in EventSinks.GetInvocationList() )
+				foreach ( EventHandler<T> sink in this.EventSinks.GetInvocationList() )
 				{
 					sink( sender, arg );
 					continueChain = compare( arg );
 					if ( !continueChain )
+					{
 						break;
+					}
 				}
 			}
 			// Return a flag indicating whether an event sink canceled the event.

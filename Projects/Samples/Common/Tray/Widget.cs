@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -27,6 +29,7 @@ using Axiom.Fonts;
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
+
 using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
 
 namespace Axiom.Samples
@@ -37,18 +40,22 @@ namespace Axiom.Samples
 	public class Widget
 	{
 		#region fields
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement element;
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TrayLocation trayLoc;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected ISdkTrayListener listener;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected TrayLocation trayLoc;
+
 		#endregion fields
 
 		#region properties
@@ -60,11 +67,11 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				trayLoc = value;
+				this.trayLoc = value;
 			}
 			get
 			{
-				return trayLoc;
+				return this.trayLoc;
 			}
 		}
 
@@ -75,13 +82,14 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return listener;
+				return this.listener;
 			}
 			set
 			{
-				listener = value;
+				this.listener = value;
 			}
 		}
+
 		/// <summary>
 		/// Gets the underlying overlay element
 		/// </summary>
@@ -89,9 +97,10 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return element;
+				return this.element;
 			}
 		}
+
 		/// <summary>
 		/// Gets the name of this widget.
 		/// </summary>
@@ -99,7 +108,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return element.Name;
+				return this.element.Name;
 			}
 		}
 
@@ -150,10 +159,10 @@ namespace Axiom.Samples
 		/// <param name="element"></param>
 		public static void NukeOverlayElement( OverlayElement element )
 		{
-			OverlayElementContainer container = element as OverlayElementContainer;
+			var container = element as OverlayElementContainer;
 			if ( container != null )
 			{
-				List<OverlayElement> toDelete = new List<OverlayElement>();
+				var toDelete = new List<OverlayElement>();
 				foreach ( OverlayElement child in container.Children.Values )
 				{
 					toDelete.Add( child );
@@ -168,7 +177,9 @@ namespace Axiom.Samples
 			{
 				OverlayElementContainer parent = element.Parent;
 				if ( parent != null )
+				{
 					parent.RemoveChild( element.Name );
+				}
 				OverlayManager.Instance.Elements.DestroyElement( element.Name );
 			}
 		}
@@ -194,13 +205,12 @@ namespace Axiom.Samples
 		public static bool IsCursorOver( OverlayElement element, Vector2 cursorPos, Real voidBorder )
 		{
 			OverlayManager om = OverlayManager.Instance;
-			int l = (int)( element.DerivedLeft * om.ViewportWidth );
-			int t = (int)( element.DerivedTop * om.ViewportHeight );
+			var l = (int)( element.DerivedLeft * om.ViewportWidth );
+			var t = (int)( element.DerivedTop * om.ViewportHeight );
 			int r = l + (int)element.Width;
 			int b = t + (int)element.Height;
 
-			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder &&
-					cursorPos.y >= t + voidBorder && cursorPos.y <= b - voidBorder );
+			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder && cursorPos.y >= t + voidBorder && cursorPos.y <= b - voidBorder );
 		}
 
 		/// <summary>
@@ -213,8 +223,7 @@ namespace Axiom.Samples
 		public static Vector2 CursorOffset( OverlayElement element, Vector2 cursorPos )
 		{
 			OverlayManager om = OverlayManager.Instance;
-			return new Vector2( cursorPos.x - ( element.DerivedLeft * om.ViewportWidth + element.Width / 2 ),
-							   cursorPos.y - ( element.DerivedTop * om.ViewportHeight + element.Height / 2 ) );
+			return new Vector2( cursorPos.x - ( element.DerivedLeft * om.ViewportWidth + element.Width / 2 ), cursorPos.y - ( element.DerivedTop * om.ViewportHeight + element.Height / 2 ) );
 		}
 
 		/// <summary>
@@ -225,7 +234,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public static Real GetCaptionWidth( String caption, TextArea area )
 		{
-			Font font = (Font)FontManager.Instance.GetByName( area.FontName );
+			var font = (Font)FontManager.Instance.GetByName( area.FontName );
 			String current = caption;
 			Real lineWidth = 0;
 
@@ -235,15 +244,23 @@ namespace Axiom.Samples
 				if ( current[ i ] == ' ' )
 				{
 					if ( area.SpaceWidth != 0 )
+					{
 						lineWidth += area.SpaceWidth;
+					}
 					else
+					{
 						lineWidth += font.GetGlyphAspectRatio( ' ' ) * area.CharHeight;
+					}
 				}
 				else if ( current[ i ] == '\n' )
+				{
 					break;
+				}
 				// use glyph information to calculate line width
 				else
+				{
 					lineWidth += font.GetGlyphAspectRatio( current[ i ] ) * area.CharHeight;
+				}
 			}
 
 			return lineWidth;
@@ -257,21 +274,27 @@ namespace Axiom.Samples
 		/// <param name="maxWidth"></param>
 		public static void FitCaptionToArea( String caption, TextArea area, Real maxWidth )
 		{
-			Font f = (Font)FontManager.Instance.GetByName( area.FontName );
+			var f = (Font)FontManager.Instance.GetByName( area.FontName );
 			String s = caption;
 
 			int nl = s.IndexOf( '\n' );
 			if ( nl != -1 )
+			{
 				s = s.Substring( 0, nl );
+			}
 
 			Real width = 0;
 
 			for ( int i = 0; i < s.Length; i++ )
 			{
 				if ( s[ i ] == ' ' && area.SpaceWidth != 0 )
+				{
 					width += area.SpaceWidth;
+				}
 				else
+				{
 					width += f.GetGlyphAspectRatio( s[ i ] ) * area.CharHeight;
+				}
 				if ( width > maxWidth )
 				{
 					s = s.Substring( 0, i );
@@ -292,7 +315,9 @@ namespace Axiom.Samples
 		public void Cleanup()
 		{
 			if ( this.element != null )
+			{
 				NukeOverlayElement( this.element );
+			}
 			this.element = null;
 		}
 
@@ -311,6 +336,7 @@ namespace Axiom.Samples
 		{
 			this.element.Show();
 		}
+
 		#endregion
 
 		#region events
@@ -319,14 +345,17 @@ namespace Axiom.Samples
 		/// Occurs when the cursor pointer is moved over the widget.
 		/// </summary>
 		public event CursorMovedHandler CursorMoved;
+
 		/// <summary>
 		/// Occurs when the cursor pointer is over the widget and a mouse button is pressed.
 		/// </summary>
 		public event CursorPressedHandler CursorPressed;
+
 		/// <summary>
 		/// Occurs when the cursor pointer is over the widget and a mouse button is released.
 		/// </summary>
 		public event CursorReleasedHandler CursorReleased;
+
 		/// <summary>
 		/// Occours when the widget loses focus.
 		/// </summary>
@@ -343,7 +372,9 @@ namespace Axiom.Samples
 			// immediately after the null check and before the event is raised.
 			CursorMovedHandler handler = CursorMoved;
 			if ( handler != null )
+			{
 				handler( cursorPos );
+			}
 		}
 
 		/// <summary>
@@ -357,7 +388,9 @@ namespace Axiom.Samples
 			// immediately after the null check and before the event is raised.
 			CursorPressedHandler handler = CursorPressed;
 			if ( handler != null )
-				handler(this, cursorPos );
+			{
+				handler( this, cursorPos );
+			}
 		}
 
 		/// <summary>
@@ -371,7 +404,9 @@ namespace Axiom.Samples
 			// immediately after the null check and before the event is raised.
 			CursorReleasedHandler handler = CursorReleased;
 			if ( handler != null )
+			{
 				handler( cursorPos );
+			}
 		}
 
 		/// <summary>
@@ -384,7 +419,9 @@ namespace Axiom.Samples
 			// immediately after the null check and before the event is raised.
 			LostFocusHandler handler = LostFocus;
 			if ( handler != null )
+			{
 				handler();
+			}
 		}
 
 		#endregion events

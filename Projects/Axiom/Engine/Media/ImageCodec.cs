@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -34,45 +38,49 @@
 namespace Axiom.Media
 {
 	/// <summary>
-    /// Codec specialized in images.
+	/// Codec specialized in images.
 	/// </summary>
-    /// <remarks>
-    /// The users implementing subclasses of ImageCodec are required to return
-    /// a valid pointer to a ImageData class from the decode(...) function.
-    /// </remarks>
+	/// <remarks>
+	/// The users implementing subclasses of ImageCodec are required to return
+	/// a valid pointer to a ImageData class from the decode(...) function.
+	/// </remarks>
 	public abstract class ImageCodec : Codec
 	{
-        [OgreVersion( 1, 7, 2 )]
-        public override string DataType
-        {
-            get
-            {
-                return "ImageData";
-            }
-        }
+		[OgreVersion( 1, 7, 2 )]
+		public override string DataType
+		{
+			get
+			{
+				return "ImageData";
+			}
+		}
 
-        /// <summary>
-        /// Codec return class for images. Has information about the size and the
-        /// pixel format of the image.
-        /// </summary>
-        public class ImageData : CodecData
-        {
-            [OgreVersion( 1, 7, 2 )]
-            public override string DataType
-            {
-                get
-                {
-                    return "ImageData";
-                }
-            }
+		#region Nested type: ImageData
 
-            public int width;
-            public int height;
-            public int depth = 1;
-            public int size;
-            public ImageFlags flags;
-            public int numMipMaps;
-            public PixelFormat format;
-        };
+		/// <summary>
+		/// Codec return class for images. Has information about the size and the
+		/// pixel format of the image.
+		/// </summary>
+		public class ImageData : CodecData
+		{
+			public int depth = 1;
+			public ImageFlags flags;
+			public PixelFormat format;
+			public int height;
+			public int numMipMaps;
+			public int size;
+			public int width;
+
+			[OgreVersion( 1, 7, 2 )]
+			public override string DataType
+			{
+				get
+				{
+					return "ImageData";
+				}
+			}
+		};
+
+		#endregion
 	};
 }

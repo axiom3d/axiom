@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -50,25 +54,29 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
+		///     Index of the item, only applicable for some elements like texture coords.
 		/// </summary>
-		protected short source;
+		protected int index;
+
 		/// <summary>
 		///     The offset in the buffer that this element starts at.
 		/// </summary>
 		protected int offset;
-		/// <summary>
-		///     The type of element.
-		/// </summary>
-		protected VertexElementType type;
+
 		/// <summary>
 		///     The meaning of the element.
 		/// </summary>
 		protected VertexElementSemantic semantic;
+
 		/// <summary>
-		///     Index of the item, only applicable for some elements like texture coords.
+		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
 		/// </summary>
-		protected int index;
+		protected short source;
+
+		/// <summary>
+		///     The type of element.
+		/// </summary>
+		protected VertexElementType type;
 
 		#endregion Fields
 
@@ -82,9 +90,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 )
-		{
-		}
+			: this( source, offset, type, semantic, 0 ) { }
 
 		/// <summary>
 		///     Constructor.
@@ -114,7 +120,7 @@ namespace Axiom.Graphics
 		{
 			switch ( type )
 			{
-                case VertexElementType.Color_ABGR:
+				case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
 				case VertexElementType.Color:
 					return Memory.SizeOf( typeof( int ) );
@@ -145,7 +151,7 @@ namespace Axiom.Graphics
 
 				case VertexElementType.UByte4:
 					return Memory.SizeOf( typeof( byte ) ) * 4;
-            } // end switch
+			} // end switch
 
 			// keep the compiler happy
 			return 0;
@@ -256,7 +262,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 		}
 
@@ -267,7 +273,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return offset;
+				return this.offset;
 			}
 		}
 
@@ -278,7 +284,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 		}
 
@@ -289,7 +295,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return semantic;
+				return this.semantic;
 			}
 		}
 
@@ -300,7 +306,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return index;
+				return this.index;
 			}
 		}
 
@@ -311,7 +317,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return GetTypeSize( type );
+				return GetTypeSize( this.type );
 			}
 		}
 
@@ -325,26 +331,26 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public object Clone()
 		{
-			return this.MemberwiseClone();
+			return MemberwiseClone();
 		}
 
 		#endregion
 
-	    public static int ConvertColorValue( ColorEx color, VertexElementType colorVertexElementType )
-	    {
-            switch (colorVertexElementType)
-            {
+		public static int ConvertColorValue( ColorEx color, VertexElementType colorVertexElementType )
+		{
+			switch ( colorVertexElementType )
+			{
 #if AXIOM_PLATFORM == AXIOM_PLATFORM_WIN32
-                default:
+				default:
 #endif
-                case VertexElementType.Color_ARGB:
-                    return color.ToARGB();
+				case VertexElementType.Color_ARGB:
+					return color.ToARGB();
 #if AXIOM_PLATFORM != OGRE_PLATFORM_WIN32
         default:
 #endif
-                case VertexElementType.Color_ABGR:
-                    return color.ToABGR();
-            }
-	    }
+				case VertexElementType.Color_ABGR:
+					return color.ToABGR();
+			}
+		}
 	}
 }

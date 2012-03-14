@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using Axiom.Core;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -70,6 +74,7 @@ namespace Axiom.Graphics
 		#region top Property
 
 		private int _top;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -77,11 +82,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _top;
+				return this._top;
 			}
 			set
 			{
-				_top = value;
+				this._top = value;
 			}
 		}
 
@@ -90,6 +95,7 @@ namespace Axiom.Graphics
 		#region left Property
 
 		private int _left;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -97,11 +103,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _left;
+				return this._left;
 			}
 			set
 			{
-				_left = value;
+				this._left = value;
 			}
 		}
 
@@ -110,6 +116,7 @@ namespace Axiom.Graphics
 		#region IsFullScreen Property
 
 		protected bool isFullScreen;
+
 		/// <summary>
 		/// Returns true if window is running in fullscreen mode.
 		/// </summary>
@@ -117,11 +124,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isFullScreen;
+				return this.isFullScreen;
 			}
 			protected set
 			{
-				isFullScreen = value;
+				this.isFullScreen = value;
 			}
 		}
 
@@ -138,10 +145,7 @@ namespace Axiom.Graphics
 			{
 				return true;
 			}
-			set
-			{
-
-			}
+			set { }
 		}
 
 		#endregion IsVisible Property
@@ -162,14 +166,21 @@ namespace Axiom.Graphics
 		/// Indicates whether the window has been closed by the user.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool IsClosed
+		public abstract bool IsClosed { get; }
+
+		public virtual bool IsHidden
 		{
-			get;
+			get
+			{
+				return false;
+			}
+			set { }
 		}
 
 		#region IsPrimary Property
 
 		private bool _isPrimary;
+
 		/// <summary>
 		/// Indicates wether the window is the primary window. The
 		/// primary window is special in that it is destroyed when 
@@ -181,61 +192,63 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isPrimary;
+				return this._isPrimary;
 			}
 			internal set // Only to be called by root
 			{
-				_isPrimary = value;
+				this._isPrimary = value;
 			}
 		}
 
-        #endregion IsPrimary Property
-
-        public virtual bool IsHidden
-        {
-            get
-            {
-                return false;
-            }
-            set
-            {
-            }
-        }
-
-	    
+		#endregion IsPrimary Property
 
 		#endregion
 
 		#region Constructor
 
 		protected RenderWindow()
-            : base()
 		{
-
 			// render windows are low priority
-			this.Priority = RenderTargetPriority.Default;
+			Priority = RenderTargetPriority.Default;
 		}
 
 		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                }
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources ) { }
+			}
 
-            // make sure this window is no longer active
-            IsActive = false;
+			// make sure this window is no longer active
+			IsActive = false;
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
+
+		/// <summary>
+		/// Alter fullscreen mode options.
+		/// </summary>
+		/// <remarks>
+		/// Nothing will happen unless the settings here are different from the
+		/// current settings.
+		/// </remarks>
+		/// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
+		/// <param name="width">The new width to use</param>
+		/// <param name="height">The new height to use</param>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual void SetFullScreen( bool fullScreen, int width, int height ) { }
+
+		/// <summary>
+		/// Destroys the window.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void Destroy();
 
 		#region Abstract methods and properties
 
@@ -260,16 +273,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Reposition the window.
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public abstract void Reposition( int left, int top );
 
 		/// <summary>
 		/// Notify that the window has been resized
 		/// </summary>
 		/// <remarks>You don't need to call this unless you created the window externally.</remarks>
-		public virtual void WindowMovedOrResized()
-		{
-		}
+		public virtual void WindowMovedOrResized() { }
 
 		#endregion
 
@@ -281,37 +292,12 @@ namespace Axiom.Graphics
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
-			top = _top;
-			left = _left;
+			top = this._top;
+			left = this._left;
 		}
 
-
 		#endregion
-
-        /// <summary>
-        /// Alter fullscreen mode options.
-        /// </summary>
-        /// <remarks>
-        /// Nothing will happen unless the settings here are different from the
-        /// current settings.
-        /// </remarks>
-        /// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
-        /// <param name="width">The new width to use</param>
-        /// <param name="height">The new height to use</param>
-        [OgreVersion( 1, 7, 2 )]
-        public virtual void SetFullScreen( bool fullScreen, int width, int height )
-        {
-        }
-
-        /// <summary>
-        /// Destroys the window.
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void Destroy();
-
 	}
 
-    public class RenderWindowList: List<RenderWindow>
-    {
-    }
+	public class RenderWindowList : List<RenderWindow> { }
 }

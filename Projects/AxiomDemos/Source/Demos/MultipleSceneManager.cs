@@ -1,72 +1,69 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Input;
 using Axiom.Math;
 
 namespace Axiom.Demos
 {
-    [Export(typeof(TechDemo))]
-    public class MultipleSceneManager : TechDemo
+	[Export( typeof( TechDemo ) )]
+	public class MultipleSceneManager : TechDemo
 	{
-		const string CAMERA_NAME = "Camera";
+		private const string CAMERA_NAME = "Camera";
 
-		SceneManager[] _sceneManagers = new SceneManager[ 3 ];
-		Camera[] _cameras = new Camera[ 3 ];
+		private readonly Camera[] _cameras = new Camera[ 3 ];
+		private readonly SceneManager[] _sceneManagers = new SceneManager[ 3 ];
 
-		private string bspPath;
+		private readonly LoadingBar loadingBar = new LoadingBar();
+
+		private AnimationState animationState;
 		private string bspMap;
-		private LoadingBar loadingBar = new LoadingBar();
-
-		private AnimationState animationState = null;
+		private string bspPath;
 
 		public override void ChooseSceneManager()
 		{
-			_sceneManagers[ 0 ] = Root.Instance.CreateSceneManager( SceneType.Generic, "primary" );
-			_sceneManagers[ 1 ] = Root.Instance.CreateSceneManager( "TerrainSceneManager", "secondary" );
-			_sceneManagers[ 2 ] = Root.Instance.CreateSceneManager( "BspSceneManager", "tertiary" );
-			scene = _sceneManagers[ 0 ];
+			this._sceneManagers[ 0 ] = Root.Instance.CreateSceneManager( SceneType.Generic, "primary" );
+			this._sceneManagers[ 1 ] = Root.Instance.CreateSceneManager( "TerrainSceneManager", "secondary" );
+			this._sceneManagers[ 2 ] = Root.Instance.CreateSceneManager( "BspSceneManager", "tertiary" );
+			scene = this._sceneManagers[ 0 ];
 		}
 
 		public override void SetupResources()
 		{
-			bspPath = "Media/Archives/chiropteraDM.zip";
-			bspMap = "maps/chiropteradm.bsp";
+			this.bspPath = "Media/Archives/chiropteraDM.zip";
+			this.bspMap = "maps/chiropteradm.bsp";
 
-			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
+			ResourceGroupManager.Instance.AddResourceLocation( this.bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
 
 		protected override void LoadResources()
 		{
-			loadingBar.Start( Window, 1, 1, 0.75 );
+			this.loadingBar.Start( Window, 1, 1, 0.75 );
 
 			// Turn off rendering of everything except overlays
-			_sceneManagers[ 2 ].SpecialCaseRenderQueueList.ClearRenderQueues();
-			_sceneManagers[ 2 ].SpecialCaseRenderQueueList.AddRenderQueue( RenderQueueGroupID.Overlay );
-			_sceneManagers[ 2 ].SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Include;
+			this._sceneManagers[ 2 ].SpecialCaseRenderQueueList.ClearRenderQueues();
+			this._sceneManagers[ 2 ].SpecialCaseRenderQueueList.AddRenderQueue( RenderQueueGroupID.Overlay );
+			this._sceneManagers[ 2 ].SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Include;
 
 			// Set up the world geometry link
-			Core.ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( Core.ResourceGroupManager.Instance.WorldResourceGroupName, bspMap, _sceneManagers[ 2 ] );
+			ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( ResourceGroupManager.Instance.WorldResourceGroupName, this.bspMap, this._sceneManagers[ 2 ] );
 
 			// Initialise the rest of the resource groups, parse scripts etc
-			Core.ResourceGroupManager.Instance.InitializeAllResourceGroups();
-			Core.ResourceGroupManager.Instance.LoadResourceGroup( Core.ResourceGroupManager.Instance.WorldResourceGroupName, false, true );
+			ResourceGroupManager.Instance.InitializeAllResourceGroups();
+			ResourceGroupManager.Instance.LoadResourceGroup( ResourceGroupManager.Instance.WorldResourceGroupName, false, true );
 
 			// Back to full rendering
-			_sceneManagers[ 2 ].SpecialCaseRenderQueueList.ClearRenderQueues();
-			_sceneManagers[ 2 ].SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Exclude;
+			this._sceneManagers[ 2 ].SpecialCaseRenderQueueList.ClearRenderQueues();
+			this._sceneManagers[ 2 ].SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Exclude;
 
-			loadingBar.Finish();
+			this.loadingBar.Finish();
 		}
 
 		public override void CreateScene()
 		{
 			#region Primary Scene
+
 			// set some ambient light
 			scene.AmbientLight = new ColorEx( 1.0f, 0.2f, 0.2f, 0.2f );
 
@@ -78,7 +75,7 @@ namespace Axiom.Demos
 			light.Position = new Vector3( 20, 80, 50 );
 
 			// create a plane for the plane mesh
-			Plane plane = new Plane();
+			var plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 200;
 
@@ -114,7 +111,7 @@ namespace Axiom.Demos
 			AnimationTrack track = animation.CreateNodeTrack( 0, cameraNode );
 
 			// create a few keyframes to move the camera around
-			TransformKeyFrame frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
+			var frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
 
 			frame = (TransformKeyFrame)track.CreateKeyFrame( 2.5f );
 			frame.Translate = new Vector3( 500, 500, -1000 );
@@ -129,10 +126,10 @@ namespace Axiom.Demos
 			frame.Translate = Vector3.Zero;
 
 			// create a new animation state to control the animation
-			animationState = scene.CreateAnimationState( "OgreHeadAnimation" );
+			this.animationState = scene.CreateAnimationState( "OgreHeadAnimation" );
 
 			// enable the animation
-			animationState.IsEnabled = true;
+			this.animationState.IsEnabled = true;
 
 			// turn on some fog
 			scene.SetFog( FogMode.Exp, ColorEx.White, 0.0002f );
@@ -141,34 +138,34 @@ namespace Axiom.Demos
 
 			#region Secondary Scene
 
-			_sceneManagers[ 1 ].SetWorldGeometry( "terrain.xml" );
+			this._sceneManagers[ 1 ].SetWorldGeometry( "terrain.xml" );
 			// Infinite far plane?
 			if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) )
 			{
-				_cameras[ 1 ].Far = 0;
+				this._cameras[ 1 ].Far = 0;
 			}
 			// Set a nice viewpoint
-			_cameras[ 1 ].Position = new Vector3( 707, 3500, 528 );
-			_cameras[ 1 ].LookAt( Vector3.Zero );
-			_cameras[ 1 ].Near = 1;
-			_cameras[ 1 ].Far = 1000;
+			this._cameras[ 1 ].Position = new Vector3( 707, 3500, 528 );
+			this._cameras[ 1 ].LookAt( Vector3.Zero );
+			this._cameras[ 1 ].Near = 1;
+			this._cameras[ 1 ].Far = 1000;
 
 			#endregion Secondary Scene
 
 			#region Tertiary Scene
 
 			// modify camera for close work
-			_cameras[ 2 ].Near = 4;
-			_cameras[ 2 ].Far = 4000;
+			this._cameras[ 2 ].Near = 4;
+			this._cameras[ 2 ].Far = 4000;
 
 			// Also change position, and set Quake-type orientation
 			// Get random player start point
-			ViewPoint vp = _sceneManagers[ 2 ].GetSuggestedViewpoint( true );
-			_cameras[ 2 ].Position = vp.position;
-			_cameras[ 2 ].Pitch( 90 ); // Quake uses X/Y horizon, Z up
-			_cameras[ 2 ].Rotate( vp.orientation );
+			ViewPoint vp = this._sceneManagers[ 2 ].GetSuggestedViewpoint( true );
+			this._cameras[ 2 ].Position = vp.position;
+			this._cameras[ 2 ].Pitch( 90 ); // Quake uses X/Y horizon, Z up
+			this._cameras[ 2 ].Rotate( vp.orientation );
 			// Don't yaw along variable axis, causes leaning
-			_cameras[ 2 ].FixedYawAxis = Vector3.UnitZ;
+			this._cameras[ 2 ].FixedYawAxis = Vector3.UnitZ;
 
 			#endregion Tertiary Scene
 		}
@@ -176,17 +173,17 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// add time to the animation which is driven off of rendering time per frame
-			animationState.AddTime( evt.TimeSinceLastFrame );
+			this.animationState.AddTime( evt.TimeSinceLastFrame );
 
 			base.OnFrameStarted( source, evt );
 		}
 
 		public override void CreateCamera()
 		{
-			_cameras[ 0 ] = _sceneManagers[ 0 ].CreateCamera( "Primary" + CAMERA_NAME );
-			camera = _cameras[ 0 ];
-			_cameras[ 1 ] = _sceneManagers[ 1 ].CreateCamera( "Secondary" + CAMERA_NAME );
-			_cameras[ 2 ] = _sceneManagers[ 2 ].CreateCamera( "Tertiary" + CAMERA_NAME );
+			this._cameras[ 0 ] = this._sceneManagers[ 0 ].CreateCamera( "Primary" + CAMERA_NAME );
+			camera = this._cameras[ 0 ];
+			this._cameras[ 1 ] = this._sceneManagers[ 1 ].CreateCamera( "Secondary" + CAMERA_NAME );
+			this._cameras[ 2 ] = this._sceneManagers[ 2 ].CreateCamera( "Tertiary" + CAMERA_NAME );
 		}
 
 		public override void CreateViewports()
@@ -200,26 +197,25 @@ namespace Axiom.Demos
 
 			#region Secondary ViewPort
 
-			Viewport vp = Window.AddViewport( _cameras[ 1 ], 0.5f, 0, 0.5f, 0.5f, 1 );
+			Viewport vp = Window.AddViewport( this._cameras[ 1 ], 0.5f, 0, 0.5f, 0.5f, 1 );
 			vp.ShowOverlays = false;
 
 			// Fog
 			// NB it's VERY important to set this before calling setWorldGeometry
 			// because the vertex program picked will be different
-			ColorEx fadeColour = new ColorEx( 0.93f, 0.86f, 0.76f );
-			_sceneManagers[ 1 ].SetFog( FogMode.Linear, fadeColour, .001f, 500, 1000 );
+			var fadeColour = new ColorEx( 0.93f, 0.86f, 0.76f );
+			this._sceneManagers[ 1 ].SetFog( FogMode.Linear, fadeColour, .001f, 500, 1000 );
 			vp.BackgroundColor = fadeColour;
 
 			#endregion Secondary ViewPort
 
 			#region Tertiary ViewPort
 
-			vp = Window.AddViewport( _cameras[ 2 ], 0.5f, 0.5f, 0.5f, 0.5f, 2 );
+			vp = Window.AddViewport( this._cameras[ 2 ], 0.5f, 0.5f, 0.5f, 0.5f, 2 );
 			vp.ShowOverlays = false;
 
 			#endregion Tertiary ViewPort
 		}
-
 	}
 }
 

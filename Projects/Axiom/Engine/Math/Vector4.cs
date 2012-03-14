@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -101,7 +105,7 @@ namespace Axiom.Math
 		/// <returns>A Real representing the dot product value.</returns>
 		public Real Dot( Vector4 vec )
 		{
-			return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
+			return this.x * vec.x + this.y * vec.y + this.z * vec.z + this.w * vec.w;
 		}
 
 		#endregion Methods
@@ -118,6 +122,7 @@ namespace Axiom.Math
 		{
 			return vector * matrix;
 		}
+
 		/// <summary>
 		///		
 		/// </summary>
@@ -167,16 +172,11 @@ namespace Axiom.Math
 			return result;
 		}
 
-        [OgreVersion( 1, 7, 2 )]
-        public static Vector4 operator /( Real fScalar, Vector4 rkVector )
-        {
-            return new Vector4(
-                fScalar / rkVector.x,
-                fScalar / rkVector.y,
-                fScalar / rkVector.z,
-                fScalar / rkVector.w
-                );
-        }
+		[OgreVersion( 1, 7, 2 )]
+		public static Vector4 operator /( Real fScalar, Vector4 rkVector )
+		{
+			return new Vector4( fScalar / rkVector.x, fScalar / rkVector.y, fScalar / rkVector.z, fScalar / rkVector.w );
+		}
 
 		/// <summary>
 		///		User to compare two Vector4 instances for equality.
@@ -186,10 +186,7 @@ namespace Axiom.Math
 		/// <returns>true or false</returns>
 		public static bool operator ==( Vector4 left, Vector4 right )
 		{
-			return ( left.x == right.x &&
-				left.y == right.y &&
-				left.z == right.z &&
-				left.w == right.w );
+			return ( left.x == right.x && left.y == right.y && left.z == right.z && left.w == right.w );
 		}
 
 		/// <summary>
@@ -213,6 +210,7 @@ namespace Axiom.Math
 		{
 			return new Vector4( left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w );
 		}
+
 		/// <summary>
 		///		Used to negate the elements of a vector.
 		/// </summary>
@@ -231,23 +229,20 @@ namespace Axiom.Math
 		/// <returns>true or false</returns>
 		public static bool operator !=( Vector4 left, Vector4 right )
 		{
-			return ( left.x != right.x ||
-				left.y != right.y ||
-				left.z != right.z ||
-				left.w != right.w );
+			return ( left.x != right.x || left.y != right.y || left.z != right.z || left.w != right.w );
 		}
 
-        [OgreVersion( 1, 7, 2, "instead of the = operator")]
-        public static implicit operator Vector4( Vector3 rhs )
-        {
-            return new Vector4( rhs.x, rhs.y, rhs.z, 1 );
-        }
+		[OgreVersion( 1, 7, 2, "instead of the = operator" )]
+		public static implicit operator Vector4( Vector3 rhs )
+		{
+			return new Vector4( rhs.x, rhs.y, rhs.z, 1 );
+		}
 
-        [OgreVersion( 1, 7, 2, "instead of the = operator" )]
-        public static implicit operator Vector4( Real fScalar )
-        {
-            return new Vector4( fScalar, fScalar, fScalar, fScalar );
-        }
+		[OgreVersion( 1, 7, 2, "instead of the = operator" )]
+		public static implicit operator Vector4( Real fScalar )
+		{
+			return new Vector4( fScalar, fScalar, fScalar, fScalar );
+		}
 
 		/// <summary>
 		///		Used to access a Vector by index 0 = this.x, 1 = this.y, 2 = this.z, 3 = this.w.  
@@ -273,8 +268,10 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
+					{
 						return *( pX + index );
+					}
 				}
 #endif
 			}
@@ -294,11 +291,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
+					{
 						*( pX + index ) = value;
+					}
 				}
 #endif
-            }
+			}
 		}
 
 		#endregion
@@ -355,11 +354,10 @@ namespace Axiom.Math
 		/// </returns>
 		public static Vector4 Parse( string vector )
 		{
-			var vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
+			string[] vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
 			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
 		}
-
 
 		#endregion
 	}

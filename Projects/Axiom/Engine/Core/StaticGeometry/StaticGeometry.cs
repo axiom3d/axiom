@@ -42,6 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -131,6 +132,8 @@ namespace Axiom.Core
 	{
 		#region Structs
 
+		#region Nested type: OptimisedSubMeshGeometry
+
 		///<summary>
 		///    Struct holding geometry optimised per SubMesh / LOD level, ready
 		///    for copying to instances.
@@ -157,35 +160,13 @@ namespace Axiom.Core
 		///</remarks>
 		public class OptimisedSubMeshGeometry
 		{
-			public VertexData vertexData;
 			public IndexData indexData;
+			public VertexData vertexData;
 		}
 
-		///<summary>
-		///    Saved link between SubMesh at a LOD and vertex/index data
-		///    May point to original or optimised geometry
-		///</summary>
-		public class SubMeshLodGeometryLink
-		{
-			public VertexData vertexData;
-			public IndexData indexData;
-		}
+		#endregion
 
-		///<summary>
-		///    Structure recording a queued submesh for the build
-		///</summary>
-		public class QueuedSubMesh
-		{
-			public SubMesh submesh;
-			/// Link to LOD list of geometry, potentially optimised
-			public List<SubMeshLodGeometryLink> geometryLodList;
-			public string materialName;
-			public Vector3 position;
-			public Quaternion orientation;
-			public Vector3 scale;
-			// Pre-transformed world AABB
-			public AxisAlignedBox worldBounds;
-		}
+		#region Nested type: QueuedGeometry
 
 		///<summary>
 		///    Structure recording a queued geometry for low level builds
@@ -193,33 +174,51 @@ namespace Axiom.Core
 		public struct QueuedGeometry
 		{
 			public SubMeshLodGeometryLink geometry;
-			public Vector3 position;
 			public Quaternion orientation;
+			public Vector3 position;
 			public Vector3 scale;
 		}
 
 		#endregion
 
-		#region Fields and Properties
+		#region Nested type: QueuedSubMesh
 
-		protected SceneManager owner;
-		protected string name;
-		protected int logLevel;
-		protected bool built;
-		protected float upperDistance;
-		protected float squaredUpperDistance;
-		protected bool castShadows;
-		protected Vector3 regionDimensions;
-		protected Vector3 halfRegionDimensions;
-		protected Vector3 origin;
-		protected bool visible;
-		protected RenderQueueGroupID renderQueueID;
-		protected bool renderQueueIDSet;
-		protected int buildCount;
-		protected List<QueuedSubMesh> queuedSubMeshes;
-		protected List<OptimisedSubMeshGeometry> optimisedSubMeshGeometryList;
-		protected Dictionary<SubMesh, List<SubMeshLodGeometryLink>> subMeshGeometryLookup;
-		protected Dictionary<uint, Region> regionMap;
+		///<summary>
+		///    Structure recording a queued submesh for the build
+		///</summary>
+		public class QueuedSubMesh
+		{
+			/// Link to LOD list of geometry, potentially optimised
+			public List<SubMeshLodGeometryLink> geometryLodList;
+
+			public string materialName;
+			public Quaternion orientation;
+			public Vector3 position;
+			public Vector3 scale;
+			public SubMesh submesh;
+			// Pre-transformed world AABB
+			public AxisAlignedBox worldBounds;
+		}
+
+		#endregion
+
+		#region Nested type: SubMeshLodGeometryLink
+
+		///<summary>
+		///    Saved link between SubMesh at a LOD and vertex/index data
+		///    May point to original or optimised geometry
+		///</summary>
+		public class SubMeshLodGeometryLink
+		{
+			public IndexData indexData;
+			public VertexData vertexData;
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Fields and Properties
 
 		protected static int regionRange = 1024;
 		protected static int regionHalfRange = 512;
@@ -232,11 +231,31 @@ namespace Axiom.Core
 		/// </summary>
 		protected static int regionSize = 1000000;
 
+		protected int buildCount;
+
+		protected bool built;
+		protected bool castShadows;
+		protected Vector3 halfRegionDimensions;
+		protected int logLevel;
+		protected string name;
+		protected List<OptimisedSubMeshGeometry> optimisedSubMeshGeometryList;
+		protected Vector3 origin;
+		protected SceneManager owner;
+		protected List<QueuedSubMesh> queuedSubMeshes;
+		protected Vector3 regionDimensions;
+		protected Dictionary<uint, Region> regionMap;
+		protected RenderQueueGroupID renderQueueID;
+		protected bool renderQueueIDSet;
+		protected float squaredUpperDistance;
+		protected Dictionary<SubMesh, List<SubMeshLodGeometryLink>> subMeshGeometryLookup;
+		protected float upperDistance;
+		protected bool visible;
+
 		public string Name
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -244,7 +263,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return squaredUpperDistance;
+				return this.squaredUpperDistance;
 			}
 		}
 
@@ -252,12 +271,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return upperDistance;
+				return this.upperDistance;
 			}
 			set
 			{
-				upperDistance = value;
-				squaredUpperDistance = upperDistance * upperDistance;
+				this.upperDistance = value;
+				this.squaredUpperDistance = this.upperDistance * this.upperDistance;
 			}
 		}
 
@@ -265,14 +284,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return visible;
+				return this.visible;
 			}
 			set
 			{
-				visible = value;
+				this.visible = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( Region region in this.regionMap.Values )
+				{
 					region.IsVisible = value;
+				}
 			}
 		}
 
@@ -280,14 +301,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return castShadows;
+				return this.castShadows;
 			}
 			set
 			{
-				castShadows = value;
+				this.castShadows = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( Region region in this.regionMap.Values )
+				{
 					region.CastShadows = value;
+				}
 			}
 		}
 
@@ -295,12 +318,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return regionDimensions;
+				return this.regionDimensions;
 			}
 			set
 			{
-				regionDimensions = value;
-				halfRegionDimensions = value * 0.5f;
+				this.regionDimensions = value;
+				this.halfRegionDimensions = value * 0.5f;
 			}
 		}
 
@@ -320,11 +343,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return origin;
+				return this.origin;
 			}
 			set
 			{
-				origin = value;
+				this.origin = value;
 			}
 		}
 
@@ -332,15 +355,17 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return renderQueueID;
+				return this.renderQueueID;
 			}
 			set
 			{
-				renderQueueIDSet = true;
-				renderQueueID = value;
+				this.renderQueueIDSet = true;
+				this.renderQueueID = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( Region region in this.regionMap.Values )
+				{
 					region.RenderQueueGroup = value;
+				}
 			}
 		}
 
@@ -348,7 +373,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return regionMap;
+				return this.regionMap;
 			}
 		}
 
@@ -361,52 +386,52 @@ namespace Axiom.Core
 			this.owner = owner;
 			this.name = name;
 			this.logLevel = logLevel;
-			built = false;
-			upperDistance = 0.0f;
-			squaredUpperDistance = 0.0f;
-			castShadows = false;
-			regionDimensions = new Vector3( regionSize, regionSize, regionSize );
-			halfRegionDimensions = regionDimensions * 0.5f;
-			origin = Vector3.Zero;
-			visible = true;
-			renderQueueID = RenderQueueGroupID.Main;
-			renderQueueIDSet = false;
-			buildCount = 0;
-			subMeshGeometryLookup = new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
-			queuedSubMeshes = new List<QueuedSubMesh>();
-			regionMap = new Dictionary<uint, Region>();
-			optimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
+			this.built = false;
+			this.upperDistance = 0.0f;
+			this.squaredUpperDistance = 0.0f;
+			this.castShadows = false;
+			this.regionDimensions = new Vector3( regionSize, regionSize, regionSize );
+			this.halfRegionDimensions = this.regionDimensions * 0.5f;
+			this.origin = Vector3.Zero;
+			this.visible = true;
+			this.renderQueueID = RenderQueueGroupID.Main;
+			this.renderQueueIDSet = false;
+			this.buildCount = 0;
+			this.subMeshGeometryLookup = new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
+			this.queuedSubMeshes = new List<QueuedSubMesh>();
+			this.regionMap = new Dictionary<uint, Region>();
+			this.optimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
 		}
 
 		#endregion Constructor
 
-		#region Protected Members
-
 		protected Region GetRegion( AxisAlignedBox bounds, bool autoCreate )
 		{
 			if ( bounds == null )
+			{
 				return null;
+			}
 
 			// Get the region which has the largest overlapping volume
-			var min = bounds.Minimum;
-			var max = bounds.Maximum;
+			Vector3 min = bounds.Minimum;
+			Vector3 max = bounds.Maximum;
 
 			// Get the min and max region indexes
 			ushort minx, miny, minz;
 			ushort maxx, maxy, maxz;
 			GetRegionIndexes( min, out minx, out miny, out minz );
 			GetRegionIndexes( max, out maxx, out maxy, out maxz );
-			var maxVolume = 0.0f;
+			float maxVolume = 0.0f;
 			ushort finalx = 0;
 			ushort finaly = 0;
 			ushort finalz = 0;
-			for ( var x = minx; x <= maxx; ++x )
+			for ( ushort x = minx; x <= maxx; ++x )
 			{
-				for ( var y = miny; y <= maxy; ++y )
+				for ( ushort y = miny; y <= maxy; ++y )
 				{
-					for ( var z = minz; z <= maxz; ++z )
+					for ( ushort z = minz; z <= maxz; ++z )
 					{
-						var vol = GetVolumeIntersection( bounds, x, y, z );
+						float vol = GetVolumeIntersection( bounds, x, y, z );
 						if ( vol > maxVolume )
 						{
 							maxVolume = vol;
@@ -424,74 +449,68 @@ namespace Axiom.Core
 		protected float GetVolumeIntersection( AxisAlignedBox box, ushort x, ushort y, ushort z )
 		{
 			// Get bounds of indexed region
-			var regionBounds = GetRegionBounds( x, y, z );
-			var intersectBox = regionBounds.Intersection( box );
+			AxisAlignedBox regionBounds = GetRegionBounds( x, y, z );
+			AxisAlignedBox intersectBox = regionBounds.Intersection( box );
 			// return a 'volume' which ignores zero dimensions
 			// since we only use this for relative comparisons of the same bounds
 			// this will still be internally consistent
-			var boxdiff = box.Maximum - box.Minimum;
-			var intersectDiff = intersectBox.Maximum - intersectBox.Minimum;
+			Vector3 boxdiff = box.Maximum - box.Minimum;
+			Vector3 intersectDiff = intersectBox.Maximum - intersectBox.Minimum;
 
-			return ( boxdiff.x == 0 ? 1 : intersectDiff.x ) *
-				( boxdiff.y == 0 ? 1 : intersectDiff.y ) *
-				( boxdiff.z == 0 ? 1 : intersectDiff.z );
+			return ( boxdiff.x == 0 ? 1 : intersectDiff.x ) * ( boxdiff.y == 0 ? 1 : intersectDiff.y ) * ( boxdiff.z == 0 ? 1 : intersectDiff.z );
 		}
 
 		protected AxisAlignedBox GetRegionBounds( ushort x, ushort y, ushort z )
 		{
-			var min = new Vector3(
-				( (float)x - regionHalfRange ) * regionDimensions.x + origin.x,
-				( (float)y - regionHalfRange ) * regionDimensions.y + origin.y,
-				( (float)z - regionHalfRange ) * regionDimensions.z + origin.z );
-			var max = min + regionDimensions;
+			var min = new Vector3( ( (float)x - regionHalfRange ) * this.regionDimensions.x + this.origin.x, ( (float)y - regionHalfRange ) * this.regionDimensions.y + this.origin.y, ( (float)z - regionHalfRange ) * this.regionDimensions.z + this.origin.z );
+			Vector3 max = min + this.regionDimensions;
 			return new AxisAlignedBox( min, max );
 		}
 
 		protected Vector3 GetRegionCenter( ushort x, ushort y, ushort z )
 		{
-			return new Vector3(
-				( (float)x - regionHalfRange ) * regionDimensions.x + origin.x
-					+ halfRegionDimensions.x,
-				( (float)y - regionHalfRange ) * regionDimensions.y + origin.y
-					+ halfRegionDimensions.y,
-				( (float)z - regionHalfRange ) * regionDimensions.z + origin.z
-					+ halfRegionDimensions.z
-				);
+			return new Vector3( ( (float)x - regionHalfRange ) * this.regionDimensions.x + this.origin.x + this.halfRegionDimensions.x, ( (float)y - regionHalfRange ) * this.regionDimensions.y + this.origin.y + this.halfRegionDimensions.y, ( (float)z - regionHalfRange ) * this.regionDimensions.z + this.origin.z + this.halfRegionDimensions.z );
 		}
 
 		protected Region GetRegion( ushort x, ushort y, ushort z, bool autoCreate )
 		{
-			var index = PackIndex( x, y, z );
-			var region = GetRegion( index );
+			uint index = PackIndex( x, y, z );
+			Region region = GetRegion( index );
 			if ( region == null && autoCreate )
 			{
 				// Make a name
-				var str = string.Format( "{0}:{1}", name, index );
+				string str = string.Format( "{0}:{1}", this.name, index );
 				// Calculate the region center
-				var center = GetRegionCenter( x, y, z );
-				region = new Region( this, str, owner, index, center );
-				owner.InjectMovableObject( region );
-				region.IsVisible = visible;
-				region.CastShadows = castShadows;
-				if ( renderQueueIDSet )
-					region.RenderQueueGroup = renderQueueID;
-				regionMap[ index ] = region;
+				Vector3 center = GetRegionCenter( x, y, z );
+				region = new Region( this, str, this.owner, index, center );
+				this.owner.InjectMovableObject( region );
+				region.IsVisible = this.visible;
+				region.CastShadows = this.castShadows;
+				if ( this.renderQueueIDSet )
+				{
+					region.RenderQueueGroup = this.renderQueueID;
+				}
+				this.regionMap[ index ] = region;
 			}
 			return region;
 		}
 
 		protected Region GetRegion( uint index )
 		{
-			if ( regionMap.ContainsKey( index ) )
-				return regionMap[ index ];
+			if ( this.regionMap.ContainsKey( index ) )
+			{
+				return this.regionMap[ index ];
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		protected void GetRegionIndexes( Vector3 point, out ushort x, out ushort y, out ushort z )
 		{
 			// Scale the point into multiples of region and adjust for origin
-			var scaledPoint = ( point - origin ) / regionDimensions;
+			Vector3 scaledPoint = ( point - this.origin ) / this.regionDimensions;
 
 			// Round down to 'bottom left' point which represents the cell index
 			var ix = (int)System.Math.Floor( scaledPoint.x );
@@ -499,9 +518,7 @@ namespace Axiom.Core
 			var iz = (int)System.Math.Floor( scaledPoint.z );
 
 			// Check bounds
-			if ( ix < regionMinIndex || ix > regionMaxIndex
-				|| iy < regionMinIndex || iy > regionMaxIndex
-				|| iz < regionMinIndex || iz > regionMaxIndex )
+			if ( ix < regionMinIndex || ix > regionMaxIndex || iy < regionMinIndex || iy > regionMaxIndex || iz < regionMinIndex || iz > regionMaxIndex )
 			{
 				throw new Exception( "Point out of bounds in StaticGeometry.GetRegionIndexes" );
 			}
@@ -524,60 +541,60 @@ namespace Axiom.Core
 			return GetRegion( x, y, z, autoCreate );
 		}
 
-		protected AxisAlignedBox CalculateBounds( VertexData vertexData,
-			Vector3 position, Quaternion orientation,
-			Vector3 scale )
+		protected AxisAlignedBox CalculateBounds( VertexData vertexData, Vector3 position, Quaternion orientation, Vector3 scale )
 		{
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                var posElem = vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position);
-                var vbuf = vertexData.vertexBufferBinding.GetBuffer(posElem.Source);
-                var src = vbuf.Lock(BufferLocking.ReadOnly);
-                var vertex = src;
+			{
+				VertexElement posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				HardwareVertexBuffer vbuf = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
+				BufferBase src = vbuf.Lock( BufferLocking.ReadOnly );
+				BufferBase vertex = src;
 
-                var min = Vector3.Zero;
-                var max = Vector3.Zero;
-                var first = true;
+				Vector3 min = Vector3.Zero;
+				Vector3 max = Vector3.Zero;
+				bool first = true;
 
-                for (var j = 0; j < vertexData.vertexCount; ++j, vertex += vbuf.VertexSize)
-                {
-                    var pFloat = (vertex + posElem.Offset).ToFloatPointer();
-                    var pt = new Vector3(pFloat[0], pFloat[1], pFloat[2]);
-                    // Transform to world (scale, rotate, translate)
-                    pt = (orientation*(pt*scale)) + position;
-                    if (first)
-                    {
-                        min = max = pt;
-                        first = false;
-                    }
-                    else
-                    {
-                        min.Floor(pt);
-                        max.Ceil(pt);
-                    }
-                }
-                vbuf.Unlock();
-                return new AxisAlignedBox(min, max);
-            }
+				for ( int j = 0; j < vertexData.vertexCount; ++j, vertex += vbuf.VertexSize )
+				{
+					float* pFloat = ( vertex + posElem.Offset ).ToFloatPointer();
+					var pt = new Vector3( pFloat[ 0 ], pFloat[ 1 ], pFloat[ 2 ] );
+					// Transform to world (scale, rotate, translate)
+					pt = ( orientation * ( pt * scale ) ) + position;
+					if ( first )
+					{
+						min = max = pt;
+						first = false;
+					}
+					else
+					{
+						min.Floor( pt );
+						max.Ceil( pt );
+					}
+				}
+				vbuf.Unlock();
+				return new AxisAlignedBox( min, max );
+			}
 		}
 
 		protected List<SubMeshLodGeometryLink> DetermineGeometry( SubMesh sm )
 		{
 			// First, determine if we've already seen this submesh before
 			List<SubMeshLodGeometryLink> lodList;
-			if ( subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
+			if ( this.subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
+			{
 				return lodList;
+			}
 			// Otherwise, we have to create a new one
 			lodList = new List<SubMeshLodGeometryLink>();
-			subMeshGeometryLookup[ sm ] = lodList;
-			var numLods = sm.Parent.IsLodManual ? 1 : sm.Parent.LodLevelCount;
-			for ( var lod = 0; lod < numLods; ++lod )
+			this.subMeshGeometryLookup[ sm ] = lodList;
+			int numLods = sm.Parent.IsLodManual ? 1 : sm.Parent.LodLevelCount;
+			for ( int lod = 0; lod < numLods; ++lod )
 			{
 				var geomLink = new SubMeshLodGeometryLink();
 				lodList.Add( geomLink );
-				var lodIndexData = lod == 0 ? sm.indexData : sm.LodFaceList[ lod - 1 ];
+				IndexData lodIndexData = lod == 0 ? sm.indexData : sm.LodFaceList[ lod - 1 ];
 				// Can use the original mesh geometry?
 				if ( sm.useSharedVertices )
 				{
@@ -588,8 +605,10 @@ namespace Axiom.Core
 						geomLink.indexData = lodIndexData;
 					}
 					else
+					{
 						// We have to split it
 						SplitGeometry( sm.Parent.SharedVertexData, lodIndexData, geomLink );
+					}
 				}
 				else
 				{
@@ -601,12 +620,12 @@ namespace Axiom.Core
 						geomLink.indexData = sm.IndexData;
 					}
 					else
+					{
 						// We have to split it
 						SplitGeometry( sm.VertexData, lodIndexData, geomLink );
+					}
 				}
-				Debug.Assert( geomLink.vertexData.vertexStart == 0,
-					"Cannot use vertexStart > 0 on indexed geometry due to " +
-					"rendersystem incompatibilities - see the docs!" );
+				Debug.Assert( geomLink.vertexData.vertexStart == 0, "Cannot use vertexStart > 0 on indexed geometry due to " + "rendersystem incompatibilities - see the docs!" );
 			}
 			return lodList;
 		}
@@ -614,127 +633,131 @@ namespace Axiom.Core
 		protected void SplitGeometry( VertexData vd, IndexData id, SubMeshLodGeometryLink targetGeomLink )
 		{
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                if (logLevel <= 1)
-                    LogManager.Instance.Write("StaticGeometry.SplitGeometry called");
-                // Firstly we need to scan to see how many vertices are being used
-                // and while we're at it, build the remap we can use later
-                var use32bitIndexes = id.indexBuffer.Type == IndexType.Size32;
-                var indexRemap = new Dictionary<int, int>();
-                var src = id.indexBuffer.Lock(BufferLocking.ReadOnly);
-                indexRemap.Clear();
-                if (use32bitIndexes)
-                {
-                    var p32 = src.ToIntPointer();
-                    for (var i = 0; i < id.indexCount; ++i)
-                        indexRemap[p32[i]] = indexRemap.Count;
-                }
-                else
-                {
-                    var p16 = src.ToShortPointer();
-                    for (var i = 0; i < id.indexCount; ++i)
-                        indexRemap[p16[i]] = indexRemap.Count;
-                }
-                id.indexBuffer.Unlock();
-                if (indexRemap.Count == vd.vertexCount)
-                {
-                    // ha, complete usage after all
-                    targetGeomLink.vertexData = vd;
-                    targetGeomLink.indexData = id;
-                    return;
-                }
+			{
+				if ( this.logLevel <= 1 )
+				{
+					LogManager.Instance.Write( "StaticGeometry.SplitGeometry called" );
+				}
+				// Firstly we need to scan to see how many vertices are being used
+				// and while we're at it, build the remap we can use later
+				bool use32bitIndexes = id.indexBuffer.Type == IndexType.Size32;
+				var indexRemap = new Dictionary<int, int>();
+				BufferBase src = id.indexBuffer.Lock( BufferLocking.ReadOnly );
+				indexRemap.Clear();
+				if ( use32bitIndexes )
+				{
+					int* p32 = src.ToIntPointer();
+					for ( int i = 0; i < id.indexCount; ++i )
+					{
+						indexRemap[ p32[ i ] ] = indexRemap.Count;
+					}
+				}
+				else
+				{
+					short* p16 = src.ToShortPointer();
+					for ( int i = 0; i < id.indexCount; ++i )
+					{
+						indexRemap[ p16[ i ] ] = indexRemap.Count;
+					}
+				}
+				id.indexBuffer.Unlock();
+				if ( indexRemap.Count == vd.vertexCount )
+				{
+					// ha, complete usage after all
+					targetGeomLink.vertexData = vd;
+					targetGeomLink.indexData = id;
+					return;
+				}
 
-                // Create the new vertex data records
-                targetGeomLink.vertexData = vd.Clone(false);
-                // Convenience
-                var newvd = targetGeomLink.vertexData;
-                //IndexData newid = targetGeomLink.IndexData;
-                // Update the vertex count
-                newvd.vertexCount = indexRemap.Count;
+				// Create the new vertex data records
+				targetGeomLink.vertexData = vd.Clone( false );
+				// Convenience
+				VertexData newvd = targetGeomLink.vertexData;
+				//IndexData newid = targetGeomLink.IndexData;
+				// Update the vertex count
+				newvd.vertexCount = indexRemap.Count;
 
-                var numvbufs = vd.vertexBufferBinding.BindingCount;
-                // Copy buffers from old to new
-                for (short b = 0; b < numvbufs; ++b)
-                {
-                    // Lock old buffer
-                    var oldBuf = vd.vertexBufferBinding.GetBuffer(b);
-                    // Create new buffer
-                    var newBuf =
-                        HardwareBufferManager.Instance.CreateVertexBuffer(oldBuf.VertexDeclaration, indexRemap.Count,
-                                                                          BufferUsage.Static);
-                    // rebind
-                    newvd.vertexBufferBinding.SetBinding(b, newBuf);
+				int numvbufs = vd.vertexBufferBinding.BindingCount;
+				// Copy buffers from old to new
+				for ( short b = 0; b < numvbufs; ++b )
+				{
+					// Lock old buffer
+					HardwareVertexBuffer oldBuf = vd.vertexBufferBinding.GetBuffer( b );
+					// Create new buffer
+					HardwareVertexBuffer newBuf = HardwareBufferManager.Instance.CreateVertexBuffer( oldBuf.VertexDeclaration, indexRemap.Count, BufferUsage.Static );
+					// rebind
+					newvd.vertexBufferBinding.SetBinding( b, newBuf );
 
-                    // Copy all the elements of the buffer across, by iterating over
-                    // the IndexRemap which describes how to move the old vertices
-                    // to the new ones. By nature of the map the remap is in order of
-                    // indexes in the old buffer, but note that we're not guaranteed to
-                    // address every vertex (which is kinda why we're here)
-                    var vdSrc = oldBuf.Lock(BufferLocking.ReadOnly);
-                    var pSrcBase = vdSrc;
-                    var vdDest = newBuf.Lock(BufferLocking.Discard);
-                    var pDstBase = vdDest;
-                    var vertexSize = oldBuf.VertexSize;
-                    // Buffers should be the same size
-                    Debug.Assert(vertexSize == newBuf.VertexSize);
+					// Copy all the elements of the buffer across, by iterating over
+					// the IndexRemap which describes how to move the old vertices
+					// to the new ones. By nature of the map the remap is in order of
+					// indexes in the old buffer, but note that we're not guaranteed to
+					// address every vertex (which is kinda why we're here)
+					BufferBase vdSrc = oldBuf.Lock( BufferLocking.ReadOnly );
+					BufferBase pSrcBase = vdSrc;
+					BufferBase vdDest = newBuf.Lock( BufferLocking.Discard );
+					BufferBase pDstBase = vdDest;
+					int vertexSize = oldBuf.VertexSize;
+					// Buffers should be the same size
+					Debug.Assert( vertexSize == newBuf.VertexSize );
 
-                    foreach (var pair in indexRemap)
-                    {
-                        Debug.Assert(pair.Key < oldBuf.VertexCount);
-                        Debug.Assert(pair.Value < newBuf.VertexCount);
+					foreach ( var pair in indexRemap )
+					{
+						Debug.Assert( pair.Key < oldBuf.VertexCount );
+						Debug.Assert( pair.Value < newBuf.VertexCount );
 
-                        var pSrc = (pSrcBase + pair.Key*vertexSize).ToBytePointer();
-                        var pDst = (pDstBase + pair.Value * vertexSize).ToBytePointer();
-                        for (var i = 0; i < vertexSize; i++)
-                            pDst[i] = pSrc[i];
-                    }
-                    // unlock
-                    oldBuf.Unlock();
-                    newBuf.Unlock();
-                }
+						byte* pSrc = ( pSrcBase + pair.Key * vertexSize ).ToBytePointer();
+						byte* pDst = ( pDstBase + pair.Value * vertexSize ).ToBytePointer();
+						for ( int i = 0; i < vertexSize; i++ )
+						{
+							pDst[ i ] = pSrc[ i ];
+						}
+					}
+					// unlock
+					oldBuf.Unlock();
+					newBuf.Unlock();
+				}
 
-                // Now create a new index buffer
-                var ibuf =
-                    HardwareBufferManager.Instance.CreateIndexBuffer(id.indexBuffer.Type, id.indexCount,
-                                                                     BufferUsage.Static);
+				// Now create a new index buffer
+				HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( id.indexBuffer.Type, id.indexCount, BufferUsage.Static );
 
-                var idSrc = id.indexBuffer.Lock(BufferLocking.ReadOnly);
-                var idDest = ibuf.Lock(BufferLocking.Discard);
-                if (use32bitIndexes)
-                {
-                    var pSrc32 = idSrc.ToIntPointer();
-                    var pDst32 = idDest.ToIntPointer();
-                    for (var i = 0; i < id.indexCount; ++i)
-                            pDst32[i] = indexRemap[pSrc32[i]];
-                }
-                else
-                {
-                    var pSrc16 = idSrc.ToUShortPointer();
-                    var pDst16 = idDest.ToUShortPointer();
-                    for (var i = 0; i < id.indexCount; ++i)
-                        pDst16[i] = (ushort) indexRemap[pSrc16[i]];
-                }
-                id.indexBuffer.Unlock();
-                ibuf.Unlock();
+				BufferBase idSrc = id.indexBuffer.Lock( BufferLocking.ReadOnly );
+				BufferBase idDest = ibuf.Lock( BufferLocking.Discard );
+				if ( use32bitIndexes )
+				{
+					int* pSrc32 = idSrc.ToIntPointer();
+					int* pDst32 = idDest.ToIntPointer();
+					for ( int i = 0; i < id.indexCount; ++i )
+					{
+						pDst32[ i ] = indexRemap[ pSrc32[ i ] ];
+					}
+				}
+				else
+				{
+					ushort* pSrc16 = idSrc.ToUShortPointer();
+					ushort* pDst16 = idDest.ToUShortPointer();
+					for ( int i = 0; i < id.indexCount; ++i )
+					{
+						pDst16[ i ] = (ushort)indexRemap[ pSrc16[ i ] ];
+					}
+				}
+				id.indexBuffer.Unlock();
+				ibuf.Unlock();
 
-                targetGeomLink.indexData = new IndexData();
-                targetGeomLink.indexData.indexStart = 0;
-                targetGeomLink.indexData.indexCount = id.indexCount;
-                targetGeomLink.indexData.indexBuffer = ibuf;
+				targetGeomLink.indexData = new IndexData();
+				targetGeomLink.indexData.indexStart = 0;
+				targetGeomLink.indexData.indexCount = id.indexCount;
+				targetGeomLink.indexData.indexBuffer = ibuf;
 
-                // Store optimised geometry for deallocation later
-                var optGeom = new OptimisedSubMeshGeometry();
-                optGeom.indexData = targetGeomLink.indexData;
-                optGeom.vertexData = targetGeomLink.vertexData;
-                optimisedSubMeshGeometryList.Add(optGeom);
-            }
+				// Store optimised geometry for deallocation later
+				var optGeom = new OptimisedSubMeshGeometry();
+				optGeom.indexData = targetGeomLink.indexData;
+				optGeom.vertexData = targetGeomLink.vertexData;
+				this.optimisedSubMeshGeometryList.Add( optGeom );
+			}
 		}
-
-		#endregion Protected Members
-
-		#region Public Members
 
 		/// <summary>
 		///     Adds an Entity to the static geometry.
@@ -758,12 +781,12 @@ namespace Axiom.Core
 		/// <param name="scale">The scale at which to add this entity</param>
 		public void AddEntity( Entity ent, Vector3 position, Quaternion orientation, Vector3 scale )
 		{
-			var msh = ent.Mesh;
+			Mesh msh = ent.Mesh;
 			// Validate
 			if ( msh.IsLodManual )
-				LogManager.Instance.Write(
-					"WARNING (StaticGeometry): Manual LOD is not supported. " +
-					"Using only highest LOD level for mesh " + msh.Name );
+			{
+				LogManager.Instance.Write( "WARNING (StaticGeometry): Manual LOD is not supported. " + "Using only highest LOD level for mesh " + msh.Name );
+			}
 			// queue this entities submeshes and choice of material
 			// also build the lists of geometry to be used for the source of lods
 			foreach ( SubEntity se in ent.SubEntities )
@@ -779,7 +802,7 @@ namespace Axiom.Core
 				q.scale = scale;
 				// Determine the bounds based on the highest LOD
 				q.worldBounds = CalculateBounds( q.geometryLodList[ 0 ].vertexData, position, orientation, scale );
-				queuedSubMeshes.Add( q );
+				this.queuedSubMeshes.Add( q );
 			}
 		}
 
@@ -804,10 +827,12 @@ namespace Axiom.Core
 		/// <param name="node">Pointer to the node to use to provide a set of Entity templates</param>
 		public void AddSceneNode( SceneNode node )
 		{
-			foreach ( var mobj in node.Objects )
+			foreach ( MovableObject mobj in node.Objects )
 			{
 				if ( mobj is Entity )
+				{
 					AddEntity( (Entity)mobj, node.DerivedPosition, node.DerivedOrientation, node.DerivedScale );
+				}
 			}
 			// recursively add the child-nodes
 			foreach ( SceneNode child in node.Children )
@@ -831,31 +856,37 @@ namespace Axiom.Core
 		/// </note>
 		public void Build()
 		{
-			if ( logLevel <= 1 )
-				LogManager.Instance.Write( "Building new static geometry {0}", name );
+			if ( this.logLevel <= 1 )
+			{
+				LogManager.Instance.Write( "Building new static geometry {0}", this.name );
+			}
 
-			buildCount++;
+			this.buildCount++;
 
 			// Make sure there's nothing from previous builds
 			Destroy();
 
 			// Firstly allocate meshes to regions
-			foreach ( var qsm in queuedSubMeshes )
+			foreach ( QueuedSubMesh qsm in this.queuedSubMeshes )
 			{
-				var region = GetRegion( qsm.worldBounds, true );
+				Region region = GetRegion( qsm.worldBounds, true );
 				region.Assign( qsm );
 			}
-			var stencilShadows = false;
-			if ( castShadows && owner.IsShadowTechniqueStencilBased )
+			bool stencilShadows = false;
+			if ( this.castShadows && this.owner.IsShadowTechniqueStencilBased )
+			{
 				stencilShadows = true;
+			}
 
 			// Now tell each region to build itself
-			foreach ( var region in regionMap.Values )
-				region.Build( stencilShadows, logLevel );
-
-			if ( logLevel <= 1 )
+			foreach ( Region region in this.regionMap.Values )
 			{
-				LogManager.Instance.Write( "Finished building new static geometry {0}", name );
+				region.Build( stencilShadows, this.logLevel );
+			}
+
+			if ( this.logLevel <= 1 )
+			{
+				LogManager.Instance.Write( "Finished building new static geometry {0}", this.name );
 				Dump();
 			}
 		}
@@ -869,12 +900,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public void Destroy()
 		{
-			foreach ( var region in regionMap.Values )
+			foreach ( Region region in this.regionMap.Values )
 			{
-				owner.ExtractMovableObject( region );
+				this.owner.ExtractMovableObject( region );
 				region.Dispose();
 			}
-			regionMap.Clear();
+			this.regionMap.Clear();
 		}
 
 		/// <summary>
@@ -884,33 +915,33 @@ namespace Axiom.Core
 		public void Reset()
 		{
 			Destroy();
-			queuedSubMeshes.Clear();
-			subMeshGeometryLookup.Clear();
-			var bm = HardwareBufferManager.Instance;
-			foreach ( var smg in optimisedSubMeshGeometryList )
+			this.queuedSubMeshes.Clear();
+			this.subMeshGeometryLookup.Clear();
+			HardwareBufferManager bm = HardwareBufferManager.Instance;
+			foreach ( OptimisedSubMeshGeometry smg in this.optimisedSubMeshGeometryList )
 			{
 				bm.DestroyVertexBufferBinding( smg.vertexData.vertexBufferBinding );
 				bm.DestroyVertexDeclaration( smg.vertexData.vertexDeclaration );
 			}
-			optimisedSubMeshGeometryList.Clear();
+			this.optimisedSubMeshGeometryList.Clear();
 		}
 
 		public void Dump()
 		{
-			LogManager.Instance.Write( "Static Geometry Report for {0}", name );
+			LogManager.Instance.Write( "Static Geometry Report for {0}", this.name );
 			LogManager.Instance.Write( "-------------------------------------------------" );
-			LogManager.Instance.Write( "Build Count: {0}", buildCount );
-			LogManager.Instance.Write( "Number of queued submeshes: {0}", queuedSubMeshes.Count );
-			LogManager.Instance.Write( "Number of regions: {0}", regionMap.Count );
-			LogManager.Instance.Write( "Region dimensions: {0}", regionDimensions );
-			LogManager.Instance.Write( "Origin: {0}", origin );
-			LogManager.Instance.Write( "Max distance: {0}", upperDistance );
-			LogManager.Instance.Write( "Casts shadows?: {0}", castShadows );
-			foreach ( var region in regionMap.Values )
+			LogManager.Instance.Write( "Build Count: {0}", this.buildCount );
+			LogManager.Instance.Write( "Number of queued submeshes: {0}", this.queuedSubMeshes.Count );
+			LogManager.Instance.Write( "Number of regions: {0}", this.regionMap.Count );
+			LogManager.Instance.Write( "Region dimensions: {0}", this.regionDimensions );
+			LogManager.Instance.Write( "Origin: {0}", this.origin );
+			LogManager.Instance.Write( "Max distance: {0}", this.upperDistance );
+			LogManager.Instance.Write( "Casts shadows?: {0}", this.castShadows );
+			foreach ( Region region in this.regionMap.Values )
+			{
 				region.Dump();
+			}
 			LogManager.Instance.Write( "-------------------------------------------------" );
 		}
-
-		#endregion Public Members
 	}
 }

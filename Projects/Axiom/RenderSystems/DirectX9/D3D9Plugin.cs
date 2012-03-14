@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -41,39 +46,39 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    [Export( typeof( IPlugin ) )]
-    public sealed class D3D9Plugin : IPlugin
-    {
-        #region Fields
+	/// <summary>
+	/// Summary description for Plugin.
+	/// </summary>
+	[Export( typeof( IPlugin ) )]
+	public sealed class D3D9Plugin : IPlugin
+	{
+		#region Fields
 
-        /// <summary>
-        /// Reference to the render system instance.
-        /// </summary>
-        private RenderSystem _renderSystem;
+		/// <summary>
+		/// Reference to the render system instance.
+		/// </summary>
+		private RenderSystem _renderSystem;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Implementation of IPlugin
+		#region Implementation of IPlugin
 
-        public void Initialize()
-        {
-            // Render system creation has been moved here ( like Ogre does in Install method )
-            // since the Plugin.ctor is called twice during startup.
-            _renderSystem = new D3D9RenderSystem();
+		public void Initialize()
+		{
+			// Render system creation has been moved here ( like Ogre does in Install method )
+			// since the Plugin.ctor is called twice during startup.
+			this._renderSystem = new D3D9RenderSystem();
 
-            // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "DirectX9", _renderSystem );
-        }
+			// add an instance of this plugin to the list of available RenderSystems
+			Root.Instance.RenderSystems.Add( "DirectX9", this._renderSystem );
+		}
 
-        public void Shutdown()
-        {
-            _renderSystem.SafeDispose();
-            _renderSystem = null;
-        }
+		public void Shutdown()
+		{
+			this._renderSystem.SafeDispose();
+			this._renderSystem = null;
+		}
 
-        #endregion Implementation of IPlugin
-    };
+		#endregion Implementation of IPlugin
+	};
 }

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,24 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Controllers;
 
 #endregion Namespace Declarations
 
@@ -56,21 +57,22 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class AnimationStateSet : IEnumerable<KeyValuePair<string, AnimationState>>
 	{
-
 		#region Protected Fields
+
+		/// <summary>
+		///		
+		/// </summary>
+		protected int dirtyFrameNumber;
+
+		/// <summary>
+		///		A list of enabled animation states
+		/// </summary>
+		protected List<AnimationState> enabledAnimationStates = new List<AnimationState>();
 
 		/// <summary>
 		///		Mapping from string to AnimationState
 		/// </summary>
 		protected Dictionary<string, AnimationState> stateSet = new Dictionary<string, AnimationState>();
-		/// <summary>
-		///		
-		/// </summary>
-		protected int dirtyFrameNumber;
-		/// <summary>
-		///		A list of enabled animation states
-		/// </summary>
-		protected List<AnimationState> enabledAnimationStates = new List<AnimationState>();
 
 		#endregion Protected Fields
 
@@ -92,11 +94,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return dirtyFrameNumber;
+				return this.dirtyFrameNumber;
 			}
 			set
 			{
-				dirtyFrameNumber = value;
+				this.dirtyFrameNumber = value;
 			}
 		}
 
@@ -107,7 +109,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return stateSet;
+				return this.stateSet;
 			}
 		}
 
@@ -118,7 +120,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return enabledAnimationStates;
+				return this.enabledAnimationStates;
 			}
 		}
 
@@ -126,7 +128,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return (ICollection<AnimationState>)stateSet.Values;
+				return this.stateSet.Values;
 			}
 		}
 
@@ -141,19 +143,23 @@ namespace Axiom.Animating
 		{
 			var newSet = new AnimationStateSet();
 
-			foreach ( var animationState in stateSet.Values )
+			foreach ( AnimationState animationState in this.stateSet.Values )
+			{
 				new AnimationState( newSet, animationState );
+			}
 
 			// Clone enabled animation state list
-			foreach ( var animationState in enabledAnimationStates )
+			foreach ( AnimationState animationState in this.enabledAnimationStates )
+			{
 				newSet.EnabledAnimationStates.Add( newSet.GetAnimationState( animationState.Name ) );
+			}
 			return newSet;
 		}
 
 		/// <summary>
 		///     Create a new AnimationState instance. 
 		/// </summary>
-        /// <param name="name"> The name of the animation</param>
+		/// <param name="name"> The name of the animation</param>
 		/// <param name="time"> Starting time position</param>
 		/// <param name="length"> Length of the animation to play</param>
 		public AnimationState CreateAnimationState( string name, float time, float length )
@@ -165,19 +171,18 @@ namespace Axiom.Animating
 		///     Create a new AnimationState instance. 
 		/// </summary>
 		/// <param name="name"> The name of the animation</param>
-        /// <param name="time"> Starting time position</param>
+		/// <param name="time"> Starting time position</param>
 		/// <param name="length"> Length of the animation to play</param>
 		/// <param name="weight"> Weight to apply the animation with</param>
 		/// <param name="enabled"> Whether the animation is enabled</param>
-		public AnimationState CreateAnimationState( string name, float time, float length,
-												   float weight, bool enabled )
+		public AnimationState CreateAnimationState( string name, float time, float length, float weight, bool enabled )
 		{
-			if ( stateSet.ContainsKey( name ) )
-				throw new Exception( "State for animation named '" + name + "' already exists, " +
-									"in AnimationStateSet.CreateAnimationState" );
-			var newState = new AnimationState( name, this, time,
-														 length, weight, enabled );
-			stateSet[ name ] = newState;
+			if ( this.stateSet.ContainsKey( name ) )
+			{
+				throw new Exception( "State for animation named '" + name + "' already exists, " + "in AnimationStateSet.CreateAnimationState" );
+			}
+			var newState = new AnimationState( name, this, time, length, weight, enabled );
+			this.stateSet[ name ] = newState;
 			return newState;
 		}
 
@@ -186,10 +191,11 @@ namespace Axiom.Animating
 		/// </summary>
 		public AnimationState GetAnimationState( string name )
 		{
-			if ( !stateSet.ContainsKey( name ) )
-				throw new Exception( "No state found for animation named '" + name + "', " +
-									"in AnimationStateSet.CreateAnimationState" );
-			return stateSet[ name ];
+			if ( !this.stateSet.ContainsKey( name ) )
+			{
+				throw new Exception( "No state found for animation named '" + name + "', " + "in AnimationStateSet.CreateAnimationState" );
+			}
+			return this.stateSet[ name ];
 		}
 
 		/// <summary>
@@ -197,7 +203,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public bool HasAnimationState( string name )
 		{
-			return stateSet.ContainsKey( name );
+			return this.stateSet.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -205,10 +211,10 @@ namespace Axiom.Animating
 		/// </summary>
 		public void RemoveAnimationState( string name )
 		{
-			if ( stateSet.ContainsKey( name ) )
+			if ( this.stateSet.ContainsKey( name ) )
 			{
-				enabledAnimationStates.Remove( stateSet[ name ] );
-				stateSet.Remove( name );
+				this.enabledAnimationStates.Remove( this.stateSet[ name ] );
+				this.stateSet.Remove( name );
 			}
 		}
 
@@ -217,8 +223,8 @@ namespace Axiom.Animating
 		/// </summary>
 		public void RemoveAllAnimationStates()
 		{
-			stateSet.Clear();
-			enabledAnimationStates.Clear();
+			this.stateSet.Clear();
+			this.enabledAnimationStates.Clear();
 		}
 
 		/// <summary>
@@ -229,19 +235,24 @@ namespace Axiom.Animating
 			foreach ( var pair in target.AllAnimationStates )
 			{
 				AnimationState result;
-				if ( !stateSet.TryGetValue( pair.Key, out result ) )
-					throw new Exception( "No animation entry found named '" + pair.Key + "', in " +
-										"AnimationStateSet.CopyMatchingState" );
+				if ( !this.stateSet.TryGetValue( pair.Key, out result ) )
+				{
+					throw new Exception( "No animation entry found named '" + pair.Key + "', in " + "AnimationStateSet.CopyMatchingState" );
+				}
 				else
+				{
 					pair.Value.CopyFrom( result );
+				}
 			}
 
 			// Copy matching enabled animation state list
 			target.EnabledAnimationStates.Clear();
-			foreach ( var state in enabledAnimationStates )
+			foreach ( AnimationState state in this.enabledAnimationStates )
+			{
 				target.EnabledAnimationStates.Add( target.AllAnimationStates[ state.Name ] );
+			}
 
-			target.DirtyFrameNumber = dirtyFrameNumber;
+			target.DirtyFrameNumber = this.dirtyFrameNumber;
 		}
 
 		/// <summary>
@@ -249,7 +260,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public void NotifyDirty()
 		{
-			++dirtyFrameNumber;
+			++this.dirtyFrameNumber;
 		}
 
 		/// <summary>
@@ -258,11 +269,13 @@ namespace Axiom.Animating
 		public void NotifyAnimationStateEnabled( AnimationState target, bool enabled )
 		{
 			// Remove from enabled animation state list first
-			enabledAnimationStates.Remove( target );
+			this.enabledAnimationStates.Remove( target );
 
 			// Add to enabled animation state list if need
 			if ( enabled )
-				enabledAnimationStates.Add( target );
+			{
+				this.enabledAnimationStates.Add( target );
+			}
 
 			// Set the dirty frame number
 			NotifyDirty();
@@ -270,14 +283,18 @@ namespace Axiom.Animating
 
 		#endregion Methods
 
+		#region IEnumerable<KeyValuePair<string,AnimationState>> Members
+
 		public IEnumerator<KeyValuePair<string, AnimationState>> GetEnumerator()
 		{
-			return stateSet.GetEnumerator();
+			return this.stateSet.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return stateSet.GetEnumerator();
+			return this.stateSet.GetEnumerator();
 		}
+
+		#endregion
 	}
 }

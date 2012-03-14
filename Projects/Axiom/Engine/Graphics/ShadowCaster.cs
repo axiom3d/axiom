@@ -37,13 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.Math;
+using Axiom.CrossPlatform;
 using Axiom.Graphics.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -59,11 +59,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets/Sets whether or not this object currently casts a shadow.
 		/// </summary>
-		public abstract bool CastShadows
-		{
-			get;
-			set;
-		}
+		public abstract bool CastShadows { get; set; }
 
 		#endregion Properties
 
@@ -109,29 +105,27 @@ namespace Axiom.Graphics
 			return GetWorldBoundingBox( false );
 		}
 
-	    /// <summary>
-	    ///		Gets an iterator over the renderables required to render the shadow volume.
-	    /// </summary>
-	    /// <remarks>
-	    ///		Shadowable geometry should ideally be designed such that there is only one
-	    ///		ShadowRenderable required to render the the shadow; however this is not a necessary
-	    ///		limitation and it can be exceeded if required.
-	    /// </remarks>
-	    /// <param name="technique">The technique being used to generate the shadow.</param>
-	    /// <param name="light">The light to generate the shadow from.</param>
-	    /// <param name="indexBuffer">The index buffer to build the renderables into,
-	    /// the current contents are assumed to be disposable.</param>
-	    /// <param name="extrudeVertices">If true, this means this class should extrude
-	    /// the vertices of the back of the volume in software. If false, it
-	    /// will not be done (a vertex program is assumed).</param>
-	    /// <param name="extrusionDistance"></param>
-	    /// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
-	    /// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
-	    public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
+		/// <summary>
+		///		Gets an iterator over the renderables required to render the shadow volume.
+		/// </summary>
+		/// <remarks>
+		///		Shadowable geometry should ideally be designed such that there is only one
+		///		ShadowRenderable required to render the the shadow; however this is not a necessary
+		///		limitation and it can be exceeded if required.
+		/// </remarks>
+		/// <param name="technique">The technique being used to generate the shadow.</param>
+		/// <param name="light">The light to generate the shadow from.</param>
+		/// <param name="indexBuffer">The index buffer to build the renderables into,
+		/// the current contents are assumed to be disposable.</param>
+		/// <param name="extrudeVertices">If true, this means this class should extrude
+		/// the vertices of the back of the volume in software. If false, it
+		/// will not be done (a vertex program is assumed).</param>
+		/// <param name="extrusionDistance"></param>
+		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
+		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
+		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
 
-		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-			HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
+		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
 		{
 			return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
 		}
@@ -175,10 +169,10 @@ namespace Axiom.Graphics
 				// Lock the entire buffer for writing, even though we'll only be
 				// updating the latter because you can't have 2 locks on the same
 				// buffer
-				var srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
-				var destPtr = srcPtr + ( originalVertexCount * 3 * 4 );
-				var pSrc = srcPtr.ToFloatPointer();
-				var pDest = destPtr.ToFloatPointer();
+				BufferBase srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
+				BufferBase destPtr = srcPtr + ( originalVertexCount * 3 * 4 );
+				float* pSrc = srcPtr.ToFloatPointer();
+				float* pDest = destPtr.ToFloatPointer();
 
 				int destCount = 0, srcCount = 0;
 
@@ -187,7 +181,7 @@ namespace Axiom.Graphics
 				extrusionDir.Normalize();
 				extrusionDir *= extrudeDistance;
 
-				for ( var vert = 0; vert < originalVertexCount; vert++ )
+				for ( int vert = 0; vert < originalVertexCount; vert++ )
 				{
 					if ( lightPosition.w != 0.0f )
 					{
@@ -233,55 +227,53 @@ namespace Axiom.Graphics
 		/// already been constructed but will need populating with details of
 		/// the index ranges to be used.</param>
 		/// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
-		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
-			ShadowRenderableList shadowRenderables, int flags )
+		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light, ShadowRenderableList shadowRenderables, int flags )
 		{
 			// Edge groups should be 1:1 with shadow renderables
 			Debug.Assert( edgeData.edgeGroups.Count == shadowRenderables.Count );
 
-			var lightType = light.Type;
+			LightType lightType = light.Type;
 
-			var extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
+			bool extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
 
 			// Lock index buffer for writing
-			var idxPtr = indexBuffer.Lock( BufferLocking.Discard );
+			BufferBase idxPtr = indexBuffer.Lock( BufferLocking.Discard );
 
-			var indexStart = 0;
+			int indexStart = 0;
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
 				// TODO: Will currently cause an overflow for 32 bit indices, revisit
-				var pIdx = idxPtr.ToShortPointer();
-				var count = 0;
+				short* pIdx = idxPtr.ToShortPointer();
+				int count = 0;
 
 				// Iterate over the groups and form renderables for each based on their
 				// lightFacing
-				for ( var groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++ )
+				for ( int groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++ )
 				{
-					var eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[ groupCount ];
-					var si = (ShadowRenderable)shadowRenderables[ groupCount ];
+					EdgeData.EdgeGroup eg = edgeData.edgeGroups[ groupCount ];
+					ShadowRenderable si = shadowRenderables[ groupCount ];
 
 					RenderOperation lightShadOp = null;
 
 					// Initialize the index bounds for this shadow renderable
-					var shadOp = si.GetRenderOperationForUpdate();
+					RenderOperation shadOp = si.GetRenderOperationForUpdate();
 					shadOp.indexData.indexCount = 0;
 					shadOp.indexData.indexStart = indexStart;
 
 					// original number of verts (without extruded copy)
-					var originalVertexCount = eg.vertexData.vertexCount;
-					var firstDarkCapTri = true;
-					var darkCapStart = 0;
+					int originalVertexCount = eg.vertexData.vertexCount;
+					bool firstDarkCapTri = true;
+					int darkCapStart = 0;
 
-					for ( var edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++ )
+					for ( int edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++ )
 					{
-						var edge = (EdgeData.Edge)eg.edges[ edgeCount ];
+						EdgeData.Edge edge = eg.edges[ edgeCount ];
 
-						var t1 = (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ];
-						var t2 =
-							edge.isDegenerate ? (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ] : (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 1 ] ];
+						EdgeData.Triangle t1 = edgeData.triangles[ edge.triIndex[ 0 ] ];
+						EdgeData.Triangle t2 = edge.isDegenerate ? edgeData.triangles[ edge.triIndex[ 0 ] ] : edgeData.triangles[ edge.triIndex[ 1 ] ];
 
 						if ( t1.lightFacing && ( edge.isDegenerate || !t2.lightFacing ) )
 						{
@@ -387,13 +379,12 @@ namespace Axiom.Graphics
 							lightShadOp.indexData.indexCount = 0;
 							// start indexes after the current total
 							// NB we don't update the total here since that's done below
-							lightShadOp.indexData.indexStart =
-								indexStart + shadOp.indexData.indexCount;
+							lightShadOp.indexData.indexStart = indexStart + shadOp.indexData.indexCount;
 						}
 
-						for ( var triCount = 0; triCount < edgeData.triangles.Count; triCount++ )
+						for ( int triCount = 0; triCount < edgeData.triangles.Count; triCount++ )
 						{
-							var t = (EdgeData.Triangle)edgeData.triangles[ triCount ];
+							EdgeData.Triangle t = edgeData.triangles[ triCount ];
 
 							// Light facing, and vertex set matches
 							if ( t.lightFacing && t.vertexSet == eg.vertexSet )
@@ -440,7 +431,7 @@ namespace Axiom.Graphics
 		/// <param name="extrudeDistance">The distance to extrude.</param>
 		protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
 		{
-			var extrusionDir = Vector3.Zero;
+			Vector3 extrusionDir = Vector3.Zero;
 
 			if ( lightPosition.w == 0 )
 			{
@@ -453,18 +444,18 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				var corners = box.Corners;
+				Vector3[] corners = box.Corners;
 				var vmin = new Vector3();
 				var vmax = new Vector3();
 
-				for ( var i = 0; i < 8; i++ )
+				for ( int i = 0; i < 8; i++ )
 				{
 					extrusionDir.x = corners[ i ].x - lightPosition.x;
 					extrusionDir.y = corners[ i ].y - lightPosition.y;
 					extrusionDir.z = corners[ i ].z - lightPosition.z;
 					extrusionDir.Normalize();
 					extrusionDir *= extrudeDistance;
-					var res = corners[ i ] + extrusionDir;
+					Vector3 res = corners[ i ] + extrusionDir;
 
 					if ( i == 0 )
 					{
@@ -490,7 +481,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		protected float GetExtrusionDistance( Vector3 objectPos, Light light )
 		{
-			var diff = objectPos - light.GetDerivedPosition();
+			Vector3 diff = objectPos - light.GetDerivedPosition();
 			return light.AttenuationRange - diff.Length;
 		}
 

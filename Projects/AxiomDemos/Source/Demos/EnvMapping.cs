@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -13,9 +13,9 @@ namespace Axiom.Demos
 	/// 	Summary description for EnvMapping.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class EnvMapping : TechDemo
+	public class EnvMapping : TechDemo
 	{
 		#region Methods
 

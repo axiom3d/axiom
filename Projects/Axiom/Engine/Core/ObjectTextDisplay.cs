@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Axiom.Math;
 using Axiom.Overlays;
@@ -51,35 +51,40 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		protected MovableObject parent;
 		protected Camera camera;
+		protected bool enabled;
+		protected MovableObject parent;
+		protected OverlayElementContainer parentContainer;
 		protected Overlay parentOverlay;
 		protected OverlayElement parentText;
-		protected OverlayElementContainer parentContainer;
 
-		protected bool enabled;
+		protected string text;
+
 		public bool IsEnabled
 		{
 			get
 			{
-				return enabled;
+				return this.enabled;
 			}
 			set
 			{
 				this.enabled = value;
 				if ( value )
+				{
 					this.parentOverlay.Show();
+				}
 				else
+				{
 					this.parentOverlay.Hide();
-
+				}
 			}
 		}
-		protected string text;
+
 		public string Text
 		{
 			get
 			{
-				return text;
+				return this.text;
 			}
 			set
 			{
@@ -102,7 +107,7 @@ namespace Axiom.Core
 			// create an overlay that we can use for later
 
 			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
+			this.parentOverlay = OverlayManager.Instance.Create( "shapeName" );
 
 			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
 			this.parentContainer = (OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
@@ -139,28 +144,30 @@ namespace Axiom.Core
 		public void Update()
 		{
 			if ( !this.enabled )
+			{
 				return;
+			}
 
 			// get the projection of the object's AABB into screen space
-			var bbox = this.parent.GetWorldBoundingBox( true );//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true ); //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			var mat = this.camera.ViewMatrix;
+			Matrix4 mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
-			var corners = bbox.Corners;
+			Vector3[] corners = bbox.Corners;
 
 
-			var min_x = 1.0f;
-			var max_x = 0.0f;
-			var min_y = 1.0f;
-			var max_y = 0.0f;
+			float min_x = 1.0f;
+			float max_x = 0.0f;
+			float min_y = 1.0f;
+			float max_y = 0.0f;
 
 			// expand the screen-space bounding-box so that it completely encloses
 			// the object's AABB
-			for ( var i = 0; i < 8; i++ )
+			for ( int i = 0; i < 8; i++ )
 			{
-				var corner = corners[ i ];
+				Vector3 corner = corners[ i ];
 
 				// multiply the AABB corner vertex by the view matrix to
 				// get a camera-space vertex
@@ -173,16 +180,24 @@ namespace Axiom.Core
 				float y = corner.y / corner.z + 0.5f;
 
 				if ( x < min_x )
+				{
 					min_x = x;
+				}
 
 				if ( x > max_x )
+				{
 					max_x = x;
+				}
 
 				if ( y < min_y )
+				{
 					min_y = y;
+				}
 
 				if ( y > max_y )
+				{
 					max_y = y;
+				}
 			}
 
 			// we now have relative screen-space coords for the object's bounding box; here
@@ -194,6 +209,4 @@ namespace Axiom.Core
 			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
 		}
 	}
-
-
 }

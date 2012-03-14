@@ -27,17 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -53,6 +53,27 @@ namespace Axiom.Core
 		private static string _baseName;
 
 		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <remarks>
+		/// use the name of the type as a base for generating unique names.
+		/// </remarks>
+		public NameGenerator()
+			: this( typeof( T ).Name ) { }
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="baseName">the base of the name for the type</param>
+		public NameGenerator( string baseName )
+		{
+			if ( string.IsNullOrEmpty( _baseName ) )
+			{
+				_baseName = baseName;
+			}
+		}
+
+		/// <summary>
 		/// Gets/sets the next identifier used to generate a name
 		/// </summary>
 		public long NextIdentifier
@@ -65,27 +86,6 @@ namespace Axiom.Core
 			{
 				_nextId = value;
 			}
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <remarks>
-		/// use the name of the type as a base for generating unique names.
-		/// </remarks>
-		public NameGenerator()
-			: this( typeof( T ).Name )
-		{
-		}
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="baseName">the base of the name for the type</param>
-		public NameGenerator( string baseName )
-		{
-			if ( string.IsNullOrEmpty( _baseName ) )
-				_baseName = baseName;
 		}
 
 		/// <summary>

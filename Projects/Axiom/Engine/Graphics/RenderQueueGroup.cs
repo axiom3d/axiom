@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,32 +23,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-
-using Axiom.Core;
-using Axiom.Collections;
-using Axiom.Graphics;
-using System.Collections.Generic;
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-
 	/// <summary>
 	///		A grouping level underneath RenderQueue which groups renderables
 	///		to be issued at coarsely the same time to the renderer.	
@@ -62,41 +57,44 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
+		///		List of priority groups.
+		/// </summary>
+		private readonly RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
+
+		/// <summary>
 		///		Render queue that this queue group belongs to.
 		/// </summary>
 		protected RenderQueue parent;
-		/// <summary>
-		///		Should passes be split by their lighting stage?
-		/// </summary>
-		protected bool splitPassesByLightingType;
-		protected bool splitNoShadowPasses;
+
 		protected bool shadowCastersCannotBeReceivers;
 
-		/// <summary>
-		///		List of priority groups.
-		/// </summary>
-		private RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>
 		protected bool shadowsEnabled;
 
+		protected bool splitNoShadowPasses;
+
+		/// <summary>
+		///		Should passes be split by their lighting stage?
+		/// </summary>
+		protected bool splitPassesByLightingType;
+
 		#endregion Fields
 
 		#region Constructor
 
-	    /// <summary>
-	    ///		Default constructor.
-	    /// </summary>
-	    /// <param name="parent">Render queue that owns this group.</param>
-	    /// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
-	    /// <param name="splitNoShadowPasses"></param>
-	    /// <param name="shadowCastersCannotBeReceivers"></param>
-	    public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType,
-								bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="parent">Render queue that owns this group.</param>
+		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
+		/// <param name="splitNoShadowPasses"></param>
+		/// <param name="shadowCastersCannotBeReceivers"></param>
+		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
-			shadowsEnabled = true;
+			this.shadowsEnabled = true;
 
 			this.splitPassesByLightingType = splitPassesByLightingType;
 			this.splitNoShadowPasses = splitNoShadowPasses;
@@ -118,7 +116,7 @@ namespace Axiom.Graphics
 			if ( !PriorityGroups.ContainsKey( priority ) )
 			{
 				// create a new queue group for this group id
-				group = new RenderPriorityGroup( this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType );
+				group = new RenderPriorityGroup( this, this.splitPassesByLightingType, this.splitNoShadowPasses, this.splitPassesByLightingType );
 
 				// add the new group to cached render group
 				PriorityGroups.Add( priority, group );
@@ -148,13 +146,15 @@ namespace Axiom.Graphics
 		{
 			// loop through each priority group and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			foreach ( var group in PriorityGroups.Values )
+			foreach ( RenderPriorityGroup group in PriorityGroups.Values )
 			{
 				// clear the RenderPriorityGroup
 				group.Clear();
 			}
 			if ( dispose )
+			{
 				PriorityGroups.Clear();
+			}
 		}
 
 		#endregion
@@ -179,7 +179,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return priorityGroups;
+				return this.priorityGroups;
 			}
 		}
 
@@ -200,11 +200,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowsEnabled;
+				return this.shadowsEnabled;
 			}
 			set
 			{
-				shadowsEnabled = value;
+				this.shadowsEnabled = value;
 			}
 		}
 
@@ -216,16 +216,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitPassesByLightingType;
+				return this.splitPassesByLightingType;
 			}
 			set
 			{
-				splitPassesByLightingType = value;
+				this.splitPassesByLightingType = value;
 
 				// set the value for all priority groups as well
 				foreach ( var item in PriorityGroups )
 				{
-					item.Value.SplitPassesByLightingType = splitPassesByLightingType;
+					item.Value.SplitPassesByLightingType = this.splitPassesByLightingType;
 				}
 			}
 		}
@@ -239,16 +239,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitNoShadowPasses;
+				return this.splitNoShadowPasses;
 			}
 			set
 			{
-				splitNoShadowPasses = value;
+				this.splitNoShadowPasses = value;
 
 				// set the value for all priority groups as well
-				foreach ( var group in PriorityGroups.Values )
+				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
 				{
-					group.SplitNoShadowPasses = splitNoShadowPasses;
+					group.SplitNoShadowPasses = this.splitNoShadowPasses;
 				}
 			}
 		}
@@ -261,21 +261,20 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowCastersCannotBeReceivers;
+				return this.shadowCastersCannotBeReceivers;
 			}
 			set
 			{
-				shadowCastersCannotBeReceivers = value;
+				this.shadowCastersCannotBeReceivers = value;
 
 				// set the value for all priority groups as well
-				foreach ( var group in PriorityGroups.Values )
+				foreach ( RenderPriorityGroup group in PriorityGroups.Values )
 				{
-					group.ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
+					group.ShadowCastersCannotBeReceivers = this.shadowCastersCannotBeReceivers;
 				}
 			}
 		}
 
 		#endregion
 	}
-
 }

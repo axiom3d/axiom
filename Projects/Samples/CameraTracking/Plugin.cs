@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,22 +19,25 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 namespace Axiom.Samples.CameraTrack
 {
-	[Export(typeof(IPlugin))]
+	[Export( typeof( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private CameraTrackingSample sample;
+
 		public override void Initialize()
 		{
-			sample = new CameraTrackingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new CameraTrackingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

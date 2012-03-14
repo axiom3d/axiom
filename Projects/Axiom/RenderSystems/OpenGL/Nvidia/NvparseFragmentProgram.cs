@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
@@ -60,14 +62,11 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		public NvparseFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
 			// create a display list
 			programId = Gl.glGenLists( 1 );
 		}
 
 		#endregion Constructor
-
-		#region GpuProgram Members
 
 		/// <summary>
 		///     Loads the raw ASM source and runs Nvparse to send the appropriate
@@ -115,10 +114,6 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glDeleteLists( programId, 1 );
 		}
 
-		#endregion GpuProgram Members
-
-		#region GLGpuProgram Members
-
 		/// <summary>
 		///     Binds the Nvparse program to the current context.
 		/// </summary>
@@ -143,35 +138,33 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		/// <summary>
 		/// Called to pass parameters to the Nvparse program.
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+		[OgreVersion( 1, 7, 2 )]
+		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
 			// Register combiners uses 2 constants per texture stage (0 and 1)
-            // We have stored these as (stage * 2) + const_index in the physical buffer
-            // There are no other parameters in a register combiners shader
-            var floatList = parms.GetFloatConstantList();
-            var index = 0;
+			// We have stored these as (stage * 2) + const_index in the physical buffer
+			// There are no other parameters in a register combiners shader
+			float[] floatList = parms.GetFloatConstantList();
+			int index = 0;
 
-            for ( var i = 0; i < floatList.Length; ++i, ++index )
-            {
-                var combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
-                var pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
+			for ( int i = 0; i < floatList.Length; ++i, ++index )
+			{
+				int combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
+				int pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
 
-                Gl.glCombinerStageParameterfvNV( combinerStage, pname, ref floatList[ i ] );
-            }
+				Gl.glCombinerStageParameterfvNV( combinerStage, pname, ref floatList[ i ] );
+			}
 		}
-
-		#endregion GLGpuProgram Members
 
 		#region Nvparse externs
 
-		const string NATIVE_LIB = "nvparse.dll";
+		private const string NATIVE_LIB = "nvparse.dll";
 
 		[DllImport( NATIVE_LIB, CallingConvention = CallingConvention.Cdecl )]
 		private static extern void nvparse( string input );
 
 		[DllImport( NATIVE_LIB, CallingConvention = CallingConvention.Cdecl, EntryPoint = "nvparse_get_errors", CharSet = CharSet.Auto )]
-		private static unsafe extern byte** nvparse_get_errorsA();
+		private static extern unsafe byte** nvparse_get_errorsA();
 
 		/// <summary>
 		///     
@@ -224,5 +217,4 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 		#endregion
 	}
-
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -49,69 +53,68 @@ namespace Axiom.Core
 	/// </summary>
 	public class ObjectCreator
 	{
-		private Assembly _assembly;
-		private Type _type;
-
-        public Type CreatedType
-        {
-            get
-            {
-                return _type;
-            }
-        }
+		private readonly Assembly _assembly;
+		private readonly Type _type;
 
 		public ObjectCreator( Type type )
-            : this( type.Assembly, type )
-		{
-		}
+			: this( type.Assembly, type ) { }
 
-        public ObjectCreator( Assembly assembly, Type type )
-        {
-            _assembly = assembly;
-            _type = type;
-        }
+		public ObjectCreator( Assembly assembly, Type type )
+		{
+			this._assembly = assembly;
+			this._type = type;
+		}
 
 		public ObjectCreator( string assemblyName, string className )
 		{
-			var assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
+			string assemblyFile = Path.Combine( Directory.GetCurrentDirectory(), assemblyName );
 			try
 			{
 #if SILVERLIGHT
                 _assembly = Assembly.Load(assemblyFile);
 #else
-				_assembly = Assembly.LoadFrom( assemblyFile );
+				this._assembly = Assembly.LoadFrom( assemblyFile );
 #endif
-            }
+			}
 			catch ( Exception )
 			{
-				_assembly = Assembly.GetExecutingAssembly();
+				this._assembly = Assembly.GetExecutingAssembly();
 			}
 
-			_type = _assembly.GetType( className );
+			this._type = this._assembly.GetType( className );
 		}
 
 		public ObjectCreator( string className )
 		{
-			_assembly = Assembly.GetExecutingAssembly();
-			_type = _assembly.GetType( className );
+			this._assembly = Assembly.GetExecutingAssembly();
+			this._type = this._assembly.GetType( className );
+		}
+
+		public Type CreatedType
+		{
+			get
+			{
+				return this._type;
+			}
 		}
 
 		public string GetAssemblyTitle()
 		{
-			var title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
+			Attribute title = Attribute.GetCustomAttribute( this._assembly, typeof( AssemblyTitleAttribute ) );
 			if ( title == null )
-				return _assembly.GetName().Name;
+			{
+				return this._assembly.GetName().Name;
+			}
 			return ( (AssemblyTitleAttribute)title ).Title;
 		}
 
 		public T CreateInstance<T>() where T : class
 		{
-			var type = _type;
-			var assembly = _assembly;
+			Type type = this._type;
+			Assembly assembly = this._assembly;
 #if !( XBOX || XBOX360 )
 			// Check interfaces or Base type for casting purposes
-			if ( type.GetInterface( typeof( T ).Name, false ) != null
-				 || type.BaseType.Name == typeof( T ).Name )
+			if ( type.GetInterface( typeof( T ).Name, false ) != null || type.BaseType.Name == typeof( T ).Name )
 #else
 			bool typeFound = false;
 			for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
@@ -145,8 +148,8 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-        private static readonly object _mutex = new object();
-		private string _assemblyFilename;
+		private static readonly object _mutex = new object();
+		private readonly string _assemblyFilename;
 		private Assembly _assembly;
 
 		#endregion Fields and Properties
@@ -156,9 +159,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Creates a loader instance for the current executing assembly
 		/// </summary>
-		public DynamicLoader()
-		{
-		}
+		public DynamicLoader() { }
 
 		/// <summary>
 		/// Creates a loader instance for the specified assembly
@@ -166,36 +167,35 @@ namespace Axiom.Core
 		public DynamicLoader( string assemblyFilename )
 			: this()
 		{
-			_assemblyFilename = assemblyFilename;
+			this._assemblyFilename = assemblyFilename;
 		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
 
-
 		public Assembly GetAssembly()
 		{
-			if ( _assembly == null )
+			if ( this._assembly == null )
 			{
 				lock ( _mutex )
 				{
-					if ( String.IsNullOrEmpty( _assemblyFilename ) )
+					if ( String.IsNullOrEmpty( this._assemblyFilename ) )
 					{
-						_assembly = Assembly.GetExecutingAssembly();
+						this._assembly = Assembly.GetExecutingAssembly();
 					}
 					else
 					{
-						Debug.WriteLine( String.Format("Loading {0}", _assemblyFilename) );
+						Debug.WriteLine( String.Format( "Loading {0}", this._assemblyFilename ) );
 #if SILVERLIGHT
                         _assembly = Assembly.Load(_assemblyFilename);
 #else
-                        _assembly = Assembly.LoadFrom(_assemblyFilename);
+						this._assembly = Assembly.LoadFrom( this._assemblyFilename );
 #endif
-                    }
+					}
 				}
 			}
-			return _assembly;
+			return this._assembly;
 		}
 
 		public IList<ObjectCreator> Find( Type baseType )
@@ -209,11 +209,10 @@ namespace Axiom.Core
 				assembly = GetAssembly();
 				assemblyTypes = assembly.GetTypes();
 
-				foreach ( var type in assemblyTypes )
+				foreach ( Type type in assemblyTypes )
 				{
 #if !(XBOX || XBOX360)
-					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) ||
-						 ( !baseType.IsInterface && type.BaseType == baseType ) )
+					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) || ( !baseType.IsInterface && type.BaseType == baseType ) )
 					{
 						types.Add( new ObjectCreator( assembly, type ) );
 					}
@@ -235,7 +234,7 @@ namespace Axiom.Core
 			{
 				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				LogManager.Instance.Write( "Loader Exceptions:" );
-				foreach ( var lex in ex.LoaderExceptions )
+				foreach ( Exception lex in ex.LoaderExceptions )
 				{
 					LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
 				}

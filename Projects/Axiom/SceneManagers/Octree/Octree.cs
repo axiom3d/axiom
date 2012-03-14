@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-
-using Axiom;
-using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Core.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -55,46 +54,44 @@ namespace Axiom.SceneManagers.Octree
 
 		/** Returns the number of scene nodes attached to this octree
         */
-		protected int numNodes;
-
-		/** Public list of SceneNodes attached to this particular octree
-		*/
-		protected NodeCollection nodeList = new NodeCollection();
 
 		/** The bounding box of the octree
 		@remarks
 		This is used for octant index determination and rendering, but not culling
 		*/
+		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
 		protected AxisAlignedBox box = new AxisAlignedBox();
 		/** Creates the wire frame bounding box for this octant
 		*/
-		protected WireBoundingBox wireBoundingBox;
 
 		/** Vector containing the dimensions of this octree / 2
 		*/
 		protected Vector3 halfSize;
+		protected NodeCollection nodeList = new NodeCollection();
+		protected int numNodes;
 
 		/** 3D array of children of this octree.
 		@remarks
 		Children are dynamically created as needed when nodes are inserted in the Octree.
 		If, later, the all the nodes are removed from the child, it is still kept arround.
 		*/
-		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
 
-		protected Octree parent = null;
+		protected Octree parent;
+		protected WireBoundingBox wireBoundingBox;
 
 		#endregion Member Variables
 
 		#region Properties
+
 		public int NumNodes
 		{
 			get
 			{
-				return numNodes;
+				return this.numNodes;
 			}
 			set
 			{
-				numNodes = value;
+				this.numNodes = value;
 			}
 		}
 
@@ -102,7 +99,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return nodeList;
+				return this.nodeList;
 			}
 		}
 
@@ -110,11 +107,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return halfSize;
+				return this.halfSize;
 			}
 			set
 			{
-				halfSize = value;
+				this.halfSize = value;
 			}
 		}
 
@@ -122,11 +119,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return box;
+				return this.box;
 			}
 			set
 			{
-				box = value;
+				this.box = value;
 			}
 		}
 
@@ -135,16 +132,48 @@ namespace Axiom.SceneManagers.Octree
 		public Octree( Octree parent )
 		{
 			this.wireBoundingBox = null;
-			this.HalfSize = new Vector3();
+			HalfSize = new Vector3();
 
 			this.parent = parent;
-			this.NumNodes = 0;
+			NumNodes = 0;
+		}
+
+		/// <summary>
+		///  Creates the AxisAlignedBox used for culling this octree.
+		/// </summary>
+		/// <remarks>
+		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
+		/// </remarks>
+		public AxisAlignedBox CullBounds
+		{
+			get
+			{
+				Vector3[] Corners = this.box.Corners;
+				this.box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
+
+				return this.box;
+			}
+		}
+
+		public WireBoundingBox WireBoundingBox
+		{
+			get
+			{
+				// Create a WireBoundingBox if needed
+				if ( this.wireBoundingBox == null )
+				{
+					this.wireBoundingBox = new WireBoundingBox();
+				}
+
+				this.wireBoundingBox.BoundingBox = this.box;
+				return this.wireBoundingBox;
+			}
 		}
 
 		public void AddNode( OctreeNode node )
 		{
 			// TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
-			nodeList.Add( node );
+			this.nodeList.Add( node );
 			node.Octant = this;
 			Ref();
 		}
@@ -162,16 +191,12 @@ namespace Axiom.SceneManagers.Octree
 		///	This method is used by the OctreeSceneManager to determine if the given
 		///	box will fit into a child of this octree.
 		/// </summary>
-
 		public bool IsTwiceSize( AxisAlignedBox box )
 		{
 			Vector3[] pts1 = this.box.Corners;
 			Vector3[] pts2 = box.Corners;
 
-			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) &&
-				( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
-				( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
-
+			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) && ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) && ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
 		}
 
 		/// <summary>
@@ -183,7 +208,6 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-
 			Vector3 max = this.box.Maximum;
 			Vector3 min = aabox.Minimum;
 
@@ -220,53 +244,23 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		/// <summary>
-		///  Creates the AxisAlignedBox used for culling this octree.
-		/// </summary>
-		/// <remarks>
-		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
-		/// </remarks>
-		public AxisAlignedBox CullBounds
-		{
-			get
-			{
-				Vector3[] Corners = this.box.Corners;
-				box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
-
-				return box;
-			}
-		}
-
 		public void Ref()
 		{
-			numNodes++;
+			this.numNodes++;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.Ref();
+				this.parent.Ref();
 			}
 		}
 
 		public void UnRef()
 		{
-			numNodes--;
+			this.numNodes--;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.UnRef();
-			}
-		}
-
-		public WireBoundingBox WireBoundingBox
-		{
-			get
-			{
-				// Create a WireBoundingBox if needed
-				if ( wireBoundingBox == null )
-					wireBoundingBox = new WireBoundingBox();
-
-				wireBoundingBox.BoundingBox = box;
-				return wireBoundingBox;
+				this.parent.UnRef();
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright (c) 2009 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,25 +19,25 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
+
 using Axiom.Core;
 
 namespace Axiom.Samples.MousePicking
 {
-	[Export(typeof(IPlugin))]
+	[Export( typeof( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private MousePickingSample sample;
+
 		public override void Initialize()
 		{
-			sample = new MousePickingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new MousePickingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

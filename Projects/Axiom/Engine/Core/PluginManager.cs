@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -61,7 +65,6 @@ namespace Axiom.Core
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PluginManager()
-			: base()
 		{
 			if ( instance == null )
 			{
@@ -87,7 +90,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		List of loaded plugins.
 		/// </summary>
-		private static List<IPlugin> _plugins = new List<IPlugin>();
+		private static readonly List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
@@ -98,7 +101,10 @@ namespace Axiom.Core
 		/// </summary>
 		public ReadOnlyCollection<IPlugin> InstalledPlugins
 		{
-			get { return new ReadOnlyCollection<IPlugin>( _plugins ); }
+			get
+			{
+				return new ReadOnlyCollection<IPlugin>( _plugins );
+			}
 		}
 
 		#endregion
@@ -110,11 +116,11 @@ namespace Axiom.Core
 		/// </summary>
 		public void LoadAll()
 		{
-			var newPlugins = ScanForPlugins();
+			IList<ObjectCreator> newPlugins = ScanForPlugins();
 
-			foreach ( var pluginCreator in newPlugins )
+			foreach ( ObjectCreator pluginCreator in newPlugins )
 			{
-				var plugin = LoadPlugin( pluginCreator );
+				IPlugin plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -124,11 +130,11 @@ namespace Axiom.Core
 
 		public void LoadDirectory( string path )
 		{
-			var newPlugins = ScanForPlugins( path );
+			IList<ObjectCreator> newPlugins = ScanForPlugins( path );
 
-			foreach ( var pluginCreator in newPlugins )
+			foreach ( ObjectCreator pluginCreator in newPlugins )
 			{
-				var plugin = LoadPlugin( pluginCreator );
+				IPlugin plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -149,21 +155,25 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="file">The file to check</param>
 		/// <returns>True if the module contains CLR data</returns>
-		private bool _isValidModule(string file)
+		private bool _isValidModule( string file )
 		{
-			using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+			using ( var fs = new FileStream( file, FileMode.Open, FileAccess.Read, FileShare.Read ) )
 			{
-				if (fs.Length < 1024)
+				if ( fs.Length < 1024 )
+				{
 					return false;
-				using (var reader = new BinaryReader(fs))
+				}
+				using ( var reader = new BinaryReader( fs ) )
 				{
 					fs.Position = 0x3C;
-					var offset = reader.ReadUInt32(); // go to NT_HEADER
-					offset += 24;  // go to optional header
+					uint offset = reader.ReadUInt32(); // go to NT_HEADER
+					offset += 24; // go to optional header
 					offset += 208; // go to CLI header directory
 
-					if (fs.Length < offset + 4)
+					if ( fs.Length < offset + 4 )
+					{
 						return false;
+					}
 
 					fs.Position = offset;
 					return reader.ReadUInt32() != 0; // check if the RVA to the CLI header is valid
@@ -181,7 +191,7 @@ namespace Axiom.Core
 		/// </summary>
 		///<param name="folder"></param>
 		///<returns></returns>
-		protected IList<ObjectCreator> ScanForPlugins(string folder)
+		protected IList<ObjectCreator> ScanForPlugins( string folder )
 		{
 			var pluginFactories = new List<ObjectCreator>();
 
@@ -195,16 +205,18 @@ namespace Axiom.Core
 #elif !( WINDOWS_PHONE )
 			if ( Directory.Exists( folder ) )
 			{
-				var files = Directory.GetFiles(folder);
+				string[] files = Directory.GetFiles( folder );
 				//var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
-				foreach ( var file in files )
+				foreach ( string file in files )
 				{
-					var currentFile = Path.GetFileName( file );
+					string currentFile = Path.GetFileName( file );
 
-					if ( Path.GetExtension( file ) != ".dll" /*|| currentFile == assemblyName */)
+					if ( Path.GetExtension( file ) != ".dll" /*|| currentFile == assemblyName */ )
+					{
 						continue;
-					var fullPath = Path.GetFullPath( file );
+					}
+					string fullPath = Path.GetFullPath( file );
 
 					if ( !_isValidModule( fullPath ) )
 					{
@@ -214,7 +226,7 @@ namespace Axiom.Core
 
 					var loader = new DynamicLoader( fullPath );
 
-					pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
+					pluginFactories.AddRange( loader.Find( typeof( IPlugin ) ) );
 				}
 			}
 #endif
@@ -227,9 +239,9 @@ namespace Axiom.Core
 		public void UnloadAll()
 		{
 			// loop through and stop all loaded plugins
-			for ( var i = _plugins.Count - 1; i >= 0; i-- )
+			for ( int i = _plugins.Count - 1; i >= 0; i-- )
 			{
-				var plugin = (IPlugin)_plugins[ i ];
+				IPlugin plugin = _plugins[ i ];
 
 				LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
@@ -242,11 +254,12 @@ namespace Axiom.Core
 
 		public static string GetAssemblyTitle( Type type )
 		{
-			var assembly = type.Assembly;
-			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
-											(Assembly)assembly, typeof( AssemblyTitleAttribute ) );
+			Assembly assembly = type.Assembly;
+			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( assembly, typeof( AssemblyTitleAttribute ) );
 			if ( title == null )
+			{
 				return assembly.GetName().Name;
+			}
 			return title.Title;
 		}
 
@@ -260,26 +273,26 @@ namespace Axiom.Core
 		{
 			try
 			{
-                // Avoid duplicates of plugins of the same type.
-                if ( _plugins.Count > 0 )
-                {
-                    var byTypePlugins = from p in _plugins
-                                        where p.GetType() == creator.CreatedType
-                                        select p;
+				// Avoid duplicates of plugins of the same type.
+				if ( _plugins.Count > 0 )
+				{
+					IEnumerable<IPlugin> byTypePlugins = from p in _plugins
+														 where p.GetType() == creator.CreatedType
+														 select p;
 
-                    if ( byTypePlugins.Count() > 0 )
-                    {
-                        LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
-                        return null;
-                    }
-                }
+					if ( byTypePlugins.Count() > 0 )
+					{
+						LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
+						return null;
+					}
+				}
 
 				// create and start the plugin
 				var plugin = creator.CreateInstance<IPlugin>();
 
-				if (plugin == null)
+				if ( plugin == null )
 				{
-					LogManager.Instance.Write("Failed to load plugin: {0}", creator.GetAssemblyTitle());
+					LogManager.Instance.Write( "Failed to load plugin: {0}", creator.GetAssemblyTitle() );
 					return null;
 				}
 
@@ -301,13 +314,13 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		protected override void dispose(bool disposeManagedResources)
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if (!this.IsDisposed)
+			if ( !IsDisposed )
 			{
-				if (disposeManagedResources)
+				if ( disposeManagedResources )
 				{
-					if (instance != null)
+					if ( instance != null )
 					{
 						UnloadAll();
 						instance = null;
@@ -315,7 +328,7 @@ namespace Axiom.Core
 				}
 			}
 
-			base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

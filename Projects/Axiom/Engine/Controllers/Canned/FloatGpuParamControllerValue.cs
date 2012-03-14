@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 
 using Axiom.Graphics;
 using Axiom.Math;
@@ -60,13 +63,15 @@ namespace Axiom.Controllers.Canned
 		#region Fields
 
 		/// <summary>
-		///     Gpu parameters to access.
-		/// </summary>
-		protected GpuProgramParameters parms;
-		/// <summary>
 		///     The constant register index of the parameter to set.
 		/// </summary>
 		protected int index;
+
+		/// <summary>
+		///     Gpu parameters to access.
+		/// </summary>
+		protected GpuProgramParameters parms;
+
 		/// <summary>
 		///     Member level Vector to use for returning.
 		/// </summary>
@@ -89,7 +94,7 @@ namespace Axiom.Controllers.Canned
 
 		#endregion Constructor
 
-		#region IControllerValue Members
+		#region IControllerValue<Real> Members
 
 		/// <summary>
 		/// Gets or Sets the value of the GPU parameter
@@ -98,15 +103,15 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				return parms.GetFloatConstant( index );
+				return this.parms.GetFloatConstant( this.index );
 			}
 			set
 			{
 				// set the x component, since this is a single value only
-				vec4.x = value;
+				this.vec4.x = value;
 
 				// send the vector along to the gpu program params
-				parms.SetConstant( index, vec4 );
+				this.parms.SetConstant( this.index, this.vec4 );
 			}
 		}
 

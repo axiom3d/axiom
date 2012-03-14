@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Scripting.Compiler.AST;
@@ -44,14 +49,15 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: CompositionTechniqueTranslator
+
 		public class CompositionTechniqueTranslator : Translator
 		{
 			protected CompositionTechnique _Technique;
 
 			public CompositionTechniqueTranslator()
-				: base()
 			{
-				_Technique = null;
+				this._Technique = null;
 			}
 
 			#region Translator Implementation
@@ -68,10 +74,10 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var compositor = (Compositor)obj.Parent.Context;
-				_Technique = compositor.CreateTechnique();
-				obj.Context = _Technique;
+				this._Technique = compositor.CreateTechnique();
+				obj.Context = this._Technique;
 
-				foreach ( var i in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -83,11 +89,12 @@ namespace Axiom.Scripting.Compiler
 						switch ( (Keywords)prop.Id )
 						{
 							#region ID_TEXTURE
+
 							case Keywords.ID_TEXTURE:
 								{
-									var atomIndex = 1;
+									int atomIndex = 1;
 
-									var it = getNodeAt( prop.Values, 0 );
+									AbstractNode it = getNodeAt( prop.Values, 0 );
 
 									if ( it is AtomAbstractNode )
 									{
@@ -100,17 +107,17 @@ namespace Axiom.Scripting.Compiler
 									int width = 0, height = 0;
 									float widthFactor = 1.0f, heightFactor = 1.0f;
 									bool widthSet = false, heightSet = false, formatSet = false;
-									var pooled = false;
-									var hwGammaWrite = false;
-									var fsaa = true;
+									bool pooled = false;
+									bool hwGammaWrite = false;
+									bool fsaa = true;
 
-									var scope = CompositionTechnique.TextureScope.Local;
+									CompositionTechnique.TextureScope scope = CompositionTechnique.TextureScope.Local;
 									var formats = new List<PixelFormat>();
 
 									while ( atomIndex < prop.Values.Count )
 									{
 										it = getNodeAt( prop.Values, atomIndex++ );
-										if ( !(it is AtomAbstractNode) )
+										if ( !( it is AtomAbstractNode ) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 											return;
@@ -132,8 +139,8 @@ namespace Axiom.Scripting.Compiler
 											case Keywords.ID_TARGET_WIDTH_SCALED:
 											case Keywords.ID_TARGET_HEIGHT_SCALED:
 												{
-													var pSetFlag = false;
-													var pSize = 0;
+													bool pSetFlag = false;
+													int pSize = 0;
 													float pFactor = 0;
 													if ( atom.Id == (uint)Keywords.ID_TARGET_WIDTH_SCALED )
 													{
@@ -149,7 +156,7 @@ namespace Axiom.Scripting.Compiler
 													}
 													// advance to next to get scaling
 													it = getNodeAt( prop.Values, atomIndex++ );
-													if ( it == null || !(it is AtomAbstractNode) )
+													if ( it == null || !( it is AtomAbstractNode ) )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 														return;
@@ -213,7 +220,7 @@ namespace Axiom.Scripting.Compiler
 												else
 												{
 													// pixel format?
-													var format = PixelUtil.GetFormatFromName( atom.Value, true );
+													PixelFormat format = PixelUtil.GetFormatFromName( atom.Value, true );
 													if ( format == PixelFormat.Unknown )
 													{
 														compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
@@ -232,7 +239,7 @@ namespace Axiom.Scripting.Compiler
 									}
 
 									// No errors, create
-									var def = _Technique.CreateTextureDefinition( atom0.Value );
+									CompositionTechnique.TextureDefinition def = this._Technique.CreateTextureDefinition( atom0.Value );
 									def.Width = width;
 									def.Height = height;
 									def.WidthFactor = widthFactor;
@@ -244,9 +251,11 @@ namespace Axiom.Scripting.Compiler
 									def.Scope = scope;
 								}
 								break;
+
 							#endregion ID_TEXTURE
 
 							#region ID_TEXTURE_REF
+
 							case Keywords.ID_TEXTURE_REF:
 								if ( prop.Values.Count == 0 )
 								{
@@ -254,43 +263,41 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count != 3 )
 								{
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref only supports 3 argument" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref only supports 3 argument" );
 								}
 								else
 								{
 									string texName = string.Empty, refCompName = string.Empty, refTexName = string.Empty;
 
-									var it = getNodeAt( prop.Values, 0 );
+									AbstractNode it = getNodeAt( prop.Values, 0 );
 									if ( !getString( it, out texName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 1 );
 									if ( !getString( it, out refCompName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 2 );
 									if ( !getString( it, out refTexName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
-									var refTexDef = _Technique.CreateTextureDefinition( texName );
+									CompositionTechnique.TextureDefinition refTexDef = this._Technique.CreateTextureDefinition( texName );
 
 									refTexDef.ReferenceCompositorName = refCompName;
 									refTexDef.ReferenceTextureName = refTexName;
 								}
 								break;
+
 							#endregion ID_TEXTURE_REF
 
 							#region ID_SCHEME
+
 							case Keywords.ID_SCHEME:
 								if ( prop.Values.Count == 0 )
 								{
@@ -298,24 +305,28 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"scheme only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scheme only supports 1 argument" );
 								}
 								else
 								{
-									var i0 = getNodeAt( prop.Values, 0 );
-									var scheme = string.Empty;
+									AbstractNode i0 = getNodeAt( prop.Values, 0 );
+									string scheme = string.Empty;
 
 									if ( getString( i0, out scheme ) )
-										_Technique.SchemeName = scheme;
+									{
+										this._Technique.SchemeName = scheme;
+									}
 									else
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"scheme must have 1 string argument" );
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scheme must have 1 string argument" );
+									}
 								}
 								break;
+
 							#endregion ID_SCHEME
 
 							#region ID_COMPOSITOR_LOGIC
+
 							case Keywords.ID_COMPOSITOR_LOGIC:
 								if ( prop.Values.Count == 0 )
 								{
@@ -323,26 +334,28 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-										"compositor logic only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "compositor logic only supports 1 argument" );
 								}
 								else
 								{
-									var i0 = getNodeAt( prop.Values, 0 );
-									var logicName = string.Empty;
+									AbstractNode i0 = getNodeAt( prop.Values, 0 );
+									string logicName = string.Empty;
 
 									if ( getString( i0, out logicName ) )
-										_Technique.CompositorLogicName = logicName;
+									{
+										this._Technique.CompositorLogicName = logicName;
+									}
 									else
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										"compositor logic must have 1 string argument" );
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "compositor logic must have 1 string argument" );
+									}
 								}
 								break;
+
 							#endregion ID_COMPOSITOR_LOGIC
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-									"token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}
@@ -351,6 +364,7 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+
+		#endregion
 	}
 }
-

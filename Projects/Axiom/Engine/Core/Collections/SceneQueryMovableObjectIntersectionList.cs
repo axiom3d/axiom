@@ -35,8 +35,9 @@
 
 #region Namespace Declarations
 
-using Axiom.Core;
 using System.Collections.Generic;
+
+using Axiom.Core;
 
 #endregion
 
@@ -68,21 +69,13 @@ namespace Axiom.Collections
 		/// Gets or sets the first <see cref="MovableObject"/>.
 		/// </summary>
 		/// <value>A <see cref="MovableObject"/>.</value>
-		public MovableObject first
-		{
-			get;
-			set;
-		}
+		public MovableObject first { get; set; }
 
 		/// <summary>
 		/// Gets or sets the second <see cref="MovableObject"/>.
 		/// </summary>
 		/// <value>A <see cref="MovableObject"/>.</value>
-		public MovableObject second
-		{
-			get;
-			set;
-		}
+		public MovableObject second { get; set; }
 
 		#endregion
 	}
@@ -90,7 +83,5 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="SceneQueryMovableObjectPair">SceneQueryMovableObjectPairs</see>
 	/// </summary>
-	public class SceneQueryMovableObjectIntersectionList : List<SceneQueryMovableObjectPair>
-	{
-	}
+	public class SceneQueryMovableObjectIntersectionList : List<SceneQueryMovableObjectPair> { }
 }

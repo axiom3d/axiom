@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 using Axiom.Collections;
 
@@ -49,9 +52,10 @@ namespace Axiom.Core
 	/// implementation that can be overriden by derivitives
 	/// </summary>
 	/// <typeparam name="T">The Type to instantiate</typeparam>
-	public class AbstractFactory<T> : DisposableObject, IAbstractFactory<T> where T : class
+	public class AbstractFactory<T> : DisposableObject, IAbstractFactory<T>
+		where T : class
 	{
-		static private readonly List<T> _instances = new List<T>();
+		private static readonly List<T> _instances = new List<T>();
 
 		#region Implementation of IAbstractFactory<T>
 
@@ -80,7 +84,17 @@ namespace Axiom.Core
 		/// </returns>
 		public virtual T CreateInstance( string name )
 		{
-			return this.CreateInstance( name, new NameValuePairList() );
+			return CreateInstance( name, new NameValuePairList() );
+		}
+
+		/// <summary>
+		/// Destroys an object which was created by this factory.
+		/// </summary>
+		/// <param name="obj">the object to destroy</param>
+		public virtual void DestroyInstance( ref T obj )
+		{
+			_instances.Remove( obj );
+			obj = null;
 		}
 
 		/// <summary>
@@ -98,16 +112,6 @@ namespace Axiom.Core
 			var instance = creator.CreateInstance<T>();
 			_instances.Add( instance );
 			return instance;
-		}
-
-		/// <summary>
-		/// Destroys an object which was created by this factory.
-		/// </summary>
-		/// <param name="obj">the object to destroy</param>
-		public virtual void DestroyInstance( ref T obj )
-		{
-			_instances.Remove( obj );
-			obj = null;
 		}
 
 		#endregion Implementation of IAbstractFactory<T>

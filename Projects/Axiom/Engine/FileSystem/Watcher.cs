@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.IO;
 
 using Axiom.Core;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -46,15 +48,17 @@ namespace Axiom.FileSystem
 	public class Watcher
 	{
 		#region Fields and Properties
+
 #if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT)
 		private readonly FileSystemWatcher _monitor;
 #endif
-        #endregion Fields and Properties
 
-        #region Construction and Destruction
+		#endregion Fields and Properties
 
-        public Watcher( string path, bool recurse )
-        {
+		#region Construction and Destruction
+
+		public Watcher( string path, bool recurse )
+		{
 #if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT)
 			// Initialize FileSystemWatcher
 			this._monitor = new FileSystemWatcher();
@@ -66,20 +70,21 @@ namespace Axiom.FileSystem
 			this._monitor.IncludeSubdirectories = recurse;
 
 			// Add event handlers.
-			this._monitor.Changed += new FileSystemEventHandler( OnChanged );
-			this._monitor.Created += new FileSystemEventHandler( OnChanged );
-			this._monitor.Deleted += new FileSystemEventHandler( OnChanged );
-			this._monitor.Renamed += new RenamedEventHandler( OnRenamed );
+			this._monitor.Changed += OnChanged;
+			this._monitor.Created += OnChanged;
+			this._monitor.Deleted += OnChanged;
+			this._monitor.Renamed += OnRenamed;
 
 			// Begin watching.
 			this._monitor.EnableRaisingEvents = true;
-            LogManager.Instance.Write( "File monitor created for {0}.", path );
+			LogManager.Instance.Write( "File monitor created for {0}.", path );
 #endif
-        }
+		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
+
 #if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT)
 		private static void OnChanged( object source, FileSystemEventArgs e )
 		{
@@ -93,6 +98,7 @@ namespace Axiom.FileSystem
 			LogManager.Instance.Write( "File: {0} renamed to {1}", e.OldFullPath, e.FullPath );
 		}
 #endif
+
 		#endregion Methods
 	}
 }

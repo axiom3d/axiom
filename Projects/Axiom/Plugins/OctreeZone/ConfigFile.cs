@@ -27,31 +27,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System.IO;
-using System.Linq;
-using System.Xml;
 using System.Collections;
-using System.Xml.Linq;
+using System.IO;
+using System.Xml;
 
 #endregion Namespace Declarations
 
 namespace OctreeZone
 {
-    public class ConfigFile
-    {
-        private string baseSchema;
-        public ConfigFile(string baseSchemaName)
-        {
-            baseSchema = baseSchemaName;
-        }
+	public class ConfigFile
+	{
+		private readonly string baseSchema;
+
+		public ConfigFile( string baseSchemaName )
+		{
+			this.baseSchema = baseSchemaName;
+		}
 
 #if SILVERLIGHT || WINDOWS_PHONE
         private XDocument _doc = new XDocument();
@@ -81,34 +82,37 @@ namespace OctreeZone
             }
 		}
 #else
-        private XmlDocument _doc = new XmlDocument();
+		private readonly XmlDocument _doc = new XmlDocument();
 
-        public bool Load(Stream stream)
-        {
-            _doc.Load(stream);
-            return true;
-        }
+		public bool Load( Stream stream )
+		{
+			this._doc.Load( stream );
+			return true;
+		}
 
-        public string this[string key]
-        {
-            get
-            {
-                return _doc[baseSchema][key].InnerText;
-            }
-        }
+		public string this[ string key ]
+		{
+			get
+			{
+				return this._doc[ this.baseSchema ][ key ].InnerText;
+			}
+		}
 
-        public IEnumerable GetEnumerator()
-        {
-            foreach (XmlElement el in _doc[baseSchema])
-            {
-                yield return new string[] { el.Name, el.InnerText };
-            }
-        }
+		public IEnumerable GetEnumerator()
+		{
+			foreach ( XmlElement el in this._doc[ this.baseSchema ] )
+			{
+				yield return new[]
+                             {
+                                 el.Name, el.InnerText
+                             };
+			}
+		}
 #endif
 
-        public string getSetting(string key)
-        {
-            return this[key];
-        }
-    }
+		public string getSetting( string key )
+		{
+			return this[ key ];
+		}
+	}
 }

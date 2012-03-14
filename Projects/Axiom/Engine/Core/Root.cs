@@ -40,24 +40,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Text;
-#if SILVERLIGHT
-using System.Threading;
-using System.Windows.Controls;
-#endif
+
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.FileSystem;
 using Axiom.Fonts;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
 using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler;
-using Axiom.Graphics.Collections;
-using System.IO;
+#if SILVERLIGHT
+using System.Threading;
+using System.Windows.Controls;
+#endif
 
 #endregion Namespace Declarations
 
@@ -92,9 +93,7 @@ namespace Axiom.Core
 		///     This is a critical step in preparing the engine for use.
 		/// </remarks>
 		public Root()
-			: this( "axiom.log" )
-		{
-		}
+			: this( "axiom.log" ) { }
 
 		/// <summary>
 		///     Constructor.
@@ -114,15 +113,17 @@ namespace Axiom.Core
 
 				// write the initial info at the top of the log
 				info.AppendFormat( "*********Axiom 3D Engine Log *************\n" );
-				info.AppendFormat( "Copyright {0}\n", this.Copyright );
-				info.AppendFormat( "Version: {0}\n", this.Version );
-				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion.ToString() );
-				var isMono = Type.GetType("Mono.Runtime") != null;
-				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version.ToString(), isMono ? "Mono": ".Net" );
+				info.AppendFormat( "Copyright {0}\n", Copyright );
+				info.AppendFormat( "Version: {0}\n", Version );
+				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion );
+				bool isMono = Type.GetType( "Mono.Runtime" ) != null;
+				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version, isMono ? "Mono" : ".Net" );
 
 				// Initializes the Log Manager singleton
 				if ( LogManager.Instance == null )
+				{
 					new LogManager();
+				}
 
 				this.logMgr = LogManager.Instance;
 
@@ -148,21 +149,23 @@ namespace Axiom.Core
 				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
 #endif
 				new ResourceGroupManager();
-                new CodecManager();
+				new CodecManager();
 				new HighLevelGpuProgramManager();
 
-                // Register image codecs
+				// Register image codecs
 #if !( WINDOWS_PHONE || XBOX || XBOX360 )
-                DDSCodec.Initialize();
+				DDSCodec.Initialize();
 #endif
-                PVRTCCodec.Initialize();
+				PVRTCCodec.Initialize();
 
 				ResourceGroupManager.Instance.Initialize();
 
-                // WorkQueue (note: users can replace this if they want)
-                DefaultWorkQueue defaultQ = new DefaultWorkQueue( "Root" );
-                // never process responses in main thread for longer than 10ms by default
-                defaultQ.ResponseProcessingTimeLimit = 10;
+				// WorkQueue (note: users can replace this if they want)
+				var defaultQ = new DefaultWorkQueue( "Root" )
+							   {
+								   ResponseProcessingTimeLimit = 10
+							   };
+				// never process responses in main thread for longer than 10ms by default
 
 #if AXIOM_THREAD_SUPPORT
 
@@ -175,14 +178,14 @@ namespace Axiom.Core
                 else
                     defaultQ.WorkersCanAccessRenderSystem = false;
 #endif
-                _workQueue = defaultQ;
+				this._workQueue = defaultQ;
 
-                var resBack = new ResourceBackgroundQueue();
+				var resBack = new ResourceBackgroundQueue();
 
 				this.sceneManagerEnumerator = SceneManagerEnumerator.Instance;
 
-				var mat = MaterialManager.Instance;
-				var mesh = MeshManager.Instance;
+				MaterialManager mat = MaterialManager.Instance;
+				MeshManager mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
 #if !(XNA || ANDROID || IPHONE || WINDOWS_PHONE )
@@ -208,19 +211,19 @@ namespace Axiom.Core
 
 				// instantiate and register base movable factories
 				this.entityFactory = new EntityFactory();
-				this.AddMovableObjectFactory( this.entityFactory, true );
+				AddMovableObjectFactory( this.entityFactory, true );
 				this.lightFactory = new LightFactory();
-				this.AddMovableObjectFactory( this.lightFactory, true );
+				AddMovableObjectFactory( this.lightFactory, true );
 				this.billboardSetFactory = new BillboardSetFactory();
-				this.AddMovableObjectFactory( this.billboardSetFactory, true );
+				AddMovableObjectFactory( this.billboardSetFactory, true );
 				this.manualObjectFactory = new ManualObjectFactory();
-				this.AddMovableObjectFactory( this.manualObjectFactory, true );
+				AddMovableObjectFactory( this.manualObjectFactory, true );
 				this.billboardChainFactory = new BillboardChainFactory();
-				this.AddMovableObjectFactory( this.billboardChainFactory, true );
+				AddMovableObjectFactory( this.billboardChainFactory, true );
 				this.ribbonTrailFactory = new RibbonTrailFactory();
-				this.AddMovableObjectFactory( this.ribbonTrailFactory, true );
+				AddMovableObjectFactory( this.ribbonTrailFactory, true );
 				this.movableTextFactory = new MovableTextFactory();
-				this.AddMovableObjectFactory( this.movableTextFactory, true );
+				AddMovableObjectFactory( this.movableTextFactory, true );
 			}
 		}
 
@@ -314,7 +317,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Holds instance of LogManager
 		/// </summary>
-		private LogManager logMgr;
+		private readonly LogManager logMgr;
 
 		/// <summary>
 		///     Lowest recorded frames per second.
@@ -329,17 +332,12 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of available render systems.
 		/// </summary>
-		private RenderSystemCollection renderSystemList = new RenderSystemCollection();
-
-		/// <summary>
-		///     Current active scene manager.
-		/// </summary>
-		private SceneManager sceneManager;
+		private readonly RenderSystemCollection renderSystemList = new RenderSystemCollection();
 
 		/// <summary>
 		///     List of available scene managers.
 		/// </summary>
-		private SceneManagerEnumerator sceneManagerEnumerator;
+		private readonly SceneManagerEnumerator sceneManagerEnumerator;
 
 		/// <summary>
 		///     How often we determine the FPS average, in seconds
@@ -347,39 +345,34 @@ namespace Axiom.Core
 		private float secondsBetweenFPSAverages = 1f;
 
 		/// <summary>
-		///		True if a request has been made to suspend rendering, typically because the
-		///	    form has been minimized
-		/// </summary>
-		private bool suspendRendering = false;
-
-		/// <summary>
 		///     Current active timer.
 		/// </summary>
-		private ITimer timer;
+		private readonly ITimer timer;
 
 
-        private float frameSmoothingTime = 0.0f;
+		private float frameSmoothingTime;
+
 		#region MovableObjectFactory fields
 
 		private readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
-		private EntityFactory entityFactory;
-		private LightFactory lightFactory;
-		private BillboardSetFactory billboardSetFactory;
-		private BillboardChainFactory billboardChainFactory;
-		private ManualObjectFactory manualObjectFactory;
+		private readonly EntityFactory entityFactory;
+		private readonly LightFactory lightFactory;
+		private readonly BillboardSetFactory billboardSetFactory;
+		private readonly BillboardChainFactory billboardChainFactory;
+		private readonly ManualObjectFactory manualObjectFactory;
 		private uint nextMovableObjectTypeFlag;
-		private RibbonTrailFactory ribbonTrailFactory;
-		private MovableTextFactory movableTextFactory;
+		private readonly RibbonTrailFactory ribbonTrailFactory;
+		private readonly MovableTextFactory movableTextFactory;
 
 		#endregion MovableObjectFactory fields
 
-        /// <summary>
-        /// Are we initialised yet?
-        /// </summary>
-        private bool _isInitialized;
+		/// <summary>
+		/// Are we initialised yet?
+		/// </summary>
+		private bool _isInitialized;
 
-        private WorkQueue _workQueue;
+		private WorkQueue _workQueue;
 
 		#endregion Fields
 
@@ -395,7 +388,7 @@ namespace Axiom.Core
 		///    limiting frame rates.  By default, we don't limit frame
 		///    rates, and in that case, the number is 0.
 		/// </summary>
-		private float microsecondsPerFrame = 0;
+		private float microsecondsPerFrame;
 
 		/// <summary>
 		///    The number of microseconds per tick; obviously a fraction
@@ -403,6 +396,7 @@ namespace Axiom.Core
 		private float microsecondsPerTick;
 
 		private readonly ChainedEvent<FrameEventArgs> _frameStartedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired as a frame is about to be rendered.
 		/// </summary>
@@ -410,15 +404,16 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_frameStartedEvent.EventSinks += value;
+				this._frameStartedEvent.EventSinks += value;
 			}
 			remove
 			{
-				_frameStartedEvent.EventSinks -= value;
+				this._frameStartedEvent.EventSinks -= value;
 			}
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameEndedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -426,15 +421,16 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_frameEndedEvent.EventSinks += value;
+				this._frameEndedEvent.EventSinks += value;
 			}
 			remove
 			{
-				_frameEndedEvent.EventSinks -= value;
+				this._frameEndedEvent.EventSinks -= value;
 			}
 		}
 
 		private readonly ChainedEvent<FrameEventArgs> _frameRenderingQueuedEvent = new ChainedEvent<FrameEventArgs>();
+
 		/// <summary>
 		/// Fired after a frame has completed rendering.
 		/// </summary>
@@ -442,11 +438,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_frameRenderingQueuedEvent.EventSinks += value;
+				this._frameRenderingQueuedEvent.EventSinks += value;
 			}
 			remove
 			{
-				_frameRenderingQueuedEvent.EventSinks -= value;
+				this._frameRenderingQueuedEvent.EventSinks -= value;
 			}
 		}
 
@@ -461,11 +457,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var attribute =
-						(AssemblyCopyrightAttribute)
-						Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
-													  typeof( AssemblyCopyrightAttribute ),
-													  false );
+				var attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(), typeof( AssemblyCopyrightAttribute ), false );
 
 				if ( attribute != null )
 				{
@@ -504,17 +496,7 @@ namespace Axiom.Core
 		///		This is only intended for internal use; it is only valid during the
 		///		rendering of a frame.
 		///</remarks>
-		public SceneManager SceneManager
-		{
-			get
-			{
-				return this.sceneManager;
-			}
-			set
-			{
-				this.sceneManager = value;
-			}
-		}
+		public SceneManager SceneManager { get; set; }
 
 		/// <summary>
 		///		Gets a list over all the existing SceneManager instances.
@@ -597,18 +579,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return
-						(int)
-						( ( this.microsecondsPerFrame == 0 )
-								  ? this.microsecondsPerFrame
-								  : ( 1000000.0f / this.microsecondsPerFrame ) );
+				return (int)( ( this.microsecondsPerFrame == 0 ) ? this.microsecondsPerFrame : ( 1000000.0f / this.microsecondsPerFrame ) );
 			}
 			set
 			{
 				if ( value != 0 )
 				{
-					this.microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
-					this.microsecondsPerFrame = 1000000.0f / (float)value;
+					this.microsecondsPerTick = 1000000.0f / Stopwatch.Frequency;
+					this.microsecondsPerFrame = 1000000.0f / value;
 				}
 				else // Disable MaxFPS
 				{
@@ -632,134 +610,133 @@ namespace Axiom.Core
 			}
 		}
 
-        /// <summary>
-        ///		Gets the number of frames drawn since startup.
-        /// </summary>
-        public ulong CurrentFrameCount
-        {
-            get
-            {
-                return this.currentFrameCount;
-            }
-        }
+		/// <summary>
+		///		Gets the number of frames drawn since startup.
+		/// </summary>
+		public ulong CurrentFrameCount
+		{
+			get
+			{
+				return this.currentFrameCount;
+			}
+		}
 
-        /// <summary>
-        ///		Exposes FPS stats to anyone who cares.
-        /// </summary>
-        public float CurrentFPS
-        {
-            get
-            {
-                return this.currentFPS;
-            }
-        }
+		/// <summary>
+		///		Exposes FPS stats to anyone who cares.
+		/// </summary>
+		public float CurrentFPS
+		{
+			get
+			{
+				return this.currentFPS;
+			}
+		}
 
-        /// <summary>
-        ///		Exposes FPS stats to anyone who cares.
-        /// </summary>
-        public float BestFPS
-        {
-            get
-            {
-                return this.highestFPS;
-            }
-        }
+		/// <summary>
+		///		Exposes FPS stats to anyone who cares.
+		/// </summary>
+		public float BestFPS
+		{
+			get
+			{
+				return this.highestFPS;
+			}
+		}
 
-        /// <summary>
-        ///		Exposes FPS stats to anyone who cares.
-        /// </summary>
-        public float WorstFPS
-        {
-            get
-            {
-                return this.lowestFPS;
-            }
-        }
+		/// <summary>
+		///		Exposes FPS stats to anyone who cares.
+		/// </summary>
+		public float WorstFPS
+		{
+			get
+			{
+				return this.lowestFPS;
+			}
+		}
 
-        /// <summary>
-        ///		Exposes FPS stats to anyone who cares.
-        /// </summary>
-        public float AverageFPS
-        {
-            get
-            {
-                return this.averageFPS;
-            }
-        }
-        /// <summary>
-        /// Axiom by default gives you the raw frame time, but can 
-        /// optionally smooth it out over several frames, in order to reduce the
-        /// noticable effect of occasional hiccups in framerate.
-        /// These smoothed values are passed back as parameters to FrameListener calls.
-        /// </summary>
-        /// <remarks>This method allows you to tweak the smoothing period, and is expressed
-        /// in seconds. Setting it to 0 will result in completely unsmoothed frame times (the default)</remarks>
-        public float FrameSmoothingTime
-        {
-            get { return frameSmoothingTime; }
-            set { frameSmoothingTime = value; }
-        }
+		/// <summary>
+		///		Exposes FPS stats to anyone who cares.
+		/// </summary>
+		public float AverageFPS
+		{
+			get
+			{
+				return this.averageFPS;
+			}
+		}
 
-        /// <summary>
-        ///	    Exposes the mechanism to suspend rendering
-        /// </summary>
-        public bool SuspendRendering
-        {
-            get
-            {
-                return this.suspendRendering;
-            }
-            set
-            {
-                this.suspendRendering = value;
-            }
-        }
+		/// <summary>
+		/// Axiom by default gives you the raw frame time, but can 
+		/// optionally smooth it out over several frames, in order to reduce the
+		/// noticable effect of occasional hiccups in framerate.
+		/// These smoothed values are passed back as parameters to FrameListener calls.
+		/// </summary>
+		/// <remarks>This method allows you to tweak the smoothing period, and is expressed
+		/// in seconds. Setting it to 0 will result in completely unsmoothed frame times (the default)</remarks>
+		public float FrameSmoothingTime
+		{
+			get
+			{
+				return this.frameSmoothingTime;
+			}
+			set
+			{
+				this.frameSmoothingTime = value;
+			}
+		}
 
-        /// <summary>
-        /// Get/Set the WorkQueue for processing background tasks.
-        /// You are free to add new requests and handlers to this queue to
-        /// process your custom background tasks using the shared thread pool. 
-        /// However, you must remember to assign yourself a new channel through 
-        /// which to process your tasks.
-        /// </summary>
-        /// <remarks>
-        /// Root will delete this work queue
-        /// at shutdown, so do not destroy it yourself.
-        /// </remarks>
-        public WorkQueue WorkQueue
-        {
-            [OgreVersion( 1, 7, 2 )]
-            get
-            {
-                return _workQueue;
-            }
+		/// <summary>
+		///	    Exposes the mechanism to suspend rendering
+		/// </summary>
+		public bool SuspendRendering { get; set; }
 
-            [OgreVersion( 1, 7, 2 )]
-            set
-            {
-                if ( _workQueue != value )
-                {
-                    // delete old one (will shut down)
-                    _workQueue.Dispose();
-                    _workQueue = value;
+		/// <summary>
+		/// Get/Set the WorkQueue for processing background tasks.
+		/// You are free to add new requests and handlers to this queue to
+		/// process your custom background tasks using the shared thread pool. 
+		/// However, you must remember to assign yourself a new channel through 
+		/// which to process your tasks.
+		/// </summary>
+		/// <remarks>
+		/// Root will delete this work queue
+		/// at shutdown, so do not destroy it yourself.
+		/// </remarks>
+		public WorkQueue WorkQueue
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return this._workQueue;
+			}
 
-                    if ( _isInitialized )
-                        _workQueue.Startup();
-                }
-            }
-        }
+			[OgreVersion( 1, 7, 2 )]
+			set
+			{
+				if ( this._workQueue != value )
+				{
+					// delete old one (will shut down)
+					this._workQueue.Dispose();
+					this._workQueue = value;
 
-        /// <summary>
-        /// Returns whether the system is initialised or not.
-        /// </summary>
-        public bool IsInitialized
-        {
-            [OgreVersion( 1, 7, 2 )]
-            get
-            {
-                return _isInitialized;
-            }
-        }
+					if ( this._isInitialized )
+					{
+						this._workQueue.Startup();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns whether the system is initialised or not.
+		/// </summary>
+		public bool IsInitialized
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return this._isInitialized;
+			}
+		}
 
 		#endregion Properties
 
@@ -815,7 +792,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( string typeName )
 		{
-			var instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( typeName.ToString() );
+			string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( typeName );
 			return this.sceneManagerEnumerator.CreateSceneManager( typeName, instanceName );
 		}
 
@@ -855,7 +832,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( SceneType sceneType )
 		{
-			var instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( sceneType.ToString() );
+			string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( sceneType.ToString() );
 			return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
 		}
 
@@ -903,15 +880,15 @@ namespace Axiom.Core
 			return this.sceneManagerEnumerator.GetSceneManager( instanceName );
 		}
 
-        /// <summary>
-        /// Determines if a given SceneManager already exists
-        /// </summary>
-        /// <param name="instanceName">The name of the instance to retrieve.</param>
-        [OgreVersion( 1, 7, 2 )]
-        public bool HasSceneManager( string instanceName )
-        {
-            return sceneManagerEnumerator.HasSceneManager( instanceName );
-        }
+		/// <summary>
+		/// Determines if a given SceneManager already exists
+		/// </summary>
+		/// <param name="instanceName">The name of the instance to retrieve.</param>
+		[OgreVersion( 1, 7, 2 )]
+		public bool HasSceneManager( string instanceName )
+		{
+			return this.sceneManagerEnumerator.HasSceneManager( instanceName );
+		}
 
 		/// <summary>
 		///    Initializes the renderer.
@@ -928,7 +905,7 @@ namespace Axiom.Core
 		/// <returns>A reference to the automatically created window (if requested), or null otherwise.</returns>
 		public RenderWindow Initialize( bool autoCreateWindow )
 		{
-			return this.Initialize( autoCreateWindow, "Axiom Render Window" );
+			return Initialize( autoCreateWindow, "Axiom Render Window" );
 		}
 
 		/// <summary>
@@ -963,7 +940,7 @@ namespace Axiom.Core
 			// if they chose to auto create a window, also initialize several subsystems
 			if ( autoCreateWindow )
 			{
-				this.OneTimePostWindowInit();
+				OneTimePostWindowInit();
 			}
 
 			// initialize timer
@@ -993,7 +970,7 @@ namespace Axiom.Core
 															};
 								});
 #endif
-            _isInitialized = true;
+			this._isInitialized = true;
 			return this.autoWindow;
 		}
 
@@ -1004,13 +981,15 @@ namespace Axiom.Core
 		{
 			if ( this.firstTimePostWindowInit )
 			{
-                // Background loader
-                ResourceBackgroundQueue.Instance.Initialize();
-                _workQueue.Startup();
+				// Background loader
+				ResourceBackgroundQueue.Instance.Initialize();
+				this._workQueue.Startup();
 
 				// init material manager singleton, which parse sources for materials
 				if ( MaterialManager.Instance == null )
+				{
 					new MaterialManager();
+				}
 
 				MaterialManager.Instance.Initialize();
 
@@ -1030,32 +1009,23 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen )
 		{
-			return this.CreateRenderWindow( name, width, height, isFullScreen, null );
+			return CreateRenderWindow( name, width, height, isFullScreen, null );
 		}
 
 		/// <summary>
 		///		A collection of addition render system specific options.
 		///	</summary>
-		public RenderWindow CreateRenderWindow( string name,
-												int width,
-												int height,
-												bool isFullscreen,
-												NamedParameterList miscParams )
+		public RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
 		{
-			Debug.Assert( this.activeRenderSystem != null,
-						  "Cannot create a RenderWindow without an active RenderSystem." );
+			Debug.Assert( this.activeRenderSystem != null, "Cannot create a RenderWindow without an active RenderSystem." );
 
 			// create a new render window via the current render system
-			var window = this.activeRenderSystem.CreateRenderWindow( name,
-																			  width,
-																			  height,
-																			  isFullscreen,
-																			  miscParams );
+			RenderWindow window = this.activeRenderSystem.CreateRenderWindow( name, width, height, isFullscreen, miscParams );
 
 			// do any required initialization
 			if ( this.firstTimePostWindowInit )
 			{
-				this.OneTimePostWindowInit();
+				OneTimePostWindowInit();
 				// window.Primary = true;
 			}
 
@@ -1104,19 +1074,19 @@ namespace Axiom.Core
 		public bool RenderOneFrame()
 		{
 			// Stop rendering if frame callback says so
-			if ( !this.OnFrameStarted() )
+			if ( !OnFrameStarted() )
 			{
 				return false;
 			}
 
 			// update all current render targets
-			if ( !this.UpdateAllRenderTargets() )
+			if ( !UpdateAllRenderTargets() )
 			{
 				return false;
 			}
 
 			// Stop rendering if frame callback says so
-			return this.OnFrameEnded();
+			return OnFrameEnded();
 		}
 
 		/// <summary>
@@ -1154,7 +1124,7 @@ namespace Axiom.Core
 					WindowEventMonitor.Instance.MessagePump();
 				}
 
-				if ( !this.RenderOneFrame() )
+				if ( !RenderOneFrame() )
 				{
 					break;
 				}
@@ -1167,15 +1137,15 @@ namespace Axiom.Core
 		/// </summary>
 		public void Shutdown()
 		{
-            LogManager.Instance.Write( "*-*-* Axiom Shutdown Initiated." );
+			LogManager.Instance.Write( "*-*-* Axiom Shutdown Initiated." );
 			SceneManagerEnumerator.Instance.ShutdownAll();
 
 			// destroy all auto created GPU programs
 			ShadowVolumeExtrudeProgram.Shutdown();
-            ResourceGroupManager.Instance.ShutdownAll();
+			ResourceGroupManager.Instance.ShutdownAll();
 
 			// ResourceBackGroundPool.Instance.Shutdown();
-            _isInitialized = false;
+			this._isInitialized = false;
 		}
 
 		/// <summary>
@@ -1202,7 +1172,7 @@ namespace Axiom.Core
 			// update all targets but don't swap buffers
 			this.activeRenderSystem.UpdateAllRenderTargets( false );
 			// give client app opportunity to use queued GPU time
-			var ret = OnFrameRenderingQueued();
+			bool ret = OnFrameRenderingQueued();
 			// block for final swap
 			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.WaitForVerticalBlank );
 
@@ -1214,52 +1184,52 @@ namespace Axiom.Core
 		/// <summary>
 		///		Called to shutdown the engine and dispose of all it's resources.
 		/// </summary>
-        public void Dispose()
-        {
-            // force the engine to shutdown
-            this.Shutdown();
+		public void Dispose()
+		{
+			// force the engine to shutdown
+			Shutdown();
 
-            DDSCodec.Shutdown();
-            PVRTCCodec.Shutdown();
+			DDSCodec.Shutdown();
+			PVRTCCodec.Shutdown();
 
-            CompositorManager.Instance.SafeDispose();
-            OverlayManager.Instance.SafeDispose();
-            OverlayElementManager.Instance.SafeDispose();
-            FontManager.Instance.SafeDispose();
-            ArchiveManager.Instance.SafeDispose();
-            SkeletonManager.Instance.SafeDispose();
-            MeshManager.Instance.SafeDispose();
-            MaterialManager.Instance.SafeDispose();
-            ParticleSystemManager.Instance.SafeDispose();
-            ControllerManager.Instance.SafeDispose();
-            HighLevelGpuProgramManager.Instance.SafeDispose();
-            PluginManager.Instance.SafeDispose();
+			CompositorManager.Instance.SafeDispose();
+			OverlayManager.Instance.SafeDispose();
+			OverlayElementManager.Instance.SafeDispose();
+			FontManager.Instance.SafeDispose();
+			ArchiveManager.Instance.SafeDispose();
+			SkeletonManager.Instance.SafeDispose();
+			MeshManager.Instance.SafeDispose();
+			MaterialManager.Instance.SafeDispose();
+			ParticleSystemManager.Instance.SafeDispose();
+			ControllerManager.Instance.SafeDispose();
+			HighLevelGpuProgramManager.Instance.SafeDispose();
+			PluginManager.Instance.SafeDispose();
 
-            Pass.ProcessPendingUpdates();
+			Pass.ProcessPendingUpdates();
 
-            ResourceGroupManager.Instance.SafeDispose();
+			ResourceGroupManager.Instance.SafeDispose();
 
-            // Note: The dispose method implementation of both ResourceBackgroundQueue and
-            // DefaultWorkQueue internally calls Shutdown, so the direct call to Shutdown methods
-            // isn't necessary in Root.Shutdown.
-            ResourceBackgroundQueue.Instance.Dispose();
-            _workQueue.Dispose();
-            _workQueue = null;
+			// Note: The dispose method implementation of both ResourceBackgroundQueue and
+			// DefaultWorkQueue internally calls Shutdown, so the direct call to Shutdown methods
+			// isn't necessary in Root.Shutdown.
+			ResourceBackgroundQueue.Instance.Dispose();
+			this._workQueue.Dispose();
+			this._workQueue = null;
 
-            CodecManager.Instance.SafeDispose();
+			CodecManager.Instance.SafeDispose();
 
 #if !XBOX360
-            PlatformManager.Instance.SafeDispose();
+			PlatformManager.Instance.SafeDispose();
 #endif
-            this.activeRenderSystem = null;
+			this.activeRenderSystem = null;
 
-            WindowEventMonitor.Instance.SafeDispose();
+			WindowEventMonitor.Instance.SafeDispose();
 #if DEBUG
-            ObjectManager.Instance.SafeDispose();
+			ObjectManager.Instance.SafeDispose();
 #endif
-            LogManager.Instance.SafeDispose();
+			LogManager.Instance.SafeDispose();
 
-            instance = null;
+			instance = null;
 		}
 
 		#endregion Implementation of IDisposable
@@ -1274,21 +1244,21 @@ namespace Axiom.Core
 		/// <returns>Average time since last event of the same type.</returns>
 		private float CalculateEventTime( long time, FrameEventType type )
 		{
-            //calculate the average time passed between events of the given type
-            //during the last frameSmoothingTime seconds
+			//calculate the average time passed between events of the given type
+			//during the last frameSmoothingTime seconds
 			float result = 0;
-            float discardThreshold = frameSmoothingTime * 1000.0f;
-         
+			float discardThreshold = this.frameSmoothingTime * 1000.0f;
 
 
-            if (time > discardThreshold)
-                time -= (long)(frameSmoothingTime * discardThreshold);
+			if ( time > discardThreshold )
+			{
+				time -= (long)( this.frameSmoothingTime * discardThreshold );
+			}
 			if ( type == FrameEventType.Start )
 			{
 				result = (float)( time - this.lastStartTime ) / 1000;
 
-               
-                
+
 				// update the last start time before the render targets are rendered
 				this.lastStartTime = time;
 			}
@@ -1308,7 +1278,7 @@ namespace Axiom.Core
 				{
 					// Is It Time To Update Our Calculations?
 					// Calculate New Framerate
-					this.currentFPS = (float)this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
+					this.currentFPS = this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
 
 					// calculate the average framerate
 					if ( this.averageFPS == 0 )
@@ -1340,7 +1310,7 @@ namespace Axiom.Core
 					// Reset Our Frame Count
 					this.frameCount = 0;
 				}
-                
+
 				result = (float)( time - this.lastEndTime ) / 1000;
 
 				this.lastEndTime = time;
@@ -1349,7 +1319,8 @@ namespace Axiom.Core
 			return result;
 		}
 
-		FrameEventArgs frameEventArgs = new FrameEventArgs();
+		private readonly FrameEventArgs frameEventArgs = new FrameEventArgs();
+
 		/// <summary>
 		///    Method for raising frame started events.
 		/// </summary>
@@ -1367,11 +1338,11 @@ namespace Axiom.Core
 		public bool OnFrameStarted()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			var now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
+			long now = this.timer.Milliseconds;
+			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.Start );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameStarted( frameEventArgs );
+			return OnFrameStarted( this.frameEventArgs );
 		}
 
 		/// <summary>
@@ -1389,11 +1360,11 @@ namespace Axiom.Core
 		public bool OnFrameRenderingQueued()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			var now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
+			long now = this.timer.Milliseconds;
+			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.Queued );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameRenderingQueued( frameEventArgs );
+			return OnFrameRenderingQueued( this.frameEventArgs );
 		}
 
 		/// <summary>
@@ -1413,11 +1384,11 @@ namespace Axiom.Core
 		public bool OnFrameEnded()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			var now = this.timer.Milliseconds;
-			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
+			long now = this.timer.Milliseconds;
+			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.End );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return this.OnFrameEnded( frameEventArgs );
+			return OnFrameEnded( this.frameEventArgs );
 		}
 
 		/// <summary>
@@ -1497,8 +1468,8 @@ namespace Axiom.Core
 				HardwareBufferManager.Instance.ReleaseBufferCopies( false );
 			}
 
-            // Tell the queue to process responses
-            _workQueue.ProcessResponses();
+			// Tell the queue to process responses
+			this._workQueue.ProcessResponses();
 
 			return !e.StopRendering;
 		}
@@ -1518,11 +1489,10 @@ namespace Axiom.Core
 		{
 			if ( this.nextMovableObjectTypeFlag == (uint)SceneQueryTypeMask.UserLimit )
 			{
-				throw new AxiomException(
-						"Cannot allocate a type flag since all the available flags have been used." );
+				throw new AxiomException( "Cannot allocate a type flag since all the available flags have been used." );
 			}
 
-			var ret = this.nextMovableObjectTypeFlag;
+			uint ret = this.nextMovableObjectTypeFlag;
 			this.nextMovableObjectTypeFlag <<= 1;
 			return ret;
 		}
@@ -1611,22 +1581,21 @@ namespace Axiom.Core
 				else
 				{
 					// Allocate new
-					fact.TypeFlag = this.NextMovableObjectTypeFlag();
+					fact.TypeFlag = NextMovableObjectTypeFlag();
 				}
 			}
 
 			// Save
 			if ( this.movableObjectFactoryMap.ContainsKey( fact.Type ) )
 			{
-				LogManager.Instance.Write( "Factory {0} has been replaced by {1}.",
-					this.movableObjectFactoryMap[ fact.Type ].GetType().Name,
-					fact.GetType().Name
-					);
+				LogManager.Instance.Write( "Factory {0} has been replaced by {1}.", this.movableObjectFactoryMap[ fact.Type ].GetType().Name, fact.GetType().Name );
 
 				this.movableObjectFactoryMap[ fact.Type ] = fact;
 			}
 			else
+			{
 				this.movableObjectFactoryMap.Add( fact.Type, fact );
+			}
 
 			LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
 		}
@@ -1635,7 +1604,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return movableObjectFactoryMap;
+				return this.movableObjectFactoryMap;
 			}
 		}
 
@@ -1643,137 +1612,138 @@ namespace Axiom.Core
 
 		#endregion MovableObjectFactory methods
 
-        /// <summary>
-        /// Helper method to assist you in creating writeable file streams.
-        /// </summary>
-        /// <remarks>
-        /// This is a high-level utility method which you can use to find a place to 
-        /// save a file more easily. If the filename you specify is either an
-        /// absolute or relative filename (ie it includes path separators), then
-        /// the file will be created in the normal filesystem using that specification.
-        /// If it doesn't, then the method will look for a writeable resource location
-        /// via ResourceGroupManager::createResource using the other params provided.
-        /// </remarks>
-        /// <param name="fileName">The name of the file to create. If it includes path separators, 
-        /// the filesystem will be accessed direct. If no path separators are
-        /// present the resource system is used, falling back on the raw filesystem after.</param>
-        /// <param name="groupName">The name of the group in which to create the file, if the 
-        /// resource system is used</param>
-        /// <param name="overwrite">If true, an existing file will be overwritten, if false
-        /// an error will occur if the file already exists</param>
-        /// <param name="locationPattern">If the resource group contains multiple locations, 
-        /// then usually the file will be created in the first writable location. If you 
-        /// want to be more specific, you can include a location pattern here and 
-        /// only locations which match that pattern (as determined by StringUtil::match)
-        /// will be considered candidates for creation.</param>
-        [OgreVersion( 1, 7, 2 )]
-        public Stream CreateFileStream( string fileName, string groupName, bool overwrite, string locationPattern )
-        {
-            // Does this file include path specifiers?
-            string path = Path.GetDirectoryName( fileName );
-            string basename = Path.GetFileName( fileName );
+		/// <summary>
+		/// Helper method to assist you in creating writeable file streams.
+		/// </summary>
+		/// <remarks>
+		/// This is a high-level utility method which you can use to find a place to 
+		/// save a file more easily. If the filename you specify is either an
+		/// absolute or relative filename (ie it includes path separators), then
+		/// the file will be created in the normal filesystem using that specification.
+		/// If it doesn't, then the method will look for a writeable resource location
+		/// via ResourceGroupManager::createResource using the other params provided.
+		/// </remarks>
+		/// <param name="fileName">The name of the file to create. If it includes path separators, 
+		/// the filesystem will be accessed direct. If no path separators are
+		/// present the resource system is used, falling back on the raw filesystem after.</param>
+		/// <param name="groupName">The name of the group in which to create the file, if the 
+		/// resource system is used</param>
+		/// <param name="overwrite">If true, an existing file will be overwritten, if false
+		/// an error will occur if the file already exists</param>
+		/// <param name="locationPattern">If the resource group contains multiple locations, 
+		/// then usually the file will be created in the first writable location. If you 
+		/// want to be more specific, you can include a location pattern here and 
+		/// only locations which match that pattern (as determined by StringUtil::match)
+		/// will be considered candidates for creation.</param>
+		[OgreVersion( 1, 7, 2 )]
+		public Stream CreateFileStream( string fileName, string groupName, bool overwrite, string locationPattern )
+		{
+			// Does this file include path specifiers?
+			string path = Path.GetDirectoryName( fileName );
+			string basename = Path.GetFileName( fileName );
 
-            // no path elements, try the resource system first
-            Stream stream = null;
-            if ( string.IsNullOrEmpty( path ) )
-            {
-                try
-                {
-                    stream = ResourceGroupManager.Instance.CreateResource( fileName, groupName, overwrite, locationPattern );
-                }
-                catch
-                { }
-            }
+			// no path elements, try the resource system first
+			Stream stream = null;
+			if ( string.IsNullOrEmpty( path ) )
+			{
+				try
+				{
+					stream = ResourceGroupManager.Instance.CreateResource( fileName, groupName, overwrite, locationPattern );
+				}
+				catch { }
+			}
 
-            if ( stream == null )
-            {
-                // save direct in filesystem
-                try
-                {
+			if ( stream == null )
+			{
+				// save direct in filesystem
+				try
+				{
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
-                    stream = File.Create( fileName, 1, FileOptions.RandomAccess );
+					stream = File.Create( fileName, 1, FileOptions.RandomAccess );
 #else
 					stream = File.Create( fileName, 1 );
 #endif
-                }
-                catch ( Exception ex )
-                {
-                    throw new AxiomException( "Can't open '{0}' for writing", ex, fileName );
-                }
-            }
+				}
+				catch ( Exception ex )
+				{
+					throw new AxiomException( "Can't open '{0}' for writing", ex, fileName );
+				}
+			}
 
-            return stream;
-        }
+			return stream;
+		}
 
-        public Stream CreateFileStream( string fileName )
-        {
-            return this.CreateFileStream( fileName, ResourceGroupManager.DefaultResourceGroupName, false, string.Empty );
-        }
+		public Stream CreateFileStream( string fileName )
+		{
+			return CreateFileStream( fileName, ResourceGroupManager.DefaultResourceGroupName, false, string.Empty );
+		}
 
-        public Stream CreateFileStream( string fileName, string groupName )
-        {
-            return this.CreateFileStream( fileName, groupName, false, string.Empty );
-        }
+		public Stream CreateFileStream( string fileName, string groupName )
+		{
+			return CreateFileStream( fileName, groupName, false, string.Empty );
+		}
 
-        public Stream CreateFileStream( string fileName, string groupName, bool overwrite )
-        {
-            return this.CreateFileStream( fileName, groupName, overwrite, string.Empty );
-        }
+		public Stream CreateFileStream( string fileName, string groupName, bool overwrite )
+		{
+			return CreateFileStream( fileName, groupName, overwrite, string.Empty );
+		}
 
-        /// <summary>
-        /// Helper method to assist you in accessing readable file streams.
-        /// </summary>
-        /// <remarks>
-        /// This is a high-level utility method which you can use to find a place to 
-        /// open a file more easily. It checks the resource system first, and if
-        /// that fails falls back on accessing the file system directly.
-        /// </remarks>
-        /// <param name="filename">The name of the file to open.</param>
-        /// <param name="groupName">The name of the group in which to create the file, if the 
-        /// resource system is used</param>
-        /// <param name="locationPattern">
-        /// If the resource group contains multiple locations, 
-        /// then usually the file will be created in the first writable location. If you 
-        /// want to be more specific, you can include a location pattern here and 
-        /// only locations which match that pattern (as determined by StringUtil::match)
-        /// will be considered candidates for creation.
-        /// </param>
-        [OgreVersion( 1, 7, 2 )]
-        public Stream OpenFileStream( string filename, string groupName, string locationPattern )
-        {
-            Stream stream = null;
-            if ( ResourceGroupManager.Instance.ResourceExists( groupName, filename ) )
-            {
-                stream = ResourceGroupManager.Instance.OpenResource( filename, groupName );
-            }
-            else
-            {
-                // try direct
-                if ( !File.Exists( filename ) )
-                    throw new AxiomException( "'{0}' file not found!", filename );
+		/// <summary>
+		/// Helper method to assist you in accessing readable file streams.
+		/// </summary>
+		/// <remarks>
+		/// This is a high-level utility method which you can use to find a place to 
+		/// open a file more easily. It checks the resource system first, and if
+		/// that fails falls back on accessing the file system directly.
+		/// </remarks>
+		/// <param name="filename">The name of the file to open.</param>
+		/// <param name="groupName">The name of the group in which to create the file, if the 
+		/// resource system is used</param>
+		/// <param name="locationPattern">
+		/// If the resource group contains multiple locations, 
+		/// then usually the file will be created in the first writable location. If you 
+		/// want to be more specific, you can include a location pattern here and 
+		/// only locations which match that pattern (as determined by StringUtil::match)
+		/// will be considered candidates for creation.
+		/// </param>
+		[OgreVersion( 1, 7, 2 )]
+		public Stream OpenFileStream( string filename, string groupName, string locationPattern )
+		{
+			Stream stream = null;
+			if ( ResourceGroupManager.Instance.ResourceExists( groupName, filename ) )
+			{
+				stream = ResourceGroupManager.Instance.OpenResource( filename, groupName );
+			}
+			else
+			{
+				// try direct
+				if ( !File.Exists( filename ) )
+				{
+					throw new AxiomException( "'{0}' file not found!", filename );
+				}
 
-                try
-                {
-                    stream = File.Open( filename, FileMode.Open );
-                }
-                catch ( Exception ex )
-                {
-                    throw new AxiomException( "Can't open file '{0}' for reading", ex, filename );
-                }
-            }
+				try
+				{
+					stream = File.Open( filename, FileMode.Open );
+				}
+				catch ( Exception ex )
+				{
+					throw new AxiomException( "Can't open file '{0}' for reading", ex, filename );
+				}
+			}
 
-            return stream;
-        }
+			return stream;
+		}
 
-        public Stream OpenFileStream( string filename )
-        {
-            return this.OpenFileStream( filename, ResourceGroupManager.DefaultResourceGroupName, string.Empty );
-        }
+		public Stream OpenFileStream( string filename )
+		{
+			return OpenFileStream( filename, ResourceGroupManager.DefaultResourceGroupName, string.Empty );
+		}
 
-        public Stream OpenFileStream( string filename, string groupName )
-        {
-            return this.OpenFileStream( filename, groupName, string.Empty );
-        }
+		public Stream OpenFileStream( string filename, string groupName )
+		{
+			return OpenFileStream( filename, groupName, string.Empty );
+		}
 	}
 
 	#region Frame Events

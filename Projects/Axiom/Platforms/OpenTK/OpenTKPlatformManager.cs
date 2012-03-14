@@ -1,6 +1,7 @@
 ﻿#region Namespace Declarations
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Input;
 
@@ -8,7 +9,7 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.OpenTK
 {
-	[Export(typeof(IPlatformManager))]
+	[Export( typeof( IPlatformManager ) )]
 	public class OpenTKPlatformManager : IPlatformManager
 	{
 		#region Fields
@@ -26,24 +27,22 @@ namespace Axiom.Platforms.OpenTK
 		///		Creates an InputReader
 		/// </summary>
 		/// <returns></returns>
-		public Axiom.Input.InputReader CreateInputReader()
+		public InputReader CreateInputReader()
 		{
-			inputReader = new OpenTKInputReader();
-			return inputReader;
+			this.inputReader = new OpenTKInputReader();
+			return this.inputReader;
 		}
 
-		#endregion IPlatformManager Members
-
-		#region IDisposable Members
 		public void Dispose()
 		{
-			if ( inputReader != null )
+			if ( this.inputReader != null )
 			{
-				inputReader.Dispose();
-				inputReader = null;
+				this.inputReader.Dispose();
+				this.inputReader = null;
 			}
 			LogManager.Instance.Write( "OpenTK Platform Manager Shutdown." );
 		}
-		#endregion IDisposable Members
+
+		#endregion
 	}
 }

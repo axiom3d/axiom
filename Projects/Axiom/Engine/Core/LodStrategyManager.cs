@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: LodStrategyManager.cs 1762 2009-09-13 17:56:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -50,28 +53,14 @@ namespace Axiom.Core
 		/// <summary>
 		/// Internal map of strategies.
 		/// </summary>
-		private Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
+		private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
 
 		#region DefaultStrategy
 
 		/// <summary>
-		/// Default strategy.
-		/// </summary>
-		private LodStrategy _defaultStrategy;
-		/// <summary>
 		/// Get's or set's the default strategy.
 		/// </summary>
-		public LodStrategy DefaultStrategy
-		{
-			set
-			{
-				this._defaultStrategy = value;
-			}
-			get
-			{
-				return this._defaultStrategy;
-			}
-		}
+		public LodStrategy DefaultStrategy { set; get; }
 
 		/// <summary>
 		/// Set the default strategy by name.
@@ -90,7 +79,6 @@ namespace Axiom.Core
 		/// Default constructor.
 		/// </summary>
 		public LodStrategyManager()
-            : base()
 		{
 			// Add default (distance) strategy
 			var distanceStrategy = new DistanceLodStrategy();
@@ -131,7 +119,9 @@ namespace Axiom.Core
 		{
 			// Check for invalid strategy name
 			if ( strategy.Name.ToLower() == "default" )
+			{
 				throw new AxiomException( "Lod strategy name must not be 'default'", new object[] { } );
+			}
 
 			// Insert the strategy into the map with its name as the key
 			this._strategies.Add( strategy.Name, strategy );
@@ -178,7 +168,9 @@ namespace Axiom.Core
 		{
 			// If name is "default", return the default strategy instead of performing a lookup
 			if ( name.ToLower() == "default" )
+			{
 				return DefaultStrategy;
+			}
 
 			LodStrategy ret = null;
 			this._strategies.TryGetValue( name, out ret );

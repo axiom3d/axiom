@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Graphics;
 
@@ -54,10 +56,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareBufferManagerBase()
-		{
-		}
-
 		#endregion
 
 		#region Methods
@@ -70,13 +68,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-            var buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
-            lock ( IndexBuffersMutex )
-                indexBuffers.Add( buffer );
-            return buffer;
+			var buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
+			lock ( IndexBuffersMutex )
+				indexBuffers.Add( buffer );
+			return buffer;
 		}
 
 		/// <summary>
@@ -87,15 +85,14 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-        [OgreVersion( 1, 7, 2 )]
-        public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
-        {
-            var buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
-            lock ( VertexBuffersMutex )
-                vertexBuffers.Add( buffer );
-            return buffer;
-        }
-
+		[OgreVersion( 1, 7, 2 )]
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		{
+			var buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
+			lock ( VertexBuffersMutex )
+				vertexBuffers.Add( buffer );
+			return buffer;
+		}
 
 		#endregion
 	}
@@ -103,9 +100,7 @@ namespace Axiom.RenderSystems.OpenGL
 	public class GLHardwareBufferManager : HardwareBufferManager
 	{
 		public GLHardwareBufferManager()
-			: base( new GLHardwareBufferManagerBase() )
-		{
-		}
+			: base( new GLHardwareBufferManagerBase() ) { }
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -117,32 +112,31 @@ namespace Axiom.RenderSystems.OpenGL
 			base.dispose( disposeManagedResources );
 		}
 
-	    public static int GetGLType( VertexElementType type )
-	    {
-            switch (type)
-            {
-                case VertexElementType.Float1:
-                case VertexElementType.Float2:
-                case VertexElementType.Float3:
-                case VertexElementType.Float4:
-                    return Gl.GL_FLOAT;
-                case VertexElementType.Short1:
-                case VertexElementType.Short2:
-                case VertexElementType.Short3:
-                case VertexElementType.Short4:
-                    return Gl.GL_SHORT;
-                case VertexElementType.Color:
-                case VertexElementType.Color_ABGR:
-                case VertexElementType.Color_ARGB:
-                case VertexElementType.UByte4:
-                    return Gl.GL_UNSIGNED_BYTE;
-                default:
-                    return 0;
-            };
-	    }
+		public static int GetGLType( VertexElementType type )
+		{
+			switch ( type )
+			{
+				case VertexElementType.Float1:
+				case VertexElementType.Float2:
+				case VertexElementType.Float3:
+				case VertexElementType.Float4:
+					return Gl.GL_FLOAT;
+				case VertexElementType.Short1:
+				case VertexElementType.Short2:
+				case VertexElementType.Short3:
+				case VertexElementType.Short4:
+					return Gl.GL_SHORT;
+				case VertexElementType.Color:
+				case VertexElementType.Color_ABGR:
+				case VertexElementType.Color_ARGB:
+				case VertexElementType.UByte4:
+					return Gl.GL_UNSIGNED_BYTE;
+				default:
+					return 0;
+			}
+			;
+		}
 	}
 
-	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
-	{
-	}
+	public class GLSoftwareBufferManager : DefaultHardwareBufferManager { }
 }

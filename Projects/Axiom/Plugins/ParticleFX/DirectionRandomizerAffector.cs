@@ -37,10 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.ParticleSystems;
 using Axiom.Scripting;
@@ -58,7 +55,22 @@ namespace Axiom.ParticleFX
 	/// </summary>
 	public class DirectionRandomizerAffector : ParticleAffector
 	{
+		private bool _keepVelocity;
 		private float _randomness;
+
+		private float _scope;
+
+		public DirectionRandomizerAffector( ParticleSystem psys )
+			: base( psys )
+		{
+			type = "DirectionRandomizer";
+
+			// defaults
+			this._randomness = 1.0f;
+			this._scope = 1.0f;
+			this._keepVelocity = false;
+		}
+
 		/// <summary>
 		///
 		/// </summary>
@@ -66,15 +78,14 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _randomness;
+				return this._randomness;
 			}
 			set
 			{
-				_randomness = value;
+				this._randomness = value;
 			}
 		}
 
-		private float _scope;
 		/// <summary>
 		///
 		/// </summary>
@@ -82,15 +93,13 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _scope;
+				return this._scope;
 			}
 			set
 			{
-				_scope = value;
+				this._scope = value;
 			}
 		}
-
-		private bool _keepVelocity;
 
 		/// <summary>
 		///
@@ -99,23 +108,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _keepVelocity;
+				return this._keepVelocity;
 			}
 			set
 			{
-				_keepVelocity = value;
+				this._keepVelocity = value;
 			}
-		}
-
-        public DirectionRandomizerAffector( ParticleSystem psys )
-            : base( psys )
-        {
-            this.type = "DirectionRandomizer";
-
-			// defaults
-			_randomness = 1.0f;
-			_scope = 1.0f;
-			_keepVelocity = false;
 		}
 
 		/// <summary>
@@ -134,20 +132,18 @@ namespace Axiom.ParticleFX
 
 			foreach ( Particle p in system.Particles )
 			{
-				if ( _scope > Utility.UnitRandom() )
+				if ( this._scope > Utility.UnitRandom() )
 				{
 					if ( !p.Direction.IsZeroLength )
 					{
-						if ( _keepVelocity )
+						if ( this._keepVelocity )
 						{
 							length = p.Direction.Length;
 						}
 
-						p.Direction += new Vector3( Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed,
-													Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed,
-													Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed );
+						p.Direction += new Vector3( Utility.RangeRandom( -this._randomness, this._randomness ) * timeElapsed, Utility.RangeRandom( -this._randomness, this._randomness ) * timeElapsed, Utility.RangeRandom( -this._randomness, this._randomness ) * timeElapsed );
 
-						if ( _keepVelocity )
+						if ( this._keepVelocity )
 						{
 							p.Direction *= length / p.Direction.Length;
 						}
@@ -158,53 +154,77 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		[ScriptableProperty( "randomness", "The amount of randomness (chaos) to apply to the particle movement.", typeof( ParticleAffector ) )]
-        public class RandomnessCommand : IPropertyCommand
-		{
-			public string Get( object target )
-			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
-				return StringConverter.ToString( affector.Randomness );
-			}
-
-			public void Set( object target, string val )
-			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
-				affector.Randomness = StringConverter.ParseFloat( val );
-			}
-		}
-
-		[ScriptableProperty( "scope", "The percentage of particles which is affected.", typeof( ParticleAffector ) )]
-        public class ScopeCommand : IPropertyCommand
-		{
-			public string Get( object target )
-			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
-				return StringConverter.ToString( affector.Scope );
-			}
-
-			public void Set( object target, string val )
-			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
-				affector.Scope = StringConverter.ParseFloat( val );
-			}
-		}
+		#region Nested type: KeepVelocityCommand
 
 		[ScriptableProperty( "keep_velocity", "Detemines whether the velocity of the particles is changed.", typeof( ParticleAffector ) )]
-        public class KeepVelocityCommand : IPropertyCommand
+		public class KeepVelocityCommand : IPropertyCommand
 		{
+			#region IPropertyCommand Members
+
 			public string Get( object target )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				return affector.KeepVelocity.ToString();
 			}
 
 			public void Set( object target, string val )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				affector.KeepVelocity = StringConverter.ParseBool( val );
 			}
+
+			#endregion
 		}
+
+		#endregion
+
+		#region Nested type: RandomnessCommand
+
+		[ScriptableProperty( "randomness", "The amount of randomness (chaos) to apply to the particle movement.", typeof( ParticleAffector ) )]
+		public class RandomnessCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				var affector = target as DirectionRandomizerAffector;
+				return StringConverter.ToString( affector.Randomness );
+			}
+
+			public void Set( object target, string val )
+			{
+				var affector = target as DirectionRandomizerAffector;
+				affector.Randomness = StringConverter.ParseFloat( val );
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: ScopeCommand
+
+		[ScriptableProperty( "scope", "The percentage of particles which is affected.", typeof( ParticleAffector ) )]
+		public class ScopeCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				var affector = target as DirectionRandomizerAffector;
+				return StringConverter.ToString( affector.Scope );
+			}
+
+			public void Set( object target, string val )
+			{
+				var affector = target as DirectionRandomizerAffector;
+				affector.Scope = StringConverter.ParseFloat( val );
+			}
+
+			#endregion
+		}
+
+		#endregion
 
 		#endregion Command definition classes
 	}

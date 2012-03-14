@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,11 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
 using Axiom.Math;
+
+using SharpInputSystem;
+
 using SIS = SharpInputSystem;
+using Vector3 = Axiom.Math.Vector3;
 
 namespace Axiom.Samples
 {
@@ -42,6 +48,40 @@ namespace Axiom.Samples
 	public class SdkCameraManager
 	{
 		protected Camera mCamera;
+
+		protected bool mGoingBack;
+		protected bool mGoingDown;
+		protected bool mGoingForward;
+		protected bool mGoingLeft;
+		protected bool mGoingRight;
+		protected bool mGoingUp;
+		protected string mName;
+		protected bool mOrbiting;
+		protected CameraStyle mStyle;
+
+		protected SceneNode mTarget;
+		protected Vector3 mVelocity;
+		protected bool mZooming;
+
+		public SdkCameraManager( Camera cam )
+		{
+			this.mTarget = null;
+			this.mOrbiting = false;
+			this.mZooming = false;
+			this.mCamera = null;
+			TopSpeed = 150;
+			this.mGoingForward = false;
+			this.mGoingBack = false;
+			this.mGoingLeft = false;
+			this.mGoingRight = false;
+			this.mGoingUp = false;
+			this.mGoingDown = false;
+			this.mVelocity = Vector3.Zero;
+
+			Camera = cam;
+			setStyle( CameraStyle.FreeLook );
+		}
+
 		/// <summary>
 		/// Swaps the camera on our camera manager for another camera.
 		/// </summary>
@@ -49,18 +89,14 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return mCamera;
+				return this.mCamera;
 			}
 			set
 			{
-				mCamera = value;
+				this.mCamera = value;
 			}
 		}
 
-		protected string mName;
-		protected CameraStyle mStyle;
-
-		protected SceneNode mTarget;
 		/// <summary>
 		/// Gets/Sets the target we will revolve around. Only applies for orbit style.
 		/// </summary>
@@ -68,56 +104,23 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				if ( mStyle == CameraStyle.Orbit )
+				if ( this.mStyle == CameraStyle.Orbit )
 				{
-					mTarget = value ?? mCamera.SceneManager.RootSceneNode;
+					this.mTarget = value ?? this.mCamera.SceneManager.RootSceneNode;
 					SetYawPitchDist( new Degree( Real.Zero ), new Degree( new Real( 15f ) ), 150 );
-					mCamera.SetAutoTracking( true, mTarget );
+					this.mCamera.SetAutoTracking( true, this.mTarget );
 				}
 			}
 			get
 			{
-				return mTarget ?? mCamera.SceneManager.RootSceneNode;
+				return this.mTarget ?? this.mCamera.SceneManager.RootSceneNode;
 			}
 		}
-
-		protected bool mOrbiting;
-		protected bool mZooming;
 
 		/// <summary>
 		/// Gets/Sets the camera's top speed. Only applies for free-look style.
 		/// </summary>
-		public Real TopSpeed
-		{
-			get;
-			set;
-		}
-		protected Vector3 mVelocity;
-		protected bool mGoingForward;
-		protected bool mGoingBack;
-		protected bool mGoingLeft;
-		protected bool mGoingRight;
-		protected bool mGoingUp;
-		protected bool mGoingDown;
-
-		public SdkCameraManager( Camera cam )
-		{
-			mTarget = null;
-			mOrbiting = false;
-			mZooming = false;
-			mCamera = null;
-			TopSpeed = 150;
-			mGoingForward = false;
-			mGoingBack = false;
-			mGoingLeft = false;
-			mGoingRight = false;
-			mGoingUp = false;
-			mGoingDown = false;
-			mVelocity = Vector3.Zero;
-
-			Camera = cam;
-			setStyle( CameraStyle.FreeLook );
-		}
+		public Real TopSpeed { get; set; }
 
 		/// <summary>
 		/// Sets the spatial offset from the target. Only applies for orbit style.
@@ -127,13 +130,13 @@ namespace Axiom.Samples
 		/// <param name="dist"></param>
 		public virtual void SetYawPitchDist( Radian yaw, Radian pitch, Real dist )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				mCamera.Position = mTarget.DerivedPosition;
-				mCamera.Orientation = mTarget.DerivedOrientation;
-				mCamera.Yaw( (Real)yaw );
-				mCamera.Pitch( (Real)( -pitch ) );
-				mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
+				this.mCamera.Position = this.mTarget.DerivedPosition;
+				this.mCamera.Orientation = this.mTarget.DerivedOrientation;
+				this.mCamera.Yaw( (Real)yaw );
+				this.mCamera.Pitch( (Real)( -pitch ) );
+				this.mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 			}
 		}
 
@@ -141,90 +144,110 @@ namespace Axiom.Samples
 		/*-----------------------------------------------------------------------------
 		| Sets the movement style of our camera man.
 		-----------------------------------------------------------------------------*/
+
 		public virtual void setStyle( CameraStyle style )
 		{
-			if ( mStyle != CameraStyle.Orbit && style == CameraStyle.Orbit )
+			if ( this.mStyle != CameraStyle.Orbit && style == CameraStyle.Orbit )
 			{
-				mStyle = CameraStyle.Orbit;
+				this.mStyle = CameraStyle.Orbit;
 				Target = Target;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
-			else if ( mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
+			else if ( this.mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
 			{
-				mStyle = CameraStyle.FreeLook;
-				mCamera.AutoTrackingTarget = null;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mStyle = CameraStyle.FreeLook;
+				this.mCamera.AutoTrackingTarget = null;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
-			else if ( mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
+			else if ( this.mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
 			{
-				mStyle = CameraStyle.Manual;
-				mCamera.AutoTrackingTarget = null;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mStyle = CameraStyle.Manual;
+				this.mCamera.AutoTrackingTarget = null;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
 		}
 
 		public virtual CameraStyle getStyle()
 		{
-			return mStyle;
+			return this.mStyle;
 		}
 
 		/*-----------------------------------------------------------------------------
 		| Manually stops the camera when in free-look mode.
 		-----------------------------------------------------------------------------*/
+
 		public virtual void manualStop()
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				mGoingForward = false;
-				mGoingBack = false;
-				mGoingLeft = false;
-				mGoingRight = false;
-				mGoingUp = false;
-				mGoingDown = false;
-				mVelocity = Vector3.Zero;
+				this.mGoingForward = false;
+				this.mGoingBack = false;
+				this.mGoingLeft = false;
+				this.mGoingRight = false;
+				this.mGoingUp = false;
+				this.mGoingDown = false;
+				this.mVelocity = Vector3.Zero;
 			}
 		}
 
 		public virtual bool frameRenderingQueued( FrameEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
 				// build our acceleration vector based on keyboard input composite
 				Vector3 accel = Vector3.Zero;
-				if ( mGoingForward )
-					accel += mCamera.Direction;
-				if ( mGoingBack )
-					accel -= mCamera.Direction;
-				if ( mGoingRight )
-					accel += mCamera.Right;
-				if ( mGoingLeft )
-					accel -= mCamera.Right;
-				if ( mGoingUp )
-					accel += mCamera.Up;
-				if ( mGoingDown )
-					accel -= mCamera.Up;
+				if ( this.mGoingForward )
+				{
+					accel += this.mCamera.Direction;
+				}
+				if ( this.mGoingBack )
+				{
+					accel -= this.mCamera.Direction;
+				}
+				if ( this.mGoingRight )
+				{
+					accel += this.mCamera.Right;
+				}
+				if ( this.mGoingLeft )
+				{
+					accel -= this.mCamera.Right;
+				}
+				if ( this.mGoingUp )
+				{
+					accel += this.mCamera.Up;
+				}
+				if ( this.mGoingDown )
+				{
+					accel -= this.mCamera.Up;
+				}
 
 				// if accelerating, try to reach top speed in a certain time
 				if ( accel.LengthSquared != 0 )
 				{
 					accel.Normalize();
-					mVelocity += accel * TopSpeed * evt.TimeSinceLastFrame * 10;
+					this.mVelocity += accel * TopSpeed * evt.TimeSinceLastFrame * 10;
 				}
 				// if not accelerating, try to stop in a certain time
 				else
-					mVelocity -= mVelocity * evt.TimeSinceLastFrame * 10;
+				{
+					this.mVelocity -= this.mVelocity * evt.TimeSinceLastFrame * 10;
+				}
 
 				// keep camera velocity below top speed and above zero
-				if ( mVelocity.LengthSquared > TopSpeed * TopSpeed )
+				if ( this.mVelocity.LengthSquared > TopSpeed * TopSpeed )
 				{
-					mVelocity.Normalize();
-					mVelocity *= TopSpeed;
+					this.mVelocity.Normalize();
+					this.mVelocity *= TopSpeed;
 				}
-				else if ( mVelocity.LengthSquared < 0.1 )
-					mVelocity = Vector3.Zero;
+				else if ( this.mVelocity.LengthSquared < 0.1 )
+				{
+					this.mVelocity = Vector3.Zero;
+				}
 
-				if ( mVelocity != Vector3.Zero )
-					mCamera.Move( mVelocity * evt.TimeSinceLastFrame );
+				if ( this.mVelocity != Vector3.Zero )
+				{
+					this.mCamera.Move( this.mVelocity * evt.TimeSinceLastFrame );
+				}
 			}
 
 			return true;
@@ -233,82 +256,109 @@ namespace Axiom.Samples
 		/*-----------------------------------------------------------------------------
 		| Processes key presses for free-look style movement.
 		-----------------------------------------------------------------------------*/
-		public virtual void injectKeyDown( SIS.KeyEventArgs evt )
+
+		public virtual void injectKeyDown( KeyEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				if ( evt.Key == SIS.KeyCode.Key_W || evt.Key == SIS.KeyCode.Key_UP )
-					mGoingForward = true;
-				else if ( evt.Key == SIS.KeyCode.Key_S || evt.Key == SIS.KeyCode.Key_DOWN )
-					mGoingBack = true;
-				else if ( evt.Key == SIS.KeyCode.Key_A || evt.Key == SIS.KeyCode.Key_LEFT )
-					mGoingLeft = true;
-				else if ( evt.Key == SIS.KeyCode.Key_D || evt.Key == SIS.KeyCode.Key_RIGHT )
-					mGoingRight = true;
-				else if ( evt.Key == SIS.KeyCode.Key_PGUP )
-					mGoingUp = true;
-				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
-					mGoingDown = true;
+				if ( evt.Key == KeyCode.Key_W || evt.Key == KeyCode.Key_UP )
+				{
+					this.mGoingForward = true;
+				}
+				else if ( evt.Key == KeyCode.Key_S || evt.Key == KeyCode.Key_DOWN )
+				{
+					this.mGoingBack = true;
+				}
+				else if ( evt.Key == KeyCode.Key_A || evt.Key == KeyCode.Key_LEFT )
+				{
+					this.mGoingLeft = true;
+				}
+				else if ( evt.Key == KeyCode.Key_D || evt.Key == KeyCode.Key_RIGHT )
+				{
+					this.mGoingRight = true;
+				}
+				else if ( evt.Key == KeyCode.Key_PGUP )
+				{
+					this.mGoingUp = true;
+				}
+				else if ( evt.Key == KeyCode.Key_PGDOWN )
+				{
+					this.mGoingDown = true;
+				}
 			}
 		}
 
 		/*-----------------------------------------------------------------------------
 		| Processes key releases for free-look style movement.
 		-----------------------------------------------------------------------------*/
-		public virtual void injectKeyUp( SIS.KeyEventArgs evt )
+
+		public virtual void injectKeyUp( KeyEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				if ( evt.Key == SIS.KeyCode.Key_W || evt.Key == SIS.KeyCode.Key_UP )
-					mGoingForward = false;
-				else if ( evt.Key == SIS.KeyCode.Key_S || evt.Key == SIS.KeyCode.Key_DOWN )
-					mGoingBack = false;
-				else if ( evt.Key == SIS.KeyCode.Key_A || evt.Key == SIS.KeyCode.Key_LEFT )
-					mGoingLeft = false;
-				else if ( evt.Key == SIS.KeyCode.Key_D || evt.Key == SIS.KeyCode.Key_RIGHT )
-					mGoingRight = false;
-				else if ( evt.Key == SIS.KeyCode.Key_PGUP )
-					mGoingUp = false;
-				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
-					mGoingDown = false;
+				if ( evt.Key == KeyCode.Key_W || evt.Key == KeyCode.Key_UP )
+				{
+					this.mGoingForward = false;
+				}
+				else if ( evt.Key == KeyCode.Key_S || evt.Key == KeyCode.Key_DOWN )
+				{
+					this.mGoingBack = false;
+				}
+				else if ( evt.Key == KeyCode.Key_A || evt.Key == KeyCode.Key_LEFT )
+				{
+					this.mGoingLeft = false;
+				}
+				else if ( evt.Key == KeyCode.Key_D || evt.Key == KeyCode.Key_RIGHT )
+				{
+					this.mGoingRight = false;
+				}
+				else if ( evt.Key == KeyCode.Key_PGUP )
+				{
+					this.mGoingUp = false;
+				}
+				else if ( evt.Key == KeyCode.Key_PGDOWN )
+				{
+					this.mGoingDown = false;
+				}
 			}
 		}
 
 		/*-----------------------------------------------------------------------------
 		| Processes mouse movement differently for each style.
 		-----------------------------------------------------------------------------*/
-		public virtual void injectMouseMove( SIS.MouseEventArgs evt )
+
+		public virtual void injectMouseMove( MouseEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				Real dist = ( mCamera.Position - mTarget.DerivedPosition ).Length;
+				Real dist = ( this.mCamera.Position - this.mTarget.DerivedPosition ).Length;
 
-				if ( mOrbiting )   // yaw around the target, and pitch locally
+				if ( this.mOrbiting ) // yaw around the target, and pitch locally
 				{
-					mCamera.Position = mTarget.DerivedPosition;
+					this.mCamera.Position = this.mTarget.DerivedPosition;
 
-					mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.25f ) ) ) );
-					mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.25f ) ) ) );
+					this.mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.25f ) ) ) );
+					this.mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.25f ) ) ) );
 
-					mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 
 					// don't let the camera go over the top or around the bottom of the target
 				}
-				else if ( mZooming )  // move the camera toward or away from the target
+				else if ( this.mZooming ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative * 0.004f * dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative * 0.004f * dist ) );
 				}
-				else if ( evt.State.Z.Relative != 0 )  // move the camera toward or away from the target
+				else if ( evt.State.Z.Relative != 0 ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative * 0.0008f * dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative * 0.0008f * dist ) );
 				}
 			}
-			else if ( mStyle == CameraStyle.FreeLook )
+			else if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.15f ) ) ) );
-				mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.15f ) ) ) );
+				this.mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.15f ) ) ) );
+				this.mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.15f ) ) ) );
 			}
 		}
 
@@ -316,14 +366,19 @@ namespace Axiom.Samples
 		| Processes mouse presses. Only applies for orbit style.
 		| Left button is for orbiting, and right button is for zooming.
 		-----------------------------------------------------------------------------*/
-		public virtual void injectMouseDown( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+
+		public virtual void injectMouseDown( MouseEventArgs evt, MouseButtonID id )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				if ( id == SIS.MouseButtonID.Left )
-					mOrbiting = true;
-				else if ( id == SIS.MouseButtonID.Right )
-					mZooming = true;
+				if ( id == MouseButtonID.Left )
+				{
+					this.mOrbiting = true;
+				}
+				else if ( id == MouseButtonID.Right )
+				{
+					this.mZooming = true;
+				}
 			}
 		}
 
@@ -331,17 +386,20 @@ namespace Axiom.Samples
 		| Processes mouse releases. Only applies for orbit style.
 		| Left button is for orbiting, and right button is for zooming.
 		-----------------------------------------------------------------------------*/
-		public virtual void injectMouseUp( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+
+		public virtual void injectMouseUp( MouseEventArgs evt, MouseButtonID id )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				if ( id == SIS.MouseButtonID.Left )
-					mOrbiting = false;
-				else if ( id == SIS.MouseButtonID.Right )
-					mZooming = false;
+				if ( id == MouseButtonID.Left )
+				{
+					this.mOrbiting = false;
+				}
+				else if ( id == MouseButtonID.Right )
+				{
+					this.mZooming = false;
+				}
 			}
 		}
-
 	}
 }
-

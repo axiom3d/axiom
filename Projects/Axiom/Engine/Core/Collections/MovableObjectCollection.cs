@@ -38,7 +38,6 @@
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Collections;
 
 #endregion
 
@@ -66,20 +65,17 @@ namespace Axiom.Collections
 			base.Remove( key );
 		}
 
-		void ObjectRenamed( MovableObject obj, string oldName )
+		private void ObjectRenamed( MovableObject obj, string oldName )
 		{
 			// do not use overridden Add methods otherwise
 			// the event handler will be attached again.
 			base.Remove( oldName );
 			base.Add( obj.Name, obj );
 		}
-
 	}
 
 	/// <summary>
 	/// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
 	/// </summary>
-	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
-	{
-	}
+	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory> { }
 }

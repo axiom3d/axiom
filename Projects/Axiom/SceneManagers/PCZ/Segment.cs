@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,10 +46,9 @@ namespace Axiom.SceneManagers.PortalConnected
 	public class Segment
 	{
 		#region Fields
-		const float Parallel_Tolerance = 0.0001f;
-		private Vector3 origin;
-		private Vector3 direction;
-		private float extent;
+
+		private const float Parallel_Tolerance = 0.0001f;
+
 		#endregion Fields
 
 		#region Constructors
@@ -57,53 +58,24 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			// uninitialized
 		}
+
 		//----------------------------------------------------------------------------
 		public Segment( Vector3 origin, Vector3 direction, float extent )
 		{
-			this.origin = origin;
-			this.direction = direction;
-			this.extent = extent;
+			this.Origin = origin;
+			this.Direction = direction;
+			this.Extent = extent;
 		}
 
 		#endregion Constructors
 
 		#region Propertys
 
-		public Vector3 Origin
-		{
-			get
-			{
-				return origin;
-			}
-			set
-			{
-				origin = value;
-			}
-		}
+		public Vector3 Origin { get; set; }
 
-		public Vector3 Direction
-		{
-			get
-			{
-				return direction;
-			}
-			set
-			{
-				direction = value;
-			}
-		}
+		public Vector3 Direction { get; set; }
 
-		public float Extent
-		{
-			get
-			{
-				return extent;
-			}
-			set
-			{
-				extent = value;
-			}
-		}
+		public float Extent { get; set; }
 
 		public Vector3 EndPoint
 		{
@@ -133,6 +105,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			float fSqrDist = SquaredDistance( otherSegment );
 			return Utility.Sqrt( fSqrDist );
 		}
+
 		//----------------------------------------------------------------------------
 		public float SquaredDistance( Segment otherSegment )
 		{
@@ -164,8 +137,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								float fInvDet = ( (float)1.0 ) / fDet;
 								fS0 *= fInvDet;
 								fS1 *= fInvDet;
-								fSqrDist = fS0 * ( fS0 + fA01 * fS1 + ( (float)2.0 ) * fB0 ) +
-										   fS1 * ( fA01 * fS0 + fS1 + ( (float)2.0 ) * fB1 ) + fC;
+								fSqrDist = fS0 * ( fS0 + fA01 * fS1 + ( (float)2.0 ) * fB0 ) + fS1 * ( fA01 * fS0 + fS1 + ( (float)2.0 ) * fB1 ) + fC;
 							}
 							else // region 3 (side)
 							{
@@ -174,8 +146,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( fTmpS0 < -Extent )
 								{
 									fS0 = -Extent;
-									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-											   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 								}
 								else if ( fTmpS0 <= Extent )
 								{
@@ -185,8 +156,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								else
 								{
 									fS0 = Extent;
-									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-											   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 								}
 							}
 						}
@@ -197,8 +167,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							if ( fTmpS0 < -Extent )
 							{
 								fS0 = -Extent;
-								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-										   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 							}
 							else if ( fTmpS0 <= Extent )
 							{
@@ -208,8 +177,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							else
 							{
 								fS0 = Extent;
-								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-										   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 							}
 						}
 					}
@@ -224,8 +192,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( fTmpS1 < -otherSegment.Extent )
 								{
 									fS1 = -otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 								else if ( fTmpS1 <= otherSegment.Extent )
 								{
@@ -235,8 +202,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								else
 								{
 									fS1 = otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 							}
 							else // region 2 (corner)
@@ -246,8 +212,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( fTmpS0 < -Extent )
 								{
 									fS0 = -Extent;
-									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-											   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+									fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 								}
 								else if ( fTmpS0 <= Extent )
 								{
@@ -261,20 +226,17 @@ namespace Axiom.SceneManagers.PortalConnected
 									if ( fTmpS1 < -otherSegment.Extent )
 									{
 										fS1 = -otherSegment.Extent;
-										fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-												   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+										fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 									}
 									else if ( fTmpS1 <= otherSegment.Extent )
 									{
 										fS1 = fTmpS1;
-										fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 )
-												   + fC;
+										fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 									}
 									else
 									{
 										fS1 = otherSegment.Extent;
-										fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-												   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+										fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 									}
 								}
 							}
@@ -286,8 +248,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							if ( fTmpS0 < -Extent )
 							{
 								fS0 = -Extent;
-								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-										   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 							}
 							else if ( fTmpS0 <= Extent )
 							{
@@ -301,20 +262,17 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( fTmpS1 > otherSegment.Extent )
 								{
 									fS1 = otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 								else if ( fTmpS1 >= -otherSegment.Extent )
 								{
 									fS1 = fTmpS1;
-									fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 )
-											   + fC;
+									fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 								else
 								{
 									fS1 = -otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 							}
 						}
@@ -331,8 +289,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							if ( fTmpS1 < -otherSegment.Extent )
 							{
 								fS1 = -otherSegment.Extent;
-								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-										   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 							}
 							else if ( fTmpS1 <= otherSegment.Extent )
 							{
@@ -342,8 +299,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							else
 							{
 								fS1 = otherSegment.Extent;
-								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-										   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 							}
 						}
 						else // region 4 (corner)
@@ -353,8 +309,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							if ( fTmpS0 > Extent )
 							{
 								fS0 = Extent;
-								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-										   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+								fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 							}
 							else if ( fTmpS0 >= -Extent )
 							{
@@ -368,20 +323,17 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( fTmpS1 < -otherSegment.Extent )
 								{
 									fS1 = -otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 								else if ( fTmpS1 <= otherSegment.Extent )
 								{
 									fS1 = fTmpS1;
-									fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 )
-											   + fC;
+									fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 								else
 								{
 									fS1 = otherSegment.Extent;
-									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-											   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+									fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 								}
 							}
 						}
@@ -393,8 +345,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						if ( fTmpS0 > Extent )
 						{
 							fS0 = Extent;
-							fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) +
-									   fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
+							fSqrDist = fS0 * ( fS0 - ( (float)2.0 ) * fTmpS0 ) + fS1 * ( fS1 + ( (float)2.0 ) * fB1 ) + fC;
 						}
 						else if ( fTmpS0 >= -Extent )
 						{
@@ -408,20 +359,17 @@ namespace Axiom.SceneManagers.PortalConnected
 							if ( fTmpS1 < -otherSegment.Extent )
 							{
 								fS1 = -otherSegment.Extent;
-								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-										   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 							}
 							else if ( fTmpS1 <= otherSegment.Extent )
 							{
 								fS1 = fTmpS1;
-								fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 )
-										   + fC;
+								fSqrDist = -fS1 * fS1 + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 							}
 							else
 							{
 								fS1 = otherSegment.Extent;
-								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) +
-										   fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
+								fSqrDist = fS1 * ( fS1 - ( (float)2.0 ) * fTmpS1 ) + fS0 * ( fS0 + ( (float)2.0 ) * fB0 ) + fC;
 							}
 						}
 					}
@@ -465,6 +413,5 @@ namespace Axiom.SceneManagers.PortalConnected
 		}
 
 		#endregion Methods
-
 	}
 }

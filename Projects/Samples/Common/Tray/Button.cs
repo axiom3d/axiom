@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -34,22 +36,27 @@ namespace Axiom.Samples
 	public class Button : Widget
 	{
 		#region fields
-		/// <summary>
-		/// 
-		/// </summary>
-		protected ButtonState buttonState;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected BorderPanel BorderPanel;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea TextArea;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected ButtonState buttonState;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected bool isFitToContents;
+
 		#endregion
 
 		#region properties
@@ -61,7 +68,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return buttonState;
+				return this.buttonState;
 			}
 			protected set
 			{
@@ -99,7 +106,7 @@ namespace Axiom.Samples
 				this.TextArea.Text = value;
 				if ( this.isFitToContents )
 				{
-					this.element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
+					element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
 				}
 			}
 		}
@@ -122,18 +129,19 @@ namespace Axiom.Samples
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Button", "BorderPanel", name );
 			this.BorderPanel = (BorderPanel)element;
 			this.TextArea = (TextArea)this.BorderPanel.Children[ this.BorderPanel.Name + "/ButtonCaption" ];
-			this.TextArea.Top = -( this.TextArea.CharHeight / 2 );//
+			this.TextArea.Top = -( this.TextArea.CharHeight / 2 ); //
 			if ( width > 0 )
 			{
 				element.Width = width;
 				this.isFitToContents = false;
 			}
 			else
+			{
 				this.isFitToContents = true;
+			}
 
-			this.Caption = caption;
-			this.State = ButtonState.Up;
-
+			Caption = caption;
+			State = ButtonState.Up;
 		}
 
 		#endregion Construction and Destruction
@@ -144,12 +152,11 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-            if ( IsCursorOver( element, cursorPos, 4 ) )
-            {
-                this.State = ButtonState.Down;
-                base.OnCursorPressed( cursorPos );
-            }
-			
+			if ( IsCursorOver( element, cursorPos, 4 ) )
+			{
+				State = ButtonState.Down;
+				base.OnCursorPressed( cursorPos );
+			}
 		}
 
 		/// <summary>
@@ -158,10 +165,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorReleased( Vector2 cursorPos )
 		{
-			if ( this.State == ButtonState.Down )
+			if ( State == ButtonState.Down )
 			{
-				this.State = ButtonState.Over;
-				if ( this.listener != null )
+				State = ButtonState.Over;
+				if ( listener != null )
 				{
 					listener.OnButtonHit( this, this );
 				}
@@ -178,16 +185,16 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( element, cursorPos, 4 ) )
 			{
-				if ( this.State == ButtonState.Up )
+				if ( State == ButtonState.Up )
 				{
-					this.State = ButtonState.Over;
+					State = ButtonState.Over;
 				}
 			}
 			else
 			{
-				if ( this.State != ButtonState.Up )
+				if ( State != ButtonState.Up )
 				{
-					this.State = ButtonState.Up;
+					State = ButtonState.Up;
 				}
 			}
 
@@ -199,7 +206,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			this.State = ButtonState.Up;   // reset button if cursor was lost
+			State = ButtonState.Up; // reset button if cursor was lost
 
 			base.OnLostFocus();
 		}

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+
 #if SILVERLIGHT
 using System.IO.IsolatedStorage;
 #endif
@@ -44,48 +49,14 @@ using System.IO.IsolatedStorage;
 
 namespace Axiom.Core
 {
+
 	#region LogListenerEventArgs Class
+
 	/// <summary>
 	/// 
 	/// </summary>
 	public class LogListenerEventArgs : EventArgs
 	{
-		/// <summary>
-		/// The message to be logged
-		/// </summary>
-		public string Message
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// The message level the log is using
-		/// </summary>
-		public LogMessageLevel Level
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// If we are printing to the console or not
-		/// </summary>
-		public bool MaskDebug
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// the name of this log (so you can have several listeners for different logs, and identify them)
-		/// </summary>
-		public string LogName
-		{
-			get;
-			private set;
-		}
-
 		/// <summary>
 		/// This is called whenever the log recieves a message and is about to write it out
 		/// </summary>
@@ -94,17 +65,38 @@ namespace Axiom.Core
 		/// <param name="maskDebug">If we are printing to the console or not</param>
 		/// <param name="logName">the name of this log (so you can have several listeners for different logs, and identify them)</param>
 		public LogListenerEventArgs( string message, LogMessageLevel lml, bool maskDebug, string logName )
-			: base()
 		{
-			this.Message = message;
-			this.Level = lml;
-			this.MaskDebug = maskDebug;
-			this.LogName = logName;
+			Message = message;
+			Level = lml;
+			MaskDebug = maskDebug;
+			LogName = logName;
 		}
+
+		/// <summary>
+		/// The message to be logged
+		/// </summary>
+		public string Message { get; private set; }
+
+		/// <summary>
+		/// The message level the log is using
+		/// </summary>
+		public LogMessageLevel Level { get; private set; }
+
+		/// <summary>
+		/// If we are printing to the console or not
+		/// </summary>
+		public bool MaskDebug { get; private set; }
+
+		/// <summary>
+		/// the name of this log (so you can have several listeners for different logs, and identify them)
+		/// </summary>
+		public string LogName { get; private set; }
 	}
+
 	#endregion LogListenerEventArgs Class
 
 	#region Log Class
+
 	/// <summary>
 	///     Log class for writing debug/log data to files.
 	/// </summary>
@@ -115,28 +107,33 @@ namespace Axiom.Core
 #if SILVERLIGHT
 		private IsolatedStorageFile file;
 #endif
+
 		/// <summary>
 		///     File stream used for kepping the log file open.
 		/// </summary>
-		private FileStream log;
+		private readonly FileStream log;
+
 		/// <summary>
 		///     Writer used for writing to the log file.
 		/// </summary>
-		private StreamWriter writer;
+		private readonly StreamWriter writer;
+
 		/// <summary>
 		///     Level of detail for this log.
 		/// </summary>
 		private LoggingLevel logLevel;
+
 		/// <summary>
 		///     Debug output enabled?
 		/// </summary>
-		private bool debugOutput;
+		private readonly bool debugOutput;
+
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
-		const int LogThreshold = 4;
+		private const int LogThreshold = 4;
 
-		private string mLogName;
+		private readonly string mLogName;
 
 		#endregion Fields
 
@@ -149,9 +146,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="fileName">Name of the log file to open.</param>
 		public Log( string fileName )
-			: this( fileName, true )
-		{
-		}
+			: this( fileName, true ) { }
 
 		/// <summary>
 		///     Constructor.
@@ -159,13 +154,12 @@ namespace Axiom.Core
 		/// <param name="fileName">Name of the log file to open.</param>
 		/// <param name="debugOutput">Write log messages to the debug output?</param>
 		public Log( string fileName, bool debugOutput )
-            : base()
 		{
 			this.mLogName = fileName;
-			this.MessageLogged = null;
+			MessageLogged = null;
 
 			this.debugOutput = debugOutput;
-			logLevel = LoggingLevel.Normal;
+			this.logLevel = LoggingLevel.Normal;
 
 			if ( fileName != null )
 			{
@@ -178,19 +172,16 @@ namespace Axiom.Core
 					file = IsolatedStorageFile.GetUserStoreForApplication();
 					log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 #else
-					log = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+					this.log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
 #endif
 
 					// get a stream writer using the file stream
-					writer = new StreamWriter( log );
-					writer.AutoFlush = true;	//always flush after write
+					this.writer = new StreamWriter( this.log );
+					this.writer.AutoFlush = true; //always flush after write
 #endif
 				}
-				catch
-				{
-				}
+				catch { }
 			}
-
 		}
 
 		#endregion Constructors
@@ -205,11 +196,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return logLevel;
+				return this.logLevel;
 			}
 			set
 			{
-				logLevel = value;
+				this.logLevel = value;
 			}
 		}
 
@@ -262,13 +253,19 @@ namespace Axiom.Core
 		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
-			if ( this.IsDisposed )
+			if ( IsDisposed )
+			{
 				return;
+			}
 
 			if ( message == null )
+			{
 				throw new ArgumentNullException( "The log message cannot be null" );
-			if ( ( (int)logLevel + (int)level ) > LogThreshold )
-				return;	//too verbose a message to write
+			}
+			if ( ( (int)this.logLevel + (int)level ) > LogThreshold )
+			{
+				return; //too verbose a message to write
+			}
 
 			// construct the log message
 			if ( substitutions != null && substitutions.Length > 0 )
@@ -277,24 +274,24 @@ namespace Axiom.Core
 			}
 
 			// write the the debug output if requested
-			if ( debugOutput && !maskDebug )
+			if ( this.debugOutput && !maskDebug )
 			{
 #if MONO
 				if(System.Diagnostics.Debugger.IsAttached)
 					System.Console.WriteLine( message );
 				else
 #endif
-					System.Diagnostics.Debug.WriteLine( message );
+				Debug.WriteLine( message );
 			}
 
-			if ( writer != null && writer.BaseStream != null )
+			if ( this.writer != null && this.writer.BaseStream != null )
 			{
-
 				// prepend the current time to the message
 				message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
 				// write the message and flush the buffer
-                lock (writer) writer.WriteLine(message);
+				lock ( this.writer )
+					this.writer.WriteLine( message );
 				//writer auto-flushes
 			}
 
@@ -304,10 +301,10 @@ namespace Axiom.Core
 		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
 		{
 			// Now fire the MessageLogged event
-			if ( this.MessageLogged != null )
+			if ( MessageLogged != null )
 			{
 				var args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
-				this.MessageLogged( this, args );
+				MessageLogged( this, args );
 			}
 		}
 
@@ -315,39 +312,42 @@ namespace Axiom.Core
 
 		#region DisposableObject Members
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    // Dispose managed resources.
-                    try
-                    {
-                        if (writer != null)
-                            writer.Close();
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					try
+					{
+						if ( this.writer != null )
+						{
+							this.writer.Close();
+						}
 
-                        if (log != null)
-                            log.Close();
+						if ( this.log != null )
+						{
+							this.log.Close();
+						}
 
 #if SILVERLIGHT
 				if (file != null)
 					file.Dispose();
 #endif
-                    }
-                    catch
-                    {
-                    }
-                }
+					}
+					catch { }
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
-        #endregion DisposableObject Members
-    }
+		#endregion DisposableObject Members
+	}
+
 	#endregion Log Class
 }

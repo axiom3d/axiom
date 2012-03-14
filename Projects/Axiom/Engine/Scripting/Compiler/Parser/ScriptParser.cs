@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,26 +47,16 @@ namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptParser
 	{
-		enum ParserState
-		{
-			Ready,
-			Object
-		}
-
-		public ScriptParser()
-		{
-		}
-
 		public IList<ConcreteNode> Parse( IList<ScriptToken> tokens )
 		{
 			var nodes = new List<ConcreteNode>();
 
-			var state = ParserState.Ready;
+			ParserState state = ParserState.Ready;
 			ScriptToken token;
 			ConcreteNode parent = null, node = null;
 
-			var iter = 0;
-			var end = tokens.Count;
+			int iter = 0;
+			int end = tokens.Count;
 
 			while ( iter != end )
 			{
@@ -70,14 +64,17 @@ namespace Axiom.Scripting.Compiler.Parser
 				switch ( state )
 				{
 					#region Ready
+
 					case ParserState.Ready:
 						switch ( token.type )
 						{
 							#region Word
+
 							case Tokens.Word:
 								switch ( token.lexeme )
 								{
 									#region "import"
+
 									case "import":
 										node = new ConcreteNode();
 										node.Token = token.lexeme;
@@ -88,7 +85,9 @@ namespace Axiom.Scripting.Compiler.Parser
 										// The next token is the target
 										iter++;
 										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( String.Format( "Expected import target at line {0}", node.Line ) );
+										}
 
 										var temp = new ConcreteNode();
 										temp.Parent = node;
@@ -96,16 +95,22 @@ namespace Axiom.Scripting.Compiler.Parser
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
 										if ( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// The second-next token is the source
 										iter++; // "from"
 										iter++;
 										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( String.Format( "Expected import source at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
@@ -113,9 +118,13 @@ namespace Axiom.Scripting.Compiler.Parser
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
 										if ( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// Consume all the newlines
@@ -134,9 +143,11 @@ namespace Axiom.Scripting.Compiler.Parser
 										}
 										node = null;
 										break;
+
 									#endregion "import"
 
 									#region "set"
+
 									case "set":
 										node = new ConcreteNode();
 										node.Token = token.lexeme;
@@ -147,7 +158,9 @@ namespace Axiom.Scripting.Compiler.Parser
 										// The next token is the variable
 										++iter;
 										if ( iter == end || tokens[ iter ].type != Tokens.Variable )
+										{
 											throw new Exception( string.Format( "expected variable name at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
@@ -160,7 +173,9 @@ namespace Axiom.Scripting.Compiler.Parser
 										// The next token is the assignment
 										++iter;
 										if ( iter == end || ( tokens[ iter ].type != Tokens.Word && tokens[ iter ].type != Tokens.Quote ) )
+										{
 											throw new Exception( string.Format( "expected variable name at line {0}", node.Line ) );
+										}
 
 										temp = new ConcreteNode();
 										temp.Parent = node;
@@ -168,9 +183,13 @@ namespace Axiom.Scripting.Compiler.Parser
 										temp.Line = tokens[ iter ].line;
 										temp.Type = tokens[ iter ].type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
 										if ( temp.Type == ConcreteNodeType.Quote )
+										{
 											temp.Token = tokens[ iter ].lexeme.Substring( 1, tokens[ iter ].lexeme.Length - 2 );
+										}
 										else
+										{
 											temp.Token = tokens[ iter ].lexeme;
+										}
 										node.Children.Add( temp );
 
 										// Consume all the newlines
@@ -189,6 +208,7 @@ namespace Axiom.Scripting.Compiler.Parser
 										}
 										node = null;
 										break;
+
 									#endregion "set"
 
 									default:
@@ -197,9 +217,13 @@ namespace Axiom.Scripting.Compiler.Parser
 										node.Line = token.line;
 										node.Type = token.type == Tokens.Word ? ConcreteNodeType.Word : ConcreteNodeType.Quote;
 										if ( node.Type == ConcreteNodeType.Quote )
+										{
 											node.Token = token.lexeme.Substring( 1, token.lexeme.Length - 2 );
+										}
 										else
+										{
 											node.Token = token.lexeme;
+										}
 
 										// Insert the node
 										if ( parent != null )
@@ -224,13 +248,17 @@ namespace Axiom.Scripting.Compiler.Parser
 										break;
 								}
 								break;
+
 							#endregion Word
 
 							#region RightBrace
+
 							case Tokens.RightBrace:
 								// Go up one level if we can
 								if ( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -255,36 +283,46 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								// Move up another level
 								if ( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = null;
 
 								break;
+
 							#endregion RightBrace
 						}
 						break;
+
 					#endregion Ready
 
 					#region Object
+
 					case ParserState.Object:
 						switch ( token.type )
 						{
 							#region Newline
+
 							case Tokens.Newline:
 								// Look ahead to the next non-newline token and if it isn't an {, this was a property
-								var next = SkipNewlines( tokens, iter, end );
+								int next = SkipNewlines( tokens, iter, end );
 								if ( next == end || tokens[ next ].type != Tokens.LeftBrace )
 								{
 									// Ended a property here
 									if ( parent != null )
+									{
 										parent = parent.Parent;
+									}
 									state = ParserState.Ready;
 								}
 								node = null;
 								break;
+
 							#endregion Newline
 
 							#region Colon
+
 							case Tokens.Colon:
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -295,10 +333,12 @@ namespace Axiom.Scripting.Compiler.Parser
 								// The following token are the parent objects (base classes).
 								// Require at least one of them.
 
-								var j = iter + 1;
+								int j = iter + 1;
 								j = SkipNewlines( tokens, j, end );
 								if ( j == end || ( tokens[ j ].type != Tokens.Word && tokens[ j ].type != Tokens.Quote ) )
+								{
 									throw new Exception( String.Format( "Expected object identifier at line {0}", node.Line ) );
+								}
 
 								while ( j != end && ( tokens[ j ].type == Tokens.Word || tokens[ j ].type == Tokens.Quote ) )
 								{
@@ -329,9 +369,11 @@ namespace Axiom.Scripting.Compiler.Parser
 								}
 								node = null;
 								break;
+
 							#endregion Colon
 
 							#region LeftBrace
+
 							case Tokens.LeftBrace:
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -362,18 +404,24 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
+
 							#endregion LeftBrace
 
 							#region RightBrace
+
 							case Tokens.RightBrace:
 
 								// Go up one level if we can
 								if ( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								// If the parent is currently a { then go up again
 								if ( parent != null && parent.Type == ConcreteNodeType.LeftBrace && parent.Parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -398,15 +446,19 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								//Move up another level
 								if ( parent != null )
+								{
 									parent = parent.Parent;
+								}
 
 								node = null;
 								state = ParserState.Ready;
 
 								break;
+
 							#endregion RightBrace
 
 							#region Variable
+
 							case Tokens.Variable:
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -428,9 +480,11 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
+
 							#endregion Variable
 
 							#region Quote
+
 							case Tokens.Quote:
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -452,9 +506,11 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
+
 							#endregion Quote
 
 							#region Word
+
 							case Tokens.Word:
 								node = new ConcreteNode();
 								node.File = token.file;
@@ -476,9 +532,11 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								node = null;
 								break;
+
 							#endregion Word
 						}
 						break;
+
 					#endregion Object
 				}
 				iter++;
@@ -491,7 +549,7 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			IList<ConcreteNode> nodes = new List<ConcreteNode>();
 			ConcreteNode node = null;
-			foreach ( var token in tokens )
+			foreach ( ScriptToken token in tokens )
 			{
 				switch ( token.type )
 				{
@@ -527,7 +585,9 @@ namespace Axiom.Scripting.Compiler.Parser
 				}
 
 				if ( node != null )
+				{
 					nodes.Add( node );
+				}
 			}
 			return nodes;
 		}
@@ -535,19 +595,35 @@ namespace Axiom.Scripting.Compiler.Parser
 		private ScriptToken GetToken( IEnumerator<ScriptToken> iter, int offset )
 		{
 			var token = new ScriptToken();
-			while ( --offset > 1 && iter.MoveNext() != false )
+			while ( --offset > 1 && iter.MoveNext() )
+			{
 				;
+			}
 
-			if ( iter.MoveNext() != false )
+			if ( iter.MoveNext() )
+			{
 				token = iter.Current;
+			}
 			return token;
 		}
 
 		private int SkipNewlines( IList<ScriptToken> tokens, int iter, int end )
 		{
 			while ( tokens[ iter ].type == Tokens.Newline && ++iter != end )
+			{
 				;
+			}
 			return iter;
 		}
+
+		#region Nested type: ParserState
+
+		private enum ParserState
+		{
+			Ready,
+			Object
+		}
+
+		#endregion
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -80,42 +85,30 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Default window title if one is not specified upon a call to <see cref="Initialize"/>.
 		/// </summary>
-		const string DefaultWindowTitle = "Axiom Window";
+		private const string DefaultWindowTitle = "Axiom Window";
 
 		// TODO: should this go into Config?
-		const int NumRendertargetGroups = 10;
+		private const int NumRendertargetGroups = 10;
 
 		#endregion Constants
 
 		#region Inner Types
 
-		public class RenderTargetMap : Dictionary<string, RenderTarget>
-		{
-		}
+		public class RenderTargetMap : Dictionary<string, RenderTarget> { }
 
-		public class RenderTargetPriorityMap : MultiMap<RenderTargetPriority, RenderTarget>
-		{
-		}
+		public class RenderTargetPriorityMap : MultiMap<RenderTargetPriority, RenderTarget> { }
 
 		/// <summary>
 		/// Dummy structure for render system contexts - implementing RenderSystems can extend
 		/// as needed
 		/// </summary>
-		public class RenderSystemContext : DisposableObject
-		{
-		}
+		public class RenderSystemContext : DisposableObject { }
 
-		public class DepthBufferVec : List<DepthBuffer>
-		{
-		}
+		public class DepthBufferVec : List<DepthBuffer> { }
 
-		public class DepthBufferMap : Dictionary<PoolId, DepthBufferVec>
-		{
-		}
+		public class DepthBufferMap : Dictionary<PoolId, DepthBufferVec> { }
 
-		public class HardwareOcclusionQueryList : List<HardwareOcclusionQuery>
-		{
-		}
+		public class HardwareOcclusionQueryList : List<HardwareOcclusionQuery> { }
 
 		#endregion
 
@@ -166,8 +159,10 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool vertexProgramBound;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool fragmentProgramBound;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool geometryProgramBound;
 
@@ -182,10 +177,13 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool derivedDepthBias;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected float derivedDepthBiasBase;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected float derivedDepthBiasMultiplier;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected float derivedDepthBiasSlopeScale;
 
@@ -193,22 +191,27 @@ namespace Axiom.Graphics
 		// The Active GPU programs and gpu program parameters
 		[OgreVersion( 1, 7, 2790 )]
 		protected GpuProgramParameters activeVertexGpuProgramParameters;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected GpuProgramParameters activeGeometryGpuProgramParameters;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected GpuProgramParameters activeFragmentGpuProgramParameters;
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected DepthBufferMap depthBufferPool =
-			new DepthBufferMap
-			{
-				{ PoolId.Default, new DepthBufferVec() },
-				// { PoolId.ManualUsage, new DepthBufferVec() },
-				{ PoolId.NoDepth, new DepthBufferVec() }
-			};
+		protected DepthBufferMap depthBufferPool = new DepthBufferMap
+                                                   {
+                                                       {
+                                                           PoolId.Default, new DepthBufferVec()
+                                                           }, // { PoolId.ManualUsage, new DepthBufferVec() },
+                                                       {
+                                                           PoolId.NoDepth, new DepthBufferVec()
+                                                           }
+                                                   };
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool texProjRelative;
+
 		[OgreVersion( 1, 7, 2790 )]
 		protected Vector3 texProjRelativeOrigin;
 
@@ -220,18 +223,17 @@ namespace Axiom.Graphics
 		/// Base constructor.
 		/// </summary>
 		protected RenderSystem()
-			: base()
 		{
 			// This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
 			// This makes it the same as OpenGL and other right-handed systems
-			cullingMode = CullingMode.Clockwise;
+			this.cullingMode = CullingMode.Clockwise;
 
 
-			vSync = true;
-			vSyncInterval = 1;
+			this.vSync = true;
+			this.vSyncInterval = 1;
 
-			globalNumberOfInstances = 1;
-			clipPlanesDirty = true;
+			this.globalNumberOfInstances = 1;
+			this.clipPlanesDirty = true;
 		}
 
 		#endregion
@@ -244,10 +246,7 @@ namespace Axiom.Graphics
 		/// Set current render target to target, enabling its device context if needed
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract RenderTarget RenderTarget
-		{
-			set;
-		}
+		public abstract RenderTarget RenderTarget { set; }
 
 		#endregion
 
@@ -275,11 +274,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vSync;
+				return this.vSync;
 			}
 			set
 			{
-				vSync = value;
+				this.vSync = value;
 			}
 		}
 
@@ -298,7 +297,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalInstanceVertexBuffer;
+				return this.globalInstanceVertexBuffer;
 			}
 			set
 			{
@@ -306,7 +305,7 @@ namespace Axiom.Graphics
 				{
 					throw new AxiomException( "A none instance data vertex buffer was set to be the global instance vertex buffer." );
 				}
-				globalInstanceVertexBuffer = value;
+				this.globalInstanceVertexBuffer = value;
 			}
 		}
 
@@ -325,11 +324,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalInstanceVertexBufferVertexDeclaration;
+				return this.globalInstanceVertexBufferVertexDeclaration;
 			}
 			set
 			{
-				globalInstanceVertexBufferVertexDeclaration = value;
+				this.globalInstanceVertexBufferVertexDeclaration = value;
 			}
 		}
 
@@ -348,11 +347,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalNumberOfInstances;
+				return this.globalNumberOfInstances;
 			}
 			set
 			{
-				globalNumberOfInstances = value;
+				this.globalNumberOfInstances = value;
 			}
 		}
 
@@ -381,10 +380,7 @@ namespace Axiom.Graphics
 		/// render point sprites (textured quads) or plain points.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract bool PointSpritesEnabled
-		{
-			set;
-		}
+		public abstract bool PointSpritesEnabled { set; }
 
 		#endregion
 
@@ -401,7 +397,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentCapabilities;
+				return this.currentCapabilities;
 			}
 		}
 
@@ -413,7 +409,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentCapabilities;
+				return this.currentCapabilities;
 			}
 		}
 
@@ -432,11 +428,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return activeViewport;
+				return this.activeViewport;
 			}
 			set
 			{
-				throw new NotImplementedException("Abstract call: Viewport set");
+				throw new NotImplementedException( "Abstract call: Viewport set" );
 			}
 		}
 
@@ -465,7 +461,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return cullingMode;
+				return this.cullingMode;
 			}
 			set
 			{
@@ -481,10 +477,7 @@ namespace Axiom.Graphics
 		/// Sets whether or not the depth buffer check is performed before a pixel write
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Default = true" )]
-		public abstract bool DepthBufferCheckEnabled
-		{
-			set;
-		}
+		public abstract bool DepthBufferCheckEnabled { set; }
 
 		#endregion
 
@@ -494,10 +487,7 @@ namespace Axiom.Graphics
 		/// Sets whether or not the depth buffer is updated after a pixel write.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Default = true" )]
-		public abstract bool DepthBufferWriteEnabled
-		{
-			set;
-		}
+		public abstract bool DepthBufferWriteEnabled { set; }
 
 		#endregion
 
@@ -510,10 +500,7 @@ namespace Axiom.Graphics
 		/// <see cref="DepthBufferCheckEnabled"/>
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Default = (CompareFunction.LessEqual" )]
-		public abstract CompareFunction DepthBufferFunction
-		{
-			set;
-		}
+		public abstract CompareFunction DepthBufferFunction { set; }
 
 		#endregion
 
@@ -530,7 +517,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return driverVersion;
+				return this.driverVersion;
 			}
 		}
 
@@ -556,8 +543,8 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected PlaneList clipPlanes = new PlaneList();
-		
-        [OgreVersion( 1, 7, 2790 )]
+
+		[OgreVersion( 1, 7, 2790 )]
 		protected bool clipPlanesDirty;
 
 		/// <summary>
@@ -569,11 +556,13 @@ namespace Axiom.Graphics
 			set
 			{
 				if ( value == null )
-					throw new ArgumentNullException(); // Ogre passes this as ref so must be non null
-				if ( !value.Equals( clipPlanes ) )
 				{
-					clipPlanes = value;
-					clipPlanesDirty = true;
+					throw new ArgumentNullException(); // Ogre passes this as ref so must be non null
+				}
+				if ( !value.Equals( this.clipPlanes ) )
+				{
+					this.clipPlanes = value;
+					this.clipPlanesDirty = true;
 				}
 			}
 		}
@@ -593,8 +582,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-                // return a COPY of the current config options
-				return configOptions;
+				// return a COPY of the current config options
+				return this.configOptions;
 			}
 		}
 
@@ -613,7 +602,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return faceCount;
+				return this.faceCount;
 			}
 		}
 
@@ -632,7 +621,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return batchCount;
+				return this.batchCount;
 			}
 		}
 
@@ -651,7 +640,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexCount;
+				return this.vertexCount;
 			}
 		}
 
@@ -662,10 +651,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract VertexElementType ColorVertexElementType
-		{
-			get;
-		}
+		public abstract VertexElementType ColorVertexElementType { get; }
 
 		#endregion
 
@@ -675,10 +661,7 @@ namespace Axiom.Graphics
 		/// Sets the current vertex declaration, ie the source of vertex data.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract VertexDeclaration VertexDeclaration
-		{
-			set;
-		}
+		public abstract VertexDeclaration VertexDeclaration { set; }
 
 		#endregion
 
@@ -688,10 +671,7 @@ namespace Axiom.Graphics
 		/// Sets the current vertex buffer binding state.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract VertexBufferBinding VertexBufferBinding
-		{
-			set;
-		}
+		public abstract VertexBufferBinding VertexBufferBinding { set; }
 
 		#endregion
 
@@ -712,11 +692,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentPassIterationCount;
+				return this.currentPassIterationCount;
 			}
 			set
 			{
-				currentPassIterationCount = value;
+				this.currentPassIterationCount = value;
 			}
 		}
 
@@ -736,11 +716,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return invertVertexWinding;
+				return this.invertVertexWinding;
 			}
 			set
 			{
-				invertVertexWinding = value;
+				this.invertVertexWinding = value;
 			}
 		}
 
@@ -757,11 +737,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				var attribute =
-					(AssemblyTitleAttribute)Attribute.GetCustomAttribute( GetType().Assembly, typeof( AssemblyTitleAttribute ), false );
+				var attribute = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( GetType().Assembly, typeof( AssemblyTitleAttribute ), false );
 
 				if ( attribute != null )
+				{
 					return attribute.Title;
+				}
 				//else
 				return "Not Found";
 			}
@@ -787,28 +768,29 @@ namespace Axiom.Graphics
 		}
 
 		[AxiomHelper( 0, 8 )]
-		private readonly Dictionary<Axiom.Math.Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>> _namedEvents =
-			new Dictionary<Axiom.Math.Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>>();
+		private readonly Dictionary<Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>> _namedEvents = new Dictionary<Tuple<string, Action<NameValuePairList>>, Action<string, NameValuePairList>>();
 
 		[AxiomHelper( 0, 8 )]
 		public void AddEvent( string name, Action<NameValuePairList> handler )
 		{
-			var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>( name, handler );
+			var key = new Tuple<string, Action<NameValuePairList>>( name, handler );
 			Action<string, NameValuePairList> wrapper = ( n, args ) =>
 														{
 															if ( n == name )
+															{
 																handler( args );
+															}
 														};
 			Listener += wrapper;
-			_namedEvents.Add( key, wrapper );
+			this._namedEvents.Add( key, wrapper );
 		}
 
 		[AxiomHelper( 0, 8 )]
 		public void RemoveEvent( string name, Action<NameValuePairList> handler )
 		{
-			var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>( name, handler );
-			Listener -= _namedEvents[ key ];
-			_namedEvents.Remove( key );
+			var key = new Tuple<string, Action<NameValuePairList>>( name, handler );
+			Listener -= this._namedEvents[ key ];
+			this._namedEvents.Remove( key );
 		}
 
 		#endregion
@@ -823,7 +805,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return eventNames;
+				return this.eventNames;
 			}
 		}
 
@@ -835,10 +817,7 @@ namespace Axiom.Graphics
 		/// Gets the number of display monitors. <see name="Root.DisplayMonitorCount"/>
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract int DisplayMonitorCount
-		{
-			get;
-		}
+		public abstract int DisplayMonitorCount { get; }
 
 		#endregion
 
@@ -852,11 +831,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return wBuffer;
+				return this.wBuffer;
 			}
 			set
 			{
-				wBuffer = value;
+				this.wBuffer = value;
 			}
 		}
 
@@ -868,18 +847,10 @@ namespace Axiom.Graphics
 		/// Sets the color &amp; strength of the ambient (global directionless) light in the world.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Axiom interface uses ColorEx while Ogre uses a ternary (r,g,b) setter" )]
-		public abstract ColorEx AmbientLight 
-		{
-			get;
-			set;
-		}
+		public abstract ColorEx AmbientLight { get; set; }
 
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract ShadeOptions ShadingType
-		{ 
-			get;
-			set;
-		}
+		public abstract ShadeOptions ShadingType { get; set; }
 
 		#endregion
 
@@ -897,10 +868,7 @@ namespace Axiom.Graphics
 		/// the horizontal direction.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Real HorizontalTexelOffset
-		{
-			get;
-		}
+		public abstract Real HorizontalTexelOffset { get; }
 
 		#endregion
 
@@ -913,11 +881,7 @@ namespace Axiom.Graphics
 		/// normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract bool LightingEnabled
-		{
-			get;
-			set;
-		}
+		public abstract bool LightingEnabled { get; set; }
 
 		#endregion
 
@@ -936,11 +900,7 @@ namespace Axiom.Graphics
 		/// overridden by material settings. 
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract bool NormalizeNormals
-		{
-			get;
-			set;
-		}
+		public abstract bool NormalizeNormals { get; set; }
 
 		#endregion
 
@@ -950,11 +910,7 @@ namespace Axiom.Graphics
 		/// Gets/Sets the current projection matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Matrix4 ProjectionMatrix
-		{
-			get;
-			set;
-		}
+		public abstract Matrix4 ProjectionMatrix { get; set; }
 
 		#endregion
 
@@ -964,11 +920,7 @@ namespace Axiom.Graphics
 		/// Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract PolygonMode PolygonMode
-		{
-			get;
-			set;
-		}
+		public abstract PolygonMode PolygonMode { get; set; }
 
 		#endregion
 
@@ -983,11 +935,7 @@ namespace Axiom.Graphics
 		/// disabled.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract bool StencilCheckEnabled
-		{
-			get;
-			set;
-		}
+		public abstract bool StencilCheckEnabled { get; set; }
 
 		#endregion
 
@@ -1005,10 +953,7 @@ namespace Axiom.Graphics
 		/// the vertical direction.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Real VerticalTexelOffset
-		{
-			get;
-		}
+		public abstract Real VerticalTexelOffset { get; }
 
 		#endregion
 
@@ -1018,11 +963,7 @@ namespace Axiom.Graphics
 		/// Gets/Sets the current view matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Matrix4 ViewMatrix
-		{
-			get;
-			set;
-		}
+		public abstract Matrix4 ViewMatrix { get; set; }
 
 		#endregion
 
@@ -1032,11 +973,7 @@ namespace Axiom.Graphics
 		/// Sets the current world matrix.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Matrix4 WorldMatrix
-		{
-			get;
-			set;
-		}
+		public abstract Matrix4 WorldMatrix { get; set; }
 
 		#endregion
 
@@ -1053,10 +990,7 @@ namespace Axiom.Graphics
 		/// <see cref="SimpleRenderable.UseIdentityProjection"/>
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Real MinimumDepthInputValue
-		{
-			get;
-		}
+		public abstract Real MinimumDepthInputValue { get; }
 
 		#endregion
 
@@ -1073,10 +1007,7 @@ namespace Axiom.Graphics
 		/// <see cref="SimpleRenderable.UseIdentityProjection"/>
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract Real MaximumDepthInputValue
-		{
-			get;
-		}
+		public abstract Real MaximumDepthInputValue { get; }
 
 		#endregion
 
@@ -1093,7 +1024,9 @@ namespace Axiom.Graphics
 		protected virtual void FireEvent( string name )
 		{
 			if ( eventListeners != null )
+			{
 				eventListeners( name, null );
+			}
 		}
 
 		/// <summary>
@@ -1103,7 +1036,9 @@ namespace Axiom.Graphics
 		protected virtual void FireEvent( string name, NameValuePairList pars )
 		{
 			if ( eventListeners != null )
+			{
 				eventListeners( name, pars );
+			}
 		}
 
 		#endregion
@@ -1164,7 +1099,6 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void RegisterThread();
 
-
 		#endregion
 
 		#region UnregisterThread
@@ -1191,65 +1125,65 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void UseCustomRenderSystemCapabilities( RenderSystemCapabilities capabilities )
 		{
-			if ( realCapabilities != null )
+			if ( this.realCapabilities != null )
 			{
 				throw new AxiomException( "Custom render capabilities must be set before the RenderSystem is initialized." );
 			}
 
-			currentCapabilities = capabilities;
-			useCustomCapabilities = true;
+			this.currentCapabilities = capabilities;
+			this.useCustomCapabilities = true;
 		}
 
 		#endregion
 
-//        #region SetDepthBufferFor
+		//        #region SetDepthBufferFor
 
-//        /// <summary>
-//        /// Retrieves an existing DepthBuffer or creates a new one suited for the given RenderTarget and sets it.
-//        /// </summary>
-//        /// <remarks>
-//        /// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
-//        /// </remarks>
-//        /// <param name="renderTarget"></param>
-//        [OgreVersion( 1, 7, 2790 )]
-//        public virtual void SetDepthBufferFor( RenderTarget renderTarget )
-//        {
-//            var poolId = renderTarget.DepthBufferPool;
-//            //Find a depth buffer in the pool
+		//        /// <summary>
+		//        /// Retrieves an existing DepthBuffer or creates a new one suited for the given RenderTarget and sets it.
+		//        /// </summary>
+		//        /// <remarks>
+		//        /// RenderTarget's pool ID is respected. <see name="RenderTarget.DepthBufferPool"/>
+		//        /// </remarks>
+		//        /// <param name="renderTarget"></param>
+		//        [OgreVersion( 1, 7, 2790 )]
+		//        public virtual void SetDepthBufferFor( RenderTarget renderTarget )
+		//        {
+		//            var poolId = renderTarget.DepthBufferPool;
+		//            //Find a depth buffer in the pool
 
-//            // Axiom: emulate std::map [] access
-//            if ( !depthBufferPool.ContainsKey( poolId ) )
-//                depthBufferPool[ poolId ] = new DepthBufferVec();
+		//            // Axiom: emulate std::map [] access
+		//            if ( !depthBufferPool.ContainsKey( poolId ) )
+		//                depthBufferPool[ poolId ] = new DepthBufferVec();
 
-//            var itor = depthBufferPool[ poolId ].GetEnumerator();
+		//            var itor = depthBufferPool[ poolId ].GetEnumerator();
 
-//            var bAttached = false;
-//            while ( itor.MoveNext() && !bAttached )
-//                bAttached = renderTarget.AttachDepthBuffer( itor.Current );
+		//            var bAttached = false;
+		//            while ( itor.MoveNext() && !bAttached )
+		//                bAttached = renderTarget.AttachDepthBuffer( itor.Current );
 
-//            //Not found yet? Create a new one!
-//            if ( !bAttached )
-//            {
-//                var newDepthBuffer = CreateDepthBufferFor( renderTarget );
+		//            //Not found yet? Create a new one!
+		//            if ( !bAttached )
+		//            {
+		//                var newDepthBuffer = CreateDepthBufferFor( renderTarget );
 
-//                if ( newDepthBuffer != null )
-//                {
-//                    newDepthBuffer.SetPoolId( poolId );
-//                    depthBufferPool[ poolId ].Add( newDepthBuffer );
+		//                if ( newDepthBuffer != null )
+		//                {
+		//                    newDepthBuffer.SetPoolId( poolId );
+		//                    depthBufferPool[ poolId ].Add( newDepthBuffer );
 
-//                    bAttached = renderTarget.AttachDepthBuffer( newDepthBuffer );
+		//                    bAttached = renderTarget.AttachDepthBuffer( newDepthBuffer );
 
-//                    Debug.Assert( bAttached,
-//                                  @"A new DepthBuffer for a RenderTarget was created, but after creation
-//it says it's incompatible with that RT" );
-//                }
-//                else
-//                    LogManager.Instance.Write( "WARNING: Couldn't create a suited DepthBuffer for RT: {0}",
-//                                               renderTarget.Name );
-//            }
-//        }
+		//                    Debug.Assert( bAttached,
+		//                                  @"A new DepthBuffer for a RenderTarget was created, but after creation
+		//it says it's incompatible with that RT" );
+		//                }
+		//                else
+		//                    LogManager.Instance.Write( "WARNING: Couldn't create a suited DepthBuffer for RT: {0}",
+		//                                               renderTarget.Name );
+		//            }
+		//        }
 
-//        #endregion
+		//        #endregion
 
 		#region SetDepthBias
 
@@ -1326,10 +1260,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetDerivedDepthBias( bool derive, float baseValue, float multiplier, float slopeScale )
 		{
-			derivedDepthBias = derive;
-			derivedDepthBiasBase = baseValue;
-			derivedDepthBiasMultiplier = multiplier;
-			derivedDepthBiasSlopeScale = slopeScale;
+			this.derivedDepthBias = derive;
+			this.derivedDepthBiasBase = baseValue;
+			this.derivedDepthBiasMultiplier = multiplier;
+			this.derivedDepthBiasSlopeScale = slopeScale;
 		}
 
 		#endregion
@@ -1356,8 +1290,8 @@ namespace Axiom.Graphics
 		public virtual void AttachRenderTarget( RenderTarget target )
 		{
 			Debug.Assert( (int)target.Priority < NumRendertargetGroups );
-			renderTargets.Add( target.Name, target );
-			prioritizedRenderTargets.Add( target.Priority, target );
+			this.renderTargets.Add( target.Name, target );
+			this.prioritizedRenderTargets.Add( target.Priority, target );
 		}
 
 		#endregion
@@ -1370,7 +1304,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void BeginGeometryCount()
 		{
-			batchCount = vertexCount = faceCount = 0;
+			this.batchCount = this.vertexCount = this.faceCount = 0;
 		}
 
 		#endregion
@@ -1386,15 +1320,17 @@ namespace Axiom.Graphics
 		public virtual RenderTarget DetachRenderTarget( string name )
 		{
 			RenderTarget ret;
-			if ( renderTargets.TryGetValue( name, out ret ) )
+			if ( this.renderTargets.TryGetValue( name, out ret ) )
 			{
 				// Remove the render target from the priority groups.
-				prioritizedRenderTargets.RemoveWhere( ( k, v ) => v == ret );
+				this.prioritizedRenderTargets.RemoveWhere( ( k, v ) => v == ret );
 			}
 
 			// If detached render target is the active render target, reset active render target
-			if ( ret == activeRenderTarget )
-				activeRenderTarget = null;
+			if ( ret == this.activeRenderTarget )
+			{
+				this.activeRenderTarget = null;
+			}
 
 			return ret;
 		}
@@ -1438,11 +1374,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DisableTextureUnitsFrom( int texUnit )
 		{
-			var disableTo = Config.MaxTextureLayers;
-			if ( disableTo > disabledTexUnitsFrom )
-				disableTo = disabledTexUnitsFrom;
-			disabledTexUnitsFrom = texUnit;
-			for ( var i = texUnit; i < disableTo; ++i )
+			int disableTo = Config.MaxTextureLayers;
+			if ( disableTo > this.disabledTexUnitsFrom )
+			{
+				disableTo = this.disabledTexUnitsFrom;
+			}
+			this.disabledTexUnitsFrom = texUnit;
+			for ( int i = texUnit; i < disableTo; ++i )
 			{
 				DisableTextureUnit( i );
 			}
@@ -1459,7 +1397,7 @@ namespace Axiom.Graphics
 		public virtual void InitRenderTargets()
 		{
 			// init stats for each render target
-			foreach ( var item in renderTargets )
+			foreach ( var item in this.renderTargets )
 			{
 				item.Value.ResetStatistics();
 			}
@@ -1475,8 +1413,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void AddClipPlane( Plane p )
 		{
-			clipPlanes.Add( p );
-			clipPlanesDirty = true;
+			this.clipPlanes.Add( p );
+			this.clipPlanesDirty = true;
 		}
 
 		#endregion
@@ -1502,10 +1440,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void ResetClipPlanes()
 		{
-			if ( clipPlanes.Count != 0 )
+			if ( this.clipPlanes.Count != 0 )
 			{
-				clipPlanes.Clear();
-				clipPlanesDirty = true;
+				this.clipPlanes.Clear();
+				this.clipPlanesDirty = true;
 			}
 		}
 
@@ -1521,7 +1459,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyCameraRemoved( Camera camera )
 		{
-			foreach ( var item in renderTargets )
+			foreach ( var item in this.renderTargets )
 			{
 				item.Value.NotifyCameraRemoved( camera );
 			}
@@ -1558,25 +1496,27 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void Render( RenderOperation op )
 		{
-			var val = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
+			int val = op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount;
 
 			val *= op.numberOfInstances;
 
 			// account for a pass having multiple iterations
-			if ( currentPassIterationCount > 1 )
-				val *= currentPassIterationCount;
+			if ( this.currentPassIterationCount > 1 )
+			{
+				val *= this.currentPassIterationCount;
+			}
 
-			currentPassIterationNum = 0;
+			this.currentPassIterationNum = 0;
 
 			// calculate faces
 			switch ( op.operationType )
 			{
 				case OperationType.TriangleList:
-					faceCount += val / 3;
+					this.faceCount += val / 3;
 					break;
 				case OperationType.TriangleStrip:
 				case OperationType.TriangleFan:
-					faceCount += val - 2;
+					this.faceCount += val - 2;
 					break;
 				case OperationType.PointList:
 				case OperationType.LineList:
@@ -1585,15 +1525,15 @@ namespace Axiom.Graphics
 			}
 
 			// increment running vertex count
-			vertexCount += op.vertexData.vertexCount;
-			batchCount += currentPassIterationCount;
+			this.vertexCount += op.vertexData.vertexCount;
+			this.batchCount += this.currentPassIterationCount;
 
 			// sort out clip planes
 			// have to do it here in case of matrix issues
-			if ( clipPlanesDirty )
+			if ( this.clipPlanesDirty )
 			{
-				SetClipPlanesImpl( clipPlanes );
-				clipPlanesDirty = false;
+				SetClipPlanesImpl( this.clipPlanes );
+				this.clipPlanesDirty = false;
 			}
 		}
 
@@ -1608,24 +1548,26 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool UpdatePassIterationRenderState()
 		{
-			if ( currentPassIterationCount <= 1 )
-				return false;
-
-			--currentPassIterationCount;
-			++currentPassIterationNum;
-			if ( activeVertexGpuProgramParameters != null )
+			if ( this.currentPassIterationCount <= 1 )
 			{
-				activeVertexGpuProgramParameters.IncPassIterationNumber();
+				return false;
+			}
+
+			--this.currentPassIterationCount;
+			++this.currentPassIterationNum;
+			if ( this.activeVertexGpuProgramParameters != null )
+			{
+				this.activeVertexGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Vertex );
 			}
-			if ( activeGeometryGpuProgramParameters != null )
+			if ( this.activeGeometryGpuProgramParameters != null )
 			{
-				activeGeometryGpuProgramParameters.IncPassIterationNumber();
+				this.activeGeometryGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Geometry );
 			}
-			if ( activeFragmentGpuProgramParameters != null )
+			if ( this.activeFragmentGpuProgramParameters != null )
 			{
-				activeFragmentGpuProgramParameters.IncPassIterationNumber();
+				this.activeFragmentGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Fragment );
 			}
 			return true;
@@ -1651,8 +1593,7 @@ namespace Axiom.Graphics
 			var tex = (Texture)TextureManager.Instance.GetByName( tl.TextureName );
 
 			// Vertex Texture Binding?
-			if ( Capabilities.HasCapability( Graphics.Capabilities.VertexTextureFetch )
-				 && !Capabilities.VertexTextureUnitsShared )
+			if ( Capabilities.HasCapability( Graphics.Capabilities.VertexTextureFetch ) && !Capabilities.VertexTextureUnitsShared )
 			{
 				if ( tl.BindingType == TextureBindingType.Vertex )
 				{
@@ -1668,7 +1609,6 @@ namespace Axiom.Graphics
 					SetVertexTexture( texUnit, null );
 					SetTexture( texUnit, true, tex );
 				}
-
 			}
 			else
 			{
@@ -1681,11 +1621,7 @@ namespace Axiom.Graphics
 			SetTextureCoordSet( texUnit, tl.TextureCoordSet );
 
 			// Texture layer filtering
-			SetTextureUnitFiltering(
-				texUnit,
-				tl.GetTextureFiltering( FilterType.Min ),
-				tl.GetTextureFiltering( FilterType.Mag ),
-				tl.GetTextureFiltering( FilterType.Mip ) );
+			SetTextureUnitFiltering( texUnit, tl.GetTextureFiltering( FilterType.Min ), tl.GetTextureFiltering( FilterType.Mag ), tl.GetTextureFiltering( FilterType.Mip ) );
 
 			// Texture layer anistropy
 			SetTextureLayerAnisotropy( texUnit, tl.TextureAnisotropy );
@@ -1699,23 +1635,21 @@ namespace Axiom.Graphics
 			SetTextureBlendMode( texUnit, tl.AlphaBlendMode );
 
 			// Texture addressing mode
-			var uvw = tl.TextureAddressingMode;
+			UVWAddressing uvw = tl.TextureAddressingMode;
 			SetTextureAddressingMode( texUnit, uvw );
 
 			// Set the texture border color only if needed.
-			if ( uvw.U == TextureAddressing.Border
-				 || uvw.V == TextureAddressing.Border
-				 || uvw.W == TextureAddressing.Border )
+			if ( uvw.U == TextureAddressing.Border || uvw.V == TextureAddressing.Border || uvw.W == TextureAddressing.Border )
 			{
 				SetTextureBorderColor( texUnit, tl.TextureBorderColor );
 			}
 
 			// Set texture Effects
-			var anyCalcs = false;
+			bool anyCalcs = false;
 			// TODO: Change TextureUnitState Effects to use Enumerator
-			for ( var i = 0; i < tl.NumEffects; i++ )
+			for ( int i = 0; i < tl.NumEffects; i++ )
 			{
-				var effect = tl.GetEffect( i );
+				TextureEffect effect = tl.GetEffect( i );
 
 				switch ( effect.type )
 				{
@@ -1790,26 +1724,32 @@ namespace Axiom.Graphics
 		public virtual void Shutdown()
 		{
 			// Remove occlusion queries
-			foreach ( var i in hwOcclusionQueries )
+			foreach ( HardwareOcclusionQuery i in this.hwOcclusionQueries )
+			{
 				i.SafeDispose();
-			hwOcclusionQueries.Clear();
+			}
+			this.hwOcclusionQueries.Clear();
 
 			CleanupDepthBuffers();
 
 			// Remove all the render targets.
 			// (destroy primary target last since others may depend on it)
 			RenderTarget primary = null;
-			foreach ( var it in renderTargets )
+			foreach ( var it in this.renderTargets )
 			{
 				if ( primary == null && it.Value.IsPrimary )
+				{
 					primary = it.Value;
+				}
 				else
+				{
 					it.Value.SafeDispose();
+				}
 			}
 
-            primary.SafeDispose();
-			renderTargets.Clear();
-			prioritizedRenderTargets.Clear();
+			primary.SafeDispose();
+			this.renderTargets.Clear();
+			this.prioritizedRenderTargets.Clear();
 		}
 
 		#endregion
@@ -1826,7 +1766,7 @@ namespace Axiom.Graphics
 			UpdateAllRenderTargets( true );
 		}
 
-			/// <summary>
+		/// <summary>
 		/// Internal method for updating all render targets attached to this rendering system.
 		/// </summary>
 		/// <param name="swapBuffers"></param>
@@ -1835,9 +1775,9 @@ namespace Axiom.Graphics
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
-			foreach ( var targets in prioritizedRenderTargets )
+			foreach ( var targets in this.prioritizedRenderTargets )
 			{
-				foreach ( var target in targets.Value )
+				foreach ( RenderTarget target in targets.Value )
 				{
 					// only update if it is active
 					if ( target.IsActive && target.IsAutoUpdated )
@@ -1871,9 +1811,9 @@ namespace Axiom.Graphics
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
-			foreach ( var targets in prioritizedRenderTargets )
+			foreach ( var targets in this.prioritizedRenderTargets )
 			{
-				foreach ( var target in targets.Value )
+				foreach ( RenderTarget target in targets.Value )
 				{
 					// only update if it is active
 					if ( target.IsActive && target.IsAutoUpdated )
@@ -1898,15 +1838,15 @@ namespace Axiom.Graphics
 		public virtual RenderTarget GetRenderTarget( string name )
 		{
 			RenderTarget ret;
-			renderTargets.TryGetValue( name, out ret );
+			this.renderTargets.TryGetValue( name, out ret );
 			return ret;
 		}
 
 		#endregion
 
-        #region BeginFrame
+		#region BeginFrame
 
-        /// <summary>
+		/// <summary>
 		/// Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
 		/// several times per complete frame if multiple viewports exist.
 		/// </summary>
@@ -1965,16 +1905,18 @@ namespace Axiom.Graphics
 			{
 				case GpuProgramType.Vertex:
 					// mark clip planes dirty if changed (programmable can change space)
-					if ( !vertexProgramBound && clipPlanes.Count != 0 )
-						clipPlanesDirty = true;
+					if ( !this.vertexProgramBound && this.clipPlanes.Count != 0 )
+					{
+						this.clipPlanesDirty = true;
+					}
 
-					vertexProgramBound = true;
+					this.vertexProgramBound = true;
 					break;
 				case GpuProgramType.Geometry:
-					geometryProgramBound = true;
+					this.geometryProgramBound = true;
 					break;
 				case GpuProgramType.Fragment:
-					fragmentProgramBound = true;
+					this.fragmentProgramBound = true;
 					break;
 			}
 		}
@@ -1987,8 +1929,7 @@ namespace Axiom.Graphics
 		/// Bind Gpu program parameters.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
-			GpuProgramParameters.GpuParamVariability mask );
+		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask );
 
 		#endregion
 
@@ -2076,11 +2017,11 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams );
 
-        #endregion CreateRenderWindow
+		#endregion CreateRenderWindow
 
-        #region CreateRenderWindows
+		#region CreateRenderWindows
 
-        /// <summary>
+		/// <summary>
 		/// Creates multiple rendering windows.
 		/// </summary>
 		/// <param name="renderWindowDescriptions">
@@ -2091,24 +2032,27 @@ namespace Axiom.Graphics
 		/// <param name="createdWindows">This array will hold the created render windows.</param>
 		/// <returns>true on success.</returns>
 		[OgreVersion( 1, 7, 2790 )]
-		public virtual bool CreateRenderWindows( RenderWindowDescriptionList renderWindowDescriptions,
-						RenderWindowList createdWindows )
+		public virtual bool CreateRenderWindows( RenderWindowDescriptionList renderWindowDescriptions, RenderWindowList createdWindows )
 		{
-			var fullscreenWindowsCount = 0;
+			int fullscreenWindowsCount = 0;
 
-			for ( var nWindow = 0; nWindow < renderWindowDescriptions.Count; ++nWindow )
+			for ( int nWindow = 0; nWindow < renderWindowDescriptions.Count; ++nWindow )
 			{
-				var curDesc = renderWindowDescriptions[ nWindow ];
+				RenderWindowDescription curDesc = renderWindowDescriptions[ nWindow ];
 				if ( curDesc.UseFullScreen )
+				{
 					fullscreenWindowsCount++;
+				}
 
-				var renderWindowFound = false;
+				bool renderWindowFound = false;
 
-				if ( renderTargets.ContainsKey( curDesc.Name ) )
+				if ( this.renderTargets.ContainsKey( curDesc.Name ) )
+				{
 					renderWindowFound = true;
+				}
 				else
 				{
-					for ( var nSecWindow = nWindow + 1; nSecWindow < renderWindowDescriptions.Count; ++nSecWindow )
+					for ( int nSecWindow = nWindow + 1; nSecWindow < renderWindowDescriptions.Count; ++nSecWindow )
 					{
 						if ( curDesc.Name != renderWindowDescriptions[ nSecWindow ].Name )
 						{
@@ -2123,9 +2067,7 @@ namespace Axiom.Graphics
 				// same name as the one supplied
 				if ( renderWindowFound )
 				{
-					throw new AxiomException(
-						"A render target of the same name '{0}' already exists.  You cannot create a new window with this name.",
-						curDesc.Name );
+					throw new AxiomException( "A render target of the same name '{0}' already exists.  You cannot create a new window with this name.", curDesc.Name );
 				}
 			}
 
@@ -2142,11 +2084,11 @@ namespace Axiom.Graphics
 			return true;
 		}
 
-        #endregion CreateRenderWindows
+		#endregion CreateRenderWindows
 
-        #region CreateMultiRenderTarget
+		#region CreateMultiRenderTarget
 
-        /// <summary>
+		/// <summary>
 		/// Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures at once.
 		/// </summary>
 		/// <Remarks>
@@ -2179,7 +2121,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DestroyHardwareOcclusionQuery( HardwareOcclusionQuery hq )
 		{
-			if ( hwOcclusionQueries.Remove( hq ) )
+			if ( this.hwOcclusionQueries.Remove( hq ) )
 			{
 				hq.Dispose();
 			}
@@ -2221,9 +2163,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			vertexProgramBound = false;
-			geometryProgramBound = false;
-			fragmentProgramBound = false;
+			this.vertexProgramBound = false;
+			this.geometryProgramBound = false;
+			this.fragmentProgramBound = false;
 			return null;
 		}
 
@@ -2239,33 +2181,33 @@ namespace Axiom.Graphics
 
 		#endregion
 
-        #region CreateRenderSystemCapabilities
+		#region CreateRenderSystemCapabilities
 
-        /// <summary>
-        /// Query the real capabilities of the GPU and driver in the RenderSystem
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
+		/// <summary>
+		/// Query the real capabilities of the GPU and driver in the RenderSystem
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public abstract RenderSystemCapabilities CreateRenderSystemCapabilities();
 
-        #endregion
+		#endregion
 
-        #region MakeOrthoMatrix
+		#region MakeOrthoMatrix
 
-        /// <summary>
-        /// Builds an orthographic projection matrix suitable for this render system.
-        /// </summary>
-        /// <remarks>
-        /// Because different APIs have different requirements (some incompatible) for the
-        /// projection matrix, this method allows each to implement their own correctly and pass
-        /// back a generic Matrix4 for storage in the engine.
-        /// </remarks>
-        /// <param name="fov">Field of view angle.</param>
-        /// <param name="aspectRatio">Aspect ratio.</param>
-        /// <param name="near">Near clipping plane distance.</param>
-        /// <param name="far">Far clipping plane distance.</param>
-        /// <param name="dest"></param>
-        /// <param name="forGpuPrograms"></param>
-        [OgreVersion( 1, 7, 2790 )]
+		/// <summary>
+		/// Builds an orthographic projection matrix suitable for this render system.
+		/// </summary>
+		/// <remarks>
+		/// Because different APIs have different requirements (some incompatible) for the
+		/// projection matrix, this method allows each to implement their own correctly and pass
+		/// back a generic Matrix4 for storage in the engine.
+		/// </remarks>
+		/// <param name="fov">Field of view angle.</param>
+		/// <param name="aspectRatio">Aspect ratio.</param>
+		/// <param name="near">Near clipping plane distance.</param>
+		/// <param name="far">Far clipping plane distance.</param>
+		/// <param name="dest"></param>
+		/// <param name="forGpuPrograms"></param>
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
 #else
@@ -2273,46 +2215,46 @@ namespace Axiom.Graphics
 #endif
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderSystem.MakeOrthoMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
-        public void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
-        {
-            MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
-        }
+		/// <see cref="Axiom.Graphics.RenderSystem.MakeOrthoMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
+		public void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+		{
+			MakeOrthoMatrix( fov, aspectRatio, near, far, out dest, false );
+		}
 #endif
 
-        #endregion MakeOrthoMatrix
+		#endregion MakeOrthoMatrix
 
-        #region ApplyObliqueDepthProjection
+		#region ApplyObliqueDepthProjection
 
-        /// <summary>
-        /// Update a perspective projection matrix to use 'oblique depth projection'.
-        /// </summary>
-        /// <remarks>
-        /// This method can be used to change the nature of a perspective 
-        /// transform in order to make the near plane not perpendicular to the 
-        /// camera view direction, but to be at some different orientation. 
-        /// This can be useful for performing arbitrary clipping (e.g. to a 
-        /// reflection plane) which could otherwise only be done using user
-        /// clip planes, which are more expensive, and not necessarily supported
-        /// on all cards.
-        /// </remarks>
-        /// <param name="matrix">The existing projection matrix. Note that this must be a
-        /// perspective transform (not orthographic), and must not have already
-        /// been altered by this method. The matrix will be altered in-place.
-        /// </param>
-        /// <param name="plane">
-        /// The plane which is to be used as the clipping plane. This
-        /// plane must be in CAMERA (view) space.
-        /// </param>
-        /// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function</param>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void ApplyObliqueDepthProjection( ref Matrix4 matrix, Plane plane, bool forGpuProgram );
+		/// <summary>
+		/// Update a perspective projection matrix to use 'oblique depth projection'.
+		/// </summary>
+		/// <remarks>
+		/// This method can be used to change the nature of a perspective 
+		/// transform in order to make the near plane not perpendicular to the 
+		/// camera view direction, but to be at some different orientation. 
+		/// This can be useful for performing arbitrary clipping (e.g. to a 
+		/// reflection plane) which could otherwise only be done using user
+		/// clip planes, which are more expensive, and not necessarily supported
+		/// on all cards.
+		/// </remarks>
+		/// <param name="matrix">The existing projection matrix. Note that this must be a
+		/// perspective transform (not orthographic), and must not have already
+		/// been altered by this method. The matrix will be altered in-place.
+		/// </param>
+		/// <param name="plane">
+		/// The plane which is to be used as the clipping plane. This
+		/// plane must be in CAMERA (view) space.
+		/// </param>
+		/// <param name="forGpuProgram">Is this for use with a Gpu program or fixed-function</param>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void ApplyObliqueDepthProjection( ref Matrix4 matrix, Plane plane, bool forGpuProgram );
 
-        #endregion ApplyObliqueDepthProjection
+		#endregion ApplyObliqueDepthProjection
 
-        #region ConvertProjectionMatrix
+		#region ConvertProjectionMatrix
 
-        /// <summary>
+		/// <summary>
 		/// Converts a uniform projection matrix to one suitable for this render system.
 		/// </summary>
 		/// <remarks>
@@ -2327,20 +2269,20 @@ namespace Axiom.Graphics
 #if NET_40
 		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram = false );
 #else
-        public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram );
+		public abstract void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram );
 #endif
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderSystem.ConvertProjectionMatrix(Matrix4, out Matrix4, bool)"/>
-        public void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest )
-        {
-            ConvertProjectionMatrix( matrix, out dest, false );
-        }
+		/// <see cref="Axiom.Graphics.RenderSystem.ConvertProjectionMatrix(Matrix4, out Matrix4, bool)"/>
+		public void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest )
+		{
+			ConvertProjectionMatrix( matrix, out dest, false );
+		}
 #endif
 
-        #endregion ConvertProjectionMatrix
+		#endregion ConvertProjectionMatrix
 
-        #region MakeProjectionMatrix
+		#region MakeProjectionMatrix
 
 		/// <summary>
 		/// Builds a perspective projection matrix suitable for this render system.
@@ -2364,11 +2306,11 @@ namespace Axiom.Graphics
 #endif
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
-        public void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
-        {
-            MakeProjectionMatrix( fov, aspectRatio, near, far, out dest, false );
-        }
+		/// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
+		public void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest )
+		{
+			MakeProjectionMatrix( fov, aspectRatio, near, far, out dest, false );
+		}
 #endif
 
 		/// <summary>
@@ -2380,26 +2322,26 @@ namespace Axiom.Graphics
 		/// at the origin.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
-		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top,Real nearPlane, Real farPlane, out Matrix4 dest, 
+		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest,
 #if NET_40
             bool forGpuProgram = false );
 #else
-            bool forGpuProgram );
+ bool forGpuProgram );
 #endif
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Real, Real, Real, Real, Real, Real, out Matrix4, bool)"/>
-        public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest )
-        {
-            MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
-        }
+		/// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Real, Real, Real, Real, Real, Real, out Matrix4, bool)"/>
+		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest )
+		{
+			MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
+		}
 #endif
 
-        #endregion MakeProjectionMatrix
+		#endregion MakeProjectionMatrix
 
-        #region SetAlphaRejectSettings
+		#region SetAlphaRejectSettings
 
-        /// <summary>
+		/// <summary>
 		///  Sets the global alpha rejection approach for future renders.
 		/// </summary>
 		/// <param name="func">The comparison function which must pass for a pixel to be written.</param>
@@ -2415,27 +2357,27 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetTextureProjectionRelativeTo( bool enabled, Vector3 pos )
 		{
-			texProjRelative = true;
-			texProjRelativeOrigin = pos;
+			this.texProjRelative = true;
+			this.texProjRelativeOrigin = pos;
 		}
 
 		#endregion
 
-        //#region CreateDepthBufferFor
+		//#region CreateDepthBufferFor
 
-        ///// <summary>
-        ///// Creates a DepthBuffer that can be attached to the specified RenderTarget
-        ///// </summary>
-        ///// <remarks>
-        ///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
-        ///// Caller is responsible for putting this buffer into the right pool, for
-        ///// attaching, and deleting it. Here's where API-specific magic happens.
-        ///// Don't call this directly unless you know what you're doing.
-        ///// </remarks>
-        //[OgreVersion( 1, 7, 2790 )]
-        //public abstract DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget );
+		///// <summary>
+		///// Creates a DepthBuffer that can be attached to the specified RenderTarget
+		///// </summary>
+		///// <remarks>
+		///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
+		///// Caller is responsible for putting this buffer into the right pool, for
+		///// attaching, and deleting it. Here's where API-specific magic happens.
+		///// Don't call this directly unless you know what you're doing.
+		///// </remarks>
+		//[OgreVersion( 1, 7, 2790 )]
+		//public abstract DepthBuffer CreateDepthBufferFor( RenderTarget renderTarget );
 
-        //#endregion
+		//#endregion
 
 		#region CleanupDepthBuffers
 
@@ -2453,7 +2395,7 @@ namespace Axiom.Graphics
 		{
 			CleanupDepthBuffers( true );
 		}
-	
+
 		/// <summary>
 		/// Removes all depth buffers. Should be called on device lost and shutdown
 		/// </summary>
@@ -2467,19 +2409,21 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void CleanupDepthBuffers( bool cleanManualBuffers )
 		{
-			foreach ( var itmap in depthBufferPool )
+			foreach ( var itmap in this.depthBufferPool )
 			{
-				var itor = itmap.Value.GetEnumerator();
+				List<DepthBuffer>.Enumerator itor = itmap.Value.GetEnumerator();
 				while ( itor.MoveNext() )
 				{
 					if ( cleanManualBuffers || !itor.Current.IsManual )
+					{
 						itor.Dispose();
+					}
 				}
 
 				itmap.Value.Clear();
 			}
 
-			depthBufferPool.Clear();
+			this.depthBufferPool.Clear();
 		}
 
 		#endregion
@@ -2545,7 +2489,12 @@ namespace Axiom.Graphics
 		/// <param name="depthFunction">Sets the function required for the depth test.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction );
-		public void SetDepthBufferParams( ){ SetDepthBufferParams( true, true, CompareFunction.LessEqual );}
+
+		public void SetDepthBufferParams()
+		{
+			SetDepthBufferParams( true, true, CompareFunction.LessEqual );
+		}
+
 		public void SetDepthBufferParams( bool depthTest, bool depthWrite )
 		{
 			SetDepthBufferParams( depthTest, depthWrite, CompareFunction.LessEqual );
@@ -2733,8 +2682,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetStencilBufferParams()
 		{
-			SetStencilBufferParams(CompareFunction.AlwaysPass,0,-1,StencilOperation.Keep,StencilOperation.Keep,StencilOperation.Keep, false );
+			SetStencilBufferParams( CompareFunction.AlwaysPass, 0, -1, StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false );
 		}
+
 		/// <summary>
 		/// This method allows you to set all the stencil buffer parameters in one call.
 		/// </summary>
@@ -2768,7 +2718,7 @@ namespace Axiom.Graphics
 		/// The bitmask applied to both the stencil value and the reference value 
 		/// before comparison.
 		/// </param>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public void SetStencilBufferParams( CompareFunction function, int refValue )
 		{
 			SetStencilBufferParams( function, refValue, -1, StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep, false );
@@ -2813,7 +2763,7 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="passOp">The action to take when both the stencil and depth check pass.</param>
 		[OgreVersion( 1, 7, 2790 )]
-		public void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp)
+		public void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp )
 		{
 			SetStencilBufferParams( function, refValue, mask, stencilFailOp, depthFailOp, passOp, false );
 		}
@@ -3037,10 +2987,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetVertexTexture( int unit, Texture texture )
 		{
-			throw new NotSupportedException(
-				"This rendersystem does not support separate vertex texture samplers, " +
-				"you should use the regular texture samplers which are shared between " +
-				"the vertex and fragment units." );
+			throw new NotSupportedException( "This rendersystem does not support separate vertex texture samplers, " + "you should use the regular texture samplers which are shared between " + "the vertex and fragment units." );
 		}
 
 		#endregion
@@ -3196,16 +3143,18 @@ namespace Axiom.Graphics
 			{
 				case GpuProgramType.Vertex:
 					// mark clip planes dirty if changed (programmable can change space)
-					if ( vertexProgramBound && clipPlanes.Count != 0 )
-						clipPlanesDirty = true;
+					if ( this.vertexProgramBound && this.clipPlanes.Count != 0 )
+					{
+						this.clipPlanesDirty = true;
+					}
 
-					vertexProgramBound = false;
+					this.vertexProgramBound = false;
 					break;
 				case GpuProgramType.Geometry:
-					geometryProgramBound = false;
+					this.geometryProgramBound = false;
 					break;
 				case GpuProgramType.Fragment:
-					fragmentProgramBound = false;
+					this.fragmentProgramBound = false;
 					break;
 			}
 		}
@@ -3223,11 +3172,11 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
-					return vertexProgramBound;
+					return this.vertexProgramBound;
 				case GpuProgramType.Geometry:
-					return geometryProgramBound;
+					return this.geometryProgramBound;
 				case GpuProgramType.Fragment:
-					return fragmentProgramBound;
+					return this.fragmentProgramBound;
 			}
 			return false;
 		}
@@ -3257,7 +3206,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DestroyRenderTarget( string name )
 		{
-			var rt = DetachRenderTarget( name );
+			RenderTarget rt = DetachRenderTarget( name );
 			rt.Dispose();
 		}
 
@@ -3299,7 +3248,6 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void InitializeFromRenderSystemCapabilities( RenderSystemCapabilities caps, RenderTarget primary );
 
-
 		#endregion
 
 		#endregion Methods
@@ -3322,16 +3270,16 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
-        [OgreVersion( 1, 7, 2, "~RenderSystem" )]
+		[OgreVersion( 1, 7, 2, "~RenderSystem" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-                    Shutdown();
-                    realCapabilities = null;
-                    currentCapabilities = null;
+					Shutdown();
+					this.realCapabilities = null;
+					this.currentCapabilities = null;
 				}
 
 				// There are no unmanaged resources to release, but

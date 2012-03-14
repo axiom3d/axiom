@@ -41,8 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
+
 
 #endregion Namespace Declarations
 
@@ -51,7 +50,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// Interface for custom composition passes, allowing custom operations (in addition to
 	/// the quad, scene and clear operations) in composition passes.
-    /// <seealso cref="CompositorManager.RegisterCustomCompositorPass"/>
+	/// <seealso cref="CompositorManager.RegisterCustomCompositorPass"/>
 	/// </summary>
 	public interface ICustomCompositionPass
 	{

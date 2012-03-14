@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -43,55 +45,57 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
+		private long _bottom;
 		private long _left;
+		private long _right;
+
+		private long _top;
+
 		public long Left
 		{
 			get
 			{
-				return _left;
+				return this._left;
 			}
 			set
 			{
-				_left = value;
+				this._left = value;
 			}
 		}
 
-		private long _top;
 		public long Top
 		{
 			get
 			{
-				return _top;
+				return this._top;
 			}
 			set
 			{
-				_top = value;
+				this._top = value;
 			}
 		}
 
-		private long _right;
 		public long Right
 		{
 			get
 			{
-				return _right;
+				return this._right;
 			}
 			set
 			{
-				_right = value;
+				this._right = value;
 			}
 		}
 
-		private long _bottom;
 		public long Bottom
 		{
 			get
 			{
-				return _bottom;
+				return this._bottom;
 			}
 			set
 			{
-				_bottom = value;
+				this._bottom = value;
 			}
 		}
 
@@ -99,38 +103,40 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _right - _left;
+				return this._right - this._left;
 			}
 			set
 			{
-				_left = value - _right;
-			}
-		}
-		
-        public long Height
-		{
-			get
-			{
-				return _bottom - _top;
-			}
-			set
-			{
-				_bottom = value - _top;
+				this._left = value - this._right;
 			}
 		}
 
-        public bool IsNull
-        {
-            get
-            {
-                return this.Width == 0 || this.Height == 0;
-            }
-            set
-            {
-                if ( value )
-                    _left = _right = _top = _bottom = 0;
-            }
-        }
+		public long Height
+		{
+			get
+			{
+				return this._bottom - this._top;
+			}
+			set
+			{
+				this._bottom = value - this._top;
+			}
+		}
+
+		public bool IsNull
+		{
+			get
+			{
+				return Width == 0 || Height == 0;
+			}
+			set
+			{
+				if ( value )
+				{
+					this._left = this._right = this._top = this._bottom = 0;
+				}
+			}
+		}
 
 		#endregion Fields and Properties
 
@@ -138,18 +144,18 @@ namespace Axiom.Core
 
 		public Rectangle( long left, long top, long right, long bottom )
 		{
-			_left = left;
-			_top = top;
-			_right = right;
-			_bottom = bottom;
+			this._left = left;
+			this._top = top;
+			this._right = right;
+			this._bottom = bottom;
 		}
 
 		public Rectangle( Rectangle copy )
 		{
-			_left = copy._left;
-			_top = copy._top;
-			_right = copy._right;
-			_bottom = copy._bottom;
+			this._left = copy._left;
+			this._top = copy._top;
+			this._right = copy._right;
+			this._bottom = copy._bottom;
 		}
 
 		#endregion Construction and Destruction
@@ -158,7 +164,7 @@ namespace Axiom.Core
 
 		public bool Contains( long x, long y )
 		{
-			return x >= _left && x <= _right && y >= _top && y <= _bottom;
+			return x >= this._left && x <= this._right && y >= this._top && y <= this._bottom;
 		}
 
 		public Rectangle Intersect( Rectangle rhs )
@@ -166,15 +172,15 @@ namespace Axiom.Core
 			return Intersect( this, rhs );
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public Rectangle Merge( Rectangle rhs )
 		{
-			if ( this.IsNull )
+			if ( IsNull )
 			{
 				this = rhs;
 			}
-			
-            else if ( !rhs.IsNull )
+
+			else if ( !rhs.IsNull )
 			{
 				Left = System.Math.Min( Left, rhs.Left );
 				Right = System.Math.Max( Right, rhs.Right );
@@ -187,98 +193,94 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
 		{
-			Rectangle ret = new Rectangle();
+			var ret = new Rectangle();
 
-            if ( lhs.IsNull || rhs.IsNull )
-            {
-                //empty
-                return ret;
-            }
-            else
-            {
-                ret.Left = System.Math.Min( lhs.Left, rhs.Left );
-                ret.Right = System.Math.Max( lhs.Right, rhs.Right );
-                ret.Top = System.Math.Min( lhs.Top, rhs.Top );
-                ret.Bottom = System.Math.Max( lhs.Bottom, rhs.Bottom );
-            }
+			if ( lhs.IsNull || rhs.IsNull )
+			{
+				//empty
+				return ret;
+			}
+			else
+			{
+				ret.Left = System.Math.Min( lhs.Left, rhs.Left );
+				ret.Right = System.Math.Max( lhs.Right, rhs.Right );
+				ret.Top = System.Math.Min( lhs.Top, rhs.Top );
+				ret.Bottom = System.Math.Max( lhs.Bottom, rhs.Bottom );
+			}
 
-            if ( ret.Left > ret.Right || ret.Top > ret.Bottom )
-            {
-                // no intersection, return empty
-                ret.IsNull = true;
-            }
+			if ( ret.Left > ret.Right || ret.Top > ret.Bottom )
+			{
+				// no intersection, return empty
+				ret.IsNull = true;
+			}
 
 			return ret;
 		}
 
-        public override string ToString()
-        {
-            return string.Format(
-                "Rectangle<>(l:{0}, t:{1}, r:{2}, b:{3})",
-                _left,
-                _top,
-                _right,
-                _bottom
-                );
-        }
+		public override string ToString()
+		{
+			return string.Format( "Rectangle<>(l:{0}, t:{1}, r:{2}, b:{3})", this._left, this._top, this._right, this._bottom );
+		}
 	}
 
 	public struct RectangleF
 	{
 		#region Fields and Properties
 
+		private float _bottom;
 		private float _left;
+		private float _right;
+
+		private float _top;
+
 		public float Left
 		{
 			get
 			{
-				return _left;
+				return this._left;
 			}
 			set
 			{
-				_left = value;
+				this._left = value;
 			}
 		}
 
-		private float _top;
 		public float Top
 		{
 			get
 			{
-				return _top;
+				return this._top;
 			}
 			set
 			{
-				_top = value;
+				this._top = value;
 			}
 		}
 
-		private float _right;
 		public float Right
 		{
 			get
 			{
-				return _right;
+				return this._right;
 			}
 			set
 			{
-				_right = value;
+				this._right = value;
 			}
 		}
 
-		private float _bottom;
 		public float Bottom
 		{
 			get
 			{
-				return _bottom;
+				return this._bottom;
 			}
 			set
 			{
-				_bottom = value;
+				this._bottom = value;
 			}
 		}
 
@@ -286,22 +288,23 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _right - _left;
+				return this._right - this._left;
 			}
 			set
 			{
-				_right = value - _left;
+				this._right = value - this._left;
 			}
 		}
+
 		public float Height
 		{
 			get
 			{
-				return _bottom - _top;
+				return this._bottom - this._top;
 			}
 			set
 			{
-				_bottom = value - _top;
+				this._bottom = value - this._top;
 			}
 		}
 
@@ -311,18 +314,18 @@ namespace Axiom.Core
 
 		public RectangleF( float left, float top, float right, float bottom )
 		{
-			_left = left;
-			_top = top;
-			_right = right;
-			_bottom = bottom;
+			this._left = left;
+			this._top = top;
+			this._right = right;
+			this._bottom = bottom;
 		}
 
 		public RectangleF( RectangleF copy )
 		{
-			_left = copy._left;
-			_top = copy._top;
-			_right = copy._right;
-			_bottom = copy._bottom;
+			this._left = copy._left;
+			this._top = copy._top;
+			this._right = copy._right;
+			this._bottom = copy._bottom;
 		}
 
 		#endregion Construction and Destruction
@@ -331,7 +334,7 @@ namespace Axiom.Core
 
 		public bool Contains( float x, float y )
 		{
-			return x >= _left && x <= _right && y >= _top && y <= _bottom;
+			return x >= this._left && x <= this._right && y >= this._top && y <= this._bottom;
 		}
 
 		public RectangleF Intersect( RectangleF rhs )
@@ -356,9 +359,7 @@ namespace Axiom.Core
 			return this;
 		}
 
-
 		#endregion Methods
-
 
 		internal static RectangleF Intersect( RectangleF lhs, RectangleF rhs )
 		{
@@ -372,5 +373,4 @@ namespace Axiom.Core
 			return r;
 		}
 	}
-
 }

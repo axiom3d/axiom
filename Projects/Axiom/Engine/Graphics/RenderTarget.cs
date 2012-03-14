@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,19 +19,23 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.CrossPlatform;
@@ -48,12 +53,12 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Delegate for RenderTarget update events.
 	/// </summary>
-	public delegate void RenderTargetEventHandler(RenderTargetEventArgs e);
+	public delegate void RenderTargetEventHandler( RenderTargetEventArgs e );
 
 	/// <summary>
 	///    Delegate for Viewport update events.
 	/// </summary>
-	public delegate void RenderTargetViewportEventHandler(RenderTargetViewportEventArgs e);
+	public delegate void RenderTargetViewportEventHandler( RenderTargetViewportEventArgs e );
 
 	/// <summary>
 	///    Event arguments for render target updates.
@@ -62,19 +67,18 @@ namespace Axiom.Graphics
 	{
 		internal RenderTarget source;
 
-		public RenderTarget Source
-		{
-			get
-			{
-				return source;
-			}
-		}
-
-		public RenderTargetEventArgs(RenderTarget source)
+		public RenderTargetEventArgs( RenderTarget source )
 		{
 			this.source = source;
 		}
 
+		public RenderTarget Source
+		{
+			get
+			{
+				return this.source;
+			}
+		}
 	}
 
 	/// <summary>
@@ -84,20 +88,19 @@ namespace Axiom.Graphics
 	{
 		internal Viewport viewport;
 
-		public Viewport Viewport
-		{
-			get
-			{
-				return viewport;
-			}
-		}
-
-		public RenderTargetViewportEventArgs(RenderTarget source, Viewport viewport)
-			: base(source)
+		public RenderTargetViewportEventArgs( RenderTarget source, Viewport viewport )
+			: base( source )
 		{
 			this.viewport = viewport;
 		}
 
+		public Viewport Viewport
+		{
+			get
+			{
+				return this.viewport;
+			}
+		}
 	}
 
 	#endregion Delegate/EventArg Declarations
@@ -148,37 +151,44 @@ namespace Axiom.Graphics
 		public struct FrameStatistics
 		{
 			/// <summary>
-			/// The number of Frames per second.
-			/// </summary>
-			public Real LastFPS;
-			/// <summary>
 			/// The average number of Frames per second since Root.StartRendering was called.
 			/// </summary>
 			public float AverageFPS;
-			/// <summary>
-			/// The highest number of Frames per second since Root.StartRendering was called.
-			/// </summary>
-			public float BestFPS;
-			/// <summary>
-			/// The lowest number of Frames per second since Root.StartRendering was called.
-			/// </summary>
-			public float WorstFPS;
-			/// <summary>
-			/// The best frame time recorded since Root.StartRendering was called.
-			/// </summary>
-			public float BestFrameTime;
-			/// <summary>
-			/// The worst frame time recorded since Root.StartRendering was called.
-			/// </summary>
-			public float WorstFrameTime;
-			/// <summary>
-			/// The number of triangles processed in the last call to Update()
-			/// </summary>
-			public float TriangleCount;
+
 			/// <summary>
 			/// The number of batches procecssed in the last call to Update()
 			/// </summary>
 			public float BatchCount;
+
+			/// <summary>
+			/// The highest number of Frames per second since Root.StartRendering was called.
+			/// </summary>
+			public float BestFPS;
+
+			/// <summary>
+			/// The best frame time recorded since Root.StartRendering was called.
+			/// </summary>
+			public float BestFrameTime;
+
+			/// <summary>
+			/// The number of Frames per second.
+			/// </summary>
+			public Real LastFPS;
+
+			/// <summary>
+			/// The number of triangles processed in the last call to Update()
+			/// </summary>
+			public float TriangleCount;
+
+			/// <summary>
+			/// The lowest number of Frames per second since Root.StartRendering was called.
+			/// </summary>
+			public float WorstFPS;
+
+			/// <summary>
+			/// The worst frame time recorded since Root.StartRendering was called.
+			/// </summary>
+			public float WorstFrameTime;
 		};
 
 		public enum FrameBuffer
@@ -192,42 +202,43 @@ namespace Axiom.Graphics
 
 		#region Fields and Properties
 
-		[AxiomHelper(0, 8, "Cached timer used for statistic queries")]
+		[AxiomHelper( 0, 8, "Cached timer used for statistic queries" )]
 		private readonly ITimer _timer = Root.Instance.Timer;
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected FrameStatistics stats;
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected long lastTime;
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected long lastSecond;
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected long frameCount;
 
 		#region DepthBufferPool Property
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected PoolId depthBufferPoolId;
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public PoolId DepthBufferPool
 		{
 			get
 			{
-				return depthBufferPoolId;
+				return this.depthBufferPoolId;
 			}
 			set
 			{
-				if (depthBufferPoolId != value)
+				if ( this.depthBufferPoolId != value )
 				{
-					depthBufferPoolId = value;
+					this.depthBufferPoolId = value;
 					DetachDepthBuffer();
 				}
 			}
 		}
+
 		#endregion DepthBufferPool Property
 
 		#region Height Property
@@ -235,17 +246,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Height of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected int height;
+
 		/// <summary>
 		/// Gets the height of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual int Height
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
@@ -256,17 +268,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Width of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected int width;
+
 		/// <summary>
 		/// Gets the width of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual int Width
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
@@ -277,17 +290,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Color depth of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected int colorDepth;
+
 		/// <summary>
 		/// Gets the color depth of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual int ColorDepth
 		{
 			get
 			{
-				return colorDepth;
+				return this.colorDepth;
 			}
 		}
 
@@ -295,17 +309,18 @@ namespace Axiom.Graphics
 
 		#region DepthBuffer Property
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected DepthBuffer depthBuffer;
+
 		/// <summary>
 		/// Gets the depthbuffer attached to this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual DepthBuffer DepthBuffer
 		{
 			get
 			{
-				return depthBuffer;
+				return this.depthBuffer;
 			}
 		}
 
@@ -316,21 +331,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Indicates the priority of this render target.  Higher priority targets will get processed first.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected RenderTargetPriority priority;
+
 		/// <summary>
 		/// Gets/Sets the priority of this render target.  Higher priority targets will get processed first.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual RenderTargetPriority Priority
 		{
 			get
 			{
-				return priority;
+				return this.priority;
 			}
 			set
 			{
-				priority = value;
+				this.priority = value;
 			}
 		}
 
@@ -341,20 +357,20 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Unique name assigned to this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected string name;
+
 		/// <summary>
 		/// Gets the name of this render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual string Name
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
-
 
 		#endregion Name Property
 
@@ -364,7 +380,7 @@ namespace Axiom.Graphics
 		///     Signals whether textures should be flipping before this target
 		///     is updated.  Required for render textures in some API's.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public abstract bool RequiresTextureFlipping { get; }
 
 		#endregion RequiresTextureFlipping Property
@@ -374,23 +390,23 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Flag that states whether this target is active or not.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected bool active = true;
 
 		/// <summary>
 		///    Gets/Sets whether this RenderTarget is active or not.  When inactive, it will be skipped
 		///    during processing each frame.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsActive
 		{
 			get
 			{
-				return active && !IsDisposed;
+				return this.active && !IsDisposed;
 			}
 			set
 			{
-				active = value;
+				this.active = value;
 			}
 		}
 
@@ -405,7 +421,7 @@ namespace Axiom.Graphics
 		/// This is the case because it holds the context for vertex,
 		/// index buffers and textures..
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsPrimary
 		{
 			get
@@ -422,6 +438,7 @@ namespace Axiom.Graphics
 		///     Is this render target updated automatically each frame?
 		/// </summary>
 		private bool autoUpdate = true;
+
 		/// <summary>
 		///    Gets/Sets whether this target should be automatically updated if Axiom's rendering
 		///    loop or Root.UpdateAllRenderTargets is being used.
@@ -436,11 +453,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return autoUpdate;
+				return this.autoUpdate;
 			}
 			set
 			{
-				autoUpdate = value;
+				this.autoUpdate = value;
 			}
 		}
 
@@ -449,15 +466,16 @@ namespace Axiom.Graphics
 		#region isDepthBuffered Property
 
 		private bool _isDepthBuffered = true;
+
 		protected bool isDepthBuffered
 		{
 			get
 			{
-				return _isDepthBuffered;
+				return this._isDepthBuffered;
 			}
 			set
 			{
-				_isDepthBuffered = value;
+				this._isDepthBuffered = value;
 			}
 		}
 
@@ -479,7 +497,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return hwGamma;
+				return this.hwGamma;
 			}
 		}
 
@@ -491,6 +509,7 @@ namespace Axiom.Graphics
 		///    Flag that states whether this target is FSAA.
 		/// </summary>
 		protected int fsaa;
+
 		/// <summary>
 		///    Gets/Sets whether this RenderTarget is FSAA or not.
 		/// </summary>
@@ -498,7 +517,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaa;
+				return this.fsaa;
 			}
 		}
 
@@ -516,7 +535,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaaHint;
+				return this.fsaaHint;
 			}
 		}
 
@@ -527,12 +546,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Returns the number of viewports attached to this target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual int NumViewports
 		{
 			get
 			{
-				return ViewportList.Count;
+				return this.ViewportList.Count;
 			}
 		}
 
@@ -542,21 +561,21 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected RenderTarget()
 		{
-            priority = RenderTargetPriority.Default;
-            active = true;
-            autoUpdate = true;
-            _timer = Root.Instance.Timer;
-            ResetStatistics();
+			this.priority = RenderTargetPriority.Default;
+			this.active = true;
+			this.autoUpdate = true;
+			this._timer = Root.Instance.Timer;
+			ResetStatistics();
 		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Event Handling
+		#region Event Handling
 
-        /// <summary>
+		/// <summary>
 		///    Gets fired before this RenderTarget is going to update.  Handling this event is ideal
 		///    in situation, such as RenderTextures, where before rendering the scene to the texture,
 		///    you would like to show/hide certain entities to avoid rendering more than was necessary
@@ -593,12 +612,12 @@ namespace Axiom.Graphics
 
 		#region FirePreUpdate
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void FirePreUpdate()
 		{
-			if (BeforeUpdate != null)
+			if ( BeforeUpdate != null )
 			{
-				BeforeUpdate(new RenderTargetEventArgs(this));
+				BeforeUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
@@ -606,12 +625,12 @@ namespace Axiom.Graphics
 
 		#region FirePostUpdate
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void FirePostUpdate()
 		{
-			if (AfterUpdate != null)
+			if ( AfterUpdate != null )
 			{
-				AfterUpdate(new RenderTargetEventArgs(this));
+				AfterUpdate( new RenderTargetEventArgs( this ) );
 			}
 		}
 
@@ -619,12 +638,12 @@ namespace Axiom.Graphics
 
 		#region FireViewportPreUpdate
 
-		[OgreVersion(1, 7, 2790)]
-		protected virtual void FireViewportPreUpdate(Viewport viewport)
+		[OgreVersion( 1, 7, 2790 )]
+		protected virtual void FireViewportPreUpdate( Viewport viewport )
 		{
-			if (BeforeViewportUpdate != null)
+			if ( BeforeViewportUpdate != null )
 			{
-				BeforeViewportUpdate(new RenderTargetViewportEventArgs(this, viewport));
+				BeforeViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -632,12 +651,12 @@ namespace Axiom.Graphics
 
 		#region FireViewportPostUpdate
 
-		[OgreVersion(1, 7, 2790)]
-		protected virtual void FireViewportPostUpdate(Viewport viewport)
+		[OgreVersion( 1, 7, 2790 )]
+		protected virtual void FireViewportPostUpdate( Viewport viewport )
 		{
-			if (AfterViewportUpdate != null)
+			if ( AfterViewportUpdate != null )
 			{
-				AfterViewportUpdate(new RenderTargetViewportEventArgs(this, viewport));
+				AfterViewportUpdate( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -645,12 +664,12 @@ namespace Axiom.Graphics
 
 		#region FireViewportAdded
 
-		[OgreVersion(1, 7, 2790)]
-		protected virtual void FireViewportAdded(Viewport viewport)
+		[OgreVersion( 1, 7, 2790 )]
+		protected virtual void FireViewportAdded( Viewport viewport )
 		{
-			if (ViewportAdded != null)
+			if ( ViewportAdded != null )
 			{
-				ViewportAdded(new RenderTargetViewportEventArgs(this, viewport));
+				ViewportAdded( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -658,12 +677,12 @@ namespace Axiom.Graphics
 
 		#region FireViewportRemoved
 
-		[OgreVersion(1, 7, 2790)]
-		protected virtual void FireViewportRemoved(Viewport viewport)
+		[OgreVersion( 1, 7, 2790 )]
+		protected virtual void FireViewportRemoved( Viewport viewport )
 		{
-			if (ViewportRemoved != null)
+			if ( ViewportRemoved != null )
 			{
-				ViewportRemoved(new RenderTargetViewportEventArgs(this, viewport));
+				ViewportRemoved( new RenderTargetViewportEventArgs( this, viewport ) );
 			}
 		}
 
@@ -673,7 +692,7 @@ namespace Axiom.Graphics
 
 		#region Viewport Management
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected ViewportCollection ViewportList = new ViewportCollection();
 
 		#region GetViewport
@@ -681,12 +700,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Retrieves a pointer to the viewport with the given index.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		public virtual Viewport GetViewport(int index)
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual Viewport GetViewport( int index )
 		{
-			Debug.Assert(index >= 0 && index < ViewportList.Count);
+			Debug.Assert( index >= 0 && index < this.ViewportList.Count );
 
-			return ViewportList.Values[index];
+			return this.ViewportList.Values[ index ];
 		}
 
 		#endregion
@@ -699,13 +718,13 @@ namespace Axiom.Graphics
 		/// <remarks>
 		/// throws if not found.
 		/// </remarks>
-		[OgreVersion(1, 7, 2790)]
-		public virtual Viewport GetViewportByZOrder(int zOrder)
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual Viewport GetViewportByZOrder( int zOrder )
 		{
 			Viewport viewport;
-			if (!ViewportList.TryGetValue(zOrder, out viewport))
+			if ( !this.ViewportList.TryGetValue( zOrder, out viewport ) )
 			{
-				throw new AxiomException("No viewport with given zorder : {0}", zOrder);
+				throw new AxiomException( "No viewport with given zorder : {0}", zOrder );
 			}
 			return viewport;
 		}
@@ -719,9 +738,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="zOrder"></param>
 		/// <returns>true if and only if a viewport exists at the given ZOrder.</returns>
-		public virtual bool HasViewportWithZOrder(int zOrder)
+		public virtual bool HasViewportWithZOrder( int zOrder )
 		{
-			return ViewportList.ContainsKey(zOrder);
+			return this.ViewportList.ContainsKey( zOrder );
 		}
 
 		#endregion
@@ -748,71 +767,75 @@ namespace Axiom.Graphics
 		///		viewports i.e. picture-in-picture). Higher ZOrders are on top of lower ones. The actual number
 		///		is irrelevant, only the relative ZOrder matters (you can leave gaps in the numbering)</param>
 		/// <returns></returns>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public virtual Viewport AddViewport( Camera camera, float left = 0, float top = 0, float nwidth = 1.0f, float nheight = 1.0f, int zOrder = 0 )
 #else
-        public virtual Viewport AddViewport( Camera camera, float left, float top, float nwidth, float nheight, int zOrder )
+		public virtual Viewport AddViewport( Camera camera, float left, float top, float nwidth, float nheight, int zOrder )
 #endif
-        {
-            if ( ViewportList.ContainsKey( zOrder ) )
-                throw new AxiomException( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", name, zOrder );
+		{
+			if ( this.ViewportList.ContainsKey( zOrder ) )
+			{
+				throw new AxiomException( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", this.name, zOrder );
+			}
 
 			// create a new camera and add it to our internal collection
-			var viewport = new Viewport(camera, this, left, top, nwidth, nheight, zOrder);
-			ViewportList.Add(viewport);
+			var viewport = new Viewport( camera, this, left, top, nwidth, nheight, zOrder );
+			this.ViewportList.Add( viewport );
 
-			FireViewportAdded(viewport);
+			FireViewportAdded( viewport );
 
 			return viewport;
 		}
 
 #if !NET_40
-        [AxiomHelper( 0, 8, "defaulting overload" )]
-        public Viewport AddViewport( Camera camera )
-        {
-            return AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-        }
+		[AxiomHelper( 0, 8, "defaulting overload" )]
+		public Viewport AddViewport( Camera camera )
+		{
+			return AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
+		}
 #endif
 
-        #endregion AddViewport
+		#endregion AddViewport
 
-        #region RemoveViewport
+		#region RemoveViewport
 
-        /// <summary>
+		/// <summary>
 		/// Removes a viewport at a given ZOrder.
 		/// </summary>
 		/// <param name="zOrder">
 		/// The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
 		/// </param>
-		[OgreVersion(1, 7, 2790)]
-		public virtual void RemoveViewport(int zOrder)
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void RemoveViewport( int zOrder )
 		{
-            Viewport viewport;
-            if ( !ViewportList.TryGetValue( zOrder, out viewport ) )
-                return;
-            FireViewportRemoved( viewport );
-            viewport.SafeDispose();
-            ViewportList.Remove( zOrder );
-        }
+			Viewport viewport;
+			if ( !this.ViewportList.TryGetValue( zOrder, out viewport ) )
+			{
+				return;
+			}
+			FireViewportRemoved( viewport );
+			viewport.SafeDispose();
+			this.ViewportList.Remove( zOrder );
+		}
 
-        #endregion RemoveViewport
+		#endregion RemoveViewport
 
-        #region RemoveAllViewports
+		#region RemoveAllViewports
 
-        /// <summary>
+		/// <summary>
 		/// Removes all viewports on this target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void RemoveAllViewports()
 		{
-            foreach ( var it in ViewportList.Values )
-            {
-                FireViewportRemoved( it );
-                it.SafeDispose();
-            }
+			foreach ( Viewport it in this.ViewportList.Values )
+			{
+				FireViewportRemoved( it );
+				it.SafeDispose();
+			}
 
-			ViewportList.Clear();
+			this.ViewportList.Clear();
 		}
 
 		#endregion
@@ -826,36 +849,36 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Retieves details of current rendering performance.
 		/// </summary>
-        /// <param name="lastFPS">The number of frames per second (FPS) based on the last frame rendered.</param>
-        /// <param name="avgFPS">
-        /// The FPS rating based on an average of all the frames rendered 
-        /// since rendering began (the call to Root.StartRendering).
-        /// </param>
-        /// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
-        /// <param name="worstFPS">The worst FPS rating seen so far</param>
-        [Obsolete( "The RenderTarget.Statistics Property provides complete access to all statistical data." )]
-        [OgreVersion( 1, 7, 2790 )]
-        public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
-        {
-            lastFPS = stats.LastFPS;
-            avgFPS = stats.AverageFPS;
-            bestFPS = stats.BestFPS;
-            worstFPS = stats.WorstFPS;
-        }
+		/// <param name="lastFPS">The number of frames per second (FPS) based on the last frame rendered.</param>
+		/// <param name="avgFPS">
+		/// The FPS rating based on an average of all the frames rendered 
+		/// since rendering began (the call to Root.StartRendering).
+		/// </param>
+		/// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
+		/// <param name="worstFPS">The worst FPS rating seen so far</param>
+		[Obsolete( "The RenderTarget.Statistics Property provides complete access to all statistical data." )]
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
+		{
+			lastFPS = this.stats.LastFPS;
+			avgFPS = this.stats.AverageFPS;
+			bestFPS = this.stats.BestFPS;
+			worstFPS = this.stats.WorstFPS;
+		}
 
-        #endregion GetStatistics
+		#endregion GetStatistics
 
-        #region FrameStatistics
+		#region FrameStatistics
 
-        /// <summary>
+		/// <summary>
 		/// Retieves details of current rendering performance.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual FrameStatistics Statistics
 		{
 			get
 			{
-				return stats;
+				return this.stats;
 			}
 		}
 
@@ -866,12 +889,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The number of frames per second (FPS) based on the last frame rendered.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual Real LastFPS
 		{
 			get
 			{
-				return stats.LastFPS;
+				return this.stats.LastFPS;
 			}
 		}
 
@@ -882,12 +905,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The average frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual float AverageFPS
 		{
 			get
 			{
-				return stats.AverageFPS;
+				return this.stats.AverageFPS;
 			}
 		}
 
@@ -898,12 +921,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The best frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual float BestFPS
 		{
 			get
 			{
-				return stats.BestFPS;
+				return this.stats.BestFPS;
 			}
 		}
 
@@ -914,12 +937,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The worst frames per second (FPS) since call to Root.StartRendering.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual float WorstFPS
 		{
 			get
 			{
-				return stats.WorstFPS;
+				return this.stats.WorstFPS;
 			}
 		}
 
@@ -930,12 +953,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The best frame time
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual float BestFrameTime
 		{
 			get
 			{
-				return stats.BestFrameTime;
+				return this.stats.BestFrameTime;
 			}
 		}
 
@@ -946,12 +969,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The worst frame time
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual float WorstFrameTime
 		{
 			get
 			{
-				return stats.WorstFrameTime;
+				return this.stats.WorstFrameTime;
 			}
 		}
 
@@ -962,12 +985,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The number of triangles rendered in the last Update() call. 
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "TriangleCount")]
+		[OgreVersion( 1, 7, 2790, "TriangleCount" )]
 		public virtual float LastTriangleCount
 		{
 			get
 			{
-				return stats.TriangleCount;
+				return this.stats.TriangleCount;
 			}
 		}
 
@@ -978,12 +1001,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The number of triangles rendered in the last Update() call. 
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "BatchCount")]
+		[OgreVersion( 1, 7, 2790, "BatchCount" )]
 		public virtual float LastBatchCount
 		{
 			get
 			{
-				return stats.BatchCount;
+				return this.stats.BatchCount;
 			}
 		}
 
@@ -994,57 +1017,63 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Resets saved frame-rate statistices.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void ResetStatistics()
 		{
-			stats.AverageFPS = 0.0F;
-			stats.BestFPS = 0.0F;
-			stats.LastFPS = 0.0F;
-			stats.WorstFPS = 999.0F;
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
-			stats.BestFrameTime = 999999;
-			stats.WorstFrameTime = 0;
+			this.stats.AverageFPS = 0.0F;
+			this.stats.BestFPS = 0.0F;
+			this.stats.LastFPS = 0.0F;
+			this.stats.WorstFPS = 999.0F;
+			this.stats.TriangleCount = 0;
+			this.stats.BatchCount = 0;
+			this.stats.BestFrameTime = 999999;
+			this.stats.WorstFrameTime = 0;
 
-			lastTime = _timer.Milliseconds;
-			lastSecond = lastTime;
-			frameCount = 0;
+			this.lastTime = this._timer.Milliseconds;
+			this.lastSecond = this.lastTime;
+			this.frameCount = 0;
 		}
 
-        #endregion ResetStatistics
+		#endregion ResetStatistics
 
-        #region UpdateStatistics
+		#region UpdateStatistics
 
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected void UpdateStatistics()
 		{
-			frameCount++;
-			var thisTime = _timer.Milliseconds;
+			this.frameCount++;
+			long thisTime = this._timer.Milliseconds;
 
 			// check frame time
-			var frameTime = thisTime - lastTime;
-			lastTime = thisTime;
+			long frameTime = thisTime - this.lastTime;
+			this.lastTime = thisTime;
 
-			stats.BestFrameTime = Math.Utility.Min(stats.BestFrameTime, frameTime);
-			stats.WorstFrameTime = Math.Utility.Max(stats.WorstFrameTime, frameTime);
+			this.stats.BestFrameTime = Utility.Min( this.stats.BestFrameTime, frameTime );
+			this.stats.WorstFrameTime = Utility.Max( this.stats.WorstFrameTime, frameTime );
 
 			// check if new second (update only once per second)
-			if (thisTime - lastSecond <= 1000)
+			if ( thisTime - this.lastSecond <= 1000 )
+			{
 				return;
+			}
 
 			// new second - not 100% precise
-			stats.LastFPS = (float)frameCount / (thisTime - lastSecond) * 1000;
+			this.stats.LastFPS = (float)this.frameCount / ( thisTime - this.lastSecond ) * 1000;
 
-			if (stats.AverageFPS == 0)
-				stats.AverageFPS = stats.LastFPS;
+			if ( this.stats.AverageFPS == 0 )
+			{
+				this.stats.AverageFPS = this.stats.LastFPS;
+			}
 			else
-				stats.AverageFPS = (stats.AverageFPS + stats.LastFPS) / 2; // not strictly correct, but good enough
+			{
+				this.stats.AverageFPS = ( this.stats.AverageFPS + this.stats.LastFPS ) / 2; // not strictly correct, but good enough
+			}
 
-			stats.BestFPS = Math.Utility.Max(stats.BestFPS, stats.LastFPS);
-			stats.WorstFPS = Math.Utility.Min(stats.WorstFPS, stats.LastFPS);
+			this.stats.BestFPS = Utility.Max( this.stats.BestFPS, this.stats.LastFPS );
+			this.stats.WorstFPS = Utility.Min( this.stats.WorstFPS, this.stats.LastFPS );
 
-			lastSecond = thisTime;
-			frameCount = 0;
+			this.lastSecond = thisTime;
+			this.frameCount = 0;
 		}
 
 		#endregion
@@ -1062,19 +1091,19 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="attribute">The name of the attribute.</param>
 		/// <returns></returns>
-		[Obsolete("The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes.")]
-		[OgreVersion(1, 7, 2790)]
-		public object GetCustomAttribute(string attribute)
+		[Obsolete( "The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes." )]
+		[OgreVersion( 1, 7, 2790 )]
+		public object GetCustomAttribute( string attribute )
 		{
-			return this[attribute];
+			return this[ attribute ];
 		}
 
-		[AxiomHelper(0, 8, "GetCustomAttribute replacement")]
-		public virtual object this[string attribute]
+		[AxiomHelper( 0, 8, "GetCustomAttribute replacement" )]
+		public virtual object this[ string attribute ]
 		{
 			get
 			{
-				throw new Exception(String.Format("Attribute [{0}] not found.", attribute));
+				throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
 			}
 		}
 
@@ -1089,56 +1118,58 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="ndepthBuffer">The buffer to attach</param>
 		/// <returns>false if couldn't attach</returns>
-		[OgreVersion(1, 7, 2790)]
-		public virtual bool AttachDepthBuffer(DepthBuffer ndepthBuffer)
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual bool AttachDepthBuffer( DepthBuffer ndepthBuffer )
 		{
-			var retVal = false;
+			bool retVal = false;
 
-			if (ndepthBuffer.IsCompatible(this))
+			if ( ndepthBuffer.IsCompatible( this ) )
 			{
 				retVal = true;
 				DetachDepthBuffer();
-				depthBuffer = ndepthBuffer;
-				depthBuffer.NotifyRenderTargetAttached(this);
+				this.depthBuffer = ndepthBuffer;
+				this.depthBuffer.NotifyRenderTargetAttached( this );
 			}
 
 			return retVal;
 		}
 
-        #endregion AttachDepthBuffer
+		#endregion AttachDepthBuffer
 
-        #region DetachDepthBuffer
+		#region DetachDepthBuffer
 
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DetachDepthBuffer()
 		{
-			if (depthBuffer == null)
+			if ( this.depthBuffer == null )
+			{
 				return;
+			}
 
-			depthBuffer.NotifyRenderTargetDetached(this);
-			depthBuffer = null;
+			this.depthBuffer.NotifyRenderTargetDetached( this );
+			this.depthBuffer = null;
 		}
 
-        #endregion DetachDepthBuffer
+		#endregion DetachDepthBuffer
 
-        #region _DetachDepthBuffer
+		#region _DetachDepthBuffer
 
-        /// <summary>
+		/// <summary>
 		/// Detaches DepthBuffer without notifying it from the detach.
 		/// Useful when called from the DepthBuffer while it iterates through attached
 		/// RenderTargets <see cref="Axiom.Graphics.DepthBuffer.PoolId"/>
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void _DetachDepthBuffer()
 		{
-			depthBuffer = null;
+			this.depthBuffer = null;
 		}
 
-        #endregion _DetachDepthBuffer
+		#endregion _DetachDepthBuffer
 
-        #region Update
+		#region Update
 
-        /// <summary>
+		/// <summary>
 		///		Updates the window contents.
 		/// </summary>
 		/// <remarks>
@@ -1156,50 +1187,50 @@ namespace Axiom.Graphics
 		///	queued commands complete. Or, you might do this if you want custom
 		///	control over your windows, such as for externally created windows.
 		///	</param>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public virtual void Update( bool swapBuffers = true )
 #else
-        public virtual void Update( bool swapBuffers )
+		public virtual void Update( bool swapBuffers )
 #endif
 		{
 			// call implementation
 			UpdateImpl();
 
 
-			if (swapBuffers)
+			if ( swapBuffers )
 			{
 				// Swap buffers
-				SwapBuffers(Root.Instance.RenderSystem.WaitForVerticalBlank);
+				SwapBuffers( Root.Instance.RenderSystem.WaitForVerticalBlank );
 			}
 		}
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
-        [AxiomHelper( 0, 8, "defaulting overload" )]
-        public void Update()
-        {
-            Update( true );
-        }
+		/// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
+		[AxiomHelper( 0, 8, "defaulting overload" )]
+		public void Update()
+		{
+			Update( true );
+		}
 #endif
 
-        #endregion Update
+		#endregion Update
 
-        #region UpdateImpl
+		#region UpdateImpl
 
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void UpdateImpl()
 		{
 			BeginUpdate();
-            UpdateAutoUpdatedViewports( true );
+			UpdateAutoUpdatedViewports( true );
 			EndUpdate();
 		}
 
-        #endregion UpdateImpl
+		#endregion UpdateImpl
 
-        #region BeginUpdate
+		#region BeginUpdate
 
-        /// <summary>
+		/// <summary>
 		/// Method for manual management of rendering : fires 'preRenderTargetUpdate'
 		/// and initializes statistics etc.
 		/// </summary>
@@ -1224,21 +1255,21 @@ namespace Axiom.Graphics
 		/// Please note that in that case, the zorder may not work as you expect,
 		/// since you are responsible for calling UpdateViewport in the correct order.
 		/// </remarks>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void BeginUpdate()
 		{
-            // notify listeners (pre)
+			// notify listeners (pre)
 			FirePreUpdate();
 
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
+			this.stats.TriangleCount = 0;
+			this.stats.BatchCount = 0;
 		}
 
-        #endregion BeginUpdate
+		#endregion BeginUpdate
 
-        #region UpdateViewport
+		#region UpdateViewport
 
-        /// <summary>
+		/// <summary>
 		/// Method for manual management of rendering - renders the given 
 		/// viewport (even if it is not autoupdated)
 		/// </summary>
@@ -1248,20 +1279,19 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="viewport">The viewport you want to update, it must be bound to the rendertarget.</param>
 		/// <param name="updateStatistics">Whether you want to update statistics or not.</param>
-		[OgreVersion(1, 7, 2790)]
-		public virtual void UpdateViewport(Viewport viewport, bool updateStatistics)
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void UpdateViewport( Viewport viewport, bool updateStatistics )
 		{
-            Contract.Requires( viewport.Target == this,
-                          "RenderTarget::_updateViewport the requested viewport is not bound to the rendertarget!" );
+			Contract.Requires( viewport.Target == this, "RenderTarget::_updateViewport the requested viewport is not bound to the rendertarget!" );
 
-            FireViewportPreUpdate( viewport );
-            viewport.Update();
-            if ( updateStatistics )
-            {
-                stats.TriangleCount += viewport.RenderedFaceCount;
-                stats.BatchCount += viewport.RenderedBatchCount;
-            }
-            FireViewportPostUpdate( viewport );
+			FireViewportPreUpdate( viewport );
+			viewport.Update();
+			if ( updateStatistics )
+			{
+				this.stats.TriangleCount += viewport.RenderedFaceCount;
+				this.stats.BatchCount += viewport.RenderedBatchCount;
+			}
+			FireViewportPostUpdate( viewport );
 		}
 
 		/// <summary>
@@ -1272,25 +1302,26 @@ namespace Axiom.Graphics
 		/// This also fires preViewportUpdate and postViewportUpdate, and manages statistics.
 		/// You should call it between <see cref="BeginUpdate"/> and <see cref="EndUpdate"/>.
 		/// </remarks>
-        /// <param name="zorder">The zorder of the viewport to update.</param>
-        /// <param name="updateStatistics">Whether you want to update statistics or not.</param>
-        [OgreVersion( 1, 7, 2790 )]
-        public virtual void UpdateViewport( int zorder, bool updateStatistics )
-        {
-            Viewport viewport;
-            if ( ViewportList.TryGetValue( zorder, out viewport ) )
-            {
-                UpdateViewport( viewport, updateStatistics );
-            }
-            else
-            {
-                throw new AxiomException( "No viewport with given zorder : {0}", zorder );
-            }
-        }
+		/// <param name="zorder">The zorder of the viewport to update.</param>
+		/// <param name="updateStatistics">Whether you want to update statistics or not.</param>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual void UpdateViewport( int zorder, bool updateStatistics )
+		{
+			Viewport viewport;
+			if ( this.ViewportList.TryGetValue( zorder, out viewport ) )
+			{
+				UpdateViewport( viewport, updateStatistics );
+			}
+			else
+			{
+				throw new AxiomException( "No viewport with given zorder : {0}", zorder );
+			}
+		}
 
-        #endregion UpdateViewport
+		#endregion UpdateViewport
 
-        #region UpdateAutoUpdatedViewports
+		#region UpdateAutoUpdatedViewports
+
 		/// <summary>
 		/// Method for manual management of rendering - renders only viewports that are auto updated
 		/// </summary>
@@ -1300,45 +1331,45 @@ namespace Axiom.Graphics
 		/// <see cref="EndUpdate"/>.
 		/// </remarks>
 		/// <param name="updateStatistics"></param>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public virtual void UpdateAutoUpdatedViewports( bool updateStatistics = true )
 #else
-        public virtual void UpdateAutoUpdatedViewports( bool updateStatistics )
+		public virtual void UpdateAutoUpdatedViewports( bool updateStatistics )
 #endif
 		{
 			// Go through viewports in Z-order
 			// Tell each to refresh
-			foreach (var it in ViewportList)
+			foreach ( var it in this.ViewportList )
 			{
-				var viewport = it.Value;
-				if (viewport.IsAutoUpdated)
+				Viewport viewport = it.Value;
+				if ( viewport.IsAutoUpdated )
 				{
-					UpdateViewport(viewport, updateStatistics);
+					UpdateViewport( viewport, updateStatistics );
 				}
 			}
 		}
 
 #if !NET_40
-        /// <see cref="Axiom.Graphics.RenderTarget.UpdateAutoUpdatedViewports(bool)"/>
-        public void UpdateAutoUpdatedViewports()
-        {
-            UpdateAutoUpdatedViewports( true );
-        }
+		/// <see cref="Axiom.Graphics.RenderTarget.UpdateAutoUpdatedViewports(bool)"/>
+		public void UpdateAutoUpdatedViewports()
+		{
+			UpdateAutoUpdatedViewports( true );
+		}
 #endif
 
-        #endregion UpdateAutoUpdatedViewports
+		#endregion UpdateAutoUpdatedViewports
 
-        #region EndUpdate
+		#region EndUpdate
 
-        /// <summary>
+		/// <summary>
 		/// Method for manual management of rendering - finishes statistics calculation
 		/// and fires 'postRenderTargetUpdate'.
 		/// </summary>
 		/// <remarks>
 		/// You should call it after a <see cref="BeginUpdate"/>
 		/// </remarks>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual void EndUpdate()
 		{
 			// notify listeners (post)
@@ -1348,91 +1379,91 @@ namespace Axiom.Graphics
 			UpdateStatistics();
 		}
 
-        #endregion EndUpdate
+		#endregion EndUpdate
 
-        #region NotifyCameraRemoved
+		#region NotifyCameraRemoved
 
-        /// <summary>
+		/// <summary>
 		///	Utility method to notify a render target that a camera has been removed, 
 		/// incase it was referring to it as a viewer.
 		/// </summary>
 		/// <param name="camera"></param>
-		[OgreVersion(1, 7, 2790)]
-		internal void NotifyCameraRemoved(Camera camera)
+		[OgreVersion( 1, 7, 2790 )]
+		internal void NotifyCameraRemoved( Camera camera )
 		{
-			if (ViewportList == null)
-				return;
-
-			for (var i = 0; i < ViewportList.Count; i++)
+			if ( this.ViewportList == null )
 			{
-				var viewport = ViewportList.Values[i];
+				return;
+			}
+
+			for ( int i = 0; i < this.ViewportList.Count; i++ )
+			{
+				Viewport viewport = this.ViewportList.Values[ i ];
 
 				// remove the link to this camera
-				if (viewport.Camera == camera)
+				if ( viewport.Camera == camera )
 				{
 					viewport.Camera = null;
 				}
 			}
 		}
 
-        #endregion NotifyCameraRemoved
+		#endregion NotifyCameraRemoved
 
-        #region GetMetrics
+		#region GetMetrics
 
-        /// <summary>
+		/// <summary>
 		/// Retrieve information about the render target.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		public void GetMetrics(out int nwidth, out int nheight, out int ncolorDepth)
+		[OgreVersion( 1, 7, 2790 )]
+		public void GetMetrics( out int nwidth, out int nheight, out int ncolorDepth )
 		{
-			nwidth = width;
-			nheight = height;
-			ncolorDepth = colorDepth;
+			nwidth = this.width;
+			nheight = this.height;
+			ncolorDepth = this.colorDepth;
 		}
 
-        #endregion GetMetrics
+		#endregion GetMetrics
 
-        #region WriteContentsToFile
+		#region WriteContentsToFile
 
-        /// <summary>
+		/// <summary>
 		/// Saves window contents to file (i.e. screenshot);
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public void WriteContentsToFile( string fileName )
-        {
-            var pf = SuggestPixelFormat();
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public void WriteContentsToFile( string fileName )
+		{
+			PixelFormat pf = SuggestPixelFormat();
 
-            var data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
-            var buf = BufferBase.Wrap( data );
-            var pb = new PixelBox( Width, Height, 1, pf, buf );
+			var data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+			BufferBase buf = BufferBase.Wrap( data );
+			var pb = new PixelBox( Width, Height, 1, pf, buf );
 
-            CopyContentsToMemory( pb );
+			CopyContentsToMemory( pb );
 
-            ( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
-            buf.Dispose();
-        }
+			( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
+			buf.Dispose();
+		}
 
-        #endregion WriteContentsToFile
+		#endregion WriteContentsToFile
 
-        #region WriteContentsToTimestampedFile
+		#region WriteContentsToTimestampedFile
 
-        /// <summary>
+		/// <summary>
 		/// Writes the current contents of the render target to the (PREFIX)(time-stamp)(SUFFIX) file.
 		/// </summary>
 		/// <returns>the name of the file used.</returns>
-        [OgreVersion( 1, 7, 2790 )]
-        public virtual String WriteContentsToTimestampedFile( String filenamePrefix, String filenameSuffix )
-        {
-            var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}",
-                DateTime.Now, _timer.Milliseconds % 1000,
-                filenamePrefix, filenameSuffix );
-            WriteContentsToFile( filename );
-            return filename;
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual String WriteContentsToTimestampedFile( String filenamePrefix, String filenameSuffix )
+		{
+			string filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}", DateTime.Now, this._timer.Milliseconds % 1000, filenamePrefix, filenameSuffix );
+			WriteContentsToFile( filename );
+			return filename;
+		}
 
-        #endregion WriteContentsToTimestampedFile
+		#endregion WriteContentsToTimestampedFile
 
-        #region CopyContentsToMemory
+		#region CopyContentsToMemory
 
 		/// <summary>
 		/// Copies the current contents of the render target to a pixelbox. 
@@ -1442,39 +1473,39 @@ namespace Axiom.Graphics
 		/// extract into, although you can use whatever format you like and the 
 		/// results will be converted.
 		/// </remarks>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer = FrameBuffer.Auto );
 #else
-        public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
+		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
 
-        /// <see cref="Axiom.Graphics.RenderTarget.CopyContentsToMemory(PixelBox, FrameBuffer)"/>
-        [AxiomHelper( 0, 8, "default overload" )]
-        public void CopyContentsToMemory( PixelBox pb )
-        {
-            CopyContentsToMemory( pb, FrameBuffer.Auto );
-        }
+		/// <see cref="Axiom.Graphics.RenderTarget.CopyContentsToMemory(PixelBox, FrameBuffer)"/>
+		[AxiomHelper( 0, 8, "default overload" )]
+		public void CopyContentsToMemory( PixelBox pb )
+		{
+			CopyContentsToMemory( pb, FrameBuffer.Auto );
+		}
 #endif
 
-        #endregion CopyContentsToMemory
+		#endregion CopyContentsToMemory
 
-        #region SuggestPixelFormat
+		#region SuggestPixelFormat
 
-        /// <summary>
+		/// <summary>
 		/// Suggests a pixel format to use for extracting the data in this target, when calling 
 		/// <see cref="CopyContentsToMemory(PixelBox, FrameBuffer)"/>.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual PixelFormat SuggestPixelFormat()
 		{
 			return PixelFormat.BYTE_RGBA;
 		}
 
-        #endregion SuggestPixelFormat
+		#endregion SuggestPixelFormat
 
-        #region SwapBuffers
+		#region SwapBuffers
 
-        /// <summary>
+		/// <summary>
 		///		Swaps the frame buffers to display the next frame.
 		/// </summary>
 		/// <remarks>
@@ -1496,54 +1527,53 @@ namespace Axiom.Graphics
 		///		resulting from flipping buffers when the beam is
 		///		in the progress of drawing the last frame). 
 		///</param>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public virtual void SwapBuffers( bool waitForVSync = true ) { }
 #else
-        public virtual void SwapBuffers( bool waitForVSync ) { }
+		public virtual void SwapBuffers( bool waitForVSync ) { }
 
-        /// <see cref="Axiom.Graphics.RenderTarget.SwapBuffers(bool)"/>
-        public void SwapBuffers()
-        {
-            SwapBuffers( true );
-        }
+		/// <see cref="Axiom.Graphics.RenderTarget.SwapBuffers(bool)"/>
+		public void SwapBuffers()
+		{
+			SwapBuffers( true );
+		}
 #endif
 
-        #endregion SwapBuffers
+		#endregion SwapBuffers
 
-        #endregion Methods
+		#endregion Methods
 
-        #region IDisposable Implementation
+		#region IDisposable Implementation
 
-        /// <summary>
+		/// <summary>
 		/// Class level dispose method
 		/// </summary>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-        [OgreVersion( 1, 7, 2, "~RenderTarget" )]
-		protected override void dispose(bool disposeManagedResources)
+		[OgreVersion( 1, 7, 2, "~RenderTarget" )]
+		protected override void dispose( bool disposeManagedResources )
 		{
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Delete viewports
-                    foreach ( var i in ViewportList )
-                    {
-                        FireViewportRemoved( i.Value );
-                        i.Value.SafeDispose();
-                    }
-                    ViewportList.Clear();
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Delete viewports
+					foreach ( var i in this.ViewportList )
+					{
+						FireViewportRemoved( i.Value );
+						i.Value.SafeDispose();
+					}
+					this.ViewportList.Clear();
 
-                    // Write final performance stats
-                    if ( LogManager.Instance != null )
-                    {
-                        LogManager.Instance.Write(
-                            "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", name, stats.AverageFPS, stats.BestFPS, stats.WorstFPS );
-                    }
-                }
-            }
+					// Write final performance stats
+					if ( LogManager.Instance != null )
+					{
+						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.name, this.stats.AverageFPS, this.stats.BestFPS, this.stats.WorstFPS );
+					}
+				}
+			}
 
-            base.dispose( disposeManagedResources );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

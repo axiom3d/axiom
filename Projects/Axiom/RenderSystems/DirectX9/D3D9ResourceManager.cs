@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
@@ -32,187 +34,202 @@
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Utilities;
+
+using SharpDX.Direct3D9;
+
 using D3D9 = SharpDX.Direct3D9;
+using Resource = Axiom.Core.Resource;
 using ResourceContainer = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.ID3D9Resource>;
+using ResourceManager = Axiom.Core.ResourceManager;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    public class D3D9ResourceManager: ResourceManager
-    {
-        public enum ResourceCreationPolicy
-        {
-            CreateOnActiveDevice,
-            CreateOnAllDevices
-        };
+	public class D3D9ResourceManager : ResourceManager
+	{
+		#region ResourceCreationPolicy enum
 
-        [OgreVersion(1, 7, 2790)]
-        private static readonly object _resourcesMutex = new object();
+		public enum ResourceCreationPolicy
+		{
+			CreateOnActiveDevice,
+			CreateOnAllDevices
+		};
 
-        [OgreVersion(1, 7, 2790)]
-        protected new ResourceContainer Resources = new ResourceContainer();
+		#endregion
 
-        [OgreVersion(1, 7, 2790)]
-        private int _deviceAccessLockCount;
+		[OgreVersion( 1, 7, 2790 )]
+		private static readonly object _resourcesMutex = new object();
 
-        [OgreVersion(1, 7, 2790)]
-        public ResourceCreationPolicy CreationPolicy 
-        { 
-            get; 
-            set; 
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		protected new ResourceContainer Resources = new ResourceContainer();
 
-        [OgreVersion( 1, 7, 2790 )]
-        public bool AutoHardwareBufferManagement
-        {
-            get;
-            set;
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		private int _deviceAccessLockCount;
 
-        #region Constructor
+		[OgreVersion( 1, 7, 2790 )]
+		public ResourceCreationPolicy CreationPolicy { get; set; }
 
-        [OgreVersion(1, 7, 2790)]
-        public D3D9ResourceManager()
-            : base()
-        {
-            CreationPolicy = ResourceCreationPolicy.CreateOnAllDevices;
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public bool AutoHardwareBufferManagement { get; set; }
 
-        #endregion Constructor
+		#region Constructor
 
-        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-        {
-            throw new NotImplementedException( "Base class needs update to 1.7.2790" );
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public D3D9ResourceManager()
+		{
+			CreationPolicy = ResourceCreationPolicy.CreateOnAllDevices;
+		}
 
-        #region LockDeviceAccess
+		#endregion Constructor
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void LockDeviceAccess()
-        {
-            Contract.Requires( _deviceAccessLockCount >= 0 );
-            _deviceAccessLockCount++;
-            if ( _deviceAccessLockCount == 1 )
-            {
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			throw new NotImplementedException( "Base class needs update to 1.7.2790" );
+		}
+
+		#region LockDeviceAccess
+
+		[OgreVersion( 1, 7, 2790 )]
+		public void LockDeviceAccess()
+		{
+			Contract.Requires( this._deviceAccessLockCount >= 0 );
+			this._deviceAccessLockCount++;
+			if ( this._deviceAccessLockCount == 1 )
+			{
 #if AXIOM_THREAD_SUPPORT
                 System.Threading.Monitor.Enter( _resourcesMutex );
 #endif
-                foreach ( var it in Resources )
-                    it.LockDeviceAccess();
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.LockDeviceAccess();
+				}
 
-                D3D9HardwarePixelBuffer.LockDeviceAccess();
-            }
-        }
+				D3D9HardwarePixelBuffer.LockDeviceAccess();
+			}
+		}
 
-        #endregion LockDeviceAccess
+		#endregion LockDeviceAccess
 
-        #region UnlockDeviceAccess
+		#region UnlockDeviceAccess
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void UnlockDeviceAccess()
-        {
-            Contract.Requires( _deviceAccessLockCount > 0 );
-            _deviceAccessLockCount--;
-            if ( _deviceAccessLockCount == 0 )
-            {
-                // outermost recursive lock release, propagte unlock
-                foreach ( var it in Resources )
-                    it.UnlockDeviceAccess();
+		[OgreVersion( 1, 7, 2790 )]
+		public void UnlockDeviceAccess()
+		{
+			Contract.Requires( this._deviceAccessLockCount > 0 );
+			this._deviceAccessLockCount--;
+			if ( this._deviceAccessLockCount == 0 )
+			{
+				// outermost recursive lock release, propagte unlock
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.UnlockDeviceAccess();
+				}
 
-                D3D9HardwarePixelBuffer.UnlockDeviceAccess();
+				D3D9HardwarePixelBuffer.UnlockDeviceAccess();
 #if AXIOM_THREAD_SUPPORT
                 System.Threading.Monitor.Exit( _resourcesMutex );
 #endif
-            }
-        }
+			}
+		}
 
-        #endregion UnlockDeviceAccess
+		#endregion UnlockDeviceAccess
 
-        #region NotifyOnDeviceCreate
+		#region NotifyOnDeviceCreate
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyOnDeviceCreate( D3D9.Device d3D9Device )
-        {
-            lock ( _resourcesMutex )
-            {
-                foreach ( var it in Resources )
-                    it.NotifyOnDeviceCreate( d3D9Device );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyOnDeviceCreate( Device d3D9Device )
+		{
+			lock ( _resourcesMutex )
+			{
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.NotifyOnDeviceCreate( d3D9Device );
+				}
+			}
+		}
 
-        #endregion NotifyOnDeviceCreate
+		#endregion NotifyOnDeviceCreate
 
-        #region NotifyOnDeviceDestroy
+		#region NotifyOnDeviceDestroy
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyOnDeviceDestroy( D3D9.Device d3D9Device )
-        {
-            lock ( _resourcesMutex )
-            {
-                foreach ( var it in Resources )
-                    it.NotifyOnDeviceDestroy( d3D9Device );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyOnDeviceDestroy( Device d3D9Device )
+		{
+			lock ( _resourcesMutex )
+			{
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.NotifyOnDeviceDestroy( d3D9Device );
+				}
+			}
+		}
 
-        #endregion NotifyOnDeviceDestroy
+		#endregion NotifyOnDeviceDestroy
 
-        #region NotifyOnDeviceLost
+		#region NotifyOnDeviceLost
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyOnDeviceLost( D3D9.Device d3D9Device )
-        {
-            lock ( _resourcesMutex )
-            {
-                foreach ( var it in Resources )
-                    it.NotifyOnDeviceLost( d3D9Device );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyOnDeviceLost( Device d3D9Device )
+		{
+			lock ( _resourcesMutex )
+			{
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.NotifyOnDeviceLost( d3D9Device );
+				}
+			}
+		}
 
-        #endregion NotifyOnDeviceLost
+		#endregion NotifyOnDeviceLost
 
-        #region NotifyOnDeviceReset
+		#region NotifyOnDeviceReset
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyOnDeviceReset( D3D9.Device d3D9Device )
-        {
-            lock ( _resourcesMutex )
-            {
-                foreach ( var it in Resources )
-                    it.NotifyOnDeviceReset( d3D9Device );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyOnDeviceReset( Device d3D9Device )
+		{
+			lock ( _resourcesMutex )
+			{
+				foreach ( ID3D9Resource it in this.Resources )
+				{
+					it.NotifyOnDeviceReset( d3D9Device );
+				}
+			}
+		}
 
-        #endregion NotifyOnDeviceReset
+		#endregion NotifyOnDeviceReset
 
-        #region NotifyResourceCreated
+		#region NotifyResourceCreated
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyResourceCreated( ID3D9Resource pResource )
-        {
-            lock ( _resourcesMutex )
-            {
-                Resources.Add( pResource );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyResourceCreated( ID3D9Resource pResource )
+		{
+			lock ( _resourcesMutex )
+			{
+				this.Resources.Add( pResource );
+			}
+		}
 
-        #endregion NotifyResourceCreated
+		#endregion NotifyResourceCreated
 
-        #region NotifyResourceDestroyed
+		#region NotifyResourceDestroyed
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void NotifyResourceDestroyed( ID3D9Resource pResource )
-        {
-            lock ( _resourcesMutex )
-            {
-                if ( Resources.Contains( pResource ) )
-                    Resources.Remove( pResource );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void NotifyResourceDestroyed( ID3D9Resource pResource )
+		{
+			lock ( _resourcesMutex )
+			{
+				if ( this.Resources.Contains( pResource ) )
+				{
+					this.Resources.Remove( pResource );
+				}
+			}
+		}
 
-        #endregion NotifyResourceDestroyed
-    };
+		#endregion NotifyResourceDestroyed
+	};
 }

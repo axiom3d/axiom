@@ -42,14 +42,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
 
 using Axiom.Core;
-using Axiom.Configuration;
 using Axiom.Media;
 
 using ResourceHandle = System.UInt64;
@@ -69,8 +66,33 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
+		/// <summary>
+		///    Auto incrementing number for creating unique names.
+		/// </summary>
+		protected static int autoNumber;
+
+		private readonly ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
+		private readonly ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
+
+		///<summary>
+		///     This is set if the techniques change and the supportedness of techniques has to be
+		///     re-evaluated.
+		///</summary>
+		protected bool compilationRequired;
+
+		/// <summary>
+		/// Store a list of MRTs we've created
+		/// </summary>
+		protected Dictionary<string, MultiRenderTarget> globalMRTs;
+
+		/// <summary>
+		/// Store a list of textures we've created
+		/// </summary>
+		protected Dictionary<string, Texture> globalTextures;
+
+		protected List<CompositionTechnique> supportedTechniques;
 		protected List<CompositionTechnique> techniques;
-		private ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
+
 		/// <summary>
 		/// List of all techniques
 		/// </summary>
@@ -78,12 +100,10 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return readOnlyTechniques;
+				return this.readOnlyTechniques;
 			}
 		}
 
-		protected List<CompositionTechnique> supportedTechniques;
-		private ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
 		/// <summary>
 		/// List of supported techniques
 		/// </summary>
@@ -96,30 +116,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return readOnlySupportedTechniques;
+				return this.readOnlySupportedTechniques;
 			}
 		}
-
-		///<summary>
-		///     This is set if the techniques change and the supportedness of techniques has to be
-		///     re-evaluated.
-		///</summary>
-		protected bool compilationRequired;
-
-		/// <summary>
-		/// Store a list of textures we've created
-		/// </summary>
-		protected Dictionary<string, Texture> globalTextures;
-
-		/// <summary>
-		/// Store a list of MRTs we've created
-		/// </summary>
-		protected Dictionary<string, MultiRenderTarget> globalMRTs;
-
-		/// <summary>
-		///    Auto incrementing number for creating unique names.
-		/// </summary>
-		protected static int autoNumber;
 
 		#endregion Fields and Properties
 
@@ -128,12 +127,12 @@ namespace Axiom.Graphics
 		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			techniques = new List<CompositionTechnique>();
-			readOnlyTechniques = new ReadOnlyCollection<CompositionTechnique>( techniques );
-			supportedTechniques = new List<CompositionTechnique>();
-			readOnlySupportedTechniques = new ReadOnlyCollection<CompositionTechnique>( supportedTechniques );
-			globalTextures = new Dictionary<string, Texture>();
-			globalMRTs = new Dictionary<string, MultiRenderTarget>();
+			this.techniques = new List<CompositionTechnique>();
+			this.readOnlyTechniques = new ReadOnlyCollection<CompositionTechnique>( this.techniques );
+			this.supportedTechniques = new List<CompositionTechnique>();
+			this.readOnlySupportedTechniques = new ReadOnlyCollection<CompositionTechnique>( this.supportedTechniques );
+			this.globalTextures = new Dictionary<string, Texture>();
+			this.globalMRTs = new Dictionary<string, MultiRenderTarget>();
 			this.compilationRequired = true;
 		}
 
@@ -155,12 +154,12 @@ namespace Axiom.Graphics
 			if ( !IsLoaded )
 			{
 				// compile if needed
-				if ( compilationRequired )
+				if ( this.compilationRequired )
 				{
 					Compile();
 				}
 
-                CreateGlobalTextures();
+				CreateGlobalTextures();
 			}
 		}
 
@@ -170,7 +169,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void unload()
 		{
-            FreeGlobalTextures();
+			FreeGlobalTextures();
 		}
 
 		/// <summary>
@@ -182,20 +181,20 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					this.RemoveAllTechniques();
+					RemoveAllTechniques();
 
-					foreach ( var item in globalMRTs )
+					foreach ( var item in this.globalMRTs )
 					{
 						item.Value.Dispose();
 					}
-					globalMRTs.Clear();
+					this.globalMRTs.Clear();
 
-					foreach ( var item in globalTextures )
+					foreach ( var item in this.globalTextures )
 					{
 						item.Value.Dispose();
 					}
-                    return;
-                    unload();
+					return;
+					unload();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -212,7 +211,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public override void Touch()
 		{
-			if ( compilationRequired )
+			if ( this.compilationRequired )
 			{
 				Compile();
 			}
@@ -231,8 +230,8 @@ namespace Axiom.Graphics
 		public CompositionTechnique CreateTechnique()
 		{
 			var t = new CompositionTechnique( this );
-			techniques.Add( t );
-			compilationRequired = true;
+			this.techniques.Add( t );
+			this.compilationRequired = true;
 			return t;
 		}
 
@@ -241,12 +240,12 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveTechnique( int idx )
 		{
-            Debug.Assert(idx < techniques.Count, "Index out of bounds.");
-            techniques[idx].Dispose();
-            techniques[idx] = null;
-			techniques.RemoveAt( idx );
-			supportedTechniques.Clear();
-			compilationRequired = true;
+			Debug.Assert( idx < this.techniques.Count, "Index out of bounds." );
+			this.techniques[ idx ].Dispose();
+			this.techniques[ idx ] = null;
+			this.techniques.RemoveAt( idx );
+			this.supportedTechniques.Clear();
+			this.compilationRequired = true;
 		}
 
 		///<summary>
@@ -254,14 +253,14 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveAllTechniques()
 		{
-            //for (int i = 0; i < techniques.Count; i++)
-            //{
-            //    techniques[i].Dispose();
-            //    techniques[i] = null;
-            //}
-			techniques.Clear();
-			supportedTechniques.Clear();
-			compilationRequired = true;
+			//for (int i = 0; i < techniques.Count; i++)
+			//{
+			//    techniques[i].Dispose();
+			//    techniques[i] = null;
+			//}
+			this.techniques.Clear();
+			this.supportedTechniques.Clear();
+			this.compilationRequired = true;
 		}
 
 		/// <summary>
@@ -286,7 +285,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public CompositionTechnique GetSupportedTechniqueByScheme( string schemeName )
 		{
-			foreach ( var t in supportedTechniques )
+			foreach ( CompositionTechnique t in this.supportedTechniques )
 			{
 				if ( t.SchemeName == schemeName )
 				{
@@ -294,7 +293,7 @@ namespace Axiom.Graphics
 				}
 			}
 			// didn't find a matching one
-			foreach ( var t in supportedTechniques )
+			foreach ( CompositionTechnique t in this.supportedTechniques )
 			{
 				if ( String.IsNullOrEmpty( t.SchemeName ) )
 				{
@@ -314,13 +313,17 @@ namespace Axiom.Graphics
 		{
 			//Try simple texture
 			Texture ret = null;
-			if ( globalTextures.TryGetValue( name, out ret ) )
+			if ( this.globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret;
+			}
 
 			//Try MRT
-			var mrtName = GetMRTLocalName( name, mrtIndex );
-			if ( !globalTextures.TryGetValue( name, out ret ) )
+			string mrtName = GetMRTLocalName( name, mrtIndex );
+			if ( !this.globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret;
+			}
 
 			throw new AxiomException( "Non-existent global texture name." );
 		}
@@ -339,13 +342,17 @@ namespace Axiom.Graphics
 		{
 			//Try simple texture
 			Texture ret = null;
-			if ( globalTextures.TryGetValue( name, out ret ) )
+			if ( this.globalTextures.TryGetValue( name, out ret ) )
+			{
 				return ret.GetBuffer().GetRenderTarget();
+			}
 
 			//Try MRT
 			MultiRenderTarget mrt = null;
-			if ( globalMRTs.TryGetValue( name, out mrt ) )
+			if ( this.globalMRTs.TryGetValue( name, out mrt ) )
+			{
 				return mrt;
+			}
 
 			throw new AxiomException( "Non-existent global texture name." );
 		}
@@ -367,30 +374,30 @@ namespace Axiom.Graphics
 		protected void Compile()
 		{
 			// Sift out supported techniques
-			supportedTechniques.Clear();
+			this.supportedTechniques.Clear();
 			// Try looking for exact technique support with no texture fallback
-			foreach ( var t in techniques )
+			foreach ( CompositionTechnique t in this.techniques )
 			{
 				// Look for exact texture support first
 				if ( t.IsSupported( false ) )
 				{
-					supportedTechniques.Add( t );
+					this.supportedTechniques.Add( t );
 				}
 			}
 
-			if ( supportedTechniques.Count == 0 )
+			if ( this.supportedTechniques.Count == 0 )
 			{
 				// Check again, being more lenient with textures
-				foreach ( var t in techniques )
+				foreach ( CompositionTechnique t in this.techniques )
 				{
 					// Allow texture support with degraded pixel format
 					if ( t.IsSupported( true ) )
 					{
-						supportedTechniques.Add( t );
+						this.supportedTechniques.Add( t );
 					}
 				}
 			}
-			compilationRequired = false;
+			this.compilationRequired = false;
 		}
 
 		/// <summary>
@@ -398,30 +405,38 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void CreateGlobalTextures()
 		{
-			if ( supportedTechniques.Count == 0 )
+			if ( this.supportedTechniques.Count == 0 )
+			{
 				return;
+			}
 
 			//To make sure that we are consistent, it is demanded that all composition
 			//techniques define the same set of global textures.
 			var globalTextureNames = new List<string>();
 
 			//Initialize global textures from first supported technique
-			var firstTechnique = supportedTechniques[ 0 ];
+			CompositionTechnique firstTechnique = this.supportedTechniques[ 0 ];
 
-			foreach ( var def in firstTechnique.TextureDefinitions )
+			foreach ( CompositionTechnique.TextureDefinition def in firstTechnique.TextureDefinitions )
 			{
 				if ( def.Scope == CompositionTechnique.TextureScope.Global )
 				{
 					//Check that this is a legit global texture
 					if ( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
+					{
 						throw new AxiomException( "Global compositor texture definition can not be a reference." );
+					}
 
-                    if ( def.Width == 0 || def.Height == 0 )
+					if ( def.Width == 0 || def.Height == 0 )
+					{
 						throw new AxiomException( "Global compositor texture definition must have absolute size." );
+					}
 
-                    if ( def.Pooled )
+					if ( def.Pooled )
+					{
 						LogManager.Instance.Write( "Pooling global compositor textures has no effect", null );
-					
+					}
+
 					globalTextureNames.Add( def.Name );
 
 					//TODO GSOC : Heavy copy-pasting from CompositorInstance. How to we solve it?
@@ -429,55 +444,49 @@ namespace Axiom.Graphics
 					RenderTarget renderTarget = null;
 					if ( def.PixelFormats.Count > 1 )
 					{
-                        var MRTBaseName = string.Format( "c{0}/{1}/{2}", autoNumber++.ToString(), _name, def.Name );
-						var mrt = Root.Instance.RenderSystem.CreateMultiRenderTarget( MRTBaseName );
-						globalMRTs.Add( def.Name, mrt );
+						string MRTBaseName = string.Format( "c{0}/{1}/{2}", autoNumber++.ToString(), _name, def.Name );
+						MultiRenderTarget mrt = Root.Instance.RenderSystem.CreateMultiRenderTarget( MRTBaseName );
+						this.globalMRTs.Add( def.Name, mrt );
 
 						// create and bind individual surfaces
-						var atch = 0;
-						foreach ( var p in def.PixelFormats )
+						int atch = 0;
+						foreach ( PixelFormat p in def.PixelFormats )
 						{
-                            var texName = string.Format( "{0}/{1}", MRTBaseName, atch.ToString() );
-							var tex =
-								TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-																	 TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null,
-																	 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
+							string texName = string.Format( "{0}/{1}", MRTBaseName, atch.ToString() );
+							Texture tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
 
-							var rt = tex.GetBuffer().GetRenderTarget();
+							RenderTexture rt = tex.GetBuffer().GetRenderTarget();
 							rt.IsAutoUpdated = false;
 							mrt.BindSurface( atch, rt );
 							// Also add to local textures so we can look up
-							var mrtLocalName = GetMRTLocalName( def.Name, atch );
-							globalTextures.Add( mrtLocalName, tex );
+							string mrtLocalName = GetMRTLocalName( def.Name, atch );
+							this.globalTextures.Add( mrtLocalName, tex );
 						}
 						renderTarget = mrt;
 					}
 					else
 					{
-						var texName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
+						string texName = "c" + autoNumber++.ToString() + "/" + _name + "/" + def.Name;
 						// space in the name mixup the cegui in the compositor demo
 						// this is an auto generated name - so no spaces can't hart us.
 						texName = texName.Replace( " ", "_" );
-						var tex =
-							TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-																 TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null,
-																 def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
+						Texture tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
 
 						renderTarget = tex.GetBuffer().GetRenderTarget();
-						globalTextures.Add( def.Name, tex );
+						this.globalTextures.Add( def.Name, tex );
 					}
-                    
-                    //Set DepthBuffer pool for sharing
-                    renderTarget.DepthBufferPool = def.DepthBufferId;
+
+					//Set DepthBuffer pool for sharing
+					renderTarget.DepthBufferPool = def.DepthBufferId;
 				}
 			}
 
 			//Validate that all other supported techniques expose the same set of global textures.
-			foreach ( var technique in supportedTechniques )
+			foreach ( CompositionTechnique technique in this.supportedTechniques )
 			{
-				var isConsistent = true;
-				var numGlobals = 0;
-				foreach ( var texDef in technique.TextureDefinitions )
+				bool isConsistent = true;
+				int numGlobals = 0;
+				foreach ( CompositionTechnique.TextureDefinition texDef in technique.TextureDefinitions )
 				{
 					if ( texDef.Scope == CompositionTechnique.TextureScope.Global )
 					{
@@ -505,17 +514,17 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void FreeGlobalTextures()
 		{
-			foreach ( var tex in globalTextures.Values )
+			foreach ( Texture tex in this.globalTextures.Values )
 			{
 				TextureManager.Instance.Remove( tex.Name );
 			}
-			globalTextures.Clear();
+			this.globalTextures.Clear();
 
-			foreach ( var mrt in globalMRTs.Values )
+			foreach ( MultiRenderTarget mrt in this.globalMRTs.Values )
 			{
 				Root.Instance.RenderSystem.DestroyRenderTarget( mrt.Name );
 			}
-			globalMRTs.Clear();
+			this.globalMRTs.Clear();
 		}
 
 		#endregion Methods

@@ -43,8 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
-
 #endregion Namespace Declarations
 
 using System.Runtime.InteropServices;
@@ -79,6 +77,7 @@ namespace Axiom.Math
 		public Vector3 Normal;
 
 		private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
+
 		public static Plane Null
 		{
 			get
@@ -128,8 +127,8 @@ namespace Axiom.Math
 		/// <param name="point2">Third point.</param>
 		public Plane( Vector3 point0, Vector3 point1, Vector3 point2 )
 		{
-			var edge1 = point1 - point0;
-			var edge2 = point2 - point0;
+			Vector3 edge1 = point1 - point0;
+			Vector3 edge2 = point2 - point0;
 			this.Normal = edge1.Cross( edge2 );
 			this.Normal.Normalize();
 			this.D = -this.Normal.Dot( point0 );
@@ -146,7 +145,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public PlaneSide GetSide( Vector3 point )
 		{
-			var distance = this.GetDistance( point );
+			Real distance = GetDistance( point );
 
 			if ( distance < 0.0f )
 			{
@@ -178,7 +177,7 @@ namespace Axiom.Math
 				return PlaneSide.Both;
 			}
 
-			return this.GetSide( box.Center, box.HalfSize );
+			return GetSide( box.Center, box.HalfSize );
 		}
 
 		/// <summary>
@@ -195,11 +194,11 @@ namespace Axiom.Math
 		public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
 		{
 			// Calculate the distance between box centre and the plane
-			var dist = this.GetDistance( centre );
+			Real dist = GetDistance( centre );
 
 			// Calculate the maximise allows absolute distance for
 			// the distance between box centre and plane
-			var maxAbsDist = this.Normal.AbsDot( halfSize );
+			Real maxAbsDist = this.Normal.AbsDot( halfSize );
 
 			if ( dist < -maxAbsDist )
 			{
@@ -248,8 +247,8 @@ namespace Axiom.Math
 		/// <param name="point2">Third point.</param>
 		public void Redefine( Vector3 point0, Vector3 point1, Vector3 point2 )
 		{
-			var edge1 = point1 - point0;
-			var edge2 = point2 - point0;
+			Vector3 edge1 = point1 - point0;
+			Vector3 edge2 = point2 - point0;
 			this.Normal = edge1.Cross( edge2 );
 			this.Normal.Normalize();
 			this.D = -this.Normal.Dot( point0 );

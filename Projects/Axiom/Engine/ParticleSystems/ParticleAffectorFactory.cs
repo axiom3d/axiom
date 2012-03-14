@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-
 
 #endregion Namespace Declarations
 
@@ -62,13 +64,6 @@ namespace Axiom.ParticleSystems
 
 		#region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public ParticleAffectorFactory()
-		{
-		}
-
 		#endregion
 
 		#region Properties
@@ -76,10 +71,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Returns the name of the factory, which identifies the affector type this factory creates.
 		/// </summary>
-		public abstract string Name
-		{
-			get;
-		}
+		public abstract string Name { get; }
 
 		/// <summary>
 		///		Creates a new affector instance.
@@ -87,8 +79,8 @@ namespace Axiom.ParticleSystems
 		/// <remarks>
 		///		Subclasses MUST add a reference to the affectorList.
 		/// </remarks>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract ParticleAffector CreateAffector( ParticleSystem psys );
+		[OgreVersion( 1, 7, 2 )]
+		public abstract ParticleAffector CreateAffector( ParticleSystem psys );
 
 		/// <summary>
 		///		Destroys the affector referenced by the parameter.
@@ -97,7 +89,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleAffector e )
 		{
 			// remove the affector from the list
-			affectorList.Remove( e );
+			this.affectorList.Remove( e );
 		}
 
 		#endregion

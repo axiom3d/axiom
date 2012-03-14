@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -35,23 +39,27 @@ using System;
 
 namespace Axiom.Core
 {
-    public static class ObjectExtentions
-    {
-        /// <summary>
-        /// Helper method to safe dispose an object.
-        /// </summary>
-        /// <param name="disposable">The object being disposed</param>
-        [AxiomHelper( 0, 9 )]
-        public static void SafeDispose( this object disposable )
-        {
-            // first sanity check on disposable
-            if ( disposable == null || !( disposable is IDisposable ) )
-                return;
+	public static class ObjectExtentions
+	{
+		/// <summary>
+		/// Helper method to safe dispose an object.
+		/// </summary>
+		/// <param name="disposable">The object being disposed</param>
+		[AxiomHelper( 0, 9 )]
+		public static void SafeDispose( this object disposable )
+		{
+			// first sanity check on disposable
+			if ( disposable == null || !( disposable is IDisposable ) )
+			{
+				return;
+			}
 
-            var canCallDispose = disposable is DisposableObject ? !( (DisposableObject)disposable ).IsDisposed : true;
+			bool canCallDispose = disposable is DisposableObject ? !( (DisposableObject)disposable ).IsDisposed : true;
 
-            if ( canCallDispose )
-                ( (IDisposable)disposable ).Dispose();
-        }
-    };
+			if ( canCallDispose )
+			{
+				( (IDisposable)disposable ).Dispose();
+			}
+		}
+	};
 }

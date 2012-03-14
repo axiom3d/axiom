@@ -27,17 +27,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -47,8 +46,10 @@ namespace Axiom.SceneManagers.PortalConnected
 	public class Capsule
 	{
 		#region Fields
-		private Segment mSegment;
+
+		private readonly Segment mSegment;
 		private float mRadius;
+
 		#endregion Fields
 
 		#region Constructors
@@ -56,16 +57,19 @@ namespace Axiom.SceneManagers.PortalConnected
 		public Capsule()
 		{
 			// uninitialized
-			mSegment = new Segment();
-			mRadius = float.NaN;
+			this.mSegment = new Segment();
+			this.mRadius = float.NaN;
 		}
+
 		//----------------------------------------------------------------------------
 		public Capsule( Segment segment, float radius )
 		{
-			mSegment = segment;
-			mRadius = radius;
+			this.mSegment = segment;
+			this.mRadius = radius;
 		}
+
 		//----------------------------------------------------------------------------
+
 		#endregion Constructors
 
 		#region propertys
@@ -74,7 +78,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mSegment;
+				return this.mSegment;
 			}
 		}
 
@@ -82,7 +86,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mRadius;
+				return this.mRadius;
 			}
 		}
 
@@ -90,18 +94,13 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		#region Methods
 
-		public void Set( Vector3 newOrigin, Vector3 newEnd, float newRadius )
-		{
-			mSegment.Set( newOrigin, newEnd );
-			mRadius = newRadius;
-		}
 		//----------------------------------------------------------------------------
 
 		public Vector3 Origin
 		{
 			set
 			{
-				mSegment.Origin = value;
+				this.mSegment.Origin = value;
 			}
 		}
 
@@ -109,28 +108,37 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			set
 			{
-				mSegment.EndPoint = value;
+				this.mSegment.EndPoint = value;
 			}
+		}
+
+		public void Set( Vector3 newOrigin, Vector3 newEnd, float newRadius )
+		{
+			this.mSegment.Set( newOrigin, newEnd );
+			this.mRadius = newRadius;
 		}
 
 		//----------------------------------------------------------------------------
 		public void SetRadius( Real newRadius )
 		{
-			mRadius = newRadius;
+			this.mRadius = newRadius;
 		}
+
 		//----------------------------------------------------------------------------
 		public bool Intersects( Capsule otherCapsule )
 		{
-			Real fDistance = mSegment.Distance( otherCapsule.mSegment );
-			Real fRSum = mRadius + otherCapsule.mRadius;
+			Real fDistance = this.mSegment.Distance( otherCapsule.mSegment );
+			Real fRSum = this.mRadius + otherCapsule.mRadius;
 			return fDistance <= fRSum;
 		}
+
 		//----------------------------------------------------------------------------
 		public bool Intersects( Segment segment )
 		{
-			Real fDist = segment.Distance( mSegment );
-			return fDist <= mRadius;
+			Real fDist = segment.Distance( this.mSegment );
+			return fDist <= this.mRadius;
 		}
+
 		//----------------------------------------------------------------------------
 
 		#endregion Methods

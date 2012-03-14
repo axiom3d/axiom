@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -45,21 +49,22 @@ namespace Axiom.Scripting
 	[AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
 	public sealed class CommandAttribute : Attribute
 	{
-
 		#region Fields
+
+		/// <summary>
+		///    Description of what this command does.
+		/// </summary>
+		private readonly string description;
 
 		/// <summary>
 		///    Name of the command the target class will be registered to handle.
 		/// </summary>
-		private string name;
-		/// <summary>
-		///    Description of what this command does.
-		/// </summary>
-		private string description;
+		private readonly string name;
+
 		/// <summary>
 		///    Target type this class is meant to handle commands for.
 		/// </summary>
-		private Type target;
+		private readonly Type target;
 
 		#endregion Fields
 
@@ -109,7 +114,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -120,7 +125,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return description;
+				return this.description;
 			}
 		}
 
@@ -131,7 +136,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return target;
+				return this.target;
 			}
 		}
 

@@ -37,7 +37,6 @@
 
 using System;
 
-using Axiom.Core;
 using Axiom.Collections;
 
 #endregion

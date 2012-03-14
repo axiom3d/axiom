@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Utilities;
@@ -12,235 +13,252 @@ using Axiom.Utilities;
 
 namespace Axiom.Graphics
 {
-    public partial class GpuProgramParameters
-    {
-        /// <summary>
-        /// This class emulates the behaviour of a vector&lt;T&gt;
-        /// allowing T* access as IntPtr of a specified element
-        /// </summary>
-        [AxiomHelper( 0, 9 )]
-        public abstract class OffsetArray<T> : DisposableObject, IList<T>
-        {
-            #region Fields
+	public partial class GpuProgramParameters
+	{
+		#region Nested type: FloatConstantList
 
-            private FixedPointer _ptr;
-            private readonly int _size = Memory.SizeOf( typeof( T ) );
+		/// <summary>
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public class FloatConstantList : OffsetArray<float>
+		{
+			public FloatConstantList() { }
 
-            #endregion Fields
+			public FloatConstantList( FloatConstantList other )
+			{
+				Data = (float[])other.Data.Clone();
+			}
 
-            #region Properties
+			public override void Resize( int size )
+			{
+				Contract.Requires( size > Count );
+				AddRange( Enumerable.Repeat( 0.0f, size - Count ) );
+			}
+		};
 
-            public T[] Data
-            { 
-                get;
-                protected set;
-            }
+		#endregion
 
-            public int Count
-            {
-                get;
-                private set;
-            }
+		#region Nested type: IntConstantList
 
-            public int Capacity
-            {
-                get
-                {
-                    return Data.Length;
-                }
-            }
+		/// <summary>
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public class IntConstantList : OffsetArray<int>
+		{
+			public IntConstantList() { }
 
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return false;
-                }
-            }
+			public IntConstantList( IntConstantList other )
+			{
+				Data = (int[])other.Data.Clone();
+			}
 
-            public T this[ int index ]
-            {
-                get
-                {
-                    return Data[ index ];
-                }
+			public override void Resize( int size )
+			{
+				Contract.Requires( size > Count );
+				AddRange( Enumerable.Repeat( 0, size - Count ) );
+			}
+		};
 
-                set
-                {
-                    Data[ index ] = value;
-                }
-            }
+		#endregion
 
-            #endregion Properties
+		#region Nested type: OffsetArray
 
-            #region Nested types
+		/// <summary>
+		/// This class emulates the behaviour of a vector&lt;T&gt;
+		/// allowing T* access as IntPtr of a specified element
+		/// </summary>
+		[AxiomHelper( 0, 9 )]
+		public abstract class OffsetArray<T> : DisposableObject, IList<T>
+		{
+			#region Fields
 
-            public struct FixedPointer : IDisposable
-            {
-                public BufferBase Pointer;
-                internal T[] Owner;
+			private readonly int _size = Memory.SizeOf( typeof( T ) );
+			private FixedPointer _ptr;
 
-                public void Dispose()
-                {
-                    Memory.UnpinObject( Owner );
-                }
-            };
+			#endregion Fields
 
-            #endregion Nested types
+			#region Properties
 
-            public OffsetArray()
-                : base()
-            {
-                Data = new T[ 16 ];
-            }
+			public T[] Data { get; protected set; }
 
-            protected override void dispose( bool disposeManagedResources )
-            {
-                if ( !this.IsDisposed && disposeManagedResources )
-                    _ptr.SafeDispose();
+			public int Capacity
+			{
+				get
+				{
+					return Data.Length;
+				}
+			}
 
-                base.dispose( disposeManagedResources );
-            }
+			public int Count { get; private set; }
 
-            public FixedPointer Fix( int offset )
-            {
-                _ptr.Owner = Data;
-                _ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size * offset );
-                return _ptr;
-            }
+			public bool IsReadOnly
+			{
+				get
+				{
+					return false;
+				}
+			}
 
-            public IEnumerator<T> GetEnumerator()
-            {
-                for ( var i = 0; i < Count; i++ )
-                    yield return Data[ i ];
-            }
+			public T this[ int index ]
+			{
+				get
+				{
+					return Data[ index ];
+				}
 
-            private void _grow()
-            {
-                var tmp = Data;
-                Array.Resize( ref tmp, Capacity + 16 );
-                Data = tmp;
-            }
+				set
+				{
+					Data[ index ] = value;
+				}
+			}
 
-            public void AddRange( IEnumerable<T> entries )
-            {
-                foreach ( var v in entries )
-                    Add( v );
-            }
+			#endregion Properties
 
-            public void RemoveRange( int index, int count )
-            {
-                var behind = Count - index - 1; // number of elements behind the to be moved region
-                var next = index + count;       // index of the first element behind
-                var todo = behind < count ? behind : count; // number of elements to shift down
+			#region Nested types
 
-                for ( var i = 0; i < todo; i++ )
-                    Data[ index + i ] = Data[ next + i ];
+			public struct FixedPointer : IDisposable
+			{
+				internal T[] Owner;
+				public BufferBase Pointer;
 
-                Count -= count;
-            }
+				#region IDisposable Members
 
-            public abstract void Resize( int size );
+				public void Dispose()
+				{
+					Memory.UnpinObject( this.Owner );
+				}
 
-            #region IList<T> implementation
+				#endregion
+			};
 
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
+			#endregion Nested types
 
-            public void Add( T item )
-            {
-                if ( Count == Capacity )
-                    _grow();
-                Data[ Count++ ] = item;
-            }
+			public OffsetArray()
+			{
+				Data = new T[ 16 ];
+			}
 
-            public void Clear()
-            {
-                Count = 0;
-            }
+			#region IList<T> Members
 
-            public void CopyTo( T[] array, int arrayIndex )
-            {
-                for ( var i = 0; i < Count; i++ )
-                    array[ arrayIndex + i ] = Data[ i ];
-            }
+			public IEnumerator<T> GetEnumerator()
+			{
+				for ( int i = 0; i < Count; i++ )
+				{
+					yield return Data[ i ];
+				}
+			}
 
-            public void RemoveAt( int index )
-            {
-                RemoveRange( index, 1 );
-            }
+			#endregion
 
-            #region unimplemented operations
+			protected override void dispose( bool disposeManagedResources )
+			{
+				if ( !IsDisposed && disposeManagedResources )
+				{
+					this._ptr.SafeDispose();
+				}
 
-            public bool Contains( T item )
-            {
-                throw new NotImplementedException();
-            }
+				base.dispose( disposeManagedResources );
+			}
 
-            public bool Remove( T item )
-            {
-                throw new NotImplementedException();
-            }
+			public FixedPointer Fix( int offset )
+			{
+				this._ptr.Owner = Data;
+				this._ptr.Pointer = Memory.PinObject( this._ptr.Owner ).Offset( this._size * offset );
+				return this._ptr;
+			}
 
-            public int IndexOf( T item )
-            {
-                throw new NotImplementedException();
-            }
+			private void _grow()
+			{
+				T[] tmp = Data;
+				Array.Resize( ref tmp, Capacity + 16 );
+				Data = tmp;
+			}
 
-            public void Insert( int index, T item )
-            {
-                throw new NotImplementedException();
-            }
+			public void AddRange( IEnumerable<T> entries )
+			{
+				foreach ( T v in entries )
+				{
+					Add( v );
+				}
+			}
 
-            #endregion
+			public void RemoveRange( int index, int count )
+			{
+				int behind = Count - index - 1; // number of elements behind the to be moved region
+				int next = index + count; // index of the first element behind
+				int todo = behind < count ? behind : count; // number of elements to shift down
 
-            #endregion IList<T> implementation
-        };
+				for ( int i = 0; i < todo; i++ )
+				{
+					Data[ index + i ] = Data[ next + i ];
+				}
 
-        /// <summary>
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public class FloatConstantList : OffsetArray<float>
-        {
-            public FloatConstantList()
-                : base()
-            {
-            }
+				Count -= count;
+			}
 
-            public FloatConstantList( FloatConstantList other )
-            {
-                Data = (float[])other.Data.Clone();
-            }
+			public abstract void Resize( int size );
 
-            public override void Resize( int size )
-            {
-                Contract.Requires( size > Count );
-                AddRange( Enumerable.Repeat( 0.0f, size - Count ) );
-            }
-        };
+			#region IList<T> implementation
 
-        /// <summary>
-        /// </summary>
-        [OgreVersion( 1, 7, 2790 )]
-        public class IntConstantList : OffsetArray<int>
-        {
-            public IntConstantList()
-                : base()
-            {
-            }
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
 
-            public IntConstantList( IntConstantList other )
-            {
-                Data = (int[])other.Data.Clone();
-            }
+			public void Add( T item )
+			{
+				if ( Count == Capacity )
+				{
+					_grow();
+				}
+				Data[ Count++ ] = item;
+			}
 
-            public override void Resize( int size )
-            {
-                Contract.Requires( size > Count );
-                AddRange( Enumerable.Repeat( 0, size - Count ) );
-            }
-        };
-    }
+			public void Clear()
+			{
+				Count = 0;
+			}
+
+			public void CopyTo( T[] array, int arrayIndex )
+			{
+				for ( int i = 0; i < Count; i++ )
+				{
+					array[ arrayIndex + i ] = Data[ i ];
+				}
+			}
+
+			public void RemoveAt( int index )
+			{
+				RemoveRange( index, 1 );
+			}
+
+			#region unimplemented operations
+
+			public bool Contains( T item )
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool Remove( T item )
+			{
+				throw new NotImplementedException();
+			}
+
+			public int IndexOf( T item )
+			{
+				throw new NotImplementedException();
+			}
+
+			public void Insert( int index, T item )
+			{
+				throw new NotImplementedException();
+			}
+
+			#endregion
+
+			#endregion IList<T> implementation
+		};
+
+		#endregion
+	}
 }

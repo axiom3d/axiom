@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -45,6 +45,8 @@ namespace Axiom.Media
 {
 	partial class LinearResampler
 	{
+		#region Nested type: Float32
+
 		/// <summary>
 		/// float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only.
 		/// avoids overhead of pixel unpack/repack function calls
@@ -54,18 +56,16 @@ namespace Axiom.Media
 			private int _count;
 
 			public Float32()
-				: this( 1 )
-			{
-			}
+				: this( 1 ) { }
 
 			public Float32( int count )
 			{
 				this._count = count;
 			}
 
-			public void Scale( PixelBox src, PixelBox dst )
-			{
-			}
+			public void Scale( PixelBox src, PixelBox dst ) { }
 		}
+
+		#endregion
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,7 +48,7 @@ namespace Axiom.Controllers.Canned
 	/// </summary>
 	public class MultipyControllerFunction : BaseControllerFunction
 	{
-		private Real rate = 10.0f;
+		private readonly Real rate = 10.0f;
 
 		public MultipyControllerFunction( Real rate )
 			: base( false )
@@ -60,8 +64,7 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			return AdjustInput( sourceValue * rate );
+			return AdjustInput( sourceValue * this.rate );
 		}
-
 	}
 }

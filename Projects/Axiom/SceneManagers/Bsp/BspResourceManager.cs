@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,24 +23,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
+using System.IO;
 
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 
 using ResourceHandle = System.UInt64;
-using System.IO;
 
 #endregion Namespace Declarations
 
@@ -73,7 +76,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			RemoveAll();
 
-			BspLevel bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
+			var bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
 			bsp.Load( stream );
 
 			return bsp;
@@ -83,60 +86,61 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region ISingleton<BspResourceManager> Implementation
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// 
+		/// </summary>
 		protected static BspResourceManager instance;
 
-        /// <summary>
-        /// 
-        /// </summary>
+		internal BspResourceManager()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+				ResourceType = "BspLevel";
+				this.shaderManager = new Quake3ShaderManager();
+				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+			}
+			else
+			{
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public static BspResourceManager Instance
 		{
 			get
 			{
 				return instance;
 			}
-        }
+		}
 
-        internal BspResourceManager()
-            : base()
-        {
-            if (instance == null)
-            {
-                instance = this;
-                ResourceType = "BspLevel";
-                shaderManager = new Quake3ShaderManager();
-                ResourceGroupManager.Instance.RegisterResourceManager(ResourceType, this);
-            }
-            else
-                throw new AxiomException("Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public bool Initialize(params object[] args)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public bool Initialize( params object[] args )
 		{
 			return true;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					shaderManager.Dispose();
+					this.shaderManager.Dispose();
 					ResourceGroupManager.Instance.UnregisterResourceManager( "BspLevel" );
-                    instance = null;
+					instance = null;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -152,27 +156,27 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region ResourceManager Implementation
 
-        #region Load
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="group"></param>
-        /// <param name="isManual"></param>
-        /// <param name="loader"></param>
-        /// <param name="loadParams"></param>
-        /// <returns></returns>
-        public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
-            NameValuePairList loadParams, bool backgroundThread )
+		#region Load
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="isManual"></param>
+		/// <param name="loader"></param>
+		/// <param name="loadParams"></param>
+		/// <returns></returns>
+		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
 		{
 			RemoveAll(); // Only one level at a time.
 
 			return base.Load( name, group, isManual, loader, loadParams );
 		}
-        #endregion Load
 
+		#endregion Load
 
-        /// <summary>
+		/// <summary>
 		///		Creates a BspLevel resource - mainly used internally.
 		/// </summary>
 		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )

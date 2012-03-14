@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using Axiom.Core;
@@ -55,22 +57,16 @@ namespace Axiom.FileSystem
 	{
 		#region Fields and Properties
 
+		private readonly Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
+
 		/// <summary>
 		/// The list of factories
 		/// </summary>
-		private Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
-		private Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
+		private readonly Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
 
 		#endregion
 
 		#region Constructor
-
-		/// <summary>
-		/// Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		public ArchiveManager()
-		{
-		}
 
 		#endregion Constructor
 
@@ -93,21 +89,36 @@ namespace Axiom.FileSystem
 		public Archive Load( string filename, string archiveType )
 		{
 			Archive arch = null;
-			if ( !_archives.TryGetValue( filename, out arch ) )
+			if ( !this._archives.TryGetValue( filename, out arch ) )
 			{
 				// Search factories
 				ArchiveFactory fac = null;
-				if ( !_factories.TryGetValue( archiveType, out fac ) )
+				if ( !this._factories.TryGetValue( archiveType, out fac ) )
+				{
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", archiveType );
+				}
 
 				arch = fac.CreateInstance( filename );
 				arch.Load();
-				_archives.Add( filename, arch );
-
+				this._archives.Add( filename, arch );
 			}
 			return arch;
 		}
 
+		/// <summary>
+		/// Add an archive factory to the list
+		/// </summary>
+		/// <param name="factory">The factory itself</param>
+		public void AddArchiveFactory( ArchiveFactory factory )
+		{
+			if ( this._factories.ContainsKey( factory.Type ) )
+			{
+				throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
+			}
+
+			this._factories.Add( factory.Type, factory );
+			LogManager.Instance.Write( "ArchiveFactory for archive type {0} registered.", factory.Type );
+		}
 
 		#region Unload Method
 
@@ -129,40 +140,26 @@ namespace Axiom.FileSystem
 		///  <remarks>
 		/// You must ensure that this archive is not being used before removing it.
 		///  </remarks>
-        /// <param name="filename">The Archive to unload</param>
+		/// <param name="filename">The Archive to unload</param>
 		public void Unload( string filename )
 		{
-			var arch = _archives[ filename ];
+			Archive arch = this._archives[ filename ];
 
 			if ( arch != null )
 			{
 				arch.Unload();
 
-				var fac = _factories[ arch.Type ];
+				ArchiveFactory fac = this._factories[ arch.Type ];
 				if ( fac == null )
+				{
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Type );
-				_archives.Remove( arch.Name );
+				}
+				this._archives.Remove( arch.Name );
 				fac.DestroyInstance( ref arch );
 			}
 		}
 
 		#endregion Unload Method
-
-		/// <summary>
-		/// Add an archive factory to the list
-		/// </summary>
-		/// <param name="factory">The factory itself</param>
-		public void AddArchiveFactory( ArchiveFactory factory )
-		{
-			if ( _factories.ContainsKey( factory.Type ) == true )
-			{
-				throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
-			}
-
-			_factories.Add( factory.Type, factory );
-			LogManager.Instance.Write( "ArchiveFactory for archive type {0} registered.", factory.Type );
-
-		}
 
 		#endregion Methods
 
@@ -178,26 +175,24 @@ namespace Axiom.FileSystem
 				if ( disposeManagedResources )
 				{
 					// Unload & delete resources in turn
-					foreach ( var arch in _archives )
+					foreach ( var arch in this._archives )
 					{
 						// Unload
 						arch.Value.Unload();
 
 						// Find factory to destroy
-						var fac = _factories[ arch.Value.Type ];
+						ArchiveFactory fac = this._factories[ arch.Value.Type ];
 						if ( fac == null )
 						{
 							// Factory not found
 							throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Value.Type );
 						}
-						var tmp = arch.Value;
+						Archive tmp = arch.Value;
 						fac.DestroyInstance( ref tmp );
-
 					}
 
 					// Empty the list
-					_archives.Clear();
-
+					this._archives.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

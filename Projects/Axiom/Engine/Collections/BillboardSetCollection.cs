@@ -41,10 +41,8 @@ using Axiom.Core;
 
 namespace Axiom.Collections
 {
-    /// <summary>
-    /// Represents a collection of <see cref="BillboardSet">BillboardSets</see> that are sorted by name.
-    /// </summary>
-    public class BillboardSetCollection : AxiomCollection<BillboardSet>
-    {
-    }
+	/// <summary>
+	/// Represents a collection of <see cref="BillboardSet">BillboardSets</see> that are sorted by name.
+	/// </summary>
+	public class BillboardSetCollection : AxiomCollection<BillboardSet> { }
 }

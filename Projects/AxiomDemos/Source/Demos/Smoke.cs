@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.ParticleSystems;
 
@@ -13,9 +13,9 @@ namespace Axiom.Demos
 	/// Summary description for Smoke.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class Smoke : TechDemo
+	public class Smoke : TechDemo
 	{
 		public override void CreateScene()
 		{
@@ -23,11 +23,9 @@ namespace Axiom.Demos
 
 			scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
 
-			ParticleSystem smokeSystem =
-				ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
+			ParticleSystem smokeSystem = ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
 
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
-
 		}
 	}
 }

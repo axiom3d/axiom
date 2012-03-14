@@ -42,6 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -85,11 +86,12 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-        private static readonly object _autoMutex = new object();
+		private static readonly object _autoMutex = new object();
 
 		#region Resources Property
 
 		private readonly Dictionary<string, Resource> _resources = new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
+
 		/// <summary>
 		///		A cached list of all resources in memory.
 		///	</summary>
@@ -107,6 +109,7 @@ namespace Axiom.Core
 
 		//  std::map<ResourceHandle, ResourcePtr>
 		private readonly Dictionary<ResourceHandle, Resource> _resourceHandleMap = new Dictionary<ResourceHandle, Resource>();
+
 		/// <summary>
 		///		A cached list of all resources handles in memory.
 		///	</summary>
@@ -114,7 +117,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resourceHandleMap;
+				return this._resourceHandleMap;
 			}
 		}
 
@@ -123,6 +126,7 @@ namespace Axiom.Core
 		#region MemoryBudget Property
 
 		private long _memoryBudget; // in bytes
+
 		/// <summary>
 		/// Get/Set a limit on the amount of memory all resource handlers may use.
 		/// </summary>
@@ -136,11 +140,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _memoryBudget;
+				return this._memoryBudget;
 			}
 			set
 			{
-				_memoryBudget = value;
+				this._memoryBudget = value;
 				checkUsage();
 			}
 		}
@@ -150,6 +154,7 @@ namespace Axiom.Core
 		#region memoryUsage Property
 
 		private long _memoryUsage; // in bytes
+
 		/// <summary>
 		///		Gets/Sets the current memory usages by all resource managers.
 		/// </summary>
@@ -157,7 +162,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _memoryUsage;
+				return this._memoryUsage;
 			}
 		}
 
@@ -165,49 +170,24 @@ namespace Axiom.Core
 
 		#region ResourceType Property
 
-		private string _resourceType;
 		/// <summary>
 		/// Gets/Sets a string identifying the type of resource this manager handles.
 		/// </summary>
-		public string ResourceType
-		{
-			get
-			{
-				return _resourceType;
-			}
-			protected set
-			{
-				_resourceType = value;
-			}
-		}
+		public string ResourceType { get; protected set; }
 
 		#endregion ResourceType Property
 
-        #region Verbose Property
+		#region Verbose Property
 
-        /// <summary>
-        /// Gets/Sets whether this manager and its resources habitually produce log output
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public virtual bool Verbose
-        {
-            get;
-            set;
-        }
+		/// <summary>
+		/// Gets/Sets whether this manager and its resources habitually produce log output
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual bool Verbose { get; set; }
 
-        #endregion Verbose Property
+		#endregion Verbose Property
 
-        #region Indexer Properties
-
-        public Resource GetByName( string name )
-		{
-			return this[ name ];
-		}
-
-		public Resource GetByHandle( ResourceHandle handle )
-		{
-			return this[ handle ];
-		}
+		#region Indexer Properties
 
 		/// <summary>
 		///    Gets a reference to the specified named resource.
@@ -234,12 +214,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( _resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( this._resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
 
 				Resource resource;
 
 				// try to obtain the resource
-				if ( _resourceHandleMap.TryGetValue( handle, out resource ) )
+				if ( this._resourceHandleMap.TryGetValue( handle, out resource ) )
 				{
 					resource.Touch();
 				}
@@ -247,6 +227,16 @@ namespace Axiom.Core
 				// return the resource or null
 				return resource;
 			}
+		}
+
+		public Resource GetByName( string name )
+		{
+			return this[ name ];
+		}
+
+		public Resource GetByHandle( ResourceHandle handle )
+		{
+			return this[ handle ];
 		}
 
 		#endregion Indexer Properties
@@ -259,11 +249,10 @@ namespace Axiom.Core
 		///		Default constructor
 		/// </summary>
 		protected ResourceManager()
-            : base()
 		{
-			_memoryBudget = long.MaxValue;
-			_memoryUsage = 0;
-			_loadingOrder = 0;
+			this._memoryBudget = long.MaxValue;
+			this._memoryUsage = 0;
+			this._loadingOrder = 0;
 		}
 
 		#endregion Constructors and Destructors
@@ -286,7 +275,7 @@ namespace Axiom.Core
 		///     cast the result to the subclass you know you're creating.
 		/// </remarks>
 		/// <param name="name">The unique name of the resource</param>
-        /// <param name="group"></param>
+		/// <param name="group"></param>
 		/// <returns></returns>
 		/// </overloads>
 		public Resource Create( string name, string group )
@@ -294,34 +283,34 @@ namespace Axiom.Core
 			return Create( name, group, false, null, null );
 		}
 
-	    /// <param name="group"></param>
-	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-	    /// <param name="name"></param>
-	    public Resource Create( string name, string group, NameValuePairList createParams )
+		/// <param name="group"></param>
+		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+		/// <param name="name"></param>
+		public Resource Create( string name, string group, NameValuePairList createParams )
 		{
 			return Create( name, group, false, null, createParams );
 		}
 
-	    /// <param name="group"></param>
-	    /// <param name="isManual">
-	    /// Is this resource manually loaded? If so, you should really
-	    /// populate the loader parameter in order that the load process
-	    /// can call the loader back when loading is required.
-	    /// </param>
-	    /// <param name="loader">
-	    /// Pointer to a ManualLoader implementation which will be called
-	    /// when the Resource wishes to load (should be supplied if you set
-	    /// isManual to true). You can in fact leave this parameter null
-	    /// if you wish, but the Resource will never be able to reload if
-	    /// anything ever causes it to unload. Therefore provision of a proper
-	    /// ManualLoader instance is strongly recommended.
-	    /// </param>
-	    /// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
-	    /// <param name="name"></param>
-	    public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		/// <param name="group"></param>
+		/// <param name="isManual">
+		/// Is this resource manually loaded? If so, you should really
+		/// populate the loader parameter in order that the load process
+		/// can call the loader back when loading is required.
+		/// </param>
+		/// <param name="loader">
+		/// Pointer to a ManualLoader implementation which will be called
+		/// when the Resource wishes to load (should be supplied if you set
+		/// isManual to true). You can in fact leave this parameter null
+		/// if you wish, but the Resource will never be able to reload if
+		/// anything ever causes it to unload. Therefore provision of a proper
+		/// ManualLoader instance is strongly recommended.
+		/// </param>
+		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
+		/// <param name="name"></param>
+		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
-			var ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
+			Resource ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
 			if ( createParams != null )
 			{
 				ret.SetParameters( createParams );
@@ -335,17 +324,17 @@ namespace Axiom.Core
 			return ret;
 		}
 
-		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
+		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
 		{
 			return CreateOrRetrieve( name, group, false, null, null );
 		}
 
-		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
+		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
 		{
-			ResourceHandle hashCode = (ResourceHandle)name.ToLower().GetHashCode();
+			var hashCode = (ResourceHandle)name.ToLower().GetHashCode();
 
-			var res = this[ hashCode ];
-			var created = false;
+			Resource res = this[ hashCode ];
+			bool created = false;
 
 			if ( res == null )
 			{
@@ -363,108 +352,108 @@ namespace Axiom.Core
 				created = true;
 			}
 
-			return new Axiom.Math.Tuple<Resource, bool>( res, created );
+			return new Tuple<Resource, bool>( res, created );
 		}
 
 		#endregion Create Method
 
-        #region Prepare Method
-        /// <summary>
-        /// Generic prepare method, used to create a Resource specific to this 
-        /// ResourceManager without using one of the specialised 'prepare' methods
-        /// (containing per-Resource-type parameters).
-        /// </summary>
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
-        /// <param name="isManual">Is the resource to be manually loaded? If so, you should
-        /// provide a value for the loader parameter</param>
-        /// <param name="loader">The manual loader which is to perform the required actions
-        /// when this resource is loaded; only applicable when you specify true
-        /// for the previous parameter</param>
-        /// <param name="loadParams">Optional pointer to a list of name/value pairs 
-        /// containing loading parameters for this type of resource.</param>
-        /// <param name="backgroundThread">Optional boolean which lets the load routine know if it
-        /// is being run on the background resource loading thread</param>
-        [OgreVersion( 1, 7, 2 )]
-        public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader,
-            NameValuePairList loadParams, bool backgroundThread )
-        {
-            var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
-            // ensure prepared
-            r.Prepare( backgroundThread );
-            return r;
-        }
+		#region Prepare Method
 
-        public Resource Prepare( string name, string group )
-        {
-            return this.Prepare( name, group, false, null, null, false );
-        }
+		/// <summary>
+		/// Generic prepare method, used to create a Resource specific to this 
+		/// ResourceManager without using one of the specialised 'prepare' methods
+		/// (containing per-Resource-type parameters).
+		/// </summary>
+		/// <param name="name">The name of the Resource</param>
+		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">Is the resource to be manually loaded? If so, you should
+		/// provide a value for the loader parameter</param>
+		/// <param name="loader">The manual loader which is to perform the required actions
+		/// when this resource is loaded; only applicable when you specify true
+		/// for the previous parameter</param>
+		/// <param name="loadParams">Optional pointer to a list of name/value pairs 
+		/// containing loading parameters for this type of resource.</param>
+		/// <param name="backgroundThread">Optional boolean which lets the load routine know if it
+		/// is being run on the background resource loading thread</param>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
+		{
+			Resource r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+			// ensure prepared
+			r.Prepare( backgroundThread );
+			return r;
+		}
 
-        public Resource Prepare( string name, string group, bool isManual )
-        {
-            return this.Prepare( name, group, isManual, null, null, false );
-        }
+		public Resource Prepare( string name, string group )
+		{
+			return Prepare( name, group, false, null, null, false );
+		}
 
-        public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader )
-        {
-            return this.Prepare( name, group, isManual, loader, null, false );
-        }
+		public Resource Prepare( string name, string group, bool isManual )
+		{
+			return Prepare( name, group, isManual, null, null, false );
+		}
 
-        public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
-        {
-            return this.Prepare( name, group, isManual, loader, loadParams, false );
-        }
-        #endregion Prepare Method
+		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader )
+		{
+			return Prepare( name, group, isManual, loader, null, false );
+		}
 
-        #region Load Method
+		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		{
+			return Prepare( name, group, isManual, loader, loadParams, false );
+		}
 
-        //TODO : Look at generics method for implementing this.
+		#endregion Prepare Method
 
-        /// <summary>
-        /// Generic load method, used to create a Resource specific to this 
-        /// ResourceManager without using one of the specialised 'load' methods
-        /// (containing per-Resource-type parameters).
-        /// </summary>
-        /// <param name="name">The name of the Resource</param>
-        /// <param name="group">The resource group to which this resource will belong</param>
-        /// <param name="isManual">Is the resource to be manually loaded? If so, you should
-        /// provide a value for the loader parameter</param>
-        /// <param name="loader">The manual loader which is to perform the required actions
-        /// when this resource is loaded; only applicable when you specify true
-        /// for the previous parameter</param>
-        /// <param name="loadParams">Optional pointer to a list of name/value pairs 
-        /// containing loading parameters for this type of resource.</param>
-        /// <param name="backgroundThread">Optional boolean which lets the load routine know if it
-        /// is being run on the background resource loading thread</param>
-        [OgreVersion( 1, 7, 2 )]
-        public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
-            NameValuePairList loadParams, bool backgroundThread )
-        {
-            var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
-            // ensure loaded
-            r.Load( backgroundThread );
-            return r;
-        }
+		#region Load Method
 
-        public Resource Load( string name, string group )
-        {
-            return this.Load( name, group, false, null, null, false );
-        }
+		//TODO : Look at generics method for implementing this.
 
-        public Resource Load( string name, string group, bool isManual )
-        {
-            return this.Load( name, group, isManual, null, null, false );
-        }
+		/// <summary>
+		/// Generic load method, used to create a Resource specific to this 
+		/// ResourceManager without using one of the specialised 'load' methods
+		/// (containing per-Resource-type parameters).
+		/// </summary>
+		/// <param name="name">The name of the Resource</param>
+		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">Is the resource to be manually loaded? If so, you should
+		/// provide a value for the loader parameter</param>
+		/// <param name="loader">The manual loader which is to perform the required actions
+		/// when this resource is loaded; only applicable when you specify true
+		/// for the previous parameter</param>
+		/// <param name="loadParams">Optional pointer to a list of name/value pairs 
+		/// containing loading parameters for this type of resource.</param>
+		/// <param name="backgroundThread">Optional boolean which lets the load routine know if it
+		/// is being run on the background resource loading thread</param>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
+		{
+			Resource r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+			// ensure loaded
+			r.Load( backgroundThread );
+			return r;
+		}
 
-        public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader )
-        {
-            return this.Load( name, group, isManual, loader, null, false );
-        }
+		public Resource Load( string name, string group )
+		{
+			return Load( name, group, false, null, null, false );
+		}
 
-        public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
-        {
-            return this.Load( name, group, isManual, loader, loadParams, false );
-        }
+		public Resource Load( string name, string group, bool isManual )
+		{
+			return Load( name, group, isManual, null, null, false );
+		}
+
+		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader )
+		{
+			return Load( name, group, isManual, loader, null, false );
+		}
+
+		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		{
+			return Load( name, group, isManual, loader, loadParams, false );
+		}
 
 		#endregion Load Method
 
@@ -483,7 +472,7 @@ namespace Axiom.Core
 		/// <param name="name">Name of the resource.</param>
 		public virtual void Unload( string name )
 		{
-			var res = this[ name ];
+			Resource res = this[ name ];
 
 			if ( res != null )
 			{
@@ -495,7 +484,7 @@ namespace Axiom.Core
 		/// <param name="handle">Handle of the resource</param>
 		public virtual void Unload( ResourceHandle handle )
 		{
-			var res = this[ handle ];
+			Resource res = this[ handle ];
 
 			if ( res != null )
 			{
@@ -519,10 +508,10 @@ namespace Axiom.Core
 			resource.Unload();
 
 			// remove the resource
-			_resources.Remove( resource.Name );
+			this._resources.Remove( resource.Name );
 
 			// update memory usage
-			_memoryUsage -= resource.Size;
+			this._memoryUsage -= resource.Size;
 		}
 
 		#endregion Unload Method
@@ -537,7 +526,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void UnloadAll()
 		{
-			foreach ( var res in _resources.Values )
+			foreach ( Resource res in this._resources.Values )
 			{
 				res.Unload();
 			}
@@ -551,62 +540,11 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( var res in _resources.Values )
+			foreach ( Resource res in this._resources.Values )
 			{
 				res.Reload();
 			}
 		}
-
-		#region Remove Method
-
-		/// <overloads>
-		/// <summary>
-		/// Remove a single resource.
-		/// </summary>
-		/// <remarks>
-		/// Removes a single resource, meaning it will be removed from the list
-		/// of valid resources in this manager, also causing it to be unloaded.
-		/// <para/>
-		/// The word 'Destroy' is not used here, since
-		/// if any other pointers are referring to this resource, it will persist
-		/// until they have finished with it; however to all intents and purposes
-		/// it no longer exists and will likely get destroyed imminently.
-		/// <para/>
-		/// If you do have references to resources hanging around after the
-		/// ResourceManager is destroyed, you may get problems on destruction of
-		/// these resources if they were relying on the manager (especially if
-		/// it is a plugin). If you find you get problems on shutdown in the
-		/// destruction of resources, try making sure you release all your
-		/// references before you shutdown OGRE.
-		/// </remarks>
-		/// </overloads>
-		/// <param name="resource">The resource to remove</param>
-		public virtual void Remove( Resource resource )
-		{
-			_remove( resource );
-		}
-
-		/// <param name="name">The name of the resource to remove</param>
-		public virtual void Remove( string name )
-		{
-			var resource = this[ name ];
-			if ( resource != null )
-			{
-				_remove( resource );
-			}
-		}
-
-		/// <param name="handle">The Handle of the resource to remove</param>
-		public virtual void Remove( ResourceHandle handle )
-		{
-			var resource = this[ handle ];
-			if ( resource != null )
-			{
-				_remove( resource );
-			}
-		}
-
-		#endregion Remove Method
 
 		/// <summary>
 		/// Removes all resources.
@@ -629,37 +567,22 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAll()
 		{
-			foreach ( var resource in _resources.Values )
+			foreach ( Resource resource in this._resources.Values )
 			{
-                if (!resource.IsDisposed)
-				    resource.Dispose();
+				if ( !resource.IsDisposed )
+				{
+					resource.Dispose();
+				}
 			}
-			_resources.Clear();
-			_resourceHandleMap.Clear();
+			this._resources.Clear();
+			this._resourceHandleMap.Clear();
 
 			ResourceGroupManager.Instance.notifyAllResourcesRemoved( this );
 		}
 
-		#region ResourceExists Method
-
-		/// <summary>Returns whether the named resource exists in this manager</summary>
-		/// <param name="name">name of the resource</param>
-		public virtual bool ResourceExists( string name )
-		{
-			return this[ name ] != null;
-		}
-		/// <summary>Returns whether a resource with the given handle exists in this manager</summary>
-		/// <param name="handle">handle of the resource</param>
-		public virtual bool ResourceExists( ResourceHandle handle )
-		{
-			return this[ handle ] != null;
-		}
-
-		#endregion ResourceExists Method
-
 		/// <summary>Notify this manager that a resource which it manages has been 'touched', ie used. </summary>
 		/// <param name="res">the resource</param>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceTouched( Resource res )
 		{
 			// TODO
@@ -667,24 +590,24 @@ namespace Axiom.Core
 
 		/// <summary> Notify this manager that a resource which it manages has been loaded. </summary>
 		/// <param name="res">the resource</param>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceLoaded( Resource res )
 		{
-            lock ( _autoMutex )
-            {
-                _memoryUsage += res.Size;
-            }
+			lock ( _autoMutex )
+			{
+				this._memoryUsage += res.Size;
+			}
 		}
 
 		/// <summary>Notify this manager that a resource which it manages has been unloaded.</summary>
 		/// <param name="res">the resource</param>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyResourceUnloaded( Resource res )
 		{
-            lock ( _autoMutex )
-            {
-                _memoryUsage -= res.Size;
-            }
+			lock ( _autoMutex )
+			{
+				this._memoryUsage -= res.Size;
+			}
 		}
 
 		/// <summary>
@@ -722,9 +645,9 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _add( Resource res )
 		{
-			if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( !this._resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				_resourceHandleMap.Add( res.Handle, res );
+				this._resourceHandleMap.Add( res.Handle, res );
 			}
 			else
 			{
@@ -738,14 +661,14 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _remove( Resource res )
 		{
-			if ( _resources.ContainsKey( res.Name ) )
+			if ( this._resources.ContainsKey( res.Name ) )
 			{
-				_resources.Remove( res.Name );
+				this._resources.Remove( res.Name );
 			}
 
-			if ( _resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( this._resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				_resourceHandleMap.Remove( res.Handle );
+				this._resourceHandleMap.Remove( res.Handle );
 			}
 
 			ResourceGroupManager.Instance.notifyResourceRemoved( res );
@@ -759,6 +682,75 @@ namespace Axiom.Core
 			// TODO Implementation of CheckUsage.
 			// Keep a sorted list of resource by LastAccessed for easy removal of oldest?
 		}
+
+		#region ResourceExists Method
+
+		/// <summary>Returns whether the named resource exists in this manager</summary>
+		/// <param name="name">name of the resource</param>
+		public virtual bool ResourceExists( string name )
+		{
+			return this[ name ] != null;
+		}
+
+		/// <summary>Returns whether a resource with the given handle exists in this manager</summary>
+		/// <param name="handle">handle of the resource</param>
+		public virtual bool ResourceExists( ResourceHandle handle )
+		{
+			return this[ handle ] != null;
+		}
+
+		#endregion ResourceExists Method
+
+		#region Remove Method
+
+		/// <overloads>
+		/// <summary>
+		/// Remove a single resource.
+		/// </summary>
+		/// <remarks>
+		/// Removes a single resource, meaning it will be removed from the list
+		/// of valid resources in this manager, also causing it to be unloaded.
+		/// <para/>
+		/// The word 'Destroy' is not used here, since
+		/// if any other pointers are referring to this resource, it will persist
+		/// until they have finished with it; however to all intents and purposes
+		/// it no longer exists and will likely get destroyed imminently.
+		/// <para/>
+		/// If you do have references to resources hanging around after the
+		/// ResourceManager is destroyed, you may get problems on destruction of
+		/// these resources if they were relying on the manager (especially if
+		/// it is a plugin). If you find you get problems on shutdown in the
+		/// destruction of resources, try making sure you release all your
+		/// references before you shutdown OGRE.
+		/// </remarks>
+		/// </overloads>
+		/// <param name="resource">The resource to remove</param>
+		public virtual void Remove( Resource resource )
+		{
+			_remove( resource );
+		}
+
+		/// <param name="name">The name of the resource to remove</param>
+		public virtual void Remove( string name )
+		{
+			Resource resource = this[ name ];
+			if ( resource != null )
+			{
+				_remove( resource );
+			}
+		}
+
+		/// <param name="handle">The Handle of the resource to remove</param>
+		public virtual void Remove( ResourceHandle handle )
+		{
+			Resource resource = this[ handle ];
+			if ( resource != null )
+			{
+				_remove( resource );
+			}
+		}
+
+		#endregion Remove Method
 
 		#endregion Methods
 
@@ -790,11 +782,11 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-                    UnloadAll();
+					UnloadAll();
 					RemoveAll();
 				}
 
@@ -802,16 +794,15 @@ namespace Axiom.Core
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
-        #endregion DisposableObject Implementation
+		#endregion DisposableObject Implementation
 
-        #region IScriptLoader Members
+		#region ScriptPatterns Property
 
-        #region ScriptPatterns Property
+		private List<string> _scriptPatterns = new List<string>();
 
-        private List<string> _scriptPatterns = new List<string>();
 		/// <summary>
 		/// Gets the file patterns which should be used to find scripts for this class.
 		/// </summary>
@@ -824,11 +815,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 			protected set
 			{
-				_scriptPatterns = value;
+				this._scriptPatterns = value;
 			}
 		}
 
@@ -836,24 +827,23 @@ namespace Axiom.Core
 
 		#region ParseScriptMethod
 
-	    /// <summary>
-	    /// Parse a script file.
-	    /// </summary>
-	    /// <param name="stream">reference to a data stream which is the source of the script</param>
-	    /// <param name="groupName">
-	    /// The name of a resource group which should be used if any resources
-	    /// are created during the parse of this script.
-	    /// </param>
-	    /// <param name="fileName"></param>
-	    public virtual void ParseScript( Stream stream, string groupName, string fileName )
-		{
-		}
+		/// <summary>
+		/// Parse a script file.
+		/// </summary>
+		/// <param name="stream">reference to a data stream which is the source of the script</param>
+		/// <param name="groupName">
+		/// The name of a resource group which should be used if any resources
+		/// are created during the parse of this script.
+		/// </param>
+		/// <param name="fileName"></param>
+		public virtual void ParseScript( Stream stream, string groupName, string fileName ) { }
 
 		#endregion ParseScriptMethod
 
 		#region LoadingOrder Property
 
 		private Real _loadingOrder;
+
 		/// <summary>
 		/// Gets the relative loading order of scripts of this type.
 		/// </summary>
@@ -867,16 +857,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _loadingOrder;
+				return this._loadingOrder;
 			}
 			protected set
 			{
-				_loadingOrder = value;
+				this._loadingOrder = value;
 			}
 		}
 
 		#endregion LoadingOrder Property
-
-		#endregion IScriptLoader Members
-    };
+	};
 }

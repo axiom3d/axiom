@@ -3,8 +3,6 @@
  ! supported by the Microsoft.Common.targets file.
  !-->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.CommonProject.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
-  <Import Project="MetaBuild.CommonProject.common.ext"
-          Condition="'$(MetaBuildProjectType)'=='Common'" />
+  <Import Project="MetaBuild.CommonProject.shell.ext" Condition="'$(MetaBuildProjectType)'=='Shell'" />
+  <Import Project="MetaBuild.CommonProject.common.ext" Condition="'$(MetaBuildProjectType)'=='Common'" />
 </Project>

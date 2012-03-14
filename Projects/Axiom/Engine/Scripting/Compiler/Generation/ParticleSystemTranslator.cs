@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,14 +46,15 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: ParticleSystemTranslator
+
 		public class ParticleSystemTranslator : Translator
 		{
 			protected ParticleSystem _System;
 
 			public ParticleSystemTranslator()
-				: base()
 			{
-				_System = null;
+				this._System = null;
 			}
 
 			#region Translator Implementation
@@ -83,28 +88,30 @@ namespace Axiom.Scripting.Compiler
 				// Allocate the particle system
 				object sysObject;
 				ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				var processed = compiler._fireEvent( ref evt, out sysObject );
+				bool processed = compiler._fireEvent( ref evt, out sysObject );
 
 				if ( !processed )
 				{
-					_System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
+					this._System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
 				}
 				else
-					_System = (ParticleSystem)sysObject;
+				{
+					this._System = (ParticleSystem)sysObject;
+				}
 
-				if ( _System == null )
+				if ( this._System == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
-				_System.Origin = obj.File;
-				_System.RemoveAllEmitters();
-				_System.RemoveAllAffectors();
+				this._System.Origin = obj.File;
+				this._System.RemoveAllEmitters();
+				this._System.RemoveAllAffectors();
 
-				obj.Context = _System;
+				obj.Context = this._System;
 
-				foreach ( var i in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
@@ -121,22 +128,20 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										var name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
+										string name = ( prop.Values[ 0 ] ).Value;
 
-										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent(
-											ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
+										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
 
 										compiler._fireEvent( ref locEvt );
-										var locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
+										string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
-										if ( !_System.SetParameter( "material", locEvtName ) )
+										if ( !this._System.SetParameter( "material", locEvtName ) )
 										{
-											if ( _System.Renderer != null )
+											if ( this._System.Renderer != null )
 											{
-												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
+												if ( !this._System.Renderer.SetParameter( "material", locEvtName ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-														"material property could not be set with material \"" + locEvtName + "\"" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "material property could not be set with material \"" + locEvtName + "\"" );
 												}
 											}
 										}
@@ -155,14 +160,18 @@ namespace Axiom.Scripting.Compiler
 									string name = prop.Name, value = string.Empty;
 
 									// Glob the values together
-									foreach ( var it in prop.Values )
+									foreach ( AbstractNode it in prop.Values )
 									{
 										if ( it is AtomAbstractNode )
 										{
 											if ( string.IsNullOrEmpty( value ) )
-												value = ( (AtomAbstractNode)it ).Value;
+											{
+												value = ( it ).Value;
+											}
 											else
-												value = value + " " + ( (AtomAbstractNode)it ).Value;
+											{
+												value = value + " " + ( it ).Value;
+											}
 										}
 										else
 										{
@@ -171,12 +180,14 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									if ( !_System.SetParameter( name, value ) )
+									if ( !this._System.SetParameter( name, value ) )
 									{
-										if ( _System.Renderer != null )
+										if ( this._System.Renderer != null )
 										{
-											if ( !_System.Renderer.SetParameter( name, value ) )
+											if ( !this._System.Renderer.SetParameter( name, value ) )
+											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+											}
 										}
 									}
 								}
@@ -192,6 +203,7 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+
+		#endregion
 	}
 }
-

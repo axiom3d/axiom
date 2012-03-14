@@ -2,6 +2,5 @@
  ! Provides support for Visual Basic 6 compilation.
  !-->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.VisualBasic6Project.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+  <Import Project="MetaBuild.VisualBasic6Project.shell.ext" Condition="'$(MetaBuildProjectType)'=='Shell'" />
 </Project>

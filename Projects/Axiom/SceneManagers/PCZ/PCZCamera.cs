@@ -27,20 +27,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -48,20 +47,33 @@ namespace Axiom.SceneManagers.PortalConnected
 {
 	public class PCZCamera : Camera
 	{
-		AxisAlignedBox box;
-		PCZFrustum extraCullingFrustum;
+		private readonly AxisAlignedBox box;
+		private readonly PCZFrustum extraCullingFrustum;
 
 		public PCZCamera( string name, SceneManager sceneManager )
 			: base( name, sceneManager )
 		{
-			box = new AxisAlignedBox( new Vector3( -0.1f, -0.1f, -0.1f ), new Vector3( 0.1f, 0.1f, 0.1f ) );
-			extraCullingFrustum = new PCZFrustum();
-			extraCullingFrustum.SetUseOriginPlane( true );
+			this.box = new AxisAlignedBox( new Vector3( -0.1f, -0.1f, -0.1f ), new Vector3( 0.1f, 0.1f, 0.1f ) );
+			this.extraCullingFrustum = new PCZFrustum();
+			this.extraCullingFrustum.SetUseOriginPlane( true );
+		}
+
+		public new Projection ProjectionType
+		{
+			get
+			{
+				return base.ProjectionType;
+			}
+			set
+			{
+				base.ProjectionType = value;
+				this.extraCullingFrustum.ProjectionType = value;
+			}
 		}
 
 		public AxisAlignedBox GetBoundingBox()
 		{
-			return box;
+			return this.box;
 		}
 
 		// this version checks against extra culling planes
@@ -71,18 +83,22 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// Null boxes always invisible
 			if ( bound.IsNull )
+			{
 				return false;
+			}
 
 			// infinite boxes always visible
 			if ( bound.IsInfinite )
+			{
 				return true;
+			}
 
 			// Make any pending updates to the calculated frustum planes
 			UpdateFrustumPlanes();
 
 			// check extra culling planes
 			bool extraResults;
-			extraResults = extraCullingFrustum.IsObjectVisible( bound );
+			extraResults = this.extraCullingFrustum.IsObjectVisible( bound );
 			if ( !extraResults )
 			{
 				return false;
@@ -128,7 +144,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			// check the extra frustum first
-			if ( !extraCullingFrustum.IsObjectVisible( portal ) )
+			if ( !this.extraCullingFrustum.IsObjectVisible( portal ) )
 			{
 				return false;
 			}
@@ -136,7 +152,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// if portal is of type AABB or Sphere, then use simple bound check against planes
 			if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_AABB )
 			{
-				AxisAlignedBox aabb = new AxisAlignedBox( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
+				var aabb = new AxisAlignedBox( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
 				return base.IsObjectVisible( aabb, out culledBy );
 			}
 			else if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
@@ -168,7 +184,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					visible_flag = false;
 					// Skip far plane if infinite view frustum
 					if ( (FrustumPlane)plane == FrustumPlane.Far && _farDistance == 0 )
+					{
 						continue;
+					}
 
 					// we have to check each corner of the portal
 					for ( int corner = 0; corner < 4; corner++ )
@@ -185,7 +203,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					{
 						// ALL corners on negative side therefore out of view
 						if ( culledBy != FrustumPlane.None )
+						{
 							culledBy = (FrustumPlane)plane;
+						}
 						return false;
 					}
 				}
@@ -208,7 +228,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					visible_flag = false;
 					// Skip far plane if infinite view frustum
 					if ( (FrustumPlane)plane == FrustumPlane.Far && _farDistance == 0 )
+					{
 						continue;
+					}
 
 					// we have to check each corner of the portal
 					for ( int corner = 0; corner < 4; corner++ )
@@ -225,7 +247,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					{
 						// ALL corners on negative side therefore out of view
 						if ( culledBy != FrustumPlane.None )
+						{
 							culledBy = (FrustumPlane)plane;
+						}
 						return false;
 					}
 				}
@@ -249,7 +273,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			// Null boxes always invisible
 			if ( bound.IsNull )
+			{
 				return PCZFrustum.Visibility.None;
+			}
 
 			// Get centre of the box
 			Vector3 centre = bound.Center;
@@ -260,21 +286,26 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			for ( int plane = 0; plane < 6; ++plane )
 			{
-
 				// Skip far plane if infinite view frustum
 				if ( plane == (int)FrustumPlane.Far && Far == 0 )
+				{
 					continue;
+				}
 
 				// This updates frustum planes and deals with cull frustum
 				PlaneSide side = FrustumPlanes[ plane ].GetSide( centre, halfSize );
 				if ( side == PlaneSide.Negative )
+				{
 					return PCZFrustum.Visibility.None;
+				}
 				// We can't return now as the box could be later on the negative side of a plane.
 				if ( side == PlaneSide.Both )
+				{
 					all_inside = false;
+				}
 			}
 
-			switch ( extraCullingFrustum.GetVisibility( bound ) )
+			switch ( this.extraCullingFrustum.GetVisibility( bound ) )
 			{
 				case PCZFrustum.Visibility.None:
 					return PCZFrustum.Visibility.None;
@@ -285,26 +316,15 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			if ( all_inside )
+			{
 				return PCZFrustum.Visibility.Full;
+			}
 			else
+			{
 				return PCZFrustum.Visibility.Partial;
-
-		}
-
-
-
-		public new Projection ProjectionType
-		{
-			get
-			{
-				return base.ProjectionType;
-			}
-			set
-			{
-				base.ProjectionType = value;
-				extraCullingFrustum.ProjectionType = value;
 			}
 		}
+
 
 		// calculate extra culling planes from portal and camera
 		// origin and add to list of extra culling planes
@@ -313,40 +333,38 @@ namespace Axiom.SceneManagers.PortalConnected
 		public int AddPortalCullingPlanes( Portal portal )
 		{
 			// add the extra culling planes from the portal
-			return extraCullingFrustum.AddPortalCullingPlanes( portal );
+			return this.extraCullingFrustum.AddPortalCullingPlanes( portal );
 		}
 
 		// remove extra culling planes created from the given portal
 		// NOTE: This should only be used during visibility traversal (backing out of a recursion)
 		public void RemovePortalCullingPlanes( Portal portal )
 		{
-			extraCullingFrustum.RemovePortalCullingPlanes( portal );
+			this.extraCullingFrustum.RemovePortalCullingPlanes( portal );
 		}
 
 		// remove all extra culling planes
 		public void RemoveAllExtraCullingPlanes()
 		{
-			extraCullingFrustum.RemoveAllCullingPlanes();
+			this.extraCullingFrustum.RemoveAllCullingPlanes();
 		}
 
 		public void Update()
 		{
 			// make sure the extra culling frustum origin stuff is up to date
-			if ( extraCullingFrustum.ProjectionType == Projection.Perspective )
+			if ( this.extraCullingFrustum.ProjectionType == Projection.Perspective )
 			//if (!mCustomViewMatrix)
 			{
-				extraCullingFrustum.SetUseOriginPlane( true );
-				extraCullingFrustum.SetOrigin( DerivedPosition );
-				extraCullingFrustum.SetOriginPlane( DerivedDirection, DerivedPosition );
+				this.extraCullingFrustum.SetUseOriginPlane( true );
+				this.extraCullingFrustum.SetOrigin( DerivedPosition );
+				this.extraCullingFrustum.SetOriginPlane( DerivedDirection, DerivedPosition );
 			}
 			else
 			{
 				// In ortho mode, we don't want to cull things behind camera.
 				// This helps for back casting which is useful for texture shadow projection on directional light.
-				extraCullingFrustum.SetUseOriginPlane( false );
+				this.extraCullingFrustum.SetUseOriginPlane( false );
 			}
-
 		}
-
 	}
 }

@@ -39,8 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -95,19 +95,19 @@ namespace Axiom.Core
 			renderOperation.useIndices = false;
 
 			// get a reference to the vertex declaration and buffer binding
-			var decl = vertexData.vertexDeclaration;
-			var binding = vertexData.vertexBufferBinding;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			// add elements for position and color only
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
 
-			this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+			material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 		}
 
 		#endregion Constructors
@@ -118,22 +118,22 @@ namespace Axiom.Core
 		public void InitAABB( AxisAlignedBox box )
 		{
 			// store the bounding box locally
-			this.BoundingBox = box;
+			BoundingBox = box;
 		}
 
 		[Obsolete( "Use WireBoundingBox.BoundingBox property." )]
 		public void SetupBoundingBox( AxisAlignedBox aabb )
 		{
 			// store the bounding box locally
-			this.BoundingBox = box;
+			BoundingBox = box;
 		}
 
 		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
 		{
-			var vmax = aab.Maximum;
-			var vmin = aab.Minimum;
+			Vector3 vmax = aab.Maximum;
+			Vector3 vmin = aab.Minimum;
 
-			var sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
+			float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
 			//mRadius = System.Math.Sqrt(sqLen);
 
 			float maxx = vmax.x;
@@ -144,99 +144,99 @@ namespace Axiom.Core
 			float miny = vmin.y;
 			float minz = vmin.z;
 
-			var buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
+			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-                var posPtr = buffer.Lock(BufferLocking.Discard).ToFloatPointer();                
-                var pPos = 0;
+				float* posPtr = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
+				int pPos = 0;
 
 				// line 0
-                posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
 				// line 1
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = maxz;
 				// line 2
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
 				// line 3
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
 				// line 4
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
 				// line 5
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = maxz;
 				// line 6
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
 				// line 7
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
 				// line 8
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = maxz;
 				// line 9
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = minz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = minz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
 				// line 10
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = maxz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = maxy;
-				posPtr[pPos++] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = maxy;
+				posPtr[ pPos++ ] = maxz;
 				// line 11
-				posPtr[pPos++] = minx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos++] = maxz;
-				posPtr[pPos++] = maxx;
-				posPtr[pPos++] = miny;
-				posPtr[pPos] = maxz;
+				posPtr[ pPos++ ] = minx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos++ ] = maxz;
+				posPtr[ pPos++ ] = maxx;
+				posPtr[ pPos++ ] = miny;
+				posPtr[ pPos ] = maxz;
 			}
 			buffer.Unlock();
 		}
@@ -244,6 +244,17 @@ namespace Axiom.Core
 		#endregion Methods
 
 		#region Implementation of SimpleRenderable
+
+		/// <summary>
+		///    Get the local bounding radius of the wire bounding box.
+		/// </summary>
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return this.Radius;
+			}
+		}
 
 		/// <summary>
 		///
@@ -262,23 +273,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 min = box.Minimum,
-					max = box.Maximum,
-					mid = ( ( max - min ) * 0.5f ) + min,
-					dist = camera.DerivedPosition - mid;
+			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min ) * 0.5f ) + min, dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
-		}
-
-		/// <summary>
-		///    Get the local bounding radius of the wire bounding box.
-		/// </summary>
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return this.Radius;
-			}
 		}
 
 		#endregion Implementation of SimpleRenderable

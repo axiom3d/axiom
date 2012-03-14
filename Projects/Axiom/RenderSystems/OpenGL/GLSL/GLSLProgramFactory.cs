@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -55,10 +57,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///     Language string.
 		/// </summary>
 		private static string languageName = "glsl";
+
 		/// <summary>
 		///     Reference to the link program manager we create.
 		/// </summary>
-		private GLSLLinkProgramManager glslLinkProgramMgr;
+		private readonly GLSLLinkProgramManager glslLinkProgramMgr;
 
 		#endregion Fields
 
@@ -70,23 +73,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		internal GLSLProgramFactory()
 		{
 			// instantiate the singleton
-			glslLinkProgramMgr = new GLSLLinkProgramManager();
+			this.glslLinkProgramMgr = new GLSLLinkProgramManager();
 		}
 
 		#endregion Constructor
 
 		#region HighLevelGpuProgramFactory Implementation
-
-		/// <summary>
-		///		Creates and returns a new GLSL program object.
-		/// </summary>
-		/// <param name="name">Name of the object.</param>
-		/// <param name="type">Type of the object.</param>
-		/// <returns>A newly created GLSL program object.</returns>
-		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-		{
-			return new GLSLProgram( parent, name, handle, group, isManual, loader );
-		}
 
 		/// <summary>
 		///		Returns the language code for this high level program manager.
@@ -99,6 +91,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
+		/// <summary>
+		///		Creates and returns a new GLSL program object.
+		/// </summary>
+		/// <param name="name">Name of the object.</param>
+		/// <param name="type">Type of the object.</param>
+		/// <returns>A newly created GLSL program object.</returns>
+		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		{
+			return new GLSLProgram( parent, name, handle, group, isManual, loader );
+		}
+
 		#endregion HighLevelGpuProgramFactory Implementation
 
 		#region IDisposable Implementation
@@ -106,16 +109,15 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (disposeManagedResources)
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
 			{
-				glslLinkProgramMgr.Dispose();
+				this.glslLinkProgramMgr.Dispose();
 			}
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
-
 	}
 }

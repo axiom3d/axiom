@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -34,26 +36,32 @@ namespace Axiom.Samples
 	public class ProgressBar : Widget
 	{
 		#region fields
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TextArea textArea;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea commentTextArea;
-		/// <summary>
-		/// 
-		/// </summary>
-		protected OverlayElement meter;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected OverlayElement fill;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected OverlayElement meter;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Real progress;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected TextArea textArea;
+
 		#endregion fields
 
 		#region properties
@@ -65,15 +73,16 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				progress = value;
-				this.progress = Utility.Clamp<Real>( progress, 1, 0 );
-				fill.Width = System.Math.Max( (int)fill.Height, (int)( progress * ( meter.Width - 2 * fill.Left ) ) );
+				this.progress = value;
+				this.progress = Utility.Clamp( this.progress, 1, 0 );
+				this.fill.Width = System.Math.Max( (int)this.fill.Height, (int)( this.progress * ( this.meter.Width - 2 * this.fill.Left ) ) );
 			}
 			get
 			{
-				return progress;
+				return this.progress;
 			}
 		}
+
 		/// <summary>
 		/// Gets or sets the caption
 		/// </summary>
@@ -81,11 +90,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return textArea.Text;
+				return this.textArea.Text;
 			}
 			set
 			{
-				textArea.Text = value;
+				this.textArea.Text = value;
 			}
 		}
 
@@ -96,11 +105,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return commentTextArea.Text;
+				return this.commentTextArea.Text;
 			}
 			set
 			{
-				commentTextArea.Text = value;
+				this.commentTextArea.Text = value;
 			}
 		}
 
@@ -117,16 +126,16 @@ namespace Axiom.Samples
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ProgressBar", "BorderPanel", name );
 			element.Width = ( width );
-			OverlayElementContainer c = (OverlayElementContainer)element;
+			var c = (OverlayElementContainer)element;
 			this.textArea = (TextArea)c.Children[ Name + "/ProgressCaption" ];
-			OverlayElementContainer commentBox = (OverlayElementContainer)c.Children[ Name + "/ProgressCommentBox" ];
+			var commentBox = (OverlayElementContainer)c.Children[ Name + "/ProgressCommentBox" ];
 			commentBox.Width = ( commentBoxWidth );
 			commentBox.Left = ( -( commentBoxWidth + 5 ) );
 			this.commentTextArea = (TextArea)commentBox.Children[ commentBox.Name + "/ProgressCommentText" ];
 			this.meter = c.Children[ Name + "/ProgressMeter" ];
 			this.meter.Width = ( width - 10 );
 			this.fill = ( (OverlayElementContainer)this.meter ).Children[ this.meter.Name + "/ProgressFill" ];
-			this.Caption = caption;
+			Caption = caption;
 		}
 	};
 }

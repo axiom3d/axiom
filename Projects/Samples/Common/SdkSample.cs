@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
@@ -27,6 +29,8 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+
+using SharpInputSystem;
 
 using SIS = SharpInputSystem;
 
@@ -39,6 +43,36 @@ namespace Axiom.Samples
 	{
 		#region Fields and Properties
 
+		/// <summary>
+		/// Main Camera
+		/// </summary>
+		protected Camera Camera;
+
+		/// <summary>
+		/// Basic Camera Manager
+		/// </summary>
+		protected SdkCameraManager CameraManager;
+
+		/// <summary>
+		/// Was the cursor visible before dialog appeared
+		/// </summary>
+		protected bool CursorWasVisible;
+
+		/// <summary>
+		/// Simple Details Panel
+		/// </summary>
+		protected ParamsPanel DetailsPanel;
+
+		/// <summary>
+		/// Tray Interface Manager
+		/// </summary>
+		protected SdkTrayManager TrayManager;
+
+		/// <summary>
+		/// Main Viewport
+		/// </summary>
+		protected Viewport Viewport;
+
 		private bool dragLook;
 
 		/// <summary>
@@ -48,55 +82,26 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return dragLook;
+				return this.dragLook;
 			}
 
-            [OgreVersion( 1, 7, 2 )]
+			[OgreVersion( 1, 7, 2 )]
 			set
 			{
 				if ( value )
 				{
-					CameraManager.setStyle( CameraStyle.Manual );
-					TrayManager.ShowCursor();
-					dragLook = true;
+					this.CameraManager.setStyle( CameraStyle.Manual );
+					this.TrayManager.ShowCursor();
+					this.dragLook = true;
 				}
 				else
 				{
-					CameraManager.setStyle( CameraStyle.FreeLook );
-					TrayManager.HideCursor();
-					dragLook = false;
+					this.CameraManager.setStyle( CameraStyle.FreeLook );
+					this.TrayManager.HideCursor();
+					this.dragLook = false;
 				}
 			}
 		}
-
-		/// <summary>
-		/// Main Viewport
-		/// </summary>
-		protected Viewport Viewport;
-		/// <summary>
-		/// Main Camera
-		/// </summary>
-		protected Camera Camera;
-
-		/// <summary>
-		/// Tray Interface Manager
-		/// </summary>
-		protected SdkTrayManager TrayManager;
-
-		/// <summary>
-		/// Basic Camera Manager
-		/// </summary>
-		protected SdkCameraManager CameraManager;
-
-		/// <summary>
-		/// Simple Details Panel
-		/// </summary>
-		protected ParamsPanel DetailsPanel;
-
-		/// <summary>
-		/// Was the cursor visible before dialog appeared
-		/// </summary>
-		protected bool CursorWasVisible;
 
 		#endregion Fields and Properties
 
@@ -115,9 +120,7 @@ namespace Axiom.Samples
 			this.CameraManager = null;
 		}
 
-		~SdkSample()
-		{
-		}
+		~SdkSample() { }
 
 		#endregion Construction and Destruction
 
@@ -126,7 +129,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Manually update the cursor position after being unpaused.
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override void Unpaused()
 		{
 			this.TrayManager.RefreshCursor();
@@ -135,7 +138,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Automatically saves position and orientation for free-look cameras.
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override void SaveState( NameValuePairList state )
 		{
 			if ( this.CameraManager.getStyle() == CameraStyle.FreeLook )
@@ -148,7 +151,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Automatically restores position and orientation for free-look cameras.
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override void RestoreState( NameValuePairList state )
 		{
 			if ( state.ContainsKey( "CameraPosition" ) && state.ContainsKey( "CameraOrientation" ) )
@@ -164,16 +167,16 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns>true if we should stop rendering!</returns>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			this.TrayManager.FrameRenderingQueued( evt );
 
 			if ( !this.TrayManager.IsDialogVisible )
 			{
-				this.CameraManager.frameRenderingQueued( evt );   // if dialog isn't up, then update the camera
+				this.CameraManager.frameRenderingQueued( evt ); // if dialog isn't up, then update the camera
 
-				if ( this.DetailsPanel.IsVisible )   // if details panel is visible, then update its contents
+				if ( this.DetailsPanel.IsVisible ) // if details panel is visible, then update its contents
 				{
 					this.DetailsPanel.SetParamValue( 0, this.Camera.DerivedPosition.x.ToString() );
 					this.DetailsPanel.SetParamValue( 1, this.Camera.DerivedPosition.y.ToString() );
@@ -188,10 +191,10 @@ namespace Axiom.Samples
 			return false;
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override void WindowResized( RenderWindow rw )
 		{
-            this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
+			this.Camera.AspectRatio = this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
 		}
 
 		/// <summary>
@@ -199,24 +202,30 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyPressed( SIS.KeyEventArgs evt )
+		public override bool KeyPressed( KeyEventArgs evt )
 		{
-			if ( evt.Key == SIS.KeyCode.Key_H || evt.Key == SIS.KeyCode.Key_F1 ) // toggle visibility of help dialog
+			if ( evt.Key == KeyCode.Key_H || evt.Key == KeyCode.Key_F1 ) // toggle visibility of help dialog
 			{
 				if ( !this.TrayManager.IsDialogVisible && Metadata[ "Help" ] != "" )
+				{
 					this.TrayManager.ShowOkDialog( "Help", Metadata[ "Help" ] );
+				}
 				else
+				{
 					this.TrayManager.CloseDialog();
+				}
 			}
 
 			if ( this.TrayManager.IsDialogVisible )
+			{
 				return true; // don't process any more keys if dialog is up
+			}
 
-			if ( evt.Key == SIS.KeyCode.Key_F ) // toggle visibility of advanced frame stats
+			if ( evt.Key == KeyCode.Key_F ) // toggle visibility of advanced frame stats
 			{
 				this.TrayManager.ToggleAdvancedFrameStats();
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_G ) // toggle visibility of even rarer debugging details
+			else if ( evt.Key == KeyCode.Key_G ) // toggle visibility of even rarer debugging details
 			{
 				if ( this.DetailsPanel.TrayLocation == TrayLocation.None )
 				{
@@ -229,7 +238,7 @@ namespace Axiom.Samples
 					this.DetailsPanel.Hide();
 				}
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_T ) // cycle polygon rendering mode
+			else if ( evt.Key == KeyCode.Key_T ) // cycle polygon rendering mode
 			{
 				String newVal;
 				TextureFiltering tfo;
@@ -263,7 +272,7 @@ namespace Axiom.Samples
 				MaterialManager.Instance.DefaultAnisotropy = aniso;
 				this.DetailsPanel.SetParamValue( 9, newVal );
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_R ) // cycle polygon rendering mode
+			else if ( evt.Key == KeyCode.Key_R ) // cycle polygon rendering mode
 			{
 				String newVal;
 				PolygonMode pm;
@@ -287,13 +296,13 @@ namespace Axiom.Samples
 				this.Camera.PolygonMode = pm;
 				this.DetailsPanel.SetParamValue( 10, newVal );
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_F5 ) // refresh all textures
+			else if ( evt.Key == KeyCode.Key_F5 ) // refresh all textures
 			{
 				TextureManager.Instance.ReloadAll();
 			}
-			else if ( evt.Key == SIS.KeyCode.Key_F9 ) // take a screenshot
+			else if ( evt.Key == KeyCode.Key_F9 ) // take a screenshot
 			{
-                Window.WriteContentsToTimestampedFile( "screenshot", ".png" );
+				Window.WriteContentsToTimestampedFile( "screenshot", ".png" );
 			}
 
 			this.CameraManager.injectKeyDown( evt );
@@ -301,8 +310,8 @@ namespace Axiom.Samples
 			return true;
 		}
 
-        [OgreVersion( 1, 7, 2 )]
-		public override bool KeyReleased( SIS.KeyEventArgs evt )
+		[OgreVersion( 1, 7, 2 )]
+		public override bool KeyReleased( KeyEventArgs evt )
 		{
 			this.CameraManager.injectKeyUp( evt );
 
@@ -317,11 +326,13 @@ namespace Axiom.Samples
 		/// to filter out any interface-related mouse events before processing them in your scene.
 		/// If the tray manager handler returns true, the event was meant for the trays, not you.
 		/// </remarks>
-        [OgreVersion( 1, 7, 2 )]
-		public override bool MouseMoved( SIS.MouseEventArgs evt )
+		[OgreVersion( 1, 7, 2 )]
+		public override bool MouseMoved( MouseEventArgs evt )
 		{
 			if ( this.TrayManager.InjectMouseMove( evt ) )
+			{
 				return true;
+			}
 
 			this.CameraManager.injectMouseMove( evt );
 
@@ -339,17 +350,19 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-        [OgreVersion( 1, 7, 2 )]
-		public override bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		[OgreVersion( 1, 7, 2 )]
+		public override bool MousePressed( MouseEventArgs evt, MouseButtonID id )
 		{
 			if ( this.TrayManager.InjectMouseDown( evt, id ) )
+			{
 				return true;
+			}
 
-            if ( dragLook && id == SIS.MouseButtonID.Left )
-            {
-                CameraManager.setStyle( CameraStyle.FreeLook );
-                TrayManager.HideCursor();
-            }
+			if ( this.dragLook && id == MouseButtonID.Left )
+			{
+				this.CameraManager.setStyle( CameraStyle.FreeLook );
+				this.TrayManager.HideCursor();
+			}
 
 			this.CameraManager.injectMouseDown( evt, id );
 
@@ -367,17 +380,19 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-        [OgreVersion( 1, 7, 2 )]
-		public override bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		[OgreVersion( 1, 7, 2 )]
+		public override bool MouseReleased( MouseEventArgs evt, MouseButtonID id )
 		{
 			if ( this.TrayManager.InjectMouseUp( evt, id ) )
+			{
 				return true;
+			}
 
-            if ( dragLook && id == SIS.MouseButtonID.Left )
-            {
-                CameraManager.setStyle( CameraStyle.Manual );
-                TrayManager.ShowCursor();
-            }
+			if ( this.dragLook && id == MouseButtonID.Left )
+			{
+				this.CameraManager.setStyle( CameraStyle.Manual );
+				this.TrayManager.ShowCursor();
+			}
 
 			this.CameraManager.injectMouseUp( evt, id );
 
@@ -390,7 +405,7 @@ namespace Axiom.Samples
 		/// <param name="window"></param>
 		/// <param name="keyboard"></param>
 		/// <param name="mouse"></param>
-		protected internal override void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
+		protected internal override void Setup( RenderWindow window, Keyboard keyboard, Mouse mouse )
 		{
 			Window = window;
 			Keyboard = keyboard;
@@ -400,7 +415,7 @@ namespace Axiom.Samples
 			CreateSceneManager();
 			SetupView();
 
-			this.TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener );  // create a tray interface
+			this.TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener ); // create a tray interface
 
 			LoadResources();
 			ResourcesLoaded = true;
@@ -411,20 +426,10 @@ namespace Axiom.Samples
 			this.TrayManager.HideCursor();
 
 			// create a params panel for displaying sample details
-			List<string> items = new List<string>
-								 {
-									 "cam.pX", 
-									 "cam.pY", 
-									 "cam.pZ", 
-									 String.Empty, 
-									 "cam.oW", 
-									 "cam.oX", 
-									 "cam.oY", 
-									 "cam.oZ", 
-									 String.Empty, 
-									 "Filtering", 
-									 "Poly Mode"
-								 };
+			var items = new List<string>
+                        {
+                            "cam.pX", "cam.pY", "cam.pZ", String.Empty, "cam.oW", "cam.oX", "cam.oY", "cam.oZ", String.Empty, "Filtering", "Poly Mode"
+                        };
 			this.DetailsPanel = this.TrayManager.CreateParamsPanel( TrayLocation.None, "DetailsPanel", 180, items );
 			this.DetailsPanel.SetParamValue( 9, "Bilinear" );
 			this.DetailsPanel.SetParamValue( 10, "Solid" );
@@ -444,9 +449,13 @@ namespace Axiom.Samples
 			base.Shutdown();
 
 			if ( this.TrayManager != null )
+			{
 				this.TrayManager.Dispose();
+			}
 			if ( this.CameraManager != null )
+			{
 				this.CameraManager = null;
+			}
 
 			// restore settings we may have changed, so as not to affect other samples
 			MaterialManager.Instance.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
@@ -461,13 +470,12 @@ namespace Axiom.Samples
 			// setup default viewport layout and camera
 			this.Camera = SceneManager.CreateCamera( "MainCamera" );
 			this.Viewport = Window.AddViewport( this.Camera );
-			this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
+			this.Camera.AspectRatio = this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
 			this.Camera.Near = 5;
 
-			this.CameraManager = new SdkCameraManager( this.Camera );   // create a default camera controller
+			this.CameraManager = new SdkCameraManager( this.Camera ); // create a default camera controller
 		}
 
 		#endregion Sample Implementation
-
 	}
 }

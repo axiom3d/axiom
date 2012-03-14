@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 
 using Axiom.Core;
 using Axiom.Math;
@@ -46,10 +49,10 @@ namespace Axiom.Controllers.Canned
 	/// </summary>
 	public class NodeRotationControllerValue : IControllerValue<Real>
 	{
-        // commented out (read access only private)
+		// commented out (read access only private)
 		//private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
-		private Node node;
-		private Vector3 axis;
+		private readonly Vector3 axis;
+		private readonly Node node;
 
 		public NodeRotationControllerValue( Node node, Vector3 axis )
 		{
@@ -57,18 +60,18 @@ namespace Axiom.Controllers.Canned
 			this.axis = axis;
 		}
 
-		#region IControllerValue Members
+		#region IControllerValue<Real> Members
 
 		public Real Value
 		{
 			get
 			{
-                //return radians;
-			    return 0.0f;
+				//return radians;
+				return 0.0f;
 			}
 			set
 			{
-				node.Rotate( axis, value );
+				this.node.Rotate( this.axis, value );
 			}
 		}
 

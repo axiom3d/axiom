@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Globalization;
 
 #endregion Namespace Declarations
@@ -47,55 +50,67 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		private CultureInfo _culture = new CultureInfo( "en-US" );
-		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign |
-										   NumberStyles.AllowLeadingWhite |
-										   NumberStyles.AllowTrailingWhite |
-										   NumberStyles.AllowDecimalPoint;
-
-
-		private bool _parsed = false;
-		private string _value;
-
+		private readonly CultureInfo _culture = new CultureInfo( "en-US" );
 		public uint Id;
 
-		private bool _isNumber = false;
+		private bool _isNumber;
+		private float _number;
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
+
+
+		private bool _parsed;
+		private string _value;
 
 		public bool IsNumber
 		{
 			get
 			{
-				if ( !_parsed )
+				if ( !this._parsed )
+				{
 					_parse();
-				return _isNumber;
+				}
+				return this._isNumber;
 			}
 		}
-
-		private float _number;
 
 		public float Number
 		{
 			get
 			{
-				if ( !_parsed )
+				if ( !this._parsed )
+				{
 					_parse();
-				return _number;
+				}
+				return this._number;
 			}
 		}
+
 		#endregion Fields and Properties
 
 		public AtomAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+			: base( parent ) { }
 
 		private void _parse()
 		{
-			_isNumber = float.TryParse( _value, _parseStyle, _culture, out _number );
-			_parsed = true;
+			this._isNumber = float.TryParse( this._value, this._parseStyle, this._culture, out this._number );
+			this._parsed = true;
 		}
 
 		#region AbstractNode Implementation
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return this._value;
+			}
+
+			set
+			{
+				this._value = value;
+			}
+		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -106,20 +121,6 @@ namespace Axiom.Scripting.Compiler.AST
 			node.Id = this.Id;
 			node._value = Value;
 			return node;
-		}
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return _value;
-			}
-
-			set
-			{
-				_value = value;
-			}
 		}
 
 		#endregion AbstractNode Implementation

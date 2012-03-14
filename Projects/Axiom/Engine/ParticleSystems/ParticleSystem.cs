@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright � 2003-2011 Axiom Project Team
@@ -22,41 +23,40 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Math;
-using Axiom.Controllers;
-using Axiom.Graphics;
 using System.Reflection;
+
+using Axiom.Controllers;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-
 	/// <summary>
 	///     Particle system attribute method definition.
 	/// </summary>
 	/// <param name="values">Attribute values.</param>
 	/// <param name="system">Target particle system.</param>
-	delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
+	internal delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
 
 	/// <summary>
 	///		Class defining particle system based special effects.
@@ -79,142 +79,145 @@ namespace Axiom.ParticleSystems
 	{
 		#region Fields and Properties
 
-		const string PARTICLE = "Particle";
-
-		/// <summary>List of emitters for this system.</summary>
-		protected List<ParticleEmitter> emitterList = new List<ParticleEmitter>();
-		public List<ParticleEmitter> Emitters
-		{
-			get
-			{
-				return emitterList;
-			}
-		}
-		/// <summary>List of affectors for this system.</summary>
-		protected List<ParticleAffector> affectorList = new List<ParticleAffector>();
-		public List<ParticleAffector> Affectors
-		{
-			get
-			{
-				return affectorList;
-			}
-		}
-
-        /// <summary>
-        /// Return the resource group to be used to load dependent resources
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public string ResourceGroupName
-        {
-            get
-            {
-                return resourceGroupName;
-            }
-        }
-
-		/// <summary>Cached for less memory usage during emitter processing.</summary>
-		/// <note>EmitterList is a list of _counts_, not a list of emitters</note>
-		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
-
-		/** Pool of emitted emitters for use and reuse in the active emitted emitter list.
-		@remarks
-			The emitters in this pool act as particles and as emitters. The pool is a map containing lists 
-			of emitters, identified by their name.
-		@par
-			The emitters in this pool are cloned using emitters that are kept in the main emitter list
-			of the ParticleSystem.
-		*/
-		protected Dictionary<int, List<ParticleEmitter>> emittedEmitterPool = new Dictionary<int, List<ParticleEmitter>>();
-
-		/** Free emitted emitter list.
-			@remarks
-				This contains a list of the emitters free for use as new instances as required by the set.
-		*/
-		protected Dictionary<int, List<ParticleEmitter>> freeEmittedEmitters = new Dictionary<int, List<ParticleEmitter>>();
-
-		/** Active emitted emitter list.
-			@remarks
-				This is a linked list of pointers to emitters in the emitted emitter pool.
-				Emitters that are used are stored (their pointers) in both the list with active particles and in 
-				the list with active emitted emitters.        */
-		protected List<ParticleEmitter> activeEmittedEmitters = new List<ParticleEmitter>();
-
-		protected bool emittedEmitterPoolInitialized;
-		protected int emittedEmitterPoolSize = 3;
-
-		/// World AABB, only used to compare world-space positions to calc bounds
-		protected AxisAlignedBox aab;
-		protected Real boundingRadius;
-		protected bool boundsAutoUpdate = true;
-		protected float boundsUpdateTime = 10.0f;
-		protected float updateRemainTime = 0.0f;
-
-		/// Name of the resource group to use to load materials
-		protected string resourceGroupName;
-		/// Name of the material to use
-		protected string materialName = "BaseWhite";
-		/// Have we set the material etc on the renderer?
-		protected bool isRendererConfigured = false;
-		/// Pointer to the material to use
-		protected Material material;
-		/// Default width of each particle
-		protected float defaultWidth;
-		/// Default height of each particle
-		protected float defaultHeight;
-		/// Speed factor
-		protected float speedFactor = 1.0f;
-		/// Iteration interval
-		protected float iterationInterval = 0.0f;
-		/// Iteration interval set? Otherwise track default
-		protected bool iterationIntervalSet = false;
-		/// Particles sorted according to camera?
-		protected bool sorted = false;
-		/// Particles in local space?
-		protected bool localSpace = false;
-		/// Update timeout when nonvisible (0 for no timeout)
-		protected float nonvisibleTimeout = 0.0f;
-		/// Update timeout when nonvisible set? Otherwise track default
-		protected bool nonvisibleTimeoutSet = false;
-		/// Amount of time non-visible so far
-		protected float timeSinceLastVisible = 0;
-		/// Last frame in which known to be visible
-		protected ulong lastVisibleFrame = 0;
-		/// Controller for time update
-		protected Controller<Real> timeController = null;
-
-		// various collections for pooling billboards
-		protected List<Particle> freeParticles = new List<Particle>();
-		protected List<Particle> activeParticles = new List<Particle>();
-		protected List<Particle> particlePool = new List<Particle>();
-
-		/// The renderer used to render this particle system
-		protected ParticleSystemRenderer renderer;
-
-		/// Do we cull each particle individually?
-		protected bool cullIndividual = false;
-
-		/// The name of the type of renderer used to render this system
-		protected string rendererType;
-
-		/// The number of particles in the pool.
-		protected int poolSize = 0;
-
-		/// Optional origin of this particle system (eg script name)
-		protected string origin;
+		private const string PARTICLE = "Particle";
 
 		/// Default iteration interval
 		protected static float defaultIterationInterval;
+
 		/// Default nonvisible update timeout
 		protected static float defaultNonvisibleTimeout;
 
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
+		private readonly Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
+
+		/// World AABB, only used to compare world-space positions to calc bounds
+		protected AxisAlignedBox aab;
+
+		protected List<ParticleEmitter> activeEmittedEmitters = new List<ParticleEmitter>();
+		protected List<Particle> activeParticles = new List<Particle>();
+
+		/// <summary>List of affectors for this system.</summary>
+		protected List<ParticleAffector> affectorList = new List<ParticleAffector>();
+
+		protected Real boundingRadius;
+		protected bool boundsAutoUpdate = true;
+		protected float boundsUpdateTime = 10.0f;
+
+		/// Do we cull each particle individually?
+		protected bool cullIndividual;
+
+		/// Default height of each particle
+		protected float defaultHeight;
+
+		/// Default width of each particle
+		protected float defaultWidth;
+
+		protected Dictionary<int, List<ParticleEmitter>> emittedEmitterPool = new Dictionary<int, List<ParticleEmitter>>();
+		protected bool emittedEmitterPoolInitialized;
+		protected int emittedEmitterPoolSize = 3;
+
+		/// <summary>List of emitters for this system.</summary>
+		protected List<ParticleEmitter> emitterList = new List<ParticleEmitter>();
+
+		protected Dictionary<int, List<ParticleEmitter>> freeEmittedEmitters = new Dictionary<int, List<ParticleEmitter>>();
+		protected List<Particle> freeParticles = new List<Particle>();
+
+		/// Have we set the material etc on the renderer?
+		protected bool isRendererConfigured;
+
+		/// Iteration interval
+		protected float iterationInterval;
+
+		/// Iteration interval set? Otherwise track default
+		protected bool iterationIntervalSet;
+
+		/// Last frame in which known to be visible
+		protected ulong lastVisibleFrame;
+
+		/// Particles in local space?
+		protected bool localSpace;
+
+		/// Pointer to the material to use
+		protected Material material;
+
+		/// Name of the material to use
+		protected string materialName = "BaseWhite";
+
+		/// Update timeout when nonvisible (0 for no timeout)
+		protected float nonvisibleTimeout;
+
+		/// Update timeout when nonvisible set? Otherwise track default
+		protected bool nonvisibleTimeoutSet;
+
+		/// Optional origin of this particle system (eg script name)
+		protected string origin;
+
+		protected List<Particle> particlePool = new List<Particle>();
+
+		/// The number of particles in the pool.
+		protected int poolSize;
+
+		/// The renderer used to render this particle system
+		protected ParticleSystemRenderer renderer;
+
+		/// The name of the type of renderer used to render this system
+		protected string rendererType;
+
+		/// <summary>Cached for less memory usage during emitter processing.</summary>
+		/// <note>EmitterList is a list of _counts_, not a list of emitters</note>
+		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
+
+		/// Name of the resource group to use to load materials
+		protected string resourceGroupName;
+
+		/// Particles sorted according to camera?
+		protected bool sorted;
+
+		/// Speed factor
+		protected float speedFactor = 1.0f;
+
+		/// Controller for time update
+		protected Controller<Real> timeController;
+
+		/// Amount of time non-visible so far
+		protected float timeSinceLastVisible;
+
+		protected float updateRemainTime;
+
+		public List<ParticleEmitter> Emitters
+		{
+			get
+			{
+				return this.emitterList;
+			}
+		}
+
+		public List<ParticleAffector> Affectors
+		{
+			get
+			{
+				return this.affectorList;
+			}
+		}
+
+		/// <summary>
+		/// Return the resource group to be used to load dependent resources
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public string ResourceGroupName
+		{
+			get
+			{
+				return this.resourceGroupName;
+			}
+		}
 
 		#endregion
 
 		#region Constructors
+
 		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
 		/// </summary>
@@ -223,10 +226,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="name"></param>
 		internal ParticleSystem( string name )
-			: this( name, ResourceGroupManager.DefaultResourceGroupName )
-		{
-
-		}
+			: this( name, ResourceGroupManager.DefaultResourceGroupName ) { }
 
 		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
@@ -238,45 +238,47 @@ namespace Axiom.ParticleSystems
 			: base( name )
 		{
 			InitParameters();
-			aab = new AxisAlignedBox();
-			boundingRadius = 1.0f;
-			resourceGroupName = resourceGroup;
+			this.aab = new AxisAlignedBox();
+			this.boundingRadius = 1.0f;
+			this.resourceGroupName = resourceGroup;
 			RendererName = "billboard";
 
 			RegisterParsers();
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( timeController != null )
+					if ( this.timeController != null )
 					{
 						// timeController.Dispose();
-						timeController = null;
+						this.timeController = null;
 					}
 					RemoveAllEmitters();
 					RemoveAllAffectors();
 
-					DestroyVisualParticles( 0, particlePool.Count );
-					
-                    if ( renderer != null )
-					{
-                        if (!renderer.IsDisposed)
-                            renderer.Dispose();
+					DestroyVisualParticles( 0, this.particlePool.Count );
 
-						renderer = null;
+					if ( this.renderer != null )
+					{
+						if ( !this.renderer.IsDisposed )
+						{
+							this.renderer.Dispose();
+						}
+
+						this.renderer = null;
 					}
 				}
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>
@@ -294,24 +296,24 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleEmitter AddEmitter( string emitterType )
 		{
-			var emitter = ParticleSystemManager.Instance.CreateEmitter( emitterType, this );
-			emitterList.Add( emitter );
+			ParticleEmitter emitter = ParticleSystemManager.Instance.CreateEmitter( emitterType, this );
+			this.emitterList.Add( emitter );
 			return emitter;
 		}
 
 		public void RemoveEmitter( int index )
 		{
-			Debug.Assert( index < emitterList.Count, "Emitter index out of bounds!" );
-			var emitter = emitterList[ index ];
+			Debug.Assert( index < this.emitterList.Count, "Emitter index out of bounds!" );
+			ParticleEmitter emitter = this.emitterList[ index ];
 			// ParticleSystemManager.Instance.DestroyEmitter(emitter);
-			emitterList.RemoveAt( index );
+			this.emitterList.RemoveAt( index );
 		}
 
 		public void RemoveAllEmitters()
 		{
-            //foreach (ParticleEmitter emitter in emitterList)
-            //    ParticleSystemManager.Instance.DestroyEmitter(emitter);
-			emitterList.Clear();
+			//foreach (ParticleEmitter emitter in emitterList)
+			//    ParticleSystemManager.Instance.DestroyEmitter(emitter);
+			this.emitterList.Clear();
 		}
 
 		/// <summary>
@@ -321,33 +323,33 @@ namespace Axiom.ParticleSystems
 		///		Particles are modified over time in a particle system by affectors - see the ParticleAffector
 		///		class for more details.
 		/// </remarks>
-        /// <param name="affectorType">
+		/// <param name="affectorType">
 		///		string identifying the affector type to create. Affector types are defined
 		///		by registering new factories with the manager - see ParticleAffectorFactory for more details.
 		///		Affector types can be extended by plugin authors.
 		/// </param>
 		/// <returns></returns>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public ParticleAffector AddAffector( string affectorType )
 		{
-			var affector = ParticleSystemManager.Instance.CreateAffector( affectorType, this );
-			affectorList.Add( affector );
+			ParticleAffector affector = ParticleSystemManager.Instance.CreateAffector( affectorType, this );
+			this.affectorList.Add( affector );
 			return affector;
 		}
 
 		public void RemoveAffector( int index )
 		{
-			Debug.Assert( index < affectorList.Count, "Affector index out of bounds!" );
-			var affector = affectorList[ index ];
+			Debug.Assert( index < this.affectorList.Count, "Affector index out of bounds!" );
+			ParticleAffector affector = this.affectorList[ index ];
 			// ParticleSystemManager.Instance.DestroyAffector(affector);
-			affectorList.RemoveAt( index );
+			this.affectorList.RemoveAt( index );
 		}
 
 		public void RemoveAllAffectors()
 		{
 			// foreach (ParticleAffector affector in AffectorList)
 			//      ParticleSystemManager.Instance.DestroyEmitter(affector);
-			affectorList.Clear();
+			this.affectorList.Clear();
 		}
 
 		/// <summary>
@@ -357,8 +359,8 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleAffector GetAffector( int index )
 		{
-			Debug.Assert( index < affectorList.Count, "index < affectorList.Count" );
-			return affectorList[ index ];
+			Debug.Assert( index < this.affectorList.Count, "index < affectorList.Count" );
+			return this.affectorList[ index ];
 		}
 
 		/// <summary>
@@ -368,16 +370,14 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleEmitter GetEmitter( int index )
 		{
-			Debug.Assert( index < emitterList.Count, "index < emitterList.Count" );
+			Debug.Assert( index < this.emitterList.Count, "index < emitterList.Count" );
 
-			return emitterList[ index ];
+			return this.emitterList[ index ];
 		}
 
 		#endregion
 
 		#region Methods
-
-
 
 		/// <summary>
 		///		Used to expire dead particles.
@@ -386,32 +386,31 @@ namespace Axiom.ParticleSystems
 		protected void Expire( float timeElapsed )
 		{
 			var expiredList = new List<Particle>();
-			for ( var index = 0; index < activeParticles.Count; index++ )
+			for ( int index = 0; index < this.activeParticles.Count; index++ )
 			//foreach ( Particle particle in activeParticles )
 			{
-				var particle = activeParticles[ index ];
+				Particle particle = this.activeParticles[ index ];
 				// is this particle dead?
 				if ( particle.timeToLive < timeElapsed )
 				{
 					// notify renderer
-					renderer.NotifyParticleExpired( particle );
+					this.renderer.NotifyParticleExpired( particle );
 
 					// Identify the particle type
 					if ( particle.ParticleType == ParticleType.Emitter )
 					{
 						// For now, it can only be an emitted emitter
 						var pParticleEmitter = (ParticleEmitter)particle;
-						var fee = findFreeEmittedEmitter( pParticleEmitter.Name.ToLower().GetHashCode() );
+						List<ParticleEmitter> fee = findFreeEmittedEmitter( pParticleEmitter.Name.ToLower().GetHashCode() );
 						fee.Add( pParticleEmitter );
 
 						// Also erase from activeEmittedEmitters
 						removeFromActiveEmittedEmitters( pParticleEmitter );
-
 					}
 					else
 					{
 						// add back to the free queue 
-						freeParticles.Add( particle );
+						this.freeParticles.Add( particle );
 					}
 					//and remove from active list
 					expiredList.Add( particle );
@@ -422,19 +421,19 @@ namespace Axiom.ParticleSystems
 					particle.timeToLive -= timeElapsed;
 				}
 			}
-			for ( var index = 0; index < expiredList.Count; index++ )
+			for ( int index = 0; index < expiredList.Count; index++ )
 			//foreach ( Particle p in expiredList )
 			{
-				var p = expiredList[ index ];
-				activeParticles.Remove( p );
+				Particle p = expiredList[ index ];
+				this.activeParticles.Remove( p );
 			}
 		}
 
 		private void removeFromActiveEmittedEmitters( ParticleEmitter pParticleEmitter )
 		{
-			if ( activeEmittedEmitters.Contains( pParticleEmitter ) )
+			if ( this.activeEmittedEmitters.Contains( pParticleEmitter ) )
 			{
-				activeEmittedEmitters.Remove( pParticleEmitter );
+				this.activeEmittedEmitters.Remove( pParticleEmitter );
 			}
 		}
 
@@ -447,45 +446,45 @@ namespace Axiom.ParticleSystems
 			int index;
 			int totalRequested, emissionAllowed;
 
-			emissionAllowed = freeParticles.Count;
+			emissionAllowed = this.freeParticles.Count;
 			totalRequested = 0;
 
 			// Count up total requested emissions
 			//foreach ( ParticleEmitter emitter in emitterList )
-			for ( index = 0; index < emitterList.Count; index++ )
+			for ( index = 0; index < this.emitterList.Count; index++ )
 			{
-				var emitter = emitterList[ index ];
+				ParticleEmitter emitter = this.emitterList[ index ];
 
-				if ( !requested.ContainsKey( emitter ) )
+				if ( !this.requested.ContainsKey( emitter ) )
 				{
-					requested.Add( emitter, 0 );
+					this.requested.Add( emitter, 0 );
 				}
 				if ( !emitter.IsEmitted )
 				{
-					requested[ emitter ] = emitter.GetEmissionCount( timeElapsed );
-					totalRequested += requested[ emitter ];
+					this.requested[ emitter ] = emitter.GetEmissionCount( timeElapsed );
+					totalRequested += this.requested[ emitter ];
 				}
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for ( index = 0; index < this.activeEmittedEmitters.Count; index++ )
 			{
-				var activeEmitter = activeEmittedEmitters[ index ];
-				if ( !requested.ContainsKey( activeEmitter ) )
+				ParticleEmitter activeEmitter = this.activeEmittedEmitters[ index ];
+				if ( !this.requested.ContainsKey( activeEmitter ) )
 				{
-					requested.Add( activeEmitter, 0 );
+					this.requested.Add( activeEmitter, 0 );
 				}
-				totalRequested += requested[ activeEmitter ];
+				totalRequested += this.requested[ activeEmitter ];
 			}
-			var ratio = 1.0f;
+			float ratio = 1.0f;
 			// Check if the quota will be exceeded, if so reduce demand
 			if ( totalRequested > emissionAllowed )
 			{
 				// Apportion down requested values to allotted values
-				ratio = (float)emissionAllowed / (float)totalRequested;
-				foreach ( var emitter in emitterList )
+				ratio = emissionAllowed / (float)totalRequested;
+				foreach ( ParticleEmitter emitter in this.emitterList )
 				{
-					requested[ emitter ] = (int)( requested[ emitter ] * ratio );
+					this.requested[ emitter ] = (int)( this.requested[ emitter ] * ratio );
 				}
 			}
 
@@ -494,35 +493,35 @@ namespace Axiom.ParticleSystems
 			// this ensures an even distribution of particles when many are
 			// emitted in a single frame
 			//foreach ( ParticleEmitter emitter in emitterList )
-			for ( index = 0; index < emitterList.Count; index++ )
+			for ( index = 0; index < this.emitterList.Count; index++ )
 			{
-				var emitter = emitterList[ index ];
+				ParticleEmitter emitter = this.emitterList[ index ];
 				// Trigger the emitters, but exclude the emitters that are already in the emitted emitters list; 
 				// they are handled in a separate loop
 				if ( !emitter.IsEmitted )
 				{
-					executeTriggerEmitters( emitter, requested[ emitter ], timeElapsed );
+					executeTriggerEmitters( emitter, this.requested[ emitter ], timeElapsed );
 				}
 			}
 
 			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
-			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
+			for ( index = 0; index < this.activeEmittedEmitters.Count; index++ )
 			{
-				var activeEmitter = activeEmittedEmitters[ index ];
-				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
+				ParticleEmitter activeEmitter = this.activeEmittedEmitters[ index ];
+				executeTriggerEmitters( activeEmitter, (int)( activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
 			}
 		}
 
 		private void executeTriggerEmitters( ParticleEmitter emitter, int requested, float timeElapsed )
 		{
-			var timePoint = 0.0f;
-			var timeInc = timeElapsed / requested;
+			float timePoint = 0.0f;
+			float timeInc = timeElapsed / requested;
 
-			for ( var j = 0; j < requested; ++j )
+			for ( int j = 0; j < requested; ++j )
 			{
 				// Create a new particle & init using emitter
 				Particle p = null;
-				var emitterName = emitter.EmittedEmitter;
+				string emitterName = emitter.EmittedEmitter;
 				if ( emitterName == string.Empty )
 				{
 					p = CreateParticle();
@@ -533,11 +532,13 @@ namespace Axiom.ParticleSystems
 				}
 
 				if ( p == null )
+				{
 					return;
+				}
 
 				emitter.InitParticle( p );
 
-				if ( !localSpace )
+				if ( !this.localSpace )
 				{
 					p.Position = ( parentNode.DerivedOrientation * ( parentNode.DerivedScale * p.Position ) ) + parentNode.DerivedPosition;
 					p.Direction = ( parentNode.DerivedOrientation * p.Direction );
@@ -547,8 +548,10 @@ namespace Axiom.ParticleSystems
 				p.Position += ( p.Direction * timePoint );
 
 				// apply particle initialization by the affectors
-				foreach ( var affector in affectorList )
+				foreach ( ParticleAffector affector in this.affectorList )
+				{
 					affector.InitParticle( ref p );
+				}
 
 				// Increment time fragment
 				timePoint += timeInc;
@@ -563,11 +566,9 @@ namespace Axiom.ParticleSystems
 				}
 
 				// Notify renderer
-				renderer.NotifyParticleEmitted( p );
-
+				this.renderer.NotifyParticleEmitted( p );
 			}
 		}
-
 
 
 		/// <summary>
@@ -576,7 +577,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void ApplyMotion( float timeElapsed )
 		{
-			foreach ( var p in activeParticles )
+			foreach ( Particle p in this.activeParticles )
 			{
 				p.Position += p.Direction * timeElapsed;
 
@@ -590,7 +591,7 @@ namespace Axiom.ParticleSystems
 				}
 
 				// notify renderer
-				renderer.NotifyParticleMoved( activeParticles );
+				this.renderer.NotifyParticleMoved( this.activeParticles );
 			}
 		}
 
@@ -600,8 +601,10 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void TriggerAffectors( float timeElapsed )
 		{
-			foreach ( var affector in affectorList )
+			foreach ( ParticleAffector affector in this.affectorList )
+			{
 				affector.AffectParticles( this, timeElapsed );
+			}
 		}
 
 		/// <summary>
@@ -610,35 +613,39 @@ namespace Axiom.ParticleSystems
 		/// <param name="size"></param>
 		protected void IncreasePool( int size )
 		{
-			var oldSize = particlePool.Count;
+			int oldSize = this.particlePool.Count;
 
 			// expand the capacity a bit
-			particlePool.Capacity = size;
+			this.particlePool.Capacity = size;
 
 			// add fresh Billboard objects to the new slots
-			for ( var i = oldSize; i < size; i++ )
-				particlePool.Add( new Particle() );
+			for ( int i = oldSize; i < size; i++ )
+			{
+				this.particlePool.Add( new Particle() );
+			}
 
-			if ( isRendererConfigured )
+			if ( this.isRendererConfigured )
+			{
 				CreateVisualParticles( oldSize, size );
+			}
 		}
 
 		public Particle GetParticle( int index )
 		{
-			return activeParticles[ index ];
+			return this.activeParticles[ index ];
 		}
 
 		private Particle CreateParticle()
 		{
 			Particle newParticle = null;
-			if ( freeParticles.Count != 0 )
+			if ( this.freeParticles.Count != 0 )
 			{
 				// Fast creation (don't use superclass since emitter will init)
-				newParticle = freeParticles[ 0 ];
-				freeParticles.RemoveAt( 0 );
+				newParticle = this.freeParticles[ 0 ];
+				this.freeParticles.RemoveAt( 0 );
 
 				// add the billboard to the active list
-				activeParticles.Add( newParticle );
+				this.activeParticles.Add( newParticle );
 
 				newParticle.NotifyOwner( this );
 			}
@@ -649,18 +656,18 @@ namespace Axiom.ParticleSystems
 		{
 			// Get the appropriate list and retrieve an emitter	
 			Particle p = null;
-			var fee = findFreeEmittedEmitter( emitterId );
+			List<ParticleEmitter> fee = findFreeEmittedEmitter( emitterId );
 			if ( fee != null && fee.Count != 0 )
 			{
 				p = fee[ 0 ];
 				p.ParticleType = ParticleType.Emitter;
 				fee.RemoveAt( 0 );
-				activeParticles.Add( p );
+				this.activeParticles.Add( p );
 
 				// Also add to mActiveEmittedEmitters. This is needed to traverse through all active emitters
 				// that are emitted. Don't use mActiveParticles for that (although they are added to
 				// mActiveParticles also), because it would take too long to traverse.
-				activeEmittedEmitters.Add( (ParticleEmitter)p );
+				this.activeEmittedEmitters.Add( (ParticleEmitter)p );
 
 				p.NotifyOwner( this );
 			}
@@ -670,9 +677,9 @@ namespace Axiom.ParticleSystems
 
 		private List<ParticleEmitter> findFreeEmittedEmitter( int id )
 		{
-			if ( freeEmittedEmitters.ContainsKey( id ) )
+			if ( this.freeEmittedEmitters.ContainsKey( id ) )
 			{
-				return freeEmittedEmitters[ id ];
+				return this.freeEmittedEmitters[ id ];
 			}
 
 			return null;
@@ -681,8 +688,10 @@ namespace Axiom.ParticleSystems
 
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( renderer != null )
-				renderer.UpdateRenderQueue( queue, activeParticles, cullIndividual );
+			if ( this.renderer != null )
+			{
+				this.renderer.UpdateRenderQueue( queue, this.activeParticles, this.cullIndividual );
+			}
 		}
 
 		protected void InitParameters()
@@ -693,11 +702,11 @@ namespace Axiom.ParticleSystems
 
 		protected void UpdateBounds()
 		{
-			if ( parentNode != null && ( boundsAutoUpdate || boundsUpdateTime > 0.0f ) )
+			if ( parentNode != null && ( this.boundsAutoUpdate || this.boundsUpdateTime > 0.0f ) )
 			{
 				Vector3 min;
 				Vector3 max;
-				if ( !boundsAutoUpdate )
+				if ( !this.boundsAutoUpdate )
 				{
 					// We're on a limit, grow rather than reset each time
 					// so that we pick up the worst case scenario
@@ -709,15 +718,13 @@ namespace Axiom.ParticleSystems
 					min.x = min.y = min.z = float.PositiveInfinity;
 					max.x = max.y = max.z = float.NegativeInfinity;
 				}
-				var halfScale = Vector3.UnitScale * 0.5f;
-				var defaultPadding =
-					halfScale * (float)Utility.Max( defaultHeight, defaultWidth );
-				foreach ( var p in activeParticles )
+				Vector3 halfScale = Vector3.UnitScale * 0.5f;
+				Vector3 defaultPadding = halfScale * Utility.Max( this.defaultHeight, this.defaultWidth );
+				foreach ( Particle p in this.activeParticles )
 				{
 					if ( p.HasOwnDimensions )
 					{
-						var padding =
-							halfScale * (float)Utility.Max( p.Width, p.Height );
+						Vector3 padding = halfScale * Utility.Max( p.Width, p.Height );
 						min.Floor( p.Position - padding );
 						max.Ceil( p.Position + padding );
 					}
@@ -730,10 +737,10 @@ namespace Axiom.ParticleSystems
 				worldAABB.SetExtents( min, max );
 
 
-				if ( localSpace )
+				if ( this.localSpace )
 				{
 					// Merge calculated box with current AABB to preserve any user-set AABB
-					aab.Merge( worldAABB );
+					this.aab.Merge( worldAABB );
 				}
 				else
 				{
@@ -744,7 +751,7 @@ namespace Axiom.ParticleSystems
 					newAABB.Transform( parentNode.FullTransform.Inverse() );
 
 					// Merge calculated box with current AABB to preserve any user-set AABB
-					aab.Merge( newAABB );
+					this.aab.Merge( newAABB );
 				}
 
 				parentNode.NeedUpdate();
@@ -777,7 +784,7 @@ namespace Axiom.ParticleSystems
 		/// </param>
 		public void FastForward( float time, float interval )
 		{
-			for ( var t = 0.0f; t < time; t += interval )
+			for ( float t = 0.0f; t < time; t += interval )
 			{
 				Update( interval );
 			}
@@ -785,22 +792,28 @@ namespace Axiom.ParticleSystems
 
 		public void NotifyParticleResized()
 		{
-			if ( renderer != null )
-				renderer.NotifyParticleResized();
+			if ( this.renderer != null )
+			{
+				this.renderer.NotifyParticleResized();
+			}
 		}
 
 		public void NotifyParticleRotated()
 		{
-			if ( renderer != null )
-				renderer.NotifyParticleRotated();
+			if ( this.renderer != null )
+			{
+				this.renderer.NotifyParticleRotated();
+			}
 		}
 
 		protected void SetDefaultDimensions( float width, float height )
 		{
-			defaultWidth = width;
-			defaultHeight = height;
-			if ( renderer != null )
-				renderer.NotifyDefaultDimensions( width, height );
+			this.defaultWidth = width;
+			this.defaultHeight = height;
+			if ( this.renderer != null )
+			{
+				this.renderer.NotifyDefaultDimensions( width, height );
+			}
 		}
 
 		public override void NotifyCurrentCamera( Camera cam )
@@ -808,8 +821,8 @@ namespace Axiom.ParticleSystems
 			// base.NotifyCurrentCamera(cam);
 
 			// Record visible
-			lastVisibleFrame = Root.Instance.CurrentFrameCount;
-			timeSinceLastVisible = 0.0f;
+			this.lastVisibleFrame = Root.Instance.CurrentFrameCount;
+			this.timeSinceLastVisible = 0.0f;
 
 			// TODO: Should I support sorting?
 			//if (sorted)
@@ -817,100 +830,104 @@ namespace Axiom.ParticleSystems
 			//    SortParticles(cam);
 			//}
 
-			if ( renderer != null )
+			if ( this.renderer != null )
 			{
-				if ( !isRendererConfigured )
+				if ( !this.isRendererConfigured )
+				{
 					ConfigureRenderer();
-				renderer.NotifyCurrentCamera( cam );
+				}
+				this.renderer.NotifyCurrentCamera( cam );
 			}
 		}
 
 		internal override void NotifyAttached( Node parent, bool isTagPoint )
 		{
 			base.NotifyAttached( parent, isTagPoint );
-			if ( renderer != null && isRendererConfigured )
+			if ( this.renderer != null && this.isRendererConfigured )
 			{
-				renderer.NotifyAttached( parent, isTagPoint );
+				this.renderer.NotifyAttached( parent, isTagPoint );
 			}
 
-			if ( parent != null && timeController == null )
+			if ( parent != null && this.timeController == null )
 			{
 				// Assume visible
-				timeSinceLastVisible = 0;
-				lastVisibleFrame = Root.Instance.CurrentFrameCount;
+				this.timeSinceLastVisible = 0;
+				this.lastVisibleFrame = Root.Instance.CurrentFrameCount;
 
 				// Create time controller when attached
-				var mgr = ControllerManager.Instance;
+				ControllerManager mgr = ControllerManager.Instance;
 				IControllerValue<Real> updValue = new ParticleSystemUpdateValue( this );
-				timeController = ControllerManager.Instance.CreateFrameTimePassthroughController( updValue );
+				this.timeController = ControllerManager.Instance.CreateFrameTimePassthroughController( updValue );
 			}
-			else if ( parent == null && timeController != null )
+			else if ( parent == null && this.timeController != null )
 			{
 				// Destroy controller
-				ControllerManager.Instance.DestroyController( timeController );
-				timeController = null;
+				ControllerManager.Instance.DestroyController( this.timeController );
+				this.timeController = null;
 			}
 		}
 
 		protected void Clear()
 		{
-			freeParticles.AddRange( activeParticles );
-			activeParticles.Clear();
-			updateRemainTime = 0.0f;
+			this.freeParticles.AddRange( this.activeParticles );
+			this.activeParticles.Clear();
+			this.updateRemainTime = 0.0f;
 		}
 
 		protected void ConfigureRenderer()
 		{
 			// Actual allocate particles
-			var currSize = particlePool.Count;
-			var size = poolSize;
+			int currSize = this.particlePool.Count;
+			int size = this.poolSize;
 			if ( currSize < size )
 			{
 				IncreasePool( size );
 
-				for ( var i = currSize; i < size; ++i )
+				for ( int i = currSize; i < size; ++i )
 				{
 					// Add new items to the queue
-					freeParticles.Add( particlePool[ i ] );
+					this.freeParticles.Add( this.particlePool[ i ] );
 				}
 
 				// Tell the renderer, if already configured
-				if ( renderer != null && isRendererConfigured )
+				if ( this.renderer != null && this.isRendererConfigured )
 				{
-					renderer.NotifyParticleQuota( size );
+					this.renderer.NotifyParticleQuota( size );
 				}
 			}
 
-			if ( renderer != null && !isRendererConfigured )
+			if ( this.renderer != null && !this.isRendererConfigured )
 			{
-				renderer.NotifyParticleQuota( particlePool.Count );
-				renderer.NotifyAttached( parentNode, parentIsTagPoint );
-				renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
-				CreateVisualParticles( 0, particlePool.Count );
-				var mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
-				renderer.Material = mat;
+				this.renderer.NotifyParticleQuota( this.particlePool.Count );
+				this.renderer.NotifyAttached( parentNode, parentIsTagPoint );
+				this.renderer.NotifyDefaultDimensions( this.defaultWidth, this.defaultHeight );
+				CreateVisualParticles( 0, this.particlePool.Count );
+				var mat = (Material)MaterialManager.Instance.Load( this.materialName, this.resourceGroupName );
+				this.renderer.Material = mat;
 				if ( renderQueueIDSet )
-					renderer.RenderQueueGroup = renderQueueID;
-				renderer.SetKeepParticlesInLocalSpace( localSpace );
-				isRendererConfigured = true;
+				{
+					this.renderer.RenderQueueGroup = renderQueueID;
+				}
+				this.renderer.SetKeepParticlesInLocalSpace( this.localSpace );
+				this.isRendererConfigured = true;
 			}
 		}
 
 		protected void CreateVisualParticles( int poolstart, int poolend )
 		{
-			for ( var i = poolstart; i < poolend; ++i )
+			for ( int i = poolstart; i < poolend; ++i )
 			{
-				particlePool[ i ].NotifyVisualData( renderer.CreateVisualData() );
+				this.particlePool[ i ].NotifyVisualData( this.renderer.CreateVisualData() );
 			}
 		}
 
 		//-----------------------------------------------------------------------
 		protected void DestroyVisualParticles( int poolstart, int poolend )
 		{
-			for ( var i = poolstart; i < poolend; ++i )
+			for ( int i = poolstart; i < poolend; ++i )
 			{
-				renderer.DestroyVisualData( particlePool[ i ].VisualData );
-				particlePool[ i ].NotifyVisualData( null );
+				this.renderer.DestroyVisualData( this.particlePool[ i ].VisualData );
+				this.particlePool[ i ].NotifyVisualData( null );
 			}
 		}
 
@@ -922,56 +939,57 @@ namespace Axiom.ParticleSystems
 		//-----------------------------------------------------------------------
 		protected void SetBounds( AxisAlignedBox aabb )
 		{
-			aab = (AxisAlignedBox)aabb.Clone();
-			var sqDist = (float)Utility.Max( aab.Minimum.LengthSquared,
-										   aab.Maximum.LengthSquared );
-			boundingRadius = (float)Utility.Sqrt( sqDist );
+			this.aab = (AxisAlignedBox)aabb.Clone();
+			var sqDist = (float)Utility.Max( this.aab.Minimum.LengthSquared, this.aab.Maximum.LengthSquared );
+			this.boundingRadius = (float)Utility.Sqrt( sqDist );
 		}
 
 		//-----------------------------------------------------------------------
 		protected void SetBoundsAutoUpdated( bool autoUpdate, float stopIn )
 		{
-			boundsAutoUpdate = autoUpdate;
-			boundsUpdateTime = stopIn;
+			this.boundsAutoUpdate = autoUpdate;
+			this.boundsUpdateTime = stopIn;
 		}
+
 		//-----------------------------------------------------------------------
 		protected void SetRenderQueueGroup( RenderQueueGroupID queueID )
 		{
 			base.RenderQueueGroup = queueID;
-			if ( renderer != null )
+			if ( this.renderer != null )
 			{
-				renderer.RenderQueueGroup = queueID;
+				this.renderer.RenderQueueGroup = queueID;
 			}
 		}
+
 		//-----------------------------------------------------------------------
 		protected void SetKeepParticlesInLocalSpace( bool keepLocal )
 		{
-			localSpace = keepLocal;
-			if ( renderer != null )
+			this.localSpace = keepLocal;
+			if ( this.renderer != null )
 			{
-				renderer.SetKeepParticlesInLocalSpace( keepLocal );
+				this.renderer.SetKeepParticlesInLocalSpace( keepLocal );
 			}
 		}
 
 		public void ScaleVelocity( float velocityMultiplier )
 		{
-			var emitterCount = emitterList.Count;
-			for ( var i = 0; i < emitterCount; i++ )
+			int emitterCount = this.emitterList.Count;
+			for ( int i = 0; i < emitterCount; i++ )
 			{
-				var emitter = (ParticleEmitter)emitterList[ i ];
+				ParticleEmitter emitter = this.emitterList[ i ];
 				emitter.ScaleVelocity( velocityMultiplier );
 			}
 		}
 
 		public bool SetParameter( string attr, string val )
 		{
-			var id = attr.ToLower().GetHashCode();
-			if ( attribParsers.ContainsKey( id ) )
+			int id = attr.ToLower().GetHashCode();
+			if ( this.attribParsers.ContainsKey( id ) )
 			{
 				var args = new object[ 2 ];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
-				attribParsers[ id ].Invoke( null, args );
+				this.attribParsers[ id ].Invoke( null, args );
 				// attribParsers[attr].Invoke(this, val.Split(' '));
 				//ParticleSystemAttributeParser parser =
 				//        (ParticleSystemAttributeParser)attribParsers[attr];
@@ -995,30 +1013,28 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		private void RegisterParsers()
 		{
-			var methods = this.GetType().GetMethods();
+			MethodInfo[] methods = GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
-			for ( var i = 0; i < methods.Length; i++ )
+			for ( int i = 0; i < methods.Length; i++ )
 			{
 				// get the current method in the loop
-				var method = methods[ i ];
+				MethodInfo method = methods[ i ];
 
 				// see if the method should be used to parse one or more material attributes
-				var parserAtts =
-					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
+				var parserAtts = (ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
-				for ( var j = 0; j < parserAtts.Length; j++ )
+				for ( int j = 0; j < parserAtts.Length; j++ )
 				{
-					var parserAtt = parserAtts[ j ];
+					ParserCommandAttribute parserAtt = parserAtts[ j ];
 
 					switch ( parserAtt.ParserType )
 					{
 						// this method should parse a material attribute
 						case PARTICLE:
-							attribParsers.Add( parserAtt.Name.ToLower().GetHashCode(), method );
+							this.attribParsers.Add( parserAtt.Name.ToLower().GetHashCode(), method );
 							break;
-
 					} // switch
 				} // for
 			} // for
@@ -1165,7 +1181,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return localSpace;
+				return this.localSpace;
 			}
 			set
 			{
@@ -1177,26 +1193,31 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return defaultWidth;
+				return this.defaultWidth;
 			}
 			set
 			{
-				defaultWidth = value;
-				if ( renderer != null )
-					renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
+				this.defaultWidth = value;
+				if ( this.renderer != null )
+				{
+					this.renderer.NotifyDefaultDimensions( this.defaultWidth, this.defaultHeight );
+				}
 			}
 		}
+
 		public float DefaultHeight
 		{
 			get
 			{
-				return defaultHeight;
+				return this.defaultHeight;
 			}
 			set
 			{
-				defaultHeight = value;
-				if ( renderer != null )
-					renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
+				this.defaultHeight = value;
+				if ( this.renderer != null )
+				{
+					this.renderer.NotifyDefaultDimensions( this.defaultWidth, this.defaultHeight );
+				}
 			}
 		}
 
@@ -1207,7 +1228,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return activeParticles.Count;
+				return this.activeParticles.Count;
 			}
 		}
 
@@ -1226,12 +1247,14 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return poolSize;
+				return this.poolSize;
 			}
 			set
 			{
-				if ( poolSize < value )
-					poolSize = value;
+				if ( this.poolSize < value )
+				{
+					this.poolSize = value;
+				}
 			}
 		}
 
@@ -1242,7 +1265,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return activeParticles;
+				return this.activeParticles;
 			}
 		}
 
@@ -1250,17 +1273,17 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 
-            [OgreVersion( 1, 7, 2 )]
+			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				materialName = value;
-				if ( isRendererConfigured )
+				this.materialName = value;
+				if ( this.isRendererConfigured )
 				{
-					var mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
-					renderer.Material = mat;
+					var mat = (Material)MaterialManager.Instance.Load( this.materialName, this.resourceGroupName );
+					this.renderer.Material = mat;
 				}
 			}
 		}
@@ -1269,22 +1292,24 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				if ( renderer != null )
-					return renderer.Type;
+				if ( this.renderer != null )
+				{
+					return this.renderer.Type;
+				}
 				return string.Empty;
 			}
 			set
 			{
-				if ( renderer != null )
+				if ( this.renderer != null )
 				{
-					DestroyVisualParticles( 0, particlePool.Count );
+					DestroyVisualParticles( 0, this.particlePool.Count );
 					// ParticleSystemManager.Instance.DestroyRenderer(renderer);
-					renderer = null;
+					this.renderer = null;
 				}
 				if ( value != null && value != "" )
 				{
-					renderer = ParticleSystemManager.Instance.CreateRenderer( value );
-					isRendererConfigured = false;
+					this.renderer = ParticleSystemManager.Instance.CreateRenderer( value );
+					this.isRendererConfigured = false;
 				}
 			}
 		}
@@ -1293,11 +1318,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return cullIndividual;
+				return this.cullIndividual;
 			}
 			set
 			{
-				cullIndividual = value;
+				this.cullIndividual = value;
 			}
 		}
 
@@ -1305,11 +1330,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return sorted;
+				return this.sorted;
 			}
 			set
 			{
-				sorted = value;
+				this.sorted = value;
 			}
 		}
 
@@ -1317,11 +1342,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return speedFactor;
+				return this.speedFactor;
 			}
 			set
 			{
-				speedFactor = value;
+				this.speedFactor = value;
 			}
 		}
 
@@ -1329,12 +1354,12 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return iterationInterval;
+				return this.iterationInterval;
 			}
 			set
 			{
-				iterationInterval = value;
-				iterationIntervalSet = true;
+				this.iterationInterval = value;
+				this.iterationIntervalSet = true;
 			}
 		}
 
@@ -1354,12 +1379,12 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return nonvisibleTimeout;
+				return this.nonvisibleTimeout;
 			}
 			set
 			{
-				nonvisibleTimeout = value;
-				nonvisibleTimeoutSet = true;
+				this.nonvisibleTimeout = value;
+				this.nonvisibleTimeoutSet = true;
 			}
 		}
 
@@ -1379,289 +1404,21 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return origin;
+				return this.origin;
 			}
-            set
-            {
-                origin = value;
-            }
+			set
+			{
+				this.origin = value;
+			}
 		}
 
 		#endregion
-
-		/// <summary>
-		///		Cloning will deep copy all particle emitters and effectors, but not particles. The
-		///		system's name is also not copied.
-		/// </summary>
-		/// <returns></returns>
-		public void CopyTo( ParticleSystem system )
-		{
-			// remove the target's emitters and affectors
-			system.RemoveAllEmitters();
-			system.RemoveAllAffectors();
-
-			// loop through emitter and affector lists and copy them over
-			foreach ( var emitter in emitterList )
-			{
-				var newEmitter = system.AddEmitter( emitter.Type );
-				emitter.CopyTo( newEmitter );
-			}
-
-			foreach ( var affector in affectorList )
-			{
-				var newAffector = system.AddAffector( affector.Type );
-				affector.CopyTo( newAffector );
-			}
-			system.ParticleQuota = this.ParticleQuota;
-			system.MaterialName = this.MaterialName;
-			system.SetDefaultDimensions( this.defaultWidth, this.defaultHeight );
-			system.cullIndividual = this.cullIndividual;
-			system.sorted = this.sorted;
-			system.localSpace = this.localSpace;
-			system.iterationInterval = this.iterationInterval;
-			system.iterationIntervalSet = this.iterationIntervalSet;
-			system.nonvisibleTimeout = this.nonvisibleTimeout;
-			system.nonvisibleTimeoutSet = this.nonvisibleTimeoutSet;
-			// last frame visible and time since last visible should be left default
-			system.RendererName = this.RendererName;
-			// FIXME
-			if ( system.renderer != null && renderer != null )
-			{
-				renderer.CopyParametersTo( system.renderer );
-			}
-		}
-
-		/// <summary>
-		///		Updates the particles in the system based on time elapsed.
-		///	 </summary>
-		///	 <remarks>	
-		///		This is called automatically every frame by the engine.
-		/// </remarks>
-		/// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
-		internal void Update( float timeElapsed )
-		{
-			// Only update if attached to a node
-			if ( parentNode == null )
-				return;
-
-			var _nonvisibleTimeout = nonvisibleTimeoutSet ? nonvisibleTimeout : defaultNonvisibleTimeout;
-
-			if ( _nonvisibleTimeout > 0 )
-			{
-				// Check whether it's been more than one frame (update is ahead of
-				// camera notification by one frame because of the ordering)
-				var frameDiff = Root.Instance.CurrentFrameCount - lastVisibleFrame;
-				if ( frameDiff > 1 || frameDiff < 0 ) // < 0 if wrap only
-				{
-					timeSinceLastVisible += timeElapsed;
-					if ( timeSinceLastVisible >= _nonvisibleTimeout )
-					{
-						// No update
-						return;
-					}
-				}
-			}
-
-			// Scale incoming speed for the rest of the calculation
-			timeElapsed *= speedFactor;
-
-			// Init renderer if not done already
-			if ( renderer != null )
-			{
-				if ( !isRendererConfigured )
-					ConfigureRenderer();
-			}
-
-			// Initialize emitted emitters list if not done already
-			initializeEmittedEmitters();
-
-			var _iterationInterval = iterationIntervalSet ? iterationInterval : defaultIterationInterval;
-			if ( _iterationInterval > 0 )
-			{
-				updateRemainTime += timeElapsed;
-
-				while ( updateRemainTime >= _iterationInterval )
-				{
-					// Update existing particles
-					Expire( _iterationInterval );
-					TriggerAffectors( _iterationInterval );
-					ApplyMotion( _iterationInterval );
-					// Emit new particles
-					TriggerEmitters( _iterationInterval );
-
-					updateRemainTime -= _iterationInterval;
-				}
-			}
-			else
-			{
-				// Update existing particles
-				Expire( timeElapsed );
-				TriggerAffectors( timeElapsed );
-				ApplyMotion( timeElapsed );
-				// Emit new particles
-				TriggerEmitters( timeElapsed );
-			}
-
-			if ( !boundsAutoUpdate && boundsUpdateTime > 0.0f )
-				boundsUpdateTime -= timeElapsed; // count down 
-			UpdateBounds();
-		}
-
-		private void initializeEmittedEmitters()
-		{
-			// Initialize the pool if needed
-			var currSize = 0;
-			if ( emittedEmitterPool.Count == 0 )
-			{
-				if ( emittedEmitterPoolInitialized )
-				{
-					// It was already initialized, but apparently no emitted emitters were used
-					return;
-				}
-				else
-				{
-					initializeEmittedEmitterPool();
-				}
-			}
-			else
-			{
-				foreach ( var peList in emittedEmitterPool.Values )
-				{
-					currSize += peList.Count;
-				}
-			}
-
-			var size = emittedEmitterPoolSize;
-			if ( currSize < size && emittedEmitterPool.Count != 0 )
-			{
-				// Increase the pool. Equally distribute over all vectors in the map
-				increaseEmittedEmitterPool( size );
-
-				// Add new items to the free list
-				addFreeEmittedEmitters();
-			}
-		}
-
-		private void initializeEmittedEmitterPool()
-		{
-			if ( emittedEmitterPoolInitialized )
-				return;
-
-			// Run through mEmitters and add keys to the pool
-			foreach ( var emitter in emitterList )
-			{
-				// Determine the names of all emitters that are emitted
-				if ( emitter != null && emitter.EmittedEmitter != string.Empty )
-				{
-					// This one will be emitted, register its name and leave the vector empty!
-                    emittedEmitterPool.Add( emitter.EmittedEmitter.ToLower().GetHashCode(), new List<ParticleEmitter>() );
-				}
-
-				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
-				foreach ( var emitterInner in emitterList )
-				{
-					if ( emitter != null &&
-						emitterInner != null &&
-						emitter.Name != string.Empty &&
-						emitter.Name == emitterInner.EmittedEmitter )
-					{
-						emitter.IsEmitted = true;
-						break;
-					}
-					else
-					{
-						// Set explicitly to 'false' although the default value is already 'false'
-						emitter.IsEmitted = false;
-					}
-				}
-			}
-
-			emittedEmitterPoolInitialized = true;
-		}
-
-		private void increaseEmittedEmitterPool( int size )
-		{
-			// Don't proceed if the pool doesn't contain any keys of emitted emitters
-			if ( emittedEmitterPool.Count == 0 )
-				return;
-
-			ParticleEmitter clonedEmitter = null;
-			List<ParticleEmitter> e = null;
-			var maxNumberOfEmitters = size / emittedEmitterPool.Count; // equally distribute the number for each emitted emitter list
-			var oldSize = 0;
-
-			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
-			foreach ( var poolEntry in emittedEmitterPool )
-			{
-				e = poolEntry.Value;
-
-				// Search the correct emitter in the mEmitters vector
-				foreach ( var emitter in emitterList )
-				{
-					if ( emitter != null && poolEntry.Key == emitter.Name.ToLower().GetHashCode() )
-					{
-						// Found the right emitter, clone each emitter a number of times
-						oldSize = e.Count;
-						for ( var t = oldSize; t < maxNumberOfEmitters; ++t )
-						{
-							clonedEmitter = ParticleSystemManager.Instance.CreateEmitter( emitter.Type, this );
-							emitter.CopyTo( clonedEmitter );
-							clonedEmitter.IsEmitted = emitter.IsEmitted; // is always 'true' by the way, but just in case
-
-							// Initially deactivate the emitted emitter if duration/repeat_delay are set
-							if ( clonedEmitter.Duration > 0.0f &&
-								( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
-								clonedEmitter.IsEnabled = false;
-
-							// Add cloned emitters to the pool
-							e.Add( clonedEmitter );
-						}
-					}
-				}
-			}
-		}
-
-		private void addFreeEmittedEmitters()
-		{
-			// Don't proceed if the EmittedEmitterPool is empty
-			if ( emittedEmitterPool.Count == 0 )
-				return;
-
-			// Copy all pooled emitters to the free list
-			List<ParticleEmitter> emittedEmitters = null;
-			List<ParticleEmitter> fee = null;
-			var name = string.Empty;
-
-			// Run through the emittedEmitterPool map
-			foreach ( var poolEntry in emittedEmitterPool )
-			{
-				emittedEmitters = poolEntry.Value;
-				fee = findFreeEmittedEmitter( poolEntry.Key );
-
-				// If it큦 not in the map, create an empty one
-				if ( fee == null )
-				{
-					freeEmittedEmitters.Add( poolEntry.Key, new List<ParticleEmitter>() );
-					fee = findFreeEmittedEmitter( poolEntry.Key );
-				}
-
-				// Check anyway if it큦 ok now
-				if ( fee == null )
-					return; // forget it!
-
-				// Add all emitted emitters from the pool to the free list
-				foreach ( var emittedEmitter in emittedEmitters )
-				{
-					fee.Add( emittedEmitter );
-				}
-			}
-		}
 
 		public override AxisAlignedBox BoundingBox
 		{
 			get
 			{
-				return aab;
+				return this.aab;
 			}
 		}
 
@@ -1669,7 +1426,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return boundingRadius;
+				return this.boundingRadius;
 			}
 		}
 
@@ -1689,7 +1446,287 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return renderer;
+				return this.renderer;
+			}
+		}
+
+		/// <summary>
+		///		Cloning will deep copy all particle emitters and effectors, but not particles. The
+		///		system's name is also not copied.
+		/// </summary>
+		/// <returns></returns>
+		public void CopyTo( ParticleSystem system )
+		{
+			// remove the target's emitters and affectors
+			system.RemoveAllEmitters();
+			system.RemoveAllAffectors();
+
+			// loop through emitter and affector lists and copy them over
+			foreach ( ParticleEmitter emitter in this.emitterList )
+			{
+				ParticleEmitter newEmitter = system.AddEmitter( emitter.Type );
+				emitter.CopyTo( newEmitter );
+			}
+
+			foreach ( ParticleAffector affector in this.affectorList )
+			{
+				ParticleAffector newAffector = system.AddAffector( affector.Type );
+				affector.CopyTo( newAffector );
+			}
+			system.ParticleQuota = ParticleQuota;
+			system.MaterialName = MaterialName;
+			system.SetDefaultDimensions( this.defaultWidth, this.defaultHeight );
+			system.cullIndividual = this.cullIndividual;
+			system.sorted = this.sorted;
+			system.localSpace = this.localSpace;
+			system.iterationInterval = this.iterationInterval;
+			system.iterationIntervalSet = this.iterationIntervalSet;
+			system.nonvisibleTimeout = this.nonvisibleTimeout;
+			system.nonvisibleTimeoutSet = this.nonvisibleTimeoutSet;
+			// last frame visible and time since last visible should be left default
+			system.RendererName = RendererName;
+			// FIXME
+			if ( system.renderer != null && this.renderer != null )
+			{
+				this.renderer.CopyParametersTo( system.renderer );
+			}
+		}
+
+		/// <summary>
+		///		Updates the particles in the system based on time elapsed.
+		///	 </summary>
+		///	 <remarks>	
+		///		This is called automatically every frame by the engine.
+		/// </remarks>
+		/// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
+		internal void Update( float timeElapsed )
+		{
+			// Only update if attached to a node
+			if ( parentNode == null )
+			{
+				return;
+			}
+
+			float _nonvisibleTimeout = this.nonvisibleTimeoutSet ? this.nonvisibleTimeout : defaultNonvisibleTimeout;
+
+			if ( _nonvisibleTimeout > 0 )
+			{
+				// Check whether it's been more than one frame (update is ahead of
+				// camera notification by one frame because of the ordering)
+				ulong frameDiff = Root.Instance.CurrentFrameCount - this.lastVisibleFrame;
+				if ( frameDiff > 1 || frameDiff < 0 ) // < 0 if wrap only
+				{
+					this.timeSinceLastVisible += timeElapsed;
+					if ( this.timeSinceLastVisible >= _nonvisibleTimeout )
+					{
+						// No update
+						return;
+					}
+				}
+			}
+
+			// Scale incoming speed for the rest of the calculation
+			timeElapsed *= this.speedFactor;
+
+			// Init renderer if not done already
+			if ( this.renderer != null )
+			{
+				if ( !this.isRendererConfigured )
+				{
+					ConfigureRenderer();
+				}
+			}
+
+			// Initialize emitted emitters list if not done already
+			initializeEmittedEmitters();
+
+			float _iterationInterval = this.iterationIntervalSet ? this.iterationInterval : defaultIterationInterval;
+			if ( _iterationInterval > 0 )
+			{
+				this.updateRemainTime += timeElapsed;
+
+				while ( this.updateRemainTime >= _iterationInterval )
+				{
+					// Update existing particles
+					Expire( _iterationInterval );
+					TriggerAffectors( _iterationInterval );
+					ApplyMotion( _iterationInterval );
+					// Emit new particles
+					TriggerEmitters( _iterationInterval );
+
+					this.updateRemainTime -= _iterationInterval;
+				}
+			}
+			else
+			{
+				// Update existing particles
+				Expire( timeElapsed );
+				TriggerAffectors( timeElapsed );
+				ApplyMotion( timeElapsed );
+				// Emit new particles
+				TriggerEmitters( timeElapsed );
+			}
+
+			if ( !this.boundsAutoUpdate && this.boundsUpdateTime > 0.0f )
+			{
+				this.boundsUpdateTime -= timeElapsed; // count down 
+			}
+			UpdateBounds();
+		}
+
+		private void initializeEmittedEmitters()
+		{
+			// Initialize the pool if needed
+			int currSize = 0;
+			if ( this.emittedEmitterPool.Count == 0 )
+			{
+				if ( this.emittedEmitterPoolInitialized )
+				{
+					// It was already initialized, but apparently no emitted emitters were used
+					return;
+				}
+				else
+				{
+					initializeEmittedEmitterPool();
+				}
+			}
+			else
+			{
+				foreach ( var peList in this.emittedEmitterPool.Values )
+				{
+					currSize += peList.Count;
+				}
+			}
+
+			int size = this.emittedEmitterPoolSize;
+			if ( currSize < size && this.emittedEmitterPool.Count != 0 )
+			{
+				// Increase the pool. Equally distribute over all vectors in the map
+				increaseEmittedEmitterPool( size );
+
+				// Add new items to the free list
+				addFreeEmittedEmitters();
+			}
+		}
+
+		private void initializeEmittedEmitterPool()
+		{
+			if ( this.emittedEmitterPoolInitialized )
+			{
+				return;
+			}
+
+			// Run through mEmitters and add keys to the pool
+			foreach ( ParticleEmitter emitter in this.emitterList )
+			{
+				// Determine the names of all emitters that are emitted
+				if ( emitter != null && emitter.EmittedEmitter != string.Empty )
+				{
+					// This one will be emitted, register its name and leave the vector empty!
+					this.emittedEmitterPool.Add( emitter.EmittedEmitter.ToLower().GetHashCode(), new List<ParticleEmitter>() );
+				}
+
+				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
+				foreach ( ParticleEmitter emitterInner in this.emitterList )
+				{
+					if ( emitter != null && emitterInner != null && emitter.Name != string.Empty && emitter.Name == emitterInner.EmittedEmitter )
+					{
+						emitter.IsEmitted = true;
+						break;
+					}
+					else
+					{
+						// Set explicitly to 'false' although the default value is already 'false'
+						emitter.IsEmitted = false;
+					}
+				}
+			}
+
+			this.emittedEmitterPoolInitialized = true;
+		}
+
+		private void increaseEmittedEmitterPool( int size )
+		{
+			// Don't proceed if the pool doesn't contain any keys of emitted emitters
+			if ( this.emittedEmitterPool.Count == 0 )
+			{
+				return;
+			}
+
+			ParticleEmitter clonedEmitter = null;
+			List<ParticleEmitter> e = null;
+			int maxNumberOfEmitters = size / this.emittedEmitterPool.Count; // equally distribute the number for each emitted emitter list
+			int oldSize = 0;
+
+			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
+			foreach ( var poolEntry in this.emittedEmitterPool )
+			{
+				e = poolEntry.Value;
+
+				// Search the correct emitter in the mEmitters vector
+				foreach ( ParticleEmitter emitter in this.emitterList )
+				{
+					if ( emitter != null && poolEntry.Key == emitter.Name.ToLower().GetHashCode() )
+					{
+						// Found the right emitter, clone each emitter a number of times
+						oldSize = e.Count;
+						for ( int t = oldSize; t < maxNumberOfEmitters; ++t )
+						{
+							clonedEmitter = ParticleSystemManager.Instance.CreateEmitter( emitter.Type, this );
+							emitter.CopyTo( clonedEmitter );
+							clonedEmitter.IsEmitted = emitter.IsEmitted; // is always 'true' by the way, but just in case
+
+							// Initially deactivate the emitted emitter if duration/repeat_delay are set
+							if ( clonedEmitter.Duration > 0.0f && ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
+							{
+								clonedEmitter.IsEnabled = false;
+							}
+
+							// Add cloned emitters to the pool
+							e.Add( clonedEmitter );
+						}
+					}
+				}
+			}
+		}
+
+		private void addFreeEmittedEmitters()
+		{
+			// Don't proceed if the EmittedEmitterPool is empty
+			if ( this.emittedEmitterPool.Count == 0 )
+			{
+				return;
+			}
+
+			// Copy all pooled emitters to the free list
+			List<ParticleEmitter> emittedEmitters = null;
+			List<ParticleEmitter> fee = null;
+			string name = string.Empty;
+
+			// Run through the emittedEmitterPool map
+			foreach ( var poolEntry in this.emittedEmitterPool )
+			{
+				emittedEmitters = poolEntry.Value;
+				fee = findFreeEmittedEmitter( poolEntry.Key );
+
+				// If it큦 not in the map, create an empty one
+				if ( fee == null )
+				{
+					this.freeEmittedEmitters.Add( poolEntry.Key, new List<ParticleEmitter>() );
+					fee = findFreeEmittedEmitter( poolEntry.Key );
+				}
+
+				// Check anyway if it큦 ok now
+				if ( fee == null )
+				{
+					return; // forget it!
+				}
+
+				// Add all emitted emitters from the pool to the free list
+				foreach ( ParticleEmitter emittedEmitter in emittedEmitters )
+				{
+					fee.Add( emittedEmitter );
+				}
 			}
 		}
 	}
@@ -1703,6 +1740,8 @@ namespace Axiom.ParticleSystems
 			this.target = target;
 		}
 
+		#region IControllerValue<Real> Members
+
 		public Real Value
 		{
 			get
@@ -1711,8 +1750,10 @@ namespace Axiom.ParticleSystems
 			}
 			set
 			{
-				target.Update( value );
+				this.target.Update( value );
 			}
 		}
+
+		#endregion
 	}
 }

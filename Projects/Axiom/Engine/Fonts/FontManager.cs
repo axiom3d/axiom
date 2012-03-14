@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.IO;
+using System.Text;
 
 using Axiom.Collections;
 using Axiom.Core;
@@ -87,7 +91,6 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
-            : base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -115,8 +118,11 @@ namespace Axiom.Fonts
 		/// <param name="font"></param>
 		protected void parseAttribute( string line, Font font )
 		{
-			var parms = line.Split( new char[] { ' ', '\t' } );
-			var attrib = parms[ 0 ].ToLower();
+			string[] parms = line.Split( new[]
+                                         {
+                                             ' ', '\t'
+                                         } );
+			string attrib = parms[ 0 ].ToLower();
 
 			switch ( attrib )
 			{
@@ -158,15 +164,10 @@ namespace Axiom.Fonts
 						return;
 					}
 
-					var glyph = parms[ 1 ][ 0 ];
+					char glyph = parms[ 1 ][ 0 ];
 
 					// set the texcoords for this glyph
-					font.SetGlyphTexCoords(
-						glyph,
-						StringConverter.ParseFloat( parms[ 2 ] ),
-						StringConverter.ParseFloat( parms[ 3 ] ),
-						StringConverter.ParseFloat( parms[ 4 ] ),
-						StringConverter.ParseFloat( parms[ 5 ] ) );
+					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ), StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
 
 					break;
 
@@ -223,50 +224,50 @@ namespace Axiom.Fonts
 		/// </summary>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			var script = new StreamReader( stream, System.Text.Encoding.UTF8 );
+			var script = new StreamReader( stream, Encoding.UTF8 );
 
 			Font font = null;
 
 			string line;
 
-            // parse through the data to the end
-            while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-            {
-                // ignore blank lines and comments
-                if ( line.Length == 0 || line.StartsWith( "//" ) )
-                {
-                    continue;
-                }
-                else
-                {
-                    if ( font == null )
-                    {
-                        // No current font
-                        // So first valid data should be font name
-                        if ( line.StartsWith( "font " ) )
-                        {
-                            // chop off the 'particle_system ' needed by new compilers
-                            line = line.Substring( 5 );
-                        }
-                        font = (Font)Create( line, groupName );
+			// parse through the data to the end
+			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
+			{
+				// ignore blank lines and comments
+				if ( line.Length == 0 || line.StartsWith( "//" ) )
+				{
+					continue;
+				}
+				else
+				{
+					if ( font == null )
+					{
+						// No current font
+						// So first valid data should be font name
+						if ( line.StartsWith( "font " ) )
+						{
+							// chop off the 'particle_system ' needed by new compilers
+							line = line.Substring( 5 );
+						}
+						font = (Font)Create( line, groupName );
 
-                        ParseHelper.SkipToNextOpenBrace( script );
-                    }
-                    else
-                    {
-                        // currently in a font
-                        if ( line == "}" )
-                        {
-                            // finished
-                            font = null;
-                            // NB font isn't loaded until required
-                        }
-                        else
-                        {
-                            parseAttribute( line, font );
-                        }
-                    }
-                }
+						ParseHelper.SkipToNextOpenBrace( script );
+					}
+					else
+					{
+						// currently in a font
+						if ( line == "}" )
+						{
+							// finished
+							font = null;
+							// NB font isn't loaded until required
+						}
+						else
+						{
+							parseAttribute( line, font );
+						}
+					}
+				}
 			}
 		}
 
@@ -276,7 +277,7 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -284,7 +285,7 @@ namespace Axiom.Fonts
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					// Unegister scripting with resource group manager
 					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-                    Singleton<FontManager>.Destroy();
+					Singleton<FontManager>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,18 +29,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -94,27 +97,15 @@ namespace Axiom.Math
 		public Real m20, m21, m22, m23;
 		public Real m30, m31, m32, m33;
 
-		private readonly static Matrix4 zeroMatrix = new Matrix4(
-			0, 0, 0, 0,
-			0, 0, 0, 0,
-			0, 0, 0, 0,
-			0, 0, 0, 0 );
-		private readonly static Matrix4 identityMatrix = new Matrix4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1 );
+		private static readonly Matrix4 zeroMatrix = new Matrix4( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+		private static readonly Matrix4 identityMatrix = new Matrix4( 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
 
 		// NOTE: This is different from what is in OGRE. Not sure why this is the case ATM, however, do not change it.
-		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
-			//0.5f,  0.0f, 0.0f, -0.5f,
+		private static readonly Matrix4 clipSpace2dToImageSpace = new Matrix4( //0.5f,  0.0f, 0.0f, -0.5f,
 			//0.0f, -0.5f, 0.0f, -0.5f,
 			//0.0f,  0.0f, 0.0f,  1.0f,
 			//0.0f,  0.0f, 0.0f,  1.0f );
-				0.5f, 0.0f, 0.0f, 0.5f,
-				0.0f, -0.5f, 0.0f, 0.5f,
-				0.0f, 0.0f, 1.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 1.0f );
+			0.5f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f );
 
 		#endregion
 
@@ -123,10 +114,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new Matrix4 with all the specified parameters.
 		/// </summary>
-		public Matrix4( Real m00, Real m01, Real m02, Real m03,
-			Real m10, Real m11, Real m12, Real m13,
-			Real m20, Real m21, Real m22, Real m23,
-			Real m30, Real m31, Real m32, Real m33 )
+		public Matrix4( Real m00, Real m01, Real m02, Real m03, Real m10, Real m11, Real m12, Real m13, Real m20, Real m21, Real m22, Real m23, Real m30, Real m31, Real m32, Real m33 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -149,6 +137,7 @@ namespace Axiom.Math
 		#endregion
 
 		#region Static properties
+
 		/// <summary>
 		///    Returns a matrix with the following form:
 		///    | 1,0,0,0 |
@@ -245,7 +234,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1;
+				return this.m30 == 0 && this.m31 == 0 && this.m32 == 0 && this.m33 == 1;
 			}
 		}
 
@@ -257,10 +246,7 @@ namespace Axiom.Math
 			get
 			{
 				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-				var result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
-					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
-					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
-					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+				Real result = this.m00 * ( this.m11 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m12 * ( this.m21 * this.m33 - this.m31 * this.m23 ) + this.m13 * ( this.m21 * this.m32 - this.m31 * this.m22 ) ) - this.m01 * ( this.m10 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m12 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m13 * ( this.m20 * this.m32 - this.m30 * this.m22 ) ) + this.m02 * ( this.m10 * ( this.m21 * this.m33 - this.m31 * this.m23 ) - this.m11 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m13 * ( this.m20 * this.m31 - this.m30 * this.m21 ) ) - this.m03 * ( this.m10 * ( this.m21 * this.m32 - this.m31 * this.m22 ) - this.m11 * ( this.m20 * this.m32 - this.m30 * this.m22 ) + this.m12 * ( this.m20 * this.m31 - this.m30 * this.m21 ) );
 
 				return result;
 			}
@@ -314,9 +300,9 @@ namespace Axiom.Math
 		public static Matrix4 ComposeInverse( Vector3 translation, Vector3 scale, Quaternion orientation )
 		{
 			// Invert the parameters
-			var invTranslate = -translation;
+			Vector3 invTranslate = -translation;
 			var invScale = new Vector3( 1f / scale.x, 1f / scale.y, 1f / scale.z );
-			var invRot = orientation.Inverse();
+			Quaternion invRot = orientation.Inverse();
 
 			// Because we're inverting, order is translation, rotation, scale
 			// So make translation relative to scale & rotation
@@ -338,42 +324,43 @@ namespace Axiom.Math
 			return result;
 		}
 
-       public static Matrix4 MakeViewMatrix(Vector3 position, Quaternion orientation, Matrix4 reflectMatrix)
-        {
-            Matrix4 viewMatrix;
+		public static Matrix4 MakeViewMatrix( Vector3 position, Quaternion orientation, Matrix4 reflectMatrix )
+		{
+			Matrix4 viewMatrix;
 
-            // View matrix is:
-                //
-                //  [ Lx  Uy  Dz  Tx  ]
-                //  [ Lx  Uy  Dz  Ty  ]
-                //  [ Lx  Uy  Dz  Tz  ]
-                //  [ 0   0   0   1   ]
-                //
-                // Where T = -(Transposed(Rot) * Pos)
+			// View matrix is:
+			//
+			//  [ Lx  Uy  Dz  Tx  ]
+			//  [ Lx  Uy  Dz  Ty  ]
+			//  [ Lx  Uy  Dz  Tz  ]
+			//  [ 0   0   0   1   ]
+			//
+			// Where T = -(Transposed(Rot) * Pos)
 
-                // This is most efficiently done using 3x3 Matrices
-                Matrix3 rot;
-                rot = orientation.ToRotationMatrix();
-            
-                // Make the translation relative to new axes
-                Matrix3 rotT = rot.Transpose();
-                Vector3 trans = -rotT * position;
+			// This is most efficiently done using 3x3 Matrices
+			Matrix3 rot;
+			rot = orientation.ToRotationMatrix();
 
-                // Make final matrix
-                viewMatrix = Matrix4.Identity;
-                viewMatrix = rotT; // fills upper 3x3
-                viewMatrix[0,3] = trans.x;
-                viewMatrix[1,3] = trans.y;
-                viewMatrix[2,3] = trans.z;
+			// Make the translation relative to new axes
+			Matrix3 rotT = rot.Transpose();
+			Vector3 trans = -rotT * position;
 
-                // Deal with reflections
-                if (reflectMatrix != Matrix4.zeroMatrix)
-                {
-                        viewMatrix = viewMatrix * (reflectMatrix);
-                }
+			// Make final matrix
+			viewMatrix = Identity;
+			viewMatrix = rotT; // fills upper 3x3
+			viewMatrix[ 0, 3 ] = trans.x;
+			viewMatrix[ 1, 3 ] = trans.y;
+			viewMatrix[ 2, 3 ] = trans.z;
 
-            return viewMatrix;
-        }
+			// Deal with reflections
+			if ( reflectMatrix != zeroMatrix )
+			{
+				viewMatrix = viewMatrix * ( reflectMatrix );
+			}
+
+			return viewMatrix;
+		}
+
 		#endregion
 
 		#region Public methods
@@ -384,11 +371,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Matrix3 GetMatrix3()
 		{
-			return
-				new Matrix3(
-					this.m00, this.m01, this.m02,
-					this.m10, this.m11, this.m12,
-					this.m20, this.m21, this.m22 );
+			return new Matrix3( this.m00, this.m01, this.m02, this.m10, this.m11, this.m12, this.m20, this.m21, this.m22 );
 		}
 
 		/// <summary>
@@ -397,7 +380,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Matrix4 Inverse()
 		{
-			return Adjoint() * ( 1.0f / this.Determinant );
+			return Adjoint() * ( 1.0f / Determinant );
 		}
 
 		/// <summary>
@@ -408,42 +391,37 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			var t00 = m22 * m11 - m21 * m12;
-			var t10 = m20 * m12 - m22 * m10;
-			var t20 = m21 * m10 - m20 * m11;
+			Real t00 = this.m22 * this.m11 - this.m21 * this.m12;
+			Real t10 = this.m20 * this.m12 - this.m22 * this.m10;
+			Real t20 = this.m21 * this.m10 - this.m20 * this.m11;
 
-			var invDet = 1 / ( m00 * t00 + m01 * t10 + m02 * t20 );
+			Real invDet = 1 / ( this.m00 * t00 + this.m01 * t10 + this.m02 * t20 );
 
 			t00 *= invDet;
 			t10 *= invDet;
 			t20 *= invDet;
 
-			m00 *= invDet;
-			m01 *= invDet;
-			m02 *= invDet;
+			this.m00 *= invDet;
+			this.m01 *= invDet;
+			this.m02 *= invDet;
 
-			var r00 = t00;
-			var r01 = m02 * m21 - m01 * m22;
-			var r02 = m01 * m12 - m02 * m11;
+			Real r00 = t00;
+			Real r01 = this.m02 * this.m21 - this.m01 * this.m22;
+			Real r02 = this.m01 * this.m12 - this.m02 * this.m11;
 
-			var r10 = t10;
-			var r11 = m00 * m22 - m02 * m20;
-			var r12 = m02 * m10 - m00 * m12;
+			Real r10 = t10;
+			Real r11 = this.m00 * this.m22 - this.m02 * this.m20;
+			Real r12 = this.m02 * this.m10 - this.m00 * this.m12;
 
-			var r20 = t20;
-			var r21 = m01 * m20 - m00 * m21;
-			var r22 = m00 * m11 - m01 * m10;
+			Real r20 = t20;
+			Real r21 = this.m01 * this.m20 - this.m00 * this.m21;
+			Real r22 = this.m00 * this.m11 - this.m01 * this.m10;
 
-			var r03 = -( r00 * m03 + r01 * m13 + r02 * m23 );
-			var r13 = -( r10 * m03 + r11 * m13 + r12 * m23 );
-			var r23 = -( r20 * m03 + r21 * m13 + r22 * m23 );
+			Real r03 = -( r00 * this.m03 + r01 * this.m13 + r02 * this.m23 );
+			Real r13 = -( r10 * this.m03 + r11 * this.m13 + r12 * this.m23 );
+			Real r23 = -( r20 * this.m03 + r21 * this.m13 + r22 * this.m23 );
 
-			return new Matrix4(
-				r00, r01, r02, r03,
-				r10, r11, r12, r13,
-				r20, r21, r22, r23,
-				  0, 0, 0, 1 );
-
+			return new Matrix4( r00, r01, r02, r03, r10, r11, r12, r13, r20, r21, r22, r23, 0, 0, 0, 1 );
 		}
 
 		/// <summary>
@@ -452,10 +430,7 @@ namespace Axiom.Math
 		/// <returns>A transposed Matrix.</returns>
 		public Matrix4 Transpose()
 		{
-			return new Matrix4( this.m00, this.m10, this.m20, this.m30,
-				this.m01, this.m11, this.m21, this.m31,
-				this.m02, this.m12, this.m22, this.m32,
-				this.m03, this.m13, this.m23, this.m33 );
+			return new Matrix4( this.m00, this.m10, this.m20, this.m30, this.m01, this.m11, this.m21, this.m31, this.m02, this.m12, this.m22, this.m32, this.m03, this.m13, this.m23, this.m33 );
 		}
 
 		/// <summary>
@@ -472,10 +447,7 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			return new Vector3(
-					m00 * v.x + m01 * v.y + m02 * v.z + m03,
-					m10 * v.x + m11 * v.y + m12 * v.z + m13,
-					m20 * v.x + m21 * v.y + m22 * v.z + m23 );
+			return new Vector3( this.m00 * v.x + this.m01 * v.y + this.m02 * v.z + this.m03, this.m10 * v.x + this.m11 * v.y + this.m12 * v.z + this.m13, this.m20 * v.x + this.m21 * v.y + this.m22 * v.z + this.m23 );
 		}
 
 		/// <summary>
@@ -490,11 +462,7 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			return new Vector4(
-				m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
-				m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
-				m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
-				v.w );
+			return new Vector4( this.m00 * v.x + this.m01 * v.y + this.m02 * v.z + this.m03 * v.w, this.m10 * v.x + this.m11 * v.y + this.m12 * v.z + this.m13 * v.w, this.m20 * v.x + this.m21 * v.y + this.m22 * v.z + this.m23 * v.w, v.w );
 		}
 
 		/// <summary>
@@ -541,33 +509,33 @@ namespace Axiom.Math
 			floats[ 15 ] = this.m33;
 		}
 
-        public void MakeFloatArray(float[] floats, int offset)
-        {
-            floats[offset++] = m00;
-            floats[offset++] = m01;
-            floats[offset++] = m02;
-            floats[offset++] = m03;
-            floats[offset++] = m10;
-            floats[offset++] = m11;
-            floats[offset++] = m12;
-            floats[offset++] = m13;
-            floats[offset++] = m20;
-            floats[offset++] = m21;
-            floats[offset++] = m22;
-            floats[offset++] = m23;
-            floats[offset++] = m30;
-            floats[offset++] = m31;
-            floats[offset++] = m32;
-            floats[offset] = m33;
-        }
+		public void MakeFloatArray( float[] floats, int offset )
+		{
+			floats[ offset++ ] = this.m00;
+			floats[ offset++ ] = this.m01;
+			floats[ offset++ ] = this.m02;
+			floats[ offset++ ] = this.m03;
+			floats[ offset++ ] = this.m10;
+			floats[ offset++ ] = this.m11;
+			floats[ offset++ ] = this.m12;
+			floats[ offset++ ] = this.m13;
+			floats[ offset++ ] = this.m20;
+			floats[ offset++ ] = this.m21;
+			floats[ offset++ ] = this.m22;
+			floats[ offset++ ] = this.m23;
+			floats[ offset++ ] = this.m30;
+			floats[ offset++ ] = this.m31;
+			floats[ offset++ ] = this.m32;
+			floats[ offset ] = this.m33;
+		}
 
 		/// <summary>
 		///     Extract the 3x3 matrix representing the current rotation. 
 		/// </summary>
 		public Matrix3 ExtractRotation()
 		{
-			var axis = Vector3.Zero;
-			var rotation = Matrix3.Identity;
+			Vector3 axis = Vector3.Zero;
+			Matrix3 rotation = Matrix3.Identity;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -602,8 +570,8 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 ExtractScale()
 		{
-			var scale = Vector3.UnitScale;
-			var axis = Vector3.Zero;
+			Vector3 scale = Vector3.UnitScale;
+			Vector3 axis = Vector3.Zero;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -632,8 +600,8 @@ namespace Axiom.Math
 		public void Decompose( out Vector3 translation, out Vector3 scale, out Quaternion orientation )
 		{
 			scale = Vector3.UnitScale;
-			var rotation = Matrix3.Identity;
-			var axis = Vector3.Zero;
+			Matrix3 rotation = Matrix3.Identity;
+			Vector3 axis = Vector3.Zero;
 
 			axis.x = this.m00;
 			axis.y = this.m10;
@@ -659,18 +627,18 @@ namespace Axiom.Math
 			rotation.m12 = axis.y;
 			rotation.m22 = axis.z;
 
-            /* http://www.robertblum.com/articles/2005/02/14/decomposing-matrices check to support transforms with negative scaling */
-            //thanks sebj for the info
-            if (rotation.Determinant < 0)
-            {
-                rotation.m00 = -rotation.m00;
-                rotation.m10 = -rotation.m10;
-                rotation.m20 = -rotation.m20;
-                scale.x = -scale.x;
-            }
+			/* http://www.robertblum.com/articles/2005/02/14/decomposing-matrices check to support transforms with negative scaling */
+			//thanks sebj for the info
+			if ( rotation.Determinant < 0 )
+			{
+				rotation.m00 = -rotation.m00;
+				rotation.m10 = -rotation.m10;
+				rotation.m20 = -rotation.m20;
+				scale.x = -scale.x;
+			}
 
 			orientation = Quaternion.FromRotationMatrix( rotation );
-			translation = this.Translation;
+			translation = Translation;
 		}
 
 		#endregion
@@ -684,22 +652,22 @@ namespace Axiom.Math
 		private Matrix4 Adjoint()
 		{
 			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-			var val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
-			var val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
-			var val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
-			var val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
-			var val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
-			var val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
-			var val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
-			var val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
-			var val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
-			var val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
-			var val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
-			var val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
-			var val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-			var val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
-			var val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
-			var val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
+			Real val0 = this.m11 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m12 * ( this.m21 * this.m33 - this.m31 * this.m23 ) + this.m13 * ( this.m21 * this.m32 - this.m31 * this.m22 );
+			Real val1 = -( this.m01 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m02 * ( this.m21 * this.m33 - this.m31 * this.m23 ) + this.m03 * ( this.m21 * this.m32 - this.m31 * this.m22 ) );
+			Real val2 = this.m01 * ( this.m12 * this.m33 - this.m32 * this.m13 ) - this.m02 * ( this.m11 * this.m33 - this.m31 * this.m13 ) + this.m03 * ( this.m11 * this.m32 - this.m31 * this.m12 );
+			Real val3 = -( this.m01 * ( this.m12 * this.m23 - this.m22 * this.m13 ) - this.m02 * ( this.m11 * this.m23 - this.m21 * this.m13 ) + this.m03 * ( this.m11 * this.m22 - this.m21 * this.m12 ) );
+			Real val4 = -( this.m10 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m12 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m13 * ( this.m20 * this.m32 - this.m30 * this.m22 ) );
+			Real val5 = this.m00 * ( this.m22 * this.m33 - this.m32 * this.m23 ) - this.m02 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m03 * ( this.m20 * this.m32 - this.m30 * this.m22 );
+			Real val6 = -( this.m00 * ( this.m12 * this.m33 - this.m32 * this.m13 ) - this.m02 * ( this.m10 * this.m33 - this.m30 * this.m13 ) + this.m03 * ( this.m10 * this.m32 - this.m30 * this.m12 ) );
+			Real val7 = this.m00 * ( this.m12 * this.m23 - this.m22 * this.m13 ) - this.m02 * ( this.m10 * this.m23 - this.m20 * this.m13 ) + this.m03 * ( this.m10 * this.m22 - this.m20 * this.m12 );
+			Real val8 = this.m10 * ( this.m21 * this.m33 - this.m31 * this.m23 ) - this.m11 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m13 * ( this.m20 * this.m31 - this.m30 * this.m21 );
+			Real val9 = -( this.m00 * ( this.m21 * this.m33 - this.m31 * this.m23 ) - this.m01 * ( this.m20 * this.m33 - this.m30 * this.m23 ) + this.m03 * ( this.m20 * this.m31 - this.m30 * this.m21 ) );
+			Real val10 = this.m00 * ( this.m11 * this.m33 - this.m31 * this.m13 ) - this.m01 * ( this.m10 * this.m33 - this.m30 * this.m13 ) + this.m03 * ( this.m10 * this.m31 - this.m30 * this.m11 );
+			Real val11 = -( this.m00 * ( this.m11 * this.m23 - this.m21 * this.m13 ) - this.m01 * ( this.m10 * this.m23 - this.m20 * this.m13 ) + this.m03 * ( this.m10 * this.m21 - this.m20 * this.m11 ) );
+			Real val12 = -( this.m10 * ( this.m21 * this.m32 - this.m31 * this.m22 ) - this.m11 * ( this.m20 * this.m32 - this.m30 * this.m22 ) + this.m12 * ( this.m20 * this.m31 - this.m30 * this.m21 ) );
+			Real val13 = this.m00 * ( this.m21 * this.m32 - this.m31 * this.m22 ) - this.m01 * ( this.m20 * this.m32 - this.m30 * this.m22 ) + this.m02 * ( this.m20 * this.m31 - this.m30 * this.m21 );
+			Real val14 = -( this.m00 * ( this.m11 * this.m32 - this.m31 * this.m12 ) - this.m01 * ( this.m10 * this.m32 - this.m30 * this.m12 ) + this.m02 * ( this.m10 * this.m31 - this.m30 * this.m11 ) );
+			Real val15 = this.m00 * ( this.m11 * this.m22 - this.m21 * this.m12 ) - this.m01 * ( this.m10 * this.m22 - this.m20 * this.m12 ) + this.m02 * ( this.m10 * this.m21 - this.m20 * this.m11 );
 
 			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
 		}
@@ -794,7 +762,7 @@ namespace Axiom.Math
 		{
 			var result = new Vector3();
 
-			var inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
+			Real inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
 
 			result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
 			result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
@@ -844,14 +812,11 @@ namespace Axiom.Math
 		{
 			var result = new Plane();
 
-			var planeNormal = plane.Normal;
+			Vector3 planeNormal = plane.Normal;
 
-			result.Normal = new Vector3(
-				left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
-				left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
-				left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
+			result.Normal = new Vector3( left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z, left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z, left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
 
-			var pt = planeNormal * -plane.D;
+			Vector3 pt = planeNormal * -plane.D;
 			pt = left * pt;
 
 			result.D = -pt.Dot( result.Normal );
@@ -955,12 +920,10 @@ namespace Axiom.Math
 		/// <returns>true if the Matrix 4 instances are equal, false otherwise.</returns>
 		public static bool operator ==( Matrix4 left, Matrix4 right )
 		{
-			if (
-				left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m03 == right.m03 &&
-				left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m13 == right.m13 &&
-				left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 && left.m23 == right.m23 &&
-				left.m30 == right.m30 && left.m31 == right.m31 && left.m32 == right.m32 && left.m33 == right.m33 )
+			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m03 == right.m03 && left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m13 == right.m13 && left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 && left.m23 == right.m23 && left.m30 == right.m30 && left.m31 == right.m31 && left.m32 == right.m32 && left.m33 == right.m33 )
+			{
 				return true;
+			}
 
 			return false;
 		}
@@ -983,7 +946,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static implicit operator Matrix4( Matrix3 right )
 		{
-			var result = Matrix4.Identity;
+			Matrix4 result = Identity;
 
 			result.m00 = right.m00;
 			result.m01 = right.m01;
@@ -1054,10 +1017,12 @@ namespace Axiom.Math
 			    throw new IndexOutOfRangeException("Attempt to access Matrix4 indexer out of bounds.");
 #else
 				unsafe
-                {
-                    fixed (Real* pM = &m00)
-                        return *(pM + ((4 * row) + col));
-                }
+				{
+					fixed ( Real* pM = &this.m00 )
+					{
+						return *( pM + ( ( 4 * row ) + col ) );
+					}
+				}
 #endif
 			}
 			set
@@ -1107,11 +1072,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
+					{
 						*( pM + ( ( 4 * row ) + col ) ) = value;
+					}
 				}
 #endif
-            }
+			}
 		}
 
 		/// <summary>
@@ -1191,7 +1158,7 @@ namespace Axiom.Math
 					}
 				}
 #endif
-            }
+			}
 		}
 
 		#endregion
@@ -1232,16 +1199,18 @@ namespace Axiom.Math
 		           (int) (m20) ^ (int) (m21) ^ (int) (m22) ^ (int) (m23) ^
 		           (int) (m30) ^ (int) (m31) ^ (int) (m32) ^ (int) (m33);
 #else
-			var hashCode = 0;
+			int hashCode = 0;
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed ( Real* pM = &this.m00 )
 				{
-					for ( var i = 0; i < 16; i++ )
+					for ( int i = 0; i < 16; i++ )
+					{
 						hashCode ^= (int)( *( pM + i ) );
+					}
 				}
 			}
-            return hashCode;
+			return hashCode;
 #endif
 		}
 
@@ -1258,17 +1227,17 @@ namespace Axiom.Math
 
 		#endregion
 
-	    public void Extract3x3Matrix( out Matrix3 m3 )
-	    {
-            m3.m00 = m00;
-            m3.m01 = m01;
-            m3.m02 = m02;
-            m3.m10 = m10;
-            m3.m11 = m11;
-            m3.m12 = m12;
-            m3.m20 = m20;
-            m3.m21 = m21;
-            m3.m22 = m22;
-	    }
+		public void Extract3x3Matrix( out Matrix3 m3 )
+		{
+			m3.m00 = this.m00;
+			m3.m01 = this.m01;
+			m3.m02 = this.m02;
+			m3.m10 = this.m10;
+			m3.m11 = this.m11;
+			m3.m12 = this.m12;
+			m3.m20 = this.m20;
+			m3.m21 = this.m21;
+			m3.m22 = this.m22;
+		}
 	}
 }

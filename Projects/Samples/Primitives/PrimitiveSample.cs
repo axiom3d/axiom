@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,8 +46,8 @@ namespace Axiom.Samples.Primitives
 	public class PrimitivesSample : SdkSample
 	{
 		private Vector4 _color = new Vector4( 1, 0, 0, 1 );
-        private Line3d _line;
-        private Triangle _tri;
+		private Line3d _line;
+		private Triangle _tri;
 
 		public PrimitivesSample()
 		{
@@ -56,44 +60,46 @@ namespace Axiom.Samples.Primitives
 		public override bool FrameStarted( FrameEventArgs evt )
 		{
 			if ( evt.StopRendering )
+			{
 				return false;
+			}
 
-			_color.x += evt.TimeSinceLastFrame * .6f;
-			if ( _color.x > 1 )
-				_color.x = 0;
+			this._color.x += evt.TimeSinceLastFrame * .6f;
+			if ( this._color.x > 1 )
+			{
+				this._color.x = 0;
+			}
 
-			_color.y += evt.TimeSinceLastFrame * .6f;
-			if ( _color.y > 1 )
-				_color.y = 0;
+			this._color.y += evt.TimeSinceLastFrame * .6f;
+			if ( this._color.y > 1 )
+			{
+				this._color.y = 0;
+			}
 
-			_color.z += evt.TimeSinceLastFrame * .6f;
-			if ( _color.z > 1 )
-				_color.z = 0;
+			this._color.z += evt.TimeSinceLastFrame * .6f;
+			if ( this._color.z > 1 )
+			{
+				this._color.z = 0;
+			}
 			return base.FrameStarted( evt );
 		}
 
 		protected override void SetupContent()
 		{
 			// create a 3d line
-			_line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
+			this._line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
 
-			_tri = new Triangle(
-				new Vector3( -25, 0, 0 ),
-				new Vector3( 0, 50, 0 ),
-				new Vector3( 25, 0, 0 ),
-				ColorEx.Red,
-				ColorEx.Blue,
-				ColorEx.Green );
+			this._tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red, ColorEx.Blue, ColorEx.Green );
 
 			// create a node for the line
-			var node = SceneManager.RootSceneNode.CreateChildSceneNode();
-			var lineNode = node.CreateChildSceneNode();
-			var triNode = node.CreateChildSceneNode();
+			SceneNode node = SceneManager.RootSceneNode.CreateChildSceneNode();
+			SceneNode lineNode = node.CreateChildSceneNode();
+			SceneNode triNode = node.CreateChildSceneNode();
 			triNode.Position = new Vector3( 50, 0, 0 );
 
 			// add the line and triangle to the scene
-			lineNode.AttachObject( _line );
-			triNode.AttachObject( _tri );
+			lineNode.AttachObject( this._line );
+			triNode.AttachObject( this._tri );
 
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
@@ -116,11 +122,11 @@ namespace Axiom.Samples.Primitives
 			base.Camera.Position = new Vector3( 30, 30, 220 );
 		}
 
-        protected override void CleanupContent()
-        {
-            _line.SafeDispose();
-            _tri.SafeDispose();
-        }
+		protected override void CleanupContent()
+		{
+			this._line.SafeDispose();
+			this._tri.SafeDispose();
+		}
 	};
 
 	/// <summary>
@@ -129,8 +135,8 @@ namespace Axiom.Samples.Primitives
 	public class Line3d : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		/// <summary>
 		///
@@ -145,7 +151,7 @@ namespace Axiom.Samples.Primitives
 			direction.Normalize();
 
 			// calculate the actual endpoint
-			var endPoint = startPoint + ( direction * length );
+			Vector3 endPoint = startPoint + ( direction * length );
 
 			vertexData = new VertexData();
 			renderOperation.vertexData = vertexData;
@@ -155,16 +161,19 @@ namespace Axiom.Samples.Primitives
 			renderOperation.operationType = OperationType.LineList;
 			renderOperation.useIndices = false;
 
-			var decl = vertexData.vertexDeclaration;
-			var binding = vertexData.vertexBufferBinding;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			// add a position and color element to the declaration
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 			decl.AddElement( COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
 			// create a vertex buffer for the position
-            var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
-            var pos = new Vector3[] { startPoint, endPoint };
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var pos = new[]
+                      {
+                          startPoint, endPoint
+                      };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, pos, true );
@@ -175,9 +184,12 @@ namespace Axiom.Samples.Primitives
 			// create a color buffer
 			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			var colorValue = Root.Instance.RenderSystem.ConvertColor( color );
+			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
-			var colors = new int[] { colorValue, colorValue };
+			var colors = new[]
+                         {
+                             colorValue, colorValue
+                         };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -194,24 +206,32 @@ namespace Axiom.Samples.Primitives
 			// set culling to none so the triangle is drawn 2 sided
 			material.CullingMode = CullingMode.None;
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the line
-			this.box = new AxisAlignedBox( startPoint, endPoint );
+			box = new AxisAlignedBox( startPoint, endPoint );
 		}
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    MaterialManager.Instance.Remove( this.Material );
-                }
-            }
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return 0;
+			}
+		}
 
-            base.dispose( disposeManagedResources );
-        }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					MaterialManager.Instance.Remove( Material );
+				}
+			}
+
+			base.dispose( disposeManagedResources );
+		}
 
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
@@ -223,14 +243,6 @@ namespace Axiom.Samples.Primitives
 
 			return dist.LengthSquared;
 		}
-
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
 	};
 
 	/// <summary>
@@ -239,8 +251,8 @@ namespace Axiom.Samples.Primitives
 	public class Triangle : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		public Triangle( Vector3 v1, Vector3 v2, Vector3 v3, ColorEx c1, ColorEx c2, ColorEx c3 )
 		{
@@ -252,8 +264,8 @@ namespace Axiom.Samples.Primitives
 			renderOperation.operationType = OperationType.TriangleList;
 			renderOperation.useIndices = false;
 
-			var decl = vertexData.vertexDeclaration;
-			var binding = vertexData.vertexBufferBinding;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			// add a position and color element to the declaration
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
@@ -261,9 +273,12 @@ namespace Axiom.Samples.Primitives
 
 			// POSITIONS
 			// create a vertex buffer for the position
-            var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			var positions = new Vector3[] { v1, v2, v3 };
+			var positions = new[]
+                            {
+                                v1, v2, v3
+                            };
 
 			// write the positions to the buffer
 			buffer.WriteData( 0, buffer.Size, positions, true );
@@ -278,11 +293,10 @@ namespace Axiom.Samples.Primitives
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's
 			// preferred packed int format
-			var colors = new int[] {
-				Root.Instance.RenderSystem.ConvertColor(c1),
-				Root.Instance.RenderSystem.ConvertColor(c2),
-				Root.Instance.RenderSystem.ConvertColor(c3)
-			};
+			var colors = new[]
+                         {
+                             Root.Instance.RenderSystem.ConvertColor( c1 ), Root.Instance.RenderSystem.ConvertColor( c2 ), Root.Instance.RenderSystem.ConvertColor( c3 )
+                         };
 
 			// write the colors to the color buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -300,25 +314,33 @@ namespace Axiom.Samples.Primitives
 			// set culling to none so the triangle is drawn 2 sided
 			material.CullingMode = CullingMode.None;
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the tri
 			// TODO: not right, but good enough for now
-			this.box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
+			box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
 		}
 
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    MaterialManager.Instance.Remove( this.Material );
-                }
-            }
-            
-            base.dispose( disposeManagedResources );
-        }
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return 0;
+			}
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					MaterialManager.Instance.Remove( Material );
+				}
+			}
+
+			base.dispose( disposeManagedResources );
+		}
 
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
@@ -329,14 +351,6 @@ namespace Axiom.Samples.Primitives
 			dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
-		}
-
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
 		}
 	};
 }

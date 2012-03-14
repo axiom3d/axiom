@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -38,8 +42,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+
 using Axiom.Core;
 using Axiom.Graphics;
+
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -76,36 +82,63 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				instance = this;
 			}
 
-			typeEnumMap = new Dictionary<string, int>
-			{
-				{"float", Gl.GL_FLOAT},
-				{"vec2", Gl.GL_FLOAT_VEC2},
-				{"vec3", Gl.GL_FLOAT_VEC3},
-				{"vec4", Gl.GL_FLOAT_VEC4},
-				{"sampler1D", Gl.GL_SAMPLER_1D},
-				{"sampler2D", Gl.GL_SAMPLER_2D},
-				{"sampler3D", Gl.GL_SAMPLER_3D},
-				{"samplerCube", Gl.GL_SAMPLER_CUBE},
-				{"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW},
-				{"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW},
-				{"int", Gl.GL_INT},
-				{"ivec2", Gl.GL_INT_VEC2},
-				{"ivec3", Gl.GL_INT_VEC3},
-				{"ivec4", Gl.GL_INT_VEC4},
-				{"mat2", Gl.GL_FLOAT_MAT2},
-				{"mat3", Gl.GL_FLOAT_MAT3},
-				{"mat4", Gl.GL_FLOAT_MAT4},
-				// GL 2.1
-				{"mat2x2", Gl.GL_FLOAT_MAT2},
-				{"mat3x3", Gl.GL_FLOAT_MAT3},
-				{"mat4x4", Gl.GL_FLOAT_MAT4},
-				{"mat2x3", Gl.GL_FLOAT_MAT2x3},
-				{"mat3x2", Gl.GL_FLOAT_MAT3x2},
-				{"mat3x4", Gl.GL_FLOAT_MAT3x4},
-				{"mat4x3", Gl.GL_FLOAT_MAT4x3},
-				{"mat2x4", Gl.GL_FLOAT_MAT2x4},
-				{"mat4x2", Gl.GL_FLOAT_MAT4x2},
-			};
+			this.typeEnumMap = new Dictionary<string, int>
+                               {
+                                   {
+                                       "float", Gl.GL_FLOAT
+                                       }, {
+                                              "vec2", Gl.GL_FLOAT_VEC2
+                                              }, {
+                                                     "vec3", Gl.GL_FLOAT_VEC3
+                                                     }, {
+                                                            "vec4", Gl.GL_FLOAT_VEC4
+                                                            }, {
+                                                                   "sampler1D", Gl.GL_SAMPLER_1D
+                                                                   }, {
+                                                                          "sampler2D", Gl.GL_SAMPLER_2D
+                                                                          }, {
+                                                                                 "sampler3D", Gl.GL_SAMPLER_3D
+                                                                                 }, {
+                                                                                        "samplerCube", Gl.GL_SAMPLER_CUBE
+                                                                                        }, {
+                                                                                               "sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
+                                                                                               }, {
+                                                                                                      "sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
+                                                                                                      }, {
+                                                                                                             "int", Gl.GL_INT
+                                                                                                             }, {
+                                                                                                                    "ivec2", Gl.GL_INT_VEC2
+                                                                                                                    }, {
+                                                                                                                           "ivec3", Gl.GL_INT_VEC3
+                                                                                                                           }, {
+                                                                                                                                  "ivec4", Gl.GL_INT_VEC4
+                                                                                                                                  }, {
+                                                                                                                                         "mat2", Gl.GL_FLOAT_MAT2
+                                                                                                                                         }, {
+                                                                                                                                                "mat3", Gl.GL_FLOAT_MAT3
+                                                                                                                                                }, {
+                                                                                                                                                       "mat4", Gl.GL_FLOAT_MAT4
+                                                                                                                                                       }, // GL 2.1
+                                   {
+                                       "mat2x2", Gl.GL_FLOAT_MAT2
+                                       }, {
+                                              "mat3x3", Gl.GL_FLOAT_MAT3
+                                              }, {
+                                                     "mat4x4", Gl.GL_FLOAT_MAT4
+                                                     }, {
+                                                            "mat2x3", Gl.GL_FLOAT_MAT2x3
+                                                            }, {
+                                                                   "mat3x2", Gl.GL_FLOAT_MAT3x2
+                                                                   }, {
+                                                                          "mat3x4", Gl.GL_FLOAT_MAT3x4
+                                                                          }, {
+                                                                                 "mat4x3", Gl.GL_FLOAT_MAT4x3
+                                                                                 }, {
+                                                                                        "mat2x4", Gl.GL_FLOAT_MAT2x4
+                                                                                        }, {
+                                                                                               "mat4x2", Gl.GL_FLOAT_MAT4x2
+                                                                                               },
+                               };
 		}
 
 		/// <summary>
@@ -127,24 +160,28 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		List holding previously created program objects.
 		/// </summary>
 		private readonly Hashtable linkPrograms = new Hashtable();
-		/// <summary>
-		///		Currently active vertex GPU program.
-		/// </summary>
-		private GLSLGpuProgram activeVertexProgram;
-		/// <summary>
-		///		Currently active geometry GPU program.
-		/// </summary>
-		private GLSLGpuProgram activeGeometryProgram;
+
+		private readonly Dictionary<string, int> typeEnumMap;
+
 		/// <summary>
 		///		Currently active fragment GPU program.
 		/// </summary>
 		private GLSLGpuProgram activeFragmentProgram;
+
+		/// <summary>
+		///		Currently active geometry GPU program.
+		/// </summary>
+		private GLSLGpuProgram activeGeometryProgram;
+
 		/// <summary>
 		///		Currently active link program.
 		/// </summary>
 		private GLSLLinkProgram activeLinkProgram;
 
-		private Dictionary<string, int> typeEnumMap;
+		/// <summary>
+		///		Currently active vertex GPU program.
+		/// </summary>
+		private GLSLGpuProgram activeVertexProgram;
 
 		#endregion Fields
 
@@ -159,54 +196,53 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			get
 			{
 				// if there is an active link program then return it
-				if ( activeLinkProgram != null )
+				if ( this.activeLinkProgram != null )
 				{
-					return activeLinkProgram;
+					return this.activeLinkProgram;
 				}
 
 				// no active link program so find one or make a new one
 				// is there an active key?
 				long activeKey = 0;
 
-				if ( activeVertexProgram != null )
+				if ( this.activeVertexProgram != null )
 				{
-					activeKey = activeVertexProgram.ProgramID << 32;
+					activeKey = this.activeVertexProgram.ProgramID << 32;
 				}
-				if ( activeGeometryProgram != null )
+				if ( this.activeGeometryProgram != null )
 				{
-					activeKey += activeGeometryProgram.ProgramID << 16;
+					activeKey += this.activeGeometryProgram.ProgramID << 16;
 				}
-				if ( activeFragmentProgram != null )
+				if ( this.activeFragmentProgram != null )
 				{
-					activeKey += activeFragmentProgram.ProgramID;
+					activeKey += this.activeFragmentProgram.ProgramID;
 				}
 
 				// only return a link program object if a vertex or fragment program exist
 				if ( activeKey > 0 )
 				{
 					// find the key in the hash map
-					var programFound = linkPrograms[ activeKey ];
+					object programFound = this.linkPrograms[ activeKey ];
 					// program object not found for key so need to create it
 					if ( programFound == null )
 					{
-						activeLinkProgram = new GLSLLinkProgram( activeVertexProgram, activeGeometryProgram, activeFragmentProgram );
-						linkPrograms[ activeKey ] = activeLinkProgram;
+						this.activeLinkProgram = new GLSLLinkProgram( this.activeVertexProgram, this.activeGeometryProgram, this.activeFragmentProgram );
+						this.linkPrograms[ activeKey ] = this.activeLinkProgram;
 					}
 					else
 					{
 						// found a link program in map container so make it active
-						activeLinkProgram = (GLSLLinkProgram)programFound;
+						this.activeLinkProgram = (GLSLLinkProgram)programFound;
 					}
-
 				}
 
 				// make the program object active
-				if ( activeLinkProgram != null )
+				if ( this.activeLinkProgram != null )
 				{
-					activeLinkProgram.Activate();
+					this.activeLinkProgram.Activate();
 				}
 
-				return activeLinkProgram;
+				return this.activeLinkProgram;
 			}
 		}
 
@@ -228,12 +264,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="fragmentProgram"></param>
 		public void SetActiveFragmentShader( GLSLGpuProgram fragmentProgram )
 		{
-			if ( fragmentProgram != activeFragmentProgram )
+			if ( fragmentProgram != this.activeFragmentProgram )
 			{
-				activeFragmentProgram = fragmentProgram;
+				this.activeFragmentProgram = fragmentProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -250,12 +286,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveGeometryShader( GLSLGpuProgram geometryProgram )
 		{
-			if ( geometryProgram != activeGeometryProgram )
+			if ( geometryProgram != this.activeGeometryProgram )
 			{
-				activeGeometryProgram = geometryProgram;
+				this.activeGeometryProgram = geometryProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -272,12 +308,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveVertexShader( GLSLGpuProgram vertexProgram )
 		{
-			if ( vertexProgram != activeVertexProgram )
+			if ( vertexProgram != this.activeVertexProgram )
 			{
-				activeVertexProgram = vertexProgram;
+				this.activeVertexProgram = vertexProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -368,23 +404,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				default:
 					defToUpdate.ConstantType = GpuProgramParameters.GpuConstantType.Unknown;
 					break;
-
 			}
 
 			// GL doesn't pad
 			defToUpdate.ElementSize = GpuProgramParameters.GpuConstantDefinition.GetElementSize( defToUpdate.ConstantType, false );
 		}
 
-		private bool CompleteParamSource( String paramName,
-				GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs,
-				GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs,
-				GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs,
-				GLSLLinkProgram.UniformReference refToUpdate )
+		private bool CompleteParamSource( String paramName, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs, GLSLLinkProgram.UniformReference refToUpdate )
 		{
 			GpuProgramParameters.GpuConstantDefinition parami;
 			if ( vertexConstantDefs != null )
 			{
-
 				if ( vertexConstantDefs.TryGetValue( paramName, out parami ) )
 				{
 					refToUpdate.SourceProgType = GpuProgramType.Vertex;
@@ -395,7 +425,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			if ( geometryConstantDefs != null )
 			{
-
 				if ( geometryConstantDefs.TryGetValue( paramName, out parami ) )
 				{
 					refToUpdate.SourceProgType = GpuProgramType.Geometry;
@@ -406,7 +435,6 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			if ( fragmentConstantDefs != null )
 			{
-
 				if ( fragmentConstantDefs.TryGetValue( paramName, out parami ) )
 				{
 					refToUpdate.SourceProgType = GpuProgramType.Fragment;
@@ -434,25 +462,19 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// uniforms. May be null if there is no fragment program.</param>
 		///<param name="list">The list to populate (will not be cleared before adding, clear
 		/// it yourself before calling this if that's what you want).</param>
-		public void ExtractUniforms( int programObject,
-				   GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs,
-				   GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs,
-				   GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs,
-				   GLSLLinkProgram.UniformReferenceList list )
+		public void ExtractUniforms( int programObject, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs, GLSLLinkProgram.UniformReferenceList list )
 		{
-
 			// scan through the active uniforms and add them to the reference list
 
 			// get the number of active uniforms
 			int uniformCount;
 			const int BUFFERSIZE = 200;
 
-			Gl.glGetObjectParameterivARB( programObject, Gl.GL_OBJECT_ACTIVE_UNIFORMS_ARB,
-						out uniformCount );
+			Gl.glGetObjectParameterivARB( programObject, Gl.GL_OBJECT_ACTIVE_UNIFORMS_ARB, out uniformCount );
 
 			// Loop over each of the active uniforms, and add them to the reference container
 			// only do this for user defined uniforms, ignore built in gl state uniforms
-			for ( var index = 0; index < uniformCount; index++ )
+			for ( int index = 0; index < uniformCount; index++ )
 			{
 				// important for Axiom: dont pull this var to the outer scope
 				// because UniformReference is by value (class)
@@ -463,39 +485,38 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				var uniformName = new StringBuilder();
 				int arraySize;
 				int glType;
-				Gl.glGetActiveUniformARB( programObject, index, BUFFERSIZE, null,
-								out arraySize, out glType, uniformName );
+				Gl.glGetActiveUniformARB( programObject, index, BUFFERSIZE, null, out arraySize, out glType, uniformName );
 
 				newGLUniformReference.Location = Gl.glGetUniformLocationARB( programObject, uniformName.ToString() );
 				if ( newGLUniformReference.Location >= 0 )
 				{
 					// user defined uniform found, add it to the reference list
-					var paramName = uniformName.ToString();
+					string paramName = uniformName.ToString();
 
 					// currant ATI drivers (Catalyst 7.2 and earlier) and older NVidia drivers will include all array elements as uniforms but we only want the root array name and location
 					// Also note that ATI Catalyst 6.8 to 7.2 there is a bug with glUniform that does not allow you to update a uniform array past the first uniform array element
 					// ie you can't start updating an array starting at element 1, must always be element 0.
 
 					// if the uniform name has a "[" in it then its an array element uniform.
-					var arrayStart = paramName.IndexOf( '[' );
+					int arrayStart = paramName.IndexOf( '[' );
 					if ( arrayStart != -1 )
 					{
 						// if not the first array element then skip it and continue to the next uniform
 
 						if ( paramName.Substring( arrayStart, paramName.Length - 1 ) != "[0]" )
+						{
 							continue;
+						}
 						paramName = paramName.Substring( 0, arrayStart );
 					}
 
 					// find out which params object this comes from
-					var foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs,
-														   fragmentConstantDefs, newGLUniformReference );
+					bool foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs, fragmentConstantDefs, newGLUniformReference );
 
 					// only add this parameter if we found the source
 					if ( foundSource )
 					{
-						Debug.Assert( arraySize == newGLUniformReference.ConstantDef.ArraySize,
-									  "GL doesn't agree with our array size!" );
+						Debug.Assert( arraySize == newGLUniformReference.ConstantDef.ArraySize, "GL doesn't agree with our array size!" );
 						list.Add( newGLUniformReference );
 					}
 
@@ -522,26 +543,29 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			string line;
 
-			var currPos = src.IndexOf( "uniform" );
+			int currPos = src.IndexOf( "uniform" );
 			while ( currPos != -1 )
 			{
 				var def = new GpuProgramParameters.GpuConstantDefinition();
-				var paramName = "";
+				string paramName = "";
 
 				// Now check for using the word 'uniform' in a larger string & ignore
 				bool inLargerString = false;
 				if ( currPos != 0 )
 				{
-					var prev = src[ currPos - 1 ];
-					if ( prev != ' ' && prev != '\t' && prev != '\r' && prev != '\n'
-									   && prev != ';' )
+					char prev = src[ currPos - 1 ];
+					if ( prev != ' ' && prev != '\t' && prev != '\r' && prev != '\n' && prev != ';' )
+					{
 						inLargerString = true;
+					}
 				}
 				if ( !inLargerString && currPos + 7 < src.Length )
 				{
-					var next = src[ currPos + 7 ];
+					char next = src[ currPos + 7 ];
 					if ( next != ' ' && next != '\t' && next != '\r' && next != '\n' )
+					{
 						inLargerString = true;
+					}
 				}
 
 				// skip 'uniform'
@@ -550,7 +574,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				if ( !inLargerString )
 				{
 					// find terminating semicolon
-					var endPos = src.IndexOf( ';', currPos );
+					int endPos = src.IndexOf( ';', currPos );
 					if ( endPos == -1 )
 					{
 						// problem, missing semicolon, abort
@@ -561,17 +585,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					// Remove spaces before opening square braces, otherwise
 					// the following split() can split the line at inappropriate
 					// places (e.g. "vec3 something [3]" won't work).
-					for ( var sqp = line.IndexOf( " [" ); sqp != -1;
-						sqp = line.IndexOf( " [" ) )
+					for ( int sqp = line.IndexOf( " [" ); sqp != -1; sqp = line.IndexOf( " [" ) )
+					{
 						line.Remove( sqp, 1 );
+					}
 
 					// Split into tokens
-					var parts = line.Split( ", \t\r\n".ToCharArray() );
-					foreach ( var _i in parts )
+					string[] parts = line.Split( ", \t\r\n".ToCharArray() );
+					foreach ( string _i in parts )
 					{
-						var i = _i;
+						string i = _i;
 						int typei;
-						if ( typeEnumMap.TryGetValue( i, out typei ) )
+						if ( this.typeEnumMap.TryGetValue( i, out typei ) )
 						{
 							CompleteDefInfo( typei, def );
 						}
@@ -580,19 +605,23 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 							// if this is not a type, and not empty, it should be a name
 							i = i.Trim();
 							if ( i == string.Empty )
+							{
 								continue;
+							}
 
-							var arrayStart = i.IndexOf( '[' );
+							int arrayStart = i.IndexOf( '[' );
 							if ( arrayStart != -1 )
 							{
 								// potential name (if butted up to array)
-								var name = i.Substring( 0, arrayStart );
+								string name = i.Substring( 0, arrayStart );
 								name = name.Trim();
 								if ( name != string.Empty )
+								{
 									paramName = name;
+								}
 
-								var arrayEnd = i.IndexOf( ']', arrayStart );
-								var arrayDimTerm = i.Substring( arrayStart + 1, arrayEnd - arrayStart - 1 );
+								int arrayEnd = i.IndexOf( ']', arrayStart );
+								string arrayDimTerm = i.Substring( arrayStart + 1, arrayEnd - arrayStart - 1 );
 								arrayDimTerm = arrayDimTerm.Trim();
 								// the array term might be a simple number or it might be
 								// an expression (e.g. 24*3) or refer to a constant expression
@@ -611,9 +640,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 							// this part once for each name mentioned 
 							if ( def.ConstantType == GpuProgramParameters.GpuConstantType.Unknown )
 							{
-								LogManager.Instance.Write(
-									"Problem parsing the following GLSL Uniform: '"
-									+ line + "' in file " + filename );
+								LogManager.Instance.Write( "Problem parsing the following GLSL Uniform: '" + line + "' in file " + filename );
 								// next uniform
 								break;
 							}
@@ -653,14 +680,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			foreach ( GLSLLinkProgram program in linkPrograms.Values )
+			foreach ( GLSLLinkProgram program in this.linkPrograms.Values )
 			{
 				program.Dispose();
 			}
 
-			linkPrograms.Clear();
+			this.linkPrograms.Clear();
 		}
 
-		#endregion IDisposable Members
+		#endregion
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -59,7 +64,6 @@ namespace Axiom.Controllers
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal ControllerManager()
-            : base()
 		{
 			if ( instance == null )
 			{
@@ -83,36 +87,37 @@ namespace Axiom.Controllers
 		#region Member variables
 
 		/// <summary>
+		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
+		/// </summary>
+		private readonly IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
+
+		private readonly IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
+
+		/// <summary>
 		///		List of references to controllers in a scene.
 		/// </summary>
 		private List<Controller<Real>> controllers = new List<Controller<Real>>();
 
+		private ulong lastFrameNumber;
+
 		/// <summary>
-		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
+		/// Returns a ControllerValue which provides the time since the last frame as a control value source.
 		/// </summary>
-		private IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
-
-		private IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
-		private ulong lastFrameNumber = 0;
-
-        /// <summary>
-        /// Returns a ControllerValue which provides the time since the last frame as a control value source.
-        /// </summary>
-        /// <remarks>
-        /// A common source value to use to feed into a controller is the time since the last frame. This method
-        /// returns a pointer to a common source value which provides this information.
-        /// @par
-        /// Remember the value will only be up to date after the RenderSystem::beginFrame method is called.
-        /// </remarks>
-        /// <see cref="RenderSystem.BeginFrame"/>
-        public IControllerValue<Real> FrameTimeSource
-        {
-            [OgreVersion( 1, 7, 2 )]
-            get
-            {
-                return frameTimeController;
-            }
-        }
+		/// <remarks>
+		/// A common source value to use to feed into a controller is the time since the last frame. This method
+		/// returns a pointer to a common source value which provides this information.
+		/// @par
+		/// Remember the value will only be up to date after the RenderSystem::beginFrame method is called.
+		/// </remarks>
+		/// <see cref="RenderSystem.BeginFrame"/>
+		public IControllerValue<Real> FrameTimeSource
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return this.frameTimeController;
+			}
+		}
 
 		#endregion
 
@@ -128,7 +133,7 @@ namespace Axiom.Controllers
 		public Controller<Real> CreateController( IControllerValue<Real> destination, IControllerFunction<Real> function )
 		{
 			// call the overloaded method passing in our precreated frame time controller value as the source
-			return CreateController( frameTimeController, destination, function );
+			return CreateController( this.frameTimeController, destination, function );
 		}
 
 		/// <summary>
@@ -144,25 +149,25 @@ namespace Axiom.Controllers
 			var controller = new Controller<Real>( source, destination, function );
 
 			// add the new controller to our list
-			controllers.Add( controller );
+			this.controllers.Add( controller );
 
 			return controller;
 		}
 
 		public void DestroyController( Controller<Real> controller )
 		{
-			controllers.Remove( controller );
+			this.controllers.Remove( controller );
 		}
 
 		public Controller<Real> CreateFrameTimePassthroughController( IControllerValue<Real> dest )
 		{
-			return CreateController( frameTimeController, dest, passthroughFunction );
+			return CreateController( this.frameTimeController, dest, this.passthroughFunction );
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public Real GetElapsedTime()
 		{
-			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
+			return ( (FrameTimeControllerValue)this.frameTimeController ).ElapsedTime;
 		}
 
 
@@ -325,15 +330,14 @@ namespace Axiom.Controllers
 		///	    rotation of a texture based on a wave function.	
 		/// </summary>
 		/// <param name="layer">The texture unit to effect.</param>
-        /// <param name="type">The type of transform, either translate (scroll), scale (stretch) or rotate (spin).</param>
+		/// <param name="type">The type of transform, either translate (scroll), scale (stretch) or rotate (spin).</param>
 		/// <param name="waveType">The shape of the wave, see WaveformType enum for details.</param>
 		/// <param name="baseVal">The base value of the output.</param>
 		/// <param name="frequency">The speed of the wave in cycles per second.</param>
 		/// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
 		/// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<Real> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
-			Real baseVal, Real frequency, Real phase, Real amplitude )
+		public Controller<Real> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType, Real baseVal, Real frequency, Real phase, Real amplitude )
 		{
 			IControllerValue<Real> val = null;
 			IControllerFunction<Real> function = null;
@@ -366,7 +370,7 @@ namespace Axiom.Controllers
 			function = new WaveformControllerFunction( waveType, baseVal, frequency, phase, amplitude, true );
 
 			// finally, create the controller using frame time as the source value
-			return CreateController( frameTimeController, val, function );
+			return CreateController( this.frameTimeController, val, function );
 		}
 
 		/// <summary>
@@ -375,15 +379,15 @@ namespace Axiom.Controllers
 		/// </summary>
 		public void UpdateAll()
 		{
-			var thisFrameNumber = Root.Instance.CurrentFrameCount;
-			if ( thisFrameNumber != lastFrameNumber )
+			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
+			if ( thisFrameNumber != this.lastFrameNumber )
 			{
 				// loop through each controller and tell it to update
-				foreach ( var controller in controllers )
+				foreach ( var controller in this.controllers )
 				{
 					controller.Update();
 				}
-				lastFrameNumber = thisFrameNumber;
+				this.lastFrameNumber = thisFrameNumber;
 			}
 		}
 
@@ -391,22 +395,22 @@ namespace Axiom.Controllers
 
 		#region IDisposable Implementation
 
-        /// <summary>
-        ///     Called when the engine is shutting down.
-        /// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    controllers.Clear();
-                    controllers = null;
-                    instance = null;
-                }
-            }
-            base.dispose(disposeManagedResources);
-        }
+		/// <summary>
+		///     Called when the engine is shutting down.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					this.controllers.Clear();
+					this.controllers = null;
+					instance = null;
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
 
 		#endregion IDisposable Implementation
 	}

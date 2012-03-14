@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,26 +23,28 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: DistanceLodStrategy.cs 1762 2009-09-13 18:56:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Math;
-using Axiom.Core;
-using Axiom.Graphics;
-using MathHelper = Axiom.Math.Utility;
 using Axiom.Core.Collections;
+using Axiom.Graphics;
+using Axiom.Math;
+
+using MathHelper = Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -50,11 +53,12 @@ namespace Axiom.Core
 	/// <summary>
 	/// Level of detail strategy based on distance from camera.
 	/// </summary>
-	public class DistanceLodStrategy : LodStrategy,  ISingleton<DistanceLodStrategy>
+	public class DistanceLodStrategy : LodStrategy, ISingleton<DistanceLodStrategy>
 	{
 		#region Fields and Properties
 
 		public const string StrategyName = "Distance";
+
 		/// <summary>
 		///
 		/// </summary>
@@ -64,6 +68,7 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		private bool _referenceViewEnabled;
+
 		/// <summary>
 		///
 		/// </summary>
@@ -73,17 +78,21 @@ namespace Axiom.Core
 			{
 				// Ensure reference value has been set before being enabled
 				if ( value )
-					Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+				{
+					Debug.Assert( this.ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+				}
 
-				_referenceViewEnabled = value;
+				this._referenceViewEnabled = value;
 			}
 			get
 			{
-				return _referenceViewEnabled;
+				return this._referenceViewEnabled;
 			}
 		}
 
 		#endregion Fields and Properties
+
+		protected static DistanceLodStrategy instance;
 
 		/// <summary>
 		/// Default constructor.
@@ -91,14 +100,33 @@ namespace Axiom.Core
 		protected internal DistanceLodStrategy()
 			: base( StrategyName )
 		{
-            if ( instance == null )
-            {
-                instance = this;
-                ReferenceViewValue = float.NaN;
-            }
-            else
-                throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			if ( instance == null )
+			{
+				instance = this;
+				this.ReferenceViewValue = float.NaN;
+			}
+			else
+			{
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+			}
 		}
+
+		public static DistanceLodStrategy Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
+
+		#region ISingleton<DistanceLodStrategy> Members
+
+		public bool Initialize( params object[] args )
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 
 		/// <summary>
 		/// Sets the reference view upon which the distances were based.
@@ -114,16 +142,16 @@ namespace Axiom.Core
 		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
-			var fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
+			Radian fovX = fovY * ( viewportWidth / (Real)viewportHeight );
 
 			// Determine viewport area
-			var viewportArea = viewportHeight * viewportWidth;
+			float viewportArea = viewportHeight * viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
-			ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
+			this.ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
 
 			// Enable use of reference view
-			_referenceViewEnabled = true;
+			this._referenceViewEnabled = true;
 		}
 
 		#region LodStrategy Implemention
@@ -146,25 +174,25 @@ namespace Axiom.Core
 			Real squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
-			if ( _referenceViewEnabled )
+			if ( this._referenceViewEnabled )
 			{
 				// Reference view only applicable to perspective projection
-				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
+				Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
 
 				// Get camera viewport
-				var viewport = cam.Viewport;
+				Viewport viewport = cam.Viewport;
 
 				// Get viewport area
 				Real viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
 				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-				var projectionMatrix = cam.ProjectionMatrix;
+				Matrix4 projectionMatrix = cam.ProjectionMatrix;
 
 				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
 				Real biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
 
 				// Scale squared depth appropriately
-				squaredDepth *= ( ReferenceViewValue / biasValue );
+				squaredDepth *= ( this.ReferenceViewValue / biasValue );
 			}
 
 			// Squared depth should never be below 0, so clamp
@@ -206,24 +234,5 @@ namespace Axiom.Core
 		}
 
 		#endregion LodStrategy Implemention
-
-        #region ISingleton<DistanceLodStrategy> Members
-
-        protected static DistanceLodStrategy instance;
-
-        public static DistanceLodStrategy Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
-
-        public bool Initialize( params object[] args )
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
+	}
 }
