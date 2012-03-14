@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -11,17 +12,13 @@ namespace Axiom.Samples.VolumeTexture
 	/// <OriginalAuthor>W.J. van der Laan</OriginalAuthor>
 	public class ThingRendable : SimpleRenderable
 	{
-		protected HardwareVertexBuffer vertexBuffer;
-		protected Real radius;
 		protected int count;
-		protected float qSize;
-		protected List<Quaternion> things = new List<Quaternion>();
 		protected List<Quaternion> orbits = new List<Quaternion>();
+		protected float qSize;
+		protected Real radius;
+		protected List<Quaternion> things = new List<Quaternion>();
+		protected HardwareVertexBuffer vertexBuffer;
 
-		public override Real BoundingRadius
-		{
-			get { return radius; }
-		}
 		/// <summary>
 		/// Default ctor.
 		/// </summary>
@@ -37,6 +34,14 @@ namespace Axiom.Samples.VolumeTexture
 			box = new AxisAlignedBox( new Vector3( -radius, -radius, -radius ), new Vector3( radius, radius, radius ) );
 			Initialize();
 			FillBuffer();
+		}
+
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return this.radius;
+			}
 		}
 
 		/// <summary>
@@ -59,11 +64,11 @@ namespace Axiom.Samples.VolumeTexture
 		/// <param name="time">time elapsed</param>
 		public void AddTime( float elapsedTime )
 		{
-			for ( int x = 0; x < count; x++ )
+			for ( int x = 0; x < this.count; x++ )
 			{
-				Quaternion dest = things[ x ] * orbits[ x ];
-				things[ x ] = things[ x ] + elapsedTime * ( dest - things[ x ] );
-				things[ x ].Normalize();
+				Quaternion dest = this.things[ x ] * this.orbits[ x ];
+				this.things[ x ] = this.things[ x ] + elapsedTime * ( dest - this.things[ x ] );
+				this.things[ x ].Normalize();
 			}
 
 			FillBuffer();
@@ -94,10 +99,10 @@ namespace Axiom.Samples.VolumeTexture
 			Vector3 ax = Vector3.Zero, ay = Vector3.Zero, az = Vector3.Zero;
 			int x = 0;
 			Quaternion q = Quaternion.Identity;
-			things.Clear();
-			orbits.Clear();
+			this.things.Clear();
+			this.orbits.Clear();
 
-			for ( x = 0; x < count; x++ )
+			for ( x = 0; x < this.count; x++ )
 			{
 				ax = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
 				ay = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
@@ -107,7 +112,7 @@ namespace Axiom.Samples.VolumeTexture
 				ay.Normalize();
 				az.Normalize();
 				q = Quaternion.FromAxes( ax, ay, az );
-				things.Add( q );
+				this.things.Add( q );
 
 				ax = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
 				ay = new Vector3( GenerateRandomFloat(), GenerateRandomFloat(), GenerateRandomFloat() );
@@ -117,17 +122,17 @@ namespace Axiom.Samples.VolumeTexture
 				ay.Normalize();
 				az.Normalize();
 				q = Quaternion.FromAxes( ax, ay, az );
-				orbits.Add( q );
+				this.orbits.Add( q );
 			}
 
-			int nVertices = count * 4;
+			int nVertices = this.count * 4;
 
-			IndexData indexData  = new IndexData();
-			VertexData vertexData = new VertexData();
+			var indexData = new IndexData();
+			var vertexData = new VertexData();
 
 			//Quads
-			short[] faces = new short[ count * 6 ];
-			for ( x = 0; x < count; x++ )
+			var faces = new short[ this.count * 6 ];
+			for ( x = 0; x < this.count; x++ )
 			{
 				faces[ x * 6 + 0 ] = (short)( x * 4 + 0 );
 				faces[ x * 6 + 1 ] = (short)( x * 4 + 1 );
@@ -146,15 +151,15 @@ namespace Axiom.Samples.VolumeTexture
 			int offset = 0;
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position ).Size;
 
-			vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(0), nVertices, BufferUsage.DynamicWriteOnly );
+			this.vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), nVertices, BufferUsage.DynamicWriteOnly );
 
-			bind.SetBinding( 0, vertexBuffer );
+			bind.SetBinding( 0, this.vertexBuffer );
 
-			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, count * 6, BufferUsage.StaticWriteOnly );
+			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, this.count * 6, BufferUsage.StaticWriteOnly );
 			indexData.indexBuffer = indexBuffer;
 			indexData.indexStart = 0;
-			indexData.indexCount = count * 6;
-            
+			indexData.indexCount = this.count * 6;
+
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
 
 			faces = null;
@@ -162,7 +167,7 @@ namespace Axiom.Samples.VolumeTexture
 			renderOperation.operationType = OperationType.TriangleList;
 			renderOperation.indexData = indexData;
 			renderOperation.vertexData = vertexData;
-            renderOperation.useIndices = true;
+			renderOperation.useIndices = true;
 		}
 
 		/// <summary>
@@ -173,16 +178,16 @@ namespace Axiom.Samples.VolumeTexture
 			unsafe
 			{
 				// Transfer vertices and normals
-				var vIdx = vertexBuffer.Lock( BufferLocking.Discard ).ToFloatPointer();
+				float* vIdx = this.vertexBuffer.Lock( BufferLocking.Discard ).ToFloatPointer();
 				int elemsize = 1 * 3; // position only
 				int planesize = 4 * elemsize; // four vertices per plane
-				for ( int x = 0; x < count; x++ )
+				for ( int x = 0; x < this.count; x++ )
 				{
 					Vector3 ax, ay, az;
-					things[ x ].ToAxes( out ax, out ay, out az );
-					Vector3 pos = az * radius; // scale to radius
-					ax *= qSize;
-					ay *= qSize;
+					this.things[ x ].ToAxes( out ax, out ay, out az );
+					Vector3 pos = az * this.radius; // scale to radius
+					ax *= this.qSize;
+					ay *= this.qSize;
 					Vector3 pos1 = pos - ax - ay;
 					Vector3 pos2 = pos + ax - ay;
 					Vector3 pos3 = pos + ax + ay;
@@ -200,7 +205,7 @@ namespace Axiom.Samples.VolumeTexture
 					vIdx[ x * planesize + 3 * elemsize + 1 ] = pos4.y;
 					vIdx[ x * planesize + 3 * elemsize + 2 ] = pos4.z;
 				}
-				vertexBuffer.Unlock();
+				this.vertexBuffer.Unlock();
 			}
 		}
 

@@ -38,13 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -82,55 +82,54 @@ namespace Axiom.Overlays
 	{
 		#region Member variables
 
-		protected string name;
-		protected bool isVisible;
-		protected bool isCloneable;
-		protected float left, top, width, height;
-		protected string materialName;
-		protected Material material;
-		protected string text;
-		protected ColorEx color;
 		protected Rectangle clippingRegion;
-
-		protected MetricsMode metricsMode;
-		protected HorizontalAlignment horzAlign;
-		protected VerticalAlignment vertAlign;
-
-		// Pixel-mode positions, used in GMM_PIXELS mode.
-		protected float pixelTop;
-		protected float pixelLeft;
-		protected float pixelWidth;
-		protected float pixelHeight;
-		protected float pixelScaleX;
-		protected float pixelScaleY;
-		// parent container
-		protected OverlayElementContainer parent;
-		// overlay this element is attached to
-		protected Overlay overlay;
+		protected ColorEx color;
+		protected List<Vector4> customParams = new List<Vector4>();
 
 		protected float derivedLeft, derivedTop;
+		protected LightList emptyLightList = new LightList();
+		protected float height;
+		protected HorizontalAlignment horzAlign;
+		protected bool isCloneable;
 		protected bool isDerivedOutOfDate;
+		protected bool isEnabled;
 		// Flag indicating if the vertex positons need recalculating
 		protected bool isGeomPositionsOutOfDate;
 		// Flag indicating if the vertex uvs need recalculating
 		protected bool isGeomUVsOutOfDate;
 		// Zorder for when sending to render queue
 		// Derived from parent
-		protected int zOrder;
-
-		// world transforms
-		protected Matrix4[] xform = new Matrix4[ 1 ] { Matrix4.Identity };
-
-		protected bool isEnabled;
 
 		// is element initialised
 		protected bool isInitialized;
+		protected bool isVisible;
+		protected float left;
+		protected Material material;
+		protected string materialName;
+		protected MetricsMode metricsMode;
+		protected string name;
+		protected Overlay overlay;
+		protected OverlayElementContainer parent;
+		protected float pixelHeight;
+		protected float pixelLeft;
+		protected float pixelScaleX;
+		protected float pixelScaleY;
+		protected float pixelTop;
+		protected float pixelWidth;
 
 		// Used to see if this element is created from a Template
 		protected OverlayElement sourceTemplate;
+		protected string text;
+		protected float top;
+		protected VerticalAlignment vertAlign;
+		protected float width;
 
-		protected LightList emptyLightList = new LightList();
-		protected List<Vector4> customParams = new List<Vector4>();
+		protected Matrix4[] xform = new Matrix4[ 1 ]
+                                    {
+                                        Matrix4.Identity
+                                    };
+
+		protected int zOrder;
 
 		#endregion Member variables
 
@@ -141,33 +140,32 @@ namespace Axiom.Overlays
 		/// </summary>
 		/// <param name="name"></param>
 		protected internal OverlayElement( string name )
-			: base()
 		{
 			this.name = name;
-			isVisible = true;
-			isCloneable = true;
-			left = 0.0f;
-			top = 0.0f;
-			width = 1.0f;
-			height = 1.0f;
-			metricsMode = MetricsMode.Relative;
-			horzAlign = HorizontalAlignment.Left;
-			vertAlign = VerticalAlignment.Top;
-			pixelTop = 0.0f;
-			pixelLeft = 0.0f;
-			pixelWidth = 1.0f;
-			pixelHeight = 1.0f;
-			pixelScaleX = 1.0f;
-			pixelScaleY = 1.0f;
-			parent = null;
-			overlay = null;
-			isDerivedOutOfDate = true;
-			isGeomPositionsOutOfDate = true;
-			isGeomUVsOutOfDate = true;
-			zOrder = 0;
-			isEnabled = true;
-			isInitialized = false;
-			sourceTemplate = null;
+			this.isVisible = true;
+			this.isCloneable = true;
+			this.left = 0.0f;
+			this.top = 0.0f;
+			this.width = 1.0f;
+			this.height = 1.0f;
+			this.metricsMode = MetricsMode.Relative;
+			this.horzAlign = HorizontalAlignment.Left;
+			this.vertAlign = VerticalAlignment.Top;
+			this.pixelTop = 0.0f;
+			this.pixelLeft = 0.0f;
+			this.pixelWidth = 1.0f;
+			this.pixelHeight = 1.0f;
+			this.pixelScaleX = 1.0f;
+			this.pixelScaleY = 1.0f;
+			this.parent = null;
+			this.overlay = null;
+			this.isDerivedOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
+			this.isGeomUVsOutOfDate = true;
+			this.zOrder = 0;
+			this.isEnabled = true;
+			this.isInitialized = false;
+			this.sourceTemplate = null;
 		}
 
 		#endregion Constructors
@@ -182,21 +180,21 @@ namespace Axiom.Overlays
 		public virtual void CopyFromTemplate( OverlayElement template )
 		{
 			template.CopyParametersTo( this );
-			sourceTemplate = template;
+			this.sourceTemplate = template;
 		}
 
 		public void CopyParametersTo( OverlayElement instance )
 		{
-			foreach ( var command in Commands )
+			foreach ( IPropertyCommand command in Commands )
 			{
-				var srcValue = command.Get( this );
+				string srcValue = command.Get( this );
 				command.Set( instance, srcValue );
 			}
 		}
 
 		public virtual OverlayElement Clone( string instanceName )
 		{
-			var newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
+			OverlayElement newElement = OverlayElementManager.Instance.CreateElement( GetType().Name, instanceName + "/" + this.name );
 			CopyParametersTo( newElement );
 
 			return newElement;
@@ -207,7 +205,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Hide()
 		{
-			isVisible = false;
+			this.isVisible = false;
 		}
 
 		/// <summary>
@@ -230,7 +228,7 @@ namespace Axiom.Overlays
 				Initialize();
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 		}
 
 		/// <summary>
@@ -270,11 +268,11 @@ namespace Axiom.Overlays
 		/// </summary>
 		public virtual void NotifyViewport()
 		{
-			switch ( metricsMode )
+			switch ( this.metricsMode )
 			{
 				case MetricsMode.Pixels:
 					{
-						var oMgr = OverlayManager.Instance;
+						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -282,14 +280,14 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / vpWidth;
-						pixelScaleY = 1.0f / vpHeight;
+						this.pixelScaleX = 1.0f / vpWidth;
+						this.pixelScaleY = 1.0f / vpHeight;
 					}
 					break;
 
 				case MetricsMode.Relative_Aspect_Adjusted:
 					{
-						var oMgr = OverlayManager.Instance;
+						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -297,27 +295,27 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-						pixelScaleY = 1.0f / 10000.0f;
+						this.pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+						this.pixelScaleY = 1.0f / 10000.0f;
 					}
 					break;
 
 				case MetricsMode.Relative:
-					pixelScaleX = 1.0f;
-					pixelScaleY = 1.0f;
-					pixelLeft = left;
-					pixelTop = top;
-					pixelWidth = width;
-					pixelHeight = height;
+					this.pixelScaleX = 1.0f;
+					this.pixelScaleY = 1.0f;
+					this.pixelLeft = this.left;
+					this.pixelTop = this.top;
+					this.pixelWidth = this.width;
+					this.pixelHeight = this.height;
 					break;
 			}
 
-			left = pixelLeft * pixelScaleX;
-			top = pixelTop * pixelScaleY;
-			width = pixelWidth * pixelScaleX;
-			height = pixelHeight * pixelScaleY;
+			this.left = this.pixelLeft * this.pixelScaleX;
+			this.top = this.pixelTop * this.pixelScaleY;
+			this.width = this.pixelWidth * this.pixelScaleX;
+			this.height = this.pixelHeight * this.pixelScaleY;
 
-			isGeomPositionsOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -325,7 +323,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public virtual void PositionsOutOfDate()
 		{
-			isGeomPositionsOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -335,10 +333,10 @@ namespace Axiom.Overlays
 		/// <param name="height">The height.</param>
 		public void SetDimensions( float width, float height )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if ( this.metricsMode != MetricsMode.Relative )
 			{
-				pixelWidth = (int)width;
-				pixelHeight = (int)height;
+				this.pixelWidth = (int)width;
+				this.pixelHeight = (int)height;
 			}
 			else
 			{
@@ -346,7 +344,7 @@ namespace Axiom.Overlays
 				this.height = height;
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -358,7 +356,7 @@ namespace Axiom.Overlays
 		/// <param name="val"></param>
 		public bool SetParam( string param, string val )
 		{
-			this.Properties[ param ] = val;
+			Properties[ param ] = val;
 			return true;
 		}
 
@@ -369,10 +367,10 @@ namespace Axiom.Overlays
 		/// <param name="top">The top.</param>
 		public void SetPosition( float left, float top )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if ( this.metricsMode != MetricsMode.Relative )
 			{
-				pixelLeft = (int)left;
-				pixelTop = (int)top;
+				this.pixelLeft = (int)left;
+				this.pixelTop = (int)top;
 			}
 			else
 			{
@@ -380,7 +378,7 @@ namespace Axiom.Overlays
 				this.top = top;
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -389,7 +387,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Show()
 		{
-			isVisible = true;
+			this.isVisible = true;
 		}
 
 		/// <summary>
@@ -401,9 +399,9 @@ namespace Axiom.Overlays
 			switch ( this.metricsMode )
 			{
 				case MetricsMode.Pixels:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if ( OverlayManager.Instance.HasViewportChanged || this.isGeomPositionsOutOfDate )
 					{
-						var oMgr = OverlayManager.Instance;
+						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -411,20 +409,20 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / vpWidth;
-						pixelScaleY = 1.0f / vpHeight;
+						this.pixelScaleX = 1.0f / vpWidth;
+						this.pixelScaleY = 1.0f / vpHeight;
 
-						left = pixelLeft * pixelScaleX;
-						top = pixelTop * pixelScaleY;
-						width = pixelWidth * pixelScaleX;
-						height = pixelHeight * pixelScaleY;
+						this.left = this.pixelLeft * this.pixelScaleX;
+						this.top = this.pixelTop * this.pixelScaleY;
+						this.width = this.pixelWidth * this.pixelScaleX;
+						this.height = this.pixelHeight * this.pixelScaleY;
 					}
 					break;
 
 				case MetricsMode.Relative_Aspect_Adjusted:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if ( OverlayManager.Instance.HasViewportChanged || this.isGeomPositionsOutOfDate )
 					{
-						var oMgr = OverlayManager.Instance;
+						OverlayManager oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
 						float vpHeight = oMgr.ViewportHeight;
 
@@ -432,13 +430,13 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-						pixelScaleY = 1.0f / 10000.0f;
+						this.pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+						this.pixelScaleY = 1.0f / 10000.0f;
 
-						left = pixelLeft * pixelScaleX;
-						top = pixelTop * pixelScaleY;
-						width = pixelWidth * pixelScaleX;
-						height = pixelHeight * pixelScaleY;
+						this.left = this.pixelLeft * this.pixelScaleX;
+						this.top = this.pixelTop * this.pixelScaleY;
+						this.width = this.pixelWidth * this.pixelScaleX;
+						this.height = this.pixelHeight * this.pixelScaleY;
 					}
 					break;
 				default:
@@ -449,16 +447,16 @@ namespace Axiom.Overlays
 			UpdateFromParent();
 
 			// update our own position geometry
-			if ( isGeomPositionsOutOfDate && this.isInitialized )
+			if ( this.isGeomPositionsOutOfDate && this.isInitialized )
 			{
 				UpdatePositionGeometry();
-				isGeomPositionsOutOfDate = false;
+				this.isGeomPositionsOutOfDate = false;
 			}
 			// Tell self to update own texture geometry
-			if ( isGeomUVsOutOfDate && this.isInitialized )
+			if ( this.isGeomUVsOutOfDate && this.isInitialized )
 			{
 				UpdateTextureGeometry();
-				isGeomUVsOutOfDate = false;
+				this.isGeomUVsOutOfDate = false;
 			}
 		}
 
@@ -470,7 +468,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public virtual bool Contains( float x, float y )
 		{
-			return clippingRegion.Contains( (int)x, (int)y );
+			return this.clippingRegion.Contains( (int)x, (int)y );
 		}
 
 		/// <summary>
@@ -498,20 +496,20 @@ namespace Axiom.Overlays
 
 			parentLeft = parentTop = parentBottom = parentRight = 0;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parentLeft = parent.DerivedLeft;
-				parentTop = parent.DerivedTop;
+				parentLeft = this.parent.DerivedLeft;
+				parentTop = this.parent.DerivedTop;
 
 				// derive right position
-				if ( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
+				if ( this.horzAlign == HorizontalAlignment.Center || this.horzAlign == HorizontalAlignment.Right )
 				{
-					parentRight = parentLeft + parent.width;
+					parentRight = parentLeft + this.parent.width;
 				}
 				// derive bottom position
-				if ( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
+				if ( this.vertAlign == VerticalAlignment.Center || this.vertAlign == VerticalAlignment.Bottom )
 				{
-					parentBottom = parentTop + parent.height;
+					parentBottom = parentTop + this.parent.height;
 				}
 			}
 			else
@@ -520,8 +518,8 @@ namespace Axiom.Overlays
 				//                parentLeft = parentTop = 0.0f;
 				//                parentRight = parentBottom = 1.0f;
 
-				var rSys = Root.Instance.RenderSystem;
-				var oMgr = OverlayManager.Instance;
+				RenderSystem rSys = Root.Instance.RenderSystem;
+				OverlayManager oMgr = OverlayManager.Instance;
 
 				// Calculate offsets required for mapping texel origins to pixel origins in the
 				// current rendersystem
@@ -538,50 +536,50 @@ namespace Axiom.Overlays
 			// all we do is derived the origin, we don't automatically sort out the position
 			// This is more flexible than forcing absolute right & middle
 
-			switch ( horzAlign )
+			switch ( this.horzAlign )
 			{
 				case HorizontalAlignment.Center:
-					derivedLeft = ( ( parentLeft + parentRight ) * 0.5f ) + left;
+					this.derivedLeft = ( ( parentLeft + parentRight ) * 0.5f ) + this.left;
 					break;
 
 				case HorizontalAlignment.Left:
-					derivedLeft = parentLeft + left;
+					this.derivedLeft = parentLeft + this.left;
 					break;
 
 				case HorizontalAlignment.Right:
-					derivedLeft = parentRight + left;
+					this.derivedLeft = parentRight + this.left;
 					break;
 			}
 
-			switch ( vertAlign )
+			switch ( this.vertAlign )
 			{
 				case VerticalAlignment.Center:
-					derivedTop = ( ( parentTop + parentBottom ) * 0.5f ) + top;
+					this.derivedTop = ( ( parentTop + parentBottom ) * 0.5f ) + this.top;
 					break;
 
 				case VerticalAlignment.Top:
-					derivedTop = parentTop + top;
+					this.derivedTop = parentTop + this.top;
 					break;
 
 				case VerticalAlignment.Bottom:
-					derivedTop = parentBottom + top;
+					this.derivedTop = parentBottom + this.top;
 					break;
 			}
 
-			isDerivedOutOfDate = false;
-			if ( parent != null )
+			this.isDerivedOutOfDate = false;
+			if ( this.parent != null )
 			{
 				Rectangle parentRect;
 
-				parentRect = parent.ClippingRegion;
+				parentRect = this.parent.ClippingRegion;
 
-				var childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
+				var childRect = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop, (long)( this.derivedLeft + this.width ), (long)( this.derivedTop + this.height ) );
 
 				this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
 			}
 			else
 			{
-				clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
+				this.clippingRegion = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop, (long)( this.derivedLeft + this.width ), (long)( this.derivedTop + this.height ) );
 			}
 		}
 
@@ -593,9 +591,9 @@ namespace Axiom.Overlays
 		public void ScreenLeft( float left )
 		{
 			this.left = left;
-			pixelLeft = left / pixelScaleX;
+			this.pixelLeft = left / this.pixelScaleX;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -607,9 +605,9 @@ namespace Axiom.Overlays
 		public void ScreenTop( float top )
 		{
 			this.top = top;
-			pixelTop = top / pixelScaleY;
+			this.pixelTop = top / this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -621,9 +619,9 @@ namespace Axiom.Overlays
 		public void ScreenWidth( float width )
 		{
 			this.width = width;
-			pixelWidth = width / pixelScaleX;
+			this.pixelWidth = width / this.pixelScaleX;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -635,9 +633,9 @@ namespace Axiom.Overlays
 		public void ScreenHeight( float height )
 		{
 			this.height = height;
-			pixelHeight = height / pixelScaleY;
+			this.pixelHeight = height / this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -651,10 +649,10 @@ namespace Axiom.Overlays
 		{
 			this.left = left;
 			this.top = top;
-			pixelLeft = left / pixelScaleX;
-			pixelTop = top / pixelScaleY;
+			this.pixelLeft = left / this.pixelScaleX;
+			this.pixelTop = top / this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -668,10 +666,10 @@ namespace Axiom.Overlays
 		{
 			this.width = width;
 			this.height = height;
-			pixelWidth = width / pixelScaleX;
-			pixelHeight = height / pixelScaleY;
+			this.pixelWidth = width / this.pixelScaleX;
+			this.pixelHeight = height / this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -695,9 +693,9 @@ namespace Axiom.Overlays
 		/// <param name="queue">Current render queue.</param>
 		public virtual void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( isVisible )
+			if ( this.isVisible )
 			{
-				queue.AddRenderable( this, (ushort)zOrder, RenderQueueGroupID.Overlay );
+				queue.AddRenderable( this, (ushort)this.zOrder, RenderQueueGroupID.Overlay );
 			}
 		}
 
@@ -708,11 +706,8 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// Usefuel to hold custom userdata.
 		/// </summary>
-		public object UserData
-		{
-			get;
-			set;
-		}
+		public object UserData { get; set; }
+
 		/// <summary>
 		/// Gets the SourceTemplate for this element
 		/// </summary>
@@ -734,11 +729,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return color;
+				return this.color;
 			}
 			set
 			{
-				color = value;
+				this.color = value;
 			}
 		}
 
@@ -749,11 +744,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return derivedLeft;
+				return this.derivedLeft;
 			}
 		}
 
@@ -764,11 +759,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return derivedTop;
+				return this.derivedTop;
 			}
 		}
 
@@ -779,11 +774,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
+				this.isEnabled = value;
 			}
 		}
 
@@ -794,24 +789,24 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelHeight;
+					return this.pixelHeight;
 				}
 				else
 				{
-					return height;
+					return this.height;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelHeight = (int)value;
+					this.pixelHeight = (int)value;
 				}
 				else
 				{
-					height = value;
+					this.height = value;
 				}
 				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
@@ -839,11 +834,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return horzAlign;
+				return this.horzAlign;
 			}
 			set
 			{
-				horzAlign = value;
+				this.horzAlign = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -866,11 +861,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isCloneable;
+				return this.isCloneable;
 			}
 			set
 			{
-				isCloneable = value;
+				this.isCloneable = value;
 			}
 		}
 
@@ -881,11 +876,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isVisible;
+				return this.isVisible;
 			}
 			set
 			{
-				isVisible = value;
+				this.isVisible = value;
 			}
 		}
 
@@ -896,27 +891,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelLeft;
+					return this.pixelLeft;
 				}
 				else
 				{
-					return left;
+					return this.left;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelLeft = (int)value;
+					this.pixelLeft = (int)value;
 				}
 				else
 				{
-					left = value;
+					this.left = value;
 				}
 
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -928,25 +923,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 			set
 			{
-				materialName = value;
-				material = (Material)MaterialManager.Instance[ materialName ];
+				this.materialName = value;
+				this.material = (Material)MaterialManager.Instance[ this.materialName ];
 
-				if ( material == null )
+				if ( this.material == null )
 				{
-					throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
+					throw new Exception( string.Format( "Could not find material '{0}'.", this.materialName ) );
 				}
 
-				if (!material.IsLoaded)
-					material.Load();
+				if ( !this.material.IsLoaded )
+				{
+					this.material.Load();
+				}
 
 
 				// Set some prerequisites to be sure
-				material.Lighting = false;
-				material.DepthCheck = false;
+				this.material.Lighting = false;
+				this.material.DepthCheck = false;
 			}
 		}
 
@@ -966,17 +963,17 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return metricsMode;
+				return this.metricsMode;
 			}
 			set
 			{
-				var localMetricsMode = value;
+				MetricsMode localMetricsMode = value;
 				switch ( localMetricsMode )
 				{
 					case MetricsMode.Pixels:
 						{
 							float vpWidth, vpHeight;
-							var oMgr = OverlayManager.Instance;
+							OverlayManager oMgr = OverlayManager.Instance;
 							vpWidth = oMgr.ViewportWidth;
 							vpHeight = oMgr.ViewportHeight;
 
@@ -984,15 +981,15 @@ namespace Axiom.Overlays
 							vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 							vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-							pixelScaleX = 1.0f / vpWidth;
-							pixelScaleY = 1.0f / vpHeight;
+							this.pixelScaleX = 1.0f / vpWidth;
+							this.pixelScaleY = 1.0f / vpHeight;
 
-							if ( metricsMode == MetricsMode.Relative )
+							if ( this.metricsMode == MetricsMode.Relative )
 							{
-								pixelLeft = left;
-								pixelTop = top;
-								pixelWidth = width;
-								pixelHeight = height;
+								this.pixelLeft = this.left;
+								this.pixelTop = this.top;
+								this.pixelWidth = this.width;
+								this.pixelHeight = this.height;
 							}
 						}
 						break;
@@ -1000,7 +997,7 @@ namespace Axiom.Overlays
 					case MetricsMode.Relative_Aspect_Adjusted:
 						{
 							float vpWidth, vpHeight;
-							var oMgr = OverlayManager.Instance;
+							OverlayManager oMgr = OverlayManager.Instance;
 							vpWidth = oMgr.ViewportWidth;
 							vpHeight = oMgr.ViewportHeight;
 
@@ -1008,36 +1005,36 @@ namespace Axiom.Overlays
 							vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 							vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-							pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-							pixelScaleY = 1.0f / 10000.0f;
+							this.pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+							this.pixelScaleY = 1.0f / 10000.0f;
 
-							if ( metricsMode == MetricsMode.Relative )
+							if ( this.metricsMode == MetricsMode.Relative )
 							{
-								pixelLeft = left;
-								pixelTop = top;
-								pixelWidth = width;
-								pixelHeight = height;
+								this.pixelLeft = this.left;
+								this.pixelTop = this.top;
+								this.pixelWidth = this.width;
+								this.pixelHeight = this.height;
 							}
 						}
 						break;
 
 					case MetricsMode.Relative:
-						pixelScaleX = 1.0f;
-						pixelScaleY = 1.0f;
-						pixelLeft = left;
-						pixelTop = top;
-						pixelWidth = width;
-						pixelHeight = height;
+						this.pixelScaleX = 1.0f;
+						this.pixelScaleY = 1.0f;
+						this.pixelLeft = this.left;
+						this.pixelTop = this.top;
+						this.pixelWidth = this.width;
+						this.pixelHeight = this.height;
 						break;
 				}
 
-				left = pixelLeft * pixelScaleX;
-				top = pixelTop * pixelScaleY;
-				width = pixelWidth * pixelScaleX;
-				height = pixelHeight * pixelScaleY;
+				this.left = this.pixelLeft * this.pixelScaleX;
+				this.top = this.pixelTop * this.pixelScaleY;
+				this.width = this.pixelWidth * this.pixelScaleX;
+				this.height = this.pixelHeight * this.pixelScaleY;
 
-				metricsMode = value;
-				isDerivedOutOfDate = true;
+				this.metricsMode = value;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1049,7 +1046,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -1060,11 +1057,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return clippingRegion;
+				return this.clippingRegion;
 			}
 		}
 
@@ -1075,11 +1072,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -1094,11 +1091,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return text;
+				return this.text;
 			}
 			set
 			{
-				text = value;
+				this.text = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -1110,27 +1107,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelTop;
+					return this.pixelTop;
 				}
 				else
 				{
-					return top;
+					return this.top;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelTop = (int)value;
+					this.pixelTop = (int)value;
 				}
 				else
 				{
-					top = value;
+					this.top = value;
 				}
 
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1156,11 +1153,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return vertAlign;
+				return this.vertAlign;
 			}
 			set
 			{
-				vertAlign = value;
+				this.vertAlign = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -1172,24 +1169,24 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelWidth;
+					return this.pixelWidth;
 				}
 				else
 				{
-					return width;
+					return this.width;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelWidth = (int)value;
+					this.pixelWidth = (int)value;
 				}
 				else
 				{
-					width = value;
+					this.width = value;
 				}
 				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
@@ -1203,11 +1200,13 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return zOrder;
+				return this.zOrder;
 			}
 		}
 
 		#endregion Properties
+
+		protected RenderOperation renderOperation = new RenderOperation();
 
 		#region IRenderable Members
 
@@ -1223,7 +1222,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 		}
 
@@ -1239,11 +1238,10 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return material.GetBestTechnique();
+				return this.material.GetBestTechnique();
 			}
 		}
 
-		protected RenderOperation renderOperation = new RenderOperation();
 		/// <summary>
 		///
 		/// </summary>
@@ -1252,7 +1250,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -1262,22 +1260,9 @@ namespace Axiom.Overlays
 		/// <param name="matrices"></param>
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
-			overlay.GetWorldTransforms( matrices );
+			this.overlay.GetWorldTransforms( matrices );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <returns></returns>
-		public Quaternion GetWorldOrientation()
-		{
-			return overlay.GetWorldOrientation();
-		}
-
-		public Vector3 GetWorldPosition()
-		{
-			return overlay.GetWorldPosition();
-		}
 		/// <summary>
 		///
 		/// </summary>
@@ -1326,7 +1311,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public Real GetSquaredViewDepth( Camera camera )
 		{
-			return 10000 - this.ZOrder;
+			return 10000 - ZOrder;
 		}
 
 		/// <summary>
@@ -1336,7 +1321,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return overlay.DerivedOrientation;
+				return this.overlay.DerivedOrientation;
 			}
 		}
 
@@ -1347,7 +1332,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return overlay.DerivedPosition;
+				return this.overlay.DerivedPosition;
 			}
 		}
 
@@ -1355,38 +1340,40 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return emptyLightList;
+				return this.emptyLightList;
 			}
 		}
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
-				customParams.Add( Vector4.Zero );
-			customParams[ index ] = val;
+			while ( this.customParams.Count <= index )
+			{
+				this.customParams.Add( Vector4.Zero );
+			}
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if ( this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
 			}
 		}
 
-		#endregion IRenderable Members
+		#endregion
 
 		#region IDisposable Implementation
 
@@ -1421,12 +1408,14 @@ namespace Axiom.Overlays
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						if (!renderOperation.IsDisposed)
-							renderOperation.Dispose();
+						if ( !this.renderOperation.IsDisposed )
+						{
+							this.renderOperation.Dispose();
+						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 				}
 
@@ -1434,332 +1423,14 @@ namespace Axiom.Overlays
 				// if we add them, they need to be released here.
 			}
 
-			base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
 
 		#region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
-		public class MetricsModeAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return ScriptEnumAttribute.GetScriptAttribute( (int)element.MetricsMode, typeof( MetricsMode ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( val, typeof( MetricsMode ) );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
-		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return ScriptEnumAttribute.GetScriptAttribute( (int)element.HorizontalAlignment, typeof( HorizontalAlignment ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
-		public class VerticalAlignmentAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return ScriptEnumAttribute.GetScriptAttribute( (int)element.VerticalAlignment, typeof( VerticalAlignment ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( val, typeof( VerticalAlignment ) );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
-		public class TopAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return element.Top.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.Top = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
-		public class LeftAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return element.Left.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.Left = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "width", "The width of the gui element.", typeof( OverlayElement ) )]
-		public class WidthAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return element.Width.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.Width = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "height", "The height of the gui element.", typeof( OverlayElement ) )]
-		public class HeightAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return element.Height.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.Height = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
-		public class VisibleAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					return element.IsVisible.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as OverlayElement;
-				if ( element != null )
-				{
-					element.IsVisible = StringConverter.ParseBool( val );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
+		#region Nested type: CaptionAttributeCommand
 
 		[ScriptableProperty( "caption", "The element caption, if supported.", typeof( OverlayElement ) )]
 		public class CaptionAttributeCommand : IPropertyCommand
@@ -1801,6 +1472,142 @@ namespace Axiom.Overlays
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
+		#endregion
+
+		#region Nested type: HeightAttributeCommand
+
+		[ScriptableProperty( "height", "The height of the gui element.", typeof( OverlayElement ) )]
+		public class HeightAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return element.Height.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.Height = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: HorizontalAlignmentAttributeCommand
+
+		[ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
+		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return ScriptEnumAttribute.GetScriptAttribute( (int)element.HorizontalAlignment, typeof( HorizontalAlignment ) );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: LeftAttributeCommand
+
+		[ScriptableProperty( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
+		public class LeftAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return element.Left.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.Left = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: MaterialAttributeCommand
+
 		[ScriptableProperty( "material", "The name of the material to use.", typeof( OverlayElement ) )]
 		public class MaterialAttributeCommand : IPropertyCommand
 		{
@@ -1841,6 +1648,242 @@ namespace Axiom.Overlays
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
+		#endregion
+
+		#region Nested type: MetricsModeAttributeCommand
+
+		[ScriptableProperty( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
+		public class MetricsModeAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return ScriptEnumAttribute.GetScriptAttribute( (int)element.MetricsMode, typeof( MetricsMode ) );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( val, typeof( MetricsMode ) );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: TopAttributeCommand
+
+		[ScriptableProperty( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
+		public class TopAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return element.Top.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.Top = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: VerticalAlignmentAttributeCommand
+
+		[ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
+		public class VerticalAlignmentAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return ScriptEnumAttribute.GetScriptAttribute( (int)element.VerticalAlignment, typeof( VerticalAlignment ) );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( val, typeof( VerticalAlignment ) );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: VisibleAttributeCommand
+
+		[ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
+		public class VisibleAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return element.IsVisible.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.IsVisible = StringConverter.ParseBool( val );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: WidthAttributeCommand
+
+		[ScriptableProperty( "width", "The width of the gui element.", typeof( OverlayElement ) )]
+		public class WidthAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					return element.Width.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as OverlayElement;
+				if ( element != null )
+				{
+					element.Width = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
 		#endregion ScriptableObject Interface Command Classes
+
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
+		public Quaternion GetWorldOrientation()
+		{
+			return this.overlay.GetWorldOrientation();
+		}
+
+		public Vector3 GetWorldPosition()
+		{
+			return this.overlay.GetWorldPosition();
+		}
 	}
 }

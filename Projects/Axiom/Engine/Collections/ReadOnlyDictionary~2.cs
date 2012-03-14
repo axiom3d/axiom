@@ -27,18 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -48,7 +47,7 @@ namespace Axiom.Collections
 													IDictionary, IDictionary<TKey, TValue>,
 													IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>> */
 	{
-		private IDictionary<TKey, TValue> dictionary;
+		private readonly IDictionary<TKey, TValue> dictionary;
 
 		public ReadOnlyDictionary( IDictionary<TKey, TValue> dictionary )
 		{
@@ -59,7 +58,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				return dictionary[ index ];
+				return this.dictionary[ index ];
 			}
 		}
 	}

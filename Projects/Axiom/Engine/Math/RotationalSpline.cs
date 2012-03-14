@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,23 +29,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
-
-using Axiom.Math.Collections;
 using Axiom.Utilities;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -70,14 +69,6 @@ namespace Axiom.Math
 	public sealed class RotationalSpline : Spline<Quaternion>
 	{
 		#region Constructors
-
-		/// <summary>
-		///		Creates a new Rotational Spline.
-		/// </summary>
-		public RotationalSpline()
-			: base()
-		{
-		}
 
 		#endregion
 
@@ -124,7 +115,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			var segment = t * ( pointList.Count - 1 );
+			Real segment = t * ( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -134,14 +125,14 @@ namespace Axiom.Math
 			return Interpolate( segIndex, t, useShortestPath );
 		}
 
-	    /// <summary>
-	    ///		Interpolates a single segment of the spline given a parametric value.
-	    /// </summary>
-	    /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
-	    /// <param name="t">Parametric value</param>
-	    /// <param name="useShortestPath"></param>
-	    /// <returns>An interpolated point along the spline.</returns>
-	    public Quaternion Interpolate( int index, Real t, bool useShortestPath )
+		/// <summary>
+		///		Interpolates a single segment of the spline given a parametric value.
+		/// </summary>
+		/// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
+		/// <param name="t">Parametric value</param>
+		/// <param name="useShortestPath"></param>
+		/// <returns>An interpolated point along the spline.</returns>
+		public Quaternion Interpolate( int index, Real t, bool useShortestPath )
 		{
 			Contract.Requires( index >= 0, "index", "Spline point index underrun." );
 			Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
@@ -165,10 +156,10 @@ namespace Axiom.Math
 			// Time for real interpolation
 
 			// Algorithm uses spherical quadratic interpolation
-			var p = pointList[ index ];
-			var q = pointList[ index + 1 ];
-			var a = tangentList[ index ];
-			var b = tangentList[ index + 1 ];
+			Quaternion p = pointList[ index ];
+			Quaternion q = pointList[ index + 1 ];
+			Quaternion a = tangentList[ index ];
+			Quaternion b = tangentList[ index + 1 ];
 
 			// return the final result
 			return Quaternion.Squad( t, p, a, b, q, useShortestPath );
@@ -197,20 +188,26 @@ namespace Axiom.Math
 
 			// if there arent at least 2 points, there is nothing to inerpolate
 			if ( numPoints < 2 )
+			{
 				return;
+			}
 
 			// closed or open?
 			if ( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			{
 				isClosed = true;
+			}
 			else
+			{
 				isClosed = false;
+			}
 
 			Quaternion invp, part1, part2, preExp;
 
 			// loop through the points and generate the tangents
 			for ( i = 0; i < numPoints; i++ )
 			{
-				var p = pointList[ i ];
+				Quaternion p = pointList[ i ];
 
 				// Get the inverse of p
 				invp = p.Inverse();
@@ -225,7 +222,9 @@ namespace Axiom.Math
 						part2 = ( invp * pointList[ numPoints - 2 ] ).Log();
 					}
 					else
+					{
 						part2 = ( invp * p ).Log();
+					}
 				}
 				else if ( i == numPoints - 1 )
 				{
@@ -235,7 +234,9 @@ namespace Axiom.Math
 						part1 = ( invp * pointList[ 1 ] ).Log();
 					}
 					else
+					{
 						part1 = ( invp * p ).Log();
+					}
 
 					part2 = ( invp * pointList[ i - 1 ] ).Log();
 				}

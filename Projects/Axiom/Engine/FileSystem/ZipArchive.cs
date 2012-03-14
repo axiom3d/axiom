@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,31 +23,33 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: ZipArchive.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.IO.IsolatedStorage;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.IO;
+
+using Axiom.Core;
+
+using ICSharpCode.SharpZipLib.Zip;
 #if SILVERLIGHT
 using System.Windows;
 #endif
-using Axiom.Core;
-using ICSharpCode.SharpZipLib.Zip;
 
 #endregion Namespace Declarations
 
@@ -67,13 +70,15 @@ namespace Axiom.FileSystem
 	{
 		#region Fields and Properties
 
+		protected List<FileInfo> _fileList = new List<FileInfo>();
+		protected string _zipDir = "/";
+
 		/// <summary>
 		/// root location of the zip file.
 		/// </summary>
 		protected string _zipFile;
-		protected string _zipDir = "/";
+
 		protected ZipInputStream _zipStream;
-		protected List<FileInfo> _fileList = new List<FileInfo>();
 
 		#endregion Fields and Properties
 
@@ -100,19 +105,23 @@ namespace Axiom.FileSystem
 		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
 			if ( currentDir == "" )
-				currentDir = _zipDir;
+			{
+				currentDir = this._zipDir;
+			}
 
 			Load();
 
-			var entry = _zipStream.GetNextEntry();
-			if (pattern.Contains("*"))
+			ZipEntry entry = this._zipStream.GetNextEntry();
+			if ( pattern.Contains( "*" ) )
+			{
 				pattern = pattern.Replace( ".", Path.DirectorySeparatorChar + "." ).Replace( "*", ".*" );
-			var ex = new Regex(pattern);
+			}
+			var ex = new Regex( pattern );
 
 			while ( entry != null )
 			{
 				// get the full path for the output file
-				var file = entry.Name;
+				string file = entry.Name;
 				if ( ex.IsMatch( file ) )
 				{
 					if ( simpleList != null )
@@ -131,10 +140,9 @@ namespace Axiom.FileSystem
 						fileInfo.ModifiedTime = entry.DateTime;
 						detailList.Add( fileInfo );
 					}
-
 				}
 
-				entry = _zipStream.GetNextEntry();
+				entry = this._zipStream.GetNextEntry();
 			}
 		}
 
@@ -143,9 +151,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructor
 
 		public ZipArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+			: base( name, archType ) { }
 
 		~ZipArchive()
 		{
@@ -172,7 +178,7 @@ namespace Axiom.FileSystem
 		/// </summary>
 		public override void Load()
 		{
-			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream.Available == 0)
+			if ( this._zipFile == null || this._zipFile.Length == 0 || this._zipStream.Available == 0 )
 			{
 				// read the open the zip archive
 				Stream fs = null;
@@ -181,22 +187,26 @@ namespace Axiom.FileSystem
 				if (Application.Current.HasElevatedPermissions)
 #endif
 				{
-					_zipFile = Path.GetFullPath(Name);
-					if (File.Exists(_zipFile))
-						fs = File.OpenRead(_zipFile);
+					this._zipFile = Path.GetFullPath( Name );
+					if ( File.Exists( this._zipFile ) )
+					{
+						fs = File.OpenRead( this._zipFile );
+					}
 				}
 
-				if (fs == null)
+				if ( fs == null )
 				{
-					_zipFile = Name.Replace('/', '.');
+					this._zipFile = Name.Replace( '/', '.' );
 
-					var assemblyContent = (from assembly in AssemblyEx.Neighbors()
-										   where _zipFile.StartsWith(assembly.FullName.Split(',')[0])
-										   select assembly).FirstOrDefault();
-					if (assemblyContent != null)
-						fs = assemblyContent.GetManifestResourceStream(_zipFile);
-				}  
-			  
+					Assembly assemblyContent = ( from assembly in AssemblyEx.Neighbors()
+												 where this._zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
+												 select assembly ).FirstOrDefault();
+					if ( assemblyContent != null )
+					{
+						fs = assemblyContent.GetManifestResourceStream( this._zipFile );
+					}
+				}
+
 #if (SILVERLIGHT && WINDOWS_PHONE) || ( XBOX || XBOX360)
 				if (fs == null)
 				{
@@ -215,13 +225,15 @@ namespace Axiom.FileSystem
 						fs = res.Stream;
 				}
 #endif
-				if (fs == null)
-					throw new FileNotFoundException(Name);
+				if ( fs == null )
+				{
+					throw new FileNotFoundException( Name );
+				}
 
 				fs.Position = 0;
 
 				// get a input stream from the zip file
-				_zipStream = new ZipInputStream( fs );
+				this._zipStream = new ZipInputStream( fs );
 				//ZipEntry entry = _zipStream.GetNextEntry();
 				//Regex ex = new Regex( pattern );
 
@@ -243,7 +255,6 @@ namespace Axiom.FileSystem
 
 				//    entry = _zipStream.GetNextEntry();
 				//}
-
 			}
 		}
 
@@ -252,11 +263,11 @@ namespace Axiom.FileSystem
 		/// </summary>
 		public override void Unload()
 		{
-			if ( _zipStream != null )
+			if ( this._zipStream != null )
 			{
-				_zipStream.Close();
-				_zipStream.Dispose();
-				_zipStream = null;
+				this._zipStream.Close();
+				this._zipStream.Dispose();
+				this._zipStream = null;
 			}
 		}
 
@@ -276,7 +287,7 @@ namespace Axiom.FileSystem
 			Load();
 
 			// get the first entry 
-			entry = _zipStream.GetNextEntry();
+			entry = this._zipStream.GetNextEntry();
 
 			// loop through all the entries until we find the requested one
 			while ( entry != null )
@@ -287,7 +298,7 @@ namespace Axiom.FileSystem
 				}
 
 				// look at the next file in the list
-				entry = _zipStream.GetNextEntry();
+				entry = this._zipStream.GetNextEntry();
 			}
 
 			if ( entry == null )
@@ -296,11 +307,11 @@ namespace Axiom.FileSystem
 			}
 
 			// write the data to the output stream
-			var size = 2048;
+			int size = 2048;
 			var data = new byte[ 2048 ];
 			while ( true )
 			{
-				size = _zipStream.Read( data, 0, data.Length );
+				size = this._zipStream.Read( data, 0, data.Length );
 				if ( size > 0 )
 				{
 					output.Write( data, 0, size );
@@ -377,7 +388,7 @@ namespace Axiom.FileSystem
 
 			findFiles( fileName, false, ret, null );
 
-			return (bool)( ret.Count > 0 );
+			return ( ret.Count > 0 );
 		}
 
 		#endregion Archive Implementation

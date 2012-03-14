@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Contract.cs 1256 2008-03-21 14:35:53Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -60,7 +64,7 @@ namespace Axiom.Utilities
 		}
 
 		/// <overloads>
-        /// <param name="condition"></param>
+		/// <param name="condition"></param>
 		/// <param name="name">Name of the requirement, this should be something unique to make it easy to find.</param>
 		/// </overloads>
 		public static void Requires( bool condition, string name )
@@ -74,8 +78,8 @@ namespace Axiom.Utilities
 		}
 
 		/// <overloads>
-        /// <param name="condition"></param>
-        /// <param name="name">Name of the requirement, this should be something unique to make it easy to find.</param>
+		/// <param name="condition"></param>
+		/// <param name="name">Name of the requirement, this should be something unique to make it easy to find.</param>
 		/// <param name="message">Message if the condition isn't met</param>
 		/// </overloads>
 		public static void Requires( bool condition, string name, string message )
@@ -146,7 +150,9 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( array );
 
 			if ( index < 0 || index >= array.Count )
+			{
 				throw new ArgumentOutOfRangeException( indexName );
+			}
 		}
 
 		/// <summary>
@@ -160,7 +166,9 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( array );
 
 			if ( index < 0 || index > array.Count )
+			{
 				throw new ArgumentOutOfRangeException( indexName );
+			}
 		}
 
 		/// <summary>
@@ -175,9 +183,13 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( array );
 
 			if ( count < 0 )
+			{
 				throw new ArgumentOutOfRangeException( countName );
+			}
 			if ( offset < 0 || array.Count - offset < count )
+			{
 				throw new ArgumentOutOfRangeException( offsetName );
+			}
 		}
 
 		/// <summary>
@@ -192,9 +204,13 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( str );
 
 			if ( count < 0 )
+			{
 				throw new ArgumentOutOfRangeException( countName );
+			}
 			if ( offset < 0 || str.Length - offset < count )
+			{
 				throw new ArgumentOutOfRangeException( offsetName );
+			}
 		}
 
 		/// <summary>
@@ -205,7 +221,7 @@ namespace Axiom.Utilities
 			Proclaim.NotNull( name );
 			RequiresNotNull( items, name );
 
-			for ( var i = 0; i < items.Count; i++ )
+			for ( int i = 0; i < items.Count; i++ )
 			{
 				if ( items[ i ] == null )
 				{

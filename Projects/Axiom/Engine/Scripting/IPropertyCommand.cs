@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: IPropertyCommand.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,31 +41,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.Scripting
 {
-    /// <summary>
-    /// Specialization of the IPropertyCommand using object
-    /// </summary>
-    public interface IPropertyCommand : IPropertyCommand<object>
-    {
-    };
+	/// <summary>
+	/// Specialization of the IPropertyCommand using object
+	/// </summary>
+	public interface IPropertyCommand : IPropertyCommand<object> { };
 
-    /// <summary>
-    /// Provides an interface for setting object properties via a Command Pattern.
-    /// </summary>
-    /// <typeparam name="TObjectType">Type of the object to operate on.</typeparam>
-    public interface IPropertyCommand<TObjectType>
-    {
-        /// <summary>
-        ///    Gets the value for this command from the target object.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        string Get( TObjectType target );
+	/// <summary>
+	/// Provides an interface for setting object properties via a Command Pattern.
+	/// </summary>
+	/// <typeparam name="TObjectType">Type of the object to operate on.</typeparam>
+	public interface IPropertyCommand<TObjectType>
+	{
+		/// <summary>
+		///    Gets the value for this command from the target object.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		string Get( TObjectType target );
 
-        /// <summary>
-        ///    Sets the value for this command on the target object.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="val"></param>
-        void Set( TObjectType target, string val );
-    };
+		/// <summary>
+		///    Sets the value for this command on the target object.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="val"></param>
+		void Set( TObjectType target, string val );
+	};
 }

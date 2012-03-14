@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -62,6 +66,7 @@ namespace Axiom.Media
 		///    Unknown pixel format.
 		/// </summary>
 		Unknown = 0,
+
 		/// <summary>
 		///    8-bit pixel format, all bits luminance.
 		/// </summary>
@@ -107,7 +112,7 @@ namespace Axiom.Media
 		/// <summary>
 		///    16-bit pixel format, 4 bits for blue, green, red and alpha.
 		/// </summary>
-        B4G4R4A4 = 8,
+		B4G4R4A4 = 8,
 
 		/// <summary>
 		///    16-bit pixel format, 8 bits for alpha, 8 bits for luminance.
@@ -130,13 +135,13 @@ namespace Axiom.Media
 		///    24-bit pixel format, 8 bits for red, green and blue.
 		/// </summary>
 		R8G8B8 = 10,
-        BYTE_BGR = R8G8B8, 
+		BYTE_BGR = R8G8B8,
 
 		/// <summary>
 		///    24-bit pixel format, 8 bits for blue, green and red.
 		/// </summary>
 		B8G8R8 = 11,
-        BYTE_RGB = B8G8R8,
+		BYTE_RGB = B8G8R8,
 
 		// <summary>
 		//    24-bit pixel format, all bits luminance.
@@ -272,25 +277,25 @@ namespace Axiom.Media
 		/// </summary>
 		SHORT_RGB = 37,
 
-        /// <summary>
-        /// PVRTC (PowerVR) RGB 2 bpp
-        /// </summary>
-        PVRTC_RGB2 = 38,
+		/// <summary>
+		/// PVRTC (PowerVR) RGB 2 bpp
+		/// </summary>
+		PVRTC_RGB2 = 38,
 
-        /// <summary>
-        /// PVRTC (PowerVR) RGBA 2 bpp
-        /// </summary>
-        PVRTC_RGBA2 = 39,
+		/// <summary>
+		/// PVRTC (PowerVR) RGBA 2 bpp
+		/// </summary>
+		PVRTC_RGBA2 = 39,
 
-        /// <summary>
-        /// PVRTC (PowerVR) RGB 4 bpp
-        /// </summary>
-        PVRTC_RGB4 = 40,
+		/// <summary>
+		/// PVRTC (PowerVR) RGB 4 bpp
+		/// </summary>
+		PVRTC_RGB4 = 40,
 
-        /// <summary>
-        /// PVRTC (PowerVR) RGBA 4 bpp
-        /// </summary>
-        PVRTC_RGBA4 = 41,
+		/// <summary>
+		/// PVRTC (PowerVR) RGBA 4 bpp
+		/// </summary>
+		PVRTC_RGBA4 = 41,
 
 		/// <summary>
 		///    The last one, used to size arrays of PixelFormat.  Don't add anything after this one!
@@ -328,30 +333,30 @@ namespace Axiom.Media
 	/// </summary>
 	public enum PixelComponentType
 	{
-        /// <summary>
-        ///  Byte per component (8 bit fixed 0.0..1.0)
-        /// </summary>
+		/// <summary>
+		///  Byte per component (8 bit fixed 0.0..1.0)
+		/// </summary>
 		Byte = 0,
 
-        /// <summary>
-        /// Short per component (16 bit fixed 0.0..1.0))
-        /// </summary>
+		/// <summary>
+		/// Short per component (16 bit fixed 0.0..1.0))
+		/// </summary>
 		Short = 1,
 
-        /// <summary>
-        /// 16 bit float per component
-        /// </summary>
+		/// <summary>
+		/// 16 bit float per component
+		/// </summary>
 		Float16 = 2,
 
-        /// <summary>
-        /// 32 bit float per component
-        /// </summary>
+		/// <summary>
+		/// 32 bit float per component
+		/// </summary>
 		Float32 = 3,
 
-        // this should not be part of the enum in C# ...
-        /// <summary>
-        /// Number of pixel types
-        /// </summary>
-		Count = 4 
+		// this should not be part of the enum in C# ...
+		/// <summary>
+		/// Number of pixel types
+		/// </summary>
+		Count = 4
 	}
 }

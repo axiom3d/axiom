@@ -1,9 +1,8 @@
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.ComponentModel.Composition;
-using Axiom.Animating;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -16,30 +15,28 @@ namespace Axiom.Demos
 	/// Summary description for CelShading.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class CelShading : TechDemo
+	public class CelShading : TechDemo
 	{
 		#region Constants
 
-		const int CustomShininess = 1;
-		const int CustomDiffuse = 2;
-		const int CustomSpecular = 3;
+		private const int CustomShininess = 1;
+		private const int CustomDiffuse = 2;
+		private const int CustomSpecular = 3;
 
 		#endregion Constants
 
 		#region Fields
 
-		SceneNode rotNode;
+		private SceneNode rotNode;
 
 		#endregion Fields
 
 		public override void CreateScene()
 		{
-			if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) ||
-				!Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.FragmentPrograms ) )
+			if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) || !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.FragmentPrograms ) )
 			{
-
 				throw new Exception( "Your hardware does not support vertex and fragment programs, so you cannot run this demo." );
 			}
 
@@ -47,8 +44,8 @@ namespace Axiom.Demos
 			Light light = scene.CreateLight( "MainLight" );
 			light.Position = new Vector3( 20, 80, 50 );
 
-			rotNode = scene.RootSceneNode.CreateChildSceneNode();
-			rotNode.CreateChildSceneNode( new Vector3( 20, 40, 50 ), Quaternion.Identity ).AttachObject( light );
+			this.rotNode = scene.RootSceneNode.CreateChildSceneNode();
+			this.rotNode.CreateChildSceneNode( new Vector3( 20, 40, 50 ), Quaternion.Identity ).AttachObject( light );
 
 			Entity entity = scene.CreateEntity( "Head", "ogrehead.mesh" );
 
@@ -91,7 +88,7 @@ namespace Axiom.Demos
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			rotNode.Yaw( evt.TimeSinceLastFrame * 30 );
+			this.rotNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
 			base.OnFrameStarted( source, evt );
 		}

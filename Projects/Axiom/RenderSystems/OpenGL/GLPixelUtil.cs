@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,33 +23,32 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Media;
 
 using Tao.OpenGl;
-
-using Axiom.Media;
-using Axiom.Graphics;
-using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	static class GLPixelUtil
+	internal static class GLPixelUtil
 	{
 		/// <summary>
 		/// Takes the Axiom pixel format and returns the appropriate GL one
@@ -173,16 +173,16 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.R8G8B8A8:
 					return Gl.GL_UNSIGNED_BYTE;
 #else
-                case PixelFormat.X8B8G8R8:
-			case PixelFormat.A8B8G8R8:
-                return Gl.GL_UNSIGNED_BYTE;
-			case PixelFormat.X8R8G8B8:
-            case PixelFormat.A8R8G8B8:
-				return Gl.GL_UNSIGNED_BYTE;
-            case PixelFormat.B8G8R8A8:
-                return Gl.GL_UNSIGNED_INT_8_8_8_8;
-			case PixelFormat.R8G8B8A8:
-				return Gl.GL_UNSIGNED_INT_8_8_8_8;
+				case PixelFormat.X8B8G8R8:
+				case PixelFormat.A8B8G8R8:
+					return Gl.GL_UNSIGNED_BYTE;
+				case PixelFormat.X8R8G8B8:
+				case PixelFormat.A8R8G8B8:
+					return Gl.GL_UNSIGNED_BYTE;
+				case PixelFormat.B8G8R8A8:
+					return Gl.GL_UNSIGNED_INT_8_8_8_8;
+				case PixelFormat.R8G8B8A8:
+					return Gl.GL_UNSIGNED_INT_8_8_8_8;
 #endif
 				case PixelFormat.A2R10G10B10:
 					return Gl.GL_UNSIGNED_INT_2_10_10_10_REV;
@@ -290,9 +290,13 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			int glFormat = GetGLInternalFormat( format );
 			if ( glFormat == Gl.GL_NONE )
+			{
 				return Gl.GL_RGBA8;
+			}
 			else
+			{
 				return glFormat;
+			}
 		}
 
 		/// <summary>
@@ -389,13 +393,20 @@ namespace Axiom.RenderSystems.OpenGL
 			do
 			{
 				if ( width > 1 )
+				{
 					width = width / 2;
+				}
 				if ( height > 1 )
+				{
 					height = height / 2;
+				}
 				if ( depth > 1 )
+				{
 					depth = depth / 2;
+				}
 				count++;
-			} while ( !( width == 1 && height == 1 && depth == 1 ) );
+			}
+			while ( !( width == 1 && height == 1 && depth == 1 ) );
 
 			return count;
 		}
@@ -410,10 +421,13 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
+			{
 				return value;
+			}
 			else
+			{
 				return (int)Bitwise.FirstPO2From( (uint)value );
-
+			}
 		}
 	}
 }

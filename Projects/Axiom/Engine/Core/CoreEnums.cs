@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,28 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-
 	/// <summary>
 	///     The level of detail in which the log will go into.
 	/// </summary>
@@ -84,16 +88,22 @@ namespace Axiom.Core
 	{
 		/// <summary>Query type mask which will be used for world geometry <see cref="SceneQuery"/></summary>
 		WorldGeometry = 0x80000000,
+
 		/// <summary>Query type mask which will be used for entities <see cref="SceneQuery"/></summary>
 		Entity = 0x40000000,
+
 		/// <summary>Query type mask which will be used for effects like billboardsets / particle systems <see cref="SceneQuery"/></summary>
 		Fx = 0x20000000,
+
 		/// <summary>Query type mask which will be used for StaticGeometry <see cref="SceneQuery"/></summary>
 		StaticGeometry = 0x10000000,
+
 		/// <summary>Query type mask which will be used for lights <see cref="SceneQuery"/></summary>
 		Light = 0x08000000,
+
 		/// <summary>Query type mask which will be used for frusta and cameras <see cref="SceneQuery"/></summary>
 		Frustum = 0x04000000,
+
 		/// <summary>User type mask limit</summary>
 		UserLimit = Frustum
 	}
@@ -105,20 +115,28 @@ namespace Axiom.Core
 	{
 		[ScriptEnum( "top_left" )]
 		TopLeft,
+
 		[ScriptEnum( "top_center" )]
 		TopCenter,
+
 		[ScriptEnum( "top_right" )]
 		TopRight,
+
 		[ScriptEnum( "center_left" )]
 		CenterLeft,
+
 		[ScriptEnum( "center" )]
 		Center,
+
 		[ScriptEnum( "center_right" )]
 		CenterRight,
+
 		[ScriptEnum( "bottom_left" )]
 		BottomLeft,
+
 		[ScriptEnum( "bottom_center" )]
 		BottomCenter,
+
 		[ScriptEnum( "bottom_right" )]
 		BottomRight
 	}
@@ -128,6 +146,7 @@ namespace Axiom.Core
 		/// <summary>Rotate the billboard's vertices around their facing direction</summary>
 		[ScriptEnum( "vertex" )]
 		Vertex,
+
 		/// <summary>Rotate the billboard's texture coordinates</summary>
 		[ScriptEnum( "texcoord" )]
 		Texcoord
@@ -141,15 +160,19 @@ namespace Axiom.Core
 		/// <summary>Standard point billboard (default), always faces the camera completely and is always upright</summary>
 		[ScriptEnum( "point" )]
 		Point,
+
 		/// <summary>Billboards are oriented around a shared direction vector (used as Y axis) and only rotate around this to face the camera</summary>
 		[ScriptEnum( "oriented_common" )]
 		OrientedCommon,
+
 		/// <summary>Billboards are oriented around their own direction vector (their own Y axis) and only rotate around this to face the camera</summary>
 		[ScriptEnum( "oriented_self" )]
 		OrientedSelf,
+
 		/// <summary>Billboards are oriented perpendicular to a shared direction vector</summary>
 		[ScriptEnum( "perpendicular_common" )]
 		PerpendicularCommon,
+
 		/// <summary>Billboards are oriented perpendicular to their own direction vector</summary>
 		[ScriptEnum( "perpendicular_self" )]
 		PerpendicularSelf
@@ -179,6 +202,7 @@ namespace Axiom.Core
 		Right,
 		Top,
 		Bottom,
+
 		/// <summary>Used for methods that require returning a value of this type but cannot return null.</summary>
 		None
 	}
@@ -190,8 +214,10 @@ namespace Axiom.Core
 	{
 		/// <summary>A flat plane.</summary>
 		Plane,
+
 		/// <summary>Typical box.</summary>
 		Cube,
+
 		/// <summary>That round shape.</summary>
 		Sphere
 	}
@@ -205,38 +231,51 @@ namespace Axiom.Core
 		///		Objects that must be rendered first (like backgrounds).
 		///	</summary>
 		Background = 0,
+
 		/// <summary>
 		///		First queue (after backgrounds), used for skyboxes if rendered first.
 		/// </summary>
 		SkiesEarly = 5,
+
 		/// <summary>All purpose queue.</summary>
 		One = 10,
+
 		/// <summary>All purpose queue.</summary>
 		Two = 20,
 		WorldGeometryOne = 25,
+
 		/// <summary>All purpose queue.</summary>
 		Three = 30,
+
 		/// <summary>All purpose queue.</summary>
 		Four = 40,
+
 		/// <summary>Default queue.</summary>
 		Main = 50,
+
 		/// <summary>All purpose queue.</summary>
 		Six = 60,
+
 		/// <summary>All purpose queue.</summary>
 		Seven = 70,
 		WorldGeometryTwo = 75,
+
 		/// <summary>All purpose queue.</summary>
 		Eight = 80,
+
 		/// <summary>All purpose queue.</summary>
 		Nine = 90,
+
 		/// <summary>
 		///		Last queue before overlays, used for skyboxes if rendered last.
 		/// </summary>
 		SkiesLate = 95,
+
 		/// <summary>
 		///		Use this queue for objects which must be rendered last e.g. overlays.
 		///	</summary>
 		Overlay = 100,
+
 		/// <summary>
 		///		A count of the set of all render queues
 		///	</summary>
@@ -252,10 +291,12 @@ namespace Axiom.Core
 		///     Transform is relative to the local space.
 		/// </summary>
 		Local,
+
 		/// <summary>
 		///     Transform is relative to the space of the parent node.
 		/// </summary>
 		Parent,
+
 		/// <summary>
 		///     Transform is relative to world space.
 		/// </summary>
@@ -276,18 +317,22 @@ namespace Axiom.Core
 		///    Return no world geometry hits at all.
 		/// </summary>
 		None = 0x01,
+
 		/// <summary>
 		///    Return references to convex plane-bounded regions.
 		/// </summary>
 		PlaneBoundedRegion = 0x02,
+
 		/// <summary>
 		///    Return a single intersection point (typically RaySceneQuery only)
 		/// </summary>
 		SingleIntersection = 0x04,
+
 		/// <summary>
 		///    Custom geometry as defined by the SceneManger.
 		/// </summary>
 		CustomGeometry = 0x08,
+
 		/// <summary>
 		///    General RenderOperation structure.
 		/// </summary>

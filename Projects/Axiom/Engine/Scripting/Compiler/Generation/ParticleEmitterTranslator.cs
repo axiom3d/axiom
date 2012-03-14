@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,14 +46,15 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: ParticleEmitterTranslator
+
 		public class ParticleEmitterTranslator : Translator
 		{
 			protected ParticleEmitter _Emitter;
 
 			public ParticleEmitterTranslator()
-				: base()
 			{
-				_Emitter = null;
+				this._Emitter = null;
 			}
 
 			#region Translator Implementation
@@ -72,7 +77,7 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				var type = string.Empty;
+				string type = string.Empty;
 				if ( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
@@ -80,24 +85,28 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				var system = (ParticleSystem)obj.Parent.Context;
-				_Emitter = system.AddEmitter( type );
+				this._Emitter = system.AddEmitter( type );
 
-				foreach ( var i in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
 						var prop = (PropertyAbstractNode)i;
-						var value = string.Empty;
+						string value = string.Empty;
 
 						// Glob the values together
-						foreach ( var it in prop.Values )
+						foreach ( AbstractNode it in prop.Values )
 						{
 							if ( it is AtomAbstractNode )
 							{
 								if ( string.IsNullOrEmpty( value ) )
-									value = ( (AtomAbstractNode)it ).Value;
+								{
+									value = ( it ).Value;
+								}
 								else
-									value = value + " " + ( (AtomAbstractNode)it ).Value;
+								{
+									value = value + " " + ( it ).Value;
+								}
 							}
 							else
 							{
@@ -106,7 +115,7 @@ namespace Axiom.Scripting.Compiler
 							}
 						}
 
-						if ( !_Emitter.SetParam( prop.Name, value ) )
+						if ( !this._Emitter.SetParam( prop.Name, value ) )
 						{
 							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 						}
@@ -120,6 +129,7 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+
+		#endregion
 	}
 }
-

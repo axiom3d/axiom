@@ -27,21 +27,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+
+using Axiom.Core;
 using Axiom.Math;
 using Axiom.Media;
-using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -49,86 +50,91 @@ namespace OctreeZone
 {
 	public class HeightmapTerrainZonePageSource : TerrainZonePageSource
 	{
+		/// Should we flip terrain vertically?
+		protected bool mFlipTerrainZone;
+
+		/// Image containing the source heightmap if loaded from non-RAW
+		protected Image mImage;
 
 		/// Is this input RAW?
 		protected bool mIsRaw;
-		/// Should we flip terrain vertically?
-		protected bool mFlipTerrainZone;
-		/// Image containing the source heightmap if loaded from non-RAW
-		protected Image mImage;
-		/// Arbitrary data loaded from RAW
-		protected MemoryStream mRawData;
+
 		/// The (single) terrain page this source will provide
 		protected TerrainZonePage mPage;
-		/// Source file name
-		protected string mSource;
-		/// Manual size if source is RAW
-		protected int mRawSize;
+
 		/// Manual bpp if source is RAW
 		protected byte mRawBpp;
+
+		/// Arbitrary data loaded from RAW
+		protected MemoryStream mRawData;
+
+		/// Manual size if source is RAW
+		protected int mRawSize;
+
+		/// Source file name
+		protected string mSource;
 
 
 		//-------------------------------------------------------------------------
 		public HeightmapTerrainZonePageSource()
 		{
-			mIsRaw = false;
-			mFlipTerrainZone = false;
-			mPage = null;
+			this.mIsRaw = false;
+			this.mFlipTerrainZone = false;
+			this.mPage = null;
 		}
+
 		//-------------------------------------------------------------------------
 		~HeightmapTerrainZonePageSource()
 		{
 			Shutdown();
 		}
+
 		//-------------------------------------------------------------------------
 		public override void Shutdown()
 		{
-			if ( null != mImage )
+			if ( null != this.mImage )
 			{
-				mImage.Dispose();
+				this.mImage.Dispose();
 			}
-			mPage = null;
+			this.mPage = null;
 		}
+
 		//-------------------------------------------------------------------------
 		public void LoadHeightmap()
 		{
 			int imgSize;
 			// Special-case RAW format
-			if ( mIsRaw )
+			if ( this.mIsRaw )
 			{
 				// Image size comes from setting (since RAW is not self-describing)
-				imgSize = mRawSize;
+				imgSize = this.mRawSize;
 
 				// Load data
-				mRawData = null;
-				Stream stream = ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName );
-				byte[] buffer = new byte[ stream.Length ];
+				this.mRawData = null;
+				Stream stream = ResourceGroupManager.Instance.OpenResource( this.mSource, ResourceGroupManager.Instance.WorldResourceGroupName );
+				var buffer = new byte[ stream.Length ];
 				stream.Read( buffer, 0, (int)stream.Length );
-				mRawData = new MemoryStream( buffer );
+				this.mRawData = new MemoryStream( buffer );
 
 				// Validate size
-				int numBytes = imgSize * imgSize * mRawBpp;
-				if ( mRawData.Length != numBytes )
+				int numBytes = imgSize * imgSize * this.mRawBpp;
+				if ( this.mRawData.Length != numBytes )
 				{
 					Shutdown();
-					throw new AxiomException( "RAW size (" + mRawData.Length +
-											 ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
+					throw new AxiomException( "RAW size (" + this.mRawData.Length + ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
 				}
 			}
 			else
 			{
-				mImage =
-					Image.FromStream( ResourceGroupManager.Instance.OpenResource( mSource,
-																				ResourceGroupManager.Instance.
-																					WorldResourceGroupName ), mSource.Split( '.' )[ 1 ] );
+				this.mImage = Image.FromStream( ResourceGroupManager.Instance.OpenResource( this.mSource, ResourceGroupManager.Instance.WorldResourceGroupName ), this.mSource.Split( '.' )[ 1 ] );
 
 				// Must be square (dimensions checked later)
-				if ( mImage.Width != mImage.Height )
+				if ( this.mImage.Width != this.mImage.Height )
 				{
 					Shutdown();
 					throw new AxiomException( "Heightmap must be square. HeightmapTerrainZonePageSource.LoadHeightmap" );
 				}
-				imgSize = mImage.Width;
+				imgSize = this.mImage.Width;
 			}
 			//check to make sure it's the expected size
 			if ( imgSize != mPageSize )
@@ -136,11 +142,10 @@ namespace OctreeZone
 				Shutdown();
 				throw new AxiomException( "Error: Invalid heightmap size : " + imgSize + ". Should be " + mPageSize + "HeightmapTerrainZonePageSource.LoadHeightmap" );
 			}
-
 		}
+
 		//-------------------------------------------------------------------------
-		public override void Initialize( TerrainZone tsm, int tileSize, int pageSize, bool asyncLoading,
-			TerrainZonePageSourceOptionList optionList )
+		public override void Initialize( TerrainZone tsm, int tileSize, int pageSize, bool asyncLoading, TerrainZonePageSourceOptionList optionList )
 		{
 			// Shutdown to clear any previous data
 			Shutdown();
@@ -150,89 +155,86 @@ namespace OctreeZone
 			// Get source image
 
 			bool imageFound = false;
-			mIsRaw = false;
+			this.mIsRaw = false;
 			bool rawSizeFound = false;
 			bool rawBppFound = false;
-			foreach ( KeyValuePair<string, string> opt in optionList )
+			foreach ( var opt in optionList )
 			{
 				string key = opt.Key;
 				key = key.Trim();
 				if ( key.StartsWith( "HeightmapImage".ToLower(), StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					mSource = opt.Value;
+					this.mSource = opt.Value;
 					imageFound = true;
 					// is it a raw?
-					if ( mSource.ToLowerInvariant().Trim().EndsWith( "raw" ) )
+					if ( this.mSource.ToLowerInvariant().Trim().EndsWith( "raw" ) )
 					{
-						mIsRaw = true;
+						this.mIsRaw = true;
 					}
 				}
 				else if ( key.StartsWith( "Heightmap.raw.size", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					mRawSize = Convert.ToInt32( opt.Value );
+					this.mRawSize = Convert.ToInt32( opt.Value );
 					rawSizeFound = true;
 				}
 				else if ( key.StartsWith( "Heightmap.raw.bpp", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					mRawBpp = Convert.ToByte( opt.Value );
-					if ( mRawBpp < 1 || mRawBpp > 2 )
+					this.mRawBpp = Convert.ToByte( opt.Value );
+					if ( this.mRawBpp < 1 || this.mRawBpp > 2 )
 					{
-						throw new AxiomException(
-							"Invalid value for 'Heightmap.raw.bpp', must be 1 or 2. HeightmapTerrainZonePageSource.Initialise" );
+						throw new AxiomException( "Invalid value for 'Heightmap.raw.bpp', must be 1 or 2. HeightmapTerrainZonePageSource.Initialise" );
 					}
 					rawBppFound = true;
 				}
 				else if ( key.StartsWith( "Heightmap.flip", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					mFlipTerrainZone = Convert.ToBoolean( opt.Value );
+					this.mFlipTerrainZone = Convert.ToBoolean( opt.Value );
 				}
 				else
 				{
-					LogManager.Instance.Write( "Warning: ignoring unknown Heightmap option '"
-						+ key + "'" );
+					LogManager.Instance.Write( "Warning: ignoring unknown Heightmap option '" + key + "'" );
 				}
 			}
 			if ( !imageFound )
 			{
 				throw new AxiomException( "Missing option 'HeightmapImage'. HeightmapTerrainZonePageSource.Initialise" );
 			}
-			if ( mIsRaw &&
-				( !rawSizeFound || !rawBppFound ) )
+			if ( this.mIsRaw && ( !rawSizeFound || !rawBppFound ) )
 			{
-				throw new AxiomException(
-					"Options 'Heightmap.raw.size' and 'Heightmap.raw.bpp' must be specified for RAW heightmap sources. HeightmapTerrainZonePageSource.Initialise" );
+				throw new AxiomException( "Options 'Heightmap.raw.size' and 'Heightmap.raw.bpp' must be specified for RAW heightmap sources. HeightmapTerrainZonePageSource.Initialise" );
 			}
 			// Load it!
 			LoadHeightmap();
 		}
+
 		//-------------------------------------------------------------------------
 		public override void RequestPage( ushort x, ushort y )
 		{
 			// Only 1 page provided
-			if ( x == 0 && y == 0 && mPage == null )
+			if ( x == 0 && y == 0 && this.mPage == null )
 			{
 				// Convert the image data to unscaled floats
-				ulong totalPageSize = (ulong)( mPageSize * mPageSize );
-				Real[] heightData = new Real[ totalPageSize ];
+				var totalPageSize = (ulong)( mPageSize * mPageSize );
+				var heightData = new Real[ totalPageSize ];
 				byte[] pOrigSrc, pSrc;
 				Real[] pDest = heightData;
 				Real invScale;
 				bool is16bit = false;
 
-				if ( mIsRaw )
+				if ( this.mIsRaw )
 				{
-					pOrigSrc = mRawData.GetBuffer();
-					is16bit = ( mRawBpp == 2 );
+					pOrigSrc = this.mRawData.GetBuffer();
+					is16bit = ( this.mRawBpp == 2 );
 				}
 				else
 				{
-					PixelFormat pf = mImage.Format;
+					PixelFormat pf = this.mImage.Format;
 					if ( pf != PixelFormat.L8 && pf != PixelFormat.L16 )
 					{
 						throw new AxiomException( "Error: Image is not a grayscale image. HeightmapTerrainZonePageSource.RequestPage" );
 					}
 
-					pOrigSrc = mImage.Data;
+					pOrigSrc = this.mImage.Data;
 					is16bit = ( pf == PixelFormat.L16 );
 				}
 				// Determine mapping from fixed to floating
@@ -293,25 +295,25 @@ namespace OctreeZone
 				// Note that we're using a single material for now
 				if ( null != mTerrainZone )
 				{
-					mPage = BuildPage( heightData,
-						mTerrainZone.Options.terrainMaterial );
-					mTerrainZone.AttachPage( 0, 0, mPage );
+					this.mPage = BuildPage( heightData, mTerrainZone.Options.terrainMaterial );
+					mTerrainZone.AttachPage( 0, 0, this.mPage );
 				}
 
 				// Free temp store
 				// OGRE_FREE(heightData, MEMCATEGORY_RESOURCE);
 			}
 		}
+
 		//-------------------------------------------------------------------------
 		public void ExpirePage( ushort x, ushort y )
 		{
 			// Single page
-			if ( x == 0 && y == 0 && null != mPage )
+			if ( x == 0 && y == 0 && null != this.mPage )
 			{
-				mPage = null;
+				this.mPage = null;
 			}
-
 		}
+
 		//-------------------------------------------------------------------------
 	}
 }

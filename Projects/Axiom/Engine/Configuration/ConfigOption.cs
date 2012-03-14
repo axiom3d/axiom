@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 using Axiom.Collections;
 using Axiom.Graphics;
@@ -47,9 +47,7 @@ namespace Axiom.Configuration
 	public class ConfigOption : ConfigOption<string>
 	{
 		public ConfigOption( string name, string value, bool immutable )
-			: base( name, value, immutable )
-		{
-		}
+			: base( name, value, immutable ) { }
 	}
 
 	/// <summary>
@@ -58,11 +56,10 @@ namespace Axiom.Configuration
 	/// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
 	public class ConfigOption<T>
 	{
-		//RenderSystem _parent;
-
 		#region Name Property
 
-		private string _name;
+		private readonly string _name;
+
 		/// <summary>
 		/// The name for the Configuration Option
 		/// </summary>
@@ -70,7 +67,7 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _name;
+				return this._name;
 			}
 		}
 
@@ -79,6 +76,7 @@ namespace Axiom.Configuration
 		#region Value Property
 
 		private T _value;
+
 		/// <summary>
 		/// The value of the Configuration Option
 		/// </summary>
@@ -86,14 +84,14 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _value;
+				return this._value;
 			}
 			set
 			{
-				if ( _immutable != true )
+				if ( this._immutable != true )
 				{
-					_value = value;
-					OnValueChanged( _name, _value );
+					this._value = value;
+					OnValueChanged( this._name, this._value );
 				}
 			}
 		}
@@ -102,7 +100,8 @@ namespace Axiom.Configuration
 
 		#region PossibleValues Property
 
-		private ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
+		private readonly ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
+
 		/// <summary>
 		/// A list of the possible values for this Configuration Option
 		/// </summary>
@@ -110,7 +109,7 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _possibleValues;
+				return this._possibleValues;
 			}
 		}
 
@@ -119,6 +118,7 @@ namespace Axiom.Configuration
 		#region Immutable Property
 
 		private bool _immutable;
+
 		/// <summary>
 		/// Indicates if this option can be modified.
 		/// </summary>
@@ -126,44 +126,54 @@ namespace Axiom.Configuration
 		{
 			set
 			{
-				_immutable = value;
+				this._immutable = value;
 			}
 			get
 			{
-				return _immutable;
+				return this._immutable;
 			}
 		}
 
 		#endregion Immutable Property
 
+		//RenderSystem _parent;
+
 		public ConfigOption( string name, T value, bool immutable )
 		{
-			_name = name;
-			_value = value;
-			_immutable = immutable;
+			this._name = name;
+			this._value = value;
+			this._immutable = immutable;
 		}
 
 		#region Events
 
+		#region Delegates
+
 		public delegate void ValueChanged( string name, string value );
+
+		#endregion
+
 		public event ValueChanged ConfigValueChanged;
 
 		private void OnValueChanged( string name, T value )
 		{
 			if ( ConfigValueChanged != null )
+			{
 				ConfigValueChanged( name, Value.ToString() );
+			}
 		}
 
 		#endregion Events
 
 		public override string ToString()
 		{
-			return string.Format( "{0} : {1}", this.Name, this.Value );
+			return string.Format( "{0} : {1}", Name, Value );
 		}
 
-		public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int, ValueType>
-		{
+		#region Nested type: ConfigOptionValuesCollection
 
-		}
+		public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int, ValueType> { }
+
+		#endregion
 	}
 }

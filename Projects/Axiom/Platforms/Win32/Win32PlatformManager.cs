@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Input;
@@ -47,7 +49,7 @@ namespace Axiom.Platforms.Win32
 	/// <summary>
 	///		Platform management specialization for Microsoft Windows (r) platform.
 	/// </summary>
-	[Export(typeof(IPlatformManager))]  
+	[Export( typeof( IPlatformManager ) )]
 	public class Win32PlatformManager : IPlatformManager
 	{
 		#region Fields
@@ -76,9 +78,11 @@ namespace Axiom.Platforms.Win32
 		/// <returns></returns>
 		public InputReader CreateInputReader()
 		{
-			if ( inputReader == null )
-				inputReader = new Win32InputReader();
-			return inputReader;
+			if ( this.inputReader == null )
+			{
+				this.inputReader = new Win32InputReader();
+			}
+			return this.inputReader;
 		}
 
 		/// <summary>
@@ -86,13 +90,13 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		public void Dispose()
 		{
-			if ( inputReader != null )
+			if ( this.inputReader != null )
 			{
-				inputReader.Dispose();
+				this.inputReader.Dispose();
 			}
 			LogManager.Instance.Write( "Win32 Platform Manager Shutdown." );
 		}
 
-		#endregion IPlatformManager Members
+		#endregion
 	}
 }

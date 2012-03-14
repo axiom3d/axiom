@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,9 +51,8 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		public String Name;
-
 		public uint Id;
+		public String Name;
 
 		public IList<AbstractNode> Values = new List<AbstractNode>();
 
@@ -58,10 +61,23 @@ namespace Axiom.Scripting.Compiler.AST
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Id = 0;
+			this.Id = 0;
 		}
 
 		#region AbstractNode Implementation
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return this.Name;
+			}
+			set
+			{
+				this.Name = value;
+			}
+		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -69,29 +85,15 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
-			node.Id = Id;
-			foreach ( var an in Values )
+			node.Name = this.Name;
+			node.Id = this.Id;
+			foreach ( AbstractNode an in this.Values )
 			{
-				var newNode = (AbstractNode)( an.Clone() );
+				AbstractNode newNode = ( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}
 			return node;
-		}
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return Name;
-			}
-			set
-			{
-				Name = value;
-			}
-
 		}
 
 		#endregion AbstractNode Implementation

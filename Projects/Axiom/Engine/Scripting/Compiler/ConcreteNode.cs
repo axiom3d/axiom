@@ -27,18 +27,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Axiom.Scripting.Compiler.Parser;
 
 #endregion Namespace Declarations
 
@@ -64,11 +63,11 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public class ConcreteNode
 	{
-		public string Token;
+		public List<ConcreteNode> Children = new List<ConcreteNode>();
 		public string File;
 		public uint Line;
-		public ConcreteNodeType Type;
-		public List<ConcreteNode> Children = new List<ConcreteNode>();
 		public ConcreteNode Parent;
+		public string Token;
+		public ConcreteNodeType Type;
 	}
 }

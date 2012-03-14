@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Core;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -54,14 +58,14 @@ namespace Axiom.Graphics
 
 		protected HardwareBufferManagerBase Manager;
 		protected int numVertices;
-		protected VertexDeclaration vertexDeclaration;
 		protected int useCount;
+		protected VertexDeclaration vertexDeclaration;
 
 		#endregion
 
 		#region Construction and destruction
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
@@ -75,47 +79,49 @@ namespace Axiom.Graphics
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-                shadowBuffer = new DefaultHardwareVertexBuffer(Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic);
+				shadowBuffer = new DefaultHardwareVertexBuffer( this.Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
 			}
 
-			useCount = 0;
+			this.useCount = 0;
 		}
 
-        [OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
-        protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !this.IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    if ( this.Manager != null )
-                        this.Manager.NotifyVertexBufferDestroyed( this );
+		[OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.Manager != null )
+					{
+						this.Manager.NotifyVertexBufferDestroyed( this );
+					}
 
-                    shadowBuffer.SafeDispose();
-                    shadowBuffer = null;
-                }
-            }
+					shadowBuffer.SafeDispose();
+					shadowBuffer = null;
+				}
+			}
 
-            base.dispose( disposeManagedResources );
-        }
+			base.dispose( disposeManagedResources );
+		}
 
-        #endregion Construction and destruction
+		#endregion Construction and destruction
 
-        #region Properties
+		#region Properties
 
-        public VertexDeclaration VertexDeclaration
-        {
-            get
-            {
-                return vertexDeclaration;
-            }
-        }
+		public VertexDeclaration VertexDeclaration
+		{
+			get
+			{
+				return this.vertexDeclaration;
+			}
+		}
 
 		public int VertexSize
 		{
 			get
 			{
-				return vertexDeclaration.GetVertexSize();
+				return this.vertexDeclaration.GetVertexSize();
 			}
 		}
 
@@ -123,7 +129,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return numVertices;
+				return this.numVertices;
 			}
 		}
 
@@ -131,82 +137,82 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return useCount;
+				return this.useCount;
 			}
 		}
 
-        #region IsInstanceData
+		#region IsInstanceData
 
-        [OgreVersion(1, 7, 2790)]
-	    protected bool isInstanceData;
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool isInstanceData;
 
-        [OgreVersion(1, 7, 2790)]
-        public bool IsInstanceData
-        {
-            get
-            {
-                return isInstanceData;
-            }
-            set
-            {
-                if ( value && !CheckIfVertexInstanceDataIsSupported() )
-                {
-                    throw new AxiomException( "vertex instance data is not supported by the render system." );
-                }
-                // else
-                {
-                    isInstanceData = value;
-                }
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public bool IsInstanceData
+		{
+			get
+			{
+				return this.isInstanceData;
+			}
+			set
+			{
+				if ( value && !CheckIfVertexInstanceDataIsSupported() )
+				{
+					throw new AxiomException( "vertex instance data is not supported by the render system." );
+				}
+				// else
+				{
+					this.isInstanceData = value;
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region InstanceDataStepRate
+		#region InstanceDataStepRate
 
-        [OgreVersion(1, 7, 2790)]
-        protected int instanceDataStepRate;
+		[OgreVersion( 1, 7, 2790 )]
+		protected int instanceDataStepRate;
 
-        [OgreVersion(1, 7, 2790)]
-        public int InstanceDataStepRate
-        {
-            get
-            {
-                return instanceDataStepRate;
-            }
-            set
-            {
-                if (value > 0)
-                {
-                    instanceDataStepRate = value;
-                }
-                else
-                {
-                    throw new AxiomException("Instance data step rate must be bigger then 0.");    
-                }
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public int InstanceDataStepRate
+		{
+			get
+			{
+				return this.instanceDataStepRate;
+			}
+			set
+			{
+				if ( value > 0 )
+				{
+					this.instanceDataStepRate = value;
+				}
+				else
+				{
+					throw new AxiomException( "Instance data step rate must be bigger then 0." );
+				}
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// Checks if vertex instance data is supported by the render system
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool CheckIfVertexInstanceDataIsSupported()
-        {
-            // Use the current render system
-    	    var rs = Root.Instance.RenderSystem;
+		/// <summary>
+		/// Checks if vertex instance data is supported by the render system
+		/// </summary>
+		/// <returns></returns>
+		protected virtual bool CheckIfVertexInstanceDataIsSupported()
+		{
+			// Use the current render system
+			RenderSystem rs = Root.Instance.RenderSystem;
 
-    	    // Check if the supported  
-            throw new NotImplementedException();
-            //return rs.Capabilities.HasCapability(Capabilities.VertexBufferInstanceData);
-        }
+			// Check if the supported  
+			throw new NotImplementedException();
+			//return rs.Capabilities.HasCapability(Capabilities.VertexBufferInstanceData);
+		}
 
-	    #endregion
-    }
+		#endregion
+	}
 }

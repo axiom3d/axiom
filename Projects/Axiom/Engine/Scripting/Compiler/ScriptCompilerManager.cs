@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
+using System.IO;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
@@ -52,18 +57,17 @@ namespace Axiom.Scripting.Compiler
 	{
 		#region Fields and Properties
 
-		private List<string> _scriptPatterns = new List<string>();
+		private readonly ScriptTranslatorManager _builtinTranslatorManager;
+		private readonly ScriptCompiler _compiler;
+		private readonly List<string> _scriptPatterns = new List<string>();
 
-		private ScriptCompiler _compiler;
-
-		private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
-		private ScriptTranslatorManager _builtinTranslatorManager;
+		private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
 
 		public IList<ScriptTranslatorManager> TranslatorManagers
 		{
 			get
 			{
-				return _translatorManagers;
+				return this._translatorManagers;
 			}
 		}
 
@@ -72,7 +76,6 @@ namespace Axiom.Scripting.Compiler
 		#region Construction and Destruction
 
 		public ScriptCompilerManager()
-			: base()
 		{
 #if AXIOM_USENEWCOMPILERS
 			this._scriptPatterns.Add( "*.program" );
@@ -89,6 +92,7 @@ namespace Axiom.Scripting.Compiler
 			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
 			this._translatorManagers.Add( this._builtinTranslatorManager );
 		}
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -103,13 +107,15 @@ namespace Axiom.Scripting.Compiler
 			ScriptCompiler.Translator translator = null;
 
 			// Start looking from the back
-			if ( _translatorManagers.Count > 0 )
+			if ( this._translatorManagers.Count > 0 )
 			{
-				for ( var i = _translatorManagers.Count - 1; i >= 0; i-- )
+				for ( int i = this._translatorManagers.Count - 1; i >= 0; i-- )
 				{
-					translator = _translatorManagers[ i ].GetTranslator( node );
+					translator = this._translatorManagers[ i ].GetTranslator( node );
 					if ( translator != null )
+					{
 						break;
+					}
 				}
 			}
 
@@ -127,68 +133,22 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 		}
 
-		public void ParseScript( System.IO.Stream stream, string groupName, string fileName )
+		public void ParseScript( Stream stream, string groupName, string fileName )
 		{
 			// Set the listener on the compiler before we continue
 			_unsetCompilerEvents(); // Double tap
 			_setCompilerEvents();
 
-			var rdr = new System.IO.StreamReader( stream );
-			var script = rdr.ReadToEnd();
-			_compiler.Compile( script, fileName, groupName );
+			var rdr = new StreamReader( stream );
+			string script = rdr.ReadToEnd();
+			this._compiler.Compile( script, fileName, groupName );
 
 			// Unset events in order to avoid that compiler's events will be called twice next time
 			_unsetCompilerEvents();
-		}
-
-		/// <summary>
-		/// Set events of this manager's compiler
-		/// </summary>
-		private void _setCompilerEvents()
-		{
-			Contract.RequiresNotNull( _compiler, "_compiler" );
-
-			if ( this.OnImportFile != null )
-				_compiler.OnImportFile += this.OnImportFile;
-
-			if ( this.OnPreConversion != null )
-				_compiler.OnPreConversion += this.OnPreConversion;
-
-			if ( this.OnPostConversion != null )
-				_compiler.OnPostConversion += this.OnPostConversion;
-
-			if ( this.OnCompileError != null )
-				_compiler.OnCompileError += this.OnCompileError;
-
-			if ( this.OnCompilerEvent != null )
-				_compiler.OnCompilerEvent += this.OnCompilerEvent;
-		}
-
-		/// <summary>
-		/// Unset events of this manager's compiler
-		/// </summary>
-		private void _unsetCompilerEvents()
-		{
-			Contract.RequiresNotNull( _compiler, "_compiler" );
-
-			if ( this.OnImportFile != null )
-				_compiler.OnImportFile -= this.OnImportFile;
-
-			if ( this.OnPreConversion != null )
-				_compiler.OnPreConversion -= this.OnPreConversion;
-
-			if ( this.OnPostConversion != null )
-				_compiler.OnPostConversion -= this.OnPostConversion;
-
-			if ( this.OnCompileError != null )
-				_compiler.OnCompileError -= this.OnCompileError;
-
-			if ( this.OnCompilerEvent != null )
-				_compiler.OnCompilerEvent -= this.OnCompilerEvent;
 		}
 
 		public Real LoadingOrder
@@ -197,6 +157,72 @@ namespace Axiom.Scripting.Compiler
 			{
 				// Load relatively early, before most script loaders run
 				return 90.0f;
+			}
+		}
+
+		/// <summary>
+		/// Set events of this manager's compiler
+		/// </summary>
+		private void _setCompilerEvents()
+		{
+			Contract.RequiresNotNull( this._compiler, "_compiler" );
+
+			if ( OnImportFile != null )
+			{
+				this._compiler.OnImportFile += OnImportFile;
+			}
+
+			if ( OnPreConversion != null )
+			{
+				this._compiler.OnPreConversion += OnPreConversion;
+			}
+
+			if ( OnPostConversion != null )
+			{
+				this._compiler.OnPostConversion += OnPostConversion;
+			}
+
+			if ( OnCompileError != null )
+			{
+				this._compiler.OnCompileError += OnCompileError;
+			}
+
+			if ( OnCompilerEvent != null )
+			{
+				this._compiler.OnCompilerEvent += OnCompilerEvent;
+			}
+		}
+
+		/// <summary>
+		/// Unset events of this manager's compiler
+		/// </summary>
+		private void _unsetCompilerEvents()
+		{
+			Contract.RequiresNotNull( this._compiler, "_compiler" );
+
+			if ( OnImportFile != null )
+			{
+				this._compiler.OnImportFile -= OnImportFile;
+			}
+
+			if ( OnPreConversion != null )
+			{
+				this._compiler.OnPreConversion -= OnPreConversion;
+			}
+
+			if ( OnPostConversion != null )
+			{
+				this._compiler.OnPostConversion -= OnPostConversion;
+			}
+
+			if ( OnCompileError != null )
+			{
+				this._compiler.OnCompileError -= OnCompileError;
+			}
+
+			if ( OnCompilerEvent != null )
+			{
+				this._compiler.OnCompilerEvent -= OnCompilerEvent;
 			}
 		}
 
@@ -220,7 +246,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return _translators.Count;
+				return this._translators.Count;
 			}
 		}
 
@@ -234,13 +260,15 @@ namespace Axiom.Scripting.Compiler
 			if ( node is ObjectAbstractNode )
 			{
 				var obj = (ObjectAbstractNode)node;
-				var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
-				var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
+				ObjectAbstractNode parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
+				Keywords parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( var currentTranslator in _translators )
+				foreach ( ScriptCompiler.Translator currentTranslator in this._translators )
 				{
 					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
+					{
 						return currentTranslator;
+					}
 				}
 			}
 
@@ -254,7 +282,6 @@ namespace Axiom.Scripting.Compiler
 	public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
 	{
 		public BuiltinScriptTranslatorManager()
-			: base()
 		{
 			_translators.Add( new ScriptCompiler.MaterialTranslator() );
 			_translators.Add( new ScriptCompiler.TechniqueTranslator() );
@@ -264,7 +291,7 @@ namespace Axiom.Scripting.Compiler
 			//TODO uncomment following file when ExternalTextureSourceManager is being implemented
 			//_translators.Add( new ScriptCompiler.TextureSourceTranslator() );
 			_translators.Add( new ScriptCompiler.GpuProgramTranslator() );
-            _translators.Add( new ScriptCompiler.SharedParametersTranslator() );
+			_translators.Add( new ScriptCompiler.SharedParametersTranslator() );
 
 			/**************************************************************************
 			* Particle System section

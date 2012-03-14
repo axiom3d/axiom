@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -59,8 +59,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			this.manager = manager;
 
-			pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
-			manager.RequestPBuffer( pbFormat, Width, Height );
+			this.pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
+			manager.RequestPBuffer( this.pbFormat, Width, Height );
 		}
 
 		#endregion Construction and Destruction
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( disposeManagedResources )
 				{
-					manager.ReleasePBuffer( pbFormat );
+					this.manager.ReleasePBuffer( this.pbFormat );
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -90,14 +90,14 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToUpper() )
 				{
 					case "TARGET":
-						GLSurfaceDesc target = new GLSurfaceDesc();
-						target.Buffer = (GLHardwarePixelBuffer)this.pixelBuffer;
-						target.ZOffset = this.zOffset;
+						var target = new GLSurfaceDesc();
+						target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
+						target.ZOffset = zOffset;
 						return target;
 						break;
 					case "GLCONTEXT":
 						// Get PBuffer for our internal format
-						return manager.GetContextFor( pbFormat, Width, Height );
+						return this.manager.GetContextFor( this.pbFormat, Width, Height );
 						break;
 					default:
 						return base[ attribute ];
@@ -105,6 +105,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 			}
 		}
+
 		#endregion Methods
 	}
 }

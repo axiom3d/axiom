@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,31 +23,30 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.IO;
 using System.Diagnostics;
 
-using Axiom.Core;
 using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
-
-
 	///<summary>
 	///    Structure used to define a box in a 3-D integer space.
 	///    Note that the left, top, and front edges are included but the right, 
@@ -54,15 +54,14 @@ namespace Axiom.Media
 	///</summary>
 	public class BasicBox
 	{
-
 		#region Fields
 
-		protected int left;
-		protected int top;
-		protected int right;
+		protected int back;
 		protected int bottom;
 		protected int front;
-		protected int back;
+		protected int left;
+		protected int right;
+		protected int top;
 
 		#endregion Fields
 
@@ -71,9 +70,7 @@ namespace Axiom.Media
 		///<summary>
 		///    Parameterless constructor for setting the members manually
 		///</summary>
-		public BasicBox()
-		{
-		}
+		public BasicBox() { }
 
 		///<summary>
 		///    Define a box from left, top, right and bottom coordinates
@@ -95,7 +92,7 @@ namespace Axiom.Media
 			this.bottom = bottom;
 			this.front = 0;
 			this.back = 1;
-			Debug.Assert( right >= left && bottom >= top && back >= front );
+			Debug.Assert( right >= left && bottom >= top && this.back >= this.front );
 		}
 
 		///<summary>
@@ -131,11 +128,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return left;
+				return this.left;
 			}
 			set
 			{
-				left = value;
+				this.left = value;
 			}
 		}
 
@@ -143,11 +140,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return top;
+				return this.top;
 			}
 			set
 			{
-				top = value;
+				this.top = value;
 			}
 		}
 
@@ -155,11 +152,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return right;
+				return this.right;
 			}
 			set
 			{
-				right = value;
+				this.right = value;
 			}
 		}
 
@@ -167,11 +164,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return bottom;
+				return this.bottom;
 			}
 			set
 			{
-				bottom = value;
+				this.bottom = value;
 			}
 		}
 
@@ -179,11 +176,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return front;
+				return this.front;
 			}
 			set
 			{
-				front = value;
+				this.front = value;
 			}
 		}
 
@@ -191,11 +188,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return back;
+				return this.back;
 			}
 			set
 			{
-				back = value;
+				this.back = value;
 			}
 		}
 
@@ -207,7 +204,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return right - left;
+				return this.right - this.left;
 			}
 		}
 
@@ -218,7 +215,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return bottom - top;
+				return this.bottom - this.top;
 			}
 		}
 
@@ -229,7 +226,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return back - front;
+				return this.back - this.front;
 			}
 		}
 
@@ -242,22 +239,20 @@ namespace Axiom.Media
 		///</summary>
 		public bool Contains( BasicBox def )
 		{
-			return ( def.Left >= left && def.top >= top && def.front >= front &&
-					def.right <= right && def.bottom <= bottom && def.back <= back );
+			return ( def.Left >= this.left && def.top >= this.top && def.front >= this.front && def.right <= this.right && def.bottom <= this.bottom && def.back <= this.back );
 		}
 
 		public void CopyFromBasicBox( BasicBox src )
 		{
-			left = src.left;
-			top = src.top;
-			front = src.front;
-			right = src.right;
-			bottom = src.bottom;
-			back = src.back;
+			this.left = src.left;
+			this.top = src.top;
+			this.front = src.front;
+			this.right = src.right;
+			this.bottom = src.bottom;
+			this.back = src.back;
 		}
 
 		#endregion Methods
-
 	}
 
 
@@ -269,27 +264,30 @@ namespace Axiom.Media
 	///</summary>
 	public class PixelBox : BasicBox
 	{
-
 		#region Fields
 
 		///<summary>
 		///    The data pointer.  We do not own this.
 		///</summary>
-        protected BufferBase data;
-		///<summary>
-		///    A byte offset into the data
-		///</summary>
-		protected int offset;
+		protected BufferBase data;
+
 		///<summary>
 		///    The pixel format 
 		///</summary>
 		protected PixelFormat format;
+
+		///<summary>
+		///    A byte offset into the data
+		///</summary>
+		protected int offset;
+
 		///<summary>
 		///    Number of elements between the leftmost pixel of one row and the left
 		///    pixel of the next. This value must always be equal to getWidth() (consecutive) 
 		///    for compressed formats.
 		///</summary>
 		protected int rowPitch;
+
 		///<summary>
 		///    Number of elements between the top left pixel of one (depth) slice and 
 		///    the top left pixel of the next. This can be a negative value. Must be a multiple of
@@ -305,9 +303,7 @@ namespace Axiom.Media
 		///<summary>
 		///    Parameter constructor for setting the members manually
 		///</summary>
-		public PixelBox()
-		{
-		}
+		public PixelBox() { }
 
 		///<summary>
 		///    Constructor providing extents in the form of a Box object. This constructor
@@ -317,7 +313,7 @@ namespace Axiom.Media
 		///<param name="extents">Extents of the region defined by data</param>
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-        internal PixelBox(BasicBox extents, PixelFormat format, BufferBase data)
+		internal PixelBox( BasicBox extents, PixelFormat format, BufferBase data )
 		{
 			CopyFromBasicBox( extents );
 			this.format = format;
@@ -344,7 +340,7 @@ namespace Axiom.Media
 		///<param name="depth">Depth of the region</param>
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-        public PixelBox(int width, int height, int depth, PixelFormat format, BufferBase data)
+		public PixelBox( int width, int height, int depth, PixelFormat format, BufferBase data )
 			: base( 0, 0, 0, width, height, depth )
 		{
 			this.format = format;
@@ -367,15 +363,15 @@ namespace Axiom.Media
 		///<summary>
 		///    Get/set the data array
 		///</summary>
-        public BufferBase Data
+		public BufferBase Data
 		{
 			get
 			{
-				return data;
+				return this.data;
 			}
 			set
 			{
-				data = value;
+				this.data = value;
 			}
 		}
 
@@ -386,11 +382,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return offset;
+				return this.offset;
 			}
 			set
 			{
-				offset = value;
+				this.offset = value;
 			}
 		}
 
@@ -401,11 +397,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return format;
+				return this.format;
 			}
 			set
 			{
-				format = value;
+				this.format = value;
 			}
 		}
 
@@ -415,11 +411,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return rowPitch;
+				return this.rowPitch;
 			}
 			set
 			{
-				rowPitch = value;
+				this.rowPitch = value;
 			}
 		}
 
@@ -432,7 +428,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return rowPitch - Width;
+				return this.rowPitch - Width;
 			}
 		}
 
@@ -442,11 +438,11 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return slicePitch;
+				return this.slicePitch;
 			}
 			set
 			{
-				slicePitch = value;
+				this.slicePitch = value;
 			}
 		}
 
@@ -459,7 +455,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return slicePitch - ( Height * rowPitch );
+				return this.slicePitch - ( Height * this.rowPitch );
 			}
 		}
 
@@ -471,7 +467,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return rowPitch == Width && slicePitch == Width * Height;
+				return this.rowPitch == Width && this.slicePitch == Width * Height;
 			}
 		}
 
@@ -483,7 +479,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return PixelUtil.GetMemorySize( Width, Height, Depth, format );
+				return PixelUtil.GetMemorySize( Width, Height, Depth, this.format );
 			}
 		}
 
@@ -497,8 +493,8 @@ namespace Axiom.Media
 		///</summary>
 		public void SetConsecutive()
 		{
-			rowPitch = Width;
-			slicePitch = Width * Height;
+			this.rowPitch = Width;
+			this.slicePitch = Width * Height;
 		}
 
 		///<summary>
@@ -506,11 +502,7 @@ namespace Axiom.Media
 		///</summary>
 		public static bool Compressed( PixelFormat format )
 		{
-			return ( format == PixelFormat.DXT1 ||
-					format == PixelFormat.DXT2 ||
-					format == PixelFormat.DXT3 ||
-					format == PixelFormat.DXT4 ||
-					format == PixelFormat.DXT5 );
+			return ( format == PixelFormat.DXT1 || format == PixelFormat.DXT2 || format == PixelFormat.DXT3 || format == PixelFormat.DXT4 || format == PixelFormat.DXT5 );
 		}
 
 		/// <summary>
@@ -525,26 +517,27 @@ namespace Axiom.Media
 		/// </remarks>
 		public PixelBox GetSubVolume( BasicBox def )
 		{
-			if ( Compressed( format ) )
+			if ( Compressed( this.format ) )
 			{
-				if ( def.Left == left && def.Top == top && def.Front == front &&
-				   def.Right == right && def.Bottom == bottom && def.Back == back )
+				if ( def.Left == left && def.Top == top && def.Front == front && def.Right == right && def.Bottom == bottom && def.Back == back )
+				{
 					// Entire buffer is being queried
 					return this;
+				}
 				throw new Exception( "Cannot return subvolume of compressed PixelBuffer, in PixelBox.GetSubVolume" );
 			}
 			if ( !Contains( def ) )
+			{
 				throw new Exception( "Bounds out of range, in PixelBox.GetSubVolume" );
+			}
 
-			var elemSize = PixelUtil.GetNumElemBytes( format );
+			int elemSize = PixelUtil.GetNumElemBytes( this.format );
 			// Calculate new data origin
-			var rval = new PixelBox( def, format, data );
-			rval.offset = ( ( ( def.Left - left ) * elemSize ) +
-							( ( def.Top - top ) * rowPitch * elemSize ) +
-							( ( def.Front - front ) * slicePitch * elemSize ) );
-			rval.rowPitch = rowPitch;
-			rval.slicePitch = slicePitch;
-			rval.format = format;
+			var rval = new PixelBox( def, this.format, this.data );
+			rval.offset = ( ( ( def.Left - left ) * elemSize ) + ( ( def.Top - top ) * this.rowPitch * elemSize ) + ( ( def.Front - front ) * this.slicePitch * elemSize ) );
+			rval.rowPitch = this.rowPitch;
+			rval.slicePitch = this.slicePitch;
+			rval.format = this.format;
 			return rval;
 		}
 

@@ -27,25 +27,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-
-using Axiom;
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Math;
-using Axiom.Math.Collections;
-using Axiom.SceneManagers.PortalConnected;
 using System.Collections.Generic;
+
+using Axiom.Core;
 using Axiom.Core.Collections;
+using Axiom.Math;
+using Axiom.SceneManagers.PortalConnected;
 
 #endregion Namespace Declarations
 
@@ -56,123 +53,13 @@ namespace OctreeZone
 	/// </summary>
 	public class Octree
 	{
-		enum Intersection
-		{
-			OUTSIDE = 0,
-			INSIDE = 1,
-			INTERSECT = 2
-		};
-
-		#region Member Variables
-
-		/** Returns the number of scene nodes attached to this octree
-		*/
-		protected int nunodeList;
-
-		/** Public list of SceneNodes attached to this particular octree
-		*/
-		protected NodeCollection nodeList = new NodeCollection();
-
-		/** The bounding box of the octree
-		@remarks
-		This is used for octant index determination and rendering, but not culling
-		*/
-		protected AxisAlignedBox box = new AxisAlignedBox();
-		/** Creates the wire frame bounding box for this octant
-		*/
-		protected WireBoundingBox wireBoundingBox;
-
-		/** Vector containing the dimensions of this octree / 2
-		*/
-		protected Vector3 halfSize;
-
-		/** 3D array of children of this octree.
-		@remarks
-		Children are dynamically created as needed when nodes are inserted in the Octree.
-		If, later, the all the nodes are removed from the child, it is still kept arround.
-		*/
-		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
-
-		protected Octree parent = null;
-
-		protected PCZone zone;
-
-		#endregion Member Variables
-
-		#region Properties
-		public int NunodeList
-		{
-			get
-			{
-				return nunodeList;
-			}
-			set
-			{
-				nunodeList = value;
-			}
-		}
-
-		public NodeCollection NodeList
-		{
-			get
-			{
-				return nodeList;
-			}
-			//set{nodeList = value;}
-		}
-
-		public WireBoundingBox BoundingBox
-		{
-			get
-			{
-				// Create a WireBoundingBox if needed
-				if ( this.wireBoundingBox == null )
-				{
-					this.wireBoundingBox = new WireBoundingBox();
-				}
-
-				this.wireBoundingBox.BoundingBox = this.box;
-				return this.wireBoundingBox;
-			}
-
-			set
-			{
-				wireBoundingBox = value;
-			}
-		}
-
-		public Vector3 HalfSize
-		{
-			get
-			{
-				return halfSize;
-			}
-			set
-			{
-				halfSize = value;
-			}
-		}
-
-		public AxisAlignedBox Box
-		{
-			get
-			{
-				return box;
-			}
-			set
-			{
-				box = value;
-			}
-		}
-
-		#endregion Properties
 		public Octree( PCZone zone, Octree parent )
 		{
 			this.wireBoundingBox = null;
-			this.HalfSize = new Vector3();
+			HalfSize = new Vector3();
 
 			this.parent = parent;
-			this.NunodeList = 0;
+			NunodeList = 0;
 			this.zone = zone;
 
 			//initialize all children to null.
@@ -182,17 +69,33 @@ namespace OctreeZone
 				{
 					for ( int k = 0; k < 2; k++ )
 					{
-						Children[ i, j, k ] = null;
+						this.Children[ i, j, k ] = null;
 					}
 				}
 			}
+		}
 
+		/// <summary>
+		///  Creates the AxisAlignedBox used for culling this octree.
+		/// </summary>
+		/// <remarks>
+		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
+		/// </remarks>
+		public AxisAlignedBox CullBounds
+		{
+			get
+			{
+				Vector3[] Corners = this.box.Corners;
+				this.box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
+
+				return this.box;
+			}
 		}
 
 		public void AddNode( PCZSceneNode node )
 		{
-			nodeList[ node.Name ] = node;
-			( (OctreeZoneData)node.GetZoneData( zone ) ).Octant = this;
+			this.nodeList[ node.Name ] = node;
+			( (OctreeZoneData)node.GetZoneData( this.zone ) ).Octant = this;
 
 			//update total counts.
 			Ref();
@@ -200,7 +103,6 @@ namespace OctreeZone
 
 		public void RemoveNode( PCZSceneNode node )
 		{
-
 			//PCZSceneNode check;
 			//int i;
 			//int Index;
@@ -219,7 +121,7 @@ namespace OctreeZone
 			//    }
 			//}
 
-			( (OctreeZoneData)node.GetZoneData( zone ) ).Octant = null;
+			( (OctreeZoneData)node.GetZoneData( this.zone ) ).Octant = null;
 			NodeList.Remove( node );
 			UnRef();
 		}
@@ -230,16 +132,12 @@ namespace OctreeZone
 		///	This method is used by the OctreeSceneManager to determine if the given
 		///	box will fit into a child of this octree.
 		/// </summary>
-
 		public bool IsTwiceSize( AxisAlignedBox box )
 		{
 			Vector3[] pts1 = this.box.Corners;
 			Vector3[] pts2 = box.Corners;
 
-			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) &&
-				( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
-				( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
-
+			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) && ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) && ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
 		}
 
 		/// <summary>
@@ -251,7 +149,6 @@ namespace OctreeZone
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-
 			Vector3 max = this.box.Maximum;
 			Vector3 min = aabox.Minimum;
 
@@ -288,51 +185,38 @@ namespace OctreeZone
 			}
 		}
 
-		/// <summary>
-		///  Creates the AxisAlignedBox used for culling this octree.
-		/// </summary>
-		/// <remarks>
-		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
-		/// </remarks>
-		public AxisAlignedBox CullBounds
-		{
-			get
-			{
-				Vector3[] Corners = this.box.Corners;
-				box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
-
-				return box;
-			}
-		}
-
 		public void Ref()
 		{
-			nunodeList++;
+			this.nunodeList++;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.Ref();
+				this.parent.Ref();
 			}
 		}
 
 		public void UnRef()
 		{
-			nunodeList--;
+			this.nunodeList--;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.UnRef();
+				this.parent.UnRef();
 			}
 		}
 
-		static Intersection intersect( Ray one, AxisAlignedBox two )
+		private static Intersection intersect( Ray one, AxisAlignedBox two )
 		{
 			// Null box?
 			if ( two.IsNull )
+			{
 				return Intersection.OUTSIDE;
+			}
 			// Infinite box?
 			if ( two.IsInfinite )
+			{
 				return Intersection.INTERSECT;
+			}
 
 			bool inside = true;
 			Vector3 twoMin = two.Minimum;
@@ -340,7 +224,7 @@ namespace OctreeZone
 			Vector3 origin = one.Origin;
 			Vector3 dir = one.Direction;
 
-			Vector3 maxT = new Vector3( -1, -1, -1 );
+			var maxT = new Vector3( -1, -1, -1 );
 
 			int i = 0;
 			for ( i = 0; i < 3; i++ )
@@ -369,9 +253,13 @@ namespace OctreeZone
 			}
 			int whichPlane = 0;
 			if ( maxT[ 1 ] > maxT[ whichPlane ] )
+			{
 				whichPlane = 1;
+			}
 			if ( maxT[ 2 ] > maxT[ whichPlane ] )
+			{
 				whichPlane = 2;
+			}
 
 			if ( ( ( (int)maxT[ whichPlane ] ) & 0x80000000 ) != 0 )
 			{
@@ -382,8 +270,7 @@ namespace OctreeZone
 				if ( i != whichPlane )
 				{
 					float f = origin[ i ] + maxT[ whichPlane ] * dir[ i ];
-					if ( f < ( twoMin[ i ] - 0.00001f ) ||
-							f > ( twoMax[ i ] + 0.00001f ) )
+					if ( f < ( twoMin[ i ] - 0.00001f ) || f > ( twoMax[ i ] + 0.00001f ) )
 					{
 						return Intersection.OUTSIDE;
 					}
@@ -391,20 +278,24 @@ namespace OctreeZone
 			}
 
 			return Intersection.INTERSECT;
-
 		}
 
 
 		/** Checks how the axis aligned box intersects with the plane bounded volume
 		*/
+
 		private static Intersection intersect( PlaneBoundedVolume one, AxisAlignedBox two )
 		{
 			// Null box?
 			if ( two.IsNull )
+			{
 				return Intersection.OUTSIDE;
+			}
 			// Infinite box?
 			if ( two.IsInfinite )
+			{
 				return Intersection.INTERSECT;
+			}
 
 			// Get centre of the box
 			Vector3 centre = two.Center;
@@ -422,31 +313,44 @@ namespace OctreeZone
 			{
 				PlaneSide side = plane.GetSide( centre, halfSize );
 				if ( side == one.outside )
+				{
 					return Intersection.OUTSIDE;
+				}
 				if ( side == PlaneSide.Both )
+				{
 					all_inside = false;
+				}
 			}
 
 			if ( all_inside )
+			{
 				return Intersection.INSIDE;
+			}
 			else
+			{
 				return Intersection.INTERSECT;
-
+			}
 		}
 
 
 		/** Checks how the second box intersects with the first.
 		*/
 
-		static Intersection intersect( AxisAlignedBox one, AxisAlignedBox two )
+		private static Intersection intersect( AxisAlignedBox one, AxisAlignedBox two )
 		{
 			// Null box?
 			if ( one.IsNull || two.IsNull )
+			{
 				return Intersection.OUTSIDE;
+			}
 			if ( one.IsInfinite )
+			{
 				return Intersection.INSIDE;
+			}
 			if ( two.IsInfinite )
+			{
 				return Intersection.INTERSECT;
+			}
 
 
 			Vector3 insideMin = two.Minimum;
@@ -455,40 +359,37 @@ namespace OctreeZone
 			Vector3 outsideMin = one.Minimum;
 			Vector3 outsideMax = one.Maximum;
 
-			if ( insideMax.x < outsideMin.x ||
-					insideMax.y < outsideMin.y ||
-					insideMax.z < outsideMin.z ||
-					insideMin.x > outsideMax.x ||
-					insideMin.y > outsideMax.y ||
-					insideMin.z > outsideMax.z )
+			if ( insideMax.x < outsideMin.x || insideMax.y < outsideMin.y || insideMax.z < outsideMin.z || insideMin.x > outsideMax.x || insideMin.y > outsideMax.y || insideMin.z > outsideMax.z )
 			{
 				return Intersection.OUTSIDE;
 			}
 
-			bool full = ( insideMin.x > outsideMin.x &&
-						insideMin.y > outsideMin.y &&
-						insideMin.z > outsideMin.z &&
-						insideMax.x < outsideMax.x &&
-						insideMax.y < outsideMax.y &&
-						insideMax.z < outsideMax.z );
+			bool full = ( insideMin.x > outsideMin.x && insideMin.y > outsideMin.y && insideMin.z > outsideMin.z && insideMax.x < outsideMax.x && insideMax.y < outsideMax.y && insideMax.z < outsideMax.z );
 
 			if ( full )
+			{
 				return Intersection.INSIDE;
+			}
 			else
+			{
 				return Intersection.INTERSECT;
-
+			}
 		}
 
 		/** Checks how the box intersects with the sphere.
 		*/
 
-		static Intersection intersect( Sphere one, AxisAlignedBox two )
+		private static Intersection intersect( Sphere one, AxisAlignedBox two )
 		{
 			// Null box?
 			if ( two.IsNull )
+			{
 				return Intersection.OUTSIDE;
+			}
 			if ( two.IsInfinite )
+			{
 				return Intersection.INTERSECT;
+			}
 
 			float sradius = one.Radius;
 
@@ -504,8 +405,7 @@ namespace OctreeZone
 			Vector3 mndistance = ( twoMin - scenter );
 			Vector3 mxdistance = ( twoMax - scenter );
 
-			if ( mndistance.LengthSquared < sradius &&
-				mxdistance.LengthSquared < sradius )
+			if ( mndistance.LengthSquared < sradius && mxdistance.LengthSquared < sradius )
 			{
 				return Intersection.INSIDE;
 			}
@@ -525,7 +425,6 @@ namespace OctreeZone
 					s = scenter[ i ] - twoMax[ i ];
 					d += s * s;
 				}
-
 			}
 
 			bool partial = ( d <= sradius );
@@ -543,15 +442,11 @@ namespace OctreeZone
 
 		public void _getCullBounds( out AxisAlignedBox b )
 		{
-			b = new AxisAlignedBox( box.Minimum - halfSize, box.Maximum + halfSize );
+			b = new AxisAlignedBox( this.box.Minimum - this.halfSize, this.box.Maximum + this.halfSize );
 		}
 
 
-		public void _findNodes( AxisAlignedBox t,
-								ref List<PCZSceneNode> list,
-								PCZSceneNode exclude,
-								bool includeVisitors,
-								bool full )
+		public void _findNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
 		{
 			if ( !full )
 			{
@@ -561,15 +456,16 @@ namespace OctreeZone
 				Intersection isect = intersect( t, obox );
 
 				if ( isect == Intersection.OUTSIDE )
+				{
 					return;
+				}
 
 				full = ( isect == Intersection.INSIDE );
 			}
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -587,43 +483,53 @@ namespace OctreeZone
 							list.Add( on );
 						}
 					}
-
 				}
 			}
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
-
+			}
 		}
 
-		public void _findNodes( Ray t,
-								ref List<PCZSceneNode> list,
-								PCZSceneNode exclude,
-								bool includeVisitors,
-								bool full )
+		public void _findNodes( Ray t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
 		{
 			if ( !full )
 			{
@@ -633,15 +539,16 @@ namespace OctreeZone
 				Intersection isect = intersect( t, obox );
 
 				if ( isect == Intersection.OUTSIDE )
+				{
 					return;
+				}
 
 				full = ( isect == Intersection.INSIDE );
 			}
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -659,43 +566,53 @@ namespace OctreeZone
 							list.Add( on );
 						}
 					}
-
 				}
 			}
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
-
+			}
 		}
 
-		public void _findNodes( Sphere t,
-								ref List<PCZSceneNode> list,
-								PCZSceneNode exclude,
-								bool includeVisitors,
-								bool full )
+		public void _findNodes( Sphere t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
 		{
 			if ( !full )
 			{
@@ -705,17 +622,17 @@ namespace OctreeZone
 				Intersection isect = intersect( t, obox );
 
 				if ( isect == Intersection.OUTSIDE )
+				{
 					return;
+				}
 
 				full = ( isect == Intersection.INSIDE );
 			}
 
 
-
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -733,44 +650,54 @@ namespace OctreeZone
 							list.Add( on );
 						}
 					}
-
 				}
 			}
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
-
+			}
 		}
 
 
-		public void _findNodes( PlaneBoundedVolume t,
-								ref List<PCZSceneNode> list,
-								PCZSceneNode exclude,
-								bool includeVisitors,
-								bool full )
+		public void _findNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
 		{
 			if ( !full )
 			{
@@ -780,16 +707,17 @@ namespace OctreeZone
 				Intersection isect = intersect( t, obox );
 
 				if ( isect == Intersection.OUTSIDE )
+				{
 					return;
+				}
 
 				full = ( isect == Intersection.INSIDE );
 			}
 
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -807,42 +735,57 @@ namespace OctreeZone
 							list.Add( on );
 						}
 					}
-
 				}
 			}
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
+			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
+			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
-
+			}
 		}
 
 		/** It's assumed the the given box has already been proven to fit into
 		* a child.  Since it's a loose octree, only the centers need to be
 		* compared to find the appropriate node.
 		*/
+
 		public void _getChildIndexes( AxisAlignedBox box, ref int x, ref int y, ref int z )
 		{
 			Vector3 max = Box.Maximum;
@@ -853,42 +796,190 @@ namespace OctreeZone
 			Vector3 ncenter = Box.Maximum.MidPoint( Box.Minimum );
 
 			if ( ncenter.x > center.x )
+			{
 				x = 1;
+			}
 			else
+			{
 				x = 0;
+			}
 
 			if ( ncenter.y > center.y )
+			{
 				y = 1;
+			}
 			else
+			{
 				y = 0;
+			}
 
 			if ( ncenter.z > center.z )
+			{
 				z = 1;
+			}
 			else
+			{
 				z = 0;
+			}
 		}
 
+		#region Nested type: Intersection
 
+		private enum Intersection
+		{
+			OUTSIDE = 0,
+			INSIDE = 1,
+			INTERSECT = 2
+		};
+
+		#endregion
+
+		#region Member Variables
+
+		/** Returns the number of scene nodes attached to this octree
+		*/
+
+		/** The bounding box of the octree
+		@remarks
+		This is used for octant index determination and rendering, but not culling
+		*/
+		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
+		protected AxisAlignedBox box = new AxisAlignedBox();
+		/** Creates the wire frame bounding box for this octant
+		*/
+
+		/** Vector containing the dimensions of this octree / 2
+		*/
+		protected Vector3 halfSize;
+		protected NodeCollection nodeList = new NodeCollection();
+		protected int nunodeList;
+
+		/** 3D array of children of this octree.
+		@remarks
+		Children are dynamically created as needed when nodes are inserted in the Octree.
+		If, later, the all the nodes are removed from the child, it is still kept arround.
+		*/
+
+		protected Octree parent;
+		protected WireBoundingBox wireBoundingBox;
+
+		protected PCZone zone;
+
+		#endregion Member Variables
+
+		#region Properties
+
+		public int NunodeList
+		{
+			get
+			{
+				return this.nunodeList;
+			}
+			set
+			{
+				this.nunodeList = value;
+			}
+		}
+
+		public NodeCollection NodeList
+		{
+			get
+			{
+				return this.nodeList;
+			}
+			//set{nodeList = value;}
+		}
+
+		public WireBoundingBox BoundingBox
+		{
+			get
+			{
+				// Create a WireBoundingBox if needed
+				if ( this.wireBoundingBox == null )
+				{
+					this.wireBoundingBox = new WireBoundingBox();
+				}
+
+				this.wireBoundingBox.BoundingBox = this.box;
+				return this.wireBoundingBox;
+			}
+
+			set
+			{
+				this.wireBoundingBox = value;
+			}
+		}
+
+		public Vector3 HalfSize
+		{
+			get
+			{
+				return this.halfSize;
+			}
+			set
+			{
+				this.halfSize = value;
+			}
+		}
+
+		public AxisAlignedBox Box
+		{
+			get
+			{
+				return this.box;
+			}
+			set
+			{
+				this.box = value;
+			}
+		}
+
+		#endregion Properties
 	}
 
 	public class OctreeZoneData : ZoneData
 	{
 		///Octree this node is attached to.
 		protected Octree mOctant;
+
 		// octree-specific world bounding box (only includes attached objects, not children)
 		protected AxisAlignedBox mOctreeWorldAABB;
 
 		public OctreeZoneData( PCZSceneNode node, PCZone zone )
 			: base( node, zone )
 		{
-			mOctant = null;
-			mOctreeWorldAABB = AxisAlignedBox.Null;
+			this.mOctant = null;
+			this.mOctreeWorldAABB = AxisAlignedBox.Null;
 		}
 
 		/* Update the octreezone specific data for a node */
+
+		public AxisAlignedBox OctreeWorldAABB
+		{
+			get
+			{
+				return this.mOctreeWorldAABB;
+			}
+		}
+
+		/** Since we are loose, only check the center.
+		*/
+
+		public Octree Octant
+		{
+			get
+			{
+				return this.mOctant;
+			}
+			set
+			{
+				this.mOctant = value;
+			}
+		}
+
 		public override void update()
 		{
-			mOctreeWorldAABB.IsNull = true;
+			this.mOctreeWorldAABB.IsNull = true;
 
 			// need to use object iterator here.
 			foreach ( PCZSceneNode m in mAssociatedNode.Children )
@@ -897,37 +988,31 @@ namespace OctreeZone
 				//mOctreeWorldAABB.Merge(m.GetWorldBoundingBox(true));
 				AxisAlignedBox b = m.WorldAABB;
 				b.Transform( m.Parent.FullTransform );
-				mOctreeWorldAABB.Merge( b );
+				this.mOctreeWorldAABB.Merge( b );
 			}
 
 			// update the Octant for the node because things might have moved.
 			// if it hasn't been added to the octree, add it, and if has moved
 			// enough to leave it's current node, we'll update it.
-			if ( !mOctreeWorldAABB.IsNull )
+			if ( !this.mOctreeWorldAABB.IsNull )
 			{
 				( (OctreeZone)mAssociatedZone ).UpdateNodeOctant( this );
 			}
 		}
 
-		public AxisAlignedBox OctreeWorldAABB
-		{
-			get
-			{
-				return mOctreeWorldAABB;
-			}
-		}
-
-		/** Since we are loose, only check the center.
-		*/
 		public bool _isIn( AxisAlignedBox box )
 		{
 			// Always fail if not in the scene graph or box is null
 			if ( !mAssociatedNode.IsVisible || box.IsNull )
+			{
 				return false;
+			}
 
 			// Always succeed if AABB is infinite
 			if ( box.IsInfinite )
+			{
 				return true;
+			}
 
 			Vector3 center = mAssociatedNode.WorldAABB.Maximum.MidPoint( mAssociatedNode.WorldAABB.Minimum );
 
@@ -936,7 +1021,9 @@ namespace OctreeZone
 
 			bool centre = ( bmax > center && bmin < center );
 			if ( !centre )
+			{
 				return false;
+			}
 
 			// Even if covering the centre line, need to make sure this BB is not large
 			// enough to require being moved up into parent. When added, bboxes would
@@ -946,19 +1033,5 @@ namespace OctreeZone
 			Vector3 nodeSize = mAssociatedNode.WorldAABB.Maximum - mAssociatedNode.WorldAABB.Minimum;
 			return nodeSize < octreeSize;
 		}
-
-		public Octree Octant
-		{
-			get
-			{
-				return mOctant;
-			}
-			set
-			{
-				mOctant = value;
-			}
-		}
-
-
 	}
 }

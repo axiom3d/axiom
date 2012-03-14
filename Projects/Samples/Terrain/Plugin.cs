@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,33 +19,38 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Samples.Terrain
 {
-    [Export( typeof( IPlugin ) )]
-    public class Plugin : SamplePlugin
-    {
-        private TerrainSample sample;
-        public override void Initialize()
-        {
-            sample = new TerrainSample();
-            Name = sample.Metadata[ "Title" ] + " Sample";
-            AddSample( sample );
-        }
-    };
+	[Export( typeof( IPlugin ) )]
+	public class Plugin : SamplePlugin
+	{
+		private TerrainSample sample;
+
+		public override void Initialize()
+		{
+			this.sample = new TerrainSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
+		}
+	};
 }

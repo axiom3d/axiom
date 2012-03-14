@@ -1,9 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
-using Axiom.Controllers;
-using Axiom.Controllers.Canned;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -16,9 +14,9 @@ namespace Axiom.Demos
 	/// 	Summary description for TextureBlending.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class TextureFX : TechDemo
+	public class TextureFX : TechDemo
 	{
 		public override void CreateScene()
 		{
@@ -40,7 +38,7 @@ namespace Axiom.Demos
 			CreateWateryPlane();
 
 			// set up a material for the skydome
-			Material skyMaterial = (Material)MaterialManager.Instance.Create( "SkyMat", ResourceGroupManager.DefaultResourceGroupName );
+			var skyMaterial = (Material)MaterialManager.Instance.Create( "SkyMat", ResourceGroupManager.DefaultResourceGroupName );
 			skyMaterial.Lighting = false;
 			// use a cloudy sky
 			Pass pass = skyMaterial.GetTechnique( 0 ).GetPass( 0 );

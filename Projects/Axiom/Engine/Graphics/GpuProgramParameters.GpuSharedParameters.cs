@@ -27,17 +27,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -47,6 +48,8 @@ namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
+		#region Nested type: GpuSharedParameters
+
 		/// <summary>
 		/// A group of manually updated parameters that are shared between many parameter sets.
 		/// </summary>
@@ -66,88 +69,88 @@ namespace Axiom.Graphics
 		/// <note>
 		/// Shared parameter sets can be named, and looked up using the GpuProgramManager.
 		/// </note>
-        [OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		public class GpuSharedParameters
-        {
-            #region NamedConstants
+		{
+			#region NamedConstants
 
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
 
-            #endregion
+			#endregion
 
-            #region FloatConstants
+			#region FloatConstants
 
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			protected internal FloatConstantList FloatConstants = new FloatConstantList();
 
-            #endregion
+			#endregion
 
-            #region IntConstants
+			#region IntConstants
 
-            [OgreVersion(1, 7, 2790)]
-            protected internal IntConstantList IntConstants = new IntConstantList();
+			[OgreVersion( 1, 7, 2790 )]
+			protected internal IntConstantList IntConstants = new IntConstantList();
 
-            #endregion
+			#endregion
 
-            #region Name
+			#region Name
 
-            /// <summary>
-            /// Get the name of this shared parameter set
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public string Name { get; protected set; }
+			/// <summary>
+			/// Get the name of this shared parameter set
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public string Name { get; protected set; }
 
-            #endregion
+			#endregion
 
-            #region ConstantDefinitions
+			#region ConstantDefinitions
 
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public GpuNamedConstants ConstantDefinitions
 			{
 				get
 				{
-					return NamedConstants;
+					return this.NamedConstants;
 				}
 			}
 
-            #endregion
+			#endregion
 
-            #region Version
+			#region Version
 
-            /// <summary>
-		    /// Get the version number of this shared parameter set, can be used to identify when
-		    /// changes have occurred.
-		    /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public uint Version { get; protected set; }
+			/// <summary>
+			/// Get the version number of this shared parameter set, can be used to identify when
+			/// changes have occurred.
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public uint Version { get; protected set; }
 
-            #endregion
+			#endregion
 
-            #region FrameLastUpdated
+			#region FrameLastUpdated
 
-            /// <summary>
-		    ///  Not used when copying data, but might be useful to RS using shared buffers
-		    ///  Get the frame in which this shared parameter set was last updated
-		    /// </summary>
-            [OgreVersion(1, 7, 2790)]
-		    public int FrameLastUpdated { get; protected set; }
+			/// <summary>
+			///  Not used when copying data, but might be useful to RS using shared buffers
+			///  Get the frame in which this shared parameter set was last updated
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public int FrameLastUpdated { get; protected set; }
 
-            #endregion
+			#endregion
 
-            #region RenderSystemData
+			#region RenderSystemData
 
-            /// <summary>
-		    ///  Internal method that the RenderSystem might use to store optional data.
-		    /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public object RenderSystemData { get; protected set; }
+			/// <summary>
+			///  Internal method that the RenderSystem might use to store optional data.
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public object RenderSystemData { get; protected set; }
 
-            #endregion
+			#endregion
 
-            #region constructor
+			#region constructor
 
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public GpuSharedParameters( string name )
 			{
 				Name = name;
@@ -155,10 +158,11 @@ namespace Axiom.Graphics
 				Version = 0;
 			}
 
-            #endregion
+			#endregion
 
-            #region AddConstantDefinition
-            /// <summary>
+			#region AddConstantDefinition
+
+			/// <summary>
 			/// Add a new constant definition to this shared set of parameters.
 			/// </summary>
 			/// <param name="name"></param>
@@ -169,12 +173,13 @@ namespace Axiom.Graphics
 			/// user. Only parameters which have been predefined here may be later
 			/// updated.
 			/// </remarks>
-            [OgreVersion(1, 7, 2790, "will not expose ConstantDefinitionIterator")]
+			[OgreVersion( 1, 7, 2790, "will not expose ConstantDefinitionIterator" )]
 			public void AddConstantDefinition( string name, GpuConstantType constType )
 			{
 				AddConstantDefinition( name, constType, 1 );
 			}
-            /// <summary>
+
+			/// <summary>
 			/// Add a new constant definition to this shared set of parameters.
 			/// </summary>
 			/// <param name="name"></param>
@@ -186,260 +191,278 @@ namespace Axiom.Graphics
 			/// user. Only parameters which have been predefined here may be later
 			/// updated.
 			/// </remarks>
-            [OgreVersion(1, 7, 2790, "will not expose ConstantDefinitionIterator")]
+			[OgreVersion( 1, 7, 2790, "will not expose ConstantDefinitionIterator" )]
 			public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
 			{
-				if ( NamedConstants.Map.ContainsKey( name ) )
+				if ( this.NamedConstants.Map.ContainsKey( name ) )
 				{
-					throw new Exception( string.Format("Constant entry with name '{0}' allready exists.", name) );
+					throw new Exception( string.Format( "Constant entry with name '{0}' allready exists.", name ) );
 				}
 
-                var def = new GpuConstantDefinition
-                          {
-                              ArraySize = arrraySize,
-                              ConstantType = constType,
-
-                              // for compatibility we do not pad values to multiples of 4
-                              // when it comes to arrays, user is responsible for creating matching defs
-                              ElementSize = GpuConstantDefinition.GetElementSize( constType, false ),
-
-                              // not used
-                              LogicalIndex = 0,
-                              Variability = GpuParamVariability.Global
-                          };
+				var def = new GpuConstantDefinition
+						  {
+							  ArraySize = arrraySize,
+							  ConstantType = constType, // for compatibility we do not pad values to multiples of 4
+							  // when it comes to arrays, user is responsible for creating matching defs
+							  ElementSize = GpuConstantDefinition.GetElementSize( constType, false ), // not used
+							  LogicalIndex = 0,
+							  Variability = GpuParamVariability.Global
+						  };
 
 				if ( def.IsFloat )
 				{
-					def.PhysicalIndex = FloatConstants.Count;
-                    FloatConstants.Resize(FloatConstants.Count + def.ArraySize * def.ElementSize);
+					def.PhysicalIndex = this.FloatConstants.Count;
+					this.FloatConstants.Resize( this.FloatConstants.Count + def.ArraySize * def.ElementSize );
 				}
 				else
 				{
-					def.PhysicalIndex = IntConstants.Count;
-                    IntConstants.Resize(IntConstants.Count + def.ArraySize * def.ElementSize);
+					def.PhysicalIndex = this.IntConstants.Count;
+					this.IntConstants.Resize( this.IntConstants.Count + def.ArraySize * def.ElementSize );
 				}
-				NamedConstants.Map.Add( name, def );
+				this.NamedConstants.Map.Add( name, def );
 
 				++Version;
 			}
 
-            #endregion
+			#endregion
 
-            #region RemoveConstantDefinition
+			#region RemoveConstantDefinition
 
-            /// <summary>
+			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			[OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public virtual void RemoveConstantDefinition( string name )
 			{
 				GpuConstantDefinition def;
-                if ( !NamedConstants.Map.TryGetValue( name, out def ) )
-                    return;
-                
-                var isFloat = def.IsFloat;
-                var numElems = def.ElementSize * def.ArraySize;
+				if ( !this.NamedConstants.Map.TryGetValue( name, out def ) )
+				{
+					return;
+				}
 
-                foreach (var otherDef in NamedConstants.Map.Values)
-                {
-                    // same type, and comes after in the buffer
-                    if ( ( isFloat == otherDef.IsFloat ) && otherDef.PhysicalIndex > def.PhysicalIndex )
-                    {
-                        // adjust index
-                        otherDef.PhysicalIndex -= numElems;
-                    }
-                }
+				bool isFloat = def.IsFloat;
+				int numElems = def.ElementSize * def.ArraySize;
 
-                // remove floats and reduce buffer
-                if ( isFloat )
-                {
-                    NamedConstants.FloatBufferSize -= numElems;
-                    FloatConstants.RemoveRange(def.PhysicalIndex, numElems);
-                }
-                else
-                {
-                    NamedConstants.IntBufferSize -= numElems;
-                    IntConstants.RemoveRange(def.PhysicalIndex, numElems);
-                }
+				foreach ( GpuConstantDefinition otherDef in this.NamedConstants.Map.Values )
+				{
+					// same type, and comes after in the buffer
+					if ( ( isFloat == otherDef.IsFloat ) && otherDef.PhysicalIndex > def.PhysicalIndex )
+					{
+						// adjust index
+						otherDef.PhysicalIndex -= numElems;
+					}
+				}
 
-                ++Version;
+				// remove floats and reduce buffer
+				if ( isFloat )
+				{
+					this.NamedConstants.FloatBufferSize -= numElems;
+					this.FloatConstants.RemoveRange( def.PhysicalIndex, numElems );
+				}
+				else
+				{
+					this.NamedConstants.IntBufferSize -= numElems;
+					this.IntConstants.RemoveRange( def.PhysicalIndex, numElems );
+				}
+
+				++Version;
 			}
 
-            #endregion
+			#endregion
 
-            #region RemoveAllConstantDefinitions
+			#region RemoveAllConstantDefinitions
 
-            /// <summary>
+			/// <summary>
 			/// Remove a constant definition from this shared set of parameters.
 			/// </summary>
-			[OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public void RemoveAllConstantDefinitions()
 			{
-				NamedConstants.Map.Clear();
-				NamedConstants.FloatBufferSize = 0;
-				NamedConstants.IntBufferSize = 0;
-				FloatConstants.Clear();
-				IntConstants.Clear();
+				this.NamedConstants.Map.Clear();
+				this.NamedConstants.FloatBufferSize = 0;
+				this.NamedConstants.IntBufferSize = 0;
+				this.FloatConstants.Clear();
+				this.IntConstants.Clear();
 			}
 
-            #endregion
+			#endregion
 
-            #region GetConstantDefinition
+			#region GetConstantDefinition
 
-            /// <summary>
+			/// <summary>
 			/// Get a specific GpuConstantDefinition for a named parameter.
 			/// </summary>
-			[OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public GpuConstantDefinition GetConstantDefinition( string name )
 			{
-			    return NamedConstants.Map[ name ];
+				return this.NamedConstants.Map[ name ];
 			}
 
-            #endregion
+			#endregion
 
-            #region SetNamedConstant overloads
+			#region SetNamedConstant overloads
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, Real value)
-            {
-                SetNamedConstant(name, new float[]{value});
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, Real value )
+			{
+				SetNamedConstant( name, new float[]
+                                        {
+                                            value
+                                        } );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, int value)
-            {
-                SetNamedConstant(name, new []{value});
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, int value )
+			{
+				SetNamedConstant( name, new[]
+                                        {
+                                            value
+                                        } );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, Vector4 value)
-            {
-                SetNamedConstant(name, new float[]{value.x, value.y, value.z, value.w});
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, Vector4 value )
+			{
+				SetNamedConstant( name, new float[]
+                                        {
+                                            value.x, value.y, value.z, value.w
+                                        } );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, Vector3 value)
-            {
-                SetNamedConstant(name, new float[] { value.x, value.y, value.z });
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, Vector3 value )
+			{
+				SetNamedConstant( name, new float[]
+                                        {
+                                            value.x, value.y, value.z
+                                        } );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, Matrix4 value)
-            {
-                var floats = new float[16];
-                value.MakeFloatArray( floats );
-                SetNamedConstant(name, floats);
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, Matrix4 value )
+			{
+				var floats = new float[ 16 ];
+				value.MakeFloatArray( floats );
+				SetNamedConstant( name, floats );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, Matrix4[] value)
-            {
-                var size = value.Length * 16;
-                var floats = new float[size];
-                for (var i = 0; i < value.Length; i++)
-                    value[i].MakeFloatArray( floats, i * 16 );
-                SetNamedConstant(name, floats);
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, Matrix4[] value )
+			{
+				int size = value.Length * 16;
+				var floats = new float[ size ];
+				for ( int i = 0; i < value.Length; i++ )
+				{
+					value[ i ].MakeFloatArray( floats, i * 16 );
+				}
+				SetNamedConstant( name, floats );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, float[] value)
-            {
-                GpuConstantDefinition def;
-                if (NamedConstants.Map.TryGetValue(name, out def))
-                {
-                    var count = Utility.Min(value.Length, def.ElementSize * def.ArraySize);
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, float[] value )
+			{
+				GpuConstantDefinition def;
+				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				{
+					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-                    for (var v = 0; v < count; v++)
-                        FloatConstants[def.PhysicalIndex + v] = value[v];
-                }
+					for ( int v = 0; v < count; v++ )
+					{
+						this.FloatConstants[ def.PhysicalIndex + v ] = value[ v ];
+					}
+				}
 
-                MarkDirty();
-            }
+				MarkDirty();
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, double[] value)
-            {
-                GpuConstantDefinition def;
-                if ( NamedConstants.Map.TryGetValue( name, out def ) )
-                {
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, double[] value )
+			{
+				GpuConstantDefinition def;
+				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				{
+					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-                    var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
+					for ( int v = 0; v < count; v++ )
+					{
+						this.FloatConstants[ def.PhysicalIndex + v ] = (float)value[ v ];
+					}
+				}
 
-                    for ( var v = 0; v < count; v++ )
-                        FloatConstants[ def.PhysicalIndex + v ] = (float)value[ v ];
-                }
+				MarkDirty();
+			}
 
-                MarkDirty();
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, ColorEx value )
+			{
+				var floats = new float[ 4 ];
+				value.ToArrayRGBA( floats );
+				SetNamedConstant( name, floats );
+			}
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, ColorEx value)
-		    {
-                var floats = new float[4];
-		        value.ToArrayRGBA( floats );
-                SetNamedConstant(name, floats);
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public void SetNamedConstant( string name, int[] value )
+			{
+				GpuConstantDefinition def;
+				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				{
+					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-            [OgreVersion(1, 7, 2790)]
-            public void SetNamedConstant(string name, int[] value)
-            {
-                GpuConstantDefinition def;
-                if (NamedConstants.Map.TryGetValue(name, out def))
-                {
+					for ( int v = 0; v < count; v++ )
+					{
+						this.IntConstants[ def.PhysicalIndex + v ] = value[ v ];
+					}
+				}
 
-                    var count = Utility.Min(value.Length, def.ElementSize * def.ArraySize);
+				MarkDirty();
+			}
 
-                    for (var v = 0; v < count; v++)
-                        IntConstants[def.PhysicalIndex + v] = value[v];
-                }
+			#endregion
 
-                MarkDirty();
-            }
+			#region MarkDirty
 
-            #endregion
+			/// <summary>
+			/// Mark the shared set as being dirty (values modified).
+			/// </summary>
+			/// <remarks>
+			/// You do not need to call this yourself, set is marked as dirty whenever
+			/// setNamedConstant or (non const) getFloatPointer et al are called.
+			/// </remarks>
+			[OgreVersion( 1, 7, 2790 )]
+			public virtual void MarkDirty()
+			{
+				FrameLastUpdated = Root.Instance.NextFrameNumber;
+			}
 
-            #region MarkDirty
+			#endregion
 
-            /// <summary>
-            /// Mark the shared set as being dirty (values modified).
-            /// </summary>
-            /// <remarks>
-            /// You do not need to call this yourself, set is marked as dirty whenever
-            /// setNamedConstant or (non const) getFloatPointer et al are called.
-            /// </remarks>
-            [OgreVersion(1, 7, 2790)]
-            public virtual void MarkDirty()
-            {
-                FrameLastUpdated = Root.Instance.NextFrameNumber;
-            }
+			#region GetFloatPointer
 
-            #endregion
-
-            #region GetFloatPointer
-
-            /// <summary>
+			/// <summary>
 			/// Get a pointer to the 'nth' item in the float buffer
 			/// </summary>
-			[OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<float>.FixedPointer GetFloatPointer( int pos )
-            {
-                return FloatConstants.Fix( pos );
+			{
+				return this.FloatConstants.Fix( pos );
 			}
 
-            #endregion
+			#endregion
 
-            #region GetIntPointer
+			#region GetIntPointer
 
-            /// <summary>
+			/// <summary>
 			/// Get a pointer to the 'nth' item in the int buffer
 			/// </summary>
-            [OgreVersion(1, 7, 2790)]
+			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<int>.FixedPointer GetIntPointer( int pos )
 			{
-			    return IntConstants.Fix( pos );
-            }
+				return this.IntConstants.Fix( pos );
+			}
 
-            #endregion
-        }
+			#endregion
+		}
+
+		#endregion
 	};
 }

@@ -40,9 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -60,19 +60,21 @@ namespace Axiom.SceneManagers.Bsp
 
 		public BspGeometry()
 		{
-			geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
+			this.geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
 
-			if ( geometryMat == null )
+			if ( this.geometryMat == null )
 			{
-				geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
-				geometryMat.ReceiveShadows = true;
-				technique = geometryMat.GetTechnique( 0 );
+				this.geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
+				this.geometryMat.ReceiveShadows = true;
+				this.technique = this.geometryMat.GetTechnique( 0 );
 			}
 		}
 
 		#region IRenderable implementation
 
 		#region Properties
+
+		protected RenderOperation renderOperation = new RenderOperation();
 
 		/// <summary>
 		///		Gets whether this renderable would normally cast a shadow.
@@ -92,7 +94,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return geometryMat;
+				return this.geometryMat;
 			}
 		}
 
@@ -107,11 +109,9 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return technique;
+				return this.technique;
 			}
 		}
-
-		protected RenderOperation renderOperation = new RenderOperation();
 
 		/// <summary>
 		///    Gets the render operation required to send this object to the frame buffer.
@@ -120,7 +120,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -135,9 +135,7 @@ namespace Axiom.SceneManagers.Bsp
 		///    does use vertex blending it will fill the passed in pointer with an array of matrices,
 		///    the length being the value returned from getNumWorldTransforms.
 		/// </remarks>
-		public void GetWorldTransforms( Matrix4[] matrices )
-		{
-		}
+		public void GetWorldTransforms( Matrix4[] matrices ) { }
 
 		/// <summary>
 		///    Gets a list of lights, ordered relative to how close they are to this renderable.
@@ -174,7 +172,6 @@ namespace Axiom.SceneManagers.Bsp
 		///    If a renderable does not use vertex blending this method returns 1, which is the default for
 		///    simplicity.
 		/// </remarks>
-
 		public ushort NumWorldTransforms
 		{
 			get
@@ -310,9 +307,7 @@ namespace Axiom.SceneManagers.Bsp
 		///		two is performed by the AutoConstant.Custom entry, if that is used.
 		/// </param>
 		/// <param name="val">The value to associate.</param>
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-		}
+		public void SetCustomParameter( int index, Vector4 val ) { }
 
 		/// <summary>
 		///		Update a custom GpuProgramParameters constant which is derived from
@@ -331,9 +326,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </remarks>
 		/// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
 		/// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters )
-		{
-		}
+		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters ) { }
 
 		#endregion Public Methods
 
@@ -343,22 +336,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 
@@ -393,11 +374,11 @@ namespace Axiom.SceneManagers.Bsp
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
-						renderOperation = null;
+						this.renderOperation.vertexData = null;
+						this.renderOperation.indexData = null;
+						this.renderOperation = null;
 					}
 				}
 

@@ -1,31 +1,27 @@
 ﻿#region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 
-using Axiom.Math;
-using Axiom.Core;
 using Axiom.Animating;
 using Axiom.Controllers;
-using Axiom.Demos;
 using Axiom.Controllers.Canned;
+using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
-	public class LightGrassWibbler : Controllers.IControllerValue<Real>
+	public class LightGrassWibbler : IControllerValue<Real>
 	{
-		protected Light light;
 		protected Billboard billboard;
-		protected ColorEx colorRange = new ColorEx();
-		protected ColorEx halfColor = new ColorEx();
+		protected ColorEx colorRange;
+		protected ColorEx halfColor;
+		protected Real intensity;
+		protected Light light;
 		protected Real minSize;
 		protected Real sizeRange;
-		protected Real intensity;
 
 		public LightGrassWibbler( Light light, Billboard billboard, ColorEx minColor, ColorEx maxColor, int minSize, int maxSize )
 		{
@@ -36,9 +32,9 @@ namespace Axiom.Demos
 			this.colorRange.g = ( maxColor.g - minColor.g ) * 0.5f;
 			this.colorRange.b = ( maxColor.b - minColor.b ) * 0.5f;
 
-			this.halfColor.r = ( minColor.r + colorRange.r ); // 2;
-			this.halfColor.g = ( minColor.g + colorRange.g ); // 2;
-			this.halfColor.b = ( minColor.b + colorRange.b ); // 2;
+			this.halfColor.r = ( minColor.r + this.colorRange.r ); // 2;
+			this.halfColor.g = ( minColor.g + this.colorRange.g ); // 2;
+			this.halfColor.b = ( minColor.b + this.colorRange.b ); // 2;
 
 			this.minSize = minSize;
 			this.sizeRange = maxSize - minSize;
@@ -50,53 +46,50 @@ namespace Axiom.Demos
 		{
 			get
 			{
-				return intensity;
+				return this.intensity;
 			}
 			set
 			{
-				intensity = value;
+				this.intensity = value;
 
-				ColorEx newColor = new ColorEx();
+				var newColor = new ColorEx();
 				//atenuate the brightness of the light
-				newColor.r = halfColor.r + ( colorRange.r * intensity );
-				newColor.g = halfColor.g + ( colorRange.g * intensity );
-				newColor.b = halfColor.b + ( colorRange.b * intensity );
+				newColor.r = this.halfColor.r + ( this.colorRange.r * this.intensity );
+				newColor.g = this.halfColor.g + ( this.colorRange.g * this.intensity );
+				newColor.b = this.halfColor.b + ( this.colorRange.b * this.intensity );
 
 				this.light.Diffuse = newColor;
 				this.billboard.Color = newColor;
 
-				Real newSize = minSize + ( intensity * sizeRange );
+				Real newSize = this.minSize + ( this.intensity * this.sizeRange );
 				this.billboard.SetDimensions( newSize, newSize );
 			}
 		}
 
-		#endregion IControllerValue<Real> Members
+		#endregion
 	}
 
-    [Export(typeof(TechDemo))]
-    public class Grass : TechDemo
+	[Export( typeof( TechDemo ) )]
+	public class Grass : TechDemo
 	{
 		protected const float GRASS_HEIGHT = 300;
 		protected const float GRASS_WIDTH = 250;
 		protected const string GRASS_MESH_NAME = "grassblades";
-		protected string GRASS_MATERIAL = "Examples/GrassBlades";
 		protected const int OFFSET_PARAM = 999;
-		protected Real extraOffset = 0.1f;
-		protected Real randomRange = 60;
-		protected bool backward = false;
+		protected readonly ColorEx MaxLightColour = new ColorEx( 1.0f, 0.6f, 0.0f );
+		protected readonly ColorEx MinLightColour = new ColorEx( 0.5f, 0.1f, 0.0f );
+		protected AnimationState AnimState;
+		protected string GRASS_MATERIAL = "Examples/GrassBlades";
+		protected SceneNode HeadNode;
 
 		protected Light Light;
 		protected SceneNode LightNode;
-		protected AnimationState AnimState;
-
-		protected readonly ColorEx MinLightColour = new ColorEx( 0.5f, 0.1f, 0.0f );
-
-		protected readonly ColorEx MaxLightColour = new ColorEx( 1.0f, 0.6f, 0.0f );
-
-		protected int MinFlareSize = 40;
 		protected int MaxFlareSize = 80;
+		protected int MinFlareSize = 40;
 		protected StaticGeometry StaticGeom;
-		protected SceneNode HeadNode;
+		protected bool backward;
+		protected Real extraOffset = 0.1f;
+		protected Real randomRange = 60;
 
 		public override void CreateScene()
 		{
@@ -104,7 +97,7 @@ namespace Axiom.Demos
 
 			SetupLighting();
 
-			Plane plane = new Plane();
+			var plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 0;
 
@@ -116,8 +109,8 @@ namespace Axiom.Demos
 
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( planeEnt );
 
-			Vector3 minV = new Vector3( -2000, 0, -2000 );
-			Vector3 maxV = new Vector3( 2000, 0, 2000 );
+			var minV = new Vector3( -2000, 0, -2000 );
+			var maxV = new Vector3( 2000, 0, 2000 );
 
 			CreateGrassMesh();
 
@@ -130,17 +123,17 @@ namespace Axiom.Demos
 			{
 				for ( int z = -1950; z < 1950; z += 150 )
 				{
-					Vector3 pos = new Vector3( x + Math.Utility.RangeRandom( -25, 25 ), 0, z + Math.Utility.RangeRandom( -25, 25 ) );
+					var pos = new Vector3( x + Utility.RangeRandom( -25, 25 ), 0, z + Utility.RangeRandom( -25, 25 ) );
 
-					Quaternion orientation = Quaternion.FromAngleAxis( Math.Utility.RangeRandom( 0, 359 ), Vector3.UnitY );
+					Quaternion orientation = Quaternion.FromAngleAxis( Utility.RangeRandom( 0, 359 ), Vector3.UnitY );
 
-					Vector3 scale = new Vector3( 1, Math.Utility.RangeRandom( 0.85f, 1.15f ), 1 );
+					var scale = new Vector3( 1, Utility.RangeRandom( 0.85f, 1.15f ), 1 );
 
 					s.AddEntity( e, pos, orientation, scale );
 				}
 			}
 			s.Build();
-			StaticGeom = s;
+			this.StaticGeom = s;
 
 			Mesh mesh = MeshManager.Instance.Load( "ogrehead.mesh", ResourceGroupManager.DefaultResourceGroupName );
 
@@ -153,10 +146,10 @@ namespace Axiom.Demos
 			e = scene.CreateEntity( "head", "ogrehead.mesh" );
 			e.MaterialName = "Examples/OffsetMapping/Specular";
 
-			HeadNode = scene.RootSceneNode.CreateChildSceneNode();
-			HeadNode.AttachObject( e );
-			HeadNode.Scale = new Vector3( 7, 7, 7 );
-			HeadNode.Position = new Vector3( 0, 200, 0 );
+			this.HeadNode = scene.RootSceneNode.CreateChildSceneNode();
+			this.HeadNode.AttachObject( e );
+			this.HeadNode.Scale = new Vector3( 7, 7, 7 );
+			this.HeadNode.Position = new Vector3( 0, 200, 0 );
 
 			if ( e.GetSubEntity( 0 ).NormalizeNormals == false )
 			{
@@ -193,65 +186,65 @@ namespace Axiom.Demos
 
 			int i;
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-				var pData = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
-			    var idx = 0;
+			{
+				float* pData = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+				int idx = 0;
 
-				Vector3 baseVec = new Vector3( GRASS_WIDTH / 2, 0, 0 );
+				var baseVec = new Vector3( GRASS_WIDTH / 2, 0, 0 );
 				Vector3 vec = baseVec;
 				Quaternion rot = Quaternion.FromAngleAxis( Utility.DegreesToRadians( 60 ), Vector3.UnitY );
 
 				for ( i = 0; i < 3; ++i )
 				{
 					//position
-					pData[idx++] = -vec.x;
-                    pData[idx++] = GRASS_HEIGHT;
-                    pData[idx++] = -vec.z;
+					pData[ idx++ ] = -vec.x;
+					pData[ idx++ ] = GRASS_HEIGHT;
+					pData[ idx++ ] = -vec.z;
 					// normal
-                    pData[idx++] = 0;
-                    pData[idx++] = 1;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 0;
 					// uv
-					pData[idx++] = 0;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 0;
 
 					// position
-					pData[idx++] = vec.x;
-					pData[idx++] = GRASS_HEIGHT;
-					pData[idx++] = vec.z;
+					pData[ idx++ ] = vec.x;
+					pData[ idx++ ] = GRASS_HEIGHT;
+					pData[ idx++ ] = vec.z;
 					// normal
-					pData[idx++] = 0;
-					pData[idx++] = 1;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 0;
 					// uv
-					pData[idx++] = 1;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 0;
 
 					// position
-					pData[idx++] = -vec.x;
-					pData[idx++] = 0;
-					pData[idx++] = -vec.z;
+					pData[ idx++ ] = -vec.x;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = -vec.z;
 					// normal
-					pData[idx++] = 0;
-					pData[idx++] = 1;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 0;
 					// uv
-					pData[idx++] = 0;
-					pData[idx++] = 1;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 1;
 
 					// position
-					pData[idx++] = vec.x;
-					pData[idx++] = 0;
-					pData[idx++] = vec.z;
+					pData[ idx++ ] = vec.x;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = vec.z;
 					// normal
-					pData[idx++] = 0;
-					pData[idx++] = 1;
-					pData[idx++] = 0;
+					pData[ idx++ ] = 0;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 0;
 					// uv
-					pData[idx++] = 1;
-					pData[idx++] = 1;
+					pData[ idx++ ] = 1;
+					pData[ idx++ ] = 1;
 
 					vec = rot * vec;
 				} //for
@@ -264,27 +257,27 @@ namespace Axiom.Demos
 			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6 * 3, BufferUsage.StaticWriteOnly );
 
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-				var pI = ( sm.indexData.indexBuffer.Lock( BufferLocking.Discard ) ).ToUShortPointer();
-			    var idx = 0;
+			{
+				ushort* pI = ( sm.indexData.indexBuffer.Lock( BufferLocking.Discard ) ).ToUShortPointer();
+				int idx = 0;
 
 				for ( i = 0; i < 3; ++i )
 				{
 					int off = i * 4;
-                    pI[idx++] = (ushort)(off);
-                    pI[idx++] = (ushort)(off + 3);
-                    pI[idx++] = (ushort)(off + 1);
+					pI[ idx++ ] = (ushort)( off );
+					pI[ idx++ ] = (ushort)( off + 3 );
+					pI[ idx++ ] = (ushort)( off + 1 );
 
-                    pI[idx++] = (ushort)(off + 0);
-                    pI[idx++] = (ushort)(off + 2);
-                    pI[idx++] = (ushort)(off + 3);
+					pI[ idx++ ] = (ushort)( off + 0 );
+					pI[ idx++ ] = (ushort)( off + 2 );
+					pI[ idx++ ] = (ushort)( off + 3 );
 				}
 			}
 
 			sm.indexData.indexBuffer.Unlock();
-			sm.MaterialName = GRASS_MATERIAL;
+			sm.MaterialName = this.GRASS_MATERIAL;
 
 			msh.Load();
 		}
@@ -292,34 +285,34 @@ namespace Axiom.Demos
 		private void SetupLighting()
 		{
 			scene.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );
-			Light = scene.CreateLight( "Light2" );
-			Light.Diffuse = new ColorEx( MinLightColour );
-			Light.SetAttenuation( 8000, 1, 0.0005f, 0 );
-			Light.Specular = new ColorEx( 1, 1, 1 );
+			this.Light = scene.CreateLight( "Light2" );
+			this.Light.Diffuse = new ColorEx( this.MinLightColour );
+			this.Light.SetAttenuation( 8000, 1, 0.0005f, 0 );
+			this.Light.Specular = new ColorEx( 1, 1, 1 );
 
-			LightNode = scene.RootSceneNode.CreateChildSceneNode( "MovingLightNode" );
-			LightNode.AttachObject( Light );
+			this.LightNode = scene.RootSceneNode.CreateChildSceneNode( "MovingLightNode" );
+			this.LightNode.AttachObject( this.Light );
 			//create billboard set
 
 			BillboardSet bbs = scene.CreateBillboardSet( "lightbbs", 1 );
 			bbs.MaterialName = "Examples/Flare";
-			Billboard bb = bbs.CreateBillboard( new Vector3( 0, 0, 0 ), MinLightColour );
-			LightNode.AttachObject( bbs );
+			Billboard bb = bbs.CreateBillboard( new Vector3( 0, 0, 0 ), this.MinLightColour );
+			this.LightNode.AttachObject( bbs );
 
-			LightGrassWibbler val = new LightGrassWibbler( Light, bb, MinLightColour, this.MaxLightColour, MinFlareSize, MaxFlareSize );
+			var val = new LightGrassWibbler( this.Light, bb, this.MinLightColour, this.MaxLightColour, this.MinFlareSize, this.MaxFlareSize );
 
 			// create controller, after this is will get updated on its own
-			WaveformControllerFunction func = new WaveformControllerFunction( WaveformType.Sine, 0.0f, 0.5f );
+			var func = new WaveformControllerFunction( WaveformType.Sine, 0.0f, 0.5f );
 
 			ControllerManager.Instance.CreateController( val, func );
 
-			LightNode.Position = new Vector3( 300, 250, -300 );
+			this.LightNode.Position = new Vector3( 300, 250, -300 );
 
 			Animation anim = scene.CreateAnimation( "LightTrack", 20 );
 			//Spline it for nce curves
 			anim.InterpolationMode = InterpolationMode.Spline;
 			//create a srtack to animte the camera's node
-			NodeAnimationTrack track = anim.CreateNodeTrack( 0, LightNode );
+			NodeAnimationTrack track = anim.CreateNodeTrack( 0, this.LightNode );
 			//setup keyframes
 			TransformKeyFrame key = track.CreateNodeKeyFrame( 0 );
 			key.Translate = new Vector3( 300, 550, -300 );
@@ -345,40 +338,42 @@ namespace Axiom.Demos
 			key.Translate = new Vector3( 300, 550, -300 );
 			// Create a new animation state to track this
 
-			AnimState = scene.CreateAnimationState( "LightTrack" );
-			AnimState.IsEnabled = true;
+			this.AnimState = scene.CreateAnimationState( "LightTrack" );
+			this.AnimState.IsEnabled = true;
 		}
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
 			// animate Light Wibbler
-			AnimState.AddTime( evt.TimeSinceLastFrame );
+			this.AnimState.AddTime( evt.TimeSinceLastFrame );
 
-			randomRange = Math.Utility.RangeRandom( 20, 100 );
+			this.randomRange = Utility.RangeRandom( 20, 100 );
 
-			if ( !backward )
+			if ( !this.backward )
 			{
-				extraOffset += 0.5f;
-				if ( extraOffset > randomRange )
+				this.extraOffset += 0.5f;
+				if ( this.extraOffset > this.randomRange )
 				{
-					backward = true;
+					this.backward = true;
 				}
 			}
-			if ( backward )
+			if ( this.backward )
 			{
-				extraOffset -= 0.5f;
-				if ( extraOffset < 0.02f )
+				this.extraOffset -= 0.5f;
+				if ( this.extraOffset < 0.02f )
 				{
-					backward = false;
+					this.backward = false;
 				}
 			}
 
 			// we are animating the static mesh ( Entity ) here with a simple offset
-			foreach ( Axiom.Core.StaticGeometry.Region reg in StaticGeom.RegionMap.Values )
+			foreach ( StaticGeometry.Region reg in this.StaticGeom.RegionMap.Values )
 			{
 				foreach ( StaticGeometry.LODBucket lod in reg.LodBucketList )
 				{
@@ -386,11 +381,13 @@ namespace Axiom.Demos
 					{
 						foreach ( StaticGeometry.GeometryBucket geom in mat.GeometryBucketList )
 						{
-							geom.SetCustomParameter( OFFSET_PARAM, new Vector4( extraOffset, 0, 0, 0 ) );
+							geom.SetCustomParameter( OFFSET_PARAM, new Vector4( this.extraOffset, 0, 0, 0 ) );
 						}
 					}
 				}
 			}
-		} //end function
+		}
+
+		//end function
 	}
 }

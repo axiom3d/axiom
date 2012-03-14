@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 
 using Axiom.Core;
 using Axiom.Math;
@@ -46,18 +49,18 @@ namespace Axiom.Controllers
 	/// </summary>
 	public sealed class FrameTimeControllerValue : IControllerValue<Real>
 	{
+		private Real elapsedTime;
+		private float frameDelay;
+
 		/// <summary>
 		///		Stores the value of the time elapsed since the last frame.
 		/// </summary>
 		private Real frameTime;
 
-		private float frameDelay;
 		/// <summary>
 		///		Float value that should be used to scale controller time.
 		/// </summary>
 		private float timeFactor;
-
-		private Real elapsedTime;
 
 		public FrameTimeControllerValue()
 		{
@@ -67,12 +70,12 @@ namespace Axiom.Controllers
 			//frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
 			// default to 1 for standard timing
-			timeFactor = 1;
-			frameDelay = 0;
-			elapsedTime = 0;
+			this.timeFactor = 1;
+			this.frameDelay = 0;
+			this.elapsedTime = 0;
 		}
 
-		#region IControllerValue Members
+		#region IControllerValue<Real> Members
 
 		/// <summary>
 		///		Gets a time scaled value to use for controller functions.
@@ -81,7 +84,7 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return frameTime;
+				return this.frameTime;
 			}
 			set
 			{
@@ -102,14 +105,14 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return timeFactor;
+				return this.timeFactor;
 			}
 			set
 			{
 				if ( value >= 0 )
 				{
-					timeFactor = value;
-					frameDelay = 0;
+					this.timeFactor = value;
+					this.frameDelay = 0;
 				}
 			}
 		}
@@ -118,12 +121,12 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return frameDelay;
+				return this.frameDelay;
 			}
 			set
 			{
-				timeFactor = 0;
-				frameDelay = value;
+				this.timeFactor = 0;
+				this.frameDelay = value;
 			}
 		}
 
@@ -131,11 +134,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return elapsedTime;
+				return this.elapsedTime;
 			}
 			set
 			{
-				elapsedTime = value;
+				this.elapsedTime = value;
 			}
 		}
 
@@ -150,19 +153,19 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
-			if ( frameDelay != 0 )
+			if ( this.frameDelay != 0 )
 			{
 				// Fixed frame time
-				frameTime = frameDelay;
-				timeFactor = frameDelay / e.TimeSinceLastFrame;
+				this.frameTime = this.frameDelay;
+				this.timeFactor = this.frameDelay / e.TimeSinceLastFrame;
 			}
 			else
 			{
 				// Save the time value after applying time factor
-				frameTime = timeFactor * e.TimeSinceLastFrame;
+				this.frameTime = this.timeFactor * e.TimeSinceLastFrame;
 			}
 			// Accumulate the elapsed time
-			elapsedTime += frameTime;
+			this.elapsedTime += this.frameTime;
 		}
 	}
 }

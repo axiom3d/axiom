@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Utilities;
-using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -47,7 +49,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for Plugin.
 	/// </summary>
-	[Export(typeof(IPlugin))]
+	[Export( typeof( IPlugin ) )]
 	public sealed class Plugin : IPlugin
 	{
 		#region Implementation of IPlugin
@@ -60,20 +62,18 @@ namespace Axiom.RenderSystems.OpenGL
 		public void Initialize()
 		{
 #if OPENGL_OTK
-			Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager",
-							   "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
+			Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
 #endif
-			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
-							   "An instance of the OpenGL renderer is already loaded." );
+			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL", "An instance of the OpenGL renderer is already loaded." );
 
-			_renderSystem = new GLRenderSystem();
+			this._renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "OpenGL", _renderSystem );
+			Root.Instance.RenderSystems.Add( "OpenGL", this._renderSystem );
 		}
 
 		public void Shutdown()
 		{
-			_renderSystem.Shutdown();
+			this._renderSystem.Shutdown();
 		}
 
 		#endregion Implementation of IPlugin

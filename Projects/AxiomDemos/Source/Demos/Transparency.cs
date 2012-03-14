@@ -1,9 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
-using Axiom.Animating;
-using Axiom.Controllers;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -15,9 +13,9 @@ namespace Axiom.Demos
 	/// 	Summary description for Transparency.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class Transparency : TechDemo
+	public class Transparency : TechDemo
 	{
 		#region Methods
 
@@ -51,7 +49,7 @@ namespace Axiom.Demos
 				SceneNode node = scene.CreateSceneNode();
 
 				// calculate a random position
-				Vector3 nodePosition = new Vector3();
+				var nodePosition = new Vector3();
 				nodePosition.x = Utility.SymmetricRandom() * 500.0f;
 				nodePosition.y = Utility.SymmetricRandom() * 500.0f;
 				nodePosition.z = Utility.SymmetricRandom() * 500.0f;
@@ -70,6 +68,7 @@ namespace Axiom.Demos
 				node.AttachObject( clone );
 			}
 		}
+
 		#endregion Methods
 	}
 }

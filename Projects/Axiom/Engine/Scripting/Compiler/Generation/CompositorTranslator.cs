@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,14 +46,15 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: CompositorTranslator
+
 		public class CompositorTranslator : Translator
 		{
 			protected Compositor _Compositor;
 
 			public CompositorTranslator()
-				: base()
 			{
-				_Compositor = null;
+				this._Compositor = null;
 			}
 
 			#region Translator Implementation
@@ -81,7 +86,7 @@ namespace Axiom.Scripting.Compiler
 				// Create the compositor
 				object compObject;
 				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				var processed = compiler._fireEvent( ref evt, out compObject );
+				bool processed = compiler._fireEvent( ref evt, out compObject );
 
 				if ( !processed )
 				{
@@ -95,25 +100,31 @@ namespace Axiom.Scripting.Compiler
 					var checkForExistingComp = (Compositor)CompositorManager.Instance.GetByName( obj.Name );
 
 					if ( checkForExistingComp == null )
-						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					{
+						this._Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+					}
 					else
-						_Compositor = checkForExistingComp;
+					{
+						this._Compositor = checkForExistingComp;
+					}
 				}
 				else
-					_Compositor = (Compositor)compObject;
+				{
+					this._Compositor = (Compositor)compObject;
+				}
 
-				if ( _Compositor == null )
+				if ( this._Compositor == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
 				// Prepare the compositor
-				_Compositor.RemoveAllTechniques();
-				_Compositor.Origin = obj.File;
-				obj.Context = _Compositor;
+				this._Compositor.RemoveAllTechniques();
+				this._Compositor.Origin = obj.File;
+				obj.Context = this._Compositor;
 
-				foreach ( var i in obj.Children )
+				foreach ( AbstractNode i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -128,6 +139,7 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
+
+		#endregion
 	}
 }
-

@@ -38,11 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Core.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -55,24 +55,25 @@ namespace Axiom.Graphics
 	{
 		#region Fields
 
-		protected RenderOperation renderOperation = new RenderOperation();
-		protected Matrix4 worldTransform = Matrix4.Identity;
+		protected static long nextAutoGenName;
 		protected AxisAlignedBox box;
-		protected string materialName;
-		protected Material material;
-		protected SceneManager sceneMgr;
 		protected Camera camera;
-		static protected long nextAutoGenName;
-
-		protected VertexData vertexData;
-		protected IndexData indexData;
+		protected List<Vector4> customParams = new List<Vector4>();
 
 		/// <summary>
 		///    Empty light list to use when there is no parent for this renderable.
 		/// </summary>
 		protected LightList dummyLightList = new LightList();
 
-		protected List<Vector4> customParams = new List<Vector4>();
+		protected IndexData indexData;
+
+		protected Material material;
+		protected string materialName;
+		protected RenderOperation renderOperation = new RenderOperation();
+		protected SceneManager sceneMgr;
+
+		protected VertexData vertexData;
+		protected Matrix4 worldTransform = Matrix4.Identity;
 
 		#endregion Fields
 
@@ -82,9 +83,7 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public SimpleRenderable()
-			: this( "SimpleRenderable" + nextAutoGenName++ )
-		{
-		}
+			: this( "SimpleRenderable" + nextAutoGenName++ ) { }
 
 		/// <summary>
 		///		Default constructor.
@@ -92,10 +91,10 @@ namespace Axiom.Graphics
 		public SimpleRenderable( string name )
 			: base( name )
 		{
-			materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this.materialName = "BaseWhite";
+			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 			name = "SimpleRenderable" + nextAutoGenName++;
-			material.Load();
+			this.material.Load();
 		}
 
 		private void LoadDefaultMaterial()
@@ -116,7 +115,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return (AxisAlignedBox)box.Clone();
+				return (AxisAlignedBox)this.box.Clone();
 			}
 		}
 
@@ -136,7 +135,7 @@ namespace Axiom.Graphics
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// add ourself to the render queue
-			queue.AddRenderable( this, this.RenderQueueGroup);
+			queue.AddRenderable( this, RenderQueueGroup );
 		}
 
 		#endregion Implementation of MovableObject
@@ -158,13 +157,15 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 			set
 			{
-				material = value;
-                if (material != null)
-                    materialName = material.Name;
+				this.material = value;
+				if ( this.material != null )
+				{
+					this.materialName = this.material.Name;
+				}
 			}
 		}
 
@@ -172,7 +173,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return material.GetBestTechnique();
+				return this.material.GetBestTechnique();
 			}
 		}
 
@@ -180,7 +181,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -190,7 +191,7 @@ namespace Axiom.Graphics
 		/// <param name="matrices"></param>
 		public virtual void GetWorldTransforms( Matrix4[] matrices )
 		{
-			matrices[ 0 ] = worldTransform * parentNode.FullTransform;
+			matrices[ 0 ] = this.worldTransform * parentNode.FullTransform;
 		}
 
 		public bool NormalizeNormals
@@ -281,32 +282,34 @@ namespace Axiom.Graphics
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
-				customParams.Add( Vector4.Zero );
-			customParams[ index ] = val;
+			while ( this.customParams.Count <= index )
+			{
+				this.customParams.Add( Vector4.Zero );
+			}
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams.Count > entry.Data && customParams[ entry.Data ] != null )
+			if ( this.customParams.Count > entry.Data && this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
 			}
 		}
 
-		#endregion IRenderable Members
+		#endregion
 
 		#region IDisposable Implementation
 
@@ -336,41 +339,47 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
+						if ( !this.renderOperation.IsDisposed )
+						{
+							this.renderOperation.Dispose();
+						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-                    if (indexData != null)
-                    {
-                        if (!this.indexData.IsDisposed)
-                            indexData.Dispose();
+					if ( this.indexData != null )
+					{
+						if ( !this.indexData.IsDisposed )
+						{
+							this.indexData.Dispose();
+						}
 
-                        this.indexData = null;
-                    }
-                    
-                    if (vertexData != null)
-                    {
-                        if (!this.vertexData.IsDisposed)
-                            vertexData.Dispose();
+						this.indexData = null;
+					}
 
-                        this.vertexData = null;
-                    }
+					if ( this.vertexData != null )
+					{
+						if ( !this.vertexData.IsDisposed )
+						{
+							this.vertexData.Dispose();
+						}
+
+						this.vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,18 +29,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Math.Collections;
 
@@ -55,13 +57,14 @@ namespace Axiom.Math
 		#region Fields
 
 		/// <summary>
-		///		Publicly accessible plane list, you can modify this direct.
-		/// </summary>
-		public PlaneList planes = new PlaneList();
-		/// <summary>
 		///		Side of the plane to be considered 'outside'.
 		/// </summary>
 		public PlaneSide outside;
+
+		/// <summary>
+		///		Publicly accessible plane list, you can modify this direct.
+		/// </summary>
+		public PlaneList planes = new PlaneList();
 
 		#endregion Fields
 
@@ -71,9 +74,7 @@ namespace Axiom.Math
 		///		Default constructor.
 		/// </summary>
 		public PlaneBoundedVolume()
-			: this( PlaneSide.Negative )
-		{
-		}
+			: this( PlaneSide.Negative ) { }
 
 		/// <summary>
 		///		Constructor.
@@ -109,19 +110,19 @@ namespace Axiom.Math
 			}
 
 			// Get centre of the box
-			var center = box.Center;
+			Vector3 center = box.Center;
 			// Get the half-size of the box
-			var halfSize = box.HalfSize;
+			Vector3 halfSize = box.HalfSize;
 
 			// If all points are on outside of any plane, we fail
-			var points = box.Corners;
+			Vector3[] points = box.Corners;
 
-			for ( var i = 0; i < planes.Count; i++ )
+			for ( int i = 0; i < this.planes.Count; i++ )
 			{
-				var plane = (Plane)planes[ i ];
+				Plane plane = this.planes[ i ];
 
-				var side = plane.GetSide( center, halfSize );
-				if ( side == outside )
+				PlaneSide side = plane.GetSide( center, halfSize );
+				if ( side == this.outside )
 				{
 					// Found a splitting plane therefore return not intersecting
 					return false;
@@ -139,15 +140,15 @@ namespace Axiom.Math
 		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			for ( var i = 0; i < planes.Count; i++ )
+			for ( int i = 0; i < this.planes.Count; i++ )
 			{
-				var plane = (Plane)planes[ i ];
+				Plane plane = this.planes[ i ];
 
 				// Test which side of the plane the sphere is
-				var d = plane.GetDistance( sphere.Center );
+				Real d = plane.GetDistance( sphere.Center );
 
 				// Negate d if planes point inwards
-				if ( outside == PlaneSide.Negative )
+				if ( this.outside == PlaneSide.Negative )
 				{
 					d = -d;
 				}

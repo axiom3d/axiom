@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -55,14 +59,14 @@ namespace Axiom.Controllers
 		#region Member variables
 
 		/// <summary>
-		///		If true, function will add input values together and wrap at 1.0 before evaluating.
-		/// </summary>
-		protected bool useDeltaInput;
-
-		/// <summary>
 		///		Value to be added during evaluation.
 		/// </summary>
 		protected Real deltaCount;
+
+		/// <summary>
+		///		If true, function will add input values together and wrap at 1.0 before evaluating.
+		/// </summary>
+		protected bool useDeltaInput;
 
 		#endregion
 
@@ -85,13 +89,13 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		protected virtual Real AdjustInput( Real input )
 		{
-			if ( useDeltaInput )
+			if ( this.useDeltaInput )
 			{
 				// wrap the value if it went past 1
-				deltaCount = ( deltaCount + input ) % 1.0f;
+				this.deltaCount = ( this.deltaCount + input ) % 1.0f;
 
 				// return the adjusted input value
-				return deltaCount;
+				return this.deltaCount;
 			}
 			else
 			{

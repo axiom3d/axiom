@@ -27,17 +27,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -47,23 +46,27 @@ namespace Axiom.Core
 	/** Structure collecting together information about the visible objects
 	that have been discovered in a scene.
 	*/
+
 	public struct VisibleObjectsBoundsInfo
 	{
 		/// The axis-aligned bounds of the visible objects
 		public AxisAlignedBox aabb;
-		/// The axis-aligned bounds of the visible shadow receiver objects
-		public AxisAlignedBox receiverAabb;
-		/// The closest a visible object is to the camera
-		public Real minDistance;
+
 		/// The farthest a visible objects is from the camera
 		public Real maxDistance;
 
+		/// The closest a visible object is to the camera
+		public Real minDistance;
+
+		/// The axis-aligned bounds of the visible shadow receiver objects
+		public AxisAlignedBox receiverAabb;
+
 		public void Reset()
 		{
-			aabb.IsNull = true;
-			receiverAabb.IsNull = true;
-			minDistance = float.NegativeInfinity;
-			maxDistance = 0;
+			this.aabb.IsNull = true;
+			this.receiverAabb.IsNull = true;
+			this.minDistance = float.NegativeInfinity;
+			this.maxDistance = 0;
 		}
 
 		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam )
@@ -73,13 +76,14 @@ namespace Axiom.Core
 
 		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam, bool receiver )
 		{
-			aabb.Merge( boxBounds );
+			this.aabb.Merge( boxBounds );
 			if ( receiver )
-				receiverAabb.Merge( boxBounds );
+			{
+				this.receiverAabb.Merge( boxBounds );
+			}
 			Real camDistToCenter = ( cam.DerivedPosition - sphereBounds.Center ).Length;
-			minDistance = System.Math.Min( minDistance, System.Math.Max( (Real)0, camDistToCenter - sphereBounds.Radius ) );
-			maxDistance = System.Math.Max( maxDistance, camDistToCenter + sphereBounds.Radius );
+			this.minDistance = System.Math.Min( this.minDistance, System.Math.Max( (Real)0, camDistToCenter - sphereBounds.Radius ) );
+			this.maxDistance = System.Math.Max( this.maxDistance, camDistToCenter + sphereBounds.Radius );
 		}
-
 	}
 }

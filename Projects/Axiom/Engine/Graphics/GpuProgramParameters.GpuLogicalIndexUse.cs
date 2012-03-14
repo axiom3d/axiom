@@ -1,79 +1,82 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Axiom.Graphics
 {
-    public partial class GpuProgramParameters
-    {
-        [OgreVersion(1, 7, 2790)]
-        public class GpuLogicalIndexUse
-        {
-            #region PhysicalIndex
+	public partial class GpuProgramParameters
+	{
+		#region Nested type: GpuLogicalIndexUse
 
-            /// <summary>
-            /// Physical buffer index
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public int PhysicalIndex;
+		[OgreVersion( 1, 7, 2790 )]
+		public class GpuLogicalIndexUse
+		{
+			#region PhysicalIndex
 
-            #endregion
+			/// <summary>
+			/// Physical buffer index
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public int PhysicalIndex;
 
-            #region CurrentSize
+			#endregion
 
-            /// <summary>
-            /// Current physical size allocation
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public int CurrentSize;
+			#region CurrentSize
 
-            #endregion
+			/// <summary>
+			/// Current physical size allocation
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public int CurrentSize;
 
-            #region Variability
+			#endregion
 
-            /// <summary>
-            /// How the contents of this slot vary
-            /// </summary>
-            [OgreVersion(1, 7, 2790)]
-            public GpuParamVariability Variability;
+			#region Variability
 
-            #endregion
+			/// <summary>
+			/// How the contents of this slot vary
+			/// </summary>
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuParamVariability Variability;
 
-            #region Constructor
+			#endregion
 
-            [OgreVersion(1, 7, 2790)]
-            public GpuLogicalIndexUse()
-            {
-                PhysicalIndex = 99999;
-                CurrentSize = 0;
-                Variability = GpuParamVariability.Global;
-            }
+			#region Constructor
 
-            [OgreVersion(1, 7, 2790)]
-            public GpuLogicalIndexUse(int bufIdx, int curSz, GpuParamVariability v)
-            {
-                PhysicalIndex = bufIdx;
-                CurrentSize = curSz;
-                Variability = v;
-            }
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuLogicalIndexUse()
+			{
+				this.PhysicalIndex = 99999;
+				this.CurrentSize = 0;
+				this.Variability = GpuParamVariability.Global;
+			}
 
-            #endregion
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuLogicalIndexUse( int bufIdx, int curSz, GpuParamVariability v )
+			{
+				this.PhysicalIndex = bufIdx;
+				this.CurrentSize = curSz;
+				this.Variability = v;
+			}
 
-            [AxiomHelper(0, 8)]
-            public GpuLogicalIndexUse Clone()
-            {
-                var p = new GpuLogicalIndexUse();
-                p.PhysicalIndex = PhysicalIndex;
-                p.CurrentSize = CurrentSize;
-                p.Variability = Variability;
-                return p;
-            }
-        }
+			#endregion
 
-        [OgreVersion(1, 7, 2790)]
-        public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse>
-        {
-        }
-    }
+			[AxiomHelper( 0, 8 )]
+			public GpuLogicalIndexUse Clone()
+			{
+				var p = new GpuLogicalIndexUse();
+				p.PhysicalIndex = this.PhysicalIndex;
+				p.CurrentSize = this.CurrentSize;
+				p.Variability = this.Variability;
+				return p;
+			}
+		}
+
+		#endregion
+
+		#region Nested type: GpuLogicalIndexUseMap
+
+		[OgreVersion( 1, 7, 2790 )]
+		public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse> { }
+
+		#endregion
+	}
 }

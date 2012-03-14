@@ -39,14 +39,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Math;
-using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Core.Collections;
+using Axiom.CrossPlatform;
+using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -54,93 +54,7 @@ namespace Axiom.Core
 {
 	public class BillboardChain : MovableObject, IRenderable
 	{
-		public class Element
-		{
-			#region Fields
-
-			private Vector3 position;
-			private float width;
-			// U or V texture coord depending on options
-			private float texCoord;
-			private ColorEx color;
-
-			#endregion Fields
-
-			#region Constructors
-
-			public Element()
-			{
-			}
-
-			public Element( Vector3 position, float width, float texCoord, ColorEx color )
-			{
-				this.position = position;
-				this.width = width;
-				this.texCoord = texCoord;
-				this.color = color;
-			}
-
-			#endregion Constructors
-
-			#region Properties
-
-			public Vector3 Position
-			{
-				get
-				{
-					return this.position;
-				}
-				set
-				{
-					this.position = value;
-				}
-			}
-
-			public float Width
-			{
-				get
-				{
-					return this.width;
-				}
-				set
-				{
-					this.width = value;
-				}
-			}
-
-			public float TexCoord
-			{
-				get
-				{
-					return this.texCoord;
-				}
-				set
-				{
-					this.texCoord = value;
-				}
-			}
-
-			public ColorEx Color
-			{
-				get
-				{
-					return this.color;
-				}
-				set
-				{
-					this.color = value;
-				}
-			}
-
-			#endregion Properties
-		}
-
-		public class ChainSegment
-		{
-			public int start;
-			public int head;
-			public int tail;
-		}
+		#region TexCoordDirection enum
 
 		public enum TexCoordDirection
 		{
@@ -148,33 +62,34 @@ namespace Axiom.Core
 			V
 		}
 
+		#endregion
+
 		public const int SEGMENT_EMPTY = int.MaxValue;
 
 		#region Fields
 
-		protected int maxElementsPerChain;
-		protected int chainCount;
-		protected bool useTexCoords;
-		protected bool useVertexColor;
-		protected bool dynamic;
-		protected VertexData vertexData;
-		protected IndexData indexData;
-		protected bool vertexDeclDirty;
-		protected bool buffersNeedRecreating;
-		protected bool boundsDirty;
-		protected bool indexContentDirty;
 		protected AxisAlignedBox aabb = new AxisAlignedBox();
-		protected Real radius;
-		protected string materialName;
-		protected Material material;
-		protected TexCoordDirection texCoordDirection;
-		protected float[] otherTexCoordRange = new float[ 2 ];
-
+		protected bool boundsDirty;
+		protected bool buffersNeedRecreating;
+		protected int chainCount;
 		protected List<Element> chainElementList;
 
 		protected List<ChainSegment> chainSegmentList;
 
 		protected List<Vector4> customParams = new List<Vector4>( 20 );
+		protected bool dynamic;
+		protected bool indexContentDirty;
+		protected IndexData indexData;
+		protected Material material;
+		protected string materialName;
+		protected int maxElementsPerChain;
+		protected float[] otherTexCoordRange = new float[ 2 ];
+		protected Real radius;
+		protected TexCoordDirection texCoordDirection;
+		protected bool useTexCoords;
+		protected bool useVertexColor;
+		protected VertexData vertexData;
+		protected bool vertexDeclDirty;
 
 		#endregion Fields
 
@@ -189,7 +104,7 @@ namespace Axiom.Core
 			set
 			{
 				this.maxElementsPerChain = value;
-				this.SetupChainContainers();
+				SetupChainContainers();
 				this.buffersNeedRecreating = this.indexContentDirty = true;
 			}
 		}
@@ -203,7 +118,7 @@ namespace Axiom.Core
 			set
 			{
 				this.chainCount = value;
-				this.SetupChainContainers();
+				SetupChainContainers();
 				this.buffersNeedRecreating = this.indexContentDirty = true;
 			}
 		}
@@ -286,14 +201,13 @@ namespace Axiom.Core
 				this.material = (Material)MaterialManager.Instance[ value ];
 				if ( this.material == null )
 				{
-					LogManager.Instance.Write( "Can't assign material {0} to BillboardChain {1} because this " +
-											   "Material does not exist. Have you forgotten to define it in a .material script?",
-											   this.materialName, Name );
+					LogManager.Instance.Write( "Can't assign material {0} to BillboardChain {1} because this " + "Material does not exist. Have you forgotten to define it in a .material script?", this.materialName, Name );
 
 					this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 					if ( this.material == null )
-						throw new Exception( String.Format( "Can't assign default material to BillboardChain of {0}. Did " +
-															"you forget to call MaterialManager::initialise()?", Name ) );
+					{
+						throw new Exception( String.Format( "Can't assign default material to BillboardChain of {0}. Did " + "you forget to call MaterialManager::initialise()?", Name ) );
+					}
 				}
 			}
 		}
@@ -324,38 +238,28 @@ namespace Axiom.Core
 			this.otherTexCoordRange[ 0 ] = 0.0f;
 			this.otherTexCoordRange[ 1 ] = 1.0f;
 
-			this.SetupChainContainers();
+			SetupChainContainers();
 
 			this.vertexData.vertexStart = 0;
 			// index data setup later
 			// set basic white material
-			this.MaterialName = "BaseWhiteNoLighting";
+			MaterialName = "BaseWhiteNoLighting";
 		}
 
 		public BillboardChain( string name, int maxElements, int numberOfChains, bool useTextureCoords, bool useColors )
-			: this( name, maxElements, numberOfChains, useTextureCoords, useColors, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, useTextureCoords, useColors, true ) { }
 
 		public BillboardChain( string name, int maxElements, int numberOfChains, bool useTextureCoords )
-			: this( name, maxElements, numberOfChains, useTextureCoords, true, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, useTextureCoords, true, true ) { }
 
 		public BillboardChain( string name, int maxElements, int numberOfChains )
-			: this( name, maxElements, numberOfChains, true, true, true )
-		{
-		}
+			: this( name, maxElements, numberOfChains, true, true, true ) { }
 
 		public BillboardChain( string name, int maxElements )
-			: this( name, maxElements, 1, true, true, true )
-		{
-		}
+			: this( name, maxElements, 1, true, true, true ) { }
 
 		public BillboardChain( string name )
-			: this( name, 20, 1, true, true, true )
-		{
-		}
+			: this( name, 20, 1, true, true, true ) { }
 
 		#endregion Constructors
 
@@ -366,14 +270,16 @@ namespace Axiom.Core
 			// allocate enough space for everything
 			this.chainElementList = new List<Element>( this.chainCount * this.maxElementsPerChain );
 
-			for ( var i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
+			for ( int i = 0; i < this.chainCount * this.maxElementsPerChain; ++i )
+			{
 				this.chainElementList.Add( new Element() );
+			}
 
 			this.vertexData.vertexCount = this.chainElementList.Capacity * 2;
 
 			// configure chains
 			this.chainSegmentList = new List<ChainSegment>( this.chainCount );
-			for ( var i = 0; i < this.chainCount; ++i )
+			for ( int i = 0; i < this.chainCount; ++i )
 			{
 				this.chainSegmentList.Add( new ChainSegment() );
 				this.chainSegmentList[ i ].start = i * this.maxElementsPerChain;
@@ -385,10 +291,10 @@ namespace Axiom.Core
 		{
 			if ( this.vertexDeclDirty )
 			{
-				var decl = this.vertexData.vertexDeclaration;
+				VertexDeclaration decl = this.vertexData.vertexDeclaration;
 				decl.RemoveAllElements();
 
-				var offset = 0;
+				int offset = 0;
 				// Add a description for the buffer of the positions of the vertices
 				decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
 				offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
@@ -407,10 +313,7 @@ namespace Axiom.Core
 
 				if ( !this.useTexCoords && !this.useVertexColor )
 				{
-					LogManager.Instance.Write( "Error - BillboardChain '{0}' is using neither texture " +
-											   "coordinates or vertex colors; it will not be visible " +
-											   "on some rendering API's so you should change this so you " +
-											   "use one or the other." );
+					LogManager.Instance.Write( "Error - BillboardChain '{0}' is using neither texture " + "coordinates or vertex colors; it will not be visible " + "on some rendering API's so you should change this so you " + "use one or the other." );
 				}
 				this.vertexDeclDirty = false;
 			}
@@ -418,12 +321,12 @@ namespace Axiom.Core
 
 		protected virtual void SetupBuffers()
 		{
-			this.SetupVertexDeclaration();
+			SetupVertexDeclaration();
 
 			if ( this.buffersNeedRecreating )
 			{
 				// Create the vertex buffer (always dynamic due to the camera adjust)
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexData.vertexDeclaration.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexData.vertexDeclaration.Clone( 0 ), this.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// (re)Bind the buffer
 				// Any existing buffer will lose its reference count and be destroyed
@@ -439,28 +342,28 @@ namespace Axiom.Core
 
 		protected virtual void UpdateVertexBuffer( Camera camera )
 		{
-			this.SetupBuffers();
-			var buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
-			var bufferPtr = buffer.Lock( BufferLocking.Discard );
+			SetupBuffers();
+			HardwareVertexBuffer buffer = this.vertexData.vertexBufferBinding.GetBuffer( 0 );
+			BufferBase bufferPtr = buffer.Lock( BufferLocking.Discard );
 
-			var camPosition = camera.DerivedPosition;
-			var eyePosition = ParentNode.DerivedOrientation.Inverse() * ( camPosition - ParentNode.DerivedPosition ) / ParentNode.DerivedScale;
+			Vector3 camPosition = camera.DerivedPosition;
+			Vector3 eyePosition = ParentNode.DerivedOrientation.Inverse() * ( camPosition - ParentNode.DerivedPosition ) / ParentNode.DerivedScale;
 
 			Vector3 chainTangent;
 
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-				var bufferStart = bufferPtr;
+			{
+				BufferBase bufferStart = bufferPtr;
 
-				foreach ( var segment in this.chainSegmentList )
+				foreach ( ChainSegment segment in this.chainSegmentList )
 				{
 					// Skip 0 or 1 element segment counts
 					if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 					{
-						var laste = segment.head;
-						for ( var e = segment.head; ; ++e )
+						int laste = segment.head;
+						for ( int e = segment.head; ; ++e )
 						{
 							// Wrap forwards
 							if ( e == this.maxElementsPerChain )
@@ -468,14 +371,14 @@ namespace Axiom.Core
 								e = 0;
 							}
 
-							var element = this.chainElementList[ e + segment.start ];
+							Element element = this.chainElementList[ e + segment.start ];
 							var baseIndex = (ushort)( ( e + segment.start ) * 2 );
 
 							// Determine base pointer to vertex #1
-							var pBase = bufferStart + buffer.VertexSize * baseIndex;
+							BufferBase pBase = bufferStart + buffer.VertexSize * baseIndex;
 
 							// Get index of next item
-							var nexte = e + 1;
+							int nexte = e + 1;
 							if ( nexte == this.maxElementsPerChain )
 							{
 								nexte = 0;
@@ -497,76 +400,76 @@ namespace Axiom.Core
 								chainTangent = this.chainElementList[ nexte + segment.start ].Position - this.chainElementList[ laste + segment.start ].Position;
 							}
 
-							var p1ToEye = eyePosition - element.Position;
-							var perpendicular = chainTangent.Cross( p1ToEye );
+							Vector3 p1ToEye = eyePosition - element.Position;
+							Vector3 perpendicular = chainTangent.Cross( p1ToEye );
 							perpendicular.Normalize();
 							perpendicular *= ( element.Width * 0.5f );
 
-							var pos0 = element.Position - perpendicular;
-							var pos1 = element.Position + perpendicular;
+							Vector3 pos0 = element.Position - perpendicular;
+							Vector3 pos1 = element.Position + perpendicular;
 
-							var pFloat = pBase.ToFloatPointer();
+							float* pFloat = pBase.ToFloatPointer();
 							// pos1
-							pFloat[0] = pos0.x;
-                            pFloat[1] = pos0.y;
-                            pFloat[2] = pos0.z;
+							pFloat[ 0 ] = pos0.x;
+							pFloat[ 1 ] = pos0.y;
+							pFloat[ 2 ] = pos0.z;
 
-						    pBase += sizeof(float)*3;
+							pBase += sizeof( float ) * 3;
 
 							if ( this.useVertexColor )
 							{
-								var pColor = pBase.ToIntPointer();
-								pColor[0] = Root.Instance.ConvertColor( element.Color );
-							    pBase += sizeof(int);
+								int* pColor = pBase.ToIntPointer();
+								pColor[ 0 ] = Root.Instance.ConvertColor( element.Color );
+								pBase += sizeof( int );
 							}
 
 							if ( this.useTexCoords )
 							{
-                                pFloat = pBase.ToFloatPointer();
-                                if (this.texCoordDirection == TexCoordDirection.U)
+								pFloat = pBase.ToFloatPointer();
+								if ( this.texCoordDirection == TexCoordDirection.U )
 								{
-                                    pFloat[0] = element.TexCoord;
-                                    pFloat[1] = this.otherTexCoordRange[0];
+									pFloat[ 0 ] = element.TexCoord;
+									pFloat[ 1 ] = this.otherTexCoordRange[ 0 ];
 								}
 								else
 								{
-                                    pFloat[0] = this.otherTexCoordRange[0];
-                                    pFloat[1] = element.TexCoord;
+									pFloat[ 0 ] = this.otherTexCoordRange[ 0 ];
+									pFloat[ 1 ] = element.TexCoord;
 								}
-							    pBase += sizeof(float)*2;
+								pBase += sizeof( float ) * 2;
 							}
 
-                            pFloat = pBase.ToFloatPointer();
+							pFloat = pBase.ToFloatPointer();
 
 							// pos2
-                            pFloat[0] = pos1.x;
-                            pFloat[1] = pos1.y;
-                            pFloat[2] = pos1.z;
+							pFloat[ 0 ] = pos1.x;
+							pFloat[ 1 ] = pos1.y;
+							pFloat[ 2 ] = pos1.z;
 
-                            pBase += sizeof(float) * 3;
+							pBase += sizeof( float ) * 3;
 
 							if ( this.useVertexColor )
 							{
-                                var pColor = pBase.ToIntPointer();
-                                pColor[0] = Root.Instance.ConvertColor(element.Color);
-                                pBase += sizeof(int);
+								int* pColor = pBase.ToIntPointer();
+								pColor[ 0 ] = Root.Instance.ConvertColor( element.Color );
+								pBase += sizeof( int );
 							}
 
 							if ( this.useTexCoords )
 							{
-                                pFloat = pBase.ToFloatPointer();
-                                if (this.texCoordDirection == TexCoordDirection.U)
-                                {
-                                    pFloat[0] = element.TexCoord;
-                                    pFloat[1] = this.otherTexCoordRange[0];
-                                }
-                                else
-                                {
-                                    pFloat[0] = this.otherTexCoordRange[0];
-                                    pFloat[1] = element.TexCoord;
-                                }
-                                pBase += sizeof(float) * 2;
-                            }
+								pFloat = pBase.ToFloatPointer();
+								if ( this.texCoordDirection == TexCoordDirection.U )
+								{
+									pFloat[ 0 ] = element.TexCoord;
+									pFloat[ 1 ] = this.otherTexCoordRange[ 0 ];
+								}
+								else
+								{
+									pFloat[ 0 ] = this.otherTexCoordRange[ 0 ];
+									pFloat[ 1 ] = element.TexCoord;
+								}
+								pBase += sizeof( float ) * 2;
+							}
 
 							if ( e == segment.tail )
 							{
@@ -582,31 +485,31 @@ namespace Axiom.Core
 
 		protected virtual void UpdateIndexBuffer()
 		{
-			this.SetupBuffers();
+			SetupBuffers();
 
 			if ( this.indexContentDirty )
 			{
-				var pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				BufferBase pBufferBase = this.indexData.indexBuffer.Lock( BufferLocking.Discard );
 				this.indexData.indexCount = 0;
 
 #if !AXIOM_SAFE_ONLY
-                unsafe
+				unsafe
 #endif
-                {
-					var pShort = pBufferBase.ToUShortPointer();
-                    var idx = 0;
-                    // indexes
-					foreach ( var segment in this.chainSegmentList )
+				{
+					ushort* pShort = pBufferBase.ToUShortPointer();
+					int idx = 0;
+					// indexes
+					foreach ( ChainSegment segment in this.chainSegmentList )
 					{
 						// Skip 0 or 1 element segment counts
 						if ( segment.head != SEGMENT_EMPTY && segment.head != segment.tail )
 						{
 							// Start from head + 1 since it's only useful in pairs
-							var laste = segment.head;
+							int laste = segment.head;
 
 							while ( true )
 							{
-								var e = laste + 1;
+								int e = laste + 1;
 								// Wrap Forwards
 								if ( e == this.maxElementsPerChain )
 								{
@@ -617,12 +520,12 @@ namespace Axiom.Core
 								var baseIndex = (ushort)( ( e + segment.start ) * 2 );
 								var lastBaseIndex = (ushort)( ( laste + segment.start ) * 2 );
 
-								pShort[idx++] = lastBaseIndex;
-                                pShort[idx++] = (ushort)(lastBaseIndex + 1);
-                                pShort[idx++] = baseIndex;
-                                pShort[idx++] = (ushort)(lastBaseIndex + 1);
-                                pShort[idx++] = (ushort)(baseIndex + 1);
-                                pShort[idx++] = baseIndex;
+								pShort[ idx++ ] = lastBaseIndex;
+								pShort[ idx++ ] = (ushort)( lastBaseIndex + 1 );
+								pShort[ idx++ ] = baseIndex;
+								pShort[ idx++ ] = (ushort)( lastBaseIndex + 1 );
+								pShort[ idx++ ] = (ushort)( baseIndex + 1 );
+								pShort[ idx++ ] = baseIndex;
 
 								this.indexData.indexCount += 6;
 
@@ -649,11 +552,11 @@ namespace Axiom.Core
 				this.aabb.IsNull = true;
 				Vector3 widthVector;
 
-				foreach ( var segment in this.chainSegmentList )
+				foreach ( ChainSegment segment in this.chainSegmentList )
 				{
 					if ( segment.head != SEGMENT_EMPTY )
 					{
-						for ( var i = segment.head; ; ++i )
+						for ( int i = segment.head; ; ++i )
 						{
 							// Wrap forwards
 							if ( i == this.maxElementsPerChain )
@@ -661,7 +564,7 @@ namespace Axiom.Core
 								i = 0;
 							}
 
-							var element = this.chainElementList[ segment.start + i ];
+							Element element = this.chainElementList[ segment.start + i ];
 
 							widthVector.x = widthVector.y = widthVector.z = element.Width;
 							this.aabb.Merge( element.Position - widthVector );
@@ -697,7 +600,7 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			var segment = this.chainSegmentList[ chainIndex ];
+			ChainSegment segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
 			{
 				// Tail starts at end, head grows backwards
@@ -752,9 +655,11 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			var segment = this.chainSegmentList[ chainIndex ];
+			ChainSegment segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
+			{
 				return; // nothing to remove
+			}
 
 			if ( segment.tail == segment.head )
 			{
@@ -786,13 +691,13 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			var segment = this.chainSegmentList[ chainIndex ];
+			ChainSegment segment = this.chainSegmentList[ chainIndex ];
 			if ( segment.head == SEGMENT_EMPTY )
 			{
 				throw new Exception( "Chain segement is empty" );
 			}
 
-			var index = segment.head + elementIndex;
+			int index = segment.head + elementIndex;
 			// adjust for the edge and start
 			index = ( index % this.maxElementsPerChain ) + segment.start;
 
@@ -812,9 +717,9 @@ namespace Axiom.Core
 			{
 				throw new IndexOutOfRangeException();
 			}
-			var segment = this.chainSegmentList[ chainIndex ];
+			ChainSegment segment = this.chainSegmentList[ chainIndex ];
 
-			var index = segment.head + elementIndex;
+			int index = segment.head + elementIndex;
 			// adjust for the edge and start
 			index = ( index % this.maxElementsPerChain ) + segment.start;
 
@@ -825,26 +730,11 @@ namespace Axiom.Core
 
 		#region Overriden Methods
 
-		public override void NotifyCurrentCamera( Camera camera )
-		{
-			this.UpdateVertexBuffer( camera );
-		}
-
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			this.UpdateIndexBuffer();
-
-			if ( this.indexData.indexCount > 0 )
-			{
-				queue.AddRenderable( this );
-			}
-		}
-
 		public override AxisAlignedBox BoundingBox
 		{
 			get
 			{
-				this.UpdateBoundingBox();
+				UpdateBoundingBox();
 				return this.aabb;
 			}
 		}
@@ -865,9 +755,26 @@ namespace Axiom.Core
 			}
 		}
 
+		public override void NotifyCurrentCamera( Camera camera )
+		{
+			UpdateVertexBuffer( camera );
+		}
+
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
+			UpdateIndexBuffer();
+
+			if ( this.indexData.indexCount > 0 )
+			{
+				queue.AddRenderable( this );
+			}
+		}
+
 		#endregion Overriden Methods
 
 		#region IRenderable Implementation
+
+		protected RenderOperation renderOperation = new RenderOperation();
 
 		public bool NormalizeNormals
 		{
@@ -972,7 +879,6 @@ namespace Axiom.Core
 			}
 		}
 
-		protected RenderOperation renderOperation = new RenderOperation();
 		public RenderOperation RenderOperation
 		{
 			get
@@ -1014,14 +920,16 @@ namespace Axiom.Core
 			}
 			else
 			{
-				return (Vector4)this.customParams[ index ];
+				return this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
-				customParams.Add( Vector4.Zero );
+			while ( this.customParams.Count <= index )
+			{
+				this.customParams.Add( Vector4.Zero );
+			}
 			this.customParams[ index ] = val;
 		}
 
@@ -1029,14 +937,13 @@ namespace Axiom.Core
 		{
 			if ( this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
 			}
 		}
 
 		#endregion IRenderable Implementation
 
 		#region IDisposable Implementation
-
 
 		/// <summary>
 		/// Class level dispose method
@@ -1069,39 +976,95 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-                        if (!this.renderOperation.IsDisposed)
-                            this.renderOperation.Dispose();
+						if ( !this.renderOperation.IsDisposed )
+						{
+							this.renderOperation.Dispose();
+						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-                    if (indexData != null)
-                    {
-                        if (!indexData.IsDisposed)
-                            indexData.Dispose();
+					if ( this.indexData != null )
+					{
+						if ( !this.indexData.IsDisposed )
+						{
+							this.indexData.Dispose();
+						}
 
-                        indexData = null;
-                    }
+						this.indexData = null;
+					}
 
-                    if (vertexData != null)
-                    {
-                        if (!vertexData.IsDisposed)
-                            vertexData.Dispose();
+					if ( this.vertexData != null )
+					{
+						if ( !this.vertexData.IsDisposed )
+						{
+							this.vertexData.Dispose();
+						}
 
-                        vertexData = null;
-                    }
+						this.vertexData = null;
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
+
+		#region Nested type: ChainSegment
+
+		public class ChainSegment
+		{
+			public int head;
+			public int start;
+			public int tail;
+		}
+
+		#endregion
+
+		#region Nested type: Element
+
+		public class Element
+		{
+			#region Fields
+
+			// U or V texture coord depending on options
+
+			#endregion Fields
+
+			#region Constructors
+
+			public Element() { }
+
+			public Element( Vector3 position, float width, float texCoord, ColorEx color )
+			{
+				this.Position = position;
+				this.Width = width;
+				this.TexCoord = texCoord;
+				this.Color = color;
+			}
+
+			#endregion Constructors
+
+			#region Properties
+
+			public Vector3 Position { get; set; }
+
+			public float Width { get; set; }
+
+			public float TexCoord { get; set; }
+
+			public ColorEx Color { get; set; }
+
+			#endregion Properties
+		}
+
+		#endregion
 	}
 
 	public class BillboardChainFactory : MovableObjectFactory
@@ -1109,19 +1072,18 @@ namespace Axiom.Core
 		public new const string TypeName = "BillboardChain";
 
 		public BillboardChainFactory()
-            : base()
 		{
-			base.Type = BillboardChainFactory.TypeName;
+			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
 		}
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
-			var maxElements = 20;
-			var numberOfChains = 1;
-			var useTextureCoords = true;
-			var useVertexColors = true;
-			var isDynamic = true;
+			int maxElements = 20;
+			int numberOfChains = 1;
+			bool useTextureCoords = true;
+			bool useVertexColors = true;
+			bool isDynamic = true;
 
 			// optional parameters
 			if ( param != null )

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Linq;
 
 using Axiom.Collections;
 using Axiom.Core;
@@ -46,7 +48,6 @@ using Axiom.Core.Collections;
 using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -79,42 +80,16 @@ namespace Axiom.Graphics
 	{
 		#region Delegates
 
-		delegate void PassAttributeParser( string[] values, Pass pass );
-		
-		delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
-
-		public class SchemeNotFoundEventArgs : EventArgs
-		{
-			public ushort SchemeIndex { get; private set; }
-
-			public string SchemeName { get; private set; }
-
-			public Material OriginalMaterial { get; private set; }
-
-			public int LodIndex { get; private set; }
-
-			public IRenderable Renderable { get; private set; }
-
-			public SchemeNotFoundEventArgs(ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable)
-			{
-				SchemeIndex = schemeIndex;
-				Renderable = renderable;
-				LodIndex = lodIndex;
-				OriginalMaterial = originalMaterial;
-				SchemeName = schemeName;
-			}
-		}
-
-		public delegate Technique SchemeNotFoundHandler(SchemeNotFoundEventArgs args);
+		public delegate Technique SchemeNotFoundHandler( SchemeNotFoundEventArgs args );
 
 		#endregion
 
 		#region Fields and Properties
 
 		/// <summary>
-		///     Default Texture filtering - minification.
+		///		Used for parsing material scripts.
 		/// </summary>
-		private FilterOptions _defaultMinFilter;
+		private readonly MaterialSerializer _serializer = new MaterialSerializer();
 
 		/// <summary>
 		///     Default Texture filtering - magnification.
@@ -122,42 +97,27 @@ namespace Axiom.Graphics
 		private FilterOptions _defaultMagFilter;
 
 		/// <summary>
+		///     Default Texture filtering - minification.
+		/// </summary>
+		private FilterOptions _defaultMinFilter;
+
+		/// <summary>
 		///     Default Texture filtering - mipmapping.
 		/// </summary>
 		private FilterOptions _defaultMipFilter;
 
+		private TextureFiltering _filtering;
+
 		#region DefaultAnisotropy Property
 
-		/// <summary>
-		///     Default Texture anisotropy.
-		/// </summary>
-		private int _defaultMaxAniso;
 		/// <summary>
 		///    Sets the default anisotropy level to be used for loaded textures, for when textures are
 		///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
 		///    parameters by the application.
 		/// </summary>
-		public int DefaultAnisotropy
-		{
-			get
-			{
-				return _defaultMaxAniso;
-			}
-			set
-			{
-				_defaultMaxAniso = value;
-			}
-		}
+		public int DefaultAnisotropy { get; set; }
 
 		#endregion DefaultAnisotropy Property
-
-		/// <summary>
-		///		Used for parsing material scripts.
-		/// </summary>
-		private MaterialSerializer _serializer = new MaterialSerializer();
-
-		private TextureFiltering _filtering;
-
 
 		#endregion Fields and Properties
 
@@ -167,27 +127,27 @@ namespace Axiom.Graphics
 		/// private constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public MaterialManager()
-			: base()
 		{
 			if ( instance == null )
 			{
 				instance = this;
 			}
 
-			this.SetDefaultTextureFiltering(TextureFiltering.Bilinear);
-			_defaultMaxAniso = 1;
+			SetDefaultTextureFiltering( TextureFiltering.Bilinear );
+			this.DefaultAnisotropy = 1;
 
 			// Loading order
-			this.LoadingOrder = 100.0f;
+			LoadingOrder = 100.0f;
 
 #if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
 			ScriptPatterns.Add( "*.program" );
 			ScriptPatterns.Add( "*.material" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
-#endif // AXIOM_USENEWCOMPILERS
+#endif
+			// AXIOM_USENEWCOMPILERS
 			// Material Schemes
-			ActiveScheme = MaterialManager.DefaultSchemeName;
+			ActiveScheme = DefaultSchemeName;
 			ActiveSchemeIndex = 0;
 			//_schemes.Add(_activeSchemeName, _activeSchemeIndex);
 			GetSchemeIndex( ActiveScheme );
@@ -260,15 +220,15 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					_defaultMinFilter = options;
+					this._defaultMinFilter = options;
 					break;
 
 				case FilterType.Mag:
-					_defaultMagFilter = options;
+					this._defaultMagFilter = options;
 					break;
 
 				case FilterType.Mip:
-					_defaultMipFilter = options;
+					this._defaultMipFilter = options;
 					break;
 			}
 		}
@@ -278,9 +238,9 @@ namespace Axiom.Graphics
 		/// <param name="mipFilter">Map filter.</param>
 		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
 		{
-			_defaultMinFilter = minFilter;
-			_defaultMagFilter = magFilter;
-			_defaultMipFilter = mipFilter;
+			this._defaultMinFilter = minFilter;
+			this._defaultMagFilter = magFilter;
+			this._defaultMipFilter = mipFilter;
 		}
 
 		#endregion SetDefaultTextureFiltering Method
@@ -297,13 +257,13 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					return _defaultMinFilter;
+					return this._defaultMinFilter;
 
 				case FilterType.Mag:
-					return _defaultMagFilter;
+					return this._defaultMagFilter;
 
 				case FilterType.Mip:
-					return _defaultMipFilter;
+					return this._defaultMipFilter;
 			}
 
 			// make the compiler happy
@@ -315,7 +275,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual TextureFiltering GetDefaultTextureFiltering()
 		{
-			return _filtering;
+			return this._filtering;
 		}
 
 		#endregion GetDefaultTextureFiltering Method
@@ -323,55 +283,19 @@ namespace Axiom.Graphics
 		#endregion Methods
 
 		#region Material Schemes
+
 		public static string DefaultSchemeName = "Default";
+		private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
 
 		protected readonly Dictionary<String, ushort> _schemes = new Dictionary<String, ushort>();
-		protected String _activeSchemeName;
 		protected ushort _activeSchemeIndex;
-
-		/// <summary>
-		/// The index for the given material scheme name. 
-		/// </summary>
-		/// <seealso ref="Technique.SchemeName"/>
-		public ushort GetSchemeIndex( String name )
-		{
-			if ( !_schemes.ContainsKey( name ) )
-			{
-				_schemes.Add( name, (ushort)_schemes.Count );
-			}
-
-			return _schemes[ name ];
-		}
-
-
-		/// <summary>
-		/// The name for the given material scheme index. 
-		/// </summary>
-		/// <seealso ref="Technique.SchemeName"/>
-		public String GetSchemeName( ushort index )
-		{
-			if ( _schemes.ContainsValue( index ) )
-			{
-				foreach ( var item in _schemes )
-				{
-					if ( item.Value == index )
-					{
-						return item.Key;
-					}
-				}
-			}
-			return MaterialManager.DefaultSchemeName;
-		}
+		protected String _activeSchemeName;
 
 		/// <summary>
 		/// The active scheme index. 
 		/// </summary>
 		/// <seealso ref="Technique.SchemeIndex"/>
-		public ushort ActiveSchemeIndex
-		{
-			get;
-			protected set;
-		}
+		public ushort ActiveSchemeIndex { get; protected set; }
 
 		/// <summary>
 		/// The name of the active material scheme. 
@@ -381,83 +305,118 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _activeSchemeName;
+				return this._activeSchemeName;
 			}
 			set
 			{
 				ActiveSchemeIndex = GetSchemeIndex( value );
-				_activeSchemeName = value;
+				this._activeSchemeName = value;
 			}
 		}
 
+		/// <summary>
+		/// The index for the given material scheme name. 
+		/// </summary>
+		/// <seealso ref="Technique.SchemeName"/>
+		public ushort GetSchemeIndex( String name )
+		{
+			if ( !this._schemes.ContainsKey( name ) )
+			{
+				this._schemes.Add( name, (ushort)this._schemes.Count );
+			}
+
+			return this._schemes[ name ];
+		}
 
 
-		private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
+		/// <summary>
+		/// The name for the given material scheme index. 
+		/// </summary>
+		/// <seealso ref="Technique.SchemeName"/>
+		public String GetSchemeName( ushort index )
+		{
+			if ( this._schemes.ContainsValue( index ) )
+			{
+				foreach ( var item in this._schemes )
+				{
+					if ( item.Value == index )
+					{
+						return item.Key;
+					}
+				}
+			}
+			return DefaultSchemeName;
+		}
+
 
 		/// <summary>
 		/// Add a listener to handle material events. 
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-		public virtual void AddListener(SchemeNotFoundHandler l )
+		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
+		public virtual void AddListener( SchemeNotFoundHandler l )
 		{
-			_listenerMap.Add( string.Empty, l );
+			this._listenerMap.Add( string.Empty, l );
 		}
 
 		/// <summary>
 		/// Add a listener to handle material events. 
 		/// If schemeName is supplied, the listener will only receive events for that certain scheme.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-		public virtual void AddListener(SchemeNotFoundHandler l, string schemeName )
+		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
+		public virtual void AddListener( SchemeNotFoundHandler l, string schemeName )
 		{
-			_listenerMap.Add( schemeName ?? string.Empty, l );
+			this._listenerMap.Add( schemeName ?? string.Empty, l );
 		}
 
 		/// <summary>
 		/// Remove a listener handling material events. 
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-		public virtual void RemoveListener(SchemeNotFoundHandler l )
+		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
+		public virtual void RemoveListener( SchemeNotFoundHandler l )
 		{
-			_listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
+			this._listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
 		}
 
 		/// <summary>
 		/// Remove a listener handling material events. 
 		/// If the listener was added with a custom scheme name, it needs to be supplied here as well.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "Using delegate rather than an Listener interface")]
-		public virtual void RemoveListener(SchemeNotFoundHandler l, string schemeName )
+		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
+		public virtual void RemoveListener( SchemeNotFoundHandler l, string schemeName )
 		{
-			_listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
+			this._listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
 		}
 
 
 		/// <summary>Internal method for sorting out missing technique for a scheme</summary>
-		public Technique ArbitrateMissingTechniqueForActiveScheme(Material mat, int lodIndex, IRenderable rend)
+		public Technique ArbitrateMissingTechniqueForActiveScheme( Material mat, int lodIndex, IRenderable rend )
 		{
-			var args = new SchemeNotFoundEventArgs(_activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend);
+			var args = new SchemeNotFoundEventArgs( this._activeSchemeIndex, this._activeSchemeName, mat, lodIndex, rend );
 
 			//First, check the scheme specific listeners
 			List<SchemeNotFoundHandler> handlers;
-			if (_listenerMap.TryGetValue( _activeSchemeName, out handlers ))
+			if ( this._listenerMap.TryGetValue( this._activeSchemeName, out handlers ) )
 			{
-				foreach (var i in handlers)
+				foreach ( SchemeNotFoundHandler i in handlers )
 				{
-					var t = i(args);
-					if (t != null)
+					Technique t = i( args );
+					if ( t != null )
+					{
 						return t;
+					}
 				}
 			}
 
 			//If no success, check generic listeners
-			if (_listenerMap.TryGetValue( string.Empty, out handlers ))
+			if ( this._listenerMap.TryGetValue( string.Empty, out handlers ) )
 			{
-				foreach (var i in handlers)
+				foreach ( SchemeNotFoundHandler i in handlers )
 				{
-					var t = i(args);
-					if (t != null)
+					Technique t = i( args );
+					if ( t != null )
+					{
 						return t;
+					}
 				}
 			}
 
@@ -495,7 +454,6 @@ namespace Axiom.Graphics
 
 		public virtual bool Initialize( params object[] args )
 		{
-
 			return true;
 		}
 
@@ -511,7 +469,7 @@ namespace Axiom.Graphics
 #if AXIOM_USENEWCOMPILERS
 			Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
 #else
-			_serializer.ParseScript( stream, groupName, fileName );
+			this._serializer.ParseScript( stream, groupName, fileName );
 #endif
 		}
 
@@ -525,7 +483,7 @@ namespace Axiom.Graphics
 		/// <ogre name="~MaterialManager" />
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -547,5 +505,42 @@ namespace Axiom.Graphics
 
 		#endregion IDisposable Implementation
 
+		#region Nested type: PassAttributeParser
+
+		private delegate void PassAttributeParser( string[] values, Pass pass );
+
+		#endregion
+
+		#region Nested type: SchemeNotFoundEventArgs
+
+		public class SchemeNotFoundEventArgs : EventArgs
+		{
+			public SchemeNotFoundEventArgs( ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable )
+			{
+				SchemeIndex = schemeIndex;
+				Renderable = renderable;
+				LodIndex = lodIndex;
+				OriginalMaterial = originalMaterial;
+				SchemeName = schemeName;
+			}
+
+			public ushort SchemeIndex { get; private set; }
+
+			public string SchemeName { get; private set; }
+
+			public Material OriginalMaterial { get; private set; }
+
+			public int LodIndex { get; private set; }
+
+			public IRenderable Renderable { get; private set; }
+		}
+
+		#endregion
+
+		#region Nested type: TextureUnitAttributeParser
+
+		private delegate void TextureUnitAttributeParser( string[] values, TextureUnitState texUnit );
+
+		#endregion
 	}
 }

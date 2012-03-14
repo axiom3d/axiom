@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,23 +29,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Diagnostics;
-
-using Axiom.Math.Collections;
-using Axiom.Utilities;
 using System.Collections.Generic;
+
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -69,7 +70,6 @@ namespace Axiom.Math
 		///		Creates a new Positional Spline.
 		/// </summary>
 		public PositionalSpline()
-			: base()
 		{
 			// intialize the vector collections
 			pointList = new List<Vector3>();
@@ -82,7 +82,6 @@ namespace Axiom.Math
 		#endregion
 
 		#region Public methods
-
 
 		/// <summary>
 		///		Returns an interpolated point based on a parametric value over the whole series.
@@ -99,7 +98,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			var segment = t * ( pointList.Count - 1 );
+			Real segment = t * ( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -128,9 +127,13 @@ namespace Axiom.Math
 
 			// quick special cases
 			if ( t == 0.0f )
+			{
 				return pointList[ index ];
+			}
 			else if ( t == 1.0f )
+			{
 				return pointList[ index + 1 ];
+			}
 
 			// Time for real interpolation
 			// Construct a Vector4 of powers of 2
@@ -143,10 +146,10 @@ namespace Axiom.Math
 			var powers = new Vector4( t3, t2, t, 1 );
 
 			// Algorithm is result = powers * hermitePoly * Matrix4(point1, point2, tangent1, tangent2)
-			var point1 = pointList[ index ];
-			var point2 = pointList[ index + 1 ];
-			var tangent1 = tangentList[ index ];
-			var tangent2 = tangentList[ index + 1 ];
+			Vector3 point1 = pointList[ index ];
+			Vector3 point2 = pointList[ index + 1 ];
+			Vector3 tangent1 = tangentList[ index ];
+			Vector3 tangent2 = tangentList[ index + 1 ];
 			var point = new Matrix4();
 
 			// create the matrix 4 with the 2 point and tangent values
@@ -168,7 +171,7 @@ namespace Axiom.Math
 			point.m33 = 1.0f;
 
 			// get the final result in a Vector4
-			var result = powers * hermitePoly * point;
+			Vector4 result = powers * hermitePoly * point;
 
 			// return the final result
 			return new Vector3( result.x, result.y, result.z );
@@ -197,13 +200,19 @@ namespace Axiom.Math
 
 			// if there arent at least 2 points, there is nothing to inerpolate
 			if ( numPoints < 2 )
+			{
 				return;
+			}
 
 			// closed or open?
 			if ( pointList[ 0 ] == pointList[ numPoints - 1 ] )
+			{
 				isClosed = true;
+			}
 			else
+			{
 				isClosed = false;
+			}
 
 			// loop through the points and generate the tangents
 			for ( i = 0; i < numPoints; i++ )
@@ -217,7 +226,9 @@ namespace Axiom.Math
 						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
 					}
 					else
+					{
 						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ 0 ] ) );
+					}
 				}
 				else if ( i == numPoints - 1 )
 				{
@@ -227,10 +238,14 @@ namespace Axiom.Math
 						tangentList.Add( tangentList[ 0 ] );
 					}
 					else
+					{
 						tangentList.Add( 0.5f * ( pointList[ i ] - pointList[ i - 1 ] ) );
+					}
 				}
 				else
+				{
 					tangentList.Add( 0.5f * ( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
+				}
 			}
 		}
 

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
 
 using Axiom.Scripting;
 
@@ -51,6 +54,7 @@ namespace Axiom.Graphics
 		///     Licensee will only release buffer when it says so.
 		/// </summary>
 		Manual,
+
 		/// <summary>
 		///     Licensee can have license revoked.
 		/// </summary>
@@ -60,11 +64,11 @@ namespace Axiom.Graphics
 	/// <summary>
 	///	Describes how a vertex buffer should act when it is locked.
 	/// </summary>
-    [OgreVersion( 1, 7, 2 )]
+	[OgreVersion( 1, 7, 2 )]
 	public enum BufferLocking
 	{
 		/// <summary>
-        /// Normal mode, ie allows read/write and contents are preserved.
+		/// Normal mode, ie allows read/write and contents are preserved.
 		/// </summary>
 		Normal,
 
@@ -81,26 +85,26 @@ namespace Axiom.Graphics
 		/// </summary>
 		ReadOnly,
 
-        /// <summary>
-        /// As Normal, except the application guarantees not to overwrite any 
-        /// region of the buffer which has already been used in this frame, can allow
-        /// some optimisation on some APIs.
-        /// </summary>
-        NoOverwrite
+		/// <summary>
+		/// As Normal, except the application guarantees not to overwrite any 
+		/// region of the buffer which has already been used in this frame, can allow
+		/// some optimisation on some APIs.
+		/// </summary>
+		NoOverwrite
 	}
 
 	/// <summary>
 	///	Describes how a vertex buffer is to be used, and affects how it is created.
 	/// </summary>
 	[Flags]
-    [OgreVersion( 1, 7, 2 )]
+	[OgreVersion( 1, 7, 2 )]
 	public enum BufferUsage
-    {
-        /// <summary>
-        /// Static buffer which the application rarely modifies once created. Modifying 
-        /// the contents of this buffer will involve a performance hit.
-        /// </summary>
-        Static = 1,
+	{
+		/// <summary>
+		/// Static buffer which the application rarely modifies once created. Modifying 
+		/// the contents of this buffer will involve a performance hit.
+		/// </summary>
+		Static = 1,
 
 		/// <summary>
 		///	Indicates the application would like to modify this buffer with the CPU
@@ -143,9 +147,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		DynamicWriteOnly = 6,
 
-        /// <summary>
-        /// Combination of Dynamic, WriteOnly and Discardable
-        /// </summary>
+		/// <summary>
+		/// Combination of Dynamic, WriteOnly and Discardable
+		/// </summary>
 		DynamicWriteOnlyDiscardable = 14
 	}
 
@@ -160,15 +164,15 @@ namespace Axiom.Graphics
 		GL = 3
 	}
 
-	[AxiomHelper(0, 8, "Utility class for holding few constants")]
+	[AxiomHelper( 0, 8, "Utility class for holding few constants" )]
 	internal static class CapsUtil
 	{
 		public const int Categories = 4;
 		public const int Shift = ( 32 - Categories );
-		public const int Mask = (((1 << Categories) - 1) << Shift);
+		public const int Mask = ( ( ( 1 << Categories ) - 1 ) << Shift );
 	}
 
-	[AxiomHelper(0, 8, "Utility enum used to build Capabilities values")]
+	[AxiomHelper( 0, 8, "Utility enum used to build Capabilities values" )]
 	internal enum CapCategoryShift
 	{
 		Common = CapabilitiesCategory.Common << CapsUtil.Shift,
@@ -188,15 +192,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports generating mipmaps in hardware.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_AUTOMIPMAP in Ogre")]
-		HardwareMipMaps = CapCategoryShift.Common | (1 << 0),
+		[OgreVersion( 1, 7, 2790, "RSC_AUTOMIPMAP in Ogre" )]
+		HardwareMipMaps = CapCategoryShift.Common | ( 1 << 0 ),
 
 		#endregion
 
 		#region Blending
 
-		[OgreVersion(1, 7, 2790)]
-		Blending = CapCategoryShift.Common | (1 << 1),
+		[OgreVersion( 1, 7, 2790 )]
+		Blending = CapCategoryShift.Common | ( 1 << 1 ),
 
 		#endregion
 
@@ -205,8 +209,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports anisotropic texture filtering
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_ANISOTROPY in Ogre")]
-		AnisotropicFiltering = CapCategoryShift.Common | (1 << 2),
+		[OgreVersion( 1, 7, 2790, "RSC_ANISOTROPY in Ogre" )]
+		AnisotropicFiltering = CapCategoryShift.Common | ( 1 << 2 ),
 
 		#endregion
 
@@ -215,8 +219,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports fixed-function DOT3 texture blend.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		Dot3 = CapCategoryShift.Common | (1 << 3),
+		[OgreVersion( 1, 7, 2790 )]
+		Dot3 = CapCategoryShift.Common | ( 1 << 3 ),
 
 		#endregion
 
@@ -225,8 +229,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports cube mapping.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		CubeMapping = CapCategoryShift.Common | (1 << 4),
+		[OgreVersion( 1, 7, 2790 )]
+		CubeMapping = CapCategoryShift.Common | ( 1 << 4 ),
 
 		#endregion
 
@@ -235,8 +239,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports hardware stencil buffer.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_HWSTENCIL in Ogre")]
-		StencilBuffer = CapCategoryShift.Common | (1 << 5),
+		[OgreVersion( 1, 7, 2790, "RSC_HWSTENCIL in Ogre" )]
+		StencilBuffer = CapCategoryShift.Common | ( 1 << 5 ),
 
 		#endregion
 
@@ -245,8 +249,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports hardware vertex and index buffers.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_VBO in Ogre")]
-		VertexBuffer = CapCategoryShift.Common | (1 << 7),
+		[OgreVersion( 1, 7, 2790, "RSC_VBO in Ogre" )]
+		VertexBuffer = CapCategoryShift.Common | ( 1 << 7 ),
 
 		#endregion
 
@@ -255,8 +259,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports vertex programs (vertex shaders).
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		VertexPrograms = CapCategoryShift.Common | (1 << 9),
+		[OgreVersion( 1, 7, 2790 )]
+		VertexPrograms = CapCategoryShift.Common | ( 1 << 9 ),
 
 		#endregion
 
@@ -265,8 +269,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports fragment programs (pixel shaders).
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		FragmentPrograms = CapCategoryShift.Common | (1 << 10),
+		[OgreVersion( 1, 7, 2790 )]
+		FragmentPrograms = CapCategoryShift.Common | ( 1 << 10 ),
 
 		#endregion
 
@@ -275,8 +279,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports performing a scissor test to exclude areas of the screen.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		ScissorTest = CapCategoryShift.Common | (1 << 11),
+		[OgreVersion( 1, 7, 2790 )]
+		ScissorTest = CapCategoryShift.Common | ( 1 << 11 ),
 
 		#endregion
 
@@ -285,8 +289,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports separate stencil updates for both front and back faces.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TwoSidedStencil = CapCategoryShift.Common | (1 << 12),
+		[OgreVersion( 1, 7, 2790 )]
+		TwoSidedStencil = CapCategoryShift.Common | ( 1 << 12 ),
 
 		#endregion
 
@@ -295,8 +299,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports wrapping the stencil value at the range extremeties.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		StencilWrap = CapCategoryShift.Common | (1 << 13),
+		[OgreVersion( 1, 7, 2790 )]
+		StencilWrap = CapCategoryShift.Common | ( 1 << 13 ),
 
 		#endregion
 
@@ -305,8 +309,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports hardware occlusion queries.
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_HWOCCLUSION in Ogre")]
-		HardwareOcculusion = CapCategoryShift.Common | (1 << 14),
+		[OgreVersion( 1, 7, 2790, "RSC_HWOCCLUSION in Ogre" )]
+		HardwareOcculusion = CapCategoryShift.Common | ( 1 << 14 ),
 
 		#endregion
 
@@ -315,8 +319,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports user clipping planes.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		UserClipPlanes = CapCategoryShift.Common | (1 << 15),
+		[OgreVersion( 1, 7, 2790 )]
+		UserClipPlanes = CapCategoryShift.Common | ( 1 << 15 ),
 
 		#endregion
 
@@ -325,8 +329,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports the VET_UBYTE4 vertex element type
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		VertexFormatUByte4 = CapCategoryShift.Common | (1 << 16),
+		[OgreVersion( 1, 7, 2790 )]
+		VertexFormatUByte4 = CapCategoryShift.Common | ( 1 << 16 ),
 
 		#endregion
 
@@ -335,8 +339,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports infinite far plane projection
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		InfiniteFarPlane = CapCategoryShift.Common | (1 << 17),
+		[OgreVersion( 1, 7, 2790 )]
+		InfiniteFarPlane = CapCategoryShift.Common | ( 1 << 17 ),
 
 		#endregion
 
@@ -345,8 +349,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports hardware render-to-texture (bigger than framebuffer)
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre")]
-		HardwareRenderToTexture = CapCategoryShift.Common | (1 << 18),
+		[OgreVersion( 1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre" )]
+		HardwareRenderToTexture = CapCategoryShift.Common | ( 1 << 18 ),
 
 		#endregion
 
@@ -355,18 +359,18 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports float textures and render targets
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TextureFloat = CapCategoryShift.Common | (1 << 19),
+		[OgreVersion( 1, 7, 2790 )]
+		TextureFloat = CapCategoryShift.Common | ( 1 << 19 ),
 
-		#endregion  
+		#endregion
 
 		#region NonPowerOf2Textures
 
 		/// <summary>
 		/// Supports non-power of two textures
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		NonPowerOf2Textures = CapCategoryShift.Common | (1 << 20),
+		[OgreVersion( 1, 7, 2790 )]
+		NonPowerOf2Textures = CapCategoryShift.Common | ( 1 << 20 ),
 
 		#endregion
 
@@ -375,8 +379,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports 3d (volume) textures
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		Texture3D = CapCategoryShift.Common | (1 << 21),
+		[OgreVersion( 1, 7, 2790 )]
+		Texture3D = CapCategoryShift.Common | ( 1 << 21 ),
 
 		#endregion
 
@@ -385,8 +389,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports basic point sprite rendering
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PointSprites = CapCategoryShift.Common | (1 << 22),
+		[OgreVersion( 1, 7, 2790 )]
+		PointSprites = CapCategoryShift.Common | ( 1 << 22 ),
 
 		#endregion
 
@@ -395,8 +399,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports extra point parameters (minsize, maxsize, attenuation)
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PointExtendedParameters = CapCategoryShift.Common | (1 << 23),
+		[OgreVersion( 1, 7, 2790 )]
+		PointExtendedParameters = CapCategoryShift.Common | ( 1 << 23 ),
 
 		#endregion
 
@@ -405,8 +409,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports vertex texture fetch
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		VertexTextureFetch = CapCategoryShift.Common | (1 << 24),
+		[OgreVersion( 1, 7, 2790 )]
+		VertexTextureFetch = CapCategoryShift.Common | ( 1 << 24 ),
 
 		#endregion
 
@@ -415,8 +419,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports mipmap LOD biasing
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		MipmapLODBias = CapCategoryShift.Common | (1 << 25),
+		[OgreVersion( 1, 7, 2790 )]
+		MipmapLODBias = CapCategoryShift.Common | ( 1 << 25 ),
 
 		#endregion
 
@@ -425,8 +429,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports hardware geometry programs
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		GeometryPrograms = CapCategoryShift.Common | (1 << 26),
+		[OgreVersion( 1, 7, 2790 )]
+		GeometryPrograms = CapCategoryShift.Common | ( 1 << 26 ),
 
 		#endregion
 
@@ -435,8 +439,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// HardwareRenderToVertexBuffer
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		HardwareRenderToVertexBuffer = CapCategoryShift.Common | ( 1 << 27),
+		[OgreVersion( 1, 7, 2790 )]
+		HardwareRenderToVertexBuffer = CapCategoryShift.Common | ( 1 << 27 ),
 
 		#endregion
 
@@ -445,8 +449,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports compressed textures.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TextureCompression = CapCategoryShift.Common2 | (1 << 0),
+		[OgreVersion( 1, 7, 2790 )]
+		TextureCompression = CapCategoryShift.Common2 | ( 1 << 0 ),
 
 		#endregion
 
@@ -455,8 +459,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports compressed textures in the DXT/ST3C formats.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TextureCompressionDXT = CapCategoryShift.Common2 | (1 << 1),
+		[OgreVersion( 1, 7, 2790 )]
+		TextureCompressionDXT = CapCategoryShift.Common2 | ( 1 << 1 ),
 
 		#endregion
 
@@ -465,8 +469,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///	Supports compressed textures in the VTC format.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TextureCompressionVTC = CapCategoryShift.Common2 | (1 << 2),
+		[OgreVersion( 1, 7, 2790 )]
+		TextureCompressionVTC = CapCategoryShift.Common2 | ( 1 << 2 ),
 
 		#endregion
 
@@ -475,8 +479,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports compressed textures in the PVRTC format
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		TextureCompressionPVRTC = CapCategoryShift.Common2 | (1 << 3),
+		[OgreVersion( 1, 7, 2790 )]
+		TextureCompressionPVRTC = CapCategoryShift.Common2 | ( 1 << 3 ),
 
 		#endregion
 
@@ -485,8 +489,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports fixed-function pipeline
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		FixedFunction = CapCategoryShift.Common2 | (1 << 4),
+		[OgreVersion( 1, 7, 2790 )]
+		FixedFunction = CapCategoryShift.Common2 | ( 1 << 4 ),
 
 		#endregion
 
@@ -495,8 +499,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports MRTs with different bit depths
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		MRTDifferentBitDepths = CapCategoryShift.Common2 | (1 << 5),
+		[OgreVersion( 1, 7, 2790 )]
+		MRTDifferentBitDepths = CapCategoryShift.Common2 | ( 1 << 5 ),
 
 		#endregion
 
@@ -505,8 +509,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports Alpha to Coverage (A2C)
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		AlphaToCoverage = CapCategoryShift.Common2 | (1 << 6),
+		[OgreVersion( 1, 7, 2790 )]
+		AlphaToCoverage = CapCategoryShift.Common2 | ( 1 << 6 ),
 
 		#endregion
 
@@ -515,8 +519,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports Blending operations other than +
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		AdvancedBlendOperations = CapCategoryShift.Common2 | (1 << 7),
+		[OgreVersion( 1, 7, 2790 )]
+		AdvancedBlendOperations = CapCategoryShift.Common2 | ( 1 << 7 ),
 
 		#endregion
 
@@ -525,8 +529,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		RTTSerperateDepthBuffer = CapCategoryShift.Common2 | (1 << 8),
+		[OgreVersion( 1, 7, 2790 )]
+		RTTSerperateDepthBuffer = CapCategoryShift.Common2 | ( 1 << 8 ),
 
 		#endregion
 
@@ -536,19 +540,19 @@ namespace Axiom.Graphics
 		/// Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown
 		/// (undefined behavior?), OGL w/ copy supports it
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		RTTMainDepthbufferAttachable = CapCategoryShift.Common2 | (1 << 9),
+		[OgreVersion( 1, 7, 2790 )]
+		RTTMainDepthbufferAttachable = CapCategoryShift.Common2 | ( 1 << 9 ),
 
 		#endregion
-		
+
 		#region RTTDepthbufferResolutionLessEqual
 
 		/// <summary>
 		/// Supports attaching a depth buffer to an RTT that has width & height less or equal than RTT's.
 		/// Otherwise must be of _exact_ same resolution. D3D 9, OGL 3.0 (not 2.0, not D3D10)
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		RTTDepthbufferResolutionLessEqual = CapCategoryShift.Common2 | (1 << 10),
+		[OgreVersion( 1, 7, 2790 )]
+		RTTDepthbufferResolutionLessEqual = CapCategoryShift.Common2 | ( 1 << 10 ),
 
 		#endregion
 
@@ -557,15 +561,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports using vertex buffers for instance data
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		VertexBufferInstanceData = CapCategoryShift.Common2 | (1 << 11),
+		[OgreVersion( 1, 7, 2790 )]
+		VertexBufferInstanceData = CapCategoryShift.Common2 | ( 1 << 11 ),
 
 		#endregion
 
 		#region CanGetCompiledShaderBuffer
 
-		[OgreVersion(1, 7, 2790)]
-		CanGetCompiledShaderBuffer = CapCategoryShift.Common2 | (1 << 12),
+		[OgreVersion( 1, 7, 2790 )]
+		CanGetCompiledShaderBuffer = CapCategoryShift.Common2 | ( 1 << 12 ),
 
 		#endregion
 
@@ -576,8 +580,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Is DirectX feature "per stage constants" supported
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PerStageConstant = CapCategoryShift.D3D9 | (1 << 0),
+		[OgreVersion( 1, 7, 2790 )]
+		PerStageConstant = CapCategoryShift.D3D9 | ( 1 << 0 ),
 
 		#endregion
 
@@ -588,8 +592,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports openGL GLEW version 1.5
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_GL1_5_NOVBO in Ogre")]
-		GL15NoVbo = CapCategoryShift.GL | (1 << 1),
+		[OgreVersion( 1, 7, 2790, "RSC_GL1_5_NOVBO in Ogre" )]
+		GL15NoVbo = CapCategoryShift.GL | ( 1 << 1 ),
 
 		#endregion
 
@@ -598,8 +602,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for Frame Buffer Objects (FBOs)
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_FBO in Ogre")]
-		FrameBufferObjects = CapCategoryShift.GL | (1 << 2),
+		[OgreVersion( 1, 7, 2790, "RSC_FBO in Ogre" )]
+		FrameBufferObjects = CapCategoryShift.GL | ( 1 << 2 ),
 
 		#endregion
 
@@ -608,8 +612,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for Frame Buffer Objects ARB implementation (regular FBO is higher precedence)
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_FBO_ARB in Ogre")]
-		FrameBufferObjectsARB = CapCategoryShift.GL | (1 << 3),
+		[OgreVersion( 1, 7, 2790, "RSC_FBO_ARB in Ogre" )]
+		FrameBufferObjectsARB = CapCategoryShift.GL | ( 1 << 3 ),
 
 		#endregion
 
@@ -618,8 +622,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for Frame Buffer Objects ATI implementation (ARB FBO is higher precedence)
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_FBO_ATI in Ogre")]
-		FrameBufferObjectsATI = CapCategoryShift.GL | (1 << 4),
+		[OgreVersion( 1, 7, 2790, "RSC_FBO_ATI in Ogre" )]
+		FrameBufferObjectsATI = CapCategoryShift.GL | ( 1 << 4 ),
 
 		#endregion
 
@@ -628,8 +632,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for PBuffer
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PBuffer = CapCategoryShift.GL | (1 << 5),
+		[OgreVersion( 1, 7, 2790 )]
+		PBuffer = CapCategoryShift.GL | ( 1 << 5 ),
 
 		#endregion
 
@@ -638,8 +642,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for GL 1.5 but without HW occlusion workaround
 		/// </summary>
-		[OgreVersion(1, 7, 2790, "RSC_GL1_5_NOHWOCCLUSION in Ogre")]
-		GL15NoHardwareOcclusion = CapCategoryShift.GL | (1 << 6),
+		[OgreVersion( 1, 7, 2790, "RSC_GL1_5_NOHWOCCLUSION in Ogre" )]
+		GL15NoHardwareOcclusion = CapCategoryShift.GL | ( 1 << 6 ),
 
 		#endregion
 
@@ -648,8 +652,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for point parameters ARB implementation
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PointExtendedParametersARB = CapCategoryShift.GL | (1 << 7),
+		[OgreVersion( 1, 7, 2790 )]
+		PointExtendedParametersARB = CapCategoryShift.GL | ( 1 << 7 ),
 
 		#endregion
 
@@ -658,13 +662,13 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Support for point parameters EXT implementation
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		PointExtendedParametersEXT = CapCategoryShift.GL | (1 << 8),
+		[OgreVersion( 1, 7, 2790 )]
+		PointExtendedParametersEXT = CapCategoryShift.GL | ( 1 << 8 ),
 
 		#endregion
 
-        TextureBlending = CapCategoryShift.Common2 | (1 << 25),
-        MultiTexturing = CapCategoryShift.Common2 | (1 << 26),   
+		TextureBlending = CapCategoryShift.Common2 | ( 1 << 25 ),
+		MultiTexturing = CapCategoryShift.Common2 | ( 1 << 26 ),
 	}
 
 	/// <summary>
@@ -674,18 +678,25 @@ namespace Axiom.Graphics
 	{
 		[ScriptEnum( "always_fail" )]
 		AlwaysFail,
+
 		[ScriptEnum( "always_pass" )]
 		AlwaysPass,
+
 		[ScriptEnum( "less" )]
 		Less,
+
 		[ScriptEnum( "less_equal" )]
 		LessEqual,
+
 		[ScriptEnum( "equal" )]
 		Equal,
+
 		[ScriptEnum( "not_equal" )]
 		NotEqual,
+
 		[ScriptEnum( "greater_equal" )]
 		GreaterEqual,
+
 		[ScriptEnum( "greater" )]
 		Greater
 	};
@@ -700,11 +711,13 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "none" )]
 		None,
+
 		/// <summary>
 		///		Only draw geomtry where vertices were specified in clockwise order.
 		///	 </summary>
 		[ScriptEnum( "clockwise" )]
 		Clockwise,
+
 		/// <summary>
 		///		Only draw geomtry where vertices were specified in counterclockwise order.
 		///	 </summary>
@@ -726,16 +739,19 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "spherical" )]
 		Curved,
+
 		/// <summary>
 		///		Envmap based on dot of vector from camera to vertex and vertex normal, good for curves.
 		///	 </summary>
 		[ScriptEnum( "planar" )]
 		Planar,
+
 		/// <summary>
 		///		Envmap entended to supply reflection vectors for cube mapping.
 		/// </summary>
 		[ScriptEnum( "cubic_reflection" )]
 		Reflection,
+
 		/// <summary>
 		///		Envmap entended to supply normal vectors for cube mapping
 		/// </summary>
@@ -763,16 +779,19 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "none" )]
 		None,
+
 		/// <summary>
 		///    Use the closest pixel.
 		/// </summary>
 		[ScriptEnum( "point" )]
 		Point,
+
 		/// <summary>
 		///    Average of a 2x2 pixel area, denotes bilinear for Min and Mag, trilinear for Mip.
 		/// </summary>
 		[ScriptEnum( "linear" )]
 		Linear,
+
 		/// <summary>
 		///    Similar to Linear, but compensates for the angle of the texture plane.
 		/// </summary>
@@ -789,10 +808,12 @@ namespace Axiom.Graphics
 		///    The filter used when shrinking a texture.
 		/// </summary>
 		Min,
+
 		/// <summary>
 		///    The filter used when magnifiying a texture.
 		/// </summary>
 		Mag,
+
 		/// <summary>
 		///    The filter used when determining the mipmap.
 		/// </summary>
@@ -809,16 +830,19 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "none" )]
 		None,
+
 		/// <summary>
 		///		Fog density increases exponentially from the camera (fog = 1/e^(distance * density)).
 		///	 </summary>
 		[ScriptEnum( "exp" )]
 		Exp,
+
 		/// <summary>
 		///		Fog density increases at the square of FOG_EXP, i.e. even quicker (fog = 1/e^(distance * density)^2).
 		///	 </summary>
 		[ScriptEnum( "exp2" )]
 		Exp2,
+
 		/// <summary>
 		///		Fog density increases linearly between the start and end distances.
 		///	 </summary>
@@ -835,11 +859,13 @@ namespace Axiom.Graphics
 		///    Executes for each vertex passed through the pipeline while this program is active.
 		/// </summary>
 		Vertex,
+
 		/// <summary>
 		///    Executes for each fragment (or pixel) for primitives that are passed through the pipeline
 		///    while this program is active..
 		/// </summary>
 		Fragment,
+
 		/// <summary>
 		///    Executes for each geometry for primitives that are passed through the pipeline
 		///    while this program is active..
@@ -860,7 +886,6 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Parameter is managed by Axiom and passed in by index. Used for ASM shaders.
 		/// </summary>
-
 		IndexedAuto,
 
 		/// <summary>
@@ -895,22 +920,27 @@ namespace Axiom.Graphics
 		///		No special illumination stage.
 		/// </summary>
 		None,
+
 		/// <summary>
 		///		Ambient stage, when background light is added.
 		/// </summary>
 		Ambient,
+
 		/// <summary>
 		///		Diffuse / specular stage, when individual light contributions are added.
 		/// </summary>
 		PerLight,
+
 		/// <summary>
 		///		Decal stage, when texture detail is added to the lit base.
 		/// </summary>
 		Decal,
+
 		/// <summary>
 		///		Render to texture stage, used for texture based shadows.
 		/// </summary>
 		RenderToTexture,
+
 		/// <summary>
 		///		Render from shadow texture to receivers stage.
 		/// </summary>
@@ -926,10 +956,12 @@ namespace Axiom.Graphics
 		///		Part of the rendering which occurs without any kind of direct lighting.
 		/// </summary>
 		Ambient,
+
 		/// <summary>
 		///		Part of the rendering which occurs per light.
 		/// </summary>
 		PerLight,
+
 		/// <summary>
 		///		Post-lighting rendering.
 		/// </summary>
@@ -959,16 +991,19 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "replace" )]
 		Replace,
+
 		/// <summary>
 		///		Add color components together.
 		/// </summary>
 		[ScriptEnum( "add" )]
 		Add,
+
 		/// <summary>
 		///		Multiply the color components together.
 		/// </summary>
 		[ScriptEnum( "modulate" )]
 		Modulate,
+
 		/// <summary>
 		///		Blend based on texture alpha.
 		/// </summary>
@@ -987,71 +1022,85 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "source1" )]
 		Source1,
+
 		/// <summary>
 		///		Use source 2 as is.
 		/// </summary>
 		[ScriptEnum( "source2" )]
 		Source2,
+
 		/// <summary>
 		///		Multiply source 1 and source 2 together.
 		/// </summary>
 		[ScriptEnum( "modulate" )]
 		Modulate,
+
 		/// <summary>
 		///		Same as Modulate, but brightens as a result.
 		/// </summary>
 		[ScriptEnum( "modulate_x2" )]
 		ModulateX2,
+
 		/// <summary>
 		///		Same as ModuleX2, but brightens even more as a result.
 		/// </summary>
 		[ScriptEnum( "modulate_x4" )]
 		ModulateX4,
+
 		/// <summary>
 		///		Add source 1 and source 2 together.
 		/// </summary>
 		[ScriptEnum( "add" )]
 		Add,
+
 		/// <summary>
 		///		Same as Add, but subtracts 0.5 from the result.
 		/// </summary>
 		[ScriptEnum( "add_signed" )]
 		AddSigned,
+
 		/// <summary>
 		///		Same as Add, but subtracts the product from the sum.
 		/// </summary>
 		[ScriptEnum( "add_smooth" )]
 		AddSmooth,
+
 		/// <summary>
 		///		Subtract source 2 from source 1.
 		/// </summary>
 		[ScriptEnum( "subtract" )]
 		Subtract,
+
 		/// <summary>
 		///		Use interpolated alpha value from vertices to scale source 1, then add source 2 scaled by 1 - alpha
 		/// </summary>
 		[ScriptEnum( "blend_diffuse_alpha" )]
 		BlendDiffuseAlpha,
+
 		/// <summary>
 		///		Same as BlendDiffuseAlpha, but uses current alpha from the texture.
 		/// </summary>
 		[ScriptEnum( "blend_texture_alpha" )]
 		BlendTextureAlpha,
+
 		/// <summary>
 		///		Same as BlendDiffuseAlpha, but uses current alpha from previous stages.
 		/// </summary>
 		[ScriptEnum( "blend_current_alpha" )]
 		BlendCurrentAlpha,
+
 		/// <summary>
 		///		Sames as BlendDiffuseAlpha, but uses a constant manual blend value from [0.0,1.0]
 		/// </summary>
 		[ScriptEnum( "blend_manual" )]
 		BlendManual,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		[ScriptEnum( "blend_diffuse_color" )]
 		BlendDiffuseColor,
+
 		/// <summary>
 		///		Takes the dot product of color 1 and color 2.
 		/// </summary>
@@ -1069,21 +1118,25 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "src_current" )]
 		Current,
+
 		/// <summary>
 		///		The color derived from the texture assigned to the current layer.
 		/// </summary>
 		[ScriptEnum( "src_texture" )]
 		Texture,
+
 		/// <summary>
 		///		The interpolated diffuse color from the vertices.
 		/// </summary>
 		[ScriptEnum( "src_diffuse" )]
 		Diffuse,
+
 		/// <summary>
 		///		The interpolated specular color from the vertices.
 		/// </summary>
 		[ScriptEnum( "src_specular" )]
 		Specular,
+
 		/// <summary>
 		///		A color supplied manually as a seperate argument.
 		/// </summary>
@@ -1101,6 +1154,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "color" )]
 		Color,
+
 		/// <summary>
 		///		Based on the alpha value of the texture.
 		/// </summary>
@@ -1118,11 +1172,13 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "point" )]
 		Point,
+
 		/// <summary>
 		///		Directional lights simulate parallel light beams from a distant source, hence have direction but no position.
 		///	 </summary>
 		[ScriptEnum( "directional" )]
 		Directional,
+
 		/// <summary>
 		///		Spotlights simulate a cone of light from a source so require position and direction, plus extra values for falloff.
 		///	 </summary>
@@ -1144,11 +1200,13 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "none" )]
 		None = 1,
+
 		/// <summary>
 		///		Cull triangles whose normal is pointing away from the camera (default).
 		///	 </summary>
 		[ScriptEnum( "back" )]
 		Back = 2,
+
 		/// <summary>
 		///		Cull triangles whose normal is pointing towards the camera.
 		///	 </summary>
@@ -1163,6 +1221,7 @@ namespace Axiom.Graphics
 	{
 		/// <summary> Things stay the same size no matter where they are in terms of the camera.  Normally only used in 3D HUD elements. </summary>
 		Orthographic,
+
 		/// <summary> Things get smaller when they are furthur away from the camera. </summary>
 		Perspective
 	}
@@ -1176,22 +1235,27 @@ namespace Axiom.Graphics
 		///		Render the vertices as individual points.
 		/// </summary>
 		PointList = 1,
+
 		/// <summary>
 		///		Render the vertices as a series of individual lines.
 		/// </summary>
 		LineList,
+
 		/// <summary>
 		///		Render the vertices as a continuous line.
 		/// </summary>
 		LineStrip,
+
 		/// <summary>
 		///		Render the vertices as a series of individual triangles.
 		/// </summary>
 		TriangleList,
+
 		/// <summary>
 		///		Render the vertices as a continous set of triangles in a zigzag type fashion.
 		/// </summary>
 		TriangleStrip,
+
 		/// <summary>
 		///		Render the vertices as a set of trinagles in a fan like formation.
 		/// </summary>
@@ -1201,12 +1265,13 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Specifies priorities for processing Render Targets.
 	/// </summary>
-	public enum RenderTargetPriority: byte
+	public enum RenderTargetPriority : byte
 	{
 		/// <summary>
 		///    Will be processed last.
 		/// </summary>
 		Default = 4,
+
 		/// <summary>
 		///    Will be processed first (i.e. RenderTextures).
 		/// </summary>
@@ -1223,30 +1288,39 @@ namespace Axiom.Graphics
 		/// <summary></summary>
 		[ScriptEnum( "one" )]
 		One,
+
 		/// <summary></summary>
 		[ScriptEnum( "zero" )]
 		Zero,
+
 		/// <summary></summary>
 		[ScriptEnum( "dest_colour" )]
 		DestColor,
+
 		/// <summary></summary>
 		[ScriptEnum( "src_colour" )]
 		SourceColor,
+
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_dest_colour" )]
 		OneMinusDestColor,
+
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_src_colour" )]
 		OneMinusSourceColor,
+
 		/// <summary></summary>
 		[ScriptEnum( "dest_alpha" )]
 		DestAlpha,
+
 		/// <summary></summary>
 		[ScriptEnum( "src_alpha" )]
 		SourceAlpha,
+
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_dest_alpha" )]
 		OneMinusDestAlpha,
+
 		/// <summary></summary>
 		[ScriptEnum( "one_minus_src_alpha" )]
 		OneMinusSourceAlpha
@@ -1262,22 +1336,26 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "alpha_blend" )]
 		TransparentAlpha,
+
 		/// <summary>
 		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
 		///	 </summary>
 		[ScriptEnum( "colour_blend" )]
 		[ScriptEnum( "color_blend" )]
 		TransparentColor,
+
 		/// <summary>
 		///		Make the object transparent based on the color values in the texture (brighter = more opaque).
 		///	 </summary>
 		[ScriptEnum( "modulate" )]
 		Modulate,
+
 		/// <summary>
 		///		Add the texture values to the existing scene content.
 		///	 </summary>
 		[ScriptEnum( "add" )]
 		Add,
+
 		/// <summary>
 		/// The default blend mode where source replaces destination
 		/// </summary>
@@ -1303,10 +1381,12 @@ namespace Axiom.Graphics
 		///		Render subsequent requests drawing only the vertices in the scene.
 		/// </summary>
 		Points,
+
 		/// <summary>
 		///		Render subsequent requests drawing only objects using wireframe mode.
 		/// </summary>
 		Wireframe,
+
 		/// <summary>
 		///		Render everything in the scene normally (textures, etc).
 		/// </summary>
@@ -1323,11 +1403,13 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "flat" )]
 		Flat,
+
 		/// <summary>
 		///		Interpolate color across primitive vertices.
 		///	 </summary>
 		[ScriptEnum( "gouraud" )]
 		Gouraud,
+
 		/// <summary>
 		///		Draw everything (2 sided geometry).
 		///	 </summary>
@@ -1344,10 +1426,12 @@ namespace Axiom.Graphics
 		///		For shadow volume techniques only, generate a light cap on the volume.
 		/// </summary>
 		IncludeLightCap = 1,
+
 		/// <summary>
 		///		For shadow volume techniques only, generate a dark cap on the volume.
 		/// </summary>
 		IncludeDarkCap = 2,
+
 		/// <summary>
 		///		For shadow volume techniques only, indicates volume is extruded to infinity
 		/// </summary>
@@ -1363,6 +1447,7 @@ namespace Axiom.Graphics
 		///		No shadows.
 		/// </summary>
 		None,
+
 		/// <summary>
 		///		Stencil shadow technique which renders all shadow volumes as
 		///		a modulation after all the non-transparent areas have been 
@@ -1371,6 +1456,7 @@ namespace Axiom.Graphics
 		///		lights, but is not an accurate model. 
 		/// </summary>
 		StencilModulative,
+
 		///	<summary>		
 		///		Stencil shadow technique which renders each light as a separate
 		///		additive pass to the scene. This technique can be very fillrate
@@ -1380,12 +1466,14 @@ namespace Axiom.Graphics
 		///		especially apparant when using coloured lights or bump mapping.
 		/// </summary>
 		StencilAdditive,
+
 		/// <summary>
 		///		Texture-based shadow technique which involves a monochrome render-to-texture
 		///		of the shadow caster and a projection of that texture onto the 
 		///		shadow receivers as a modulative pass.
 		/// </summary>
 		TextureModulative,
+
 		/// <summary>
 		///		Texture-based shadow technique which involves a render-to-texture
 		///		of the shadow caster and a projection of that texture onto the 
@@ -1398,37 +1486,44 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the various actions which can be taken on the stencil buffer.
 	///	</summary> 
-	[OgreVersion(1, 7, 2790)]
+	[OgreVersion( 1, 7, 2790 )]
 	public enum StencilOperation
 	{
 		/// <summary>
 		///		Leave the stencil buffer unchanged.
 		///	 </summary>
 		Keep,
+
 		/// <summary>
 		///		Set the stencil value to zero.
 		///	 </summary>
 		Zero,
+
 		/// <summary>
 		///		Set the stencil value to the reference value.
 		///	 </summary>
 		Replace,
+
 		/// <summary>
 		///		Increase the stencil value by 1, clamping at the maximum value.
 		///	 </summary>
 		Increment,
+
 		/// <summary>
 		///		Decrease the stencil value by 1, clamping at 0.
 		///	 </summary>
 		Decrement,
+
 		/// <summary>
 		///		Increase the stencil value by 1, wrapping back to 0 when incrementing the maximum value.
 		///	 </summary>
 		IncrementWrap,
+
 		/// <summary>
 		///		Decrease the stencil value by 1, wrapping when decrementing 0.
 		///	 </summary>
 		DecrementWrap,
+
 		/// <summary>
 		///		Invert the bits of the stencil buffer.
 		///	 </summary>
@@ -1448,16 +1543,19 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "wrap" )]
 		Wrap,
+
 		/// <summary>
 		///		Texture mirrors (flips) at joins over 1.0.
 		///	 </summary>
 		[ScriptEnum( "mirror" )]
 		Mirror,
+
 		/// <summary>
 		///		Texture clamps at 1.0.
 		///	 </summary>
 		[ScriptEnum( "clamp" )]
 		Clamp,
+
 		/// <summary>
 		///		Values outside the range [0.0, 1.0] are set to the border colour
 		///	 </summary>
@@ -1468,23 +1566,26 @@ namespace Axiom.Graphics
 	/// <summary>
 	///		Describes the ways to generate texture coordinates.
 	/// </summary>
-	[OgreVersion(1, 7, 2790)]
+	[OgreVersion( 1, 7, 2790 )]
 	public enum TexCoordCalcMethod
 	{
 		/// <summary>
 		///		No calculated texture coordinates.
 		///	 </summary>
 		None,
+
 		/// <summary>
 		///		Environment map based on vertex normals.
 		///	 </summary>
 		EnvironmentMap,
+
 		/// <summary>
 		///		Environment map based on vertex positions.
 		///	 </summary>
 		EnvironmentMapPlanar,
 		EnvironmentMapReflection,
 		EnvironmentMapNormal,
+
 		/// <summary>
 		///		Projective texture.
 		///	 </summary>
@@ -1517,26 +1618,32 @@ namespace Axiom.Graphics
 		///		Generate all texture coords based on angle between camera and vertex.
 		///	 </summary>
 		EnvironmentMap,
+
 		/// <summary>
 		///		Generate texture coords based on a frustum.
 		///	 </summary>
 		ProjectiveTexture,
+
 		/// <summary>
 		///		Constant u/v scrolling effect.
 		///	 </summary>
 		UVScroll,
+
 		/// <summary>
 		///		Constant u scrolling effect.
 		///	 </summary>
 		UScroll,
+
 		/// <summary>
 		///		Constant v scrolling effect.
 		///	 </summary>
 		VScroll,
+
 		/// <summary>
 		///		Constant rotation.
 		///	 </summary>
 		Rotate,
+
 		/// <summary>
 		///		More complex transform.
 		///	 </summary>
@@ -1553,16 +1660,19 @@ namespace Axiom.Graphics
 		///	 </summary>
 		[ScriptEnum( "none" )]
 		None,
+
 		/// <summary>
 		///		Equal to: min=Linear, mag=Linear, mip=Point
 		///	 </summary>
 		[ScriptEnum( "bilinear" )]
 		Bilinear,
+
 		/// <summary>
 		///		Equal to: min=Linear, mag=Linear, mip=Linear
 		///	 </summary>
 		[ScriptEnum( "trilinear" )]
 		Trilinear,
+
 		/// <summary>
 		///    Equal to: min=Anisotropic, max=Anisotropic, mip=Linear
 		/// </summary>
@@ -1584,21 +1694,25 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "scroll_x" )]
 		TranslateU,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		[ScriptEnum( "scroll_y" )]
 		TranslateV,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		[ScriptEnum( "scale_x" )]
 		ScaleU,
+
 		/// <summary>
 		/// 
 		/// </summary>
 		[ScriptEnum( "scale_y" )]
 		ScaleV,
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -1616,16 +1730,19 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "1d" )]
 		OneD = 1,
+
 		/// <summary>
 		///    2D texture, used in combination with 2D texture coordinates (default).
 		/// </summary>
 		[ScriptEnum( "2d" )]
 		TwoD = 2,
+
 		/// <summary>
 		///    3D volume texture, used in combination with 3D texture coordinates.
 		/// </summary>
 		[ScriptEnum( "3d" )]
 		ThreeD = 3,
+
 		/// <summary>
 		///    3D cube map, used in combination with 3D texture coordinates.
 		/// </summary>
@@ -1640,6 +1757,7 @@ namespace Axiom.Graphics
 	{
 		/// Generate mipmaps up to 1x1
 		Unlimited = 0x7FFFFFFF,
+
 		/// Use TextureManager default
 		Default = -1
 	}
@@ -1656,15 +1774,18 @@ namespace Axiom.Graphics
 		StaticWriteOnly = BufferUsage.StaticWriteOnly,
 		DynamicWriteOnly = BufferUsage.DynamicWriteOnly,
 		DynamicWriteOnlyDiscardable = BufferUsage.DynamicWriteOnlyDiscardable,
+
 		/// <summary>
 		///    Mipmaps will be automatically generated for this texture
 		///	 </summary>
 		AutoMipMap = 0x100,
+
 		/// <summary>
 		///    This texture will be a render target, ie. used as a target for render to texture
 		///    setting this flag will ignore all other texture usages except AutoMipMap
 		///	 </summary>
 		RenderTarget = 0x200,
+
 		/// <summary>
 		///    Default to automatic mipmap generation static textures
 		///	</summary>
@@ -1685,24 +1806,29 @@ namespace Axiom.Graphics
 		///		Specifies the 3D coordinates of the vertex.
 		///	 </summary>
 		Position = 1,
+
 		/// <summary>
 		///		When applying 1 or more world matrices to a vertex, the weight values of a vertex dictate how much
 		///		of an effect each matrix has in determining its final position.  
 		/// </summary>
 		BlendWeights = 2,
+
 		/// <summary>
 		///		Normal vector, determines the logical direction the vertex is facing for use in
 		///		lighting calculations.
 		///	 </summary>
 		Normals = 4,
+
 		/// <summary>
 		///		Texture coordinate for the vertex.
 		///	 </summary>
 		TextureCoords = 8,
+
 		/// <summary>
 		///		The primary color of the vertex.
 		/// </summary>
 		Diffuse = 16,
+
 		/// <summary>
 		///		Specular color for this vertex.
 		///	 </summary>
@@ -1718,34 +1844,42 @@ namespace Axiom.Graphics
 		///     Position, 3 reals per vertex.
 		/// </summary>
 		Position = 1,
+
 		/// <summary>
 		///     Blending weights.
 		/// </summary>
 		BlendWeights = 2,
+
 		/// <summary>
 		///     Blending indices.
 		/// </summary>
 		BlendIndices = 3,
+
 		/// <summary>
 		///     Normal, 3 reals per vertex.
 		/// </summary>
 		Normal = 4,
+
 		/// <summary>
 		///     Diffuse colors.
 		/// </summary>
 		Diffuse = 5,
+
 		/// <summary>
 		///     Specular colors.
 		/// </summary>
 		Specular = 6,
+
 		/// <summary>
 		///     Texture coordinates.
 		/// </summary>
 		TexCoords = 7,
+
 		/// <summary>
 		///     Binormal (Y axis if normal is Z).
 		/// </summary>
 		Binormal = 8,
+
 		/// <summary>
 		///     Tangent (X axis if normal is Z).
 		/// </summary>
@@ -1767,8 +1901,10 @@ namespace Axiom.Graphics
 		Short3,
 		Short4,
 		UByte4,
+
 		/// D3D style compact colour
 		Color_ARGB = 10,
+
 		/// GL style compact colour
 		Color_ABGR = 11
 	}
@@ -1781,28 +1917,28 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Clear target to one colour
 		/// </summary>
-		[ScriptEnum("clear")]
+		[ScriptEnum( "clear" )]
 		Clear,
 
 		/// <summary>
 		/// Set stencil operation
 		/// </summary>
-		[ScriptEnum("stencil")]
+		[ScriptEnum( "stencil" )]
 		Stencil,
 
 		/// <summary>
 		/// Render the scene or part of it
 		/// </summary>
-		[ScriptEnum("render_scene")]
+		[ScriptEnum( "render_scene" )]
 		RenderScene,
 
 		/// <summary>
 		/// Render a full screen quad
 		/// </summary>
-		[ScriptEnum("render_quad")]
+		[ScriptEnum( "render_quad" )]
 		RenderQuad,
 
-		[ScriptEnum("render_custom")]
+		[ScriptEnum( "render_custom" )]
 		RenderCustom
 	}
 
@@ -1811,7 +1947,7 @@ namespace Axiom.Graphics
 	/// </summary>
 	public enum CompositorInputMode
 	{
-		None,            // No input
-		Previous         // Output of previous Composition in chain
+		None, // No input
+		Previous // Output of previous Composition in chain
 	}
 }

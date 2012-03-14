@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 #endregion Namespace Declarations
 
@@ -44,6 +46,8 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region CompileErrorCode enum
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -92,38 +96,27 @@ namespace Axiom.Scripting.Compiler
 			ReferenceToaNonExistingObject
 		}
 
+		#endregion
+
+		#region Nested type: CompileError
+
 		public struct CompileError
 		{
-
 			public CompileError( CompileErrorCode code, string file, uint line, string msg )
 				: this()
 			{
-				this.Code = code;
-				this.File = file;
-				this.Line = line;
-				this.Message = msg;
+				Code = code;
+				File = file;
+				Line = line;
+				Message = msg;
 			}
 
-			public string File
-			{
-				get;
-				private set;
-			}
-			public string Message
-			{
-				get;
-				private set;
-			}
-			public uint Line
-			{
-				get;
-				private set;
-			}
-			public CompileErrorCode Code
-			{
-				get;
-				private set;
-			}
+			public string File { get; private set; }
+			public string Message { get; private set; }
+			public uint Line { get; private set; }
+			public CompileErrorCode Code { get; private set; }
 		}
+
+		#endregion
 	}
 }

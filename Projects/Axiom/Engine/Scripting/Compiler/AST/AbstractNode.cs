@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -58,16 +62,16 @@ namespace Axiom.Scripting.Compiler.AST
 	/// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
+		/// <summary>
+		/// An holder for translation context data
+		/// </summary>
+		public object Context;
+
 		public string File;
 
 		public uint Line;
 
 		public AbstractNode Parent;
-
-        /// <summary>
-        /// An holder for translation context data
-        /// </summary>
-        public object Context;
 
 		/// <summary>
 		/// Constructor
@@ -80,19 +84,15 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		/// <summary>
-        /// Returns a string value depending on the type of the AbstractNode.
+		/// Returns a string value depending on the type of the AbstractNode.
 		/// </summary>
-		public abstract string Value
-		{
-			get;
-			set;
-		}
+		public abstract string Value { get; set; }
 
 		#region ICloneable Implementation
 
 		object ICloneable.Clone()
 		{
-			return (object)Clone();
+			return Clone();
 		}
 
 		/// <summary>
@@ -107,12 +107,12 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override bool Equals( object obj )
 		{
-			return this.GetHashCode() == obj.GetHashCode();
+			return GetHashCode() == obj.GetHashCode();
 		}
 
 		public override int GetHashCode()
 		{
-			return File.GetHashCode() | Line.GetHashCode();
+			return this.File.GetHashCode() | this.Line.GetHashCode();
 		}
 
 		#endregion System.Object Implementation

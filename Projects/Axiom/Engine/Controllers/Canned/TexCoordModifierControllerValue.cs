@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 
 using Axiom.Graphics;
 using Axiom.Math;
@@ -48,12 +51,12 @@ namespace Axiom.Controllers.Canned
 	{
 		#region Member variables
 
-		protected bool transU;
-		protected bool transV;
+		protected bool rotate;
 		protected bool scaleU;
 		protected bool scaleV;
-		protected bool rotate;
 		protected TextureUnitState texUnit;
+		protected bool transU;
+		protected bool transV;
 
 		#endregion
 
@@ -63,9 +66,7 @@ namespace Axiom.Controllers.Canned
 		}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU )
-			: this( texUnit, scrollU, false )
-		{
-		}
+			: this( texUnit, scrollU, false ) { }
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
 		{
@@ -84,60 +85,74 @@ namespace Axiom.Controllers.Canned
 			this.rotate = rotate;
 		}
 
-		#region IControllerValue Members
+		#region IControllerValue<Real> Members
 
 		public Real Value
 		{
 			get
 			{
-				var trans = texUnit.TextureMatrix;
+				Matrix4 trans = this.texUnit.TextureMatrix;
 
-				if ( transU )
+				if ( this.transU )
+				{
 					return trans.m03;
-				else if ( transV )
+				}
+				else if ( this.transV )
+				{
 					return trans.m13;
-				else if ( scaleU )
+				}
+				else if ( this.scaleU )
+				{
 					return trans.m00;
-				else if ( scaleV )
+				}
+				else if ( this.scaleV )
+				{
 					return trans.m11;
+				}
 
 				// should never get here
 				return 0.0f;
 			}
 			set
 			{
-				if ( transU )
-					texUnit.SetTextureScrollU( value );
+				if ( this.transU )
+				{
+					this.texUnit.SetTextureScrollU( value );
+				}
 
-				if ( transV )
-					texUnit.SetTextureScrollV( value );
+				if ( this.transV )
+				{
+					this.texUnit.SetTextureScrollV( value );
+				}
 
-				if ( scaleU )
+				if ( this.scaleU )
 				{
 					if ( value >= 0 )
 					{
-						texUnit.SetTextureScaleU( 1 + value );
+						this.texUnit.SetTextureScaleU( 1 + value );
 					}
 					else
 					{
-						texUnit.SetTextureScaleU( 1 / -value );
+						this.texUnit.SetTextureScaleU( 1 / -value );
 					}
 				}
 
-				if ( scaleV )
+				if ( this.scaleV )
 				{
 					if ( value >= 0 )
 					{
-						texUnit.SetTextureScaleV( 1 + value );
+						this.texUnit.SetTextureScaleV( 1 + value );
 					}
 					else
 					{
-						texUnit.SetTextureScaleV( 1 / -value );
+						this.texUnit.SetTextureScaleV( 1 / -value );
 					}
 				}
 
-				if ( rotate )
-					texUnit.SetTextureRotate( value * 360 );
+				if ( this.rotate )
+				{
+					this.texUnit.SetTextureRotate( value * 360 );
+				}
 			}
 		}
 

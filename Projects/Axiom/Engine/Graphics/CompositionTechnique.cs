@@ -41,14 +41,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 using Axiom.Core;
-using Axiom.Configuration;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -60,6 +56,8 @@ namespace Axiom.Graphics
 	///</summary>
 	public class CompositionTechnique : DisposableObject
 	{
+		#region TextureScope enum
+
 		///<summary>
 		/// The scope of a texture defined by the compositor.
 		///</summary>
@@ -69,261 +67,21 @@ namespace Axiom.Graphics
 			/// Local texture - only available to the compositor passes in this technique
 			///</summary>
 			Local,
+
 			///<summary>
 			/// Chain texture - available to the other compositors in the chain
 			///</summary>
 			Chain,
+
 			///<summary>
 			/// Global texture - available to everyone in every scope
 			///</summary>
 			Global
 		}
 
+		#endregion
+
 		//end enum TextureScope
-
-		///<summary>
-		/// Local texture definitions
-		///</summary>
-		public class TextureDefinition
-		{
-			///<summary>
-			/// Name of the texture definition.
-			///</summary>
-			public string Name
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// If a reference, the name of the compositor being referenced
-			/// </summary>
-			public string ReferenceCompositorName
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// If a reference, the name of the texture in the compositor being referenced
-			/// </summary>
-			public string ReferenceTextureName
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// 0 means adapt to target width
-			/// </summary>
-			public int Width
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// 0 means adapt to target height
-			/// </summary>
-			public int Height
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// multiple of target width to use (if width = 0)
-			/// </summary>
-			public float WidthFactor
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// multiple of target height to use (if height = 0)
-			/// </summary>
-			public float HeightFactor
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// more than one means MRT
-			/// </summary>
-			public IList<PixelFormat> PixelFormats
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// FSAA enabled; 
-			/// true = determine from main target (if render_scene), false = disable
-			/// </summary>
-			public bool Fsaa
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// Do sRGB gamma correction on write (only 8-bit per channel formats)
-			/// </summary>
-			public bool HwGammaWrite
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// Depth Buffer's pool ID. (unrelated to "pool" variable below)
-			/// </summary>
-			public PoolId DepthBufferId
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// whether to use pooled textures for this one
-			/// </summary>
-			public bool Pooled
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// Which scope has access to this texture
-			/// </summary>
-			public TextureScope Scope
-			{
-				get;
-				set;
-			}
-
-			/// <summary>
-			/// Creates a new local texture definition.
-			/// </summary>
-			public TextureDefinition()
-			{
-				WidthFactor = 1.0f;
-				HeightFactor = 1.0f;
-				Fsaa = true;
-				DepthBufferId = PoolId.Default;
-				Scope = TextureScope.Local;
-				ReferenceCompositorName = string.Empty;
-				ReferenceTextureName = string.Empty;
-				PixelFormats = new List<PixelFormat>();
-			}
-		}
-
-		#region Fields and Properties
-
-		/// <summary>
-		/// local texture definitions.
-		/// </summary>
-		protected List<TextureDefinition> textureDefinitions;
-		/// <summary>
-		/// Get's a list of all texture definitions.
-		/// </summary>
-		public IList<TextureDefinition> TextureDefinitions
-		{
-			get
-			{
-				return this.textureDefinitions;
-			}
-		}
-
-		/// <summary>
-		/// Intermediate target passes
-		/// </summary>
-		protected List<CompositionTargetPass> targetPasses;
-		/// <summary>
-		/// Get's a list of all target passes of this technique.
-		/// </summary>
-		public IList<CompositionTargetPass> TargetPasses
-		{
-			get
-			{
-				return this.targetPasses;
-			}
-		}
-
-		/// <summary>
-		/// Output target pass (can be only one)
-		/// </summary>
-		protected CompositionTargetPass outputTarget;
-		/// <summary>
-		/// Get's the output (final) target pass.
-		/// </summary>
-		public CompositionTargetPass OutputTarget
-		{
-			get
-			{
-				return this.outputTarget;
-			}
-		}
-
-		/// <summary>
-		/// Optional scheme name
-		/// </summary>
-		protected string schemeName;
-		/// <summary>
-		/// Get's or set's a scheme name for this technique,
-		/// used to switch between multiple techniques by choice,
-		/// rather than for hardware compatibility.
-		/// </summary>
-		public virtual string SchemeName
-		{
-			get
-			{
-				return this.schemeName;
-			}
-			set
-			{
-				this.schemeName = value;
-			}
-		}
-
-		/// <summary>
-		/// Optional compositor logic name
-		/// </summary>
-		protected string compositorLogicName;
-		/// <summary>
-		/// Get's or set's the logic name, assigned to this technique.
-		/// Instances if this technique will be auto-coupled with the matching logic.
-		/// </summary>
-		public string CompositorLogicName
-		{
-			get
-			{
-				return this.compositorLogicName;
-			}
-			set
-			{
-				this.compositorLogicName = value;
-			}
-		}
-
-		/// <summary>
-		/// Parent compositor.
-		/// </summary>
-		protected Compositor parent;
-		/// <summary>
-		/// Get's the parent of this technique.
-		/// </summary>
-		public Compositor Parent
-		{
-			get
-			{
-				return this.parent;
-			}
-		}
-
-		#endregion Fields and Properties
 
 		/// <summary>
 		/// Create's a new Composition technique
@@ -380,7 +138,7 @@ namespace Axiom.Graphics
 		/// <returns>texture definition for the given name.if noone exists, null</returns>
 		public virtual TextureDefinition GetTextureDefinition( string name )
 		{
-			foreach ( var t in this.textureDefinitions )
+			foreach ( TextureDefinition t in this.textureDefinitions )
 			{
 				if ( t.Name == name )
 				{
@@ -421,8 +179,8 @@ namespace Axiom.Graphics
 		public virtual void RemoveTargetPass( int index )
 		{
 			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
-            this.targetPasses[index].Dispose();
-            this.targetPasses[index] = null;
+			this.targetPasses[ index ].Dispose();
+			this.targetPasses[ index ] = null;
 			this.targetPasses.RemoveAt( index );
 		}
 
@@ -442,11 +200,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllTargetPasses()
 		{
-            for (int i = 0; i < targetPasses.Count; i++)
-            {
-                targetPasses[i].Dispose();
-                targetPasses[i] = null;
-            }
+			for ( int i = 0; i < this.targetPasses.Count; i++ )
+			{
+				this.targetPasses[ i ].Dispose();
+				this.targetPasses[ i ] = null;
+			}
 			this.targetPasses.Clear();
 		}
 
@@ -472,7 +230,7 @@ namespace Axiom.Graphics
 				return false;
 			}
 			// Check all target passes is supported
-			foreach ( var targetPass in this.targetPasses )
+			foreach ( CompositionTargetPass targetPass in this.targetPasses )
 			{
 				if ( !targetPass.IsSupported )
 				{
@@ -480,9 +238,9 @@ namespace Axiom.Graphics
 				}
 			}
 
-			var texMgr = TextureManager.Instance;
+			TextureManager texMgr = TextureManager.Instance;
 			// Check all Texture Definitions is supported
-			foreach ( var td in this.textureDefinitions )
+			foreach ( TextureDefinition td in this.textureDefinitions )
 			{
 				// Firstly check MRTs
 				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
@@ -490,7 +248,7 @@ namespace Axiom.Graphics
 					return false;
 				}
 
-				foreach ( var pf in td.PixelFormats )
+				foreach ( PixelFormat pf in td.PixelFormats )
 				{
 					// Check whether equivalent supported
 					if ( allowTextureDegradation )
@@ -516,20 +274,222 @@ namespace Axiom.Graphics
 			return true;
 		}
 
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    return;
-                    RemoveAllTextureDefinitions();
-                    RemoveAllTargetPasses();
-                    outputTarget.Dispose();
-                    outputTarget = null;
-                }
-            }
-            base.dispose(disposeManagedResources);
-        }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					return;
+					RemoveAllTextureDefinitions();
+					RemoveAllTargetPasses();
+					this.outputTarget.Dispose();
+					this.outputTarget = null;
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#region Nested type: TextureDefinition
+
+		///<summary>
+		/// Local texture definitions
+		///</summary>
+		public class TextureDefinition
+		{
+			/// <summary>
+			/// Creates a new local texture definition.
+			/// </summary>
+			public TextureDefinition()
+			{
+				WidthFactor = 1.0f;
+				HeightFactor = 1.0f;
+				Fsaa = true;
+				DepthBufferId = PoolId.Default;
+				Scope = TextureScope.Local;
+				ReferenceCompositorName = string.Empty;
+				ReferenceTextureName = string.Empty;
+				PixelFormats = new List<PixelFormat>();
+			}
+
+			///<summary>
+			/// Name of the texture definition.
+			///</summary>
+			public string Name { get; set; }
+
+			/// <summary>
+			/// If a reference, the name of the compositor being referenced
+			/// </summary>
+			public string ReferenceCompositorName { get; set; }
+
+			/// <summary>
+			/// If a reference, the name of the texture in the compositor being referenced
+			/// </summary>
+			public string ReferenceTextureName { get; set; }
+
+			/// <summary>
+			/// 0 means adapt to target width
+			/// </summary>
+			public int Width { get; set; }
+
+			/// <summary>
+			/// 0 means adapt to target height
+			/// </summary>
+			public int Height { get; set; }
+
+			/// <summary>
+			/// multiple of target width to use (if width = 0)
+			/// </summary>
+			public float WidthFactor { get; set; }
+
+			/// <summary>
+			/// multiple of target height to use (if height = 0)
+			/// </summary>
+			public float HeightFactor { get; set; }
+
+			/// <summary>
+			/// more than one means MRT
+			/// </summary>
+			public IList<PixelFormat> PixelFormats { get; set; }
+
+			/// <summary>
+			/// FSAA enabled; 
+			/// true = determine from main target (if render_scene), false = disable
+			/// </summary>
+			public bool Fsaa { get; set; }
+
+			/// <summary>
+			/// Do sRGB gamma correction on write (only 8-bit per channel formats)
+			/// </summary>
+			public bool HwGammaWrite { get; set; }
+
+			/// <summary>
+			/// Depth Buffer's pool ID. (unrelated to "pool" variable below)
+			/// </summary>
+			public PoolId DepthBufferId { get; set; }
+
+			/// <summary>
+			/// whether to use pooled textures for this one
+			/// </summary>
+			public bool Pooled { get; set; }
+
+			/// <summary>
+			/// Which scope has access to this texture
+			/// </summary>
+			public TextureScope Scope { get; set; }
+		}
+
+		#endregion
+
+		#region Fields and Properties
+
+		/// <summary>
+		/// Optional compositor logic name
+		/// </summary>
+		protected string compositorLogicName;
+
+		/// <summary>
+		/// Output target pass (can be only one)
+		/// </summary>
+		protected CompositionTargetPass outputTarget;
+
+		/// <summary>
+		/// Parent compositor.
+		/// </summary>
+		protected Compositor parent;
+
+		/// <summary>
+		/// Optional scheme name
+		/// </summary>
+		protected string schemeName;
+
+		/// <summary>
+		/// Intermediate target passes
+		/// </summary>
+		protected List<CompositionTargetPass> targetPasses;
+
+		/// <summary>
+		/// local texture definitions.
+		/// </summary>
+		protected List<TextureDefinition> textureDefinitions;
+
+		/// <summary>
+		/// Get's a list of all texture definitions.
+		/// </summary>
+		public IList<TextureDefinition> TextureDefinitions
+		{
+			get
+			{
+				return this.textureDefinitions;
+			}
+		}
+
+		/// <summary>
+		/// Get's a list of all target passes of this technique.
+		/// </summary>
+		public IList<CompositionTargetPass> TargetPasses
+		{
+			get
+			{
+				return this.targetPasses;
+			}
+		}
+
+		/// <summary>
+		/// Get's the output (final) target pass.
+		/// </summary>
+		public CompositionTargetPass OutputTarget
+		{
+			get
+			{
+				return this.outputTarget;
+			}
+		}
+
+		/// <summary>
+		/// Get's or set's a scheme name for this technique,
+		/// used to switch between multiple techniques by choice,
+		/// rather than for hardware compatibility.
+		/// </summary>
+		public virtual string SchemeName
+		{
+			get
+			{
+				return this.schemeName;
+			}
+			set
+			{
+				this.schemeName = value;
+			}
+		}
+
+		/// <summary>
+		/// Get's or set's the logic name, assigned to this technique.
+		/// Instances if this technique will be auto-coupled with the matching logic.
+		/// </summary>
+		public string CompositorLogicName
+		{
+			get
+			{
+				return this.compositorLogicName;
+			}
+			set
+			{
+				this.compositorLogicName = value;
+			}
+		}
+
+		/// <summary>
+		/// Get's the parent of this technique.
+		/// </summary>
+		public Compositor Parent
+		{
+			get
+			{
+				return this.parent;
+			}
+		}
+
+		#endregion Fields and Properties
 	}
 }

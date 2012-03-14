@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,7 +58,7 @@ namespace Axiom.CgPrograms
 		/// <summary>
 		///    ID of the active Cg context.
 		/// </summary>
-		private IntPtr cgContext;
+		private readonly IntPtr cgContext;
 
 		#endregion Fields
 
@@ -66,14 +70,12 @@ namespace Axiom.CgPrograms
 		internal CgProgramFactory()
 		{
 			// create the Cg context
-			cgContext = Cg.cgCreateContext();
+			this.cgContext = Cg.cgCreateContext();
 
-			CgHelper.CheckCgError( "Error creating Cg context.", cgContext );
+			CgHelper.CheckCgError( "Error creating Cg context.", this.cgContext );
 		}
 
 		#endregion Constructors
-
-		#region HighLevelGpuProgramFactory Members
 
 		public override string Language
 		{
@@ -91,24 +93,20 @@ namespace Axiom.CgPrograms
 		/// <returns>A new CgProgram instance within the current Cg Context.</returns>
 		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
+			return new CgProgram( parent, name, handle, group, isManual, loader, this.cgContext );
 		}
-
-		#endregion HighLevelGpuProgramFactory Members
-
-		#region IDisposable Members
 
 		/// <summary>
 		///    Destroys the Cg context upon being disposed.
 		/// </summary>
-        protected override void dispose(bool disposeManagedResources)
-        {
+		protected override void dispose( bool disposeManagedResources )
+		{
 			// destroy the Cg context
-            if (disposeManagedResources)
-			    Cg.cgDestroyContext( cgContext );
-		    base.dispose( disposeManagedResources );
-        }
-
-		#endregion IDisposable Members
+			if ( disposeManagedResources )
+			{
+				Cg.cgDestroyContext( this.cgContext );
+			}
+			base.dispose( disposeManagedResources );
+		}
 	}
 }

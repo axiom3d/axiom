@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -44,21 +48,6 @@ namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptLexer
 	{
-		private enum ScriptState
-		{
-			Ready,
-			Comment,
-			MultiComment,
-			Word,
-			Quote,
-			Var,
-			PossibleComment
-		}
-
-		public ScriptLexer()
-		{
-		}
-
 		/// <summary>
 		/// Tokenizes the given input and returns the list of tokens found
 		/// </summary>
@@ -73,21 +62,24 @@ namespace Axiom.Scripting.Compiler.Parser
 
 			var lexeme = new StringBuilder();
 			uint line = 1, lastQuote = 0;
-			var state = ScriptState.Ready;
+			ScriptState state = ScriptState.Ready;
 
 			var tokens = new List<ScriptToken>();
 
-			for ( var index = 0; index < str.Length; index++ )
+			for ( int index = 0; index < str.Length; index++ )
 			{
 				lastChar = c;
 				c = str[ index ];
 
 				if ( c == quote )
+				{
 					lastQuote = line;
+				}
 
 				switch ( state )
 				{
 					#region Ready
+
 					case ScriptState.Ready:
 						if ( c == slash && lastChar == slash )
 						{
@@ -122,29 +114,43 @@ namespace Axiom.Scripting.Compiler.Parser
 						{
 							lexeme = new StringBuilder( c.ToString() );
 							if ( c == slash )
+							{
 								state = ScriptState.PossibleComment;
+							}
 							else
+							{
 								state = ScriptState.Word;
+							}
 						}
 						break;
+
 					#endregion Ready
 
 					#region Comment
+
 					case ScriptState.Comment:
 						// This newline happens to be ignored automatically
 						if ( IsNewline( c ) )
+						{
 							state = ScriptState.Ready;
+						}
 						break;
+
 					#endregion Comment
 
 					#region MultiComment
+
 					case ScriptState.MultiComment:
 						if ( c == slash && lastChar == star )
+						{
 							state = ScriptState.Ready;
+						}
 						break;
+
 					#endregion MultiComment
 
 					#region PossibleComment
+
 					case ScriptState.PossibleComment:
 						if ( c == slash && lastChar == slash )
 						{
@@ -159,11 +165,15 @@ namespace Axiom.Scripting.Compiler.Parser
 							break;
 						}
 						else
+						{
 							state = ScriptState.Word;
+						}
 						break;
+
 					#endregion PossibleComment
 
 					#region Word
+
 					case ScriptState.Word:
 						if ( IsNewline( c ) )
 						{
@@ -189,9 +199,11 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
+
 					#endregion Word
 
 					#region Quote
+
 					case ScriptState.Quote:
 						if ( c != backslash )
 						{
@@ -215,13 +227,17 @@ namespace Axiom.Scripting.Compiler.Parser
 									lexeme.Append( c );
 								}
 								else
+								{
 									lexeme.Append( c );
+								}
 							}
 						}
 						break;
+
 					#endregion Quote
 
 					#region Var
+
 					case ScriptState.Var:
 						if ( IsNewline( c ) )
 						{
@@ -247,19 +263,24 @@ namespace Axiom.Scripting.Compiler.Parser
 							lexeme.Append( c );
 						}
 						break;
+
 					#endregion Var
 				}
 
 				// Separate check for newlines just to track line numbers
 				if ( IsNewline( c ) )
+				{
 					line++;
+				}
 			}
 
 			// Check for valid exit states
 			if ( state == ScriptState.Word || state == ScriptState.Var )
 			{
 				if ( lexeme.Length != 0 )
+				{
 					SetToken( lexeme, line, source, tokens );
+				}
 			}
 			else
 			{
@@ -282,23 +303,33 @@ namespace Axiom.Scripting.Compiler.Parser
 			token.lexeme = lexeme.ToString();
 			token.line = line;
 			token.file = source;
-			var ignore = false;
+			bool ignore = false;
 
 			// Check the user token map first
 			if ( lexeme.Length == 1 && lexeme[ 0 ] == newline )
 			{
 				token.type = Tokens.Newline;
 				if ( tokens.Count != 0 && tokens[ tokens.Count - 1 ].type == Tokens.Newline )
+				{
 					ignore = true;
+				}
 			}
 			else if ( lexeme.Length == 1 && lexeme[ 0 ] == openBrace )
+			{
 				token.type = Tokens.LeftBrace;
+			}
 			else if ( lexeme.Length == 1 && lexeme[ 0 ] == closeBrace )
+			{
 				token.type = Tokens.RightBrace;
+			}
 			else if ( lexeme.Length == 1 && lexeme[ 0 ] == colon )
+			{
 				token.type = Tokens.Colon;
+			}
 			else if ( lexeme[ 0 ] == var )
+			{
 				token.type = Tokens.Variable;
+			}
 			else
 			{
 				// This is either a non-zero length phrase or quoted phrase
@@ -313,7 +344,9 @@ namespace Axiom.Scripting.Compiler.Parser
 			}
 
 			if ( !ignore )
+			{
 				tokens.Add( token );
+			}
 		}
 
 		private bool IsWhitespace( char c )
@@ -325,5 +358,20 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			return c == '\n';
 		}
+
+		#region Nested type: ScriptState
+
+		private enum ScriptState
+		{
+			Ready,
+			Comment,
+			MultiComment,
+			Word,
+			Quote,
+			Var,
+			PossibleComment
+		}
+
+		#endregion
 	}
 }

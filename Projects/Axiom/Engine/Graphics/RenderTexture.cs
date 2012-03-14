@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 
-using Axiom.Core;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -50,43 +53,44 @@ namespace Axiom.Graphics
 		#region Fields
 
 		protected HardwarePixelBuffer pixelBuffer;
-		protected int zOffset = 0;
+		protected int zOffset;
 
 		#endregion Fields
 
 		#region Constructors
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
-            : base()
 		{
-            pixelBuffer = buffer;
-            this.zOffset = zOffset;
-            Priority = RenderTargetPriority.RenderToTexture;
-            width = buffer.Width;
-            height = buffer.Height;
-            colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+			this.pixelBuffer = buffer;
+			this.zOffset = zOffset;
+			Priority = RenderTargetPriority.RenderToTexture;
+			width = buffer.Width;
+			height = buffer.Height;
+			colorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
 		#endregion Constructors
 
 		#region Methods
 
-		public override void CopyContentsToMemory( PixelBox dst, RenderTarget.FrameBuffer buffer )
+		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
 			if ( buffer == FrameBuffer.Auto )
+			{
 				buffer = FrameBuffer.Front;
+			}
 			if ( buffer != FrameBuffer.Front )
 			{
 				throw new Exception( "Invalid buffer." );
 			}
 
-			pixelBuffer.BlitToMemory( dst );
+			this.pixelBuffer.BlitToMemory( dst );
 		}
 
-	    public override PixelFormat SuggestPixelFormat()
+		public override PixelFormat SuggestPixelFormat()
 		{
-			return pixelBuffer.Format;
+			return this.pixelBuffer.Format;
 		}
 
 		/// <summary>
@@ -98,7 +102,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					pixelBuffer.ClearSliceRTT( 0 );
+					this.pixelBuffer.ClearSliceRTT( 0 );
 				}
 			}
 

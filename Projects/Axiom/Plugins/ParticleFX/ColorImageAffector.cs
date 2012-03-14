@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,9 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
 using Axiom.Media;
+using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -50,56 +54,55 @@ namespace Axiom.ParticleFX
 	/// </summary>
 	public class ColorImageAffector : ParticleAffector
 	{
+		private const float div_255 = 1.0f / 255.0f;
 		protected Image colorImage;
-		protected String colorImageName;
 		protected bool colorImageLoaded;
+		protected String colorImageName;
 
-		const float div_255 = 1.0f / 255.0f;
-
-        public ColorImageAffector( ParticleSystem psys )
-            : base( psys )
-        {
-            this.type = "ColourImage";
-        }
+		public ColorImageAffector( ParticleSystem psys )
+			: base( psys )
+		{
+			type = "ColourImage";
+		}
 
 		public String ColorImageName
 		{
 			get
-            {
-                return colorImageName;
-            }
-            set
-            {
-                colorImageName = value;
-            }
-        }
-
-        /// <see cref="ParticleAffector.InitParticle"/>
-		public override void InitParticle( ref Particle particle )
-		{
-			if ( !colorImageLoaded )
 			{
-				loadImage();
+				return this.colorImageName;
 			}
-
-			particle.Color = colorImage.GetColorAt( 0, 0, 0 );
+			set
+			{
+				this.colorImageName = value;
+			}
 		}
 
-        /// <see cref="ParticleAffector.AffectParticles"/>
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+		/// <see cref="ParticleAffector.InitParticle"/>
+		public override void InitParticle( ref Particle particle )
 		{
-			if ( !colorImageLoaded )
+			if ( !this.colorImageLoaded )
 			{
 				loadImage();
 			}
 
-			int width = colorImage.Width - 1;
-			float height = colorImage.Height - 1;
+			particle.Color = this.colorImage.GetColorAt( 0, 0, 0 );
+		}
+
+		/// <see cref="ParticleAffector.AffectParticles"/>
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+		{
+			if ( !this.colorImageLoaded )
+			{
+				loadImage();
+			}
+
+			int width = this.colorImage.Width - 1;
+			float height = this.colorImage.Height - 1;
 
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				Particle p = system.Particles[ i ];
 
 				// life_time, float_index, index and position are CONST in OGRE, but errors here
 
@@ -117,26 +120,25 @@ namespace Axiom.ParticleFX
 				}
 
 				float float_index = particle_time * width;
-				int index = (int)float_index;
+				var index = (int)float_index;
 				int position = index * 4;
 
 				if ( index <= 0 )
 				{
-					p.Color = colorImage.GetColorAt( 0, 0, 0 );
+					p.Color = this.colorImage.GetColorAt( 0, 0, 0 );
 				}
-					else if ( index >= width )
+				else if ( index >= width )
 				{
-					p.Color = colorImage.GetColorAt( width, 0, 0 );
+					p.Color = this.colorImage.GetColorAt( width, 0, 0 );
 				}
 				else
 				{
 					// fract, to_color and from_color are CONST in OGRE, but errors here
-					float fract = float_index - (float)index;
+					float fract = float_index - index;
 					float toColor = fract;
-					float fromColor = (1 - toColor );
+					float fromColor = ( 1 - toColor );
 
-					ColorEx from = colorImage.GetColorAt( index, 0, 0 ),
-							to = colorImage.GetColorAt( index + 1, 0, 0 );
+					ColorEx from = this.colorImage.GetColorAt( index, 0, 0 ), to = this.colorImage.GetColorAt( index + 1, 0, 0 );
 
 					p.Color.r = ( from.r * fromColor ) + ( to.r * toColor );
 					p.Color.g = ( from.g * fromColor ) + ( to.g * toColor );
@@ -144,41 +146,43 @@ namespace Axiom.ParticleFX
 					p.Color.a = ( from.a * fromColor ) + ( to.a * toColor );
 				}
 			}
-
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		private void loadImage()
 		{
-			colorImage = Image.FromFile( colorImageName, parent.ResourceGroupName );
+			this.colorImage = Image.FromFile( this.colorImageName, parent.ResourceGroupName );
 
-			var format = colorImage.Format;
+			PixelFormat format = this.colorImage.Format;
 
 			if ( !PixelUtil.IsAccessible( format ) )
+			{
 				throw new AxiomException( "Error: Image is not accessible (rgba) image." );
+			}
 
-			colorImageLoaded = true;
+			this.colorImageLoaded = true;
 		}
 
 		#region Command definition classes
 
 		[ScriptableProperty( "image", "Image for color alterations.", typeof( ParticleAffector ) )]
-        public class ImageCommand : IPropertyCommand
+		public class ImageCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				ColorImageAffector affector = target as ColorImageAffector;
+				var affector = target as ColorImageAffector;
 				return affector.ColorImageName;
 			}
+
 			public void Set( object target, string val )
 			{
-				ColorImageAffector affector = target as ColorImageAffector;
+				var affector = target as ColorImageAffector;
 				affector.ColorImageName = val;
 			}
 
-			#endregion IPropertyCommand Members
+			#endregion
 		}
 
 		#endregion Command definition classes

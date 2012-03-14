@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom;
 using Axiom.Core;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -61,32 +61,33 @@ namespace Axiom.SceneManagers.Bsp
 	public class BspSceneNode : SceneNode
 	{
 		#region Constructors
+
 		public BspSceneNode( SceneManager creator )
-			: base( creator )
-		{
-		}
+			: base( creator ) { }
 
 		public BspSceneNode( SceneManager creator, string name )
-			: base( creator, name )
-		{
-		}
+			: base( creator, name ) { }
+
 		#endregion Constructors
 
 		#region Methods
+
 		protected override void Update( bool updateChildren, bool parentHasChanged )
 		{
 			bool checkMovables = false;
 
 			//needChildUpdate is more appropriate than needParentUpdate. needParentUpdate
 			//is set to false when there is a DerivedPosition/DerivedOrientation.
-			if ( this.needChildUpdate || parentHasChanged )
+			if ( needChildUpdate || parentHasChanged )
+			{
 				checkMovables = true;
+			}
 
 			base.Update( updateChildren, parentHasChanged );
 
 			if ( checkMovables )
 			{
-				foreach ( MovableObject obj in this.objectList.Values )
+				foreach ( MovableObject obj in objectList.Values )
 				{
 					if ( obj is TextureLight )
 					{
@@ -94,7 +95,7 @@ namespace Axiom.SceneManagers.Bsp
 						// the light is changed, is taken care of at TextureLight.Update()
 						continue;
 					}
-					( (BspSceneManager)this.Creator ).NotifyObjectMoved( obj, this.DerivedPosition );
+					( (BspSceneManager)Creator ).NotifyObjectMoved( obj, DerivedPosition );
 				}
 			}
 		}
@@ -103,26 +104,31 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			// TextureLights are detached only when removed at the BspSceneManager
 			if ( !( obj is TextureLight ) )
-				( (BspSceneManager)this.Creator ).NotifyObjectDetached( obj );
+			{
+				( (BspSceneManager)Creator ).NotifyObjectDetached( obj );
+			}
 
 			base.DetachObject( obj );
 		}
 
 		public override void DetachAllObjects()
 		{
-			BspSceneManager mgr = (BspSceneManager)this.Creator;
+			var mgr = (BspSceneManager)Creator;
 
-			foreach ( MovableObject obj in this.objectList.Values )
+			foreach ( MovableObject obj in objectList.Values )
 			{
 				// TextureLights are detached only when removed at the BspSceneManager
 				if ( obj is TextureLight )
+				{
 					continue;
+				}
 
 				mgr.NotifyObjectDetached( obj );
 			}
 
 			base.DetachAllObjects();
 		}
+
 		#endregion Methods
 	}
 }

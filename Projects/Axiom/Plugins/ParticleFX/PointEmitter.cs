@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.ParticleSystems;
-using Axiom.Math;
-using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -54,7 +53,7 @@ namespace Axiom.ParticleFX
 		public PointEmitter( ParticleSystem ps )
 			: base( ps )
 		{
-			this.Type = "Point";
+			Type = "Point";
 		}
 
 		#endregion Constructors
@@ -72,7 +71,7 @@ namespace Axiom.ParticleFX
 			base.InitParticle( particle );
 
 			// point emitter emits starting from its own position
-			particle.Position = this.position;
+			particle.Position = position;
 
 			GenerateEmissionColor( ref particle.Color );
 			GenerateEmissionDirection( ref particle.Direction );

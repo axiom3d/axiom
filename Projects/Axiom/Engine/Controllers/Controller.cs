@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
+
 
 #endregion Namespace Declarations
 
@@ -52,7 +56,7 @@ namespace Axiom.Controllers
 	///		The Controller is an intentionally abstract concept - it can generate values
 	///		based on input and a function, which can either be one of the standard ones
 	///		supplied, or a function can be 'plugged in' for custom behavior - see the <see cref="IControllerFunction&lt;T&gt;"/> class for details.
-    ///		Both the input and output values are via <see cref="IControllerValue&lt;T&gt;"/> objects, meaning that any value can be both
+	///		Both the input and output values are via <see cref="IControllerValue&lt;T&gt;"/> objects, meaning that any value can be both
 	///		input and output of the controller.
 	///		<p/>
 	///		While this is very flexible, it can be a little bit confusing so to make it simpler the most often used
@@ -61,11 +65,6 @@ namespace Axiom.Controllers
 	public class Controller<T>
 	{
 		#region Member variables
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected IControllerValue<T> source;
 
 		/// <summary>
 		/// 
@@ -81,6 +80,11 @@ namespace Axiom.Controllers
 		///		States whether or not this controller is enabled.
 		/// </summary>
 		protected bool isEnabled;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected IControllerValue<T> source;
 
 		#endregion
 
@@ -100,7 +104,7 @@ namespace Axiom.Controllers
 			this.function = function;
 
 			// enabled by default, of course
-			isEnabled = true;
+			this.isEnabled = true;
 		}
 
 		#endregion
@@ -115,8 +119,10 @@ namespace Axiom.Controllers
 		{
 			// if we are enabled, set the destination value based on the return value of the
 			// controller function ran using the source value
-			if ( isEnabled )
-				destination.Value = function.Execute( source.Value );
+			if ( this.isEnabled )
+			{
+				this.destination.Value = this.function.Execute( this.source.Value );
+			}
 		}
 
 		#endregion
@@ -130,11 +136,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 			set
 			{
-				source = value;
+				this.source = value;
 			}
 		}
 
@@ -145,11 +151,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return destination;
+				return this.destination;
 			}
 			set
 			{
-				destination = value;
+				this.destination = value;
 			}
 		}
 
@@ -160,11 +166,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return function;
+				return this.function;
 			}
 			set
 			{
-				function = value;
+				this.function = value;
 			}
 		}
 
@@ -175,11 +181,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
+				this.isEnabled = value;
 			}
 		}
 

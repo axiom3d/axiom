@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,27 +23,29 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: Singleton.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-
-	public interface ISingleton<T> where T : class
+	public interface ISingleton<T>
+		where T : class
 	{
 		bool Initialize( params object[] args );
 	}
@@ -54,23 +57,15 @@ namespace Axiom.Core
 	/// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
 	/// </remarks>
 	/// <typeparam name="T">a class</typeparam>
-	public abstract class Singleton<T> : IDisposable where T : class, new()
+	public abstract class Singleton<T> : IDisposable
+		where T : class, new()
 	{
-
 		public Singleton()
 		{
-			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
-				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
-		}
-
-		~Singleton()
-		{
-			dispose( false );
-		}
-
-		public virtual bool Initialize( params object[] args )
-		{
-			return true;
+			if ( SingletonFactory.instance != null && !ReferenceEquals( this, SingletonFactory.instance ) )
+			{
+				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", GetType().Name ) );
+			}
 		}
 
 		public static T Instance
@@ -80,7 +75,9 @@ namespace Axiom.Core
 				try
 				{
 					if ( SingletonFactory.instance != null )
+					{
 						return SingletonFactory.instance;
+					}
 					lock ( SingletonFactory.singletonLock )
 					{
 						SingletonFactory.instance = new T();
@@ -94,15 +91,14 @@ namespace Axiom.Core
 			}
 		}
 
-		class SingletonFactory
+		~Singleton()
 		{
-			internal static object singletonLock = new object();
-			static SingletonFactory()
-			{
+			dispose( false );
+		}
 
-			}
-
-			internal static T instance = new T();
+		public virtual bool Initialize( params object[] args )
+		{
+			return true;
 		}
 
 		public static void Destroy()
@@ -110,31 +106,24 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
-		public static void Reinitialize()
-		{
-		}
-		#region IDisposable Implementation
+		public static void Reinitialize() { }
 
+		#region IDisposable Implementation
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -166,7 +155,7 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					Singleton<T>.Destroy();
+					Destroy();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -175,12 +164,18 @@ namespace Axiom.Core
 			isDisposed = true;
 		}
 
-		public void Dispose()
+		#endregion IDisposable Implementation
+
+		#region Nested type: SingletonFactory
+
+		private class SingletonFactory
 		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+			internal static object singletonLock = new object();
+
+			internal static T instance = new T();
+			static SingletonFactory() { }
 		}
 
-		#endregion IDisposable Implementation
+		#endregion
 	}
 }

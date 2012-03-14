@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,13 +29,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -66,12 +70,15 @@ namespace Axiom.Math
 
 		/// <summary>X component.</summary>
 		public Real x;
+
 		/// <summary>Y component.</summary>
 		public Real y;
+
 		/// <summary>Z component.</summary>
 		public Real z;
 
 		private static readonly Vector3 positiveInfinityVector = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
+
 		public static Vector3 PositiveInfinity
 		{
 			get
@@ -81,6 +88,7 @@ namespace Axiom.Math
 		}
 
 		private static readonly Vector3 negativeInfinityVector = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+
 		public static Vector3 NegativeInfinity
 		{
 			get
@@ -90,6 +98,7 @@ namespace Axiom.Math
 		}
 
 		private static readonly Vector3 invalidVector = new Vector3( Real.NaN, Real.NaN, Real.NaN );
+
 		public static Vector3 Invalid
 		{
 			get
@@ -125,9 +134,7 @@ namespace Axiom.Math
 		///		Creates a new 3 dimensional Vector.
 		/// </summary>
 		public Vector3( Real unitDimension )
-			: this( unitDimension, unitDimension, unitDimension )
-		{
-		}
+			: this( unitDimension, unitDimension, unitDimension ) { }
 
 		/// <summary>
 		///		Creates a new 3 dimensional Vector.
@@ -135,7 +142,9 @@ namespace Axiom.Math
 		public Vector3( Real[] coordinates )
 		{
 			if ( coordinates.Length != 3 )
+			{
 				throw new ArgumentException( "The coordinates array must be of length 3 to specify the x, y, and z coordinates." );
+			}
 			this.x = coordinates[ 0 ];
 			this.y = coordinates[ 1 ];
 			this.z = coordinates[ 2 ];
@@ -154,9 +163,13 @@ namespace Axiom.Math
 		public static bool operator ==( Vector3 left, Vector3 right )
 		{
 			if ( left.IsInvalid && right.IsInvalid )
+			{
 				return true;
+			}
 			if ( left.IsInvalid || right.IsInvalid )
+			{
 				return false;
+			}
 			return ( left.x == right.x && left.y == right.y && left.z == right.z );
 		}
 
@@ -169,9 +182,13 @@ namespace Axiom.Math
 		public static bool operator !=( Vector3 left, Vector3 right )
 		{
 			if ( left.IsInvalid && right.IsInvalid )
+			{
 				return false;
+			}
 			if ( left.IsInvalid || right.IsInvalid )
+			{
 				return true;
+			}
 			return ( left.x != right.x || left.y != right.y || left.z != right.z );
 		}
 
@@ -254,7 +271,7 @@ namespace Axiom.Math
 			Vector3 vector;
 
 			// get the inverse of the scalar up front to avoid doing multiple divides later
-			var inverse = 1.0f / scalar;
+			Real inverse = 1.0f / scalar;
 
 			vector.x = left.x * inverse;
 			vector.y = left.y * inverse;
@@ -275,13 +292,13 @@ namespace Axiom.Math
 			return left + right;
 		}
 
-        /// <summary>
-        /// Add a scalar to a Vector3
-        /// </summary>
-        public static Vector3 Add( Vector3 v, Real fScalar )
-        {
-            return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
-        }
+		/// <summary>
+		/// Add a scalar to a Vector3
+		/// </summary>
+		public static Vector3 Add( Vector3 v, Real fScalar )
+		{
+			return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
+		}
 
 		/// <summary>
 		///		Used when a Vector3 is added to another Vector3.
@@ -294,10 +311,10 @@ namespace Axiom.Math
 			return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
 		}
 
-        public static Vector3 operator +( Vector3 v, Real fScalar )
-        {
-            return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
-        }
+		public static Vector3 operator +( Vector3 v, Real fScalar )
+		{
+			return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
+		}
 
 		/// <summary>
 		///		Used when a Vector3 is multiplied by a scalar value.
@@ -459,11 +476,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
+					{
 						return *( pX + index );
+					}
 				}
 #endif
-            }
+			}
 			set
 			{
 				Debug.Assert( index >= 0 && index < 3, "Indexer boundaries overrun in Vector3." );
@@ -479,11 +498,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
+					{
 						*( pX + index ) = value;
+					}
 				}
 #endif
-            }
+			}
 		}
 
 		#endregion
@@ -521,11 +542,18 @@ namespace Axiom.Math
 
 		public object[] ToObjectArray()
 		{
-			return new object[] { x, y, z };
+			return new object[]
+                   {
+                       this.x, this.y, this.z
+                   };
 		}
+
 		public Real[] ToArray()
 		{
-			return new Real[] { x, y, z };
+			return new[]
+                   {
+                       this.x, this.y, this.z
+                   };
 		}
 
 		public bool IsAnyComponentGreaterThan( Vector3 vector )
@@ -542,6 +570,7 @@ namespace Axiom.Math
 		{
 			return ( this.x < vector.x || this.y < vector.y || this.z < vector.z );
 		}
+
 		public bool IsAnyComponentLessThanOrEqualTo( Vector3 vector )
 		{
 			return ( this.x <= vector.x || this.y <= vector.y || this.z <= vector.z );
@@ -568,7 +597,7 @@ namespace Axiom.Math
 		/// <returns>Products of vector lengths and cosine of the angle between them. </returns>
 		public Real Dot( Vector3 vector )
 		{
-			return x * vector.x + y * vector.y + z * vector.z;
+			return this.x * vector.x + this.y * vector.y + this.z * vector.z;
 		}
 
 		/// <summary>
@@ -585,7 +614,7 @@ namespace Axiom.Math
 		/// <returns>A float representing the absolute dot product value.</returns>
 		public Real AbsDot( Vector3 vec )
 		{
-			return System.Math.Abs( x * vec.x ) + System.Math.Abs( y * vec.y ) + System.Math.Abs( z * vec.z );
+			return System.Math.Abs( this.x * vec.x ) + System.Math.Abs( this.y * vec.y ) + System.Math.Abs( this.z * vec.z );
 		}
 
 		/// <summary>
@@ -596,12 +625,7 @@ namespace Axiom.Math
 		/// <returns>A new Vector3 perpedicular to the 2 original vectors.</returns>
 		public Vector3 Cross( Vector3 vector )
 		{
-			return new Vector3(
-				( this.y * vector.z ) - ( this.z * vector.y ),
-				( this.z * vector.x ) - ( this.x * vector.z ),
-				( this.x * vector.y ) - ( this.y * vector.x )
-				);
-
+			return new Vector3( ( this.y * vector.z ) - ( this.z * vector.y ), ( this.z * vector.x ) - ( this.x * vector.z ), ( this.x * vector.y ) - ( this.y * vector.x ) );
 		}
 
 		/// <summary>
@@ -610,17 +634,18 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 Perpendicular()
 		{
-			var result = this.Cross( Vector3.UnitX );
+			Vector3 result = Cross( UnitX );
 
 			// check length
 			if ( result.LengthSquared < Real.Epsilon )
 			{
 				// This vector is the Y axis multiplied by a scalar, so we have to use another axis
-				result = this.Cross( Vector3.UnitY );
+				result = Cross( UnitY );
 			}
 
 			return result;
 		}
+
 		public static Vector3 SymmetricRandom()
 		{
 			return SymmetricRandom( 1f, 1f, 1f );
@@ -638,11 +663,7 @@ namespace Axiom.Math
 
 		public static Vector3 SymmetricRandom( Real xMult, Real yMult, Real zMult )
 		{
-			return new Vector3(
-				( xMult == 0 ) ? 0 : xMult * Utility.SymmetricRandom(),
-				( yMult == 0 ) ? 0 : yMult * Utility.SymmetricRandom(),
-				( zMult == 0 ) ? 0 : zMult * Utility.SymmetricRandom()
-				);
+			return new Vector3( ( xMult == 0 ) ? 0 : xMult * Utility.SymmetricRandom(), ( yMult == 0 ) ? 0 : yMult * Utility.SymmetricRandom(), ( zMult == 0 ) ? 0 : zMult * Utility.SymmetricRandom() );
 		}
 
 		/// <summary>
@@ -653,10 +674,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 RandomDeviant( Real angle, Vector3 up )
 		{
-			var newUp = ( up == Vector3.Zero ) ? this.Perpendicular() : up;
+			Vector3 newUp = ( up == Zero ) ? Perpendicular() : up;
 
 			// rotate up vector by random amount around this
-			var q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
+			Quaternion q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
 			newUp = q * newUp;
 
 			// finally, rotate this by given angle around randomized up vector
@@ -675,13 +696,11 @@ namespace Axiom.Math
 			return PositionEquals( right, 1e-03f );
 		}
 
-        ///<param name="right">The vector to compare with</param>
+		///<param name="right">The vector to compare with</param>
 		/// <param name="tolerance">The amount that each element of the vector may vary by and still be considered equal.</param>
 		public bool PositionEquals( Vector3 right, Real tolerance )
 		{
-			return Utility.RealEqual( x, right.x, tolerance ) &&
-				   Utility.RealEqual( y, right.y, tolerance ) &&
-				   Utility.RealEqual( z, right.z, tolerance );
+			return Utility.RealEqual( this.x, right.x, tolerance ) && Utility.RealEqual( this.y, right.y, tolerance ) && Utility.RealEqual( this.z, right.z, tolerance );
 		}
 
 		/// <summary>
@@ -691,9 +710,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 MidPoint( Vector3 vector )
 		{
-			return new Vector3( ( this.x + vector.x ) * 0.5f,
-				( this.y + vector.y ) * 0.5f,
-				( this.z + vector.z ) * 0.5f );
+			return new Vector3( ( this.x + vector.x ) * 0.5f, ( this.y + vector.y ) * 0.5f, ( this.z + vector.z ) * 0.5f );
 		}
 
 		/// <summary>
@@ -702,12 +719,18 @@ namespace Axiom.Math
 		/// <param name="compare"></param>
 		public void Ceil( Vector3 compare )
 		{
-			if ( compare.x > x )
-				x = compare.x;
-			if ( compare.y > y )
-				y = compare.y;
-			if ( compare.z > z )
-				z = compare.z;
+			if ( compare.x > this.x )
+			{
+				this.x = compare.x;
+			}
+			if ( compare.y > this.y )
+			{
+				this.y = compare.y;
+			}
+			if ( compare.z > this.z )
+			{
+				this.z = compare.z;
+			}
 		}
 
 		/// <summary>
@@ -717,22 +740,28 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public void Floor( Vector3 compare )
 		{
-			if ( compare.x < x )
-				x = compare.x;
-			if ( compare.y < y )
-				y = compare.y;
-			if ( compare.z < z )
-				z = compare.z;
+			if ( compare.x < this.x )
+			{
+				this.x = compare.x;
+			}
+			if ( compare.y < this.y )
+			{
+				this.y = compare.y;
+			}
+			if ( compare.z < this.z )
+			{
+				this.z = compare.z;
+			}
 		}
 
 		public bool AllComponentsLessThan( Real limit )
 		{
-			return Utility.Abs( x ) < limit && Utility.Abs( y ) < limit && Utility.Abs( z ) < limit;
+			return Utility.Abs( this.x ) < limit && Utility.Abs( this.y ) < limit && Utility.Abs( this.z ) < limit;
 		}
 
 		public bool DifferenceLessThan( Vector3 other, Real limit )
 		{
-			return Utility.Abs( x - other.x ) < limit && Utility.Abs( y - other.y ) < limit && Utility.Abs( z - other.z ) < limit;
+			return Utility.Abs( this.x - other.x ) < limit && Utility.Abs( this.y - other.y ) < limit && Utility.Abs( this.z - other.z ) < limit;
 		}
 
 		/// <summary>
@@ -744,7 +773,7 @@ namespace Axiom.Math
 		///	</remarks>
 		public Quaternion GetRotationTo( Vector3 destination )
 		{
-			return GetRotationTo( destination, Vector3.Zero );
+			return GetRotationTo( destination, Zero );
 		}
 
 		/// <summary>
@@ -764,16 +793,16 @@ namespace Axiom.Math
 
 			// Copy, since cannot modify local
 			var v0 = new Vector3( this.x, this.y, this.z );
-			var v1 = destination;
+			Vector3 v1 = destination;
 
 			// normalize both vectors 
 			v0.Normalize();
 			v1.Normalize();
 
 			// get the cross product of the vectors
-			var c = v0.Cross( v1 );
+			Vector3 c = v0.Cross( v1 );
 
-			var d = v0.Dot( v1 );
+			Real d = v0.Dot( v1 );
 
 			// If dot == 1, vectors are the same
 			if ( d >= 1.0f )
@@ -783,7 +812,7 @@ namespace Axiom.Math
 
 			if ( d < ( 1e-6f - 1.0f ) )
 			{
-				if ( fallbackAxis != Vector3.Zero )
+				if ( fallbackAxis != Zero )
 				{
 					// rotate 180 degrees about the fallback axis
 					q = Quaternion.FromAngleAxis( Utility.PI, fallbackAxis );
@@ -791,18 +820,19 @@ namespace Axiom.Math
 				else
 				{
 					// Generate an axis
-					var axis = Vector3.UnitX.Cross( this );
+					Vector3 axis = UnitX.Cross( this );
 					if ( axis.IsZeroLength ) // pick another if colinear
-						axis = Vector3.UnitY.Cross( this );
+					{
+						axis = UnitY.Cross( this );
+					}
 					axis.Normalize();
 					q = Quaternion.FromAngleAxis( Utility.PI, axis );
 				}
 			}
 			else
 			{
-
-				var s = Utility.Sqrt( ( 1 + d ) * 2 );
-				var inverse = 1 / s;
+				Real s = Utility.Sqrt( ( 1 + d ) * 2 );
+				Real inverse = 1 / s;
 
 				q.x = c.x * inverse;
 				q.y = c.y * inverse;
@@ -814,7 +844,7 @@ namespace Axiom.Math
 
 		public Vector3 ToNormalized()
 		{
-			var vec = this;
+			Vector3 vec = this;
 			vec.Normalize();
 			return vec;
 		}
@@ -832,12 +862,12 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			var length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+			Real length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				var inverseLength = 1.0f / length;
+				Real inverseLength = 1.0f / length;
 
 				this.x *= inverseLength;
 				this.y *= inverseLength;
@@ -857,12 +887,13 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 Reflect( Vector3 normal )
 		{
-			return this - ( 2 * this.Dot( normal ) * normal );
+			return this - ( 2 * Dot( normal ) * normal );
 		}
 
 		#endregion
 
 		#region Public properties
+
 		public bool IsZero
 		{
 			get
@@ -878,7 +909,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var sqlen = ( x * x ) + ( y * y ) + ( z * z );
+				Real sqlen = ( this.x * this.x ) + ( this.y * this.y ) + ( this.z * this.z );
 				return ( sqlen < ( 1e-06f * 1e-06f ) );
 			}
 		}
@@ -1041,7 +1072,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+			return this.x.GetHashCode() ^ this.y.GetHashCode() ^ this.z.GetHashCode();
 		}
 
 		/// <summary>
@@ -1072,13 +1103,13 @@ namespace Axiom.Math
 		{
 			// the format is "Vector3(x, y, z)"
 			if ( !vector.StartsWith( "Vector3(" ) )
+			{
 				throw new FormatException();
+			}
 
-			var vals = vector.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
+			string[] vals = vector.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
-			return new Vector3( Real.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ),
-								Real.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ),
-								Real.Parse( vals[ 2 ].Trim(), CultureInfo.InvariantCulture ) );
+			return new Vector3( Real.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ), Real.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ), Real.Parse( vals[ 2 ].Trim(), CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,29 +23,31 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
 using Axiom.Collections;
-using Axiom.Configuration;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
+using Axiom.Math;
 using Axiom.Media;
 
 using Tao.OpenGl;
-using Axiom.Math;
-using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
@@ -63,6 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Collection of extensions supported by the current hardware.
 		/// </summary>
 		private static List<String> _extensionList;
+
 		/// <summary>
 		///		Gets a collection of strings listing all the available extensions.
 		/// </summary>
@@ -82,6 +86,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///		OpenGL version string.
 		/// </summary>
 		private static string _glVersion;
+
 		/// <summary>
 		///		Version string for the current OpenGL driver.
 		/// </summary>
@@ -101,6 +106,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Vendor of the current hardware.
 		/// </summary>
 		private static string _vendor;
+
 		/// <summary>
 		///		Name of the vendor for the current video hardware.
 		/// </summary>
@@ -120,6 +126,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Name of the video card in use.
 		/// </summary>
 		private static string _videoCard;
+
 		/// <summary>
 		///		Name/brand of the current video hardware.
 		/// </summary>
@@ -139,6 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Config options.
 		/// </summary>
 		protected ConfigOptionMap _engineConfig = new ConfigOptionMap();
+
 		/// <summary>
 		///		Gets the options currently set by the current GL implementation.
 		/// </summary>
@@ -146,7 +154,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _engineConfig;
+				return this._engineConfig;
 			}
 		}
 
@@ -155,6 +163,22 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion Fields and Properties
 
 		#region Methods
+
+		public virtual bool SupportsPBuffers
+		{
+			get
+			{
+				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
+			}
+		}
+
+		public int DisplayMonitorCount
+		{
+			get
+			{
+				return Screen.AllScreens.Length;
+			}
+		}
 
 		/// <summary>
 		///		Handy check to see if the current GL version is at least what is supplied.
@@ -174,7 +198,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public bool CheckExtension( string extention )
 		{
 			// check if the extension is supported
-            return _extensionList.Contains("GL_" + extention) || _extensionList.Contains(extention);
+			return _extensionList.Contains( "GL_" + extention ) || _extensionList.Contains( extention );
 		}
 
 		/// <summary>
@@ -215,30 +239,12 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public virtual bool SupportsPBuffers
-		{
-			get
-			{
-				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
-			}
-		}
-
-	    public int DisplayMonitorCount
-	    {
-	        get
-	        {
-	            return Screen.AllScreens.Length;
-	        }
-	    }
-
-	    public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
+		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
 		{
 			return null;
 		}
 
 		#endregion Methods
-
-		#region Abstract Members
 
 		/// <summary>
 		/// Start anything speciual
@@ -288,11 +294,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
 
-		#endregion Abstract Members
-
-	    public string ValidateConfig()
-	    {
-	        return "";
-	    }
+		public string ValidateConfig()
+		{
+			return "";
+		}
 	}
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,16 +40,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 // <ogresynchronization>
 //     <file name="KeyFrame.h"   revision="1.9" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 //     <file name="KeyFrame.cpp" revision="1.13" lastUpdated="10/15/2005" lastUpdatedBy="DanielH" />
 // </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Animating
@@ -64,13 +70,14 @@ namespace Axiom.Animating
 		#region Protected member variables
 
 		/// <summary>
-		///		Time of this keyframe.
-		/// </summary>
-		protected float time;
-		/// <summary>
 		///		Animation track that this key frame belongs to.
 		/// </summary>
 		protected AnimationTrack parentTrack;
+
+		/// <summary>
+		///		Time of this keyframe.
+		/// </summary>
+		protected float time;
 
 		#endregion Protected member variables
 
@@ -99,11 +106,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return time;
+				return this.time;
 			}
 			set
 			{
-				time = value;
+				this.time = value;
 			}
 		}
 
@@ -113,7 +120,6 @@ namespace Axiom.Animating
 	/// <summary>Specialised KeyFrame which stores any numeric value.</summary>
 	public class NumericKeyFrame : KeyFrame
 	{
-
 		#region Protected member variables
 
 		/// <summary>
@@ -132,9 +138,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public NumericKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time )
-		{
-		}
+			: base( parent, time ) { }
 
 		#endregion
 
@@ -147,7 +151,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return numericValue;
+				return this.numericValue;
 			}
 			set
 			{
@@ -171,7 +175,7 @@ namespace Axiom.Animating
 						}
 					}
 				}
-				numericValue = value;
+				this.numericValue = value;
 			}
 		}
 
@@ -181,21 +185,22 @@ namespace Axiom.Animating
 	/// <summary>Specialised KeyFrame which stores a full transform.</summary>
 	public class TransformKeyFrame : KeyFrame
 	{
-
 		#region Protected member variables
+
+		/// <summary>
+		///		Rotation at this keyframe.
+		/// </summary>
+		protected Quaternion rotation;
+
+		/// <summary>
+		///		Scale factor at this keyframe.
+		/// </summary>
+		protected Vector3 scale;
 
 		/// <summary>
 		///		Translation at this keyframe.
 		/// </summary>
 		protected Vector3 translate;
-		/// <summary>
-		///		Scale factor at this keyframe.
-		/// </summary>
-		protected Vector3 scale;
-		/// <summary>
-		///		Rotation at this keyframe.
-		/// </summary>
-		protected Quaternion rotation;
 
 		#endregion Protected member variables
 
@@ -210,9 +215,9 @@ namespace Axiom.Animating
 		public TransformKeyFrame( AnimationTrack parent, float time )
 			: base( parent, time )
 		{
-			translate = new Vector3();
-			scale = Vector3.UnitScale;
-			rotation = Quaternion.Identity;
+			this.translate = new Vector3();
+			this.scale = Vector3.UnitScale;
+			this.rotation = Quaternion.Identity;
 		}
 
 		#endregion Constructors
@@ -228,11 +233,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return rotation;
+				return this.rotation;
 			}
 			set
 			{
-				rotation = value;
+				this.rotation = value;
 
 				if ( parentTrack != null )
 				{
@@ -240,6 +245,7 @@ namespace Axiom.Animating
 				}
 			}
 		}
+
 		/// <summary>
 		///		Sets the scaling factor applied by this keyframe to the animable
 		///		object at its time index.
@@ -250,11 +256,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return scale;
+				return this.scale;
 			}
 			set
 			{
-				scale = value;
+				this.scale = value;
 
 				if ( parentTrack != null )
 				{
@@ -274,11 +280,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return translate;
+				return this.translate;
 			}
 			set
 			{
-				translate = value;
+				this.translate = value;
 
 				if ( parentTrack != null )
 				{
@@ -297,6 +303,12 @@ namespace Axiom.Animating
 	/// </remarks>
 	public struct PoseRef
 	{
+		/// <summary>
+		///     Influence level of the linked pose. 
+		///     1.0 for full influence (full offset), 0.0 for no influence.
+		/// </summary>
+		public float influence;
+
 		/// <summary>The linked pose index.</summary>
 		///	<remarks>
 		///	    The Mesh contains all poses for all vertex data in one list, both 
@@ -305,11 +317,6 @@ namespace Axiom.Animating
 		///	    linked pose.
 		/// </remarks>
 		public ushort poseIndex;
-		/// <summary>
-		///     Influence level of the linked pose. 
-		///     1.0 for full influence (full offset), 0.0 for no influence.
-		/// </summary>
-		public float influence;
 
 		public PoseRef( ushort poseIndex, float influence )
 		{
@@ -321,11 +328,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return poseIndex;
+				return this.poseIndex;
 			}
 			set
 			{
-				poseIndex = value;
+				this.poseIndex = value;
 			}
 		}
 
@@ -333,18 +340,17 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return influence;
+				return this.influence;
 			}
 			set
 			{
-				influence = value;
+				this.influence = value;
 			}
 		}
 	}
 
 	public class VertexMorphKeyFrame : KeyFrame
 	{
-
 		#region Protected member variables
 
 		/// <summary>
@@ -363,9 +369,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexMorphKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time )
-		{
-		}
+			: base( parent, time ) { }
 
 		#endregion Constructors
 
@@ -378,11 +382,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return vertexBuffer;
+				return this.vertexBuffer;
 			}
 			set
 			{
-				vertexBuffer = value;
+				this.vertexBuffer = value;
 			}
 		}
 
@@ -392,7 +396,6 @@ namespace Axiom.Animating
 
 	public class VertexPoseKeyFrame : KeyFrame
 	{
-
 		#region Protected member variables
 
 		/// <summary>
@@ -411,9 +414,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexPoseKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time )
-		{
-		}
+			: base( parent, time ) { }
 
 		#endregion Constructors
 
@@ -426,7 +427,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return poseRefs;
+				return this.poseRefs;
 			}
 		}
 
@@ -437,7 +438,7 @@ namespace Axiom.Animating
 		/// <summary>Add a new pose reference.</summary>
 		public void AddPoseReference( ushort poseIndex, float influence )
 		{
-			poseRefs.Add( new PoseRef( poseIndex, influence ) );
+			this.poseRefs.Add( new PoseRef( poseIndex, influence ) );
 		}
 
 		/// <summary>Update the influence of a pose reference.</summary>
@@ -454,11 +455,11 @@ namespace Axiom.Animating
 		/// <param name="poseIndex">The pose index (not the index of the reference)</param>
 		public void RemovePoseReference( ushort poseIndex )
 		{
-			for ( var i = 0; i < poseRefs.Count; i++ )
+			for ( int i = 0; i < this.poseRefs.Count; i++ )
 			{
-				if ( poseRefs[ i ].poseIndex == poseIndex )
+				if ( this.poseRefs[ i ].poseIndex == poseIndex )
 				{
-					poseRefs.RemoveAt( i );
+					this.poseRefs.RemoveAt( i );
 					return;
 				}
 			}
@@ -467,7 +468,7 @@ namespace Axiom.Animating
 		/// <summary>Remove all pose references.</summary>
 		public void RemoveAllPoseReferences()
 		{
-			poseRefs.Clear();
+			this.poseRefs.Clear();
 		}
 
 		#endregion Public Methods

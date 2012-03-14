@@ -1,12 +1,12 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -16,9 +16,9 @@ namespace Axiom.Demos
 	/// 	Sample class which shows the classic spinning triangle, done in the Axiom engine.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class Tutorial1 : TechDemo
+	public class Tutorial1 : TechDemo
 	{
 		#region Methods
 
@@ -28,33 +28,35 @@ namespace Axiom.Demos
 		{
 			//base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
-			color.x += evt.TimeSinceLastFrame * .6f;
-			if ( color.x > 1 )
-				color.x = 0;
+			this.color.x += evt.TimeSinceLastFrame * .6f;
+			if ( this.color.x > 1 )
+			{
+				this.color.x = 0;
+			}
 
-			color.y += evt.TimeSinceLastFrame * .6f;
-			if ( color.y > 1 )
-				color.y = 0;
+			this.color.y += evt.TimeSinceLastFrame * .6f;
+			if ( this.color.y > 1 )
+			{
+				this.color.y = 0;
+			}
 
-			color.z += evt.TimeSinceLastFrame * .6f;
-			if ( color.z > 1 )
-				color.z = 0;
+			this.color.z += evt.TimeSinceLastFrame * .6f;
+			if ( this.color.z > 1 )
+			{
+				this.color.z = 0;
+			}
 		}
 
 		public override void CreateScene()
 		{
 			// create a 3d line
-			Line3d line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
+			var line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
 
-			Triangle tri = new Triangle(
-				new Vector3( -25, 0, 0 ),
-				new Vector3( 0, 50, 0 ),
-				new Vector3( 25, 0, 0 ),
-				ColorEx.Red,
-				ColorEx.Blue,
-				ColorEx.Green );
+			var tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red, ColorEx.Blue, ColorEx.Green );
 
 			// create a node for the line
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
@@ -69,11 +71,11 @@ namespace Axiom.Demos
 
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
-			NodeRotationControllerValue rotate = new NodeRotationControllerValue( triNode, Vector3.UnitY );
-			NodeRotationControllerValue rotate2 = new NodeRotationControllerValue( lineNode, Vector3.UnitZ );
+			var rotate = new NodeRotationControllerValue( triNode, Vector3.UnitY );
+			var rotate2 = new NodeRotationControllerValue( lineNode, Vector3.UnitZ );
 
 			// the multiply controller function will multiply the source controller value by the specified value each frame.
-			MultipyControllerFunction func = new MultipyControllerFunction( 50 );
+			var func = new MultipyControllerFunction( 50 );
 
 			// create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
 			// used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which
@@ -99,8 +101,8 @@ namespace Axiom.Demos
 	public class Line3d : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		/// <summary>
 		///
@@ -133,10 +135,12 @@ namespace Axiom.Demos
 			decl.AddElement( COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
 			// create a vertex buffer for the position
-			HardwareVertexBuffer buffer =
-				HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			Vector3[] pos = new Vector3[] { startPoint, endPoint };
+			var pos = new[]
+                      {
+                          startPoint, endPoint
+                      };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, pos, true );
@@ -149,7 +153,10 @@ namespace Axiom.Demos
 
 			int colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
-			int[] colors = new int[] { colorValue, colorValue };
+			var colors = new[]
+                         {
+                             colorValue, colorValue
+                         };
 
 			// write the data to the position buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -159,17 +166,25 @@ namespace Axiom.Demos
 
 			// MATERIAL
 			// grab a copy of the BaseWhite material for our use
-			Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
+			var material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
 			material = material.Clone( "LineMat" );
 			// disable lighting to vertex colors are used
 			material.Lighting = false;
 			// set culling to none so the triangle is drawn 2 sided
 			material.CullingMode = CullingMode.None;
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the line
-			this.box = new AxisAlignedBox( startPoint, endPoint );
+			box = new AxisAlignedBox( startPoint, endPoint );
+		}
+
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return 0;
+			}
 		}
 
 		/// <summary>
@@ -187,15 +202,6 @@ namespace Axiom.Demos
 
 			return dist.LengthSquared;
 		}
-
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
-		}
-
 	}
 
 
@@ -205,8 +211,8 @@ namespace Axiom.Demos
 	public class Triangle : SimpleRenderable
 	{
 		// constants for buffer source bindings
-		const int POSITION = 0;
-		const int COLOR = 1;
+		private const int POSITION = 0;
+		private const int COLOR = 1;
 
 		/// <summary>
 		///
@@ -235,7 +241,10 @@ namespace Axiom.Demos
 			// create a vertex buffer for the position
 			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
-			Vector3[] positions = new Vector3[] { v1, v2, v3 };
+			var positions = new[]
+                            {
+                                v1, v2, v3
+                            };
 
 			// write the positions to the buffer
 			buffer.WriteData( 0, buffer.Size, positions, true );
@@ -250,11 +259,10 @@ namespace Axiom.Demos
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's
 			// preferred packed int format
-			int[] colors = new int[] {
-				Root.Instance.RenderSystem.ConvertColor(c1),
-				Root.Instance.RenderSystem.ConvertColor(c2),
-				Root.Instance.RenderSystem.ConvertColor(c3)
-			};
+			var colors = new[]
+                         {
+                             Root.Instance.RenderSystem.ConvertColor( c1 ), Root.Instance.RenderSystem.ConvertColor( c2 ), Root.Instance.RenderSystem.ConvertColor( c3 )
+                         };
 
 			// write the colors to the color buffer
 			buffer.WriteData( 0, buffer.Size, colors, true );
@@ -264,7 +272,7 @@ namespace Axiom.Demos
 
 			// MATERIAL
 			// grab a copy of the BaseWhite material for our use
-			Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
+			var material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
 			material = material.Clone( "TriMat" );
 
 			// disable lighting to vertex colors are used
@@ -274,11 +282,19 @@ namespace Axiom.Demos
 
 			materialName = "TriMat";
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the tri
 			// TODO: not right, but good enough for now
-			this.box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
+			box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
+		}
+
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return 0;
+			}
 		}
 
 		/// <summary>
@@ -295,14 +311,6 @@ namespace Axiom.Demos
 			dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
-		}
-
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return 0;
-			}
 		}
 	}
 }

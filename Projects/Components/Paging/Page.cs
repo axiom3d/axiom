@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,20 +19,26 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -48,37 +55,30 @@ namespace Axiom.Components.Paging
 		public static ushort WORKQUEUE_PREPARE_REQUEST = 1;
 		public static ushort WORKQUEUE_CHANGECOLLECTION_REQUEST = 3;
 
-		protected PageID mID;
-		protected PagedWorldSection mParent;
-		protected int mFrameLastHeld;
 		protected List<PageContentCollection> mContentCollections = new List<PageContentCollection>();
 		protected SceneNode mDebugNode;
 		protected bool mDeferredProcessInProgress;
+		protected int mFrameLastHeld;
+		protected PageID mID;
 		protected bool mModified;
+		protected PagedWorldSection mParent;
 		protected ushort workQueueChannel;
 
-		protected struct PageData
-		{
-			public List<PageContentCollection> collectionsToAdd;
-		};
-
 		/// <summary>
-		/// Structure for holding background page requests
+		/// Default Constructor
 		/// </summary>
-		protected struct PageRequest
+		[OgreVersion( 1, 7, 2 )]
+		public Page( PageID pageID, PagedWorldSection parent )
 		{
-			public Page srcPage;
+			this.mID = pageID;
+			this.mParent = parent;
 
-			public PageRequest( Page p )
-			{
-				srcPage = p;
-			}
-		};
-
-		protected struct PageResponse
-		{
-			public PageData pageData;
-		};
+			WorkQueue wq = Root.Instance.WorkQueue;
+			this.workQueueChannel = wq.GetChannel( "Axiom/Page" );
+			wq.AddRequestHandler( this.workQueueChannel, this );
+			wq.AddResponseHandler( this.workQueueChannel, this );
+			Touch();
+		}
 
 		/// <summary>
 		/// Get the ID of this page, unique withing the parent
@@ -86,7 +86,10 @@ namespace Axiom.Components.Paging
 		public virtual PageID PageID
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mID; }
+			get
+			{
+				return this.mID;
+			}
 		}
 
 		/// <summary>
@@ -95,7 +98,10 @@ namespace Axiom.Components.Paging
 		public virtual PagedWorldSection ParentSection
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mParent; }
+			get
+			{
+				return this.mParent;
+			}
 		}
 
 		/// <summary>
@@ -108,13 +114,19 @@ namespace Axiom.Components.Paging
 		public virtual int FrameLastHeld
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mFrameLastHeld; }
+			get
+			{
+				return this.mFrameLastHeld;
+			}
 		}
 
 		public PageManager Manager
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mParent.Manager; }
+			get
+			{
+				return this.mParent.Manager;
+			}
 		}
 
 		/// <summary>
@@ -123,7 +135,10 @@ namespace Axiom.Components.Paging
 		public virtual int ContentCollectionCount
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mContentCollections.Count; }
+			get
+			{
+				return this.mContentCollections.Count;
+			}
 		}
 
 		/// <summary>
@@ -132,7 +147,10 @@ namespace Axiom.Components.Paging
 		public virtual List<PageContentCollection> ContentCollectionList
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mContentCollections; }
+			get
+			{
+				return this.mContentCollections;
+			}
 		}
 
 		/// <summary>
@@ -149,13 +167,15 @@ namespace Axiom.Components.Paging
 				int nextFrame = Root.Instance.NextFrameNumber;
 				int dist;
 
-				if ( nextFrame < mFrameLastHeld )
+				if ( nextFrame < this.mFrameLastHeld )
 				{
 					// we must have wrapped around
-					dist = mFrameLastHeld + ( int.MaxValue - mFrameLastHeld );
+					dist = this.mFrameLastHeld + ( int.MaxValue - this.mFrameLastHeld );
 				}
 				else
-					dist = nextFrame - mFrameLastHeld;
+				{
+					dist = nextFrame - this.mFrameLastHeld;
+				}
 
 				// 5-frame tolerance
 				return dist <= 5;
@@ -165,7 +185,10 @@ namespace Axiom.Components.Paging
 		public SceneManager SceneManager
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mParent.SceneManager; }
+			get
+			{
+				return this.mParent.SceneManager;
+			}
 		}
 
 		/// <summary>
@@ -176,50 +199,131 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mDeferredProcessInProgress;
+				return this.mDeferredProcessInProgress;
 			}
 		}
 
-		/// <summary>
-		/// Default Constructor
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public Page( PageID pageID, PagedWorldSection parent )
-			: base()
-		{
-			mID = pageID;
-			mParent = parent;
+		#region IRequestHandler Members
 
-			WorkQueue wq = Root.Instance.WorkQueue;
-			workQueueChannel = wq.GetChannel( "Axiom/Page" );
-			wq.AddRequestHandler( workQueueChannel, this );
-			wq.AddResponseHandler( workQueueChannel, this );
-			Touch();
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
+		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		{
+			var preq = (PageRequest)req.Data;
+			// only deal with own requests
+			// we do this because if we delete a page we want any pending tasks to be discarded
+			if ( preq.srcPage != this )
+			{
+				return false;
+			}
+			else
+			{
+				return !req.Aborted;
+			}
 		}
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
+		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		{
+			// Background thread (maybe)
+
+			var preq = (PageRequest)req.Data;
+			// only deal with own requests; we shouldn't ever get here though
+			if ( preq.srcPage != this )
+			{
+				return null;
+			}
+
+			var res = new PageResponse();
+			res.pageData = new PageData();
+			WorkQueue.Response response;
+			try
+			{
+				PrepareImpl( ref res.pageData );
+				response = new WorkQueue.Response( req, true, res );
+			}
+			catch ( Exception e )
+			{
+				// oops
+				response = new WorkQueue.Response( req, false, res, e.Message );
+			}
+
+			return response;
+		}
+
+		#endregion
+
+		#region IResponseHandler Members
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
+		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
+		{
+			var preq = (PageRequest)res.Request.Data;
+			// only deal with own requests
+			// we do this because if we delete a page we want any pending tasks to be discarded
+			if ( preq.srcPage != this )
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		/// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
+		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
+		{
+			// Main thread
+			var pres = (PageResponse)res.Data;
+			var preq = (PageRequest)res.Request.Data;
+
+			// only deal with own requests
+			if ( preq.srcPage != this )
+			{
+				return;
+			}
+
+			// final loading behaviour
+			if ( res.Succeeded )
+			{
+				Utility.Swap( ref this.mContentCollections, ref pres.pageData.collectionsToAdd );
+				LoadImpl();
+			}
+
+			this.mDeferredProcessInProgress = false;
+		}
+
+		#endregion
 
 		[OgreVersion( 1, 7, 2, "~Page" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					WorkQueue wq = Root.Instance.WorkQueue;
-					wq.RemoveRequestHandler( workQueueChannel, this );
-					wq.RemoveResponseHandler( workQueueChannel, this );
+					wq.RemoveRequestHandler( this.workQueueChannel, this );
+					wq.RemoveResponseHandler( this.workQueueChannel, this );
 
 					DestroyAllContentCollections();
 
-					if ( mDebugNode != null )
+					if ( this.mDebugNode != null )
 					{
 						// destroy while we have the chance
-						for ( int i = 0; i < mDebugNode.ObjectCount; ++i )
-							mParent.SceneManager.DestroyMovableObject( mDebugNode.GetObject( i ) );
+						for ( int i = 0; i < this.mDebugNode.ObjectCount; ++i )
+						{
+							this.mParent.SceneManager.DestroyMovableObject( this.mDebugNode.GetObject( i ) );
+						}
 
-						mDebugNode.RemoveAndDestroyAllChildren();
-						mParent.SceneManager.DestroySceneNode( mDebugNode );
+						this.mDebugNode.RemoveAndDestroyAllChildren();
+						this.mParent.SceneManager.DestroySceneNode( this.mDebugNode );
 
-						mDebugNode = null;
+						this.mDebugNode = null;
 					}
 				}
 			}
@@ -233,12 +337,14 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void DestroyAllContentCollections()
 		{
-			foreach ( var i in mContentCollections )
+			foreach ( PageContentCollection i in this.mContentCollections )
 			{
 				if ( !i.IsDisposed )
+				{
 					i.SafeDispose();
+				}
 			}
-			mContentCollections.Clear();
+			this.mContentCollections.Clear();
 		}
 
 		/// <summary>
@@ -247,7 +353,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Touch()
 		{
-			mFrameLastHeld = Root.Instance.NextFrameNumber;
+			this.mFrameLastHeld = Root.Instance.NextFrameNumber;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -255,21 +361,23 @@ namespace Axiom.Components.Paging
 		{
 			//now do the real loading
 			if ( stream.ReadChunkBegin( CHUNK_ID, CHUNK_VERSION, "Page" ) == null )
+			{
 				return false;
+			}
 
 			// pageID check (we should know the ID we're expecting)
 			int storedID = -1;
 			stream.Read( out storedID );
-			if ( mID.Value != storedID )
+			if ( this.mID.Value != storedID )
 			{
-				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}", mID.Value, storedID );
+				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}", this.mID.Value, storedID );
 				stream.UndoReadChunk( CHUNK_ID );
 				return false;
 			}
 
 			PageManager mgr = Manager;
 
-			while ( stream.NextChunkId == Page.CHUNK_CONTENTCOLLECTION_DECLARATION_ID )
+			while ( stream.NextChunkId == CHUNK_CONTENTCOLLECTION_DECLARATION_ID )
 			{
 				Chunk collChunk = stream.ReadChunkBegin();
 				string factoryName;
@@ -286,19 +394,19 @@ namespace Axiom.Components.Paging
 					}
 					else
 					{
-						LogManager.Instance.Write( "Error preparing PageContentCollection type: {0} in {1}", factoryName, this.ToString() );
+						LogManager.Instance.Write( "Error preparing PageContentCollection type: {0} in {1}", factoryName, ToString() );
 						collFact.DestroyInstance( ref collInst );
 					}
 				}
 				else
 				{
-					LogManager.Instance.Write( "Unsupported PageContentCollection type: {0} in {1}", factoryName, this.ToString() );
+					LogManager.Instance.Write( "Unsupported PageContentCollection type: {0} in {1}", factoryName, ToString() );
 					//skip
 					stream.ReadChunkEnd( collChunk.id );
 				}
 			}
 
-			mModified = false;
+			this.mModified = false;
 			return true;
 		}
 
@@ -309,13 +417,13 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Load( bool synchronous )
 		{
-			if ( !mDeferredProcessInProgress )
+			if ( !this.mDeferredProcessInProgress )
 			{
 				DestroyAllContentCollections();
-				PageRequest req = new PageRequest( this );
-				mDeferredProcessInProgress = true;
+				var req = new PageRequest( this );
+				this.mDeferredProcessInProgress = true;
 
-				Root.Instance.WorkQueue.AddRequest( workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
+				Root.Instance.WorkQueue.AddRequest( this.workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
 			}
 		}
 
@@ -332,14 +440,16 @@ namespace Axiom.Components.Paging
 		protected virtual bool PrepareImpl( ref PageData dataToPopulate )
 		{
 			// Procedural preparation
-			if ( mParent.PrepareProcedualePage( this ) )
+			if ( this.mParent.PrepareProcedualePage( this ) )
+			{
 				return true;
+			}
 			else
 			{
 				// Background loading
 				string filename = GenerateFilename();
 
-				var stream = Root.Instance.OpenFileStream( filename, Manager.PageResourceGroup );
+				Stream stream = Root.Instance.OpenFileStream( filename, Manager.PageResourceGroup );
 				var ser = new StreamSerializer( stream );
 				return PrepareImpl( ser, ref dataToPopulate );
 			}
@@ -348,9 +458,11 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual void LoadImpl()
 		{
-			mParent.LoadProcedualPage( this );
-			foreach ( var i in mContentCollections )
+			this.mParent.LoadProcedualPage( this );
+			foreach ( PageContentCollection i in this.mContentCollections )
+			{
 				i.Load();
+			}
 		}
 
 		/// <summary>
@@ -369,7 +481,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Save( string fileName )
 		{
-			var stream = Root.Instance.CreateFileStream( fileName, Manager.PageResourceGroup, true );
+			Stream stream = Root.Instance.CreateFileStream( fileName, Manager.PageResourceGroup, true );
 			var ser = new StreamSerializer( stream );
 			Save( ser );
 		}
@@ -383,10 +495,10 @@ namespace Axiom.Components.Paging
 			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
 
 			//page id
-			stream.Write( mID.Value );
+			stream.Write( this.mID.Value );
 
 			//content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( PageContentCollection coll in this.mContentCollections )
 			{
 				//declaration
 				stream.WriteChunkBegin( CHUNK_CONTENTCOLLECTION_DECLARATION_ID );
@@ -397,7 +509,7 @@ namespace Axiom.Components.Paging
 			}
 
 			stream.WriteChunkEnd( CHUNK_ID );
-			mModified = false;
+			this.mModified = false;
 		}
 
 		/// <summary>
@@ -409,8 +521,10 @@ namespace Axiom.Components.Paging
 			UpdateDebugDisplay();
 
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( PageContentCollection coll in this.mContentCollections )
+			{
 				coll.FrameStart( timeSinceLastFrame );
+			}
 		}
 
 		/// <summary>
@@ -420,8 +534,10 @@ namespace Axiom.Components.Paging
 		public virtual void FrameEnd( Real timeElapsed )
 		{
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( PageContentCollection coll in this.mContentCollections )
+			{
 				coll.FrameEnd( timeElapsed );
+			}
 		}
 
 		/// <summary>
@@ -431,8 +547,10 @@ namespace Axiom.Components.Paging
 		public virtual void NotifyCamera( Camera cam )
 		{
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( PageContentCollection coll in this.mContentCollections )
+			{
 				coll.NotifyCamera( cam );
+			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -442,14 +560,18 @@ namespace Axiom.Components.Paging
 			if ( dbglvl > 0 )
 			{
 				// update debug display
-				if ( mDebugNode != null )
-					mDebugNode = mParent.SceneManager.RootSceneNode.CreateChildSceneNode();
+				if ( this.mDebugNode != null )
+				{
+					this.mDebugNode = this.mParent.SceneManager.RootSceneNode.CreateChildSceneNode();
+				}
 
-				mParent.Strategy.UpdateDebugDisplay( this, mDebugNode );
-				mDebugNode.IsVisible = true;
+				this.mParent.Strategy.UpdateDebugDisplay( this, this.mDebugNode );
+				this.mDebugNode.IsVisible = true;
 			}
-			else if ( mDebugNode != null )
-				mDebugNode.IsVisible = false;
+			else if ( this.mDebugNode != null )
+			{
+				this.mDebugNode.IsVisible = false;
+			}
 		}
 
 		/// <summary>
@@ -463,7 +585,7 @@ namespace Axiom.Components.Paging
 		{
 			PageContentCollection coll = Manager.CreateContentCollection( typeName );
 			coll.NotifyAttached( this );
-			mContentCollections.Add( coll );
+			this.mContentCollections.Add( coll );
 			return coll;
 		}
 
@@ -475,8 +597,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void DestroyContentCollection( ref PageContentCollection coll )
 		{
-			if ( mContentCollections.Contains( coll ) )
-				mContentCollections.Remove( coll );
+			if ( this.mContentCollections.Contains( coll ) )
+			{
+				this.mContentCollections.Remove( coll );
+			}
 
 			Manager.DestroyContentCollection( ref coll );
 		}
@@ -487,109 +611,62 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual PageContentCollection GetContentCollection( int index )
 		{
-			System.Diagnostics.Debug.Assert( index < mContentCollections.Count );
-			return mContentCollections[ index ];
+			Debug.Assert( index < this.mContentCollections.Count );
+			return this.mContentCollections[ index ];
 		}
 
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "Page( ID: {0}, section: {1}, world: {2})", mID, ParentSection.Name, ParentSection.World.Name );
+			return string.Format( "Page( ID: {0}, section: {1}, world: {2})", this.mID, ParentSection.Name, ParentSection.World.Name );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected string GenerateFilename()
 		{
 			var str = new StringBuilder();
-			if ( mParent != null )
-				str.AppendFormat( "{0}_{1}", mParent.World.Name, mParent.Name );
+			if ( this.mParent != null )
+			{
+				str.AppendFormat( "{0}_{1}", this.mParent.World.Name, this.mParent.Name );
+			}
 
-			str.AppendFormat( "{0}.page", mID.Value.ToString( "X" ).PadLeft( 8, '0' ) );
+			str.AppendFormat( "{0}.page", this.mID.Value.ToString( "X" ).PadLeft( 8, '0' ) );
 			return str.ToString();
 		}
 
-		#region IRequestHandler Members
+		#region Nested type: PageData
 
-		[OgreVersion( 1, 7, 2 )]
-		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
-		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		protected struct PageData
 		{
-			PageRequest preq = (PageRequest)req.Data;
-			// only deal with own requests
-			// we do this because if we delete a page we want any pending tasks to be discarded
-			if ( preq.srcPage != this )
-				return false;
-			else
-				return !req.Aborted;
-		}
+			public List<PageContentCollection> collectionsToAdd;
+		};
 
-		[OgreVersion( 1, 7, 2 )]
-		/// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
-		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
+		#endregion
+
+		#region Nested type: PageRequest
+
+		/// <summary>
+		/// Structure for holding background page requests
+		/// </summary>
+		protected struct PageRequest
 		{
-			// Background thread (maybe)
+			public Page srcPage;
 
-			PageRequest preq = (PageRequest)req.Data;
-			// only deal with own requests; we shouldn't ever get here though
-            if ( preq.srcPage != this )
-                return null;
-
-			PageResponse res = new PageResponse();
-			res.pageData = new PageData();
-			WorkQueue.Response response;
-			try
+			public PageRequest( Page p )
 			{
-				PrepareImpl( ref res.pageData );
-				response = new WorkQueue.Response( req, true, res );
+				this.srcPage = p;
 			}
-			catch ( Exception e )
-			{
-				// oops
-				response = new WorkQueue.Response( req, false, res, e.Message );
-			}
+		};
 
-			return response;
-		}
+		#endregion
 
-		#endregion IRequestHandler Members
+		#region Nested type: PageResponse
 
-		#region IResponseHandler Members
-
-		[OgreVersion( 1, 7, 2 )]
-		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
-		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
+		protected struct PageResponse
 		{
-			PageRequest preq = (PageRequest)res.Request.Data;
-			// only deal with own requests
-			// we do this because if we delete a page we want any pending tasks to be discarded
-			if ( preq.srcPage != this )
-				return false;
-			else
-				return true;
-		}
+			public PageData pageData;
+		};
 
-		[OgreVersion( 1, 7, 2 )]
-		/// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
-		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
-		{
-			// Main thread
-			PageResponse pres = (PageResponse)res.Data;
-			PageRequest preq = (PageRequest)res.Request.Data;
-
-			// only deal with own requests
-			if ( preq.srcPage != this )
-				return;
-
-			// final loading behaviour
-			if ( res.Succeeded )
-			{
-                Utility.Swap<List<PageContentCollection>>( ref mContentCollections, ref pres.pageData.collectionsToAdd );
-				LoadImpl();
-			}
-
-			mDeferredProcessInProgress = false;
-		}
-
-		#endregion IResponseHandler Members
+		#endregion
 	};
 }

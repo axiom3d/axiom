@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,20 +29,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -54,8 +56,8 @@ namespace Axiom.Math
 	{
 		#region Fields
 
-		internal Vector3 origin;
 		internal Vector3 direction;
+		internal Vector3 origin;
 
 		#endregion
 
@@ -66,8 +68,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Ray()
 		{
-			origin = Vector3.Zero;
-			direction = Vector3.UnitZ;
+			this.origin = Vector3.Zero;
+			this.direction = Vector3.UnitZ;
 		}
 
 		/// <summary>
@@ -90,9 +92,12 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public Vector3 GetPoint( Real t )
+		public Vector3 this[ Real t ]
 		{
-			return origin + ( direction * t );
+			get
+			{
+				return this.origin + ( this.direction * t );
+			}
 		}
 
 		/// <summary>
@@ -100,12 +105,9 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public Vector3 this[ Real t ]
+		public Vector3 GetPoint( Real t )
 		{
-			get
-			{
-				return origin + ( direction * t );
-			}
+			return this.origin + ( this.direction * t );
 		}
 
 		#endregion Methods
@@ -193,12 +195,11 @@ namespace Axiom.Math
 		{
 			return obj is Ray && this == (Ray)obj;
 		}
+
 		public override int GetHashCode()
 		{
-			return direction.GetHashCode() ^ origin.GetHashCode();
+			return this.direction.GetHashCode() ^ this.origin.GetHashCode();
 		}
-
-
 
 		#endregion Operator Overloads
 
@@ -211,11 +212,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return origin;
+				return this.origin;
 			}
 			set
 			{
-				origin = value;
+				this.origin = value;
 			}
 		}
 
@@ -229,11 +230,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return direction;
+				return this.direction;
 			}
 			set
 			{
-				direction = value;
+				this.direction = value;
 			}
 		}
 

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,16 +44,27 @@ namespace Axiom.Scripting.Compiler.AST
 	/// <summary>
 	/// This abstract node represents a variable assignment
 	/// </summary>
-	class VariableGetAbstractNode : AbstractNode
+	internal class VariableGetAbstractNode : AbstractNode
 	{
 		public string Name;
 
 		public VariableGetAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+			: base( parent ) { }
 
 		#region AbstractNode Implementation
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return this.Name;
+			}
+			set
+			{
+				this.Name = value;
+			}
+		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -57,21 +72,8 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new VariableGetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
+			node.Name = this.Name;
 			return node;
-		}
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return Name;
-			}
-			set
-			{
-				Name = value;
-			}
 		}
 
 		#endregion AbstractNode Implementation

@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,12 +44,12 @@ using Axiom.Utilities;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	class GLFBOMultiRenderTarget : MultiRenderTarget
+	internal class GLFBOMultiRenderTarget : MultiRenderTarget
 	{
 		#region Fields and Properties
 
-		protected GLFBORTTManager _manager;
 		protected GLFrameBufferObject _fbo;
+		protected GLFBORTTManager _manager;
 
 		#endregion Fields and Properties
 
@@ -71,11 +75,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format
 		/// </remarks>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			GLFrameBufferObject fbObject = (GLFrameBufferObject)target[ "FBO" ];
+			var fbObject = (GLFrameBufferObject)target[ "FBO" ];
 			Proclaim.NotNull( fbObject );
 
 			this._fbo.BindSurface( attachment, fbObject.SurfaceDesc );
@@ -83,19 +87,19 @@ namespace Axiom.RenderSystems.OpenGL
 			// Initialize?
 
 			// Set width and height
-			this.width = this._fbo.Width;
-			this.height = this._fbo.Height;
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			this._fbo.UnbindSurface( attachment );
-			this.width = this._fbo.Width;
-			this.height = this._fbo.Height;
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		#endregion Methods

@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,104 +19,108 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+using Axiom.Framework.Properties;
+
 using SWF = System.Windows.Forms;
 
 
 namespace Axiom.Framework.Exceptions
 {
-
 	/// <summary>
 	/// 
 	/// </summary>
-	public class WinFormErrorDialog : SWF.Form, SWF.IMessageFilter, IErrorDialog
+	public class WinFormErrorDialog : Form, IMessageFilter, IErrorDialog
 	{
-		protected SWF.Label lblHeader;
-		protected SWF.TextBox txtMsg;
-		protected SWF.Label lblFooter;
-		protected SWF.Button cmdClose;
+		protected Button cmdClose;
+		protected Label lblFooter;
+		protected Label lblHeader;
+		protected TextBox txtMsg;
 
 		public WinFormErrorDialog()
 		{
-			this.SetStyle( SWF.ControlStyles.DoubleBuffer, true );
+			SetStyle( ControlStyles.DoubleBuffer, true );
 			InitializeComponent();
 		}
 
 		private void InitializeComponent()
 		{
-			this.lblHeader = new System.Windows.Forms.Label();
-			this.txtMsg = new System.Windows.Forms.TextBox();
-			this.lblFooter = new System.Windows.Forms.Label();
-			this.cmdClose = new System.Windows.Forms.Button();
-			this.SuspendLayout();
+			this.lblHeader = new Label();
+			this.txtMsg = new TextBox();
+			this.lblFooter = new Label();
+			this.cmdClose = new Button();
+			SuspendLayout();
 			// 
 			// lblHeader
 			// 
-			this.lblHeader.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.lblHeader.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			this.lblHeader.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.lblHeader.Location = new System.Drawing.Point( 12, 9 );
+			this.lblHeader.FlatStyle = FlatStyle.Flat;
+			this.lblHeader.Font = new Font( "Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, ( ( 0 ) ) );
+			this.lblHeader.ForeColor = Color.FromArgb( ( ( ( ( 25 ) ) ) ), ( ( ( ( 35 ) ) ) ), ( ( ( ( 75 ) ) ) ) );
+			this.lblHeader.Location = new Point( 12, 9 );
 			this.lblHeader.Name = "lblHeader";
-			this.lblHeader.Size = new System.Drawing.Size( 422, 40 );
+			this.lblHeader.Size = new Size( 422, 40 );
 			this.lblHeader.TabIndex = 9;
-			this.lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.lblHeader.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Header;
+			this.lblHeader.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblHeader.Text = Resources.Axiom_Error_Header;
 			// 
 			// txtMsg
 			// 
-			this.txtMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.txtMsg.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			this.txtMsg.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.txtMsg.Location = new System.Drawing.Point( 12, 49 );
+			this.txtMsg.BorderStyle = BorderStyle.Fixed3D;
+			this.txtMsg.Font = new Font( "Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, ( ( 0 ) ) );
+			this.txtMsg.ForeColor = Color.FromArgb( ( ( ( ( 25 ) ) ) ), ( ( ( ( 35 ) ) ) ), ( ( ( ( 75 ) ) ) ) );
+			this.txtMsg.Location = new Point( 12, 49 );
 			this.txtMsg.Name = "txtMsg";
-			this.txtMsg.Size = new System.Drawing.Size( 422, 161 );
+			this.txtMsg.Size = new Size( 422, 161 );
 			this.txtMsg.TabIndex = 9;
 			this.txtMsg.Multiline = true;
-			this.txtMsg.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			this.txtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.txtMsg.TextAlign = HorizontalAlignment.Left;
+			this.txtMsg.ScrollBars = ScrollBars.Both;
 			this.txtMsg.ReadOnly = true;
 			// 
 			// lblFooter
 			// 
-			this.lblFooter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.lblFooter.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			this.lblFooter.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ), ( (int)( ( (byte)( 75 ) ) ) ) );
-			this.lblFooter.Location = new System.Drawing.Point( 12, 220 );
+			this.lblFooter.FlatStyle = FlatStyle.Flat;
+			this.lblFooter.Font = new Font( "Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, ( ( 0 ) ) );
+			this.lblFooter.ForeColor = Color.FromArgb( ( ( ( ( 25 ) ) ) ), ( ( ( ( 35 ) ) ) ), ( ( ( ( 75 ) ) ) ) );
+			this.lblFooter.Location = new Point( 12, 220 );
 			this.lblFooter.Name = "lblFooter";
-			this.lblFooter.Size = new System.Drawing.Size( 422, 86 );
+			this.lblFooter.Size = new Size( 422, 86 );
 			this.lblFooter.TabIndex = 9;
-			this.lblFooter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.lblFooter.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Footer;
+			this.lblFooter.TextAlign = ContentAlignment.MiddleLeft;
+			this.lblFooter.Text = Resources.Axiom_Error_Footer;
 			// 
 			// cmdClose
 			// 
-			this.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.cmdClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.cmdClose.Location = new System.Drawing.Point( 172, 313 );
+			this.cmdClose.Anchor = AnchorStyles.Bottom;
+			this.cmdClose.DialogResult = DialogResult.OK;
+			this.cmdClose.Location = new Point( 172, 313 );
 			this.cmdClose.Name = "cmdClose";
-			this.cmdClose.Size = new System.Drawing.Size( 80, 26 );
+			this.cmdClose.Size = new Size( 80, 26 );
 			this.cmdClose.TabIndex = 11;
 			this.cmdClose.Text = "&Close";
 			// 
 			// WinFormErrorDialog
 			// 
-			this.ClientSize = new System.Drawing.Size( 446, 351 );
-			this.ControlBox = false;
-			this.Controls.Add( this.cmdClose );
-			this.Controls.Add( this.lblHeader );
-			this.Controls.Add( this.lblFooter );
-			this.Controls.Add( this.txtMsg );
-			this.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "WinFormErrorDialog";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Title;
-			this.ResumeLayout( false );
-
+			ClientSize = new Size( 446, 351 );
+			ControlBox = false;
+			Controls.Add( this.cmdClose );
+			Controls.Add( this.lblHeader );
+			Controls.Add( this.lblFooter );
+			Controls.Add( this.txtMsg );
+			Font = new Font( "Tahoma", 9F, FontStyle.Regular, GraphicsUnit.Point, ( ( 0 ) ) );
+			FormBorderStyle = FormBorderStyle.FixedToolWindow;
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "WinFormErrorDialog";
+			StartPosition = FormStartPosition.CenterScreen;
+			Text = Resources.Axiom_Error_Title;
+			ResumeLayout( false );
 		}
 
 		#region Implementation of IMessageFilter
@@ -128,15 +133,14 @@ namespace Axiom.Framework.Exceptions
 		/// </returns>
 		/// <param name="msg">The message to be dispatched. You cannot modify this message.</param>
 		/// <filterpriority>1</filterpriority>
-		public bool PreFilterMessage( ref SWF.Message msg )
+		public bool PreFilterMessage( ref Message msg )
 		{
 			const int WM_KEYDOWN = 0x100;
 
-			SWF.Keys keyCode = (SWF.Keys)(int)msg.WParam & SWF.Keys.KeyCode;
-			if ( ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Return )
-				|| ( msg.Msg == WM_KEYDOWN && keyCode == SWF.Keys.Escape ) )
+			Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
+			if ( ( msg.Msg == WM_KEYDOWN && keyCode == Keys.Return ) || ( msg.Msg == WM_KEYDOWN && keyCode == Keys.Escape ) )
 			{
-				this.Close();
+				Close();
 				return true;
 			}
 			return false;
@@ -154,10 +158,9 @@ namespace Axiom.Framework.Exceptions
 		{
 			this.txtMsg.Text = exception.Message + Environment.NewLine + exception.StackTrace;
 			this.cmdClose.Select();
-			this.ShowDialog();
+			ShowDialog();
 		}
 
 		#endregion
-
 	}
 }

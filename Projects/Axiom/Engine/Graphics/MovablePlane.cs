@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,18 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 using Axiom.Core;
 using Axiom.Math;
@@ -42,17 +44,12 @@ using Axiom.Math;
 
 namespace Axiom.Graphics
 {
-
 	public interface IDerivedPlaneProvider
 	{
-
 		/// <summary>
 		///		Get the derived plane as transformed by its parent node.
 		/// </summary>
-		Plane DerivedPlane
-		{
-			get;
-		}
+		Plane DerivedPlane { get; }
 	}
 
 	/// <summary>
@@ -70,33 +67,37 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
+		///		Underlying plane representation.
+		/// </summary>
+		/// <remarks>
+		///		Ogre uses multiple inheritance for this purpose - bah! ;)
+		/// </remarks>
+		protected Plane containedPlane;
+
+		/// <summary>
 		///		Plane as transformed by it's parent node.
 		/// </summary>
-		protected Plane derivedPlane = new Plane();
-		/// <summary>
-		///		Cached translation vector.
-		/// </summary>
-		protected Vector3 lastTranslate;
-		/// <summary>
-		///		Cached rotation.
-		/// </summary>
-		protected Quaternion lastRotate;
-		/// <summary>
-		///		Bounding box.
-		/// </summary>
-		protected AxisAlignedBox nullBB = AxisAlignedBox.Null;
+		protected Plane derivedPlane;
+
 		/// <summary>
 		///		Flag for whether changes have been made to this planes position/rotation.
 		/// </summary>
 		protected bool isDirty;
 
 		/// <summary>
-		///		Underlying plane representation.
+		///		Cached rotation.
 		/// </summary>
-		/// <remarks>
-		///		Ogre uses multiple inheritance for this purpose - bah! ;)
-		/// </remarks>
-		protected Plane containedPlane = new Plane();
+		protected Quaternion lastRotate;
+
+		/// <summary>
+		///		Cached translation vector.
+		/// </summary>
+		protected Vector3 lastTranslate;
+
+		/// <summary>
+		///		Bounding box.
+		/// </summary>
+		protected AxisAlignedBox nullBB = AxisAlignedBox.Null;
 
 		#endregion Fields
 
@@ -109,21 +110,20 @@ namespace Axiom.Graphics
 		public MovablePlane( string name )
 			: base( name )
 		{
-			lastTranslate = Vector3.Zero;
-			lastRotate = Quaternion.Identity;
-			isDirty = true;
+			this.lastTranslate = Vector3.Zero;
+			this.lastRotate = Quaternion.Identity;
+			this.isDirty = true;
 		}
 
 		#endregion Constructor
 
 		#region Properties
 
-
 		public Plane Plane
 		{
 			get
 			{
-				return containedPlane;
+				return this.containedPlane;
 			}
 		}
 
@@ -134,11 +134,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return containedPlane.D;
+				return this.containedPlane.D;
 			}
 			set
 			{
-				containedPlane.D = value;
+				this.containedPlane.D = value;
 			}
 		}
 
@@ -149,11 +149,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return containedPlane.Normal;
+				return this.containedPlane.Normal;
 			}
 			set
 			{
-				containedPlane.Normal = value;
+				this.containedPlane.Normal = value;
 			}
 		}
 
@@ -166,45 +166,40 @@ namespace Axiom.Graphics
 			{
 				if ( parentNode != null )
 				{
-					if ( isDirty ||
-						!( parentNode.DerivedOrientation == lastRotate &&
-						parentNode.DerivedPosition == lastTranslate ) )
+					if ( this.isDirty || !( parentNode.DerivedOrientation == this.lastRotate && parentNode.DerivedPosition == this.lastTranslate ) )
 					{
-
 						// store off parent position/orientation
-						lastRotate = parentNode.DerivedOrientation;
-						lastTranslate = parentNode.DerivedPosition;
+						this.lastRotate = parentNode.DerivedOrientation;
+						this.lastTranslate = parentNode.DerivedPosition;
 
 						// rotate normal
-						derivedPlane.Normal = lastRotate * containedPlane.Normal;
+						this.derivedPlane.Normal = this.lastRotate * this.containedPlane.Normal;
 
 						// d remains the same in rotation, since rotation happens first
-						derivedPlane.D = containedPlane.D;
+						this.derivedPlane.D = this.containedPlane.D;
 
 						// add on the effect of the translation (project onto new normal)
-						derivedPlane.D -= derivedPlane.Normal.Dot( lastTranslate );
+						this.derivedPlane.D -= this.derivedPlane.Normal.Dot( this.lastTranslate );
 
-						isDirty = false;
+						this.isDirty = false;
 					}
 				}
 				else
 				{
-					return containedPlane;
+					return this.containedPlane;
 				}
 
-				return derivedPlane;
+				return this.derivedPlane;
 			}
 		}
 
 		#endregion Properties
 
-		#region SceneObject Members
-
-		public override Axiom.Math.AxisAlignedBox BoundingBox
+		public override AxisAlignedBox BoundingBox
 		{
 			get
 			{
-				return nullBB;
+				return this.nullBB;
 			}
 		}
 
@@ -225,7 +220,5 @@ namespace Axiom.Graphics
 		{
 			// do nothing
 		}
-
-		#endregion SceneObject Members
 	}
 }

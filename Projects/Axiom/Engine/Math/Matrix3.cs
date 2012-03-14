@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,18 +29,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -75,16 +78,13 @@ namespace Axiom.Math
 		/// 
 		/// </summary>
 		public Real m00, m01, m02;
+
 		public Real m10, m11, m12;
 		public Real m20, m21, m22;
 
-		private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0,
-			0, 1, 0,
-			0, 0, 1 );
+		private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0, 0, 1, 0, 0, 0, 1 );
 
-		private static readonly Matrix3 zeroMatrix = new Matrix3( 0, 0, 0,
-			0, 0, 0,
-			0, 0, 0 );
+		private static readonly Matrix3 zeroMatrix = new Matrix3( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 
 		#endregion
 
@@ -93,9 +93,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Creates a new Matrix3 with all the specified parameters.
 		/// </summary>
-		public Matrix3( Real m00, Real m01, Real m02,
-			Real m10, Real m11, Real m12,
-			Real m20, Real m21, Real m22 )
+		public Matrix3( Real m00, Real m01, Real m02, Real m10, Real m11, Real m12, Real m20, Real m21, Real m22 )
 		{
 			this.m00 = m00;
 			this.m01 = m01;
@@ -116,15 +114,15 @@ namespace Axiom.Math
 		/// <param name="zAxis"></param>
 		public Matrix3( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
-			m00 = xAxis.x;
-			m01 = yAxis.x;
-			m02 = zAxis.x;
-			m10 = xAxis.y;
-			m11 = yAxis.y;
-			m12 = zAxis.y;
-			m20 = xAxis.z;
-			m21 = yAxis.z;
-			m22 = zAxis.z;
+			this.m00 = xAxis.x;
+			this.m01 = yAxis.x;
+			this.m02 = zAxis.x;
+			this.m10 = xAxis.y;
+			this.m11 = yAxis.y;
+			this.m12 = zAxis.y;
+			this.m20 = xAxis.z;
+			this.m21 = yAxis.z;
+			this.m22 = zAxis.z;
 		}
 
 		#endregion
@@ -163,9 +161,7 @@ namespace Axiom.Math
 		/// <returns>A transposed Matrix.</returns>
 		public Matrix3 Transpose()
 		{
-			return new Matrix3( m00, m10, m20,
-				m01, m11, m21,
-				m02, m12, m22 );
+			return new Matrix3( this.m00, this.m10, this.m20, this.m01, this.m11, this.m21, this.m02, this.m12, this.m22 );
 		}
 
 		/// <summary>
@@ -188,10 +184,12 @@ namespace Axiom.Math
 #else
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
-					return new Vector3( *( pM + col ),        //m[0,col], 
-										*( pM + 3 + col ),    //m[1,col], 
-										*( pM + 6 + col ) );  //m[2,col]);
+				fixed ( Real* pM = &this.m00 )
+				{
+					return new Vector3( *( pM + col ), //m[0,col], 
+										*( pM + 3 + col ), //m[1,col], 
+										*( pM + 6 + col ) ); //m[2,col]);
+				}
 			}
 #endif
 		}
@@ -232,8 +230,8 @@ namespace Axiom.Math
 		/// <param name="roll"></param>
 		public void FromEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
 		{
-			var cos = Utility.Cos( yaw );
-			var sin = Utility.Sin( yaw );
+			Real cos = Utility.Cos( yaw );
+			Real sin = Utility.Sin( yaw );
 			var xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
 			cos = Utility.Cos( pitch );
@@ -253,18 +251,18 @@ namespace Axiom.Math
 			Real rAngle;
 			Real pAngle;
 
-			pAngle = Utility.ASin( m01 );
+			pAngle = Utility.ASin( this.m01 );
 			if ( pAngle < Utility.PI / 2 )
 			{
 				if ( pAngle > -Utility.PI / 2 )
 				{
-					yAngle = Utility.ATan2( m21, m11 );
-					rAngle = Utility.ATan2( m02, m00 );
+					yAngle = Utility.ATan2( this.m21, this.m11 );
+					rAngle = Utility.ATan2( this.m02, this.m00 );
 				}
 				else
 				{
 					// WARNING. Not a unique solution.
-					var fRmY = (Real)Utility.ATan2( -m20, m22 );
+					Real fRmY = Utility.ATan2( -this.m20, this.m22 );
 					rAngle = 0.0f; // any angle works
 					yAngle = rAngle - fRmY;
 				}
@@ -272,7 +270,7 @@ namespace Axiom.Math
 			else
 			{
 				// WARNING. Not a unique solution.
-				var fRpY = Utility.ATan2( -m20, m22 );
+				Real fRpY = Utility.ATan2( -this.m20, this.m22 );
 				rAngle = 0.0f; // any angle works
 				yAngle = fRpY - rAngle;
 			}
@@ -303,7 +301,6 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 operator *( Matrix3 left, Matrix3 right )
 		{
-
 			var result = new Matrix3();
 
 			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
@@ -466,9 +463,9 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			for ( var row = 0; row < 3; row++ )
+			for ( int row = 0; row < 3; row++ )
 			{
-				for ( var col = 0; col < 3; col++ )
+				for ( int col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] + right[ row, col ];
 				}
@@ -498,9 +495,9 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			for ( var row = 0; row < 3; row++ )
+			for ( int row = 0; row < 3; row++ )
 			{
-				for ( var col = 0; col < 3; col++ )
+				for ( int col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] - right[ row, col ];
 				}
@@ -549,12 +546,8 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static bool operator ==( Matrix3 left, Matrix3 right )
 		{
-			if (
-				left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 &&
-				left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 &&
-				left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
+			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
 			{
-
 				return true;
 			}
 
@@ -607,11 +600,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
+					{
 						return *( pM + ( ( 3 * row ) + col ) );
+					}
 				}
 #endif
-            }
+			}
 			set
 			{
 				//Debug.Assert((row >= 0 && row < 3) && (col >= 0 && col < 3), "Attempt to access Matrix3 indexer out of bounds.");
@@ -647,11 +642,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
+					{
 						*( pM + ( ( 3 * row ) + col ) ) = value;
+					}
 				}
 #endif
-            }
+			}
 		}
 
 		/// <summary>
@@ -680,13 +677,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						return *( pMatrix + index );
 					}
 				}
 #endif
-            }
+			}
 			set
 			{
 				//Debug.Assert(index >= 0 && index <= 8, "Attempt to access Matrix3 linear indexer out of bounds.");
@@ -707,13 +704,13 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
 				}
 #endif
-            }
+			}
 		}
 
 		#endregion
@@ -724,14 +721,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var cofactor00 = m11 * m22 - m12 * m21;
-				var cofactor10 = m12 * m20 - m10 * m22;
-				var cofactor20 = m10 * m21 - m11 * m20;
+				Real cofactor00 = this.m11 * this.m22 - this.m12 * this.m21;
+				Real cofactor10 = this.m12 * this.m20 - this.m10 * this.m22;
+				Real cofactor20 = this.m10 * this.m21 - this.m11 * this.m20;
 
-				var result =
-					m00 * cofactor00 +
-					m01 * cofactor10 +
-					m02 * cofactor20;
+				Real result = this.m00 * cofactor00 + this.m01 * cofactor10 + this.m02 * cofactor20;
 
 				return result;
 			}
@@ -750,9 +744,9 @@ namespace Axiom.Math
 		{
 			var builder = new StringBuilder();
 
-			builder.AppendFormat( " | {0} {1} {2} |\n", m00, m01, m02 );
-			builder.AppendFormat( " | {0} {1} {2} |\n", m10, m11, m12 );
-			builder.AppendFormat( " | {0} {1} {2} |", m20, m21, m22 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", this.m00, this.m01, this.m02 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", this.m10, this.m11, this.m12 );
+			builder.AppendFormat( " | {0} {1} {2} |", this.m20, this.m21, this.m22 );
 
 			return builder.ToString();
 		}
@@ -773,18 +767,20 @@ namespace Axiom.Math
 		           (int) (m10) ^ (int) (m11) ^ (int) (m12) ^ 
 		           (int) (m20) ^ (int) (m21) ^ (int) (m22);
 #else
-			var hashCode = 0;
+			int hashCode = 0;
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed ( Real* pM = &this.m00 )
 				{
-					for ( var i = 0; i < 9; i++ )
+					for ( int i = 0; i < 9; i++ )
+					{
 						hashCode ^= (int)( *( pM + i ) );
+					}
 				}
 			}
-            return hashCode;
+			return hashCode;
 #endif
-        }
+		}
 
 		/// <summary>
 		///		Compares this Matrix to another object.  This should be done because the 
@@ -798,6 +794,5 @@ namespace Axiom.Math
 		}
 
 		#endregion
-
 	}
 }

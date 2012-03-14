@@ -1,6 +1,7 @@
-﻿using System;
-using Axiom.Core;
-using Math = Axiom.Math;
+﻿using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
+
 namespace Axiom.Samples.MousePicking
 {
 	public class SelectionRectangle : ManualObject
@@ -92,7 +93,7 @@ namespace Axiom.Samples.MousePicking
 			 * rectangle)
 			 */
 			Clear();
-			Begin( "", Axiom.Graphics.OperationType.LineStrip );
+			Begin( "", OperationType.LineStrip );
 			Position( left, top, -1 );
 			Position( right, top, -1 );
 			Position( right, bottom, -1 );
@@ -116,12 +117,13 @@ namespace Axiom.Samples.MousePicking
 			 */
 			BoundingBox.IsInfinite = true;
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="topLeft"></param>
 		/// <param name="bottomRight"></param>
-		public void SetCorners( Math.Vector2 topLeft, Math.Vector2 bottomRight )
+		public void SetCorners( Vector2 topLeft, Vector2 bottomRight )
 		{
 			SetCorners( topLeft.x, topLeft.y, bottomRight.x, bottomRight.y );
 		}

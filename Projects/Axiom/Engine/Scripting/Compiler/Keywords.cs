@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,28 +23,29 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
 	/// This enum defines the integer ids for keywords this compiler handles
-	enum Keywords : uint
+	internal enum Keywords : uint
 	{
 		ID_MATERIAL = 3,
 		ID_VERTEX_PROGRAM,
@@ -237,7 +239,7 @@ namespace Axiom.Scripting.Compiler
 		ID_SQUARE,
 		ID_SAWTOOTH,
 		ID_INVERSE_SAWTOOTH,
-        ID_PULSE_WIDTH_MODULATION,
+		ID_PULSE_WIDTH_MODULATION,
 		ID_TRANSFORM,
 		ID_BINDING_TYPE,
 		ID_VERTEX,

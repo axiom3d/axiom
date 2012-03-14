@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,24 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: GpuProgramParameters.cs 1747 2009-08-28 19:55:22Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 
-using Axiom.Controllers;
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Core.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -58,21 +58,7 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		/// <summary>
-		/// Name of this strategy.
-		/// </summary>
-		private string _name;
-		public string Name
-		{
-			get
-			{
-				return this._name;
-			}
-			protected set
-			{
-				this._name = value;
-			}
-		}
+		public string Name { get; protected set; }
 
 		#endregion Fields and Properties
 
@@ -84,7 +70,7 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		public LodStrategy( string name )
 		{
-			_name = name;
+			this.Name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -124,13 +110,15 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedAscending( LodValueList values )
 		{
-			for ( var i = 0; i < values.Count; i++ )
+			for ( int i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
 				{
 					if ( values[ i + 1 ] < prev )
+					{
 						return false;
+					}
 				}
 			}
 			return true;
@@ -143,13 +131,15 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedDescending( LodValueList values )
 		{
-			for ( var i = 0; i < values.Count; i++ )
+			for ( int i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
 				{
 					if ( values[ i + 1 ] > prev )
+					{
 						return false;
+					}
 				}
 			}
 			return true;
@@ -182,10 +172,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value > value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( meshLodUsageList.Count - 1 );
 		}
@@ -199,10 +191,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value < value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( meshLodUsageList.Count - 1 );
 		}
@@ -212,10 +206,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] > value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( materialLodValueList.Count - 1 );
 		}
@@ -225,10 +221,12 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] < value )
+				{
 					return (ushort)( index - 1 );
+				}
 			}
 			return (ushort)( materialLodValueList.Count - 1 );
 		}
@@ -240,10 +238,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Get the value of the first (highest) level of detail.
 		/// </summary>
-		public abstract Real BaseValue
-		{
-			get;
-		}
+		public abstract Real BaseValue { get; }
 
 		/// <summary>
 		/// Transform lod bias so it only needs to be multiplied by the lod value.
@@ -276,26 +271,42 @@ namespace Axiom.Core
 	/// </summary>
 	public class LodUsageSortGreater : IComparer<MeshLodUsage>
 	{
+		#region IComparer<MeshLodUsage> Members
+
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
 			if ( mesh1.Value > mesh2.Value )
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
+
+		#endregion
 	}
+
 	/// <summary>
 	/// Small helper class to sort a MeshLodUsageList
 	/// </summary>
 	public class LodUsageSortLess : IComparer<MeshLodUsage>
 	{
+		#region IComparer<MeshLodUsage> Members
+
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
 			if ( mesh1.Value < mesh2.Value )
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
-	}
 
+		#endregion
+	}
 }

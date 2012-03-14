@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
-using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;
 
@@ -55,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-            throw new AxiomException("This needs upgrading");
+			throw new AxiomException( "This needs upgrading" );
 			programType = Gl.GL_FRAGMENT_SHADER_ATI;
 			programId = Gl.glGenFragmentShadersATI( 1 );
 		}
@@ -64,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		protected override void LoadFromSource()
 		{
-			PixelShader assembler = new PixelShader();
+			var assembler = new PixelShader();
 
 			//bool testError = assembler.RunTests();
 
@@ -80,9 +82,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 				Gl.glEndFragmentShaderATI();
 			}
-			else
-			{
-			}
+			else { }
 		}
 
 		public override void Unload()
@@ -92,7 +92,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// delete the fragment shader for good
 			Gl.glDeleteFragmentShaderATI( programId );
 		}
-
 
 		#endregion Implementation of GpuProgram
 
@@ -104,28 +103,28 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			Gl.glBindFragmentShaderATI( programId );
 		}
 
-        [OgreVersion( 1, 7, 2 )]
-        public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+		[OgreVersion( 1, 7, 2 )]
+		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
-            // only supports float constants
-            var floatStruct = parms.FloatLogicalBufferStruct;
+			// only supports float constants
+			GpuProgramParameters.GpuLogicalBufferStruct floatStruct = parms.FloatLogicalBufferStruct;
 
-            foreach ( var i in floatStruct.Map )
-            {
-                if ( ( i.Value.Variability & mask ) != 0 )
-                {
-                    var logicalIndex = i.Key;
-                    var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
-                    // Iterate over the params, set in 4-float chunks (low-level)
-                    for ( var j = 0; j < i.Value.CurrentSize; j += 4 )
-                    {
-                        Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin() );
-                        pFloat.UnPin();
-                        pFloat += 4;
-                        ++logicalIndex;
-                    }
-                }
-            }
+			foreach ( var i in floatStruct.Map )
+			{
+				if ( ( i.Value.Variability & mask ) != 0 )
+				{
+					int logicalIndex = i.Key;
+					BufferBase pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
+					// Iterate over the params, set in 4-float chunks (low-level)
+					for ( int j = 0; j < i.Value.CurrentSize; j += 4 )
+					{
+						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin() );
+						pFloat.UnPin();
+						pFloat += 4;
+						++logicalIndex;
+					}
+				}
+			}
 		}
 
 		public override void Unbind()
@@ -154,5 +153,4 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		#endregion
 	}
-
 }

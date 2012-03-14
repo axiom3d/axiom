@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -53,20 +55,25 @@ namespace Axiom.Graphics
 		#region Member variables
 
 		/// <summary>
+		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
+		///		buffer containing indices into the vertices stored here. 
+		/// </summary>
+		public IndexData indexData;
+
+		/// <summary>
+		/// The number of instances for the render operation - this option is supported 
+		/// in only a part of the render systems.
+		/// </summary>
+		public int numberOfInstances;
+
+		/// <summary>
 		///		Type of operation to perform.
 		/// </summary>
 		public OperationType operationType;
 
 		/// <summary>
-		///		Contains a list of hardware vertex buffers for this complete render operation.
 		/// </summary>
-		public VertexData vertexData;
-
-		/// <summary>
-		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
-		///		buffer containing indices into the vertices stored here. 
-		/// </summary>
-		public IndexData indexData;
+		public bool useGlobalInstancingVertexBufferIsAvailable;
 
 		/// <summary>
 		///		Specifies whether or not a list of indices should be used when rendering the vertices in
@@ -74,15 +81,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool useIndices;
 
-	    /// <summary>
-	    /// The number of instances for the render operation - this option is supported 
-	    /// in only a part of the render systems.
-	    /// </summary>
-	    public int numberOfInstances;
-
-        /// <summary>
-        /// </summary>
-	    public bool useGlobalInstancingVertexBufferIsAvailable;
+		/// <summary>
+		///		Contains a list of hardware vertex buffers for this complete render operation.
+		/// </summary>
+		public VertexData vertexData;
 
 		#endregion
 
@@ -93,40 +95,44 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderOperation()
 		{
-		    numberOfInstances = 1;
+			this.numberOfInstances = 1;
 		}
 
 		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.vertexData != null)
-                    {
-                        if (!this.vertexData.IsDisposed)
-                            this.vertexData.Dispose();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.vertexData != null )
+					{
+						if ( !this.vertexData.IsDisposed )
+						{
+							this.vertexData.Dispose();
+						}
 
-                        this.vertexData = null;
-                    }
+						this.vertexData = null;
+					}
 
-                    if (this.indexData != null)
-                    {
-                        if (!this.indexData.IsDisposed)
-                            this.indexData.Dispose();
+					if ( this.indexData != null )
+					{
+						if ( !this.indexData.IsDisposed )
+						{
+							this.indexData.Dispose();
+						}
 
-                        this.indexData = null;
-                    }
-                }
-            }
+						this.indexData = null;
+					}
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 	}
 }

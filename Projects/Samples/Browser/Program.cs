@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,24 +19,22 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Globalization;
-using System.Security.Permissions;
 using System.Threading;
-#if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
-using Axiom.Core;
+
 using Axiom.Framework.Exceptions;
+#if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
+
 #endif
 
 namespace Axiom.Samples
 {
 #if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
-	static class Program
+	internal static class Program
 	{
 		/// <summary>
 		/// The main entry point for the application.
@@ -43,13 +42,13 @@ namespace Axiom.Samples
 #if !(XBOX || XBOX360)
 		[STAThread]
 #endif
-		static void Main()
+		private static void Main()
 		{
 			try
 			{
 #if !(XBOX || XBOX360)
 				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
+				using ( var sb = new SampleBrowser() )
 #else
 				using (SampleBrowser sb = new Xna.SampleBrowser())
 #endif
@@ -66,7 +65,6 @@ namespace Axiom.Samples
 				Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
 #endif
 			}
-
 		}
 	}
 #endif

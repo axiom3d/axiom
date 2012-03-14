@@ -27,18 +27,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
+
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
 
@@ -46,25 +46,29 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
-    [Export(typeof(IPlugin))]
+	[Export( typeof( IPlugin ) )]
 	public class OctreeZonePlugin : IPlugin
 	{
+		private OctreeZoneFactory mOctreeZoneFactory;
+		private TerrainZoneFactory mTerrainZoneFactory;
+
+		#region IPlugin Members
+
 		public void Initialize()
 		{
-			mTerrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
-			mOctreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
+			this.mTerrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
+			this.mOctreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
 
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( mTerrainZoneFactory );
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( mOctreeZoneFactory );
+			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mTerrainZoneFactory );
+			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mOctreeZoneFactory );
 		}
 
 		public void Shutdown()
 		{
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( mOctreeZoneFactory );
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( mTerrainZoneFactory );
+			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mOctreeZoneFactory );
+			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mTerrainZoneFactory );
 		}
 
-		OctreeZoneFactory mOctreeZoneFactory;
-		TerrainZoneFactory mTerrainZoneFactory;
+		#endregion
 	}
 }

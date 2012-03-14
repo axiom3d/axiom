@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -35,30 +39,37 @@ using Axiom.Core;
 
 namespace Axiom.Components.Paging
 {
-    /// <summary>
-    /// Factory class for SimplePageContentCollection
-    /// </summary>
-    public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
-    {
-        [OgreVersion( 1, 7, 2 )]
-        public static string FACTORY_NAME = "Simple";
+	/// <summary>
+	/// Factory class for SimplePageContentCollection
+	/// </summary>
+	public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
+	{
+		[OgreVersion( 1, 7, 2 )]
+		public static string FACTORY_NAME = "Simple";
 
-        public string Name
-        {
-            [OgreVersion( 1, 7, 2 )]
-            get { return FACTORY_NAME; }
-        }
+		#region IPageContentCollectionFactory Members
 
-        [OgreVersion( 1, 7, 2 )]
-        public PageContentCollection CreateInstance()
-        {
-            return new SimplePageContentCollection( this );
-        }
+		public string Name
+		{
+			[OgreVersion( 1, 7, 2 )]
+			get
+			{
+				return FACTORY_NAME;
+			}
+		}
 
-        [OgreVersion( 1, 7, 2 )]
-        public void DestroyInstance( ref PageContentCollection c )
-        {
-            c.SafeDispose();
-        }
-    };
+		[OgreVersion( 1, 7, 2 )]
+		public PageContentCollection CreateInstance()
+		{
+			return new SimplePageContentCollection( this );
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		public void DestroyInstance( ref PageContentCollection c )
+		{
+			c.SafeDispose();
+		}
+
+		#endregion
+	};
 }

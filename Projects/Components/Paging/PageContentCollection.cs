@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,13 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -54,10 +58,10 @@ namespace Axiom.Components.Paging
 		public static ushort CHUNK_VERSION = 1;
 
 		#region - fields -
-		
+
 		protected IPageContentCollectionFactory mCreator;
 		protected Page mParent;
-		
+
 		#endregion - fields -
 
 		#region - properties -
@@ -65,7 +69,10 @@ namespace Axiom.Components.Paging
 		public PageManager Manager
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mParent.Manager; }
+			get
+			{
+				return this.mParent.Manager;
+			}
 		}
 
 		/// <summary>
@@ -76,14 +83,17 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mCreator.Name;
+				return this.mCreator.Name;
 			}
 		}
 
 		public SceneManager SceneManager
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mParent.SceneManager; }
+			get
+			{
+				return this.mParent.SceneManager;
+			}
 		}
 
 		#endregion - properties -
@@ -93,9 +103,8 @@ namespace Axiom.Components.Paging
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public PageContentCollection( IPageContentCollectionFactory creator )
-			: base()
 		{
-			mCreator = creator;
+			this.mCreator = creator;
 		}
 
 		/// <summary>
@@ -104,55 +113,55 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void NotifyAttached( Page page )
 		{
-			mParent = page;
+			this.mParent = page;
 		}
 
-        /// <summary>
-        /// Save the collection to a stream
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void Save( StreamSerializer stream );
+		/// <summary>
+		/// Save the collection to a stream
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void Save( StreamSerializer stream );
 
 		/// <summary>
-        /// Called when the frame starts
+		/// Called when the frame starts
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void FrameStart( Real timeSinceLastFrame );
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void FrameStart( Real timeSinceLastFrame );
 
 		/// <summary>
-        /// Called when the frame ends
+		/// Called when the frame ends
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void FrameEnd( Real timeElapsed );
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void FrameEnd( Real timeElapsed );
 
 		/// <summary>
-        /// Notify a section of the current camera
+		/// Notify a section of the current camera
 		/// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void NotifyCamera( Camera camera );
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void NotifyCamera( Camera camera );
 
-        /// <summary>
-        /// Prepare data - may be called in the background
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract bool Prepare( StreamSerializer ser );
+		/// <summary>
+		/// Prepare data - may be called in the background
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract bool Prepare( StreamSerializer ser );
 
-        /// <summary>
-        /// Load - will be called in main thread
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void Load();
+		/// <summary>
+		/// Load - will be called in main thread
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void Load();
 
-        /// <summary>
-        /// UnLoad - will be called in main thread
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void UnLoad();
+		/// <summary>
+		/// UnLoad - will be called in main thread
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void UnLoad();
 
-        /// <summary>
-        /// UnPrepare date - may be called in the background
-        /// </summary>
-        [OgreVersion( 1, 7, 2 )]
-        public abstract void UnPrepare();
+		/// <summary>
+		/// UnPrepare date - may be called in the background
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void UnPrepare();
 	};
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
@@ -55,17 +58,19 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		///		Current position (as a byte offset) into the stream.
-		/// </summary>
-		protected long position;
-		/// <summary>
 		///     Pointer to the raw data we will be writing to.
 		/// </summary>
-        protected BufferBase data;
+		protected BufferBase data;
+
 		/// <summary>
 		///     Reference to the hardware buffer who owns this stream.
 		/// </summary>
 		protected HardwareBuffer owner;
+
+		/// <summary>
+		///		Current position (as a byte offset) into the stream.
+		/// </summary>
+		protected long position;
 
 		/// <summary>
 		///     Temp array.
@@ -81,7 +86,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="owner">Reference to the hardware buffer who owns this stream.</param>
 		/// <param name="data">Pointer to the raw data we will be writing to.</param>
-        internal BufferStream(HardwareBuffer owner, BufferBase data)
+		internal BufferStream( HardwareBuffer owner, BufferBase data )
 		{
 			this.data = data;
 			this.owner = owner;
@@ -98,7 +103,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return owner.Size;
+				return this.owner.Size;
 			}
 		}
 
@@ -109,16 +114,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return position;
+				return this.position;
 			}
 			set
 			{
-				if ( value > this.Length )
+				if ( value > Length )
 				{
 					throw new ArgumentException( "Position of the buffer may not exceed the length." );
 				}
 
-				position = value;
+				this.position = value;
 			}
 		}
 
@@ -137,47 +142,47 @@ namespace Axiom.Graphics
 
 		public void Write( Vector3 vec, int offset )
 		{
-			tmp[ 0 ] = vec;
+			this.tmp[ 0 ] = vec;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( Vector4 vec, int offset )
 		{
-			tmp[ 0 ] = vec;
+			this.tmp[ 0 ] = vec;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( float val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( short val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( byte val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
-		public void Write( System.Array val )
+		public void Write( Array val )
 		{
 			Write( val, 0 );
 		}
 
-		public void Write( System.Array val, int offset )
+		public void Write( Array val, int offset )
 		{
-			var count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
+			int count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
 
 			Write( val, offset, count );
 		}
@@ -188,41 +193,41 @@ namespace Axiom.Graphics
 		/// <param name="val"></param>
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
-		public void Write( System.Array val, int offset, int count )
+		public void Write( Array val, int offset, int count )
 		{
 			// can't write to unlocked buffers
-			if ( !owner.IsLocked )
+			if ( !this.owner.IsLocked )
 			{
 				throw new AxiomException( "Cannot write to a buffer stream when the buffer is not locked." );
 			}
 
-			var newOffset = position + offset;
+			long newOffset = this.position + offset;
 
 			// ensure we won't go past the end of the stream
-			if ( newOffset + count > this.Length )
+			if ( newOffset + count > Length )
 			{
 				throw new AxiomException( "Unable to write data past the end of a BufferStream" );
 			}
 
 			// pin the array so we can get a pointer to it
-		    var handle = Memory.PinObject(val);
+			BufferBase handle = Memory.PinObject( val );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
 				// get byte pointers for the source and target
-				var b = handle.ToBytePointer();
-				var dataPtr = data.ToBytePointer();
+				byte* b = handle.ToBytePointer();
+				byte* dataPtr = this.data.ToBytePointer();
 
 				// copy the data from the source to the target
-				for ( var i = 0; i < count; i++ )
+				for ( int i = 0; i < count; i++ )
 				{
-					dataPtr[ (int)(i + newOffset) ] = b[ i ];
+					dataPtr[ (int)( i + newOffset ) ] = b[ i ];
 				}
 			}
 
-            Memory.UnpinObject(val);
+			Memory.UnpinObject( val );
 		}
 
 		/// <summary>
@@ -247,34 +252,33 @@ namespace Axiom.Graphics
 			{
 				// seeks from the beginning of the stream
 				case SeekOrigin.Begin:
-					position = offset;
+					this.position = offset;
 					break;
 
 				// offset is from the current stream position
 				case SeekOrigin.Current:
-					if ( position + offset > this.Length )
+					if ( this.position + offset > Length )
 					{
 						throw new ArgumentException( "Cannot seek past the end of the stream." );
 					}
 
-					position = position + offset;
+					this.position = this.position + offset;
 					break;
 
 				// seeks backwards from the end of the stream
 				case SeekOrigin.End:
-					if ( this.Length - offset < 0 )
+					if ( Length - offset < 0 )
 					{
 						throw new ArgumentException( "Cannot seek past the beginning of the stream." );
 					}
 
-					position = this.Length - offset;
+					this.position = Length - offset;
 					break;
 			}
 
-			return position;
+			return this.position;
 		}
 
 		#endregion Methods
 	}
 }
-

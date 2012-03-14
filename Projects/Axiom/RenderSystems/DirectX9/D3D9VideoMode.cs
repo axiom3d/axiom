@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,18 +19,24 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using Axiom.Core;
+
+using SharpDX.Direct3D9;
+
 using D3D = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -43,21 +50,22 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Member variables
 
-		private D3D.DisplayMode displayMode;
+		private static int modeCount;
+		private DisplayMode displayMode;
 		private int modeNum;
-		private static int modeCount = 0;
 
 		#endregion Member variables
 
 		#region Constructors
+
 		/// <summary>
 		///	Default constructor.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9VideoMode()
 		{
-			modeNum = ++modeCount;
-			displayMode = new D3D.DisplayMode();
+			this.modeNum = ++modeCount;
+			this.displayMode = new DisplayMode();
 		}
 
 		/// <summary>
@@ -66,17 +74,17 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9VideoMode( D3D9VideoMode videoMode )
 		{
-			modeNum = ++modeCount;
-			displayMode = videoMode.displayMode;
+			this.modeNum = ++modeCount;
+			this.displayMode = videoMode.displayMode;
 		}
 
 		/// <summary>
 		///	Accepts a existing Direct3D.DisplayMode object.
 		/// </summary>
-		public D3D9VideoMode( D3D.DisplayMode videoMode )
+		public D3D9VideoMode( DisplayMode videoMode )
 		{
-			modeNum = ++modeCount;
-			displayMode = videoMode;
+			this.modeNum = ++modeCount;
+			this.displayMode = videoMode;
 		}
 
 		#endregion Constructors
@@ -84,10 +92,12 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9VideoMode" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
+				{
 					modeCount--;
+				}
 			}
 			base.dispose( disposeManagedResources );
 		}
@@ -98,7 +108,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "getDescription" )]
 		public override string ToString()
 		{
-			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+			return string.Format( "{0} x {1} @ {2}-bit color", this.displayMode.Width, this.displayMode.Height, ColorDepth );
 		}
 
 		#region Properties
@@ -111,7 +121,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode.Width;
+				return this.displayMode.Width;
 			}
 		}
 
@@ -123,7 +133,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode.Height;
+				return this.displayMode.Height;
 			}
 		}
 
@@ -131,11 +141,11 @@ namespace Axiom.RenderSystems.DirectX9
 		///	Format of this video mode.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public D3D.Format Format
+		public Format Format
 		{
 			get
 			{
-				return displayMode.Format;
+				return this.displayMode.Format;
 			}
 		}
 
@@ -148,13 +158,13 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return displayMode.RefreshRate;
+				return this.displayMode.RefreshRate;
 			}
 
 			[OgreVersion( 1, 7, 2, "increaseRefreshRate" )]
 			set
 			{
-				displayMode.RefreshRate = value;
+				this.displayMode.RefreshRate = value;
 			}
 		}
 
@@ -166,11 +176,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				var colorDepth = 16;
+				int colorDepth = 16;
 
-				if ( displayMode.Format == D3D.Format.X8R8G8B8 ||
-					displayMode.Format == D3D.Format.A8R8G8B8 ||
-					displayMode.Format == D3D.Format.R8G8B8 )
+				if ( this.displayMode.Format == Format.X8R8G8B8 || this.displayMode.Format == Format.A8R8G8B8 || this.displayMode.Format == Format.R8G8B8 )
 				{
 					colorDepth = 32;
 				}
@@ -183,11 +191,11 @@ namespace Axiom.RenderSystems.DirectX9
 		///	Gets the Direct3D.DisplayMode object associated with this video mode.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public D3D.DisplayMode DisplayMode
+		public DisplayMode DisplayMode
 		{
 			get
 			{
-				return displayMode;
+				return this.displayMode;
 			}
 		}
 
@@ -199,7 +207,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this.ToString();
+				return ToString();
 			}
 		}
 

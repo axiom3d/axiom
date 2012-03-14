@@ -1,7 +1,7 @@
 #region Namespace Declarations
 
-using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -15,15 +15,15 @@ namespace Axiom.Demos
 	/// 	Summary description for SkeletalAnimation.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class SkeletalAnimation : TechDemo
+	public class SkeletalAnimation : TechDemo
 	{
 		#region Fields
 
-		const int NumRobots = 10;
-		AnimationState[] animState = new AnimationState[ NumRobots ];
-		float[] animationSpeed = new float[ NumRobots ];
+		private const int NumRobots = 10;
+		private readonly AnimationState[] animState = new AnimationState[ NumRobots ];
+		private readonly float[] animationSpeed = new float[ NumRobots ];
 
 		#endregion Fields
 
@@ -42,13 +42,12 @@ namespace Axiom.Demos
 			{
 				string robotName = string.Format( "Robot{0}", i );
 				entity = scene.CreateEntity( robotName, "robot.mesh" );
-				SceneNode node = scene.RootSceneNode.CreateChildSceneNode(
-					new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
-				node.ScaleBy( new Vector3( 0.5f, 0.5f, 0.5f ) ) ;
+				SceneNode node = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
+				node.ScaleBy( new Vector3( 0.5f, 0.5f, 0.5f ) );
 				node.AttachObject( entity );
-				animState[ i ] = entity.GetAnimationState( "Walk" );
-				animState[ i ].IsEnabled = true;
-				animationSpeed[ i ] = Utility.RangeRandom( 0.5f, 1.5f );
+				this.animState[ i ] = entity.GetAnimationState( "Walk" );
+				this.animState[ i ].IsEnabled = true;
+				this.animationSpeed[ i ] = Utility.RangeRandom( 0.5f, 1.5f );
 			}
 
 			Light light = scene.CreateLight( "BlueLight" );
@@ -80,12 +79,14 @@ namespace Axiom.Demos
 		{
 			base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
 			for ( int i = 0; i < NumRobots; i++ )
 			{
 				// add time to the robot animation
-				animState[ i ].AddTime( evt.TimeSinceLastFrame * animationSpeed[ i ] );
+				this.animState[ i ].AddTime( evt.TimeSinceLastFrame * this.animationSpeed[ i ] );
 			}
 		}
 

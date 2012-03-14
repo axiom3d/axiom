@@ -27,17 +27,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -63,109 +62,124 @@ namespace Axiom.SceneManagers.PortalConnected
 	public class Portal
 	{
 		// Type of portal (quad, aabb, or sphere)
-		protected PORTAL_TYPE mType;
-		// Name (identifier) for the Portal - must be unique
-		protected string mName;
-		/// SceneNode (if any) this portal is attached to
-		protected SceneNode mNode;
-		///connected Zone
-		protected PCZone mTargetZone;
-		/// Zone this portal is currently owned by (in)
-		protected PCZone mCurrentHomeZone;
-		///zone to transfer this portal to
-		protected PCZone mNewHomeZone;
-		///Matching Portal in the target zone (usually in same world space
-		// as this portal, but pointing the opposite direction)
-		protected Portal mTargetPortal;
+
 		/// Corners of the portal - coordinates are relative to the sceneNode
 		// NOTE: there are 4 corners if the portal is a quad type
 		//       there are 2 corners if the portal is an AABB type
 		//       there are 2 corners if the portal is a sphere type (center and point on sphere)
 		protected Vector3[] mCorners;
+
+		/// Zone this portal is currently owned by (in)
+		protected PCZone mCurrentHomeZone;
+
+		/// Derived (world coordinates) of portal (center point)
+		protected Vector3 mDerivedCP;
+
+		/// Derived (world coordinates) Corners of the portal
+		// NOTE: there are 4 corners if the portal is a quad type
+		//       there are 2 corners if the portal is an AABB type (min corner & max corner)
+		//       there are 2 corners if the portal is a sphere type (center and point on sphere)
+		protected Vector3[] mDerivedCorners;
+
+		/// Derived (world coordinates) direction of the portal
+		// NOTE: Only applicable for a Quad portal
+		protected Vector3 mDerivedDirection;
+
+		/// Derived (world coordinates) Plane of the portal
+		// NOTE: Only applicable for a Quad portal
+		protected Plane mDerivedPlane;
+
+		/// Sphere of the portal centered on the derived CP
+		protected Sphere mDerivedSphere;
+
 		/// Direction ("Norm") of the portal -
 		// NOTE: For a Quad portal, determined by the 1st 3 corners.
 		// NOTE: For AABB & SPHERE portals, we only have "inward" or "outward" cases.
 		//       To indicate "outward", the Direction is UNIT_Z
 		//		 to indicate "inward", the Direction is NEGATIVE_UNIT_Z
 		protected Vector3 mDirection;
-		/// Radius of the sphere enclosing the portal
-		// NOTE: For aabb portals, this value is the distance from the center of the aab to a corner
-		protected Real mRadius;
-		// Local Centerpoint of the portal
+
 		protected Vector3 mLocalCP;
-		/// Derived (world coordinates) Corners of the portal
-		// NOTE: there are 4 corners if the portal is a quad type
-		//       there are 2 corners if the portal is an AABB type (min corner & max corner)
-		//       there are 2 corners if the portal is a sphere type (center and point on sphere)
-		protected Vector3[] mDerivedCorners;
-		/// Derived (world coordinates) direction of the portal
-		// NOTE: Only applicable for a Quad portal
-		protected Vector3 mDerivedDirection;
-		/// Derived (world coordinates) of portal (center point)
-		protected Vector3 mDerivedCP;
-		/// Sphere of the portal centered on the derived CP
-		protected Sphere mDerivedSphere;
-		/// Derived (world coordinates) Plane of the portal
-		// NOTE: Only applicable for a Quad portal
-		protected Plane mDerivedPlane;
+
+		/// flag indicating whether or not local values are up-to-date
+		protected bool mLocalsUpToDate;
+
+		protected string mName;
+
+		///zone to transfer this portal to
+		protected PCZone mNewHomeZone;
+
+		/// SceneNode (if any) this portal is attached to
+		protected SceneNode mNode;
+
+		private bool mOpen;
+
 		/// Previous frame portal cp (in world coordinates)
 		protected Vector3 mPrevDerivedCP;
+
 		/// Previous frame derived plane
 		// NOTE: Only applicable for a Quad portal
 		protected Plane mPrevDerivedPlane;
-		/// flag indicating whether or not local values are up-to-date
-		protected bool mLocalsUpToDate;
+
+		/// Radius of the sphere enclosing the portal
+		// NOTE: For aabb portals, this value is the distance from the center of the aab to a corner
+		protected Real mRadius;
+
+		///Matching Portal in the target zone (usually in same world space
+		// as this portal, but pointing the opposite direction)
+		protected Portal mTargetPortal;
+
+		///connected Zone
+		protected PCZone mTargetZone;
+
+		protected PORTAL_TYPE mType;
+
 		// previous world transform
 		protected Matrix4 prevWorldTransform;
 		// flag open or closed
-		private bool mOpen;
 
 
 		public Portal( string name, PORTAL_TYPE type )
 		{
-			mType = type;
-			mName = name;
-			mTargetZone = null;
-			mCurrentHomeZone = null;
-			mNewHomeZone = null;
-			mTargetPortal = null;
-			mNode = null;
-			mRadius = 0.0;
-			mDirection = Math.Vector3.UnitZ;
-			mLocalsUpToDate = false;
-			mDerivedSphere = new Sphere();
-			mDerivedPlane = new Plane();
+			this.mType = type;
+			this.mName = name;
+			this.mTargetZone = null;
+			this.mCurrentHomeZone = null;
+			this.mNewHomeZone = null;
+			this.mTargetPortal = null;
+			this.mNode = null;
+			this.mRadius = 0.0;
+			this.mDirection = Vector3.UnitZ;
+			this.mLocalsUpToDate = false;
+			this.mDerivedSphere = new Sphere();
+			this.mDerivedPlane = new Plane();
 			// set prevWorldTransform to a zero'd out matrix
-			prevWorldTransform = Math.Matrix4.Zero;
+			this.prevWorldTransform = Matrix4.Zero;
 			// default to open
-			mOpen = true;
-			switch ( mType )
+			this.mOpen = true;
+			switch ( this.mType )
 			{
 				default:
 				case PORTAL_TYPE.PORTAL_TYPE_QUAD:
-					mCorners = new Vector3[ 4 ];
-					mDerivedCorners = new Vector3[ 4 ];
+					this.mCorners = new Vector3[ 4 ];
+					this.mDerivedCorners = new Vector3[ 4 ];
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
-					mCorners = new Vector3[ 2 ];
-					mDerivedCorners = new Vector3[ 2 ];
+					this.mCorners = new Vector3[ 2 ];
+					this.mDerivedCorners = new Vector3[ 2 ];
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
-					mCorners = new Vector3[ 2 ];
-					mDerivedCorners = new Vector3[ 2 ];
+					this.mCorners = new Vector3[ 2 ];
+					this.mDerivedCorners = new Vector3[ 2 ];
 					break;
 			}
-		}
-
-		~Portal()
-		{
 		}
 
 		public PORTAL_TYPE Type
 		{
 			get
 			{
-				return mType;
+				return this.mType;
 			}
 		}
 
@@ -173,62 +187,12 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mOpen;
+				return this.mOpen;
 			}
 			set
 			{
-				mOpen = value;
+				this.mOpen = value;
 			}
-		}
-
-		// Set the SceneNode the Portal is associated with
-		public void setNode( SceneNode sn )
-		{
-			mNode = sn;
-			mLocalsUpToDate = false;
-		}
-		// Set the 1st Zone the Portal connects to
-		public void setTargetZone( PCZone z )
-		{
-			mTargetZone = z;
-		}
-
-		/* Returns the name of the portal
-		*/
-		public string getName()
-		{
-			return mName;
-		}
-
-		/* Get the scene node (if any) this portal is associated with
-		*/
-		public SceneNode getNode()
-		{
-			return mNode;
-		}
-		/** Get the Zone the Portal connects to
-		*/
-		public PCZone getTargetZone()
-		{
-			return mTargetZone;
-		}
-		/** Get the Zone the Portal is currently "in"
-		*/
-		public PCZone getCurrentHomeZone()
-		{
-			return mCurrentHomeZone;
-		}
-		/** Get the Zone the Portal should be moved to
-		*/
-		public PCZone getNewHomeZone()
-		{
-			return mNewHomeZone;
-		}
-		/** Get the connected portal (if any)
-		*/
-		public Portal getTargetPortal()
-		{
-			return mTargetPortal;
 		}
 
 		/// <summary>
@@ -238,12 +202,75 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mDirection;
+				return this.mDirection;
 			}
 			set
 			{
-				mDirection = value;
+				this.mDirection = value;
 			}
+		}
+
+		~Portal() { }
+
+		// Set the SceneNode the Portal is associated with
+		public void setNode( SceneNode sn )
+		{
+			this.mNode = sn;
+			this.mLocalsUpToDate = false;
+		}
+
+		// Set the 1st Zone the Portal connects to
+		public void setTargetZone( PCZone z )
+		{
+			this.mTargetZone = z;
+		}
+
+		/* Returns the name of the portal
+		*/
+
+		public string getName()
+		{
+			return this.mName;
+		}
+
+		/* Get the scene node (if any) this portal is associated with
+		*/
+
+		public SceneNode getNode()
+		{
+			return this.mNode;
+		}
+
+		/** Get the Zone the Portal connects to
+		*/
+
+		public PCZone getTargetZone()
+		{
+			return this.mTargetZone;
+		}
+
+		/** Get the Zone the Portal is currently "in"
+		*/
+
+		public PCZone getCurrentHomeZone()
+		{
+			return this.mCurrentHomeZone;
+		}
+
+		/** Get the Zone the Portal should be moved to
+		*/
+
+		public PCZone getNewHomeZone()
+		{
+			return this.mNewHomeZone;
+		}
+
+		/** Get the connected portal (if any)
+		*/
+
+		public Portal getTargetPortal()
+		{
+			return this.mTargetPortal;
 		}
 
 		// Set the zone this portal is in.
@@ -254,32 +281,34 @@ namespace Axiom.SceneManagers.PortalConnected
 			if ( null != z )
 			{
 				// inform old zone of portal change.
-				if ( null != mCurrentHomeZone )
+				if ( null != this.mCurrentHomeZone )
 				{
-					mCurrentHomeZone.PortalsUpdated = true;
+					this.mCurrentHomeZone.PortalsUpdated = true;
 				}
-				z.PortalsUpdated = true;   // inform new zone of portal change
+				z.PortalsUpdated = true; // inform new zone of portal change
 			}
-			mCurrentHomeZone = z;
+			this.mCurrentHomeZone = z;
 		}
 
 		// Set the zone this portal should be moved to
 		public void setNewHomeZone( PCZone z )
 		{
-			mNewHomeZone = z;
+			this.mNewHomeZone = z;
 		}
 
 		// Set the Portal the Portal connects to
 		public void setTargetPortal( Portal p )
 		{
-			mTargetPortal = p;
+			this.mTargetPortal = p;
 		}
+
 		// Set the local coordinates of one of the portal corners
 		public void setCorner( int index, Vector3 pt )
 		{
-			mCorners[ index ] = pt;
-			mLocalsUpToDate = false;
+			this.mCorners[ index ] = pt;
+			this.mLocalsUpToDate = false;
 		}
+
 		/** Set the local coordinates of all of the portal corners
 		*/
 		// NOTE: there are 4 corners if the portal is a quad type
@@ -287,25 +316,25 @@ namespace Axiom.SceneManagers.PortalConnected
 		//       there are 2 corners if the portal is a sphere type (center and point on sphere)
 		public void setCorners( Vector3[] corners )
 		{
-			switch ( mType )
+			switch ( this.mType )
 			{
 				default:
 				case PORTAL_TYPE.PORTAL_TYPE_QUAD:
-					mCorners[ 0 ] = corners[ 0 ];
-					mCorners[ 1 ] = corners[ 1 ];
-					mCorners[ 2 ] = corners[ 2 ];
-					mCorners[ 3 ] = corners[ 3 ];
+					this.mCorners[ 0 ] = corners[ 0 ];
+					this.mCorners[ 1 ] = corners[ 1 ];
+					this.mCorners[ 2 ] = corners[ 2 ];
+					this.mCorners[ 3 ] = corners[ 3 ];
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
-					mCorners[ 0 ] = corners[ 0 ]; // minimum corner
-					mCorners[ 1 ] = corners[ 1 ]; // maximum corner (opposite from min corner)
+					this.mCorners[ 0 ] = corners[ 0 ]; // minimum corner
+					this.mCorners[ 1 ] = corners[ 1 ]; // maximum corner (opposite from min corner)
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
-					mCorners[ 0 ] = corners[ 0 ]; // center point
-					mCorners[ 1 ] = corners[ 1 ]; // point on sphere surface
+					this.mCorners[ 0 ] = corners[ 0 ]; // center point
+					this.mCorners[ 1 ] = corners[ 1 ]; // point on sphere surface
 					break;
 			}
-			mLocalsUpToDate = false;
+			this.mLocalsUpToDate = false;
 		}
 
 		// calculate the local direction of the portal from the corners
@@ -314,232 +343,244 @@ namespace Axiom.SceneManagers.PortalConnected
 			Vector3 radiusVector;
 			Vector3 side1, side2;
 
-			switch ( mType )
+			switch ( this.mType )
 			{
 				default:
 				case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 					// first calculate local direction
-					side1 = mCorners[ 1 ] - mCorners[ 0 ];
-					side2 = mCorners[ 2 ] - mCorners[ 0 ];
-					mDirection = side1.Cross( side2 );
-					mDirection.Normalize();
+					side1 = this.mCorners[ 1 ] - this.mCorners[ 0 ];
+					side2 = this.mCorners[ 2 ] - this.mCorners[ 0 ];
+					this.mDirection = side1.Cross( side2 );
+					this.mDirection.Normalize();
 					// calculate local cp
-					mLocalCP = Vector3.Zero;
+					this.mLocalCP = Vector3.Zero;
 					for ( int i = 0; i < 4; i++ )
 					{
-						mLocalCP += mCorners[ i ];
+						this.mLocalCP += this.mCorners[ i ];
 					}
-					mLocalCP *= 0.25f;
+					this.mLocalCP *= 0.25f;
 					// then calculate radius
-					radiusVector = mCorners[ 0 ] - mLocalCP;
-					mRadius = radiusVector.Length;
+					radiusVector = this.mCorners[ 0 ] - this.mLocalCP;
+					this.mRadius = radiusVector.Length;
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					// "direction" is is either pointed inward or outward and is set by user, not calculated.
 					// calculate local cp
-					mLocalCP = Vector3.Zero;
+					this.mLocalCP = Vector3.Zero;
 					for ( int i = 0; i < 2; i++ )
 					{
-						mLocalCP += mCorners[ i ];
+						this.mLocalCP += this.mCorners[ i ];
 					}
-					mLocalCP *= 0.5f;
+					this.mLocalCP *= 0.5f;
 					// for radius, use distance from corner to center point
 					// this gives the radius of a sphere that encapsulates the aabb
-					radiusVector = mCorners[ 0 ] - mLocalCP;
-					mRadius = radiusVector.Length;
+					radiusVector = this.mCorners[ 0 ] - this.mLocalCP;
+					this.mRadius = radiusVector.Length;
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
 					// "direction" is is either pointed inward or outward and is set by user, not calculated.
 					// local CP is same as corner point 0
-					mLocalCP = mCorners[ 0 ];
+					this.mLocalCP = this.mCorners[ 0 ];
 					// since corner1 is point on sphere, radius is simply corner1 - center point
-					radiusVector = mCorners[ 1 ] - mLocalCP;
-					mRadius = radiusVector.Length;
+					radiusVector = this.mCorners[ 1 ] - this.mLocalCP;
+					this.mRadius = radiusVector.Length;
 					break;
 			}
-			mDerivedSphere.Radius = mRadius;
+			this.mDerivedSphere.Radius = this.mRadius;
 			// locals are now up to date
-			mLocalsUpToDate = true;
+			this.mLocalsUpToDate = true;
 		}
 
 		// Calculate the local bounding sphere of the portal from the corner points
 		public Real getRadius()
 		{
-			if ( !mLocalsUpToDate )
+			if ( !this.mLocalsUpToDate )
 			{
 				calcDirectionAndRadius();
 			}
-			return mRadius;
+			return this.mRadius;
 		}
+
 		//Get the coordinates of one of the portal corners
 		public Vector3 getCorner( int index )
 		{
-			return mCorners[ index ];
+			return this.mCorners[ index ];
 		}
+
 		// Get the derived (world) coordinates of a portal corner (assumes they are up-to-date)
 		public Vector3 getDerivedCorner( int index )
 		{
-			return mDerivedCorners[ index ];
+			return this.mDerivedCorners[ index ];
 		}
+
 		// Get the direction of the portal in world coordinates (assumes  it is up-to-date)
 		public Vector3 getDerivedDirection()
 		{
-			return mDerivedDirection;
+			return this.mDerivedDirection;
 		}
+
 		// Get the position (centerpoint) of the portal in world coordinates (assumes  it is up-to-date)
 		public Vector3 getDerivedCP()
 		{
-			return mDerivedCP;
+			return this.mDerivedCP;
 		}
+
 		// Get the sphere (centered on DerivedCP) of the portal in world coordinates (assumes  it is up-to-date)
 		public Sphere getDerivedSphere()
 		{
-			return mDerivedSphere;
+			return this.mDerivedSphere;
 		}
+
 		// Get the plane of the portal in world coordinates (assumes  it is up-to-date)
 		public Plane getDerivedPlane()
 		{
-			return mDerivedPlane;
+			return this.mDerivedPlane;
 		}
+
 		// Get the previous position (centerpoint) of the portal in world coordinates (assumes  it is up-to-date)
 		public Vector3 getPrevDerivedCP()
 		{
-			return mPrevDerivedCP;
+			return this.mPrevDerivedCP;
 		}
+
 		// Get the previous plane of the portal in world coordinates (assumes  it is up-to-date)
 		public Plane getPrevDerivedPlane()
 		{
-			return mPrevDerivedPlane;
+			return this.mPrevDerivedPlane;
 		}
+
 		// Update (Calculate) the world spatial values
 		public void updateDerivedValues()
 		{
 			// make sure local values are up to date
-			if ( !mLocalsUpToDate )
+			if ( !this.mLocalsUpToDate )
 			{
 				calcDirectionAndRadius();
 			}
 			int numCorners = 4;
-			if ( mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+			if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+			{
 				numCorners = 2;
-			else if ( mType == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
+			}
+			else if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
+			{
 				numCorners = 2;
+			}
 
 			// calculate derived values
-			if ( null != mNode )
+			if ( null != this.mNode )
 			{
-				if ( prevWorldTransform != mNode.FullTransform )
+				if ( this.prevWorldTransform != this.mNode.FullTransform )
 				{
-					if ( null != mCurrentHomeZone )
+					if ( null != this.mCurrentHomeZone )
 					{
 						// inform home zone that a portal has been updated
-						mCurrentHomeZone.PortalsUpdated = true;
+						this.mCurrentHomeZone.PortalsUpdated = true;
 					}
 					// save world transform
-					Matrix4 transform = mNode.FullTransform;
+					Matrix4 transform = this.mNode.FullTransform;
 					Matrix3 rotation;
 					// save off the current DerivedCP
-					mPrevDerivedCP = mDerivedCP;
-					mDerivedCP = transform * mLocalCP;
-					mDerivedSphere.Center = mDerivedCP;
-					switch ( mType )
+					this.mPrevDerivedCP = this.mDerivedCP;
+					this.mDerivedCP = transform * this.mLocalCP;
+					this.mDerivedSphere.Center = this.mDerivedCP;
+					switch ( this.mType )
 					{
 						case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 							for ( int i = 0; i < numCorners; i++ )
 							{
-								mDerivedCorners[ i ] = transform * mCorners[ i ];
+								this.mDerivedCorners[ i ] = transform * this.mCorners[ i ];
 							}
 							rotation = transform.ExtractRotation();
-							mDerivedDirection = rotation * mDirection;
+							this.mDerivedDirection = rotation * this.mDirection;
 							break;
 						case PORTAL_TYPE.PORTAL_TYPE_AABB:
 							{
-								AxisAlignedBox aabb;// = new AxisAlignedBox(mCorners[0], mCorners[1]);
+								AxisAlignedBox aabb; // = new AxisAlignedBox(mCorners[0], mCorners[1]);
 								//aabb.SetExtents(mCorners[0], mCorners[1]);
-								aabb = mNode.WorldAABB;
+								aabb = this.mNode.WorldAABB;
 								//aabb.transform(mNode->_getFullTransform());
-								mDerivedCorners[ 0 ] = aabb.Minimum;
-								mDerivedCorners[ 1 ] = aabb.Maximum;
-								mDerivedDirection = mDirection;
+								this.mDerivedCorners[ 0 ] = aabb.Minimum;
+								this.mDerivedCorners[ 1 ] = aabb.Maximum;
+								this.mDerivedDirection = this.mDirection;
 							}
 							break;
 						case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
 							{
-								mDerivedCorners[ 0 ] = mDerivedCP;
-								mDerivedCorners[ 1 ] = transform * mCorners[ 1 ];
-								mDerivedDirection = mDirection;
+								this.mDerivedCorners[ 0 ] = this.mDerivedCP;
+								this.mDerivedCorners[ 1 ] = transform * this.mCorners[ 1 ];
+								this.mDerivedDirection = this.mDirection;
 							}
 							break;
 					}
-					if ( prevWorldTransform != Matrix4.Zero )
+					if ( this.prevWorldTransform != Matrix4.Zero )
 					{
 						// save previous calc'd plane
-						mPrevDerivedPlane = mDerivedPlane;
+						this.mPrevDerivedPlane = this.mDerivedPlane;
 						// calc new plane
-						mDerivedPlane = new Plane( mDerivedDirection, mDerivedCP );
+						this.mDerivedPlane = new Plane( this.mDerivedDirection, this.mDerivedCP );
 						// only update prevWorldTransform if did not move
 						// we need to add this conditional to ensure that
 						// the portal fully updates when it changes position.
-						if ( mPrevDerivedPlane == mDerivedPlane &&
-							mPrevDerivedCP == mDerivedCP )
+						if ( this.mPrevDerivedPlane == this.mDerivedPlane && this.mPrevDerivedCP == this.mDerivedCP )
 						{
-							prevWorldTransform = transform;
+							this.prevWorldTransform = transform;
 						}
-						mPrevDerivedCP = mDerivedCP;
+						this.mPrevDerivedCP = this.mDerivedCP;
 					}
 					else
 					{
 						// calc new plane
-						mDerivedPlane = new Plane( mDerivedDirection, mDerivedCP );
+						this.mDerivedPlane = new Plane( this.mDerivedDirection, this.mDerivedCP );
 						// this is first time, so there is no previous, so prev = current.
-						mPrevDerivedPlane = mDerivedPlane;
-						mPrevDerivedCP = mDerivedCP;
-						prevWorldTransform = Matrix4.Identity;
-						prevWorldTransform = transform;
+						this.mPrevDerivedPlane = this.mDerivedPlane;
+						this.mPrevDerivedCP = this.mDerivedCP;
+						this.prevWorldTransform = Matrix4.Identity;
+						this.prevWorldTransform = transform;
 					}
 				}
 			}
 			else // no associated node, so just use the local values as derived values
 			{
-				if ( prevWorldTransform != Matrix4.Zero )
+				if ( this.prevWorldTransform != Matrix4.Zero )
 				{
 					// save off the current DerivedCP
-					mPrevDerivedCP = mDerivedCP;
-					mDerivedCP = mLocalCP;
-					mDerivedSphere.Center = mDerivedCP;
+					this.mPrevDerivedCP = this.mDerivedCP;
+					this.mDerivedCP = this.mLocalCP;
+					this.mDerivedSphere.Center = this.mDerivedCP;
 					for ( int i = 0; i < numCorners; i++ )
 					{
-						mDerivedCorners[ i ] = mCorners[ i ];
+						this.mDerivedCorners[ i ] = this.mCorners[ i ];
 					}
-					mDerivedDirection = mDirection;
+					this.mDerivedDirection = this.mDirection;
 					// save previous calc'd plane
-					mPrevDerivedPlane = mDerivedPlane;
+					this.mPrevDerivedPlane = this.mDerivedPlane;
 					// calc new plane
-					mDerivedPlane = new Plane( mDerivedDirection, mDerivedCP );
+					this.mDerivedPlane = new Plane( this.mDerivedDirection, this.mDerivedCP );
 				}
 				else
 				{
-					if ( null != mCurrentHomeZone )
+					if ( null != this.mCurrentHomeZone )
 					{
 						// this case should only happen once
-						mCurrentHomeZone.PortalsUpdated = true;
+						this.mCurrentHomeZone.PortalsUpdated = true;
 					}
 					// this is the first time the derived CP has been calculated, so there
 					// is no "previous" value, so set previous = current.
-					mDerivedCP = mLocalCP;
-					mPrevDerivedCP = mDerivedCP;
-					mDerivedSphere.Center = mDerivedCP;
+					this.mDerivedCP = this.mLocalCP;
+					this.mPrevDerivedCP = this.mDerivedCP;
+					this.mDerivedSphere.Center = this.mDerivedCP;
 					for ( int i = 0; i < numCorners; i++ )
 					{
-						mDerivedCorners[ i ] = mCorners[ i ];
+						this.mDerivedCorners[ i ] = this.mCorners[ i ];
 					}
-					mDerivedDirection = mDirection;
+					this.mDerivedDirection = this.mDirection;
 					// calc new plane
-					mDerivedPlane = new Plane( mDerivedDirection, mDerivedCP );
+					this.mDerivedPlane = new Plane( this.mDerivedDirection, this.mDerivedCP );
 					// this is first time, so there is no previous, so prev = current.
-					mPrevDerivedPlane = mDerivedPlane;
+					this.mPrevDerivedPlane = this.mDerivedPlane;
 					// flag as initialized
-					prevWorldTransform = Matrix4.Identity;
+					this.prevWorldTransform = Matrix4.Identity;
 				}
 			}
 		}
@@ -552,31 +593,34 @@ namespace Axiom.SceneManagers.PortalConnected
 			int i;
 
 			// make sure local values are up to date
-			if ( !mLocalsUpToDate )
+			if ( !this.mLocalsUpToDate )
 			{
 				calcDirectionAndRadius();
 			}
 			// move the parent node to the center point
-			node.Position = mLocalCP;
+			node.Position = this.mLocalCP;
 
 			// move the corner points to be relative to the node
 			int numCorners = 4;
-			if ( mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+			if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+			{
 				numCorners = 2;
-			else if ( mType == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
+			}
+			else if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
+			{
 				numCorners = 2;
+			}
 
 			for ( i = 0; i < numCorners; i++ )
 			{
-				mCorners[ i ] -= mLocalCP;
+				this.mCorners[ i ] -= this.mLocalCP;
 			}
-			if ( mType != PORTAL_TYPE.PORTAL_TYPE_AABB &&
-				mType != PORTAL_TYPE.PORTAL_TYPE_SPHERE )
+			if ( this.mType != PORTAL_TYPE.PORTAL_TYPE_AABB && this.mType != PORTAL_TYPE.PORTAL_TYPE_SPHERE )
 			{
 				// NOTE: UNIT_Z is the basis for our local direction
 				// orient the node to match the direction
 				Quaternion q;
-				q = Math.Vector3.UnitZ.GetRotationTo( mDirection );
+				q = Vector3.UnitZ.GetRotationTo( this.mDirection );
 				node.Orientation = q;
 			}
 
@@ -587,13 +631,13 @@ namespace Axiom.SceneManagers.PortalConnected
 		// IsOpen a portal (allows scene traversal and crossing)
 		public void open()
 		{
-			mOpen = true;
+			this.mOpen = true;
 		}
 
 		// Close a portal (disallows scene traversal and crossing)
 		public void close()
 		{
-			mOpen = false;
+			this.mOpen = false;
 		}
 
 		// Check if a portal intersects an AABB
@@ -601,19 +645,19 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool intersects( AxisAlignedBox aab )
 		{
 			// Only check if portal is open
-			if ( mOpen )
+			if ( this.mOpen )
 			{
-				switch ( mType )
+				switch ( this.mType )
 				{
 					case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 						// since ogre doesn't have built in support for a quad, just check
 						// if the box intersects both the sphere of the portal and the plane
 						// this can result in false positives, but they will be minimal
-						if ( !aab.Intersects( mDerivedSphere ) )
+						if ( !aab.Intersects( this.mDerivedSphere ) )
 						{
 							return false;
 						}
-						if ( aab.Intersects( mDerivedPlane ) )
+						if ( aab.Intersects( this.mDerivedPlane ) )
 						{
 							return true;
 						}
@@ -621,12 +665,12 @@ namespace Axiom.SceneManagers.PortalConnected
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 						{
 							// aab to aab check
-							AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+							var aabb = new AxisAlignedBox( this.mDerivedCorners[ 0 ], this.mDerivedCorners[ 1 ] );
 							return ( aab.Intersects( aabb ) );
 						}
 					case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
 						// aab to sphere check
-						return ( aab.Intersects( mDerivedSphere ) );
+						return ( aab.Intersects( this.mDerivedSphere ) );
 				}
 			}
 			return false;
@@ -637,19 +681,19 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool intersects( Sphere sphere )
 		{
 			// Only check if portal is open
-			if ( mOpen )
+			if ( this.mOpen )
 			{
-				switch ( mType )
+				switch ( this.mType )
 				{
 					case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 						// since ogre doesn't have built in support for a quad, just check
 						// if the sphere intersects both the sphere of the portal and the plane
 						// this can result in false positives, but they will be minimal
-						if ( !sphere.Intersects( mDerivedSphere ) )
+						if ( !sphere.Intersects( this.mDerivedSphere ) )
 						{
 							return false;
 						}
-						if ( sphere.Intersects( mDerivedPlane ) )
+						if ( sphere.Intersects( this.mDerivedPlane ) )
 						{
 							return true;
 						}
@@ -657,11 +701,11 @@ namespace Axiom.SceneManagers.PortalConnected
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 						{
 							// aab to aab check
-							AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+							var aabb = new AxisAlignedBox( this.mDerivedCorners[ 0 ], this.mDerivedCorners[ 1 ] );
 							return ( aabb.Intersects( sphere ) );
 						}
 					case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
-						return ( mDerivedSphere.Intersects( sphere ) );
+						return ( this.mDerivedSphere.Intersects( sphere ) );
 				}
 			}
 			return false;
@@ -673,14 +717,14 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool intersects( PlaneBoundedVolume pbv )
 		{
 			// Only check if portal is open
-			if ( mOpen )
+			if ( this.mOpen )
 			{
-				switch ( mType )
+				switch ( this.mType )
 				{
 					case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 						{
 							// first check sphere of the portal
-							if ( !pbv.Intersects( mDerivedSphere ) )
+							if ( !pbv.Intersects( this.mDerivedSphere ) )
 							{
 								return false;
 							}
@@ -692,7 +736,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								bool allOutside = true;
 								for ( int i = 0; i < 4; i++ )
 								{
-									if ( plane.GetSide( mDerivedCorners[ i ] ) != pbv.outside )
+									if ( plane.GetSide( this.mDerivedCorners[ i ] ) != pbv.outside )
 									{
 										allOutside = false;
 									}
@@ -701,13 +745,12 @@ namespace Axiom.SceneManagers.PortalConnected
 								{
 									return false;
 								}
-
 							}
 						}
 						break;
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 						{
-							AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+							var aabb = new AxisAlignedBox( this.mDerivedCorners[ 0 ], this.mDerivedCorners[ 1 ] );
 							if ( !pbv.Intersects( aabb ) )
 							{
 								return false;
@@ -715,7 +758,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						}
 						break;
 					case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
-						if ( !pbv.Intersects( mDerivedSphere ) )
+						if ( !pbv.Intersects( this.mDerivedSphere ) )
 						{
 							return false;
 						}
@@ -730,9 +773,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool intersects( Ray ray )
 		{
 			// Only check if portal is open
-			if ( mOpen )
+			if ( this.mOpen )
 			{
-				if ( mType == PORTAL_TYPE.PORTAL_TYPE_QUAD )
+				if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_QUAD )
 				{
 					// since ogre doesn't have built in support for a quad, I'm going to first
 					// find the intersection point (if any) of the ray and the portal plane.  Then
@@ -741,7 +784,7 @@ namespace Axiom.SceneManagers.PortalConnected
 					// all 4 cross products have vectors pointing in the same direction, then the
 					// intersection point is within the portal, otherwise it is outside.
 
-					IntersectResult result = ray.Intersects( mDerivedPlane );
+					IntersectResult result = ray.Intersects( this.mDerivedPlane );
 
 					if ( result.Hit )
 					{
@@ -749,25 +792,25 @@ namespace Axiom.SceneManagers.PortalConnected
 						Vector3 isect = ray.GetPoint( result.Distance );
 						Vector3 cross, vect1, vect2;
 						Vector3 cross2, vect3, vect4;
-						vect1 = mDerivedCorners[ 1 ] - mDerivedCorners[ 0 ];
-						vect2 = isect - mDerivedCorners[ 0 ];
+						vect1 = this.mDerivedCorners[ 1 ] - this.mDerivedCorners[ 0 ];
+						vect2 = isect - this.mDerivedCorners[ 0 ];
 						cross = vect1.Cross( vect2 );
-						vect3 = mDerivedCorners[ 2 ] - mDerivedCorners[ 1 ];
-						vect4 = isect - mDerivedCorners[ 1 ];
+						vect3 = this.mDerivedCorners[ 2 ] - this.mDerivedCorners[ 1 ];
+						vect4 = isect - this.mDerivedCorners[ 1 ];
 						cross2 = vect3.Cross( vect4 );
 						if ( cross.Dot( cross2 ) < 0 )
 						{
 							return false;
 						}
-						vect1 = mDerivedCorners[ 3 ] - mDerivedCorners[ 2 ];
-						vect2 = isect - mDerivedCorners[ 2 ];
+						vect1 = this.mDerivedCorners[ 3 ] - this.mDerivedCorners[ 2 ];
+						vect2 = isect - this.mDerivedCorners[ 2 ];
 						cross = vect1.Cross( vect2 );
 						if ( cross.Dot( cross2 ) < 0 )
 						{
 							return false;
 						}
-						vect1 = mDerivedCorners[ 0 ] - mDerivedCorners[ 3 ];
-						vect2 = isect - mDerivedCorners[ 3 ];
+						vect1 = this.mDerivedCorners[ 0 ] - this.mDerivedCorners[ 3 ];
+						vect2 = isect - this.mDerivedCorners[ 3 ];
 						cross = vect1.Cross( vect2 );
 						if ( cross.Dot( cross2 ) < 0 )
 						{
@@ -780,15 +823,15 @@ namespace Axiom.SceneManagers.PortalConnected
 
 					return false;
 				}
-				else if ( mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+				else if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
 				{
-					AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+					var aabb = new AxisAlignedBox( this.mDerivedCorners[ 0 ], this.mDerivedCorners[ 1 ] );
 					IntersectResult result = ray.Intersects( aabb );
 					return result.Hit;
 				}
 				else // sphere
 				{
-					IntersectResult result = ray.Intersects( mDerivedSphere );
+					IntersectResult result = ray.Intersects( this.mDerivedSphere );
 					return result.Hit;
 				}
 			}
@@ -796,32 +839,32 @@ namespace Axiom.SceneManagers.PortalConnected
 		}
 
 
-
 		/* Test if a scene node intersected a portal during the last time delta
 			* (from last frame time to current frame time).  This function checks
 			* if the node "crossed over" the portal also.
 		*/
+
 		public PortalIntersectResult intersects( PCZSceneNode pczsn )
 		{
 			// Only check if portal is open
-			if ( mOpen )
+			if ( this.mOpen )
 			{
-				if ( pczsn == mNode )
+				if ( pczsn == this.mNode )
 				{
 					// ignore the scene node if it is the node the portal is associated with
 					return PortalIntersectResult.NO_INTERSECT;
 				}
 				// most complicated case - if the portal is a quad:
-				if ( mType == PORTAL_TYPE.PORTAL_TYPE_QUAD )
+				if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_QUAD )
 				{
 					// the node is modeled as a line segment (prevPostion to currentPosition)
 					// intersection test is then between the capsule and the line segment.
-					Segment nodeSegment = new Segment();
+					var nodeSegment = new Segment();
 					nodeSegment.Set( pczsn.PreviousPosition, pczsn.DerivedPosition );
 
 					// we model the portal as a line swept sphere (mPrevDerivedCP to mDerivedCP).
-					Capsule portalCapsule = new Capsule();
-					portalCapsule.Set( mPrevDerivedCP, mDerivedCP, mRadius );
+					var portalCapsule = new Capsule();
+					portalCapsule.Set( this.mPrevDerivedCP, this.mDerivedCP, this.mRadius );
 
 					if ( portalCapsule.Intersects( nodeSegment ) )
 					{
@@ -830,16 +873,15 @@ namespace Axiom.SceneManagers.PortalConnected
 						// a crossing occurs if the "side" of the final position of the node compared
 						// to the final position of the portal is negative AND the initial position
 						// of the node compared to the initial position of the portal is non-negative
-						if ( mDerivedPlane.GetSide( pczsn.DerivedPosition ) == PlaneSide.Negative &&
-							mPrevDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
+						if ( this.mDerivedPlane.GetSide( pczsn.DerivedPosition ) == PlaneSide.Negative && this.mPrevDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
 						{
 							// safety check - make sure the node has at least one dimension which is
 							// small enough to fit through the portal! (avoid the "elephant fitting
 							// through a mouse hole" case)
 							Vector3 nodeHalfVector = pczsn.WorldAABB.HalfSize;
-							Vector3 portalBox = new Vector3( mRadius, mRadius, mRadius );
+							var portalBox = new Vector3( this.mRadius, this.mRadius, this.mRadius );
 							portalBox.Floor( nodeHalfVector );
-							if ( portalBox.x < mRadius )
+							if ( portalBox.x < this.mRadius )
 							{
 								// crossing occurred!
 								return PortalIntersectResult.INTERSECT_CROSS;
@@ -849,12 +891,11 @@ namespace Axiom.SceneManagers.PortalConnected
 					// there was no crossing of the portal by the node, but it might be touching
 					// the portal.  We check for this by checking the bounding box of the node vs.
 					// the sphere of the portal
-					if ( mDerivedSphere.Intersects( pczsn.WorldAABB ) &&
-						mDerivedPlane.GetSide( pczsn.WorldAABB ) == PlaneSide.Both )
+					if ( this.mDerivedSphere.Intersects( pczsn.WorldAABB ) && this.mDerivedPlane.GetSide( pczsn.WorldAABB ) == PlaneSide.Both )
 					{
 						// intersection but no crossing
 						// note this means that the node is CURRENTLY touching the portal.
-						if ( mDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
+						if ( this.mDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
 						{
 							// the node is on the positive (front) or exactly on the CP of the portal
 							return PortalIntersectResult.INTERSECT_NO_CROSS;
@@ -870,18 +911,18 @@ namespace Axiom.SceneManagers.PortalConnected
 					// crossing, and it isn't touching anymore, so it doesn't matter.
 					return PortalIntersectResult.NO_INTERSECT;
 				}
-				else if ( mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
+				else if ( this.mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
 				{
 					// for aabb's we check if the center point went from being inside to being outside
 					// the aabb (or vice versa) for crossing.
-					AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+					var aabb = new AxisAlignedBox( this.mDerivedCorners[ 0 ], this.mDerivedCorners[ 1 ] );
 					//bool previousInside = aabb.contains(pczsn->getPrevPosition());
 					bool currentInside = aabb.Contains( pczsn.DerivedPosition );
-					if ( mDirection == Vector3.UnitZ )
+					if ( this.mDirection == Vector3.UnitZ )
 					{
 						// portal norm is "outward" pointing, look for going from outside to inside
 						//if (previousInside == false &&
-						if ( currentInside == true )
+						if ( currentInside )
 						{
 							return PortalIntersectResult.INTERSECT_CROSS;
 						}
@@ -917,9 +958,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					// for spheres we check if the center point went from being inside to being outside
 					// the sphere surface (or vice versa) for crossing.
 					//Real previousDistance2 = mPrevDerivedCP.squaredDistance(pczsn->getPrevPosition());
-					Real currentDistance2 = mDerivedCP.DistanceSquared( pczsn.DerivedPosition );
-					Real mRadius2 = mRadius * mRadius;
-					if ( mDirection == Vector3.UnitZ )
+					Real currentDistance2 = this.mDerivedCP.DistanceSquared( pczsn.DerivedPosition );
+					Real mRadius2 = this.mRadius * this.mRadius;
+					if ( this.mDirection == Vector3.UnitZ )
 					{
 						// portal norm is "outward" pointing, look for going from outside to inside
 						//if (previousDistance2 >= mRadius2 &&
@@ -938,7 +979,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						}
 					}
 					// no crossing, but might be touching - check distance
-					if ( System.Math.Sqrt( System.Math.Abs( mRadius2 - currentDistance2 ) ) <= mRadius )
+					if ( System.Math.Sqrt( System.Math.Abs( mRadius2 - currentDistance2 ) ) <= this.mRadius )
 					{
 						return PortalIntersectResult.INTERSECT_NO_CROSS;
 					}
@@ -946,11 +987,11 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 			}
 			return PortalIntersectResult.NO_INTERSECT;
-
 		}
 
 		/* This function check if *this* portal "crossed over" the other portal.
 		*/
+
 		public bool crossedPortal( Portal otherPortal )
 		{
 			// Only check if portal is open
@@ -964,12 +1005,10 @@ namespace Axiom.SceneManagers.PortalConnected
 				Capsule portalCapsule, otherPortalCapsule;
 
 				portalCapsule = new Capsule();
-				portalCapsule.Set( this.getPrevDerivedCP(), this.getDerivedCP(), this.getRadius() );
+				portalCapsule.Set( getPrevDerivedCP(), getDerivedCP(), getRadius() );
 
 				otherPortalCapsule = new Capsule();
-				otherPortalCapsule.Set( otherPortal.mPrevDerivedCP,
-									   otherPortal.mDerivedCP,
-									   otherPortal.mRadius );
+				otherPortalCapsule.Set( otherPortal.mPrevDerivedCP, otherPortal.mDerivedCP, otherPortal.mRadius );
 
 				if ( portalCapsule.Intersects( otherPortalCapsule ) )
 				{
@@ -983,8 +1022,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							// of this portal compared to the initial position of the other portal is non-negative
 							// NOTE: This function assumes that this portal is the smaller portal potentially crossing
 							//       over the otherPortal which is larger.
-							if ( otherPortal.getDerivedPlane().GetSide( mDerivedCP ) == PlaneSide.Negative &&
-								otherPortal.getPrevDerivedPlane().GetSide( mPrevDerivedCP ) != PlaneSide.Negative )
+							if ( otherPortal.getDerivedPlane().GetSide( this.mDerivedCP ) == PlaneSide.Negative && otherPortal.getPrevDerivedPlane().GetSide( this.mPrevDerivedCP ) != PlaneSide.Negative )
 							{
 								// crossing occurred!
 								return true;
@@ -994,14 +1032,14 @@ namespace Axiom.SceneManagers.PortalConnected
 							{
 								// for aabb's we check if the center point went from being inside to being outside
 								// the aabb (or vice versa) for crossing.
-								AxisAlignedBox aabb = new AxisAlignedBox( otherPortal.getDerivedCorner( 0 ), otherPortal.getDerivedCorner( 1 ) );
+								var aabb = new AxisAlignedBox( otherPortal.getDerivedCorner( 0 ), otherPortal.getDerivedCorner( 1 ) );
 								//bool previousInside = aabb.contains(mPrevDerivedCP);
-								bool currentInside = aabb.Contains( mDerivedCP );
+								bool currentInside = aabb.Contains( this.mDerivedCP );
 								if ( otherPortal.getDerivedDirection() == Vector3.UnitZ )
 								{
 									// portal norm is "outward" pointing, look for going from outside to inside
 									//if (previousInside == false &&
-									if ( currentInside == true )
+									if ( currentInside )
 									{
 										return true;
 									}
@@ -1022,7 +1060,7 @@ namespace Axiom.SceneManagers.PortalConnected
 								// for spheres we check if the center point went from being inside to being outside
 								// the sphere surface (or vice versa) for crossing.
 								//Real previousDistance2 = mPrevDerivedCP.squaredDistance(otherPortal->getPrevDerivedCP());
-								Real currentDistance2 = mDerivedCP.DistanceSquared( otherPortal.getDerivedCP() );
+								Real currentDistance2 = this.mDerivedCP.DistanceSquared( otherPortal.getDerivedCP() );
 								Real mRadius2 = System.Math.Sqrt( otherPortal.getRadius() );
 								if ( otherPortal.getDerivedDirection() == Vector3.UnitZ )
 								{
@@ -1062,18 +1100,18 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool closeTo( Portal otherPortal )
 		{
 			// only portals of the same type can be "close to" each other.
-			if ( mType != otherPortal.Type )
+			if ( this.mType != otherPortal.Type )
 			{
 				return false;
 			}
 			bool close = false;
-			switch ( mType )
+			switch ( this.mType )
 			{
 				default:
 				case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 					{
 						// quad portals must be within 1/4 sphere of each other
-						Sphere quarterSphere1 = mDerivedSphere;
+						Sphere quarterSphere1 = this.mDerivedSphere;
 						quarterSphere1.Radius = quarterSphere1.Radius * 0.25f;
 						Sphere quarterSphere2 = otherPortal.getDerivedSphere();
 						quarterSphere2.Radius = quarterSphere2.Radius * 0.25f;
@@ -1082,17 +1120,14 @@ namespace Axiom.SceneManagers.PortalConnected
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					// NOTE: AABB's must match perfectly
-					if ( mDerivedCP == otherPortal.getDerivedCP() &&
-						mCorners[ 0 ] == otherPortal.getCorner( 0 ) &&
-						mCorners[ 1 ] == otherPortal.getCorner( 1 ) )
+					if ( this.mDerivedCP == otherPortal.getDerivedCP() && this.mCorners[ 0 ] == otherPortal.getCorner( 0 ) && this.mCorners[ 1 ] == otherPortal.getCorner( 1 ) )
 					{
 						close = true;
 					}
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
 					// NOTE: Spheres must match perfectly
-					if ( mDerivedCP == otherPortal.getDerivedCP() &&
-						mRadius == otherPortal.getRadius() )
+					if ( this.mDerivedCP == otherPortal.getDerivedCP() && this.mRadius == otherPortal.getRadius() )
 					{
 						close = true;
 					}
@@ -1100,6 +1135,5 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 			return close;
 		}
-
 	}
 }

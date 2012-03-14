@@ -1,15 +1,14 @@
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -20,12 +19,14 @@ namespace Axiom.SceneManagers.Octree
 	public class TerrainRaySceneQuery : DefaultRaySceneQuery
 	{
 		protected WorldFragment WorldFragment;
+
 		protected internal TerrainRaySceneQuery( SceneManager creator )
 			: base( creator )
 		{
-			this.worldFragmentTypes = WorldFragmentType.SingleIntersection;
+			worldFragmentTypes = WorldFragmentType.SingleIntersection;
 			this.WorldFragment = new WorldFragment();
 		}
+
 		public override void Execute( IRaySceneQueryListener listener )
 		{
 			Vector3 dir = ray.Direction;
@@ -40,15 +41,19 @@ namespace Axiom.SceneManagers.Octree
 					this.WorldFragment.SingleIntersection.z = origin.z;
 					this.WorldFragment.SingleIntersection.y = height;
 					if ( !listener.OnQueryResult( this.WorldFragment, ( this.WorldFragment.SingleIntersection - origin ).Length ) )
+					{
 						return;
+					}
 				}
 			}
 			else
 			{
-				TerrainSceneManager tsm = (TerrainSceneManager)creator;
+				var tsm = (TerrainSceneManager)creator;
 				this.WorldFragment.SingleIntersection = tsm.IntersectSegment( origin, origin + ( dir * 100000 ) );
 				if ( !listener.OnQueryResult( this.WorldFragment, ( this.WorldFragment.SingleIntersection - origin ).Length ) )
+				{
 					return;
+				}
 			}
 		}
 	}

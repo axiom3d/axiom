@@ -27,15 +27,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
@@ -49,82 +52,122 @@ namespace Axiom.SceneManagers.PortalConnected
 		/** flag indicating if any of the zones in the affectedZonesList is
 		*   visible in the current frame
 		*/
-		private bool affectsVisibleZone;
 
 		/** List of PCZones which are affected by the light
 		*/
 		private readonly List<PCZone> affectedZonesList = new List<PCZone>();
+		private bool affectsVisibleZone;
 
 		// flag recording if light has moved, therefore affected list needs updating
-		bool needsUpdate;
+		private bool needsUpdate;
 
 
 		public PCZLight()
-			: this( "" )
-		{
-		}
+			: this( "" ) { }
 
 		public PCZLight( string name )
 			: base( name )
 		{
-			needsUpdate = true;   // need to update the first time, regardless of attachment or movement
+			this.needsUpdate = true; // need to update the first time, regardless of attachment or movement
+		}
+
+		public bool NeedsUpdate
+		{
+			get
+			{
+				if ( this.needsUpdate ) // if this light has moved, return true immediately
+				{
+					return true;
+				}
+
+				// if any zones affected by this light have updated portals, then this light needs updating too
+				foreach ( PCZone zone in this.affectedZonesList )
+				{
+					if ( zone.PortalsUpdated )
+					{
+						return true; // return immediately to prevent further iterating
+					}
+				}
+
+				return false; // light hasnt moved, and no zones have updated portals. no light update.
+			}
+
+			set
+			{
+				this.needsUpdate = value;
+			}
+		}
+
+		public bool AffectsVisibleZone
+		{
+			get
+			{
+				return this.affectsVisibleZone;
+			}
+			set
+			{
+				this.affectsVisibleZone = value;
+			}
 		}
 
 
 		~PCZLight()
 		{
-			affectedZonesList.Clear();
+			this.affectedZonesList.Clear();
 		}
 
 		//-----------------------------------------------------------------------
 		/** Clear the affectedZonesList
 		*/
+
 		public void ClearAffectedZones()
 		{
-			affectedZonesList.Clear();
+			this.affectedZonesList.Clear();
 		}
 
 		//-----------------------------------------------------------------------
 		/** Add a zone to the zones affected list
 		*/
+
 		public void AddZoneToAffectedZonesList( PCZone zone )
 		{
-			affectedZonesList.Add( zone );
+			this.affectedZonesList.Add( zone );
 		}
 
 		/** check if a zone is in the list of zones affected by the light */
+
 		public bool AffectsZone( PCZone zone )
 		{
-			return affectedZonesList.Contains( zone );
+			return this.affectedZonesList.Contains( zone );
 		}
 
 		public void UpdateZones( PCZone defaultZone, ulong frameCount )
 		{
 			//update the zones this light affects
 			PCZone homeZone;
-			affectedZonesList.Clear();
-			affectsVisibleZone = false;
-			PCZSceneNode sn = (PCZSceneNode)( this.ParentSceneNode );
+			this.affectedZonesList.Clear();
+			this.affectsVisibleZone = false;
+			var sn = (PCZSceneNode)( ParentSceneNode );
 			if ( null != sn )
 			{
 				// start with the zone the light is in
 				homeZone = sn.HomeZone;
 				if ( null != homeZone )
 				{
-					affectedZonesList.Add( homeZone );
+					this.affectedZonesList.Add( homeZone );
 					if ( homeZone.LastVisibleFrame == frameCount )
 					{
-						affectsVisibleZone = true;
+						this.affectsVisibleZone = true;
 					}
 				}
 				else
 				{
 					// error - scene node has no homezone!
 					// just say it affects the default zone and leave it at that.
-					affectedZonesList.Add( defaultZone );
+					this.affectedZonesList.Add( defaultZone );
 					if ( defaultZone.LastVisibleFrame == frameCount )
 					{
-						affectsVisibleZone = true;
+						this.affectsVisibleZone = true;
 					}
 					return;
 				}
@@ -133,10 +176,10 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				// ERROR! not connected to a scene node,
 				// just say it affects the default zone and leave it at that.
-				affectedZonesList.Add( defaultZone );
+				this.affectedZonesList.Add( defaultZone );
 				if ( defaultZone.LastVisibleFrame == frameCount )
 				{
-					affectsVisibleZone = true;
+					this.affectsVisibleZone = true;
 				}
 				return;
 			}
@@ -144,63 +187,31 @@ namespace Axiom.SceneManagers.PortalConnected
 			// now check visibility of each portal in the home zone.  If visible to
 			// the light then add the target zone of the portal to the list of
 			// affected zones and recurse into the target zone
-			PCZFrustum portalFrustum = new PCZFrustum();
+			var portalFrustum = new PCZFrustum();
 			Vector3 v = GetDerivedPosition();
 			portalFrustum.SetOrigin( v );
 			homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null );
 		}
+
 		//-----------------------------------------------------------------------
 		public void RemoveZoneFromAffectedZonesList( PCZone zone )
 		{
-			if ( affectedZonesList.Contains( zone ) )
+			if ( this.affectedZonesList.Contains( zone ) )
 			{
-				affectedZonesList.Remove( zone );
+				this.affectedZonesList.Remove( zone );
 			}
 		}
+
 		//-----------------------------------------------------------------------
 		public void NotifyMoved()
 		{
 			//TODO: Check implementation of this
 			//_notifyMoved();   // inform ogre Light of movement
 			localTransformDirty = true;
-			needsUpdate = true;   // set need update flag
+			this.needsUpdate = true; // set need update flag
 		}
+
 		//-----------------------------------------------------------------------
-
-		public bool NeedsUpdate
-		{
-			get
-			{
-				if ( needsUpdate ) // if this light has moved, return true immediately
-					return true;
-
-				// if any zones affected by this light have updated portals, then this light needs updating too
-				foreach ( PCZone zone in affectedZonesList )
-				{
-					if ( zone.PortalsUpdated )
-						return true; // return immediately to prevent further iterating
-				}
-
-				return false; // light hasnt moved, and no zones have updated portals. no light update.
-			}
-
-			set
-			{
-				needsUpdate = value;
-			}
-		}
-
-		public bool AffectsVisibleZone
-		{
-			get
-			{
-				return affectsVisibleZone;
-			}
-			set
-			{
-				affectsVisibleZone = value;
-			}
-		}
 	}
 
 	public class PCZLightFactory : LightFactory
@@ -209,7 +220,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PCZLightFactory()
 		{
-			base.Type = PCZLightFactory.TypeName;
+			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Light;
 		}
 
@@ -218,5 +229,4 @@ namespace Axiom.SceneManagers.PortalConnected
 			return new PCZLight( name );
 		}
 	}
-
 }

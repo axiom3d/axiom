@@ -8,10 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Axiom.Framework.Properties {
+namespace Axiom.Framework.Properties
+{
 	using System;
-	
-	
+
+
 	/// <summary>
 	///   A strongly-typed resource class, for looking up localized strings, etc.
 	/// </summary>
@@ -19,89 +20,107 @@ namespace Axiom.Framework.Properties {
 	// class via a tool like ResGen or Visual Studio.
 	// To add or remove a member, edit your .ResX file then rerun ResGen
 	// with the /str option, or rebuild your VS project.
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0" )]
 	[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 	[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-	public class Resources {
-		
+	public class Resources
+	{
+
 		private static global::System.Resources.ResourceManager resourceMan;
-		
+
 		private static global::System.Globalization.CultureInfo resourceCulture;
-		
-		[global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-		internal Resources() {
+
+		[global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode" )]
+		internal Resources()
+		{
 		}
-		
+
 		/// <summary>
 		///   Returns the cached ResourceManager instance used by this class.
 		/// </summary>
-		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-		public static global::System.Resources.ResourceManager ResourceManager {
-			get {
-				if (object.ReferenceEquals(resourceMan, null)) {
-					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Axiom.Framework.Properties.Resources", typeof(Resources).Assembly);
+		[global::System.ComponentModel.EditorBrowsableAttribute( global::System.ComponentModel.EditorBrowsableState.Advanced )]
+		public static global::System.Resources.ResourceManager ResourceManager
+		{
+			get
+			{
+				if ( object.ReferenceEquals( resourceMan, null ) )
+				{
+					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager( "Axiom.Framework.Properties.Resources", typeof( Resources ).Assembly );
 					resourceMan = temp;
 				}
 				return resourceMan;
 			}
 		}
-		
+
 		/// <summary>
 		///   Overrides the current thread's CurrentUICulture property for all
 		///   resource lookups using this strongly typed resource class.
 		/// </summary>
-		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-		public static global::System.Globalization.CultureInfo Culture {
-			get {
+		[global::System.ComponentModel.EditorBrowsableAttribute( global::System.ComponentModel.EditorBrowsableState.Advanced )]
+		public static global::System.Globalization.CultureInfo Culture
+		{
+			get
+			{
 				return resourceCulture;
 			}
-			set {
+			set
+			{
 				resourceCulture = value;
 			}
 		}
-		
+
 		/// <summary>
 		///   Looks up a localized string similar to If you cannot resolve this issue yourself, please report it through the web site at http://www.axiom3d.net.
 		///
 		///If you report the error, please include details of your hardware setup, and attach a copy of the &apos;axiom.log&apos; file which you will find in the local folder..
 		/// </summary>
-		public static string Axiom_Error_Footer {
-			get {
-				return ResourceManager.GetString("Axiom_Error_Footer", resourceCulture);
+		public static string Axiom_Error_Footer
+		{
+			get
+			{
+				return ResourceManager.GetString( "Axiom_Error_Footer", resourceCulture );
 			}
 		}
-		
+
 		/// <summary>
 		///   Looks up a localized string similar to The Axiom engine has encountered an error from which it cannot recover.
 		///The last message was:.
 		/// </summary>
-		public static string Axiom_Error_Header {
-			get {
-				return ResourceManager.GetString("Axiom_Error_Header", resourceCulture);
+		public static string Axiom_Error_Header
+		{
+			get
+			{
+				return ResourceManager.GetString( "Axiom_Error_Header", resourceCulture );
 			}
 		}
-		
+
 		/// <summary>
 		///   Looks up a localized string similar to Axiom Exception Report.
 		/// </summary>
-		public static string Axiom_Error_Title {
-			get {
-				return ResourceManager.GetString("Axiom_Error_Title", resourceCulture);
+		public static string Axiom_Error_Title
+		{
+			get
+			{
+				return ResourceManager.GetString( "Axiom_Error_Title", resourceCulture );
 			}
 		}
-		
+
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-		public static System.Drawing.Icon AxiomIcon {
-			get {
-				object obj = ResourceManager.GetObject("AxiomIcon", resourceCulture);
-				return ((System.Drawing.Icon)(obj));
+		public static System.Drawing.Icon AxiomIcon
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject( "AxiomIcon", resourceCulture );
+				return ( (System.Drawing.Icon)( obj ) );
 			}
 		}
-		
-		public static System.Drawing.Bitmap AxiomLogo {
-			get {
-				object obj = ResourceManager.GetObject("AxiomLogo", resourceCulture);
-				return ((System.Drawing.Bitmap)(obj));
+
+		public static System.Drawing.Bitmap AxiomLogo
+		{
+			get
+			{
+				object obj = ResourceManager.GetObject( "AxiomLogo", resourceCulture );
+				return ( (System.Drawing.Bitmap)( obj ) );
 			}
 		}
 #endif

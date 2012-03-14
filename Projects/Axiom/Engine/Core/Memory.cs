@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,23 +19,27 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using Axiom.CrossPlatform;
-
-#if !AXIOM_SAFE_ONLY
 using System.Runtime.InteropServices;
+
+using Axiom.CrossPlatform;
+#if !AXIOM_SAFE_ONLY
+
 #endif
 
 #endregion Namespace Declarations
@@ -42,15 +47,15 @@ using System.Runtime.InteropServices;
 namespace Axiom.Core
 {
 	public static class IntPtrExtension
-    {
-        public static IntPtr Offset( this IntPtr p, int offset )
-        {
+	{
+		public static IntPtr Offset( this IntPtr p, int offset )
+		{
 #if !NET40
-            return new IntPtr( p.ToInt64() + offset );
+			return new IntPtr( p.ToInt64() + offset );
 #else
 			return p + offset;
 #endif
-        }
+		}
 	};
 
 	/// <summary>
@@ -59,13 +64,14 @@ namespace Axiom.Core
 	public static class Memory
 	{
 		#region Copy Method
+
 		/// <summary>
 		///	Method for copying data from one IntPtr to another.
 		/// </summary>
 		/// <param name="src">Source pointer.</param>
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-        public static void Copy( BufferBase src, BufferBase dest, int length )
+		public static void Copy( BufferBase src, BufferBase dest, int length )
 		{
 			Copy( src, dest, 0, 0, length );
 		}
@@ -78,31 +84,34 @@ namespace Axiom.Core
 		/// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
 		/// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
 		/// <param name="length">Length of data (in bytes) to copy.</param>
-        public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
+		public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
 		{
 			// TODO: Block copy would be faster, find a cross platform way to do it
 #if AXIOM_SAFE_ONLY
             dest.Copy( src, srcOffset, destOffset, length );
 #else
-            unsafe
-            {
-                var pSrc = src.ToBytePointer();
-                var pDest = dest.ToBytePointer();
+			unsafe
+			{
+				byte* pSrc = src.ToBytePointer();
+				byte* pDest = dest.ToBytePointer();
 
-                for ( var i = 0; i < length; i++ )
-                    pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
-            }
+				for ( int i = 0; i < length; i++ )
+				{
+					pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
+				}
+			}
 #endif
 		}
+
 		#endregion Copy Method
 
 		/// <summary>
-        /// Sets buffers to a specified value
+		/// Sets buffers to a specified value
 		/// </summary>
-        /// <remarks>
-        /// Sets the first length values of dest to the value "c".
-        /// Make sure that the destination buffer has enough room for at least length characters.
-        /// </remarks>
+		/// <remarks>
+		/// Sets the first length values of dest to the value "c".
+		/// Make sure that the destination buffer has enough room for at least length characters.
+		/// </remarks>
 		/// <param name="dest">Destination pointer.</param>
 		/// <param name="c">Value to set.</param>
 		/// <param name="length">Number of bytes to set.</param>
@@ -111,20 +120,22 @@ namespace Axiom.Core
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
-            {
-                var ptr = dest.ToBytePointer();
+			{
+				byte* ptr = dest.ToBytePointer();
 
-                for ( var i = 0; i < length; i++ )
-                    ptr[ i ] = c;
-            }
-        }
+				for ( int i = 0; i < length; i++ )
+				{
+					ptr[ i ] = c;
+				}
+			}
+		}
 
-        public static int SizeOf( Type type )
+		public static int SizeOf( Type type )
 		{
 			return type.Size();
 		}
 
-        public static int SizeOf( object obj )
+		public static int SizeOf( object obj )
 		{
 			return obj.GetType().Size();
 		}
@@ -149,39 +160,41 @@ namespace Axiom.Core
             return handle;
         }
 #else
-        private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+		private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
 
-        public static BufferBase PinObject( object obj )
-        {
-            GCHandle handle;
-            if ( _pinnedReferences.ContainsKey( obj ) )
-            {
-                handle = _pinnedReferences[ obj ];
-            }
-            else
-            {
-                handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
-                _pinnedReferences.Add( obj, handle );
-            }
-            return new UnsafeBuffer( handle.AddrOfPinnedObject() );
-        }
+		public static BufferBase PinObject( object obj )
+		{
+			GCHandle handle;
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				handle = _pinnedReferences[ obj ];
+			}
+			else
+			{
+				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+				_pinnedReferences.Add( obj, handle );
+			}
+			return new UnsafeBuffer( handle.AddrOfPinnedObject() );
+		}
 #endif
 
-        public static void UnpinObject( object obj )
-        {
-            if ( _pinnedReferences.ContainsKey( obj ) )
-            {
-                var handle = _pinnedReferences[ obj ];
+		public static void UnpinObject( object obj )
+		{
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				GCHandle handle = _pinnedReferences[ obj ];
 #if AXIOM_SAFE_ONLY
                 handle.Dispose();
 #else
 				handle.Free();
 #endif
-                _pinnedReferences.Remove( obj );
-            }
-            else
-                LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
-        }
+				_pinnedReferences.Remove( obj );
+			}
+			else
+			{
+				LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
+			}
+		}
 
 		#endregion Pinned Object Access
 	};

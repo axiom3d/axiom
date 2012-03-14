@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,17 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
 
 using Axiom.Math;
 
@@ -66,9 +69,7 @@ namespace Axiom.Controllers.Canned
 		/// </summary>
 		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
 		public AnimationControllerFunction( Real sequenceTime )
-			: this( sequenceTime, 0.0f )
-		{
-		}
+			: this( sequenceTime, 0.0f ) { }
 
 		/// <summary>
 		///     Constructor.
@@ -83,7 +84,7 @@ namespace Axiom.Controllers.Canned
 
 		#endregion
 
-		#region ControllerFunction Members
+		#region IControllerFunction<Real> Members
 
 		/// <summary>
 		/// 
@@ -93,18 +94,18 @@ namespace Axiom.Controllers.Canned
 		public Real Execute( Real sourceValue )
 		{
 			// assuming source if the time since the last update
-			time += sourceValue;
+			this.time += sourceValue;
 
 			// wrap
-			while ( time >= sequenceTime )
+			while ( this.time >= this.sequenceTime )
 			{
-				time -= sequenceTime;
+				this.time -= this.sequenceTime;
 			}
 
 			// return parametric
-			return time / sequenceTime;
+			return this.time / this.sequenceTime;
 		}
 
-		#endregion ControllerFunction Members
+		#endregion
 	}
 }

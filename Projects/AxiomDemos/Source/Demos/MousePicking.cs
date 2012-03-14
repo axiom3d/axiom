@@ -2,22 +2,21 @@
 
 using System;
 using System.ComponentModel.Composition;
-using Axiom.Animating;
+
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
-    [Export(typeof(TechDemo))]
-    public class MousePicking : TechDemo
+	[Export( typeof( TechDemo ) )]
+	public class MousePicking : TechDemo
 	{
-
 		#region Fields & Properties
 
-		private SceneNode headNode = null;
+		private SceneNode headNode;
 
 		#endregion Fields & Properties
 
@@ -36,7 +35,7 @@ namespace Axiom.Demos
 			light.Position = new Vector3( 20, 80, 50 );
 
 			// create a plane for the plane mesh
-			Plane plane = new Plane();
+			var plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 200;
 
@@ -52,11 +51,11 @@ namespace Axiom.Demos
 			Entity ogreHead = scene.CreateEntity( "OgreHead", "ogrehead.mesh" );
 
 			// create a scene node for the entity and attach the entity
-			headNode = scene.RootSceneNode.CreateChildSceneNode( "OgreHeadNode", Vector3.Zero, Quaternion.Identity );
-			headNode.AttachObject( ogreHead );
+			this.headNode = scene.RootSceneNode.CreateChildSceneNode( "OgreHeadNode", Vector3.Zero, Quaternion.Identity );
+			this.headNode.AttachObject( ogreHead );
 
 			// make sure the camera tracks this node
-			camera.SetAutoTracking( true, headNode, Vector3.Zero );
+			camera.SetAutoTracking( true, this.headNode, Vector3.Zero );
 
 			// create a scene node to attach the camera to
 			SceneNode cameraNode = scene.RootSceneNode.CreateChildSceneNode( "CameraNode" );
@@ -74,18 +73,19 @@ namespace Axiom.Demos
 		{
 			base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
 			float mouseX = input.AbsoluteMouseX / (float)window.Width;
 			float mouseY = input.AbsoluteMouseY / (float)window.Height;
 
 			Ray ray = camera.GetCameraToViewportRay( mouseX, mouseY );
-			headNode.ShowBoundingBox = ray.Intersects( headNode.WorldBoundingSphere ).Hit;
+			this.headNode.ShowBoundingBox = ray.Intersects( this.headNode.WorldBoundingSphere ).Hit;
 
 			debugText = String.Format( " Mouse X:{0}, Y:{1}", mouseX, mouseY );
 		}
 
 		#endregion Event Handlers
-
 	}
 }

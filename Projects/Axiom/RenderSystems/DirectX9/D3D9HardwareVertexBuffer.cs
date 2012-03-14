@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
@@ -33,13 +35,19 @@
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Utilities;
+
+using SharpDX;
+using SharpDX.Direct3D9;
+
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
 #endregion Namespace Declarations
 
@@ -51,7 +59,6 @@ namespace Axiom.RenderSystems.DirectX9
 	/// which is unacceptably bad when using very large buffers
 	/// </summary>
 	/// AXIOM_D3D_MANAGE_BUFFERS
-
 	/// <summary>
 	/// Specialisation of HardwareVertexBuffer for D3D9
 	/// </summary>
@@ -59,15 +66,15 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Nested Types
 
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		private class BufferResources
 		{
-			public D3D9.VertexBuffer VertexBuffer;
 			public bool IsOutOfDate;
-			public int LockOffset;
-			public int LockLength;
-			public BufferLocking LockOptions;
 			public int LastUsedFrame;
+			public int LockLength;
+			public int LockOffset;
+			public BufferLocking LockOptions;
+			public VertexBuffer VertexBuffer;
 		};
 
 		#endregion Nested Types
@@ -78,19 +85,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Map between device to buffer resources.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		private Dictionary<D3D9.Device, BufferResources> _mapDeviceToBufferResources;
-
-		/// <summary>
-		/// Buffer description.
-		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		private D3D9.VertexBufferDescription _bufferDesc;
+		private readonly Dictionary<Device, BufferResources> _mapDeviceToBufferResources;
 
 		/// <summary>
 		/// Consistent system memory buffer for multiple devices support in case of write only buffers.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
-		private BufferBase _systemMemoryBuffer;
+		[OgreVersion( 1, 7, 2790 )]
+		private readonly BufferBase _systemMemoryBuffer;
+
+		/// <summary>
+		/// Buffer description.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		private VertexBufferDescription _bufferDesc;
 
 		#endregion Member variables
 
@@ -100,25 +107,27 @@ namespace Axiom.RenderSystems.DirectX9
 		///	Gets the underlying D3D Vertex Buffer object.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9.VertexBuffer D3DVertexBuffer
+		public VertexBuffer D3DVertexBuffer
 		{
 			get
 			{
-				var d3D9Device = D3D9RenderSystem.ActiveD3D9Device;
+				Device d3D9Device = D3D9RenderSystem.ActiveD3D9Device;
 
 				// Find the index buffer of this device.
 				BufferResources it;
-				var wasBufferFound = _mapDeviceToBufferResources.TryGetValue( d3D9Device, out it );
+				bool wasBufferFound = this._mapDeviceToBufferResources.TryGetValue( d3D9Device, out it );
 
 				// Case vertex buffer was not found for the current device -> create it.		
 				if ( !wasBufferFound || it.VertexBuffer == null )
 				{
-					CreateBuffer( d3D9Device, _bufferDesc.Pool );
-					it = _mapDeviceToBufferResources[ d3D9Device ];
+					CreateBuffer( d3D9Device, this._bufferDesc.Pool );
+					it = this._mapDeviceToBufferResources[ d3D9Device ];
 				}
 
 				if ( it.IsOutOfDate )
-					_updateBufferResources( _systemMemoryBuffer, ref it );
+				{
+					_updateBufferResources( this._systemMemoryBuffer, ref it );
+				}
 
 				it.LastUsedFrame = Root.Instance.NextFrameNumber;
 
@@ -137,31 +146,32 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			_mapDeviceToBufferResources = new Dictionary<D3D9.Device, BufferResources>();
+			this._mapDeviceToBufferResources = new Dictionary<Device, BufferResources>();
 
 #if AXIOM_D3D_MANAGE_BUFFERS
-			var eResourcePool = useSystemMemory ? D3D9.Pool.SystemMemory :
-				// If not system mem, use managed pool UNLESS buffer is discardable
+			Pool eResourcePool = useSystemMemory ? Pool.SystemMemory : // If not system mem, use managed pool UNLESS buffer is discardable
 				// if discardable, keeping the software backing is expensive
-				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D9.Pool.Default : D3D9.Pool.Managed;
+								 ( ( usage & BufferUsage.Discardable ) != 0 ) ? Pool.Default : Pool.Managed;
 #else
 			var eResourcePool = useSystemMemory ? D3D9.Pool.SystemMemory : D3D9.Pool.Default;
 #endif
 
 			// Set the desired memory pool.
-			_bufferDesc.Pool = eResourcePool;
+			this._bufferDesc.Pool = eResourcePool;
 
 			// Allocate the system memory buffer.
-			_systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
+			this._systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
 
 			// Case we have to create this buffer resource on loading.
-            if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
-            {
-                foreach ( var d3d9Device in D3D9RenderSystem.ResourceCreationDevices )
-                    CreateBuffer( d3d9Device, _bufferDesc.Pool );
-            }
+			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
+			{
+				foreach ( Device d3d9Device in D3D9RenderSystem.ResourceCreationDevices )
+				{
+					CreateBuffer( d3d9Device, this._bufferDesc.Pool );
+				}
+			}
 
-            D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
+			D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
@@ -170,22 +180,22 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareVertexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					//Entering critical section
 					this.LockDeviceAccess();
 
-					foreach ( var it in _mapDeviceToBufferResources.Values )
+					foreach ( BufferResources it in this._mapDeviceToBufferResources.Values )
 					{
 						it.VertexBuffer.SafeDispose();
 						it.SafeDispose();
 					}
-					_mapDeviceToBufferResources.Clear();
-					_systemMemoryBuffer.SafeDispose();
+					this._mapDeviceToBufferResources.Clear();
+					this._systemMemoryBuffer.SafeDispose();
 
-                    D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
+					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 
 					//Leaving critical section
 					this.UnlockDeviceAccess();
@@ -210,35 +220,41 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( options != BufferLocking.ReadOnly )
 			{
-				foreach ( var it in _mapDeviceToBufferResources )
+				foreach ( var it in this._mapDeviceToBufferResources )
 				{
-					var bufferResources = it.Value;
+					BufferResources bufferResources = it.Value;
 					bufferResources.IsOutOfDate = true;
 
 					if ( bufferResources.LockLength > 0 )
 					{
-						var highPoint = Utility.Max( offset + length, bufferResources.LockOffset + bufferResources.LockLength );
+						int highPoint = Utility.Max( offset + length, bufferResources.LockOffset + bufferResources.LockLength );
 						bufferResources.LockOffset = Utility.Min( bufferResources.LockOffset, offset );
 						bufferResources.LockLength = highPoint - bufferResources.LockOffset;
 					}
 					else
 					{
 						if ( offset < bufferResources.LockOffset )
+						{
 							bufferResources.LockOffset = offset;
+						}
 
 						if ( length > bufferResources.LockLength )
-							bufferResources.LockLength = length;                        
+						{
+							bufferResources.LockLength = length;
+						}
 					}
 
 					if ( bufferResources.LockOptions != BufferLocking.Discard )
+					{
 						bufferResources.LockOptions = options;
+					}
 				}
 			}
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
 
-			return _systemMemoryBuffer + offset;
+			return this._systemMemoryBuffer + offset;
 		}
 
 		/// <see cref="Axiom.Graphics.HardwareBuffer.UnlockImpl"/>
@@ -248,17 +264,15 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			var nextFrameNumber = Root.Instance.NextFrameNumber;
+			int nextFrameNumber = Root.Instance.NextFrameNumber;
 
-			foreach ( var it in _mapDeviceToBufferResources )
+			foreach ( var it in this._mapDeviceToBufferResources )
 			{
-				var bufferResources = it.Value;
+				BufferResources bufferResources = it.Value;
 
-				if ( bufferResources.IsOutOfDate &&
-					 bufferResources.VertexBuffer != null &&
-					 nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
+				if ( bufferResources.IsOutOfDate && bufferResources.VertexBuffer != null && nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 				{
-					_updateBufferResources( _systemMemoryBuffer, ref bufferResources );
+					_updateBufferResources( this._systemMemoryBuffer, ref bufferResources );
 				}
 			}
 
@@ -274,13 +288,13 @@ namespace Axiom.RenderSystems.DirectX9
 			// lock, copy & unlock
 
 			// lock the buffer for reading
-			var src = this.Lock( offset, length, BufferLocking.ReadOnly );
+			BufferBase src = Lock( offset, length, BufferLocking.ReadOnly );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
 			// unlock the buffer
-			this.Unlock();
+			Unlock();
 		}
 
 		/// <see cref="Axiom.Graphics.HardwareBuffer.WriteData(int, int, BufferBase, bool)"/>
@@ -291,30 +305,30 @@ namespace Axiom.RenderSystems.DirectX9
 			// lock, copy & unlock
 
 			// lock the buffer real quick
-			var dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			BufferBase dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
 			// unlock the buffer
-			this.Unlock();
+			Unlock();
 		}
 
 		/// <summary>
 		/// Create the actual vertex buffer.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public void CreateBuffer( D3D9.Device d3d9Device, D3D9.Pool ePool )
+		public void CreateBuffer( Device d3d9Device, Pool ePool )
 		{
 			// Find the vertex buffer of this device.
 			BufferResources bufferResources;
-			if ( _mapDeviceToBufferResources.TryGetValue( d3d9Device, out bufferResources ) )
+			if ( this._mapDeviceToBufferResources.TryGetValue( d3d9Device, out bufferResources ) )
 			{
 				bufferResources.VertexBuffer.SafeDispose();
 			}
 			else
 			{
 				bufferResources = new BufferResources();
-				_mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
+				this._mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
 			}
 
 			bufferResources.VertexBuffer = null;
@@ -327,59 +341,53 @@ namespace Axiom.RenderSystems.DirectX9
 			// Create the vertex buffer
 			try
 			{
-				bufferResources.VertexBuffer = new D3D9.VertexBuffer(
-					d3d9Device,
-					sizeInBytes,
-					D3D9Helper.ConvertEnum( usage ),
-					0, // No FVF here, thank you.
-					ePool );
+				bufferResources.VertexBuffer = new VertexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), 0, // No FVF here, thank you.
+																 ePool );
 			}
 			catch ( Exception ex )
 			{
 				throw new AxiomException( "Cannot restore D3D9 vertex buffer", ex );
 			}
 
-			_bufferDesc = bufferResources.VertexBuffer.Description;
+			this._bufferDesc = bufferResources.VertexBuffer.Description;
 		}
 
 		/// <summary>
 		/// Update the given buffer content.
 		/// </summary>
-		[OgreVersion(1, 7, 2790)]
+		[OgreVersion( 1, 7, 2790 )]
 		private bool _updateBufferResources( BufferBase systemMemoryBuffer, ref BufferResources bufferResources )
 		{
 			Contract.RequiresNotNull( bufferResources, "Cannot update BufferResources in D3D9HardwareVertexBuffer!" );
 			Contract.RequiresNotNull( bufferResources.VertexBuffer, "Cannot update BufferResources in D3D9HardwareVertexBuffer!" );
 			Contract.Requires( bufferResources.IsOutOfDate );
 
-			DX.DataStream dstBytes;
+			DataStream dstBytes;
 
 			// Lock the buffer
 			try
 			{
-				dstBytes = bufferResources.VertexBuffer.Lock(
-					bufferResources.LockOffset,
-					bufferResources.LockLength,
-					D3D9Helper.ConvertEnum( bufferResources.LockOptions, this.usage )
-					);
+				dstBytes = bufferResources.VertexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength, D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
 			}
 			catch ( Exception ex )
 			{
 				throw new AxiomException( "Cannot lock D3D9 vertex buffer!", ex );
 			}
 
-            using ( var src = systemMemoryBuffer + bufferResources.LockOffset )
-            {
-                using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, (int)dstBytes.Length ) )
-                {
-                    Memory.Copy( src, dest, bufferResources.LockLength );
-                }
-            }
+			using ( BufferBase src = systemMemoryBuffer + bufferResources.LockOffset )
+			{
+				using ( BufferBase dest = BufferBase.Wrap( dstBytes.DataPointer, (int)dstBytes.Length ) )
+				{
+					Memory.Copy( src, dest, bufferResources.LockLength );
+				}
+			}
 
 			// Unlock the buffer.
-			var hr = bufferResources.VertexBuffer.Unlock();
+			Result hr = bufferResources.VertexBuffer.Unlock();
 			if ( hr.Failure )
+			{
 				throw new AxiomException( "Cannot unlock D3D9 vertex buffer: {0}", hr.ToString() );
+			}
 
 			bufferResources.IsOutOfDate = false;
 			bufferResources.LockOffset = sizeInBytes;
@@ -395,13 +403,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device )
+		public void NotifyOnDeviceCreate( Device d3d9Device )
 		{
 			//Entering critical section
 			this.LockDeviceAccess();
 
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
-				CreateBuffer( d3d9Device, _bufferDesc.Pool );
+			{
+				CreateBuffer( d3d9Device, this._bufferDesc.Pool );
+			}
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
@@ -409,16 +419,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
+		public void NotifyOnDeviceDestroy( Device d3d9Device )
 		{
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+			if ( this._mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
 			{
-				_mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
-				_mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
-				_mapDeviceToBufferResources.Remove( d3d9Device );
+				this._mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
+				this._mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
+				this._mapDeviceToBufferResources.Remove( d3d9Device );
 			}
 
 			//Leaving critical section
@@ -427,15 +437,17 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceLost"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceLost( D3D9.Device d3d9Device )
+		public void NotifyOnDeviceLost( Device d3d9Device )
 		{
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _bufferDesc.Pool == D3D9.Pool.Default )
+			if ( this._bufferDesc.Pool == Pool.Default )
 			{
-				if ( _mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
-					_mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
+				if ( this._mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+				{
+					this._mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
+				}
 			}
 
 			//Leaving critical section
@@ -444,18 +456,20 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceReset( D3D9.Device d3d9Device )
+		public void NotifyOnDeviceReset( Device d3d9Device )
 		{
 			//Entering critical section
 			this.LockDeviceAccess();
 
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
-				CreateBuffer( d3d9Device, _bufferDesc.Pool );
+			{
+				CreateBuffer( d3d9Device, this._bufferDesc.Pool );
+			}
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
 		}
 
-		#endregion ID3D9Resource Members
+		#endregion
 	};
 }

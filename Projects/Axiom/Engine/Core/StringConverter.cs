@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 
 using Axiom.Math;
 
@@ -59,7 +61,7 @@ namespace Axiom.Core
 			return obj.ToLower().GetHashCode();
 		}
 
-		#endregion IEqualityComparer<string> Members
+		#endregion
 	}
 
 
@@ -73,7 +75,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
-		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
+		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		#endregion Fields
 
@@ -82,9 +84,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Private constructor so no instances can be created.
 		/// </summary>
-		private StringConverter()
-		{
-		}
+		private StringConverter() { }
 
 		#endregion Constructor
 
@@ -235,7 +235,9 @@ namespace Axiom.Core
 			}
 		}
 #endif
+
 		#endregion String.Split() replacements
+
 		/// <summary>
 		///		Parses a boolean type value
 		/// </summary>
@@ -278,7 +280,7 @@ namespace Axiom.Core
 		public static ColorEx ParseColor( string val )
 		{
 			ColorEx color;
-			var vals = val.Split( ' ' );
+			string[] vals = val.Split( ' ' );
 
 			color.r = ParseFloat( vals[ 0 ] );
 			color.g = ParseFloat( vals[ 1 ] );
@@ -307,7 +309,7 @@ namespace Axiom.Core
 		/// <param name="val"></param>
 		public static Vector3 ParseVector3( string val )
 		{
-			var values = val.Split( ' ' );
+			string[] values = val.Split( ' ' );
 
 			var vec = new Vector3();
 			vec.x = ParseFloat( values[ 0 ] );
@@ -343,7 +345,9 @@ namespace Axiom.Core
 		public static float ParseFloat( string val )
 		{
 			if ( val == float.NaN.ToString() )
+			{
 				return float.NaN;
+			}
 			return float.Parse( val, englishCulture );
 		}
 
@@ -396,7 +400,7 @@ namespace Axiom.Core
 
 		public static bool ParseInt( string value, out int num )
 		{
-		    return int.TryParse( value, out num);
+			return int.TryParse( value, out num );
 		}
 	}
 }

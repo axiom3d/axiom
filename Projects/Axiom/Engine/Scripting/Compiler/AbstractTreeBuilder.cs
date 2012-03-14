@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
+
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -44,24 +48,26 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
+		#region Nested type: AbstractTreeBuilder
+
 		private class AbstractTreeBuilder
 		{
-			private ScriptCompiler _compiler;
+			private readonly ScriptCompiler _compiler;
+			private readonly List<AbstractNode> _nodes;
 			private AbstractNode _current;
-			private List<AbstractNode> _nodes;
 
 			public AbstractTreeBuilder( ScriptCompiler compiler )
 			{
-				_compiler = compiler;
-				_current = null;
-				_nodes = new List<AbstractNode>();
+				this._compiler = compiler;
+				this._current = null;
+				this._nodes = new List<AbstractNode>();
 			}
 
 			public IList<AbstractNode> Result
 			{
 				get
 				{
-					return _nodes;
+					return this._nodes;
 				}
 			}
 
@@ -70,16 +76,16 @@ namespace Axiom.Scripting.Compiler
 				AbstractNode asn = null;
 
 				// Import = "import" >> 2 children, _current == null
-				if ( node.Type == ConcreteNodeType.Import && _current == null )
+				if ( node.Type == ConcreteNodeType.Import && this._current == null )
 				{
 					if ( node.Children.Count > 2 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
+						this._compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
 					if ( node.Children.Count < 2 )
 					{
-						_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
+						this._compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 						return;
 					}
 
@@ -96,31 +102,31 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( node.Children.Count > 2 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
+						this._compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
 					if ( node.Children.Count < 2 )
 					{
-						_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
+						this._compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 						return;
 					}
 					if ( node.Children[ 0 ].Type != ConcreteNodeType.Variable )
 					{
-						_compiler.AddError( CompileErrorCode.VariableExpected, node.Children[ 0 ].File, node.Children[ 0 ].Line );
+						this._compiler.AddError( CompileErrorCode.VariableExpected, node.Children[ 0 ].File, node.Children[ 0 ].Line );
 						return;
 					}
 
-					var name = node.Children[ 0 ].Token;
-					var value = node.Children[ 1 ].Token;
+					string name = node.Children[ 0 ].Token;
+					string value = node.Children[ 1 ].Token;
 
-					if ( _current != null && _current is ObjectAbstractNode )
+					if ( this._current != null && this._current is ObjectAbstractNode )
 					{
-						var ptr = (ObjectAbstractNode)_current;
+						var ptr = (ObjectAbstractNode)this._current;
 						ptr.SetVariable( name, value );
 					}
 					else
 					{
-						_compiler.Environment.Add( name, value );
+						this._compiler.Environment.Add( name, value );
 					}
 				}
 				// variable = $*, no children
@@ -128,11 +134,11 @@ namespace Axiom.Scripting.Compiler
 				{
 					if ( node.Children.Count != 0 )
 					{
-						_compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
+						this._compiler.AddError( CompileErrorCode.FewerParametersExpected, node.File, node.Line );
 						return;
 					}
 
-					var impl = new VariableGetAbstractNode( _current );
+					var impl = new VariableGetAbstractNode( this._current );
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Name = node.Token;
@@ -146,21 +152,24 @@ namespace Axiom.Scripting.Compiler
 					ConcreteNode temp1 = null, temp2 = null;
 
 					if ( node.Children.Count >= 1 )
+					{
 						temp1 = node.Children[ node.Children.Count - 1 ];
+					}
 					if ( node.Children.Count >= 2 )
+					{
 						temp2 = node.Children[ node.Children.Count - 2 ];
+					}
 
 					// object = last 2 children == { and }
-					if ( temp1 != null && temp2 != null &&
-						temp1.Type == ConcreteNodeType.RightBrace && temp2.Type == ConcreteNodeType.LeftBrace )
+					if ( temp1 != null && temp2 != null && temp1.Type == ConcreteNodeType.RightBrace && temp2.Type == ConcreteNodeType.LeftBrace )
 					{
 						if ( node.Children.Count < 2 )
 						{
-							_compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
+							this._compiler.AddError( CompileErrorCode.StringExpected, node.File, node.Line );
 							return;
 						}
 
-						var impl = new ObjectAbstractNode( _current );
+						var impl = new ObjectAbstractNode( this._current );
 						impl.Line = node.Line;
 						impl.File = node.File;
 						impl.IsAbstract = false;
@@ -181,12 +190,11 @@ namespace Axiom.Scripting.Compiler
 						IEnumerator<ConcreteNode> iter = temp.GetEnumerator();
 						iter.MoveNext();
 						impl.Cls = iter.Current.Token;
-						var validNode = iter.MoveNext();
+						bool validNode = iter.MoveNext();
 
 						// Get the name
 						// Unless the type is in the exclusion list
-						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
-							!_compiler._isNameExcluded( impl.Cls, _current ) )
+						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) && !this._compiler._isNameExcluded( impl.Cls, this._current ) )
 						{
 							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();
@@ -218,61 +226,63 @@ namespace Axiom.Scripting.Compiler
 						if ( validNode && iter.Current.Type == ConcreteNodeType.Colon )
 						{
 							// Children of the ':' are bases
-							foreach ( var j in iter.Current.Children )
+							foreach ( ConcreteNode j in iter.Current.Children )
+							{
 								impl.Bases.Add( j.Token );
+							}
 
 							validNode = iter.MoveNext();
 						}
 
 						// Finally try to map the cls to an id
-						if ( _compiler.KeywordMap.ContainsKey( impl.Cls ) )
+						if ( this._compiler.KeywordMap.ContainsKey( impl.Cls ) )
 						{
-							impl.Id = _compiler.KeywordMap[ impl.Cls ];
+							impl.Id = this._compiler.KeywordMap[ impl.Cls ];
 						}
 
-						asn = (AbstractNode)impl;
-						_current = impl;
+						asn = impl;
+						this._current = impl;
 
 						// Visit the children of the {
-						AbstractTreeBuilder.Visit( this, temp2.Children );
+						Visit( this, temp2.Children );
 
 						// Go back up the stack
-						_current = impl.Parent;
+						this._current = impl.Parent;
 					}
 					// Otherwise, it is a property
 					else
 					{
-						var impl = new PropertyAbstractNode( _current );
+						var impl = new PropertyAbstractNode( this._current );
 						impl.Line = node.Line;
 						impl.File = node.File;
 						impl.Name = node.Token;
 
-						if ( _compiler.KeywordMap.ContainsKey( impl.Name ) )
+						if ( this._compiler.KeywordMap.ContainsKey( impl.Name ) )
 						{
-							impl.Id = _compiler.KeywordMap[ impl.Name ];
+							impl.Id = this._compiler.KeywordMap[ impl.Name ];
 						}
 
-						asn = (AbstractNode)impl;
-						_current = impl;
+						asn = impl;
+						this._current = impl;
 
 						// Visit the children of the {
-						AbstractTreeBuilder.Visit( this, node.Children );
+						Visit( this, node.Children );
 
 						// Go back up the stack
-						_current = impl.Parent;
+						this._current = impl.Parent;
 					}
 				}
 				// Otherwise, it is a standard atom
 				else
 				{
-					var impl = new AtomAbstractNode( _current );
+					var impl = new AtomAbstractNode( this._current );
 					impl.Line = node.Line;
 					impl.File = node.File;
 					impl.Value = node.Token;
 
-					if ( _compiler.KeywordMap.ContainsKey( impl.Value ) )
+					if ( this._compiler.KeywordMap.ContainsKey( impl.Value ) )
 					{
-						impl.Id = _compiler.KeywordMap[ impl.Value ];
+						impl.Id = this._compiler.KeywordMap[ impl.Value ];
 					}
 
 					asn = impl;
@@ -280,32 +290,35 @@ namespace Axiom.Scripting.Compiler
 
 				if ( asn != null )
 				{
-					if ( _current != null )
+					if ( this._current != null )
 					{
-						if ( _current is PropertyAbstractNode )
+						if ( this._current is PropertyAbstractNode )
 						{
-							var impl = (PropertyAbstractNode)_current;
+							var impl = (PropertyAbstractNode)this._current;
 							impl.Values.Add( asn );
 						}
 						else
 						{
-							var impl = (ObjectAbstractNode)_current;
+							var impl = (ObjectAbstractNode)this._current;
 							impl.Children.Add( asn );
 						}
 					}
 					else
 					{
-						_nodes.Add( asn );
+						this._nodes.Add( asn );
 					}
 				}
 			}
 
-			static public void Visit( AbstractTreeBuilder visitor, IList<ConcreteNode> nodes )
+			public static void Visit( AbstractTreeBuilder visitor, IList<ConcreteNode> nodes )
 			{
-				foreach ( var node in nodes )
+				foreach ( ConcreteNode node in nodes )
+				{
 					visitor.visit( node );
+				}
 			}
-
 		}
+
+		#endregion
 	}
 }

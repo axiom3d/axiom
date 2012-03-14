@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,22 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 
-using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -57,38 +59,37 @@ namespace Axiom.Input
 		#region Fields
 
 		/// <summary>
+		///		Active modifier keys.
+		/// </summary>
+		protected ModifierKeys modifiers;
+
+		/// <summary>
 		///		Flag for whether or not to fire keyboard events.
 		/// </summary>
 		protected bool useKeyboardEvents;
+
 		/// <summary>
 		///		Flag for whether or not to fire mouse events.
 		/// </summary>
 		protected bool useMouseEvents;
 
-		/// <summary>
-		///		Active modifier keys.
-		/// </summary>
-		protected ModifierKeys modifiers;
-
 		#endregion Fields
-
-		#region Abstract Members
 
 		#region Methods
 
-	    /// <summary>
-	    ///		Subclasses should initialize the underlying input subsystem using this
-	    ///		method.
-	    /// </summary>
-	    /// <param name="parent">Parent window that the input belongs to.</param>
-	    /// <param name="useGamepad"></param>
-	    /// <param name="ownMouse">
-	    ///		If true, input will be taken over from the OS and exclusive to the window.
-	    ///		If false, input will still be shared with other apps.
-	    ///	</param>
-	    /// <param name="useKeyboard"></param>
-	    /// <param name="useMouse"></param>
-	    public abstract void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
+		/// <summary>
+		///		Subclasses should initialize the underlying input subsystem using this
+		///		method.
+		/// </summary>
+		/// <param name="parent">Parent window that the input belongs to.</param>
+		/// <param name="useGamepad"></param>
+		/// <param name="ownMouse">
+		///		If true, input will be taken over from the OS and exclusive to the window.
+		///		If false, input will still be shared with other apps.
+		///	</param>
+		/// <param name="useKeyboard"></param>
+		/// <param name="useMouse"></param>
+		public abstract void Initialize( RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse );
 
 		/// <summary>
 		///		Captures the state of all the input devices.
@@ -107,14 +108,14 @@ namespace Axiom.Input
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public abstract bool IsKeyPressed( Axiom.Input.KeyCodes key );
+		public abstract bool IsKeyPressed( KeyCodes key );
 
 		/// <summary>
 		///    Returns true if the specified mouse button is currently down.
 		/// </summary>
 		/// <param name="button">Mouse button to query.</param>
 		/// <returns>True if the mouse button is down, false otherwise.</returns>
-		public abstract bool IsMousePressed( Axiom.Input.MouseButtons button );
+		public abstract bool IsMousePressed( MouseButtons button );
 
 		#endregion Methods
 
@@ -124,52 +125,34 @@ namespace Axiom.Input
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the X (horizontal) axis.
 		/// </summary>
-		public abstract int RelativeMouseX
-		{
-			get;
-		}
+		public abstract int RelativeMouseX { get; }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Y (vertical) axis.
 		/// </summary>
-		public abstract int RelativeMouseY
-		{
-			get;
-		}
+		public abstract int RelativeMouseY { get; }
 
 		/// <summary>
 		///		Retrieves the relative (compared to the last input poll) mouse movement
 		///		on the Z (mouse wheel) axis.
 		/// </summary>
-		public abstract int RelativeMouseZ
-		{
-			get;
-		}
+		public abstract int RelativeMouseZ { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the X (horizontal) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseX
-		{
-			get;
-		}
+		public abstract int AbsoluteMouseX { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Y (vertical) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseY
-		{
-			get;
-		}
+		public abstract int AbsoluteMouseY { get; }
 
 		/// <summary>
 		///		Retrieves the absolute mouse position on the Z (mouse wheel) axis.
 		/// </summary>
-		public abstract int AbsoluteMouseZ
-		{
-			get;
-		}
+		public abstract int AbsoluteMouseZ { get; }
 
 		/// <summary>
 		///		Get/Set whether or not to use event based keyboard input notification.
@@ -178,11 +161,7 @@ namespace Axiom.Input
 		///		When true, events will be fired when keyboard input occurs on a call to <see cref="Capture"/>.
 		///		When false, the current keyboard state will be available via <see cref="IsKeyPressed"/> .
 		/// </value>
-		public abstract bool UseKeyboardEvents
-		{
-			get;
-			set;
-		}
+		public abstract bool UseKeyboardEvents { get; set; }
 
 		/// <summary>
 		///		Get/Set whether or not to use event based mouse input notification.
@@ -191,17 +170,9 @@ namespace Axiom.Input
 		///		When true, events will be fired when mouse input occurs on a call to <see cref="Capture"/>.
 		///		When false, the current mouse state will be available via <see cref="IsMousePressed"/> .
 		/// </value>
-		public abstract bool UseMouseEvents
-		{
-			get;
-			set;
-		}
+		public abstract bool UseMouseEvents { get; set; }
 
 		#endregion Properties
-
-		#endregion Abstract Members
-
-		#region Base Members
 
 		#region Methods
 
@@ -210,7 +181,7 @@ namespace Axiom.Input
 		/// </summary>
 		public static char GetKeyChar( KeyCodes keyCode, ModifierKeys modifiers )
 		{
-			var isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
+			bool isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
 
 			switch ( keyCode )
 			{
@@ -330,21 +301,21 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						modifiers |= ModifierKeys.Alt;
+						this.modifiers |= ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						modifiers |= ModifierKeys.Shift;
+						this.modifiers |= ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						modifiers |= ModifierKeys.Control;
+						this.modifiers |= ModifierKeys.Control;
 						break;
 				}
 
-				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new KeyEventArgs( key, this.modifiers );
 				OnKeyDown( e );
 			}
 			else
@@ -353,32 +324,28 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						modifiers &= ~ModifierKeys.Alt;
+						this.modifiers &= ~ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						modifiers &= ~ModifierKeys.Shift;
+						this.modifiers &= ~ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						modifiers &= ~ModifierKeys.Control;
+						this.modifiers &= ~ModifierKeys.Control;
 						break;
 				}
 
-				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new KeyEventArgs( key, this.modifiers );
 				OnKeyUp( e );
 			}
 		}
 
 		#endregion Methods
 
-		#endregion Base Members
-
 		#region Events
-
-		// Note: Events are only applicable when UseMouseEvents or UseKeyboardEvents are set to true.
 
 		#region Declarations
 
@@ -422,6 +389,8 @@ namespace Axiom.Input
 
 		#endregion Trigger Methods
 
+		// Note: Events are only applicable when UseMouseEvents or UseKeyboardEvents are set to true.
+
 		#endregion Events
 
 		#region IDisposable Members
@@ -431,7 +400,7 @@ namespace Axiom.Input
 		/// </summary>
 		public abstract void Dispose();
 
-		#endregion IDisposable Members
+		#endregion
 	}
 
 	#region Delegates

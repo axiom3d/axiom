@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Math;
@@ -12,52 +13,57 @@ using Axiom.ParticleSystems;
 namespace Axiom.Demos
 {
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class SkyBox : TechDemo
+	public class SkyBox : TechDemo
 	{
 		#region Fields
+
 		private float defaultDimension = 25;
 		private float defaultVelocity = 50;
-		protected ParticleSystem thrusters = null;
+		protected ParticleSystem thrusters;
+
 		#endregion Fields
 
 		protected override void OnFrameStarted( Object source, FrameEventArgs evt )
 		{
 			base.OnFrameStarted( source, evt );
 			if ( evt.StopRendering )
+			{
 				return;
+			}
 
 			if ( input.IsKeyPressed( KeyCodes.N ) )
 			{
-				thrusters.DefaultWidth = defaultDimension + 0.25f;
-				thrusters.DefaultHeight = defaultDimension + 0.25f;
-				defaultDimension += 0.25f;
+				this.thrusters.DefaultWidth = this.defaultDimension + 0.25f;
+				this.thrusters.DefaultHeight = this.defaultDimension + 0.25f;
+				this.defaultDimension += 0.25f;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.M ) )
 			{
-				thrusters.DefaultWidth = defaultDimension - 0.25f;
-				thrusters.DefaultHeight = defaultDimension - 0.25f;
-				defaultDimension -= 0.25f;
+				this.thrusters.DefaultWidth = this.defaultDimension - 0.25f;
+				this.thrusters.DefaultHeight = this.defaultDimension - 0.25f;
+				this.defaultDimension -= 0.25f;
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.H ) )
 			{
-				thrusters.GetEmitter( 0 ).ParticleVelocity = defaultVelocity + 1;
-				thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity + 1;
-				defaultVelocity += 1;
+				this.thrusters.GetEmitter( 0 ).ParticleVelocity = this.defaultVelocity + 1;
+				this.thrusters.GetEmitter( 1 ).ParticleVelocity = this.defaultVelocity + 1;
+				this.defaultVelocity += 1;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.J ) && !( defaultVelocity < 0.0f ) )
+			if ( input.IsKeyPressed( KeyCodes.J ) && !( this.defaultVelocity < 0.0f ) )
 			{
-				thrusters.GetEmitter( 0 ).ParticleVelocity = defaultVelocity - 1;
-				thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity - 1;
-				defaultVelocity -= 1;
+				this.thrusters.GetEmitter( 0 ).ParticleVelocity = this.defaultVelocity - 1;
+				this.thrusters.GetEmitter( 1 ).ParticleVelocity = this.defaultVelocity - 1;
+				this.defaultVelocity -= 1;
 			}
 		}
 
 		#region Methods
+
 		public override void CreateScene()
 		{
 			// since whole screen is being redrawn every frame, dont bother clearing
@@ -79,13 +85,13 @@ namespace Axiom.Demos
 			Entity ship = scene.CreateEntity( "razor", "razor.mesh" );
 			scene.RootSceneNode.AttachObject( ship );
 
-			thrusters = ParticleSystemManager.Instance.CreateSystem( "ParticleSystem", 200 );
-			thrusters.MaterialName = "Particles/Flare";
-			thrusters.DefaultWidth = 25;
-			thrusters.DefaultHeight = 25;
+			this.thrusters = ParticleSystemManager.Instance.CreateSystem( "ParticleSystem", 200 );
+			this.thrusters.MaterialName = "Particles/Flare";
+			this.thrusters.DefaultWidth = 25;
+			this.thrusters.DefaultHeight = 25;
 
-			ParticleEmitter emitter1 = thrusters.AddEmitter( "Point" );
-			ParticleEmitter emitter2 = thrusters.AddEmitter( "Point" );
+			ParticleEmitter emitter1 = this.thrusters.AddEmitter( "Point" );
+			ParticleEmitter emitter2 = this.thrusters.AddEmitter( "Point" );
 
 			// thruster 1
 			emitter1.Angle = 3;
@@ -109,8 +115,9 @@ namespace Axiom.Demos
 			emitter1.Position = new Vector3( 5.7f, 0, 0 );
 			emitter2.Position = new Vector3( -18, 0, 0 );
 
-			scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 6.5f, -67 ), Quaternion.Identity ).AttachObject( thrusters );
+			scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 6.5f, -67 ), Quaternion.Identity ).AttachObject( this.thrusters );
 		}
+
 		#endregion Methods
 	}
 }

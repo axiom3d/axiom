@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using Axiom.Core;
@@ -63,7 +65,6 @@ namespace Axiom.Samples.Bsp
 			ResourceGroupManager.Instance.LoadResourceGroup( "BSPSAMPLE", false, true );
 
 			TrayManager.HideLoadingBar();
-
 		}
 
 		protected override void UnloadResources()

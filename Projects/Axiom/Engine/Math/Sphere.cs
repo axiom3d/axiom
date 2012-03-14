@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -28,18 +29,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
+
 
 #endregion Namespace Declarations
 
@@ -57,8 +61,8 @@ namespace Axiom.Math
 	{
 		#region Protected member variables
 
-		private Real radius;
 		private Vector3 center;
+		private Real radius;
 
 		#endregion
 
@@ -69,8 +73,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Sphere()
 		{
-			radius = 1.0f;
-			center = Vector3.Zero;
+			this.radius = 1.0f;
+			this.center = Vector3.Zero;
 		}
 
 		/// <summary>
@@ -95,11 +99,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return center;
+				return this.center;
 			}
 			set
 			{
-				center = value;
+				this.center = value;
 			}
 		}
 
@@ -110,11 +114,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return radius;
+				return this.radius;
 			}
 			set
 			{
-				radius = value;
+				this.radius = value;
 			}
 		}
 
@@ -131,15 +135,16 @@ namespace Axiom.Math
 		{
 			return sphere1.center != sphere2.center || sphere1.radius != sphere2.radius;
 		}
+
 		public override bool Equals( object obj )
 		{
 			return obj is Sphere && this == (Sphere)obj;
 		}
+
 		public override int GetHashCode()
 		{
-			return center.GetHashCode() ^ radius.GetHashCode();
+			return this.center.GetHashCode() ^ this.radius.GetHashCode();
 		}
-
 
 
 		/// <summary>
@@ -149,7 +154,7 @@ namespace Axiom.Math
 		/// <returns>True if the spheres intersect, false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			return ( ( sphere.center - center ).Length <= ( sphere.radius + radius ) );
+			return ( ( sphere.center - this.center ).Length <= ( sphere.radius + this.radius ) );
 		}
 
 		/// <summary>
@@ -179,7 +184,7 @@ namespace Axiom.Math
 		/// <returns>True if the vector intersects, false otherwise.</returns>
 		public bool Intersects( Vector3 vector )
 		{
-			return ( vector - center ).Length <= radius;
+			return ( vector - this.center ).Length <= this.radius;
 		}
 
 		#endregion Intersection methods

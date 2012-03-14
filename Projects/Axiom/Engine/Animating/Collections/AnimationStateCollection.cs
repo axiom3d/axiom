@@ -35,9 +35,6 @@
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
-
-using Axiom.Animating;
 using Axiom.Collections;
 
 #endregion
@@ -57,10 +54,12 @@ namespace Axiom.Animating.Collections
 		/// <returns></returns>
 		public AnimationStateCollection Clone()
 		{
-            var newCol = new AnimationStateCollection();
+			var newCol = new AnimationStateCollection();
 
-			foreach ( var entry in this )
-                newCol.Add( entry.Name, entry );
+			foreach ( AnimationState entry in this )
+			{
+				newCol.Add( entry.Name, entry );
+			}
 
 			return newCol;
 		}

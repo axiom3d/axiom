@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -48,9 +49,11 @@ namespace Axiom.Media
 	public class NearestResampler
 	{
 		#region Fields and Properties
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -60,40 +63,40 @@ namespace Axiom.Media
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="temp"></param>
-		static public void Scale( PixelBox src, PixelBox temp )
+		public static void Scale( PixelBox src, PixelBox temp )
 		{
 			Scale( src, temp, PixelUtil.GetNumElemBytes( src.Format ) );
 		}
 
 		/// <summary>
 		/// </summary>
-		static public void Scale( PixelBox src, PixelBox dst, int elementSize )
+		public static void Scale( PixelBox src, PixelBox dst, int elementSize )
 		{
 			// assert(src.format == dst.format);
 			// srcdata stays at beginning, pdst is a moving pointer
 			//byte* srcdata = (byte*)src.Data;
 			//byte* pdst = (byte*)dst.Data;
-			var dstOffset = 0;
+			int dstOffset = 0;
 
 			// sx_48,sy_48,sz_48 represent current position in source
 			// using 16/48-bit fixed precision, incremented by steps
-			var stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
-			var stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
-			var stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
+			ulong stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
+			ulong stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
+			ulong stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
 
 			// note: ((stepz>>1) - 1) is an extra half-step increment to adjust
 			// for the center of the destination pixel, not the top-left corner
-			var sz_48 = ( stepz >> 1 ) - 1;
+			ulong sz_48 = ( stepz >> 1 ) - 1;
 			for ( var z = (uint)dst.Front; z < dst.Back; z++, sz_48 += stepz )
 			{
-				var srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
+				uint srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
 
-				var sy_48 = ( stepy >> 1 ) - 1;
+				ulong sy_48 = ( stepy >> 1 ) - 1;
 				for ( var y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
 				{
-					var srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
+					uint srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
 
-					var sx_48 = ( stepx >> 1 ) - 1;
+					ulong sx_48 = ( stepx >> 1 ) - 1;
 					for ( var x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
 					{
 						Memory.Copy( src.Data, dst.Data, (int)( elementSize * ( (uint)( sx_48 >> 48 ) + srcyoff + srczoff ) ), dstOffset, elementSize );
@@ -106,6 +109,5 @@ namespace Axiom.Media
 		}
 
 		#endregion Methods
-
 	}
 }

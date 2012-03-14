@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,41 +19,44 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    ///	Enum identifying D3D9 texture types
-    /// </summary>
-    [OgreVersion( 1, 7, 2 )]
-    public enum D3D9TextureType
-    {
-        /// <summary>
-        /// Standard texture
-        /// </summary>
-        Normal,
+	/// <summary>
+	///	Enum identifying D3D9 texture types
+	/// </summary>
+	[OgreVersion( 1, 7, 2 )]
+	public enum D3D9TextureType
+	{
+		/// <summary>
+		/// Standard texture
+		/// </summary>
+		Normal,
 
-        /// <summary>
-        /// Cube texture
-        /// </summary>
-        Cube,
+		/// <summary>
+		/// Cube texture
+		/// </summary>
+		Cube,
 
-        /// <summary>
-        /// Volume texture
-        /// </summary>
-        Volume,
+		/// <summary>
+		/// Volume texture
+		/// </summary>
+		Volume,
 
-        /// <summary>
-        /// Just to have it...
-        /// </summary>
-        None
-    };
+		/// <summary>
+		/// Just to have it...
+		/// </summary>
+		None
+	};
 }

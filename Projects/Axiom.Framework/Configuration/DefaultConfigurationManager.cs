@@ -1,4 +1,5 @@
 #region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,14 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 
-using Axiom.Core;
 using Axiom.Configuration;
+using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
 {
@@ -39,9 +40,9 @@ namespace Axiom.Framework.Configuration
 		public static string DefaultLogFileName = "axiom.log";
 		public static string DefaultSectionName = "axiom";
 
-		protected AxiomConfigurationSection ConfigurationSection;
 		protected System.Configuration.Configuration Configuration;
 		protected IConfigurationDialogFactory ConfigurationFactory;
+		protected AxiomConfigurationSection ConfigurationSection;
 
 		#endregion Fields and Properties
 
@@ -51,27 +52,21 @@ namespace Axiom.Framework.Configuration
 		/// 
 		/// </summary>
 		public DefaultConfigurationManager()
-			: this( new DefaultConfigurationDialogFactory(), null, DefaultSectionName )
-		{
-		}
+			: this( new DefaultConfigurationDialogFactory(), null, DefaultSectionName ) { }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="dialog"></param>
 		public DefaultConfigurationManager( IConfigurationDialogFactory dialog )
-			: this( dialog, null, DefaultSectionName )
-		{
-		}
+			: this( dialog, null, DefaultSectionName ) { }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="configurationFile"></param>
 		public DefaultConfigurationManager( string configurationFile )
-			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName )
-		{
-		}
+			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName ) { }
 
 		/// <summary>
 		/// 
@@ -79,9 +74,7 @@ namespace Axiom.Framework.Configuration
 		/// <param name="dialog"></param>
 		/// <param name="configurationFile"></param>
 		public DefaultConfigurationManager( IConfigurationDialogFactory dialog, string configurationFile )
-			: this( dialog, configurationFile, DefaultSectionName )
-		{
-		}
+			: this( dialog, configurationFile, DefaultSectionName ) { }
 
 		/// <summary>
 		/// 
@@ -89,9 +82,7 @@ namespace Axiom.Framework.Configuration
 		/// <param name="configurationFile"></param>
 		/// <param name="sectionName"></param>
 		public DefaultConfigurationManager( string configurationFile, string sectionName )
-			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName )
-		{
-		}
+			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName ) { }
 
 		/// <summary>
 		/// 
@@ -103,12 +94,12 @@ namespace Axiom.Framework.Configuration
 			: base( configurationFile )
 		{
 			this.ConfigurationFactory = factory;
-			this.LogFilename = DefaultLogFileName;
+			LogFilename = DefaultLogFileName;
 
 			if ( !String.IsNullOrEmpty( configurationFile ) )
 			{
 				// Get current configuration file.
-				ExeConfigurationFileMap map = new ExeConfigurationFileMap();
+				var map = new ExeConfigurationFileMap();
 				map.ExeConfigFilename = configurationFile;
 				this.Configuration = ConfigurationManager.OpenMappedExeConfiguration( map, ConfigurationUserLevel.None );
 			}
@@ -123,7 +114,7 @@ namespace Axiom.Framework.Configuration
 
 			if ( this.ConfigurationSection != null && !String.IsNullOrEmpty( this.ConfigurationSection.LogFilename ) )
 			{
-				this.LogFilename = this.ConfigurationSection.LogFilename;
+				LogFilename = this.ConfigurationSection.LogFilename;
 			}
 		}
 
@@ -159,7 +150,7 @@ namespace Axiom.Framework.Configuration
 			{
 				if ( engine.RenderSystems.ContainsKey( renderSystemConfig.Name ) )
 				{
-					var renderSystem = engine.RenderSystems[ renderSystemConfig.Name ];
+					Axiom.Graphics.RenderSystem renderSystem = engine.RenderSystems[ renderSystemConfig.Name ];
 
 					foreach ( RenderSystemOption optionConfig in renderSystemConfig.Options )
 					{
@@ -200,26 +191,28 @@ namespace Axiom.Framework.Configuration
 				this.ConfigurationSection.RenderSystems.Remove( this.ConfigurationSection.RenderSystems[ 0 ] );
 			}
 
-			foreach ( var key in engine.RenderSystems.Keys )
+			foreach ( string key in engine.RenderSystems.Keys )
 			{
 				this.ConfigurationSection.RenderSystems.Add( new RenderSystem
-				{
-					Name = key,
-					Options = new RenderSystemOptionElementCollection()
-				} );
+															 {
+																 Name = key,
+																 Options = new RenderSystemOptionElementCollection()
+															 } );
 
 				foreach ( ConfigOption item in engine.RenderSystems[ key ].ConfigOptions )
 				{
 					this.ConfigurationSection.RenderSystems[ key ].Options.Add( new RenderSystemOption
-					{
-						Name = item.Name,
-						Value = item.Value
-					} );
+																				{
+																					Name = item.Name,
+																					Value = item.Value
+																				} );
 				}
 			}
 
 			if ( !string.IsNullOrEmpty( defaultRenderer ) && this.ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
+			{
 				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
+			}
 
 			this.Configuration.Save( ConfigurationSaveMode.Modified );
 		}

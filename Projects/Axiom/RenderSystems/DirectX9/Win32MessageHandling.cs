@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id:"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -43,11 +49,116 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	class Win32MessageHandling
+	internal class Win32MessageHandling
 	{
 		#region P/Invoke Declarations
 
-		enum WindowMessage
+		/// <summary>
+		///		PeekMessage option to remove the message from the queue after processing.
+		/// </summary>
+		private const int PM_REMOVE = 0x0001;
+
+		private const string USER_DLL = "user32.dll";
+
+		/// <summary>
+		///	The PeekMessage function dispatches incoming sent messages, checks the thread message
+		///	queue for a posted message, and retrieves the message (if any exist).
+		/// </summary>
+		/// <param name="msg">A <see cref="Msg"/> structure that receives message information.</param>
+		/// <param name="handle"></param>
+		/// <param name="msgFilterMin"></param>
+		/// <param name="msgFilterMax"></param>
+		/// <param name="removeMsg"></param>
+		[DllImport( USER_DLL )]
+		[return: MarshalAs( UnmanagedType.Bool )]
+		private static extern bool PeekMessage( out Msg msg, IntPtr handle, uint msgFilterMin, uint msgFilterMax, uint removeMsg );
+
+		/// <summary>
+		///	The TranslateMessage function translates virtual-key messages into character messages.
+		/// </summary>
+		/// <param name="msg">
+		///	an MSG structure that contains message information retrieved from the calling thread's message queue
+		///	by using the GetMessage or <see cref="PeekMessage"/> function.
+		/// </param>
+		[DllImport( USER_DLL )]
+		[return: MarshalAs( UnmanagedType.Bool )]
+		private static extern bool TranslateMessage( ref Msg msg );
+
+		/// <summary>
+		///	The DispatchMessage function dispatches a message to a window procedure.
+		/// </summary>
+		/// <param name="msg">A <see cref="Msg"/> structure containing the message.</param>
+		[DllImport( USER_DLL )]
+		private static extern IntPtr DispatchMessage( ref Msg msg );
+
+		#region Nested type: ActivateState
+
+		private enum ActivateState
+		{
+			InActive = 0,
+			Active = 1,
+			ClickActive = 2
+		}
+
+		#endregion
+
+		#region Nested type: Msg
+
+		[StructLayout( LayoutKind.Sequential )]
+		private struct Msg
+		{
+			public readonly IntPtr hWnd;
+			public readonly uint Message;
+			public readonly IntPtr wParam;
+			public readonly IntPtr lParam;
+			public readonly uint time;
+			public readonly POINTAPI pt;
+		}
+
+		#endregion
+
+		#region Nested type: POINTAPI
+
+		[StructLayout( LayoutKind.Sequential )]
+		private struct POINTAPI
+		{
+			public readonly int x;
+			public readonly int y;
+
+			// Just to get rid of Warning CS0649.
+			public POINTAPI( int x, int y )
+			{
+				this.x = x;
+				this.y = y;
+			}
+
+			public static implicit operator Point( POINTAPI p )
+			{
+				return new Point( p.x, p.y );
+			}
+
+			public static implicit operator POINTAPI( Point p )
+			{
+				return new POINTAPI( p.X, p.Y );
+			}
+		}
+
+		#endregion
+
+		#region Nested type: VirtualKeys
+
+		private enum VirtualKeys
+		{
+			Shift = 0x10,
+			Control = 0x11,
+			Menu = 0x12
+		}
+
+		#endregion
+
+		#region Nested type: WindowMessage
+
+		private enum WindowMessage
 		{
 			Create = 0x0001,
 			Destroy = 0x0002,
@@ -63,99 +174,11 @@ namespace Axiom.RenderSystems.DirectX9
 			ExitSizeMove = 0x0232
 		}
 
-		enum ActivateState
-		{
-			InActive = 0,
-			Active = 1,
-			ClickActive = 2
-		}
-
-		enum VirtualKeys
-		{
-			Shift = 0x10,
-			Control = 0x11,
-			Menu = 0x12
-		}
-
-        [StructLayout( LayoutKind.Sequential )]
-		struct Msg
-		{
-			public IntPtr hWnd;
-			public uint Message;
-			public IntPtr wParam;
-			public IntPtr lParam;
-			public uint time;
-			public POINTAPI pt;
-		}
-
-        [StructLayout( LayoutKind.Sequential )]
-		struct POINTAPI
-		{
-			public int x;
-			public int y;
-
-			// Just to get rid of Warning CS0649.
-			public POINTAPI( int x, int y )
-			{
-                this.x = x;
-                this.y = y;
-            }
-
-            public static implicit operator System.Drawing.Point( POINTAPI p )
-            {
-                return new System.Drawing.Point( p.x, p.y );
-            }
-
-            public static implicit operator POINTAPI( System.Drawing.Point p )
-            {
-                return new POINTAPI( p.X, p.Y );
-            }
-		}
-
-		/// <summary>
-		///		PeekMessage option to remove the message from the queue after processing.
-		/// </summary>
-		const int PM_REMOVE = 0x0001;
-		const string USER_DLL = "user32.dll";
-
-		/// <summary>
-		///	The PeekMessage function dispatches incoming sent messages, checks the thread message
-		///	queue for a posted message, and retrieves the message (if any exist).
-		/// </summary>
-		/// <param name="msg">A <see cref="Msg"/> structure that receives message information.</param>
-		/// <param name="handle"></param>
-		/// <param name="msgFilterMin"></param>
-		/// <param name="msgFilterMax"></param>
-		/// <param name="removeMsg"></param>
-		[DllImport( USER_DLL )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-        private static extern bool PeekMessage( out Msg msg, IntPtr handle, uint msgFilterMin, uint msgFilterMax, uint removeMsg );
-
-		/// <summary>
-		///	The TranslateMessage function translates virtual-key messages into character messages.
-		/// </summary>
-		/// <param name="msg">
-		///	an MSG structure that contains message information retrieved from the calling thread's message queue
-		///	by using the GetMessage or <see cref="PeekMessage"/> function.
-		/// </param>
-		[DllImport( USER_DLL )]
-        [return: MarshalAs( UnmanagedType.Bool )]
-		private static extern bool TranslateMessage( ref Msg msg );
-
-		/// <summary>
-		///	The DispatchMessage function dispatches a message to a window procedure.
-		/// </summary>
-		/// <param name="msg">A <see cref="Msg"/> structure containing the message.</param>
-		[DllImport( USER_DLL )]
-		private static extern IntPtr DispatchMessage( ref Msg msg );
+		#endregion
 
 		#endregion P/Invoke Declarations
 
 		#region Construction and Destruction
-
-		public Win32MessageHandling()
-		{
-		}
 
 		#endregion Construction and Destruction
 
@@ -164,7 +187,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Internal winProc (RenderWindow's use this when creating the Win32 Window)
 		/// </summary>
-		static public bool WndProc( RenderWindow win, ref Message m )
+		public static bool WndProc( RenderWindow win, ref Message m )
 		{
 			switch ( (WindowMessage)m.Msg )
 			{
@@ -224,12 +247,12 @@ namespace Axiom.RenderSystems.DirectX9
 			return false;
 		}
 
-		static public void MessagePump()
+		public static void MessagePump()
 		{
 			Msg msg;
 
 			// pump those events!
-            while ( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) )
+			while ( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) )
 			{
 				TranslateMessage( ref msg );
 				DispatchMessage( ref msg );

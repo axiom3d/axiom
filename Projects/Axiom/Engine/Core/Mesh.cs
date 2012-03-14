@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,35 +23,34 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 
 using Axiom.Animating;
-using Axiom.Collections;
 using Axiom.Configuration;
+using Axiom.Core.Collections;
 using Axiom.CrossPlatform;
-using Axiom.Math;
-using Axiom.Math.Collections;
-using Axiom.Serialization;
 using Axiom.Graphics;
+using Axiom.Math;
+using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -100,6 +100,7 @@ namespace Axiom.Core
 		///		Shared vertex data between multiple meshes.
 		///	</summary>
 		private VertexData _sharedVertexData;
+
 		/// <summary>
 		///		Gets/Sets the shared VertexData for this mesh.
 		/// </summary>
@@ -107,11 +108,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _sharedVertexData;
+				return this._sharedVertexData;
 			}
 			set
 			{
-				_sharedVertexData = value;
+				this._sharedVertexData = value;
 			}
 		}
 
@@ -122,7 +123,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Collection of sub meshes for this mesh.
 		///	</summary>
-		private SubMeshList _subMeshList = new SubMeshList();
+		private readonly SubMeshList _subMeshList = new SubMeshList();
 
 		/// <summary>
 		///    Gets the number of submeshes belonging to this mesh.
@@ -131,7 +132,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _subMeshList.Count;
+				return this._subMeshList.Count;
 			}
 		}
 
@@ -143,6 +144,7 @@ namespace Axiom.Core
 		///		Local bounding box of this mesh.
 		/// </summary>
 		private AxisAlignedBox _boundingBox = AxisAlignedBox.Null;
+
 		/// <summary>
 		///		Gets/Sets the bounding box for this mesh.
 		/// </summary>
@@ -157,17 +159,17 @@ namespace Axiom.Core
 			get
 			{
 				// OPTIMIZE: Cloning to prevent direct modification
-				return (AxisAlignedBox)_boundingBox.Clone();
+				return (AxisAlignedBox)this._boundingBox.Clone();
 			}
 			set
 			{
-				_boundingBox = value;
+				this._boundingBox = value;
 
-				float sqLen1 = _boundingBox.Minimum.LengthSquared;
-				float sqLen2 = _boundingBox.Maximum.LengthSquared;
+				float sqLen1 = this._boundingBox.Minimum.LengthSquared;
+				float sqLen2 = this._boundingBox.Maximum.LengthSquared;
 
 				// update the bounding sphere radius as well
-				_boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
+				this._boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
 			}
 		}
 
@@ -179,6 +181,7 @@ namespace Axiom.Core
 		///		Radius of this mesh's bounding sphere.
 		/// </summary>
 		private Real _boundingSphereRadius;
+
 		/// <summary>
 		///    Bounding spehere radius from this mesh in local coordinates.
 		/// </summary>
@@ -186,11 +189,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _boundingSphereRadius;
+				return this._boundingSphereRadius;
 			}
 			set
 			{
-				_boundingSphereRadius = value;
+				this._boundingSphereRadius = value;
 			}
 		}
 
@@ -200,6 +203,7 @@ namespace Axiom.Core
 
 		/// <summary>Reference to the skeleton bound to this mesh.</summary>
 		private Skeleton _skeleton;
+
 		/// <summary>
 		///    Gets the skeleton currently bound to this mesh.
 		/// </summary>
@@ -207,11 +211,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _skeleton;
+				return this._skeleton;
 			}
 			protected set
 			{
-				_skeleton = value;
+				this._skeleton = value;
 			}
 		}
 
@@ -221,6 +225,7 @@ namespace Axiom.Core
 
 		/// <summary>Name of the skeleton bound to this mesh.</summary>
 		private string _skeletonName;
+
 		/// <summary>
 		///    Get/Sets the name of the skeleton which will be bound to this mesh.
 		/// </summary>
@@ -228,26 +233,26 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _skeletonName;
+				return this._skeletonName;
 			}
 			set
 			{
-				_skeletonName = value;
+				this._skeletonName = value;
 
-				if ( _skeletonName == null || _skeletonName.Length == 0 )
+				if ( this._skeletonName == null || this._skeletonName.Length == 0 )
 				{
-					_skeleton = null;
+					this._skeleton = null;
 				}
 				else
 				{
 					try
 					{
 						// load the skeleton
-						_skeleton = (Skeleton)SkeletonManager.Instance.Load( _skeletonName, Group );
+						this._skeleton = (Skeleton)SkeletonManager.Instance.Load( this._skeletonName, Group );
 					}
 					catch ( Exception )
 					{
-						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
+						LogManager.Instance.Write( "Unable to load skeleton " + this._skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
 					}
 				}
 			}
@@ -264,7 +269,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( _skeletonName.Length != 0 );
+				return ( this._skeletonName.Length != 0 );
 			}
 		}
 
@@ -273,7 +278,8 @@ namespace Axiom.Core
 		#region BoneAssignmentList Property
 
 		/// <summary>List of bone assignment for this mesh.</summary>
-		private Dictionary<int, List<VertexBoneAssignment>> _boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+		private readonly Dictionary<int, List<VertexBoneAssignment>> _boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+
 		/// <summary>
 		///		Gets bone assigment list
 		/// </summary>
@@ -281,11 +287,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _boneAssignmentList;
+				return this._boneAssignmentList;
 			}
 		}
 
 		#endregion BoneAssignmentList Property
+
+		/// <summary>
+		///     Storage of morph animations, lookup by name
+		/// </summary>
+		private readonly Dictionary<string, Animation> _animationsList = new Dictionary<string, Animation>();
 
 		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
 		protected bool boneAssignmentsOutOfDate;
@@ -302,6 +313,7 @@ namespace Axiom.Core
 		///		Usage type for the vertex buffer.
 		/// </summary>
 		private BufferUsage _vertexBufferUsage;
+
 		/// <summary>
 		///    Gets the usage setting for this meshes vertex buffers.
 		/// </summary>
@@ -309,11 +321,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _vertexBufferUsage;
+				return this._vertexBufferUsage;
 			}
 			protected set
 			{
-				_vertexBufferUsage = value;
+				this._vertexBufferUsage = value;
 			}
 		}
 
@@ -325,6 +337,7 @@ namespace Axiom.Core
 		///		Usage type for the index buffer.
 		/// </summary>
 		private BufferUsage _indexBufferUsage;
+
 		/// <summary>
 		///    Gets the usage setting for this meshes index buffers.
 		/// </summary>
@@ -332,11 +345,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _indexBufferUsage;
+				return this._indexBufferUsage;
 			}
 			protected set
 			{
-				_indexBufferUsage = value;
+				this._indexBufferUsage = value;
 			}
 		}
 
@@ -348,6 +361,7 @@ namespace Axiom.Core
 		///		Use a shadow buffer for the vertex data?
 		/// </summary>
 		private bool _useVertexShadowBuffer;
+
 		/// <summary>
 		///    Gets whether or not this meshes vertex buffers are shadowed.
 		/// </summary>
@@ -355,11 +369,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _useVertexShadowBuffer;
+				return this._useVertexShadowBuffer;
 			}
 			protected set
 			{
-				_useVertexShadowBuffer = value;
+				this._useVertexShadowBuffer = value;
 			}
 		}
 
@@ -371,6 +385,7 @@ namespace Axiom.Core
 		///		Use a shadow buffer for the index data?
 		/// </summary>
 		private bool _useIndexShadowBuffer;
+
 		/// <summary>
 		///    Gets whether or not this meshes index buffers are shadowed.
 		/// </summary>
@@ -378,11 +393,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _useIndexShadowBuffer;
+				return this._useIndexShadowBuffer;
 			}
 			protected set
 			{
-				_useIndexShadowBuffer = value;
+				this._useIndexShadowBuffer = value;
 			}
 		}
 
@@ -394,6 +409,7 @@ namespace Axiom.Core
 		///		Flag indicating whether precalculation steps to support shadows have been taken.
 		/// </summary>
 		private bool _isPreparedForShadowVolumes;
+
 		/// <summary>
 		///		Gets whether this mesh has already had its geometry prepared for use in
 		///		rendering shadow volumes.
@@ -402,7 +418,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isPreparedForShadowVolumes;
+				return this._isPreparedForShadowVolumes;
 			}
 		}
 
@@ -414,6 +430,7 @@ namespace Axiom.Core
 		///		Should edge lists be automatically built for this mesh?
 		/// </summary>
 		private bool _autoBuildEdgeLists;
+
 		/// <summary>
 		///		Gets/Sets whether or not this Mesh should automatically build edge lists
 		///		when asked for them, or whether it should never build them if
@@ -423,11 +440,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _autoBuildEdgeLists;
+				return this._autoBuildEdgeLists;
 			}
 			set
 			{
-				_autoBuildEdgeLists = value;
+				this._autoBuildEdgeLists = value;
 			}
 		}
 
@@ -439,6 +456,7 @@ namespace Axiom.Core
 		///     Have the edge lists been built for this mesh yet?
 		/// </summary>
 		private bool _edgeListsBuilt;
+
 		/// <summary>
 		///     Returns whether this mesh has an attached edge list.
 		/// </summary>
@@ -446,11 +464,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _edgeListsBuilt;
+				return this._edgeListsBuilt;
 			}
 			protected internal set
 			{
-				_edgeListsBuilt = value;
+				this._edgeListsBuilt = value;
 			}
 		}
 
@@ -459,7 +477,8 @@ namespace Axiom.Core
 		#region AttachmentPoints Property
 
 		/// <summary>Internal list of named transforms attached to this mesh.</summary>
-		private List<AttachmentPoint> _attachmentPoints = new List<AttachmentPoint>();
+		private readonly List<AttachmentPoint> _attachmentPoints = new List<AttachmentPoint>();
+
 		/// <summary>
 		/// Llist of named transforms attached to this mesh.
 		/// </summary>
@@ -468,16 +487,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _attachmentPoints;
+				return this._attachmentPoints;
 			}
 		}
 
 		#endregion AttachmentPoints Property
 
-		/// <summary>
-		///     Storage of morph animations, lookup by name
-		/// </summary>
-		private Dictionary<string, Animation> _animationsList = new Dictionary<string, Animation>();
 		/// <summary>
 		///   The number of vertex animations in the mesh
 		/// </summary>
@@ -485,7 +500,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _animationsList.Count;
+				return this._animationsList.Count;
 			}
 		}
 
@@ -494,7 +509,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _animationsList.Count > 0;
+				return this._animationsList.Count > 0;
 			}
 		}
 
@@ -504,6 +519,7 @@ namespace Axiom.Core
 		///     The vertex animation type associated with the shared vertex data
 		/// </summary>
 		private VertexAnimationType _sharedVertexDataAnimationType;
+
 		/// <summary>
 		///		Gets bone assigment list
 		/// </summary>
@@ -511,9 +527,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( _animationTypesDirty )
+				if ( this._animationTypesDirty )
+				{
 					DetermineAnimationTypes();
-				return _sharedVertexDataAnimationType;
+				}
+				return this._sharedVertexDataAnimationType;
 			}
 		}
 
@@ -525,12 +543,13 @@ namespace Axiom.Core
 		///     Do we need to scan animations for animation types?
 		/// </summary>
 		private bool _animationTypesDirty;
+
 		/// <summary>Are the derived animation types out of date?</summary>
 		public bool AnimationTypesDirty
 		{
 			get
 			{
-				return _animationTypesDirty;
+				return this._animationTypesDirty;
 			}
 		}
 
@@ -541,7 +560,8 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of available poses for shared and dedicated geometryPoseList
 		/// </summary>
-		private List<Pose> _poseList = new List<Pose>();
+		private readonly List<Pose> _poseList = new List<Pose>();
+
 		/// <summary>
 		///		Gets bone assigment list
 		/// </summary>
@@ -549,7 +569,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _poseList;
+				return this._poseList;
 			}
 		}
 
@@ -560,17 +580,18 @@ namespace Axiom.Core
 		/// <summary>
 		///     A list of triangles, plus machinery to determine the closest intersection point
 		/// </summary>
-		private TriangleIntersector _triangleIntersector = null;
+		private TriangleIntersector _triangleIntersector;
+
 		/// <summary>A list of triangles, plus machinery to determine the closest intersection point</summary>
 		public TriangleIntersector TriangleIntersector
 		{
 			get
 			{
-				return _triangleIntersector;
+				return this._triangleIntersector;
 			}
 			set
 			{
-				_triangleIntersector = value;
+				this._triangleIntersector = value;
 			}
 		}
 
@@ -583,40 +604,38 @@ namespace Axiom.Core
 		public Mesh( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-
 			// This will be set to false by serializers 1.3 and above
-			_autoBuildEdgeLists = true;
+			this._autoBuildEdgeLists = true;
 
 			// default to static write only for speed
-			_vertexBufferUsage = BufferUsage.StaticWriteOnly;
-			_indexBufferUsage = BufferUsage.StaticWriteOnly;
+			this._vertexBufferUsage = BufferUsage.StaticWriteOnly;
+			this._indexBufferUsage = BufferUsage.StaticWriteOnly;
 
 			// default to having shadow buffers
-			_useVertexShadowBuffer = true;
-			_useIndexShadowBuffer = true;
+			this._useVertexShadowBuffer = true;
+			this._useIndexShadowBuffer = true;
 
 			// Initialize to default strategy
-			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
+			this._lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
 			// Init first (manual) lod
 			var lod = new MeshLodUsage();
 			lod.UserValue = float.NaN; // User value not used for base lod level
-			lod.Value = _lodStrategy.BaseValue;
+			lod.Value = this._lodStrategy.BaseValue;
 			lod.EdgeData = null;
 			lod.ManualMesh = null;
-			meshLodUsageList.Add( lod );
+			this.meshLodUsageList.Add( lod );
 
 
 			// always use software blending for now
-			useSoftwareBlending = true;
+			this.useSoftwareBlending = true;
 
-			this.SkeletonName = "";
+			SkeletonName = "";
 		}
 
 		#endregion Construction and Destruction
 
 		#region Properties
-
 
 		/// <summary>
 		///		Gets the edge list for this mesh, building it if required.
@@ -636,7 +655,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public EdgeData GetEdgeList( int lodIndex )
 		{
-			if ( !_edgeListsBuilt )
+			if ( !this._edgeListsBuilt )
 			{
 				BuildEdgeList();
 			}
@@ -660,10 +679,12 @@ namespace Axiom.Core
 		/// <param name="boneAssignment">Bone assignment to add.</param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !_boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
-				_boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
-			_boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
-			boneAssignmentsOutOfDate = true;
+			if ( !this._boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			{
+				this._boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+			}
+			this._boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -672,18 +693,18 @@ namespace Axiom.Core
 		/// </summary>
 		public void AddVertexAndIndexSets( AnyBuilder builder, int lodIndex )
 		{
-			var vertexSetCount = 0;
+			int vertexSetCount = 0;
 
-			if ( _sharedVertexData != null )
+			if ( this._sharedVertexData != null )
 			{
-				builder.AddVertexData( _sharedVertexData );
+				builder.AddVertexData( this._sharedVertexData );
 				vertexSetCount++;
 			}
 
 			// Prepare the builder using the submesh information
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				SubMesh sm = this._subMeshList[ i ];
 
 				if ( sm.useSharedVertices )
 				{
@@ -723,18 +744,18 @@ namespace Axiom.Core
 		/// </summary>
 		public void BuildEdgeList()
 		{
-			if ( _edgeListsBuilt )
+			if ( this._edgeListsBuilt )
 			{
 				return;
 			}
 
 			// loop over LODs
-			for ( var lodIndex = 0; lodIndex < meshLodUsageList.Count; lodIndex++ )
+			for ( int lodIndex = 0; lodIndex < this.meshLodUsageList.Count; lodIndex++ )
 			{
 				// use getLodLevel to enforce loading of manual mesh lods
-				var usage = GetLodLevel( lodIndex );
+				MeshLodUsage usage = GetLodLevel( lodIndex );
 
-				if ( _isLodManual && lodIndex != 0 )
+				if ( this._isLodManual && lodIndex != 0 )
 				{
 					// Delegate edge building to manual mesh
 					// It should have already built its own edge list while loading
@@ -752,21 +773,23 @@ namespace Axiom.Core
 				}
 			}
 
-			_edgeListsBuilt = true;
+			this._edgeListsBuilt = true;
 		}
 
 		public void FreeEdgeList()
 		{
-			if ( !_edgeListsBuilt )
-				return;
-
-			for ( var i = 0; i < meshLodUsageList.Count; ++i )
+			if ( !this._edgeListsBuilt )
 			{
-				var usage = meshLodUsageList[ i ];
+				return;
+			}
+
+			for ( int i = 0; i < this.meshLodUsageList.Count; ++i )
+			{
+				MeshLodUsage usage = this.meshLodUsageList[ i ];
 				usage.EdgeData = null;
 			}
 
-			_edgeListsBuilt = false;
+			this._edgeListsBuilt = false;
 		}
 
 		/// <summary>
@@ -779,7 +802,7 @@ namespace Axiom.Core
 			// Add this mesh's vertex and index data structures for lod 0
 			AddVertexAndIndexSets( builder, 0 );
 			// Create the list of triangles
-			_triangleIntersector = new TriangleIntersector( builder.Build() );
+			this._triangleIntersector = new TriangleIntersector( builder.Build() );
 		}
 
 		/// <summary>
@@ -809,25 +832,25 @@ namespace Axiom.Core
 			var v = new float[ 3 ];
 
 			// setup a new 3D texture coord-set buffer for every sub mesh
-			var numSubMeshes = this.SubMeshCount;
+			int numSubMeshes = SubMeshCount;
 
-			var sharedGeometryDone = false;
+			bool sharedGeometryDone = false;
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
 				// setup a new 3D tex coord buffer for every submesh
-				for ( var sm = 0; sm < numSubMeshes; sm++ )
+				for ( int sm = 0; sm < numSubMeshes; sm++ )
 				{
-					var subMesh = GetSubMesh( sm );
+					SubMesh subMesh = GetSubMesh( sm );
 
 					// get index buffer pointer
-					var idxData = subMesh.indexData;
-					var buffIdx = idxData.indexBuffer;
-					var indices = buffIdx.Lock( BufferLocking.ReadOnly );
-                    // the face indices buffer, read only
-                    var pIdx = indices.ToUShortPointer();
+					IndexData idxData = subMesh.indexData;
+					HardwareIndexBuffer buffIdx = idxData.indexBuffer;
+					BufferBase indices = buffIdx.Lock( BufferLocking.ReadOnly );
+					// the face indices buffer, read only
+					ushort* pIdx = indices.ToUShortPointer();
 
 					// get vertex pointer
 					VertexData usedVertexData;
@@ -840,7 +863,7 @@ namespace Axiom.Core
 							continue;
 						}
 
-						usedVertexData = _sharedVertexData;
+						usedVertexData = this._sharedVertexData;
 						sharedGeometryDone = true;
 					}
 					else
@@ -848,16 +871,16 @@ namespace Axiom.Core
 						usedVertexData = subMesh.vertexData;
 					}
 
-					var decl = usedVertexData.vertexDeclaration;
-					var binding = usedVertexData.vertexBufferBinding;
+					VertexDeclaration decl = usedVertexData.vertexDeclaration;
+					VertexBufferBinding binding = usedVertexData.vertexBufferBinding;
 
 					// make sure we have a 3D coord to place data in
 					OrganizeTangentsBuffer( usedVertexData, destTexCoordSet );
 
 					// get the target element
-					var destElem = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, destTexCoordSet );
+					VertexElement destElem = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, destTexCoordSet );
 					// get the source element
-					var srcElem = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, sourceTexCoordSet );
+					VertexElement srcElem = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, sourceTexCoordSet );
 
 					if ( srcElem == null || srcElem.Type != VertexElementType.Float2 )
 					{
@@ -891,7 +914,7 @@ namespace Axiom.Core
 						destPtr = destBuffer.Lock( BufferLocking.Normal );
 					}
 
-					var elemPos = decl.FindElementBySemantic( VertexElementSemantic.Position );
+					VertexElement elemPos = decl.FindElementBySemantic( VertexElementSemantic.Position );
 
 					if ( elemPos.Source == srcElem.Source )
 					{
@@ -912,23 +935,23 @@ namespace Axiom.Core
 					}
 
 					// loop through all faces to calculate the tangents and normals
-					var numFaces = idxData.indexCount / 3;
-					var vCount = 0;
+					int numFaces = idxData.indexCount / 3;
+					int vCount = 0;
 
 					// loop through all faces to calculate the tangents
-					for ( var n = 0; n < numFaces; n++ )
+					for ( int n = 0; n < numFaces; n++ )
 					{
-						var i = 0;
+						int i = 0;
 
 						for ( i = 0; i < 3; i++ )
 						{
 							// get indices of vertices that form a polygon in the position buffer
 							vertIdx[ i ] = pIdx[ vCount++ ];
 
-							var tmpPtr = posPtr + (elemPos.Offset + ( posInc * vertIdx[ i ] ));
+							BufferBase tmpPtr = posPtr + ( elemPos.Offset + ( posInc * vertIdx[ i ] ) );
 
-                            // vertex position buffer, read only
-							var pVPos = tmpPtr.ToFloatPointer();
+							// vertex position buffer, read only
+							float* pVPos = tmpPtr.ToFloatPointer();
 
 							// get the vertex positions from the position buffer
 							vertPos[ i ].x = pVPos[ 0 ];
@@ -936,33 +959,30 @@ namespace Axiom.Core
 							vertPos[ i ].z = pVPos[ 2 ];
 
 							// get the vertex tex coords from the 2D tex coord buffer
-							tmpPtr = srcPtr + (srcElem.Offset + ( srcInc * vertIdx[ i ] ));
-                            // pointer to 2D tex.coords, read only
-                            var p2DTC = tmpPtr.ToFloatPointer();
+							tmpPtr = srcPtr + ( srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
+							// pointer to 2D tex.coords, read only
+							float* p2DTC = tmpPtr.ToFloatPointer();
 
 							u[ i ] = p2DTC[ 0 ];
 							v[ i ] = p2DTC[ 1 ];
 						} // for v = 1 to 3
 
 						// calculate the tangent space vector
-						var tangent =
-							Utility.CalculateTangentSpaceVector(
-								vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ],
-								u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
+						Vector3 tangent = Utility.CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
 
 						// write new tex.coords
 						// note we only write the tangent, not the binormal since we can calculate
 						// the binormal in the vertex program
-						var vBase = destPtr.ToBytePointer();
+						byte* vBase = destPtr.ToBytePointer();
 
 						for ( i = 0; i < 3; i++ )
 						{
 							// write values (they must be 0 and we must add them so we can average
 							// all the contributions from all the faces
-							var tmpPtr = destPtr + (destElem.Offset + ( destInc * vertIdx[ i ] ) );
+							BufferBase tmpPtr = destPtr + ( destElem.Offset + ( destInc * vertIdx[ i ] ) );
 
-                            // pointer to 3D tex.coords, write/read (discard)
-							var p3DTC = tmpPtr.ToFloatPointer();
+							// pointer to 3D tex.coords, write/read (discard)
+							float* p3DTC = tmpPtr.ToFloatPointer();
 
 							p3DTC[ 0 ] += tangent.x;
 							p3DTC[ 1 ] += tangent.y;
@@ -970,19 +990,19 @@ namespace Axiom.Core
 						} // for v = 1 to 3
 					} // for each face
 
-					var numVerts = usedVertexData.vertexCount;
+					int numVerts = usedVertexData.vertexCount;
 
-					var offset = 0;
+					int offset = 0;
 
-					var qBase = destPtr.ToBytePointer();
+					byte* qBase = destPtr.ToBytePointer();
 
 					// loop through and normalize all 3d tex coords
-					for ( var n = 0; n < numVerts; n++ )
+					for ( int n = 0; n < numVerts; n++ )
 					{
-						var tmpPtr = destPtr + (destElem.Offset + offset );
+						BufferBase tmpPtr = destPtr + ( destElem.Offset + offset );
 
-                        // pointer to 3D tex.coords, write/read (discard)
-                        var p3DTC = tmpPtr.ToFloatPointer();
+						// pointer to 3D tex.coords, write/read (discard)
+						float* p3DTC = tmpPtr.ToFloatPointer();
 
 						// read the 3d tex coord
 						var temp = new Vector3( p3DTC[ 0 ], p3DTC[ 1 ], p3DTC[ 2 ] );
@@ -1042,8 +1062,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
-			_boneAssignmentList.Clear();
-			boneAssignmentsOutOfDate = true;
+			this._boneAssignmentList.Clear();
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -1051,7 +1071,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			var maxBones = RationalizeBoneAssignments( _sharedVertexData.vertexCount, _boneAssignmentList );
+			int maxBones = RationalizeBoneAssignments( this._sharedVertexData.vertexCount, this._boneAssignmentList );
 
 			// check for no bone assignments
 			if ( maxBones == 0 )
@@ -1059,9 +1079,9 @@ namespace Axiom.Core
 				return;
 			}
 
-			CompileBoneAssignments( _boneAssignmentList, maxBones, _sharedVertexData );
+			CompileBoneAssignments( this._boneAssignmentList, maxBones, this._sharedVertexData );
 
-			boneAssignmentsOutOfDate = false;
+			this.boneAssignmentsOutOfDate = false;
 		}
 
 		/// <summary>
@@ -1072,11 +1092,11 @@ namespace Axiom.Core
 			// Create or reuse blend weight / indexes buffer
 			// Indices are always a UBYTE4 no matter how many weights per vertex
 			// Weights are more specific though since they are Reals
-			var decl = targetVertexData.vertexDeclaration;
-			var bind = targetVertexData.vertexBufferBinding;
+			VertexDeclaration decl = targetVertexData.vertexDeclaration;
+			VertexBufferBinding bind = targetVertexData.vertexBufferBinding;
 			short bindIndex;
 
-			var testElem = decl.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			VertexElement testElem = decl.FindElementBySemantic( VertexElementSemantic.BlendIndices );
 
 			if ( testElem != null )
 			{
@@ -1094,23 +1114,21 @@ namespace Axiom.Core
 				bindIndex = bind.NextIndex;
 			}
 
-			var bufferSize = Memory.SizeOf( typeof( byte ) ) * 4;
+			int bufferSize = Memory.SizeOf( typeof( byte ) ) * 4;
 			bufferSize += Memory.SizeOf( typeof( float ) ) * numBlendWeightsPerVertex;
 
 			VertexElement idxElem, weightElem;
 
-			var firstElem = decl.GetElement( 0 );
+			VertexElement firstElem = decl.GetElement( 0 );
 
 			// add new vertex elements
 			// Note, insert directly after position to abide by pre-Dx9 format restrictions
 			if ( firstElem.Semantic == VertexElementSemantic.Position )
 			{
-				var insertPoint = 1;
+				int insertPoint = 1;
 
-				while ( insertPoint < decl.ElementCount &&
-					decl.GetElement( insertPoint ).Source == firstElem.Source )
+				while ( insertPoint < decl.ElementCount && decl.GetElement( insertPoint ).Source == firstElem.Source )
 				{
-
 					insertPoint++;
 				}
 
@@ -1126,20 +1144,20 @@ namespace Axiom.Core
 				weightElem = decl.AddElement( bindIndex, Memory.SizeOf( typeof( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
 			}
 
-            var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone(bindIndex), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( bindIndex ), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
 
-            // bind new buffer
-            bind.SetBinding(bindIndex, vbuf);
+			// bind new buffer
+			bind.SetBinding( bindIndex, vbuf );
 
 
 			// Assign data
-			var ptr = vbuf.Lock( BufferLocking.Discard );
+			BufferBase ptr = vbuf.Lock( BufferLocking.Discard );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-                var pBase = ptr;
+				BufferBase pBase = ptr;
 
 				// Iterate by vertex
 
@@ -1147,28 +1165,28 @@ namespace Axiom.Core
 				foreach ( var boneAssignment in boneAssignments )
 				{
 					// Convert to specific pointers
-					var pWeight = (pBase + weightElem.Offset).ToFloatPointer();
-					var pIndex = (pBase + idxElem.Offset).ToBytePointer();
+					float* pWeight = ( pBase + weightElem.Offset ).ToFloatPointer();
+					byte* pIndex = ( pBase + idxElem.Offset ).ToBytePointer();
 
 					// get the bone assignment enumerator and move to the first one in the list
 					//List<VertexBoneAssignment> vbaList = boneAssignments[ v ];
-					var vbaList = boneAssignment.Value;
+					List<VertexBoneAssignment> vbaList = boneAssignment.Value;
 
-					for ( var bone = 0; bone < numBlendWeightsPerVertex; bone++ )
+					for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
 					{
 						// Do we still have data for this vertex?
 						if ( bone < vbaList.Count )
 						{
-							var ba = vbaList[ bone ];
+							VertexBoneAssignment ba = vbaList[ bone ];
 							// If so, write weight
-                            pWeight[bone] = ba.weight;
-							pIndex[bone] = (byte)ba.boneIndex;
+							pWeight[ bone ] = ba.weight;
+							pIndex[ bone ] = (byte)ba.boneIndex;
 						}
 						else
 						{
 							// Ran out of assignments for this vertex, use weight 0 to indicate empty
-                            pWeight[bone] = 0.0f;
-                            pIndex[bone] = 0;
+							pWeight[ bone ] = 0.0f;
+							pIndex[ bone ] = 0;
 						}
 					}
 
@@ -1186,14 +1204,14 @@ namespace Axiom.Core
 		/// <param name="destCoordSet">Destination texture coordinate set.</param>
 		protected void OrganizeTangentsBuffer( VertexData vertexData, short destCoordSet )
 		{
-			var needsToBeCreated = false;
+			bool needsToBeCreated = false;
 
 			// grab refs to the declarations and bindings
-			var decl = vertexData.vertexDeclaration;
-			var binding = vertexData.vertexBufferBinding;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			// see if we already have a 3D tex coord buffer
-			var tex3d = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, destCoordSet );
+			VertexElement tex3d = decl.FindElementBySemantic( VertexElementSemantic.TexCoords, destCoordSet );
 
 			if ( tex3d == null )
 			{
@@ -1210,9 +1228,7 @@ namespace Axiom.Core
 				// What we need to do, to be most efficient with our vertex streams,
 				// is to tack the new 3D coordinate set onto the same buffer as the
 				// previous texture coord set
-				var prevTexCoordElem =
-					vertexData.vertexDeclaration.FindElementBySemantic(
-						VertexElementSemantic.TexCoords, (short)( destCoordSet - 1 ) );
+				VertexElement prevTexCoordElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.TexCoords, (short)( destCoordSet - 1 ) );
 
 				if ( prevTexCoordElem == null )
 				{
@@ -1220,23 +1236,23 @@ namespace Axiom.Core
 				}
 
 				// find the buffer associated with this element
-				var origBuffer = vertexData.vertexBufferBinding.GetBuffer( prevTexCoordElem.Source );
+				HardwareVertexBuffer origBuffer = vertexData.vertexBufferBinding.GetBuffer( prevTexCoordElem.Source );
 
 				// add the new element
-				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords,	destCoordSet );
+				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords, destCoordSet );
 
-                // Now create a new buffer, which includes the previous contents
-                // plus extra space for the 3D coords
-                var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
-                
-                // now copy the original data across
-				var srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
-				var destPtr = newBuffer.Lock( BufferLocking.Discard );
+				// Now create a new buffer, which includes the previous contents
+				// plus extra space for the 3D coords
+				HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
 
-				var vertSize = origBuffer.VertexSize;
+				// now copy the original data across
+				BufferBase srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
+				BufferBase destPtr = newBuffer.Lock( BufferLocking.Discard );
+
+				int vertSize = origBuffer.VertexSize;
 
 				// size of the element to skip
-                var elemSize = sizeof( float ) * 3;
+				int elemSize = sizeof( float ) * 3;
 
 				for ( int i = 0, srcOffset = 0, dstOffset = 0; i < vertexData.vertexCount; i++ )
 				{
@@ -1279,13 +1295,13 @@ namespace Axiom.Core
 			destCoordSet = 0;
 
 			// Go through all the vertex data and locate source and dest (must agree)
-			var sharedGeometryDone = false;
-			var foundExisting = false;
-			var firstOne = true;
+			bool sharedGeometryDone = false;
+			bool foundExisting = false;
+			bool firstOne = true;
 
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				SubMesh sm = this._subMeshList[ i ];
 
 				VertexData vertexData;
 
@@ -1296,7 +1312,7 @@ namespace Axiom.Core
 						continue;
 					}
 
-					vertexData = _sharedVertexData;
+					vertexData = this._sharedVertexData;
 					sharedGeometryDone = true;
 				}
 				else
@@ -1310,8 +1326,7 @@ namespace Axiom.Core
 
 				for ( ; t < Config.MaxTextureCoordSets; t++ )
 				{
-					var testElem =
-						vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.TexCoords, t );
+					VertexElement testElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.TexCoords, t );
 
 					if ( testElem == null )
 					{
@@ -1376,9 +1391,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( int index )
 		{
-			Debug.Assert( index < _subMeshList.Count, "index < subMeshList.Count" );
+			Debug.Assert( index < this._subMeshList.Count, "index < subMeshList.Count" );
 
-			return _subMeshList[ index ];
+			return this._subMeshList[ index ];
 		}
 
 		/// <summary>
@@ -1388,16 +1403,16 @@ namespace Axiom.Core
 		/// <returns>The track handle to use for animation tracks associated with the give submesh</returns>
 		public int GetTrackHandle( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				if ( _subMeshList[ i ].name == name )
+				if ( this._subMeshList[ i ].name == name )
 				{
 					return i + 1;
 				}
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 		/// <summary>
@@ -1407,9 +1422,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sub = _subMeshList[ i ];
+				SubMesh sub = this._subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
@@ -1418,7 +1433,7 @@ namespace Axiom.Core
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 		/// <summary>
@@ -1428,19 +1443,19 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public void RemoveSubMesh( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sub = _subMeshList[ i ];
+				SubMesh sub = this._subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
-					_subMeshList.RemoveAt( i );
+					this._subMeshList.RemoveAt( i );
 					return;
 				}
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 
@@ -1458,18 +1473,18 @@ namespace Axiom.Core
 			if ( HasSkeleton )
 			{
 				// delegate the animation set to the skeleton
-				_skeleton.InitAnimationState( animSet );
+				this._skeleton.InitAnimationState( animSet );
 
 				// Take the opportunity to update the compiled bone assignments
-				if ( boneAssignmentsOutOfDate )
+				if ( this.boneAssignmentsOutOfDate )
 				{
 					CompileBoneAssignments();
 				}
 
 				// compile bone assignments for each sub mesh
-				for ( var i = 0; i < _subMeshList.Count; i++ )
+				for ( int i = 0; i < this._subMeshList.Count; i++ )
 				{
-					var subMesh = _subMeshList[ i ];
+					SubMesh subMesh = this._subMeshList[ i ];
 
 					if ( subMesh.boneAssignmentsOutOfDate )
 					{
@@ -1479,7 +1494,7 @@ namespace Axiom.Core
 			}
 
 			// Animation states for vertex animation
-			foreach ( var animation in _animationsList.Values )
+			foreach ( Animation animation in this._animationsList.Values )
 			{
 				// Only create a new animation state if it doesn't exist
 				// We can have the same named animation in both skeletal and vertex
@@ -1501,7 +1516,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether or not this mesh has the named vertex animation.</summary>
 		public bool ContainsAnimation( string name )
 		{
-			return _animationsList.ContainsKey( name );
+			return this._animationsList.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -1516,7 +1531,7 @@ namespace Axiom.Core
 		public void NotifySkeleton( Skeleton skeleton )
 		{
 			this._skeleton = skeleton;
-			_skeletonName = skeleton.Name;
+			this._skeletonName = skeleton.Name;
 		}
 
 		/// <summary>
@@ -1541,19 +1556,19 @@ namespace Axiom.Core
 		/// </remarks>
 		public void PrepareForShadowVolume()
 		{
-			if ( _isPreparedForShadowVolumes )
+			if ( this._isPreparedForShadowVolumes )
 			{
 				return;
 			}
 
-			if ( _sharedVertexData != null )
+			if ( this._sharedVertexData != null )
 			{
-				_sharedVertexData.PrepareForShadowVolume();
+				this._sharedVertexData.PrepareForShadowVolume();
 			}
 
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( int i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				SubMesh sm = this._subMeshList[ i ];
 
 				if ( !sm.useSharedVertices )
 				{
@@ -1561,7 +1576,7 @@ namespace Axiom.Core
 				}
 			}
 
-			_isPreparedForShadowVolumes = true;
+			this._isPreparedForShadowVolumes = true;
 		}
 
 		/// <summary>
@@ -1583,8 +1598,8 @@ namespace Axiom.Core
 		/// <returns>The maximum number of bone assignments per vertex found, clamped to [1-4]</returns>
 		internal int RationalizeBoneAssignments( int vertexCount, Dictionary<int, List<VertexBoneAssignment>> assignments )
 		{
-			var maxBones = 0;
-			var currentBones = 0;
+			int maxBones = 0;
+			int currentBones = 0;
 
 			//for ( int i = 0; i < vertexCount; i++ )
 			foreach ( var assignment in assignments )
@@ -1603,31 +1618,31 @@ namespace Axiom.Core
 				if ( currentBones > Config.MaxBlendWeights )
 				{
 					//List<VertexBoneAssignment> sortedList = assignments[ i ];
-					var sortedList = assignment.Value;
+					List<VertexBoneAssignment> sortedList = assignment.Value;
 					IComparer<VertexBoneAssignment> comp = new VertexBoneAssignmentWeightComparer();
 					sortedList.Sort( comp );
 					sortedList.RemoveRange( 0, currentBones - Config.MaxBlendWeights );
 				}
 
-				var totalWeight = 0.0f;
+				float totalWeight = 0.0f;
 
 				// Make sure the weights are normalised
 				// Do this irrespective of whether we had to remove assignments or not
 				//   since it gives us a guarantee that weights are normalised
 				//  We assume this, so it's a good idea since some modellers may not
 				//List<VertexBoneAssignment> vbaList = assignments[ i ];
-				var vbaList = assignment.Value;
+				List<VertexBoneAssignment> vbaList = assignment.Value;
 
-				foreach ( var vba in vbaList )
+				foreach ( VertexBoneAssignment vba in vbaList )
 				{
 					totalWeight += vba.weight;
 				}
 
 				// Now normalise if total weight is outside tolerance
-				var delta = 1.0f / ( 1 << 24 );
+				float delta = 1.0f / ( 1 << 24 );
 				if ( !Utility.RealEqual( totalWeight, 1.0f, delta ) )
 				{
-					foreach ( var vba in vbaList )
+					foreach ( VertexBoneAssignment vba in vbaList )
 					{
 						vba.weight /= totalWeight;
 					}
@@ -1659,7 +1674,7 @@ namespace Axiom.Core
 			subMesh.Parent = this;
 
 			// add to the list of child meshes
-			_subMeshList.Add( subMesh );
+			this._subMeshList.Add( subMesh );
 
 			return subMesh;
 		}
@@ -1704,8 +1719,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetVertexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			_vertexBufferUsage = usage;
-			_useVertexShadowBuffer = useShadowBuffer;
+			this._vertexBufferUsage = usage;
+			this._useVertexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1734,8 +1749,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetIndexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			_indexBufferUsage = usage;
-			_useIndexShadowBuffer = useShadowBuffer;
+			this._indexBufferUsage = usage;
+			this._useIndexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1744,10 +1759,12 @@ namespace Axiom.Core
 		/// <param name="manualLodEntries"></param>
 		public void AddManualLodEntries( List<MeshLodUsage> manualLodEntries )
 		{
-			Debug.Assert( meshLodUsageList.Count == 1 );
-			_isLodManual = true;
-			foreach ( var usage in manualLodEntries )
-				meshLodUsageList.Add( usage );
+			Debug.Assert( this.meshLodUsageList.Count == 1 );
+			this._isLodManual = true;
+			foreach ( MeshLodUsage usage in manualLodEntries )
+			{
+				this.meshLodUsageList.Add( usage );
+			}
 		}
 
 		/// <summary>
@@ -1760,7 +1777,7 @@ namespace Axiom.Core
 		public virtual AttachmentPoint CreateAttachmentPoint( string name, Quaternion rotation, Vector3 translation )
 		{
 			var ap = new AttachmentPoint( name, null, rotation, translation );
-			_attachmentPoints.Add( ap );
+			this._attachmentPoints.Add( ap );
 			return ap;
 		}
 
@@ -1776,52 +1793,45 @@ namespace Axiom.Core
 			// done, allow caller to force if they need to
 
 			// Initialize all types to nothing
-			_sharedVertexDataAnimationType = VertexAnimationType.None;
-			for ( var sm = 0; sm < this.SubMeshCount; sm++ )
+			this._sharedVertexDataAnimationType = VertexAnimationType.None;
+			for ( int sm = 0; sm < SubMeshCount; sm++ )
 			{
-				var subMesh = GetSubMesh( sm );
+				SubMesh subMesh = GetSubMesh( sm );
 				subMesh.VertexAnimationType = VertexAnimationType.None;
 			}
 
 			// Scan all animations and determine the type of animation tracks
 			// relating to each vertex data
-			foreach ( var anim in _animationsList.Values )
+			foreach ( Animation anim in this._animationsList.Values )
 			{
-				foreach ( var track in anim.VertexTracks.Values )
+				foreach ( VertexAnimationTrack track in anim.VertexTracks.Values )
 				{
-					var handle = track.Handle;
+					ushort handle = track.Handle;
 					if ( handle == 0 )
 					{
 						// shared data
-						if ( _sharedVertexDataAnimationType != VertexAnimationType.None &&
-							_sharedVertexDataAnimationType != track.AnimationType )
+						if ( this._sharedVertexDataAnimationType != VertexAnimationType.None && this._sharedVertexDataAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
-							throw new Exception( "Animation tracks for shared vertex data on mesh "
-												+ Name + " try to mix vertex animation types, which is " +
-												"not allowed, in Mesh.DetermineAnimationTypes" );
+							throw new Exception( "Animation tracks for shared vertex data on mesh " + Name + " try to mix vertex animation types, which is " + "not allowed, in Mesh.DetermineAnimationTypes" );
 						}
-						_sharedVertexDataAnimationType = track.AnimationType;
+						this._sharedVertexDataAnimationType = track.AnimationType;
 					}
 					else
 					{
 						// submesh index (-1)
-						var sm = GetSubMesh( handle - 1 );
-						if ( sm.CurrentVertexAnimationType != VertexAnimationType.None &&
-							sm.CurrentVertexAnimationType != track.AnimationType )
+						SubMesh sm = GetSubMesh( handle - 1 );
+						if ( sm.CurrentVertexAnimationType != VertexAnimationType.None && sm.CurrentVertexAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
-							throw new Exception( string.Format( "Animation tracks for dedicated vertex data {0}  on mesh {1}",
-															  handle - 1, Name ) +
-												" try to mix vertex animation types, which is " +
-												"not allowed, in Mesh.DetermineAnimationTypes" );
+							throw new Exception( string.Format( "Animation tracks for dedicated vertex data {0}  on mesh {1}", handle - 1, Name ) + " try to mix vertex animation types, which is " + "not allowed, in Mesh.DetermineAnimationTypes" );
 						}
 						sm.VertexAnimationType = track.AnimationType;
 					}
 				}
 			}
 
-			_animationTypesDirty = false;
+			this._animationTypesDirty = false;
 		}
 
 		/// <summary>
@@ -1832,16 +1842,15 @@ namespace Axiom.Core
 		public Animation CreateAnimation( string name, float length )
 		{
 			// Check name not used
-			if ( _animationsList.ContainsKey( name ) )
+			if ( this._animationsList.ContainsKey( name ) )
 			{
-				throw new Exception( "An animation with the name " + name + " already exists" +
-									", in Mesh.CreateAnimation" );
+				throw new Exception( "An animation with the name " + name + " already exists" + ", in Mesh.CreateAnimation" );
 			}
 			var ret = new Animation( name, length );
 			// Add to list
-			_animationsList[ name ] = ret;
+			this._animationsList[ name ] = ret;
 			// Mark animation types dirty
-			_animationTypesDirty = true;
+			this._animationTypesDirty = true;
 			return ret;
 		}
 
@@ -1852,8 +1861,10 @@ namespace Axiom.Core
 		public Animation GetAnimation( string name )
 		{
 			Animation ret;
-			if ( !_animationsList.TryGetValue( name, out ret ) )
+			if ( !this._animationsList.TryGetValue( name, out ret ) )
+			{
 				return null;
+			}
 			return ret;
 		}
 
@@ -1863,14 +1874,16 @@ namespace Axiom.Core
 		public Animation GetAnimation( ushort index )
 		{
 			// If you hit this assert, then the index is out of bounds.
-			Debug.Assert( index < _animationsList.Count );
+			Debug.Assert( index < this._animationsList.Count );
 			// ??? The only way I can figure out to do this is with
 			// ??? a loop over the elements.
 			ushort i = 0;
-			foreach ( var animation in _animationsList.Values )
+			foreach ( Animation animation in this._animationsList.Values )
 			{
 				if ( i == index )
+				{
 					return animation;
+				}
 				i++;
 			}
 			// Make compiler happy
@@ -1880,7 +1893,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether this mesh contains the named vertex animation.</summary>
 		public bool HasAnimation( string name )
 		{
-			return _animationsList.ContainsKey( name );
+			return this._animationsList.ContainsKey( name );
 		}
 
 		/// <summary>Removes vertex Animation from this mesh.</summary>
@@ -1888,18 +1901,17 @@ namespace Axiom.Core
 		{
 			if ( !HasAnimation( name ) )
 			{
-				throw new Exception( "No animation entry found named " + name +
-									", in Mesh.RemoveAnimation" );
+				throw new Exception( "No animation entry found named " + name + ", in Mesh.RemoveAnimation" );
 			}
-			_animationsList.Remove( name );
-			_animationTypesDirty = true;
+			this._animationsList.Remove( name );
+			this._animationTypesDirty = true;
 		}
 
 		/// <summary>Removes all morph Animations from this mesh.</summary>
 		public void RemoveAllAnimations()
 		{
-			_animationsList.Clear();
-			_animationTypesDirty = true;
+			this._animationsList.Clear();
+			this._animationTypesDirty = true;
 		}
 
 		/// <summary>
@@ -1912,9 +1924,13 @@ namespace Axiom.Core
 		public VertexData GetVertexDataByTrackHandle( ushort handle )
 		{
 			if ( handle == 0 )
-				return _sharedVertexData;
+			{
+				return this._sharedVertexData;
+			}
 			else
+			{
 				return GetSubMesh( handle - 1 ).vertexData;
+			}
 		}
 
 		/// <summary>
@@ -1937,38 +1953,43 @@ namespace Axiom.Core
 		public Pose GetPose( ushort index )
 		{
 			if ( index >= PoseList.Count )
+			{
 				throw new Exception( "Index out of bounds, in Mesh.GetPose" );
-			return _poseList[ index ];
+			}
+			return this._poseList[ index ];
 		}
 
 		/// <summary>Retrieve an existing Pose by name.</summary>
 		public Pose GetPose( string name )
 		{
-			foreach ( var pose in PoseList )
+			foreach ( Pose pose in PoseList )
 			{
 				if ( pose.Name == name )
+				{
 					return pose;
+				}
 			}
-			throw new Exception( "No pose called " + name + " found in Mesh " + name +
-								", in Mesh.GetPose" );
+			throw new Exception( "No pose called " + name + " found in Mesh " + name + ", in Mesh.GetPose" );
 		}
+
 		/// <summary>Retrieve an existing Pose index by name.</summary>
 		public ushort GetPoseIndex( string name )
 		{
 			for ( ushort i = 0; i < PoseList.Count; i++ )
 			{
 				if ( PoseList[ i ].Name == name )
+				{
 					return i;
+				}
 			}
-			throw new Exception( "No pose called " + name + " found in Mesh " + this.Name +
-								", in Mesh.GetPoseIndex" );
+			throw new Exception( "No pose called " + name + " found in Mesh " + Name + ", in Mesh.GetPoseIndex" );
 		}
 
 		/// <summary>Destroy a pose by index.</summary>
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( ushort index )
 		{
-			if ( index >= _poseList.Count )
+			if ( index >= this._poseList.Count )
 			{
 				throw new Exception( "Index out of bounds, in Mesh.RemovePose" );
 			}
@@ -1979,23 +2000,22 @@ namespace Axiom.Core
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( string name )
 		{
-			for ( var i = 0; i < _poseList.Count; i++ )
+			for ( int i = 0; i < this._poseList.Count; i++ )
 			{
-				var pose = PoseList[ i ];
+				Pose pose = PoseList[ i ];
 				if ( pose.Name == name )
 				{
 					PoseList.RemoveAt( i );
 					return;
 				}
 			}
-			throw new Exception( "No pose called " + name + " found in Mesh " + name +
-								"Mesh.RemovePose" );
+			throw new Exception( "No pose called " + name + " found in Mesh " + name + "Mesh.RemovePose" );
 		}
 
 		/// <summary>Destroy all poses.</summary>
 		public void RemoveAllPoses()
 		{
-			_poseList.Clear();
+			this._poseList.Clear();
 		}
 
 		#endregion Methods
@@ -2008,6 +2028,7 @@ namespace Axiom.Core
 		///	Flag indicating the use of manually created LOD meshes.
 		/// </summary>
 		private bool _isLodManual;
+
 		/// <summary>
 		/// Returns true if this mesh is using manual LOD.
 		/// </summary>
@@ -2020,11 +2041,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isLodManual;
+				return this._isLodManual;
 			}
 			protected internal set
 			{
-				_isLodManual = value;
+				this._isLodManual = value;
 			}
 		}
 
@@ -2033,21 +2054,22 @@ namespace Axiom.Core
 		#region LodStrategy Property
 
 		private LodStrategy _lodStrategy;
+
 		public LodStrategy LodStrategy
 		{
 			get
 			{
-				return _lodStrategy;
+				return this._lodStrategy;
 			}
 			set
 			{
-				_lodStrategy = value;
+				this._lodStrategy = value;
 				Debug.Assert( this.meshLodUsageList.Count > 0 );
 
 				this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
 
 				// Re-transform user lod values (starting at index 1, no need to transform base value)
-				foreach ( var meshLodUsage in meshLodUsageList )
+				foreach ( MeshLodUsage meshLodUsage in this.meshLodUsageList )
 				{
 					meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
 				}
@@ -2065,9 +2087,10 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return meshLodUsageList;
+				return this.meshLodUsageList;
 			}
 		}
+
 		/// <summary>
 		///	Gets the current number of Lod levels associated with this mesh.
 		/// </summary>
@@ -2075,7 +2098,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return meshLodUsageList.Count;
+				return this.meshLodUsageList.Count;
 			}
 		}
 
@@ -2085,13 +2108,13 @@ namespace Axiom.Core
 
 			LogManager.Instance.Write( "Generating {0} lower LODs for mesh {1}.", lodValues.Count, Name );
 
-			foreach ( var subMesh in _subMeshList )
+			foreach ( SubMesh subMesh in this._subMeshList )
 			{
 				// check if triangles are present
 				if ( subMesh.IndexData.indexCount > 0 )
 				{
 					// Set up data for reduction
-					var vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
+					VertexData vertexData = subMesh.useSharedVertices ? this._sharedVertexData : subMesh.vertexData;
 
 					var pm = new ProgressiveMesh( vertexData, subMesh.indexData );
 					pm.Build( (ushort)lodValues.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
@@ -2099,7 +2122,7 @@ namespace Axiom.Core
 				else
 				{
 					// create empty index data for each lod
-					for ( var i = 0; i < lodValues.Count; ++i )
+					for ( int i = 0; i < lodValues.Count; ++i )
 					{
 						subMesh.LodFaceList.Add( new IndexData() );
 					}
@@ -2107,31 +2130,33 @@ namespace Axiom.Core
 			}
 
 			// Iterate over the lods and record usage
-			foreach ( var value in lodValues )
+			foreach ( Real value in lodValues )
 			{
 				// Record usage
 				var lod = new MeshLodUsage();
 				lod.UserValue = value;
-				lod.Value = _lodStrategy.TransformUserValue( value );
+				lod.Value = this._lodStrategy.TransformUserValue( value );
 				lod.EdgeData = null;
 				lod.ManualMesh = null;
-				meshLodUsageList.Add( lod );
+				this.meshLodUsageList.Add( lod );
 			}
 		}
 
 		public void RemoveLodLevels()
 		{
-			if ( !this.IsLodManual )
+			if ( !IsLodManual )
 			{
-				foreach ( var subMesh in this._subMeshList )
+				foreach ( SubMesh subMesh in this._subMeshList )
+				{
 					subMesh.RemoveLodLevels();
+				}
 			}
 
 			FreeEdgeList();
 			this.meshLodUsageList.Clear();
 			var lod = new MeshLodUsage();
 			lod.UserValue = float.NaN;
-			lod.Value = _lodStrategy.BaseValue;
+			lod.Value = this._lodStrategy.BaseValue;
 			lod.EdgeData = null;
 			lod.ManualMesh = null;
 			this.meshLodUsageList.Add( lod );
@@ -2145,7 +2170,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int GetLodIndex( Real value )
 		{
-			return _lodStrategy.GetIndex( value, meshLodUsageList );
+			return this._lodStrategy.GetIndex( value, this.meshLodUsageList );
 		}
 
 		/// <summary>
@@ -2155,17 +2180,17 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public MeshLodUsage GetLodLevel( int index )
 		{
-			Debug.Assert( index < meshLodUsageList.Count, "index < lodUsageList.Count" );
+			Debug.Assert( index < this.meshLodUsageList.Count, "index < lodUsageList.Count" );
 
-			var usage = meshLodUsageList[ index ];
+			MeshLodUsage usage = this.meshLodUsageList[ index ];
 
 			// load the manual lod mesh for this level if not done already
-			if ( _isLodManual && index > 0 && usage.ManualMesh == null )
+			if ( this._isLodManual && index > 0 && usage.ManualMesh == null )
 			{
 				usage.ManualMesh = MeshManager.Instance.Load( usage.ManualName, Group );
 
 				// get the edge data, if required
-				if ( !_autoBuildEdgeLists )
+				if ( !this._autoBuildEdgeLists )
 				{
 					usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
 				}
@@ -2190,94 +2215,90 @@ namespace Axiom.Core
 			//    ( *i )->mLodFaceList.resize( numLevels - 1 );
 			//}
 			IsLodManual = isManual;
-
 		}
+
 		#endregion Mesh Level of Detail
 
 		#region Static Methods
 
-	    /// <summary>
-	    ///		Performs a software indexed vertex blend, of the kind used for
-	    ///		skeletal animation although it can be used for other purposes.
-	    /// </summary>
-	    /// <remarks>
-	    ///		This function is supplied to update vertex data with blends
-	    ///		done in software, either because no hardware support is available,
-	    ///		or that you need the results of the blend for some other CPU operations.
-	    /// </remarks>
-	    /// <param name="sourceVertexData">
-	    ///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
-	    ///	</param>
-	    /// <param name="targetVertexData">
-	    ///		<see cref="VertexData"/> class containing target position
-	    ///		and normal buffers which will be updated with the blended versions.
-	    ///		Note that the layout of the source and target position / normal
-	    ///		buffers must be identical, ie they must use the same buffer indexes.
-	    /// </param>
-	    /// <param name="matrices">An array of matrices to be used to blend.</param>
-	    /// <param name="blendNormals">If true, normals are blended as well as positions.</param>
-	    /// <param name="blendTangents"></param>
-	    /// <param name="blendBinorms"></param>
-	    public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
+		/// <summary>
+		///		Performs a software indexed vertex blend, of the kind used for
+		///		skeletal animation although it can be used for other purposes.
+		/// </summary>
+		/// <remarks>
+		///		This function is supplied to update vertex data with blends
+		///		done in software, either because no hardware support is available,
+		///		or that you need the results of the blend for some other CPU operations.
+		/// </remarks>
+		/// <param name="sourceVertexData">
+		///		<see cref="VertexData"/> class containing positions, normals, blend indices and blend weights.
+		///	</param>
+		/// <param name="targetVertexData">
+		///		<see cref="VertexData"/> class containing target position
+		///		and normal buffers which will be updated with the blended versions.
+		///		Note that the layout of the source and target position / normal
+		///		buffers must be identical, ie they must use the same buffer indexes.
+		/// </param>
+		/// <param name="matrices">An array of matrices to be used to blend.</param>
+		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
+		/// <param name="blendTangents"></param>
+		/// <param name="blendBinorms"></param>
+		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
 		{
 			// Source vectors
-			var sourcePos = Vector3.Zero;
-			var sourceNorm = Vector3.Zero;
-			var sourceTan = Vector3.Zero;
-			var sourceBinorm = Vector3.Zero;
+			Vector3 sourcePos = Vector3.Zero;
+			Vector3 sourceNorm = Vector3.Zero;
+			Vector3 sourceTan = Vector3.Zero;
+			Vector3 sourceBinorm = Vector3.Zero;
 			// Accumulation vectors
-			var accumVecPos = Vector3.Zero;
-			var accumVecNorm = Vector3.Zero;
-			var accumVecTan = Vector3.Zero;
-			var accumVecBinorm = Vector3.Zero;
+			Vector3 accumVecPos = Vector3.Zero;
+			Vector3 accumVecNorm = Vector3.Zero;
+			Vector3 accumVecTan = Vector3.Zero;
+			Vector3 accumVecBinorm = Vector3.Zero;
 
 			HardwareVertexBuffer srcPosBuf = null, srcNormBuf = null, srcTanBuf = null, srcBinormBuf = null;
 			HardwareVertexBuffer destPosBuf = null, destNormBuf = null, destTanBuf = null, destBinormBuf = null;
 			HardwareVertexBuffer srcIdxBuf = null, srcWeightBuf = null;
 
-			var weightsIndexesShareBuffer = false;
+			bool weightsIndexesShareBuffer = false;
 
 			// Get elements for source
-			var srcElemPos =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-			var srcElemNorm =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			var srcElemTan =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-			var srcElemBinorm =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
-			var srcElemBlendIndices =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-			var srcElemBlendWeights =
-				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+			VertexElement srcElemPos = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement srcElemNorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement srcElemTan = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement srcElemBinorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			VertexElement srcElemBlendIndices = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			VertexElement srcElemBlendWeights = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
 			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
 
 			// Get elements for target
-			var destElemPos =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-			var destElemNorm =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			var destElemTan =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
-			var destElemBinorm =
-				targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
+			VertexElement destElemPos = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement destElemNorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement destElemTan = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement destElemBinorm = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
 
 			// Do we have normals and want to blend them?
-			var includeNormals = blendNormals && ( srcElemNorm != null ) && ( destElemNorm != null );
-			var includeTangents = blendTangents && ( srcElemTan != null ) && ( destElemTan != null );
-			var includeBinormals = blendBinorms && ( srcElemBinorm != null ) && ( destElemBinorm != null );
+			bool includeNormals = blendNormals && ( srcElemNorm != null ) && ( destElemNorm != null );
+			bool includeTangents = blendTangents && ( srcElemTan != null ) && ( destElemTan != null );
+			bool includeBinormals = blendBinorms && ( srcElemBinorm != null ) && ( destElemBinorm != null );
 
 			// Get buffers for source
 			srcPosBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemPos.Source );
 			srcIdxBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendIndices.Source );
 			srcWeightBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBlendWeights.Source );
 			if ( includeNormals )
+			{
 				srcNormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemNorm.Source );
+			}
 			if ( includeTangents )
+			{
 				srcTanBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemTan.Source );
+			}
 			if ( includeBinormals )
+			{
 				srcBinormBuf = sourceVertexData.vertexBufferBinding.GetBuffer( srcElemBinorm.Source );
+			}
 
 			// note: reference comparison
 			weightsIndexesShareBuffer = ( srcIdxBuf == srcWeightBuf );
@@ -2285,11 +2306,17 @@ namespace Axiom.Core
 			// Get buffers for target
 			destPosBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemPos.Source );
 			if ( includeNormals )
+			{
 				destNormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemNorm.Source );
+			}
 			if ( includeTangents )
+			{
 				destTanBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemTan.Source );
+			}
 			if ( includeBinormals )
+			{
 				destBinormBuf = targetVertexData.vertexBufferBinding.GetBuffer( destElemBinorm.Source );
+			}
 
 			// Lock source buffers for reading
 			Debug.Assert( srcElemPos.Offset == 0, "Positions must be first element in dedicated buffer!" );
@@ -2303,17 +2330,19 @@ namespace Axiom.Core
                 ITypePointer<float> pDestNorm = null, pDestTan = null, pDestBinorm = null;
                 ITypePointer<float> pBlendWeight;
 #else
-                float* pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
-                float* pDestNorm = null, pDestTan = null, pDestBinorm = null;
-                float* pBlendWeight;
+				float* pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
+				float* pDestNorm = null, pDestTan = null, pDestBinorm = null;
+				float* pBlendWeight;
 #endif
-				var ptr = srcPosBuf.Lock( BufferLocking.ReadOnly );
-				var pSrcPos = ptr.ToFloatPointer();
-			    
+				BufferBase ptr = srcPosBuf.Lock( BufferLocking.ReadOnly );
+				float* pSrcPos = ptr.ToFloatPointer();
+
 				if ( includeNormals )
 				{
 					if ( srcNormBuf == srcPosBuf )
+					{
 						pSrcNorm = pSrcPos;
+					}
 					else
 					{
 						ptr = srcNormBuf.Lock( BufferLocking.ReadOnly );
@@ -2323,9 +2352,13 @@ namespace Axiom.Core
 				if ( includeTangents )
 				{
 					if ( srcTanBuf == srcPosBuf )
+					{
 						pSrcTan = pSrcPos;
+					}
 					else if ( srcTanBuf == srcNormBuf )
+					{
 						pSrcTan = pSrcNorm;
+					}
 					else
 					{
 						ptr = srcTanBuf.Lock( BufferLocking.ReadOnly );
@@ -2335,11 +2368,17 @@ namespace Axiom.Core
 				if ( includeBinormals )
 				{
 					if ( srcBinormBuf == srcPosBuf )
+					{
 						pSrcBinorm = pSrcPos;
+					}
 					else if ( srcBinormBuf == srcNormBuf )
+					{
 						pSrcBinorm = pSrcNorm;
+					}
 					else if ( srcBinormBuf == srcTanBuf )
+					{
 						pSrcBinorm = pSrcTan;
+					}
 					else
 					{
 						ptr = srcBinormBuf.Lock( BufferLocking.ReadOnly );
@@ -2348,14 +2387,15 @@ namespace Axiom.Core
 				}
 
 				// Indices must be 4 bytes
-				Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4,
-					"Blend indices must be VET_UBYTE4" );
+				Debug.Assert( srcElemBlendIndices.Type == VertexElementType.UByte4, "Blend indices must be VET_UBYTE4" );
 
 				ptr = srcIdxBuf.Lock( BufferLocking.ReadOnly );
-				var pBlendIdx = ptr.ToBytePointer();
+				byte* pBlendIdx = ptr.ToBytePointer();
 
 				if ( srcWeightBuf == srcIdxBuf )
-                    pBlendWeight = ptr.ToFloatPointer();
+				{
+					pBlendWeight = ptr.ToFloatPointer();
+				}
 				else
 				{
 					// Lock buffer
@@ -2363,16 +2403,18 @@ namespace Axiom.Core
 					pBlendWeight = ptr.ToFloatPointer();
 				}
 
-				var numWeightsPerVertex = VertexElement.GetTypeCount( srcElemBlendWeights.Type );
+				int numWeightsPerVertex = VertexElement.GetTypeCount( srcElemBlendWeights.Type );
 
 				// Lock destination buffers for writing
 				ptr = destPosBuf.Lock( BufferLocking.Discard );
-                var pDestPos = ptr.ToFloatPointer();
+				float* pDestPos = ptr.ToFloatPointer();
 
 				if ( includeNormals )
 				{
 					if ( destNormBuf == destPosBuf )
+					{
 						pDestNorm = pDestPos;
+					}
 					else
 					{
 						ptr = destNormBuf.Lock( BufferLocking.Discard );
@@ -2382,34 +2424,44 @@ namespace Axiom.Core
 				if ( includeTangents )
 				{
 					if ( destTanBuf == destPosBuf )
+					{
 						pDestTan = pDestPos;
+					}
 					else if ( destTanBuf == destNormBuf )
+					{
 						pDestTan = pDestNorm;
+					}
 					else
 					{
 						ptr = destTanBuf.Lock( BufferLocking.Discard );
-                        pDestTan = ptr.ToFloatPointer();
+						pDestTan = ptr.ToFloatPointer();
 					}
 				}
 				if ( includeBinormals )
 				{
 					if ( destBinormBuf == destPosBuf )
+					{
 						pDestBinorm = pDestPos;
+					}
 					else if ( destBinormBuf == destNormBuf )
+					{
 						pDestBinorm = pDestNorm;
+					}
 					else if ( destBinormBuf == destTanBuf )
+					{
 						pDestBinorm = pDestTan;
+					}
 					else
 					{
 						ptr = destBinormBuf.Lock( BufferLocking.Discard );
-                        pDestBinorm = ptr.ToFloatPointer();
+						pDestBinorm = ptr.ToFloatPointer();
 					}
 				}
 
 				// Loop per vertex
-				for ( var vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++ )
+				for ( int vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++ )
 				{
-					var srcPosOffset = ( vertIdx * srcPosBuf.VertexSize + srcElemPos.Offset ) / 4;
+					int srcPosOffset = ( vertIdx * srcPosBuf.VertexSize + srcElemPos.Offset ) / 4;
 					// Load source vertex elements
 					sourcePos.x = pSrcPos[ srcPosOffset ];
 					sourcePos.y = pSrcPos[ srcPosOffset + 1 ];
@@ -2417,7 +2469,7 @@ namespace Axiom.Core
 
 					if ( includeNormals )
 					{
-						var srcNormOffset = ( vertIdx * srcNormBuf.VertexSize + srcElemNorm.Offset ) / 4;
+						int srcNormOffset = ( vertIdx * srcNormBuf.VertexSize + srcElemNorm.Offset ) / 4;
 						sourceNorm.x = pSrcNorm[ srcNormOffset ];
 						sourceNorm.y = pSrcNorm[ srcNormOffset + 1 ];
 						sourceNorm.z = pSrcNorm[ srcNormOffset + 2 ];
@@ -2425,7 +2477,7 @@ namespace Axiom.Core
 
 					if ( includeTangents )
 					{
-						var srcTanOffset = ( vertIdx * srcTanBuf.VertexSize + srcElemTan.Offset ) / 4;
+						int srcTanOffset = ( vertIdx * srcTanBuf.VertexSize + srcElemTan.Offset ) / 4;
 						sourceTan.x = pSrcTan[ srcTanOffset ];
 						sourceTan.y = pSrcTan[ srcTanOffset + 1 ];
 						sourceTan.z = pSrcTan[ srcTanOffset + 2 ];
@@ -2433,7 +2485,7 @@ namespace Axiom.Core
 
 					if ( includeBinormals )
 					{
-						var srcBinormOffset = ( vertIdx * srcBinormBuf.VertexSize + srcElemBinorm.Offset ) / 4;
+						int srcBinormOffset = ( vertIdx * srcBinormBuf.VertexSize + srcElemBinorm.Offset ) / 4;
 						sourceBinorm.x = pSrcBinorm[ srcBinormOffset ];
 						sourceBinorm.y = pSrcBinorm[ srcBinormOffset + 1 ];
 						sourceBinorm.z = pSrcBinorm[ srcBinormOffset + 2 ];
@@ -2445,12 +2497,12 @@ namespace Axiom.Core
 					accumVecTan = Vector3.Zero;
 					accumVecBinorm = Vector3.Zero;
 
-					var blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
-					var blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
+					int blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
+					int blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
 					// Loop per blend weight
-					for ( var blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
+					for ( int blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
 					{
-						var blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
+						float blendWeight = pBlendWeight[ blendWeightOffset + blendIdx ];
 						int blendMatrixIdx = pBlendIdx[ blendMatrixOffset + blendIdx ];
 						// Blend by multiplying source by blend matrix and scaling by weight
 						// Add to accumulator
@@ -2458,7 +2510,7 @@ namespace Axiom.Core
 						if ( blendWeight != 0.0f )
 						{
 							// Blend position, use 3x4 matrix
-							var mat = matrices[ blendMatrixIdx ];
+							Matrix4 mat = matrices[ blendMatrixIdx ];
 							BlendPosVector( ref accumVecPos, ref mat, ref sourcePos, blendWeight );
 
 							if ( includeNormals )
@@ -2478,12 +2530,11 @@ namespace Axiom.Core
 							{
 								BlendDirVector( ref accumVecBinorm, ref mat, ref sourceBinorm, blendWeight );
 							}
-
 						}
 					}
 
 					// Stored blended vertex in hardware buffer
-					var dstPosOffset = ( vertIdx * destPosBuf.VertexSize + destElemPos.Offset ) / 4;
+					int dstPosOffset = ( vertIdx * destPosBuf.VertexSize + destElemPos.Offset ) / 4;
 					pDestPos[ dstPosOffset ] = accumVecPos.x;
 					pDestPos[ dstPosOffset + 1 ] = accumVecPos.y;
 					pDestPos[ dstPosOffset + 2 ] = accumVecPos.z;
@@ -2493,7 +2544,7 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecNorm.Normalize();
-						var dstNormOffset = ( vertIdx * destNormBuf.VertexSize + destElemNorm.Offset ) / 4;
+						int dstNormOffset = ( vertIdx * destNormBuf.VertexSize + destElemNorm.Offset ) / 4;
 						pDestNorm[ dstNormOffset ] = accumVecNorm.x;
 						pDestNorm[ dstNormOffset + 1 ] = accumVecNorm.y;
 						pDestNorm[ dstNormOffset + 2 ] = accumVecNorm.z;
@@ -2503,7 +2554,7 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecTan.Normalize();
-						var dstTanOffset = ( vertIdx * destTanBuf.VertexSize + destElemTan.Offset ) / 4;
+						int dstTanOffset = ( vertIdx * destTanBuf.VertexSize + destElemTan.Offset ) / 4;
 						pDestTan[ dstTanOffset ] = accumVecTan.x;
 						pDestTan[ dstTanOffset + 1 ] = accumVecTan.y;
 						pDestTan[ dstTanOffset + 2 ] = accumVecTan.z;
@@ -2513,12 +2564,11 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecBinorm.Normalize();
-						var dstBinormOffset = ( vertIdx * destBinormBuf.VertexSize + destElemBinorm.Offset ) / 4;
+						int dstBinormOffset = ( vertIdx * destBinormBuf.VertexSize + destElemBinorm.Offset ) / 4;
 						pDestBinorm[ dstBinormOffset ] = accumVecBinorm.x;
 						pDestBinorm[ dstBinormOffset + 1 ] = accumVecBinorm.y;
 						pDestBinorm[ dstBinormOffset + 2 ] = accumVecBinorm.z;
 					}
-
 				}
 				// Unlock source buffers
 				srcPosBuf.Unlock();
@@ -2529,21 +2579,15 @@ namespace Axiom.Core
 					srcWeightBuf.Unlock();
 				}
 
-				if ( includeNormals &&
-					srcNormBuf != srcPosBuf )
+				if ( includeNormals && srcNormBuf != srcPosBuf )
 				{
 					srcNormBuf.Unlock();
 				}
-				if ( includeTangents &&
-					srcTanBuf != srcPosBuf &&
-					srcTanBuf != srcNormBuf )
+				if ( includeTangents && srcTanBuf != srcPosBuf && srcTanBuf != srcNormBuf )
 				{
 					srcTanBuf.Unlock();
 				}
-				if ( includeBinormals &&
-					srcBinormBuf != srcPosBuf &&
-					srcBinormBuf != srcNormBuf &&
-					srcBinormBuf != srcTanBuf )
+				if ( includeBinormals && srcBinormBuf != srcPosBuf && srcBinormBuf != srcNormBuf && srcBinormBuf != srcTanBuf )
 				{
 					srcBinormBuf.Unlock();
 				}
@@ -2551,71 +2595,37 @@ namespace Axiom.Core
 				// Unlock destination buffers
 				destPosBuf.Unlock();
 
-				if ( includeNormals &&
-					destNormBuf != destPosBuf )
+				if ( includeNormals && destNormBuf != destPosBuf )
 				{
 					destNormBuf.Unlock();
 				}
-				if ( includeTangents &&
-					destTanBuf != destPosBuf &&
-					destTanBuf != destNormBuf )
+				if ( includeTangents && destTanBuf != destPosBuf && destTanBuf != destNormBuf )
 				{
 					destTanBuf.Unlock();
 				}
-				if ( includeBinormals &&
-					destBinormBuf != destPosBuf &&
-					destBinormBuf != destNormBuf &&
-					destBinormBuf != destTanBuf )
+				if ( includeBinormals && destBinormBuf != destPosBuf && destBinormBuf != destNormBuf && destBinormBuf != destTanBuf )
 				{
 					destBinormBuf.Unlock();
 				}
-
 			} // unsafe
 		}
 
 		public static void BlendDirVector( ref Vector3 accumVec, ref Matrix4 mat, ref Vector3 srcVec, float blendWeight )
 		{
-			accumVec.x +=
-				( mat.m00 * srcVec.x +
-				 mat.m01 * srcVec.y +
-				 mat.m02 * srcVec.z )
-				* blendWeight;
+			accumVec.x += ( mat.m00 * srcVec.x + mat.m01 * srcVec.y + mat.m02 * srcVec.z ) * blendWeight;
 
-			accumVec.y +=
-				( mat.m10 * srcVec.x +
-				 mat.m11 * srcVec.y +
-				 mat.m12 * srcVec.z )
-				* blendWeight;
+			accumVec.y += ( mat.m10 * srcVec.x + mat.m11 * srcVec.y + mat.m12 * srcVec.z ) * blendWeight;
 
-			accumVec.z +=
-				( mat.m20 * srcVec.x +
-				 mat.m21 * srcVec.y +
-				 mat.m22 * srcVec.z )
-				* blendWeight;
+			accumVec.z += ( mat.m20 * srcVec.x + mat.m21 * srcVec.y + mat.m22 * srcVec.z ) * blendWeight;
 		}
 
 		public static void BlendPosVector( ref Vector3 accumVec, ref Matrix4 mat, ref Vector3 srcVec, float blendWeight )
 		{
-			accumVec.x +=
-				( mat.m00 * srcVec.x +
-				 mat.m01 * srcVec.y +
-				 mat.m02 * srcVec.z +
-				 mat.m03 )
-				* blendWeight;
+			accumVec.x += ( mat.m00 * srcVec.x + mat.m01 * srcVec.y + mat.m02 * srcVec.z + mat.m03 ) * blendWeight;
 
-			accumVec.y +=
-				( mat.m10 * srcVec.x +
-				 mat.m11 * srcVec.y +
-				 mat.m12 * srcVec.z +
-				 mat.m13 )
-				* blendWeight;
+			accumVec.y += ( mat.m10 * srcVec.x + mat.m11 * srcVec.y + mat.m12 * srcVec.z + mat.m13 ) * blendWeight;
 
-			accumVec.z +=
-				( mat.m20 * srcVec.x +
-				 mat.m21 * srcVec.y +
-				 mat.m22 * srcVec.z +
-				 mat.m23 )
-				* blendWeight;
+			accumVec.z += ( mat.m20 * srcVec.x + mat.m21 * srcVec.y + mat.m22 * srcVec.z + mat.m23 ) * blendWeight;
 		}
 
 		/// <summary>
@@ -2639,28 +2649,28 @@ namespace Axiom.Core
 			unsafe
 #endif
 			{
-			    var bpb1 = b1.Lock(BufferLocking.ReadOnly).ToFloatPointer();
-                var pb1 = 0;
-                var bpb2 = b2.Lock(BufferLocking.ReadOnly).ToFloatPointer();
-                var pb2 = 0;
-				var posElem = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				float* bpb1 = b1.Lock( BufferLocking.ReadOnly ).ToFloatPointer();
+				int pb1 = 0;
+				float* bpb2 = b2.Lock( BufferLocking.ReadOnly ).ToFloatPointer();
+				int pb2 = 0;
+				VertexElement posElem = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				Debug.Assert( posElem != null );
-				var destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
+				HardwareVertexBuffer destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
 				Debug.Assert( posElem.Size == destBuf.VertexSize, "Positions must be in a buffer on their own for morphing" );
-                var bpdst = destBuf.Lock(BufferLocking.Discard).ToFloatPointer();
-                var pdst = 0;
-				for ( var i = 0; i < targetVertexData.vertexCount; ++i )
+				float* bpdst = destBuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+				int pdst = 0;
+				for ( int i = 0; i < targetVertexData.vertexCount; ++i )
 				{
 					// x
-                    bpdst[pdst++] = bpb1[pb1] + t * (bpb2[pb2] - bpb1[pb1]);
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 					// y
-                    bpdst[pdst++] = bpb1[pb1] + t * (bpb2[pb2] - bpb1[pb1]);
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 					// z
-                    bpdst[pdst++] = bpb1[pb1] + t * (bpb2[pb2] - bpb1[pb1]);
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 				}
@@ -2687,34 +2697,34 @@ namespace Axiom.Core
 		///	    buffer already bound, and the number of vertices must agree with the
 		///	    number in start and end
 		/// </param>
-		public static void SoftwareVertexPoseBlend( float weight, Dictionary<int, Vector3> vertexOffsetMap,
-												   VertexData targetVertexData )
+		public static void SoftwareVertexPoseBlend( float weight, Dictionary<int, Vector3> vertexOffsetMap, VertexData targetVertexData )
 		{
 			// Do nothing if no weight
 			if ( weight == 0.0f )
+			{
 				return;
+			}
 
-			var posElem = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement posElem = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 			Debug.Assert( posElem != null );
-			var destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-			Debug.Assert( posElem.Size == destBuf.VertexSize,
-						 "Positions must be in a buffer on their own for pose blending" );
+			HardwareVertexBuffer destBuf = targetVertexData.vertexBufferBinding.GetBuffer( posElem.Source );
+			Debug.Assert( posElem.Size == destBuf.VertexSize, "Positions must be in a buffer on their own for pose blending" );
 			// Have to lock in normal mode since this is incremental
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var pBase = destBuf.Lock( BufferLocking.Normal ).ToFloatPointer();
+				float* pBase = destBuf.Lock( BufferLocking.Normal ).ToFloatPointer();
 				// Iterate over affected vertices
 				foreach ( var pair in vertexOffsetMap )
 				{
 					// Adjust pointer
-					var pdst = pair.Key * 3;
-                    pBase[pdst] += (pair.Value.x * weight);
+					int pdst = pair.Key * 3;
+					pBase[ pdst ] += ( pair.Value.x * weight );
 					++pdst;
-                    pBase[pdst] += (pair.Value.y * weight);
+					pBase[ pdst ] += ( pair.Value.y * weight );
 					++pdst;
-                    pBase[pdst] += (pair.Value.z * weight);
+					pBase[ pdst ] += ( pair.Value.z * weight );
 					++pdst;
 				}
 				destBuf.Unlock();
@@ -2779,9 +2789,9 @@ namespace Axiom.Core
 				var serializer = new MeshSerializer();
 
 				// get the resource data from MeshManager
-				var data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+				Stream data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
-				var extension = Path.GetExtension( Name );
+				string extension = Path.GetExtension( Name );
 
 				if ( extension != ".mesh" )
 				{
@@ -2800,11 +2810,11 @@ namespace Axiom.Core
 			// prepare the mesh for a shadow volume?
 			if ( MeshManager.Instance.PrepareAllMeshesForShadowVolumes )
 			{
-				if ( _edgeListsBuilt || _autoBuildEdgeLists )
+				if ( this._edgeListsBuilt || this._autoBuildEdgeLists )
 				{
 					PrepareForShadowVolume();
 				}
-				if ( !_edgeListsBuilt && _autoBuildEdgeLists )
+				if ( !this._edgeListsBuilt && this._autoBuildEdgeLists )
 				{
 					BuildEdgeList();
 				}
@@ -2814,8 +2824,10 @@ namespace Axiom.Core
 			// transformation of user values must occur after loading is complete.
 
 			// Transform user lod values
-			foreach ( var mlu in meshLodUsageList )
-				mlu.Value = _lodStrategy.TransformUserValue( mlu.UserValue );
+			foreach ( MeshLodUsage mlu in this.meshLodUsageList )
+			{
+				mlu.Value = this._lodStrategy.TransformUserValue( mlu.UserValue );
+			}
 
 			// meshLoadMeter.Exit();
 		}
@@ -2825,34 +2837,40 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void unload()
 		{
-            // Dispose managed resources.
-            if (_skeleton != null)
-            {
-                if (!this.Skeleton.IsDisposed)
-                    this._skeleton.Dispose();
+			// Dispose managed resources.
+			if ( this._skeleton != null )
+			{
+				if ( !Skeleton.IsDisposed )
+				{
+					this._skeleton.Dispose();
+				}
 
-                this._skeleton = null;
-            }
+				this._skeleton = null;
+			}
 
-            foreach (var subMesh in _subMeshList)
-            {
-                if (!subMesh.IsDisposed)
-                    subMesh.Dispose();
-            }
-            _subMeshList.Clear();
+			foreach ( SubMesh subMesh in this._subMeshList )
+			{
+				if ( !subMesh.IsDisposed )
+				{
+					subMesh.Dispose();
+				}
+			}
+			this._subMeshList.Clear();
 
-            if (this._sharedVertexData != null)
-            {
-                if (!this._sharedVertexData.IsDisposed)
-                    this._sharedVertexData.Dispose();
+			if ( this._sharedVertexData != null )
+			{
+				if ( !this._sharedVertexData.IsDisposed )
+				{
+					this._sharedVertexData.Dispose();
+				}
 
-                this._sharedVertexData = null;
-            }
+				this._sharedVertexData = null;
+			}
 
-            _isPreparedForShadowVolumes = false;
-			
-            //// TODO: SubMeshNameCount
-            //// TODO: Remove LOD levels
+			this._isPreparedForShadowVolumes = false;
+
+			//// TODO: SubMeshNameCount
+			//// TODO: Remove LOD levels
 		}
 
 		#endregion Implementation of Resource
@@ -2865,17 +2883,18 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-                    if (this.IsLoaded)
-                        this.unload();
+					if ( IsLoaded )
+					{
+						unload();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
 
-            base.dispose(disposeManagedResources);
+			base.dispose( disposeManagedResources );
 		}
-
 
 		#endregion IDisposable Implementation
 	}
@@ -2886,12 +2905,28 @@ namespace Axiom.Core
 	public class MeshLodUsage
 	{
 		/// <summary>
+		///		Edge list for this LOD level (may be derived from manual mesh).
+		/// </summary>
+		public EdgeData EdgeData;
+
+		///	<summary>
+		///		Reference to the manual mesh to avoid looking up each time.
+		///	</summary>
+		public Mesh ManualMesh;
+
+		/// <summary>
+		///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
+		/// </summary>
+		public string ManualName;
+
+		/// <summary>
 		/// User-supplied values used to determine when th is lod applies.
 		/// </summary>
 		/// <remarks>
 		/// This is required in case the lod strategy changes.
 		/// </remarks>
 		public Real UserValue;
+
 		/// <summary>
 		/// Value used by to determine when this lod applies.
 		/// </summary>
@@ -2900,17 +2935,5 @@ namespace Axiom.Core
 		/// Transformed from user-supplied values with <see cref="LodStrategy.TransformUserValue"/>.
 		/// </remarks>
 		public Real Value;
-		/// <summary>
-		///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
-		/// </summary>
-		public string ManualName;
-		///	<summary>
-		///		Reference to the manual mesh to avoid looking up each time.
-		///	</summary>
-		public Mesh ManualMesh;
-		/// <summary>
-		///		Edge list for this LOD level (may be derived from manual mesh).
-		/// </summary>
-		public EdgeData EdgeData;
 	}
 }

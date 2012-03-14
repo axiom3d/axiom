@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,27 +23,33 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: AssemblyInfo.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.FreeImageCodecs
 {
-    [Export( typeof( IPlugin ) )]
+	[Export( typeof( IPlugin ) )]
 	public class Plugin : IPlugin
 	{
+		#region IPlugin Members
+
 		/// <summary>
 		///    Called when the plugin is started.
 		/// </summary>
@@ -58,5 +65,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		{
 			FreeImageCodec.Shutdown();
 		}
+
+		#endregion
 	};
 }

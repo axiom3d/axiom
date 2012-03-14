@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Graphics;
-using Axiom.Media;
 using Axiom.Math;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -69,7 +74,6 @@ namespace Axiom.Core
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal TextureManager()
-			: base()
 		{
 			if ( instance == null )
 			{
@@ -80,7 +84,9 @@ namespace Axiom.Core
 				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
 			}
 			else
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+			{
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+			}
 		}
 
 		/// <summary>
@@ -103,21 +109,7 @@ namespace Axiom.Core
 		/// <summary>
 		///    Flag that indicates whether 32-bit texture are being used.
 		/// </summary>
-		private bool _is32Bit;
-		/// <summary>
-		///    Flag that indicates whether 32-bit texture are being used.
-		/// </summary>
-		public bool Is32Bit
-		{
-			get
-			{
-				return _is32Bit;
-			}
-			protected set
-			{
-				_is32Bit = value;
-			}
-		}
+		public bool Is32Bit { get; protected set; }
 
 		#endregion Is32Bit Property
 
@@ -135,11 +127,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _defaultMipmapCount;
+				return this._defaultMipmapCount;
 			}
 			set
 			{
-				_defaultMipmapCount = value;
+				this._defaultMipmapCount = value;
 			}
 		}
 
@@ -149,13 +141,13 @@ namespace Axiom.Core
 
 		#region PreferredIntegerBitDepth Property
 
-		private ushort _preferredIntegerBitDepth = 0;
+		private ushort _preferredIntegerBitDepth;
 
 		public ushort PreferredIntegerBitDepth
 		{
 			get
 			{
-				return _preferredIntegerBitDepth;
+				return this._preferredIntegerBitDepth;
 			}
 			set
 			{
@@ -165,7 +157,7 @@ namespace Axiom.Core
 
 		public void SetPreferredIntegerBitDepth( ushort bits, bool reloadTextures )
 		{
-			_preferredIntegerBitDepth = bits;
+			this._preferredIntegerBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -191,12 +183,13 @@ namespace Axiom.Core
 
 		#region PreferredFloatBitDepth Property
 
-		private ushort _preferredFloatBitDepth = 0;
+		private ushort _preferredFloatBitDepth;
+
 		public ushort PreferredFloatBitDepth
 		{
 			get
 			{
-				return _preferredFloatBitDepth;
+				return this._preferredFloatBitDepth;
 			}
 			set
 			{
@@ -206,7 +199,7 @@ namespace Axiom.Core
 
 		public void SetPreferredFloatBitDepth( ushort bits, bool reloadTextures )
 		{
-			_preferredFloatBitDepth = bits;
+			this._preferredFloatBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -232,8 +225,8 @@ namespace Axiom.Core
 
 		public void SetPreferredBitDepths( ushort integerBits, ushort floatBits, bool reloadTextures )
 		{
-			_preferredFloatBitDepth = floatBits;
-			_preferredIntegerBitDepth = integerBits;
+			this._preferredFloatBitDepth = floatBits;
+			this._preferredIntegerBitDepth = integerBits;
 
 			if ( reloadTextures )
 			{
@@ -261,56 +254,56 @@ namespace Axiom.Core
 
 		#region Methods
 
-	    /// <summary>
-	    /// Create a manual texture with specified width, height and depth (not loaded from a file).
-	    /// </summary>
-	    /// <param name="name">The name to give the resulting texture</param>
-	    /// <param name="group">The name of the resource group to assign the texture to</param>
-	    /// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
-	    /// <param name="width">The dimensions of the texture</param>
-	    /// <param name="height">The dimensions of the texture</param>
-	    /// <param name="depth">The dimensions of the texture</param>
-	    /// <param name="numMipMaps">
-	    /// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
-	    /// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
-	    /// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
-	    /// level, 1x1x1.
-	    /// </param>
-	    /// <param name="format">
-	    /// The internal format you wish to request; the manager reserves
-	    /// the right to create a different format if the one you select is
-	    /// not available in this context.
-	    /// </param>
-	    /// <param name="usage">
-	    /// The kind of usage this texture is intended for. It
-	    /// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
-	    /// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
-	    /// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
-	    /// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
-	    /// </param>
-	    /// <param name="loader">
-	    /// If you intend the contents of the manual texture to be
-	    /// regularly updated, to the extent that you don't need to recover
-	    /// the contents if the texture content is lost somehow, you can leave
-	    /// this parameter as null. However, if you intend to populate the
-	    /// texture only once, then you should implement ManualResourceLoader
-	    /// and pass a pointer to it in this parameter; this means that if the
-	    /// manual texture ever needs to be reloaded, the ManualResourceLoader
-	    /// will be called to do it.
-	    /// </param>
-	    /// <param name="hwGammaCorrection"></param>
-	    /// <param name="fsaa"></param>
-	    /// <param name="fsaaHint"></param>
-	    /// <returns></returns>
-	    public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
+		/// <summary>
+		/// Create a manual texture with specified width, height and depth (not loaded from a file).
+		/// </summary>
+		/// <param name="name">The name to give the resulting texture</param>
+		/// <param name="group">The name of the resource group to assign the texture to</param>
+		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
+		/// <param name="width">The dimensions of the texture</param>
+		/// <param name="height">The dimensions of the texture</param>
+		/// <param name="depth">The dimensions of the texture</param>
+		/// <param name="numMipMaps">
+		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
+		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
+		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
+		/// level, 1x1x1.
+		/// </param>
+		/// <param name="format">
+		/// The internal format you wish to request; the manager reserves
+		/// the right to create a different format if the one you select is
+		/// not available in this context.
+		/// </param>
+		/// <param name="usage">
+		/// The kind of usage this texture is intended for. It
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY,
+		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to
+		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
+		/// </param>
+		/// <param name="loader">
+		/// If you intend the contents of the manual texture to be
+		/// regularly updated, to the extent that you don't need to recover
+		/// the contents if the texture content is lost somehow, you can leave
+		/// this parameter as null. However, if you intend to populate the
+		/// texture only once, then you should implement ManualResourceLoader
+		/// and pass a pointer to it in this parameter; this means that if the
+		/// manual texture ever needs to be reloaded, the ManualResourceLoader
+		/// will be called to do it.
+		/// </param>
+		/// <param name="hwGammaCorrection"></param>
+		/// <param name="fsaa"></param>
+		/// <param name="fsaaHint"></param>
+		/// <returns></returns>
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader, bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
 			var ret = (Texture)Create( name, group, true, loader, null );
 			ret.TextureType = type;
 			ret.Width = width;
 			ret.Height = height;
 			ret.Depth = depth;
-			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
-            ret.SetFormat( format );
+			ret.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
+			ret.SetFormat( format );
 			ret.Usage = usage;
 			ret.HardwareGammaEnabled = hwGammaCorrection;
 			ret.SetFSAA( fsaa, fsaaHint );
@@ -326,7 +319,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-        /// <param name="numMipmaps">
+		/// <param name="numMipmaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -368,7 +361,7 @@ namespace Axiom.Core
 		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
 		/// <param name="width">The dimensions of the texture</param>
 		/// <param name="height">The dimensions of the texture</param>
-        /// <param name="numMipmaps">
+		/// <param name="numMipmaps">
 		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
 		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
 		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
@@ -448,6 +441,7 @@ namespace Axiom.Core
 			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
 			return Load( name, group, type, numMipMaps, 1.0f, false );
 		}
+
 		/// <summary>
 		/// </summary>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha )
@@ -460,19 +454,19 @@ namespace Axiom.Core
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
-			var result = CreateOrRetrieve( name, group );
+			Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
 
 			var texture = (Texture)result.First;
 
 			// was it created?
-			if ( result.Second == true )
+			if ( result.Second )
 			{
 				texture.TextureType = type;
-				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
+				texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
 				// set bit depth and gamma
 				texture.Gamma = gamma;
 				texture.TreatLuminanceAsAlpha = isAlpha;
-                texture.SetFormat( desiredFormat );
+				texture.SetFormat( desiredFormat );
 			}
 			texture.Load();
 
@@ -515,13 +509,13 @@ namespace Axiom.Core
 
 			texture.TextureType = texType;
 			// set the number of mipmaps to use for this texture
-			texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
+			texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
 
 			// set bit depth and gamma
 			texture.Gamma = gamma;
 
 			texture.TreatLuminanceAsAlpha = isAlpha;
-            texture.SetFormat( desiredFormat );
+			texture.SetFormat( desiredFormat );
 
 			// load image data
 			texture.LoadImage( image );
@@ -547,7 +541,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -559,7 +553,9 @@ namespace Axiom.Core
 					foreach ( Texture texture in Resources )
 					{
 						if ( !texture.IsDisposed )
+						{
 							texture.Dispose();
+						}
 					}
 				}
 
@@ -572,8 +568,7 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-		public virtual PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format,
-												   TextureUsage usage )
+		public virtual PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
 			// Just throw an error, for non-overriders
 			throw new NotImplementedException();
@@ -586,7 +581,7 @@ namespace Axiom.Core
 
 		public bool IsEquivalentFormatSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
-			var supportedFormat = GetNativeFormat( ttype, format, usage );
+			PixelFormat supportedFormat = GetNativeFormat( ttype, format, usage );
 			// Assume that same or greater number of bits means quality not degraded
 			return PixelUtil.GetNumElemBits( supportedFormat ) >= PixelUtil.GetNumElemBits( format );
 		}
@@ -599,35 +594,35 @@ namespace Axiom.Core
 			}
 		}
 
-        /// <summary>
-        /// Returns whether this render system has hardware filtering supported for the
-        /// texture format requested with the given usage options.
-        /// </summary>
-        /// <param name="ttype">The texture type requested</param>
-        /// <param name="format">The pixel format requested</param>
-        /// <param name="usage">the kind of usage this texture is intended for, a combination of the TextureUsage flags.</param>
-        /// <param name="preciseFormatOnly">
-        /// Whether precise or fallback format mode is used to detecting.
-        /// In case the pixel format doesn't supported by device, false will be returned
-        /// if in precise mode, and natively used pixel format will be actually use to
-        /// check if in fallback mode.
-        /// </param>
-        /// <returns>true if the texture filtering is supported.</returns>
-        [OgreVersion( 1, 7, 2 )]
+		/// <summary>
+		/// Returns whether this render system has hardware filtering supported for the
+		/// texture format requested with the given usage options.
+		/// </summary>
+		/// <param name="ttype">The texture type requested</param>
+		/// <param name="format">The pixel format requested</param>
+		/// <param name="usage">the kind of usage this texture is intended for, a combination of the TextureUsage flags.</param>
+		/// <param name="preciseFormatOnly">
+		/// Whether precise or fallback format mode is used to detecting.
+		/// In case the pixel format doesn't supported by device, false will be returned
+		/// if in precise mode, and natively used pixel format will be actually use to
+		/// check if in fallback mode.
+		/// </param>
+		/// <returns>true if the texture filtering is supported.</returns>
+		[OgreVersion( 1, 7, 2 )]
 #if NET_40
         public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false );
 #else
-        public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly );
+		public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly );
 #endif
 
 #if !NET_40
-        /// <see cref="IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
-        public bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
-        {
-            return IsHardwareFilteringSupported( ttype, format, usage, false );
-        }
+		/// <see cref="IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+		public bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
+		{
+			return IsHardwareFilteringSupported( ttype, format, usage, false );
+		}
 #endif
-		
-        #endregion Methods
+
+		#endregion Methods
 	};
 }

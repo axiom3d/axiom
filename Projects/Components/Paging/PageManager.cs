@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,19 +19,23 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System.Collections.Generic;
 using System.IO;
+
 using Axiom.Core;
 using Axiom.Serialization;
 
@@ -69,7 +74,10 @@ namespace Axiom.Components.Paging
 		public PageProvider PageProvider
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mPageProvider; }
+			get
+			{
+				return this.mPageProvider;
+			}
 
 			/// <remarks>
 			/// This is the top-level way that you can direct how Page data is loaded. 
@@ -80,13 +88,19 @@ namespace Axiom.Components.Paging
 			/// called worldname_sectionname_pageID.page. 
 			/// </remarks>
 			[OgreVersion( 1, 7, 2 )]
-			set { mPageProvider = value; }
+			set
+			{
+				this.mPageProvider = value;
+			}
 		}
 
 		public Dictionary<string, IPageContentFactory> ContentFactories
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mContentFactories; }
+			get
+			{
+				return this.mContentFactories;
+			}
 		}
 
 		public Dictionary<string, IPageContentCollectionFactory> ContentCollectionFactories
@@ -94,7 +108,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mContentCollectionFactories;
+				return this.mContentCollectionFactories;
 			}
 		}
 
@@ -103,7 +117,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mWorldSectionFactories;
+				return this.mWorldSectionFactories;
 			}
 		}
 
@@ -112,7 +126,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mStrategies;
+				return this.mStrategies;
 			}
 		}
 
@@ -122,7 +136,10 @@ namespace Axiom.Components.Paging
 		public Dictionary<string, PagedWorld> Worlds
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mWorlds; }
+			get
+			{
+				return this.mWorlds;
+			}
 		}
 
 		/// <summary>
@@ -131,7 +148,10 @@ namespace Axiom.Components.Paging
 		public byte DebugDisplayLevel
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mDebugDisplayLvl; }
+			get
+			{
+				return this.mDebugDisplayLvl;
+			}
 
 			/// <remarks>
 			/// This setting controls how much debug information is displayed in the scene.
@@ -142,7 +162,10 @@ namespace Axiom.Components.Paging
 			/// up to the classes involved. 
 			/// </remarks>
 			[OgreVersion( 1, 7, 2 )]
-			set { mDebugDisplayLvl = value; }
+			set
+			{
+				this.mDebugDisplayLvl = value;
+			}
 		}
 
 		/// <summary>
@@ -153,7 +176,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mCameraList;
+				return this.mCameraList;
 			}
 		}
 
@@ -164,10 +187,16 @@ namespace Axiom.Components.Paging
 		public string PageResourceGroup
 		{
 			[OgreVersion( 1, 7, 2 )]
-			get { return mPageResourceGroup; }
+			get
+			{
+				return this.mPageResourceGroup;
+			}
 
 			[OgreVersion( 1, 7, 2 )]
-			set { mPageResourceGroup = value; }
+			set
+			{
+				this.mPageResourceGroup = value;
+			}
 		}
 
 		/// <summary>
@@ -176,9 +205,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public bool ArePagingOperationsEnabled
 		{
-			get;
-
-			// Using this method you can stop pages being loaded or unloaded for a
+			get; // Using this method you can stop pages being loaded or unloaded for a
 			// period of time, 'freezing' the current page state as it is. 
 			set;
 		}
@@ -190,18 +217,17 @@ namespace Axiom.Components.Paging
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public PageManager()
-			: base()
 		{
-			mPageResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
-			this.ArePagingOperationsEnabled = true;
+			this.mPageResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
+			ArePagingOperationsEnabled = true;
 
-			mEventRouter = new EventRouter();
-			mEventRouter.pManager = this;
-			mEventRouter.pWorlds = mWorlds;
-			mEventRouter.pCameraList = mCameraList;
+			this.mEventRouter = new EventRouter();
+			this.mEventRouter.pManager = this;
+			this.mEventRouter.pWorlds = this.mWorlds;
+			this.mEventRouter.pCameraList = this.mCameraList;
 
-			Root.Instance.FrameStarted += mEventRouter.FrameStarted;
-			Root.Instance.FrameEnded += mEventRouter.FrameEnded;
+			Root.Instance.FrameStarted += this.mEventRouter.FrameStarted;
+			Root.Instance.FrameEnded += this.mEventRouter.FrameEnded;
 
 			CreateStandardStrategies();
 			CreateStandardContentFactories();
@@ -210,15 +236,15 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~PageManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					Root.Instance.FrameStarted -= mEventRouter.FrameStarted;
-					Root.Instance.FrameEnded -= mEventRouter.FrameEnded;
+					Root.Instance.FrameStarted -= this.mEventRouter.FrameStarted;
+					Root.Instance.FrameEnded -= this.mEventRouter.FrameEnded;
 
-					mGrid2DPageStrategy.SafeDispose();
-					mSimpleCollectionFactory.SafeDispose();
+					this.mGrid2DPageStrategy.SafeDispose();
+					this.mSimpleCollectionFactory.SafeDispose();
 				}
 			}
 
@@ -228,16 +254,16 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateStandardStrategies()
 		{
-			mGrid2DPageStrategy = new Grid2PageStrategy( this );
-			AddStrategy( mGrid2DPageStrategy );
+			this.mGrid2DPageStrategy = new Grid2PageStrategy( this );
+			AddStrategy( this.mGrid2DPageStrategy );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateStandardContentFactories()
 		{
 			// collection
-			mSimpleCollectionFactory = new SimplePageContentCollectionFactory();
-			AddContentCollectionFactory( mSimpleCollectionFactory );
+			this.mSimpleCollectionFactory = new SimplePageContentCollectionFactory();
+			AddContentCollectionFactory( this.mSimpleCollectionFactory );
 		}
 
 		/// <summary>
@@ -257,39 +283,39 @@ namespace Axiom.Components.Paging
 			{
 				do
 				{
-					theName = mWorldNameGenerator.GetNextUniqueName();
+					theName = this.mWorldNameGenerator.GetNextUniqueName();
 				}
-				while ( mWorlds.ContainsKey( theName ) );
+				while ( this.mWorlds.ContainsKey( theName ) );
 			}
-			else if ( mWorlds.ContainsKey( theName ) )
+			else if ( this.mWorlds.ContainsKey( theName ) )
 			{
 				throw new AxiomException( "World named '{0}' allready exists! PageManager.CreateWorld", theName );
 			}
 
-			PagedWorld ret = new PagedWorld( theName, this );
-			mWorlds.Add( theName, ret );
+			var ret = new PagedWorld( theName, this );
+			this.mWorlds.Add( theName, ret );
 
 			return ret;
 		}
 
 #if !NET_40
-        /// <see cref="PagedWorld.CreateWorld(string)"/>
-        public PagedWorld CreateWorld()
-        {
-            return CreateWorld( string.Empty );
-        }
+		/// <see cref="PagedWorld.CreateWorld(string)"/>
+		public PagedWorld CreateWorld()
+		{
+			return CreateWorld( string.Empty );
+		}
 #endif
 
-        /// <summary>
+		/// <summary>
 		/// Destroy a world.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyWorld( string name )
 		{
-			if ( mWorlds.ContainsKey( name ) )
+			if ( this.mWorlds.ContainsKey( name ) )
 			{
-				mWorlds[ name ].SafeDispose();
-				mWorlds.Remove( name );
+				this.mWorlds[ name ].SafeDispose();
+				this.mWorlds.Remove( name );
 			}
 		}
 
@@ -299,7 +325,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyWorld( PagedWorld world )
 		{
-			this.DestroyWorld( world.Name );
+			DestroyWorld( world.Name );
 		}
 
 		/// <summary>
@@ -326,7 +352,7 @@ namespace Axiom.Components.Paging
 		}
 
 #if !NET_40
-        /// <see cref="PagedWorld.LoadWorld(string, string)"/>
+		/// <see cref="PagedWorld.LoadWorld(string, string)"/>
 		public PagedWorld LoadWorld( string fileName )
 		{
 			return LoadWorld( fileName, string.Empty );
@@ -354,7 +380,7 @@ namespace Axiom.Components.Paging
 		}
 
 #if !NET_40
-        /// <see cref="PagedWorld.LoadWorld(Stream, string)"/>
+		/// <see cref="PagedWorld.LoadWorld(Stream, string)"/>
 		public PagedWorld LoadWorld( Stream stream )
 		{
 			return LoadWorld( stream, string.Empty );
@@ -392,7 +418,7 @@ namespace Axiom.Components.Paging
 		public PagedWorld GetWorld( string name )
 		{
 			PagedWorld ret = null;
-			mWorlds.TryGetValue( name, out ret );
+			this.mWorlds.TryGetValue( name, out ret );
 			return ret;
 		}
 
@@ -406,13 +432,13 @@ namespace Axiom.Components.Paging
 		public void AddStrategy( PageStrategy strategy )
 		{
 			// note - deliberately allowing overriding
-			if ( mStrategies.ContainsKey( strategy.Name ) )
+			if ( this.mStrategies.ContainsKey( strategy.Name ) )
 			{
-				mStrategies[ strategy.Name ] = strategy;
+				this.mStrategies[ strategy.Name ] = strategy;
 				return;
 			}
 
-			mStrategies.Add( strategy.Name, strategy );
+			this.mStrategies.Add( strategy.Name, strategy );
 		}
 
 		/// <summary>
@@ -421,8 +447,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveStrategy( PageStrategy strategy )
 		{
-			if ( mStrategies.ContainsKey( strategy.Name ) )
-				mStrategies.Remove( strategy.Name );
+			if ( this.mStrategies.ContainsKey( strategy.Name ) )
+			{
+				this.mStrategies.Remove( strategy.Name );
+			}
 		}
 
 		/// <summary>
@@ -434,7 +462,7 @@ namespace Axiom.Components.Paging
 		public PageStrategy GetStrategy( string stratName )
 		{
 			PageStrategy ret;
-			mStrategies.TryGetValue( stratName, out ret );
+			this.mStrategies.TryGetValue( stratName, out ret );
 			return ret;
 		}
 
@@ -448,13 +476,13 @@ namespace Axiom.Components.Paging
 		public void AddContentCollectionFactory( IPageContentCollectionFactory f )
 		{
 			// note - deliberately allowing overriding
-			if ( mContentCollectionFactories.ContainsKey( f.Name ) )
+			if ( this.mContentCollectionFactories.ContainsKey( f.Name ) )
 			{
-				mContentCollectionFactories[ f.Name ] = f;
+				this.mContentCollectionFactories[ f.Name ] = f;
 				return;
 			}
 
-			mContentCollectionFactories.Add( f.Name, f );
+			this.mContentCollectionFactories.Add( f.Name, f );
 		}
 
 		/// <summary>
@@ -463,8 +491,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveContentCollectionFactory( IPageContentCollectionFactory f )
 		{
-			if ( mContentCollectionFactories.ContainsKey( f.Name ) )
-				mContentCollectionFactories.Remove( f.Name );
+			if ( this.mContentCollectionFactories.ContainsKey( f.Name ) )
+			{
+				this.mContentCollectionFactories.Remove( f.Name );
+			}
 		}
 
 		/// <summary>
@@ -476,7 +506,7 @@ namespace Axiom.Components.Paging
 		public IPageContentCollectionFactory GetContentCollectionFactory( string name )
 		{
 			IPageContentCollectionFactory factory;
-			mContentCollectionFactories.TryGetValue( name, out factory );
+			this.mContentCollectionFactories.TryGetValue( name, out factory );
 			return factory;
 		}
 
@@ -489,7 +519,9 @@ namespace Axiom.Components.Paging
 		{
 			IPageContentCollectionFactory fact = GetContentCollectionFactory( typeName );
 			if ( fact == null )
+			{
 				throw new AxiomException( "{0} is not the of a valid PageContentCollectionFactory! PageManager.CreateContentCollection", typeName );
+			}
 
 			return fact.CreateInstance();
 		}
@@ -502,9 +534,13 @@ namespace Axiom.Components.Paging
 		{
 			IPageContentCollectionFactory fact = GetContentCollectionFactory( coll.Type );
 			if ( fact != null )
+			{
 				fact.DestroyInstance( ref coll );
+			}
 			else
+			{
 				coll.SafeDispose(); //normally a safe fallback
+			}
 		}
 
 		/// <summary>
@@ -515,13 +551,13 @@ namespace Axiom.Components.Paging
 		public void AddContentFactory( IPageContentFactory f )
 		{
 			// note - deliberately allowing overriding
-			if ( mContentFactories.ContainsKey( f.Name ) )
+			if ( this.mContentFactories.ContainsKey( f.Name ) )
 			{
-				mContentFactories[ f.Name ] = f;
+				this.mContentFactories[ f.Name ] = f;
 				return;
 			}
 
-			mContentFactories.Add( f.Name, f );
+			this.mContentFactories.Add( f.Name, f );
 		}
 
 		/// <summary>
@@ -530,8 +566,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveContentFactory( IPageContentFactory f )
 		{
-			if ( mContentFactories.ContainsKey( f.Name ) )
-				mContentFactories.Remove( f.Name );
+			if ( this.mContentFactories.ContainsKey( f.Name ) )
+			{
+				this.mContentFactories.Remove( f.Name );
+			}
 		}
 
 		/// <summary>
@@ -543,7 +581,7 @@ namespace Axiom.Components.Paging
 		public IPageContentFactory GetContentFactory( string name )
 		{
 			IPageContentFactory f;
-			mContentFactories.TryGetValue( name, out f );
+			this.mContentFactories.TryGetValue( name, out f );
 			return f;
 		}
 
@@ -556,7 +594,9 @@ namespace Axiom.Components.Paging
 		{
 			IPageContentFactory fact = GetContentFactory( typeName );
 			if ( fact == null )
+			{
 				throw new AxiomException( "{0} is not the name of a valid PageContentFactory! PageManager.CreateContent", typeName );
+			}
 
 			return fact.CreateInstance();
 		}
@@ -569,9 +609,13 @@ namespace Axiom.Components.Paging
 		{
 			IPageContentFactory fact = GetContentFactory( c.Type );
 			if ( fact != null )
+			{
 				fact.DestroyInstance( ref c );
+			}
 			else
-				c.SafeDispose();// normally a safe fallback
+			{
+				c.SafeDispose(); // normally a safe fallback
+			}
 		}
 
 		/// <summary>
@@ -582,13 +626,13 @@ namespace Axiom.Components.Paging
 		public void AddWorldSectionFactory( PagedWorldSectionFactory f )
 		{
 			// note - deliberately allowing overriding
-			if ( mWorldSectionFactories.ContainsKey( f.Name ) )
+			if ( this.mWorldSectionFactories.ContainsKey( f.Name ) )
 			{
-				mWorldSectionFactories[ f.Name ] = f;
+				this.mWorldSectionFactories[ f.Name ] = f;
 				return;
 			}
 
-			mWorldSectionFactories.Add( f.Name, f );
+			this.mWorldSectionFactories.Add( f.Name, f );
 		}
 
 		/// <summary>
@@ -597,8 +641,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveWorldSectionFactory( PagedWorldSectionFactory f )
 		{
-			if ( mWorldSectionFactories.ContainsKey( f.Name ) )
-				mWorldSectionFactories.Remove( f.Name );
+			if ( this.mWorldSectionFactories.ContainsKey( f.Name ) )
+			{
+				this.mWorldSectionFactories.Remove( f.Name );
+			}
 		}
 
 		/// <summary>
@@ -610,7 +656,7 @@ namespace Axiom.Components.Paging
 		public PagedWorldSectionFactory GetWorldSectionFactory( string name )
 		{
 			PagedWorldSectionFactory ret;
-			mWorldSectionFactories.TryGetValue( name, out ret );
+			this.mWorldSectionFactories.TryGetValue( name, out ret );
 			return ret;
 		}
 
@@ -624,9 +670,11 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateWorldSection( string typeName, string name, PagedWorld parent, SceneManager sm )
 		{
-			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( typeName );
+			PagedWorldSectionFactory fact = GetWorldSectionFactory( typeName );
 			if ( fact == null )
+			{
 				throw new AxiomException( "{0} is not the name of a valid PagedWorldSectionFactory PageManager.CreateWorldSection", typeName );
+			}
 
 			return fact.CreateInstance( name, parent, sm );
 		}
@@ -637,11 +685,15 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyWorldSection( ref PagedWorldSection coll )
 		{
-			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( coll.Type );
+			PagedWorldSectionFactory fact = GetWorldSectionFactory( coll.Type );
 			if ( fact != null )
+			{
 				fact.DestroyInstance( ref coll );
+			}
 			else
+			{
 				coll.SafeDispose(); // normally a safe fallback
+			}
 		}
 
 		/// <summary>
@@ -654,13 +706,15 @@ namespace Axiom.Components.Paging
 		internal StreamSerializer ReadPageStream( PageID pageId, PagedWorldSection section )
 		{
 			StreamSerializer ser = null;
-			if ( mPageProvider != null )
-				ser = mPageProvider.ReadPageStream( pageId, section );
+			if ( this.mPageProvider != null )
+			{
+				ser = this.mPageProvider.ReadPageStream( pageId, section );
+			}
 			if ( ser == null )
 			{
 				// use default implementation
 				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId );
-				var stream = ResourceGroupManager.Instance.OpenResource( nameStr );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( nameStr );
 				ser = new StreamSerializer( stream );
 			}
 
@@ -678,15 +732,17 @@ namespace Axiom.Components.Paging
 		{
 			StreamSerializer ser = null;
 
-			if ( mPageProvider != null )
-				ser = mPageProvider.WritePageStream( pageId, section );
-			
+			if ( this.mPageProvider != null )
+			{
+				ser = this.mPageProvider.WritePageStream( pageId, section );
+			}
+
 			if ( ser == null )
 			{
 				// use default implementation
 				string nameStr = string.Format( "{0}_{1}_{2}.page", section.World.Name, section.Name, pageId );
 				// create file, overwrite if necessary
-				var stream = ResourceGroupManager.Instance.CreateResource( nameStr, mPageResourceGroup, true );
+				Stream stream = ResourceGroupManager.Instance.CreateResource( nameStr, this.mPageResourceGroup, true );
 				ser = new StreamSerializer( stream );
 			}
 
@@ -701,9 +757,11 @@ namespace Axiom.Components.Paging
 		internal StreamSerializer ReadWorldStream( string fileName )
 		{
 			StreamSerializer ser = null;
-			if ( mPageProvider != null )
-				ser = mPageProvider.ReadWorldStream( fileName );
-			
+			if ( this.mPageProvider != null )
+			{
+				ser = this.mPageProvider.ReadWorldStream( fileName );
+			}
+
 			if ( ser == null )
 			{
 				// use default implementation
@@ -722,14 +780,16 @@ namespace Axiom.Components.Paging
 		internal StreamSerializer WriteWorldStream( string fileName )
 		{
 			StreamSerializer ser = null;
-			if ( mPageProvider != null )
-				ser = mPageProvider.WriteWorldStream( fileName );
-			
+			if ( this.mPageProvider != null )
+			{
+				ser = this.mPageProvider.WriteWorldStream( fileName );
+			}
+
 			if ( ser == null )
 			{
 				// use default implementation
 				// create file, overwrite if necessary
-				var stream = ResourceGroupManager.Instance.CreateResource( fileName, mPageResourceGroup, true );
+				Stream stream = ResourceGroupManager.Instance.CreateResource( fileName, this.mPageResourceGroup, true );
 				ser = new StreamSerializer( stream );
 			}
 
@@ -748,8 +808,10 @@ namespace Axiom.Components.Paging
 		internal bool PrepareProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( mPageProvider != null )
-				generated = mPageProvider.PrepareProcedualPage( page, section );
+			if ( this.mPageProvider != null )
+			{
+				generated = this.mPageProvider.PrepareProcedualPage( page, section );
+			}
 
 			return generated;
 		}
@@ -767,8 +829,10 @@ namespace Axiom.Components.Paging
 		internal bool LoadProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( mPageProvider != null )
-				generated = mPageProvider.LoadProcedualPage( page, section );
+			if ( this.mPageProvider != null )
+			{
+				generated = this.mPageProvider.LoadProcedualPage( page, section );
+			}
 
 			return generated;
 		}
@@ -786,8 +850,10 @@ namespace Axiom.Components.Paging
 		{
 			bool generated = false;
 
-			if ( mPageProvider != null )
-				generated = mPageProvider.UnPrepareProcedualPage( page, section );
+			if ( this.mPageProvider != null )
+			{
+				generated = this.mPageProvider.UnPrepareProcedualPage( page, section );
+			}
 
 			return generated;
 		}
@@ -805,8 +871,10 @@ namespace Axiom.Components.Paging
 		internal bool UnloadProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( mPageProvider != null )
-				generated = mPageProvider.UnloadProcedualPage( page, section );
+			if ( this.mPageProvider != null )
+			{
+				generated = this.mPageProvider.UnloadProcedualPage( page, section );
+			}
 
 			return generated;
 		}
@@ -822,11 +890,11 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void AddCamera( Camera c )
 		{
-			if ( !mCameraList.Contains( c ) )
+			if ( !this.mCameraList.Contains( c ) )
 			{
-				mCameraList.Add( c );
-				c.CameraPreRenderScene += mEventRouter.OnPreRenderScene;
-				c.CameraDestroyed += mEventRouter.OnCameraDestroyed;
+				this.mCameraList.Add( c );
+				c.CameraPreRenderScene += this.mEventRouter.OnPreRenderScene;
+				c.CameraDestroyed += this.mEventRouter.OnCameraDestroyed;
 			}
 		}
 
@@ -836,11 +904,11 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveCamera( Camera c )
 		{
-			if ( mCameraList.Contains( c ) )
+			if ( this.mCameraList.Contains( c ) )
 			{
-				c.CameraPreRenderScene -= mEventRouter.OnPreRenderScene;
-				c.CameraDestroyed -= mEventRouter.OnCameraDestroyed;
-				mCameraList.Remove( c );
+				c.CameraPreRenderScene -= this.mEventRouter.OnPreRenderScene;
+				c.CameraDestroyed -= this.mEventRouter.OnCameraDestroyed;
+				this.mCameraList.Remove( c );
 			}
 		}
 
@@ -850,19 +918,19 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public bool HasCamera( Camera c )
 		{
-			return mCameraList.Contains( c );
+			return this.mCameraList.Contains( c );
 		}
 
 		protected class EventRouter
 		{
+			public List<Camera> pCameraList;
 			public PageManager pManager;
 			public Dictionary<string, PagedWorld> pWorlds;
-			public List<Camera> pCameraList;
 
 			[OgreVersion( 1, 7, 2 )]
 			public void FrameStarted( object source, FrameEventArgs e )
 			{
-				foreach ( var world in pWorlds.Values )
+				foreach ( PagedWorld world in this.pWorlds.Values )
 				{
 					world.FrameStart( e.TimeSinceLastFrame );
 
@@ -870,27 +938,29 @@ namespace Axiom.Components.Paging
 					// Previously we did this in cameraPreRenderScene, but that had the effect
 					// of causing unnecessary unloading of pages if a camera was rendered
 					// intermittently, so we assume that all cameras we're told to watch are 'active'
-					foreach ( var c in pCameraList )
+					foreach ( Camera c in this.pCameraList )
+					{
 						world.NotifyCamera( c );
+					}
 				}
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void FrameEnded( object source, FrameEventArgs e )
 			{
-				foreach ( var world in pWorlds.Values )
+				foreach ( PagedWorld world in this.pWorlds.Values )
+				{
 					world.FrameEnd( e.TimeSinceLastFrame );
+				}
 			}
 
 			[OgreVersion( 1, 7, 2 )]
-			public void OnPreRenderScene( Camera.CameraEventArgs e )
-			{
-			}
+			public void OnPreRenderScene( Camera.CameraEventArgs e ) { }
 
 			[OgreVersion( 1, 7, 2 )]
 			public void OnCameraDestroyed( Camera.CameraEventArgs e )
 			{
-				pManager.RemoveCamera( e.Source );
+				this.pManager.RemoveCamera( e.Source );
 			}
 		}
 	}

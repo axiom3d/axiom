@@ -37,8 +37,6 @@
 
 using System.Collections.Generic;
 
-using Axiom.Animating;
-
 #endregion
 
 namespace Axiom.Animating.Collections
@@ -46,14 +44,10 @@ namespace Axiom.Animating.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="KeyFrame">KeyFrames</see>.
 	/// </summary>
-	public class KeyFrameList : List<KeyFrame>
-	{
-	}
+	public class KeyFrameList : List<KeyFrame> { }
 
 	/// <summary>
 	/// Represents a collection of <see cref="Bone">Bones</see>.
 	/// </summary>
-	public class BoneList : List<Bone>
-	{
-	}
+	public class BoneList : List<Bone> { }
 }

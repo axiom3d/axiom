@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,34 +23,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: Root.cs 1445 2008-12-02 19:25:22Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text;
 
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Controllers;
-using Axiom.FileSystem;
-using Axiom.Fonts;
-using Axiom.Media;
-using Axiom.Overlays;
-using Axiom.Input;
-using Axiom.ParticleSystems;
-using Axiom.Graphics;
 #if MONO_SIMD
 using Mono.Simd;
 #endif
@@ -61,8 +49,10 @@ using System.Management;
 
 namespace Axiom.Core
 {
-	class PlatformInformation
+	internal class PlatformInformation
 	{
+		#region CPUFeature enum
+
 		public enum CPUFeature
 		{
 			SSE1,
@@ -75,7 +65,9 @@ namespace Axiom.Core
 			Count
 		}
 
-		private static bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
+		#endregion
+
+		private static readonly bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
 		private static string cpuIdentifier = "CPU Identification not available";
 
 		/// <summary>
@@ -151,7 +143,6 @@ namespace Axiom.Core
 			log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSE4A ) );
 			log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSSE3 ) );
 			log.Write( "-------------------------" );
-
 		}
 	}
 }

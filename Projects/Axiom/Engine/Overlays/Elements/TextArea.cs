@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,34 +23,38 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.CrossPlatform;
 using Axiom.Fonts;
-using Axiom.Scripting;
 using Axiom.Graphics;
-using Font = Axiom.Fonts.Font;
 using Axiom.Math;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
+
 // <ogresynchronization>
 //     <file name="OgreTextAreaOverlayElement.h"   revision="1.7.2.1" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
 //     <file name="OgreTextAreaOverlayElement.cpp" revision="1.9" lastUpdated="10/21/2005" lastUpdatedBy="DanielH" />
 // </ogresynchronization>
+
 #endregion
 
 namespace Axiom.Overlays.Elements
@@ -61,23 +66,24 @@ namespace Axiom.Overlays.Elements
 	{
 		#region Member variables
 
-		protected HorizontalAlignment textAlign;
-		protected bool isTransparent;
-		protected Font font;
-		protected float charHeight;
-		protected float pixelCharHeight;
-		protected float spaceWidth;
-		protected int pixelSpaceWidth;
+		private const int DEFAULT_INITIAL_CHARS = 12;
+		private const int POSITION_TEXCOORD_BINDING = 0;
+		private const int COLOR_BINDING = 1;
 		protected int allocSize;
-		protected float viewportAspectCoef;
+		protected float charHeight;
+
 		/// Colors to use for the vertices
 		protected ColorEx colorBottom;
-		protected ColorEx colorTop;
-		protected bool haveColorsChanged;
 
-		const int DEFAULT_INITIAL_CHARS = 12;
-		const int POSITION_TEXCOORD_BINDING = 0;
-		const int COLOR_BINDING = 1;
+		protected ColorEx colorTop;
+		protected Font font;
+		protected bool haveColorsChanged;
+		protected bool isTransparent;
+		protected float pixelCharHeight;
+		protected int pixelSpaceWidth;
+		protected float spaceWidth;
+		protected HorizontalAlignment textAlign;
+		protected float viewportAspectCoef;
 
 		#endregion
 
@@ -91,56 +97,54 @@ namespace Axiom.Overlays.Elements
 			: base( name )
 		{
 			//isTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
-			textAlign = HorizontalAlignment.Center;
+			this.textAlign = HorizontalAlignment.Center;
 
 
-			colorTop = ColorEx.White;
-			colorBottom = ColorEx.White;
-			haveColorsChanged = true;
+			this.colorTop = ColorEx.White;
+			this.colorBottom = ColorEx.White;
+			this.haveColorsChanged = true;
 
-			charHeight = 0.02f;
-			pixelCharHeight = 12;
-			viewportAspectCoef = 1f;
+			this.charHeight = 0.02f;
+			this.pixelCharHeight = 12;
+			this.viewportAspectCoef = 1f;
 		}
 
 		#endregion
 
 		#region Methods
 
-        /// <summary>
-        /// </summary>
+		/// <summary>
+		/// </summary>
 		protected void CheckMemoryAllocation( int numChars )
 		{
-			if ( allocSize < numChars )
+			if ( this.allocSize < numChars )
 			{
 				// Create and bind new buffers
 				// Note that old buffers will be deleted automatically through reference counting
 
 				// 6 verts per char since we're doing tri lists without indexes
 				// Allocate space for positions & texture coords
-				var decl = renderOperation.vertexData.vertexDeclaration;
-				var binding = renderOperation.vertexData.vertexBufferBinding;
+				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+				VertexBufferBinding binding = renderOperation.vertexData.vertexBufferBinding;
 
 				renderOperation.vertexData.vertexCount = numChars * 6;
 
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
-				var buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
+				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
 				// colors
-				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),	renderOperation.vertexData.vertexCount,	BufferUsage.DynamicWriteOnly );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
 
-				allocSize = numChars;
+				this.allocSize = numChars;
 				// force color buffer regeneration
-				haveColorsChanged = true;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -155,9 +159,9 @@ namespace Axiom.Overlays.Elements
 				// Combine positions and texture coords since they tend to change together
 				// since character sizes are different
 				renderOperation.vertexData = new VertexData();
-				var decl = renderOperation.vertexData.vertexDeclaration;
+				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
 
-				var offset = 0;
+				int offset = 0;
 
 				// positions
 				decl.AddElement( POSITION_TEXCOORD_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
@@ -187,13 +191,12 @@ namespace Axiom.Overlays.Elements
 		{
 			float vpWidth = OverlayManager.Instance.ViewportWidth;
 			float vpHeight = OverlayManager.Instance.ViewportHeight;
-			viewportAspectCoef = vpHeight / vpWidth;
+			this.viewportAspectCoef = vpHeight / vpWidth;
 
-			if ( metricsMode != MetricsMode.Relative &&
-				( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				charHeight = (float)pixelCharHeight / vpHeight;
-				spaceWidth = (float)pixelSpaceWidth / vpHeight;
+				this.charHeight = this.pixelCharHeight / vpHeight;
+				this.spaceWidth = this.pixelSpaceWidth / vpHeight;
 
 				isGeomPositionsOutOfDate = true;
 			}
@@ -203,7 +206,7 @@ namespace Axiom.Overlays.Elements
 			if ( this.haveColorsChanged && isInitialized )
 			{
 				UpdateColors();
-				haveColorsChanged = false;
+				this.haveColorsChanged = false;
 			}
 		}
 
@@ -212,36 +215,36 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void UpdateColors()
 		{
-		    // convert to API specific color values
-		    var topColor = Root.Instance.ConvertColor(colorTop);
-		    var bottomColor = Root.Instance.ConvertColor(colorBottom);
+			// convert to API specific color values
+			int topColor = Root.Instance.ConvertColor( this.colorTop );
+			int bottomColor = Root.Instance.ConvertColor( this.colorBottom );
 
-		    // get the seperate color buffer
-		    var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer(COLOR_BINDING);
+			// get the seperate color buffer
+			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
 
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                var data = buffer.Lock(BufferLocking.Discard);
-                var colPtr = data.ToIntPointer();
-                var index = 0;
+			{
+				BufferBase data = buffer.Lock( BufferLocking.Discard );
+				int* colPtr = data.ToIntPointer();
+				int index = 0;
 
-                for (var i = 0; i < allocSize; i++)
-                {
-                    // first tri (top, bottom, top);
-                    colPtr[index++] = topColor;
-                    colPtr[index++] = bottomColor;
-                    colPtr[index++] = topColor;
+				for ( int i = 0; i < this.allocSize; i++ )
+				{
+					// first tri (top, bottom, top);
+					colPtr[ index++ ] = topColor;
+					colPtr[ index++ ] = bottomColor;
+					colPtr[ index++ ] = topColor;
 
-                    // second tri (top, bottom, bottom);
-                    colPtr[index++] = topColor;
-                    colPtr[index++] = bottomColor;
-                    colPtr[index++] = bottomColor;
-                }
-            }
-		    // unlock this bad boy
-		    buffer.Unlock();
+					// second tri (top, bottom, bottom);
+					colPtr[ index++ ] = topColor;
+					colPtr[ index++ ] = bottomColor;
+					colPtr[ index++ ] = bottomColor;
+				}
+			}
+			// unlock this bad boy
+			buffer.Unlock();
 		}
 
 		/// <summary>
@@ -249,62 +252,62 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void UpdateGeometry()
 		{
-			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
+			if ( this.font == null || text == null || !isGeomPositionsOutOfDate )
 			{
 				// must not be initialized yet, probably due to order of creation in a template
 				return;
 			}
 
-			var charLength = text.Length;
+			int charLength = text.Length;
 			// make sure the buffers are big enough
 			CheckMemoryAllocation( charLength );
 
 			renderOperation.vertexData.vertexCount = charLength * 6;
 
 			// get pos/tex buffer
-			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
-			var data = buffer.Lock( BufferLocking.Discard );
-			var largestWidth = 0.0f;
-			var left = this.DerivedLeft * 2.0f - 1.0f;
-			var top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
+			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
+			BufferBase data = buffer.Lock( BufferLocking.Discard );
+			float largestWidth = 0.0f;
+			float left = DerivedLeft * 2.0f - 1.0f;
+			float top = -( ( DerivedTop * 2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
-			if ( spaceWidth == 0 )
+			if ( this.spaceWidth == 0 )
 			{
-				spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f * viewportAspectCoef;
+				this.spaceWidth = this.font.GetGlyphAspectRatio( 'A' ) * this.charHeight * 2.0f * this.viewportAspectCoef;
 			}
 
 
-			var newLine = true;
-			var index = 0;
+			bool newLine = true;
+			int index = 0;
 
 			// go through each character and process
-			for ( var i = 0; i < charLength; i++ )
+			for ( int i = 0; i < charLength; i++ )
 			{
-				var c = text[ i ];
+				char c = text[ i ];
 
 				if ( newLine )
 				{
-					var length = 0.0f;
+					float length = 0.0f;
 
 					// precalc the length of this line
-					for ( var j = i; j < charLength && text[ j ] != '\n'; j++ )
+					for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
 					{
 						if ( text[ j ] == ' ' )
 						{
-							length += spaceWidth;
+							length += this.spaceWidth;
 						}
 						else
 						{
-							length += font.GetGlyphAspectRatio( text[ j ] ) * charHeight * 2f * viewportAspectCoef;
+							length += this.font.GetGlyphAspectRatio( text[ j ] ) * this.charHeight * 2f * this.viewportAspectCoef;
 						}
 					} // for j
 
-					if ( this.horzAlign == HorizontalAlignment.Right )
+					if ( horzAlign == HorizontalAlignment.Right )
 					{
 						left -= length;
 					}
-					else if ( this.horzAlign == HorizontalAlignment.Center )
+					else if ( horzAlign == HorizontalAlignment.Center )
 					{
 						left -= length * 0.5f;
 					}
@@ -314,8 +317,8 @@ namespace Axiom.Overlays.Elements
 
 				if ( c == '\n' )
 				{
-					left = this.DerivedLeft * 2.0f - 1.0f;
-					top -= charHeight * 2.0f;
+					left = DerivedLeft * 2.0f - 1.0f;
+					top -= this.charHeight * 2.0f;
 					newLine = true;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
@@ -325,84 +328,84 @@ namespace Axiom.Overlays.Elements
 				if ( c == ' ' )
 				{
 					// leave a gap, no tris required
-					left += spaceWidth;
+					left += this.spaceWidth;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
 					continue;
 				}
 
-				var horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
+				float horizHeight = this.font.GetGlyphAspectRatio( c ) * this.viewportAspectCoef;
 				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
-				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
+				this.font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
 
 #if !AXIOM_SAFE_ONLY
-                unsafe
+				unsafe
 #endif
-                {
-                    // each vert is (x, y, z, u, v)
-                    // first tri
-                    // upper left
-                    var vertPtr = data.ToFloatPointer();
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u1;
-                    vertPtr[index++] = v1;
+				{
+					// each vert is (x, y, z, u, v)
+					// first tri
+					// upper left
+					float* vertPtr = data.ToFloatPointer();
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u1;
+					vertPtr[ index++ ] = v1;
 
-                    top -= charHeight*2.0f;
+					top -= this.charHeight * 2.0f;
 
-                    // bottom left
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u1;
-                    vertPtr[index++] = v2;
+					// bottom left
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u1;
+					vertPtr[ index++ ] = v2;
 
-                    top += charHeight*2.0f;
-                    left += horizHeight*charHeight*2.0f;
+					top += this.charHeight * 2.0f;
+					left += horizHeight * this.charHeight * 2.0f;
 
-                    // top right
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u2;
-                    vertPtr[index++] = v1;
+					// top right
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u2;
+					vertPtr[ index++ ] = v1;
 
-                    // second tri
+					// second tri
 
-                    // top right (again)
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u2;
-                    vertPtr[index++] = v1;
+					// top right (again)
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u2;
+					vertPtr[ index++ ] = v1;
 
-                    top -= charHeight*2.0f;
-                    left -= horizHeight*charHeight*2.0f;
+					top -= this.charHeight * 2.0f;
+					left -= horizHeight * this.charHeight * 2.0f;
 
-                    // bottom left (again)
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u1;
-                    vertPtr[index++] = v2;
+					// bottom left (again)
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u1;
+					vertPtr[ index++ ] = v2;
 
-                    left += horizHeight*charHeight*2.0f;
+					left += horizHeight * this.charHeight * 2.0f;
 
-                    // bottom right
-                    vertPtr[index++] = left;
-                    vertPtr[index++] = top;
-                    vertPtr[index++] = -1.0f;
-                    vertPtr[index++] = u2;
-                    vertPtr[index++] = v2;
-                }
+					// bottom right
+					vertPtr[ index++ ] = left;
+					vertPtr[ index++ ] = top;
+					vertPtr[ index++ ] = -1.0f;
+					vertPtr[ index++ ] = u2;
+					vertPtr[ index++ ] = v2;
+				}
 
-			    // go back up with top
-				top += charHeight * 2.0f;
+				// go back up with top
+				top += this.charHeight * 2.0f;
 
-				var currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
+				float currentWidth = ( left + 1 ) / 2 - DerivedLeft;
 
 				if ( currentWidth > largestWidth )
 				{
@@ -422,9 +425,9 @@ namespace Axiom.Overlays.Elements
 			}
 
 			// record the width as the longest width calculated for any of the lines
-			if ( this.Width < largestWidth )
+			if ( Width < largestWidth )
 			{
-				this.Width = largestWidth;
+				Width = largestWidth;
 			}
 		}
 
@@ -454,22 +457,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (float)pixelCharHeight;
+					return this.pixelCharHeight;
 				}
 				else
 				{
-					return charHeight;
+					return this.charHeight;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					pixelCharHeight = value;
+					this.pixelCharHeight = value;
 				}
 				else
 				{
-					charHeight = value;
+					this.charHeight = value;
 				}
 				isGeomPositionsOutOfDate = true;
 			}
@@ -483,13 +486,13 @@ namespace Axiom.Overlays.Elements
 			get
 			{
 				// doesnt matter if they are both the same
-				return colorTop;
+				return this.colorTop;
 			}
 			set
 			{
-				colorTop = value;
-				colorBottom = value;
-				haveColorsChanged = true;
+				this.colorTop = value;
+				this.colorBottom = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -500,12 +503,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return colorTop;
+				return this.colorTop;
 			}
 			set
 			{
-				colorTop = value;
-				haveColorsChanged = true;
+				this.colorTop = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -516,12 +519,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return colorBottom;
+				return this.colorBottom;
 			}
 			set
 			{
-				colorBottom = value;
-				haveColorsChanged = true;
+				this.colorBottom = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -532,19 +535,19 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return font != null ? font.Name : null;
+				return this.font != null ? this.font.Name : null;
 			}
 			set
 			{
-				font = (Font)FontManager.Instance[ value ];
-				if ( font == null )
+				this.font = (Font)FontManager.Instance[ value ];
+				if ( this.font == null )
 				{
 					throw new Exception( "Could not find font " + value );
 				}
-				font.Load();
+				this.font.Load();
 
 				// note: font materials are created with lighting and depthcheck disabled by default
-				material = font.Material;
+				material = this.font.Material;
 
 				// TODO See if this can be eliminated
 
@@ -582,10 +585,9 @@ namespace Axiom.Overlays.Elements
 			}
 			set
 			{
-
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
 				float vpHeight = OverlayManager.Instance.ViewportHeight;
-				viewportAspectCoef = vpHeight / vpWidth;
+				this.viewportAspectCoef = vpHeight / vpWidth;
 				base.MetricsMode = value;
 
 				// configure pixel variables based on current viewport
@@ -593,13 +595,13 @@ namespace Axiom.Overlays.Elements
 				{
 					case MetricsMode.Pixels:
 						// set pixel variables multiplied by the viewport multipliers
-						pixelCharHeight = (int)( charHeight * vpHeight );
-						pixelSpaceWidth = (int)( spaceWidth * vpHeight );
+						this.pixelCharHeight = (int)( this.charHeight * vpHeight );
+						this.pixelSpaceWidth = (int)( this.spaceWidth * vpHeight );
 						break;
 					case MetricsMode.Relative:
 						// set pixel variables multiplied by the height constant
-						pixelCharHeight = (int)( charHeight * 10000.0 );
-						pixelSpaceWidth = (int)( spaceWidth * 10000.0 );
+						this.pixelCharHeight = (int)( this.charHeight * 10000.0 );
+						this.pixelSpaceWidth = (int)( this.spaceWidth * 10000.0 );
 						break;
 				}
 			}
@@ -614,22 +616,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (float)pixelSpaceWidth;
+					return this.pixelSpaceWidth;
 				}
 				else
 				{
-					return spaceWidth;
+					return this.spaceWidth;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					pixelSpaceWidth = (int)value;
+					this.pixelSpaceWidth = (int)value;
 				}
 				else
 				{
-					spaceWidth = value;
+					this.spaceWidth = value;
 				}
 
 				isGeomPositionsOutOfDate = true;
@@ -643,11 +645,11 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return textAlign;
+				return this.textAlign;
 			}
 			set
 			{
-				textAlign = value;
+				this.textAlign = value;
 				isGeomPositionsOutOfDate = true;
 			}
 		}
@@ -673,250 +675,11 @@ namespace Axiom.Overlays.Elements
 
 		#region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "char_height", "", typeof( TextArea ) )]
-        public class CharacterHeightAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return element.CharHeight.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.CharHeight = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion
-		}
-
-		[ScriptableProperty( "space_width", "", typeof( TextArea ) )]
-        public class SpaceWidthAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return element.SpaceWidth.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.SpaceWidth = StringConverter.ParseFloat( val );
-				}
-			}
-
-			#endregion
-		}
-
-		[ScriptableProperty( "font_name", "", typeof( TextArea ) )]
-        public class FontNameAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return element.FontName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.FontName = val;
-				}
-			}
-
-			#endregion
-		}
-
-		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
-        public class HorizontalAlignmentAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof( HorizontalAlignment ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
-				}
-			}
-
-			#endregion
-		}
-		[ScriptableProperty( "color", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour", "", typeof( TextArea ) )]
-        public class ColorAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return StringConverter.ToString( element.Color );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.Color = StringConverter.ParseColor( val );
-				}
-			}
-
-			#endregion
-		}
-
-		[ScriptableProperty( "color_top", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
-        public class TopColorAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return StringConverter.ToString( element.ColorTop );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.ColorTop = StringConverter.ParseColor( val );
-				}
-			}
-
-			#endregion
-		}
+		#region Nested type: BottomColorAttributeCommand
 
 		[ScriptableProperty( "color_bottom", "", typeof( TextArea ) )]
 		[ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
-        public class BottomColorAttributeCommand : IPropertyCommand
+		public class BottomColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -955,7 +718,274 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion ScriptableObject Interface Command Classes
+		#endregion
 
+		#region Nested type: CharacterHeightAttributeCommand
+
+		[ScriptableProperty( "char_height", "", typeof( TextArea ) )]
+		public class CharacterHeightAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return element.CharHeight.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.CharHeight = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion
 		}
+
+		#endregion
+
+		#region Nested type: ColorAttributeCommand
+
+		[ScriptableProperty( "color", "", typeof( TextArea ) )]
+		[ScriptableProperty( "colour", "", typeof( TextArea ) )]
+		public class ColorAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return StringConverter.ToString( element.Color );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.Color = StringConverter.ParseColor( val );
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: FontNameAttributeCommand
+
+		[ScriptableProperty( "font_name", "", typeof( TextArea ) )]
+		public class FontNameAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return element.FontName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.FontName = val;
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: HorizontalAlignmentAttributeCommand
+
+		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
+		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof( HorizontalAlignment ) );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: SpaceWidthAttributeCommand
+
+		[ScriptableProperty( "space_width", "", typeof( TextArea ) )]
+		public class SpaceWidthAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return element.SpaceWidth.ToString();
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.SpaceWidth = StringConverter.ParseFloat( val );
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: TopColorAttributeCommand
+
+		[ScriptableProperty( "color_top", "", typeof( TextArea ) )]
+		[ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
+		public class TopColorAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return StringConverter.ToString( element.ColorTop );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.ColorTop = StringConverter.ParseColor( val );
+				}
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#endregion ScriptableObject Interface Command Classes
+	}
 }

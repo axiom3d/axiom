@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -47,13 +51,14 @@ namespace Axiom.Input
 		#region Fields
 
 		/// <summary>
-		///		Special keys currently pressed during this event.
-		/// </summary>
-		protected ModifierKeys modifiers;
-		/// <summary>
 		///		Has this event been handled?
 		/// </summary>
 		protected bool handled;
+
+		/// <summary>
+		///		Special keys currently pressed during this event.
+		/// </summary>
+		protected ModifierKeys modifiers;
 
 		#endregion Fields
 
@@ -79,11 +84,11 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return handled;
+				return this.handled;
 			}
 			set
 			{
-				handled = value;
+				this.handled = value;
 			}
 		}
 
@@ -94,7 +99,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Alt ) != 0;
+				return ( this.modifiers & ModifierKeys.Alt ) != 0;
 			}
 		}
 
@@ -105,7 +110,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Shift ) != 0;
+				return ( this.modifiers & ModifierKeys.Shift ) != 0;
 			}
 		}
 
@@ -116,7 +121,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Control ) != 0;
+				return ( this.modifiers & ModifierKeys.Control ) != 0;
 			}
 		}
 
@@ -130,7 +135,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return modifiers;
+				return this.modifiers;
 			}
 		}
 

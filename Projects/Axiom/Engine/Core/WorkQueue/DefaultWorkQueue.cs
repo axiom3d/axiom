@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,16 +19,20 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 
 #if AXIOM_THREAD_SUPPORT
 using System.Collections.Generic;
@@ -53,7 +58,7 @@ namespace Axiom.Core
 		/// Synchroniser token to wait / notify on thread init
 		/// </summary>
 		protected static readonly object initSync = new object();
-		
+
 #if AXIOM_THREAD_SUPPORT
 		protected List<Thread> workers;
 #endif
@@ -63,25 +68,21 @@ namespace Axiom.Core
 		public DefaultWorkQueue( string name = "" )
 #else
 		public DefaultWorkQueue()
-			: this( string.Empty )
-		{
-		}
+			: this( string.Empty ) { }
 
-		
+
 		public DefaultWorkQueue( string name )
 #endif
-			: base( name )
-		{
-		}
+			: base( name ) { }
 
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.Shutdown();
+					Shutdown();
 				}
 			}
 
@@ -98,9 +99,13 @@ namespace Axiom.Core
 			if ( isRunning )
 			{
 				if ( forceRestart )
+				{
 					Shutdown();
+				}
 				else
+				{
 					return;
+				}
 			}
 
 			shuttingDown = false;
@@ -142,10 +147,10 @@ namespace Axiom.Core
 		{
 			lock ( initSync )
 			{
-				++numThreadsRegisteredWithRS;
+				++this.numThreadsRegisteredWithRS;
 
 #if AXIOM_THREAD_SUPPORT
-				// wake up main thread
+    // wake up main thread
 				Monitor.PulseAll( initSync );
 #endif
 			}
@@ -155,7 +160,9 @@ namespace Axiom.Core
 		public override void Shutdown()
 		{
 			if ( !isRunning )
+			{
 				return;
+			}
 
 			LogManager.Instance.Write( "DefaultWorkQueue('{0}') shutting down on thread {1}.", name, GetThreadName() );
 			shuttingDown = true;
@@ -178,7 +185,7 @@ namespace Axiom.Core
 		protected override void NotifyWorkers()
 		{
 #if AXIOM_THREAD_SUPPORT
-			// wake up waiting thread
+    // wake up waiting thread
             Monitor.Pulse( requestMutex );
 #endif
 		}
@@ -190,7 +197,7 @@ namespace Axiom.Core
 		protected virtual void WaitForNextRequest()
 		{
 #if AXIOM_THREAD_SUPPORT
-			// Lock; note that OGRE_THREAD_WAIT will free the lock
+    // Lock; note that OGRE_THREAD_WAIT will free the lock
 			lock ( requestMutex )
 			{
 				if ( requestQueue.Count == 0 )

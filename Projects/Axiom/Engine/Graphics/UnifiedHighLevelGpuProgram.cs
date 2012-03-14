@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Scripting;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -67,16 +73,19 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
-		private List<String> _delegateNames = new List<string>();
+		private readonly List<String> _delegateNames = new List<string>();
 
 		private HighLevelGpuProgram _chosenDelegate;
+
 		public HighLevelGpuProgram Delegate
 		{
 			get
 			{
-				if ( _chosenDelegate == null )
+				if ( this._chosenDelegate == null )
+				{
 					chooseDelegate();
-				return _chosenDelegate;
+				}
+				return this._chosenDelegate;
 			}
 		}
 
@@ -85,14 +94,10 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null )
-		{
-		}
+			: this( creator, name, handle, group, false, null ) { }
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader )
-		{
-		}
+			: base( creator, name, handle, group, isManual, loader ) { }
 
 		#endregion Construction and Destruction
 
@@ -101,21 +106,19 @@ namespace Axiom.Graphics
 		/// Choose the delegate to use
 		protected virtual void chooseDelegate()
 		{
-			_chosenDelegate = null;
-			foreach ( var delegateName in _delegateNames )
+			this._chosenDelegate = null;
+			foreach ( string delegateName in this._delegateNames )
 			{
-				var program = HighLevelGpuProgramManager.Instance[ delegateName ];
+				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
 				if ( program != null && program.IsSupported )
 				{
-					_chosenDelegate = program;
+					this._chosenDelegate = program;
 					break;
 				}
 			}
 		}
 
-		protected virtual void buildConstantDefinitions()
-		{
-		}
+		protected virtual void buildConstantDefinitions() { }
 
 		/// <summary>
 		/// Adds a new delegate program to the list.
@@ -126,9 +129,9 @@ namespace Axiom.Graphics
 		/// <param name="delegateName"></param>
 		public void AddDelegateProgram( string delegateName )
 		{
-			_delegateNames.Add( delegateName );
+			this._delegateNames.Add( delegateName );
 			// Invalidate current selection
-			_chosenDelegate = null;
+			this._chosenDelegate = null;
 		}
 
 		/// <summary>
@@ -136,40 +139,42 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void ClearDelegatePrograms()
 		{
-			_delegateNames.Clear();
+			this._delegateNames.Clear();
 			// Invalidate current selection
-			_chosenDelegate = null;
+			this._chosenDelegate = null;
 		}
 
 		#endregion Methods
 
-        #region Command objects
+		#region Command objects
 
-        #region DelegateCommand
-        [OgreVersion( 1, 7, 2 )]
-        [ScriptableProperty( "delegate", "Additional delegate programs containing implementations." )]
-        public class DelegateCommand : IPropertyCommand
-        {
-            #region IPropertyCommand Members
+		#region DelegateCommand
 
-            [OgreVersion( 1, 7, 2 )]
-            public string Get( object target )
-            {
-                // Can't do this (not one delegate), shouldn't matter
-                return string.Empty;
-            }
+		[OgreVersion( 1, 7, 2 )]
+		[ScriptableProperty( "delegate", "Additional delegate programs containing implementations." )]
+		public class DelegateCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            [OgreVersion( 1, 7, 2 )]
-            public void Set( object target, string val )
-            {
-                ( (UnifiedHighLevelGpuProgram)target ).AddDelegateProgram( val );
-            }
+			[OgreVersion( 1, 7, 2 )]
+			public string Get( object target )
+			{
+				// Can't do this (not one delegate), shouldn't matter
+				return string.Empty;
+			}
 
-            #endregion IPropertyCommand Members
-        }
-        #endregion DelegateCommand
+			[OgreVersion( 1, 7, 2 )]
+			public void Set( object target, string val )
+			{
+				( (UnifiedHighLevelGpuProgram)target ).AddDelegateProgram( val );
+			}
 
-        #endregion Command objects
+			#endregion
+		}
+
+		#endregion DelegateCommand
+
+		#endregion Command objects
 
 		#region HighLevelGpuProgram Implementation
 
@@ -200,7 +205,9 @@ namespace Axiom.Graphics
 			set
 			{
 				if ( Delegate != null )
+				{
 					Delegate.IsMorphAnimationIncluded = value;
+				}
 			}
 		}
 
@@ -217,7 +224,9 @@ namespace Axiom.Graphics
 			set
 			{
 				if ( Delegate != null )
+				{
 					Delegate.IsSkeletalAnimationIncluded = value;
+				}
 			}
 		}
 
@@ -234,7 +243,9 @@ namespace Axiom.Graphics
 			set
 			{
 				if ( Delegate != null )
+				{
 					Delegate.PoseAnimationCount = value;
+				}
 			}
 		}
 
@@ -282,12 +293,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-	    protected override void BuildConstantDefinitions()
-	    {
-	        throw new NotImplementedException();
-	    }
+		protected override void BuildConstantDefinitions()
+		{
+			throw new NotImplementedException();
+		}
 
-	    public override GpuProgramParameters CreateParameters()
+		public override GpuProgramParameters CreateParameters()
 		{
 			if ( IsSupported )
 			{
@@ -296,35 +307,37 @@ namespace Axiom.Graphics
 			else
 			{
 				//return a default set
-				var p = GpuProgramManager.Instance.CreateParameters();
+				GpuProgramParameters p = GpuProgramManager.Instance.CreateParameters();
 				p.IgnoreMissingParameters = true;
 				return p;
 			}
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		public override void Load( bool background )
 		{
 			if ( Delegate != null )
+			{
 				Delegate.Load( background );
+			}
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void CreateLowLevelImpl()
 		{
-            throw new AxiomException( "This method should never get called!" );
+			throw new AxiomException( "This method should never get called!" );
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void UnloadHighLevelImpl()
 		{
-            throw new AxiomException( "This method should never get called!" );
+			throw new AxiomException( "This method should never get called!" );
 		}
 
-        [OgreVersion( 1, 7, 2 )]
+		[OgreVersion( 1, 7, 2 )]
 		protected override void LoadFromSource()
 		{
-            throw new AxiomException( "This method should never get called!" );
+			throw new AxiomException( "This method should never get called!" );
 		}
 
 		#endregion HighLevelGpuProgram Implementation
@@ -332,8 +345,6 @@ namespace Axiom.Graphics
 
 	public class UnifiedHighLevelGpuProgramFactory : HighLevelGpuProgramFactory
 	{
-		#region IHighLevelGpuProgramFactory Members
-
 		public override string Language
 		{
 			get
@@ -346,7 +357,5 @@ namespace Axiom.Graphics
 		{
 			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}
-
-		#endregion
 	}
 }

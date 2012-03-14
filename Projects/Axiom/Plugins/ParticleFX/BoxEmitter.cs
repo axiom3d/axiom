@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -76,59 +78,86 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
+		#region Nested type: DepthCommand
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "depth", "Depth of the box emitter.", typeof( ParticleEmitter ) )]
+		public class DepthCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public void Set( object target, string val )
+			{
+				var emitter = target as BoxEmitter;
+				emitter.Depth = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				var emitter = target as BoxEmitter;
+				return StringConverter.ToString( emitter.Depth );
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: HeightCommand
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "height", "Height of the box emitter.", typeof( ParticleEmitter ) )]
+		public class HeightCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public void Set( object target, string val )
+			{
+				var emitter = target as BoxEmitter;
+				emitter.Height = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				var emitter = target as BoxEmitter;
+				return StringConverter.ToString( emitter.Height );
+			}
+
+			#endregion
+		}
+
+		#endregion
+
+		#region Nested type: WidthCommand
+
 		/// <summary>
 		///
 		/// </summary>
 		[ScriptableProperty( "width", "Width of the box emitter.", typeof( ParticleEmitter ) )]
 		public class WidthCommand : IPropertyCommand
 		{
+			#region IPropertyCommand Members
+
 			public void Set( object target, string val )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
+
 			public string Get( object target )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
+
+			#endregion
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the box emitter.", typeof( ParticleEmitter ) )]
-        public class HeightCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				BoxEmitter emitter = target as BoxEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
-			public string Get( object target )
-			{
-				BoxEmitter emitter = target as BoxEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the box emitter.", typeof( ParticleEmitter ) )]
-        public class DepthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				BoxEmitter emitter = target as BoxEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
-			public string Get( object target )
-			{
-				BoxEmitter emitter = target as BoxEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-		}
+		#endregion
 
 		#endregion Command definition classes
 	}

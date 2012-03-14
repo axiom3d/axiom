@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,19 +23,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -61,18 +62,18 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return light;
+				return this.light;
 			}
 			set
 			{
 				this.light = value;
-				this.lightNode = light.ParentNode;
-				this.lightPosition = light.GetDerivedPosition();
+				this.lightNode = this.light.ParentNode;
+				this.lightPosition = this.light.GetDerivedPosition();
 				this.lightOrientation = GetLightOrientation();
 
-				base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
+				base.FieldOfView = Utility.DegreesToRadians( this.light.SpotlightOuterAngle );
 				base.Near = 1;
-				base.Far = light.AttenuationRange;
+				base.Far = this.light.AttenuationRange;
 				base.AspectRatio = 1;
 				base.ProjectionType = Projection.Perspective;
 
@@ -88,16 +89,16 @@ namespace Axiom.SceneManagers.Bsp
 			if ( ProjectionType == Projection.Perspective )
 			{
 				// perspective transform, API specific
-			    Matrix4 tmp;
-			    renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far, out tmp );
-			    ProjectionMatrix = tmp;
+				Matrix4 tmp;
+				renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far, out tmp );
+				ProjectionMatrix = tmp;
 			}
 			else if ( ProjectionType == Projection.Orthographic )
 			{
 				// orthographic projection, API specific
-                Matrix4 tmp;
+				Matrix4 tmp;
 				renderSystem.MakeOrthoMatrix( FieldOfView, AspectRatio, Near, Far, out tmp );
-			    ProjectionMatrix = tmp;
+				ProjectionMatrix = tmp;
 			}
 
 			// View matrix is:
@@ -112,8 +113,8 @@ namespace Axiom.SceneManagers.Bsp
 			// This is most efficiently done using 3x3 Matrices
 
 			// Get orientation from quaternion
-			Quaternion orientation = lightOrientation;
-			Vector3 position = lightPosition;
+			Quaternion orientation = this.lightOrientation;
+			Vector3 position = this.lightPosition;
 			Matrix3 rotation = orientation.ToRotationMatrix();
 
 			Vector3 left = rotation.GetColumn( 0 );
@@ -136,10 +137,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected Quaternion GetLightOrientation()
 		{
-			Vector3 zAdjustVec = -light.DerivedDirection;
+			Vector3 zAdjustVec = -this.light.DerivedDirection;
 			Vector3 xAxis, yAxis, zAxis;
 
-			Quaternion orientation = ( lightNode == null ) ? Quaternion.Identity : lightNode.DerivedOrientation;
+			Quaternion orientation = ( this.lightNode == null ) ? Quaternion.Identity : this.lightNode.DerivedOrientation;
 
 			// Get axes from current quaternion
 			// get the vector components of the derived orientation vector

@@ -38,15 +38,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
+using System.Drawing;
 
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
+using Axiom.CrossPlatform;
+using Axiom.FileSystem;
 using Axiom.Graphics;
 using Axiom.Media;
 
 using OpenTK;
 using OpenTK.Graphics;
+using OpenTK.Platform;
 
 using Tao.OpenGl;
 
@@ -62,74 +65,36 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields
 
 		private NativeWindow _window;
-		private OpenTKGLContext glContext;
-
+		private DisplayDevice displayDevice;
 		private bool fullScreen;
-		private DisplayDevice displayDevice = null;
+		private OpenTKGLContext glContext;
 
 		#endregion Fields
 
-		public OpenTKWindow()
+		public override bool RequiresTextureFlipping
 		{
+			get
+			{
+				return false;
+			}
 		}
 
-		#region RenderWindow Members
-
-	    public override bool RequiresTextureFlipping
-	    {
-	        get
-	        {
-	            return false;
-	        }
-	    }
-
-	    public override object this[ string attribute ]
+		public override object this[ string attribute ]
 		{
 			get
 			{
 				switch ( attribute.ToLower() )
 				{
 					case "glcontext":
-						return glContext;
+						return this.glContext;
 					//case "window":
 					//	return _window.WindowInfo.WindowHandle;
 					case "nativewindow":
-						return _window;
+						return this._window;
 					default:
 						return null;
 				}
 			}
-		}
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( glContext != null ) // Do We Not Have A Rendering Context?
-					{
-						glContext.SetCurrent();
-						glContext.Dispose();
-						glContext = null;
-					}
-
-					if ( _window != null )
-					{
-						if ( fullScreen )
-							displayDevice.RestoreResolution();
-
-						_window.Close();
-						_window = null;
-					}
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>
@@ -140,8 +105,41 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _window == null && glContext == null;
+				return this._window == null && this.glContext == null;
 			}
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.glContext != null ) // Do We Not Have A Rendering Context?
+					{
+						this.glContext.SetCurrent();
+						this.glContext.Dispose();
+						this.glContext = null;
+					}
+
+					if ( this._window != null )
+					{
+						if ( this.fullScreen )
+						{
+							this.displayDevice.RestoreResolution();
+						}
+
+						this._window.Close();
+						this._window = null;
+					}
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>
@@ -164,15 +162,15 @@ namespace Axiom.RenderSystems.OpenGL
 			this.name = name;
 			this.width = width;
 			this.height = height;
-			this.colorDepth = 32;
+			colorDepth = 32;
 			this.fullScreen = fullScreen;
-			displayDevice = DisplayDevice.Default;
+			this.displayDevice = DisplayDevice.Default;
 
 			#region Parameter Handling
 
 			if ( miscParams != null )
 			{
-				foreach ( KeyValuePair<string, object> entry in miscParams )
+				foreach ( var entry in miscParams )
 				{
 					switch ( entry.Key )
 					{
@@ -206,7 +204,7 @@ namespace Axiom.RenderSystems.OpenGL
 							break;
 
 						case "externalWindowInfo":
-							glContext = new OpenTKGLContext( (OpenTK.Platform.IWindowInfo)entry.Value );
+							this.glContext = new OpenTKGLContext( (IWindowInfo)entry.Value );
 							break;
 
 						case "externalWindowHandle":
@@ -216,7 +214,7 @@ namespace Axiom.RenderSystems.OpenGL
 							{
 								ptr = (IntPtr)handle;
 							}
-							else if ( handle.GetType() == typeof( System.Int32 ) )
+							else if ( handle.GetType() == typeof( Int32 ) )
 							{
 								ptr = new IntPtr( (int)handle );
 							}
@@ -242,69 +240,77 @@ namespace Axiom.RenderSystems.OpenGL
 
 			#endregion Parameter Handling
 
-			if ( glContext == null )
+			if ( this.glContext == null )
 			{
 				// create window
-				_window = new NativeWindow( width, height, title, GameWindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
-				glContext = new OpenTKGLContext( _window.WindowInfo );
+				this._window = new NativeWindow( width, height, title, GameWindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), this.displayDevice );
+				this.glContext = new OpenTKGLContext( this._window.WindowInfo );
 
-				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
+				FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
 				if ( ico.Count != 0 )
 				{
-					_window.Icon = System.Drawing.Icon.ExtractAssociatedIcon( ico[ 0 ].Filename );
+					this._window.Icon = Icon.ExtractAssociatedIcon( ico[ 0 ].Filename );
 				}
 
 				if ( fullScreen )
 				{
-					displayDevice.ChangeResolution( width, height, ColorDepth, displayFrequency );
-					_window.WindowState = WindowState.Fullscreen;
+					this.displayDevice.ChangeResolution( width, height, ColorDepth, displayFrequency );
+					this._window.WindowState = WindowState.Fullscreen;
 					IsFullScreen = true;
 				}
 				else
 				{
-					_window.WindowState = WindowState.Normal;
+					this._window.WindowState = WindowState.Normal;
 
 					if ( border == "fixed" )
-						_window.WindowBorder = WindowBorder.Fixed;
+					{
+						this._window.WindowBorder = WindowBorder.Fixed;
+					}
 					else if ( border == "resizable" )
-						_window.WindowBorder = WindowBorder.Resizable;
+					{
+						this._window.WindowBorder = WindowBorder.Resizable;
+					}
 					else if ( border == "none" )
-						_window.WindowBorder = WindowBorder.Hidden;
+					{
+						this._window.WindowBorder = WindowBorder.Hidden;
+					}
 				}
 
-				_window.Title = title;
+				this._window.Title = title;
 
 				WindowEventMonitor.Instance.RegisterWindow( this );
 
 				// lets get active!
 				IsActive = true;
-				glContext.VSync = vsync;
-				_window.Visible = true;
+				this.glContext.VSync = vsync;
+				this._window.Visible = true;
 			}
 		}
 
 		public override void Reposition( int left, int right )
 		{
-			if ( _window != null && !IsFullScreen )
+			if ( this._window != null && !IsFullScreen )
 			{
-				_window.Location = new System.Drawing.Point( left, right );
+				this._window.Location = new Point( left, right );
 				WindowEventMonitor.Instance.WindowMoved( this );
 			}
 		}
 
 		public override void Resize( int width, int height )
 		{
-			if ( _window == null )
+			if ( this._window == null )
+			{
 				return;
-			_window.Width = width;
-			_window.Height = height;
+			}
+			this._window.Width = width;
+			this._window.Height = height;
 			WindowEventMonitor.Instance.WindowResized( this );
 		}
 
 		public override void WindowMovedOrResized()
 		{
 			// Update dimensions incase changed
-			foreach ( Viewport entry in this.ViewportList.Values )
+			foreach ( Viewport entry in ViewportList.Values )
 			{
 				entry.UpdateDimensions();
 			}
@@ -312,15 +318,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
-			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
-				( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
-				( dst.Front != 0 ) || ( dst.Back != 1 ) )
+			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) || ( dst.Top < 0 ) || ( dst.Bottom > Height ) || ( dst.Front != 0 ) || ( dst.Back != 1 ) )
 			{
 				throw new Exception( "Invalid box." );
 			}
-			if ( buffer == RenderTarget.FrameBuffer.Auto )
+			if ( buffer == FrameBuffer.Auto )
 			{
-				buffer = IsFullScreen ? RenderTarget.FrameBuffer.Front : RenderTarget.FrameBuffer.Back;
+				buffer = IsFullScreen ? FrameBuffer.Front : FrameBuffer.Back;
 			}
 
 			int format = GLPixelUtil.GetGLOriginFormat( dst.Format );
@@ -338,9 +342,9 @@ namespace Axiom.RenderSystems.OpenGL
 			// Must change the packing to ensure no overruns!
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
 
-			Gl.glReadBuffer( ( buffer == RenderTarget.FrameBuffer.Front ) ? Gl.GL_FRONT : Gl.GL_BACK );
+			Gl.glReadBuffer( ( buffer == FrameBuffer.Front ) ? Gl.GL_FRONT : Gl.GL_BACK );
 			Gl.glReadPixels( dst.Left, dst.Top, dst.Width, dst.Height, format, type, dst.Data.Pin() );
-		    dst.Data.UnPin();
+			dst.Data.UnPin();
 
 			// restore default alignment
 			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 4 );
@@ -350,12 +354,12 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				int rowSpan = dst.Width * PixelUtil.GetNumElemBytes( dst.Format );
 				int height = dst.Height;
-				byte[] tmpData = new byte[ rowSpan * height ];
+				var tmpData = new byte[ rowSpan * height ];
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
-                {
-					var dataPtr = dst.Data.ToBytePointer();
+				{
+					byte* dataPtr = dst.Data.ToBytePointer();
 					//int *srcRow = (uchar *)dst.data, *tmpRow = tmpData + (height - 1) * rowSpan;
 
 					for ( int row = height - 1, tmpRow = 0; row >= 0; row--, tmpRow++ )
@@ -366,7 +370,7 @@ namespace Axiom.RenderSystems.OpenGL
 						}
 					}
 				}
-				var tmpDataHandle = Memory.PinObject( tmpData );
+				BufferBase tmpDataHandle = Memory.PinObject( tmpData );
 				Memory.Copy( tmpDataHandle, dst.Data, rowSpan * height );
 				Memory.UnpinObject( tmpData );
 			}
@@ -378,31 +382,31 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="waitForVSync"></param>
 		public override void SwapBuffers( bool waitForVSync )
 		{
-			if ( glContext != null )
+			if ( this.glContext != null )
 			{
-				glContext.SwapBuffers();
+				this.glContext.SwapBuffers();
 				return;
 			}
-			if ( _window != null )
+			if ( this._window != null )
 			{
-				_window.ProcessEvents();
-				if ( _window.Exists == false /*|| _window.IsExiting == true*/)
+				this._window.ProcessEvents();
+				if ( this._window.Exists == false /*|| _window.IsExiting == true*/ )
 				{
 					WindowEventMonitor.Instance.WindowClosed( this );
 					return;
 				}
 
-				if ( _window.WindowState == WindowState.Minimized || !_window.Focused )
+				if ( this._window.WindowState == WindowState.Minimized || !this._window.Focused )
+				{
 					return;
+				}
 				/*_window.SwapBuffers();*/
 			}
 		}
 
-		#endregion RenderWindow Members
-
-        public override void Destroy()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override void Destroy()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

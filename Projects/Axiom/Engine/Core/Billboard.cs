@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,20 +23,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -65,22 +66,25 @@ namespace Axiom.Core
 	{
 		#region Member variables
 
-		protected bool hasOwnDimensions;
-		internal float width, height;
-		protected bool useTexcoordRect;
-		protected short texcoordIndex;
-		protected RectangleF texcoordRect;
-
-		// Intentional public access, since having a property for these for 1,000s of billboards
-		// could be too costly
-		public Vector3 Position = Vector3.Zero;
+		public ColorEx Color = ColorEx.White;
 		public Vector3 Direction = Vector3.Zero;
 		public BillboardSet ParentSet;
-		public ColorEx Color = ColorEx.White;
+		public Vector3 Position = Vector3.Zero;
+		protected bool hasOwnDimensions;
+		internal float height;
+
 		/// <summary>
 		///		Needed for particle systems
 		/// </summary>
-		public float rotationInRadians = 0;
+		public float rotationInRadians;
+
+		protected short texcoordIndex;
+		protected RectangleF texcoordRect;
+		protected bool useTexcoordRect;
+		internal float width;
+
+		// Intentional public access, since having a property for these for 1,000s of billboards
+		// could be too costly
 
 		#endregion Member variables
 
@@ -89,9 +93,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-		public Billboard()
-		{
-		}
+		public Billboard() { }
 
 		/// <summary>
 		///
@@ -129,13 +131,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 			set
 			{
-				hasOwnDimensions = true;
-				width = value;
-				ParentSet.NotifyBillboardResized();
+				this.hasOwnDimensions = true;
+				this.width = value;
+				this.ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -146,13 +148,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 			set
 			{
-				hasOwnDimensions = true;
-				height = value;
-				ParentSet.NotifyBillboardResized();
+				this.hasOwnDimensions = true;
+				this.height = value;
+				this.ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -163,11 +165,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return hasOwnDimensions;
+				return this.hasOwnDimensions;
 			}
 			set
 			{
-				hasOwnDimensions = value;
+				this.hasOwnDimensions = value;
 			}
 		}
 
@@ -176,11 +178,68 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
+		///		Gets/Sets the rotation in degrees.
+		/// </summary>
+		public float Rotation
+		{
+			get
+			{
+				return this.rotationInRadians * Utility.DEGREES_PER_RADIAN;
+			}
+			set
+			{
+				this.rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				if ( this.rotationInRadians != 0 )
+				{
+					this.ParentSet.NotifyBillboardRotated();
+				}
+			}
+		}
+
+		public RectangleF TexcoordRect
+		{
+			get
+			{
+				return this.texcoordRect;
+			}
+			set
+			{
+				this.texcoordRect = value;
+				this.useTexcoordRect = true;
+			}
+		}
+
+		public bool UseTexcoordRect
+		{
+			get
+			{
+				return this.useTexcoordRect;
+			}
+			set
+			{
+				this.useTexcoordRect = value;
+			}
+		}
+
+		public short TexcoordIndex
+		{
+			get
+			{
+				return this.texcoordIndex;
+			}
+			set
+			{
+				this.texcoordIndex = value;
+				this.useTexcoordRect = false;
+			}
+		}
+
+		/// <summary>
 		///		Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
 		/// </summary>
 		public virtual void ResetDimensions()
 		{
-			hasOwnDimensions = false;
+			this.hasOwnDimensions = false;
 		}
 
 		/// <summary>
@@ -190,10 +249,10 @@ namespace Axiom.Core
 		/// <param name="height">Height of the billboard.</param>
 		public virtual void SetDimensions( float width, float height )
 		{
-			hasOwnDimensions = true;
+			this.hasOwnDimensions = true;
 			this.width = width;
 			this.height = height;
-			ParentSet.NotifyBillboardResized();
+			this.ParentSet.NotifyBillboardResized();
 		}
 
 		/// <summary>
@@ -202,63 +261,9 @@ namespace Axiom.Core
 		/// <param name="owner"></param>
 		internal void NotifyOwner( BillboardSet owner )
 		{
-			ParentSet = owner;
+			this.ParentSet = owner;
 		}
 
-		/// <summary>
-		///		Gets/Sets the rotation in degrees.
-		/// </summary>
-		public float Rotation
-		{
-			get
-			{
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
-			}
-			set
-			{
-				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-				if ( rotationInRadians != 0 )
-					ParentSet.NotifyBillboardRotated();
-			}
-		}
-
-		public RectangleF TexcoordRect
-		{
-			get
-			{
-				return texcoordRect;
-			}
-			set
-			{
-				texcoordRect = value;
-				useTexcoordRect = true;
-			}
-		}
-
-		public bool UseTexcoordRect
-		{
-			get
-			{
-				return useTexcoordRect;
-			}
-			set
-			{
-				useTexcoordRect = value;
-			}
-		}
-
-		public short TexcoordIndex
-		{
-			get
-			{
-				return texcoordIndex;
-			}
-			set
-			{
-				texcoordIndex = value;
-				useTexcoordRect = false;
-			}
-		}
 		#endregion Methods
 	}
 }

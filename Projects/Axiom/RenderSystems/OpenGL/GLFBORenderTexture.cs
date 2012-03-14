@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,36 +23,32 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: GLFBORenderTexture.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 
-using Axiom.Core;
-using Axiom.Media;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	class GLFBORenderTexture : GLRenderTexture
+	internal class GLFBORenderTexture : GLRenderTexture
 	{
-
 		#region Fields and Properties
 
-		private GLFrameBufferObject _fbo;
+		private readonly GLFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -60,14 +57,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
-			_fbo = new GLFrameBufferObject( manager );
+			this._fbo = new GLFrameBufferObject( manager );
 
 			// Bind target to surface 0 and initialise
-			_fbo.BindSurface( 0, target );
+			this._fbo.BindSurface( 0, target );
 
 			// Get attributes
-			this.width = _fbo.Width;
-			this.height = _fbo.Height;
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		#endregion Construction and Destruction
@@ -81,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToLower() )
 				{
 					case "fbo":
-						return _fbo;
+						return this._fbo;
 					default:
 						return null;
 				}
@@ -95,7 +92,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					_fbo.Dispose();
+					this._fbo.Dispose();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -106,7 +103,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-		#endregion GLRenderTexture Implementation
 
+		#endregion GLRenderTexture Implementation
 	}
 }

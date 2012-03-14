@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +19,7 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region Namespace Declarations
@@ -26,11 +28,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Axiom.Collections;
+using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Framework.Configuration;
 using Axiom.Graphics;
+using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Overlays;
+using Axiom.Overlays.Elements;
+
+using SharpInputSystem;
 
 using SIS = SharpInputSystem;
 
@@ -44,8 +52,8 @@ namespace Axiom.Samples
 	/// </summary>
 	public class SampleBrowser : SampleContext, ISdkTrayListener
 	{
-
 		#region events
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -53,138 +61,31 @@ namespace Axiom.Samples
 
 		#endregion
 
+		private readonly List<Overlay> HiddenOverlays = new List<Overlay>(); // sample overlays hidden for pausing
+		private readonly List<string> LoadedSamplePlugins = new List<string>(); // loaded sample plugins
+		private readonly SampleSet LoadedSamples = new SampleSet(); // loaded samples
+		private readonly List<string> SampleCategories = new List<string>(); // sample categories
+		private readonly List<OverlayElementContainer> Thumbs = new List<OverlayElementContainer>(); // sample thumbnails
+		private Real CarouselPlace; // current state of carousel
+		private SelectMenu CategoryMenu; // sample category select menu
+		private TextBox DescBox; // sample description box
+		private int LastSampleIndex; // index of last sample running
+		private int LastViewCategory; // last sample category viewed
+		private int LastViewTitle; // last sample title viewed
+		private SelectMenu RendererMenu; // render system selection menu
+		private SelectMenu SampleMenu; // sample select menu
+		private Slider SampleSlider; // sample slider bar
+		private Label TitleLabel; // sample title label
 		protected SdkTrayManager TrayManager; // SDK tray interface
-		List<string> LoadedSamplePlugins = new List<string>();      // loaded sample plugins
-		List<string> SampleCategories = new List<string>();     // sample categories
-		SampleSet LoadedSamples = new SampleSet();                      // loaded samples
-		SelectMenu CategoryMenu;                     // sample category select menu
-		SelectMenu SampleMenu;                       // sample select menu
-		Slider SampleSlider;                         // sample slider bar
-		Label TitleLabel;                            // sample title label
-		TextBox DescBox;                             // sample description box
-		SelectMenu RendererMenu;                     // render system selection menu
-		List<Overlay> HiddenOverlays = new List<Overlay>();   // sample overlays hidden for pausing
-		List<OverlayElementContainer> Thumbs = new List<OverlayElementContainer>();  // sample thumbnails
-		Real CarouselPlace;                     // current state of carousel
-		int LastViewTitle;                            // last sample title viewed
-		int LastViewCategory;                         // last sample category viewed
-		int LastSampleIndex;                          // index of last sample running
-		int childIndex = 0;
+		private int childIndex;
 
 		public SampleBrowser()
 			: base( ConfigurationManagerFactory.CreateDefault() )
 		{
-			LastSampleIndex = -1;
+			this.LastSampleIndex = -1;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="s"></param>
-		public override void RunSample( Sample s )
-		{
-			if ( CurrentSample != null ) //
-			{
-				CurrentSample.Shutdown();
-				CurrentSample = null;
-				IsSamplePaused = false; // don't pause next sample
-				// create dummy scene and modify controls
-				CreateDummyScene();
-				TrayManager.ShowBackdrop( "SdkTrays/Bands" );
-				TrayManager.ShowAll();
-				( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
-			}
-			if ( s != null )// sample starting
-			{
-				( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Stop Sample";
-				TrayManager.ShowBackdrop( "SdkTrays/Shade" );
-				TrayManager.HideAll();
-				DestroyDummyScene();
-
-				try
-				{
-					base.RunSample( s );
-				}
-				catch ( Exception ex )// if failed to start, show error and fall back to menu
-				{
-					s.Shutdown();
-					CreateDummyScene();
-					TrayManager.ShowBackdrop( "SdkTrays/Bands" );
-					TrayManager.ShowAll();
-					( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
-
-					TrayManager.ShowOkDialog( "Error!", ex.ToString() + "\nSource " + this.ToString() );
-				}
-			}
-
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="evt"></param>
-		public override void FrameRenderingQueued( object sender, FrameEventArgs evt )
-		{
-			// don't do all these calculations when sample's running or when in configuration screen or when no samples loaded
-			if ( !( LoadedSamples.Count == 0 ) && TitleLabel.TrayLocation != TrayLocation.None && ( CurrentSample == null || IsSamplePaused ) )
-			{
-				// makes the carousel spin smoothly toward its right position
-				Real carouselOffset = SampleMenu.SelectionIndex - CarouselPlace;
-				if ( carouselOffset <= 0.001 && ( carouselOffset >= -0.001 ) )
-					CarouselPlace = SampleMenu.SelectionIndex;
-				else
-					CarouselPlace += carouselOffset * Math.Utility.Clamp<Real>( evt.TimeSinceLastFrame * 15, 1, -1 );
-
-				// update the thumbnail positions based on carousel state
-				for ( int i = 0; i < Thumbs.Count; i++ )
-				{
-					Real thumbOffset = CarouselPlace - i;
-					Real phase = ( thumbOffset / 2 ) - 2.8;
-
-					if ( thumbOffset < -5 || thumbOffset > 4 )    // prevent thumbnails from wrapping around in a circle
-					{
-						Thumbs[ i ].Hide();
-						continue;
-					}
-					else
-						Thumbs[ i ].Show();
-
-					Real left = System.Math.Cos( phase ) * 200;
-					Real top = System.Math.Sin( phase ) * 200;
-					Real scale = 1.0f / System.Math.Pow( ( System.Math.Abs( thumbOffset ) + 1.0f ), 0.75 );
-
-					OverlayElement[] childs = Thumbs[ i ].Children.Values.ToArray();
-					if ( childIndex >= childs.Length )
-						childIndex = 0;
-
-					Overlays.Elements.BorderPanel frame =
-						(Overlays.Elements.BorderPanel)childs[ childIndex++ ];
-
-					Thumbs[ i ].SetDimensions( 128 * scale, 96 * scale );
-					frame.SetDimensions( Thumbs[ i ].Width + 16, Thumbs[ i ].Height + 16 );
-					Thumbs[ i ].SetPosition( (int)( left - 80 - Thumbs[ i ].Width / 2 ), (int)( top - 5 - Thumbs[ i ].Height / 2 ) );
-
-					if ( i == SampleMenu.SelectionIndex )
-						frame.BorderMaterialName = "SdkTrays/Frame/Over";
-					else
-						frame.BorderMaterialName = "SdkTrays/Frame";
-
-				}
-			}
-
-			TrayManager.FrameRenderingQueued( evt );
-
-			try
-			{
-				base.FrameRenderingQueued( sender, evt );
-			}
-			catch ( Exception e )   // show error and fall back to menu
-			{
-				RunSample( null );
-				TrayManager.ShowOkDialog( "Error!", e.ToString() + "\nSource: " + e.StackTrace.ToString() );
-			}
-		}
+		#region ISdkTrayListener Members
 
 		/// <summary>
 		/// 
@@ -196,7 +97,7 @@ namespace Axiom.Samples
 			if ( question.Contains( "This will stop" ) && yesHit )
 			{
 				RunSample( null );
-				OnButtonHit( this, (Button)TrayManager.GetWidget( "UnloadReload" ) );
+				OnButtonHit( this, (Button)this.TrayManager.GetWidget( "UnloadReload" ) );
 			}
 		}
 
@@ -207,32 +108,42 @@ namespace Axiom.Samples
 		public void OnButtonHit( object sender, Button b )
 		{
 			if ( ButtonHit != null )
+			{
 				ButtonHit( sender, b );
+			}
 
-			if ( b.Name == "StartStop" )   // start or stop sample
+			if ( b.Name == "StartStop" ) // start or stop sample
 			{
 				if ( b.Caption == "Start Sample" )
 				{
-					if ( LoadedSamples.Count == 0 )
-						TrayManager.ShowOkDialog( "Error!", "No sample selected!" );
+					if ( this.LoadedSamples.Count == 0 )
+					{
+						this.TrayManager.ShowOkDialog( "Error!", "No sample selected!" );
+					}
 					// use the sample pointer we stored inside the thumbnail
 					else
-						RunSample( (Sample)( Thumbs[ SampleMenu.SelectionIndex ].UserData ) );
+					{
+						RunSample( (Sample)( this.Thumbs[ this.SampleMenu.SelectionIndex ].UserData ) );
+					}
 				}
 				else
+				{
 					RunSample( null );
+				}
 			}
-			else if ( b.Name == "UnloadReload" )   // unload or reload sample plugins and update controls
+			else if ( b.Name == "UnloadReload" ) // unload or reload sample plugins and update controls
 			{
 				if ( b.Caption == "Unload Samples" )
 				{
 					if ( CurrentSample != null )
-						TrayManager.ShowYesNoDialog( "Warning!", "This will stop the current sample. Unload anyway?" );
+					{
+						this.TrayManager.ShowYesNoDialog( "Warning!", "This will stop the current sample. Unload anyway?" );
+					}
 					else
 					{
 						// save off current view and try to restore it on the next reload
-						LastViewTitle = SampleMenu.SelectionIndex;
-						LastViewCategory = CategoryMenu.SelectionIndex;
+						this.LastViewTitle = this.SampleMenu.SelectionIndex;
+						this.LastViewCategory = this.CategoryMenu.SelectionIndex;
 
 						UnloadSamples();
 						PopulateSampleMenus();
@@ -243,13 +154,15 @@ namespace Axiom.Samples
 				{
 					LoadSamples();
 					PopulateSampleMenus();
-					if ( !( LoadedSamples.Count == 0 ) )
-						b.Caption = "Unload Samples";
-
-					try  // attempt to restore the last view before unloading samples
+					if ( !( this.LoadedSamples.Count == 0 ) )
 					{
-						CategoryMenu.SelectItem( LastViewCategory );
-						SampleMenu.SelectItem( LastViewTitle );
+						b.Caption = "Unload Samples";
+					}
+
+					try // attempt to restore the last view before unloading samples
+					{
+						this.CategoryMenu.SelectItem( this.LastViewCategory );
+						this.SampleMenu.SelectItem( this.LastViewTitle );
 					}
 					catch ( Exception )
 					{
@@ -257,69 +170,69 @@ namespace Axiom.Samples
 					}
 				}
 			}
-			else if ( b.Name == "Configure" )   // enter configuration screen
+			else if ( b.Name == "Configure" ) // enter configuration screen
 			{
-				TrayManager.RemoveWidgetFromTray( "StartStop" );
-				TrayManager.RemoveWidgetFromTray( "UnloadReload" );
-				TrayManager.RemoveWidgetFromTray( "Configure" );
-				TrayManager.RemoveWidgetFromTray( "Quit" );
-				TrayManager.MoveWidgetToTray( "Apply", TrayLocation.Right );
-				TrayManager.MoveWidgetToTray( "Back", TrayLocation.Right );
+				this.TrayManager.RemoveWidgetFromTray( "StartStop" );
+				this.TrayManager.RemoveWidgetFromTray( "UnloadReload" );
+				this.TrayManager.RemoveWidgetFromTray( "Configure" );
+				this.TrayManager.RemoveWidgetFromTray( "Quit" );
+				this.TrayManager.MoveWidgetToTray( "Apply", TrayLocation.Right );
+				this.TrayManager.MoveWidgetToTray( "Back", TrayLocation.Right );
 
-				for ( int i = 0; i < Thumbs.Count; i++ )
+				for ( int i = 0; i < this.Thumbs.Count; i++ )
 				{
-					Thumbs[ i ].Hide();
+					this.Thumbs[ i ].Hide();
 				}
 
-				while ( TrayManager.TrayContainer[ (int)TrayLocation.Center ].IsVisible )
+				while ( this.TrayManager.TrayContainer[ (int)TrayLocation.Center ].IsVisible )
 				{
-					TrayManager.RemoveWidgetFromTray( TrayLocation.Center, 0 );
+					this.TrayManager.RemoveWidgetFromTray( TrayLocation.Center, 0 );
 				}
 
-				while ( TrayManager.TrayContainer[ (int)TrayLocation.Left ].IsVisible )
+				while ( this.TrayManager.TrayContainer[ (int)TrayLocation.Left ].IsVisible )
 				{
-					TrayManager.RemoveWidgetFromTray( TrayLocation.Left, 0 );
+					this.TrayManager.RemoveWidgetFromTray( TrayLocation.Left, 0 );
 				}
 
-				TrayManager.MoveWidgetToTray( "ConfigLabel", TrayLocation.Left );
-				TrayManager.MoveWidgetToTray( RendererMenu, TrayLocation.Left );
-				TrayManager.MoveWidgetToTray( "ConfigSeparator", TrayLocation.Left );
+				this.TrayManager.MoveWidgetToTray( "ConfigLabel", TrayLocation.Left );
+				this.TrayManager.MoveWidgetToTray( this.RendererMenu, TrayLocation.Left );
+				this.TrayManager.MoveWidgetToTray( "ConfigSeparator", TrayLocation.Left );
 
-				RendererMenu.SelectItem( Root.RenderSystem.Name );
+				this.RendererMenu.SelectItem( Root.RenderSystem.Name );
 
 				WindowResized( RenderWindow );
 			}
-			else if ( b.Name == "Back" )   // leave configuration screen
+			else if ( b.Name == "Back" ) // leave configuration screen
 			{
-				while ( TrayManager.GetWidgetCount( RendererMenu.TrayLocation ) > 3 )
+				while ( this.TrayManager.GetWidgetCount( this.RendererMenu.TrayLocation ) > 3 )
 				{
-					TrayManager.DestroyWidget( RendererMenu.TrayLocation, 3 );
+					this.TrayManager.DestroyWidget( this.RendererMenu.TrayLocation, 3 );
 				}
 
-				while ( TrayManager.GetWidgetCount( TrayLocation.None ) != 0 )
+				while ( this.TrayManager.GetWidgetCount( TrayLocation.None ) != 0 )
 				{
-					TrayManager.MoveWidgetToTray( TrayLocation.None, 0, TrayLocation.Left );
+					this.TrayManager.MoveWidgetToTray( TrayLocation.None, 0, TrayLocation.Left );
 				}
 
-				TrayManager.RemoveWidgetFromTray( "Apply" );
-				TrayManager.RemoveWidgetFromTray( "Back" );
-				TrayManager.RemoveWidgetFromTray( "ConfigLabel" );
-				TrayManager.RemoveWidgetFromTray( RendererMenu );
-				TrayManager.RemoveWidgetFromTray( "ConfigSeparator" );
+				this.TrayManager.RemoveWidgetFromTray( "Apply" );
+				this.TrayManager.RemoveWidgetFromTray( "Back" );
+				this.TrayManager.RemoveWidgetFromTray( "ConfigLabel" );
+				this.TrayManager.RemoveWidgetFromTray( this.RendererMenu );
+				this.TrayManager.RemoveWidgetFromTray( "ConfigSeparator" );
 
-				TrayManager.MoveWidgetToTray( "StartStop", TrayLocation.Right );
-				TrayManager.MoveWidgetToTray( "UnloadReload", TrayLocation.Right );
-				TrayManager.MoveWidgetToTray( "Configure", TrayLocation.Right );
-				TrayManager.MoveWidgetToTray( "Quit", TrayLocation.Right );
+				this.TrayManager.MoveWidgetToTray( "StartStop", TrayLocation.Right );
+				this.TrayManager.MoveWidgetToTray( "UnloadReload", TrayLocation.Right );
+				this.TrayManager.MoveWidgetToTray( "Configure", TrayLocation.Right );
+				this.TrayManager.MoveWidgetToTray( "Quit", TrayLocation.Right );
 
 				WindowResized( RenderWindow );
 			}
-			else if ( b.Name == "Apply" )   // apply any changes made in the configuration screen
+			else if ( b.Name == "Apply" ) // apply any changes made in the configuration screen
 			{
 				bool reset = false;
 
 				string selectedRenderSystem = string.Empty;
-				switch ( RendererMenu.SelectedItem )
+				switch ( this.RendererMenu.SelectedItem )
 				{
 					case "Axiom DirectX9 Rendering Subsystem":
 						selectedRenderSystem = "DirectX9";
@@ -335,29 +248,37 @@ namespace Axiom.Samples
 				}
 				if ( selectedRenderSystem != string.Empty )
 				{
-					var options = Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
+					ConfigOptionMap options = Root.RenderSystems[ selectedRenderSystem ].ConfigOptions;
 
-					Axiom.Collections.NameValuePairList newOptions = new Collections.NameValuePairList();
+					var newOptions = new NameValuePairList();
 					// collect new settings and decide if a reset is needed
 
-					if ( RendererMenu.SelectedItem != Root.RenderSystem.Name )
-						reset = true;
-
-					for ( int i = 3; i < TrayManager.GetWidgetCount( RendererMenu.TrayLocation ); i++ )
+					if ( this.RendererMenu.SelectedItem != Root.RenderSystem.Name )
 					{
-						SelectMenu menu = (SelectMenu)TrayManager.GetWidget( RendererMenu.TrayLocation, i );
+						reset = true;
+					}
+
+					for ( int i = 3; i < this.TrayManager.GetWidgetCount( this.RendererMenu.TrayLocation ); i++ )
+					{
+						var menu = (SelectMenu)this.TrayManager.GetWidget( this.RendererMenu.TrayLocation, i );
 						if ( menu.SelectedItem != options[ menu.Caption ].Value )
+						{
 							reset = true;
+						}
 						newOptions[ menu.Caption ] = menu.SelectedItem;
 					}
 
 					// reset with new settings if necessary
 					if ( reset )
+					{
 						Reconfigure( selectedRenderSystem, newOptions );
+					}
 				}
 			}
 			else
-				Root.QueueEndRendering();  // exit browser	
+			{
+				Root.QueueEndRendering(); // exit browser	
+			}
 		}
 
 		/// <summary>
@@ -366,34 +287,36 @@ namespace Axiom.Samples
 		/// <param name="menu"></param>
 		public virtual void ItemSelected( SelectMenu menu )
 		{
-			if ( menu == CategoryMenu )      // category changed, so update the sample menu, carousel, and slider
+			if ( menu == this.CategoryMenu ) // category changed, so update the sample menu, carousel, and slider
 			{
-				for ( int i = 0; i < Thumbs.Count; i++ )    // destroy all thumbnails in carousel
+				for ( int i = 0; i < this.Thumbs.Count; i++ ) // destroy all thumbnails in carousel
 				{
-					MaterialManager.Instance.Remove( Thumbs[ i ].Name );
-					Widget.NukeOverlayElement( Thumbs[ i ] );
+					MaterialManager.Instance.Remove( this.Thumbs[ i ].Name );
+					Widget.NukeOverlayElement( this.Thumbs[ i ] );
 				}
-				Thumbs.Clear();
+				this.Thumbs.Clear();
 
 				OverlayManager om = OverlayManager.Instance;
 				String selectedCategory = string.Empty;
 
 				if ( menu.SelectionIndex != -1 )
+				{
 					selectedCategory = menu.SelectedItem;
+				}
 				else
 				{
-					TitleLabel.Caption = "";
-					DescBox.Text = "";
+					this.TitleLabel.Caption = "";
+					this.DescBox.Text = "";
 				}
 
 				bool all = selectedCategory == "All";
-				List<string> sampleTitles = new List<string>();
-				Material templateMat = (Material)MaterialManager.Instance.GetByName( "SampleThumbnail" );
+				var sampleTitles = new List<string>();
+				var templateMat = (Material)MaterialManager.Instance.GetByName( "SampleThumbnail" );
 
 				// populate the sample menu and carousel with filtered samples
-				foreach ( Sample i in LoadedSamples )
+				foreach ( Sample i in this.LoadedSamples )
 				{
-					Collections.NameValuePairList info = i.Metadata;
+					NameValuePairList info = i.Metadata;
 
 					if ( all || info[ "Category" ] == selectedCategory )
 					{
@@ -404,62 +327,74 @@ namespace Axiom.Samples
 
 						TextureUnitState tus = newMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
 						if ( ResourceGroupManager.Instance.ResourceExists( "Essential", info[ "Thumbnail" ] ) )
+						{
 							tus.SetTextureName( info[ "Thumbnail" ] );
+						}
 						else
+						{
 							tus.SetTextureName( "thumb_error.png" );
+						}
 
 						// create sample thumbnail overlay
-						Overlays.Elements.BorderPanel bp = (Overlays.Elements.BorderPanel)om.Elements.CreateElementFromTemplate( "SdkTrays/Picture", "BorderPanel", name );
+						var bp = (BorderPanel)om.Elements.CreateElementFromTemplate( "SdkTrays/Picture", "BorderPanel", name );
 						bp.HorizontalAlignment = HorizontalAlignment.Right;
 						bp.VerticalAlignment = VerticalAlignment.Center;
 						bp.MaterialName = name;
 						bp.UserData = i;
-						TrayManager.TraysLayer.AddElement( bp );
+						this.TrayManager.TraysLayer.AddElement( bp );
 
 						// add sample thumbnail and title
-						Thumbs.Add( bp );
+						this.Thumbs.Add( bp );
 						sampleTitles.Add( i.Metadata[ "Title" ] );
 					}
 				}
 
-				CarouselPlace = 0;  // reset carousel
+				this.CarouselPlace = 0; // reset carousel
 
-				SampleMenu.Items = sampleTitles;
-				if ( SampleMenu.ItemsCount != 0 )
-					ItemSelected( SampleMenu );
-
-				SampleSlider.SetRange( 1, sampleTitles.Count, sampleTitles.Count );
-			}
-			else if ( menu == SampleMenu )    // sample changed, so update slider, label and description
-			{
-				if ( SampleSlider.Value != menu.SelectionIndex + 1 )
-					SampleSlider.Value = menu.SelectionIndex + 1;
-
-				Sample s = (Sample)( Thumbs[ menu.SelectionIndex ].UserData );
-				TitleLabel.Caption = menu.SelectedItem;
-				DescBox.Text = "Category: " + s.Metadata[ "Category" ] + "\nDescription: " + s.Metadata[ "Description" ];
-
-				if ( CurrentSample != s )
-					( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
-				else
-					( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Stop Sample";
-			}
-			else if ( menu == RendererMenu )    // renderer selected, so update all settings
-			{
-				while ( TrayManager.GetWidgetCount( RendererMenu.TrayLocation ) > 3 )
+				this.SampleMenu.Items = sampleTitles;
+				if ( this.SampleMenu.ItemsCount != 0 )
 				{
-					TrayManager.DestroyWidget( RendererMenu.TrayLocation, 3 );
+					ItemSelected( this.SampleMenu );
 				}
 
-				var options = Root.RenderSystems[ menu.SelectionIndex ].ConfigOptions;
+				this.SampleSlider.SetRange( 1, sampleTitles.Count, sampleTitles.Count );
+			}
+			else if ( menu == this.SampleMenu ) // sample changed, so update slider, label and description
+			{
+				if ( this.SampleSlider.Value != menu.SelectionIndex + 1 )
+				{
+					this.SampleSlider.Value = menu.SelectionIndex + 1;
+				}
+
+				var s = (Sample)( this.Thumbs[ menu.SelectionIndex ].UserData );
+				this.TitleLabel.Caption = menu.SelectedItem;
+				this.DescBox.Text = "Category: " + s.Metadata[ "Category" ] + "\nDescription: " + s.Metadata[ "Description" ];
+
+				if ( CurrentSample != s )
+				{
+					( (Button)this.TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
+				}
+				else
+				{
+					( (Button)this.TrayManager.GetWidget( "StartStop" ) ).Caption = "Stop Sample";
+				}
+			}
+			else if ( menu == this.RendererMenu ) // renderer selected, so update all settings
+			{
+				while ( this.TrayManager.GetWidgetCount( this.RendererMenu.TrayLocation ) > 3 )
+				{
+					this.TrayManager.DestroyWidget( this.RendererMenu.TrayLocation, 3 );
+				}
+
+				ConfigOptionMap options = Root.RenderSystems[ menu.SelectionIndex ].ConfigOptions;
 
 				int i = 0;
 
 				// create all the config option select menus
-				foreach ( Configuration.ConfigOption it in options )
+				foreach ( ConfigOption it in options )
 				{
-					SelectMenu optionMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Left, "ConfigOption" + i++, it.Name, 450, 240, 10 );
-					optionMenu.Items = (List<string>)it.PossibleValues.Values.ToList();
+					SelectMenu optionMenu = this.TrayManager.CreateLongSelectMenu( TrayLocation.Left, "ConfigOption" + i++, it.Name, 450, 240, 10 );
+					optionMenu.Items = it.PossibleValues.Values.ToList();
 
 					// if the current config value is not in the menu, add it
 					try
@@ -475,7 +410,6 @@ namespace Axiom.Samples
 
 				WindowResized( RenderWindow );
 			}
-
 		}
 
 		/// <summary>
@@ -485,12 +419,134 @@ namespace Axiom.Samples
 		public virtual void SliderMoved( Slider slider )
 		{
 			// format the caption to be fraction style
-			String denom = "/" + SampleMenu.ItemsCount;
+			String denom = "/" + this.SampleMenu.ItemsCount;
 			slider.ValueCaption = slider.ValueCaption + denom;
 
 			// tell the sample menu to change if it hasn't already
-			if ( SampleMenu.SelectionIndex != -1 && SampleMenu.SelectionIndex != slider.Value - 1 )
-				SampleMenu.SelectItem( (int)slider.Value - 1 );
+			if ( this.SampleMenu.SelectionIndex != -1 && this.SampleMenu.SelectionIndex != slider.Value - 1 )
+			{
+				this.SampleMenu.SelectItem( (int)slider.Value - 1 );
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="s"></param>
+		public override void RunSample( Sample s )
+		{
+			if ( CurrentSample != null ) //
+			{
+				CurrentSample.Shutdown();
+				CurrentSample = null;
+				IsSamplePaused = false; // don't pause next sample
+				// create dummy scene and modify controls
+				CreateDummyScene();
+				this.TrayManager.ShowBackdrop( "SdkTrays/Bands" );
+				this.TrayManager.ShowAll();
+				( (Button)this.TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
+			}
+			if ( s != null ) // sample starting
+			{
+				( (Button)this.TrayManager.GetWidget( "StartStop" ) ).Caption = "Stop Sample";
+				this.TrayManager.ShowBackdrop( "SdkTrays/Shade" );
+				this.TrayManager.HideAll();
+				DestroyDummyScene();
+
+				try
+				{
+					base.RunSample( s );
+				}
+				catch ( Exception ex ) // if failed to start, show error and fall back to menu
+				{
+					s.Shutdown();
+					CreateDummyScene();
+					this.TrayManager.ShowBackdrop( "SdkTrays/Bands" );
+					this.TrayManager.ShowAll();
+					( (Button)this.TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
+
+					this.TrayManager.ShowOkDialog( "Error!", ex + "\nSource " + ToString() );
+				}
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="evt"></param>
+		public override void FrameRenderingQueued( object sender, FrameEventArgs evt )
+		{
+			// don't do all these calculations when sample's running or when in configuration screen or when no samples loaded
+			if ( !( this.LoadedSamples.Count == 0 ) && this.TitleLabel.TrayLocation != TrayLocation.None && ( CurrentSample == null || IsSamplePaused ) )
+			{
+				// makes the carousel spin smoothly toward its right position
+				Real carouselOffset = this.SampleMenu.SelectionIndex - this.CarouselPlace;
+				if ( carouselOffset <= 0.001 && ( carouselOffset >= -0.001 ) )
+				{
+					this.CarouselPlace = this.SampleMenu.SelectionIndex;
+				}
+				else
+				{
+					this.CarouselPlace += carouselOffset * Utility.Clamp<Real>( evt.TimeSinceLastFrame * 15, 1, -1 );
+				}
+
+				// update the thumbnail positions based on carousel state
+				for ( int i = 0; i < this.Thumbs.Count; i++ )
+				{
+					Real thumbOffset = this.CarouselPlace - i;
+					Real phase = ( thumbOffset / 2 ) - 2.8;
+
+					if ( thumbOffset < -5 || thumbOffset > 4 ) // prevent thumbnails from wrapping around in a circle
+					{
+						this.Thumbs[ i ].Hide();
+						continue;
+					}
+					else
+					{
+						this.Thumbs[ i ].Show();
+					}
+
+					Real left = System.Math.Cos( phase ) * 200;
+					Real top = System.Math.Sin( phase ) * 200;
+					Real scale = 1.0f / System.Math.Pow( ( System.Math.Abs( thumbOffset ) + 1.0f ), 0.75 );
+
+					OverlayElement[] childs = this.Thumbs[ i ].Children.Values.ToArray();
+					if ( this.childIndex >= childs.Length )
+					{
+						this.childIndex = 0;
+					}
+
+					var frame = (BorderPanel)childs[ this.childIndex++ ];
+
+					this.Thumbs[ i ].SetDimensions( 128 * scale, 96 * scale );
+					frame.SetDimensions( this.Thumbs[ i ].Width + 16, this.Thumbs[ i ].Height + 16 );
+					this.Thumbs[ i ].SetPosition( (int)( left - 80 - this.Thumbs[ i ].Width / 2 ), (int)( top - 5 - this.Thumbs[ i ].Height / 2 ) );
+
+					if ( i == this.SampleMenu.SelectionIndex )
+					{
+						frame.BorderMaterialName = "SdkTrays/Frame/Over";
+					}
+					else
+					{
+						frame.BorderMaterialName = "SdkTrays/Frame";
+					}
+				}
+			}
+
+			this.TrayManager.FrameRenderingQueued( evt );
+
+			try
+			{
+				base.FrameRenderingQueued( sender, evt );
+			}
+			catch ( Exception e ) // show error and fall back to menu
+			{
+				RunSample( null );
+				this.TrayManager.ShowOkDialog( "Error!", e + "\nSource: " + e.StackTrace );
+			}
 		}
 
 		/// <summary>
@@ -498,57 +554,58 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyPressed( SIS.KeyEventArgs evt )
+		public override bool KeyPressed( KeyEventArgs evt )
 		{
-			if ( TrayManager.IsDialogVisible )
+			if ( this.TrayManager.IsDialogVisible )
+			{
 				return true;
+			}
 
 			switch ( evt.Key )
 			{
-				case SIS.KeyCode.Key_ESCAPE:
-					if ( TitleLabel.TrayLocation != TrayLocation.None )
+				case KeyCode.Key_ESCAPE:
+					if ( this.TitleLabel.TrayLocation != TrayLocation.None )
 					{
 						if ( CurrentSample != null )
 						{
 							if ( IsSamplePaused )
 							{
-								TrayManager.HideAll();
+								this.TrayManager.HideAll();
 								UnpauseCurrentSample();
 							}
 							else
 							{
 								PauseCurrentSample();
-								TrayManager.ShowAll();
+								this.TrayManager.ShowAll();
 							}
 						}
 					}
 					else
 					{
-						OnButtonHit( this, (Button)TrayManager.GetWidget( "Back" ) );
+						OnButtonHit( this, (Button)this.TrayManager.GetWidget( "Back" ) );
 					}
 					break;
-				case SIS.KeyCode.Key_UP:
-				case SIS.KeyCode.Key_DOWN:
+				case KeyCode.Key_UP:
+				case KeyCode.Key_DOWN:
 					{
-
 						//if ( evt.Key == SIS.KeyCode.Key_DOWN && TitleLabel.TrayLocation != TrayLocation.None )
 						//{
 						//    break;
 						//}
 
-						int newIndex = SampleMenu.SelectionIndex + ( evt.Key == SIS.KeyCode.Key_UP ? -1 : 1 );
-						SampleMenu.SelectItem( Utility.Clamp<int>( newIndex, SampleMenu.ItemsCount - 1, 0 ) );
+						int newIndex = this.SampleMenu.SelectionIndex + ( evt.Key == KeyCode.Key_UP ? -1 : 1 );
+						this.SampleMenu.SelectItem( Utility.Clamp( newIndex, this.SampleMenu.ItemsCount - 1, 0 ) );
 					}
 					break;
-				case SIS.KeyCode.Key_RETURN:
-					if ( !( LoadedSamples.Count == 0 ) && ( IsSamplePaused || CurrentSample == null ) )
+				case KeyCode.Key_RETURN:
+					if ( !( this.LoadedSamples.Count == 0 ) && ( IsSamplePaused || CurrentSample == null ) )
 					{
-						Sample newSample = (Sample)Thumbs[ SampleMenu.SelectionIndex ].UserData;
+						var newSample = (Sample)this.Thumbs[ this.SampleMenu.SelectionIndex ].UserData;
 						RunSample( newSample == CurrentSample ? null : newSample );
 					}
 					break;
-				case SIS.KeyCode.Key_F9:// toggle full screen
-					Configuration.ConfigOption option = Root.RenderSystem.ConfigOptions[ "Video Mode" ];
+				case KeyCode.Key_F9: // toggle full screen
+					ConfigOption option = Root.RenderSystem.ConfigOptions[ "Video Mode" ];
 					string[] vals = option.Value.Split( 'x' );
 					int w = int.Parse( vals[ 0 ] );
 #if !(XBOX || XBOX360)
@@ -558,7 +615,7 @@ namespace Axiom.Samples
 #endif
 					//RenderWindow.IsFullScreen = ...;
 					break;
-				case SIS.KeyCode.Key_R:
+				case KeyCode.Key_R:
 					if ( CurrentSample != null )
 					{
 						switch ( RenderWindow.GetViewport( 0 ).Camera.PolygonMode )
@@ -585,7 +642,7 @@ namespace Axiom.Samples
 				RunSample( null );
 				string msg = ex.Message + "\nSource: " + ex.InnerException;
 				LogManager.Instance.Write( "[Samples] Error! " + msg );
-				TrayManager.ShowOkDialog( "Error!", msg );
+				this.TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -596,19 +653,20 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public override bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		public override bool MousePressed( MouseEventArgs evt, MouseButtonID id )
 		{
-			if ( TrayManager.InjectMouseDown( evt, id ) )
-				return true;
-
-			if ( TitleLabel.TrayLocation != TrayLocation.None )
+			if ( this.TrayManager.InjectMouseDown( evt, id ) )
 			{
-				for ( int i = 0; i < Thumbs.Count; i++ )
+				return true;
+			}
+
+			if ( this.TitleLabel.TrayLocation != TrayLocation.None )
+			{
+				for ( int i = 0; i < this.Thumbs.Count; i++ )
 				{
-					if ( Thumbs[ i ].IsVisible && Widget.IsCursorOver( Thumbs[ i ],
-						new Vector2( TrayManager.CursorContainer.Left, TrayManager.CursorContainer.Top ), 0 ) )
+					if ( this.Thumbs[ i ].IsVisible && Widget.IsCursorOver( this.Thumbs[ i ], new Vector2( this.TrayManager.CursorContainer.Left, this.TrayManager.CursorContainer.Top ), 0 ) )
 					{
-						SampleMenu.SelectItem( i );
+						this.SampleMenu.SelectItem( i );
 						break;
 					}
 				}
@@ -622,7 +680,7 @@ namespace Axiom.Samples
 				RunSample( null );
 				string msg = ex.Message + "\nSource: " + ex.InnerException;
 				LogManager.Instance.Write( "[Samples] Error! " + msg );
-				TrayManager.ShowOkDialog( "Error!", msg );
+				this.TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -633,10 +691,12 @@ namespace Axiom.Samples
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public override bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
+		public override bool MouseReleased( MouseEventArgs evt, MouseButtonID id )
 		{
-			if ( TrayManager.InjectMouseUp( evt, id ) )
+			if ( this.TrayManager.InjectMouseUp( evt, id ) )
+			{
 				return true;
+			}
 
 			try
 			{
@@ -647,7 +707,7 @@ namespace Axiom.Samples
 				RunSample( null );
 				string msg = ex.Message + "\nSource: " + ex.InnerException;
 				LogManager.Instance.Write( "[Samples] Error! " + msg );
-				TrayManager.ShowOkDialog( "Error!", msg );
+				this.TrayManager.ShowOkDialog( "Error!", msg );
 			}
 			return true;
 		}
@@ -658,27 +718,28 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool MouseMoved( SIS.MouseEventArgs evt )
+		public override bool MouseMoved( MouseEventArgs evt )
 		{
-			if ( TrayManager.InjectMouseMove( evt ) )
-				return true;
-
-			if ( !( CurrentSample != null && !IsSamplePaused ) && TitleLabel.TrayLocation != TrayLocation.None &&
-				evt.State.Z.Relative != 0 && SampleMenu.ItemsCount != 0 )
+			if ( this.TrayManager.InjectMouseMove( evt ) )
 			{
-				int newIndex = (int)( SampleMenu.SelectionIndex - evt.State.Z.Relative / Utility.Abs( evt.State.Z.Relative ) );
-				SampleMenu.SelectItem( Utility.Clamp<int>( newIndex, SampleMenu.ItemsCount - 1, 0 ) );
+				return true;
+			}
+
+			if ( !( CurrentSample != null && !IsSamplePaused ) && this.TitleLabel.TrayLocation != TrayLocation.None && evt.State.Z.Relative != 0 && this.SampleMenu.ItemsCount != 0 )
+			{
+				var newIndex = (int)( this.SampleMenu.SelectionIndex - evt.State.Z.Relative / Utility.Abs( evt.State.Z.Relative ) );
+				this.SampleMenu.SelectItem( Utility.Clamp( newIndex, this.SampleMenu.ItemsCount - 1, 0 ) );
 			}
 			try
 			{
 				return base.MouseMoved( evt );
 			}
-			catch ( Exception ex )   // show error and fall back to menu
+			catch ( Exception ex ) // show error and fall back to menu
 			{
 				RunSample( null );
 				string msg = ex.Message + "\nSource: " + ex.InnerException;
 				LogManager.Instance.Write( "[Samples] Error! " + msg );
-				TrayManager.ShowOkDialog( "Error!", msg );
+				this.TrayManager.ShowOkDialog( "Error!", msg );
 			}
 
 			return true;
@@ -690,24 +751,26 @@ namespace Axiom.Samples
 		/// <param name="rw"></param>
 		public override void WindowResized( RenderWindow rw )
 		{
-			if ( TrayManager == null )
+			if ( this.TrayManager == null )
+			{
 				return;
+			}
 
-			OverlayElementContainer center = TrayManager.TrayContainer[ (int)TrayLocation.Center ];
-			OverlayElementContainer left = TrayManager.TrayContainer[ (int)TrayLocation.Left ];
+			OverlayElementContainer center = this.TrayManager.TrayContainer[ (int)TrayLocation.Center ];
+			OverlayElementContainer left = this.TrayManager.TrayContainer[ (int)TrayLocation.Left ];
 
 			if ( center.IsVisible && rw.Width < 1280 - center.Width )
 			{
 				while ( center.IsVisible )
 				{
-					TrayManager.MoveWidgetToTray( TrayManager.GetWidget( TrayLocation.Center, 0 ), TrayLocation.Left );
+					this.TrayManager.MoveWidgetToTray( this.TrayManager.GetWidget( TrayLocation.Center, 0 ), TrayLocation.Left );
 				}
 			}
 			else if ( left.IsVisible && rw.Width >= 1280 - left.Width )
 			{
 				while ( left.IsVisible )
 				{
-					TrayManager.MoveWidgetToTray( TrayManager.GetWidget( TrayLocation.Left, 0 ), TrayLocation.Center );
+					this.TrayManager.MoveWidgetToTray( this.TrayManager.GetWidget( TrayLocation.Left, 0 ), TrayLocation.Center );
 				}
 			}
 			base.WindowResized( rw );
@@ -718,16 +781,15 @@ namespace Axiom.Samples
 		/// </summary>
 		protected override void Setup()
 		{
-
 			CreateWindow();
 			SetupInput();
 			LocateResources();
 
 			ResourceGroupManager.Instance.InitializeResourceGroup( "Essential" );
 
-			TrayManager = new SdkTrayManager( "BrowserControls", RenderWindow, Mouse, this );
-			TrayManager.ShowBackdrop( "SdkTrays/Bands" );
-			TrayManager.TrayContainer[ (int)TrayLocation.None ].Hide();
+			this.TrayManager = new SdkTrayManager( "BrowserControls", RenderWindow, Mouse, this );
+			this.TrayManager.ShowBackdrop( "SdkTrays/Bands" );
+			this.TrayManager.TrayContainer[ (int)TrayLocation.None ].Hide();
 
 			CreateDummyScene();
 			LoadResources();
@@ -737,20 +799,22 @@ namespace Axiom.Samples
 			TextureManager.Instance.DefaultMipmapCount = 5;
 
 			// adds context as listener to process context-level (above the sample level) events
-			this.Root.FrameStarted += this.FrameStarted;
-			this.Root.FrameEnded += this.FrameEnded;
-			this.Root.FrameRenderingQueued += this.FrameRenderingQueued;
+			Root.FrameStarted += FrameStarted;
+			Root.FrameEnded += FrameEnded;
+			Root.FrameRenderingQueued += FrameRenderingQueued;
 			WindowEventMonitor.Instance.RegisterListener( RenderWindow, this );
 
 			// create template material for sample thumbnails
-			Material thumbMat = (Material)MaterialManager.Instance.Create( "SampleThumbnail", "Essential" );
+			var thumbMat = (Material)MaterialManager.Instance.Create( "SampleThumbnail", "Essential" );
 			thumbMat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState();
 
 			SetupWidgets();
 			WindowResized( RenderWindow ); // adjust menus for resolution
 
 			if ( startupSample != null )
+			{
 				RunSample( startupSample );
+			}
 		}
 
 		/// <summary>
@@ -768,9 +832,9 @@ namespace Axiom.Samples
 		/// </summary>
 		protected override void LoadResources()
 		{
-			TrayManager.ShowLoadingBar( 6, 0 );
+			this.TrayManager.ShowLoadingBar( 6, 0 );
 			ResourceGroupManager.Instance.InitializeResourceGroup( "Popular" );
-			TrayManager.HideLoadingBar();
+			this.TrayManager.HideLoadingBar();
 		}
 
 		/// <summary>
@@ -791,7 +855,7 @@ namespace Axiom.Samples
 		protected virtual Sample LoadSamples()
 		{
 			string dir = "../samples";
-			SampleSet samples = new SampleSet();
+			var samples = new SampleSet();
 
 			PluginManager.Instance.LoadDirectory( dir );
 
@@ -799,24 +863,26 @@ namespace Axiom.Samples
 			{
 				if ( plugin is SamplePlugin )
 				{
-					SamplePlugin pluginInstance = (SamplePlugin)plugin;
-					LoadedSamplePlugins.Add( pluginInstance.Name );
+					var pluginInstance = (SamplePlugin)plugin;
+					this.LoadedSamplePlugins.Add( pluginInstance.Name );
 					foreach ( SdkSample sample in pluginInstance.Samples )
-						LoadedSamples.Add( sample );
+					{
+						this.LoadedSamples.Add( sample );
+					}
 				}
 			}
 
-			foreach ( SdkSample sample in LoadedSamples )
+			foreach ( SdkSample sample in this.LoadedSamples )
 			{
-				if ( !SampleCategories.Contains( sample.Metadata[ "Category" ] ) )
+				if ( !this.SampleCategories.Contains( sample.Metadata[ "Category" ] ) )
 				{
-					SampleCategories.Add( sample.Metadata[ "Category" ] );
+					this.SampleCategories.Add( sample.Metadata[ "Category" ] );
 				}
 			}
 
-			if ( LoadedSamples.Count > 0 )
+			if ( this.LoadedSamples.Count > 0 )
 			{
-				SampleCategories.Add( "All" );
+				this.SampleCategories.Add( "All" );
 			}
 			return null;
 		}
@@ -826,14 +892,14 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void UnloadSamples()
 		{
-			for ( int i = 0; i < LoadedSamplePlugins.Count; i++ )
+			for ( int i = 0; i < this.LoadedSamplePlugins.Count; i++ )
 			{
 				//mRoot.unloadPlugin(mLoadedSamplePlugins[i]);
 			}
 
-			LoadedSamples.Clear();
-			LoadedSamplePlugins.Clear();
-			SampleCategories.Clear();
+			this.LoadedSamples.Clear();
+			this.LoadedSamplePlugins.Clear();
+			this.SampleCategories.Clear();
 		}
 
 		/// <summary>
@@ -841,40 +907,39 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void SetupWidgets()
 		{
-
-			TrayManager.DestroyAllWidgets();
+			this.TrayManager.DestroyAllWidgets();
 
 			// create main navigation tray
-			TrayManager.ShowLogo( TrayLocation.Right );
-			TrayManager.CreateSeparator( TrayLocation.Right, "LogoSep" );
-			TrayManager.CreateButton( TrayLocation.Right, "StartStop", "Start Sample" );
-			TrayManager.CreateButton( TrayLocation.Right, "UnloadReload", LoadedSamples.Count == 0 ? "Reload Samples" : "Unload Samples" );
-			TrayManager.CreateButton( TrayLocation.Right, "Configure", "Configure" );
-			TrayManager.CreateButton( TrayLocation.Right, "Quit", "Quit" );
+			this.TrayManager.ShowLogo( TrayLocation.Right );
+			this.TrayManager.CreateSeparator( TrayLocation.Right, "LogoSep" );
+			this.TrayManager.CreateButton( TrayLocation.Right, "StartStop", "Start Sample" );
+			this.TrayManager.CreateButton( TrayLocation.Right, "UnloadReload", this.LoadedSamples.Count == 0 ? "Reload Samples" : "Unload Samples" );
+			this.TrayManager.CreateButton( TrayLocation.Right, "Configure", "Configure" );
+			this.TrayManager.CreateButton( TrayLocation.Right, "Quit", "Quit" );
 
 			// // create sample viewing controls
-			TitleLabel = TrayManager.CreateLabel( TrayLocation.Left, "SampleTitle", "" );
-			DescBox = TrayManager.CreateTextBox( TrayLocation.Left, "SampleInfo", "Sample Info", 250, 208 );
-			CategoryMenu = TrayManager.CreateThickSelectMenu( TrayLocation.Left, "CategoryMenu", "Select Category", 250, 10 );
-			SampleMenu = TrayManager.CreateThickSelectMenu( TrayLocation.Left, "SampleMenu", "Select Sample", 250, 10 );
-			SampleSlider = TrayManager.CreateThickSlider( TrayLocation.Left, "SampleSlider", "Slide Samples", 250, 80, 0, 0, 0 );
+			this.TitleLabel = this.TrayManager.CreateLabel( TrayLocation.Left, "SampleTitle", "" );
+			this.DescBox = this.TrayManager.CreateTextBox( TrayLocation.Left, "SampleInfo", "Sample Info", 250, 208 );
+			this.CategoryMenu = this.TrayManager.CreateThickSelectMenu( TrayLocation.Left, "CategoryMenu", "Select Category", 250, 10 );
+			this.SampleMenu = this.TrayManager.CreateThickSelectMenu( TrayLocation.Left, "SampleMenu", "Select Sample", 250, 10 );
+			this.SampleSlider = this.TrayManager.CreateThickSlider( TrayLocation.Left, "SampleSlider", "Slide Samples", 250, 80, 0, 0, 0 );
 
 			/* Sliders do not notify their listeners on creation, so we manually call the callback here to format the slider value correctly. */
-			SliderMoved( SampleSlider );
+			SliderMoved( this.SampleSlider );
 
 			// create configuration screen button tray
-			TrayManager.CreateButton( TrayLocation.None, "Apply", "Apply Changes" );
-			TrayManager.CreateButton( TrayLocation.None, "Back", "Go Back" );
+			this.TrayManager.CreateButton( TrayLocation.None, "Apply", "Apply Changes" );
+			this.TrayManager.CreateButton( TrayLocation.None, "Back", "Go Back" );
 
 			// create configuration screen label and renderer menu
-			TrayManager.CreateLabel( TrayLocation.None, "ConfigLabel", "Configuration" );
-			RendererMenu = TrayManager.CreateLongSelectMenu( TrayLocation.None, "RendererMenu", "Render System", 450, 240, 10 );
-			TrayManager.CreateSeparator( TrayLocation.None, "ConfigSeparator" );
+			this.TrayManager.CreateLabel( TrayLocation.None, "ConfigLabel", "Configuration" );
+			this.RendererMenu = this.TrayManager.CreateLongSelectMenu( TrayLocation.None, "RendererMenu", "Render System", 450, 240, 10 );
+			this.TrayManager.CreateSeparator( TrayLocation.None, "ConfigSeparator" );
 
 			// populate render system names
-			var rsNames = from rs in this.Root.RenderSystems.Values
-						  select rs.Name;
-			RendererMenu.Items = rsNames.ToList();
+			IEnumerable<string> rsNames = from rs in Root.RenderSystems.Values
+										  select rs.Name;
+			this.RendererMenu.Items = rsNames.ToList();
 
 			PopulateSampleMenus();
 		}
@@ -884,15 +949,21 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void PopulateSampleMenus()
 		{
-			List<string> categories = new List<string>();
-			foreach ( string i in SampleCategories )
+			var categories = new List<string>();
+			foreach ( string i in this.SampleCategories )
+			{
 				categories.Add( i );
+			}
 			categories.Sort();
-			CategoryMenu.Items = categories;
-			if ( CategoryMenu.ItemsCount != 0 )
-				CategoryMenu.SelectItem( 0 );
+			this.CategoryMenu.Items = categories;
+			if ( this.CategoryMenu.ItemsCount != 0 )
+			{
+				this.CategoryMenu.SelectItem( 0 );
+			}
 			else
-				ItemSelected( CategoryMenu );
+			{
+				ItemSelected( this.CategoryMenu );
+			}
 		}
 
 		/// <summary>
@@ -901,29 +972,29 @@ namespace Axiom.Samples
 		protected override void RecoverLastSample()
 		{
 			// restore the view while we're at it too
-			CategoryMenu.SelectItem( LastViewCategory );
-			SampleMenu.SelectItem( LastViewTitle );
-			if ( LastSampleIndex != -1 )
+			this.CategoryMenu.SelectItem( this.LastViewCategory );
+			this.SampleMenu.SelectItem( this.LastViewTitle );
+			if ( this.LastSampleIndex != -1 )
 			{
 				int index = -1;
-				foreach ( Sample i in LoadedSamples )
+				foreach ( Sample i in this.LoadedSamples )
 				{
 					index++;
-					if ( index == LastSampleIndex )
+					if ( index == this.LastSampleIndex )
 					{
 						RunSample( i );
 						i.RestoreState( LastSampleState );
 						LastSample = null;
-						LastSampleIndex = -1;
+						this.LastSampleIndex = -1;
 						LastSampleState.Clear();
 					}
 				}
 
 				PauseCurrentSample();
-				TrayManager.ShowAll();
+				this.TrayManager.ShowAll();
 			}
 
-			OnButtonHit( this, (Button)TrayManager.GetWidget( "Configure" ) );
+			OnButtonHit( this, (Button)this.TrayManager.GetWidget( "Configure" ) );
 		}
 
 		/// <summary>
@@ -931,18 +1002,18 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="renderer"></param>
 		/// <param name="options"></param>
-		protected override void Reconfigure( string renderer, Collections.NameValuePairList options )
+		protected override void Reconfigure( string renderer, NameValuePairList options )
 		{
-			LastViewCategory = CategoryMenu.SelectionIndex;
-			LastViewTitle = SampleMenu.SelectionIndex;
-			LastSampleIndex = -1;
+			this.LastViewCategory = this.CategoryMenu.SelectionIndex;
+			this.LastViewTitle = this.SampleMenu.SelectionIndex;
+			this.LastSampleIndex = -1;
 			int index = -1;
-			foreach ( Sample i in LoadedSamples )
+			foreach ( Sample i in this.LoadedSamples )
 			{
 				index++;
 				if ( i == CurrentSample )
 				{
-					LastSampleIndex = index;
+					this.LastSampleIndex = index;
 					break;
 				}
 			}
@@ -954,22 +1025,24 @@ namespace Axiom.Samples
 		/// </summary>
 		protected override void Shutdown()
 		{
-			if ( TrayManager != null )
+			if ( this.TrayManager != null )
 			{
-				TrayManager = null;
+				this.TrayManager = null;
 			}
 			if ( CurrentSample == null )
+			{
 				DestroyDummyScene();
+			}
 
-			CategoryMenu = null;
-			SampleMenu = null;
-			SampleSlider = null;
-			TitleLabel = null;
-			DescBox = null;
-			RendererMenu = null;
-			HiddenOverlays.Clear();
-			Thumbs.Clear();
-			CarouselPlace = 0;
+			this.CategoryMenu = null;
+			this.SampleMenu = null;
+			this.SampleSlider = null;
+			this.TitleLabel = null;
+			this.DescBox = null;
+			this.RendererMenu = null;
+			this.HiddenOverlays.Clear();
+			this.Thumbs.Clear();
+			this.CarouselPlace = 0;
 
 			base.Shutdown();
 
@@ -992,14 +1065,14 @@ namespace Axiom.Samples
 		{
 			base.PauseCurrentSample();
 
-			HiddenOverlays.Clear();
+			this.HiddenOverlays.Clear();
 			IEnumerator<Overlay> it = OverlayManager.Instance.Overlays;
 			while ( it.MoveNext() )
 			{
 				Overlay o = it.Current;
 				if ( o.IsVisible )
 				{
-					HiddenOverlays.Add( o );
+					this.HiddenOverlays.Add( o );
 					o.Hide();
 				}
 			}
@@ -1012,12 +1085,12 @@ namespace Axiom.Samples
 		{
 			base.UnpauseCurrentSample();
 
-			foreach ( Overlay o in HiddenOverlays )
+			foreach ( Overlay o in this.HiddenOverlays )
 			{
 				o.Show();
 			}
 
-			HiddenOverlays.Clear();
+			this.HiddenOverlays.Clear();
 		}
 
 		#region ISdkTrayListener Implementation
@@ -1026,25 +1099,19 @@ namespace Axiom.Samples
 		/// 
 		/// </summary>
 		/// <param name="message"></param>
-		public void OkDialogClosed( string message )
-		{
-		}
+		public void OkDialogClosed( string message ) { }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="label"></param>
-		public void LabelHit( Label label )
-		{
-		}
+		public void LabelHit( Label label ) { }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="box"></param>
-		public void CheckboxToggled( CheckBox box )
-		{
-		}
+		public void CheckboxToggled( CheckBox box ) { }
 
 		#endregion ISdkTrayListener Implementation
 	}

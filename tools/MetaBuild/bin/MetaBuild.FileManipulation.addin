@@ -3,6 +3,5 @@
  ! declaratively.
  !-->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.FileManipulation.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
+  <Import Project="MetaBuild.FileManipulation.shell.ext" Condition="'$(MetaBuildProjectType)'=='Shell'" />
 </Project>

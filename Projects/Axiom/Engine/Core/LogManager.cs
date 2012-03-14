@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -53,7 +56,8 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of logs created by the log manager.
 		/// </summary>
-		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
+		private readonly AxiomCollection<Log> logList = new AxiomCollection<Log>();
+
 		/// <summary>
 		///     The default log to which output is done.
 		/// </summary>
@@ -67,16 +71,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( defaultLog == null )
+				if ( this.defaultLog == null )
 				{
-                    throw new AxiomException( "No logs have been created yet." );
+					throw new AxiomException( "No logs have been created yet." );
 				}
 
-				return defaultLog;
+				return this.defaultLog;
 			}
 			set
 			{
-				defaultLog = value;
+				this.defaultLog = value;
 			}
 		}
 
@@ -113,7 +117,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-        /// <param name="isDefaultLog">
+		/// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
@@ -129,7 +133,7 @@ namespace Axiom.Core
 		///     Creates a new log with the given name.
 		/// </summary>
 		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
-        /// <param name="isDefaultLog">
+		/// <param name="isDefaultLog">
 		///     If true, this is the default log output will be
 		///     sent to if the generic logging methods on this class are
 		///     used. The first log created is always the default log unless
@@ -146,14 +150,16 @@ namespace Axiom.Core
 			var newLog = new Log( name, debuggerOutput );
 
 			// set as the default log if need be
-			if ( defaultLog == null || isDefaultLog )
+			if ( this.defaultLog == null || isDefaultLog )
 			{
-				defaultLog = newLog;
+				this.defaultLog = newLog;
 			}
 
 			if ( name == null )
+			{
 				name = string.Empty;
-			logList.Add( name, newLog );
+			}
+			this.logList.Add( name, newLog );
 
 			return newLog;
 		}
@@ -165,12 +171,12 @@ namespace Axiom.Core
 		/// <returns>Log with the specified name.</returns>
 		public Log GetLog( string name )
 		{
-			if ( logList[ name ] == null )
+			if ( this.logList[ name ] == null )
 			{
 				throw new AxiomException( "Log with the name '{0}' not found.", name );
 			}
 
-			return (Log)logList[ name ];
+			return this.logList[ name ];
 		}
 
 		/// <summary>
@@ -238,7 +244,7 @@ namespace Axiom.Core
 
 		private static string BuildInnerExceptionString( Exception innerException )
 		{
-			var errMessage = string.Empty;
+			string errMessage = string.Empty;
 
 			errMessage += "\n" + " InnerException ";
 			errMessage += "\n" + innerException.Message + "\n" + innerException.StackTrace;
@@ -260,13 +266,12 @@ namespace Axiom.Core
 				{
 					// Dispose managed resources.
 					// dispose of all the logs
-					foreach ( IDisposable o in logList.Values )
+					foreach ( IDisposable o in this.logList.Values )
 					{
 						o.Dispose();
 					}
 
-					logList.Clear();
-
+					this.logList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -278,8 +283,6 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-
 		#endregion Singleton implementation
-
 	}
 }

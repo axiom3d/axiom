@@ -1,14 +1,13 @@
 #region Namespace Declarations
 
-using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+
 using Axiom.Animating;
 using Axiom.Controllers;
-using Axiom.Controllers.Canned;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics;
-using System.Collections.Generic;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -18,9 +17,9 @@ namespace Axiom.Demos
 	/// 	Summary description for Controllers.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-    [Export(typeof(TechDemo))]
+	[Export( typeof( TechDemo ) )]
 #endif
-    public class Lights : TechDemo
+	public class Lights : TechDemo
 	{
 		#region Member variables
 
@@ -44,7 +43,7 @@ namespace Axiom.Demos
 		private IControllerValue<float> yellowLightFlasher;
 		private IControllerValue<float> greenLightFlasher;
 		private IControllerValue<float> blueLightFlasher;
-		private List<AnimationState> animationStateList = new List<AnimationState>();
+		private readonly List<AnimationState> animationStateList = new List<AnimationState>();
 
 		#endregion Member variables
 
@@ -69,7 +68,7 @@ namespace Axiom.Demos
 
 		private void setupLightTrails()
 		{
-			Vector3 dir = new Vector3( -1.0f, -1.0f, 0.5f );
+			var dir = new Vector3( -1.0f, -1.0f, 0.5f );
 			dir.Normalize();
 
 			Light l = scene.CreateLight( "light1" );
@@ -85,11 +84,11 @@ namespace Axiom.Demos
 
 			// Create 3 nodes for trail to follow
 			SceneNode animNode = scene.RootSceneNode.CreateChildSceneNode();
-			animNode.Position = new Vector3( -50, -30, 0 );//new Vector3(50,30,0);
+			animNode.Position = new Vector3( -50, -30, 0 ); //new Vector3(50,30,0);
 			Animation anim = scene.CreateAnimation( "an1", 14 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 			NodeAnimationTrack track = anim.CreateNodeTrack( 1, animNode );
-			TransformKeyFrame kf = (TransformKeyFrame)track.CreateKeyFrame( 0 );
+			var kf = (TransformKeyFrame)track.CreateKeyFrame( 0 );
 			kf.Translate = new Vector3( 50, 30, 0 );
 			kf = (TransformKeyFrame)track.CreateKeyFrame( 2 );
 			kf.Translate = new Vector3( 100, -30, 0 );
@@ -108,7 +107,7 @@ namespace Axiom.Demos
 
 			AnimationState animState = scene.CreateAnimationState( "an1" );
 			animState.IsEnabled = true;
-			animationStateList.Add( animState );
+			this.animationStateList.Add( animState );
 
 			trail.SetInitialColor( 0, new ColorEx( 1.0f, 1.0f, 0.8f, 0f ) );
 			trail.SetColorChange( 0, new ColorEx( 0.5f, 0.5f, 0.5f, 0.5f ) );
@@ -127,7 +126,7 @@ namespace Axiom.Demos
 			animNode.AttachObject( bbs );
 
 			animNode = scene.RootSceneNode.CreateChildSceneNode();
-			animNode.Position = new Vector3( -50, 100, 0 );//new Vector3(50,30,0);
+			animNode.Position = new Vector3( -50, 100, 0 ); //new Vector3(50,30,0);
 			anim = scene.CreateAnimation( "an2", 10 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 			track = anim.CreateNodeTrack( 1, animNode );
@@ -146,7 +145,7 @@ namespace Axiom.Demos
 
 			animState = scene.CreateAnimationState( "an2" );
 			animState.IsEnabled = true;
-			animationStateList.Add( animState );
+			this.animationStateList.Add( animState );
 
 			trail.SetInitialColor( 1, new ColorEx( 1.0f, 0.0f, 1.0f, 0.4f ) );
 			trail.SetColorChange( 1, new ColorEx( 0.5f, 0.5f, 0.5f, 0.5f ) );
@@ -168,7 +167,7 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// move the billboards around a bit
-			foreach ( AnimationState anim in animationStateList )
+			foreach ( AnimationState anim in this.animationStateList )
 			{
 				anim.AddTime( evt.TimeSinceLastFrame );
 			}
@@ -180,8 +179,8 @@ namespace Axiom.Demos
 
 	public class LightFlasherControllerValue : IControllerValue<float>
 	{
-		private Billboard billboard;
-		private Light light;
+		private readonly Billboard billboard;
+		private readonly Light light;
 		private float intensity;
 		private ColorEx maxColor;
 
@@ -192,31 +191,29 @@ namespace Axiom.Demos
 			this.maxColor = maxColor;
 		}
 
-		#region IControllerValue Members
+		#region IControllerValue<float> Members
 
 		public float Value
 		{
 			get
 			{
-				return intensity;
+				return this.intensity;
 			}
 			set
 			{
-				intensity = value;
+				this.intensity = value;
 
-				ColorEx newColor = new ColorEx();
+				var newColor = new ColorEx();
 
-				newColor.r = maxColor.r * intensity;
-				newColor.g = maxColor.g * intensity;
-				newColor.b = maxColor.b * intensity;
+				newColor.r = this.maxColor.r * this.intensity;
+				newColor.g = this.maxColor.g * this.intensity;
+				newColor.b = this.maxColor.b * this.intensity;
 
-				billboard.Color = newColor;
-				light.Diffuse = newColor;
+				this.billboard.Color = newColor;
+				this.light.Diffuse = newColor;
 			}
 		}
 
-		#endregion IControllerValue Members
-
+		#endregion
 	}
-
 }

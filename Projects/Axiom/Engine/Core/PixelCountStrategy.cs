@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: PixelCountStrategy.cs 1762 2009-09-13 17:56:22Z bostich $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
+
 using MathHelper = Axiom.Math.Utility;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -49,14 +54,11 @@ namespace Axiom.Core
 	/// </summary>
 	public class PixelCountStrategy : LodStrategy
 	{
-
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
 		public PixelCountStrategy()
-			: base( "PixelCount" )
-		{
-		}
+			: base( "PixelCount" ) { }
 
 		#region LodStrategy Implementation
 
@@ -101,7 +103,7 @@ namespace Axiom.Core
 		protected override Real getValue( MovableObject movableObject, Camera camera )
 		{
 			// Get viewport
-			var viewport = camera.Viewport;
+			Viewport viewport = camera.Viewport;
 
 			// Get viewport area
 			float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
@@ -115,32 +117,36 @@ namespace Axiom.Core
 				case Projection.Perspective:
 					{
 						// Get camera distance
-						var distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
+						float distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
 
 						// Check for 0 distance
 						if ( distanceSquared <= float.Epsilon )
+						{
 							return BaseValue;
+						}
 
 						// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-						var projectionMatrix = camera.ProjectionMatrix;
+						Matrix4 projectionMatrix = camera.ProjectionMatrix;
 
 						//estimate pixel count
 						return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
 					}
-					// break;
+				// break;
 				case Projection.Orthographic:
 					{
 						// Compute orthographic area
-						var orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
+						float orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
 
 						// Check for 0 orthographic area
 						if ( orthoArea <= float.Epsilon )
+						{
 							return BaseValue;
+						}
 
 						// Estimate pixel count
 						return ( boundingArea * viewportArea ) / orthoArea;
 					}
-					// break;
+				// break;
 				default:
 					{
 						// This case is not covered for obvious reasons

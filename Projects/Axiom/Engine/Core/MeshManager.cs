@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,21 +23,30 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+
+using Axiom.Animating;
+using Axiom.Collections;
+using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -53,7 +63,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Enum identifying the types of manual mesh built by this manager
 		/// </summary>
-		enum MeshBuildType
+		private enum MeshBuildType
 		{
 			Plane,
 			CurvedIllusionPlane,
@@ -63,26 +73,26 @@ namespace Axiom.Core
 		/// <summary>
 		/// Saved parameters used to (re)build a manual mesh built by this class
 		/// </summary>
-		struct MeshBuildParams
+		private struct MeshBuildParams
 		{
-			public MeshBuildType Type;
-			public Plane Plane;
-			public Real Width;
-			public Real Height;
 			public Real Curvature;
-			public int XSegments;
-			public int YSegments;
-			public bool Normals;
-			public int TexCoordSetCount;
-			public Real XTile;
-			public Real YTile;
-			public Vector3 UpVector;
-			public Quaternion Orientation;
-			public BufferUsage VertexBufferUsage;
+			public Real Height;
 			public BufferUsage IndexBufferUsage;
-			public bool VertexShadowBuffer;
 			public bool IndexShadowBuffer;
+			public bool Normals;
+			public Quaternion Orientation;
+			public Plane Plane;
+			public int TexCoordSetCount;
+			public MeshBuildType Type;
+			public Vector3 UpVector;
+			public BufferUsage VertexBufferUsage;
+			public bool VertexShadowBuffer;
+			public Real Width;
+			public int XSegments;
+			public Real XTile;
+			public int YSegments;
 			public int YSegmentsToKeep;
+			public Real YTile;
 		};
 
 		#endregion Enumerations and Structures
@@ -105,20 +115,10 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		//the factor by which the bounding box of an entity is padded
-		Real _boundsPaddingFactor;
-		public Real BoundsPaddingFactor
-		{
-			get
-			{
-				return _boundsPaddingFactor;
-			}
-			set
-			{
-				_boundsPaddingFactor = value;
-			}
-		}
+		public Real BoundsPaddingFactor { get; set; }
 
 		private readonly ChainedEvent<MeshSerializerArgs> _processMaterialNameEvent = new ChainedEvent<MeshSerializerArgs>();
+
 		/// <summary>
 		/// This event allows users to hook into the mesh loading process and
 		///	modify references within the mesh as they are loading. Material 
@@ -129,15 +129,16 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_processMaterialNameEvent.EventSinks += value;
+				this._processMaterialNameEvent.EventSinks += value;
 			}
 			remove
 			{
-				_processMaterialNameEvent.EventSinks -= value;
+				this._processMaterialNameEvent.EventSinks -= value;
 			}
 		}
 
 		private readonly ChainedEvent<MeshSerializerArgs> _processSkeletonNameEvent = new ChainedEvent<MeshSerializerArgs>();
+
 		/// <summary>
 		/// This event allows users to hook into the mesh loading process and
 		///	modify references within the mesh as they are loading. Skeletal 
@@ -148,38 +149,23 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_processSkeletonNameEvent.EventSinks += value;
+				this._processSkeletonNameEvent.EventSinks += value;
 			}
 			remove
 			{
-				_processSkeletonNameEvent.EventSinks -= value;
+				this._processSkeletonNameEvent.EventSinks -= value;
 			}
 		}
 
-		private Dictionary<Mesh, MeshBuildParams> _meshBuildParams = new Dictionary<Mesh, MeshBuildParams>();
+		private readonly Dictionary<Mesh, MeshBuildParams> _meshBuildParams = new Dictionary<Mesh, MeshBuildParams>();
 
 		#region PrepareAllMeshesForShadowVolumes Property
 
 		/// <summary>
-		///		Flag indicating whether newly loaded meshes should also be prepared for
-		///		shadow volumes.
-		/// </summary>
-		private bool _prepAllMeshesForShadowVolumes = false;
-		/// <summary>
 		///		Tells the mesh manager that all future meshes should prepare themselves for
 		///		shadow volumes on loading.
 		/// </summary>
-		public bool PrepareAllMeshesForShadowVolumes
-		{
-			get
-			{
-				return _prepAllMeshesForShadowVolumes;
-			}
-			set
-			{
-				_prepAllMeshesForShadowVolumes = value;
-			}
-		}
+		public bool PrepareAllMeshesForShadowVolumes { get; set; }
 
 		#endregion PrepareAllMeshesForShadowVolumes Property
 
@@ -191,9 +177,8 @@ namespace Axiom.Core
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public MeshManager()
-            : base()
 		{
-			_boundsPaddingFactor = 0.01f;
+			this.BoundsPaddingFactor = 0.01f;
 
 			// Loading order
 			LoadingOrder = 350.0f;
@@ -246,7 +231,7 @@ namespace Axiom.Core
 		public Mesh Load( string name, string group, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexBufferShadowed, bool indexBufferShadowed, int priority )
 		{
 			Mesh mesh = null;
-			ResourceHandle handle = (ResourceHandle)name.ToLower().GetHashCode();
+			var handle = (ResourceHandle)name.ToLower().GetHashCode();
 			// if the resource isn't cached, create it
 			if ( !resourceHandleMap.ContainsKey( handle ) )
 			{
@@ -268,16 +253,16 @@ namespace Axiom.Core
 
 		#region CreatePlane Method
 
-	    /// <summary>
-	    ///		Overloaded method.
-	    /// </summary>
-	    /// <param name="name">Name of the plane mesh.</param>
-	    ///<param name="group"></param>
-	    ///<param name="plane">Plane to use for distance and orientation of the mesh.</param>
-	    /// <param name="width">Width in world coordinates.</param>
-	    /// <param name="height">Height in world coordinates.</param>
-	    /// <returns></returns>
-	    public Mesh CreatePlane( string name, string group, Plane plane, int width, int height )
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="name">Name of the plane mesh.</param>
+		///<param name="group"></param>
+		///<param name="plane">Plane to use for distance and orientation of the mesh.</param>
+		/// <param name="width">Width in world coordinates.</param>
+		/// <param name="height">Height in world coordinates.</param>
+		/// <returns></returns>
+		public Mesh CreatePlane( string name, string group, Plane plane, int width, int height )
 		{
 			return CreatePlane( name, group, plane, width, height, 1, 1, true, 1, 1.0f, 1.0f, Vector3.UnitY, BufferUsage.StaticWriteOnly, BufferUsage.StaticWriteOnly, true, true );
 		}
@@ -307,11 +292,10 @@ namespace Axiom.Core
 		/// <param name="vertexShadowBuffer"></param>
 		/// <param name="indexShadowBuffer"></param>
 		/// <returns></returns>
-		public Mesh CreatePlane( string name, string group, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int texCoordSetCount, float uTile, float vTile, Vector3 upVec,
-			BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
+		public Mesh CreatePlane( string name, string group, Plane plane, float width, float height, int xSegments, int ySegments, bool normals, int texCoordSetCount, float uTile, float vTile, Vector3 upVec, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
 		{
 			// Create manual mesh which calls back self to load
-			var mesh = CreateManual( name, group, this );
+			Mesh mesh = CreateManual( name, group, this );
 			// Planes can never be manifold
 			mesh.AutoBuildEdgeLists = false;
 			// store parameters
@@ -331,7 +315,7 @@ namespace Axiom.Core
 			meshParams.IndexBufferUsage = indexBufferUsage;
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -362,7 +346,7 @@ namespace Axiom.Core
 		public Mesh CreateCurvedPlane( string name, string group, Plane plane, float width, float height, Real bow, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTile, float yTile, Vector3 upVector, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer )
 		{
 			// Create manual mesh which calls back self to load
-			var mesh = CreateManual( name, group, this );
+			Mesh mesh = CreateManual( name, group, this );
 			// Planes can never be manifold
 			mesh.AutoBuildEdgeLists = false;
 			// store parameters
@@ -383,7 +367,7 @@ namespace Axiom.Core
 			meshParams.IndexBufferUsage = indexBufferUsage;
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -413,9 +397,8 @@ namespace Axiom.Core
 		/// </summary>
 		public Mesh CreateCurvedIllusionPlane( string name, string group, Plane plane, float width, float height, float curvature, int xSegments, int ySegments, bool normals, int texCoordSetCount, float xTiles, float yTiles, Vector3 upVector, Quaternion orientation, BufferUsage vertexBufferUsage, BufferUsage indexBufferUsage, bool vertexShadowBuffer, bool indexShadowBuffer, int ySegmentsToKeep )
 		{
-
 			// Create manual mesh which calls back self to load
-			var mesh = CreateManual( name, group, this );
+			Mesh mesh = CreateManual( name, group, this );
 			// Planes can never be manifold
 			mesh.AutoBuildEdgeLists = false;
 			// store parameters
@@ -438,7 +421,7 @@ namespace Axiom.Core
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
 			meshParams.YSegmentsToKeep = ySegmentsToKeep;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -451,9 +434,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Creates a Bezier patch based on an array of control vertices.
 		/// </summary>
-		public PatchMesh CreateBezierPatch( string name, string group, Array controlPointBuffer, VertexDeclaration declaration,
-			int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
-			BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
+		public PatchMesh CreateBezierPatch( string name, string group, Array controlPointBuffer, VertexDeclaration declaration, int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide, BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
 		{
 			if ( width < 3 || height < 3 )
 			{
@@ -494,23 +475,22 @@ namespace Axiom.Core
 			subMesh.indexData.indexCount = ( width - 1 ) * ( height - 1 ) * 2 * iterations * 3;
 
 			// create the index buffer using the current API
-			subMesh.indexData.indexBuffer =
-				HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, subMesh.indexData.indexCount, indexBufferUsage, indexShadowBuffer );
+			subMesh.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, subMesh.indexData.indexCount, indexBufferUsage, indexShadowBuffer );
 
 			short v1, v2, v3;
 
 			// grab a reference for easy access
-			var idxBuffer = subMesh.indexData.indexBuffer;
+			HardwareIndexBuffer idxBuffer = subMesh.indexData.indexBuffer;
 
 			// lock the whole index buffer
-			var data = idxBuffer.Lock( BufferLocking.Discard );
+			BufferBase data = idxBuffer.Lock( BufferLocking.Discard );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var pIndex = data.ToShortPointer();
-			    var idx = 0;
+				short* pIndex = data.ToShortPointer();
+				int idx = 0;
 
 				while ( 0 < iterations-- )
 				{
@@ -532,33 +512,31 @@ namespace Axiom.Core
 							v2 = (short)( ( v * width ) + u );
 							v3 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
 							// Output indexes
-							pIndex[idx++] = v1;
-                            pIndex[idx++] = v2;
-                            pIndex[idx++] = v3;
+							pIndex[ idx++ ] = v1;
+							pIndex[ idx++ ] = v2;
+							pIndex[ idx++ ] = v3;
 							// Second Tri in cell
 							// ------------------
 							v1 = (short)( ( ( v + vInc ) * width ) + ( u + uInc ) );
 							v2 = (short)( ( v * width ) + u );
 							v3 = (short)( ( v * width ) + ( u + uInc ) );
 							// Output indexes
-                            pIndex[idx++] = v1;
-                            pIndex[idx++] = v2;
-                            pIndex[idx++] = v3;
+							pIndex[ idx++ ] = v1;
+							pIndex[ idx++ ] = v2;
+							pIndex[ idx++ ] = v3;
 
 							// Next column
 							u += uInc;
-
 						} // while uCount
 
 						v += vInc;
 						u = 0;
-
 					} // while vCount
 
 					v = height - 1;
 					vInc = -vInc;
 				} // while iterations
-			}// unsafe
+			} // unsafe
 
 			// unlock the buffer
 			idxBuffer.Unlock();
@@ -572,14 +550,14 @@ namespace Axiom.Core
 #endif
 			{
 				// lock the vertex buffer
-				var data = vbuf.Lock( BufferLocking.Discard );
+				BufferBase data = vbuf.Lock( BufferLocking.Discard );
 
-                var pData = data.ToFloatPointer();
-                var idx = 0;
+				float* pData = data.ToFloatPointer();
+				int idx = 0;
 
-				for ( var y = 0; y <= ySegments; y++ )
+				for ( int y = 0; y <= ySegments; y++ )
 				{
-					for ( var x = 0; x <= xSegments; x++ )
+					for ( int x = 0; x <= xSegments; x++ )
 					{
 						// centered on origin
 						vec.x = ( x * xSpace ) - halfWidth;
@@ -588,9 +566,9 @@ namespace Axiom.Core
 
 						vec = transform.TransformAffine( vec );
 
-                        pData[idx++] = vec.x;
-                        pData[idx++] = vec.y;
-                        pData[idx++] = vec.z;
+						pData[ idx++ ] = vec.x;
+						pData[ idx++ ] = vec.y;
+						pData[ idx++ ] = vec.z;
 
 						// Build bounds as we go
 						if ( firstTime )
@@ -612,15 +590,15 @@ namespace Axiom.Core
 							vec = Vector3.UnitZ;
 							vec = rotation.TransformAffine( vec );
 
-                            pData[idx++] = vec.x;
-							pData[idx++] = vec.y;
-							pData[idx++] = vec.z;
+							pData[ idx++ ] = vec.x;
+							pData[ idx++ ] = vec.y;
+							pData[ idx++ ] = vec.z;
 						}
 
-						for ( var i = 0; i < numTexCoordSets; i++ )
+						for ( int i = 0; i < numTexCoordSets; i++ )
 						{
-                            pData[idx++] = x * xTexCoord;
-                            pData[idx++] = 1 - (y * yTexCoord);
+							pData[ idx++ ] = x * xTexCoord;
+							pData[ idx++ ] = 1 - ( y * yTexCoord );
 						} // for texCoords
 					} // for x
 				} // for y
@@ -629,7 +607,6 @@ namespace Axiom.Core
 				vbuf.Unlock();
 
 				subMesh.useSharedVertices = true;
-
 			} // unsafe
 		}
 
@@ -641,31 +618,31 @@ namespace Axiom.Core
 #endif
 			{
 				// lock the vertex buffer
-				var data = vbuf.Lock( BufferLocking.Discard );
+				BufferBase data = vbuf.Lock( BufferLocking.Discard );
 
-				var pData = data.ToFloatPointer();
-			    var idx = 0;
+				float* pData = data.ToFloatPointer();
+				int idx = 0;
 
-				for ( var y = 0; y <= ySegments; y++ )
+				for ( int y = 0; y <= ySegments; y++ )
 				{
-					for ( var x = 0; x <= xSegments; x++ )
+					for ( int x = 0; x <= xSegments; x++ )
 					{
 						// centered on origin
 						vec.x = ( x * xSpace ) - halfWidth;
 						vec.y = ( y * ySpace ) - halfHeight;
 
 						// Here's where curved plane is different from standard plane.  Amazing, I know.
-						var diff_x = ( x - ( (Real)xSegments / 2 ) ) / (Real)xSegments;
-						var diff_y = ( y - ( (Real)ySegments / 2 ) ) / (Real)ySegments;
-						var dist = Utility.Sqrt( diff_x * diff_x + diff_y * diff_y );
+						Real diff_x = ( x - ( (Real)xSegments / 2 ) ) / xSegments;
+						Real diff_y = ( y - ( (Real)ySegments / 2 ) ) / ySegments;
+						Real dist = Utility.Sqrt( diff_x * diff_x + diff_y * diff_y );
 						vec.z = ( -Utility.Sin( ( 1 - dist ) * ( Utility.PI / 2 ) ) * curvature ) + curvature;
 
 						// Transform by orientation and distance
-						var pos = transform.TransformAffine( vec );
+						Vector3 pos = transform.TransformAffine( vec );
 
-                        pData[idx++] = pos.x;
-                        pData[idx++] = pos.y;
-                        pData[idx++] = pos.z;
+						pData[ idx++ ] = pos.x;
+						pData[ idx++ ] = pos.y;
+						pData[ idx++ ] = pos.z;
 
 						// Build bounds as we go
 						if ( firstTime )
@@ -693,15 +670,15 @@ namespace Axiom.Core
 							// Rotate
 							vec = rotation.TransformAffine( vec );
 
-                            pData[idx++] = vec.x;
-                            pData[idx++] = vec.y;
-                            pData[idx++] = vec.z;
+							pData[ idx++ ] = vec.x;
+							pData[ idx++ ] = vec.y;
+							pData[ idx++ ] = vec.z;
 						}
 
-						for ( var i = 0; i < numTexCoordSets; i++ )
+						for ( int i = 0; i < numTexCoordSets; i++ )
 						{
-                            pData[idx++] = x * xTexCoord;
-                            pData[idx++] = 1 - (y * yTexCoord);
+							pData[ idx++ ] = x * xTexCoord;
+							pData[ idx++ ] = 1 - ( y * yTexCoord );
 						} // for texCoords
 					} // for x
 				} // for y
@@ -710,7 +687,6 @@ namespace Axiom.Core
 				vbuf.Unlock();
 
 				subMesh.useSharedVertices = true;
-
 			} // unsafe
 		}
 
@@ -720,13 +696,13 @@ namespace Axiom.Core
 			// The lower the curvature, the larger the sphere
 			// Use the angle from viewer to the points on the plane
 			// Credit to Aftershock for the general approach
-			Real cameraPosition;      // Camera position relative to sphere center
+			Real cameraPosition; // Camera position relative to sphere center
 
 			// Derive sphere radius
 			//Vector3 vertPos;  // position relative to camera
 			//Real sphDist;      // Distance from camera to sphere along box vertex vector
 			// Vector3 camToSph; // camera position to sphere
-			Real sphereRadius;// Sphere radius
+			Real sphereRadius; // Sphere radius
 			// Actual values irrelevant, it's the relation between sphere radius and camera position that's important
 			Real sphRadius = 100.0f;
 			Real camDistance = 5.0f;
@@ -742,14 +718,14 @@ namespace Axiom.Core
 #endif
 			{
 				// lock the vertex buffer
-				var data = vertexBuffer.Lock( BufferLocking.Discard );
+				BufferBase data = vertexBuffer.Lock( BufferLocking.Discard );
 
-				var pData = data.ToFloatPointer();
-			    var idx = 0;
+				float* pData = data.ToFloatPointer();
+				int idx = 0;
 
-				for ( var y = 0; y < ySegments + 1; ++y )
+				for ( int y = 0; y < ySegments + 1; ++y )
 				{
-					for ( var x = 0; x < xSegments + 1; ++x )
+					for ( int x = 0; x < xSegments + 1; ++x )
 					{
 						// centered on origin
 						vec.x = ( x * xSpace ) - halfWidth;
@@ -760,9 +736,9 @@ namespace Axiom.Core
 						vec = xform * vec;
 
 						// assign to geometry
-						pData[idx++] = vec.x;
-                        pData[idx++] = vec.y;
-                        pData[idx++] = vec.z;
+						pData[ idx++ ] = vec.x;
+						pData[ idx++ ] = vec.y;
+						pData[ idx++ ] = vec.z;
 
 						// build bounds as we go
 						if ( firstTime )
@@ -784,9 +760,9 @@ namespace Axiom.Core
 							norm = Vector3.UnitZ;
 							norm = orientation * norm;
 
-                            pData[idx++] = vec.x;
-                            pData[idx++] = vec.y;
-                            pData[idx++] = vec.z;
+							pData[ idx++ ] = vec.x;
+							pData[ idx++ ] = vec.y;
+							pData[ idx++ ] = vec.z;
 						}
 
 						// generate texture coordinates, normalize position, modify by orientation to return +y up
@@ -802,10 +778,10 @@ namespace Axiom.Core
 						// use x and y on sphere as texture coordinates, tiled
 						float s = vec.x * ( 0.01f * uTiles );
 						float t = vec.z * ( 0.01f * vTiles );
-						for ( var i = 0; i < numberOfTexCoordSets; i++ )
+						for ( int i = 0; i < numberOfTexCoordSets; i++ )
 						{
-                            pData[idx++] = s;
-                            pData[idx++] = (1 - t);
+							pData[ idx++ ] = s;
+							pData[ idx++ ] = ( 1 - t );
 						}
 					} // x
 				} // y
@@ -815,21 +791,21 @@ namespace Axiom.Core
 			} // unsafe
 		}
 
-		private void _getVertices( ref Vector3[] points, Axiom.Animating.Bone bone )
+		private void _getVertices( ref Vector3[] points, Bone bone )
 		{
-			var boneBase = bone.DerivedPosition;
-			foreach ( Axiom.Animating.Bone childBone in bone.Children )
+			Vector3 boneBase = bone.DerivedPosition;
+			foreach ( Bone childBone in bone.Children )
 			{
 				// The tip of the bone:
-				var boneTip = childBone.DerivedPosition;
+				Vector3 boneTip = childBone.DerivedPosition;
 				// the base of the bone
-				var arm = boneTip - boneBase;
-				var perp1 = arm.Perpendicular();
-				var perp2 = arm.Cross( perp1 );
+				Vector3 arm = boneTip - boneBase;
+				Vector3 perp1 = arm.Perpendicular();
+				Vector3 perp2 = arm.Cross( perp1 );
 				perp1.Normalize();
 				perp2.Normalize();
 				float boneLen = arm.Length;
-				var offset = 6 * childBone.Handle;
+				int offset = 6 * childBone.Handle;
 				points[ offset + 0 ] = boneTip;
 				points[ offset + 1 ] = boneBase;
 				points[ offset + 2 ] = boneBase + boneLen / 10 * perp1;
@@ -871,16 +847,16 @@ namespace Axiom.Core
 
 		private void _loadManual( Mesh mesh, MeshBuildParams mbp )
 		{
-			var subMesh = mesh.CreateSubMesh();
+			SubMesh subMesh = mesh.CreateSubMesh();
 
 			// Set up vertex data
 			// Use a single shared buffer
 			mesh.SharedVertexData = new VertexData();
-			var vertexData = mesh.SharedVertexData;
+			VertexData vertexData = mesh.SharedVertexData;
 
 			// Set up Vertex Declaration
-			var decl = vertexData.vertexDeclaration;
-			var currOffset = 0;
+			VertexDeclaration decl = vertexData.vertexDeclaration;
+			int currOffset = 0;
 
 			// add position data
 			// We always need positions
@@ -904,19 +880,19 @@ namespace Axiom.Core
 			vertexData.vertexCount = ( mbp.XSegments + 1 ) * ( mbp.YSegments + 1 );
 
 			// create a new vertex buffer (based on current API)
-			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), vertexData.vertexCount, mbp.VertexBufferUsage, mbp.VertexShadowBuffer );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), vertexData.vertexCount, mbp.VertexBufferUsage, mbp.VertexShadowBuffer );
 
 			// get a reference to the vertex buffer binding
-			var binding = vertexData.vertexBufferBinding;
+			VertexBufferBinding binding = vertexData.vertexBufferBinding;
 
 			// bind the first vertex buffer
 			binding.SetBinding( 0, vbuf );
 
 			// transform the plane based on its plane def
-			var translate = Matrix4.Identity;
-			var transform = Matrix4.Zero;
-			var rotation = Matrix4.Identity;
-			var rot3x3 = Matrix3.Zero;
+			Matrix4 translate = Matrix4.Identity;
+			Matrix4 transform = Matrix4.Zero;
+			Matrix4 rotation = Matrix4.Identity;
+			Matrix3 rot3x3 = Matrix3.Zero;
 
 			Vector3 xAxis, yAxis, zAxis;
 			zAxis = mbp.Plane.Normal;
@@ -944,11 +920,11 @@ namespace Axiom.Core
 			float halfHeight = mbp.Height / 2;
 			float xTexCoord = ( 1.0f * mbp.XTile ) / mbp.XSegments;
 			float yTexCoord = ( 1.0f * mbp.YTile ) / mbp.YSegments;
-			var vec = Vector3.Zero;
-			var min = Vector3.Zero;
-			var max = Vector3.Zero;
+			Vector3 vec = Vector3.Zero;
+			Vector3 min = Vector3.Zero;
+			Vector3 max = Vector3.Zero;
 			float maxSquaredLength = 0;
-			var firstTime = true;
+			bool firstTime = true;
 
 			// generate vertex data
 			switch ( mbp.Type )
@@ -972,29 +948,36 @@ namespace Axiom.Core
 			// generate bounds for the mesh
 			mesh.BoundingBox = new AxisAlignedBox( min, max );
 			mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
-
 		}
 
 		protected internal void FireProcessMaterialName( Mesh mesh, string name )
 		{
-			_processMaterialNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+			this._processMaterialNameEvent.Fire( this, new MeshSerializerArgs
+													   {
+														   Mesh = mesh,
+														   Name = name
+													   }, ( args ) => { return true; } );
 		}
 
 		protected internal void FireProcessSkeletonName( Mesh mesh, string name )
 		{
-			_processSkeletonNameEvent.Fire(this, new MeshSerializerArgs { Mesh = mesh, Name = name}, (args) => { return true; });
+			this._processSkeletonNameEvent.Fire( this, new MeshSerializerArgs
+													   {
+														   Mesh = mesh,
+														   Name = name
+													   }, ( args ) => { return true; } );
 		}
 
 		#endregion Methods
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Mesh( this, name, handle, group, isManual, loader );
 		}
 
-		public override void ParseScript( System.IO.Stream stream, string groupName, string fileName )
+		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}
@@ -1002,6 +985,7 @@ namespace Axiom.Core
 		#endregion ResourceManager Implementation
 
 		#region CreateBoneMesh
+
 #if NOT
 		public Mesh CreateBoneMesh( string name )
 		{
@@ -1112,6 +1096,7 @@ namespace Axiom.Core
 			return mesh;
 		}
 #endif
+
 		#endregion CreateBoneMesh
 
 		public new Mesh this[ string name ]
@@ -1130,49 +1115,50 @@ namespace Axiom.Core
 			}
 		}
 
-
 		#region IManualResourceLoader Implementation
 
-        /// <see cref="IManualResourceLoader.LoadResource"/>
+		/// <see cref="IManualResourceLoader.LoadResource"/>
 		public void LoadResource( Resource resource )
 		{
 			var mesh = (Mesh)resource;
 
-            // attempt to create a prefab mesh
-			var prefab = PrefabFactory.Create( mesh );
+			// attempt to create a prefab mesh
+			bool prefab = PrefabFactory.Create( mesh );
 
-            // the mesh was not a prefab..
-            if ( !prefab )
-            {
-                // Find build parameters
-                if ( !_meshBuildParams.ContainsKey( mesh ) )
-                    throw new AxiomException( "Cannot find build parameters for {0}", mesh.Name );
+			// the mesh was not a prefab..
+			if ( !prefab )
+			{
+				// Find build parameters
+				if ( !this._meshBuildParams.ContainsKey( mesh ) )
+				{
+					throw new AxiomException( "Cannot find build parameters for {0}", mesh.Name );
+				}
 
-                var parameters = _meshBuildParams[ mesh ];
+				MeshBuildParams parameters = this._meshBuildParams[ mesh ];
 
-                switch ( parameters.Type )
-                {
-                    case MeshBuildType.Plane:
-                        //TODO
-                        //loadManualPlane(msh, parameters);
-                        break;
+				switch ( parameters.Type )
+				{
+					case MeshBuildType.Plane:
+						//TODO
+						//loadManualPlane(msh, parameters);
+						break;
 
-                    case MeshBuildType.CurvedIllusionPlane:
-                        //TODO
-                        //loadManualCurvedIllusionPlane(msh, parameters);
-                        break;
+					case MeshBuildType.CurvedIllusionPlane:
+						//TODO
+						//loadManualCurvedIllusionPlane(msh, parameters);
+						break;
 
-                    case MeshBuildType.CurvedPlane:
-                        //TODO
-                        //loadManualCurvedPlane(msh, parameters);
-                        break;
+					case MeshBuildType.CurvedPlane:
+						//TODO
+						//loadManualCurvedPlane(msh, parameters);
+						break;
 
-                    default:
-                        throw new AxiomException( "Unknown build parameters for {0}", mesh.Name );
-                }
+					default:
+						throw new AxiomException( "Unknown build parameters for {0}", mesh.Name );
+				}
 
-                _loadManual( mesh, parameters );
-            }
+				_loadManual( mesh, parameters );
+			}
 		}
 
 		#endregion IManualResourceLoader Implementation
@@ -1199,6 +1185,7 @@ namespace Axiom.Core
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion IDisposable Implementation
 	}
 
@@ -1213,6 +1200,7 @@ namespace Axiom.Core
 		/// The mesh being serialized
 		/// </summary>
 		public Mesh Mesh;
+
 		/// <summary>
 		/// The name of the the Mesh/Skeleton to process
 		/// </summary>

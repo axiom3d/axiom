@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,32 +23,33 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL.ATI
 {
-
 	public class TokenInstructionList : List<TokenInstruction>
 	{
 		public void Resize( int size )
 		{
-			TokenInstruction[] data = this.ToArray();
-			TokenInstruction[] newData = new TokenInstruction[ size ];
+			TokenInstruction[] data = ToArray();
+			var newData = new TokenInstruction[ size ];
 			Array.Copy( data, 0, newData, 0, size );
 			Clear();
 			AddRange( newData );

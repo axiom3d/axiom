@@ -38,15 +38,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using Axiom.Core;
+using Axiom.Core.Collections;
+using Axiom.CrossPlatform;
+using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
-using Axiom.Graphics;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -80,35 +79,28 @@ namespace Axiom.Overlays.Elements
 	{
 		#region Member variables
 
-		protected float leftBorderSize;
-		protected float rightBorderSize;
-		protected float topBorderSize;
-		protected float bottomBorderSize;
+		// buffer soruce bindings
+		private const int POSITION = 0;
+		private const int TEXCOORDS = 1;
+		private readonly float[] bottoms = new float[ 8 ];
 
+		// temp array for use during position updates, prevents constant memory allocation
+		private readonly float[] lefts = new float[ 8 ];
+		private readonly float[] rights = new float[ 8 ];
+		private readonly float[] tops = new float[ 8 ];
+		protected Material borderMaterial;
+		protected string borderMaterialName;
+		protected BorderRenderable borderRenderable;
 		protected CellUV[] borderUV = new CellUV[ 8 ];
-
+		protected float bottomBorderSize;
+		protected float leftBorderSize;
+		protected short pixelBottomBorderSize;
 		protected short pixelLeftBorderSize;
 		protected short pixelRightBorderSize;
 		protected short pixelTopBorderSize;
-		protected short pixelBottomBorderSize;
-
-		protected string borderMaterialName;
-		// border material, internal so BorderRenderable can access
-		protected Material borderMaterial;
-
-		// Render operation for the border area, internal so BorderRenderable can access
 		protected RenderOperation renderOp2 = new RenderOperation();
-		protected BorderRenderable borderRenderable;
-
-		// buffer soruce bindings
-		const int POSITION = 0;
-		const int TEXCOORDS = 1;
-
-		// temp array for use during position updates, prevents constant memory allocation
-		private float[] lefts = new float[ 8 ];
-		private float[] rights = new float[ 8 ];
-		private float[] tops = new float[ 8 ];
-		private float[] bottoms = new float[ 8 ];
+		protected float rightBorderSize;
+		protected float topBorderSize;
 
 		#endregion Member variables
 
@@ -121,9 +113,9 @@ namespace Axiom.Overlays.Elements
 		internal BorderPanel( string name )
 			: base( name )
 		{
-			for ( var x = 0; x < 8; x++ )
+			for ( int x = 0; x < 8; x++ )
 			{
-				borderUV[ x ] = new CellUV();
+				this.borderUV[ x ] = new CellUV();
 			}
 		}
 
@@ -131,28 +123,30 @@ namespace Axiom.Overlays.Elements
 
 		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
-        protected override void dispose(bool disposeManagedResources)
-        {
-            if (!this.IsDisposed)
-            {
-                if (disposeManagedResources)
-                {
-                    if (this.renderOp2 != null)
-                    {
-                        if (!this.renderOp2.IsDisposed)
-                            this.renderOp2.Dispose();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( this.renderOp2 != null )
+					{
+						if ( !this.renderOp2.IsDisposed )
+						{
+							this.renderOp2.Dispose();
+						}
 
-                        this.renderOp2 = null;
-                    }
-                }
-            }
+						this.renderOp2 = null;
+					}
+				}
+			}
 
-            base.dispose(disposeManagedResources);
-        }
+			base.dispose( disposeManagedResources );
+		}
 
 		protected override void UpdateTextureGeometry()
 		{
@@ -168,26 +162,26 @@ namespace Axiom.Overlays.Elements
 
 			// No choice but to lock / unlock each time here, but lock only small sections
 
-			var vbuf =	renderOp2.vertexData.vertexBufferBinding.GetBuffer( BorderPanel.TEXCOORDS );
+			HardwareVertexBuffer vbuf = this.renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 			// Can't use discard since this discards whole buffer
-			var data = vbuf.Lock( BufferLocking.Discard );
-			var index = 0;
+			BufferBase data = vbuf.Lock( BufferLocking.Discard );
+			int index = 0;
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var idxPtr = data.ToFloatPointer();
+				float* idxPtr = data.ToFloatPointer();
 
 				for ( short i = 0; i < 8; i++ )
 				{
-					idxPtr[ index++ ] = borderUV[ i ].u1;
-					idxPtr[ index++ ] = borderUV[ i ].v1;
-					idxPtr[ index++ ] = borderUV[ i ].u1;
-					idxPtr[ index++ ] = borderUV[ i ].v2;
-					idxPtr[ index++ ] = borderUV[ i ].u2;
-					idxPtr[ index++ ] = borderUV[ i ].v1;
-					idxPtr[ index++ ] = borderUV[ i ].u2;
-					idxPtr[ index++ ] = borderUV[ i ].v2;
+					idxPtr[ index++ ] = this.borderUV[ i ].u1;
+					idxPtr[ index++ ] = this.borderUV[ i ].v1;
+					idxPtr[ index++ ] = this.borderUV[ i ].u1;
+					idxPtr[ index++ ] = this.borderUV[ i ].v2;
+					idxPtr[ index++ ] = this.borderUV[ i ].u2;
+					idxPtr[ index++ ] = this.borderUV[ i ].v1;
+					idxPtr[ index++ ] = this.borderUV[ i ].u2;
+					idxPtr[ index++ ] = this.borderUV[ i ].v2;
 				}
 			}
 
@@ -196,129 +190,144 @@ namespace Axiom.Overlays.Elements
 
 		public void GetLeftBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.Left ].u1;
-			u2 = borderUV[ (int)BorderCell.Left ].u2;
-			v1 = borderUV[ (int)BorderCell.Left ].v1;
-			v2 = borderUV[ (int)BorderCell.Left ].v2;
+			u1 = this.borderUV[ (int)BorderCell.Left ].u1;
+			u2 = this.borderUV[ (int)BorderCell.Left ].u2;
+			v1 = this.borderUV[ (int)BorderCell.Left ].v1;
+			v2 = this.borderUV[ (int)BorderCell.Left ].v2;
 		}
+
 		public void SetLeftBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.Left ].u1 = u1;
-			borderUV[ (int)BorderCell.Left ].u2 = u2;
-			borderUV[ (int)BorderCell.Left ].v1 = v1;
-			borderUV[ (int)BorderCell.Left ].v2 = v2;
+			this.borderUV[ (int)BorderCell.Left ].u1 = u1;
+			this.borderUV[ (int)BorderCell.Left ].u2 = u2;
+			this.borderUV[ (int)BorderCell.Left ].v1 = v1;
+			this.borderUV[ (int)BorderCell.Left ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetRightBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.Right ].u1;
-			u2 = borderUV[ (int)BorderCell.Right ].u2;
-			v1 = borderUV[ (int)BorderCell.Right ].v1;
-			v2 = borderUV[ (int)BorderCell.Right ].v2;
+			u1 = this.borderUV[ (int)BorderCell.Right ].u1;
+			u2 = this.borderUV[ (int)BorderCell.Right ].u2;
+			v1 = this.borderUV[ (int)BorderCell.Right ].v1;
+			v2 = this.borderUV[ (int)BorderCell.Right ].v2;
 		}
+
 		public void SetRightBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.Right ].u1 = u1;
-			borderUV[ (int)BorderCell.Right ].u2 = u2;
-			borderUV[ (int)BorderCell.Right ].v1 = v1;
-			borderUV[ (int)BorderCell.Right ].v2 = v2;
+			this.borderUV[ (int)BorderCell.Right ].u1 = u1;
+			this.borderUV[ (int)BorderCell.Right ].u2 = u2;
+			this.borderUV[ (int)BorderCell.Right ].v1 = v1;
+			this.borderUV[ (int)BorderCell.Right ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetTopBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.Top ].u1;
-			u2 = borderUV[ (int)BorderCell.Top ].u2;
-			v1 = borderUV[ (int)BorderCell.Top ].v1;
-			v2 = borderUV[ (int)BorderCell.Top ].v2;
+			u1 = this.borderUV[ (int)BorderCell.Top ].u1;
+			u2 = this.borderUV[ (int)BorderCell.Top ].u2;
+			v1 = this.borderUV[ (int)BorderCell.Top ].v1;
+			v2 = this.borderUV[ (int)BorderCell.Top ].v2;
 		}
+
 		public void SetTopBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.Top ].u1 = u1;
-			borderUV[ (int)BorderCell.Top ].u2 = u2;
-			borderUV[ (int)BorderCell.Top ].v1 = v1;
-			borderUV[ (int)BorderCell.Top ].v2 = v2;
+			this.borderUV[ (int)BorderCell.Top ].u1 = u1;
+			this.borderUV[ (int)BorderCell.Top ].u2 = u2;
+			this.borderUV[ (int)BorderCell.Top ].v1 = v1;
+			this.borderUV[ (int)BorderCell.Top ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetBottomBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.Bottom ].u1;
-			u2 = borderUV[ (int)BorderCell.Bottom ].u2;
-			v1 = borderUV[ (int)BorderCell.Bottom ].v1;
-			v2 = borderUV[ (int)BorderCell.Bottom ].v2;
+			u1 = this.borderUV[ (int)BorderCell.Bottom ].u1;
+			u2 = this.borderUV[ (int)BorderCell.Bottom ].u2;
+			v1 = this.borderUV[ (int)BorderCell.Bottom ].v1;
+			v2 = this.borderUV[ (int)BorderCell.Bottom ].v2;
 		}
+
 		public void SetBottomBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.Bottom ].u1 = u1;
-			borderUV[ (int)BorderCell.Bottom ].u2 = u2;
-			borderUV[ (int)BorderCell.Bottom ].v1 = v1;
-			borderUV[ (int)BorderCell.Bottom ].v2 = v2;
+			this.borderUV[ (int)BorderCell.Bottom ].u1 = u1;
+			this.borderUV[ (int)BorderCell.Bottom ].u2 = u2;
+			this.borderUV[ (int)BorderCell.Bottom ].v1 = v1;
+			this.borderUV[ (int)BorderCell.Bottom ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetTopLeftBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.TopLeft ].u1;
-			u2 = borderUV[ (int)BorderCell.TopLeft ].u2;
-			v1 = borderUV[ (int)BorderCell.TopLeft ].v1;
-			v2 = borderUV[ (int)BorderCell.TopLeft ].v2;
+			u1 = this.borderUV[ (int)BorderCell.TopLeft ].u1;
+			u2 = this.borderUV[ (int)BorderCell.TopLeft ].u2;
+			v1 = this.borderUV[ (int)BorderCell.TopLeft ].v1;
+			v2 = this.borderUV[ (int)BorderCell.TopLeft ].v2;
 		}
+
 		public void SetTopLeftBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.TopLeft ].u1 = u1;
-			borderUV[ (int)BorderCell.TopLeft ].u2 = u2;
-			borderUV[ (int)BorderCell.TopLeft ].v1 = v1;
-			borderUV[ (int)BorderCell.TopLeft ].v2 = v2;
+			this.borderUV[ (int)BorderCell.TopLeft ].u1 = u1;
+			this.borderUV[ (int)BorderCell.TopLeft ].u2 = u2;
+			this.borderUV[ (int)BorderCell.TopLeft ].v1 = v1;
+			this.borderUV[ (int)BorderCell.TopLeft ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetTopRightBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.TopRight ].u1;
-			u2 = borderUV[ (int)BorderCell.TopRight ].u2;
-			v1 = borderUV[ (int)BorderCell.TopRight ].v1;
-			v2 = borderUV[ (int)BorderCell.TopRight ].v2;
+			u1 = this.borderUV[ (int)BorderCell.TopRight ].u1;
+			u2 = this.borderUV[ (int)BorderCell.TopRight ].u2;
+			v1 = this.borderUV[ (int)BorderCell.TopRight ].v1;
+			v2 = this.borderUV[ (int)BorderCell.TopRight ].v2;
 		}
+
 		public void SetTopRightBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.TopRight ].u1 = u1;
-			borderUV[ (int)BorderCell.TopRight ].u2 = u2;
-			borderUV[ (int)BorderCell.TopRight ].v1 = v1;
-			borderUV[ (int)BorderCell.TopRight ].v2 = v2;
+			this.borderUV[ (int)BorderCell.TopRight ].u1 = u1;
+			this.borderUV[ (int)BorderCell.TopRight ].u2 = u2;
+			this.borderUV[ (int)BorderCell.TopRight ].v1 = v1;
+			this.borderUV[ (int)BorderCell.TopRight ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetBottomLeftBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.BottomLeft ].u1;
-			u2 = borderUV[ (int)BorderCell.BottomLeft ].u2;
-			v1 = borderUV[ (int)BorderCell.BottomLeft ].v1;
-			v2 = borderUV[ (int)BorderCell.BottomLeft ].v2;
+			u1 = this.borderUV[ (int)BorderCell.BottomLeft ].u1;
+			u2 = this.borderUV[ (int)BorderCell.BottomLeft ].u2;
+			v1 = this.borderUV[ (int)BorderCell.BottomLeft ].v1;
+			v2 = this.borderUV[ (int)BorderCell.BottomLeft ].v2;
 		}
+
 		public void SetBottomLeftBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.BottomLeft ].u1 = u1;
-			borderUV[ (int)BorderCell.BottomLeft ].u2 = u2;
-			borderUV[ (int)BorderCell.BottomLeft ].v1 = v1;
-			borderUV[ (int)BorderCell.BottomLeft ].v2 = v2;
+			this.borderUV[ (int)BorderCell.BottomLeft ].u1 = u1;
+			this.borderUV[ (int)BorderCell.BottomLeft ].u2 = u2;
+			this.borderUV[ (int)BorderCell.BottomLeft ].v1 = v1;
+			this.borderUV[ (int)BorderCell.BottomLeft ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
+
 		//---------------------------------------------------------------------
 		public void GetBottomRightBorderUV( out float u1, out float v1, out float u2, out float v2 )
 		{
-			u1 = borderUV[ (int)BorderCell.BottomRight ].u1;
-			u2 = borderUV[ (int)BorderCell.BottomRight ].u2;
-			v1 = borderUV[ (int)BorderCell.BottomRight ].v1;
-			v2 = borderUV[ (int)BorderCell.BottomRight ].v2;
+			u1 = this.borderUV[ (int)BorderCell.BottomRight ].u1;
+			u2 = this.borderUV[ (int)BorderCell.BottomRight ].u2;
+			v1 = this.borderUV[ (int)BorderCell.BottomRight ].v1;
+			v2 = this.borderUV[ (int)BorderCell.BottomRight ].v2;
 		}
+
 		public void SetBottomRightBorderUV( float u1, float v1, float u2, float v2 )
 		{
-			borderUV[ (int)BorderCell.BottomRight ].u1 = u1;
-			borderUV[ (int)BorderCell.BottomRight ].u2 = u2;
-			borderUV[ (int)BorderCell.BottomRight ].v1 = v1;
-			borderUV[ (int)BorderCell.BottomRight ].v2 = v2;
+			this.borderUV[ (int)BorderCell.BottomRight ].u1 = u1;
+			this.borderUV[ (int)BorderCell.BottomRight ].u2 = u2;
+			this.borderUV[ (int)BorderCell.BottomRight ].v1 = v1;
+			this.borderUV[ (int)BorderCell.BottomRight ].v2 = v2;
 			isGeomUVsOutOfDate = true;
 		}
 
@@ -327,49 +336,47 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Initialize()
 		{
-			var init = !isInitialized;
+			bool init = !isInitialized;
 			base.Initialize();
 
 			// superclass will handle the interior panel area
 			if ( init )
 			{
 				// base class already has added the center panel at this point, so lets create the borders
-				renderOp2.vertexData = new VertexData();
+				this.renderOp2.vertexData = new VertexData();
 				// 8 * 4, cant resuse vertices because they might not share same tex coords
-				renderOp2.vertexData.vertexCount = 32;
-				renderOp2.vertexData.vertexStart = 0;
+				this.renderOp2.vertexData.vertexCount = 32;
+				this.renderOp2.vertexData.vertexStart = 0;
 
 				// get a reference to the vertex declaration
-				var decl = renderOp2.vertexData.vertexDeclaration;
+				VertexDeclaration decl = this.renderOp2.vertexData.vertexDeclaration;
 				// Position and texture coords each have their own buffers to allow
 				// each to be edited separately with the discard flag
 				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 				// position buffer
-				var buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), this.renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind position
-				var binding = renderOp2.vertexData.vertexBufferBinding;
+				VertexBufferBinding binding = this.renderOp2.vertexData.vertexBufferBinding;
 				binding.SetBinding( POSITION, buffer );
 
 				// texcoord buffer
-				buffer =
-					HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), this.renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 				// bind texcoords
-				binding = renderOp2.vertexData.vertexBufferBinding;
+				binding = this.renderOp2.vertexData.vertexBufferBinding;
 				binding.SetBinding( TEXCOORDS, buffer );
 
-				renderOp2.operationType = OperationType.TriangleList;
-				renderOp2.useIndices = true;
+				this.renderOp2.operationType = OperationType.TriangleList;
+				this.renderOp2.useIndices = true;
 
 				// index data
-				renderOp2.indexData = new IndexData();
+				this.renderOp2.indexData = new IndexData();
 				// 8 * 3 * 2 = 8 vertices, 3 indices per tri, 2 tris
-				renderOp2.indexData.indexCount = 48;
-				renderOp2.indexData.indexStart = 0;
+				this.renderOp2.indexData.indexCount = 48;
+				this.renderOp2.indexData.indexStart = 0;
 
 				/* Each cell is
 					0-----2
@@ -380,20 +387,16 @@ namespace Axiom.Overlays.Elements
 				*/
 
 				// create a new index buffer
-				renderOp2.indexData.indexBuffer =
-					HardwareBufferManager.Instance.CreateIndexBuffer(
-						IndexType.Size16,
-						renderOp2.indexData.indexCount,
-						BufferUsage.StaticWriteOnly );
+				this.renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, this.renderOp2.indexData.indexCount, BufferUsage.StaticWriteOnly );
 
 				// lock this bad boy
-				var data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
-				var index = 0;
+				BufferBase data = this.renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				int index = 0;
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					var idxPtr = data.ToShortPointer();
+					short* idxPtr = data.ToShortPointer();
 
 					for ( short cell = 0; cell < 8; cell++ )
 					{
@@ -409,10 +412,10 @@ namespace Axiom.Overlays.Elements
 				}
 
 				// unlock the buffer
-				renderOp2.indexData.indexBuffer.Unlock();
+				this.renderOp2.indexData.indexBuffer.Unlock();
 
 				// create new seperate object for the panels since they have a different material
-				borderRenderable = new BorderRenderable( this );
+				this.borderRenderable = new BorderRenderable( this );
 				isInitialized = true;
 			}
 		}
@@ -435,11 +438,11 @@ namespace Axiom.Overlays.Elements
 		{
 			if ( metricsMode != MetricsMode.Pixels )
 			{
-				pixelTopBorderSize = pixelRightBorderSize = pixelLeftBorderSize = pixelBottomBorderSize = (short)size;
+				this.pixelTopBorderSize = this.pixelRightBorderSize = this.pixelLeftBorderSize = this.pixelBottomBorderSize = (short)size;
 			}
 			else
 			{
-				topBorderSize = rightBorderSize = leftBorderSize = bottomBorderSize = size;
+				this.topBorderSize = this.rightBorderSize = this.leftBorderSize = this.bottomBorderSize = size;
 			}
 			isGeomPositionsOutOfDate = true;
 		}
@@ -461,13 +464,13 @@ namespace Axiom.Overlays.Elements
 		{
 			if ( metricsMode != MetricsMode.Relative )
 			{
-				pixelRightBorderSize = pixelLeftBorderSize = (short)sides;
-				pixelTopBorderSize = pixelBottomBorderSize = (short)topAndBottom;
+				this.pixelRightBorderSize = this.pixelLeftBorderSize = (short)sides;
+				this.pixelTopBorderSize = this.pixelBottomBorderSize = (short)topAndBottom;
 			}
 			else
 			{
-				topBorderSize = bottomBorderSize = topAndBottom;
-				rightBorderSize = leftBorderSize = sides;
+				this.topBorderSize = this.bottomBorderSize = topAndBottom;
+				this.rightBorderSize = this.leftBorderSize = sides;
 			}
 			isGeomPositionsOutOfDate = true;
 		}
@@ -491,17 +494,17 @@ namespace Axiom.Overlays.Elements
 		{
 			if ( metricsMode != MetricsMode.Relative )
 			{
-				pixelTopBorderSize = (short)top;
-				pixelBottomBorderSize = (short)bottom;
-				pixelRightBorderSize = (short)right;
-				pixelLeftBorderSize = (short)left;
+				this.pixelTopBorderSize = (short)top;
+				this.pixelBottomBorderSize = (short)bottom;
+				this.pixelRightBorderSize = (short)right;
+				this.pixelLeftBorderSize = (short)left;
 			}
 			else
 			{
-				topBorderSize = top;
-				bottomBorderSize = bottom;
-				rightBorderSize = right;
-				leftBorderSize = left;
+				this.topBorderSize = top;
+				this.bottomBorderSize = bottom;
+				this.rightBorderSize = right;
+				this.leftBorderSize = left;
 			}
 			isGeomPositionsOutOfDate = true;
 		}
@@ -528,22 +531,18 @@ namespace Axiom.Overlays.Elements
 			var cellIndex = (int)cell;
 
 			// no choice but to lock/unlock each time here, locking only what we want to modify
-			var buffer =
-				renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
+			HardwareVertexBuffer buffer = this.renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 
 			// can't use discard, or it will discard the whole buffer, wiping out the positions too
-			var data = buffer.Lock(
-				cellIndex * 8 * Memory.SizeOf( typeof( float ) ),
-				Memory.SizeOf( typeof( float ) ) * 8,
-				BufferLocking.Normal );
+			BufferBase data = buffer.Lock( cellIndex * 8 * Memory.SizeOf( typeof( float ) ), Memory.SizeOf( typeof( float ) ) * 8, BufferLocking.Normal );
 
-			var index = 0;
+			int index = 0;
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var texPtr = data.ToFloatPointer();
+				float* texPtr = data.ToFloatPointer();
 
 				texPtr[ index++ ] = u1;
 				texPtr[ index++ ] = v1;
@@ -563,13 +562,12 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Update()
 		{
-			if ( metricsMode != MetricsMode.Relative &&
-				( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				leftBorderSize = pixelLeftBorderSize * pixelScaleX;
-				rightBorderSize = pixelRightBorderSize * pixelScaleX;
-				topBorderSize = pixelTopBorderSize * pixelScaleY;
-				bottomBorderSize = pixelBottomBorderSize * pixelScaleY;
+				this.leftBorderSize = this.pixelLeftBorderSize * pixelScaleX;
+				this.rightBorderSize = this.pixelRightBorderSize * pixelScaleX;
+				this.topBorderSize = this.pixelTopBorderSize * pixelScaleY;
+				this.bottomBorderSize = this.pixelBottomBorderSize * pixelScaleY;
 				isGeomPositionsOutOfDate = true;
 			}
 			base.Update();
@@ -597,23 +595,22 @@ namespace Axiom.Overlays.Elements
 			// Top / bottom also need inverting since y is upside down
 
 			// Horizontal
-			lefts[ 0 ] = lefts[ 3 ] = lefts[ 5 ] = this.DerivedLeft * 2 - 1;
-			lefts[ 1 ] = lefts[ 6 ] = rights[ 0 ] = rights[ 3 ] = rights[ 5 ] = lefts[ 0 ] + ( leftBorderSize * 2 );
-			rights[ 2 ] = rights[ 4 ] = rights[ 7 ] = lefts[ 0 ] + ( width * 2 );
-			lefts[ 2 ] = lefts[ 4 ] = lefts[ 7 ] = rights[ 1 ] = rights[ 6 ] = rights[ 2 ] - ( rightBorderSize * 2 );
+			this.lefts[ 0 ] = this.lefts[ 3 ] = this.lefts[ 5 ] = DerivedLeft * 2 - 1;
+			this.lefts[ 1 ] = this.lefts[ 6 ] = this.rights[ 0 ] = this.rights[ 3 ] = this.rights[ 5 ] = this.lefts[ 0 ] + ( this.leftBorderSize * 2 );
+			this.rights[ 2 ] = this.rights[ 4 ] = this.rights[ 7 ] = this.lefts[ 0 ] + ( width * 2 );
+			this.lefts[ 2 ] = this.lefts[ 4 ] = this.lefts[ 7 ] = this.rights[ 1 ] = this.rights[ 6 ] = this.rights[ 2 ] - ( this.rightBorderSize * 2 );
 			// Vertical
-			tops[ 0 ] = tops[ 1 ] = tops[ 2 ] = -( ( this.DerivedTop * 2 ) - 1 );
-			tops[ 3 ] = tops[ 4 ] = bottoms[ 0 ] = bottoms[ 1 ] = bottoms[ 2 ] = tops[ 0 ] - ( topBorderSize * 2 );
-			bottoms[ 5 ] = bottoms[ 6 ] = bottoms[ 7 ] = tops[ 0 ] - ( height * 2 );
-			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize * 2 );
+			this.tops[ 0 ] = this.tops[ 1 ] = this.tops[ 2 ] = -( ( DerivedTop * 2 ) - 1 );
+			this.tops[ 3 ] = this.tops[ 4 ] = this.bottoms[ 0 ] = this.bottoms[ 1 ] = this.bottoms[ 2 ] = this.tops[ 0 ] - ( this.topBorderSize * 2 );
+			this.bottoms[ 5 ] = this.bottoms[ 6 ] = this.bottoms[ 7 ] = this.tops[ 0 ] - ( height * 2 );
+			this.tops[ 5 ] = this.tops[ 6 ] = this.tops[ 7 ] = this.bottoms[ 3 ] = this.bottoms[ 4 ] = this.bottoms[ 5 ] + ( this.bottomBorderSize * 2 );
 
 			// get a reference to the buffer
-			var buffer =
-				renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = this.renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			// lock this bad boy
-			var data = buffer.Lock( BufferLocking.Discard );
-			var index = 0;
+			BufferBase data = buffer.Lock( BufferLocking.Discard );
+			int index = 0;
 
 			//float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
 			//float zValue = -1;
@@ -621,23 +618,23 @@ namespace Axiom.Overlays.Elements
 			unsafe
 #endif
 			{
-				var posPtr = data.ToFloatPointer();
-				for ( var cell = 0; cell < 8; cell++ )
+				float* posPtr = data.ToFloatPointer();
+				for ( int cell = 0; cell < 8; cell++ )
 				{
-					posPtr[ index++ ] = lefts[ cell ];
-					posPtr[ index++ ] = tops[ cell ];
+					posPtr[ index++ ] = this.lefts[ cell ];
+					posPtr[ index++ ] = this.tops[ cell ];
 					posPtr[ index++ ] = -1;
 
-					posPtr[ index++ ] = lefts[ cell ];
-					posPtr[ index++ ] = bottoms[ cell ];
+					posPtr[ index++ ] = this.lefts[ cell ];
+					posPtr[ index++ ] = this.bottoms[ cell ];
 					posPtr[ index++ ] = -1;
 
-					posPtr[ index++ ] = rights[ cell ];
-					posPtr[ index++ ] = tops[ cell ];
+					posPtr[ index++ ] = this.rights[ cell ];
+					posPtr[ index++ ] = this.tops[ cell ];
 					posPtr[ index++ ] = -1;
 
-					posPtr[ index++ ] = rights[ cell ];
-					posPtr[ index++ ] = bottoms[ cell ];
+					posPtr[ index++ ] = this.rights[ cell ];
+					posPtr[ index++ ] = this.bottoms[ cell ];
 					posPtr[ index++ ] = -1;
 				} // for
 			} // unsafe
@@ -656,22 +653,22 @@ namespace Axiom.Overlays.Elements
 			unsafe
 #endif
 			{
-				var posPtr = data.ToFloatPointer();
+				float* posPtr = data.ToFloatPointer();
 
-				posPtr[ index++ ] = lefts[ 1 ];
-				posPtr[ index++ ] = tops[ 3 ];
+				posPtr[ index++ ] = this.lefts[ 1 ];
+				posPtr[ index++ ] = this.tops[ 3 ];
 				posPtr[ index++ ] = -1;
 
-				posPtr[ index++ ] = lefts[ 1 ];
-				posPtr[ index++ ] = bottoms[ 3 ];
+				posPtr[ index++ ] = this.lefts[ 1 ];
+				posPtr[ index++ ] = this.bottoms[ 3 ];
 				posPtr[ index++ ] = -1;
 
-				posPtr[ index++ ] = rights[ 1 ];
-				posPtr[ index++ ] = tops[ 3 ];
+				posPtr[ index++ ] = this.rights[ 1 ];
+				posPtr[ index++ ] = this.tops[ 3 ];
 				posPtr[ index++ ] = -1;
 
-				posPtr[ index++ ] = rights[ 1 ];
-				posPtr[ index++ ] = bottoms[ 3 ];
+				posPtr[ index++ ] = this.rights[ 1 ];
+				posPtr[ index++ ] = this.bottoms[ 3 ];
 				posPtr[ index ] = -1;
 			}
 
@@ -690,7 +687,7 @@ namespace Axiom.Overlays.Elements
 			if ( isVisible )
 			{
 				// add border first
-				queue.AddRenderable( borderRenderable, (ushort)zOrder, RenderQueueGroupID.Overlay );
+				queue.AddRenderable( this.borderRenderable, (ushort)zOrder, RenderQueueGroupID.Overlay );
 
 				// do inner last so the border artifacts don't overwrite the children
 				// Add inner
@@ -711,11 +708,11 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return pixelLeftBorderSize;
+					return this.pixelLeftBorderSize;
 				}
 				else
 				{
-					return leftBorderSize;
+					return this.leftBorderSize;
 				}
 			}
 		}
@@ -729,11 +726,11 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return pixelRightBorderSize;
+					return this.pixelRightBorderSize;
 				}
 				else
 				{
-					return rightBorderSize;
+					return this.rightBorderSize;
 				}
 			}
 		}
@@ -747,11 +744,11 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return pixelTopBorderSize;
+					return this.pixelTopBorderSize;
 				}
 				else
 				{
-					return topBorderSize;
+					return this.topBorderSize;
 				}
 			}
 		}
@@ -765,11 +762,11 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return pixelBottomBorderSize;
+					return this.pixelBottomBorderSize;
 				}
 				else
 				{
-					return bottomBorderSize;
+					return this.bottomBorderSize;
 				}
 			}
 		}
@@ -781,21 +778,21 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return borderMaterialName;
+				return this.borderMaterialName;
 			}
 			set
 			{
-				borderMaterialName = value;
-				borderMaterial = (Material)MaterialManager.Instance[ borderMaterialName ];
+				this.borderMaterialName = value;
+				this.borderMaterial = (Material)MaterialManager.Instance[ this.borderMaterialName ];
 
-				if ( borderMaterial == null )
+				if ( this.borderMaterial == null )
 				{
-					throw new Exception( string.Format( "Could not find material '{0}'.", borderMaterialName ) );
+					throw new Exception( string.Format( "Could not find material '{0}'.", this.borderMaterialName ) );
 				}
-				borderMaterial.Load();
+				this.borderMaterial.Load();
 				// Set some prerequisites to be sure
-				borderMaterial.Lighting = false;
-				borderMaterial.DepthCheck = false;
+				this.borderMaterial.Lighting = false;
+				this.borderMaterial.DepthCheck = false;
 			}
 		}
 
@@ -814,10 +811,10 @@ namespace Axiom.Overlays.Elements
 
 				if ( value != MetricsMode.Relative )
 				{
-					pixelBottomBorderSize = (short)bottomBorderSize;
-					pixelLeftBorderSize = (short)leftBorderSize;
-					pixelRightBorderSize = (short)rightBorderSize;
-					pixelTopBorderSize = (short)topBorderSize;
+					this.pixelBottomBorderSize = (short)this.bottomBorderSize;
+					this.pixelLeftBorderSize = (short)this.leftBorderSize;
+					this.pixelRightBorderSize = (short)this.rightBorderSize;
+					this.pixelTopBorderSize = (short)this.topBorderSize;
 				}
 			}
 		}
@@ -826,8 +823,10 @@ namespace Axiom.Overlays.Elements
 
 		#region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
-        public class BorderSizeAttributeCommand : IPropertyCommand
+		#region Nested type: BorderBottomLeftUVAttributeCommand
+
+		[ScriptableProperty( "border_bottomleft_uv", "", typeof( BorderPanel ) )]
+		public class BorderBottomLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -841,7 +840,9 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize, element.BottomBorderSize );
+					float u1, v1, u2, v2;
+					element.GetBottomLeftBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
 				}
 				else
 				{
@@ -857,22 +858,171 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
-				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					Real left = StringConverter.ParseFloat( parms[ 0 ] ),
-						 right = StringConverter.ParseFloat( parms[ 1 ] ),
-						 top = StringConverter.ParseFloat( parms[ 2 ] ),
-						 bottom = StringConverter.ParseFloat( parms[ 3 ] );
-					element.SetBorderSize( left, right, top, bottom );
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetBottomLeftBorderUV( u1, v1, u2, v2 );
 				}
 			}
 
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
+		#endregion
+
+		#region Nested type: BorderBottomRightUVAttributeCommand
+
+		[ScriptableProperty( "border_bottomright_uv", "", typeof( BorderPanel ) )]
+		public class BorderBottomRightUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetBottomRightBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetBottomRightBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: BorderBottomUVAttributeCommand
+
+		[ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
+		public class BorderBottomUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetBottomBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetBottomBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: BorderLeftUVAttributeCommand
+
+		[ScriptableProperty( "border_left_uv", "", typeof( BorderPanel ) )]
+		public class BorderLeftUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetLeftBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetLeftBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: BorderMaterialHeightAttributeCommand
+
 		[ScriptableProperty( "border_material", "", typeof( BorderPanel ) )]
-        public class BorderMaterialHeightAttributeCommand : IPropertyCommand
+		public class BorderMaterialHeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -911,296 +1061,12 @@ namespace Axiom.Overlays.Elements
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "border_topleft_uv", "", typeof( BorderPanel ) )]
-        public class BorderTopLeftUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
+		#endregion
 
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetTopLeftBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetTopLeftBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_topright_uv", "", typeof( BorderPanel ) )]
-        public class BorderTopRightUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetTopRightBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetTopRightBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_bottomleft_uv", "", typeof( BorderPanel ) )]
-        public class BorderBottomLeftUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetBottomLeftBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetBottomLeftBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_bottomright_uv", "", typeof( BorderPanel ) )]
-        public class BorderBottomRightUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetBottomRightBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetBottomRightBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_left_uv", "", typeof( BorderPanel ) )]
-        public class BorderLeftUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetLeftBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetLeftBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
-
-		[ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
-        public class BorderTopUVAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					float u1, v1, u2, v2;
-					element.GetTopBorderUV( out u1, out v1, out u2, out v2 );
-					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as BorderPanel;
-				if ( element != null )
-				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
-
-					element.SetTopBorderUV( u1, v1, u2, v2 );
-				}
-			}
-
-			#endregion Implementation of IPropertyCommand<object,string>
-		}
+		#region Nested type: BorderRightUVAttributeCommand
 
 		[ScriptableProperty( "border_right_uv", "", typeof( BorderPanel ) )]
-        public class BorderRightUVAttributeCommand : IPropertyCommand
+		public class BorderRightUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1234,11 +1100,8 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1247,8 +1110,58 @@ namespace Axiom.Overlays.Elements
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "border_bottom_uv", "", typeof( BorderPanel ) )]
-        public class BorderBottomUVAttributeCommand : IPropertyCommand
+		#endregion
+
+		#region Nested type: BorderSizeAttributeCommand
+
+		[ScriptableProperty( "border_size", "", typeof( BorderPanel ) )]
+		public class BorderSizeAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize, element.BottomBorderSize );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				string[] parms = val.Split( ' ' );
+				if ( element != null )
+				{
+					Real left = StringConverter.ParseFloat( parms[ 0 ] ), right = StringConverter.ParseFloat( parms[ 1 ] ), top = StringConverter.ParseFloat( parms[ 2 ] ), bottom = StringConverter.ParseFloat( parms[ 3 ] );
+					element.SetBorderSize( left, right, top, bottom );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: BorderTopLeftUVAttributeCommand
+
+		[ScriptableProperty( "border_topleft_uv", "", typeof( BorderPanel ) )]
+		public class BorderTopLeftUVAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
@@ -1263,7 +1176,7 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					float u1, v1, u2, v2;
-					element.GetBottomBorderUV( out u1, out v1, out u2, out v2 );
+					element.GetTopLeftBorderUV( out u1, out v1, out u2, out v2 );
 					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
 				}
 				else
@@ -1282,25 +1195,138 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
-						 v1 = StringConverter.ParseFloat( parms[ 1 ] ),
-						 u2 = StringConverter.ParseFloat( parms[ 2 ] ),
-						 v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
-					element.SetBottomBorderUV( u1, v1, u2, v2 );
+					element.SetTopLeftBorderUV( u1, v1, u2, v2 );
 				}
 			}
 
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
+		#endregion
+
+		#region Nested type: BorderTopRightUVAttributeCommand
+
+		[ScriptableProperty( "border_topright_uv", "", typeof( BorderPanel ) )]
+		public class BorderTopRightUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetTopRightBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetTopRightBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
+		#region Nested type: BorderTopUVAttributeCommand
+
+		[ScriptableProperty( "border_top_uv", "", typeof( BorderPanel ) )]
+		public class BorderTopUVAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					float u1, v1, u2, v2;
+					element.GetTopBorderUV( out u1, out v1, out u2, out v2 );
+					return String.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as BorderPanel;
+				if ( element != null )
+				{
+					string[] parms = val.Split( ' ' );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+
+					element.SetTopBorderUV( u1, v1, u2, v2 );
+				}
+			}
+
+			#endregion Implementation of IPropertyCommand<object,string>
+		}
+
+		#endregion
+
 		#endregion ScriptableObject Interface Command Classes
 
-		public class CellUV
+		#region BorderCell enum
+
+		/// <summary>
+		///    Enum for border cells.
+		/// </summary>
+		public enum BorderCell
 		{
-			public float u1, v1, u2, v2;
+			TopLeft,
+			Top,
+			TopRight,
+			Left,
+			Right,
+			BottomLeft,
+			Bottom,
+			BottomRight
 		};
+
+		#endregion
+
+		#region Nested type: BorderRenderable
 
 		/// <summary>
 		///    Class for rendering the border of a BorderPanel.
@@ -1313,11 +1339,10 @@ namespace Axiom.Overlays.Elements
 		{
 			#region Member variables
 
-			protected BorderPanel parent;
-
-			private LightList emptyLightList = new LightList();
+			private readonly LightList emptyLightList = new LightList();
 
 			protected List<Vector4> customParams = new List<Vector4>();
+			protected BorderPanel parent;
 
 			#endregion Member variables
 
@@ -1346,7 +1371,7 @@ namespace Axiom.Overlays.Elements
 
 			public Real GetSquaredViewDepth( Camera camera )
 			{
-				return parent.GetSquaredViewDepth( camera );
+				return this.parent.GetSquaredViewDepth( camera );
 			}
 
 			public bool NormalizeNormals
@@ -1383,14 +1408,14 @@ namespace Axiom.Overlays.Elements
 
 			public void GetWorldTransforms( Matrix4[] matrices )
 			{
-				parent.GetWorldTransforms( matrices );
+				this.parent.GetWorldTransforms( matrices );
 			}
 
 			public virtual bool PolygonModeOverrideable
 			{
 				get
 				{
-					return parent.PolygonModeOverrideable;
+					return this.parent.PolygonModeOverrideable;
 				}
 			}
 
@@ -1398,7 +1423,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return parent.borderMaterial;
+					return this.parent.borderMaterial;
 				}
 			}
 
@@ -1406,7 +1431,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return this.Material.GetBestTechnique();
+					return Material.GetBestTechnique();
 				}
 			}
 
@@ -1438,59 +1463,49 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return emptyLightList;
+					return this.emptyLightList;
 				}
 			}
 
 			public Vector4 GetCustomParameter( int index )
 			{
-				if ( customParams[ index ] == null )
+				if ( this.customParams[ index ] == null )
 				{
 					throw new Exception( "A parameter was not found at the given index" );
 				}
 				else
 				{
-					return (Vector4)customParams[ index ];
+					return this.customParams[ index ];
 				}
 			}
 
 			public void SetCustomParameter( int index, Vector4 val )
 			{
-				while ( customParams.Count <= index )
-					customParams.Add( Vector4.Zero );
-				customParams[ index ] = val;
+				while ( this.customParams.Count <= index )
+				{
+					this.customParams.Add( Vector4.Zero );
+				}
+				this.customParams[ index ] = val;
 			}
 
 			public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 			{
-				if ( customParams[ entry.Data ] != null )
+				if ( this.customParams[ entry.Data ] != null )
 				{
-					gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+					gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
 				}
 			}
 
-			#endregion IRenderable Members
+			#endregion
 
 			#region IDisposable Implementation
 
 			#region isDisposed Property
 
-			private bool _disposed = false;
-
 			/// <summary>
 			/// Determines if this instance has been disposed of already.
 			/// </summary>
-			protected bool isDisposed
-			{
-				get
-				{
-					return _disposed;
-				}
-				set
-				{
-					_disposed = value;
-				}
-			}
+			protected bool isDisposed { get; set; }
 
 			#endregion isDisposed Property
 
@@ -1542,19 +1557,18 @@ namespace Axiom.Overlays.Elements
 			#endregion IDisposable Implementation
 		}
 
-		/// <summary>
-		///    Enum for border cells.
-		/// </summary>
-		public enum BorderCell
+		#endregion
+
+		#region Nested type: CellUV
+
+		public class CellUV
 		{
-			TopLeft,
-			Top,
-			TopRight,
-			Left,
-			Right,
-			BottomLeft,
-			Bottom,
-			BottomRight
+			public float u1;
+			public float u2;
+			public float v1;
+			public float v2;
 		};
+
+		#endregion
 	}
 }

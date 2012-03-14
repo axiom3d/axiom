@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,23 +23,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.IO;
 using System.Text;
 
-using Axiom.Core;
 using Axiom.Animating;
+using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -72,7 +75,7 @@ namespace Axiom.Serialization
 			// store a local reference to the mesh for modification
 			this.skeleton = skeleton;
 
-			var reader = new BinaryReader( stream, System.Text.Encoding.UTF8 );
+			var reader = new BinaryReader( stream, Encoding.UTF8 );
 
 			// start off by taking a look at the header
 			ReadFileHeader( reader );
@@ -123,18 +126,18 @@ namespace Axiom.Serialization
 		protected void ReadAnimation( BinaryReader reader )
 		{
 			// name of the animation
-			var name = ReadString( reader );
+			string name = ReadString( reader );
 
 			// length in seconds of the animation
-			var length = ReadFloat( reader );
+			float length = ReadFloat( reader );
 
 			// create an animation from the skeleton
-			var anim = skeleton.CreateAnimation( name, length );
+			Animation anim = this.skeleton.CreateAnimation( name, length );
 
 			// keep reading all keyframes for this track
 			if ( !IsEOF( reader ) )
 			{
-				var chunkID = ReadChunk( reader );
+				SkeletonChunkID chunkID = ReadChunk( reader );
 				while ( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.AnimationTrack ) )
 				{
 					// read the animation track
@@ -160,18 +163,18 @@ namespace Axiom.Serialization
 		protected void ReadAnimationTrack( BinaryReader reader, Animation anim )
 		{
 			// read the bone handle to apply this track to
-			var boneHandle = ReadUShort( reader );
+			ushort boneHandle = ReadUShort( reader );
 
 			// get a reference to the target bone
-			var targetBone = skeleton.GetBone( boneHandle );
+			Bone targetBone = this.skeleton.GetBone( boneHandle );
 
 			// create an animation track for this bone
-			var track = anim.CreateNodeTrack( boneHandle, targetBone );
+			NodeAnimationTrack track = anim.CreateNodeTrack( boneHandle, targetBone );
 
 			// keep reading all keyframes for this track
 			if ( !IsEOF( reader ) )
 			{
-				var chunkID = ReadChunk( reader );
+				SkeletonChunkID chunkID = ReadChunk( reader );
 				while ( !IsEOF( reader ) && ( chunkID == SkeletonChunkID.KeyFrame ) )
 				{
 					// read the key frame
@@ -197,19 +200,19 @@ namespace Axiom.Serialization
 		protected void ReadBone( BinaryReader reader )
 		{
 			// bone name
-			var name = ReadString( reader );
+			string name = ReadString( reader );
 
-			var handle = ReadUShort( reader );
+			ushort handle = ReadUShort( reader );
 
 			// create a new bone
-			var bone = skeleton.CreateBone( name, handle );
+			Bone bone = this.skeleton.CreateBone( name, handle );
 
 			// read and set the position of the bone
-			var position = ReadVector3( reader );
+			Vector3 position = ReadVector3( reader );
 			bone.Position = position;
 
 			// read and set the orientation of the bone
-			var q = ReadQuat( reader );
+			Quaternion q = ReadQuat( reader );
 			bone.Orientation = q;
 		}
 
@@ -229,35 +232,35 @@ namespace Axiom.Serialization
 			parentHandle = ReadUShort( reader );
 
 			// get references to father and son bones
-			parent = skeleton.GetBone( parentHandle );
-			child = skeleton.GetBone( childHandle );
+			parent = this.skeleton.GetBone( parentHandle );
+			child = this.skeleton.GetBone( childHandle );
 
 			// attach the child to the parent
 			parent.AddChild( child );
 		}
 
-	    /// <summary>
-	    ///    Reads an animation track section.
-	    /// </summary>
-	    protected void ReadKeyFrame( BinaryReader reader, NodeAnimationTrack track )
+		/// <summary>
+		///    Reads an animation track section.
+		/// </summary>
+		protected void ReadKeyFrame( BinaryReader reader, NodeAnimationTrack track )
 		{
-			var time = ReadFloat( reader );
+			float time = ReadFloat( reader );
 
 			// create a new keyframe with the specified length
-			var keyFrame = track.CreateNodeKeyFrame( time );
+			TransformKeyFrame keyFrame = track.CreateNodeKeyFrame( time );
 
 			// read orientation
-			var rotate = ReadQuat( reader );
+			Quaternion rotate = ReadQuat( reader );
 			keyFrame.Rotation = rotate;
 
 			// read translation
-			var translate = ReadVector3( reader );
+			Vector3 translate = ReadVector3( reader );
 			keyFrame.Translate = translate;
 
 			// read scale if it is in there
 			if ( currentChunkLength >= 50 )
 			{
-				var scale = ReadVector3( reader );
+				Vector3 scale = ReadVector3( reader );
 				keyFrame.Scale = scale;
 			}
 			else
@@ -272,18 +275,18 @@ namespace Axiom.Serialization
 		protected void ReadAttachmentPoint( BinaryReader reader )
 		{
 			// bone name
-			var name = ReadString( reader );
+			string name = ReadString( reader );
 
-			var boneHandle = ReadUShort( reader );
+			ushort boneHandle = ReadUShort( reader );
 
 			// read and set the position of the bone
-			var position = ReadVector3( reader );
+			Vector3 position = ReadVector3( reader );
 
 			// read and set the orientation of the bone
-			var q = ReadQuat( reader );
+			Quaternion q = ReadQuat( reader );
 
 			// create the attachment point
-			var ap = skeleton.CreateAttachmentPoint( name, boneHandle, q, position );
+			AttachmentPoint ap = this.skeleton.CreateAttachmentPoint( name, boneHandle, q, position );
 		}
 
 		public void ExportSkeleton( Skeleton skeleton, string fileName )
@@ -299,40 +302,44 @@ namespace Axiom.Serialization
 			finally
 			{
 				if ( stream != null )
+				{
 					stream.Close();
+				}
 			}
 		}
 
 		protected void WriteSkeleton( BinaryWriter writer )
 		{
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for ( ushort i = 0; i < this.skeleton.BoneCount; ++i )
 			{
-				var bone = skeleton.GetBone( i );
+				Bone bone = this.skeleton.GetBone( i );
 				WriteBone( writer, bone );
 			}
 
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for ( ushort i = 0; i < this.skeleton.BoneCount; ++i )
 			{
-				var bone = skeleton.GetBone( i );
+				Bone bone = this.skeleton.GetBone( i );
 				if ( bone.Parent != null )
+				{
 					WriteBoneParent( writer, bone, (Bone)bone.Parent );
+				}
 			}
 
-			foreach ( var anim in skeleton.Animations )
+			foreach ( Animation anim in this.skeleton.Animations )
 			{
 				WriteAnimation( writer, anim );
 			}
 
-			for ( var i = 0; i < skeleton.AttachmentPoints.Count; ++i )
+			for ( int i = 0; i < this.skeleton.AttachmentPoints.Count; ++i )
 			{
-				var ap = skeleton.AttachmentPoints[ i ];
-				WriteAttachmentPoint( writer, ap, skeleton.GetBone( ap.ParentBone ) );
+				AttachmentPoint ap = this.skeleton.AttachmentPoints[ i ];
+				WriteAttachmentPoint( writer, ap, this.skeleton.GetBone( ap.ParentBone ) );
 			}
 		}
 
 		protected void WriteBone( BinaryWriter writer, Bone bone )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.Bone, 0 );
 
 			WriteString( writer, bone.Name );
@@ -340,9 +347,11 @@ namespace Axiom.Serialization
 			WriteVector3( writer, bone.Position );
 			WriteQuat( writer, bone.Orientation );
 			if ( bone.Scale != Vector3.UnitScale )
+			{
 				WriteVector3( writer, bone.Scale );
+			}
 
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.Bone, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
@@ -350,13 +359,13 @@ namespace Axiom.Serialization
 
 		protected void WriteBoneParent( BinaryWriter writer, Bone bone, Bone parent )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.BoneParent, 0 );
 
 			WriteUShort( writer, bone.Handle );
 			WriteUShort( writer, parent.Handle );
 
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.BoneParent, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
@@ -364,16 +373,18 @@ namespace Axiom.Serialization
 
 		protected void WriteAnimation( BinaryWriter writer, Animation anim )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.Animation, 0 );
 
 			WriteString( writer, anim.Name );
 			WriteFloat( writer, anim.Length );
 
-			foreach ( var track in anim.NodeTracks.Values )
+			foreach ( NodeAnimationTrack track in anim.NodeTracks.Values )
+			{
 				WriteAnimationTrack( writer, track );
+			}
 
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.Animation, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
@@ -381,16 +392,16 @@ namespace Axiom.Serialization
 
 		protected void WriteAnimationTrack( BinaryWriter writer, NodeAnimationTrack track )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.AnimationTrack, 0 );
 
-			WriteUShort( writer, (ushort)track.Handle );
+			WriteUShort( writer, track.Handle );
 			for ( ushort i = 0; i < track.KeyFrames.Count; i++ )
 			{
-				var keyFrame = track.GetNodeKeyFrame( i );
+				TransformKeyFrame keyFrame = track.GetNodeKeyFrame( i );
 				WriteKeyFrame( writer, keyFrame );
 			}
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.AnimationTrack, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
@@ -398,16 +409,18 @@ namespace Axiom.Serialization
 
 		protected void WriteKeyFrame( BinaryWriter writer, TransformKeyFrame keyFrame )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.KeyFrame, 0 );
 
 			WriteFloat( writer, keyFrame.Time );
 			WriteQuat( writer, keyFrame.Rotation );
 			WriteVector3( writer, keyFrame.Translate );
 			if ( keyFrame.Scale != Vector3.UnitScale )
+			{
 				WriteVector3( writer, keyFrame.Scale );
+			}
 
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.KeyFrame, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
@@ -415,7 +428,7 @@ namespace Axiom.Serialization
 
 		protected void WriteAttachmentPoint( BinaryWriter writer, AttachmentPoint ap, Bone bone )
 		{
-			var start_offset = writer.Seek( 0, SeekOrigin.Current );
+			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, SkeletonChunkID.AttachmentPoint, 0 );
 
 			WriteString( writer, ap.Name );
@@ -423,7 +436,7 @@ namespace Axiom.Serialization
 			WriteVector3( writer, ap.Position );
 			WriteQuat( writer, ap.Orientation );
 
-			var end_offset = writer.Seek( 0, SeekOrigin.Current );
+			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
 			WriteChunk( writer, SkeletonChunkID.AttachmentPoint, (int)( end_offset - start_offset ) );
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );

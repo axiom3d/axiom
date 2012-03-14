@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -39,7 +43,6 @@ using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;
 
@@ -69,10 +72,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		~ARBGpuProgram()
 		{
-			if ( _handle.IsAllocated )
+			if ( this._handle.IsAllocated )
 			{
 				//GCHandle's a value type, valid even inside the scope of a a finalizer
-				_handle.Free();
+				this._handle.Free();
 			}
 
 			//Gl.glDeleteProgramsARB(1, ref programId);
@@ -87,6 +90,19 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion Private
 
 		#region Implementation of GpuProgram
+
+		public override GpuProgramType Type
+		{
+			get
+			{
+				return base.Type;
+			}
+			set
+			{
+				base.Type = value;
+				programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_ARB : Gl.GL_FRAGMENT_PROGRAM_ARB;
+			}
+		}
 
 		/// <summary>
 		///     Load Assembler gpu program source.
@@ -108,12 +124,12 @@ namespace Axiom.RenderSystems.OpenGL
 			//       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
 			//       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
 			//       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
-			if ( _handle.IsAllocated )
+			if ( this._handle.IsAllocated )
 			{
-				_handle.Free();
+				this._handle.Free();
 			}
-			_handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
-			IntPtr sourcePtr = _handle.AddrOfPinnedObject();
+			this._handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
+			IntPtr sourcePtr = this._handle.AddrOfPinnedObject();
 
 			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, Source.Length, sourcePtr );
 
@@ -136,30 +152,15 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void Unload()
 		{
-
 			if ( IsLoaded )
 			{
-				if ( _handle.IsAllocated )
+				if ( this._handle.IsAllocated )
 				{
-					_handle.Free();
+					this._handle.Free();
 				}
 
 				Gl.glDeleteProgramsARB( 1, ref programId );
 				base.Unload();
-
-			}
-		}
-
-		public override GpuProgramType Type
-		{
-			get
-			{
-				return base.Type;
-			}
-			set
-			{
-				base.Type = value;
-				programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_ARB : Gl.GL_FRAGMENT_PROGRAM_ARB;
 			}
 		}
 
@@ -170,7 +171,9 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Bind()
 		{
 			if ( !IsSupported )
+			{
 				return;
+			}
 			Gl.glEnable( programType );
 			Gl.glBindProgramARB( programType, programId );
 		}
@@ -178,40 +181,42 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Unbind()
 		{
 			if ( !IsSupported )
+			{
 				return;
+			}
 			Gl.glBindProgramARB( programType, 0 );
 			Gl.glDisable( programType );
 		}
 
 
-        [OgreVersion(1, 7, 2790, "using 4f rather than 4fv for uniform upload")]
-        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+		[OgreVersion( 1, 7, 2790, "using 4f rather than 4fv for uniform upload" )]
+		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
-            var type = programType;
-    
-	        // only supports float constants
-	        var floatStruct = parms.FloatLogicalBufferStruct;
+			int type = programType;
 
-	        foreach (var i in floatStruct.Map)
-	        {
-		        if ((i.Value.Variability & mask) != 0)
-		        {
-			        var logicalIndex = i.Key;
-		            var pFloat = parms.GetFloatConstantList();
-		            var ptr = i.Value.PhysicalIndex;
-			        {
-                        for (var j = 0; j < i.Value.CurrentSize; j += 4)
-                        {
-                            var x = pFloat[ ptr + j ];
-                            var y = pFloat[ ptr + j + 1 ];
-                            var z = pFloat[ ptr + j + 2 ];
-                            var w = pFloat[ ptr + j + 3 ];
-                            Gl.glProgramLocalParameter4fARB( type, logicalIndex, x, y, z, w );
-                            ++logicalIndex;
-                        }
-                    }
-		        }
-	        }
+			// only supports float constants
+			GpuProgramParameters.GpuLogicalBufferStruct floatStruct = parms.FloatLogicalBufferStruct;
+
+			foreach ( var i in floatStruct.Map )
+			{
+				if ( ( i.Value.Variability & mask ) != 0 )
+				{
+					int logicalIndex = i.Key;
+					float[] pFloat = parms.GetFloatConstantList();
+					int ptr = i.Value.PhysicalIndex;
+					{
+						for ( int j = 0; j < i.Value.CurrentSize; j += 4 )
+						{
+							float x = pFloat[ ptr + j ];
+							float y = pFloat[ ptr + j + 1 ];
+							float z = pFloat[ ptr + j + 2 ];
+							float w = pFloat[ ptr + j + 3 ];
+							Gl.glProgramLocalParameter4fARB( type, logicalIndex, x, y, z, w );
+							++logicalIndex;
+						}
+					}
+				}
+			}
 		}
 
 		#endregion Implementation of GLGpuProgram

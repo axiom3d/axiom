@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,25 +23,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 
-using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
-using Axiom.Collections;
 using Axiom.Math.Collections;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -65,18 +67,18 @@ namespace Axiom.SceneManagers.Bsp
 	public class BspNode
 	{
 		#region Protected members
-		protected bool isLeaf;
-		protected BspNode frontNode;
+
 		protected BspNode backNode;
 
-		protected Plane splittingPlane = new Plane();
 		protected AxisAlignedBox boundingBox = new AxisAlignedBox();
-		protected MovableObjectCollection objectList = new MovableObjectCollection();
-
-		protected int numFaceGroups;
 		protected int faceGroupStart;
+		protected BspNode frontNode;
+		protected bool isLeaf;
+		protected int numFaceGroups;
+		protected MovableObjectCollection objectList = new MovableObjectCollection();
 		protected BspLevel owner;
 		protected BspBrush[] solidBrushes;
+		protected Plane splittingPlane;
 
 		/// <summary>
 		///		The cluster number of this leaf.
@@ -93,18 +95,20 @@ namespace Axiom.SceneManagers.Bsp
 		///		overhead.
 		/// </remarks>
 		protected int visCluster;
+
 		#endregion Protected members
 
 		#region Public properties
+
 		public BspLevel Owner
 		{
 			get
 			{
-				return owner;
+				return this.owner;
 			}
 			set
 			{
-				owner = value;
+				this.owner = value;
 			}
 		}
 
@@ -124,11 +128,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return isLeaf;
+				return this.isLeaf;
 			}
 			set
 			{
-				isLeaf = value;
+				this.isLeaf = value;
 			}
 		}
 
@@ -145,16 +149,20 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				if ( IsLeaf )
+				{
 					throw new AxiomException( "This property is not valid on a leaf node." );
+				}
 
-				return frontNode;
+				return this.frontNode;
 			}
 			set
 			{
 				if ( IsLeaf )
+				{
 					throw new AxiomException( "This property is not valid on a leaf node." );
+				}
 
-				frontNode = value;
+				this.frontNode = value;
 			}
 		}
 
@@ -170,16 +178,20 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				if ( IsLeaf )
+				{
 					throw new AxiomException( "This property is not valid on a leaf node." );
+				}
 
-				return backNode;
+				return this.backNode;
 			}
 			set
 			{
 				if ( IsLeaf )
+				{
 					throw new AxiomException( "This property is not valid on a leaf node." );
+				}
 
-				backNode = value;
+				this.backNode = value;
 			}
 		}
 
@@ -197,11 +209,11 @@ namespace Axiom.SceneManagers.Bsp
 				/*if(IsLeaf)
 					throw new AxiomException("This property is not valid on a leaf node.");*/
 
-				return splittingPlane;
+				return this.splittingPlane;
 			}
 			set
 			{
-				splittingPlane = value;
+				this.splittingPlane = value;
 			}
 		}
 
@@ -217,13 +229,15 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				if ( !IsLeaf )
+				{
 					throw new AxiomException( "This property is only valid on a leaf node." );
+				}
 
-				return boundingBox;
+				return this.boundingBox;
 			}
 			set
 			{
-				boundingBox = value;
+				this.boundingBox = value;
 			}
 		}
 
@@ -238,13 +252,15 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				if ( !IsLeaf )
+				{
 					throw new AxiomException( "This property is only valid on a leaf node." );
+				}
 
-				return numFaceGroups;
+				return this.numFaceGroups;
 			}
 			set
 			{
-				numFaceGroups = value;
+				this.numFaceGroups = value;
 			}
 		}
 
@@ -265,13 +281,15 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				if ( !IsLeaf )
+				{
 					throw new AxiomException( "This property is only valid on a leaf node." );
+				}
 
-				return faceGroupStart;
+				return this.faceGroupStart;
 			}
 			set
 			{
-				faceGroupStart = value;
+				this.faceGroupStart = value;
 			}
 		}
 
@@ -279,7 +297,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return objectList;
+				return this.objectList;
 			}
 		}
 
@@ -293,11 +311,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return solidBrushes;
+				return this.solidBrushes;
 			}
 			set
 			{
-				solidBrushes = value;
+				this.solidBrushes = value;
 			}
 		}
 
@@ -305,16 +323,18 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return visCluster;
+				return this.visCluster;
 			}
 			set
 			{
-				visCluster = value;
+				this.visCluster = value;
 			}
 		}
+
 		#endregion Public properties
 
 		#region Constructors
+
 		/// <summary>
 		///		Constructor, only to be used by BspLevel.
 		/// </summary>
@@ -326,12 +346,12 @@ namespace Axiom.SceneManagers.Bsp
 			this.isLeaf = isLeaf;
 		}
 
-		public BspNode()
-		{
-		}
+		public BspNode() { }
+
 		#endregion Constructors
 
 		#region Methods
+
 		/// <summary>
 		///		Determines which side of the splitting plane a worldspace point is.
 		///	</summary>
@@ -342,9 +362,11 @@ namespace Axiom.SceneManagers.Bsp
 		public PlaneSide GetSide( Vector3 point )
 		{
 			if ( IsLeaf )
+			{
 				throw new Exception( "This property is not valid on a leaf node." );
+			}
 
-			return splittingPlane.GetSide( point );
+			return this.splittingPlane.GetSide( point );
 		}
 
 		/// <summary>
@@ -357,14 +379,20 @@ namespace Axiom.SceneManagers.Bsp
 		public BspNode GetNextNode( Vector3 point )
 		{
 			if ( IsLeaf )
+			{
 				throw new Exception( "This property is not valid on a leaf node." );
+			}
 
 			PlaneSide sd = GetSide( point );
 
 			if ( sd == PlaneSide.Negative )
-				return this.BackNode;
+			{
+				return BackNode;
+			}
 			else
-				return this.FrontNode;
+			{
+				return FrontNode;
+			}
 		}
 
 		/// <summary>
@@ -378,7 +406,7 @@ namespace Axiom.SceneManagers.Bsp
 		///	</remarks>
 		public bool IsLeafVisible( BspNode leaf )
 		{
-			return owner.IsLeafVisible( this, leaf );
+			return this.owner.IsLeafVisible( this, leaf );
 		}
 
 		/// <summary>
@@ -387,7 +415,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="?"></param>
 		public void AddObject( MovableObject obj )
 		{
-			objectList.Add( obj );
+			this.objectList.Add( obj );
 		}
 
 		/// <summary>
@@ -395,7 +423,7 @@ namespace Axiom.SceneManagers.Bsp
 		///	</summary>
 		public void RemoveObject( MovableObject obj )
 		{
-			objectList.Remove( obj.Name );
+			this.objectList.Remove( obj.Name );
 		}
 
 		/// <summary>
@@ -406,52 +434,32 @@ namespace Axiom.SceneManagers.Bsp
 		public float GetDistance( Vector3 pos )
 		{
 			if ( IsLeaf )
+			{
 				throw new Exception( "This property is not valid on a leaf node." );
+			}
 
-			return splittingPlane.GetDistance( pos );
+			return this.splittingPlane.GetDistance( pos );
 		}
+
 		#endregion Methods
 	}
 
 	public class BspBrush
 	{
-		private PlaneList planes;
-		private SceneQuery.WorldFragment fragment;
-
-		public PlaneList Planes
-		{
-			get
-			{
-				return planes;
-			}
-			set
-			{
-				planes = value;
-			}
-		}
-
-		public SceneQuery.WorldFragment Fragment
-		{
-			get
-			{
-				return fragment;
-			}
-			set
-			{
-				fragment = value;
-			}
-		}
-
 		public BspBrush()
 		{
-			this.planes = new PlaneList();
-			this.fragment = new SceneQuery.WorldFragment();
+			this.Planes = new PlaneList();
+			this.Fragment = new SceneQuery.WorldFragment();
 		}
 
 		public BspBrush( PlaneList planes, SceneQuery.WorldFragment fragment )
 		{
-			this.planes = planes;
-			this.fragment = fragment;
+			this.Planes = planes;
+			this.Fragment = fragment;
 		}
+
+		public PlaneList Planes { get; set; }
+
+		public SceneQuery.WorldFragment Fragment { get; set; }
 	}
 }

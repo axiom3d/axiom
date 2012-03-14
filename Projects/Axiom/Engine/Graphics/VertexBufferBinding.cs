@@ -38,10 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -68,8 +68,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Defines the vertex buffer bindings used as source for vertex declarations.
 		/// </summary>
-		protected Dictionary<short, HardwareVertexBuffer> bindingMap =
-			new Dictionary<short, HardwareVertexBuffer>();
+		protected Dictionary<short, HardwareVertexBuffer> bindingMap = new Dictionary<short, HardwareVertexBuffer>();
+
+		/// <summary>
+		///		The highest index in use for this binding.
+		/// </summary>
+		protected short highIndex;
 
 		/// <summary>
 		///		Gets an enumerator to iterate through the buffer bindings.
@@ -79,7 +83,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bindingMap;
+				return this.bindingMap;
 			}
 		}
 
@@ -90,14 +94,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bindingMap.Count;
+				return this.bindingMap.Count;
 			}
 		}
-
-		/// <summary>
-		///		The highest index in use for this binding.
-		/// </summary>
-		protected short highIndex;
 
 		/// <summary>
 		///		Gets the highest index which has already been set, plus 1.
@@ -110,20 +109,20 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return highIndex++;
+				return this.highIndex++;
 			}
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public virtual bool HasInstanceData
-        {
-            get
-            {
-                return bindingMap.Any( i => i.Value.IsInstanceData );
-            }
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual bool HasInstanceData
+		{
+			get
+			{
+				return this.bindingMap.Any( i => i.Value.IsInstanceData );
+			}
+		}
 
-	    #endregion Fields & Properties
+		#endregion Fields & Properties
 
 		#region Construction & Destruction
 
@@ -145,8 +144,8 @@ namespace Axiom.Graphics
 		/// <param name="buffer">Vertex buffer to bind.</param>
 		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
-			bindingMap[ index ] = buffer;
-			highIndex = (short)Utility.Max( highIndex, index + 1 );
+			this.bindingMap[ index ] = buffer;
+			this.highIndex = (short)Utility.Max( this.highIndex, index + 1 );
 		}
 
 		/// <summary>
@@ -155,9 +154,9 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the buffer binding to remove.</param>
 		public virtual void UnsetBinding( short index )
 		{
-			Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
+			Debug.Assert( this.bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
 
-			bindingMap.Remove( index );
+			this.bindingMap.Remove( index );
 		}
 
 		/// <summary>
@@ -165,7 +164,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void UnsetAllBindings()
 		{
-			bindingMap.Clear();
+			this.bindingMap.Clear();
 		}
 
 		/// <summary>
@@ -175,27 +174,27 @@ namespace Axiom.Graphics
 		/// <returns>Buffer at the specified index.</returns>
 		public virtual HardwareVertexBuffer GetBuffer( short index )
 		{
-			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
+			Debug.Assert( this.bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
-			var buf = bindingMap[ index ];
+			HardwareVertexBuffer buf = this.bindingMap[ index ];
 
 			return buf;
 		}
 
-        [OgreVersion(1, 7, 2790)]
-        public virtual bool IsBufferBound(short source)
-        {
-            return bindingMap.ContainsKey(source);
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual bool IsBufferBound( short source )
+		{
+			return this.bindingMap.ContainsKey( source );
+		}
 
 		#endregion Methods
 
 		#region IDisposable Implementation
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="disposeManagedResources"></param>
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -205,13 +204,15 @@ namespace Axiom.Graphics
 					// Dispose managed resources.
 					if ( this.bindingMap != null )
 					{
-						foreach ( var item in bindingMap.Values )
+						foreach ( HardwareVertexBuffer item in this.bindingMap.Values )
 						{
-                            if (!item.IsDisposed)
-							    item.Dispose();
+							if ( !item.IsDisposed )
+							{
+								item.Dispose();
+							}
 						}
-						bindingMap.Clear();
-                        bindingMap = null;
+						this.bindingMap.Clear();
+						this.bindingMap = null;
 					}
 				}
 
@@ -225,7 +226,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion IDisposable Implementation
-
-        
 	}
 }

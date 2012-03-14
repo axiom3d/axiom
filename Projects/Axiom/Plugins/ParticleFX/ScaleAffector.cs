@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -51,22 +53,22 @@ namespace Axiom.ParticleFX
 	{
 		protected float scaleAdjust;
 
-        public ScaleAffector( ParticleSystem psys )
-            : base( psys )
+		public ScaleAffector( ParticleSystem psys )
+			: base( psys )
 		{
-			this.type = "Scaler";
-			scaleAdjust = 0;
+			type = "Scaler";
+			this.scaleAdjust = 0;
 		}
 
 		public float ScaleAdjust
 		{
 			get
 			{
-				return scaleAdjust;
+				return this.scaleAdjust;
 			}
 			set
 			{
-				scaleAdjust = value;
+				this.scaleAdjust = value;
 			}
 		}
 
@@ -75,7 +77,7 @@ namespace Axiom.ParticleFX
 			float ds;
 
 			// Scale adjustments by time
-			ds = scaleAdjust * timeElapsed;
+			ds = this.scaleAdjust * timeElapsed;
 
 			float newWide, newHigh;
 
@@ -83,7 +85,7 @@ namespace Axiom.ParticleFX
 
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				Particle p = system.Particles[ i ];
 
 				if ( p.HasOwnDimensions == false )
 				{
@@ -102,22 +104,23 @@ namespace Axiom.ParticleFX
 		#region Command definition classes
 
 		[ScriptableProperty( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
-        public class RateCommand : IPropertyCommand
+		public class RateCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				ScaleAffector affector = target as ScaleAffector;
+				var affector = target as ScaleAffector;
 				return StringConverter.ToString( affector.ScaleAdjust );
 			}
+
 			public void Set( object target, string val )
 			{
-				ScaleAffector affector = target as ScaleAffector;
+				var affector = target as ScaleAffector;
 				affector.ScaleAdjust = StringConverter.ParseFloat( val );
 			}
 
-			#endregion IPropertyCommand Members
+			#endregion
 		}
 
 		#endregion Command definition classes

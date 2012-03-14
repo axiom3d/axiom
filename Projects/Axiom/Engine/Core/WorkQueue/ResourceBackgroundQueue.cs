@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,19 +19,23 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Collections;
 
 using ResourceHandle = System.UInt64;
@@ -79,8 +84,7 @@ namespace Axiom.Core
 	/// Note, no locks are required here anymore because all of the parallelisation
 	/// is now contained in WorkQueue - this class is entirely single-threaded
 	/// </remarks>
-	public class ResourceBackgroundQueue : DisposableObject, ISingleton<ResourceBackgroundQueue>,
-		WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
+	public class ResourceBackgroundQueue : DisposableObject, ISingleton<ResourceBackgroundQueue>, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
 	{
 		/// <summary>
 		/// Enumerates the type of requests
@@ -114,16 +118,16 @@ namespace Axiom.Core
 		/// </summary>
 		protected struct ResourceRequest
 		{
-			public RequestType Type;
-			public string ResourceName;
-			public ResourceHandle ResourceHandle;
-			public string ResourceType;
 			public string GroupName;
 			public bool IsManual;
-			public IManualResourceLoader Loader;
-			public NameValuePairList LoadParams;
 			public OnOperationCompleted Listener;
+			public NameValuePairList LoadParams;
+			public IManualResourceLoader Loader;
+			public ResourceHandle ResourceHandle;
+			public string ResourceName;
+			public string ResourceType;
 			public BackgroundProcessResult Result;
+			public RequestType Type;
 		};
 
 		/// <summary>
@@ -131,8 +135,8 @@ namespace Axiom.Core
 		/// </summary>
 		protected struct ResourceResponse
 		{
-			public Resource Resource;
 			public ResourceRequest Request;
+			public Resource Resource;
 
 			public ResourceResponse( Resource r, ResourceRequest req )
 			{
@@ -145,7 +149,6 @@ namespace Axiom.Core
 		protected List<RequestID> outstandingRequestSet = new List<RequestID>();
 
 		public ResourceBackgroundQueue()
-			: base()
 		{
 			if ( instance == null )
 			{
@@ -156,7 +159,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "~ResourceBackgroundQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -179,9 +182,9 @@ namespace Axiom.Core
 		public virtual void ShutDown()
 		{
 			WorkQueue wq = Root.Instance.WorkQueue;
-			wq.AbortRequestByChannel( workQueueChannel );
-			wq.RemoveRequestHandler( workQueueChannel, this );
-			wq.RemoveResponseHandler( workQueueChannel, this );
+			wq.AbortRequestByChannel( this.workQueueChannel );
+			wq.RemoveRequestHandler( this.workQueueChannel, this );
+			wq.RemoveResponseHandler( this.workQueueChannel, this );
 		}
 
 		/// <summary>
@@ -201,7 +204,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			//queue a request
+    //queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.InitializeGroup;
 			req.GroupName = name;
@@ -218,7 +221,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.InitializeResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID InitializeResourceGroup( string name )
 		{
-			return this.InitializeResourceGroup( name, null );
+			return InitializeResourceGroup( name, null );
 		}
 #endif
 
@@ -239,7 +242,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			//queue a request
+    //queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.InitializeAllGroups;
 			req.Listener = listener;
@@ -255,7 +258,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.InitializeAllResourceGroups( OnOperationCompleted )"/>
 		public RequestID InitializeAllResourceGroups()
 		{
-			return this.InitializeAllResourceGroups( null );
+			return InitializeAllResourceGroups( null );
 		}
 #endif
 
@@ -276,7 +279,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			//queue a request
+    //queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.PrepareGroup;
 			req.GroupName = name;
@@ -293,7 +296,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.PrepareResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID PrepareResourceGroup( string name )
 		{
-			return this.PrepareResourceGroup( name, null );
+			return PrepareResourceGroup( name, null );
 		}
 #endif
 
@@ -314,7 +317,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			//queue a request
+    //queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.LoadGroup;
 			req.GroupName = name;
@@ -331,7 +334,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.LoadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID LoadResourceGroup( string name )
 		{
-			return this.LoadResourceGroup( name, null );
+			return LoadResourceGroup( name, null );
 		}
 #endif
 
@@ -358,12 +361,11 @@ namespace Axiom.Core
 		public virtual RequestID Prepare( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-			NameValuePairList loadParams, OnOperationCompleted listener )
+		public virtual RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			// queue a request
+    // queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.PrepareResource;
 			req.ResourceType = resType;
@@ -387,26 +389,25 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group )
 		{
-			return this.Prepare( resType, name, group, false, null, null, null );
+			return Prepare( resType, name, group, false, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual )
 		{
-			return this.Prepare( resType, name, group, isManual, null, null, null );
+			return Prepare( resType, name, group, isManual, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Prepare( resType, name, group, isManual, loader, null, null );
+			return Prepare( resType, name, group, isManual, loader, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
-		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-			NameValuePairList loadParams )
+		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return this.Prepare( resType, name, group, isManual, loader, loadParams, null );
+			return Prepare( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
@@ -433,12 +434,11 @@ namespace Axiom.Core
 		public virtual RequestID Load( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-			NameValuePairList loadParams, OnOperationCompleted listener )
+		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			// queue a request
+    // queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.LoadResource;
 			req.ResourceType = resType;
@@ -462,26 +462,25 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group )
 		{
-			return this.Load( resType, name, group, false, null, null, null );
+			return Load( resType, name, group, false, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual )
 		{
-			return this.Load( resType, name, group, isManual, null, null, null );
+			return Load( resType, name, group, isManual, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Load( resType, name, group, isManual, loader, null, null );
+			return Load( resType, name, group, isManual, loader, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
-		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-			NameValuePairList loadParams )
+		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return this.Load( resType, name, group, isManual, loader, loadParams, null );
+			return Load( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
@@ -502,7 +501,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			// queue a request
+    // queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.UnloadResource;
 			req.ResourceType = resType;
@@ -521,7 +520,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Unload( string, string, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, string name )
 		{
-			return this.Unload( resType, name, null );
+			return Unload( resType, name, null );
 		}
 #endif
 
@@ -542,7 +541,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			// queue a request
+    // queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.UnloadResource;
 			req.ResourceType = resType;
@@ -561,7 +560,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Unload( string, ResourceHandle, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, ResourceHandle handle )
 		{
-			return this.Unload( resType, handle, null );
+			return Unload( resType, handle, null );
 		}
 #endif
 
@@ -582,7 +581,7 @@ namespace Axiom.Core
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
-			// queue a request
+    // queue a request
 			ResourceRequest req = new ResourceRequest();
 			req.Type = RequestType.UnloadGroup;
 			req.GroupName = name;
@@ -599,7 +598,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.UnloadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID UnloadResourceGroup( string name )
 		{
-			return this.UnloadResourceGroup( name, null );
+			return UnloadResourceGroup( name, null );
 		}
 #endif
 
@@ -620,7 +619,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual bool IsProcessComplete( RequestID ticket )
 		{
-			return !outstandingRequestSet.Contains( ticket );
+			return !this.outstandingRequestSet.Contains( ticket );
 		}
 
 		/// <summary>
@@ -637,8 +636,8 @@ namespace Axiom.Core
 		protected RequestID AddRequest( ResourceRequest req )
 		{
 			WorkQueue queue = Root.Instance.WorkQueue;
-			RequestID requestID = queue.AddRequest( workQueueChannel, (ushort)req.Type, req );
-			outstandingRequestSet.Add( requestID );
+			RequestID requestID = queue.AddRequest( this.workQueueChannel, (ushort)req.Type, req );
+			this.outstandingRequestSet.Add( requestID );
 			return requestID;
 		}
 
@@ -672,9 +671,9 @@ namespace Axiom.Core
 		public bool Initialize( params object[] args )
 		{
 			WorkQueue wq = Root.Instance.WorkQueue;
-			workQueueChannel = wq.GetChannel( "Axiom/ResourceBGQ" );
-			wq.AddResponseHandler( workQueueChannel, this );
-			wq.AddRequestHandler( workQueueChannel, this );
+			this.workQueueChannel = wq.GetChannel( "Axiom/ResourceBGQ" );
+			wq.AddResponseHandler( this.workQueueChannel, this );
+			wq.AddRequestHandler( this.workQueueChannel, this );
 
 			return true;
 		}
@@ -683,18 +682,18 @@ namespace Axiom.Core
 
 		#region IRequestHandler Members
 
-        /// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
+		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
 			return true;
 		}
 
-        /// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
+		/// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			ResourceRequest resreq = (ResourceRequest)req.Data;
+			var resreq = (ResourceRequest)req.Data;
 
 			if ( req.Aborted )
 			{
@@ -705,7 +704,7 @@ namespace Axiom.Core
 				}
 
 				resreq.Result.Error = false;
-				ResourceResponse resresp = new ResourceResponse( null, resreq );
+				var resresp = new ResourceResponse( null, resreq );
 				return new WorkQueue.Response( req, true, resresp );
 			}
 
@@ -758,9 +757,13 @@ namespace Axiom.Core
 					case RequestType.UnloadResource:
 						rm = ResourceGroupManager.Instance.ResourceManagers[ resreq.ResourceType ];
 						if ( string.IsNullOrEmpty( resreq.ResourceName ) )
+						{
 							rm.Unload( resreq.ResourceHandle );
+						}
 						else
+						{
 							rm.Unload( resreq.ResourceName );
+						}
 						break;
 				}
 			}
@@ -775,7 +778,7 @@ namespace Axiom.Core
 				resreq.Result.Message = e.Message;
 
 				//return error response
-				ResourceResponse resresp = new ResourceResponse( resource, resreq );
+				var resresp = new ResourceResponse( resource, resreq );
 				return new WorkQueue.Response( req, false, resresp, e.Message );
 			}
 
@@ -787,7 +790,7 @@ namespace Axiom.Core
 			}
 
 			resreq.Result.Error = false;
-			ResourceResponse resp = new ResourceResponse( resource, resreq );
+			var resp = new ResourceResponse( resource, resreq );
 			return new WorkQueue.Response( req, true, resp );
 		}
 
@@ -795,26 +798,26 @@ namespace Axiom.Core
 
 		#region IResponseHandler Members
 
-        /// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
+		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			return true;
 		}
 
-        /// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
+		/// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			if ( res.Request.Aborted )
 			{
-				outstandingRequestSet.Remove( res.Request.ID );
+				this.outstandingRequestSet.Remove( res.Request.ID );
 				return;
 			}
 
 			if ( res.Succeeded )
 			{
-				ResourceResponse resresp = (ResourceResponse)res.Data;
+				var resresp = (ResourceResponse)res.Data;
 				// Complete full loading in main thread if semithreading
 				ResourceRequest req = resresp.Request;
 
@@ -831,20 +834,26 @@ namespace Axiom.Core
 						ResourceGroupManager.Instance.LoadResourceGroup( req.GroupName );
 				}
 #endif
-				outstandingRequestSet.Remove( res.Request.ID );
+				this.outstandingRequestSet.Remove( res.Request.ID );
 
 				// Call resource listener
 				if ( resresp.Resource != null )
 				{
 					if ( req.Type == RequestType.LoadResource )
+					{
 						resresp.Resource.FireLoadingComplete( true );
+					}
 					else
+					{
 						resresp.Resource.FirePreparingComplete( true );
+					}
 				}
 
 				// Call queue listener
 				if ( req.Listener != null )
+				{
 					req.Listener.Invoke( res.Request.ID, req.Result );
+				}
 			}
 		}
 

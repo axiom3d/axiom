@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,22 +23,23 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.ParticleSystems;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -61,48 +63,22 @@ namespace Axiom.ParticleFX
 		protected ForceApplication forceApp = ForceApplication.Add;
 		protected Vector3 forceVector = Vector3.Zero;
 
-        public LinearForceAffector( ParticleSystem psys )
-            : base( psys )
-        {
-            // HACK: See if there is better way to do this
-			this.type = "LinearForce";
-		}
-
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+		public LinearForceAffector( ParticleSystem psys )
+			: base( psys )
 		{
-			Vector3 scaledVector = Vector3.Zero;
-
-			if ( forceApp == ForceApplication.Add )
-			{
-				// scale force by time
-				scaledVector = forceVector * timeElapsed;
-			}
-
-			// affect each particle
-			for ( int i = 0; i < system.Particles.Count; i++ )
-			{
-				Particle p = (Particle)system.Particles[ i ];
-
-				if ( forceApp == ForceApplication.Add )
-				{
-					p.Direction += scaledVector;
-				}
-				else
-				{ // Average
-					p.Direction = ( p.Direction + forceVector ) / 2;
-				}
-			}
+			// HACK: See if there is better way to do this
+			type = "LinearForce";
 		}
 
 		public Vector3 Force
 		{
 			get
 			{
-				return forceVector;
+				return this.forceVector;
 			}
 			set
 			{
-				forceVector = value;
+				this.forceVector = value;
 			}
 		}
 
@@ -110,55 +86,34 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return forceApp;
+				return this.forceApp;
 			}
 			set
 			{
-				forceApp = value;
+				this.forceApp = value;
 			}
 		}
 
 		#region Command definition classes
 
-		[ScriptableProperty( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
-        public class ForceVectorCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public string Get( object target )
-			{
-				LinearForceAffector affector = target as LinearForceAffector;
-
-				Vector3 vec = affector.Force;
-
-				// TODO: Common way for vector string rep, maybe modify ToString
-				return string.Format( "{0}, {1}, {2}", vec.x, vec.y, vec.z );
-			}
-			public void Set( object target, string val )
-			{
-				LinearForceAffector affector = target as LinearForceAffector;
-
-				affector.Force = StringConverter.ParseVector3( val );
-			}
-
-			#endregion IPropertyCommand Members
-		}
+		#region Nested type: ForceApplicationCommand
 
 		[ScriptableProperty( "force_application", "Type of force to apply to this particle.", typeof( ParticleAffector ) )]
-        public class ForceApplicationCommand : IPropertyCommand
+		public class ForceApplicationCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				// TODO: Reverse lookup the enum attribute
 				return affector.ForceApplication.ToString().ToLower();
 			}
+
 			public void Set( object target, string val )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				// lookup the real enum equivalent to the script value
 				object enumVal = ScriptEnumAttribute.Lookup( val, typeof( ForceApplication ) );
@@ -175,9 +130,67 @@ namespace Axiom.ParticleFX
 				}
 			}
 
-			#endregion IPropertyCommand Members
+			#endregion
 		}
 
+		#endregion
+
+		#region Nested type: ForceVectorCommand
+
+		[ScriptableProperty( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
+		public class ForceVectorCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				var affector = target as LinearForceAffector;
+
+				Vector3 vec = affector.Force;
+
+				// TODO: Common way for vector string rep, maybe modify ToString
+				return string.Format( "{0}, {1}, {2}", vec.x, vec.y, vec.z );
+			}
+
+			public void Set( object target, string val )
+			{
+				var affector = target as LinearForceAffector;
+
+				affector.Force = StringConverter.ParseVector3( val );
+			}
+
+			#endregion
+		}
+
+		#endregion
+
 		#endregion Command definition classes
+
+		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
+		{
+			Vector3 scaledVector = Vector3.Zero;
+
+			if ( this.forceApp == ForceApplication.Add )
+			{
+				// scale force by time
+				scaledVector = this.forceVector * timeElapsed;
+			}
+
+			// affect each particle
+			for ( int i = 0; i < system.Particles.Count; i++ )
+			{
+				Particle p = system.Particles[ i ];
+
+				if ( this.forceApp == ForceApplication.Add )
+				{
+					p.Direction += scaledVector;
+				}
+				else
+				{
+					// Average
+					p.Direction = ( p.Direction + this.forceVector ) / 2;
+				}
+			}
+		}
 	}
 }

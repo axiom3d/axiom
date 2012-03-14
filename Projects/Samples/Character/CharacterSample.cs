@@ -1,4 +1,5 @@
 ﻿#region MIT/X11 License
+
 //Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,31 +19,32 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //THE SOFTWARE.
+
 #endregion License
 
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Math;
+
+using SharpInputSystem;
+
+using Vector3 = Axiom.Math.Vector3;
 
 namespace Axiom.Samples.CharacterSample
 {
 	public class CharacterSample : SdkSample
 	{
 		protected SinbadCharacterController chara;
+
 		public CharacterSample()
 		{
 			Metadata[ "Title" ] = "Character";
 			Metadata[ "Description" ] = "A demo showing 3rd-person character control and use of TagPoints.";
 			Metadata[ "Thumbnail" ] = "thumb_char.png";
 			Metadata[ "Category" ] = "Animation";
-			Metadata[ "Help" ] = "Use the WASD keys to move Sinbad, and the space bar to jump. " +
-				"Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " +
-				"Sinbad's swords. With the swords equipped, you can left click to slice vertically or " +
-				"right click to slice horizontally. When the swords are not equipped, press E to " +
-				"start/stop a silly dance routine.";
-
+			Metadata[ "Help" ] = "Use the WASD keys to move Sinbad, and the space bar to jump. " + "Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " + "Sinbad's swords. With the swords equipped, you can left click to slice vertically or " + "right click to slice horizontally. When the swords are not equipped, press E to " + "start/stop a silly dance routine.";
 		}
 
 		/// <summary>
@@ -53,35 +55,42 @@ namespace Axiom.Samples.CharacterSample
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			// let character update animations and camera
-			chara.AddTime( evt.TimeSinceLastFrame );
+			this.chara.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
+
 		public override bool FrameEnded( FrameEventArgs evt )
 		{
 			return base.FrameEnded( evt );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyPressed( SharpInputSystem.KeyEventArgs evt )
+		public override bool KeyPressed( KeyEventArgs evt )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
-				chara.InjectKeyDown( evt );
+			{
+				this.chara.InjectKeyDown( evt );
+			}
 
 			return base.KeyPressed( evt );
 		}
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyReleased( SharpInputSystem.KeyEventArgs evt )
+		public override bool KeyReleased( KeyEventArgs evt )
 		{
 			if ( !TrayManager.IsDialogVisible )
-				chara.InjectKeyUp( evt );
+			{
+				this.chara.InjectKeyUp( evt );
+			}
 
 			return base.KeyReleased( evt );
 		}
@@ -91,11 +100,13 @@ namespace Axiom.Samples.CharacterSample
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool MouseMoved( SharpInputSystem.MouseEventArgs evt )
+		public override bool MouseMoved( MouseEventArgs evt )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
-				chara.InjectMouseMove( evt );
+			{
+				this.chara.InjectMouseMove( evt );
+			}
 
 			return base.MouseMoved( evt );
 		}
@@ -106,11 +117,13 @@ namespace Axiom.Samples.CharacterSample
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
+		public override bool MousePressed( MouseEventArgs evt, MouseButtonID id )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
-				chara.InjectMouseDown( evt, id );
+			{
+				this.chara.InjectMouseDown( evt, id );
+			}
 
 			return base.MousePressed( evt, id );
 		}
@@ -142,8 +155,7 @@ namespace Axiom.Samples.CharacterSample
 			light.Position = new Vector3( -10, 40, 20 );
 			light.Specular = ColorEx.White;
 
-			MeshManager.Instance.CreatePlane( "floor", ResourceGroupManager.DefaultResourceGroupName,
-				new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "floor", ResourceGroupManager.DefaultResourceGroupName, new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
 
 			// create a floor entity, give it a material, and place it at the origin
 			Entity floor = SceneManager.CreateEntity( "Floor", "floor" );
@@ -152,13 +164,12 @@ namespace Axiom.Samples.CharacterSample
 			SceneManager.RootSceneNode.AttachObject( floor );
 
 
-
 			// create our character controller
-			chara = new SinbadCharacterController( Camera );
+			this.chara = new SinbadCharacterController( Camera );
 
 			TrayManager.ToggleAdvancedFrameStats();
 
-			List<string> items = new List<string>();
+			var items = new List<string>();
 			items.Add( "Help" );
 			ParamsPanel help = TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "HelpMessage", 100, items );
 			help.SetParamValue( "Help", " H / F1" );
@@ -166,8 +177,10 @@ namespace Axiom.Samples.CharacterSample
 
 		protected override void CleanupContent()
 		{
-			if ( chara != null )
-				chara = null;
+			if ( this.chara != null )
+			{
+				this.chara = null;
+			}
 
 			MeshManager.Instance.Remove( "floor" );
 		}

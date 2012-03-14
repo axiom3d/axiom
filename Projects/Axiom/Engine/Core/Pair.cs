@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
@@ -22,14 +23,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id: Pair.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -42,7 +46,6 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
-
 	/// <summary>
 	/// 	A simple container class for returning a pair of objects from a method call
 	/// 	(similar to std::pair).
@@ -50,37 +53,12 @@ namespace Axiom.Core
 	/// <typeparam name="T"></typeparam>
 	public class Pair<T> : IEquatable<Pair<T>>
 	{
-		private Axiom.Math.Tuple<T, T> data;
-
-		public T First
-		{
-			get
-			{
-				return data.First;
-			}
-			set
-			{
-				data = new Axiom.Math.Tuple<T, T>( value, data.Second );
-			}
-		}
-
-		public T Second
-		{
-			get
-			{
-				return data.Second;
-			}
-			set
-			{
-				data = new Axiom.Math.Tuple<T, T>( data.First, value );
-			}
-		}
+		private Tuple<T, T> data;
 
 		public Pair( T first, T second )
 		{
-			data = new Axiom.Math.Tuple<T, T>( first, second );
+			this.data = new Tuple<T, T>( first, second );
 		}
-
 
 		#region IEquatable<Pair<T>> Implementation
 
@@ -94,7 +72,7 @@ namespace Axiom.Core
 		{
 			if ( other is Pair<T> )
 			{
-				return this.Equals( (Pair<T>)other );
+				return Equals( (Pair<T>)other );
 			}
 			return false;
 		}
@@ -102,10 +80,36 @@ namespace Axiom.Core
 		#endregion IEquatable<Pair<T>> Implementation
 
 		#region System.Object Implementation
+
 		public override int GetHashCode()
 		{
-			return this.First.GetHashCode() ^ this.Second.GetHashCode();
+			return First.GetHashCode() ^ Second.GetHashCode();
 		}
+
 		#endregion System.Object Implementation
+
+		public T First
+		{
+			get
+			{
+				return this.data.First;
+			}
+			set
+			{
+				this.data = new Tuple<T, T>( value, this.data.Second );
+			}
+		}
+
+		public T Second
+		{
+			get
+			{
+				return this.data.Second;
+			}
+			set
+			{
+				this.data = new Tuple<T, T>( this.data.First, value );
+			}
+		}
 	}
 }
