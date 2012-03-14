@@ -152,7 +152,9 @@ namespace Axiom.Core
 				new HighLevelGpuProgramManager();
 
                 // Register image codecs
+#if !( WINDOWS_PHONE || XBOX || XBOX360 )
                 DDSCodec.Initialize();
+#endif
                 PVRTCCodec.Initialize();
 
 				ResourceGroupManager.Instance.Initialize();
