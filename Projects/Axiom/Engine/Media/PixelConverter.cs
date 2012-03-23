@@ -425,7 +425,6 @@ namespace Axiom.Media
             }
             else
             {
-#if !AXIOM_SAFE_ONLY
                 switch ( format )
                 {
                     case PixelFormat.FLOAT32_R:
@@ -616,7 +615,6 @@ namespace Axiom.Media
             }
             else
             {
-#if !AXIOM_SAFE_ONLY
                 switch ( pf )
                 {
                     case PixelFormat.FLOAT32_R:
