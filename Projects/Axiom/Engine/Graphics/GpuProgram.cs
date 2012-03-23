@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-using System.Text;
 
 using Axiom.Core;
 using Axiom.Scripting;
@@ -79,99 +78,6 @@ namespace Axiom.Graphics
 
 		#endregion BindingDelegate Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private bool _loadedManualNamedConstants;
-
-		/// <summary>
-		/// Record of logical to physical buffer maps. Mandatory for low-level
-		/// programs or high-level programs which set their params the same way.
-		/// </summary>
-		protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical;
-
-		/// <summary>
-		/// Record of logical to physical buffer maps. Mandatory for low-level
-		/// programs or high-level programs which set their params the same way.
-		/// </summary>
-		protected GpuProgramParameters.GpuLogicalBufferStruct intLogicalToPhysical;
-
-		#region ConstantDefinitions Property
-
-		/// <summary>
-		/// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgramParameters.GpuNamedConstants constantDefs;
-
-		/// <summary>
-		/// Get the full list of named constants.
-		/// </summary>
-		/// <note>
-		/// Only available if this parameters object has named parameters, which means either
-		/// a high-level program which loads them, or a low-level program which has them
-		/// specified manually.
-		/// </note>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual GpuProgramParameters.GpuNamedConstants ConstantDefinitions
-		{
-			get
-			{
-				return this.constantDefs;
-			}
-		}
-
-		#endregion ConstantDefinitions Property
-
-		#region ManualNamedConstants Property
-
-		/// <summary>
-		/// Allows you to manually provide a set of named parameter mappings
-		/// to a program which would not be able to derive named parameters itself.
-		/// </summary>
-		/// <remarks>
-		/// You may wish to use this if you have assembler programs that were compiled
-		/// from a high-level source, and want the convenience of still being able
-		/// to use the named parameters from the original high-level source.
-		/// <seealso cref="ManualNamedConstantsFile"/>
-		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual GpuProgramParameters.GpuNamedConstants ManualNamedConstants
-		{
-			set
-			{
-				CreateParameterMappingStructures();
-				this.constantDefs = value;
-
-				this.floatLogicalToPhysical.BufferSize = this.constantDefs.FloatBufferSize;
-				this.intLogicalToPhysical.BufferSize = this.constantDefs.IntBufferSize;
-				this.floatLogicalToPhysical.Map.Clear();
-				this.intLogicalToPhysical.Map.Clear();
-
-				// need to set up logical mappings too for some rendersystems
-				foreach ( var pair in this.constantDefs.Map )
-				{
-					string name = pair.Key;
-					GpuProgramParameters.GpuConstantDefinition def = pair.Value;
-					// only consider non-array entries
-					if ( !name.Contains( "[" ) )
-					{
-						continue;
-					}
-
-					var val = new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
-					if ( def.IsFloat )
-					{
-						this.floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
-					}
-					else
-					{
-						this.intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
-					}
-				}
-			}
-		}
-
-		#endregion
-
 		/// <summary>
 		///    Whether this source is being loaded from file or not.
 		/// </summary>
@@ -189,50 +95,6 @@ namespace Axiom.Graphics
 				return "asm";
 			}
 		}
-
-		public virtual GpuProgramParameters.GpuNamedConstants NamedConstants
-		{
-			get
-			{
-				return this.constantDefs;
-			}
-		}
-
-		#region ManualNamedConstantsFile Property
-
-		/// <summary>   
-		/// File from which to load named constants manually
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected string manualNamedConstantsFile;
-
-		/// <summary>
-		/// Specifies the name of a file from which to load named parameters mapping
-		/// for a program which would not be able to derive named parameters itself.
-		/// </summary>
-		/// <remarks>
-		/// You may wish to use this if you have assembler programs that were compiled
-		/// from a high-level source, and want the convenience of still being able
-		/// to use the named parameters from the original high-level source. This
-		/// method will make a low-level program search in the resource group of the
-		/// program for the named file from which to load parameter names from. 
-		/// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
-		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual string ManualNamedConstantsFile
-		{
-			get
-			{
-				return this.manualNamedConstantsFile;
-			}
-			set
-			{
-				this.manualNamedConstantsFile = value;
-				this._loadedManualNamedConstants = false;
-			}
-		}
-
-		#endregion ManualNamedConstantsFile Property
 
 		#region SourceFile Property
 
@@ -253,14 +115,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.fileName;
+				return fileName;
 			}
 			set
 			{
-				this.fileName = value;
-				this.source = "";
+				fileName = value;
+				source = "";
 				LoadFromFile = true;
-				this.compileError = false;
+				compileError = false;
 			}
 		}
 
@@ -285,14 +147,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.source;
+				return source;
 			}
 			set
 			{
-				this.source = value;
-				this.fileName = "";
+				source = value;
+				fileName = "";
 				LoadFromFile = false;
-				this.compileError = false;
+				compileError = false;
 			}
 		}
 
@@ -311,11 +173,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.syntaxCode;
+				return syntaxCode;
 			}
 			set
 			{
-				this.syntaxCode = value;
+				syntaxCode = value;
 			}
 		}
 
@@ -334,11 +196,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 			set
 			{
-				this.type = value;
+				type = value;
 			}
 		}
 
@@ -357,11 +219,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.isSkeletalAnimationIncluded;
+				return isSkeletalAnimationIncluded;
 			}
 			set
 			{
-				this.isSkeletalAnimationIncluded = value;
+				isSkeletalAnimationIncluded = value;
 			}
 		}
 
@@ -384,11 +246,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.morphAnimation;
+				return morphAnimation;
 			}
 			set
 			{
-				this.morphAnimation = value;
+				morphAnimation = value;
 			}
 		}
 
@@ -411,11 +273,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.vertexTextureFetchRequired;
+				return vertexTextureFetchRequired;
 			}
 			set
 			{
-				this.vertexTextureFetchRequired = value;
+				vertexTextureFetchRequired = value;
 			}
 		}
 
@@ -438,11 +300,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.needsAdjacencyInfo;
+				return needsAdjacencyInfo;
 			}
 			set
 			{
-				this.needsAdjacencyInfo = value;
+				needsAdjacencyInfo = value;
 			}
 		}
 
@@ -465,11 +327,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.poseAnimation;
+				return poseAnimation;
 			}
 			set
 			{
-				this.poseAnimation = value;
+				poseAnimation = value;
 			}
 		}
 
@@ -485,7 +347,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.poseAnimation > 0;
+				return poseAnimation > 0;
 			}
 		}
 
@@ -514,7 +376,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.defaultParams ?? ( this.defaultParams = CreateParameters() );
+				return defaultParams ?? ( defaultParams = CreateParameters() );
 			}
 		}
 
@@ -527,7 +389,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.defaultParams != null;
+				return defaultParams != null;
 			}
 		}
 
@@ -612,7 +474,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.compileError || !IsRequiredCapabilitiesSupported() )
+				if ( compileError || !IsRequiredCapabilitiesSupported() )
 				{
 					return false;
 				}
@@ -638,7 +500,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.compileError;
+				return compileError;
 			}
 		}
 
@@ -647,10 +509,147 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void ResetCompileError()
 		{
-			this.compileError = false;
+			compileError = false;
 		}
 
 		#endregion CompilerError Property
+
+		/// <summary>
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
+		/// </summary>
+		protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical;
+
+		/// <summary>
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
+		/// </summary>
+		protected GpuProgramParameters.GpuLogicalBufferStruct intLogicalToPhysical;
+
+		#region ConstantDefinitions Property
+
+		/// <summary>
+		/// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramParameters.GpuNamedConstants constantDefs;
+
+		/// <summary>
+		/// Get the full list of named constants.
+		/// </summary>
+		/// <note>
+		/// Only available if this parameters object has named parameters, which means either
+		/// a high-level program which loads them, or a low-level program which has them
+		/// specified manually.
+		/// </note>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual GpuProgramParameters.GpuNamedConstants ConstantDefinitions
+		{
+			get
+			{
+				return constantDefs;
+			}
+		}
+
+		#endregion ConstantDefinitions Property
+
+		#region ManualNamedConstants Property
+
+		/// <summary>
+		/// Allows you to manually provide a set of named parameter mappings
+		/// to a program which would not be able to derive named parameters itself.
+		/// </summary>
+		/// <remarks>
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source.
+		/// <seealso cref="ManualNamedConstantsFile"/>
+		/// </remarks>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual GpuProgramParameters.GpuNamedConstants ManualNamedConstants
+		{
+			set
+			{
+				CreateParameterMappingStructures();
+				constantDefs = value;
+
+				floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
+				intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
+				floatLogicalToPhysical.Map.Clear();
+				intLogicalToPhysical.Map.Clear();
+
+				// need to set up logical mappings too for some rendersystems
+				foreach ( var pair in constantDefs.Map )
+				{
+					var name = pair.Key;
+					var def = pair.Value;
+					// only consider non-array entries
+					if ( !name.Contains( "[" ) )
+					{
+						continue;
+					}
+
+					var val = new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
+					if ( def.IsFloat )
+					{
+						floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+					}
+					else
+					{
+						intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		public virtual GpuProgramParameters.GpuNamedConstants NamedConstants
+		{
+			get
+			{
+				return constantDefs;
+			}
+		}
+
+		#region ManualNamedConstantsFile Property
+
+		/// <summary>   
+		/// File from which to load named constants manually
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected string manualNamedConstantsFile;
+
+		/// <summary>
+		/// Specifies the name of a file from which to load named parameters mapping
+		/// for a program which would not be able to derive named parameters itself.
+		/// </summary>
+		/// <remarks>
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source. This
+		/// method will make a low-level program search in the resource group of the
+		/// program for the named file from which to load parameter names from. 
+		/// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual string ManualNamedConstantsFile
+		{
+			get
+			{
+				return manualNamedConstantsFile;
+			}
+			set
+			{
+				manualNamedConstantsFile = value;
+				_loadedManualNamedConstants = false;
+			}
+		}
+
+		#endregion ManualNamedConstantsFile Property
+
+		[OgreVersion( 1, 7, 2790 )]
+		private bool _loadedManualNamedConstants;
 
 		#endregion Fields and Properties
 
@@ -663,15 +662,15 @@ namespace Axiom.Graphics
 		protected GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			this.type = GpuProgramType.Vertex;
+			type = GpuProgramType.Vertex;
 			LoadFromFile = true;
-			this.isSkeletalAnimationIncluded = false;
-			this.morphAnimation = false;
-			this.poseAnimation = 0;
-			this.vertexTextureFetchRequired = false;
-			this.needsAdjacencyInfo = false;
-			this.compileError = false;
-			this._loadedManualNamedConstants = false;
+			isSkeletalAnimationIncluded = false;
+			morphAnimation = false;
+			poseAnimation = 0;
+			vertexTextureFetchRequired = false;
+			needsAdjacencyInfo = false;
+			compileError = false;
+			_loadedManualNamedConstants = false;
 
 			CreateParameterMappingStructures();
 		}
@@ -696,15 +695,15 @@ namespace Axiom.Graphics
 		public virtual GpuProgramParameters CreateParameters()
 		{
 			// Default implementation simply returns standard parameters.
-			GpuProgramParameters ret = GpuProgramManager.Instance.CreateParameters();
+			var ret = GpuProgramManager.Instance.CreateParameters();
 
 			// optionally load manually supplied named constants
-			if ( !String.IsNullOrEmpty( this.manualNamedConstantsFile ) && !this._loadedManualNamedConstants )
+			if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !_loadedManualNamedConstants )
 			{
 				try
 				{
 					var namedConstants = new GpuProgramParameters.GpuNamedConstants();
-					Stream stream = ResourceGroupManager.Instance.OpenResource( this.manualNamedConstantsFile, Group, true, this );
+					var stream = ResourceGroupManager.Instance.OpenResource( manualNamedConstantsFile, Group, true, this );
 					namedConstants.Load( stream );
 					ManualNamedConstants = namedConstants;
 				}
@@ -712,22 +711,22 @@ namespace Axiom.Graphics
 				{
 					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
 				}
-				this._loadedManualNamedConstants = true;
+				_loadedManualNamedConstants = true;
 			}
 
 			// set up named parameters, if any
-			if ( this.constantDefs != null && this.constantDefs.Map.Count > 0 )
+			if ( constantDefs != null && constantDefs.Map.Count > 0 )
 			{
-				ret.NamedConstants = this.constantDefs;
+				ret.NamedConstants = constantDefs;
 			}
 			// link shared logical / physical map for low-level use
-			ret.SetLogicalIndexes( this.floatLogicalToPhysical, this.intLogicalToPhysical );
+			ret.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
 
 
 			// Copy in default parameters if present
-			if ( this.defaultParams != null )
+			if ( defaultParams != null )
 			{
-				ret.CopyConstantsFrom( this.defaultParams );
+				ret.CopyConstantsFrom( defaultParams );
 			}
 
 			return ret;
@@ -746,9 +745,9 @@ namespace Axiom.Graphics
 			// load from file and get the source string from it
 			if ( LoadFromFile )
 			{
-				Stream stream = ResourceGroupManager.Instance.OpenResource( this.fileName, Group, true, this );
-				var reader = new StreamReader( stream, Encoding.UTF8 );
-				this.source = reader.ReadToEnd();
+				var stream = ResourceGroupManager.Instance.OpenResource( fileName, Group, true, this );
+				var reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
+				source = reader.ReadToEnd();
 			}
 
 			// Call polymorphic load
@@ -756,32 +755,32 @@ namespace Axiom.Graphics
 			{
 				LoadFromSource();
 
-				if ( this.defaultParams != null )
+				if ( defaultParams != null )
 				{
 					// Keep a reference to old ones to copy
-					GpuProgramParameters savedParams = this.defaultParams;
+					var savedParams = defaultParams;
 					// reset params to stop them being referenced in the next create
 					// _defaultParams.SetNull();
 
 					// Create new params
-					this.defaultParams = CreateParameters();
+					defaultParams = CreateParameters();
 
 					// Copy old (matching) values across
 					// Don't use copyConstantsFrom since program may be different
-					this.defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
+					defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
 				}
 			}
 			catch ( Exception ex )
 			{
 				LogManager.Instance.Write( "Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message );
-				this.compileError = true;
+				compileError = true;
 			}
 		}
 
 		#endregion
 
 		[OgreVersion( 0, 0, 0, "not overriden in 1.7.2790" )]
-		protected override void unload() { }
+		protected override void unload() {}
 
 		/// <summary>
 		///    Method which must be implemented by subclasses, loads the program from source.
@@ -794,7 +793,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool IsRequiredCapabilitiesSupported()
 		{
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
+			var caps = Root.Instance.RenderSystem.Capabilities;
 			// If skeletal animation is being done, we need support for UBYTE4
 			if ( IsSkeletalAnimationIncluded && !caps.HasCapability( Capabilities.VertexFormatUByte4 ) )
 			{
@@ -838,13 +837,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CreateLogicalParameterMappingStructures( bool recreateIfExists )
 		{
-			if ( recreateIfExists || this.floatLogicalToPhysical == null )
+			if ( recreateIfExists || floatLogicalToPhysical == null )
 			{
-				this.floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+				floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
 			}
-			if ( recreateIfExists || this.intLogicalToPhysical == null )
+			if ( recreateIfExists || intLogicalToPhysical == null )
 			{
-				this.intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+				intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
 			}
 		}
 
@@ -858,9 +857,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		private void CreateNamedParameterMappingStructures( bool recreateIfExists )
 		{
-			if ( recreateIfExists || this.constantDefs == null )
+			if ( recreateIfExists || constantDefs == null )
 			{
-				this.constantDefs = new GpuProgramParameters.GpuNamedConstants();
+				constantDefs = new GpuProgramParameters.GpuNamedConstants();
 			}
 		}
 
@@ -944,7 +943,7 @@ namespace Axiom.Graphics
 		#region IncludesSkeletalAnimationPropertyCommand
 
 		[OgreVersion( 1, 7, 2790 )]
-		[ScriptableProperty( "includes_skeletal_animation", "Whether this vertex program includes skeletal animation", typeof( GpuProgram ) )]
+		[ScriptableProperty( "includes_skeletal_animation", "Whether this vertex program includes skeletal animation", typeof ( GpuProgram ) )]
 		public class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -961,7 +960,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)target ).IsSkeletalAnimationIncluded = bool.Parse( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion
@@ -986,7 +985,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)target ).IsMorphAnimationIncluded = bool.Parse( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion
@@ -1011,7 +1010,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)target ).poseAnimation = ushort.Parse( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion
@@ -1036,7 +1035,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)target ).IsVertexTextureFetchRequired = bool.Parse( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion
@@ -1061,7 +1060,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)target ).ManualNamedConstantsFile = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion
@@ -1086,7 +1085,7 @@ namespace Axiom.Graphics
 				( (GpuProgram)t ).IsAdjacencyInfoRequired = bool.Parse( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion

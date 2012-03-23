@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -63,14 +64,14 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B> other )
 		{
-			return this.First.Equals( other.First ) && this.Second.Equals( other.Second );
+			return First.Equals( other.First ) && Second.Equals( other.Second );
 		}
 
 		public override bool Equals( object other )
 		{
 			if ( other is Tuple<A, B> )
 			{
-				return Equals( (Tuple<A, B>)other );
+				return this.Equals( (Tuple<A, B>)other );
 			}
 			return false;
 		}
@@ -114,14 +115,14 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B, C> other )
 		{
-			return this.First.Equals( other.First ) && this.Second.Equals( other.Second ) && this.Third.Equals( other.Third );
+			return First.Equals( other.First ) && Second.Equals( other.Second ) && Third.Equals( other.Third );
 		}
 
 		public override bool Equals( object other )
 		{
 			if ( other is Tuple<A, B, C> )
 			{
-				return Equals( (Tuple<A, B, C>)other );
+				return this.Equals( (Tuple<A, B, C>)other );
 			}
 			return false;
 		}
@@ -144,13 +145,13 @@ namespace Axiom.Math
 		public readonly A First;
 
 		/// <summary></summary>
-		public readonly D Fourth;
-
-		/// <summary></summary>
 		public readonly B Second;
 
 		/// <summary></summary>
 		public readonly C Third;
+
+		/// <summary></summary>
+		public readonly D Fourth;
 
 		#endregion Fields and Properties
 
@@ -170,14 +171,14 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B, C, D> other )
 		{
-			return this.First.Equals( other.First ) && this.Second.Equals( other.Second ) && this.Third.Equals( other.Third );
+			return First.Equals( other.First ) && Second.Equals( other.Second ) && Third.Equals( other.Third );
 		}
 
 		public override bool Equals( object other )
 		{
 			if ( other is Tuple<A, B, C, D> )
 			{
-				return Equals( (Tuple<A, B, C, D>)other );
+				return this.Equals( (Tuple<A, B, C, D>)other );
 			}
 			return false;
 		}

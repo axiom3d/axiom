@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -47,7 +51,7 @@ namespace Axiom.SceneManagers.PortalConnected
 	{
 		#region Fields
 
-		private readonly Segment mSegment;
+		private Segment mSegment;
 		private float mRadius;
 
 		#endregion Fields
@@ -57,15 +61,15 @@ namespace Axiom.SceneManagers.PortalConnected
 		public Capsule()
 		{
 			// uninitialized
-			this.mSegment = new Segment();
-			this.mRadius = float.NaN;
+			mSegment = new Segment();
+			mRadius = float.NaN;
 		}
 
 		//----------------------------------------------------------------------------
 		public Capsule( Segment segment, float radius )
 		{
-			this.mSegment = segment;
-			this.mRadius = radius;
+			mSegment = segment;
+			mRadius = radius;
 		}
 
 		//----------------------------------------------------------------------------
@@ -78,7 +82,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return this.mSegment;
+				return mSegment;
 			}
 		}
 
@@ -86,7 +90,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return this.mRadius;
+				return mRadius;
 			}
 		}
 
@@ -94,13 +98,19 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		#region Methods
 
+		public void Set( Vector3 newOrigin, Vector3 newEnd, float newRadius )
+		{
+			mSegment.Set( newOrigin, newEnd );
+			mRadius = newRadius;
+		}
+
 		//----------------------------------------------------------------------------
 
 		public Vector3 Origin
 		{
 			set
 			{
-				this.mSegment.Origin = value;
+				mSegment.Origin = value;
 			}
 		}
 
@@ -108,35 +118,29 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			set
 			{
-				this.mSegment.EndPoint = value;
+				mSegment.EndPoint = value;
 			}
-		}
-
-		public void Set( Vector3 newOrigin, Vector3 newEnd, float newRadius )
-		{
-			this.mSegment.Set( newOrigin, newEnd );
-			this.mRadius = newRadius;
 		}
 
 		//----------------------------------------------------------------------------
 		public void SetRadius( Real newRadius )
 		{
-			this.mRadius = newRadius;
+			mRadius = newRadius;
 		}
 
 		//----------------------------------------------------------------------------
 		public bool Intersects( Capsule otherCapsule )
 		{
-			Real fDistance = this.mSegment.Distance( otherCapsule.mSegment );
-			Real fRSum = this.mRadius + otherCapsule.mRadius;
+			Real fDistance = mSegment.Distance( otherCapsule.mSegment );
+			Real fRSum = mRadius + otherCapsule.mRadius;
 			return fDistance <= fRSum;
 		}
 
 		//----------------------------------------------------------------------------
 		public bool Intersects( Segment segment )
 		{
-			Real fDist = segment.Distance( this.mSegment );
-			return fDist <= this.mRadius;
+			Real fDist = segment.Distance( mSegment );
+			return fDist <= mRadius;
 		}
 
 		//----------------------------------------------------------------------------

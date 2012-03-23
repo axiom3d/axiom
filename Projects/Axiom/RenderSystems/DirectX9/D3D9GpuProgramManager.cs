@@ -50,6 +50,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		internal D3D9GpuProgramManager()
+			: base()
 		{
 			// Superclass sets up members 
 
@@ -60,7 +61,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9GpuProgramManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

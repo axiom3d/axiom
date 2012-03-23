@@ -51,12 +51,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool IsCursorOver;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool isFitToContents;
+		protected TextArea textArea;
 
 		/// <summary>
 		/// 
@@ -66,12 +61,17 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea textArea;
+		protected OverlayElement x;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected OverlayElement x;
+		protected bool isFitToContents;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected bool IsCursorOver;
 
 		#endregion fields
 
@@ -85,16 +85,16 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		public CheckBox( String name, String caption, Real width )
 		{
-			this.IsCursorOver = false;
-			this.isFitToContents = width <= 0;
+			IsCursorOver = false;
+			isFitToContents = width <= 0;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/CheckBox", "BorderPanel", name );
-			var c = (OverlayElementContainer)element;
+			OverlayElementContainer c = (OverlayElementContainer)element;
 			this.textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
 			this.square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
 			this.x = this.square.Children[ this.square.Name + "/CheckBoxX" ];
 			this.x.Hide();
 			element.Width = width;
-			Caption = caption;
+			this.Caption = caption;
 		}
 
 		#endregion
@@ -108,7 +108,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.Text;
+				return textArea.Text;
 			}
 			set
 			{
@@ -176,7 +176,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Check( bool notifyListener )
 		{
-			SetChecked( true, notifyListener );
+			this.SetChecked( true, notifyListener );
 		}
 
 		/// <summary>
@@ -193,7 +193,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Uncheck( bool notifyListener )
 		{
-			SetChecked( false, notifyListener );
+			this.SetChecked( false, notifyListener );
 			OnCheckChanged( this );
 		}
 
@@ -211,7 +211,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Toggle( bool notifyListener )
 		{
-			SetChecked( !IsChecked, notifyListener );
+			this.SetChecked( !this.IsChecked, notifyListener );
 		}
 
 		/// <summary>
@@ -220,7 +220,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( this.IsCursorOver )
+			if ( IsCursorOver )
 			{
 				Toggle();
 				base.OnCursorPressed( cursorPos );

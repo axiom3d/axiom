@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
+using Axiom.Core;
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -82,11 +83,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._top;
+				return _top;
 			}
 			set
 			{
-				this._top = value;
+				_top = value;
 			}
 		}
 
@@ -103,11 +104,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._left;
+				return _left;
 			}
 			set
 			{
-				this._left = value;
+				_left = value;
 			}
 		}
 
@@ -124,11 +125,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.isFullScreen;
+				return isFullScreen;
 			}
 			protected set
 			{
-				this.isFullScreen = value;
+				isFullScreen = value;
 			}
 		}
 
@@ -145,7 +146,7 @@ namespace Axiom.Graphics
 			{
 				return true;
 			}
-			set { }
+			set {}
 		}
 
 		#endregion IsVisible Property
@@ -168,15 +169,6 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public abstract bool IsClosed { get; }
 
-		public virtual bool IsHidden
-		{
-			get
-			{
-				return false;
-			}
-			set { }
-		}
-
 		#region IsPrimary Property
 
 		private bool _isPrimary;
@@ -192,24 +184,34 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._isPrimary;
+				return _isPrimary;
 			}
 			internal set // Only to be called by root
 			{
-				this._isPrimary = value;
+				_isPrimary = value;
 			}
 		}
 
 		#endregion IsPrimary Property
+
+		public virtual bool IsHidden
+		{
+			get
+			{
+				return false;
+			}
+			set {}
+		}
 
 		#endregion
 
 		#region Constructor
 
 		protected RenderWindow()
+			: base()
 		{
 			// render windows are low priority
-			Priority = RenderTargetPriority.Default;
+			this.Priority = RenderTargetPriority.Default;
 		}
 
 		#endregion
@@ -220,9 +222,9 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
-				if ( disposeManagedResources ) { }
+				if ( disposeManagedResources ) {}
 			}
 
 			// make sure this window is no longer active
@@ -230,25 +232,6 @@ namespace Axiom.Graphics
 
 			base.dispose( disposeManagedResources );
 		}
-
-		/// <summary>
-		/// Alter fullscreen mode options.
-		/// </summary>
-		/// <remarks>
-		/// Nothing will happen unless the settings here are different from the
-		/// current settings.
-		/// </remarks>
-		/// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
-		/// <param name="width">The new width to use</param>
-		/// <param name="height">The new height to use</param>
-		[OgreVersion( 1, 7, 2 )]
-		public virtual void SetFullScreen( bool fullScreen, int width, int height ) { }
-
-		/// <summary>
-		/// Destroys the window.
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public abstract void Destroy();
 
 		#region Abstract methods and properties
 
@@ -280,7 +263,7 @@ namespace Axiom.Graphics
 		/// Notify that the window has been resized
 		/// </summary>
 		/// <remarks>You don't need to call this unless you created the window externally.</remarks>
-		public virtual void WindowMovedOrResized() { }
+		public virtual void WindowMovedOrResized() {}
 
 		#endregion
 
@@ -292,12 +275,31 @@ namespace Axiom.Graphics
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
-			top = this._top;
-			left = this._left;
+			top = _top;
+			left = _left;
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Alter fullscreen mode options.
+		/// </summary>
+		/// <remarks>
+		/// Nothing will happen unless the settings here are different from the
+		/// current settings.
+		/// </remarks>
+		/// <param name="fullScreen">Whether to use fullscreen mode or not.</param>
+		/// <param name="width">The new width to use</param>
+		/// <param name="height">The new height to use</param>
+		[OgreVersion( 1, 7, 2 )]
+		public virtual void SetFullScreen( bool fullScreen, int width, int height ) {}
+
+		/// <summary>
+		/// Destroys the window.
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public abstract void Destroy();
 	}
 
-	public class RenderWindowList : List<RenderWindow> { }
+	public class RenderWindowList : List<RenderWindow> {}
 }

@@ -39,11 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 
 using MathHelper = Axiom.Math.Utility;
+
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -58,7 +59,7 @@ namespace Axiom.Core
 		/// Default constructor.
 		/// </summary>
 		public PixelCountStrategy()
-			: base( "PixelCount" ) { }
+			: base( "PixelCount" ) {}
 
 		#region LodStrategy Implementation
 
@@ -103,7 +104,7 @@ namespace Axiom.Core
 		protected override Real getValue( MovableObject movableObject, Camera camera )
 		{
 			// Get viewport
-			Viewport viewport = camera.Viewport;
+			var viewport = camera.Viewport;
 
 			// Get viewport area
 			float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
@@ -115,43 +116,43 @@ namespace Axiom.Core
 			switch ( camera.ProjectionType )
 			{
 				case Projection.Perspective:
+				{
+					// Get camera distance
+					var distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
+
+					// Check for 0 distance
+					if ( distanceSquared <= float.Epsilon )
 					{
-						// Get camera distance
-						float distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
-
-						// Check for 0 distance
-						if ( distanceSquared <= float.Epsilon )
-						{
-							return BaseValue;
-						}
-
-						// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-						Matrix4 projectionMatrix = camera.ProjectionMatrix;
-
-						//estimate pixel count
-						return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
+						return BaseValue;
 					}
-				// break;
+
+					// Get projection matrix (this is done to avoid computation of tan(fov / 2))
+					var projectionMatrix = camera.ProjectionMatrix;
+
+					//estimate pixel count
+					return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
+				}
+					// break;
 				case Projection.Orthographic:
+				{
+					// Compute orthographic area
+					var orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
+
+					// Check for 0 orthographic area
+					if ( orthoArea <= float.Epsilon )
 					{
-						// Compute orthographic area
-						float orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
-
-						// Check for 0 orthographic area
-						if ( orthoArea <= float.Epsilon )
-						{
-							return BaseValue;
-						}
-
-						// Estimate pixel count
-						return ( boundingArea * viewportArea ) / orthoArea;
+						return BaseValue;
 					}
-				// break;
+
+					// Estimate pixel count
+					return ( boundingArea * viewportArea ) / orthoArea;
+				}
+					// break;
 				default:
-					{
-						// This case is not covered for obvious reasons
-						throw new NotSupportedException();
-					}
+				{
+					// This case is not covered for obvious reasons
+					throw new NotSupportedException();
+				}
 			}
 		}
 

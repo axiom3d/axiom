@@ -33,8 +33,6 @@
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -112,46 +110,32 @@ namespace Axiom.Core
 			/// <summary>
 			/// The request channel, as an integer
 			/// </summary>
-			private readonly ushort _channel;
-
-			/// <summary>
-			/// The details of the request (user defined)
-			/// </summary>
-			private readonly object _data;
-
-			/// <summary>
-			/// Identifier (assigned by the system)
-			/// </summary>
-			private readonly RequestID _id;
-
-			/// <summary>
-			/// Retry count - set this to non-zero to have the request try again on failure
-			/// </summary>
-			private readonly byte _retryCount;
+			private ushort _channel;
 
 			/// <summary>
 			/// The request type, as an integer within the channel (user can define enumerations on this)
 			/// </summary>
-			private readonly ushort _type;
+			private ushort _type;
+
+			/// <summary>
+			/// The details of the request (user defined)
+			/// </summary>
+			private object _data;
+
+			/// <summary>
+			/// Retry count - set this to non-zero to have the request try again on failure
+			/// </summary>
+			private byte _retryCount;
+
+			/// <summary>
+			/// Identifier (assigned by the system)
+			/// </summary>
+			private RequestID _id;
 
 			/// <summary>
 			/// Abort Flag
 			/// </summary>
 			private bool _aborted;
-
-			/// <summary>
-			/// Constructor
-			/// </summary>
-			[OgreVersion( 1, 7, 2 )]
-			public Request( ushort channel, ushort rtype, object rData, byte retry, RequestID rid )
-			{
-				this._channel = channel;
-				this._type = rtype;
-				this._data = rData;
-				this._retryCount = retry;
-				this._id = rid;
-				this._aborted = false;
-			}
 
 			/// <summary>
 			/// Get the request channel (top level categorisation)
@@ -161,7 +145,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._channel;
+					return _channel;
 				}
 			}
 
@@ -173,7 +157,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._type;
+					return _type;
 				}
 			}
 
@@ -185,7 +169,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._data;
+					return _data;
 				}
 			}
 
@@ -197,7 +181,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._retryCount;
+					return _retryCount;
 				}
 			}
 
@@ -209,7 +193,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._id;
+					return _id;
 				}
 			}
 
@@ -221,8 +205,22 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._aborted;
+					return _aborted;
 				}
+			}
+
+			/// <summary>
+			/// Constructor
+			/// </summary>
+			[OgreVersion( 1, 7, 2 )]
+			public Request( ushort channel, ushort rtype, object rData, byte retry, RequestID rid )
+			{
+				_channel = channel;
+				_type = rtype;
+				_data = rData;
+				_retryCount = retry;
+				_id = rid;
+				_aborted = false;
 			}
 
 			/// <summary>
@@ -231,13 +229,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			public void AbortRequest()
 			{
-				this._aborted = true;
+				_aborted = true;
 			}
 
 			public static bool operator ==( Request lr, Request rr )
 			{
 				// If both are null, or both are same instance, return true.
-				if ( ReferenceEquals( lr, rr ) )
+				if ( System.Object.ReferenceEquals( lr, rr ) )
 				{
 					return true;
 				}
@@ -273,36 +271,24 @@ namespace Axiom.Core
 		public class Response
 		{
 			/// <summary>
-			/// Any diagnostic messages
-			/// </summary>
-			private readonly string _messages;
-
-			/// <summary>
 			/// Pointer to the request that this response is in relation to
 			/// </summary>
-			private readonly Request _request;
+			private Request _request;
 
 			/// <summary>
 			/// Whether the work item succeeded or not
 			/// </summary>
-			private readonly bool _success;
+			private bool _success;
+
+			/// <summary>
+			/// Any diagnostic messages
+			/// </summary>
+			private string _messages;
 
 			/// <summary>
 			/// Data associated with the result of the process
 			/// </summary>
 			private object _data;
-
-			public Response( Request rq, bool success, object data )
-				: this( rq, success, data, string.Empty ) { }
-
-			[OgreVersion( 1, 7, 2 )]
-			public Response( Request rq, bool success, object data, string msg )
-			{
-				this._request = rq;
-				this._success = success;
-				this._messages = msg;
-				this._data = data;
-			}
 
 			/// <summary>
 			/// Get the request that this is a response to (NB destruction destroys this)
@@ -312,7 +298,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._request;
+					return _request;
 				}
 			}
 
@@ -324,7 +310,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._success;
+					return _success;
 				}
 			}
 
@@ -336,7 +322,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._messages;
+					return _messages;
 				}
 			}
 
@@ -348,8 +334,20 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._data;
+					return _data;
 				}
+			}
+
+			public Response( Request rq, bool success, object data )
+				: this( rq, success, data, string.Empty ) {}
+
+			[OgreVersion( 1, 7, 2 )]
+			public Response( Request rq, bool success, object data, string msg )
+			{
+				_request = rq;
+				_success = success;
+				_messages = msg;
+				_data = data;
 			}
 
 			/// <summary>
@@ -358,8 +356,8 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			public void AbortRequest()
 			{
-				Request.AbortRequest();
-				this._data = null;
+				this.Request.AbortRequest();
+				_data = null;
 			}
 		};
 
@@ -451,7 +449,7 @@ namespace Axiom.Core
 
 		public void Startup()
 		{
-			Startup( true );
+			this.Startup( true );
 		}
 #endif
 
@@ -513,12 +511,12 @@ namespace Axiom.Core
 
 		public RequestID AddRequest( ushort channel, ushort requestType, object rData )
 		{
-			return AddRequest( channel, requestType, rData, 0, false );
+			return this.AddRequest( channel, requestType, rData, 0, false );
 		}
 
 		public RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount )
 		{
-			return AddRequest( channel, requestType, rData, retryCount, false );
+			return this.AddRequest( channel, requestType, rData, retryCount, false );
 		}
 #endif
 
@@ -579,15 +577,15 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual ushort GetChannel( string channelName )
 		{
-			lock ( this.channelMapMutex )
+			lock ( channelMapMutex )
 			{
-				if ( !this.channelMap.ContainsKey( channelName ) )
+				if ( !channelMap.ContainsKey( channelName ) )
 				{
-					this.channelMap.Add( channelName, this.nextChannel++ );
+					channelMap.Add( channelName, nextChannel++ );
 				}
 			}
 
-			return this.channelMap[ channelName ];
+			return channelMap[ channelName ];
 		}
 	};
 }

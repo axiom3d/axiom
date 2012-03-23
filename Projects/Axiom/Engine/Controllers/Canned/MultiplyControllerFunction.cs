@@ -48,7 +48,7 @@ namespace Axiom.Controllers.Canned
 	/// </summary>
 	public class MultipyControllerFunction : BaseControllerFunction
 	{
-		private readonly Real rate = 10.0f;
+		private Real rate = 10.0f;
 
 		public MultipyControllerFunction( Real rate )
 			: base( false )
@@ -64,7 +64,7 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			return AdjustInput( sourceValue * this.rate );
+			return AdjustInput( sourceValue * rate );
 		}
 	}
 }

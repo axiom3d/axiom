@@ -57,7 +57,45 @@ namespace Axiom.Media
 	{
 		#region Nested Structures
 
-		#region Nested type: DDSCaps
+		private struct DDSPixelFormat
+		{
+			public int size;
+			public int flags;
+			public int fourCC;
+			public int rgbBits;
+			public int redMask;
+			public int greenMask;
+			public int blueMask;
+			public int alphaMask;
+
+			internal static DDSPixelFormat Read( BinaryReader br )
+			{
+				var pf = new DDSPixelFormat();
+
+				pf.size = br.ReadInt32();
+				pf.flags = br.ReadInt32();
+				pf.fourCC = br.ReadInt32();
+				pf.rgbBits = br.ReadInt32();
+				pf.redMask = br.ReadInt32();
+				pf.greenMask = br.ReadInt32();
+				pf.blueMask = br.ReadInt32();
+				pf.alphaMask = br.ReadInt32();
+
+				return pf;
+			}
+
+			internal void Write( BinaryWriter br )
+			{
+				br.Write( size );
+				br.Write( flags );
+				br.Write( fourCC );
+				br.Write( rgbBits );
+				br.Write( redMask );
+				br.Write( greenMask );
+				br.Write( blueMask );
+				br.Write( alphaMask );
+			}
+		};
 
 		private struct DDSCaps
 		{
@@ -81,33 +119,29 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( this.caps1 );
-				br.Write( this.caps2 );
-				br.Write( this.reserved[ 0 ] );
-				br.Write( this.reserved[ 1 ] );
+				br.Write( caps1 );
+				br.Write( caps2 );
+				br.Write( reserved[ 0 ] );
+				br.Write( reserved[ 1 ] );
 			}
 		};
-
-		#endregion
-
-		#region Nested type: DDSHeader
 
 		/// <summary>
 		/// Main header, note preceded by 'DDS '
 		/// </summary>
 		private struct DDSHeader
 		{
-			public DDSCaps caps;
-			public int depth;
+			public int size;
 			public int flags;
 			public int height;
-			public int mipMapCount;
-			public DDSPixelFormat pixelFormat;
-			public int[] reserved1; // length = 11
-			public int reserved2;
-			public int size;
-			public int sizeOrPitch;
 			public int width;
+			public int sizeOrPitch;
+			public int depth;
+			public int mipMapCount;
+			public int[] reserved1; // length = 11
+			public DDSPixelFormat pixelFormat;
+			public DDSCaps caps;
+			public int reserved2;
 
 			internal static DDSHeader Read( BinaryReader br )
 			{
@@ -122,7 +156,7 @@ namespace Axiom.Media
 				h.mipMapCount = br.ReadInt32();
 
 				h.reserved1 = new int[ 11 ];
-				for ( int i = 0; i < 11; ++i )
+				for ( var i = 0; i < 11; ++i )
 				{
 					h.reserved1[ i ] = br.ReadInt32();
 				}
@@ -137,73 +171,25 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( this.size );
-				br.Write( this.flags );
-				br.Write( this.height );
-				br.Write( this.width );
-				br.Write( this.sizeOrPitch );
-				br.Write( this.depth );
-				br.Write( this.mipMapCount );
+				br.Write( size );
+				br.Write( flags );
+				br.Write( height );
+				br.Write( width );
+				br.Write( sizeOrPitch );
+				br.Write( depth );
+				br.Write( mipMapCount );
 
-				foreach ( int cur in this.reserved1 )
+				foreach ( var cur in reserved1 )
 				{
 					br.Write( cur );
 				}
 
-				this.pixelFormat.Write( br );
-				this.caps.Write( br );
+				pixelFormat.Write( br );
+				caps.Write( br );
 
-				br.Write( this.reserved2 );
+				br.Write( reserved2 );
 			}
 		};
-
-		#endregion
-
-		#region Nested type: DDSPixelFormat
-
-		private struct DDSPixelFormat
-		{
-			public int alphaMask;
-			public int blueMask;
-			public int flags;
-			public int fourCC;
-			public int greenMask;
-			public int redMask;
-			public int rgbBits;
-			public int size;
-
-			internal static DDSPixelFormat Read( BinaryReader br )
-			{
-				var pf = new DDSPixelFormat();
-
-				pf.size = br.ReadInt32();
-				pf.flags = br.ReadInt32();
-				pf.fourCC = br.ReadInt32();
-				pf.rgbBits = br.ReadInt32();
-				pf.redMask = br.ReadInt32();
-				pf.greenMask = br.ReadInt32();
-				pf.blueMask = br.ReadInt32();
-				pf.alphaMask = br.ReadInt32();
-
-				return pf;
-			}
-
-			internal void Write( BinaryWriter br )
-			{
-				br.Write( this.size );
-				br.Write( this.flags );
-				br.Write( this.fourCC );
-				br.Write( this.rgbBits );
-				br.Write( this.redMask );
-				br.Write( this.greenMask );
-				br.Write( this.blueMask );
-				br.Write( this.alphaMask );
-			}
-		};
-
-		#endregion
-
-		#region Nested type: DXTColorBlock
 
 		/// <summary>
 		/// An 8-byte DXT color block, represents a 4x4 texel area. Used by all DXT formats
@@ -229,10 +215,6 @@ namespace Axiom.Media
 			}
 		};
 
-		#endregion
-
-		#region Nested type: DXTExplicitAlphaBlock
-
 		/// <summary>
 		/// An 8-byte DXT explicit alpha block, represents a 4x4 texel area. Used by DXT2/3
 		/// </summary>
@@ -246,7 +228,7 @@ namespace Axiom.Media
 				var block = new DXTExplicitAlphaBlock();
 
 				block.alphaRow = new ushort[ 4 ];
-				for ( int i = 0; i < 4; ++i )
+				for ( var i = 0; i < 4; ++i )
 				{
 					block.alphaRow[ i ] = br.ReadUInt16();
 				}
@@ -254,10 +236,6 @@ namespace Axiom.Media
 				return block;
 			}
 		};
-
-		#endregion
-
-		#region Nested type: DXTInterpolatedAlphaBlock
 
 		/// <summary>
 		/// An 8-byte DXT interpolated alpha block, represents a 4x4 texel area. Used by DXT4/5
@@ -283,15 +261,14 @@ namespace Axiom.Media
 			}
 		};
 
-		#endregion
-
 		#endregion Nested Structures
 
 		#region Constants
 
-		private const int DDS_PIXELFORMAT_SIZE = 8 * sizeof( int );
-		private const int DDS_CAPS_SIZE = 4 * sizeof( int );
-		private const int DDS_HEADER_SIZE = 19 * sizeof( int ) + DDS_PIXELFORMAT_SIZE + DDS_CAPS_SIZE;
+		private readonly int DDS_MAGIC = FOURCC( 'D', 'D', 'S', ' ' );
+		private const int DDS_PIXELFORMAT_SIZE = 8 * sizeof ( int );
+		private const int DDS_CAPS_SIZE = 4 * sizeof ( int );
+		private const int DDS_HEADER_SIZE = 19 * sizeof ( int ) + DDS_PIXELFORMAT_SIZE + DDS_CAPS_SIZE;
 
 		private const int DDSD_CAPS = 0x00000001;
 		private const int DDSD_HEIGHT = 0x00000002;
@@ -323,7 +300,6 @@ namespace Axiom.Media
 		private const int D3DFMT_R32F = 114;
 		private const int D3DFMT_G32R32F = 115;
 		private const int D3DFMT_A32B32G32R32F = 116;
-		private readonly int DDS_MAGIC = FOURCC( 'D', 'D', 'S', ' ' );
 
 		#endregion Constants
 
@@ -378,27 +354,27 @@ namespace Axiom.Media
 
 		/// <see cref="Axiom.Media.Codec.Encode"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override Stream Encode( Stream input, CodecData data )
+		public override Stream Encode( Stream input, Codec.CodecData data )
 		{
 			throw new NotImplementedException( "DDS file encoding is not yet supported." );
 		}
 
 		/// <see cref="Axiom.Media.Codec.EncodeToFile"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override void EncodeToFile( Stream input, string outFileName, CodecData data )
+		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
 		{
 			// Unwrap codecDataPtr - data is cleaned by calling function
 			var imgData = (ImageData)data;
 
 			// Check size for cube map faces
-			bool isCubeMap = imgData.size == Image.CalculateSize( imgData.numMipMaps, 6, imgData.width, imgData.height, imgData.depth, imgData.format );
+			var isCubeMap = imgData.size == Image.CalculateSize( imgData.numMipMaps, 6, imgData.width, imgData.height, imgData.depth, imgData.format );
 
 			// Establish texture attributes
-			bool isVolume = imgData.depth > 1;
-			bool isFloat32r = imgData.format == PixelFormat.FLOAT32_R;
-			bool hasAlpha = false;
-			bool notImplemented = false;
-			string notImplementedString = string.Empty;
+			var isVolume = imgData.depth > 1;
+			var isFloat32r = imgData.format == PixelFormat.FLOAT32_R;
+			var hasAlpha = false;
+			var notImplemented = false;
+			var notImplementedString = string.Empty;
 
 			// Check for all the 'not implemented' conditions
 			if ( imgData.numMipMaps != 0 )
@@ -408,14 +384,14 @@ namespace Axiom.Media
 				notImplementedString += " mipmaps";
 			}
 
-			if ( isVolume && ( imgData.width != imgData.height ) )
+			if ( ( isVolume == true ) && ( imgData.width != imgData.height ) )
 			{
 				// Square textures only
 				notImplemented = true;
 				notImplementedString += " non square textures";
 			}
 
-			int size = 1;
+			var size = 1;
 			while ( size < imgData.width )
 			{
 				size <<= 1;
@@ -452,12 +428,12 @@ namespace Axiom.Media
 				// Build header and write to disk
 
 				// Variables for some DDS header flags
-				int ddsHeaderFlags = 0;
-				int ddsHeaderRgbBits = 0;
-				int ddsHeaderSizeOrPitch = 0;
-				int ddsHeaderCaps1 = 0;
-				int ddsHeaderCaps2 = 0;
-				int ddsMagic = this.DDS_MAGIC;
+				var ddsHeaderFlags = 0;
+				var ddsHeaderRgbBits = 0;
+				var ddsHeaderSizeOrPitch = 0;
+				var ddsHeaderCaps1 = 0;
+				var ddsHeaderCaps2 = 0;
+				var ddsMagic = DDS_MAGIC;
 
 				// Initalise the header flags
 				ddsHeaderFlags = ( isVolume ) ? DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_DEPTH | DDSD_PIXELFORMAT : DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
@@ -503,7 +479,7 @@ namespace Axiom.Media
 				}
 
 				// Populate the DDS header information
-				var ddsHeader = new DDSHeader();
+				DDSHeader ddsHeader = new DDSHeader();
 				ddsHeader.size = DDS_HEADER_SIZE;
 				ddsHeader.flags = ddsHeaderFlags;
 				ddsHeader.width = imgData.width;
@@ -533,14 +509,14 @@ namespace Axiom.Media
 				ddsHeader.caps.reserved[ 1 ] = 0;
 
 				// Swap endian
-				using ( BufferBase wrap = BufferBase.Wrap( ddsMagic ) )
+				using ( var wrap = BufferBase.Wrap( ddsMagic ) )
 				{
-					_flipEndian( wrap, sizeof( uint ), 1 );
+					_flipEndian( wrap, sizeof ( uint ), 1 );
 				}
 
-				using ( BufferBase wrap = BufferBase.Wrap( ddsHeader ) )
+				using ( var wrap = BufferBase.Wrap( ddsHeader ) )
 				{
-					_flipEndian( wrap, 4, Memory.SizeOf( typeof( DDSHeader ) ) / 4 );
+					_flipEndian( wrap, 4, Memory.SizeOf( typeof ( DDSHeader ) ) / 4 );
 				}
 
 				// Write the file
@@ -626,16 +602,16 @@ namespace Axiom.Media
 		private PixelFormat _convertPixelFormat( int rgbBits, int rMask, int gMask, int bMask, int aMask )
 		{
 			// General search through pixel formats
-			for ( int i = (int)PixelFormat.Unknown + 1; i < (int)PixelFormat.Count; ++i )
+			for ( var i = (int)PixelFormat.Unknown + 1; i < (int)PixelFormat.Count; ++i )
 			{
 				var pf = (PixelFormat)i;
 				if ( PixelUtil.GetNumElemBits( pf ) == rgbBits )
 				{
-					uint[] testMasks = PixelUtil.GetBitMasks( pf );
-					int[] testBits = PixelUtil.GetBitDepths( pf );
+					var testMasks = PixelUtil.GetBitMasks( pf );
+					var testBits = PixelUtil.GetBitDepths( pf );
 
 					if ( testMasks[ 0 ] == rMask && testMasks[ 1 ] == gMask && testMasks[ 2 ] == bMask &&// for alpha, deal with 'X8' formats by checking bit counts
-						 ( testMasks[ 3 ] == aMask || ( aMask == 0 && testBits[ 3 ] == 0 ) ) )
+					     ( testMasks[ 3 ] == aMask || ( aMask == 0 && testBits[ 3 ] == 0 ) ) )
 					{
 						return pf;
 					}
@@ -656,12 +632,12 @@ namespace Axiom.Media
 			// Colour lookup table
 			var derivedColours = new ColorEx[ 4 ];
 
-			using ( BufferBase src = BufferBase.Wrap( block.colour_0 ) )
+			using ( var src = BufferBase.Wrap( block.colour_0 ) )
 			{
 				derivedColours[ 0 ] = PixelConverter.UnpackColor( PixelFormat.R5G6B5, src );
 			}
 
-			using ( BufferBase src = BufferBase.Wrap( block.colour_1 ) )
+			using ( var src = BufferBase.Wrap( block.colour_1 ) )
 			{
 				derivedColours[ 1 ] = PixelConverter.UnpackColor( PixelFormat.R5G6B5, src );
 			}
@@ -684,12 +660,12 @@ namespace Axiom.Media
 			}
 
 			// Process 4x4 block of texels
-			for ( int row = 0; row < 4; ++row )
+			for ( var row = 0; row < 4; ++row )
 			{
-				for ( int x = 0; x < 4; ++x )
+				for ( var x = 0; x < 4; ++x )
 				{
 					// LSB come first
-					int colIdx = block.indexRow[ row ] >> ( x * 2 ) & 0x3;
+					var colIdx = (byte)block.indexRow[ row ] >> ( x * 2 ) & 0x3;
 					if ( pf == PixelFormat.DXT1 )
 					{
 						// Overwrite entire colour
@@ -698,7 +674,7 @@ namespace Axiom.Media
 					else
 					{
 						// alpha has already been read (alpha precedes colour)
-						ColorEx col = pCol[ ( row * 4 ) + x ];
+						var col = pCol[ ( row * 4 ) + x ];
 						col.r = derivedColours[ colIdx ].r;
 						col.g = derivedColours[ colIdx ].g;
 						col.b = derivedColours[ colIdx ].b;
@@ -716,14 +692,14 @@ namespace Axiom.Media
 			// Note - we assume all values have already been endian swapped
 
 			// This is an explicit alpha block, 4 bits per pixel, LSB first
-			for ( int row = 0; row < 4; ++row )
+			for ( var row = 0; row < 4; ++row )
 			{
-				for ( int x = 0; x < 4; ++x )
+				for ( var x = 0; x < 4; ++x )
 				{
 					// Shift and mask off to 4 bits
-					int val = (byte)block.alphaRow[ row ] >> ( x * 4 ) & 0xF;
+					var val = (byte)block.alphaRow[ row ] >> ( x * 4 ) & 0xF;
 					// Convert to [0,1]
-					pCol[ row * 4 + x ].a = val / (Real)0xF;
+					pCol[ row * 4 + x ].a = (Real)val / (Real)0xF;
 				}
 			}
 		}
@@ -748,10 +724,10 @@ namespace Axiom.Media
 				// we want to fill in [1] through [4] at weights ranging
 				// from 1/5 to 4/5
 				Real denom = 1.0f / 5.0f;
-				for ( int i = 0; i < 4; ++i )
+				for ( var i = 0; i < 4; ++i )
 				{
-					Real factor0 = ( 4 - i ) * denom;
-					Real factor1 = ( i + 1 ) * denom;
+					var factor0 = ( 4 - i ) * denom;
+					var factor1 = ( i + 1 ) * denom;
 					derivedAlphas[ i + 2 ] = ( factor0 * block.alpha_0 ) + ( factor1 * block.alpha_1 );
 				}
 				derivedAlphas[ 6 ] = 0.0f;
@@ -764,20 +740,20 @@ namespace Axiom.Media
 				// we want to fill in [1] through [6] at weights ranging
 				// from 1/7 to 6/7
 				Real denom = 1.0f / 7.0f;
-				for ( int i = 0; i < 6; ++i )
+				for ( var i = 0; i < 6; ++i )
 				{
-					Real factor0 = ( 6 - i ) * denom;
-					Real factor1 = ( i + 1 ) * denom;
+					var factor0 = ( 6 - i ) * denom;
+					var factor1 = ( i + 1 ) * denom;
 					derivedAlphas[ i + 2 ] = ( factor0 * block.alpha_0 ) + ( factor1 * block.alpha_1 );
 				}
 			}
 
 			// Ok, now we've built the reference values, process the indexes
-			for ( int i = 0; i < 16; ++i )
+			for ( var i = 0; i < 16; ++i )
 			{
-				int baseByte = ( i * 3 ) / 8;
-				int baseBit = ( i * 3 ) % 8;
-				int bits = block.indexes[ baseByte ] >> baseBit & 0x7;
+				var baseByte = ( i * 3 ) / 8;
+				var baseBit = ( i * 3 ) % 8;
+				var bits = (byte)block.indexes[ baseByte ] >> baseBit & 0x7;
 				// do we need to stitch in next byte too?
 				if ( baseBit > 5 )
 				{
@@ -790,15 +766,15 @@ namespace Axiom.Media
 
 		/// <see cref="Axiom.Media.Codec.Decode"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override DecodeResult Decode( Stream input )
+		public override Codec.DecodeResult Decode( Stream input )
 		{
 			using ( var br = new BinaryReader( input ) )
 			{
 				// Read 4 character code
-				int fileType = br.ReadInt32();
-				using ( BufferBase wrap = BufferBase.Wrap( fileType ) )
+				var fileType = br.ReadInt32();
+				using ( var wrap = BufferBase.Wrap( fileType ) )
 				{
-					_flipEndian( wrap, sizeof( uint ), 1 );
+					_flipEndian( wrap, sizeof ( uint ), 1 );
 				}
 
 				if ( FOURCC( 'D', 'D', 'S', ' ' ) != fileType )
@@ -807,12 +783,12 @@ namespace Axiom.Media
 				}
 
 				// Read header in full
-				DDSHeader header = DDSHeader.Read( br );
+				var header = DDSHeader.Read( br );
 
 				// Endian flip if required, all 32-bit values
-				using ( BufferBase wrap = BufferBase.Wrap( header ) )
+				using ( var wrap = BufferBase.Wrap( header ) )
 				{
-					_flipEndian( wrap, 4, Memory.SizeOf( typeof( DDSHeader ) ) / 4 );
+					_flipEndian( wrap, 4, Memory.SizeOf( typeof ( DDSHeader ) ) / 4 );
 				}
 
 				// Check some sizes
@@ -831,7 +807,7 @@ namespace Axiom.Media
 				imgData.depth = 1; // (deal with volume later)
 				imgData.width = header.width;
 				imgData.height = header.height;
-				int numFaces = 1; // assume one face until we know otherwise
+				var numFaces = 1; // assume one face until we know otherwise
 
 				if ( ( header.caps.caps1 & DDSCAPS_MIPMAP ) != 0 )
 				{
@@ -844,7 +820,7 @@ namespace Axiom.Media
 
 				imgData.flags = 0;
 
-				bool decompressDXT = false;
+				var decompressDXT = false;
 				// Figure out basic image type
 				if ( ( header.caps.caps2 & DDSCAPS2_CUBEMAP ) != 0 )
 				{
@@ -857,7 +833,7 @@ namespace Axiom.Media
 					imgData.depth = header.depth;
 				}
 				// Pixel format
-				PixelFormat sourceFormat = PixelFormat.Unknown;
+				var sourceFormat = PixelFormat.Unknown;
 
 				if ( ( header.pixelFormat.flags & DDPF_FOURCC ) != 0 )
 				{
@@ -885,18 +861,18 @@ namespace Axiom.Media
 								// values will benefit from the 32-bit results, and the source
 								// from which the 16-bit samples are calculated may have been
 								// 32-bit so can benefit from this.
-								DXTColorBlock block = DXTColorBlock.Read( br );
-								using ( BufferBase wrap = BufferBase.Wrap( block.colour_0 ) )
+								var block = DXTColorBlock.Read( br );
+								using ( var wrap = BufferBase.Wrap( block.colour_0 ) )
 								{
-									_flipEndian( wrap, sizeof( ushort ), 1 );
+									_flipEndian( wrap, sizeof ( ushort ), 1 );
 								}
 
-								using ( BufferBase wrap = BufferBase.Wrap( block.colour_1 ) )
+								using ( var wrap = BufferBase.Wrap( block.colour_1 ) )
 								{
-									_flipEndian( wrap, sizeof( ushort ), 1 );
+									_flipEndian( wrap, sizeof ( ushort ), 1 );
 								}
 								// skip back since we'll need to read this again
-								br.BaseStream.Seek( 0 - (long)Memory.SizeOf( typeof( DXTColorBlock ) ), SeekOrigin.Current );
+								br.BaseStream.Seek( 0 - (long)Memory.SizeOf( typeof ( DXTColorBlock ) ), SeekOrigin.Current );
 								// colour_0 <= colour_1 means transparency in DXT1
 								if ( block.colour_0 <= block.colour_1 )
 								{
@@ -941,18 +917,18 @@ namespace Axiom.Media
 
 				// Now deal with the data
 				var dest = new byte[ imgData.size ];
-				BufferBase destBuffer = BufferBase.Wrap( dest );
+				var destBuffer = BufferBase.Wrap( dest );
 
 				// all mips for a face, then each face
-				for ( int i = 0; i < numFaces; ++i )
+				for ( var i = 0; i < numFaces; ++i )
 				{
-					int width = imgData.width;
-					int height = imgData.height;
-					int depth = imgData.depth;
+					var width = imgData.width;
+					var height = imgData.height;
+					var depth = imgData.depth;
 
-					for ( int mip = 0; mip <= imgData.numMipMaps; ++mip )
+					for ( var mip = 0; mip <= imgData.numMipMaps; ++mip )
 					{
-						int dstPitch = width * PixelUtil.GetNumElemBytes( imgData.format );
+						var dstPitch = width * PixelUtil.GetNumElemBytes( imgData.format );
 
 						if ( PixelUtil.IsCompressed( sourceFormat ) )
 						{
@@ -964,25 +940,25 @@ namespace Axiom.Media
 								DXTExplicitAlphaBlock eAlpha;
 								// 4x4 block of decompressed colour
 								var tempColours = new ColorEx[ 16 ];
-								int destBpp = PixelUtil.GetNumElemBytes( imgData.format );
-								int sx = Utility.Min( width, 4 );
-								int sy = Utility.Min( height, 4 );
-								int destPitchMinus4 = dstPitch - destBpp * sx;
+								var destBpp = PixelUtil.GetNumElemBytes( imgData.format );
+								var sx = Utility.Min( width, 4 );
+								var sy = Utility.Min( height, 4 );
+								var destPitchMinus4 = dstPitch - destBpp * sx;
 								// slices are done individually
-								for ( int z = 0; z < depth; ++z )
+								for ( var z = 0; z < depth; ++z )
 								{
 									// 4x4 blocks in x/y
-									for ( int y = 0; y < height; y += 4 )
+									for ( var y = 0; y < height; y += 4 )
 									{
-										for ( int x = 0; x < width; x += 4 )
+										for ( var x = 0; x < width; x += 4 )
 										{
 											if ( sourceFormat == PixelFormat.DXT2 || sourceFormat == PixelFormat.DXT3 )
 											{
 												// explicit alpha
 												eAlpha = DXTExplicitAlphaBlock.Read( br );
-												using ( BufferBase wrap = BufferBase.Wrap( eAlpha.alphaRow ) )
+												using ( var wrap = BufferBase.Wrap( eAlpha.alphaRow ) )
 												{
-													_flipEndian( wrap, sizeof( ushort ), 4 );
+													_flipEndian( wrap, sizeof ( ushort ), 4 );
 												}
 												_unpackDXTAlpha( eAlpha, tempColours );
 											}
@@ -990,35 +966,35 @@ namespace Axiom.Media
 											{
 												// interpolated alpha
 												iAlpha = DXTInterpolatedAlphaBlock.Read( br );
-												using ( BufferBase wrap = BufferBase.Wrap( iAlpha.alpha_0 ) )
+												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_0 ) )
 												{
-													_flipEndian( wrap, sizeof( ushort ), 1 );
+													_flipEndian( wrap, sizeof ( ushort ), 1 );
 												}
 
-												using ( BufferBase wrap = BufferBase.Wrap( iAlpha.alpha_1 ) )
+												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_1 ) )
 												{
-													_flipEndian( wrap, sizeof( ushort ), 1 );
+													_flipEndian( wrap, sizeof ( ushort ), 1 );
 												}
 												_unpackDXTAlpha( iAlpha, tempColours );
 											}
 											// always read colour
 											col = DXTColorBlock.Read( br );
 
-											using ( BufferBase wrap = BufferBase.Wrap( col.colour_0 ) )
+											using ( var wrap = BufferBase.Wrap( col.colour_0 ) )
 											{
-												_flipEndian( wrap, sizeof( ushort ), 1 );
+												_flipEndian( wrap, sizeof ( ushort ), 1 );
 											}
 
-											using ( BufferBase wrap = BufferBase.Wrap( col.colour_1 ) )
+											using ( var wrap = BufferBase.Wrap( col.colour_1 ) )
 											{
-												_flipEndian( wrap, sizeof( ushort ), 1 );
+												_flipEndian( wrap, sizeof ( ushort ), 1 );
 											}
 											_unpackDXTColor( sourceFormat, col, tempColours );
 
 											// write 4x4 block to uncompressed version
-											for ( int by = 0; by < sy; ++by )
+											for ( var by = 0; by < sy; ++by )
 											{
-												for ( int bx = 0; bx < sx; ++bx )
+												for ( var bx = 0; bx < sx; ++bx )
 												{
 													PixelConverter.PackColor( tempColours[ by * 4 + bx ], imgData.format, destBuffer );
 													destBuffer += destBpp;
@@ -1047,8 +1023,8 @@ namespace Axiom.Media
 							{
 								// load directly
 								// DDS format lies! sizeOrPitch is not always set for DXT!!
-								int dxtSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
-								using ( BufferBase src = BufferBase.Wrap( br.ReadBytes( dxtSize ) ) )
+								var dxtSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
+								using ( var src = BufferBase.Wrap( br.ReadBytes( dxtSize ) ) )
 								{
 									Memory.Copy( src, destBuffer, dxtSize );
 								}
@@ -1071,11 +1047,11 @@ namespace Axiom.Media
 							Contract.Requires( dstPitch <= srcPitch );
 							var srcAdvance = (long)( srcPitch - dstPitch );
 
-							for ( int z = 0; z < imgData.depth; ++z )
+							for ( var z = 0; z < imgData.depth; ++z )
 							{
-								for ( int y = 0; y < imgData.height; ++y )
+								for ( var y = 0; y < imgData.height; ++y )
 								{
-									using ( BufferBase src = BufferBase.Wrap( br.ReadBytes( dstPitch ) ) )
+									using ( var src = BufferBase.Wrap( br.ReadBytes( dstPitch ) ) )
 									{
 										Memory.Copy( src, destBuffer, dstPitch );
 									}
@@ -1149,15 +1125,15 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
 		{
-			if ( maxbytes >= sizeof( int ) )
+			if ( maxbytes >= sizeof ( int ) )
 			{
-				int fileType = BitConverter.ToInt32( magicBuf, 0 );
-				using ( BufferBase data = BufferBase.Wrap( fileType ) )
+				var fileType = BitConverter.ToInt32( magicBuf, 0 );
+				using ( var data = BufferBase.Wrap( fileType ) )
 				{
-					_flipEndian( data, sizeof( int ), 1 );
+					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( this.DDS_MAGIC == fileType )
+				if ( DDS_MAGIC == fileType )
 				{
 					return "dds";
 				}

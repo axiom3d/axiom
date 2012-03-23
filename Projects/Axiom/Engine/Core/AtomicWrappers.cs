@@ -34,8 +34,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
-using System.Threading;
 
 #endregion Namespace Declarations
 
@@ -45,7 +43,7 @@ namespace Axiom.Core
 	{
 		#region Fields
 
-		private readonly int _size;
+		private int _size;
 		private const string ERROR_MESSAGE = "Only 16, 32, and 64 bit scalars supported in win32.";
 
 #if WINDOWS_PHONE
@@ -64,20 +62,20 @@ namespace Axiom.Core
 
 		public AtomicScalar()
 		{
-			Type type = typeof( T );
-			this._size = type.IsEnum ? 4 : Memory.SizeOf( type );
+			var type = typeof ( T );
+			_size = type.IsEnum ? 4 : Memory.SizeOf( type );
 		}
 
 		public AtomicScalar( T initial )
 			: this()
 		{
-			Value = initial;
+			this.Value = initial;
 		}
 
 		public AtomicScalar( AtomicScalar<T> cousin )
 			: this()
 		{
-			Value = cousin.Value;
+			this.Value = cousin.Value;
 		}
 
 		#endregion Constructors
@@ -86,14 +84,14 @@ namespace Axiom.Core
 
 		public bool Cas( T old, T nu )
 		{
-			if ( this._size == 2 || this._size == 4 || this._size == 8 )
+			if ( _size == 2 || _size == 4 || _size == 8 )
 			{
-				long f = Convert.ToInt64( Value );
-				long o = Convert.ToInt64( old );
-				long n = Convert.ToInt64( nu );
+				var f = Convert.ToInt64( this.Value );
+				var o = Convert.ToInt64( old );
+				var n = Convert.ToInt64( nu );
 
 #if !WINDOWS_PHONE
-				bool result = Interlocked.CompareExchange( ref f, o, n ).Equals( o );
+				var result = System.Threading.Interlocked.CompareExchange( ref f, o, n ).Equals( o );
 #else
                 bool result = false;
                 lock ( _mutex )
@@ -105,7 +103,7 @@ namespace Axiom.Core
                     result = oldValue.Equals( o );
                 }
 #endif
-				Value = _changeType( f );
+				this.Value = _changeType( f );
 
 				return result;
 			}
@@ -118,7 +116,7 @@ namespace Axiom.Core
 		[AxiomHelper( 0, 9 )]
 		private static T _changeType( object value )
 		{
-			Type type = typeof( T );
+			var type = typeof ( T );
 
 			if ( !type.IsEnum )
 			{
@@ -126,13 +124,13 @@ namespace Axiom.Core
 			}
 			else
 			{
-				FieldInfo[] fields = type.GetFields();
-				int idx = ( (int)Convert.ChangeType( value, typeof( int ), null ) ) + 1;
+				var fields = type.GetFields();
+				var idx = ( (int)Convert.ChangeType( value, typeof ( int ), null ) ) + 1;
 				if ( fields.Length > 0 && idx < fields.Length )
 				{
 					try
 					{
-						string s = fields[ idx ].Name;
+						var s = fields[ idx ].Name;
 						return (T)Enum.Parse( type, s, false );
 					}
 					catch
@@ -155,9 +153,9 @@ namespace Axiom.Core
 		{
 			if ( value._size == 2 || value._size == 4 || value._size == 8 )
 			{
-				long v = Convert.ToInt64( value.Value );
+				var v = Convert.ToInt64( value.Value );
 #if !WINDOWS_PHONE
-				Interlocked.Increment( ref v );
+				System.Threading.Interlocked.Increment( ref v );
 #else
                 lock ( _mutex )
                 {
@@ -176,9 +174,9 @@ namespace Axiom.Core
 		{
 			if ( value._size == 2 || value._size == 4 || value._size == 8 )
 			{
-				long v = Convert.ToInt64( value.Value );
+				var v = Convert.ToInt64( value.Value );
 #if !WINDOWS_PHONE
-				Interlocked.Decrement( ref v );
+				System.Threading.Interlocked.Decrement( ref v );
 #else
                 lock ( _mutex )
                 {

@@ -37,10 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Diagnostics;
+using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+
+using Tao.OpenGl;
+
+using System.Diagnostics;
 
 using ResourceHandle = System.UInt64;
 
@@ -81,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="type">Type of program (vertex or fragment).</param>
 		/// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
 		internal GLGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) { }
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Constructors
 
@@ -140,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this.programId;
+				return programId;
 			}
 		}
 
@@ -151,7 +155,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this.programType;
+				return programType;
 			}
 		}
 

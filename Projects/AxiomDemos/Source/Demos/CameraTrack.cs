@@ -1,11 +1,13 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+using Axiom.Overlays;
 
 #endregion Namespace Declarations
 
@@ -15,14 +17,14 @@ namespace Axiom.Demos
 	///     Spline pathed camera tracking sample.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class CameraTrack : TechDemo
 	{
 		#region Private Fields
 
-		private AnimationState animationState;
-		private SceneNode headNode;
+		private AnimationState animationState = null;
+		private SceneNode headNode = null;
 
 		#endregion Private Fields
 
@@ -41,7 +43,7 @@ namespace Axiom.Demos
 			light.Position = new Vector3( 20, 80, 50 );
 
 			// create a plane for the plane mesh
-			var plane = new Plane();
+			Plane plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 200;
 
@@ -57,11 +59,11 @@ namespace Axiom.Demos
 			Entity ogreHead = scene.CreateEntity( "OgreHead", "ogrehead.mesh" );
 
 			// create a scene node for the entity and attach the entity
-			this.headNode = scene.RootSceneNode.CreateChildSceneNode( "OgreHeadNode", Vector3.Zero, Quaternion.Identity );
-			this.headNode.AttachObject( ogreHead );
+			headNode = scene.RootSceneNode.CreateChildSceneNode( "OgreHeadNode", Vector3.Zero, Quaternion.Identity );
+			headNode.AttachObject( ogreHead );
 
 			// make sure the camera tracks this node
-			camera.SetAutoTracking( true, this.headNode, Vector3.Zero );
+			camera.SetAutoTracking( true, headNode, Vector3.Zero );
 
 			// create a scene node to attach the camera to
 			SceneNode cameraNode = scene.RootSceneNode.CreateChildSceneNode( "CameraNode" );
@@ -77,7 +79,7 @@ namespace Axiom.Demos
 			AnimationTrack track = animation.CreateNodeTrack( 0, cameraNode );
 
 			// create a few keyframes to move the camera around
-			var frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
+			TransformKeyFrame frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
 
 			frame = (TransformKeyFrame)track.CreateKeyFrame( 2.5f );
 			frame.Translate = new Vector3( 500, 500, -1000 );
@@ -92,10 +94,10 @@ namespace Axiom.Demos
 			frame.Translate = Vector3.Zero;
 
 			// create a new animation state to control the animation
-			this.animationState = scene.CreateAnimationState( "OgreHeadAnimation" );
+			animationState = scene.CreateAnimationState( "OgreHeadAnimation" );
 
 			// enable the animation
-			this.animationState.IsEnabled = true;
+			animationState.IsEnabled = true;
 
 			// turn on some fog
 			scene.SetFog( FogMode.Exp, ColorEx.White, 0.0002f );
@@ -108,7 +110,7 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// add time to the animation which is driven off of rendering time per frame
-			this.animationState.AddTime( evt.TimeSinceLastFrame );
+			animationState.AddTime( evt.TimeSinceLastFrame );
 
 			base.OnFrameStarted( source, evt );
 		}

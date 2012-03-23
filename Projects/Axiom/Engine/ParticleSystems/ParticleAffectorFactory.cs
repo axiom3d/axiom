@@ -64,6 +64,11 @@ namespace Axiom.ParticleSystems
 
 		#region Constructors
 
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public ParticleAffectorFactory() {}
+
 		#endregion
 
 		#region Properties
@@ -89,7 +94,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleAffector e )
 		{
 			// remove the affector from the list
-			this.affectorList.Remove( e );
+			affectorList.Remove( e );
 		}
 
 		#endregion

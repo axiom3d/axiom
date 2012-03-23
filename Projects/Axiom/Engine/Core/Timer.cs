@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
@@ -52,7 +54,7 @@ namespace Axiom.Core
 	{
 		#region Private Fields
 
-		private readonly Stopwatch _timer = new Stopwatch();
+		private Stopwatch _timer = new Stopwatch();
 
 		#endregion Private Fields
 
@@ -63,7 +65,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void Start()
 		{
-			this._timer.Start();
+			_timer.Start();
 		}
 
 		#endregion Methods
@@ -78,7 +80,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._timer.ElapsedTicks;
+				return _timer.ElapsedTicks;
 			}
 		}
 
@@ -102,7 +104,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._timer.IsRunning;
+				return _timer.IsRunning;
 			}
 		}
 
@@ -114,7 +116,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( (float)1.0 / this.Frequency );
+				return ( (float)1.0 / (float)Frequency );
 			}
 		}
 
@@ -140,15 +142,15 @@ namespace Axiom.Core
 		public void Reset()
 		{
 			// reset by restarting the timer
-			this._timer.Reset();
-			this._timer.Start();
+			_timer.Reset();
+			_timer.Start();
 		}
 
 		public long Microseconds
 		{
 			get
 			{
-				return this._timer.ElapsedMilliseconds / 10;
+				return _timer.ElapsedMilliseconds / 10;
 			}
 		}
 
@@ -156,7 +158,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._timer.ElapsedMilliseconds;
+				return _timer.ElapsedMilliseconds;
 			}
 		}
 

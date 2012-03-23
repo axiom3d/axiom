@@ -1,4 +1,9 @@
-﻿namespace Axiom.Samples.Ocean
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Axiom.Samples.Ocean
 {
 	public enum ShaderType
 	{
@@ -13,13 +18,13 @@
 
 	public struct ShaderControl
 	{
-		public int ElementIndex;
-		public float MaxVal;
-		public float MinVal;
 		public string Name;
 		public string ParamName;
-		public int PhysicalIndex;
 		public ShaderType Type;
+		public float MinVal;
+		public float MaxVal;
+		public int PhysicalIndex;
+		public int ElementIndex;
 
 		/// <summary>
 		/// 
@@ -28,7 +33,7 @@
 		{
 			get
 			{
-				return this.MaxVal - this.MinVal;
+				return MaxVal - MinVal;
 			}
 		}
 
@@ -39,7 +44,7 @@
 		/// <returns></returns>
 		public float ConvertParamToScrollPosition( float val )
 		{
-			return val - this.MinVal;
+			return val - MinVal;
 		}
 
 		/// <summary>
@@ -49,7 +54,7 @@
 		/// <returns></returns>
 		public float ConvertScrollPositionToParam( float val )
 		{
-			return val + this.MinVal;
+			return val + MinVal;
 		}
 	}
 }

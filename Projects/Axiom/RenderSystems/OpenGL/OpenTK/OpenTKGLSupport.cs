@@ -56,7 +56,12 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal class GLSupport : BaseGLSupport
 	{
-		private readonly List<int> _fsaaLevels = new List<int>();
+		private List<int> _fsaaLevels = new List<int>();
+
+		public GLSupport()
+			: base() {}
+
+		#region BaseGLSupport Members
 
 		public override void Start()
 		{
@@ -82,8 +87,8 @@ namespace Axiom.RenderSystems.OpenGL
 		private void GetFSAALevels()
 		{
 			//TODO: add only supported fsaa levels
-			this._fsaaLevels.Add( 2 );
-			this._fsaaLevels.Add( 4 );
+			_fsaaLevels.Add( 2 );
+			_fsaaLevels.Add( 4 );
 			//_fsaaLevels.Add(8);
 		}
 
@@ -92,13 +97,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void AddConfig()
 		{
-			var optFullScreen = new ConfigOption( "Full Screen", "No", false );
-			var optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
-			var optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
-			var optColorDepth = new ConfigOption( "Color Depth", "", false );
-			var optFSAA = new ConfigOption( "FSAA", "0", false );
-			var optVSync = new ConfigOption( "VSync", "No", false );
-			var optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
+			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
+			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
+			ConfigOption optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
+			ConfigOption optColorDepth = new ConfigOption( "Color Depth", "", false );
+			ConfigOption optFSAA = new ConfigOption( "FSAA", "0", false );
+			ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
+			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
 
 			// Full Screen
 			optFullScreen.PossibleValues.Add( 0, "Yes" );
@@ -141,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// FSAA
 			GetFSAALevels();
-			foreach ( int level in this._fsaaLevels )
+			foreach ( int level in _fsaaLevels )
 			{
 				optFSAA.PossibleValues.Add( level, level.ToString() );
 			}
@@ -155,13 +160,13 @@ namespace Axiom.RenderSystems.OpenGL
 			optRTTMode.PossibleValues.Add( 1, "PBuffer" );
 			optRTTMode.PossibleValues.Add( 2, "Copy" );
 
-			optFullScreen.ConfigValueChanged += _configOptionChanged;
-			optVideoMode.ConfigValueChanged += _configOptionChanged;
-			optDisplayFrequency.ConfigValueChanged += _configOptionChanged;
-			optFSAA.ConfigValueChanged += _configOptionChanged;
-			optVSync.ConfigValueChanged += _configOptionChanged;
-			optColorDepth.ConfigValueChanged += _configOptionChanged;
-			optRTTMode.ConfigValueChanged += _configOptionChanged;
+			optFullScreen.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optVideoMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optDisplayFrequency.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optFSAA.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optVSync.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optColorDepth.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optRTTMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
 
 			ConfigOptions.Add( optVideoMode );
 			ConfigOptions.Add( optColorDepth );
@@ -189,7 +194,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
-			var window = new OpenTKWindow();
+			OpenTKWindow window = new OpenTKWindow();
 			window.Create( name, width, height, fullScreen, miscParams );
 			return window;
 		}
@@ -224,7 +229,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
-				var miscParams = new NamedParameterList();
+				NamedParameterList miscParams = new NamedParameterList();
 				ConfigOption opt;
 
 				opt = ConfigOptions[ "Color Depth" ];
@@ -254,6 +259,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			return autoWindow;
 		}
+
+		#endregion BaseGLSupport Members
 
 		#region Methods
 

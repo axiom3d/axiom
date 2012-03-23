@@ -38,7 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
+using Axiom.Core;
+using Axiom.Media;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -48,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		private readonly GLFrameBufferObject _fbo;
+		private GLFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -57,14 +63,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
-			this._fbo = new GLFrameBufferObject( manager );
+			_fbo = new GLFrameBufferObject( manager );
 
 			// Bind target to surface 0 and initialise
-			this._fbo.BindSurface( 0, target );
+			_fbo.BindSurface( 0, target );
 
 			// Get attributes
-			width = this._fbo.Width;
-			height = this._fbo.Height;
+			this.width = _fbo.Width;
+			this.height = _fbo.Height;
 		}
 
 		#endregion Construction and Destruction
@@ -78,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToLower() )
 				{
 					case "fbo":
-						return this._fbo;
+						return _fbo;
 					default:
 						return null;
 				}
@@ -92,7 +98,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					this._fbo.Dispose();
+					_fbo.Dispose();
 				}
 
 				// There are no unmanaged resources to release, but

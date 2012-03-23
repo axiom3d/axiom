@@ -45,7 +45,7 @@ namespace Axiom.Components.Terrain
 	public class TerrainGlobalOptions
 	{
 		//no instantiation
-		protected TerrainGlobalOptions() { }
+		protected TerrainGlobalOptions() {}
 
 		#region - fields -
 

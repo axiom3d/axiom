@@ -37,8 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+using Axiom.Core;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -46,8 +51,6 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-		#region Nested type: AutoConstantEntry
-
 		/// <summary>
 		///    A structure for recording the use of automatic parameters.
 		/// </summary>
@@ -126,7 +129,7 @@ namespace Axiom.Graphics
 			/// <param name="variability">Variability of parameter</param>
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability )
-				: this( type, index, data, variability, 4 ) { }
+				: this( type, index, data, variability, 4 ) {}
 
 			/// <summary>
 			///    Default constructor.
@@ -139,14 +142,14 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability, int elementCount )
 			{
-				this.Type = type;
-				this.PhysicalIndex = index;
-				this.Data = data;
-				this.Variability = variability;
-				this.ElementCount = elementCount;
+				Type = type;
+				PhysicalIndex = index;
+				Data = data;
+				Variability = variability;
+				ElementCount = elementCount;
 
 				// this is likeley obsolete in as ogre doesnt have this (anymore?)
-				Debug.Assert( type != AutoConstantType.SinTime_0_X );
+				System.Diagnostics.Debug.Assert( type != AutoConstantType.SinTime_0_X );
 			}
 
 			/// <summary>
@@ -159,7 +162,7 @@ namespace Axiom.Graphics
 			/// <param name="elementCount"></param>
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability )
-				: this( type, index, fdata, variability, 4 ) { }
+				: this( type, index, fdata, variability, 4 ) {}
 
 			/// <summary>
 			///    Default constructor.
@@ -172,11 +175,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability, int elementCount )
 			{
-				this.Type = type;
-				this.PhysicalIndex = index;
-				this.FData = fdata;
-				this.Variability = variability;
-				this.ElementCount = elementCount;
+				Type = type;
+				PhysicalIndex = index;
+				FData = fdata;
+				Variability = variability;
+				ElementCount = elementCount;
 			}
 
 			#endregion
@@ -186,29 +189,23 @@ namespace Axiom.Graphics
 			[AxiomHelper( 0, 8 )]
 			public AutoConstantEntry Clone()
 			{
-				var n = new AutoConstantEntry( this.Type, this.PhysicalIndex, this.FData, this.Variability, this.ElementCount );
-				n.Data = this.Data;
+				var n = new AutoConstantEntry( Type, PhysicalIndex, FData, Variability, ElementCount );
+				n.Data = Data;
 				return n;
 			}
 
 			#endregion
 		}
 
-		#endregion
-
-		#region Nested type: AutoConstantsList
-
 		[OgreVersion( 1, 7, 2790 )]
 		public class AutoConstantsList : List<AutoConstantEntry>
 		{
-			public AutoConstantsList() { }
+			public AutoConstantsList() {}
 
 			public AutoConstantsList( AutoConstantsList other )
 			{
 				AddRange( other.GetRange( 0, other.Count ) );
 			}
 		}
-
-		#endregion
 	}
 }

@@ -127,8 +127,8 @@ namespace Axiom.Math
 		/// <param name="point2">Third point.</param>
 		public Plane( Vector3 point0, Vector3 point1, Vector3 point2 )
 		{
-			Vector3 edge1 = point1 - point0;
-			Vector3 edge2 = point2 - point0;
+			var edge1 = point1 - point0;
+			var edge2 = point2 - point0;
 			this.Normal = edge1.Cross( edge2 );
 			this.Normal.Normalize();
 			this.D = -this.Normal.Dot( point0 );
@@ -145,7 +145,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public PlaneSide GetSide( Vector3 point )
 		{
-			Real distance = GetDistance( point );
+			var distance = this.GetDistance( point );
 
 			if ( distance < 0.0f )
 			{
@@ -177,7 +177,7 @@ namespace Axiom.Math
 				return PlaneSide.Both;
 			}
 
-			return GetSide( box.Center, box.HalfSize );
+			return this.GetSide( box.Center, box.HalfSize );
 		}
 
 		/// <summary>
@@ -194,11 +194,11 @@ namespace Axiom.Math
 		public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
 		{
 			// Calculate the distance between box centre and the plane
-			Real dist = GetDistance( centre );
+			var dist = this.GetDistance( centre );
 
 			// Calculate the maximise allows absolute distance for
 			// the distance between box centre and plane
-			Real maxAbsDist = this.Normal.AbsDot( halfSize );
+			var maxAbsDist = this.Normal.AbsDot( halfSize );
 
 			if ( dist < -maxAbsDist )
 			{
@@ -247,8 +247,8 @@ namespace Axiom.Math
 		/// <param name="point2">Third point.</param>
 		public void Redefine( Vector3 point0, Vector3 point1, Vector3 point2 )
 		{
-			Vector3 edge1 = point1 - point0;
-			Vector3 edge2 = point2 - point0;
+			var edge1 = point1 - point0;
+			var edge2 = point2 - point0;
 			this.Normal = edge1.Cross( edge2 );
 			this.Normal.Normalize();
 			this.D = -this.Normal.Dot( point0 );

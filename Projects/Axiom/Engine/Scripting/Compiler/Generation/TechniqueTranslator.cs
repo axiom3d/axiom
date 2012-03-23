@@ -46,15 +46,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: TechniqueTranslator
-
 		public class TechniqueTranslator : Translator
 		{
 			protected Technique _technique;
 
 			public TechniqueTranslator()
+				: base()
 			{
-				this._technique = null;
+				_technique = null;
 			}
 
 			#region Translator Implementation
@@ -72,17 +71,17 @@ namespace Axiom.Scripting.Compiler
 
 				// Create the technique from the material
 				var material = (Material)obj.Parent.Context;
-				this._technique = material.CreateTechnique();
-				obj.Context = this._technique;
+				_technique = material.CreateTechnique();
+				obj.Context = _technique;
 
 				// Get the name of the technique
 				if ( !string.IsNullOrEmpty( obj.Name ) )
 				{
-					this._technique.Name = obj.Name;
+					_technique.Name = obj.Name;
 				}
 
 				// Set the properties for the technique
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
@@ -90,7 +89,7 @@ namespace Axiom.Scripting.Compiler
 
 						switch ( (Keywords)prop.Id )
 						{
-							#region ID_SCHEME
+								#region ID_SCHEME
 
 							case Keywords.ID_SCHEME:
 								if ( prop.Values.Count == 0 )
@@ -106,7 +105,7 @@ namespace Axiom.Scripting.Compiler
 									string scheme;
 									if ( getString( prop.Values[ 0 ], out scheme ) )
 									{
-										this._technique.Scheme = scheme;
+										_technique.Scheme = scheme;
 									}
 									else
 									{
@@ -115,9 +114,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SCHEME
+								#endregion ID_SCHEME
 
-							#region ID_LOD_INDEX
+								#region ID_LOD_INDEX
 
 							case Keywords.ID_LOD_INDEX:
 								if ( prop.Values.Count == 0 )
@@ -133,7 +132,7 @@ namespace Axiom.Scripting.Compiler
 									int val;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 									{
-										this._technique.LodIndex = val;
+										_technique.LodIndex = val;
 									}
 									else
 									{
@@ -142,9 +141,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_LOD_INDEX
+								#endregion ID_LOD_INDEX
 
-							#region ID_SHADOW_CASTER_MATERIAL
+								#region ID_SHADOW_CASTER_MATERIAL
 
 							case Keywords.ID_SHADOW_CASTER_MATERIAL:
 								if ( prop.Values.Count == 0 )
@@ -160,13 +159,13 @@ namespace Axiom.Scripting.Compiler
 									string matName;
 									if ( getString( prop.Values[ 0 ], out matName ) )
 									{
-										string evtMatName = string.Empty;
+										var evtMatName = string.Empty;
 
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
 
 										compiler._fireEvent( ref evt );
 										evtMatName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
-										this._technique.ShadowCasterMaterial = (Material)MaterialManager.Instance[ evtMatName ]; // Use the processed name
+										_technique.ShadowCasterMaterial = (Material)MaterialManager.Instance[ evtMatName ]; // Use the processed name
 									}
 									else
 									{
@@ -175,9 +174,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SHADOW_CASTER_MATERIAL
+								#endregion ID_SHADOW_CASTER_MATERIAL
 
-							#region ID_SHADOW_RECEIVER_MATERIAL
+								#region ID_SHADOW_RECEIVER_MATERIAL
 
 							case Keywords.ID_SHADOW_RECEIVER_MATERIAL:
 								if ( prop.Values.Count == 0 )
@@ -190,17 +189,17 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									string matName = string.Empty;
+									var i0 = getNodeAt( prop.Values, 0 );
+									var matName = string.Empty;
 									if ( getString( i0, out matName ) )
 									{
-										string evtName = string.Empty;
+										var evtName = string.Empty;
 
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
 
 										compiler._fireEvent( ref evt );
 										evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
-										this._technique.ShadowReceiverMaterial = (Material)MaterialManager.Instance[ evtName ];
+										_technique.ShadowReceiverMaterial = (Material)MaterialManager.Instance[ evtName ];
 									}
 									else
 									{
@@ -209,9 +208,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SHADOW_RECEIVER_MATERIAL
+								#endregion ID_SHADOW_RECEIVER_MATERIAL
 
-							#region ID_GPU_VENDOR_RULE
+								#region ID_GPU_VENDOR_RULE
 
 							case Keywords.ID_GPU_VENDOR_RULE:
 								if ( prop.Values.Count < 2 )
@@ -224,8 +223,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i0 = getNodeAt( prop.Values, 0 );
+									var i1 = getNodeAt( prop.Values, 1 );
 
 									var rule = new Technique.GPUVendorRule();
 									if ( i0 is AtomAbstractNode )
@@ -246,7 +245,7 @@ namespace Axiom.Scripting.Compiler
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
 										}
 
-										string vendor = string.Empty;
+										var vendor = string.Empty;
 										if ( !getString( i1, out vendor ) )
 										{
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_vendor_rule cannot accept \"" + i1.Value + "\" as second argument" );
@@ -256,7 +255,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( rule.Vendor != GPUVendor.Unknown )
 										{
-											this._technique.AddGPUVenderRule( rule );
+											_technique.AddGPUVenderRule( rule );
 										}
 									}
 									else
@@ -266,9 +265,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_GPU_VENDOR_RULE
+								#endregion ID_GPU_VENDOR_RULE
 
-							#region ID_GPU_DEVICE_RULE
+								#region ID_GPU_DEVICE_RULE
 
 							case Keywords.ID_GPU_DEVICE_RULE:
 								if ( prop.Values.Count < 2 )
@@ -281,8 +280,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 );
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i0 = getNodeAt( prop.Values, 0 );
+									var i1 = getNodeAt( prop.Values, 1 );
 
 									var rule = new Technique.GPUDeviceNameRule();
 									if ( i0 is AtomAbstractNode )
@@ -310,14 +309,14 @@ namespace Axiom.Scripting.Compiler
 
 										if ( prop.Values.Count == 3 )
 										{
-											AbstractNode i2 = getNodeAt( prop.Values, 2 );
+											var i2 = getNodeAt( prop.Values, 2 );
 											if ( !getBoolean( i2, out rule.CaseSensitive ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_device_rule third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
 											}
 										}
 
-										this._technique.AddGPUDeviceNameRule( rule );
+										_technique.AddGPUDeviceNameRule( rule );
 									}
 									else
 									{
@@ -326,7 +325,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_GPU_DEVICE_RULE
+								#endregion ID_GPU_DEVICE_RULE
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -342,7 +341,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

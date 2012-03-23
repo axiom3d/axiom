@@ -40,8 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections.Generic;
 
-using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -49,48 +49,14 @@ namespace Axiom.Scripting.Compiler
 {
 	partial class ScriptCompilerManager
 	{
-		#region Delegates
-
-		/// Called when an error occurred
-		public delegate void CompilerErrorHandler( ScriptCompiler compiler, ScriptCompiler.CompileError err );
-
 		/// Returns the concrete node list from the given file
 		public delegate IList<ConcreteNode> ImportFileHandler( ScriptCompiler compiler, string filename );
 
-		/// <summary>
-		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
-		/// </summary>
-		/// <remarks>
-		/// Once the script is turned completely into an AST, including import
-		/// and override handling, this function allows a listener to exit
-		/// the compilation process.
-		/// </remarks>
-		/// <returns>
-		/// True continues compilation, false aborts
-		/// </returns>
-		public delegate bool PostConversionHandler( ScriptCompiler compiler, IList<AbstractNode> nodes );
+		/// Returns the concrete node list from the given file
+		public event ImportFileHandler OnImportFile;
 
 		/// Allows for responding to and overriding behavior before a CST is translated into an AST
 		public delegate void PreConversionHandler( ScriptCompiler compiler, IList<ConcreteNode> nodes );
-
-		/// <summary>
-		/// Called when an event occurs during translation, return true if handled
-		/// </summary>
-		/// <remarks>
-		/// This function is called from the translators when an event occurs that
-		/// that can be responded to. Often this is overriding names, or it can be a request for
-		/// custom resource creation.
-		/// </remarks>
-		/// <param name="compiler">A reference to the compiler</param>
-		/// <param name="evt">The event object holding information about the event to be processed</param>
-		/// <param name="retval">A possible return value from handlers</param>
-		/// <returns>True if the handler processed the event</returns>
-		public delegate bool TransationEventHandler( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retval );
-
-		#endregion
-
-		/// Returns the concrete node list from the given file
-		public event ImportFileHandler OnImportFile;
 
 		/// Allows for responding to and overriding behavior before a CST is translated into an AST
 		public event PreConversionHandler OnPreConversion;
@@ -106,10 +72,40 @@ namespace Axiom.Scripting.Compiler
 		/// <returns>
 		/// True continues compilation, false aborts
 		/// </returns>
+		public delegate bool PostConversionHandler( ScriptCompiler compiler, IList<AbstractNode> nodes );
+
+		/// <summary>
+		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
+		/// </summary>
+		/// <remarks>
+		/// Once the script is turned completely into an AST, including import
+		/// and override handling, this function allows a listener to exit
+		/// the compilation process.
+		/// </remarks>
+		/// <returns>
+		/// True continues compilation, false aborts
+		/// </returns>
 		public event PostConversionHandler OnPostConversion;
 
 		/// Called when an error occurred
+		public delegate void CompilerErrorHandler( ScriptCompiler compiler, ScriptCompiler.CompileError err );
+
+		/// Called when an error occurred
 		public event CompilerErrorHandler OnCompileError;
+
+		/// <summary>
+		/// Called when an event occurs during translation, return true if handled
+		/// </summary>
+		/// <remarks>
+		/// This function is called from the translators when an event occurs that
+		/// that can be responded to. Often this is overriding names, or it can be a request for
+		/// custom resource creation.
+		/// </remarks>
+		/// <param name="compiler">A reference to the compiler</param>
+		/// <param name="evt">The event object holding information about the event to be processed</param>
+		/// <param name="retval">A possible return value from handlers</param>
+		/// <returns>True if the handler processed the event</returns>
+		public delegate bool TransationEventHandler( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retval );
 
 		/// <summary>
 		/// Called when an event occurs during translation, return true if handled
@@ -163,15 +159,15 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public abstract class ScriptCompilerEvent
 	{
-		protected ScriptCompilerEvent( CompilerEventType type )
-		{
-			Type = type;
-		}
-
 		/// <summary>
 		/// Return the type of this ScriptCompilerEvent
 		/// </summary>
 		public CompilerEventType Type { get; private set; }
+
+		protected ScriptCompilerEvent( CompilerEventType type )
+		{
+			Type = type;
+		}
 	};
 
 	#endregion ScriptCompilerEvent
@@ -182,14 +178,14 @@ namespace Axiom.Scripting.Compiler
 
 	public class PreApplyTextureAliasesScriptCompilerEvent : ScriptCompilerEvent
 	{
-		public Dictionary<string, string> Aliases = new Dictionary<string, string>();
 		public Material Material;
+		public Dictionary<string, string> Aliases = new Dictionary<string, string>();
 
 		public PreApplyTextureAliasesScriptCompilerEvent( Material material, ref Dictionary<string, string> aliases )
 			: base( CompilerEventType.PreApplyTextureAliases )
 		{
-			this.Material = material;
-			this.Aliases = aliases;
+			Material = material;
+			Aliases = aliases;
 		}
 	};
 
@@ -199,8 +195,6 @@ namespace Axiom.Scripting.Compiler
 
 	public class ProcessResourceNameScriptCompilerEvent : ScriptCompilerEvent
 	{
-		#region ResourceType enum
-
 		public enum ResourceType
 		{
 			Texture,
@@ -209,16 +203,14 @@ namespace Axiom.Scripting.Compiler
 			Compositor
 		}
 
-		#endregion
-
-		public string Name;
 		public ResourceType ResType;
+		public string Name;
 
 		public ProcessResourceNameScriptCompilerEvent( ResourceType resType, string name )
 			: base( CompilerEventType.ProcessResourceName )
 		{
-			this.ResType = resType;
-			this.Name = name;
+			ResType = resType;
+			Name = name;
 		}
 	};
 
@@ -234,8 +226,8 @@ namespace Axiom.Scripting.Compiler
 		public ProcessNameExclusionScriptCompilerEvent( string cls, AbstractNode parent )
 			: base( CompilerEventType.ProcessNameExclusion )
 		{
-			this.Class = cls;
-			this.Parent = parent;
+			Class = cls;
+			Parent = parent;
 		}
 	};
 
@@ -252,9 +244,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateMaterialScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateMaterial )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
 		}
 	};
 
@@ -266,20 +258,20 @@ namespace Axiom.Scripting.Compiler
 	{
 		public string File;
 		public string Name;
-		public GpuProgramType ProgramType;
 		public string ResourceGroup;
 		public string Source;
 		public string Syntax;
+		public GpuProgramType ProgramType;
 
 		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string syntax, GpuProgramType prgType )
 			: base( CompilerEventType.CreateGpuProgram )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
-			this.Source = source;
-			this.Syntax = syntax;
-			this.ProgramType = prgType;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
+			Source = source;
+			Syntax = syntax;
+			ProgramType = prgType;
 		}
 	};
 
@@ -290,21 +282,21 @@ namespace Axiom.Scripting.Compiler
 	public class CreateHighLevelGpuProgramScriptCompilerEvent : ScriptCompilerEvent
 	{
 		public string File;
-		public string Language;
 		public string Name;
-		public GpuProgramType ProgramType;
 		public string ResourceGroup;
 		public string Source;
+		public string Language;
+		public GpuProgramType ProgramType;
 
 		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string language, GpuProgramType prgType )
 			: base( CompilerEventType.CreateHighLevelGpuProgram )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
-			this.Source = source;
-			this.Language = language;
-			this.ProgramType = prgType;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
+			Source = source;
+			Language = language;
+			ProgramType = prgType;
 		}
 	};
 
@@ -321,9 +313,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateGpuSharedParametersScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateGpuSharedParameters )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
 		}
 	};
 
@@ -340,9 +332,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateParticleSystemScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateParticleSystem )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
 		}
 	};
 
@@ -359,9 +351,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateCompositorScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateCompositor )
 		{
-			this.File = file;
-			this.Name = name;
-			this.ResourceGroup = resGroup;
+			File = file;
+			Name = name;
+			ResourceGroup = resGroup;
 		}
 	};
 

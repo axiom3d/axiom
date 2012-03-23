@@ -48,8 +48,6 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: CompositionPassClearTranslator
-
 		public class CompositionPassClearTranslator : Translator
 		{
 			protected CompositionPass _Pass;
@@ -67,7 +65,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				var obj = (ObjectAbstractNode)node;
 
-				this._Pass = (CompositionPass)obj.Parent.Context;
+				_Pass = (CompositionPass)obj.Parent.Context;
 
 				// Should be no parameters, just children
 				if ( obj.Values.Count != 0 )
@@ -75,7 +73,7 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.UnexpectedToken, obj.File, obj.Line );
 				}
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -86,115 +84,115 @@ namespace Axiom.Scripting.Compiler
 						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
-							#region ID_BUFFERS
+								#region ID_BUFFERS
 
 							case Keywords.ID_BUFFERS:
+							{
+								FrameBufferType buffers = 0;
+								foreach ( var k in prop.Values )
 								{
-									FrameBufferType buffers = 0;
-									foreach ( AbstractNode k in prop.Values )
+									if ( k is AtomAbstractNode )
 									{
-										if ( k is AtomAbstractNode )
+										switch ( (Keywords)( (AtomAbstractNode)k ).Id )
 										{
-											switch ( (Keywords)( (AtomAbstractNode)k ).Id )
-											{
-												case Keywords.ID_COLOUR:
-													buffers |= FrameBufferType.Color;
-													break;
+											case Keywords.ID_COLOUR:
+												buffers |= FrameBufferType.Color;
+												break;
 
-												case Keywords.ID_DEPTH:
-													buffers |= FrameBufferType.Depth;
-													break;
+											case Keywords.ID_DEPTH:
+												buffers |= FrameBufferType.Depth;
+												break;
 
-												case Keywords.ID_STENCIL:
-													buffers |= FrameBufferType.Stencil;
-													break;
+											case Keywords.ID_STENCIL:
+												buffers |= FrameBufferType.Stencil;
+												break;
 
-												default:
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-													break;
-											}
-										}
-										else
-										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+											default:
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+												break;
 										}
 									}
-									this._Pass.ClearBuffers = buffers;
+									else
+									{
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+									}
 								}
+								_Pass.ClearBuffers = buffers;
+							}
 								break;
 
-							#endregion ID_BUFFERS
+								#endregion ID_BUFFERS
 
-							#region ID_COLOUR_VALUE
+								#region ID_COLOUR_VALUE
 
 							case Keywords.ID_COLOUR_VALUE:
+							{
+								if ( prop.Values.Count == 0 )
 								{
-									if ( prop.Values.Count == 0 )
-									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-										return;
-									}
-
-									ColorEx val = ColorEx.White;
-									if ( getColor( prop.Values, 0, out val ) )
-									{
-										this._Pass.ClearColor = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
+									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+									return;
 								}
+
+								var val = ColorEx.White;
+								if ( getColor( prop.Values, 0, out val ) )
+								{
+									_Pass.ClearColor = val;
+								}
+								else
+								{
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+							}
 								break;
 
-							#endregion ID_COLOUR_VALUE
+								#endregion ID_COLOUR_VALUE
 
-							#region ID_DEPTH_VALUE
+								#region ID_DEPTH_VALUE
 
 							case Keywords.ID_DEPTH_VALUE:
+							{
+								if ( prop.Values.Count == 0 )
 								{
-									if ( prop.Values.Count == 0 )
-									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-										return;
-									}
-									Real val = 0;
-									if ( getReal( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.ClearDepth = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
+									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+									return;
 								}
+								Real val = 0;
+								if ( getReal( prop.Values[ 0 ], out val ) )
+								{
+									_Pass.ClearDepth = val;
+								}
+								else
+								{
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+							}
 								break;
 
-							#endregion ID_DEPTH_VALUE
+								#endregion ID_DEPTH_VALUE
 
-							#region ID_STENCIL_VALUE
+								#region ID_STENCIL_VALUE
 
 							case Keywords.ID_STENCIL_VALUE:
+							{
+								if ( prop.Values.Count == 0 )
 								{
-									if ( prop.Values.Count == 0 )
-									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-										return;
-									}
-
-									int val = 0;
-									if ( getInt( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.ClearStencil = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
+									compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
+									return;
 								}
+
+								var val = 0;
+								if ( getInt( prop.Values[ 0 ], out val ) )
+								{
+									_Pass.ClearStencil = val;
+								}
+								else
+								{
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
+								}
+							}
 								break;
 
-							#endregion ID_STENCIL_VALUE
+								#endregion ID_STENCIL_VALUE
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -206,7 +204,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

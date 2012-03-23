@@ -69,7 +69,7 @@ namespace Axiom.Controllers.Canned
 		/// </summary>
 		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
 		public AnimationControllerFunction( Real sequenceTime )
-			: this( sequenceTime, 0.0f ) { }
+			: this( sequenceTime, 0.0f ) {}
 
 		/// <summary>
 		///     Constructor.
@@ -84,7 +84,7 @@ namespace Axiom.Controllers.Canned
 
 		#endregion
 
-		#region IControllerFunction<Real> Members
+		#region ControllerFunction Members
 
 		/// <summary>
 		/// 
@@ -94,18 +94,18 @@ namespace Axiom.Controllers.Canned
 		public Real Execute( Real sourceValue )
 		{
 			// assuming source if the time since the last update
-			this.time += sourceValue;
+			time += sourceValue;
 
 			// wrap
-			while ( this.time >= this.sequenceTime )
+			while ( time >= sequenceTime )
 			{
-				this.time -= this.sequenceTime;
+				time -= sequenceTime;
 			}
 
 			// return parametric
-			return this.time / this.sequenceTime;
+			return time / sequenceTime;
 		}
 
-		#endregion
+		#endregion ControllerFunction Members
 	}
 }

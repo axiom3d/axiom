@@ -22,7 +22,7 @@
 
 #endregion License
 
-using Axiom.Core;
+using System;
 
 namespace Axiom.Framework.Configuration
 {
@@ -40,14 +40,14 @@ namespace Axiom.Framework.Configuration
 		/// 
 		/// </summary>
 		public XBoxConfigurationManager()
-			: base( DefaultLogFileName ) { }
+			: base( DefaultLogFileName ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="configurationFile"></param>
 		public XBoxConfigurationManager( string configurationFile )
-			: base( configurationFile ) { }
+			: base( configurationFile ) {}
 
 		#endregion Construction and Destruction
 
@@ -58,7 +58,7 @@ namespace Axiom.Framework.Configuration
 		/// </summary>
 		/// <param name="engine"></param>
 		/// <returns></returns>
-		public override bool RestoreConfiguration( Root engine )
+		public override bool RestoreConfiguration( Core.Root engine )
 		{
 			return true;
 		}
@@ -67,14 +67,14 @@ namespace Axiom.Framework.Configuration
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
-		public override void SaveConfiguration( Root engine ) { }
+		public override void SaveConfiguration( Core.Root engine ) {}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="engine"></param>
 		/// <param name="defaultRenderer"></param>
-		public override void SaveConfiguration( Root engine, string defaultRenderer ) { }
+		public override void SaveConfiguration( Core.Root engine, string defaultRenderer ) {}
 
 
 		/// <summary>
@@ -82,7 +82,7 @@ namespace Axiom.Framework.Configuration
 		/// </summary>
 		/// <param name="engine"></param>
 		/// <returns></returns>
-		public override bool ShowConfigDialog( Root engine )
+		public override bool ShowConfigDialog( Core.Root engine )
 		{
 			return true;
 		}

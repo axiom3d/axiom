@@ -45,7 +45,6 @@ using System.Runtime.InteropServices;
 
 using Axiom.Media;
 
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using SDI = System.Drawing.Imaging;
 
 #endregion Namespace Declarations
@@ -92,28 +91,28 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			return ImageFormat.Png;
 		}
 
-		public override Stream Encode( Stream input, CodecData data )
+		public override Stream Encode( Stream input, Codec.CodecData data )
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void EncodeToFile( Stream input, string outFileName, CodecData codecData )
+		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData codecData )
 		{
 			var data = (ImageData)codecData;
 
 			// save the image to file
-			PixelFormat pf;
+			SDI.PixelFormat pf;
 			int bpp;
 
 			switch ( data.format )
 			{
-				case Media.PixelFormat.B8G8R8:
-					pf = PixelFormat.Format24bppRgb;
+				case Axiom.Media.PixelFormat.B8G8R8:
+					pf = SDI.PixelFormat.Format24bppRgb;
 					bpp = 3;
 					break;
 
-				case Media.PixelFormat.A8B8G8R8:
-					pf = PixelFormat.Format32bppRgb;
+				case Axiom.Media.PixelFormat.A8B8G8R8:
+					pf = SDI.PixelFormat.Format32bppRgb;
 					bpp = 4;
 					break;
 
@@ -124,14 +123,14 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			var image = new Bitmap( data.width, data.height, pf );
 
 			//Create a BitmapData and Lock all pixels to be written
-			BitmapData imagedta = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.WriteOnly, image.PixelFormat );
+			SDI.BitmapData imagedta = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), SDI.ImageLockMode.WriteOnly, image.PixelFormat );
 
 			var buffer = new byte[ input.Length ];
 			input.Read( buffer, 0, buffer.Length );
 
-			for ( int c = 0; c < buffer.Length - bpp; c += bpp )
+			for ( var c = 0; c < buffer.Length - bpp; c += bpp )
 			{
-				byte tmp = buffer[ c ];
+				var tmp = buffer[ c ];
 				buffer[ c ] = buffer[ c + 2 ];
 				buffer[ c + 2 ] = tmp;
 			}
@@ -145,12 +144,12 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			image.Save( outFileName, _convertImageFormat( outFileName ) );
 		}
 
-		public override DecodeResult Decode( Stream input )
+		public override Codec.DecodeResult Decode( Stream input )
 		{
 			var data = new ImageData();
 			Bitmap CurrentBitmap = null;
 			int bytesPerPixel;
-			bool gray = false; // gray image is used by terrain's heightmap
+			var gray = false; // gray image is used by terrain's heightmap
 			byte[] buffer;
 
 			try
@@ -163,12 +162,12 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 
 				switch ( CurrentBitmap.PixelFormat )
 				{
-					case PixelFormat.Format24bppRgb:
+					case SDI.PixelFormat.Format24bppRgb:
 						bytesPerPixel = 3;
 						break;
 
-					case PixelFormat.Format32bppRgb:
-					case PixelFormat.Format32bppArgb:
+					case SDI.PixelFormat.Format32bppRgb:
+					case SDI.PixelFormat.Format32bppArgb:
 						bytesPerPixel = 4;
 						break;
 
@@ -176,7 +175,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 						throw new ArgumentException( "Unsupported Pixel Format " + CurrentBitmap.PixelFormat );
 				}
 
-				BitmapData Data = CurrentBitmap.LockBits( new Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
+				var Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
 
 				// populate the image data
 				data.width = Data.Width;
@@ -185,12 +184,12 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				data.numMipMaps = 0;
 				if ( gray )
 				{
-					data.format = Media.PixelFormat.L8;
+					data.format = Axiom.Media.PixelFormat.L8;
 					data.size = data.width * data.height;
 				}
 				else
 				{
-					data.format = Media.PixelFormat.A8B8G8R8;
+					data.format = Axiom.Media.PixelFormat.A8B8G8R8;
 					data.size = data.width * data.height * 4;
 				}
 
@@ -201,7 +200,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				unsafe
 				{
 					int qw = 0;
-					var imgPtr = (byte*)( Data.Scan0 );
+					byte* imgPtr = (byte*)( Data.Scan0 );
 
 					if ( gray == false )
 					{

@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -54,5 +54,11 @@ namespace Axiom.ParticleSystems
 	/// class. If that's the case, then you should define a subclass of this class, 
 	/// and construct it when asked in your custom ParticleSystemRenderer class.
 	/// </remarks>
-	public abstract class ParticleVisualData { };
+	public abstract class ParticleVisualData
+	{
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		public ParticleVisualData() {}
+	};
 }

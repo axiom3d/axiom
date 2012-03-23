@@ -47,33 +47,41 @@ namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptParser
 	{
+		private enum ParserState
+		{
+			Ready,
+			Object
+		}
+
+		public ScriptParser() {}
+
 		public IList<ConcreteNode> Parse( IList<ScriptToken> tokens )
 		{
 			var nodes = new List<ConcreteNode>();
 
-			ParserState state = ParserState.Ready;
+			var state = ParserState.Ready;
 			ScriptToken token;
 			ConcreteNode parent = null, node = null;
 
-			int iter = 0;
-			int end = tokens.Count;
+			var iter = 0;
+			var end = tokens.Count;
 
 			while ( iter != end )
 			{
 				token = tokens[ iter ];
 				switch ( state )
 				{
-					#region Ready
+						#region Ready
 
 					case ParserState.Ready:
 						switch ( token.type )
 						{
-							#region Word
+								#region Word
 
 							case Tokens.Word:
 								switch ( token.lexeme )
 								{
-									#region "import"
+										#region "import"
 
 									case "import":
 										node = new ConcreteNode();
@@ -144,9 +152,9 @@ namespace Axiom.Scripting.Compiler.Parser
 										node = null;
 										break;
 
-									#endregion "import"
+										#endregion "import"
 
-									#region "set"
+										#region "set"
 
 									case "set":
 										node = new ConcreteNode();
@@ -209,7 +217,7 @@ namespace Axiom.Scripting.Compiler.Parser
 										node = null;
 										break;
 
-									#endregion "set"
+										#endregion "set"
 
 									default:
 										node = new ConcreteNode();
@@ -249,9 +257,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								}
 								break;
 
-							#endregion Word
+								#endregion Word
 
-							#region RightBrace
+								#region RightBrace
 
 							case Tokens.RightBrace:
 								// Go up one level if we can
@@ -291,22 +299,22 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								break;
 
-							#endregion RightBrace
+								#endregion RightBrace
 						}
 						break;
 
-					#endregion Ready
+						#endregion Ready
 
-					#region Object
+						#region Object
 
 					case ParserState.Object:
 						switch ( token.type )
 						{
-							#region Newline
+								#region Newline
 
 							case Tokens.Newline:
 								// Look ahead to the next non-newline token and if it isn't an {, this was a property
-								int next = SkipNewlines( tokens, iter, end );
+								var next = SkipNewlines( tokens, iter, end );
 								if ( next == end || tokens[ next ].type != Tokens.LeftBrace )
 								{
 									// Ended a property here
@@ -319,9 +327,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion Newline
+								#endregion Newline
 
-							#region Colon
+								#region Colon
 
 							case Tokens.Colon:
 								node = new ConcreteNode();
@@ -333,7 +341,7 @@ namespace Axiom.Scripting.Compiler.Parser
 								// The following token are the parent objects (base classes).
 								// Require at least one of them.
 
-								int j = iter + 1;
+								var j = iter + 1;
 								j = SkipNewlines( tokens, j, end );
 								if ( j == end || ( tokens[ j ].type != Tokens.Word && tokens[ j ].type != Tokens.Quote ) )
 								{
@@ -370,9 +378,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion Colon
+								#endregion Colon
 
-							#region LeftBrace
+								#region LeftBrace
 
 							case Tokens.LeftBrace:
 								node = new ConcreteNode();
@@ -405,9 +413,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion LeftBrace
+								#endregion LeftBrace
 
-							#region RightBrace
+								#region RightBrace
 
 							case Tokens.RightBrace:
 
@@ -455,9 +463,9 @@ namespace Axiom.Scripting.Compiler.Parser
 
 								break;
 
-							#endregion RightBrace
+								#endregion RightBrace
 
-							#region Variable
+								#region Variable
 
 							case Tokens.Variable:
 								node = new ConcreteNode();
@@ -481,9 +489,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion Variable
+								#endregion Variable
 
-							#region Quote
+								#region Quote
 
 							case Tokens.Quote:
 								node = new ConcreteNode();
@@ -507,9 +515,9 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion Quote
+								#endregion Quote
 
-							#region Word
+								#region Word
 
 							case Tokens.Word:
 								node = new ConcreteNode();
@@ -533,11 +541,11 @@ namespace Axiom.Scripting.Compiler.Parser
 								node = null;
 								break;
 
-							#endregion Word
+								#endregion Word
 						}
 						break;
 
-					#endregion Object
+						#endregion Object
 				}
 				iter++;
 			}
@@ -549,7 +557,7 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			IList<ConcreteNode> nodes = new List<ConcreteNode>();
 			ConcreteNode node = null;
-			foreach ( ScriptToken token in tokens )
+			foreach ( var token in tokens )
 			{
 				switch ( token.type )
 				{
@@ -595,12 +603,12 @@ namespace Axiom.Scripting.Compiler.Parser
 		private ScriptToken GetToken( IEnumerator<ScriptToken> iter, int offset )
 		{
 			var token = new ScriptToken();
-			while ( --offset > 1 && iter.MoveNext() )
+			while ( --offset > 1 && iter.MoveNext() != false )
 			{
 				;
 			}
 
-			if ( iter.MoveNext() )
+			if ( iter.MoveNext() != false )
 			{
 				token = iter.Current;
 			}
@@ -615,15 +623,5 @@ namespace Axiom.Scripting.Compiler.Parser
 			}
 			return iter;
 		}
-
-		#region Nested type: ParserState
-
-		private enum ParserState
-		{
-			Ready,
-			Object
-		}
-
-		#endregion
 	}
 }

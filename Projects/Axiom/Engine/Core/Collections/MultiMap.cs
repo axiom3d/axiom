@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Axiom.Core.Collections
 {
@@ -20,7 +21,7 @@ namespace Axiom.Core.Collections
 		{
 			foreach ( var values in this )
 			{
-				TKey key = values.Key;
+				var key = values.Key;
 				values.Value.RemoveAll( v => predicate( key, v ) );
 			}
 		}

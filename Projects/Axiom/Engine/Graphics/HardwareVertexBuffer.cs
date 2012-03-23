@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -58,8 +59,8 @@ namespace Axiom.Graphics
 
 		protected HardwareBufferManagerBase Manager;
 		protected int numVertices;
-		protected int useCount;
 		protected VertexDeclaration vertexDeclaration;
+		protected int useCount;
 
 		#endregion
 
@@ -79,16 +80,16 @@ namespace Axiom.Graphics
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new DefaultHardwareVertexBuffer( this.Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
 			}
 
-			this.useCount = 0;
+			useCount = 0;
 		}
 
 		[OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -113,7 +114,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.vertexDeclaration;
+				return vertexDeclaration;
 			}
 		}
 
@@ -121,7 +122,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.vertexDeclaration.GetVertexSize();
+				return vertexDeclaration.GetVertexSize();
 			}
 		}
 
@@ -129,7 +130,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.numVertices;
+				return numVertices;
 			}
 		}
 
@@ -137,7 +138,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.useCount;
+				return useCount;
 			}
 		}
 
@@ -151,7 +152,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.isInstanceData;
+				return isInstanceData;
 			}
 			set
 			{
@@ -161,7 +162,7 @@ namespace Axiom.Graphics
 				}
 				// else
 				{
-					this.isInstanceData = value;
+					isInstanceData = value;
 				}
 			}
 		}
@@ -178,13 +179,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.instanceDataStepRate;
+				return instanceDataStepRate;
 			}
 			set
 			{
 				if ( value > 0 )
 				{
-					this.instanceDataStepRate = value;
+					instanceDataStepRate = value;
 				}
 				else
 				{
@@ -206,7 +207,7 @@ namespace Axiom.Graphics
 		protected virtual bool CheckIfVertexInstanceDataIsSupported()
 		{
 			// Use the current render system
-			RenderSystem rs = Root.Instance.RenderSystem;
+			var rs = Root.Instance.RenderSystem;
 
 			// Check if the supported  
 			throw new NotImplementedException();

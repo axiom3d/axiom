@@ -38,11 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
+using System.Windows;
+
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -69,7 +74,7 @@ namespace Axiom.Core
 			get
 			{
 				//return ((int)Environment.OSVersion.Platform) == 128;	//if is a unix-based operating system (running Mono), not sure if this will work for GNU Portable .NET
-				string os = Environment.OSVersion.ToString();
+				var os = Environment.OSVersion.ToString();
 				return os.IndexOf( "Microsoft" ) != -1;
 			}
 		}
@@ -95,10 +100,10 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				var platformMgr = new DynamicLoader();
-				IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
+				var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
 				if ( platforms.Count != 0 )
 				{
-					instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+					instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 				}
 			}
 
@@ -118,8 +123,8 @@ namespace Axiom.Core
 			// Then look in loaded assemblies
 			if ( instance == null )
 			{
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				for ( int index = 0; index < assemblies.Length && instance == null; index++ )
+				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				for ( var index = 0; index < assemblies.Length && instance == null; index++ )
 				{
 					//TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
 					//if (assemblies[index].IsDynamic)
@@ -127,15 +132,15 @@ namespace Axiom.Core
 					try
 					{
 						var platformMgr = new DynamicLoader( assemblies[ index ].Location );
-						IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
+						var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
 						if ( platforms.Count != 0 )
 						{
-							instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+							instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 						}
 					}
 					catch ( Exception )
 					{
-						Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[ index ].FullName ) );
+						System.Diagnostics.Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[ index ].FullName ) );
 					}
 				}
 			}
@@ -144,8 +149,8 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				// find and load a platform manager assembly
-				string[] files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" ).ToArray();
-				string file = "";
+				var files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" ).ToArray();
+				var file = "";
 
 				// make sure there is 1 platform manager available
 				if ( files.Length == 0 )
@@ -154,8 +159,8 @@ namespace Axiom.Core
 				}
 				else
 				{
-					bool isWindows = IsWindowsOS;
-					string platform = IsWindowsOS ? "Win32" : "OpenTK";
+					var isWindows = IsWindowsOS;
+					var platform = IsWindowsOS ? "Win32" : "OpenTK";
 
 					if ( files.Length == 1 )
 					{
@@ -163,25 +168,25 @@ namespace Axiom.Core
 					}
 					else
 					{
-						for ( int i = 0; i < files.Length; i++ )
+						for ( var i = 0; i < files.Length; i++ )
 						{
-							if ( ( files[ i ].IndexOf( platform ) != -1 ) )
+							if ( ( files[ i ].IndexOf( platform ) != -1 ) == true )
 							{
 								file = files[ i ];
 							}
 						}
 					}
 
-					Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
+					System.Diagnostics.Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
 				}
 
-				string path = Path.Combine( Directory.GetCurrentDirectory(), file );
+				var path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
 
 				var platformMgr = new DynamicLoader( path );
-				IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
+				var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
 				if ( platforms.Count != 0 )
 				{
-					instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+					instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
 				}
 			}
 #endif

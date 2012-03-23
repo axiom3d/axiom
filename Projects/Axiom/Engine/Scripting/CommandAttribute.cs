@@ -52,19 +52,19 @@ namespace Axiom.Scripting
 		#region Fields
 
 		/// <summary>
-		///    Description of what this command does.
-		/// </summary>
-		private readonly string description;
-
-		/// <summary>
 		///    Name of the command the target class will be registered to handle.
 		/// </summary>
-		private readonly string name;
+		private string name;
+
+		/// <summary>
+		///    Description of what this command does.
+		/// </summary>
+		private string description;
 
 		/// <summary>
 		///    Target type this class is meant to handle commands for.
 		/// </summary>
-		private readonly Type target;
+		private Type target;
 
 		#endregion Fields
 
@@ -114,7 +114,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return this.name;
+				return name;
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return this.description;
+				return description;
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return this.target;
+				return target;
 			}
 		}
 

@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -97,86 +99,62 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		#region Nested type: DepthCommand
-
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as EllipsoidEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: HeightCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as EllipsoidEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: WidthCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "width", "Width of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
 		public class WidthCommand : IPropertyCommand
 		{
-			#region IPropertyCommand Members
-
 			public void Set( object target, string val )
 			{
-				var emitter = target as EllipsoidEmitter;
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				var emitter = target as EllipsoidEmitter;
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
-
-			#endregion
 		}
 
-		#endregion
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "height", "Height of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
+		public class HeightCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
+				emitter.Height = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
+				return StringConverter.ToString( emitter.Height );
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "depth", "Depth of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
+		public class DepthCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
+				emitter.Depth = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				EllipsoidEmitter emitter = target as EllipsoidEmitter;
+				return StringConverter.ToString( emitter.Depth );
+			}
+		}
 
 		#endregion Command definition classes
 	}

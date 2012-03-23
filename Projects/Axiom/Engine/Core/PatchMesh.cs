@@ -77,22 +77,8 @@ namespace Axiom.Core
 		///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
 		/// </remarks>
 		public PatchMesh( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: base( parent, name, handle, group, false, null ) { }
+			: base( parent, name, handle, group, false, null ) {}
 
-
-		public float Subdivision
-		{
-			get
-			{
-				return this.patchSurface.SubdivisionFactor;
-			}
-			set
-			{
-				this.patchSurface.SubdivisionFactor = value;
-				SubMesh sm = GetSubMesh( 0 );
-				sm.indexData.indexCount = this.patchSurface.CurrentIndexCount;
-			}
-		}
 
 		public void Define( Array controlPointArray, VertexDeclaration declaration, int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide, BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
 		{
@@ -104,37 +90,51 @@ namespace Axiom.Core
 			// Init patch builder
 			// define the surface
 			// NB clone the declaration to make it independent
-			this.vertexDeclaration = (VertexDeclaration)declaration.Clone();
-			this.patchSurface.DefineSurface( controlPointArray, this.vertexDeclaration, width, height, PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+			vertexDeclaration = (VertexDeclaration)declaration.Clone();
+			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height, PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+		}
+
+		public float Subdivision
+		{
+			get
+			{
+				return patchSurface.SubdivisionFactor;
+			}
+			set
+			{
+				patchSurface.SubdivisionFactor = value;
+				var sm = GetSubMesh( 0 );
+				sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+			}
 		}
 
 		protected override void load()
 		{
-			SubMesh sm = CreateSubMesh();
+			var sm = CreateSubMesh();
 			sm.vertexData = new VertexData();
 			sm.useSharedVertices = false;
 
 			// Set up the vertex buffer
 			sm.vertexData.vertexStart = 0;
-			sm.vertexData.vertexCount = this.patchSurface.RequiredVertexCount;
-			sm.vertexData.vertexDeclaration = this.vertexDeclaration;
+			sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
+			sm.vertexData.vertexDeclaration = vertexDeclaration;
 
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexDeclaration.Clone( 0 ), sm.vertexData.vertexCount, VertexBufferUsage, UseVertexShadowBuffer );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ), sm.vertexData.vertexCount, VertexBufferUsage, UseVertexShadowBuffer );
 
 			// bind the vertex buffer
 			sm.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
 
 			// create the index buffer
 			sm.indexData.indexStart = 0;
-			sm.indexData.indexCount = this.patchSurface.RequiredIndexCount;
+			sm.indexData.indexCount = patchSurface.RequiredIndexCount;
 			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, sm.indexData.indexCount, IndexBufferUsage, UseIndexShadowBuffer );
 
 			// build the path
-			this.patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
+			patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
 
 			// set the bounds
-			BoundingBox = this.patchSurface.Bounds;
-			BoundingSphereRadius = this.patchSurface.BoundingSphereRadius;
+			this.BoundingBox = patchSurface.Bounds;
+			this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
 		}
 	}
 }

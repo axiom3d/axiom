@@ -49,12 +49,12 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected ISdkTrayListener listener;
+		protected TrayLocation trayLoc;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TrayLocation trayLoc;
+		protected ISdkTrayListener listener;
 
 		#endregion fields
 
@@ -67,11 +67,11 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				this.trayLoc = value;
+				trayLoc = value;
 			}
 			get
 			{
-				return this.trayLoc;
+				return trayLoc;
 			}
 		}
 
@@ -82,11 +82,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.listener;
+				return listener;
 			}
 			set
 			{
-				this.listener = value;
+				listener = value;
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.element;
+				return element;
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.element.Name;
+				return element.Name;
 			}
 		}
 
@@ -159,10 +159,10 @@ namespace Axiom.Samples
 		/// <param name="element"></param>
 		public static void NukeOverlayElement( OverlayElement element )
 		{
-			var container = element as OverlayElementContainer;
+			OverlayElementContainer container = element as OverlayElementContainer;
 			if ( container != null )
 			{
-				var toDelete = new List<OverlayElement>();
+				List<OverlayElement> toDelete = new List<OverlayElement>();
 				foreach ( OverlayElement child in container.Children.Values )
 				{
 					toDelete.Add( child );
@@ -205,8 +205,8 @@ namespace Axiom.Samples
 		public static bool IsCursorOver( OverlayElement element, Vector2 cursorPos, Real voidBorder )
 		{
 			OverlayManager om = OverlayManager.Instance;
-			var l = (int)( element.DerivedLeft * om.ViewportWidth );
-			var t = (int)( element.DerivedTop * om.ViewportHeight );
+			int l = (int)( element.DerivedLeft * om.ViewportWidth );
+			int t = (int)( element.DerivedTop * om.ViewportHeight );
 			int r = l + (int)element.Width;
 			int b = t + (int)element.Height;
 
@@ -234,7 +234,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public static Real GetCaptionWidth( String caption, TextArea area )
 		{
-			var font = (Font)FontManager.Instance.GetByName( area.FontName );
+			Font font = (Font)FontManager.Instance.GetByName( area.FontName );
 			String current = caption;
 			Real lineWidth = 0;
 
@@ -256,7 +256,7 @@ namespace Axiom.Samples
 				{
 					break;
 				}
-				// use glyph information to calculate line width
+					// use glyph information to calculate line width
 				else
 				{
 					lineWidth += font.GetGlyphAspectRatio( current[ i ] ) * area.CharHeight;
@@ -274,7 +274,7 @@ namespace Axiom.Samples
 		/// <param name="maxWidth"></param>
 		public static void FitCaptionToArea( String caption, TextArea area, Real maxWidth )
 		{
-			var f = (Font)FontManager.Instance.GetByName( area.FontName );
+			Font f = (Font)FontManager.Instance.GetByName( area.FontName );
 			String s = caption;
 
 			int nl = s.IndexOf( '\n' );

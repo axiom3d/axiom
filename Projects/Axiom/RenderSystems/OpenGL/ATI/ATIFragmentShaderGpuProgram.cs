@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
+using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;
 
@@ -66,7 +68,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		protected override void LoadFromSource()
 		{
-			var assembler = new PixelShader();
+			PixelShader assembler = new PixelShader();
 
 			//bool testError = assembler.RunTests();
 
@@ -82,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 				Gl.glEndFragmentShaderATI();
 			}
-			else { }
+			else {}
 		}
 
 		public override void Unload()
@@ -107,16 +109,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
 		{
 			// only supports float constants
-			GpuProgramParameters.GpuLogicalBufferStruct floatStruct = parms.FloatLogicalBufferStruct;
+			var floatStruct = parms.FloatLogicalBufferStruct;
 
 			foreach ( var i in floatStruct.Map )
 			{
 				if ( ( i.Value.Variability & mask ) != 0 )
 				{
-					int logicalIndex = i.Key;
-					BufferBase pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
+					var logicalIndex = i.Key;
+					var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
 					// Iterate over the params, set in 4-float chunks (low-level)
-					for ( int j = 0; j < i.Value.CurrentSize; j += 4 )
+					for ( var j = 0; j < i.Value.CurrentSize; j += 4 )
 					{
 						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin() );
 						pFloat.UnPin();

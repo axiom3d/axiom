@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using Axiom.Core;
@@ -74,6 +75,12 @@ namespace Axiom.Graphics
 	public abstract class HighLevelGpuProgram : GpuProgram
 	{
 		/// <summary>
+		///    Whether the high-level program (and it's parameter defs) is loaded.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool highLevelLoaded;
+
+		/// <summary>
 		///    The underlying assembler program.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
@@ -81,12 +88,6 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool constantDefsBuilt;
-
-		/// <summary>
-		///    Whether the high-level program (and it's parameter defs) is loaded.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool highLevelLoaded;
 
 		#region BindingDelegate Property
 
@@ -98,7 +99,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.assemblerProgram;
+				return assemblerProgram;
 			}
 		}
 
@@ -110,7 +111,7 @@ namespace Axiom.Graphics
 		/// Default constructor.
 		/// </summary>
 		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) { }
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Construction and Destruction
 
@@ -122,18 +123,18 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void LoadHighLevel()
 		{
-			if ( this.highLevelLoaded )
+			if ( highLevelLoaded )
 			{
 				return;
 			}
 			try
 			{
 				LoadHighLevelImpl();
-				this.highLevelLoaded = true;
+				highLevelLoaded = true;
 				if ( defaultParams != null )
 				{
 					// Keep a reference to old ones to copy
-					GpuProgramParameters savedParams = defaultParams;
+					var savedParams = defaultParams;
 					// reset params to stop them being referenced in the next create
 					//defaultParams = null;
 
@@ -167,7 +168,7 @@ namespace Axiom.Graphics
 			if ( LoadFromFile )
 			{
 				// find & load source code
-				using ( Stream stream = ResourceGroupManager.Instance.OpenResource( fileName, _group, true, this ) )
+				using ( var stream = ResourceGroupManager.Instance.OpenResource( fileName, _group, true, this ) )
 				{
 					using ( var t = new StreamReader( stream ) )
 					{
@@ -189,17 +190,17 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void UnloadHighLevel()
 		{
-			if ( !this.highLevelLoaded )
+			if ( !highLevelLoaded )
 			{
 				return;
 			}
 
 			UnloadHighLevelImpl();
 			// Clear saved constant defs
-			this.constantDefsBuilt = false;
+			constantDefsBuilt = false;
 			CreateParameterMappingStructures( true );
 
-			this.highLevelLoaded = false;
+			highLevelLoaded = false;
 		}
 
 		#endregion
@@ -234,7 +235,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void PopulateParameterNames( GpuProgramParameters parms )
 		{
-			GpuProgramParameters.GpuNamedConstants defs = ConstantDefinitions; // Axiom: Ogre has SIDE EFFECT here!!
+			var defs = ConstantDefinitions; // Axiom: Ogre has SIDE EFFECT here!!
 			parms.NamedConstants = constantDefs;
 			// also set logical / physical maps for programs which use this
 			parms.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
@@ -265,10 +266,10 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( !this.constantDefsBuilt )
+				if ( !constantDefsBuilt )
 				{
 					BuildConstantDefinitions();
-					this.constantDefsBuilt = true;
+					constantDefsBuilt = true;
 				}
 
 				return constantDefs;
@@ -315,7 +316,7 @@ namespace Axiom.Graphics
 #endif
 			{
 				// Make sure param defs are loaded
-				GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+				var newParams = GpuProgramManager.Instance.CreateParameters();
 
 				// Only populate named parameters if we can support this program
 				if ( IsSupported )
@@ -359,9 +360,9 @@ namespace Axiom.Graphics
 			// create low-level implementation
 			CreateLowLevelImpl();
 			// load constructed assembler program (if it exists)
-			if ( this.assemblerProgram != null && this.assemblerProgram != this )
+			if ( assemblerProgram != null && assemblerProgram != this )
 			{
-				this.assemblerProgram.Load();
+				assemblerProgram.Load();
 			}
 		}
 
@@ -375,10 +376,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
 		{
-			if ( this.assemblerProgram != null && this.assemblerProgram != this )
+			if ( assemblerProgram != null && assemblerProgram != this )
 			{
-				this.assemblerProgram.Creator.Remove( this.assemblerProgram.Handle );
-				this.assemblerProgram = null;
+				assemblerProgram.Creator.Remove( assemblerProgram.Handle );
+				assemblerProgram = null;
 			}
 
 			UnloadHighLevel();

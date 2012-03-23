@@ -9,6 +9,10 @@
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -23,7 +27,7 @@ namespace Axiom.SceneManagers.Octree
 		protected internal TerrainRaySceneQuery( SceneManager creator )
 			: base( creator )
 		{
-			worldFragmentTypes = WorldFragmentType.SingleIntersection;
+			this.worldFragmentTypes = WorldFragmentType.SingleIntersection;
 			this.WorldFragment = new WorldFragment();
 		}
 
@@ -48,7 +52,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 			else
 			{
-				var tsm = (TerrainSceneManager)creator;
+				TerrainSceneManager tsm = (TerrainSceneManager)creator;
 				this.WorldFragment.SingleIntersection = tsm.IntersectSegment( origin, origin + ( dir * 100000 ) );
 				if ( !listener.OnQueryResult( this.WorldFragment, ( this.WorldFragment.SingleIntersection - origin ).Length ) )
 				{

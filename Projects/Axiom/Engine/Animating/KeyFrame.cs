@@ -40,8 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -70,14 +70,14 @@ namespace Axiom.Animating
 		#region Protected member variables
 
 		/// <summary>
-		///		Animation track that this key frame belongs to.
-		/// </summary>
-		protected AnimationTrack parentTrack;
-
-		/// <summary>
 		///		Time of this keyframe.
 		/// </summary>
 		protected float time;
+
+		/// <summary>
+		///		Animation track that this key frame belongs to.
+		/// </summary>
+		protected AnimationTrack parentTrack;
 
 		#endregion Protected member variables
 
@@ -106,11 +106,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.time;
+				return time;
 			}
 			set
 			{
-				this.time = value;
+				time = value;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public NumericKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) { }
+			: base( parent, time ) {}
 
 		#endregion
 
@@ -151,7 +151,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.numericValue;
+				return numericValue;
 			}
 			set
 			{
@@ -175,7 +175,7 @@ namespace Axiom.Animating
 						}
 					}
 				}
-				this.numericValue = value;
+				numericValue = value;
 			}
 		}
 
@@ -188,9 +188,9 @@ namespace Axiom.Animating
 		#region Protected member variables
 
 		/// <summary>
-		///		Rotation at this keyframe.
+		///		Translation at this keyframe.
 		/// </summary>
-		protected Quaternion rotation;
+		protected Vector3 translate;
 
 		/// <summary>
 		///		Scale factor at this keyframe.
@@ -198,9 +198,9 @@ namespace Axiom.Animating
 		protected Vector3 scale;
 
 		/// <summary>
-		///		Translation at this keyframe.
+		///		Rotation at this keyframe.
 		/// </summary>
-		protected Vector3 translate;
+		protected Quaternion rotation;
 
 		#endregion Protected member variables
 
@@ -215,9 +215,9 @@ namespace Axiom.Animating
 		public TransformKeyFrame( AnimationTrack parent, float time )
 			: base( parent, time )
 		{
-			this.translate = new Vector3();
-			this.scale = Vector3.UnitScale;
-			this.rotation = Quaternion.Identity;
+			translate = new Vector3();
+			scale = Vector3.UnitScale;
+			rotation = Quaternion.Identity;
 		}
 
 		#endregion Constructors
@@ -233,11 +233,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.rotation;
+				return rotation;
 			}
 			set
 			{
-				this.rotation = value;
+				rotation = value;
 
 				if ( parentTrack != null )
 				{
@@ -256,11 +256,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.scale;
+				return scale;
 			}
 			set
 			{
-				this.scale = value;
+				scale = value;
 
 				if ( parentTrack != null )
 				{
@@ -280,11 +280,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.translate;
+				return translate;
 			}
 			set
 			{
-				this.translate = value;
+				translate = value;
 
 				if ( parentTrack != null )
 				{
@@ -303,12 +303,6 @@ namespace Axiom.Animating
 	/// </remarks>
 	public struct PoseRef
 	{
-		/// <summary>
-		///     Influence level of the linked pose. 
-		///     1.0 for full influence (full offset), 0.0 for no influence.
-		/// </summary>
-		public float influence;
-
 		/// <summary>The linked pose index.</summary>
 		///	<remarks>
 		///	    The Mesh contains all poses for all vertex data in one list, both 
@@ -317,6 +311,12 @@ namespace Axiom.Animating
 		///	    linked pose.
 		/// </remarks>
 		public ushort poseIndex;
+
+		/// <summary>
+		///     Influence level of the linked pose. 
+		///     1.0 for full influence (full offset), 0.0 for no influence.
+		/// </summary>
+		public float influence;
 
 		public PoseRef( ushort poseIndex, float influence )
 		{
@@ -328,11 +328,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.poseIndex;
+				return poseIndex;
 			}
 			set
 			{
-				this.poseIndex = value;
+				poseIndex = value;
 			}
 		}
 
@@ -340,11 +340,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.influence;
+				return influence;
 			}
 			set
 			{
-				this.influence = value;
+				influence = value;
 			}
 		}
 	}
@@ -369,7 +369,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexMorphKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) { }
+			: base( parent, time ) {}
 
 		#endregion Constructors
 
@@ -382,11 +382,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.vertexBuffer;
+				return vertexBuffer;
 			}
 			set
 			{
-				this.vertexBuffer = value;
+				vertexBuffer = value;
 			}
 		}
 
@@ -414,7 +414,7 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexPoseKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) { }
+			: base( parent, time ) {}
 
 		#endregion Constructors
 
@@ -427,7 +427,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.poseRefs;
+				return poseRefs;
 			}
 		}
 
@@ -438,7 +438,7 @@ namespace Axiom.Animating
 		/// <summary>Add a new pose reference.</summary>
 		public void AddPoseReference( ushort poseIndex, float influence )
 		{
-			this.poseRefs.Add( new PoseRef( poseIndex, influence ) );
+			poseRefs.Add( new PoseRef( poseIndex, influence ) );
 		}
 
 		/// <summary>Update the influence of a pose reference.</summary>
@@ -455,11 +455,11 @@ namespace Axiom.Animating
 		/// <param name="poseIndex">The pose index (not the index of the reference)</param>
 		public void RemovePoseReference( ushort poseIndex )
 		{
-			for ( int i = 0; i < this.poseRefs.Count; i++ )
+			for ( var i = 0; i < poseRefs.Count; i++ )
 			{
-				if ( this.poseRefs[ i ].poseIndex == poseIndex )
+				if ( poseRefs[ i ].poseIndex == poseIndex )
 				{
-					this.poseRefs.RemoveAt( i );
+					poseRefs.RemoveAt( i );
 					return;
 				}
 			}
@@ -468,7 +468,7 @@ namespace Axiom.Animating
 		/// <summary>Remove all pose references.</summary>
 		public void RemoveAllPoseReferences()
 		{
-			this.poseRefs.Clear();
+			poseRefs.Clear();
 		}
 
 		#endregion Public Methods

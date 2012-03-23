@@ -8,7 +8,7 @@ namespace Axiom.RenderSystems.OpenGL
 	public class GLDefaultHardwareIndexBuffer : HardwareIndexBuffer
 	{
 		public GLDefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer ) { }
+			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer ) {}
 
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{

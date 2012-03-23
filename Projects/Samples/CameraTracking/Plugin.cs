@@ -28,16 +28,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.CameraTrack
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private CameraTrackingSample sample;
 
 		public override void Initialize()
 		{
-			this.sample = new CameraTrackingSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
+			sample = new CameraTrackingSample();
+			Name = sample.Metadata[ "Title" ] + " Sample";
+			AddSample( sample );
 		}
 	}
 }

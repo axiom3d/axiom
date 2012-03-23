@@ -33,6 +33,8 @@
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -56,19 +58,19 @@ namespace Axiom.Graphics
 				return;
 			}
 
-			if ( ( mask & this._combinedVariability ) == 0 )
+			if ( ( mask & _combinedVariability ) == 0 )
 			{
 				return;
 			}
 
-			this.activePassIterationIndex = int.MaxValue;
+			activePassIterationIndex = int.MaxValue;
 
 			Matrix3 m3;
 			Vector4 vec4;
 			Vector3 vec3;
 
 			// loop through and update all constants based on their type
-			foreach ( AutoConstantEntry entry in this.autoConstants )
+			foreach ( var entry in autoConstants )
 			{
 				// Only update needed slots
 				if ( ( entry.Variability & mask ) == 0 )
@@ -131,13 +133,13 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.VertexWinding:
-						{
-							RenderSystem rsys = Root.Instance.RenderSystem;
-							WriteRawConstant( entry.PhysicalIndex, rsys.InvertVertexWinding ? -1.0f : 1.0f );
-							break;
-						}
+					{
+						var rsys = Root.Instance.RenderSystem;
+						WriteRawConstant( entry.PhysicalIndex, rsys.InvertVertexWinding ? -1.0f : 1.0f );
+						break;
+					}
 
-					// NB ambient light still here because it's not related to a specific light
+						// NB ambient light still here because it's not related to a specific light
 					case AutoConstantType.AmbientLightColor:
 						WriteRawConstant( entry.PhysicalIndex, source.AmbientLight, entry.ElementCount );
 						break;
@@ -271,16 +273,16 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.ViewportSize:
-						{
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( source.ViewportWidth, source.ViewportHeight, source.InverseViewportWidth, source.InverseViewportHeight ), entry.ElementCount );
-						}
+					{
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( source.ViewportWidth, source.ViewportHeight, source.InverseViewportWidth, source.InverseViewportHeight ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.TexelOffsets:
-						{
-							RenderSystem rsys = Root.Instance.RenderSystem;
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( rsys.HorizontalTexelOffset, rsys.VerticalTexelOffset, rsys.HorizontalTexelOffset * source.InverseViewportWidth, rsys.VerticalTexelOffset * source.InverseViewportHeight ), entry.ElementCount );
-						}
+					{
+						var rsys = Root.Instance.RenderSystem;
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( rsys.HorizontalTexelOffset, rsys.VerticalTexelOffset, rsys.HorizontalTexelOffset * source.InverseViewportWidth, rsys.VerticalTexelOffset * source.InverseViewportHeight ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.TextureSize:
@@ -328,11 +330,11 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.PassIterationNumber:
-						{
-							// this is actually just an initial set-up, it's bound separately, so still global
-							WriteRawConstant( entry.PhysicalIndex, 0.0f );
-							this.activePassIterationIndex = entry.PhysicalIndex;
-						}
+					{
+						// this is actually just an initial set-up, it's bound separately, so still global
+						WriteRawConstant( entry.PhysicalIndex, 0.0f );
+						activePassIterationIndex = entry.PhysicalIndex;
+					}
 						break;
 
 					case AutoConstantType.TextureMatrix:
@@ -349,7 +351,7 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.TextureWorldViewProjMatrixArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							// can also be updated in lights
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetTextureWorldViewProjMatrix( l ), entry.ElementCount );
@@ -361,8 +363,50 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.LightPositionObjectSpace:
+					{
+						vec4 = source.GetLightAs4DVector( entry.Data );
+						vec3 = new Vector3( vec4.x, vec4.y, vec4.z );
+						if ( vec4.w > 0.0f )
 						{
-							vec4 = source.GetLightAs4DVector( entry.Data );
+							// point light
+							vec3 = source.InverseWorldMatrix.TransformAffine( vec3 );
+						}
+						else
+						{
+							// directional light
+							// We need the inverse of the inverse transpose 
+							source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
+							vec3 = ( m3 * vec3 ).ToNormalized();
+						}
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, vec4.w ), entry.ElementCount );
+					}
+						break;
+
+					case AutoConstantType.LightDirectionObjectSpace:
+					{
+						// We need the inverse of the inverse transpose 
+						source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
+						vec3 = m3 * source.GetLightDirection( entry.Data );
+						vec3.Normalize();
+						// Set as 4D vector for compatibility
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
+					}
+						break;
+
+					case AutoConstantType.LightDistanceObjectSpace:
+					{
+						vec3 = source.InverseWorldMatrix.TransformAffine( source.GetLightPosition( entry.Data ) );
+						WriteRawConstant( entry.PhysicalIndex, vec3.Length );
+					}
+						break;
+
+					case AutoConstantType.LightPositionObjectSpaceArray:
+					{
+						// We need the inverse of the inverse transpose 
+						source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
+						for ( var l = 0; l < entry.Data; ++l )
+						{
+							vec4 = source.GetLightAs4DVector( l );
 							vec3 = new Vector3( vec4.x, vec4.y, vec4.z );
 							if ( vec4.w > 0.0f )
 							{
@@ -372,70 +416,28 @@ namespace Axiom.Graphics
 							else
 							{
 								// directional light
-								// We need the inverse of the inverse transpose 
-								source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
 								vec3 = ( m3 * vec3 ).ToNormalized();
 							}
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, vec4.w ), entry.ElementCount );
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, vec4.w ), entry.ElementCount );
 						}
-						break;
-
-					case AutoConstantType.LightDirectionObjectSpace:
-						{
-							// We need the inverse of the inverse transpose 
-							source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
-							vec3 = m3 * source.GetLightDirection( entry.Data );
-							vec3.Normalize();
-							// Set as 4D vector for compatibility
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
-						}
-						break;
-
-					case AutoConstantType.LightDistanceObjectSpace:
-						{
-							vec3 = source.InverseWorldMatrix.TransformAffine( source.GetLightPosition( entry.Data ) );
-							WriteRawConstant( entry.PhysicalIndex, vec3.Length );
-						}
-						break;
-
-					case AutoConstantType.LightPositionObjectSpaceArray:
-						{
-							// We need the inverse of the inverse transpose 
-							source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								vec4 = source.GetLightAs4DVector( l );
-								vec3 = new Vector3( vec4.x, vec4.y, vec4.z );
-								if ( vec4.w > 0.0f )
-								{
-									// point light
-									vec3 = source.InverseWorldMatrix.TransformAffine( vec3 );
-								}
-								else
-								{
-									// directional light
-									vec3 = ( m3 * vec3 ).ToNormalized();
-								}
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, vec4.w ), entry.ElementCount );
-							}
-						}
+					}
 						break;
 
 					case AutoConstantType.LightDirectionObjectSpaceArray:
+					{
+						// We need the inverse of the inverse transpose 
+						source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							// We need the inverse of the inverse transpose 
-							source.InverseTransposeWorldMatrix.Inverse().Extract3x3Matrix( out m3 );
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								vec3 = m3 * source.GetLightDirection( l );
-								vec3.Normalize();
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
-							}
+							vec3 = m3 * source.GetLightDirection( l );
+							vec3.Normalize();
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightDistanceObjectSpaceArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							vec3 = source.InverseWorldMatrix.TransformAffine( source.GetLightPosition( l ) );
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, vec3.Length );
@@ -459,19 +461,19 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.WorldMatrixArray3x4:
+					{
+						// Loop over matrices
+						var pMatrix = source.WorldMatrixArray;
+						var numMatrices = source.WorldMatrixCount;
+						var index = entry.PhysicalIndex;
+						var floatArray = new float[ 16 ];
+						for ( var m = 0; m < numMatrices; ++m )
 						{
-							// Loop over matrices
-							Matrix4[] pMatrix = source.WorldMatrixArray;
-							int numMatrices = source.WorldMatrixCount;
-							int index = entry.PhysicalIndex;
-							var floatArray = new float[ 16 ];
-							for ( int m = 0; m < numMatrices; ++m )
-							{
-								pMatrix[ m ].MakeFloatArray( floatArray );
-								_writeRawConstants( index, floatArray, 12 );
-								index += 12;
-							}
+							pMatrix[ m ].MakeFloatArray( floatArray );
+							_writeRawConstants( index, floatArray, 12 );
+							index += 12;
 						}
+					}
 						break;
 
 					case AutoConstantType.WorldMatrixArray:
@@ -540,47 +542,47 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.LightPosition:
-						{
-							// Get as 4D vector, works for directional lights too
-							// Use element count in case uniform slot is smaller
-							WriteRawConstant( entry.PhysicalIndex, source.GetLightAs4DVector( entry.Data ), entry.ElementCount );
-						}
+					{
+						// Get as 4D vector, works for directional lights too
+						// Use element count in case uniform slot is smaller
+						WriteRawConstant( entry.PhysicalIndex, source.GetLightAs4DVector( entry.Data ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.LightDirection:
-						{
-							vec3 = source.GetLightDirection( entry.Data );
-							// Set as 4D vector for compatibility
-							// Use element count in case uniform slot is smaller
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 1.0f ), entry.ElementCount );
-						}
+					{
+						vec3 = source.GetLightDirection( entry.Data );
+						// Set as 4D vector for compatibility
+						// Use element count in case uniform slot is smaller
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 1.0f ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.LightPositionViewSpace:
-						{
-							vec4 = source.GetLightAs4DVector( entry.Data );
-							WriteRawConstant( entry.PhysicalIndex, source.ViewMatrix.TransformAffine( vec4 ), entry.ElementCount );
-						}
+					{
+						vec4 = source.GetLightAs4DVector( entry.Data );
+						WriteRawConstant( entry.PhysicalIndex, source.ViewMatrix.TransformAffine( vec4 ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.LightDirectionViewSpace:
-						{
-							source.InverseTransposeViewMatrix.Extract3x3Matrix( out m3 );
-							// inverse transpose in case of scaling
-							vec3 = m3 * source.GetLightDirection( entry.Data );
-							vec3.Normalize();
-							// Set as 4D vector for compatibility
-							WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
-						}
+					{
+						source.InverseTransposeViewMatrix.Extract3x3Matrix( out m3 );
+						// inverse transpose in case of scaling
+						vec3 = m3 * source.GetLightDirection( entry.Data );
+						vec3.Normalize();
+						// Set as 4D vector for compatibility
+						WriteRawConstant( entry.PhysicalIndex, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.ShadowExtrusionDistance:
-						{
-							// extrusion is in object-space, so we have to rescale by the inverse
-							// of the world scaling to deal with scaled objects
-							source.WorldMatrix.Extract3x3Matrix( out m3 );
-							WriteRawConstant( entry.PhysicalIndex, source.ShadowExtrusionDistance / Utility.Sqrt( Utility.Max( Utility.Max( m3.GetColumn( 0 ).LengthSquared, m3.GetColumn( 1 ).LengthSquared ), m3.GetColumn( 2 ).LengthSquared ) ) );
-						}
+					{
+						// extrusion is in object-space, so we have to rescale by the inverse
+						// of the world scaling to deal with scaled objects
+						source.WorldMatrix.Extract3x3Matrix( out m3 );
+						WriteRawConstant( entry.PhysicalIndex, source.ShadowExtrusionDistance / Utility.Sqrt( Utility.Max( Utility.Max( m3.GetColumn( 0 ).LengthSquared, m3.GetColumn( 1 ).LengthSquared ), m3.GetColumn( 2 ).LengthSquared ) ) );
+					}
 						break;
 
 					case AutoConstantType.ShadowSceneDepthRange:
@@ -620,51 +622,51 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.LightDiffuseColorArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightDiffuse( l ), entry.ElementCount );
 						}
 						break;
 
 					case AutoConstantType.LightSpecularColorArray:
+					{
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightSpecular( l ), entry.ElementCount );
-							}
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightSpecular( l ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightDiffuseColorPowerScaledArray:
+					{
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightDiffuseColorWithPower( l ), entry.ElementCount );
-							}
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightDiffuseColorWithPower( l ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightSpecularColorPowerScaledArray:
+					{
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightSpecularColorWithPower( l ), entry.ElementCount );
-							}
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightSpecularColorWithPower( l ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightPositionArray:
+					{
+						// Get as 4D vector, works for directional lights too
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							// Get as 4D vector, works for directional lights too
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightAs4DVector( l ), entry.ElementCount );
-							}
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightAs4DVector( l ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightDirectionArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							vec3 = source.GetLightDirection( l );
 							// Set as 4D vector for compatibility
@@ -673,7 +675,7 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.LightPositionViewSpaceArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							vec4 = source.GetLightAs4DVector( l );
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.ViewMatrix.TransformAffine( vec4 ), entry.ElementCount );
@@ -681,43 +683,43 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.LightDirectionViewSpaceArray:
+					{
+						source.InverseTransposeViewMatrix.Extract3x3Matrix( out m3 );
+						for ( var l = 0; l < entry.Data; ++l )
 						{
-							source.InverseTransposeViewMatrix.Extract3x3Matrix( out m3 );
-							for ( int l = 0; l < entry.Data; ++l )
-							{
-								vec3 = m3 * source.GetLightDirection( l );
-								vec3.Normalize();
-								// Set as 4D vector for compatibility
-								WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
-							}
+							vec3 = m3 * source.GetLightDirection( l );
+							vec3.Normalize();
+							// Set as 4D vector for compatibility
+							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, new Vector4( vec3.x, vec3.y, vec3.z, 0.0f ), entry.ElementCount );
 						}
+					}
 						break;
 
 					case AutoConstantType.LightPowerScaleArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightPowerScale( l ) );
 						}
 						break;
 
 					case AutoConstantType.LightAttenuationArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightAttenuation( l ), entry.ElementCount );
 						}
 						break;
 
 					case AutoConstantType.SpotLightParamsArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetSpotlightParams( l ), entry.ElementCount );
 						}
 						break;
 
 					case AutoConstantType.DerivedLightDiffuseColor:
-						{
-							WriteRawConstant( entry.PhysicalIndex, source.GetLightDiffuseColorWithPower( entry.Data ) * source.SurfaceDiffuse, entry.ElementCount );
-						}
+					{
+						WriteRawConstant( entry.PhysicalIndex, source.GetLightDiffuseColorWithPower( entry.Data ) * source.SurfaceDiffuse, entry.ElementCount );
+					}
 						break;
 
 					case AutoConstantType.DerivedLightSpecularColor:
@@ -725,14 +727,14 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.DerivedLightDiffuseColorArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightDiffuseColorWithPower( l ) * source.SurfaceDiffuse, entry.ElementCount );
 						}
 						break;
 
 					case AutoConstantType.DerivedLightSpecularColorArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetLightSpecularColorWithPower( l ) * source.SurfaceSpecular, entry.ElementCount );
 						}
@@ -744,7 +746,7 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstantType.TextureViewProjMatrixArray:
-						for ( int l = 0; l < entry.Data; ++l )
+						for ( var l = 0; l < entry.Data; ++l )
 						{
 							// can also be updated in lights
 							WriteRawConstant( entry.PhysicalIndex + l * entry.ElementCount, source.GetTextureViewProjectionMatrix( l ), entry.ElementCount );

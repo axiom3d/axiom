@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
+using System.Text;
+
+using Axiom.Scripting.Compiler.Parser;
 
 #endregion Namespace Declarations
 
@@ -63,11 +67,11 @@ namespace Axiom.Scripting.Compiler
 	/// </summary>
 	public class ConcreteNode
 	{
-		public List<ConcreteNode> Children = new List<ConcreteNode>();
+		public string Token;
 		public string File;
 		public uint Line;
-		public ConcreteNode Parent;
-		public string Token;
 		public ConcreteNodeType Type;
+		public List<ConcreteNode> Children = new List<ConcreteNode>();
+		public ConcreteNode Parent;
 	}
 }

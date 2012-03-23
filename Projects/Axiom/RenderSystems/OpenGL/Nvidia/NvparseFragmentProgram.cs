@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
@@ -67,6 +69,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		}
 
 		#endregion Constructor
+
+		#region GpuProgram Members
 
 		/// <summary>
 		///     Loads the raw ASM source and runs Nvparse to send the appropriate
@@ -114,6 +118,10 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glDeleteLists( programId, 1 );
 		}
 
+		#endregion GpuProgram Members
+
+		#region GLGpuProgram Members
+
 		/// <summary>
 		///     Binds the Nvparse program to the current context.
 		/// </summary>
@@ -144,17 +152,19 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			// Register combiners uses 2 constants per texture stage (0 and 1)
 			// We have stored these as (stage * 2) + const_index in the physical buffer
 			// There are no other parameters in a register combiners shader
-			float[] floatList = parms.GetFloatConstantList();
-			int index = 0;
+			var floatList = parms.GetFloatConstantList();
+			var index = 0;
 
-			for ( int i = 0; i < floatList.Length; ++i, ++index )
+			for ( var i = 0; i < floatList.Length; ++i, ++index )
 			{
-				int combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
-				int pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
+				var combinerStage = Gl.GL_COMBINER0_NV + ( index / 2 );
+				var pname = Gl.GL_CONSTANT_COLOR0_NV + ( index % 2 );
 
 				Gl.glCombinerStageParameterfvNV( combinerStage, pname, ref floatList[ i ] );
 			}
 		}
+
+		#endregion GLGpuProgram Members
 
 		#region Nvparse externs
 

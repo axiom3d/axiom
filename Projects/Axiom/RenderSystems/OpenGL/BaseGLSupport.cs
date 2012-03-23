@@ -39,15 +39,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using Axiom.Collections;
+using Axiom.Configuration;
 using Axiom.Graphics;
-using Axiom.Graphics.Collections;
-using Axiom.Math;
 using Axiom.Media;
 
 using Tao.OpenGl;
+
+using Axiom.Math;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
@@ -154,7 +157,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this._engineConfig;
+				return _engineConfig;
 			}
 		}
 
@@ -163,22 +166,6 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion Fields and Properties
 
 		#region Methods
-
-		public virtual bool SupportsPBuffers
-		{
-			get
-			{
-				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
-			}
-		}
-
-		public int DisplayMonitorCount
-		{
-			get
-			{
-				return Screen.AllScreens.Length;
-			}
-		}
 
 		/// <summary>
 		///		Handy check to see if the current GL version is at least what is supplied.
@@ -239,12 +226,30 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+		public virtual bool SupportsPBuffers
+		{
+			get
+			{
+				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
+			}
+		}
+
+		public int DisplayMonitorCount
+		{
+			get
+			{
+				return Screen.AllScreens.Length;
+			}
+		}
+
 		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
 		{
 			return null;
 		}
 
 		#endregion Methods
+
+		#region Abstract Members
 
 		/// <summary>
 		/// Start anything speciual
@@ -293,6 +298,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="vsync"></param>
 		/// <returns></returns>
 		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
+
+		#endregion Abstract Members
 
 		public string ValidateConfig()
 		{

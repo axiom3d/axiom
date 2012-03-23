@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -49,12 +50,10 @@ namespace Axiom.CgPrograms
 	/// <summary>
 	///    Main plugin class.
 	/// </summary>
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class CgPlugin : IPlugin
 	{
 		private CgProgramFactory factory;
-
-		#region IPlugin Members
 
 		/// <summary>
 		///    Called when the plugin is started.
@@ -62,9 +61,9 @@ namespace Axiom.CgPrograms
 		public void Initialize()
 		{
 			// register our Cg Program Factory
-			this.factory = new CgProgramFactory();
+			factory = new CgProgramFactory();
 
-			HighLevelGpuProgramManager.Instance.AddFactory( this.factory );
+			HighLevelGpuProgramManager.Instance.AddFactory( factory );
 		}
 
 		/// <summary>
@@ -74,7 +73,5 @@ namespace Axiom.CgPrograms
 		{
 			//factory.Dispose();
 		}
-
-		#endregion
 	}
 }

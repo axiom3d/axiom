@@ -53,11 +53,35 @@ namespace Axiom.Core
 	/// <typeparam name="T"></typeparam>
 	public class Pair<T> : IEquatable<Pair<T>>
 	{
-		private Tuple<T, T> data;
+		private Axiom.Math.Tuple<T, T> data;
+
+		public T First
+		{
+			get
+			{
+				return data.First;
+			}
+			set
+			{
+				data = new Axiom.Math.Tuple<T, T>( value, data.Second );
+			}
+		}
+
+		public T Second
+		{
+			get
+			{
+				return data.Second;
+			}
+			set
+			{
+				data = new Axiom.Math.Tuple<T, T>( data.First, value );
+			}
+		}
 
 		public Pair( T first, T second )
 		{
-			this.data = new Tuple<T, T>( first, second );
+			data = new Axiom.Math.Tuple<T, T>( first, second );
 		}
 
 		#region IEquatable<Pair<T>> Implementation
@@ -72,7 +96,7 @@ namespace Axiom.Core
 		{
 			if ( other is Pair<T> )
 			{
-				return Equals( (Pair<T>)other );
+				return this.Equals( (Pair<T>)other );
 			}
 			return false;
 		}
@@ -83,33 +107,9 @@ namespace Axiom.Core
 
 		public override int GetHashCode()
 		{
-			return First.GetHashCode() ^ Second.GetHashCode();
+			return this.First.GetHashCode() ^ this.Second.GetHashCode();
 		}
 
 		#endregion System.Object Implementation
-
-		public T First
-		{
-			get
-			{
-				return this.data.First;
-			}
-			set
-			{
-				this.data = new Tuple<T, T>( value, this.data.Second );
-			}
-		}
-
-		public T Second
-		{
-			get
-			{
-				return this.data.Second;
-			}
-			set
-			{
-				this.data = new Tuple<T, T>( this.data.First, value );
-			}
-		}
 	}
 }

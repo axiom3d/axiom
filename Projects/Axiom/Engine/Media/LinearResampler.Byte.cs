@@ -39,14 +39,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
 	partial class LinearResampler
 	{
-		#region Nested type: Byte
-
 		/// <summary>
 		/// byte linear resampler, does not do any format conversions.
 		/// </summary>
@@ -58,10 +60,10 @@ namespace Axiom.Media
 		/// </remarks>
 		public class Byte
 		{
-			private readonly int _channels;
+			private int _channels;
 
 			public Byte()
-				: this( 1 ) { }
+				: this( 1 ) {}
 
 			public Byte( int channels )
 			{
@@ -84,9 +86,9 @@ namespace Axiom.Media
 #endif
 				{
 					// srcdata stays at beginning of slice, pdst is a moving pointer
-					byte* srcdata = src.Data.ToBytePointer();
-					byte* dstData = dst.Data.ToBytePointer();
-					int pdst = 0;
+					var srcdata = src.Data.ToBytePointer();
+					var dstData = dst.Data.ToBytePointer();
+					var pdst = 0;
 
 					// sx_48,sy_48 represent current position in source
 					// using 16/48-bit fixed precision, incremented by steps
@@ -99,27 +101,27 @@ namespace Axiom.Media
 					// fractional bits are the blend weight of the second sample
 					uint temp;
 
-					ulong sy_48 = ( stepy >> 1 ) - 1;
+					var sy_48 = ( stepy >> 1 ) - 1;
 					for ( var y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
 					{
 						temp = (uint)( sy_48 >> 36 );
 						temp = ( temp > 0x800 ) ? temp - 0x800 : 0;
-						uint syf = temp & 0xFFF;
-						uint sy1 = temp >> 12;
+						var syf = temp & 0xFFF;
+						var sy1 = temp >> 12;
 						var sy2 = (uint)System.Math.Min( sy1 + 1, src.Bottom - src.Top - 1 );
 						var syoff1 = (uint)( sy1 * src.RowPitch );
 						var syoff2 = (uint)( sy2 * src.RowPitch );
 
-						ulong sx_48 = ( stepx >> 1 ) - 1;
+						var sx_48 = ( stepx >> 1 ) - 1;
 						for ( var x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
 						{
 							temp = (uint)( sx_48 >> 36 );
 							temp = ( temp > 0x800 ) ? temp - 0x800 : 0;
-							uint sxf = temp & 0xFFF;
-							uint sx1 = temp >> 12;
+							var sxf = temp & 0xFFF;
+							var sx1 = temp >> 12;
 							var sx2 = (uint)System.Math.Min( sx1 + 1, src.Right - src.Left - 1 );
 
-							uint sxfsyf = sxf * syf;
+							var sxfsyf = sxf * syf;
 							for ( uint k = 0; k < this._channels; k++ )
 							{
 								var accum = (uint)( srcdata[ (int)( ( sx1 + syoff1 ) * this._channels + k ) ] * (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) + srcdata[ (int)( ( sx2 + syoff1 ) * this._channels + k ) ] * (char)( ( sxf << 12 ) - sxfsyf ) + srcdata[ (int)( ( sx1 + syoff2 ) * this._channels + k ) ] * (char)( ( syf << 12 ) - sxfsyf ) + srcdata[ (int)( ( sx2 + syoff2 ) * this._channels + k ) ] * (char)sxfsyf );
@@ -133,7 +135,5 @@ namespace Axiom.Media
 				}
 			}
 		}
-
-		#endregion
 	}
 }

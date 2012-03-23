@@ -9,7 +9,7 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.OpenTK
 {
-	[Export( typeof( IPlatformManager ) )]
+	[Export( typeof ( IPlatformManager ) )]
 	public class OpenTKPlatformManager : IPlatformManager
 	{
 		#region Fields
@@ -27,22 +27,26 @@ namespace Axiom.Platforms.OpenTK
 		///		Creates an InputReader
 		/// </summary>
 		/// <returns></returns>
-		public InputReader CreateInputReader()
+		public Axiom.Input.InputReader CreateInputReader()
 		{
-			this.inputReader = new OpenTKInputReader();
-			return this.inputReader;
+			inputReader = new OpenTKInputReader();
+			return inputReader;
 		}
+
+		#endregion IPlatformManager Members
+
+		#region IDisposable Members
 
 		public void Dispose()
 		{
-			if ( this.inputReader != null )
+			if ( inputReader != null )
 			{
-				this.inputReader.Dispose();
-				this.inputReader = null;
+				inputReader.Dispose();
+				inputReader = null;
 			}
 			LogManager.Instance.Write( "OpenTK Platform Manager Shutdown." );
 		}
 
-		#endregion
+		#endregion IDisposable Members
 	}
 }

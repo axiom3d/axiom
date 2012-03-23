@@ -37,12 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.IO;
+using System;
 
-using Axiom.Collections;
 using Axiom.Core;
+using Axiom.Collections;
 
 using ResourceHandle = System.UInt64;
+
+using System.IO;
 
 #endregion Namespace Declarations
 
@@ -76,7 +78,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			RemoveAll();
 
-			var bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
+			BspLevel bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
 			bsp.Load( stream );
 
 			return bsp;
@@ -91,21 +93,6 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		protected static BspResourceManager instance;
 
-		internal BspResourceManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-				ResourceType = "BspLevel";
-				this.shaderManager = new Quake3ShaderManager();
-				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
-			}
-			else
-			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
-			}
-		}
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -114,6 +101,22 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				return instance;
+			}
+		}
+
+		internal BspResourceManager()
+			: base()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+				ResourceType = "BspLevel";
+				shaderManager = new Quake3ShaderManager();
+				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+			}
+			else
+			{
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 		}
 
@@ -133,12 +136,12 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					this.shaderManager.Dispose();
+					shaderManager.Dispose();
 					ResourceGroupManager.Instance.UnregisterResourceManager( "BspLevel" );
 					instance = null;
 				}

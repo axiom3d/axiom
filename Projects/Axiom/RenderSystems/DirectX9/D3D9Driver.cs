@@ -35,8 +35,6 @@
 
 using Axiom.Core;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -54,16 +52,18 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Default constructor
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9Driver() { }
+		public D3D9Driver()
+			: base() {}
 
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9Driver( int adapterNumber, Capabilities deviceCaps, AdapterDetails adapterIdentifier, DisplayMode desktopDisplayMode )
+		public D3D9Driver( int adapterNumber, D3D9.Capabilities deviceCaps, D3D9.AdapterDetails adapterIdentifier, D3D9.DisplayMode desktopDisplayMode )
+			: base()
 		{
-			this._adapterNumber = adapterNumber;
-			this._d3D9DeviceCaps = deviceCaps;
-			this._adapterIdentifier = adapterIdentifier;
-			this._desktopDisplayMode = desktopDisplayMode;
-			this._videoModeList = null;
+			_adapterNumber = adapterNumber;
+			_d3D9DeviceCaps = deviceCaps;
+			_adapterIdentifier = adapterIdentifier;
+			_desktopDisplayMode = desktopDisplayMode;
+			_videoModeList = null;
 		}
 
 		/// <summary>
@@ -71,12 +71,13 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9Driver( D3D9Driver ob )
+			: base()
 		{
-			this._adapterNumber = ob._adapterNumber;
-			this._d3D9DeviceCaps = ob._d3D9DeviceCaps;
-			this._adapterIdentifier = ob._adapterIdentifier;
-			this._desktopDisplayMode = ob._desktopDisplayMode;
-			this._videoModeList = null;
+			_adapterNumber = ob._adapterNumber;
+			_d3D9DeviceCaps = ob._d3D9DeviceCaps;
+			_adapterIdentifier = ob._adapterIdentifier;
+			_desktopDisplayMode = ob._desktopDisplayMode;
+			_videoModeList = null;
 		}
 
 		#endregion Constructors
@@ -86,9 +87,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9Driver" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed && disposeManagedResources )
+			if ( !this.IsDisposed && disposeManagedResources )
 			{
-				this._videoModeList.SafeDispose();
+				_videoModeList.SafeDispose();
 			}
 
 			base.dispose( disposeManagedResources );
@@ -105,7 +106,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this._adapterIdentifier.Driver;
+				return _adapterIdentifier.Driver;
 			}
 		}
 
@@ -118,7 +119,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return string.Format( "Monitor-{0}-{1}", this._adapterNumber + 1, this._adapterIdentifier.Description );
+				return string.Format( "Monitor-{0}-{1}", _adapterNumber + 1, _adapterIdentifier.Description );
 			}
 		}
 
@@ -137,7 +138,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this._adapterNumber;
+				return _adapterNumber;
 			}
 		}
 
@@ -146,14 +147,14 @@ namespace Axiom.RenderSystems.DirectX9
 		#region AdapterIdentifier Property
 
 		[OgreVersion( 1, 7, 2790 )]
-		private readonly AdapterDetails _adapterIdentifier;
+		private readonly D3D9.AdapterDetails _adapterIdentifier;
 
 		[OgreVersion( 1, 7, 2790 )]
-		public AdapterDetails AdapterIdentifier
+		public D3D9.AdapterDetails AdapterIdentifier
 		{
 			get
 			{
-				return this._adapterIdentifier;
+				return _adapterIdentifier;
 			}
 		}
 
@@ -162,14 +163,14 @@ namespace Axiom.RenderSystems.DirectX9
 		#region DesktopMode Property
 
 		[OgreVersion( 1, 7, 2790 )]
-		private readonly DisplayMode _desktopDisplayMode;
+		private readonly D3D9.DisplayMode _desktopDisplayMode;
 
 		[OgreVersion( 1, 7, 2790 )]
-		public DisplayMode DesktopMode
+		public D3D9.DisplayMode DesktopMode
 		{
 			get
 			{
-				return this._desktopDisplayMode;
+				return _desktopDisplayMode;
 			}
 		}
 
@@ -185,12 +186,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				if ( this._videoModeList == null )
+				if ( _videoModeList == null )
 				{
-					this._videoModeList = new D3D9VideoModeList( this );
+					_videoModeList = new D3D9VideoModeList( this );
 				}
 
-				return this._videoModeList;
+				return _videoModeList;
 			}
 		}
 
@@ -199,17 +200,17 @@ namespace Axiom.RenderSystems.DirectX9
 		#region D3D9DeviceCaps
 
 		[OgreVersion( 1, 7, 2790 )]
-		private readonly Capabilities _d3D9DeviceCaps;
+		private readonly D3D9.Capabilities _d3D9DeviceCaps;
 
 		/// <summary>
 		/// Get device capabilities
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public Capabilities D3D9DeviceCaps
+		public D3D9.Capabilities D3D9DeviceCaps
 		{
 			get
 			{
-				return this._d3D9DeviceCaps;
+				return _d3D9DeviceCaps;
 			}
 		}
 

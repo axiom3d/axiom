@@ -51,6 +51,21 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		private string extension;
 
 		/// <summary>
+		/// The file extension
+		/// </summary>
+		public string Extension
+		{
+			get
+			{
+				return extension;
+			}
+			set
+			{
+				extension = value;
+			}
+		}
+
+		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="extension">the file extension that this will load.</param>
@@ -73,20 +88,5 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		}
 
 		#endregion SDImageCodec Implementation
-
-		/// <summary>
-		/// The file extension
-		/// </summary>
-		public string Extension
-		{
-			get
-			{
-				return this.extension;
-			}
-			set
-			{
-				this.extension = value;
-			}
-		}
 	};
 }

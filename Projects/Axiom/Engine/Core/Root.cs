@@ -40,25 +40,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Text;
-
+#if SILVERLIGHT
+using System.Threading;
+using System.Windows.Controls;
+#endif
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.FileSystem;
 using Axiom.Fonts;
 using Axiom.Graphics;
-using Axiom.Graphics.Collections;
 using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Scripting.Compiler;
-#if SILVERLIGHT
-using System.Threading;
-using System.Windows.Controls;
-#endif
+using Axiom.Graphics.Collections;
+
+using System.IO;
 
 #endregion Namespace Declarations
 
@@ -93,7 +93,7 @@ namespace Axiom.Core
 		///     This is a critical step in preparing the engine for use.
 		/// </remarks>
 		public Root()
-			: this( "axiom.log" ) { }
+			: this( "axiom.log" ) {}
 
 		/// <summary>
 		///     Constructor.
@@ -113,11 +113,11 @@ namespace Axiom.Core
 
 				// write the initial info at the top of the log
 				info.AppendFormat( "*********Axiom 3D Engine Log *************\n" );
-				info.AppendFormat( "Copyright {0}\n", Copyright );
-				info.AppendFormat( "Version: {0}\n", Version );
-				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion );
-				bool isMono = Type.GetType( "Mono.Runtime" ) != null;
-				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version, isMono ? "Mono" : ".Net" );
+				info.AppendFormat( "Copyright {0}\n", this.Copyright );
+				info.AppendFormat( "Version: {0}\n", this.Version );
+				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion.ToString() );
+				var isMono = Type.GetType( "Mono.Runtime" ) != null;
+				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version.ToString(), isMono ? "Mono" : ".Net" );
 
 				// Initializes the Log Manager singleton
 				if ( LogManager.Instance == null )
@@ -153,19 +153,15 @@ namespace Axiom.Core
 				new HighLevelGpuProgramManager();
 
 				// Register image codecs
-#if !( WINDOWS_PHONE || XBOX || XBOX360 )
 				DDSCodec.Initialize();
-#endif
 				PVRTCCodec.Initialize();
 
 				ResourceGroupManager.Instance.Initialize();
 
 				// WorkQueue (note: users can replace this if they want)
-				var defaultQ = new DefaultWorkQueue( "Root" )
-							   {
-								   ResponseProcessingTimeLimit = 10
-							   };
+				DefaultWorkQueue defaultQ = new DefaultWorkQueue( "Root" );
 				// never process responses in main thread for longer than 10ms by default
+				defaultQ.ResponseProcessingTimeLimit = 10;
 
 #if AXIOM_THREAD_SUPPORT
 
@@ -178,14 +174,14 @@ namespace Axiom.Core
                 else
                     defaultQ.WorkersCanAccessRenderSystem = false;
 #endif
-				this._workQueue = defaultQ;
+				_workQueue = defaultQ;
 
 				var resBack = new ResourceBackgroundQueue();
 
 				this.sceneManagerEnumerator = SceneManagerEnumerator.Instance;
 
-				MaterialManager mat = MaterialManager.Instance;
-				MeshManager mesh = MeshManager.Instance;
+				var mat = MaterialManager.Instance;
+				var mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
 #if !(XNA || ANDROID || IPHONE || WINDOWS_PHONE )
@@ -211,19 +207,19 @@ namespace Axiom.Core
 
 				// instantiate and register base movable factories
 				this.entityFactory = new EntityFactory();
-				AddMovableObjectFactory( this.entityFactory, true );
+				this.AddMovableObjectFactory( this.entityFactory, true );
 				this.lightFactory = new LightFactory();
-				AddMovableObjectFactory( this.lightFactory, true );
+				this.AddMovableObjectFactory( this.lightFactory, true );
 				this.billboardSetFactory = new BillboardSetFactory();
-				AddMovableObjectFactory( this.billboardSetFactory, true );
+				this.AddMovableObjectFactory( this.billboardSetFactory, true );
 				this.manualObjectFactory = new ManualObjectFactory();
-				AddMovableObjectFactory( this.manualObjectFactory, true );
+				this.AddMovableObjectFactory( this.manualObjectFactory, true );
 				this.billboardChainFactory = new BillboardChainFactory();
-				AddMovableObjectFactory( this.billboardChainFactory, true );
+				this.AddMovableObjectFactory( this.billboardChainFactory, true );
 				this.ribbonTrailFactory = new RibbonTrailFactory();
-				AddMovableObjectFactory( this.ribbonTrailFactory, true );
+				this.AddMovableObjectFactory( this.ribbonTrailFactory, true );
 				this.movableTextFactory = new MovableTextFactory();
-				AddMovableObjectFactory( this.movableTextFactory, true );
+				this.AddMovableObjectFactory( this.movableTextFactory, true );
 			}
 		}
 
@@ -317,7 +313,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Holds instance of LogManager
 		/// </summary>
-		private readonly LogManager logMgr;
+		private LogManager logMgr;
 
 		/// <summary>
 		///     Lowest recorded frames per second.
@@ -332,12 +328,17 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of available render systems.
 		/// </summary>
-		private readonly RenderSystemCollection renderSystemList = new RenderSystemCollection();
+		private RenderSystemCollection renderSystemList = new RenderSystemCollection();
+
+		/// <summary>
+		///     Current active scene manager.
+		/// </summary>
+		private SceneManager sceneManager;
 
 		/// <summary>
 		///     List of available scene managers.
 		/// </summary>
-		private readonly SceneManagerEnumerator sceneManagerEnumerator;
+		private SceneManagerEnumerator sceneManagerEnumerator;
 
 		/// <summary>
 		///     How often we determine the FPS average, in seconds
@@ -345,25 +346,31 @@ namespace Axiom.Core
 		private float secondsBetweenFPSAverages = 1f;
 
 		/// <summary>
+		///		True if a request has been made to suspend rendering, typically because the
+		///	    form has been minimized
+		/// </summary>
+		private bool suspendRendering = false;
+
+		/// <summary>
 		///     Current active timer.
 		/// </summary>
-		private readonly ITimer timer;
+		private ITimer timer;
 
 
-		private float frameSmoothingTime;
+		private float frameSmoothingTime = 0.0f;
 
 		#region MovableObjectFactory fields
 
 		private readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
-		private readonly EntityFactory entityFactory;
-		private readonly LightFactory lightFactory;
-		private readonly BillboardSetFactory billboardSetFactory;
-		private readonly BillboardChainFactory billboardChainFactory;
-		private readonly ManualObjectFactory manualObjectFactory;
+		private EntityFactory entityFactory;
+		private LightFactory lightFactory;
+		private BillboardSetFactory billboardSetFactory;
+		private BillboardChainFactory billboardChainFactory;
+		private ManualObjectFactory manualObjectFactory;
 		private uint nextMovableObjectTypeFlag;
-		private readonly RibbonTrailFactory ribbonTrailFactory;
-		private readonly MovableTextFactory movableTextFactory;
+		private RibbonTrailFactory ribbonTrailFactory;
+		private MovableTextFactory movableTextFactory;
 
 		#endregion MovableObjectFactory fields
 
@@ -388,7 +395,7 @@ namespace Axiom.Core
 		///    limiting frame rates.  By default, we don't limit frame
 		///    rates, and in that case, the number is 0.
 		/// </summary>
-		private float microsecondsPerFrame;
+		private float microsecondsPerFrame = 0;
 
 		/// <summary>
 		///    The number of microseconds per tick; obviously a fraction
@@ -404,11 +411,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				this._frameStartedEvent.EventSinks += value;
+				_frameStartedEvent.EventSinks += value;
 			}
 			remove
 			{
-				this._frameStartedEvent.EventSinks -= value;
+				_frameStartedEvent.EventSinks -= value;
 			}
 		}
 
@@ -421,11 +428,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				this._frameEndedEvent.EventSinks += value;
+				_frameEndedEvent.EventSinks += value;
 			}
 			remove
 			{
-				this._frameEndedEvent.EventSinks -= value;
+				_frameEndedEvent.EventSinks -= value;
 			}
 		}
 
@@ -438,11 +445,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				this._frameRenderingQueuedEvent.EventSinks += value;
+				_frameRenderingQueuedEvent.EventSinks += value;
 			}
 			remove
 			{
-				this._frameRenderingQueuedEvent.EventSinks -= value;
+				_frameRenderingQueuedEvent.EventSinks -= value;
 			}
 		}
 
@@ -457,7 +464,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(), typeof( AssemblyCopyrightAttribute ), false );
+				var attribute = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(), typeof ( AssemblyCopyrightAttribute ), false );
 
 				if ( attribute != null )
 				{
@@ -496,7 +503,17 @@ namespace Axiom.Core
 		///		This is only intended for internal use; it is only valid during the
 		///		rendering of a frame.
 		///</remarks>
-		public SceneManager SceneManager { get; set; }
+		public SceneManager SceneManager
+		{
+			get
+			{
+				return this.sceneManager;
+			}
+			set
+			{
+				this.sceneManager = value;
+			}
+		}
 
 		/// <summary>
 		///		Gets a list over all the existing SceneManager instances.
@@ -585,8 +602,8 @@ namespace Axiom.Core
 			{
 				if ( value != 0 )
 				{
-					this.microsecondsPerTick = 1000000.0f / Stopwatch.Frequency;
-					this.microsecondsPerFrame = 1000000.0f / value;
+					this.microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
+					this.microsecondsPerFrame = 1000000.0f / (float)value;
 				}
 				else // Disable MaxFPS
 				{
@@ -677,18 +694,28 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.frameSmoothingTime;
+				return frameSmoothingTime;
 			}
 			set
 			{
-				this.frameSmoothingTime = value;
+				frameSmoothingTime = value;
 			}
 		}
 
 		/// <summary>
 		///	    Exposes the mechanism to suspend rendering
 		/// </summary>
-		public bool SuspendRendering { get; set; }
+		public bool SuspendRendering
+		{
+			get
+			{
+				return this.suspendRendering;
+			}
+			set
+			{
+				this.suspendRendering = value;
+			}
+		}
 
 		/// <summary>
 		/// Get/Set the WorkQueue for processing background tasks.
@@ -706,21 +733,21 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this._workQueue;
+				return _workQueue;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				if ( this._workQueue != value )
+				if ( _workQueue != value )
 				{
 					// delete old one (will shut down)
-					this._workQueue.Dispose();
-					this._workQueue = value;
+					_workQueue.Dispose();
+					_workQueue = value;
 
-					if ( this._isInitialized )
+					if ( _isInitialized )
 					{
-						this._workQueue.Startup();
+						_workQueue.Startup();
 					}
 				}
 			}
@@ -734,7 +761,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this._isInitialized;
+				return _isInitialized;
 			}
 		}
 
@@ -792,7 +819,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( string typeName )
 		{
-			string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( typeName );
+			var instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( typeName.ToString() );
 			return this.sceneManagerEnumerator.CreateSceneManager( typeName, instanceName );
 		}
 
@@ -832,7 +859,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( SceneType sceneType )
 		{
-			string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( sceneType.ToString() );
+			var instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( sceneType.ToString() );
 			return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
 		}
 
@@ -887,7 +914,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public bool HasSceneManager( string instanceName )
 		{
-			return this.sceneManagerEnumerator.HasSceneManager( instanceName );
+			return sceneManagerEnumerator.HasSceneManager( instanceName );
 		}
 
 		/// <summary>
@@ -905,7 +932,7 @@ namespace Axiom.Core
 		/// <returns>A reference to the automatically created window (if requested), or null otherwise.</returns>
 		public RenderWindow Initialize( bool autoCreateWindow )
 		{
-			return Initialize( autoCreateWindow, "Axiom Render Window" );
+			return this.Initialize( autoCreateWindow, "Axiom Render Window" );
 		}
 
 		/// <summary>
@@ -940,7 +967,7 @@ namespace Axiom.Core
 			// if they chose to auto create a window, also initialize several subsystems
 			if ( autoCreateWindow )
 			{
-				OneTimePostWindowInit();
+				this.OneTimePostWindowInit();
 			}
 
 			// initialize timer
@@ -970,7 +997,7 @@ namespace Axiom.Core
 															};
 								});
 #endif
-			this._isInitialized = true;
+			_isInitialized = true;
 			return this.autoWindow;
 		}
 
@@ -983,7 +1010,7 @@ namespace Axiom.Core
 			{
 				// Background loader
 				ResourceBackgroundQueue.Instance.Initialize();
-				this._workQueue.Startup();
+				_workQueue.Startup();
 
 				// init material manager singleton, which parse sources for materials
 				if ( MaterialManager.Instance == null )
@@ -1009,7 +1036,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen )
 		{
-			return CreateRenderWindow( name, width, height, isFullScreen, null );
+			return this.CreateRenderWindow( name, width, height, isFullScreen, null );
 		}
 
 		/// <summary>
@@ -1020,12 +1047,12 @@ namespace Axiom.Core
 			Debug.Assert( this.activeRenderSystem != null, "Cannot create a RenderWindow without an active RenderSystem." );
 
 			// create a new render window via the current render system
-			RenderWindow window = this.activeRenderSystem.CreateRenderWindow( name, width, height, isFullscreen, miscParams );
+			var window = this.activeRenderSystem.CreateRenderWindow( name, width, height, isFullscreen, miscParams );
 
 			// do any required initialization
 			if ( this.firstTimePostWindowInit )
 			{
-				OneTimePostWindowInit();
+				this.OneTimePostWindowInit();
 				// window.Primary = true;
 			}
 
@@ -1074,19 +1101,19 @@ namespace Axiom.Core
 		public bool RenderOneFrame()
 		{
 			// Stop rendering if frame callback says so
-			if ( !OnFrameStarted() )
+			if ( !this.OnFrameStarted() )
 			{
 				return false;
 			}
 
 			// update all current render targets
-			if ( !UpdateAllRenderTargets() )
+			if ( !this.UpdateAllRenderTargets() )
 			{
 				return false;
 			}
 
 			// Stop rendering if frame callback says so
-			return OnFrameEnded();
+			return this.OnFrameEnded();
 		}
 
 		/// <summary>
@@ -1124,7 +1151,7 @@ namespace Axiom.Core
 					WindowEventMonitor.Instance.MessagePump();
 				}
 
-				if ( !RenderOneFrame() )
+				if ( !this.RenderOneFrame() )
 				{
 					break;
 				}
@@ -1145,7 +1172,7 @@ namespace Axiom.Core
 			ResourceGroupManager.Instance.ShutdownAll();
 
 			// ResourceBackGroundPool.Instance.Shutdown();
-			this._isInitialized = false;
+			_isInitialized = false;
 		}
 
 		/// <summary>
@@ -1172,7 +1199,7 @@ namespace Axiom.Core
 			// update all targets but don't swap buffers
 			this.activeRenderSystem.UpdateAllRenderTargets( false );
 			// give client app opportunity to use queued GPU time
-			bool ret = OnFrameRenderingQueued();
+			var ret = OnFrameRenderingQueued();
 			// block for final swap
 			this.activeRenderSystem.SwapAllRenderTargetBuffers( this.activeRenderSystem.WaitForVerticalBlank );
 
@@ -1187,7 +1214,7 @@ namespace Axiom.Core
 		public void Dispose()
 		{
 			// force the engine to shutdown
-			Shutdown();
+			this.Shutdown();
 
 			DDSCodec.Shutdown();
 			PVRTCCodec.Shutdown();
@@ -1213,8 +1240,8 @@ namespace Axiom.Core
 			// DefaultWorkQueue internally calls Shutdown, so the direct call to Shutdown methods
 			// isn't necessary in Root.Shutdown.
 			ResourceBackgroundQueue.Instance.Dispose();
-			this._workQueue.Dispose();
-			this._workQueue = null;
+			_workQueue.Dispose();
+			_workQueue = null;
 
 			CodecManager.Instance.SafeDispose();
 
@@ -1247,12 +1274,12 @@ namespace Axiom.Core
 			//calculate the average time passed between events of the given type
 			//during the last frameSmoothingTime seconds
 			float result = 0;
-			float discardThreshold = this.frameSmoothingTime * 1000.0f;
+			float discardThreshold = frameSmoothingTime * 1000.0f;
 
 
 			if ( time > discardThreshold )
 			{
-				time -= (long)( this.frameSmoothingTime * discardThreshold );
+				time -= (long)( frameSmoothingTime * discardThreshold );
 			}
 			if ( type == FrameEventType.Start )
 			{
@@ -1278,7 +1305,7 @@ namespace Axiom.Core
 				{
 					// Is It Time To Update Our Calculations?
 					// Calculate New Framerate
-					this.currentFPS = this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
+					this.currentFPS = (float)this.frameCount / (float)( time - this.lastCalculationTime ) * 1000f;
 
 					// calculate the average framerate
 					if ( this.averageFPS == 0 )
@@ -1319,7 +1346,7 @@ namespace Axiom.Core
 			return result;
 		}
 
-		private readonly FrameEventArgs frameEventArgs = new FrameEventArgs();
+		private FrameEventArgs frameEventArgs = new FrameEventArgs();
 
 		/// <summary>
 		///    Method for raising frame started events.
@@ -1338,11 +1365,11 @@ namespace Axiom.Core
 		public bool OnFrameStarted()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			long now = this.timer.Milliseconds;
-			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.Start );
+			var now = this.timer.Milliseconds;
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return OnFrameStarted( this.frameEventArgs );
+			return this.OnFrameStarted( frameEventArgs );
 		}
 
 		/// <summary>
@@ -1360,11 +1387,11 @@ namespace Axiom.Core
 		public bool OnFrameRenderingQueued()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			long now = this.timer.Milliseconds;
-			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.Queued );
+			var now = this.timer.Milliseconds;
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Queued );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return OnFrameRenderingQueued( this.frameEventArgs );
+			return this.OnFrameRenderingQueued( frameEventArgs );
 		}
 
 		/// <summary>
@@ -1384,11 +1411,11 @@ namespace Axiom.Core
 		public bool OnFrameEnded()
 		{
 			//FrameEventArgs e = new FrameEventArgs();
-			long now = this.timer.Milliseconds;
-			this.frameEventArgs.TimeSinceLastFrame = CalculateEventTime( now, FrameEventType.End );
+			var now = this.timer.Milliseconds;
+			frameEventArgs.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
 
 			// if any event handler set this to true, that will signal the engine to shutdown
-			return OnFrameEnded( this.frameEventArgs );
+			return this.OnFrameEnded( frameEventArgs );
 		}
 
 		/// <summary>
@@ -1469,7 +1496,7 @@ namespace Axiom.Core
 			}
 
 			// Tell the queue to process responses
-			this._workQueue.ProcessResponses();
+			_workQueue.ProcessResponses();
 
 			return !e.StopRendering;
 		}
@@ -1492,7 +1519,7 @@ namespace Axiom.Core
 				throw new AxiomException( "Cannot allocate a type flag since all the available flags have been used." );
 			}
 
-			uint ret = this.nextMovableObjectTypeFlag;
+			var ret = this.nextMovableObjectTypeFlag;
 			this.nextMovableObjectTypeFlag <<= 1;
 			return ret;
 		}
@@ -1581,7 +1608,7 @@ namespace Axiom.Core
 				else
 				{
 					// Allocate new
-					fact.TypeFlag = NextMovableObjectTypeFlag();
+					fact.TypeFlag = this.NextMovableObjectTypeFlag();
 				}
 			}
 
@@ -1604,7 +1631,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.movableObjectFactoryMap;
+				return movableObjectFactoryMap;
 			}
 		}
 
@@ -1650,7 +1677,7 @@ namespace Axiom.Core
 				{
 					stream = ResourceGroupManager.Instance.CreateResource( fileName, groupName, overwrite, locationPattern );
 				}
-				catch { }
+				catch {}
 			}
 
 			if ( stream == null )
@@ -1675,17 +1702,17 @@ namespace Axiom.Core
 
 		public Stream CreateFileStream( string fileName )
 		{
-			return CreateFileStream( fileName, ResourceGroupManager.DefaultResourceGroupName, false, string.Empty );
+			return this.CreateFileStream( fileName, ResourceGroupManager.DefaultResourceGroupName, false, string.Empty );
 		}
 
 		public Stream CreateFileStream( string fileName, string groupName )
 		{
-			return CreateFileStream( fileName, groupName, false, string.Empty );
+			return this.CreateFileStream( fileName, groupName, false, string.Empty );
 		}
 
 		public Stream CreateFileStream( string fileName, string groupName, bool overwrite )
 		{
-			return CreateFileStream( fileName, groupName, overwrite, string.Empty );
+			return this.CreateFileStream( fileName, groupName, overwrite, string.Empty );
 		}
 
 		/// <summary>
@@ -1737,12 +1764,12 @@ namespace Axiom.Core
 
 		public Stream OpenFileStream( string filename )
 		{
-			return OpenFileStream( filename, ResourceGroupManager.DefaultResourceGroupName, string.Empty );
+			return this.OpenFileStream( filename, ResourceGroupManager.DefaultResourceGroupName, string.Empty );
 		}
 
 		public Stream OpenFileStream( string filename, string groupName )
 		{
-			return OpenFileStream( filename, groupName, string.Empty );
+			return this.OpenFileStream( filename, groupName, string.Empty );
 		}
 	}
 

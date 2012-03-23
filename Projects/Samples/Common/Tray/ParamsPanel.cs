@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Axiom.Core;
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
@@ -42,22 +43,22 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected IList<String> names;
-
-		/// <summary>
-		/// 
-		/// </summary>
 		protected TextArea namesArea;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected IList<String> values;
+		protected TextArea valuesArea;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea valuesArea;
+		protected IList<String> names;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected IList<String> values;
 
 		#endregion fields
 
@@ -70,7 +71,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.names;
+				return names;
 			}
 			set
 			{
@@ -81,7 +82,7 @@ namespace Axiom.Samples
 					this.values.Add( "" );
 				}
 				element.Height = this.namesArea.Top * 2 + this.names.Count * this.namesArea.CharHeight;
-				UpdateText();
+				this.UpdateText();
 			}
 		}
 
@@ -92,12 +93,12 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				this.values = value;
+				values = value;
 				UpdateText();
 			}
 			get
 			{
-				return this.values;
+				return values;
 			}
 		}
 
@@ -112,12 +113,12 @@ namespace Axiom.Samples
 		public ParamsPanel( String name, Real width, int lines )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ParamsPanel", "BorderPanel", name );
-			var c = (OverlayElementContainer)element;
+			OverlayElementContainer c = (OverlayElementContainer)element;
 			this.namesArea = (TextArea)c.Children[ Name + "/ParamsPanelNames" ];
 			this.valuesArea = (TextArea)c.Children[ Name + "/ParamsPanelValues" ];
 			element.Width = width;
 			element.Height = this.namesArea.Top * 2 + lines * this.namesArea.CharHeight;
-			this.values = new List<string>();
+			values = new List<string>();
 		}
 
 		/// <summary>
@@ -132,13 +133,13 @@ namespace Axiom.Samples
 				if ( this.names[ i ] == paramName )
 				{
 					this.values[ i ] = paramValue;
-					UpdateText();
+					this.UpdateText();
 					return;
 				}
 			}
 
 			String desc = "ParamsPanel \"" + Name + "\" has no parameter \"" + paramName + "\".";
-			throw new IndexOutOfRangeException( desc );
+			throw new System.IndexOutOfRangeException( desc );
 		}
 
 		/// <summary>
@@ -151,7 +152,7 @@ namespace Axiom.Samples
 			if ( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
-				throw new IndexOutOfRangeException( desc );
+				throw new System.IndexOutOfRangeException( desc );
 			}
 			if ( this.values.Count < index )
 			{
@@ -161,7 +162,7 @@ namespace Axiom.Samples
 			{
 				this.values[ index ] = paramValue;
 			}
-			UpdateText();
+			this.UpdateText();
 		}
 
 		/// <summary>
@@ -180,7 +181,7 @@ namespace Axiom.Samples
 			}
 
 			String desc = "ParamsPanel \"" + Name + "\" has no parameter \"" + paramName + "\".";
-			throw new IndexOutOfRangeException( desc );
+			throw new System.IndexOutOfRangeException( desc );
 		}
 
 		/// <summary>
@@ -193,7 +194,7 @@ namespace Axiom.Samples
 			if ( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
-				throw new IndexOutOfRangeException( desc );
+				throw new System.IndexOutOfRangeException( desc );
 			}
 
 			return this.values[ index ];
@@ -204,8 +205,8 @@ namespace Axiom.Samples
 		/// </summary>
 		protected void UpdateText()
 		{
-			var namesDS = new StringBuilder();
-			var valuesDS = new StringBuilder();
+			StringBuilder namesDS = new StringBuilder();
+			StringBuilder valuesDS = new StringBuilder();
 
 			for ( int i = 0; i < this.names.Count; i++ )
 			{

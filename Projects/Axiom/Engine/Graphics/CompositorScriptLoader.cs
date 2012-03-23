@@ -56,14 +56,45 @@ namespace Axiom.Graphics
 {
 	internal static class CompositorScriptLoader
 	{
+		/// <summary>
+		///		Enum to identify compositor sections.
+		/// </summary>
+		private enum CompositorScriptSection
+		{
+			None,
+			Compositor,
+			Technique,
+			Target,
+			Pass,
+			Clear,
+			Stencil
+		}
+
+		/// <summary>
+		///		Struct for holding the script context while parsing.
+		/// </summary>
+		private class CompositorScriptContext
+		{
+			public CompositorScriptSection section = CompositorScriptSection.None;
+			public Compositor compositor = null;
+			public CompositionTechnique technique = null;
+			public CompositionPass pass = null;
+			public CompositionTargetPass target = null;
+			public bool seenOpen = false;
+			// Error reporting state
+			public int lineNo;
+			public string line;
+			public string filename;
+		}
+
 		public static void ParseScript( CompositorManager compositorManager, Stream data, string groupName, string fileName )
 		{
-			string line = "";
+			var line = "";
 			var context = new CompositorScriptContext();
 			context.filename = fileName + ( data is FileStream ? " (" + ( data as FileStream ).Name + ")" : "" );
 			context.lineNo = 0;
 
-			var script = new StreamReader( data, Encoding.UTF8 );
+			var script = new StreamReader( data, System.Text.Encoding.UTF8 );
 
 			// parse through the data to the end
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
@@ -77,7 +108,7 @@ namespace Axiom.Graphics
 				{
 					context.line = line;
 					splitCmd = SplitByWhitespace( line, 2 );
-					string token = splitCmd[ 0 ];
+					var token = splitCmd[ 0 ];
 					args = SplitArgs( splitCmd.Length == 2 ? splitCmd[ 1 ] : "" );
 					arg = ( args.Length > 0 ? args[ 0 ] : "" );
 					if ( context.section == CompositorScriptSection.None )
@@ -87,7 +118,7 @@ namespace Axiom.Graphics
 							LogError( context, "First token is not 'compositor'!" );
 							break; // Give up
 						}
-						string compositorName = RemoveQuotes( splitCmd[ 1 ].Trim() );
+						var compositorName = RemoveQuotes( splitCmd[ 1 ].Trim() );
 						context.compositor = (Compositor)compositorManager.Create( compositorName, groupName );
 						context.section = CompositorScriptSection.Compositor;
 						context.seenOpen = false;
@@ -286,7 +317,7 @@ namespace Axiom.Graphics
 										{
 											break;
 										}
-										int index = 0;
+										var index = 0;
 										if ( args.Length == 3 )
 										{
 											index = ParseInt( context, args[ 2 ] );
@@ -315,7 +346,7 @@ namespace Axiom.Graphics
 								{
 									case "buffers":
 										var fb = (FrameBufferType)0;
-										foreach ( string cb in args )
+										foreach ( var cb in args )
 										{
 											switch ( cb )
 											{
@@ -486,18 +517,18 @@ namespace Axiom.Graphics
 
 		private static string[] SplitByWhitespace( string line, int count )
 		{
-			return StringConverter.Split( line, new[]
-                                                {
-                                                    ' ', '\t'
-                                                }, count );
+			return StringConverter.Split( line, new char[]
+			                                    {
+			                                    	' ', '\t'
+			                                    }, count );
 		}
 
 		private static string[] SplitArgs( string args )
 		{
-			return args.Split( new[]
-                               {
-                                   ' ', '\t'
-                               } );
+			return args.Split( new char[]
+			                   {
+			                   	' ', '\t'
+			                   } );
 		}
 
 		private static string RemoveQuotes( string token )
@@ -530,7 +561,7 @@ namespace Axiom.Graphics
 		{
 			if ( OptionCount( context, introducer, 1, args.Length ) )
 			{
-				string arg = args[ 0 ];
+				var arg = args[ 0 ];
 				if ( arg == "on" )
 				{
 					return true;
@@ -549,7 +580,7 @@ namespace Axiom.Graphics
 
 		private static int ParseInt( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 				return int.Parse( n );
@@ -563,7 +594,7 @@ namespace Axiom.Graphics
 
 		private static uint ParseUint( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 				return uint.Parse( n );
@@ -577,7 +608,7 @@ namespace Axiom.Graphics
 
 		private static float ParseFloat( CompositorScriptContext context, string s )
 		{
-			string n = s.Trim();
+			var n = s.Trim();
 			try
 			{
 				return float.Parse( n, CultureInfo.InvariantCulture );
@@ -598,10 +629,10 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				float r = ParseFloat( context, args[ 0 ] );
-				float g = ParseFloat( context, args[ 0 ] );
-				float b = ParseFloat( context, args[ 0 ] );
-				float a = ParseFloat( context, args[ 0 ] );
+				var r = ParseFloat( context, args[ 0 ] );
+				var g = ParseFloat( context, args[ 0 ] );
+				var b = ParseFloat( context, args[ 0 ] );
+				var a = ParseFloat( context, args[ 0 ] );
 
 				return new ColorEx( a, r, g, b );
 			}
@@ -618,7 +649,7 @@ namespace Axiom.Graphics
 					formatPos += 2;
 				}
 
-				CompositionTechnique.TextureDefinition textureDef = context.technique.CreateTextureDefinition( args[ 0 ] );
+				var textureDef = context.technique.CreateTextureDefinition( args[ 0 ] );
 				if ( args[ widthPos ] == "target_width" )
 				{
 					textureDef.Width = 0;
@@ -657,25 +688,25 @@ namespace Axiom.Graphics
 						textureDef.PixelFormats.Add( PixelFormat.A8R8G8B8 );
 						break;
 					case "PF_R8G8B8A8":
-						textureDef.PixelFormats.Add( PixelFormat.R8G8B8A8 );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.R8G8B8A8 );
 						break;
 					case "PF_R8G8B8":
-						textureDef.PixelFormats.Add( PixelFormat.R8G8B8 );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.R8G8B8 );
 						break;
 					case "PF_FLOAT16_RGBA":
-						textureDef.PixelFormats.Add( PixelFormat.FLOAT16_RGBA );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.FLOAT16_RGBA );
 						break;
 					case "PF_FLOAT16_RGB":
-						textureDef.PixelFormats.Add( PixelFormat.FLOAT16_RGB );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.FLOAT16_RGB );
 						break;
 					case "PF_FLOAT32_RGBA":
-						textureDef.PixelFormats.Add( PixelFormat.FLOAT32_RGBA );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.FLOAT32_RGBA );
 						break;
 					case "PF_FLOAT16_R":
-						textureDef.PixelFormats.Add( PixelFormat.FLOAT16_R );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.FLOAT16_R );
 						break;
 					case "PF_FLOAT32_R":
-						textureDef.PixelFormats.Add( PixelFormat.FLOAT32_R );
+						textureDef.PixelFormats.Add( Axiom.Media.PixelFormat.FLOAT32_R );
 						break;
 					default:
 						LogError( context, "Unsupported texture pixel format '{0}'", args[ formatPos ] );
@@ -737,44 +768,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Script Parsing Routines
-
-		#region Nested type: CompositorScriptContext
-
-		/// <summary>
-		///		Struct for holding the script context while parsing.
-		/// </summary>
-		private class CompositorScriptContext
-		{
-			public Compositor compositor;
-			public string filename;
-			public string line;
-			public int lineNo;
-			public CompositionPass pass;
-			public CompositorScriptSection section = CompositorScriptSection.None;
-			public bool seenOpen;
-			public CompositionTargetPass target;
-			public CompositionTechnique technique;
-			// Error reporting state
-		}
-
-		#endregion
-
-		#region Nested type: CompositorScriptSection
-
-		/// <summary>
-		///		Enum to identify compositor sections.
-		/// </summary>
-		private enum CompositorScriptSection
-		{
-			None,
-			Compositor,
-			Technique,
-			Target,
-			Pass,
-			Clear,
-			Stencil
-		}
-
-		#endregion
 	}
 }

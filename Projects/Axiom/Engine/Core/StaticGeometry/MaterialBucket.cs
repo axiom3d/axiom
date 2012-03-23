@@ -38,10 +38,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
 
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -49,8 +54,6 @@ namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
-		#region Nested type: MaterialBucket
-
 		/// <summary>
 		/// A MaterialBucket is a collection of smaller buckets with the same 
 		/// Material (and implicitly the same LOD).
@@ -59,18 +62,19 @@ namespace Axiom.Core
 		{
 			#region Fields and Properties
 
-			protected Dictionary<string, GeometryBucket> currentGeometryMap;
-			protected List<GeometryBucket> geometryBucketList;
-			protected Material material;
-			protected string materialName;
 			protected LODBucket parent;
+			protected string materialName;
+			protected Material material;
 			protected Technique technique;
+
+			protected List<GeometryBucket> geometryBucketList;
+			protected Dictionary<string, GeometryBucket> currentGeometryMap;
 
 			public string MaterialName
 			{
 				get
 				{
-					return this.materialName;
+					return materialName;
 				}
 			}
 
@@ -78,7 +82,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.parent;
+					return parent;
 				}
 			}
 
@@ -86,7 +90,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.material;
+					return material;
 				}
 			}
 
@@ -94,7 +98,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.technique;
+					return technique;
 				}
 			}
 
@@ -102,7 +106,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.geometryBucketList;
+					return geometryBucketList;
 				}
 			}
 
@@ -111,11 +115,12 @@ namespace Axiom.Core
 			#region Constructors
 
 			public MaterialBucket( LODBucket parent, string materialName )
+				: base()
 			{
 				this.parent = parent;
 				this.materialName = materialName;
-				this.geometryBucketList = new List<GeometryBucket>();
-				this.currentGeometryMap = new Dictionary<string, GeometryBucket>();
+				geometryBucketList = new List<GeometryBucket>();
+				currentGeometryMap = new Dictionary<string, GeometryBucket>();
 			}
 
 			#endregion
@@ -132,11 +137,11 @@ namespace Axiom.Core
 				//   source
 				//   semantic
 				//   type
-				string str = string.Format( "{0}|", geom.indexData.indexBuffer.Type );
+				var str = string.Format( "{0}|", geom.indexData.indexBuffer.Type );
 
-				for ( int i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
+				for ( var i = 0; i < geom.vertexData.vertexDeclaration.ElementCount; ++i )
 				{
-					VertexElement elem = geom.vertexData.vertexDeclaration.GetElement( i );
+					var elem = geom.vertexData.vertexDeclaration.GetElement( i );
 					str += string.Format( "{0}|{0}|{1}|{2}|", elem.Source, elem.Semantic, elem.Type );
 				}
 				return str;
@@ -149,11 +154,11 @@ namespace Axiom.Core
 			public void Assign( QueuedGeometry qgeom )
 			{
 				// Look up any current geometry
-				string formatString = GetGeometryFormatString( qgeom.geometry );
-				bool newBucket = true;
-				if ( this.currentGeometryMap.ContainsKey( formatString ) )
+				var formatString = GetGeometryFormatString( qgeom.geometry );
+				var newBucket = true;
+				if ( currentGeometryMap.ContainsKey( formatString ) )
 				{
-					GeometryBucket gbucket = this.currentGeometryMap[ formatString ];
+					var gbucket = currentGeometryMap[ formatString ];
 					// Found existing geometry, try to assign
 					newBucket = !gbucket.Assign( qgeom );
 					// Note that this bucket will be replaced as the 'current'
@@ -164,9 +169,9 @@ namespace Axiom.Core
 				{
 					var gbucket = new GeometryBucket( this, formatString, qgeom.geometry.vertexData, qgeom.geometry.indexData );
 					// Add to main list
-					this.geometryBucketList.Add( gbucket );
+					geometryBucketList.Add( gbucket );
 					// Also index in 'current' list
-					this.currentGeometryMap[ formatString ] = gbucket;
+					currentGeometryMap[ formatString ] = gbucket;
 					if ( !gbucket.Assign( qgeom ) )
 					{
 						throw new AxiomException( "Somehow we couldn't fit the requested geometry even in a " + "brand new GeometryBucket!! Must be a bug, please report." );
@@ -178,16 +183,16 @@ namespace Axiom.Core
 			{
 				if ( logLevel <= 1 )
 				{
-					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", this.materialName );
+					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", materialName );
 				}
-				this.material = (Material)MaterialManager.Instance[ this.materialName ];
-				if ( null == this.material )
+				material = (Material)MaterialManager.Instance[ materialName ];
+				if ( null == material )
 				{
-					throw new AxiomException( "Material '{0}' not found.", this.materialName );
+					throw new AxiomException( "Material '{0}' not found.", materialName );
 				}
-				this.material.Load();
+				material.Load();
 				// tell the geometry buckets to build
-				foreach ( GeometryBucket gbucket in this.geometryBucketList )
+				foreach ( var gbucket in geometryBucketList )
 				{
 					gbucket.Build( stencilShadows, logLevel );
 				}
@@ -200,7 +205,7 @@ namespace Axiom.Core
 				//BatchInstance batchInstance = Parent.Parent;
 
 				// Get material lod strategy
-				LodStrategy materialLodStrategy = Material.LodStrategy;
+				var materialLodStrategy = Material.LodStrategy;
 
 				// If material strategy doesn't match, recompute lod value with correct strategy
 #warning OGRE-1.6 BatchInstance Implementation needed
@@ -208,8 +213,8 @@ namespace Axiom.Core
 				//    lodValue = materialLodStrategy.GetValue( batchInstance, batchInstance.Camera );
 
 				// determine the current material technique
-				this.technique = this.material.GetBestTechnique( this.material.GetLodIndex( lodValue ) );
-				foreach ( GeometryBucket gbucket in this.geometryBucketList )
+				technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
+				foreach ( var gbucket in geometryBucketList )
 				{
 					queue.AddRenderable( gbucket, RenderQueue.DEFAULT_PRIORITY, group );
 				}
@@ -217,10 +222,10 @@ namespace Axiom.Core
 
 			public void Dump()
 			{
-				LogManager.Instance.Write( "Material Bucket {0}", this.materialName );
+				LogManager.Instance.Write( "Material Bucket {0}", materialName );
 				LogManager.Instance.Write( "--------------------------------------------------" );
-				LogManager.Instance.Write( "Geometry buckets: {0}", this.geometryBucketList.Count );
-				foreach ( GeometryBucket gbucket in this.geometryBucketList )
+				LogManager.Instance.Write( "Geometry buckets: {0}", geometryBucketList.Count );
+				foreach ( var gbucket in geometryBucketList )
 				{
 					gbucket.Dump();
 				}
@@ -232,21 +237,21 @@ namespace Axiom.Core
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !IsDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
-						if ( this.geometryBucketList != null )
+						if ( geometryBucketList != null )
 						{
-							foreach ( GeometryBucket gbucket in this.geometryBucketList )
+							foreach ( var gbucket in geometryBucketList )
 							{
 								if ( !gbucket.IsDisposed )
 								{
 									gbucket.Dispose();
 								}
 							}
-							this.geometryBucketList.Clear();
-							this.geometryBucketList = null;
+							geometryBucketList.Clear();
+							geometryBucketList = null;
 						}
 
 
@@ -267,7 +272,5 @@ namespace Axiom.Core
 
 			#endregion
 		}
-
-		#endregion
 	}
 }

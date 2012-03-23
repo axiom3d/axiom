@@ -22,6 +22,8 @@
 
 #endregion License
 
+using System;
+
 using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
@@ -31,14 +33,12 @@ namespace Axiom.Framework.Configuration
 	/// </summary>
 	public abstract class ConfigurationDialogFactory : IConfigurationDialogFactory
 	{
-		#region IConfigurationDialogFactory Members
+		public ConfigurationDialogFactory() {}
 
 		/// <summary>
 		/// Create an instance of the ConfigurationDialog
 		/// </summary>
 		/// <returns></returns>
 		public abstract IConfigurationDialog CreateConfigurationDialog( Root engine, ResourceGroupManager resourceManager );
-
-		#endregion
 	}
 }

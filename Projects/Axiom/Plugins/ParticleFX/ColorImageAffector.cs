@@ -40,9 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.ParticleSystems;
 using Axiom.Math;
 using Axiom.Media;
-using Axiom.ParticleSystems;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -54,55 +54,56 @@ namespace Axiom.ParticleFX
 	/// </summary>
 	public class ColorImageAffector : ParticleAffector
 	{
-		private const float div_255 = 1.0f / 255.0f;
 		protected Image colorImage;
-		protected bool colorImageLoaded;
 		protected String colorImageName;
+		protected bool colorImageLoaded;
+
+		private const float div_255 = 1.0f / 255.0f;
 
 		public ColorImageAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			type = "ColourImage";
+			this.type = "ColourImage";
 		}
 
 		public String ColorImageName
 		{
 			get
 			{
-				return this.colorImageName;
+				return colorImageName;
 			}
 			set
 			{
-				this.colorImageName = value;
+				colorImageName = value;
 			}
 		}
 
 		/// <see cref="ParticleAffector.InitParticle"/>
 		public override void InitParticle( ref Particle particle )
 		{
-			if ( !this.colorImageLoaded )
+			if ( !colorImageLoaded )
 			{
 				loadImage();
 			}
 
-			particle.Color = this.colorImage.GetColorAt( 0, 0, 0 );
+			particle.Color = colorImage.GetColorAt( 0, 0, 0 );
 		}
 
 		/// <see cref="ParticleAffector.AffectParticles"/>
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
-			if ( !this.colorImageLoaded )
+			if ( !colorImageLoaded )
 			{
 				loadImage();
 			}
 
-			int width = this.colorImage.Width - 1;
-			float height = this.colorImage.Height - 1;
+			int width = colorImage.Width - 1;
+			float height = colorImage.Height - 1;
 
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = system.Particles[ i ];
+				Particle p = (Particle)system.Particles[ i ];
 
 				// life_time, float_index, index and position are CONST in OGRE, but errors here
 
@@ -120,25 +121,25 @@ namespace Axiom.ParticleFX
 				}
 
 				float float_index = particle_time * width;
-				var index = (int)float_index;
+				int index = (int)float_index;
 				int position = index * 4;
 
 				if ( index <= 0 )
 				{
-					p.Color = this.colorImage.GetColorAt( 0, 0, 0 );
+					p.Color = colorImage.GetColorAt( 0, 0, 0 );
 				}
 				else if ( index >= width )
 				{
-					p.Color = this.colorImage.GetColorAt( width, 0, 0 );
+					p.Color = colorImage.GetColorAt( width, 0, 0 );
 				}
 				else
 				{
 					// fract, to_color and from_color are CONST in OGRE, but errors here
-					float fract = float_index - index;
+					float fract = float_index - (float)index;
 					float toColor = fract;
 					float fromColor = ( 1 - toColor );
 
-					ColorEx from = this.colorImage.GetColorAt( index, 0, 0 ), to = this.colorImage.GetColorAt( index + 1, 0, 0 );
+					ColorEx from = colorImage.GetColorAt( index, 0, 0 ), to = colorImage.GetColorAt( index + 1, 0, 0 );
 
 					p.Color.r = ( from.r * fromColor ) + ( to.r * toColor );
 					p.Color.g = ( from.g * fromColor ) + ( to.g * toColor );
@@ -151,38 +152,38 @@ namespace Axiom.ParticleFX
 		[OgreVersion( 1, 7, 2 )]
 		private void loadImage()
 		{
-			this.colorImage = Image.FromFile( this.colorImageName, parent.ResourceGroupName );
+			colorImage = Image.FromFile( colorImageName, parent.ResourceGroupName );
 
-			PixelFormat format = this.colorImage.Format;
+			var format = colorImage.Format;
 
 			if ( !PixelUtil.IsAccessible( format ) )
 			{
 				throw new AxiomException( "Error: Image is not accessible (rgba) image." );
 			}
 
-			this.colorImageLoaded = true;
+			colorImageLoaded = true;
 		}
 
 		#region Command definition classes
 
-		[ScriptableProperty( "image", "Image for color alterations.", typeof( ParticleAffector ) )]
+		[ScriptableProperty( "image", "Image for color alterations.", typeof ( ParticleAffector ) )]
 		public class ImageCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				var affector = target as ColorImageAffector;
+				ColorImageAffector affector = target as ColorImageAffector;
 				return affector.ColorImageName;
 			}
 
 			public void Set( object target, string val )
 			{
-				var affector = target as ColorImageAffector;
+				ColorImageAffector affector = target as ColorImageAffector;
 				affector.ColorImageName = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion Command definition classes

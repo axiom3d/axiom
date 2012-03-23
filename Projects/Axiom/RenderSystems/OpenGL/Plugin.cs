@@ -37,10 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Utilities;
+
+using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -49,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for Plugin.
 	/// </summary>
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public sealed class Plugin : IPlugin
 	{
 		#region Implementation of IPlugin
@@ -66,14 +70,14 @@ namespace Axiom.RenderSystems.OpenGL
 #endif
 			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL", "An instance of the OpenGL renderer is already loaded." );
 
-			this._renderSystem = new GLRenderSystem();
+			_renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "OpenGL", this._renderSystem );
+			Root.Instance.RenderSystems.Add( "OpenGL", _renderSystem );
 		}
 
 		public void Shutdown()
 		{
-			this._renderSystem.Shutdown();
+			_renderSystem.Shutdown();
 		}
 
 		#endregion Implementation of IPlugin

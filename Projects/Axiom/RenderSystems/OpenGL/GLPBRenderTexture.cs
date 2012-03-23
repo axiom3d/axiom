@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -59,8 +63,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			this.manager = manager;
 
-			this.pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
-			manager.RequestPBuffer( this.pbFormat, Width, Height );
+			pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
+			manager.RequestPBuffer( pbFormat, Width, Height );
 		}
 
 		#endregion Construction and Destruction
@@ -73,7 +77,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( disposeManagedResources )
 				{
-					this.manager.ReleasePBuffer( this.pbFormat );
+					manager.ReleasePBuffer( pbFormat );
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -90,14 +94,14 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToUpper() )
 				{
 					case "TARGET":
-						var target = new GLSurfaceDesc();
-						target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
-						target.ZOffset = zOffset;
+						GLSurfaceDesc target = new GLSurfaceDesc();
+						target.Buffer = (GLHardwarePixelBuffer)this.pixelBuffer;
+						target.ZOffset = this.zOffset;
 						return target;
 						break;
 					case "GLCONTEXT":
 						// Get PBuffer for our internal format
-						return this.manager.GetContextFor( this.pbFormat, Width, Height );
+						return manager.GetContextFor( pbFormat, Width, Height );
 						break;
 					default:
 						return base[ attribute ];

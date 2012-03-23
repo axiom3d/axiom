@@ -78,7 +78,7 @@ namespace Axiom.Media
 		public static int[] GetBitDepths( PixelFormat format )
 		{
 			var rgba = new int[ 4 ];
-			PixelConverter.PixelFormatDescription des = PixelConverter.GetDescriptionFor( format );
+			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rbits;
 			rgba[ 1 ] = des.gbits;
 			rgba[ 2 ] = des.bbits;
@@ -94,7 +94,7 @@ namespace Axiom.Media
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
 			var rgba = new uint[ 4 ];
-			PixelConverter.PixelFormatDescription des = PixelConverter.GetDescriptionFor( format );
+			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rmask;
 			rgba[ 1 ] = des.gmask;
 			rgba[ 2 ] = des.bmask;
@@ -112,7 +112,7 @@ namespace Axiom.Media
 		public static byte[] GetBitShifts( PixelFormat format )
 		{
 			var rgba = new byte[ 4 ];
-			PixelConverter.PixelFormatDescription des = PixelConverter.GetDescriptionFor( format );
+			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rshift;
 			rgba[ 1 ] = des.gshift;
 			rgba[ 2 ] = des.bshift;
@@ -151,9 +151,9 @@ namespace Axiom.Media
 					case PixelFormat.DXT5:
 						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
 
-					// Size calculations from the PVRTC OpenGL extension spec
-					// http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
-					// Basically, 32 bytes is the minimum texture size.  Smaller textures are padded up to 32 bytes
+						// Size calculations from the PVRTC OpenGL extension spec
+						// http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
+						// Basically, 32 bytes is the minimum texture size.  Smaller textures are padded up to 32 bytes
 					case PixelFormat.PVRTC_RGB2:
 					case PixelFormat.PVRTC_RGBA2:
 						Contract.Requires( depth == 1 );
@@ -188,7 +188,7 @@ namespace Axiom.Media
 			{
 				return false;
 			}
-			PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
+			var flags = PixelConverter.GetDescriptionFor( format ).flags;
 			return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
 		}
 
@@ -273,9 +273,9 @@ namespace Axiom.Media
 #endif
 		{
 			// We are storing upper-case format names.
-			string tmp = caseSensitive ? name : name.ToUpper();
+			var tmp = caseSensitive ? name : name.ToUpper();
 
-			for ( int i = 0; i < (int)PixelFormat.Count; ++i )
+			for ( var i = 0; i < (int)PixelFormat.Count; ++i )
 			{
 				var pf = (PixelFormat)i;
 				if ( !accessibleOnly || IsAccessible( pf ) )

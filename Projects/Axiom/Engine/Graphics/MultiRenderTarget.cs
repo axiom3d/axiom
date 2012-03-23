@@ -66,7 +66,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.boundSurfaces;
+				return boundSurfaces;
 			}
 		}
 
@@ -76,6 +76,7 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2 )]
 		public MultiRenderTarget( string name )
+			: base()
 		{
 			Priority = RenderTargetPriority.RenderToTexture;
 			this.name = name;
@@ -109,12 +110,12 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void BindSurface( int attachment, RenderTexture target )
 		{
-			for ( int i = this.boundSurfaces.Count; i <= attachment; ++i )
+			for ( var i = boundSurfaces.Count; i <= attachment; ++i )
 			{
-				this.boundSurfaces.Add( null );
+				boundSurfaces.Add( null );
 			}
 
-			this.boundSurfaces[ attachment ] = target;
+			boundSurfaces[ attachment ] = target;
 			BindSurfaceImpl( attachment, target );
 		}
 
@@ -130,9 +131,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void UnbindSurface( int attachment )
 		{
-			if ( attachment < this.boundSurfaces.Count )
+			if ( attachment < boundSurfaces.Count )
 			{
-				this.boundSurfaces[ attachment ] = null;
+				boundSurfaces[ attachment ] = null;
 			}
 			UnbindSurfaceImpl( attachment );
 		}

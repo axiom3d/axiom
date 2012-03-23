@@ -24,6 +24,7 @@
 
 using System;
 
+using Axiom.Core;
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
@@ -48,17 +49,22 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real dragOffset;
+		protected TextArea textArea;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected TextArea valueTextArea;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected BorderPanel track;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		protected Panel handle;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected Real interval;
 
 		/// <summary>
 		/// 
@@ -73,22 +79,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real maxValue;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected Real minValue;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TextArea textArea;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected BorderPanel track;
+		protected Real dragOffset;
 
 		/// <summary>
 		/// 
@@ -98,7 +89,17 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea valueTextArea;
+		protected Real minValue;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected Real maxValue;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected Real interval;
 
 		#endregion fields
 
@@ -126,7 +127,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.value;
+				return value;
 			}
 			set
 			{
@@ -141,7 +142,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.Text;
+				return textArea.Text;
 			}
 			set
 			{
@@ -174,9 +175,9 @@ namespace Axiom.Samples
 			this.isFitToContents = false;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Slider", "BorderPanel", name );
 			element.Width = width;
-			var c = (OverlayElementContainer)element;
+			OverlayElementContainer c = (OverlayElementContainer)element;
 			this.textArea = (TextArea)c.Children[ Name + "/SliderCaption" ];
-			var valueBox = (OverlayElementContainer)c.Children[ Name + "/SliderValueBox" ];
+			OverlayElementContainer valueBox = (OverlayElementContainer)c.Children[ Name + "/SliderValueBox" ];
 			valueBox.Width = valueBoxWidth;
 			valueBox.Left = -( valueBoxWidth + 5 );
 			this.valueTextArea = (TextArea)valueBox.Children[ valueBox.Name + "/SliderValueText" ];
@@ -202,8 +203,8 @@ namespace Axiom.Samples
 				this.track.Left = -( trackWidth + valueBoxWidth + 5 );
 			}
 
-			Caption = caption;
-			SetRange( minValue, maxValue, snaps, false );
+			this.Caption = caption;
+			this.SetRange( minValue, maxValue, snaps, false );
 		}
 
 		#endregion
@@ -251,7 +252,7 @@ namespace Axiom.Samples
 			{
 				this.handle.Show();
 				this.interval = ( maxValue - minValue ) / ( snaps - 1 );
-				SetValue( minValue, notifyListener );
+				this.SetValue( minValue, notifyListener );
 			}
 		}
 
@@ -267,9 +268,9 @@ namespace Axiom.Samples
 				return;
 			}
 
-			this.value = Utility.Clamp( value, this.maxValue, this.minValue );
+			this.value = Math.Utility.Clamp<Real>( value, this.maxValue, this.minValue );
 
-			ValueCaption = this.value.ToString();
+			this.ValueCaption = this.value.ToString();
 
 			if ( listener != null && notifyListener )
 			{
@@ -294,20 +295,20 @@ namespace Axiom.Samples
 				return;
 			}
 
-			Vector2 co = CursorOffset( this.handle, cursorPos );
+			Vector2 co = Widget.CursorOffset( this.handle, cursorPos );
 
 			if ( co.LengthSquared <= 81 )
 			{
 				this.isDragging = true;
 				this.dragOffset = co.x;
 			}
-			else if ( IsCursorOver( this.track, cursorPos ) )
+			else if ( Widget.IsCursorOver( this.track, cursorPos ) )
 			{
 				Real newLeft = this.handle.Left + co.x;
 				Real rightBoundary = this.track.Width - this.handle.Width;
 
-				this.handle.Left = Utility.Clamp( newLeft, rightBoundary, 0 );
-				Value = GetSnappedValue( newLeft / rightBoundary );
+				this.handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
+				Value = this.GetSnappedValue( newLeft / rightBoundary );
 			}
 
 			base.OnCursorPressed( cursorPos );
@@ -336,12 +337,12 @@ namespace Axiom.Samples
 		{
 			if ( this.isDragging )
 			{
-				Vector2 co = CursorOffset( this.handle, cursorPos );
+				Vector2 co = Widget.CursorOffset( this.handle, cursorPos );
 				Real newLeft = this.handle.Left + co.x - this.dragOffset;
 				Real rightBoundary = this.track.Width - this.handle.Width;
 
-				this.handle.Left = Utility.Clamp( newLeft, rightBoundary, 0 );
-				Value = GetSnappedValue( newLeft / rightBoundary );
+				this.handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
+				Value = this.GetSnappedValue( newLeft / rightBoundary );
 			}
 
 			base.OnCursorMoved( cursorPos );
@@ -375,8 +376,8 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		protected Real GetSnappedValue( Real percentage )
 		{
-			percentage = Utility.Clamp( percentage, 1, 0 );
-			var whichMarker = (int)( percentage * ( this.maxValue - this.minValue ) / this.interval + 0.5 );
+			percentage = Math.Utility.Clamp<Real>( percentage, 1, 0 );
+			int whichMarker = (int)( percentage * ( this.maxValue - this.minValue ) / this.interval + 0.5 );
 			return whichMarker * this.interval + this.minValue;
 		}
 

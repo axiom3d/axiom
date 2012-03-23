@@ -35,10 +35,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using Axiom.CrossPlatform;
 #if !AXIOM_SAFE_ONLY
+using System.Runtime.InteropServices;
 
 #endif
 
@@ -92,10 +92,10 @@ namespace Axiom.Core
 #else
 			unsafe
 			{
-				byte* pSrc = src.ToBytePointer();
-				byte* pDest = dest.ToBytePointer();
+				var pSrc = src.ToBytePointer();
+				var pDest = dest.ToBytePointer();
 
-				for ( int i = 0; i < length; i++ )
+				for ( var i = 0; i < length; i++ )
 				{
 					pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
 				}
@@ -121,9 +121,9 @@ namespace Axiom.Core
 			unsafe
 #endif
 			{
-				byte* ptr = dest.ToBytePointer();
+				var ptr = dest.ToBytePointer();
 
-				for ( int i = 0; i < length; i++ )
+				for ( var i = 0; i < length; i++ )
 				{
 					ptr[ i ] = c;
 				}
@@ -182,7 +182,7 @@ namespace Axiom.Core
 		{
 			if ( _pinnedReferences.ContainsKey( obj ) )
 			{
-				GCHandle handle = _pinnedReferences[ obj ];
+				var handle = _pinnedReferences[ obj ];
 #if AXIOM_SAFE_ONLY
                 handle.Dispose();
 #else

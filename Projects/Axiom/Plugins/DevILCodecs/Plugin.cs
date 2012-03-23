@@ -49,93 +49,10 @@ namespace Axiom.Plugins.DevILCodecs
 	/// <summary>
 	/// Main plugin class.
 	/// </summary>
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class DevILPlugin : IPlugin
 	{
-		private static readonly List<ILImageCodec> codecList = new List<ILImageCodec>();
-
-		#region IPlugin Members
-
-		/// <summary>
-		/// Called when the plugin is started.
-		/// Register all codecs provided by this plugin.
-		/// </summary>
-		/// <remarks>
-		/// Differently from Ogre, we check if a codec is already registered.
-		/// </remarks>
-		[OgreVersion( 1, 7, 2 )]
-		public void Initialize()
-		{
-			string ilVersion = Il.ilGetString( Il.IL_VERSION_NUM );
-			if ( Il.ilGetError() != Il.IL_NO_ERROR )
-			{
-				// IL defined the version number as IL_VERSION in older versions, so we have to scan for it
-				for ( int ver = 150; ver < 170; ver++ )
-				{
-					ilVersion = Il.ilGetString( ver );
-					if ( Il.ilGetError() == Il.IL_NO_ERROR )
-					{
-						break;
-					}
-					else
-					{
-						ilVersion = "Unknown";
-					}
-				}
-			}
-			LogManager.Instance.Write( "DevIL version: {0}", ilVersion );
-			string ilExtensions = Il.ilGetString( Il.IL_LOAD_EXT );
-			if ( Il.ilGetError() != Il.IL_NO_ERROR )
-			{
-				ilExtensions = string.Empty;
-			}
-
-			string[] ext = ilExtensions.Split( new[]
-                                               {
-                                                   ' '
-                                               }, StringSplitOptions.RemoveEmptyEntries );
-
-			foreach ( string str in ext )
-			{
-				if ( CodecManager.Instance.IsCodecRegistered( str ) )
-				{
-					continue;
-				}
-
-				int ilType = _IlTypeFromExt( str );
-				var codec = new ILImageCodec( str, ilType );
-				CodecManager.Instance.RegisterCodec( codec );
-				codecList.Add( codec );
-			}
-
-			// Raw format, missing in image formats string
-			if ( !CodecManager.Instance.IsCodecRegistered( "raw" ) )
-			{
-				var cod = new ILImageCodec( "raw", Il.IL_RAW );
-				CodecManager.Instance.RegisterCodec( cod );
-				codecList.Add( cod );
-				ilExtensions += "raw";
-			}
-
-			LogManager.Instance.Write( "DevIL image formats: {0}", ilExtensions );
-		}
-
-		/// <summary>
-		/// Called when the plugin is stopped.
-		/// Delete all codecs provided by this plugin.
-		/// </summary>
-		[OgreVersion( 1, 7, 2, "Original reference method was ILCodecs::deleteCodecs" )]
-		public void Shutdown()
-		{
-			foreach ( ILImageCodec i in codecList )
-			{
-				CodecManager.Instance.UnregisterCodec( i );
-			}
-
-			codecList.Clear();
-		}
-
-		#endregion
+		private static List<ILImageCodec> codecList = new List<ILImageCodec>();
 
 		[OgreVersion( 1, 7, 2 )]
 		private static int _IlTypeFromExt( string ext )
@@ -264,6 +181,85 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			return Il.IL_TYPE_UNKNOWN;
+		}
+
+		/// <summary>
+		/// Called when the plugin is started.
+		/// Register all codecs provided by this plugin.
+		/// </summary>
+		/// <remarks>
+		/// Differently from Ogre, we check if a codec is already registered.
+		/// </remarks>
+		[OgreVersion( 1, 7, 2 )]
+		public void Initialize()
+		{
+			var ilVersion = Il.ilGetString( Il.IL_VERSION_NUM );
+			if ( Il.ilGetError() != Il.IL_NO_ERROR )
+			{
+				// IL defined the version number as IL_VERSION in older versions, so we have to scan for it
+				for ( var ver = 150; ver < 170; ver++ )
+				{
+					ilVersion = Il.ilGetString( ver );
+					if ( Il.ilGetError() == Il.IL_NO_ERROR )
+					{
+						break;
+					}
+					else
+					{
+						ilVersion = "Unknown";
+					}
+				}
+			}
+			LogManager.Instance.Write( "DevIL version: {0}", ilVersion );
+			var ilExtensions = Il.ilGetString( Il.IL_LOAD_EXT );
+			if ( Il.ilGetError() != Il.IL_NO_ERROR )
+			{
+				ilExtensions = string.Empty;
+			}
+
+			var ext = ilExtensions.Split( new char[]
+			                              {
+			                              	' '
+			                              }, StringSplitOptions.RemoveEmptyEntries );
+
+			foreach ( var str in ext )
+			{
+				if ( CodecManager.Instance.IsCodecRegistered( str ) )
+				{
+					continue;
+				}
+
+				var ilType = _IlTypeFromExt( str );
+				var codec = new ILImageCodec( str, ilType );
+				CodecManager.Instance.RegisterCodec( codec );
+				codecList.Add( codec );
+			}
+
+			// Raw format, missing in image formats string
+			if ( !CodecManager.Instance.IsCodecRegistered( "raw" ) )
+			{
+				var cod = new ILImageCodec( "raw", Il.IL_RAW );
+				CodecManager.Instance.RegisterCodec( cod );
+				codecList.Add( cod );
+				ilExtensions += "raw";
+			}
+
+			LogManager.Instance.Write( "DevIL image formats: {0}", ilExtensions );
+		}
+
+		/// <summary>
+		/// Called when the plugin is stopped.
+		/// Delete all codecs provided by this plugin.
+		/// </summary>
+		[OgreVersion( 1, 7, 2, "Original reference method was ILCodecs::deleteCodecs" )]
+		public void Shutdown()
+		{
+			foreach ( var i in codecList )
+			{
+				CodecManager.Instance.UnregisterCodec( i );
+			}
+
+			codecList.Clear();
 		}
 	};
 }

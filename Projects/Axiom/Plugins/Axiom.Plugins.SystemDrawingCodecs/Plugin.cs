@@ -44,12 +44,10 @@ using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
 namespace Axiom.Plugins.SystemDrawingCodecs
 {
-	[Export( typeof( IPlugin ) )]
-	internal class Plugin : IPlugin
+	[Export( typeof ( IPlugin ) )]
+	internal class Plugin : Axiom.Core.IPlugin
 	{
 		#region Implementation of IPlugin
-
-		private static RegisteredCodec _codecList;
 
 		/// <summary>
 		/// Unique name for the plugin
@@ -61,6 +59,8 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				return "System.Drawing Media Codecs";
 			}
 		}
+
+		private static RegisteredCodec _codecList;
 
 		/// <summary>
 		/// Perform any tasks the plugin needs to perform on full system initialization.
@@ -82,7 +82,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				_codecList.Add( new SDImageLoader( "JPG" ) );
 				_codecList.Add( new SDImageLoader( "PNG" ) );
 
-				foreach ( ImageCodec i in _codecList )
+				foreach ( var i in _codecList )
 				{
 					if ( !CodecManager.Instance.IsCodecRegistered( i.Type ) )
 					{
@@ -106,7 +106,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		{
 			if ( _codecList != null )
 			{
-				foreach ( ImageCodec i in _codecList )
+				foreach ( var i in _codecList )
 				{
 					if ( CodecManager.Instance.IsCodecRegistered( i.Type ) )
 					{

@@ -55,11 +55,11 @@ namespace Axiom.Samples
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Separator", "Panel", name );
 			if ( width <= 0 )
 			{
-				IsFitToTray = true;
+				this.IsFitToTray = true;
 			}
 			else
 			{
-				IsFitToTray = false;
+				this.IsFitToTray = false;
 				element.Width = width;
 			}
 		}

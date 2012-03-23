@@ -37,10 +37,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
+using System.Runtime.InteropServices;
+
 using OpenTK;
+
+using System.ComponentModel;
 
 #endregion Namespace Declarations
 
@@ -54,6 +60,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
+		public WindowMessageHandling() {}
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -62,15 +70,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public static void MessagePump()
 		{
-			foreach ( RenderWindow renderWindow in WindowEventMonitor.Instance.Windows )
+			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
 			{
-				object window = renderWindow[ "nativewindow" ];
+				var window = renderWindow[ "nativewindow" ];
 				if ( null != window && window is INativeWindow )
 				{
 					( (INativeWindow)window ).ProcessEvents();
 					if ( firstTime )
 					{
-						( (INativeWindow)window ).Closing += delegate { WindowEventMonitor.Instance.WindowClosed( renderWindow ); };
+						( (INativeWindow)window ).Closing += delegate( object sender, CancelEventArgs e ) { WindowEventMonitor.Instance.WindowClosed( renderWindow ); };
 					}
 				}
 			}

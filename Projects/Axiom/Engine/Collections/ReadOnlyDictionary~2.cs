@@ -37,7 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -47,7 +50,7 @@ namespace Axiom.Collections
 													IDictionary, IDictionary<TKey, TValue>,
 													IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>> */
 	{
-		private readonly IDictionary<TKey, TValue> dictionary;
+		private IDictionary<TKey, TValue> dictionary;
 
 		public ReadOnlyDictionary( IDictionary<TKey, TValue> dictionary )
 		{
@@ -58,7 +61,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				return this.dictionary[ index ];
+				return dictionary[ index ];
 			}
 		}
 	}

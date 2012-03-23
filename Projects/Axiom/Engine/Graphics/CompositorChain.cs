@@ -55,10 +55,36 @@ namespace Axiom.Graphics
 	///</summary>
 	public class CompositorChain : DisposableObject
 	{
-		#region Nested type: RQListener
-
 		public class RQListener
 		{
+			///<summary>
+			/// Fields that are treated as temps by queue started/ended events
+			///</summary>
+			private CompositeTargetOperation operation;
+
+			///<summary>
+			///    The scene manager instance
+			///</summary>
+			private SceneManager sceneManager;
+
+			///<summary>
+			///    The render system
+			///</summary>
+			private RenderSystem renderSystem;
+
+			///<summary>
+			///    The view port
+			///</summary>
+			private Viewport viewport;
+
+			public Viewport Viewport
+			{
+				set
+				{
+					viewport = value;
+				}
+			}
+
 			///<summary>
 			///    The number of the first render system op to be processed by the event
 			///</summary>
@@ -70,43 +96,15 @@ namespace Axiom.Graphics
 			private int lastOp;
 
 			///<summary>
-			/// Fields that are treated as temps by queue started/ended events
-			///</summary>
-			private CompositeTargetOperation operation;
-
-			///<summary>
-			///    The render system
-			///</summary>
-			private RenderSystem renderSystem;
-
-			///<summary>
-			///    The scene manager instance
-			///</summary>
-			private SceneManager sceneManager;
-
-			///<summary>
-			///    The view port
-			///</summary>
-			private Viewport viewport;
-
-			public Viewport Viewport
-			{
-				set
-				{
-					this.viewport = value;
-				}
-			}
-
-			///<summary>
 			///    Set current operation and target */
 			///</summary>
 			public void SetOperation( CompositeTargetOperation op, SceneManager sm, RenderSystem rs )
 			{
-				this.operation = op;
-				this.sceneManager = sm;
-				this.renderSystem = rs;
-				this.currentOp = 0;
-				this.lastOp = op.RenderSystemOperations.Count;
+				operation = op;
+				sceneManager = sm;
+				renderSystem = rs;
+				currentOp = 0;
+				lastOp = op.RenderSystemOperations.Count;
 			}
 
 			///<summary>
@@ -116,7 +114,7 @@ namespace Axiom.Graphics
 			{
 				// Skip when not matching viewport
 				// shadows update is nested within main viewport update
-				if ( this.sceneManager.CurrentViewport != this.viewport )
+				if ( sceneManager.CurrentViewport != viewport )
 				{
 					return;
 				}
@@ -124,7 +122,7 @@ namespace Axiom.Graphics
 				FlushUpTo( e.RenderQueueId );
 				// If noone wants to render this queue, skip it
 				// Don't skip the OVERLAY queue because that's handled seperately
-				if ( !this.operation.RenderQueues[ (int)e.RenderQueueId ] && e.RenderQueueId != RenderQueueGroupID.Overlay )
+				if ( !operation.RenderQueues[ (int)e.RenderQueueId ] && e.RenderQueueId != RenderQueueGroupID.Overlay )
 				{
 					e.SkipInvocation = true;
 				}
@@ -146,27 +144,75 @@ namespace Axiom.Graphics
 				// Process all RenderSystemOperations up to and including render queue id.
 				// Including, because the operations for RenderQueueGroup x should be executed
 				// at the beginning of the RenderQueueGroup render for x.
-				while ( this.currentOp != this.lastOp && ( (int)this.operation.RenderSystemOperations[ this.currentOp ].QueueID < (int)id ) )
+				while ( currentOp != lastOp && ( (int)operation.RenderSystemOperations[ currentOp ].QueueID < (int)id ) )
 				{
-					this.operation.RenderSystemOperations[ this.currentOp ].Operation.Execute( this.sceneManager, this.renderSystem );
-					this.currentOp++;
+					operation.RenderSystemOperations[ currentOp ].Operation.Execute( sceneManager, renderSystem );
+					currentOp++;
 				}
 			}
 		}
 
-		#endregion
-
 		#region Fields and Properties
 
 		///<summary>
-		///    Identifier for "last" compositor in chain
+		///    Viewport affected by this CompositorChain
 		///</summary>
-		protected static int lastCompositor = int.MaxValue;
+		protected Viewport viewport;
+
+		public Viewport Viewport
+		{
+			get
+			{
+				return viewport;
+			}
+			set
+			{
+				viewport = value;
+			}
+		}
 
 		///<summary>
-		///    Identifier for best technique
+		///    Plainly renders the scene; implicit first compositor in the chain.
 		///</summary>
-		protected static int bestCompositor;
+		protected CompositorInstance originalScene;
+
+		public CompositorInstance OriginalScene
+		{
+			get
+			{
+				return originalScene;
+			}
+		}
+
+		///<summary>
+		///    Postfilter instances in this chain
+		///</summary>
+		protected List<CompositorInstance> instances;
+
+		public IList<CompositorInstance> Instances
+		{
+			get
+			{
+				return instances;
+			}
+		}
+
+		///<summary>
+		///    State needs recompile
+		///</summary>
+		protected bool dirty;
+
+		public bool Dirty
+		{
+			get
+			{
+				return dirty;
+			}
+			set
+			{
+				dirty = value;
+			}
+		}
 
 		///<summary>
 		///    Any compositors enabled?
@@ -178,25 +224,32 @@ namespace Axiom.Graphics
 		///</summary>
 		protected List<CompositeTargetOperation> compiledState;
 
-		///<summary>
-		///    State needs recompile
-		///</summary>
-		protected bool dirty;
-
-		///<summary>
-		///    Postfilter instances in this chain
-		///</summary>
-		protected List<CompositorInstance> instances;
+		protected CompositeTargetOperation outputOperation;
 
 		/// <summary>
-		///   The class that will handle the callbacks from the RenderQueue
+		///    Render System operations queued by last compile, these are created by this
+		///    instance thus managed and deleted by it. The list is cleared with
+		///    ClearCompilationState()
 		/// </summary>
-		protected RQListener listener;
+		protected List<CompositeRenderSystemOperation> renderSystemOperations;
+
+		internal IList<CompositeRenderSystemOperation> RenderSystemOperations
+		{
+			get
+			{
+				return renderSystemOperations;
+			}
+		}
 
 		///<summary>
 		///    Old viewport settings
 		///</summary>
 		protected FrameBufferType oldClearEveryFrameBuffers;
+
+		///<summary>
+		///    Store old scene visibility mask
+		///</summary>
+		protected ulong oldVisibilityMask;
 
 		///<summary>
 		///    Store old find visible objects
@@ -213,80 +266,18 @@ namespace Axiom.Graphics
 		///</summary>
 		protected string oldMaterialScheme;
 
+		protected string originalSceneMaterial;
 		protected bool oldShowShadows;
 
-		///<summary>
-		///    Store old scene visibility mask
-		///</summary>
-		protected ulong oldVisibilityMask;
-
-		///<summary>
-		///    Plainly renders the scene; implicit first compositor in the chain.
-		///</summary>
-		protected CompositorInstance originalScene;
-
-		protected string originalSceneMaterial;
-		protected CompositeTargetOperation outputOperation;
-
 		/// <summary>
-		///    Render System operations queued by last compile, these are created by this
-		///    instance thus managed and deleted by it. The list is cleared with
-		///    ClearCompilationState()
+		///   The class that will handle the callbacks from the RenderQueue
 		/// </summary>
-		protected List<CompositeRenderSystemOperation> renderSystemOperations;
+		protected RQListener listener;
 
 		///<summary>
-		///    Viewport affected by this CompositorChain
+		///    Identifier for "last" compositor in chain
 		///</summary>
-		protected Viewport viewport;
-
-		public Viewport Viewport
-		{
-			get
-			{
-				return this.viewport;
-			}
-			set
-			{
-				this.viewport = value;
-			}
-		}
-
-		public CompositorInstance OriginalScene
-		{
-			get
-			{
-				return this.originalScene;
-			}
-		}
-
-		public IList<CompositorInstance> Instances
-		{
-			get
-			{
-				return this.instances;
-			}
-		}
-
-		public bool Dirty
-		{
-			get
-			{
-				return this.dirty;
-			}
-			set
-			{
-				this.dirty = value;
-			}
-		}
-
-		internal IList<CompositeRenderSystemOperation> RenderSystemOperations
-		{
-			get
-			{
-				return this.renderSystemOperations;
-			}
-		}
+		protected static int lastCompositor = int.MaxValue;
 
 		public static int LastCompositor
 		{
@@ -295,6 +286,11 @@ namespace Axiom.Graphics
 				return lastCompositor;
 			}
 		}
+
+		///<summary>
+		///    Identifier for best technique
+		///</summary>
+		protected static int bestCompositor = 0;
 
 		public static int BestCompositor
 		{
@@ -311,23 +307,23 @@ namespace Axiom.Graphics
 		public CompositorChain( Viewport vp )
 		{
 			this.viewport = vp;
-			this.originalScene = null;
-			this.instances = new List<CompositorInstance>();
-			this.dirty = true;
-			this.anyCompositorsEnabled = false;
-			this.compiledState = new List<CompositeTargetOperation>();
-			this.outputOperation = null;
-			this.oldClearEveryFrameBuffers = this.viewport.ClearBuffers;
-			this.renderSystemOperations = new List<CompositeRenderSystemOperation>();
+			originalScene = null;
+			instances = new List<CompositorInstance>();
+			dirty = true;
+			anyCompositorsEnabled = false;
+			compiledState = new List<CompositeTargetOperation>();
+			outputOperation = null;
+			oldClearEveryFrameBuffers = viewport.ClearBuffers;
+			renderSystemOperations = new List<CompositeRenderSystemOperation>();
 
 			CreateOriginalScene();
-			this.listener = new RQListener();
-			Debug.Assert( this.viewport != null );
+			listener = new RQListener();
+			Debug.Assert( viewport != null );
 
-			this.viewport.Target.BeforeUpdate += BeforeRenderTargetUpdate;
-			this.viewport.Target.AfterUpdate += AfterRenderTargetUpdate;
-			this.viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
-			this.viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
+			viewport.Target.BeforeUpdate += this.BeforeRenderTargetUpdate;
+			viewport.Target.AfterUpdate += this.AfterRenderTargetUpdate;
+			viewport.Target.BeforeViewportUpdate += this.BeforeViewportUpdate;
+			viewport.Target.AfterViewportUpdate += this.AfterViewportUpdate;
 		}
 
 		#endregion Constructor
@@ -339,9 +335,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void CreateOriginalScene()
 		{
-			this.originalSceneMaterial = this.viewport.MaterialScheme;
-			string compName = "Axiom/Scene/" + this.originalSceneMaterial;
-			var scene = (Compositor)CompositorManager.Instance.GetByName( compName );
+			originalSceneMaterial = viewport.MaterialScheme;
+			string compName = "Axiom/Scene/" + originalSceneMaterial;
+			Compositor scene = (Compositor)CompositorManager.Instance.GetByName( compName );
 			if ( scene == null )
 			{
 				scene = (Compositor)CompositorManager.Instance.Create( compName, ResourceGroupManager.InternalResourceGroupName );
@@ -366,7 +362,7 @@ namespace Axiom.Graphics
 			}
 
 
-			this.originalScene = new CompositorInstance( scene.GetSupportedTechniqueByScheme(), this );
+			originalScene = new CompositorInstance( scene.GetSupportedTechniqueByScheme(), this );
 		}
 
 		/// <summary>
@@ -374,10 +370,10 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void DestroyOriginalScene()
 		{
-			if ( this.originalScene != null )
+			if ( originalScene != null )
 			{
-				this.originalScene.Dispose();
-				this.originalScene = null;
+				originalScene.Dispose();
+				originalScene = null;
 			}
 		}
 
@@ -388,19 +384,19 @@ namespace Axiom.Graphics
 		{
 			ClearCompiledState();
 
-			if ( this.viewport != null )
+			if ( viewport != null )
 			{
 				//Remove listeners
-				this.viewport.Target.BeforeUpdate -= BeforeRenderTargetUpdate;
-				this.viewport.Target.AfterUpdate -= AfterRenderTargetUpdate;
-				this.viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
-				this.viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
+				viewport.Target.BeforeUpdate -= BeforeRenderTargetUpdate;
+				viewport.Target.AfterUpdate -= AfterRenderTargetUpdate;
+				viewport.Target.BeforeViewportUpdate -= BeforeViewportUpdate;
+				viewport.Target.AfterViewportUpdate -= AfterViewportUpdate;
 
 				RemoveAllCompositors();
 				// Destroy "original scene" compositor instance
 				DestroyOriginalScene();
 
-				this.viewport = null;
+				viewport = null;
 			}
 		}
 
@@ -453,20 +449,20 @@ namespace Axiom.Graphics
 			{
 				LogManager.Instance.DefaultLog.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
 			}
-			var t = new CompositorInstance( tech, this );
+			CompositorInstance t = new CompositorInstance( tech, this );
 
 			if ( addPosition == lastCompositor )
 			{
-				addPosition = this.instances.Count;
+				addPosition = instances.Count;
 			}
 			else
 			{
-				Debug.Assert( addPosition <= this.instances.Count, "Index out of bounds." );
+				Debug.Assert( addPosition <= instances.Count, "Index out of bounds." );
 			}
-			this.instances.Insert( addPosition, t );
+			instances.Insert( addPosition, t );
 
-			this.dirty = true;
-			this.anyCompositorsEnabled = true;
+			dirty = true;
+			anyCompositorsEnabled = true;
 
 			return t;
 		}
@@ -486,11 +482,11 @@ namespace Axiom.Graphics
 		///<param name="position">Position in filter chain of filter to remove</param>
 		public void RemoveCompositor( int position )
 		{
-			Debug.Assert( position < this.instances.Count, "Index out of bounds." );
-			CompositorInstance instance = this.instances[ position ];
-			this.instances.RemoveAt( position );
+			Debug.Assert( position < instances.Count, "Index out of bounds." );
+			var instance = instances[ position ];
+			instances.RemoveAt( position );
 			instance = null;
-			this.dirty = true;
+			dirty = true;
 		}
 
 		///<summary>
@@ -498,12 +494,12 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveAllCompositors()
 		{
-			foreach ( CompositorInstance compositorInstance in this.instances )
+			foreach ( var compositorInstance in instances )
 			{
 				compositorInstance.Dispose();
 			}
-			this.instances.Clear();
-			this.dirty = true;
+			instances.Clear();
+			dirty = true;
 		}
 
 		///<summary>
@@ -513,9 +509,9 @@ namespace Axiom.Graphics
 		public void RemoveInstance( CompositorInstance instance )
 		{
 			instance.Dispose();
-			this.instances.Remove( instance );
+			instances.Remove( instance );
 			instance = null;
-			this.dirty = true;
+			dirty = true;
 		}
 
 		///<summary>
@@ -523,7 +519,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public CompositorInstance GetCompositor( int index )
 		{
-			return this.instances[ index ];
+			return instances[ index ];
 		}
 
 		/// <summary>
@@ -532,7 +528,7 @@ namespace Axiom.Graphics
 		/// <returns>Returns instance with matching name, null if none found.</returns>
 		public CompositorInstance GetCompositor( string name )
 		{
-			foreach ( CompositorInstance item in this.instances )
+			foreach ( CompositorInstance item in instances )
 			{
 				if ( item.Compositor.Name == name )
 				{
@@ -561,18 +557,18 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public CompositorInstance GetPreviousInstance( CompositorInstance curr, bool activeOnly )
 		{
-			bool found = false;
+			var found = false;
 
-			for ( int i = this.instances.Count - 1; i >= 0; i-- )
+			for ( int i = instances.Count - 1; i >= 0; i-- )
 			{
 				if ( found )
 				{
-					if ( this.instances[ i ].IsEnabled || !activeOnly )
+					if ( instances[ i ].IsEnabled || !activeOnly )
 					{
-						return this.instances[ i ];
+						return instances[ i ];
 					}
 				}
-				else if ( this.instances[ i ] == curr )
+				else if ( instances[ i ] == curr )
 				{
 					found = true;
 				}
@@ -599,17 +595,17 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public CompositorInstance GetNextInstance( CompositorInstance curr, bool activeOnly )
 		{
-			bool found = false;
-			for ( int i = 0; i < this.instances.Count; i++ )
+			var found = false;
+			for ( var i = 0; i < instances.Count; i++ )
 			{
 				if ( found )
 				{
-					if ( this.instances[ i ].IsEnabled || !activeOnly )
+					if ( instances[ i ].IsEnabled || !activeOnly )
 					{
-						return this.instances[ i ];
+						return instances[ i ];
 					}
 				}
-				else if ( this.instances[ i ] == curr )
+				else if ( instances[ i ] == curr )
 				{
 					found = true;
 				}
@@ -627,16 +623,16 @@ namespace Axiom.Graphics
 		/// <param name="state"></param>
 		public void SetCompositorEnabled( int position, bool state )
 		{
-			CompositorInstance instance = GetCompositor( position );
+			var instance = GetCompositor( position );
 			if ( !state && instance.IsEnabled )
 			{
 				// If we're disabling a 'middle' compositor in a chain, we have to be
 				// careful about textures which might have been shared by non-adjacent
 				// instances which have now become adjacent.
-				CompositorInstance nextInstance = GetNextInstance( instance, true );
+				var nextInstance = GetNextInstance( instance, true );
 				if ( nextInstance != null )
 				{
-					foreach ( CompositionTargetPass tp in nextInstance.Technique.TargetPasses )
+					foreach ( var tp in nextInstance.Technique.TargetPasses )
 					{
 						if ( tp.InputMode == CompositorInputMode.Previous )
 						{
@@ -659,13 +655,13 @@ namespace Axiom.Graphics
 		public void BeforeRenderTargetUpdate( RenderTargetEventArgs evt )
 		{
 			// Compile if state is dirty
-			if ( this.dirty )
+			if ( dirty )
 			{
 				Compile();
 			}
 
 			// Do nothing if no compositors enabled
-			if ( !this.anyCompositorsEnabled )
+			if ( !anyCompositorsEnabled )
 			{
 				return;
 			}
@@ -675,7 +671,7 @@ namespace Axiom.Graphics
 			// target Rendertarget will not yet have been set as current.
 			// ( RenderSystem.Viewport = ... ) if it would have been, the rendering
 			// order would be screwed up and problems would arise with copying rendertextures.
-			Camera cam = this.viewport.Camera;
+			var cam = viewport.Camera;
 			if ( cam == null )
 			{
 				return;
@@ -683,7 +679,7 @@ namespace Axiom.Graphics
 			cam.SceneManager.ActiveCompositorChain = this;
 
 			// Iterate over compiled state
-			foreach ( CompositeTargetOperation op in this.compiledState )
+			foreach ( var op in compiledState )
 			{
 				// Skip if this is a target that should only be initialised initially
 				if ( op.OnlyInitial && op.HasBeenRendered )
@@ -703,7 +699,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public void AfterRenderTargetUpdate( RenderTargetEventArgs evt )
 		{
-			Camera cam = this.viewport.Camera;
+			var cam = viewport.Camera;
 			if ( cam != null )
 			{
 				cam.SceneManager.ActiveCompositorChain = null;
@@ -716,30 +712,30 @@ namespace Axiom.Graphics
 		public virtual void BeforeViewportUpdate( RenderTargetViewportEventArgs evt )
 		{
 			// Only set up if there is at least one compositor enabled, and it's this viewport
-			if ( evt.Viewport != this.viewport || !this.anyCompositorsEnabled )
+			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
 			{
 				return;
 			}
 
 			// set original scene details from viewport
-			CompositionPass pass = this.originalScene.Technique.OutputTarget.Passes[ 0 ];
-			CompositionTargetPass passParent = pass.Parent;
-			if ( pass.ClearBuffers != this.viewport.ClearBuffers || pass.ClearColor != this.viewport.BackgroundColor || passParent.VisibilityMask != this.viewport.VisibilityMask || passParent.MaterialScheme != this.viewport.MaterialScheme || passParent.ShadowsEnabled != this.viewport.ShowShadows )
+			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
+			var passParent = pass.Parent;
+			if ( pass.ClearBuffers != viewport.ClearBuffers || pass.ClearColor != viewport.BackgroundColor || passParent.VisibilityMask != viewport.VisibilityMask || passParent.MaterialScheme != viewport.MaterialScheme || passParent.ShadowsEnabled != viewport.ShowShadows )
 			{
-				pass.ClearBuffers = this.viewport.ClearBuffers;
-				pass.ClearColor = this.viewport.BackgroundColor;
-				pass.ClearDepth = this.viewport.ClearDepth;
-				passParent.VisibilityMask = this.viewport.VisibilityMask;
-				passParent.MaterialScheme = this.viewport.MaterialScheme;
-				passParent.ShadowsEnabled = this.viewport.ShowShadows;
+				pass.ClearBuffers = viewport.ClearBuffers;
+				pass.ClearColor = viewport.BackgroundColor;
+				pass.ClearDepth = viewport.ClearDepth;
+				passParent.VisibilityMask = viewport.VisibilityMask;
+				passParent.MaterialScheme = viewport.MaterialScheme;
+				passParent.ShadowsEnabled = viewport.ShowShadows;
 				Compile();
 			}
 
-			Camera camera = this.viewport.Camera;
+			var camera = viewport.Camera;
 			if ( camera != null )
 			{
 				// Prepare for output operation
-				PreTargetOperation( this.outputOperation, this.viewport, this.viewport.Camera );
+				PreTargetOperation( outputOperation, viewport, viewport.Camera );
 			}
 		}
 
@@ -750,30 +746,30 @@ namespace Axiom.Graphics
 		{
 			if ( cam != null )
 			{
-				SceneManager sm = cam.SceneManager;
+				var sm = cam.SceneManager;
 				// Set up render target listener
-				this.listener.SetOperation( op, sm, sm.TargetRenderSystem );
-				this.listener.Viewport = vp;
+				listener.SetOperation( op, sm, sm.TargetRenderSystem );
+				listener.Viewport = vp;
 				// Register it
-				sm.QueueStarted += this.listener.OnRenderQueueStarted;
-				sm.QueueEnded += this.listener.OnRenderQueueEnded;
+				sm.QueueStarted += listener.OnRenderQueueStarted;
+				sm.QueueEnded += listener.OnRenderQueueEnded;
 				// Set visiblity mask
-				this.oldVisibilityMask = sm.VisibilityMask;
+				oldVisibilityMask = sm.VisibilityMask;
 				sm.VisibilityMask = op.VisibilityMask;
 				// Set whether we find visibles
-				this.oldFindVisibleObjects = sm.FindVisibleObjectsBool;
+				oldFindVisibleObjects = sm.FindVisibleObjectsBool;
 				sm.FindVisibleObjectsBool = op.FindVisibleObjects;
 				// Set LOD bias level
-				this.oldLodBias = cam.LodBias;
+				oldLodBias = cam.LodBias;
 				cam.LodBias = cam.LodBias * op.LodBias;
 			}
 
 
 			// Set material scheme
-			this.oldMaterialScheme = vp.MaterialScheme;
+			oldMaterialScheme = vp.MaterialScheme;
 			vp.MaterialScheme = op.MaterialScheme;
 			// Set Shadows Enabled
-			this.oldShowShadows = vp.ShowShadows;
+			oldShowShadows = vp.ShowShadows;
 			vp.ShowShadows = op.ShadowsEnabled;
 
 			//vp.ClearEveryFrame = true;
@@ -788,18 +784,18 @@ namespace Axiom.Graphics
 		{
 			if ( cam != null )
 			{
-				SceneManager sm = cam.SceneManager;
+				var sm = cam.SceneManager;
 				// Unregister our listener
-				sm.QueueStarted -= this.listener.OnRenderQueueStarted;
-				sm.QueueEnded -= this.listener.OnRenderQueueEnded;
+				sm.QueueStarted -= listener.OnRenderQueueStarted;
+				sm.QueueEnded -= listener.OnRenderQueueEnded;
 				// Restore default scene and camera settings
-				sm.VisibilityMask = this.oldVisibilityMask;
-				sm.FindVisibleObjectsBool = this.oldFindVisibleObjects;
-				cam.LodBias = this.oldLodBias;
+				sm.VisibilityMask = oldVisibilityMask;
+				sm.FindVisibleObjectsBool = oldFindVisibleObjects;
+				cam.LodBias = oldLodBias;
 			}
 
-			vp.MaterialScheme = this.oldMaterialScheme;
-			vp.ShowShadows = this.oldShowShadows;
+			vp.MaterialScheme = oldMaterialScheme;
+			vp.ShowShadows = oldShowShadows;
 		}
 
 		///<summary>
@@ -808,14 +804,14 @@ namespace Axiom.Graphics
 		public virtual void AfterViewportUpdate( RenderTargetViewportEventArgs evt )
 		{
 			// Only tidy up if there is at least one compositor enabled, and it's this viewport
-			if ( evt.Viewport != this.viewport || !this.anyCompositorsEnabled )
+			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
 			{
 				return;
 			}
 
-			if ( this.viewport.Camera != null )
+			if ( viewport.Camera != null )
 			{
-				PostTargetOperation( this.outputOperation, this.viewport, this.viewport.Camera );
+				PostTargetOperation( outputOperation, viewport, viewport.Camera );
 			}
 		}
 
@@ -826,7 +822,7 @@ namespace Axiom.Graphics
 		public virtual void OnViewportRemoved( RenderTargetViewportEventArgs evt )
 		{
 			// check this is the viewport we're attached to (multi-viewport targets)
-			if ( evt.Viewport == this.viewport )
+			if ( evt.Viewport == viewport )
 			{
 				// this chain is now orphaned
 				// can't delete it since held from outside, but release all resources being used
@@ -840,7 +836,7 @@ namespace Axiom.Graphics
 		protected void Compile()
 		{
 			//remove original scen if it has the wrong material scheme
-			if ( this.originalSceneMaterial != this.viewport.MaterialScheme )
+			if ( originalSceneMaterial != viewport.MaterialScheme )
 			{
 				DestroyOriginalScene();
 				CreateOriginalScene();
@@ -851,19 +847,19 @@ namespace Axiom.Graphics
 			bool compositorsEnabled = false;
 
 			// force default scheme so materials for compositor quads will determined correctly
-			MaterialManager matMgr = MaterialManager.Instance;
-			string prevMaterialScheme = matMgr.ActiveScheme;
+			var matMgr = MaterialManager.Instance;
+			var prevMaterialScheme = matMgr.ActiveScheme;
 			matMgr.ActiveScheme = MaterialManager.DefaultSchemeName;
 
 			// Set previous CompositorInstance for each compositor in the list
-			CompositorInstance lastComposition = this.originalScene;
-			this.originalScene.PreviousInstance = null;
-			CompositionPass pass = this.originalScene.Technique.OutputTarget.Passes[ 0 ];
-			pass.ClearBuffers = this.viewport.ClearBuffers;
-			pass.ClearColor = this.viewport.BackgroundColor;
-			pass.ClearDepth = this.viewport.ClearDepth;
+			var lastComposition = originalScene;
+			originalScene.PreviousInstance = null;
+			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
+			pass.ClearBuffers = viewport.ClearBuffers;
+			pass.ClearColor = viewport.BackgroundColor;
+			pass.ClearDepth = viewport.ClearDepth;
 
-			foreach ( CompositorInstance instance in this.instances )
+			foreach ( var instance in instances )
 			{
 				if ( instance.IsEnabled )
 				{
@@ -874,44 +870,44 @@ namespace Axiom.Graphics
 			}
 
 			// Compile misc targets
-			lastComposition.CompileTargetOperations( this.compiledState );
+			lastComposition.CompileTargetOperations( compiledState );
 
 			// Final target viewport (0)
-			this.outputOperation.RenderSystemOperations.Clear();
-			lastComposition.CompileOutputOperation( this.outputOperation );
+			outputOperation.RenderSystemOperations.Clear();
+			lastComposition.CompileOutputOperation( outputOperation );
 
 			// Deal with viewport settings
-			if ( compositorsEnabled != this.anyCompositorsEnabled )
+			if ( compositorsEnabled != anyCompositorsEnabled )
 			{
-				this.anyCompositorsEnabled = compositorsEnabled;
-				if ( this.anyCompositorsEnabled )
+				anyCompositorsEnabled = compositorsEnabled;
+				if ( anyCompositorsEnabled )
 				{
 					// Save old viewport clearing options
-					this.oldClearEveryFrameBuffers = this.viewport.ClearBuffers;
+					oldClearEveryFrameBuffers = viewport.ClearBuffers;
 					// Don't clear anything every frame since we have our own clear ops
-					this.viewport.SetClearEveryFrame( false );
+					viewport.SetClearEveryFrame( false );
 				}
 				else
 				{
 					// Reset clearing options
-					this.viewport.SetClearEveryFrame( this.oldClearEveryFrameBuffers > 0, this.oldClearEveryFrameBuffers );
+					viewport.SetClearEveryFrame( oldClearEveryFrameBuffers > 0, oldClearEveryFrameBuffers );
 				}
 			}
-			this.dirty = false;
+			dirty = false;
 
 			matMgr.ActiveScheme = prevMaterialScheme;
 		}
 
 		protected void ClearCompiledState()
 		{
-			this.renderSystemOperations.Clear();
-			this.compiledState.Clear();
-			this.outputOperation = new CompositeTargetOperation( null );
+			renderSystemOperations.Clear();
+			compiledState.Clear();
+			outputOperation = new CompositeTargetOperation( null );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -50,11 +50,11 @@ namespace Axiom.Graphics
 	{
 		#region Fields
 
-		public HardwareVertexBuffer buffer;
-		public int expiredDelay;
-		public BufferLicenseRelease licenseType;
-		public IHardwareBufferLicensee licensee;
 		public HardwareVertexBuffer originalBuffer;
+		public BufferLicenseRelease licenseType;
+		public HardwareVertexBuffer buffer;
+		public IHardwareBufferLicensee licensee;
+		public int expiredDelay;
 
 		#endregion Fields
 

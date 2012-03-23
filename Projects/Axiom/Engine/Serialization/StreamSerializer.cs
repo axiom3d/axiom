@@ -38,9 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
+using System.IO;
+using System.Threading;
 
 using Axiom.Collections;
 using Axiom.Core;
@@ -100,6 +102,11 @@ namespace Axiom.Serialization
 		public uint id;
 
 		/// <summary>
+		/// Version of the chunk (stored)
+		/// </summary>
+		public ushort version;
+
+		/// <summary>
 		/// Length of the chunk data in bytes, excluding the header of this chunk (stored)
 		/// </summary>
 		public uint length;
@@ -109,14 +116,9 @@ namespace Axiom.Serialization
 		/// </summary>
 		public uint offset;
 
-		/// <summary>
-		/// Version of the chunk (stored)
-		/// </summary>
-		public ushort version;
-
 		public Chunk()
 		{
-			this.version = 1;
+			version = 1;
 		}
 
 		public override int GetHashCode()
@@ -155,10 +157,10 @@ namespace Axiom.Serialization
 		public const uint HEADER_ID = 0x0001;
 		public const uint REVERSE_HEADER_ID = 0x1000;
 
-		public const uint CHUNK_HEADER_SIZE = sizeof( uint ) + //id
-											  sizeof( ushort ) + //version
-											  sizeof( uint ) + //length
-											  sizeof( int ); //checksum
+		public const uint CHUNK_HEADER_SIZE = sizeof ( uint ) + //id
+		                                      sizeof ( ushort ) + //version
+		                                      sizeof ( uint ) + //length
+		                                      sizeof ( int ); //checksum
 
 		#endregion Constants and Enumerations
 
@@ -169,7 +171,7 @@ namespace Axiom.Serialization
 		protected bool mReadWriteHeader;
 		protected RealStorageFormat mRealFormat = RealStorageFormat.Float;
 		protected Deque<Chunk> mChunkStack = new Deque<Chunk>();
-		protected int mCurrentOffset;
+		protected int mCurrentOffset = 0;
 
 		#region Endian Property
 
@@ -184,7 +186,7 @@ namespace Axiom.Serialization
 		{
 			get
 			{
-				return this.mEndian;
+				return mEndian;
 			}
 		}
 
@@ -199,7 +201,7 @@ namespace Axiom.Serialization
 			get
 			{
 				CheckStream();
-				return this.mStream.Position == this.mStream.Length;
+				return mStream.Position == mStream.Length;
 			}
 		}
 
@@ -210,13 +212,13 @@ namespace Axiom.Serialization
 		{
 			get
 			{
-				if ( this.mChunkStack.Count == 0 )
+				if ( mChunkStack.Count == 0 )
 				{
 					return null;
 				}
 				else
 				{
-					return this.mChunkStack.PeekTail();
+					return mChunkStack.PeekTail();
 				}
 			}
 		}
@@ -230,13 +232,13 @@ namespace Axiom.Serialization
 		{
 			get
 			{
-				if ( this.mChunkStack.Count == 0 )
+				if ( mChunkStack.Count == 0 )
 				{
 					return 0;
 				}
 				else
 				{
-					return this.mChunkStack.PeekTail().id;
+					return mChunkStack.PeekTail().id;
 				}
 			}
 		}
@@ -254,16 +256,16 @@ namespace Axiom.Serialization
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				CheckStream( false, false, false );
+				this.CheckStream( false, false, false );
 
-				if ( this.mChunkStack.Count == 0 )
+				if ( mChunkStack.Count == 0 )
 				{
 					return 0;
 				}
 				else
 				{
-					long curPos = this.mStream.Position;
-					long diff = curPos - this.mChunkStack.PeekTail().offset;
+					var curPos = mStream.Position;
+					var diff = curPos - mChunkStack.PeekTail().offset;
 					if ( diff >= CHUNK_HEADER_SIZE )
 					{
 						return (int)( diff - CHUNK_HEADER_SIZE );
@@ -283,15 +285,15 @@ namespace Axiom.Serialization
 		{
 			get
 			{
-				CheckStream();
-				if ( Eof )
+				this.CheckStream();
+				if ( this.Eof )
 				{
 					return 0;
 				}
 
-				if ( this.mReadWriteHeader )
+				if ( mReadWriteHeader )
 				{
-					ReadHeader();
+					this.ReadHeader();
 				}
 
 				if ( this.mEndian == Endian.Auto )
@@ -299,9 +301,9 @@ namespace Axiom.Serialization
 					throw new Exception( "Endian mode has not been determined, did you disable header without setting?" );
 				}
 
-				long curPos = this.mStream.Position;
-				var chunkId = Read<uint>();
-				this.mStream.Position = curPos;
+				var curPos = mStream.Position;
+				var chunkId = this.Read<uint>();
+				mStream.Position = curPos;
 				return chunkId;
 			}
 		}
@@ -315,7 +317,7 @@ namespace Axiom.Serialization
 		/// </summary>
 		/// <param name="stream">The stream on which you will read / write data.</param>
 		public StreamSerializer( Stream stream )
-			: this( stream, Endian.Auto, true ) { }
+			: this( stream, Endian.Auto, true ) {}
 
 		/// <summary>
 		/// Constructor.
@@ -328,7 +330,7 @@ namespace Axiom.Serialization
 		/// this stream is midway through a file which has already included header
 		/// information.</param>
 		public StreamSerializer( Stream stream, Endian endianMode )
-			: this( stream, endianMode, true ) { }
+			: this( stream, endianMode, true ) {}
 
 		/// <summary>
 		/// Constructor.
@@ -352,7 +354,7 @@ namespace Axiom.Serialization
 #else
 			: this( stream, endianMode, autoHeader, RealStorageFormat.Double )
 #endif
-		{ }
+		{}
 
 		/// <summary>
 		/// Constructor.
@@ -376,13 +378,14 @@ namespace Axiom.Serialization
 		/// Defaults to float unless you're using AXIOM_DOUBLE_PRECISION.</param>
 		[OgreVersion( 1, 7, 2 )]
 		public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader, RealStorageFormat realFormat )
+			: base()
 		{
-			this.mStream = stream;
-			this.mEndian = endianMode;
-			this.mReadWriteHeader = autoHeader;
-			this.mRealFormat = realFormat;
+			mStream = stream;
+			mEndian = endianMode;
+			mReadWriteHeader = autoHeader;
+			mRealFormat = realFormat;
 
-			if ( this.mEndian != Endian.Auto )
+			if ( mEndian != Endian.Auto )
 			{
 #if AXIOM_BIG_ENDIAN
 				if ( mEndian == Endian.Little )
@@ -390,14 +393,14 @@ namespace Axiom.Serialization
 					mFlipEndian = true;
 				}
 #else
-				if ( this.mEndian == Endian.Big )
+				if ( mEndian == Endian.Big )
 				{
-					this.mFlipEndian = true;
+					mFlipEndian = true;
 				}
 #endif
 			}
 
-			CheckStream();
+			this.CheckStream();
 		}
 
 		#endregion Construction and Destruction
@@ -414,8 +417,8 @@ namespace Axiom.Serialization
 			Contract.Requires( code.Length <= 4, "code", "Only four (4) characters allowed in code." );
 
 			uint ret = 0;
-			int c = System.Math.Min( 4, code.Length );
-			for ( int i = 0; i < c; ++i )
+			var c = System.Math.Min( 4, code.Length );
+			for ( var i = 0; i < c; ++i )
 			{
 				ret += (uint)( code[ i ] << ( i * 8 ) );
 			}
@@ -430,7 +433,7 @@ namespace Axiom.Serialization
 		/// read/writeChunkEnd this many times.</returns>
 		public int GetCurrentChunkDepth()
 		{
-			return this.mChunkStack.Count;
+			return mChunkStack.Count;
 		}
 
 		/// <summary>
@@ -450,18 +453,18 @@ namespace Axiom.Serialization
 		public virtual Chunk ReadChunkBegin()
 		{
 			// Have we figured out the endian mode yet?
-			if ( this.mReadWriteHeader )
+			if ( mReadWriteHeader )
 			{
 				ReadHeader();
 			}
 
-			if ( this.mEndian == Endian.Auto )
+			if ( mEndian == Endian.Auto )
 			{
 				throw new AxiomException( "Endian mode has not been determined, did you disable header without setting?" );
 			}
 
-			Chunk chunk = ReadChunk();
-			this.mChunkStack.Add( chunk );
+			var chunk = ReadChunk();
+			mChunkStack.Add( chunk );
 
 			return chunk;
 		}
@@ -502,7 +505,7 @@ namespace Axiom.Serialization
 		/// <returns>The chunk if it passes the validation</returns>
 		public Chunk ReadChunkBegin( uint id, UInt16 maxVersion, string msg )
 		{
-			Chunk c = ReadChunkBegin();
+			var c = ReadChunkBegin();
 			if ( c.id != id )
 			{
 				// rewind
@@ -531,11 +534,11 @@ namespace Axiom.Serialization
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void UndoReadChunk( uint id )
 		{
-			Chunk c = PopChunk( id );
+			var c = PopChunk( id );
 
 			CheckStream();
 
-			this.mStream.Position = c.offset;
+			mStream.Position = c.offset;
 		}
 
 		/// <summary>
@@ -549,16 +552,16 @@ namespace Axiom.Serialization
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void ReadChunkEnd( uint id )
 		{
-			Chunk c = PopChunk( id );
+			var c = PopChunk( id );
 
 			CheckStream();
 
 			// skip to the end of the chunk if we were not there already
 			// this lets us quite reading a chunk anywhere and have the read marker
 			// automatically skip to the next one
-			if ( this.mStream.Position < ( c.offset + CHUNK_HEADER_SIZE + c.length ) )
+			if ( mStream.Position < ( c.offset + CHUNK_HEADER_SIZE + c.length ) )
 			{
-				this.mStream.Position = c.offset + CHUNK_HEADER_SIZE + c.length;
+				mStream.Position = c.offset + CHUNK_HEADER_SIZE + c.length;
 			}
 		}
 
@@ -569,9 +572,9 @@ namespace Axiom.Serialization
 		/// <returns>Return whether the current data pointer is at the end of the current chunk.</returns>
 		public bool IsEndOfChunk( uint id )
 		{
-			Chunk c = CurrentChunk;
+			var c = this.CurrentChunk;
 			Contract.Requires( c.id == id );
-			return this.mStream.Position == ( c.offset + CHUNK_HEADER_SIZE + c.length );
+			return mStream.Position == ( c.offset + CHUNK_HEADER_SIZE + c.length );
 		}
 
 		/// <summary>
@@ -597,12 +600,12 @@ namespace Axiom.Serialization
 		{
 			CheckStream( false, false, true );
 
-			if ( this.mReadWriteHeader )
+			if ( mReadWriteHeader )
 			{
 				WriteHeader();
 			}
 
-			if ( this.mEndian == Endian.Auto )
+			if ( mEndian == Endian.Auto )
 			{
 				throw new AxiomException( "Endian mode has not been determined, did you disable header without setting?" );
 			}
@@ -628,21 +631,21 @@ namespace Axiom.Serialization
 		{
 			CheckStream( false, false, true );
 
-			Chunk c = PopChunk( id );
+			var c = PopChunk( id );
 
 			// update the sizes
-			long currPos = this.mStream.Position;
+			var currPos = mStream.Position;
 			c.length = (uint)( currPos - c.offset - CHUNK_HEADER_SIZE );
 
 			// seek to 'length' position in stream for this chunk
 			// skip id (32) and version (16)
-			this.mStream.Position = ( c.offset + sizeof( uint ) + sizeof( ushort ) );
+			mStream.Position = ( c.offset + sizeof ( uint ) + sizeof ( ushort ) );
 			Write( c.length );
 			// write updated checksum
 			Write( c.GetHashCode() );
 
 			// seek back to previous position
-			this.mStream.Position = currPos;
+			mStream.Position = currPos;
 		}
 
 		/// <summary>
@@ -652,7 +655,7 @@ namespace Axiom.Serialization
 		/// <returns>new instance of type T</returns>
 		public T Read<T>()
 		{
-			var buffer = new byte[ Memory.SizeOf( typeof( T ) ) ];
+			var buffer = new byte[ Memory.SizeOf( typeof ( T ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
 			return BitConverterEx.SetBytes<T>( buffer );
 		}
@@ -664,7 +667,7 @@ namespace Axiom.Serialization
 		/// <param name="data">new instance of type T</param>
 		public void Read<T>( out T data )
 		{
-			var buffer = new byte[ Memory.SizeOf( typeof( T ) ) ];
+			var buffer = new byte[ Memory.SizeOf( typeof ( T ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
 			data = BitConverterEx.SetBytes<T>( buffer );
 		}
@@ -677,12 +680,12 @@ namespace Axiom.Serialization
 		public void Read<T>( out T[] data )
 		{
 			int length;
-			var buffer = new byte[ Memory.SizeOf( typeof( int ) ) ];
+			var buffer = new byte[ Memory.SizeOf( typeof ( int ) ) ];
 			ReadData( buffer, buffer.Length, 1 );
 			length = BitConverterEx.SetBytes<int>( buffer );
-			buffer = new byte[ Memory.SizeOf( typeof( T ) ) * length ];
+			buffer = new byte[ Memory.SizeOf( typeof ( T ) ) * length ];
 			ReadData( buffer, buffer.Length, 1 );
-			BitConverterEx.SetBytes( buffer, out data );
+			BitConverterEx.SetBytes<T>( buffer, out data );
 		}
 
 		/// <summary>
@@ -692,9 +695,9 @@ namespace Axiom.Serialization
 		public void Read( out string data )
 		{
 			var length = Read<int>();
-			var encoding = new UTF8Encoding();
+			var encoding = new System.Text.UTF8Encoding();
 			var buffer = new byte[ length ];
-			ReadData( buffer, buffer.Length, 1 );
+			this.ReadData( buffer, buffer.Length, 1 );
 			data = encoding.GetString( buffer, 0, buffer.Length );
 		}
 
@@ -716,7 +719,7 @@ namespace Axiom.Serialization
 		/// <param name="data">instance of T to write</param>
 		public void Write<T>( T data )
 		{
-			byte[] buffer = BitConverterEx.GetBytes( data );
+			var buffer = BitConverterEx.GetBytes( data );
 			WriteData( buffer, buffer.Length, 1 );
 		}
 
@@ -727,7 +730,7 @@ namespace Axiom.Serialization
 		/// <param name="data">instance of T to write</param>
 		public void Write<T>( T[] data )
 		{
-			byte[] buffer = BitConverterEx.GetBytes( data.Length );
+			var buffer = BitConverterEx.GetBytes( data.Length );
 			WriteData( buffer, buffer.Length, 1 );
 			buffer = BitConverterEx.GetBytes( data );
 			WriteData( buffer, buffer.Length, 1 );
@@ -739,10 +742,10 @@ namespace Axiom.Serialization
 		/// <param name="data"></param>
 		public void Write( string data )
 		{
-			var encoding = new UTF8Encoding();
-			byte[] buffer = encoding.GetBytes( data );
-			Write( buffer.Length );
-			WriteData( buffer, buffer.Length, 1 );
+			var encoding = new System.Text.UTF8Encoding();
+			var buffer = encoding.GetBytes( data );
+			this.Write( buffer.Length );
+			this.WriteData( buffer, buffer.Length, 1 );
 		}
 
 		/// <summary>
@@ -761,18 +764,18 @@ namespace Axiom.Serialization
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual Chunk PopChunk( uint id )
 		{
-			if ( this.mChunkStack.Count == 0 )
+			if ( mChunkStack.Count == 0 )
 			{
 				throw new AxiomException( "No active chunk!" );
 			}
 
-			Chunk chunk = this.mChunkStack.PeekTail();
+			var chunk = mChunkStack.PeekTail();
 			if ( chunk.id != id )
 			{
 				throw new AxiomException( "Incorrect chunk id!" );
 			}
 
-			Chunk c = this.mChunkStack.RemoveFromTail();
+			var c = mChunkStack.RemoveFromTail();
 			return c;
 		}
 
@@ -783,33 +786,33 @@ namespace Axiom.Serialization
 		{
 			uint headerid;
 			var mtp = new byte[ 4 ];
-			int actually_read = this.mStream.Read( mtp, 0, sizeof( uint ) );
-			this.mStream.Position -= actually_read;
+			var actually_read = mStream.Read( mtp, 0, sizeof ( uint ) );
+			mStream.Position -= actually_read;
 
 			headerid = BitConverter.ToUInt32( mtp, 0 );
 			if ( headerid == REVERSE_HEADER_ID )
 			{
-				this.mFlipEndian = true;
+				mFlipEndian = true;
 			}
 			else if ( headerid == HEADER_ID )
 			{
-				this.mFlipEndian = false;
+				mFlipEndian = false;
 			}
 			else
 			{
 				throw new Exception( "Cannot determine endian mode because header is missing" );
 			}
 			DetermineEndianness();
-			this.mReadWriteHeader = false;
+			mReadWriteHeader = false;
 
-			Chunk chunk = ReadChunkBegin();
+			var chunk = ReadChunkBegin();
 			// endian should be flipped now
 			Debug.Assert( chunk.id == HEADER_ID );
 
 			// read real storage format
 			bool realIsDouble;
 			Read( out realIsDouble );
-			this.mRealFormat = realIsDouble ? RealStorageFormat.Double : RealStorageFormat.Float;
+			mRealFormat = realIsDouble ? RealStorageFormat.Double : RealStorageFormat.Float;
 
 			ReadChunkEnd( HEADER_ID );
 		}
@@ -819,7 +822,7 @@ namespace Axiom.Serialization
 		/// </summary>
 		protected void WriteHeader()
 		{
-			if ( this.mEndian == Endian.Auto )
+			if ( mEndian == Endian.Auto )
 			{
 				DetermineEndianness();
 			}
@@ -827,19 +830,19 @@ namespace Axiom.Serialization
 			WriteChunk( HEADER_ID, 1 );
 
 			// real format
-			bool realIsDouble = ( this.mRealFormat == RealStorageFormat.Double );
+			var realIsDouble = ( mRealFormat == RealStorageFormat.Double );
 			Write( realIsDouble );
 
 			WriteChunkEnd( HEADER_ID );
 
-			this.mReadWriteHeader = false;
+			mReadWriteHeader = false;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected Chunk ReadChunk()
 		{
 			var chunk = new Chunk();
-			chunk.offset = (uint)( this.mStream.Position );
+			chunk.offset = (uint)( mStream.Position );
 			Read( out chunk.id );
 			Read( out chunk.version );
 			Read( out chunk.length );
@@ -850,7 +853,7 @@ namespace Axiom.Serialization
 			if ( checksum != chunk.GetHashCode() )
 			{
 				// no good, this is an invalid chunk
-				uint off = chunk.offset;
+				var off = chunk.offset;
 				throw new AxiomException( "Corrupt chunk detected in stream at byte {0}", off );
 			}
 			else
@@ -865,10 +868,10 @@ namespace Axiom.Serialization
 			var c = new Chunk();
 			c.id = id;
 			c.version = version;
-			c.offset = (uint)this.mStream.Position;
+			c.offset = (uint)mStream.Position;
 			c.length = 0;
 
-			this.mChunkStack.Add( c );
+			mChunkStack.Add( c );
 
 			Write( c.id );
 			Write( c.version );
@@ -884,22 +887,22 @@ namespace Axiom.Serialization
 		protected virtual void CheckStream( bool failOnEof, bool validateReadable, bool validateWriteable )
 #endif
 		{
-			if ( this.mStream == null )
+			if ( mStream == null )
 			{
 				throw new AxiomException( "Invalid operation, stream is null" );
 			}
 
-			if ( failOnEof && this.mStream.Position == this.mStream.Length )
+			if ( failOnEof && mStream.Position == mStream.Length )
 			{
 				throw new AxiomException( "Invalid operation, end of file on stream" );
 			}
 
-			if ( validateReadable && !this.mStream.CanRead )
+			if ( validateReadable && !mStream.CanRead )
 			{
 				throw new AxiomException( "Invalid operation, file is not readable" );
 			}
 
-			if ( validateWriteable && !this.mStream.CanWrite )
+			if ( validateWriteable && !mStream.CanWrite )
 			{
 				throw new AxiomException( "Invalid operation, file is not writeable" );
 			}
@@ -908,17 +911,17 @@ namespace Axiom.Serialization
 #if !NET_40
 		protected void CheckStream()
 		{
-			CheckStream( false, false, false );
+			this.CheckStream( false, false, false );
 		}
 
 		protected void CheckStream( bool failOnEof )
 		{
-			CheckStream( failOnEof, false, false );
+			this.CheckStream( failOnEof, false, false );
 		}
 
 		protected void CheckStream( bool failOnEof, bool validateReadable )
 		{
-			CheckStream( failOnEof, validateReadable, false );
+			this.CheckStream( failOnEof, validateReadable, false );
 		}
 #endif
 
@@ -930,13 +933,13 @@ namespace Axiom.Serialization
 			else
 				mEndian = Endian.Big;
 #else
-			if ( this.mFlipEndian )
+			if ( mFlipEndian )
 			{
-				this.mEndian = Endian.Big;
+				mEndian = Endian.Big;
 			}
 			else
 			{
-				this.mEndian = Endian.Little;
+				mEndian = Endian.Little;
 			}
 #endif
 		}
@@ -952,10 +955,10 @@ namespace Axiom.Serialization
 		{
 			CheckStream( true, true, false );
 
-			int totSize = size * count;
-			this.mStream.Read( buf, 0, totSize );
+			var totSize = size * count;
+			mStream.Read( buf, 0, totSize );
 
-			if ( this.mFlipEndian )
+			if ( mFlipEndian )
 			{
 				FlipEndian( buf, size, count );
 			}
@@ -972,25 +975,25 @@ namespace Axiom.Serialization
 		{
 			CheckStream( false, false, true );
 
-			int totSize = size * count;
+			var totSize = size * count;
 
-			if ( this.mFlipEndian )
+			if ( mFlipEndian )
 			{
 				FlipEndian( buf, size, count );
 			}
 
-			this.mStream.Write( buf, 0, totSize );
+			mStream.Write( buf, 0, totSize );
 		}
 
 		protected void FlipEndian( byte[] pBase, int size, int count )
 		{
-			for ( int c = 0; c < count; ++c )
+			for ( var c = 0; c < count; ++c )
 			{
 				{
-					int pData = c * size;
-					for ( int byteIndex = 0; byteIndex < size / 2; byteIndex++ )
+					var pData = c * size;
+					for ( var byteIndex = 0; byteIndex < size / 2; byteIndex++ )
 					{
-						byte swapByte = pBase[ pData + byteIndex ];
+						var swapByte = pBase[ pData + byteIndex ];
 						pBase[ pData + byteIndex ] = pBase[ pData + size - byteIndex - 1 ];
 						pBase[ pData + size - byteIndex - 1 ] = swapByte;
 					}
@@ -1004,7 +1007,7 @@ namespace Axiom.Serialization
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1012,11 +1015,11 @@ namespace Axiom.Serialization
 					{
 						if ( this.mChunkStack.Count != 0 )
 						{
-							Debug.WriteLine( "Warning: stream was not fully read / written; " + this.mChunkStack.Count + " chunks remain unterminated." );
+							Debug.WriteLine( "Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated." );
 						}
-						this.mChunkStack.Clear();
-						this.mStream.Dispose();
-						this.mStream = null;
+						mChunkStack.Clear();
+						mStream.Dispose();
+						mStream = null;
 					}
 				}
 			}

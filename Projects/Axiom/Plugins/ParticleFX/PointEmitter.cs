@@ -37,7 +37,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
 using Axiom.ParticleSystems;
+using Axiom.Math;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -53,7 +58,7 @@ namespace Axiom.ParticleFX
 		public PointEmitter( ParticleSystem ps )
 			: base( ps )
 		{
-			Type = "Point";
+			this.Type = "Point";
 		}
 
 		#endregion Constructors
@@ -71,7 +76,7 @@ namespace Axiom.ParticleFX
 			base.InitParticle( particle );
 
 			// point emitter emits starting from its own position
-			particle.Position = position;
+			particle.Position = this.position;
 
 			GenerateEmissionColor( ref particle.Color );
 			GenerateEmissionDirection( ref particle.Direction );

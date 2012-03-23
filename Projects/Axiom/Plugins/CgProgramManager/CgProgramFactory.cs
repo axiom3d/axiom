@@ -58,7 +58,7 @@ namespace Axiom.CgPrograms
 		/// <summary>
 		///    ID of the active Cg context.
 		/// </summary>
-		private readonly IntPtr cgContext;
+		private IntPtr cgContext;
 
 		#endregion Fields
 
@@ -70,12 +70,14 @@ namespace Axiom.CgPrograms
 		internal CgProgramFactory()
 		{
 			// create the Cg context
-			this.cgContext = Cg.cgCreateContext();
+			cgContext = Cg.cgCreateContext();
 
-			CgHelper.CheckCgError( "Error creating Cg context.", this.cgContext );
+			CgHelper.CheckCgError( "Error creating Cg context.", cgContext );
 		}
 
 		#endregion Constructors
+
+		#region HighLevelGpuProgramFactory Members
 
 		public override string Language
 		{
@@ -93,8 +95,12 @@ namespace Axiom.CgPrograms
 		/// <returns>A new CgProgram instance within the current Cg Context.</returns>
 		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return new CgProgram( parent, name, handle, group, isManual, loader, this.cgContext );
+			return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
 		}
+
+		#endregion HighLevelGpuProgramFactory Members
+
+		#region IDisposable Members
 
 		/// <summary>
 		///    Destroys the Cg context upon being disposed.
@@ -104,9 +110,11 @@ namespace Axiom.CgPrograms
 			// destroy the Cg context
 			if ( disposeManagedResources )
 			{
-				Cg.cgDestroyContext( this.cgContext );
+				Cg.cgDestroyContext( cgContext );
 			}
 			base.dispose( disposeManagedResources );
 		}
+
+		#endregion IDisposable Members
 	}
 }

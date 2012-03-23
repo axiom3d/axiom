@@ -52,15 +52,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: TextureUnitTranslator
-
 		public class TextureUnitTranslator : Translator
 		{
 			protected TextureUnitState _textureunit;
 
 			public TextureUnitTranslator()
+				: base()
 			{
-				this._textureunit = null;
+				_textureunit = null;
 			}
 
 			#region Translator Implementation
@@ -77,24 +76,24 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var pass = (Pass)obj.Parent.Context;
-				this._textureunit = pass.CreateTextureUnitState();
-				obj.Context = this._textureunit;
+				_textureunit = pass.CreateTextureUnitState();
+				obj.Context = _textureunit;
 
 				// Get the name of the technique
 				if ( !string.IsNullOrEmpty( obj.Name ) )
 				{
-					this._textureunit.Name = obj.Name;
+					_textureunit.Name = obj.Name;
 				}
 
 				// Set the properties for the material
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
 						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
-							#region ID_TEXTURE_ALIAS
+								#region ID_TEXTURE_ALIAS
 
 							case Keywords.ID_TEXTURE_ALIAS:
 								if ( prop.Values.Count == 0 )
@@ -110,7 +109,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										this._textureunit.TextureNameAlias = val;
+										_textureunit.TextureNameAlias = val;
 									}
 									else
 									{
@@ -119,9 +118,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_TEXTURE_ALIAS
+								#endregion ID_TEXTURE_ALIAS
 
-							#region ID_TEXTURE
+								#region ID_TEXTURE
 
 							case Keywords.ID_TEXTURE:
 								if ( prop.Values.Count == 0 )
@@ -134,16 +133,16 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode j = getNodeAt( prop.Values, 0 );
-									int index = 1;
+									var j = getNodeAt( prop.Values, 0 );
+									var index = 1;
 									string val;
 									if ( getString( j, out val ) )
 									{
-										TextureType texType = TextureType.TwoD;
-										bool isAlpha = false;
-										bool sRGBRead = false;
-										PixelFormat format = PixelFormat.Unknown;
-										int mipmaps = -1; //MIP_DEFAULT;
+										var texType = TextureType.TwoD;
+										var isAlpha = false;
+										var sRGBRead = false;
+										var format = PixelFormat.Unknown;
+										var mipmaps = -1; //MIP_DEFAULT;
 
 										while ( j != null )
 										{
@@ -204,13 +203,13 @@ namespace Axiom.Scripting.Compiler
 
 										compiler._fireEvent( ref evt );
 
-										string textureName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										var textureName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
-										this._textureunit.SetTextureName( textureName, texType );
-										this._textureunit.DesiredFormat = format;
-										this._textureunit.IsAlpha = isAlpha;
-										this._textureunit.MipmapCount = mipmaps;
-										this._textureunit.IsHardwareGammaEnabled = sRGBRead;
+										_textureunit.SetTextureName( textureName, texType );
+										_textureunit.DesiredFormat = format;
+										_textureunit.IsAlpha = isAlpha;
+										_textureunit.MipmapCount = mipmaps;
+										_textureunit.IsHardwareGammaEnabled = sRGBRead;
 									}
 									else
 									{
@@ -219,9 +218,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_TEXTURE
+								#endregion ID_TEXTURE
 
-							#region ID_ANIM_TEXTURE
+								#region ID_ANIM_TEXTURE
 
 							case Keywords.ID_ANIM_TEXTURE:
 								if ( prop.Values.Count < 3 )
@@ -230,7 +229,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i1 = getNodeAt( prop.Values, 1 );
+									var i1 = getNodeAt( prop.Values, 1 );
 									if ( i1 is AtomAbstractNode && ( (AtomAbstractNode)i ).IsNumber )
 									{
 										// Short form
@@ -245,9 +244,9 @@ namespace Axiom.Scripting.Compiler
 												ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val0 );
 
 												compiler._fireEvent( ref evt );
-												string evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+												var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
-												this._textureunit.SetAnimatedTextureName( evtName, val1, val2 );
+												_textureunit.SetAnimatedTextureName( evtName, val1, val2 );
 											}
 											else
 											{
@@ -263,19 +262,19 @@ namespace Axiom.Scripting.Compiler
 									{
 										// Long form has n number of frames
 										Real duration = 0;
-										AbstractNode inNode = getNodeAt( prop.Values, prop.Values.Count - 1 );
+										var inNode = getNodeAt( prop.Values, prop.Values.Count - 1 );
 										if ( getReal( inNode, out duration ) )
 										{
 											var names = new string[ prop.Values.Count - 1 ];
-											int n = 0;
+											var n = 0;
 
-											AbstractNode j = prop.Values[ 0 ];
-											int index = 0;
+											var j = prop.Values[ 0 ];
+											var index = 0;
 											while ( j != inNode )
 											{
 												if ( j is AtomAbstractNode )
 												{
-													string name = ( j ).Value;
+													var name = ( (AtomAbstractNode)j ).Value;
 
 #warning check this if statement
 													// Run the name through the listener
@@ -300,7 +299,7 @@ namespace Axiom.Scripting.Compiler
 												j = prop.Values[ index ];
 											}
 
-											this._textureunit.SetAnimatedTextureName( names, n, duration );
+											_textureunit.SetAnimatedTextureName( names, n, duration );
 										}
 										else
 										{
@@ -310,9 +309,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ANIM_TEXTURE
+								#endregion ID_ANIM_TEXTURE
 
-							#region ID_CUBIC_TEXTURE
+								#region ID_CUBIC_TEXTURE
 
 							case Keywords.ID_CUBIC_TEXTURE:
 								if ( prop.Values.Count == 0 )
@@ -329,9 +328,9 @@ namespace Axiom.Scripting.Compiler
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, atom0.Value );
 
 										compiler._fireEvent( ref evt );
-										string evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 
-										this._textureunit.SetCubicTextureName( evtName, atom1.Id == (uint)Keywords.ID_COMBINED_UVW );
+										_textureunit.SetCubicTextureName( evtName, atom1.Id == (uint)Keywords.ID_COMBINED_UVW );
 									}
 									else
 									{
@@ -357,7 +356,7 @@ namespace Axiom.Scripting.Compiler
 										if ( compiler.Listener != null )
 										{
 											// Run each name through the listener
-											for ( int j = 0; j < 6; ++j )
+											for ( var j = 0; j < 6; ++j )
 											{
 												ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, names[ j ] );
 
@@ -366,7 +365,7 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										this._textureunit.SetCubicTextureName( names, atom6.Id == (uint)Keywords.ID_COMBINED_UVW );
+										_textureunit.SetCubicTextureName( names, atom6.Id == (uint)Keywords.ID_COMBINED_UVW );
 									}
 								}
 								else
@@ -375,9 +374,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_CUBIC_TEXTURE
+								#endregion ID_CUBIC_TEXTURE
 
-							#region ID_TEX_COORD_SET
+								#region ID_TEX_COORD_SET
 
 							case Keywords.ID_TEX_COORD_SET:
 								if ( prop.Values.Count == 0 )
@@ -390,10 +389,10 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 									{
-										this._textureunit.TextureCoordSet = val;
+										_textureunit.TextureCoordSet = val;
 									}
 									else
 									{
@@ -402,9 +401,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_TEX_COORD_SET
+								#endregion ID_TEX_COORD_SET
 
-							#region ID_TEX_ADDRESS_MODE
+								#region ID_TEX_ADDRESS_MODE
 
 							case Keywords.ID_TEX_ADDRESS_MODE:
 								if ( prop.Values.Count == 0 )
@@ -500,13 +499,13 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									this._textureunit.SetTextureAddressingMode( mode );
+									_textureunit.SetTextureAddressingMode( mode );
 								}
 								break;
 
-							#endregion ID_TEX_ADDRESS_MODE
+								#endregion ID_TEX_ADDRESS_MODE
 
-							#region ID_TEX_BORDER_COLOUR
+								#region ID_TEX_BORDER_COLOUR
 
 							case Keywords.ID_TEX_BORDER_COLOUR:
 								if ( prop.Values.Count == 0 )
@@ -518,7 +517,7 @@ namespace Axiom.Scripting.Compiler
 									ColorEx val;
 									if ( getColor( prop.Values, 0, out val ) )
 									{
-										this._textureunit.TextureBorderColor = val;
+										_textureunit.TextureBorderColor = val;
 									}
 									else
 									{
@@ -527,9 +526,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_TEX_BORDER_COLOUR
+								#endregion ID_TEX_BORDER_COLOUR
 
-							#region ID_FILTERING
+								#region ID_FILTERING
 
 							case Keywords.ID_FILTERING:
 								if ( prop.Values.Count == 0 )
@@ -544,19 +543,19 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
-												this._textureunit.SetTextureFiltering( TextureFiltering.None );
+												_textureunit.SetTextureFiltering( TextureFiltering.None );
 												break;
 
 											case Keywords.ID_BILINEAR:
-												this._textureunit.SetTextureFiltering( TextureFiltering.Bilinear );
+												_textureunit.SetTextureFiltering( TextureFiltering.Bilinear );
 												break;
 
 											case Keywords.ID_TRILINEAR:
-												this._textureunit.SetTextureFiltering( TextureFiltering.Trilinear );
+												_textureunit.SetTextureFiltering( TextureFiltering.Trilinear );
 												break;
 
 											case Keywords.ID_ANISOTROPIC:
-												this._textureunit.SetTextureFiltering( TextureFiltering.Anisotropic );
+												_textureunit.SetTextureFiltering( TextureFiltering.Anisotropic );
 												break;
 
 											default:
@@ -647,7 +646,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 										}
 
-										this._textureunit.SetTextureFiltering( tmin, tmax, tmip );
+										_textureunit.SetTextureFiltering( tmin, tmax, tmip );
 									}
 									else
 									{
@@ -660,9 +659,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_FILTERING
+								#endregion ID_FILTERING
 
-							#region ID_MAX_ANISOTROPY
+								#region ID_MAX_ANISOTROPY
 
 							case Keywords.ID_MAX_ANISOTROPY:
 								if ( prop.Values.Count == 0 )
@@ -675,10 +674,10 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									int val = 0;
+									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 									{
-										this._textureunit.TextureAnisotropy = val;
+										_textureunit.TextureAnisotropy = val;
 									}
 									else
 									{
@@ -687,9 +686,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_MAX_ANISOTROPY
+								#endregion ID_MAX_ANISOTROPY
 
-							#region ID_MIPMAP_BIAS
+								#region ID_MIPMAP_BIAS
 
 							case Keywords.ID_MIPMAP_BIAS:
 								if ( prop.Values.Count == 0 )
@@ -715,9 +714,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_MIPMAP_BIAS
+								#endregion ID_MIPMAP_BIAS
 
-							#region ID_COLOR_OP
+								#region ID_COLOR_OP
 
 							case Keywords.ID_COLOR_OP:
 								if ( prop.Values.Count == 0 )
@@ -736,19 +735,19 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_REPLACE:
-												this._textureunit.ColorOperation = LayerBlendOperation.Replace;
+												_textureunit.ColorOperation = LayerBlendOperation.Replace;
 												break;
 
 											case Keywords.ID_ADD:
-												this._textureunit.ColorOperation = LayerBlendOperation.Add;
+												_textureunit.ColorOperation = LayerBlendOperation.Add;
 												break;
 
 											case Keywords.ID_MODULATE:
-												this._textureunit.ColorOperation = LayerBlendOperation.Modulate;
+												_textureunit.ColorOperation = LayerBlendOperation.Modulate;
 												break;
 
 											case Keywords.ID_ALPHA_BLEND:
-												this._textureunit.ColorOperation = LayerBlendOperation.AlphaBlend;
+												_textureunit.ColorOperation = LayerBlendOperation.AlphaBlend;
 												break;
 
 											default:
@@ -763,9 +762,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_COLOR_OP
+								#endregion ID_COLOR_OP
 
-							#region ID_COLOR_OP_EX
+								#region ID_COLOR_OP_EX
 
 							case Keywords.ID_COLOR_OP_EX:
 								if ( prop.Values.Count < 3 )
@@ -784,7 +783,7 @@ namespace Axiom.Scripting.Compiler
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1, atom2 = (AtomAbstractNode)i2;
 
-										LayerBlendOperationEx op = LayerBlendOperationEx.Add;
+										var op = LayerBlendOperationEx.Add;
 										LayerBlendSource source1 = LayerBlendSource.Current, source2 = LayerBlendSource.Texture;
 										ColorEx arg1 = ColorEx.White, arg2 = ColorEx.White;
 										Real manualBlend = 0.0f;
@@ -912,7 +911,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
-											AbstractNode i3 = getNodeAt( prop.Values, 3 );
+											var i3 = getNodeAt( prop.Values, 3 );
 											if ( i3 != null )
 											{
 												if ( !getReal( i3, out manualBlend ) )
@@ -926,8 +925,8 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										AbstractNode j = getNodeAt( prop.Values, 3 );
-										int index = 3;
+										var j = getNodeAt( prop.Values, 3 );
+										var index = 3;
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
 											j = getNodeAt( prop.Values, ++index );
@@ -963,7 +962,7 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										this._textureunit.SetColorOperationEx( op, source1, source2, arg1, arg2, manualBlend );
+										_textureunit.SetColorOperationEx( op, source1, source2, arg1, arg2, manualBlend );
 									}
 									else
 									{
@@ -972,9 +971,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_COLOR_OP_EX
+								#endregion ID_COLOR_OP_EX
 
-							#region ID_COLOR_OP_MULTIPASS_FALLBACK
+								#region ID_COLOR_OP_MULTIPASS_FALLBACK
 
 							case Keywords.ID_COLOR_OP_MULTIPASS_FALLBACK:
 								if ( prop.Values.Count == 0 )
@@ -993,23 +992,23 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
-												this._textureunit.SetColorOpMultipassFallback( SceneBlendFactor.One, SceneBlendFactor.One );
+												_textureunit.SetColorOpMultipassFallback( SceneBlendFactor.One, SceneBlendFactor.One );
 												break;
 
 											case Keywords.ID_MODULATE:
-												this._textureunit.SetColorOpMultipassFallback( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
+												_textureunit.SetColorOpMultipassFallback( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
 												break;
 
 											case Keywords.ID_COLOUR_BLEND:
-												this._textureunit.SetColorOpMultipassFallback( SceneBlendFactor.SourceColor, SceneBlendFactor.OneMinusSourceColor );
+												_textureunit.SetColorOpMultipassFallback( SceneBlendFactor.SourceColor, SceneBlendFactor.OneMinusSourceColor );
 												break;
 
 											case Keywords.ID_ALPHA_BLEND:
-												this._textureunit.SetColorOpMultipassFallback( SceneBlendFactor.SourceAlpha, SceneBlendFactor.OneMinusSourceAlpha );
+												_textureunit.SetColorOpMultipassFallback( SceneBlendFactor.SourceAlpha, SceneBlendFactor.OneMinusSourceAlpha );
 												break;
 
 											case Keywords.ID_REPLACE:
-												this._textureunit.SetColorOpMultipassFallback( SceneBlendFactor.One, SceneBlendFactor.Zero );
+												_textureunit.SetColorOpMultipassFallback( SceneBlendFactor.One, SceneBlendFactor.Zero );
 												break;
 
 											default:
@@ -1026,9 +1025,9 @@ namespace Axiom.Scripting.Compiler
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
 									SceneBlendFactor sbf0, sbf1;
-									if ( getEnumeration( i0, compiler, out sbf0 ) && getEnumeration( i1, compiler, out sbf1 ) )
+									if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
 									{
-										this._textureunit.SetColorOpMultipassFallback( sbf0, sbf1 );
+										_textureunit.SetColorOpMultipassFallback( sbf0, sbf1 );
 									}
 									else
 									{
@@ -1037,9 +1036,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_COLOR_OP_MULTIPASS_FALLBACK
+								#endregion ID_COLOR_OP_MULTIPASS_FALLBACK
 
-							#region ID_ALPHA_OP_EX
+								#region ID_ALPHA_OP_EX
 
 							case Keywords.ID_ALPHA_OP_EX:
 								if ( prop.Values.Count < 3 )
@@ -1058,7 +1057,7 @@ namespace Axiom.Scripting.Compiler
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1, atom2 = (AtomAbstractNode)i2;
 
-										LayerBlendOperationEx op = LayerBlendOperationEx.Add;
+										var op = LayerBlendOperationEx.Add;
 										LayerBlendSource source1 = LayerBlendSource.Current, source2 = LayerBlendSource.Texture;
 										Real arg1 = 0.0f, arg2 = 0.0f;
 										Real manualBlend = 0.0f;
@@ -1186,7 +1185,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
-											AbstractNode i3 = getNodeAt( prop.Values, 3 );
+											var i3 = getNodeAt( prop.Values, 3 );
 											if ( i3 != null )
 											{
 												if ( !getReal( i3, out manualBlend ) )
@@ -1200,8 +1199,8 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										AbstractNode j = getNodeAt( prop.Values, 3 );
-										int index = 3;
+										var j = getNodeAt( prop.Values, 3 );
+										var index = 3;
 										if ( op == LayerBlendOperationEx.BlendManual )
 										{
 											j = getNodeAt( prop.Values, ++index );
@@ -1241,7 +1240,7 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										this._textureunit.SetAlphaOperation( op, source1, source2, arg1, arg2, manualBlend );
+										_textureunit.SetAlphaOperation( op, source1, source2, arg1, arg2, manualBlend );
 									}
 									else
 									{
@@ -1250,9 +1249,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ALPHA_OP_EX
+								#endregion ID_ALPHA_OP_EX
 
-							#region ID_ENV_MAP
+								#region ID_ENV_MAP
 
 							case Keywords.ID_ENV_MAP:
 								if ( prop.Values.Count == 0 )
@@ -1271,23 +1270,23 @@ namespace Axiom.Scripting.Compiler
 										switch ( atom.Id )
 										{
 											case (uint)BuiltIn.ID_OFF:
-												this._textureunit.SetEnvironmentMap( false );
+												_textureunit.SetEnvironmentMap( false );
 												break;
 
 											case (uint)Keywords.ID_SPHERICAL:
-												this._textureunit.SetEnvironmentMap( true, EnvironmentMap.Curved );
+												_textureunit.SetEnvironmentMap( true, EnvironmentMap.Curved );
 												break;
 
 											case (uint)Keywords.ID_PLANAR:
-												this._textureunit.SetEnvironmentMap( true, EnvironmentMap.Planar );
+												_textureunit.SetEnvironmentMap( true, EnvironmentMap.Planar );
 												break;
 
 											case (uint)Keywords.ID_CUBIC_REFLECTION:
-												this._textureunit.SetEnvironmentMap( true, EnvironmentMap.Reflection );
+												_textureunit.SetEnvironmentMap( true, EnvironmentMap.Reflection );
 												break;
 
 											case (uint)Keywords.ID_CUBIC_NORMAL:
-												this._textureunit.SetEnvironmentMap( true, EnvironmentMap.Normal );
+												_textureunit.SetEnvironmentMap( true, EnvironmentMap.Normal );
 												break;
 
 											default:
@@ -1302,9 +1301,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ENV_MAP
+								#endregion ID_ENV_MAP
 
-							#region ID_SCROLL
+								#region ID_SCROLL
 
 							case Keywords.ID_SCROLL:
 								if ( prop.Values.Count == 0 )
@@ -1321,7 +1320,7 @@ namespace Axiom.Scripting.Compiler
 									Real x, y;
 									if ( getReal( i0, out x ) && getReal( i1, out y ) )
 									{
-										this._textureunit.SetTextureScroll( x, y );
+										_textureunit.SetTextureScroll( x, y );
 									}
 									else
 									{
@@ -1330,9 +1329,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SCROLL
+								#endregion ID_SCROLL
 
-							#region ID_SCROLL_ANIM
+								#region ID_SCROLL_ANIM
 
 							case Keywords.ID_SCROLL_ANIM:
 								if ( prop.Values.Count == 0 )
@@ -1349,7 +1348,7 @@ namespace Axiom.Scripting.Compiler
 									Real x, y;
 									if ( getReal( i0, out x ) && getReal( i1, out y ) )
 									{
-										this._textureunit.SetScrollAnimation( x, y );
+										_textureunit.SetScrollAnimation( x, y );
 									}
 									else
 									{
@@ -1358,9 +1357,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SCROLL_ANIM
+								#endregion ID_SCROLL_ANIM
 
-							#region ID_ROTATE
+								#region ID_ROTATE
 
 							case Keywords.ID_ROTATE:
 								if ( prop.Values.Count == 0 )
@@ -1378,7 +1377,7 @@ namespace Axiom.Scripting.Compiler
 									{
 #warning check this statement
 										//mUnit->setTextureRotate(Degree(angle));
-										this._textureunit.SetTextureRotate( angle );
+										_textureunit.SetTextureRotate( angle );
 									}
 									else
 									{
@@ -1387,9 +1386,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ROTATE
+								#endregion ID_ROTATE
 
-							#region ID_ROTATE_ANIM
+								#region ID_ROTATE_ANIM
 
 							case Keywords.ID_ROTATE_ANIM:
 								if ( prop.Values.Count == 0 )
@@ -1405,7 +1404,7 @@ namespace Axiom.Scripting.Compiler
 									Real angle;
 									if ( getReal( prop.Values[ 0 ], out angle ) )
 									{
-										this._textureunit.SetRotateAnimation( angle );
+										_textureunit.SetRotateAnimation( angle );
 									}
 									else
 									{
@@ -1414,9 +1413,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ROTATE_ANIM
+								#endregion ID_ROTATE_ANIM
 
-							#region ID_SCALE
+								#region ID_SCALE
 
 							case Keywords.ID_SCALE:
 								if ( prop.Values.Count == 0 )
@@ -1433,7 +1432,7 @@ namespace Axiom.Scripting.Compiler
 									Real x, y;
 									if ( getReal( i0, out x ) && getReal( i1, out y ) )
 									{
-										this._textureunit.SetTextureScale( x, y );
+										_textureunit.SetTextureScale( x, y );
 									}
 									else
 									{
@@ -1442,9 +1441,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SCALE
+								#endregion ID_SCALE
 
-							#region ID_WAVE_XFORM
+								#region ID_WAVE_XFORM
 
 							case Keywords.ID_WAVE_XFORM:
 								if ( prop.Values.Count == 0 )
@@ -1462,8 +1461,8 @@ namespace Axiom.Scripting.Compiler
 									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode && i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
-										TextureTransform type = TextureTransform.Rotate;
-										WaveformType wave = WaveformType.Sine;
+										var type = TextureTransform.Rotate;
+										var wave = WaveformType.Sine;
 										Real baseVal = 0.0f, freq = 0.0f, phase = 0.0f, amp = 0.0f;
 
 										switch ( (Keywords)atom0.Id )
@@ -1525,7 +1524,7 @@ namespace Axiom.Scripting.Compiler
 											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "arguments 3, 4, 5, and 6 must be valid numbers; received " + i2.Value + ", " + i3.Value + ", " + i4.Value + ", " + i5.Value );
 										}
 
-										this._textureunit.SetTransformAnimation( type, wave, baseVal, freq, phase, amp );
+										_textureunit.SetTransformAnimation( type, wave, baseVal, freq, phase, amp );
 									}
 									else
 									{
@@ -1534,13 +1533,13 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_WAVE_XFORM
+								#endregion ID_WAVE_XFORM
 
-							#region ID_TRANSFORM
+								#region ID_TRANSFORM
 
 							case Keywords.ID_TRANSFORM:
-								{
-									throw new NotImplementedException();
+							{
+								throw new NotImplementedException();
 #if UNREACHABLE_CODE
 									Matrix4 m;
 									if ( getMatrix4( prop.Values, 0, out m ) )
@@ -1551,12 +1550,12 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 #else
-								}
+							}
 #endif
 
-							#endregion ID_TRANSFORM
+								#endregion ID_TRANSFORM
 
-							#region ID_BINDING_TYPE
+								#region ID_BINDING_TYPE
 
 							case Keywords.ID_BINDING_TYPE:
 								if ( prop.Values.Count == 0 )
@@ -1575,11 +1574,11 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_VERTEX:
-												this._textureunit.BindingType = TextureBindingType.Vertex;
+												_textureunit.BindingType = TextureBindingType.Vertex;
 												break;
 
 											case Keywords.ID_FRAGMENT:
-												this._textureunit.BindingType = TextureBindingType.Fragment;
+												_textureunit.BindingType = TextureBindingType.Fragment;
 												break;
 
 											default:
@@ -1594,9 +1593,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_BINDING_TYPE
+								#endregion ID_BINDING_TYPE
 
-							#region ID_CONTENT_TYPE
+								#region ID_CONTENT_TYPE
 
 							case Keywords.ID_CONTENT_TYPE:
 								if ( prop.Values.Count == 0 )
@@ -1665,7 +1664,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_CONTENT_TYPE
+								#endregion ID_CONTENT_TYPE
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -1681,7 +1680,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

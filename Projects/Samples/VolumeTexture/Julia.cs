@@ -8,35 +8,13 @@ namespace Axiom.Samples.VolumeTexture
 {
 	public class Julia
 	{
-		protected Quat c, eio, emio;
-		protected float globalImag;
-		protected float globalReal;
-		protected float globalTheta;
-		protected Quat oc;
-
 		[OgreVersion( 1, 7, 2 )]
-		public Julia( float globalReal, float globalImag, float globalTheta )
+		public struct Quat
 		{
-			this.globalReal = globalReal;
-			this.globalImag = globalImag;
-			this.globalTheta = globalTheta;
-
-			this.oc = new Quat();
-			this.oc.R = globalReal;
-			this.oc.I = globalImag;
-			this.oc.J = this.oc.K = 0.0f;
-
-			this.eio = new Quat();
-			this.eio.R = Utility.Cos( globalTheta );
-			this.eio.I = Utility.Sin( globalTheta );
-			this.eio.J = this.eio.K = 0;
-
-			this.emio = new Quat();
-			this.emio.R = Utility.Cos( -globalTheta );
-			this.emio.I = Utility.Sin( -globalTheta );
-			this.emio.J = this.emio.K = 0;
-
-			QMult( ref this.c, this.eio, this.oc );
+			public float R;
+			public float I;
+			public float J;
+			public float K;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -66,13 +44,43 @@ namespace Axiom.Samples.VolumeTexture
 			b.K = 2.0f * a.R * a.K;
 		}
 
+		protected float globalReal;
+		protected float globalImag;
+		protected float globalTheta;
+		protected Quat oc, c, eio, emio;
+
+		[OgreVersion( 1, 7, 2 )]
+		public Julia( float globalReal, float globalImag, float globalTheta )
+		{
+			this.globalReal = globalReal;
+			this.globalImag = globalImag;
+			this.globalTheta = globalTheta;
+
+			oc = new Quat();
+			oc.R = globalReal;
+			oc.I = globalImag;
+			oc.J = oc.K = 0.0f;
+
+			eio = new Quat();
+			eio.R = Utility.Cos( globalTheta );
+			eio.I = Utility.Sin( globalTheta );
+			eio.J = eio.K = 0;
+
+			emio = new Quat();
+			emio.R = Utility.Cos( -globalTheta );
+			emio.I = Utility.Sin( -globalTheta );
+			emio.J = emio.K = 0;
+
+			QMult( ref c, eio, oc );
+		}
+
 		[OgreVersion( 1, 7, 2 )]
 		public float Eval( float x, float y, float z )
 		{
 			var q = new Quat();
 			var tmp = new Quat();
 
-			int i = 0;
+			var i = 0;
 
 			q.R = x;
 			q.I = y;
@@ -82,8 +90,8 @@ namespace Axiom.Samples.VolumeTexture
 			for ( i = 30; i > 0; i-- )
 			{
 				QSqr( ref tmp, q );
-				QMult( ref q, this.emio, tmp );
-				QAdd( ref q, this.c );
+				QMult( ref q, emio, tmp );
+				QAdd( ref q, c );
 
 				if ( q.R * q.R + q.I * q.I + q.J * q.J + q.K * q.K > 8.0 )
 				{
@@ -91,20 +99,7 @@ namespace Axiom.Samples.VolumeTexture
 				}
 			}
 
-			return i;
+			return (float)i;
 		}
-
-		#region Nested type: Quat
-
-		[OgreVersion( 1, 7, 2 )]
-		public struct Quat
-		{
-			public float I;
-			public float J;
-			public float K;
-			public float R;
-		}
-
-		#endregion
 	};
 }

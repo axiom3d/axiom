@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Axiom.Core;
 using Axiom.Core.Collections;
 
 using Tao.OpenGl;
@@ -83,146 +84,147 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	{
 		#region Static Fields
 
+		private static bool libInitialized = false;
+
 		private const int RGB_BITS = 0x07;
 		private const int ALPHA_BIT = 0x08;
-		private static bool libInitialized;
 
-		private static readonly SymbolDef[] PS_1_4_SymbolTypeLib = {
-                                                                       new SymbolDef( Symbol.PS_1_4, Gl.GL_NONE, ContextKeyPattern.PS_BASE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.PS_1_1, Gl.GL_NONE, ContextKeyPattern.PS_BASE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.PS_1_2, Gl.GL_NONE, ContextKeyPattern.PS_BASE, (uint)ContextKeyPattern.PS_1_2 + (uint)ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.PS_1_3, Gl.GL_NONE, ContextKeyPattern.PS_BASE, (uint)ContextKeyPattern.PS_1_3 + (uint)ContextKeyPattern.PS_1_2 + (uint)ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.C0, Gl.GL_CON_0_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C1, Gl.GL_CON_1_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C2, Gl.GL_CON_2_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C3, Gl.GL_CON_3_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C4, Gl.GL_CON_4_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C5, Gl.GL_CON_5_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C6, Gl.GL_CON_6_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C7, Gl.GL_CON_7_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.V0, Gl.GL_PRIMARY_COLOR_ARB, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.V1, Gl.GL_SECONDARY_INTERPOLATOR_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.ADD, Gl.GL_ADD_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SUB, Gl.GL_SUB_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MUL, Gl.GL_MUL_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MAD, Gl.GL_MAD_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.LRP, Gl.GL_LERP_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MOV, Gl.GL_MOV_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CMP, Gl.GL_CND0_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CND, Gl.GL_CND_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DP3, Gl.GL_DOT3_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DP4, Gl.GL_DOT4_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DEF, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.R, Gl.GL_RED_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RA, Gl.GL_RED_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.G, Gl.GL_GREEN_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GA, Gl.GL_GREEN_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.B, Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BA, Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.A, ALPHA_BIT, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RGBA, RGB_BITS | ALPHA_BIT, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RGB, RGB_BITS, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RG, Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RGA, Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RB, Gl.GL_RED_BIT_ATI | Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RBA, Gl.GL_RED_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GB, Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GBA, Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RRRR, Gl.GL_RED, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GGGG, Gl.GL_GREEN, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BBBB, Gl.GL_BLUE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.AAAA, Gl.GL_ALPHA, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.X2, Gl.GL_2X_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.X4, Gl.GL_4X_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.D2, Gl.GL_HALF_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SAT, Gl.GL_SATURATE_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BIAS, Gl.GL_BIAS_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.INVERT, Gl.GL_COMP_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.NEGATE, Gl.GL_NEGATE_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BX2, Gl.GL_2X_BIT_ATI | Gl.GL_BIAS_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COMMA, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.VALUE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.R0, Gl.GL_REG_0_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R1, Gl.GL_REG_1_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R2, Gl.GL_REG_2_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R3, Gl.GL_REG_3_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R4, Gl.GL_REG_4_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R5, Gl.GL_REG_5_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T0, Gl.GL_TEXTURE0_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T1, Gl.GL_TEXTURE1_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T2, Gl.GL_TEXTURE2_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T3, Gl.GL_TEXTURE3_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T4, Gl.GL_TEXTURE4_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T5, Gl.GL_TEXTURE5_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.DP2ADD, Gl.GL_DOT2_ADD_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.X8, Gl.GL_8X_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.D8, Gl.GL_EIGHTH_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.D4, Gl.GL_QUARTER_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXCRD, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXLD, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STR, Gl.GL_SWIZZLE_STR_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STQ, Gl.GL_SWIZZLE_STQ_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STRDR, Gl.GL_SWIZZLE_STR_DR_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STQDQ, Gl.GL_SWIZZLE_STQ_DQ_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BEM, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.PHASE, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R0_1, Gl.GL_REG_4_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.R1_1, Gl.GL_REG_5_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T0_1, Gl.GL_REG_0_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T1_1, Gl.GL_REG_1_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T2_1, Gl.GL_REG_2_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T3_1, Gl.GL_REG_3_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXCOORD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X2PAD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X2TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3PAD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3SPEC, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3VSPEC, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXREG2AR, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXREG2GB, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXREG2RGB, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXDP3, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXDP3TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.SKIP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PLUS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PROGRAM, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PROGRAMTYPE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DECLCONSTS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DEFCONST, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CONSTANT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COLOR, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXSWIZZLE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.UNARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.NUMVAL, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SEPERATOR, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.ALUOPS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXMASK, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXOP_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXOP_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.ALU_STATEMENT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMODSAT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.UNARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.REG_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEX_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.REG_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEX_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.DSTINFO, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCINFO, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BINARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TERNARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEMPREG, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMASK, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PRESRCMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCNAME, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCREP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.POSTSRCMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTSAT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BINARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TERNARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXOPS_PHASE1, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COISSUE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PHASEMARKER, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PHASE2, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXREG_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXCISCOP_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 )
-                                                                   };
+		private static SymbolDef[] PS_1_4_SymbolTypeLib = {
+		                                                  	new SymbolDef( Symbol.PS_1_4, Gl.GL_NONE, ContextKeyPattern.PS_BASE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.PS_1_1, Gl.GL_NONE, ContextKeyPattern.PS_BASE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.PS_1_2, Gl.GL_NONE, ContextKeyPattern.PS_BASE, (uint)ContextKeyPattern.PS_1_2 + (uint)ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.PS_1_3, Gl.GL_NONE, ContextKeyPattern.PS_BASE, (uint)ContextKeyPattern.PS_1_3 + (uint)ContextKeyPattern.PS_1_2 + (uint)ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.C0, Gl.GL_CON_0_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C1, Gl.GL_CON_1_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C2, Gl.GL_CON_2_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C3, Gl.GL_CON_3_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C4, Gl.GL_CON_4_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C5, Gl.GL_CON_5_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C6, Gl.GL_CON_6_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.C7, Gl.GL_CON_7_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.V0, Gl.GL_PRIMARY_COLOR_ARB, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.V1, Gl.GL_SECONDARY_INTERPOLATOR_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.ADD, Gl.GL_ADD_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SUB, Gl.GL_SUB_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MUL, Gl.GL_MUL_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MAD, Gl.GL_MAD_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.LRP, Gl.GL_LERP_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.MOV, Gl.GL_MOV_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CMP, Gl.GL_CND0_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CND, Gl.GL_CND_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DP3, Gl.GL_DOT3_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DP4, Gl.GL_DOT4_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DEF, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.R, Gl.GL_RED_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RA, Gl.GL_RED_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.G, Gl.GL_GREEN_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GA, Gl.GL_GREEN_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.B, Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BA, Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.A, ALPHA_BIT, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RGBA, RGB_BITS | ALPHA_BIT, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RGB, RGB_BITS, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.RG, Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RGA, Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RB, Gl.GL_RED_BIT_ATI | Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RBA, Gl.GL_RED_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GB, Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GBA, Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.RRRR, Gl.GL_RED, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.GGGG, Gl.GL_GREEN, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BBBB, Gl.GL_BLUE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.AAAA, Gl.GL_ALPHA, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.X2, Gl.GL_2X_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.X4, Gl.GL_4X_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.D2, Gl.GL_HALF_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SAT, Gl.GL_SATURATE_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BIAS, Gl.GL_BIAS_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.INVERT, Gl.GL_COMP_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.NEGATE, Gl.GL_NEGATE_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BX2, Gl.GL_2X_BIT_ATI | Gl.GL_BIAS_BIT_ATI, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COMMA, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.VALUE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.R0, Gl.GL_REG_0_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R1, Gl.GL_REG_1_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R2, Gl.GL_REG_2_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R3, Gl.GL_REG_3_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R4, Gl.GL_REG_4_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R5, Gl.GL_REG_5_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T0, Gl.GL_TEXTURE0_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T1, Gl.GL_TEXTURE1_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T2, Gl.GL_TEXTURE2_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T3, Gl.GL_TEXTURE3_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T4, Gl.GL_TEXTURE4_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.T5, Gl.GL_TEXTURE5_ARB, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.DP2ADD, Gl.GL_DOT2_ADD_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.X8, Gl.GL_8X_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.D8, Gl.GL_EIGHTH_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.D4, Gl.GL_QUARTER_BIT_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXCRD, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXLD, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STR, Gl.GL_SWIZZLE_STR_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STQ, Gl.GL_SWIZZLE_STQ_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STRDR, Gl.GL_SWIZZLE_STR_DR_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.STQDQ, Gl.GL_SWIZZLE_STQ_DQ_ATI - Gl.GL_SWIZZLE_STR_ATI, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.BEM, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.PHASE, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.R0_1, Gl.GL_REG_4_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.R1_1, Gl.GL_REG_5_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T0_1, Gl.GL_REG_0_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T1_1, Gl.GL_REG_1_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T2_1, Gl.GL_REG_2_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.T3_1, Gl.GL_REG_3_ATI, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXCOORD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X2PAD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X2TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3PAD, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3SPEC, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXM3X3VSPEC, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXREG2AR, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXREG2GB, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXREG2RGB, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXDP3, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.TEXDP3TEX, Gl.GL_NONE, ContextKeyPattern.PS_1_2 ), new SymbolDef( Symbol.SKIP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PLUS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PROGRAM, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PROGRAMTYPE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DECLCONSTS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DEFCONST, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.CONSTANT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COLOR, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXSWIZZLE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.UNARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.NUMVAL, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SEPERATOR, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.ALUOPS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXMASK, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXOP_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXOP_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.ALU_STATEMENT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMODSAT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.UNARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.REG_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEX_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.REG_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEX_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.DSTINFO, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCINFO, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BINARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TERNARYOP_ARGS, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEMPREG, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMASK, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PRESRCMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCNAME, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.SRCREP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.POSTSRCMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTMOD, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.DSTSAT, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.BINARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TERNARYOP, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.TEXOPS_PHASE1, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.COISSUE, Gl.GL_NONE, ContextKeyPattern.PS_BASE ), new SymbolDef( Symbol.PHASEMARKER, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PHASE2, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXREG_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PS1_4, Gl.GL_NONE, ContextKeyPattern.PS_1_4 ), new SymbolDef( Symbol.TEXOPS_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 ), new SymbolDef( Symbol.TEXCISCOP_PS1_1_3, Gl.GL_NONE, ContextKeyPattern.PS_1_1 )
+		                                                  };
 
-		private static readonly TokenRule[] PS_1_x_RulePath = {
-                                                                  new TokenRule( OperationType.Rule, Symbol.PROGRAM, "Program" ), new TokenRule( OperationType.And, Symbol.PROGRAMTYPE ), new TokenRule( OperationType.Optional, Symbol.DECLCONSTS ), new TokenRule( OperationType.Optional, Symbol.TEXOPS_PHASE1 ), new TokenRule( OperationType.Optional, Symbol.ALUOPS ), new TokenRule( OperationType.Optional, Symbol.PHASEMARKER ), new TokenRule( OperationType.Optional, Symbol.TEXOPS_PHASE2 ), new TokenRule( OperationType.Optional, Symbol.ALUOPS ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PROGRAMTYPE, "<ProgramType>" ), new TokenRule( OperationType.And, Symbol.PS_1_4, "ps.1.4" ), new TokenRule( OperationType.Or, Symbol.PS_1_1, "ps.1.1" ), new TokenRule( OperationType.Or, Symbol.PS_1_2, "ps.1.2" ), new TokenRule( OperationType.Or, Symbol.PS_1_3, "ps.1.3" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PHASEMARKER, "<PhaseMarker>" ), new TokenRule( OperationType.And, Symbol.PHASE, "phase" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DECLCONSTS, "<DeclareConstants>" ), new TokenRule( OperationType.Repeat, Symbol.DEFCONST ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PHASE1, "<TexOps_Phase1>" ), new TokenRule( OperationType.And, Symbol.TEXOPS_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEXOPS_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PHASE2, "<TexOps_Phase2>" ), new TokenRule( OperationType.And, Symbol.TEXOPS_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.NUMVAL, "<NumVal>" ), new TokenRule( OperationType.And, Symbol.VALUE, "Float Value" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PS1_1_3, "<TexOps_PS1_1_3>" ), new TokenRule( OperationType.Repeat, Symbol.TEXOP_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PS1_4, "<TexOps_PS1_4>" ), new TokenRule( OperationType.Repeat, Symbol.TEXOP_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOP_PS1_1_3, "<TexOp_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.TEXCISCOP_PS1_1_3 ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEXCOORD, "texcoord" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEX, "tex" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOP_PS1_4, "<TexOp_PS1_4>" ), new TokenRule( OperationType.And, Symbol.TEXCRD, "texcrd" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXMASK ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEXREG_PS1_4 ), new TokenRule( OperationType.Or, Symbol.TEXLD, "texld" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXMASK ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEXREG_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.ALUOPS, "<ALUOps>" ), new TokenRule( OperationType.Repeat, Symbol.ALU_STATEMENT ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.ALU_STATEMENT, "<ALUStatement>" ), new TokenRule( OperationType.And, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.UNARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.UNARYOP_ARGS ), new TokenRule( OperationType.Or, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.BINARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.BINARYOP_ARGS ), new TokenRule( OperationType.Or, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.TERNARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.TERNARYOP_ARGS ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXREG_PS1_4, "<TexReg_PS1_4>" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXSWIZZLE ), new TokenRule( OperationType.Or, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXSWIZZLE ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.UNARYOP_ARGS, "<UnaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.BINARYOP_ARGS, "<BinaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TERNARYOP_ARGS, "<TernaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTINFO, "<DstInfo>" ), new TokenRule( OperationType.And, Symbol.TEMPREG ), new TokenRule( OperationType.Optional, Symbol.DSTMASK ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCINFO, "<SrcInfo>" ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.Optional, Symbol.PRESRCMOD ), new TokenRule( OperationType.And, Symbol.SRCNAME ), new TokenRule( OperationType.Optional, Symbol.POSTSRCMOD ), new TokenRule( OperationType.Optional, Symbol.SRCREP ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCNAME, "<SrcName>" ), new TokenRule( OperationType.And, Symbol.TEMPREG ), new TokenRule( OperationType.Or, Symbol.CONSTANT ), new TokenRule( OperationType.Or, Symbol.COLOR ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DEFCONST, "<DefineConstant>" ), new TokenRule( OperationType.And, Symbol.DEF, "def" ), new TokenRule( OperationType.And, Symbol.CONSTANT ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.CONSTANT, "<Constant>" ), new TokenRule( OperationType.And, Symbol.C0, "c0" ), new TokenRule( OperationType.Or, Symbol.C1, "c1" ), new TokenRule( OperationType.Or, Symbol.C2, "c2" ), new TokenRule( OperationType.Or, Symbol.C3, "c3" ), new TokenRule( OperationType.Or, Symbol.C4, "c4" ), new TokenRule( OperationType.Or, Symbol.C5, "c5" ), new TokenRule( OperationType.Or, Symbol.C6, "c6" ), new TokenRule( OperationType.Or, Symbol.C7, "c7" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXCISCOP_PS1_1_3, "<TexCISCOp_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.TEXDP3TEX, "texdp3tex" ), new TokenRule( OperationType.Or, Symbol.TEXDP3, "texdp3" ), new TokenRule( OperationType.Or, Symbol.TEXM3X2PAD, "texm3x2pad" ), new TokenRule( OperationType.Or, Symbol.TEXM3X2TEX, "texm3x2tex" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3PAD, "texm3x3pad" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3TEX, "texm3x3tex" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3SPEC, "texm3x3spec" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3VSPEC, "texm3x3vspec" ), new TokenRule( OperationType.Or, Symbol.TEXREG2RGB, "texreg2rgb" ), new TokenRule( OperationType.Or, Symbol.TEXREG2AR, "texreg2ar" ), new TokenRule( OperationType.Or, Symbol.TEXREG2GB, "texreg2gb" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXSWIZZLE, "<TexSwizzle>" ), new TokenRule( OperationType.And, Symbol.STQDQ, "_dw.xyw" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_dw" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_da.rga" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_da" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_dz.xyz" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_dz" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_db.rgb" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_db" ), new TokenRule( OperationType.Or, Symbol.STR, ".xyz" ), new TokenRule( OperationType.Or, Symbol.STR, ".rgb" ), new TokenRule( OperationType.Or, Symbol.STQ, ".xyw" ), new TokenRule( OperationType.Or, Symbol.STQ, ".rga" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXMASK, "<TexMask>" ), new TokenRule( OperationType.And, Symbol.RGB, ".rgb" ), new TokenRule( OperationType.Or, Symbol.RGB, ".xyz" ), new TokenRule( OperationType.Or, Symbol.RG, ".rg" ), new TokenRule( OperationType.Or, Symbol.RG, ".xy" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SEPERATOR, "<Seperator>" ), new TokenRule( OperationType.And, Symbol.COMMA, "," ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.REG_PS1_4, "<Reg_PS1_4>" ), new TokenRule( OperationType.And, Symbol.R0, "r0" ), new TokenRule( OperationType.Or, Symbol.R1, "r1" ), new TokenRule( OperationType.Or, Symbol.R2, "r2" ), new TokenRule( OperationType.Or, Symbol.R3, "r3" ), new TokenRule( OperationType.Or, Symbol.R4, "r4" ), new TokenRule( OperationType.Or, Symbol.R5, "r5" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEX_PS1_4, "<Tex_PS1_4>" ), new TokenRule( OperationType.And, Symbol.T0, "t0" ), new TokenRule( OperationType.Or, Symbol.T1, "t1" ), new TokenRule( OperationType.Or, Symbol.T2, "t2" ), new TokenRule( OperationType.Or, Symbol.T3, "t3" ), new TokenRule( OperationType.Or, Symbol.T4, "t4" ), new TokenRule( OperationType.Or, Symbol.T5, "t5" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.REG_PS1_1_3, "<Reg_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.R0_1, "r0" ), new TokenRule( OperationType.Or, Symbol.R1_1, "r1" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEX_PS1_1_3, "<Tex_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.T0_1, "t0" ), new TokenRule( OperationType.Or, Symbol.T1_1, "t1" ), new TokenRule( OperationType.Or, Symbol.T2_1, "t2" ), new TokenRule( OperationType.Or, Symbol.T3_1, "t3" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.COLOR, "<Color>" ), new TokenRule( OperationType.And, Symbol.V0, "v0" ), new TokenRule( OperationType.Or, Symbol.V1, "v1" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEMPREG, "<TempReg>" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Or, Symbol.REG_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMODSAT, "<DstModSat>" ), new TokenRule( OperationType.Optional, Symbol.DSTMOD ), new TokenRule( OperationType.Optional, Symbol.DSTSAT ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.UNARYOP, "<UnaryOp>" ), new TokenRule( OperationType.And, Symbol.MOV, "mov" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.BINARYOP, "<BinaryOP>" ), new TokenRule( OperationType.And, Symbol.ADD, "add" ), new TokenRule( OperationType.Or, Symbol.MUL, "mul" ), new TokenRule( OperationType.Or, Symbol.SUB, "sub" ), new TokenRule( OperationType.Or, Symbol.DP3, "dp3" ), new TokenRule( OperationType.Or, Symbol.DP4, "dp4" ), new TokenRule( OperationType.Or, Symbol.BEM, "bem" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TERNARYOP, "<TernaryOp>" ), new TokenRule( OperationType.And, Symbol.MAD, "mad" ), new TokenRule( OperationType.Or, Symbol.LRP, "lrp" ), new TokenRule( OperationType.Or, Symbol.CND, "cnd" ), new TokenRule( OperationType.Or, Symbol.CMP, "cmp" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMASK, "<DstMask>" ), new TokenRule( OperationType.And, Symbol.RGBA, ".rgba" ), new TokenRule( OperationType.Or, Symbol.RGBA, ".xyzw" ), new TokenRule( OperationType.Or, Symbol.RGB, ".rgb" ), new TokenRule( OperationType.Or, Symbol.RGB, ".xyz" ), new TokenRule( OperationType.Or, Symbol.RGA, ".xyw" ), new TokenRule( OperationType.Or, Symbol.RGA, ".rga" ), new TokenRule( OperationType.Or, Symbol.RBA, ".rba" ), new TokenRule( OperationType.Or, Symbol.RBA, ".xzw" ), new TokenRule( OperationType.Or, Symbol.GBA, ".gba" ), new TokenRule( OperationType.Or, Symbol.GBA, ".yzw" ), new TokenRule( OperationType.Or, Symbol.RG, ".rg" ), new TokenRule( OperationType.Or, Symbol.RG, ".xy" ), new TokenRule( OperationType.Or, Symbol.RB, ".xz" ), new TokenRule( OperationType.Or, Symbol.RB, ".rb" ), new TokenRule( OperationType.Or, Symbol.RA, ".xw" ), new TokenRule( OperationType.Or, Symbol.RA, ".ra" ), new TokenRule( OperationType.Or, Symbol.GB, ".gb" ), new TokenRule( OperationType.Or, Symbol.GB, ".yz" ), new TokenRule( OperationType.Or, Symbol.GA, ".yw" ), new TokenRule( OperationType.Or, Symbol.GA, ".ga" ), new TokenRule( OperationType.Or, Symbol.BA, ".zw" ), new TokenRule( OperationType.Or, Symbol.BA, ".ba" ), new TokenRule( OperationType.Or, Symbol.R, ".r" ), new TokenRule( OperationType.Or, Symbol.R, ".x" ), new TokenRule( OperationType.Or, Symbol.G, ".g" ), new TokenRule( OperationType.Or, Symbol.G, ".y" ), new TokenRule( OperationType.Or, Symbol.B, ".b" ), new TokenRule( OperationType.Or, Symbol.B, ".z" ), new TokenRule( OperationType.Or, Symbol.A, ".a" ), new TokenRule( OperationType.Or, Symbol.A, ".w" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCREP, "<SrcRep>" ), new TokenRule( OperationType.And, Symbol.RRRR, ".r" ), new TokenRule( OperationType.Or, Symbol.RRRR, ".x" ), new TokenRule( OperationType.Or, Symbol.GGGG, ".g" ), new TokenRule( OperationType.Or, Symbol.GGGG, ".y" ), new TokenRule( OperationType.Or, Symbol.BBBB, ".b" ), new TokenRule( OperationType.Or, Symbol.BBBB, ".z" ), new TokenRule( OperationType.Or, Symbol.AAAA, ".a" ), new TokenRule( OperationType.Or, Symbol.AAAA, ".w" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PRESRCMOD, "<PreSrcMod>" ), new TokenRule( OperationType.And, Symbol.INVERT, "1-" ), new TokenRule( OperationType.Or, Symbol.INVERT, "1 -" ), new TokenRule( OperationType.Or, Symbol.NEGATE, "-" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.POSTSRCMOD, "<PostSrcMod>" ), new TokenRule( OperationType.And, Symbol.BX2, "_bx2" ), new TokenRule( OperationType.Or, Symbol.X2, "_x2" ), new TokenRule( OperationType.Or, Symbol.BIAS, "_bias" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMOD, "<DstMod>" ), new TokenRule( OperationType.And, Symbol.X2, "_x2" ), new TokenRule( OperationType.Or, Symbol.X4, "_x4" ), new TokenRule( OperationType.Or, Symbol.D2, "_d2" ), new TokenRule( OperationType.Or, Symbol.X8, "_x8" ), new TokenRule( OperationType.Or, Symbol.D4, "_d4" ), new TokenRule( OperationType.Or, Symbol.D8, "_d8" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTSAT, "<DstSat>" ), new TokenRule( OperationType.And, Symbol.SAT, "_sat" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.COISSUE, "<CoIssue>" ), new TokenRule( OperationType.Optional, Symbol.PLUS, "+" ), new TokenRule( OperationType.End )
-                                                              };
+		private static TokenRule[] PS_1_x_RulePath = {
+		                                             	new TokenRule( OperationType.Rule, Symbol.PROGRAM, "Program" ), new TokenRule( OperationType.And, Symbol.PROGRAMTYPE ), new TokenRule( OperationType.Optional, Symbol.DECLCONSTS ), new TokenRule( OperationType.Optional, Symbol.TEXOPS_PHASE1 ), new TokenRule( OperationType.Optional, Symbol.ALUOPS ), new TokenRule( OperationType.Optional, Symbol.PHASEMARKER ), new TokenRule( OperationType.Optional, Symbol.TEXOPS_PHASE2 ), new TokenRule( OperationType.Optional, Symbol.ALUOPS ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PROGRAMTYPE, "<ProgramType>" ), new TokenRule( OperationType.And, Symbol.PS_1_4, "ps.1.4" ), new TokenRule( OperationType.Or, Symbol.PS_1_1, "ps.1.1" ), new TokenRule( OperationType.Or, Symbol.PS_1_2, "ps.1.2" ), new TokenRule( OperationType.Or, Symbol.PS_1_3, "ps.1.3" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PHASEMARKER, "<PhaseMarker>" ), new TokenRule( OperationType.And, Symbol.PHASE, "phase" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DECLCONSTS, "<DeclareConstants>" ), new TokenRule( OperationType.Repeat, Symbol.DEFCONST ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PHASE1, "<TexOps_Phase1>" ), new TokenRule( OperationType.And, Symbol.TEXOPS_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEXOPS_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PHASE2, "<TexOps_Phase2>" ), new TokenRule( OperationType.And, Symbol.TEXOPS_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.NUMVAL, "<NumVal>" ), new TokenRule( OperationType.And, Symbol.VALUE, "Float Value" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PS1_1_3, "<TexOps_PS1_1_3>" ), new TokenRule( OperationType.Repeat, Symbol.TEXOP_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOPS_PS1_4, "<TexOps_PS1_4>" ), new TokenRule( OperationType.Repeat, Symbol.TEXOP_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOP_PS1_1_3, "<TexOp_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.TEXCISCOP_PS1_1_3 ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEXCOORD, "texcoord" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEX, "tex" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXOP_PS1_4, "<TexOp_PS1_4>" ), new TokenRule( OperationType.And, Symbol.TEXCRD, "texcrd" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXMASK ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEXREG_PS1_4 ), new TokenRule( OperationType.Or, Symbol.TEXLD, "texld" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXMASK ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.TEXREG_PS1_4 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.ALUOPS, "<ALUOps>" ), new TokenRule( OperationType.Repeat, Symbol.ALU_STATEMENT ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.ALU_STATEMENT, "<ALUStatement>" ), new TokenRule( OperationType.And, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.UNARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.UNARYOP_ARGS ), new TokenRule( OperationType.Or, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.BINARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.BINARYOP_ARGS ), new TokenRule( OperationType.Or, Symbol.COISSUE ), new TokenRule( OperationType.And, Symbol.TERNARYOP ), new TokenRule( OperationType.Optional, Symbol.DSTMODSAT ), new TokenRule( OperationType.And, Symbol.TERNARYOP_ARGS ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXREG_PS1_4, "<TexReg_PS1_4>" ), new TokenRule( OperationType.And, Symbol.TEX_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXSWIZZLE ), new TokenRule( OperationType.Or, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Optional, Symbol.TEXSWIZZLE ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.UNARYOP_ARGS, "<UnaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.BINARYOP_ARGS, "<BinaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TERNARYOP_ARGS, "<TernaryOpArgs>" ), new TokenRule( OperationType.And, Symbol.DSTINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.And, Symbol.SRCINFO ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTINFO, "<DstInfo>" ), new TokenRule( OperationType.And, Symbol.TEMPREG ), new TokenRule( OperationType.Optional, Symbol.DSTMASK ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCINFO, "<SrcInfo>" ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.Optional, Symbol.PRESRCMOD ), new TokenRule( OperationType.And, Symbol.SRCNAME ), new TokenRule( OperationType.Optional, Symbol.POSTSRCMOD ), new TokenRule( OperationType.Optional, Symbol.SRCREP ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCNAME, "<SrcName>" ), new TokenRule( OperationType.And, Symbol.TEMPREG ), new TokenRule( OperationType.Or, Symbol.CONSTANT ), new TokenRule( OperationType.Or, Symbol.COLOR ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DEFCONST, "<DefineConstant>" ), new TokenRule( OperationType.And, Symbol.DEF, "def" ), new TokenRule( OperationType.And, Symbol.CONSTANT ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.And, Symbol.SEPERATOR ), new TokenRule( OperationType.And, Symbol.NUMVAL ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.CONSTANT, "<Constant>" ), new TokenRule( OperationType.And, Symbol.C0, "c0" ), new TokenRule( OperationType.Or, Symbol.C1, "c1" ), new TokenRule( OperationType.Or, Symbol.C2, "c2" ), new TokenRule( OperationType.Or, Symbol.C3, "c3" ), new TokenRule( OperationType.Or, Symbol.C4, "c4" ), new TokenRule( OperationType.Or, Symbol.C5, "c5" ), new TokenRule( OperationType.Or, Symbol.C6, "c6" ), new TokenRule( OperationType.Or, Symbol.C7, "c7" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXCISCOP_PS1_1_3, "<TexCISCOp_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.TEXDP3TEX, "texdp3tex" ), new TokenRule( OperationType.Or, Symbol.TEXDP3, "texdp3" ), new TokenRule( OperationType.Or, Symbol.TEXM3X2PAD, "texm3x2pad" ), new TokenRule( OperationType.Or, Symbol.TEXM3X2TEX, "texm3x2tex" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3PAD, "texm3x3pad" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3TEX, "texm3x3tex" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3SPEC, "texm3x3spec" ), new TokenRule( OperationType.Or, Symbol.TEXM3X3VSPEC, "texm3x3vspec" ), new TokenRule( OperationType.Or, Symbol.TEXREG2RGB, "texreg2rgb" ), new TokenRule( OperationType.Or, Symbol.TEXREG2AR, "texreg2ar" ), new TokenRule( OperationType.Or, Symbol.TEXREG2GB, "texreg2gb" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXSWIZZLE, "<TexSwizzle>" ), new TokenRule( OperationType.And, Symbol.STQDQ, "_dw.xyw" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_dw" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_da.rga" ), new TokenRule( OperationType.Or, Symbol.STQDQ, "_da" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_dz.xyz" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_dz" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_db.rgb" ), new TokenRule( OperationType.Or, Symbol.STRDR, "_db" ), new TokenRule( OperationType.Or, Symbol.STR, ".xyz" ), new TokenRule( OperationType.Or, Symbol.STR, ".rgb" ), new TokenRule( OperationType.Or, Symbol.STQ, ".xyw" ), new TokenRule( OperationType.Or, Symbol.STQ, ".rga" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEXMASK, "<TexMask>" ), new TokenRule( OperationType.And, Symbol.RGB, ".rgb" ), new TokenRule( OperationType.Or, Symbol.RGB, ".xyz" ), new TokenRule( OperationType.Or, Symbol.RG, ".rg" ), new TokenRule( OperationType.Or, Symbol.RG, ".xy" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SEPERATOR, "<Seperator>" ), new TokenRule( OperationType.And, Symbol.COMMA, "," ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.REG_PS1_4, "<Reg_PS1_4>" ), new TokenRule( OperationType.And, Symbol.R0, "r0" ), new TokenRule( OperationType.Or, Symbol.R1, "r1" ), new TokenRule( OperationType.Or, Symbol.R2, "r2" ), new TokenRule( OperationType.Or, Symbol.R3, "r3" ), new TokenRule( OperationType.Or, Symbol.R4, "r4" ), new TokenRule( OperationType.Or, Symbol.R5, "r5" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEX_PS1_4, "<Tex_PS1_4>" ), new TokenRule( OperationType.And, Symbol.T0, "t0" ), new TokenRule( OperationType.Or, Symbol.T1, "t1" ), new TokenRule( OperationType.Or, Symbol.T2, "t2" ), new TokenRule( OperationType.Or, Symbol.T3, "t3" ), new TokenRule( OperationType.Or, Symbol.T4, "t4" ), new TokenRule( OperationType.Or, Symbol.T5, "t5" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.REG_PS1_1_3, "<Reg_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.R0_1, "r0" ), new TokenRule( OperationType.Or, Symbol.R1_1, "r1" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEX_PS1_1_3, "<Tex_PS1_1_3>" ), new TokenRule( OperationType.And, Symbol.T0_1, "t0" ), new TokenRule( OperationType.Or, Symbol.T1_1, "t1" ), new TokenRule( OperationType.Or, Symbol.T2_1, "t2" ), new TokenRule( OperationType.Or, Symbol.T3_1, "t3" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.COLOR, "<Color>" ), new TokenRule( OperationType.And, Symbol.V0, "v0" ), new TokenRule( OperationType.Or, Symbol.V1, "v1" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TEMPREG, "<TempReg>" ), new TokenRule( OperationType.And, Symbol.REG_PS1_4 ), new TokenRule( OperationType.Or, Symbol.REG_PS1_1_3 ), new TokenRule( OperationType.Or, Symbol.TEX_PS1_1_3 ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMODSAT, "<DstModSat>" ), new TokenRule( OperationType.Optional, Symbol.DSTMOD ), new TokenRule( OperationType.Optional, Symbol.DSTSAT ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.UNARYOP, "<UnaryOp>" ), new TokenRule( OperationType.And, Symbol.MOV, "mov" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.BINARYOP, "<BinaryOP>" ), new TokenRule( OperationType.And, Symbol.ADD, "add" ), new TokenRule( OperationType.Or, Symbol.MUL, "mul" ), new TokenRule( OperationType.Or, Symbol.SUB, "sub" ), new TokenRule( OperationType.Or, Symbol.DP3, "dp3" ), new TokenRule( OperationType.Or, Symbol.DP4, "dp4" ), new TokenRule( OperationType.Or, Symbol.BEM, "bem" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.TERNARYOP, "<TernaryOp>" ), new TokenRule( OperationType.And, Symbol.MAD, "mad" ), new TokenRule( OperationType.Or, Symbol.LRP, "lrp" ), new TokenRule( OperationType.Or, Symbol.CND, "cnd" ), new TokenRule( OperationType.Or, Symbol.CMP, "cmp" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMASK, "<DstMask>" ), new TokenRule( OperationType.And, Symbol.RGBA, ".rgba" ), new TokenRule( OperationType.Or, Symbol.RGBA, ".xyzw" ), new TokenRule( OperationType.Or, Symbol.RGB, ".rgb" ), new TokenRule( OperationType.Or, Symbol.RGB, ".xyz" ), new TokenRule( OperationType.Or, Symbol.RGA, ".xyw" ), new TokenRule( OperationType.Or, Symbol.RGA, ".rga" ), new TokenRule( OperationType.Or, Symbol.RBA, ".rba" ), new TokenRule( OperationType.Or, Symbol.RBA, ".xzw" ), new TokenRule( OperationType.Or, Symbol.GBA, ".gba" ), new TokenRule( OperationType.Or, Symbol.GBA, ".yzw" ), new TokenRule( OperationType.Or, Symbol.RG, ".rg" ), new TokenRule( OperationType.Or, Symbol.RG, ".xy" ), new TokenRule( OperationType.Or, Symbol.RB, ".xz" ), new TokenRule( OperationType.Or, Symbol.RB, ".rb" ), new TokenRule( OperationType.Or, Symbol.RA, ".xw" ), new TokenRule( OperationType.Or, Symbol.RA, ".ra" ), new TokenRule( OperationType.Or, Symbol.GB, ".gb" ), new TokenRule( OperationType.Or, Symbol.GB, ".yz" ), new TokenRule( OperationType.Or, Symbol.GA, ".yw" ), new TokenRule( OperationType.Or, Symbol.GA, ".ga" ), new TokenRule( OperationType.Or, Symbol.BA, ".zw" ), new TokenRule( OperationType.Or, Symbol.BA, ".ba" ), new TokenRule( OperationType.Or, Symbol.R, ".r" ), new TokenRule( OperationType.Or, Symbol.R, ".x" ), new TokenRule( OperationType.Or, Symbol.G, ".g" ), new TokenRule( OperationType.Or, Symbol.G, ".y" ), new TokenRule( OperationType.Or, Symbol.B, ".b" ), new TokenRule( OperationType.Or, Symbol.B, ".z" ), new TokenRule( OperationType.Or, Symbol.A, ".a" ), new TokenRule( OperationType.Or, Symbol.A, ".w" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.SRCREP, "<SrcRep>" ), new TokenRule( OperationType.And, Symbol.RRRR, ".r" ), new TokenRule( OperationType.Or, Symbol.RRRR, ".x" ), new TokenRule( OperationType.Or, Symbol.GGGG, ".g" ), new TokenRule( OperationType.Or, Symbol.GGGG, ".y" ), new TokenRule( OperationType.Or, Symbol.BBBB, ".b" ), new TokenRule( OperationType.Or, Symbol.BBBB, ".z" ), new TokenRule( OperationType.Or, Symbol.AAAA, ".a" ), new TokenRule( OperationType.Or, Symbol.AAAA, ".w" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.PRESRCMOD, "<PreSrcMod>" ), new TokenRule( OperationType.And, Symbol.INVERT, "1-" ), new TokenRule( OperationType.Or, Symbol.INVERT, "1 -" ), new TokenRule( OperationType.Or, Symbol.NEGATE, "-" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.POSTSRCMOD, "<PostSrcMod>" ), new TokenRule( OperationType.And, Symbol.BX2, "_bx2" ), new TokenRule( OperationType.Or, Symbol.X2, "_x2" ), new TokenRule( OperationType.Or, Symbol.BIAS, "_bias" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTMOD, "<DstMod>" ), new TokenRule( OperationType.And, Symbol.X2, "_x2" ), new TokenRule( OperationType.Or, Symbol.X4, "_x4" ), new TokenRule( OperationType.Or, Symbol.D2, "_d2" ), new TokenRule( OperationType.Or, Symbol.X8, "_x8" ), new TokenRule( OperationType.Or, Symbol.D4, "_d4" ), new TokenRule( OperationType.Or, Symbol.D8, "_d8" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.DSTSAT, "<DstSat>" ), new TokenRule( OperationType.And, Symbol.SAT, "_sat" ), new TokenRule( OperationType.End ), new TokenRule( OperationType.Rule, Symbol.COISSUE, "<CoIssue>" ), new TokenRule( OperationType.Optional, Symbol.PLUS, "+" ), new TokenRule( OperationType.End )
+		                                             };
 
 		//***************************** MACROs for PS1_1 , PS1_2, PS1_3 CISC instructions **************************************
 
 		/// <summary>
 		///     Macro token expansion for ps_1_2 instruction: texreg2ar
 		/// </summary>
-		private static readonly TokenInstruction[] texreg2ar = {
-                                                                   // mov r(x).r, r(y).a
-                                                                   new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.AAAA ), // mov r(x).g, r(y).r
-                                                                   new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.RRRR ), // texld r(x), r(x)
-                                                                   new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
-                                                               };
+		private static TokenInstruction[] texreg2ar = {
+		                                              	// mov r(x).r, r(y).a
+		                                              	new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.AAAA ), // mov r(x).g, r(y).r
+		                                              	new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.RRRR ), // texld r(x), r(x)
+		                                              	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
+		                                              };
 
-		private static readonly RegModOffset[] texreg2xx_RegMods = {
-                                                                       new RegModOffset( 1, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 0 ), new RegModOffset( 13, Symbol.R_BASE, 0 ), new RegModOffset( 15, Symbol.R_BASE, 0 ), new RegModOffset( 4, Symbol.R_BASE, 1 ), new RegModOffset( 10, Symbol.R_BASE, 1 ),
-                                                                   };
+		private static RegModOffset[] texreg2xx_RegMods = {
+		                                                  	new RegModOffset( 1, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 0 ), new RegModOffset( 13, Symbol.R_BASE, 0 ), new RegModOffset( 15, Symbol.R_BASE, 0 ), new RegModOffset( 4, Symbol.R_BASE, 1 ), new RegModOffset( 10, Symbol.R_BASE, 1 ),
+		                                                  };
 
-		private static readonly MacroRegModify texreg2ar_MacroMods = new MacroRegModify( texreg2ar, texreg2xx_RegMods );
+		private static MacroRegModify texreg2ar_MacroMods = new MacroRegModify( texreg2ar, texreg2xx_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_2 instruction: texreg2gb
 		/// </summary>
-		private static readonly TokenInstruction[] texreg2gb = {
-                                                                   new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.GGGG ), // mov r(x).g, r(y).b
-                                                                   new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.BBBB ), // texld r(x), r(x)
-                                                                   new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
-                                                               };
+		private static TokenInstruction[] texreg2gb = {
+		                                              	new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.GGGG ), // mov r(x).g, r(y).b
+		                                              	new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), new TokenInstruction( Symbol.SRCREP, Symbol.BBBB ), // texld r(x), r(x)
+		                                              	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
+		                                              };
 
-		private static readonly MacroRegModify texreg2gb_MacroMods = new MacroRegModify( texreg2gb, texreg2xx_RegMods );
-
-		/// <summary>
-		///     Macro token expansion for ps_1_1 instruction: texdp3
-		/// </summary>
-		private static readonly TokenInstruction[] texdp3 = {
-                                                                // texcoord t(x)
-                                                                new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r(x), r(x), r(y)
-                                                                new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
-                                                            };
-
-		private static readonly RegModOffset[] texdp3_RegMods = {
-                                                                    new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 3, Symbol.R_BASE, 0 ), new RegModOffset( 5, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 1 )
-                                                                };
-
-		private static readonly MacroRegModify texdp3_MacroMods = new MacroRegModify( texdp3, texdp3_RegMods );
+		private static MacroRegModify texreg2gb_MacroMods = new MacroRegModify( texreg2gb, texreg2xx_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_1 instruction: texdp3
 		/// </summary>
-		private static readonly TokenInstruction[] texdp3tex = {
-                                                                   // texcoord t(x)
-                                                                   new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r1, r(x), r(y)
-                                                                   new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r(x), r(x)
-                                                                   new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
-                                                               };
+		private static TokenInstruction[] texdp3 = {
+		                                           	// texcoord t(x)
+		                                           	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r(x), r(x), r(y)
+		                                           	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
+		                                           };
 
-		private static readonly RegModOffset[] texdp3tex_RegMods = {
-                                                                       new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 3, Symbol.R_BASE, 0 ), new RegModOffset( 5, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 1 ), new RegModOffset( 9, Symbol.R_BASE, 1 ), new RegModOffset( 11, Symbol.R_BASE, 1 )
-                                                                   };
+		private static RegModOffset[] texdp3_RegMods = {
+		                                               	new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 3, Symbol.R_BASE, 0 ), new RegModOffset( 5, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 1 )
+		                                               };
 
-		private static readonly MacroRegModify texdp3tex_MacroMods = new MacroRegModify( texdp3tex, texdp3tex_RegMods );
+		private static MacroRegModify texdp3_MacroMods = new MacroRegModify( texdp3, texdp3_RegMods );
 
-		private static readonly TokenInstruction[] texm3x2pad = {
-                                                                    // texcoord t(x)
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T0_1 ), // dp3 r4.r,  r(x),  r(y)
-                                                                    new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
-                                                                };
+		/// <summary>
+		///     Macro token expansion for ps_1_1 instruction: texdp3
+		/// </summary>
+		private static TokenInstruction[] texdp3tex = {
+		                                              	// texcoord t(x)
+		                                              	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r1, r(x), r(y)
+		                                              	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r(x), r(x)
+		                                              	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 )
+		                                              };
 
-		private static readonly RegModOffset[] texm3xxpad_RegMods = {
-                                                                        new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 6, Symbol.R_BASE, 0 ), new RegModOffset( 8, Symbol.R_BASE, 1 )
-                                                                    };
+		private static RegModOffset[] texdp3tex_RegMods = {
+		                                                  	new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 3, Symbol.R_BASE, 0 ), new RegModOffset( 5, Symbol.R_BASE, 0 ), new RegModOffset( 7, Symbol.R_BASE, 1 ), new RegModOffset( 9, Symbol.R_BASE, 1 ), new RegModOffset( 11, Symbol.R_BASE, 1 )
+		                                                  };
 
-		private static readonly MacroRegModify texm3x2pad_MacroMods = new MacroRegModify( texm3x2pad, texm3xxpad_RegMods );
+		private static MacroRegModify texdp3tex_MacroMods = new MacroRegModify( texdp3tex, texdp3tex_RegMods );
+
+		private static TokenInstruction[] texm3x2pad = {
+		                                               	// texcoord t(x)
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T0_1 ), // dp3 r4.r,  r(x),  r(y)
+		                                               	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.R ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
+		                                               };
+
+		private static RegModOffset[] texm3xxpad_RegMods = {
+		                                                   	new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 6, Symbol.R_BASE, 0 ), new RegModOffset( 8, Symbol.R_BASE, 1 )
+		                                                   };
+
+		private static MacroRegModify texm3x2pad_MacroMods = new MacroRegModify( texm3x2pad, texm3xxpad_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_1 instruction: texm3x2tex
 		/// </summary>
-		private static readonly TokenInstruction[] texm3x2tex = {
-                                                                    // texcoord t(x)
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r4.g, r(x), r(y)
-                                                                    new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r(x), r4
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 )
-                                                                };
+		private static TokenInstruction[] texm3x2tex = {
+		                                               	// texcoord t(x)
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r4.g, r(x), r(y)
+		                                               	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.G ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r(x), r4
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 )
+		                                               };
 
-		private static readonly RegModOffset[] texm3xxtex_RegMods = {
-                                                                        new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 6, Symbol.R_BASE, 0 ), new RegModOffset( 8, Symbol.R_BASE, 1 ), new RegModOffset( 10, Symbol.R_BASE, 0 )
-                                                                    };
+		private static RegModOffset[] texm3xxtex_RegMods = {
+		                                                   	new RegModOffset( 1, Symbol.T_BASE, 0 ), new RegModOffset( 6, Symbol.R_BASE, 0 ), new RegModOffset( 8, Symbol.R_BASE, 1 ), new RegModOffset( 10, Symbol.R_BASE, 0 )
+		                                                   };
 
-		private static readonly MacroRegModify texm3x2tex_MacroMods = new MacroRegModify( texm3x2tex, texm3xxtex_RegMods );
+		private static MacroRegModify texm3x2tex_MacroMods = new MacroRegModify( texm3x2tex, texm3xxtex_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_1 instruction: texm3x3tex
 		/// </summary>
-		private static readonly TokenInstruction[] texm3x3pad = {
-                                                                    // texcoord t(x)
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T0_1 ), // dp3 r4.b, r(x), r(y)
-                                                                    new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
-                                                                };
+		private static TokenInstruction[] texm3x3pad = {
+		                                               	// texcoord t(x)
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T0_1 ), // dp3 r4.b, r(x), r(y)
+		                                               	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 )
+		                                               };
 
-		private static readonly MacroRegModify texm3x3pad_MacroMods = new MacroRegModify( texm3x3pad, texm3xxpad_RegMods );
+		private static MacroRegModify texm3x3pad_MacroMods = new MacroRegModify( texm3x3pad, texm3xxpad_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_1 instruction: texm3x3pad
 		/// </summary>
-		private static readonly TokenInstruction[] texm3x3tex = {
-                                                                    // texcoord t(x)
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r4.b, r(x), r(y)
-                                                                    new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r1, r4
-                                                                    new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 )
-                                                                };
+		private static TokenInstruction[] texm3x3tex = {
+		                                               	// texcoord t(x)
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T1_1 ), // dp3 r4.b, r(x), r(y)
+		                                               	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // texld r1, r4
+		                                               	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R1 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 )
+		                                               };
 
-		private static readonly MacroRegModify texm3x3tex_MacroMods = new MacroRegModify( texm3x3tex, texm3xxtex_RegMods );
+		private static MacroRegModify texm3x3tex_MacroMods = new MacroRegModify( texm3x3tex, texm3xxtex_RegMods );
 
 		/// <summary>
 		///     Macro token expansion for ps_1_1 instruction: texm3x3spec
 		/// </summary>
-		private static readonly TokenInstruction[] texm3x3spec = {
-                                                                     new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T3_1 ), // dp3 r4.b, r3, r(x)
-                                                                     new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // dp3_x2 r3, r4, c(x)
-                                                                     new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.DSTMOD, Symbol.X2 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), // mul r3, r3, c(x)
-                                                                     new TokenInstruction( Symbol.UNARYOP, Symbol.MUL ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), // dp3 r2, r4, r4
-                                                                     new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), // mad r4.rgb, 1-c(x), r2, r3
-                                                                     new TokenInstruction( Symbol.TERNARYOP, Symbol.MAD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.RGB ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.PRESRCMOD, Symbol.INVERT ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), // + mov r4.a, r2.r
-                                                                     new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.A ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SRCREP, Symbol.RRRR ), // texld r3, r4.xyz_dz
-                                                                     new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.TEXSWIZZLE, Symbol.STRDR )
-                                                                 };
+		private static TokenInstruction[] texm3x3spec = {
+		                                                	new TokenInstruction( Symbol.TEXOP_PS1_1_3, Symbol.TEXCOORD ), new TokenInstruction( Symbol.TEX_PS1_1_3, Symbol.T3_1 ), // dp3 r4.b, r3, r(x)
+		                                                	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.B ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R0 ), // dp3_x2 r3, r4, c(x)
+		                                                	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.DSTMOD, Symbol.X2 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), // mul r3, r3, c(x)
+		                                                	new TokenInstruction( Symbol.UNARYOP, Symbol.MUL ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), // dp3 r2, r4, r4
+		                                                	new TokenInstruction( Symbol.BINARYOP, Symbol.DP3 ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), // mad r4.rgb, 1-c(x), r2, r3
+		                                                	new TokenInstruction( Symbol.TERNARYOP, Symbol.MAD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.RGB ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.PRESRCMOD, Symbol.INVERT ), new TokenInstruction( Symbol.CONSTANT, Symbol.C0 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), // + mov r4.a, r2.r
+		                                                	new TokenInstruction( Symbol.UNARYOP, Symbol.MOV ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.DSTMASK, Symbol.A ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R2 ), new TokenInstruction( Symbol.SRCREP, Symbol.RRRR ), // texld r3, r4.xyz_dz
+		                                                	new TokenInstruction( Symbol.TEXOP_PS1_4, Symbol.TEXLD ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R3 ), new TokenInstruction( Symbol.SEPERATOR, Symbol.COMMA ), new TokenInstruction( Symbol.REG_PS1_4, Symbol.R4 ), new TokenInstruction( Symbol.TEXSWIZZLE, Symbol.STRDR )
+		                                                };
 
-		private static readonly RegModOffset[] texm3x3spec_RegMods = {
-                                                                         new RegModOffset( 8, Symbol.R_BASE, 1 ), new RegModOffset( 15, Symbol.R_BASE, 2 ), new RegModOffset( 21, Symbol.C_BASE, 2 ), new RegModOffset( 33, Symbol.C_BASE, 2 )
-                                                                     };
+		private static RegModOffset[] texm3x3spec_RegMods = {
+		                                                    	new RegModOffset( 8, Symbol.R_BASE, 1 ), new RegModOffset( 15, Symbol.R_BASE, 2 ), new RegModOffset( 21, Symbol.C_BASE, 2 ), new RegModOffset( 33, Symbol.C_BASE, 2 )
+		                                                    };
 
 		private static MacroRegModify texm3x3spec_MacroMods = new MacroRegModify( texm3x3spec, texm3x3spec_RegMods );
 
@@ -230,7 +232,37 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		#region Fields
 
+		/// <summary>
+		///     Machine instructions for phase one texture section.
+		/// </summary>
+		private IntList phase1TEX_mi = new IntList();
+
+		/// <summary>
+		///     Machine instructions for phase one ALU section.
+		/// </summary>
+		private IntList phase1ALU_mi = new IntList();
+
+		/// <summary>
+		///     Machine instructions for phase two texture section.
+		/// </summary>
+		private IntList phase2TEX_mi = new IntList();
+
+		/// <summary>
+		///     Machine instructions for phase two ALU section.
+		/// </summary>
+		private IntList phase2ALU_mi = new IntList();
+
+		// vars used during pass 2
+		private MachineInstruction opType;
+		private Symbol opInst;
+		private bool do_Alpha;
+		private PhaseType instructionPhase;
+		private int argCnt;
+		private int constantsPos;
+
 		private const int MAXOPPARRAMS = 5; // max number of parrams bound to an instruction
+
+		private OpParam[] opParams = new OpParam[ MAXOPPARRAMS ];
 
 		/// keeps track of which registers are written to in each phase
 		/// if a register is read from but has not been written to in phase 2
@@ -239,45 +271,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// NB: check ALU and TEX section of phase 1 and phase 2
 		/// there are 6 temp registers r0 to r5 to keep track off
 		/// checks are performed in pass 2 when building machine instructions
-		private readonly RegisterUsage[] Phase_RegisterUsage = new RegisterUsage[ 6 ];
+		private RegisterUsage[] Phase_RegisterUsage = new RegisterUsage[ 6 ];
 
-		private readonly OpParam[] opParams = new OpParam[ MAXOPPARRAMS ];
+		private bool macroOn; // if true then put all ALU instructions in phase 1
 
-		/// <summary>
-		///     Machine instructions for phase one ALU section.
-		/// </summary>
-		private readonly IntList phase1ALU_mi = new IntList();
-
-		/// <summary>
-		///     Machine instructions for phase one texture section.
-		/// </summary>
-		private readonly IntList phase1TEX_mi = new IntList();
-
-		/// <summary>
-		///     Machine instructions for phase two ALU section.
-		/// </summary>
-		private readonly IntList phase2ALU_mi = new IntList();
-
-		/// <summary>
-		///     Machine instructions for phase two texture section.
-		/// </summary>
-		private readonly IntList phase2TEX_mi = new IntList();
-
-		// vars used during pass 2
-		private int argCnt;
-		private int constantsPos;
-		private bool do_Alpha;
-		private PhaseType instructionPhase;
+		private int texm3x3padCount; // keep track of how many texm3x3pad instructions are used so know which mask to use
 
 		private int lastInstructionPos; // keep track of last phase 2 ALU instruction to check for R0 setting
-		private bool macroOn; // if true then put all ALU instructions in phase 1
-		private Symbol opInst;
-		private MachineInstruction opType;
+		private int secondLastInstructionPos;
 
 		// keep track if phase marker found: determines which phase the ALU instructions go into
 		private bool phaseMarkerFound;
-		private int secondLastInstructionPos;
-		private int texm3x3padCount; // keep track of how many texm3x3pad instructions are used so know which mask to use
 
 		#endregion Fields
 
@@ -324,11 +328,11 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// start with machine NOP instuction
 			// this is used after the switch to see if an instruction was set up
 			// determine which MachineInstID is required based on the op instruction
-			this.opType = MachineInstruction.Nop;
+			opType = MachineInstruction.Nop;
 
-			switch ( this.opInst )
+			switch ( (Symbol)opInst )
 			{
-				// ALU operations
+					// ALU operations
 				case Symbol.ADD:
 				case Symbol.SUB:
 				case Symbol.MUL:
@@ -340,68 +344,68 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				case Symbol.DP2ADD:
 				case Symbol.DP3:
 				case Symbol.DP4:
-					this.opType = (MachineInstruction)( (int)MachineInstruction.ColorOp1 + this.argCnt - 1 );
+					opType = (MachineInstruction)( (int)MachineInstruction.ColorOp1 + argCnt - 1 );
 
 					// if context is ps.1.x and Macro not on or a phase marker was found then put all ALU ops in phase 2 ALU container
-					if ( ( ( ( activeContexts & (uint)ContextKeyPattern.PS_1_1 ) > 0 ) && !this.macroOn ) || this.phaseMarkerFound )
+					if ( ( ( ( activeContexts & (uint)ContextKeyPattern.PS_1_1 ) > 0 ) && !macroOn ) || phaseMarkerFound )
 					{
-						this.instructionPhase = PhaseType.PHASE2ALU;
+						instructionPhase = PhaseType.PHASE2ALU;
 					}
 					else
 					{
-						this.instructionPhase = PhaseType.PHASE1ALU;
+						instructionPhase = PhaseType.PHASE1ALU;
 					}
 
 					// check for alpha op in destination register which is OpParrams[0]
 					// if no Mask for destination then make it .rgba
-					if ( this.opParams[ 0 ].MaskRep == 0 )
+					if ( opParams[ 0 ].MaskRep == 0 )
 					{
-						this.opParams[ 0 ].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
+						opParams[ 0 ].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
 					}
 
-					if ( ( this.opParams[ 0 ].MaskRep & ALPHA_BIT ) > 0 )
+					if ( ( opParams[ 0 ].MaskRep & ALPHA_BIT ) > 0 )
 					{
-						this.do_Alpha = true;
-						this.opParams[ 0 ].MaskRep -= ALPHA_BIT;
-						if ( this.opParams[ 0 ].MaskRep == 0 )
+						do_Alpha = true;
+						opParams[ 0 ].MaskRep -= ALPHA_BIT;
+						if ( opParams[ 0 ].MaskRep == 0 )
 						{
-							this.opType = MachineInstruction.Nop; // only do alpha op
+							opType = MachineInstruction.Nop; // only do alpha op
 						}
 					}
 					break;
 
 				case Symbol.TEXCRD:
-					this.opType = MachineInstruction.PassTexCoord;
-					if ( this.phaseMarkerFound )
+					opType = MachineInstruction.PassTexCoord;
+					if ( phaseMarkerFound )
 					{
-						this.instructionPhase = PhaseType.PHASE2TEX;
+						instructionPhase = PhaseType.PHASE2TEX;
 					}
 					else
 					{
-						this.instructionPhase = PhaseType.PHASE1TEX;
+						instructionPhase = PhaseType.PHASE1TEX;
 					}
 					break;
 
 				case Symbol.TEXLD:
-					this.opType = MachineInstruction.SampleMap;
-					if ( this.phaseMarkerFound )
+					opType = MachineInstruction.SampleMap;
+					if ( phaseMarkerFound )
 					{
-						this.instructionPhase = PhaseType.PHASE2TEX;
+						instructionPhase = PhaseType.PHASE2TEX;
 					}
 					else
 					{
-						this.instructionPhase = PhaseType.PHASE1TEX;
+						instructionPhase = PhaseType.PHASE1TEX;
 					}
 					break;
 
 				case Symbol.TEX: // PS_1_1 emulation
-					this.opType = MachineInstruction.Tex;
-					this.instructionPhase = PhaseType.PHASE1TEX;
+					opType = MachineInstruction.Tex;
+					instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.TEXCOORD: // PS_1_1 emulation
-					this.opType = MachineInstruction.TexCoord;
-					this.instructionPhase = PhaseType.PHASE1TEX;
+					opType = MachineInstruction.TexCoord;
+					instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.TEXREG2AR:
@@ -431,10 +435,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				case Symbol.TEXM3X3PAD:
 					// only 2 texm3x3pad instructions allowed
 					// use count to modify macro to select which mask to use
-					if ( this.texm3x3padCount < 2 )
+					if ( texm3x3padCount < 2 )
 					{
-						texm3x3pad[ 4 ].ID = (Symbol)( (int)Symbol.R + this.texm3x3padCount );
-						this.texm3x3padCount++;
+						texm3x3pad[ 4 ].ID = (Symbol)( (int)Symbol.R + texm3x3padCount );
+						texm3x3padCount++;
 						passed = ExpandMacro( texm3x3pad_MacroMods );
 					}
 					else
@@ -449,12 +453,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					break;
 
 				case Symbol.DEF:
-					this.opType = MachineInstruction.SetConstants;
-					this.instructionPhase = PhaseType.PHASE1TEX;
+					opType = MachineInstruction.SetConstants;
+					instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.PHASE: // PS_1_4 only
-					this.phaseMarkerFound = true;
+					phaseMarkerFound = true;
 					break;
 			} // end of switch
 
@@ -469,17 +473,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		private void ClearMachineInstState()
 		{
 			// set current Machine Instruction State to baseline
-			this.opType = MachineInstruction.Nop;
-			this.opInst = Symbol.Invalid;
-			this.do_Alpha = false;
-			this.argCnt = 0;
+			opType = MachineInstruction.Nop;
+			opInst = Symbol.Invalid;
+			do_Alpha = false;
+			argCnt = 0;
 
 			for ( int i = 0; i < MAXOPPARRAMS; i++ )
 			{
-				this.opParams[ i ].Arg = Gl.GL_NONE;
-				this.opParams[ i ].Filled = false;
-				this.opParams[ i ].MaskRep = Gl.GL_NONE;
-				this.opParams[ i ].Mod = Gl.GL_NONE;
+				opParams[ i ].Arg = Gl.GL_NONE;
+				opParams[ i ].Filled = false;
+				opParams[ i ].MaskRep = Gl.GL_NONE;
+				opParams[ i ].Mod = Gl.GL_NONE;
 			}
 		}
 
@@ -487,18 +491,18 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		{
 			bool success = true;
 
-			if ( this.argCnt < MAXOPPARRAMS )
+			if ( argCnt < MAXOPPARRAMS )
 			{
-				if ( this.opParams[ this.argCnt ].Filled )
+				if ( opParams[ argCnt ].Filled )
 				{
-					this.argCnt++;
+					argCnt++;
 				}
 			}
 
-			if ( this.argCnt < MAXOPPARRAMS )
+			if ( argCnt < MAXOPPARRAMS )
 			{
-				this.opParams[ this.argCnt ].Filled = true;
-				this.opParams[ this.argCnt ].Arg = symboldef.pass2Data;
+				opParams[ argCnt ].Filled = true;
+				opParams[ argCnt ].Arg = symboldef.pass2Data;
 			}
 			else
 			{
@@ -521,14 +525,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				// need to check last few instructions to make sure r0 is set
 				// ps.1.1 emulation uses r4 for r0 so last couple of instructions will probably require
 				// changine destination register back to r0
-				if ( this.lastInstructionPos < this.phase2ALU_mi.Count )
+				if ( lastInstructionPos < phase2ALU_mi.Count )
 				{
 					// first argument at mLastInstructionPos + 2 is destination register for all ps.1.1 ALU instructions
-					this.phase2ALU_mi[ this.lastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
+					phase2ALU_mi[ lastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
 					// if was an alpha op only then modify second last instruction destination register
-					if ( ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp1 ) || ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp2 ) || ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp3 ) )
+					if ( ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp1 ) || ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp2 ) || ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp3 ) )
 					{
-						this.phase2ALU_mi[ this.secondLastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
+						phase2ALU_mi[ secondLastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
 					}
 				} // end if (mLastInstructionPos < mMachineInstructions.size())
 			} // end if (mActiveContexts & ckp_PS_1_1)
@@ -550,7 +554,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			{
 				// lookup instruction type in library
 				cursymboldef = symbolTypeLib[ (int)Tokens[ i ].ID ];
-				ActiveNTTRuleID = Tokens[ i ].NTTRuleID;
+				ActiveNTTRuleID = (Symbol)Tokens[ i ].NTTRuleID;
 				currentLine = Tokens[ i ].line;
 				charPos = Tokens[ i ].pos;
 
@@ -577,9 +581,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 						// if the last instruction has not been passed on then do it now
 						// make sure the pipe is clear for a new instruction
 						BuildMachineInst();
-						if ( this.opInst == Symbol.Invalid )
+						if ( opInst == Symbol.Invalid )
 						{
-							this.opInst = cursymboldef.ID;
+							opInst = cursymboldef.ID;
 						}
 						else
 						{
@@ -592,25 +596,25 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case Symbol.TEXSWIZZLE:
 						// could be a dst mask or a arg replicator
 						// if dst mask and alpha included then make up a alpha instruction: maybe best to wait until instruction args completed
-						this.opParams[ this.argCnt ].MaskRep = (uint)cursymboldef.pass2Data;
+						opParams[ argCnt ].MaskRep = (uint)cursymboldef.pass2Data;
 						break;
 
 					case Symbol.DSTMOD:
 					case Symbol.DSTSAT:
 					case Symbol.PRESRCMOD:
 					case Symbol.POSTSRCMOD:
-						this.opParams[ this.argCnt ].Mod |= cursymboldef.pass2Data;
+						opParams[ argCnt ].Mod |= cursymboldef.pass2Data;
 						break;
 
 					case Symbol.NUMVAL:
 						passed = SetOpParam( cursymboldef );
 						// keep track of how many values are used
 						// update Constants array position
-						this.constantsPos++;
+						constantsPos++;
 						break;
 
 					case Symbol.SEPERATOR:
-						this.argCnt++;
+						argCnt++;
 						break;
 				} // end of switch
 
@@ -625,7 +629,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			{
 				BuildMachineInst();
 				// if there are no more instructions in the pipe than OpInst should be invalid
-				if ( this.opInst != Symbol.Invalid )
+				if ( opInst != Symbol.Invalid )
 				{
 					passed = false;
 				}
@@ -652,13 +656,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.ColorOp1:
 						if ( ( instIDX + 7 ) < instCount )
 						{
-							Gl.glColorFragmentOp1ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMask
-													  PassMachineInstructions[ instIDX + 4 ], // dstMod
-													  PassMachineInstructions[ instIDX + 5 ], // arg1
-													  PassMachineInstructions[ instIDX + 6 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 7 ] ); // arg1Mod
+							Gl.glColorFragmentOp1ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMask
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 6 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 7 ] ); // arg1Mod
 						}
 						instIDX += 8;
 						break;
@@ -666,16 +670,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.ColorOp2:
 						if ( ( instIDX + 10 ) < instCount )
 						{
-							Gl.glColorFragmentOp2ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMask
-													  PassMachineInstructions[ instIDX + 4 ], // dstMod
-													  PassMachineInstructions[ instIDX + 5 ], // arg1
-													  PassMachineInstructions[ instIDX + 6 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 7 ], // arg1Mod
-													  PassMachineInstructions[ instIDX + 8 ], // arg2
-													  PassMachineInstructions[ instIDX + 9 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 10 ] ); // arg2Mod
+							Gl.glColorFragmentOp2ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMask
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 6 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 7 ], // arg1Mod
+							                          (int)PassMachineInstructions[ instIDX + 8 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 9 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 10 ] ); // arg2Mod
 						}
 						instIDX += 11;
 						break;
@@ -683,19 +687,19 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.ColorOp3:
 						if ( ( instIDX + 13 ) < instCount )
 						{
-							Gl.glColorFragmentOp3ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMask
-													  PassMachineInstructions[ instIDX + 4 ], // dstMod
-													  PassMachineInstructions[ instIDX + 5 ], // arg1
-													  PassMachineInstructions[ instIDX + 6 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 7 ], // arg1Mod
-													  PassMachineInstructions[ instIDX + 8 ], // arg2
-													  PassMachineInstructions[ instIDX + 9 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 10 ], // arg2Mod
-													  PassMachineInstructions[ instIDX + 11 ], // arg2
-													  PassMachineInstructions[ instIDX + 12 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 13 ] ); // arg2Mod
+							Gl.glColorFragmentOp3ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMask
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 6 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 7 ], // arg1Mod
+							                          (int)PassMachineInstructions[ instIDX + 8 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 9 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 10 ], // arg2Mod
+							                          (int)PassMachineInstructions[ instIDX + 11 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 12 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 13 ] ); // arg2Mod
 						}
 						instIDX += 14;
 						break;
@@ -703,12 +707,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.AlphaOp1:
 						if ( ( instIDX + 6 ) < instCount )
 						{
-							Gl.glAlphaFragmentOp1ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMod
-													  PassMachineInstructions[ instIDX + 4 ], // arg1
-													  PassMachineInstructions[ instIDX + 5 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 6 ] ); // arg1Mod
+							Gl.glAlphaFragmentOp1ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 6 ] ); // arg1Mod
 						}
 						instIDX += 7;
 						break;
@@ -716,15 +720,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.AlphaOp2:
 						if ( ( instIDX + 9 ) < instCount )
 						{
-							Gl.glAlphaFragmentOp2ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMod
-													  PassMachineInstructions[ instIDX + 4 ], // arg1
-													  PassMachineInstructions[ instIDX + 5 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 6 ], // arg1Mod
-													  PassMachineInstructions[ instIDX + 7 ], // arg2
-													  PassMachineInstructions[ instIDX + 8 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 9 ] ); // arg2Mod
+							Gl.glAlphaFragmentOp2ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 6 ], // arg1Mod
+							                          (int)PassMachineInstructions[ instIDX + 7 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 8 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 9 ] ); // arg2Mod
 						}
 						instIDX += 10;
 						break;
@@ -732,18 +736,18 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.AlphaOp3:
 						if ( ( instIDX + 12 ) < instCount )
 						{
-							Gl.glAlphaFragmentOp3ATI( PassMachineInstructions[ instIDX + 1 ], // op
-													  PassMachineInstructions[ instIDX + 2 ], // dst
-													  PassMachineInstructions[ instIDX + 3 ], // dstMod
-													  PassMachineInstructions[ instIDX + 4 ], // arg1
-													  PassMachineInstructions[ instIDX + 5 ], // arg1Rep
-													  PassMachineInstructions[ instIDX + 6 ], // arg1Mod
-													  PassMachineInstructions[ instIDX + 7 ], // arg2
-													  PassMachineInstructions[ instIDX + 8 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 9 ], // arg2Mod
-													  PassMachineInstructions[ instIDX + 10 ], // arg2
-													  PassMachineInstructions[ instIDX + 11 ], // arg2Rep
-													  PassMachineInstructions[ instIDX + 12 ] ); // arg2Mod
+							Gl.glAlphaFragmentOp3ATI( (int)PassMachineInstructions[ instIDX + 1 ], // op
+							                          (int)PassMachineInstructions[ instIDX + 2 ], // dst
+							                          (int)PassMachineInstructions[ instIDX + 3 ], // dstMod
+							                          (int)PassMachineInstructions[ instIDX + 4 ], // arg1
+							                          (int)PassMachineInstructions[ instIDX + 5 ], // arg1Rep
+							                          (int)PassMachineInstructions[ instIDX + 6 ], // arg1Mod
+							                          (int)PassMachineInstructions[ instIDX + 7 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 8 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 9 ], // arg2Mod
+							                          (int)PassMachineInstructions[ instIDX + 10 ], // arg2
+							                          (int)PassMachineInstructions[ instIDX + 11 ], // arg2Rep
+							                          (int)PassMachineInstructions[ instIDX + 12 ] ); // arg2Mod
 						}
 						instIDX += 13;
 						break;
@@ -752,15 +756,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 						if ( ( instIDX + 2 ) < instCount )
 						{
-							int start = PassMachineInstructions[ instIDX + 2 ];
-							var vals = new float[ 4 ];
-							vals[ 0 ] = constants[ start++ ];
-							vals[ 1 ] = constants[ start++ ];
-							vals[ 2 ] = constants[ start++ ];
-							vals[ 3 ] = constants[ start ];
+							int start = (int)PassMachineInstructions[ instIDX + 2 ];
+							float[] vals = new float[ 4 ];
+							vals[ 0 ] = (float)constants[ start++ ];
+							vals[ 1 ] = (float)constants[ start++ ];
+							vals[ 2 ] = (float)constants[ start++ ];
+							vals[ 3 ] = (float)constants[ start ];
 
-							Gl.glSetFragmentShaderConstantATI( PassMachineInstructions[ instIDX + 1 ], // dst
-															   vals );
+							Gl.glSetFragmentShaderConstantATI( (int)PassMachineInstructions[ instIDX + 1 ], // dst
+							                                   vals );
 						}
 						instIDX += 3;
 						break;
@@ -768,9 +772,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.PassTexCoord:
 						if ( ( instIDX + 3 ) < instCount )
 						{
-							Gl.glPassTexCoordATI( PassMachineInstructions[ instIDX + 1 ], // dst
-												  PassMachineInstructions[ instIDX + 2 ], // coord
-												  PassMachineInstructions[ instIDX + 3 ] ); // swizzle
+							Gl.glPassTexCoordATI( (int)PassMachineInstructions[ instIDX + 1 ], // dst
+							                      (int)PassMachineInstructions[ instIDX + 2 ], // coord
+							                      (int)PassMachineInstructions[ instIDX + 3 ] ); // swizzle
 						}
 						instIDX += 4;
 						break;
@@ -778,9 +782,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case MachineInstruction.SampleMap:
 						if ( ( instIDX + 3 ) < instCount )
 						{
-							Gl.glSampleMapATI( PassMachineInstructions[ instIDX + 1 ], // dst
-											   PassMachineInstructions[ instIDX + 2 ], // interp
-											   PassMachineInstructions[ instIDX + 3 ] ); // swizzle
+							Gl.glSampleMapATI( (int)PassMachineInstructions[ instIDX + 1 ], // dst
+							                   (int)PassMachineInstructions[ instIDX + 2 ], // interp
+							                   (int)PassMachineInstructions[ instIDX + 3 ] ); // swizzle
 						}
 						instIDX += 4;
 						break;
@@ -788,9 +792,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					default:
 						instIDX = instCount;
 						break;
-					// should generate an error since an unknown instruction was found
-					// instead for now the bind process is terminated and the fragment program may still function
-					// but its output may not be what was programmed
+						// should generate an error since an unknown instruction was found
+						// instead for now the bind process is terminated and the fragment program may still function
+						// but its output may not be what was programmed
 				} // end of switch
 
 				error = ( Gl.glGetError() != Gl.GL_NO_ERROR );
@@ -811,17 +815,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			for ( int i = 0; i < MacroMod.RegModSize; i++ )
 			{
 				regmod = MacroMod.RegMods[ i ];
-				MacroMod.Macro[ regmod.MacroOffset ].ID = (Symbol)( regmod.RegisterBase + this.opParams[ regmod.OpParamsIndex ].Arg );
+				MacroMod.Macro[ regmod.MacroOffset ].ID = (Symbol)( regmod.RegisterBase + opParams[ regmod.OpParamsIndex ].Arg );
 			}
 
 			// turn macro support on so that ps.1.4 ALU instructions get put in phase 1 alu instruction sequence container
-			this.macroOn = true;
+			macroOn = true;
 
 			// pass macro tokens on to be turned into machine instructions
 			// expand macro to ps.1.4 by doing recursive call to doPass2
 			bool passed = Pass2scan( MacroMod.Macro, MacroMod.MacroSize );
 
-			this.macroOn = false;
+			macroOn = false;
 
 			return passed;
 		}
@@ -838,122 +842,122 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// assume that an instruction will be expanded
 			bool passed = true;
 
-			if ( this.opType != MachineInstruction.Nop )
+			if ( opType != MachineInstruction.Nop )
 			{
 				// a machine instruction will be built
 				// this is currently the last one being built so keep track of it
-				if ( this.instructionPhase == PhaseType.PHASE2ALU )
+				if ( instructionPhase == PhaseType.PHASE2ALU )
 				{
-					this.secondLastInstructionPos = this.lastInstructionPos;
-					this.lastInstructionPos = this.phase2ALU_mi.Count;
+					secondLastInstructionPos = lastInstructionPos;
+					lastInstructionPos = phase2ALU_mi.Count;
 				}
 
-				switch ( this.opType )
+				switch ( opType )
 				{
 					case MachineInstruction.ColorOp1:
 					case MachineInstruction.ColorOp2:
 					case MachineInstruction.ColorOp3:
+					{
+						AddMachineInst( instructionPhase, (int)opType );
+						AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
+						// send all parameters to machine inst container
+						for ( int i = 0; i <= argCnt; i++ )
 						{
-							AddMachineInst( this.instructionPhase, (int)this.opType );
-							AddMachineInst( this.instructionPhase, symbolTypeLib[ (int)this.opInst ].pass2Data );
-							// send all parameters to machine inst container
-							for ( int i = 0; i <= this.argCnt; i++ )
-							{
-								AddMachineInst( this.instructionPhase, this.opParams[ i ].Arg );
-								AddMachineInst( this.instructionPhase, (int)this.opParams[ i ].MaskRep );
-								AddMachineInst( this.instructionPhase, this.opParams[ i ].Mod );
-								// check if source register read is valid in this phase
-								passed &= IsRegisterReadValid( this.instructionPhase, i );
-							}
-
-							// record which registers were written to and in which phase
-							// opParams[0].Arg is always the destination register r0 -> r5
-							UpdateRegisterWriteState( this.instructionPhase );
+							AddMachineInst( instructionPhase, opParams[ i ].Arg );
+							AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
+							AddMachineInst( instructionPhase, opParams[ i ].Mod );
+							// check if source register read is valid in this phase
+							passed &= IsRegisterReadValid( instructionPhase, i );
 						}
+
+						// record which registers were written to and in which phase
+						// opParams[0].Arg is always the destination register r0 -> r5
+						UpdateRegisterWriteState( instructionPhase );
+					}
 						break;
 
 					case MachineInstruction.SetConstants:
-						AddMachineInst( this.instructionPhase, (int)this.opType );
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
-						AddMachineInst( this.instructionPhase, this.constantsPos ); // index into constants array
+						AddMachineInst( instructionPhase, (int)opType );
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+						AddMachineInst( instructionPhase, constantsPos ); // index into constants array
 						break;
 
 					case MachineInstruction.PassTexCoord:
 					case MachineInstruction.SampleMap:
 						// if source is a temp register than place instruction in phase 2 Texture ops
-						if ( ( this.opParams[ 1 ].Arg >= Gl.GL_REG_0_ATI ) && ( this.opParams[ 1 ].Arg <= Gl.GL_REG_5_ATI ) )
+						if ( ( opParams[ 1 ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ 1 ].Arg <= Gl.GL_REG_5_ATI ) )
 						{
-							this.instructionPhase = PhaseType.PHASE2TEX;
+							instructionPhase = PhaseType.PHASE2TEX;
 						}
 
-						AddMachineInst( this.instructionPhase, (int)this.opType );
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
-						AddMachineInst( this.instructionPhase, this.opParams[ 1 ].Arg ); // coord
-						AddMachineInst( this.instructionPhase, (int)this.opParams[ 1 ].MaskRep + Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( instructionPhase, (int)opType );
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+						AddMachineInst( instructionPhase, opParams[ 1 ].Arg ); // coord
+						AddMachineInst( instructionPhase, (int)opParams[ 1 ].MaskRep + Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( this.instructionPhase );
+						UpdateRegisterWriteState( instructionPhase );
 						break;
 
 					case MachineInstruction.Tex: // PS_1_1 emulation - turn CISC into RISC - phase 1
-						AddMachineInst( this.instructionPhase, (int)MachineInstruction.SampleMap );
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
+						AddMachineInst( instructionPhase, (int)MachineInstruction.SampleMap );
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
 						// tex tx becomes texld rx, tx with x: 0 - 3
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
 						// default to str which fills rgb of destination register
-						AddMachineInst( this.instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( this.instructionPhase );
+						UpdateRegisterWriteState( instructionPhase );
 						break;
 
 					case MachineInstruction.TexCoord: // PS_1_1 emulation - turn CISC into RISC - phase 1
-						AddMachineInst( this.instructionPhase, (int)MachineInstruction.PassTexCoord );
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
+						AddMachineInst( instructionPhase, (int)MachineInstruction.PassTexCoord );
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
 						// texcoord tx becomes texcrd rx, tx with x: 0 - 3
-						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
+						AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
 						// default to str which fills rgb of destination register
-						AddMachineInst( this.instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( this.instructionPhase );
+						UpdateRegisterWriteState( instructionPhase );
 						break;
 				} // end of switch (opType)
 			} // end of if (opType != mi_NOP)
 
-			if ( this.do_Alpha )
+			if ( do_Alpha )
 			{
 				// process alpha channel
 				//
 				// a scaler machine instruction will be built
 				// this is currently the last one being built so keep track of it
-				if ( this.instructionPhase == PhaseType.PHASE2ALU )
+				if ( instructionPhase == PhaseType.PHASE2ALU )
 				{
-					this.secondLastInstructionPos = this.lastInstructionPos;
-					this.lastInstructionPos = this.phase2ALU_mi.Count;
+					secondLastInstructionPos = lastInstructionPos;
+					lastInstructionPos = phase2ALU_mi.Count;
 				}
 
-				MachineInstruction alphaoptype = ( MachineInstruction.AlphaOp1 + this.argCnt - 1 );
-				AddMachineInst( this.instructionPhase, (int)alphaoptype );
-				AddMachineInst( this.instructionPhase, symbolTypeLib[ (int)this.opInst ].pass2Data );
+				MachineInstruction alphaoptype = (MachineInstruction)( MachineInstruction.AlphaOp1 + argCnt - 1 );
+				AddMachineInst( instructionPhase, (int)alphaoptype );
+				AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
 
 				// put all parameters in instruction que
-				for ( int i = 0; i <= this.argCnt; i++ )
+				for ( int i = 0; i <= argCnt; i++ )
 				{
-					AddMachineInst( this.instructionPhase, this.opParams[ i ].Arg );
+					AddMachineInst( instructionPhase, opParams[ i ].Arg );
 					// destination parameter has no mask since it is the alpha channel
 					// don't push mask for parrameter 0 (dst)
 					if ( i > 0 )
 					{
-						AddMachineInst( this.instructionPhase, (int)this.opParams[ i ].MaskRep );
+						AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
 					}
 
-					AddMachineInst( this.instructionPhase, this.opParams[ i ].Mod );
+					AddMachineInst( instructionPhase, opParams[ i ].Mod );
 					// check if source register read is valid in this phase
-					passed &= IsRegisterReadValid( this.instructionPhase, i );
+					passed &= IsRegisterReadValid( instructionPhase, i );
 				}
 
-				UpdateRegisterWriteState( this.instructionPhase );
+				UpdateRegisterWriteState( instructionPhase );
 			}
 
 			// instruction passed on to machine instruction so clear the pipe
@@ -965,30 +969,30 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		// mainly used by tests - too slow for use in binding
 		private int GetMachineInst( int Idx )
 		{
-			if ( Idx < this.phase1TEX_mi.Count )
+			if ( Idx < phase1TEX_mi.Count )
 			{
-				return this.phase1TEX_mi[ Idx ];
+				return (int)phase1TEX_mi[ Idx ];
 			}
 			else
 			{
-				Idx -= this.phase1TEX_mi.Count;
-				if ( Idx < this.phase1ALU_mi.Count )
+				Idx -= phase1TEX_mi.Count;
+				if ( Idx < phase1ALU_mi.Count )
 				{
-					return this.phase1ALU_mi[ Idx ];
+					return (int)phase1ALU_mi[ Idx ];
 				}
 				else
 				{
-					Idx -= this.phase1ALU_mi.Count;
-					if ( Idx < this.phase2TEX_mi.Count )
+					Idx -= phase1ALU_mi.Count;
+					if ( Idx < phase2TEX_mi.Count )
 					{
-						return this.phase2TEX_mi[ Idx ];
+						return (int)phase2TEX_mi[ Idx ];
 					}
 					else
 					{
-						Idx -= this.phase2TEX_mi.Count;
-						if ( Idx < this.phase2ALU_mi.Count )
+						Idx -= phase2TEX_mi.Count;
+						if ( Idx < phase2ALU_mi.Count )
 						{
-							return this.phase2ALU_mi[ Idx ];
+							return (int)phase2ALU_mi[ Idx ];
 						}
 					}
 				}
@@ -999,7 +1003,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		private int GetMachineInstCount()
 		{
-			return ( this.phase1TEX_mi.Count + this.phase1ALU_mi.Count + this.phase2TEX_mi.Count + this.phase2ALU_mi.Count );
+			return ( phase1TEX_mi.Count + phase1ALU_mi.Count + phase2TEX_mi.Count + phase2ALU_mi.Count );
 		}
 
 		private void AddMachineInst( PhaseType phase, int inst )
@@ -1007,63 +1011,63 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			switch ( phase )
 			{
 				case PhaseType.PHASE1TEX:
-					this.phase1TEX_mi.Add( inst );
+					phase1TEX_mi.Add( inst );
 					break;
 
 				case PhaseType.PHASE1ALU:
-					this.phase1ALU_mi.Add( inst );
+					phase1ALU_mi.Add( inst );
 					break;
 
 				case PhaseType.PHASE2TEX:
-					this.phase2TEX_mi.Add( inst );
+					phase2TEX_mi.Add( inst );
 
 					break;
 
 				case PhaseType.PHASE2ALU:
-					this.phase2ALU_mi.Add( inst );
+					phase2ALU_mi.Add( inst );
 					break;
 			} // end switch(phase)
 		}
 
 		private void ClearAllMachineInst()
 		{
-			this.phase1TEX_mi.Clear();
-			this.phase1ALU_mi.Clear();
-			this.phase2TEX_mi.Clear();
-			this.phase2ALU_mi.Clear();
+			phase1TEX_mi.Clear();
+			phase1ALU_mi.Clear();
+			phase2TEX_mi.Clear();
+			phase2ALU_mi.Clear();
 
 			// reset write state for all registers
 			for ( int i = 0; i < 6; i++ )
 			{
-				this.Phase_RegisterUsage[ i ].Phase1Write = false;
-				this.Phase_RegisterUsage[ i ].Phase2Write = false;
+				Phase_RegisterUsage[ i ].Phase1Write = false;
+				Phase_RegisterUsage[ i ].Phase2Write = false;
 			}
 
-			this.phaseMarkerFound = false;
-			this.constantsPos = -4;
+			phaseMarkerFound = false;
+			constantsPos = -4;
 			// keep track of the last instruction built
 			// this info is used at the end of pass 2 to optimize the machine code
-			this.lastInstructionPos = 0;
-			this.secondLastInstructionPos = 0;
+			lastInstructionPos = 0;
+			secondLastInstructionPos = 0;
 
-			this.macroOn = false; // macro's off at the beginning
-			this.texm3x3padCount = 0;
+			macroOn = false; // macro's off at the beginning
+			texm3x3padCount = 0;
 		}
 
 		private void UpdateRegisterWriteState( PhaseType phase )
 		{
-			int reg_offset = this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI;
+			int reg_offset = opParams[ 0 ].Arg - Gl.GL_REG_0_ATI;
 
 			switch ( phase )
 			{
 				case PhaseType.PHASE1TEX:
 				case PhaseType.PHASE1ALU:
-					this.Phase_RegisterUsage[ reg_offset ].Phase1Write = true;
+					Phase_RegisterUsage[ reg_offset ].Phase1Write = true;
 					break;
 
 				case PhaseType.PHASE2TEX:
 				case PhaseType.PHASE2ALU:
-					this.Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
+					Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
 					break;
 			} // end switch(phase)
 		}
@@ -1076,28 +1080,28 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			if ( ( phase == PhaseType.PHASE2ALU ) && ( param > 0 ) )
 			{
 				// is source argument a temp register r0 - r5?
-				if ( ( this.opParams[ param ].Arg >= Gl.GL_REG_0_ATI ) && ( this.opParams[ param ].Arg <= Gl.GL_REG_5_ATI ) )
+				if ( ( opParams[ param ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ param ].Arg <= Gl.GL_REG_5_ATI ) )
 				{
-					int reg_offset = this.opParams[ param ].Arg - Gl.GL_REG_0_ATI;
+					int reg_offset = opParams[ param ].Arg - Gl.GL_REG_0_ATI;
 					// if register was not written to in phase 2 but was in phase 1
-					if ( ( this.Phase_RegisterUsage[ reg_offset ].Phase2Write == false ) && this.Phase_RegisterUsage[ reg_offset ].Phase1Write )
+					if ( ( Phase_RegisterUsage[ reg_offset ].Phase2Write == false ) && Phase_RegisterUsage[ reg_offset ].Phase1Write )
 					{
 						// only perform register pass if there are ALU instructions in phase 1
-						if ( this.phase1ALU_mi.Count > 0 )
+						if ( phase1ALU_mi.Count > 0 )
 						{
 							// build machine instructions for passing a register from phase 1 to phase 2
 							// NB: only rgb components of register will get passed
 
 							AddMachineInst( PhaseType.PHASE2TEX, (int)MachineInstruction.PassTexCoord );
-							AddMachineInst( PhaseType.PHASE2TEX, this.opParams[ param ].Arg ); // dst
-							AddMachineInst( PhaseType.PHASE2TEX, this.opParams[ param ].Arg ); // coord
+							AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // dst
+							AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // coord
 							AddMachineInst( PhaseType.PHASE2TEX, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 
 							// mark register as being written to
-							this.Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
+							Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
 						}
 					}
-					// register can not be used because it has not been written to previously
+						// register can not be used because it has not been written to previously
 					else
 					{
 						passed = false;
@@ -1117,15 +1121,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			bool passed;
 
 			// there are 4 machine instruction queues to pass to the ATI fragment shader
-			passed = BindMachineInstInPassToFragmentShader( this.phase1TEX_mi );
-			passed &= BindMachineInstInPassToFragmentShader( this.phase1ALU_mi );
-			passed &= BindMachineInstInPassToFragmentShader( this.phase2TEX_mi );
-			passed &= BindMachineInstInPassToFragmentShader( this.phase2ALU_mi );
+			passed = BindMachineInstInPassToFragmentShader( phase1TEX_mi );
+			passed &= BindMachineInstInPassToFragmentShader( phase1ALU_mi );
+			passed &= BindMachineInstInPassToFragmentShader( phase2TEX_mi );
+			passed &= BindMachineInstInPassToFragmentShader( phase2ALU_mi );
 
 			return passed;
 		}
 
 		#endregion Members
+
+		#region Compiler2Pass Members
 
 		/// <summary>
 		///     Pass 1 is completed so now take tokens generated and build machine instructions.
@@ -1146,21 +1152,50 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			return passed;
 		}
 
+		#endregion Compiler2Pass Members
+
 		#region Test Cases
 
-		private readonly Test1Result[] test1results = new[]
-                                                      {
-                                                          new Test1Result( 'c', 4 ), new Test1Result( '-', 4 ), new Test1Result( ',', 5 ), new Test1Result( 'e', 5 )
-                                                      };
+		private struct Test1Result
+		{
+			public char character;
+			public int line;
 
-		private readonly TestFloatResult[] testFloatResults = {
-                                                                  new TestFloatResult( "1 test", 1.0f, 1 ), new TestFloatResult( "2.3f test", 2.3f, 3 ), new TestFloatResult( "-0.5 test", -0.5f, 4 ), new TestFloatResult( " 23.6 test", 23.6f, 5 ), new TestFloatResult( "  -0.021 test", -0.021f, 8 ), new TestFloatResult( "12 test", 12.0f, 2 ), new TestFloatResult( "3test", 3.0f, 1 )
-                                                              };
+			public Test1Result( char c, int line )
+			{
+				this.character = c;
+				this.line = line;
+			}
+		}
 
-		private int resultID;
+		private struct TestFloatResult
+		{
+			public string testString;
+			public float val;
+			public int charSize;
+
+			public TestFloatResult( string test, float val, int charSize )
+			{
+				this.testString = test;
+				this.val = val;
+				this.charSize = charSize;
+			}
+		}
+
 		private string testString1 = "   \n\r  //c  \n\r// test\n\r  \t  c   - \n\r ,  e";
 		private string testString3 = "mov r0,c1";
 		private string testSymbols = "mov";
+
+		private Test1Result[] test1results = new Test1Result[]
+		                                     {
+		                                     	new Test1Result( 'c', 4 ), new Test1Result( '-', 4 ), new Test1Result( ',', 5 ), new Test1Result( 'e', 5 )
+		                                     };
+
+		private TestFloatResult[] testFloatResults = {
+		                                             	new TestFloatResult( "1 test", 1.0f, 1 ), new TestFloatResult( "2.3f test", 2.3f, 3 ), new TestFloatResult( "-0.5 test", -0.5f, 4 ), new TestFloatResult( " 23.6 test", 23.6f, 5 ), new TestFloatResult( "  -0.021 test", -0.021f, 8 ), new TestFloatResult( "12 test", 12.0f, 2 ), new TestFloatResult( "3test", 3.0f, 1 )
+		                                             };
+
+		private int resultID = 0;
 
 		public bool RunTests()
 		{
@@ -1168,14 +1203,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// See if PositionToNextSymbol can find a valid symbol
 			Console.WriteLine( "**Testing: PositionToNextSymbol\n" );
 
-			source = this.testString1;
+			source = testString1;
 			charPos = 0;
 			currentLine = 1;
 			endOfSource = source.Length;
 			while ( PositionToNextSymbol() )
 			{
 				Console.WriteLine( "  Character found: {0}   Line:{1}  : ", source[ charPos ], currentLine );
-				if ( ( source[ charPos ] == this.test1results[ this.resultID ].character ) && ( currentLine == this.test1results[ this.resultID ].line ) )
+				if ( ( source[ charPos ] == test1results[ resultID ].character ) && ( currentLine == test1results[ resultID ].line ) )
 				{
 					Console.WriteLine( "Passed!" );
 				}
@@ -1184,7 +1219,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					Console.WriteLine( "FAILED!" );
 				}
 
-				this.resultID++;
+				resultID++;
 				charPos++;
 			}
 
@@ -1201,21 +1236,21 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// Does IsSymbol work properly?
 			Console.WriteLine( "**Testing: IsSymbol\n" );
 
-			source = this.testString3;
+			source = testString3;
 			charPos = 0;
 			Console.WriteLine( "  Before: {0}", source );
-			Console.WriteLine( "  Symbol to find: {0}", this.testSymbols );
+			Console.WriteLine( "  Symbol to find: {0}", testSymbols );
 
-			if ( IsSymbol( this.testSymbols, out this.resultID ) )
+			if ( IsSymbol( testSymbols, out resultID ) )
 			{
-				Console.WriteLine( "  After: {0} : {1}", source.Substring( this.resultID + 1 ), ( source[ this.resultID + 1 ] == 'r' ) ? "Passed." : "Failed!" );
+				Console.WriteLine( "  After: {0} : {1}", source.Substring( resultID + 1 ), ( source[ resultID + 1 ] == 'r' ) ? "Passed." : "Failed!" );
 			}
 			else
 			{
 				Console.WriteLine( "Failed!" );
 			}
 
-			Console.WriteLine( "  Symbol size: {0}", this.resultID );
+			Console.WriteLine( "  Symbol size: {0}", resultID );
 
 			Console.WriteLine( "**Finished testing: IsSymbol\n" );
 
@@ -1227,13 +1262,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			int charSize = 0;
 			charPos = 0;
 
-			for ( int i = 0; i < this.testFloatResults.Length; i++ )
+			for ( int i = 0; i < testFloatResults.Length; i++ )
 			{
-				source = this.testFloatResults[ i ].testString;
+				source = testFloatResults[ i ].testString;
 				Console.WriteLine( "     Test string {0}", source );
 				IsFloatValue( out val, out charSize );
-				Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, this.testFloatResults[ i ].val, ( val == this.testFloatResults[ i ].val ) ? "Passed" : "Failed" );
-				Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, this.testFloatResults[ i ].charSize, ( charSize == this.testFloatResults[ i ].charSize ) ? "Passed" : "Failed" );
+				Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, testFloatResults[ i ].val, ( val == testFloatResults[ i ].val ) ? "Passed" : "Failed" );
+				Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, testFloatResults[ i ].charSize, ( charSize == testFloatResults[ i ].charSize ) ? "Passed" : "Failed" );
 			}
 
 			Console.WriteLine( "**Finished testing: IsFloatValue\n" );
@@ -1242,24 +1277,24 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// Simple compile test for ps.1.4
 			string CompileTest1src = "ps.1.4\n";
 			Symbol[] CompileTest1result = {
-                                              Symbol.PS_1_4
-                                          };
+			                              	Symbol.PS_1_4
+			                              };
 			TestCompile( "Basic PS_1_4", CompileTest1src, CompileTest1result );
 
 			// ***TEST 6***
 			// Simple compile test for ps1.1
 			string CompileTest2src = "ps.1.1\n";
 			Symbol[] CompileTest2result = {
-                                              Symbol.PS_1_1
-                                          };
+			                              	Symbol.PS_1_1
+			                              };
 			TestCompile( "Basic PS_1_1", CompileTest2src, CompileTest2result );
 
 			// ***TEST 7***
 			// Simple compile test, ps.1.4 with defines
 			string CompileTest3src = "ps.1.4\ndef c0, 1.0, 2.0, 3.0, 4.0\n";
 			Symbol[] CompileTest3result = {
-                                              Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE
-                                          };
+			                              	Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE
+			                              };
 
 			TestCompile( "PS_1_4 with defines", CompileTest3src, CompileTest3result );
 
@@ -1267,16 +1302,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// Simple compile test, ps.1.4 with 2 defines
 			string CompileTest4src = "ps.1.4\n//test kkl \ndef c0, 1.0, 2.0, 3.0, 4.0\ndef c3, 1.0, 2.0, 3.0, 4.0\n";
 			Symbol[] CompileTest4result = {
-                                              Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.DEF, Symbol.C3, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE
-                                          };
+			                              	Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.DEF, Symbol.C3, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE
+			                              };
 
 			TestCompile( "PS_1_4 with 2 defines", CompileTest4src, CompileTest4result );
 
 			// ***TEST 9***
 			// Simple compile test, checking machine instructions
 			int[] CompileTest5MachinInstResults = {
-                                                      (int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0
-                                                  };
+			                                      	(int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0
+			                                      };
 
 			TestCompile( "PS_1_4 with defines", CompileTest3src, CompileTest3result, CompileTest5MachinInstResults );
 
@@ -1284,8 +1319,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// Simple compile test, checking ALU instructions
 			string CompileTest6Src = "ps.1.4\nmov r0.xzw, c1 \nmul r3, r2, c3";
 			Symbol[] CompileTest6result = {
-                                              Symbol.PS_1_4, Symbol.MOV, Symbol.R0, Symbol.RBA, Symbol.COMMA, Symbol.C1, Symbol.MUL, Symbol.R3, Symbol.COMMA, Symbol.R2, Symbol.COMMA, Symbol.C3
-                                          };
+			                              	Symbol.PS_1_4, Symbol.MOV, Symbol.R0, Symbol.RBA, Symbol.COMMA, Symbol.C1, Symbol.MUL, Symbol.R3, Symbol.COMMA, Symbol.R2, Symbol.COMMA, Symbol.C3
+			                              };
 
 			TestCompile( "PS_1_4 ALU simple", CompileTest6Src, CompileTest6result );
 
@@ -1294,12 +1329,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			string CompileTest7Src = "ps.1.4\ndef c0,1.0,2.0,3.0,4.0\nmov_x8 r1,v0\nmov r0,r1.g";
 
 			Symbol[] CompileTest7result = {
-                                              Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.MOV, Symbol.X8, Symbol.R1, Symbol.COMMA, Symbol.V0, Symbol.MOV, Symbol.R0, Symbol.COMMA, Symbol.R1, Symbol.GGGG
-                                          };
+			                              	Symbol.PS_1_4, Symbol.DEF, Symbol.C0, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.COMMA, Symbol.VALUE, Symbol.MOV, Symbol.X8, Symbol.R1, Symbol.COMMA, Symbol.V0, Symbol.MOV, Symbol.R0, Symbol.COMMA, Symbol.R1, Symbol.GGGG
+			                              };
 
 			int[] CompileTest7MachinInstResults = {
-                                                      (int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0, (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, RGB_BITS, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE, (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE, (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, RGB_BITS, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE, (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE,
-                                                  };
+			                                      	(int)MachineInstruction.SetConstants, Gl.GL_CON_0_ATI, 0, (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, RGB_BITS, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE, (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_1_ATI, Gl.GL_8X_BIT_ATI, Gl.GL_PRIMARY_COLOR_ARB, Gl.GL_NONE, Gl.GL_NONE, (int)MachineInstruction.ColorOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, RGB_BITS, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE, (int)MachineInstruction.AlphaOp1, Gl.GL_MOV_ATI, Gl.GL_REG_0_ATI, Gl.GL_NONE, Gl.GL_REG_1_ATI, Gl.GL_GREEN, Gl.GL_NONE,
+			                                      };
 
 			TestCompile( "PS_1_4 ALU simple modifier", CompileTest7Src, CompileTest7result, CompileTest7MachinInstResults );
 
@@ -1330,7 +1365,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			Console.WriteLine( "\n  Tokens:" );
 			for ( int i = 0; i < tokenInstructions.Count; i++ )
 			{
-				Console.WriteLine( "    Token[{0}] [{1}] {2}: [{3}] {4}: {5}", i, GetTypeDefText( ( tokenInstructions[ i ] ).ID ), ( tokenInstructions[ i ] ).ID, GetTypeDefText( expectedResults[ i ] ), expectedResults[ i ], ( ( tokenInstructions[ i ] ).ID == expectedResults[ i ] ) ? passed : failed );
+				Console.WriteLine( "    Token[{0}] [{1}] {2}: [{3}] {4}: {5}", i, GetTypeDefText( ( (TokenInstruction)tokenInstructions[ i ] ).ID ), ( (TokenInstruction)tokenInstructions[ i ] ).ID, GetTypeDefText( expectedResults[ i ] ), expectedResults[ i ], ( ( (TokenInstruction)tokenInstructions[ i ] ).ID == expectedResults[ i ] ) ? passed : failed );
 			}
 
 			if ( machineInstResults != null )
@@ -1365,40 +1400,6 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			SetActiveContexts( (uint)ContextKeyPattern.PS_BASE );
 		}
-
-		#region Nested type: Test1Result
-
-		private struct Test1Result
-		{
-			public readonly char character;
-			public readonly int line;
-
-			public Test1Result( char c, int line )
-			{
-				this.character = c;
-				this.line = line;
-			}
-		}
-
-		#endregion
-
-		#region Nested type: TestFloatResult
-
-		private struct TestFloatResult
-		{
-			public readonly int charSize;
-			public readonly string testString;
-			public readonly float val;
-
-			public TestFloatResult( string test, float val, int charSize )
-			{
-				this.testString = test;
-				this.val = val;
-				this.charSize = charSize;
-			}
-		}
-
-		#endregion
 
 		#endregion Test Cases
 	}

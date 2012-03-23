@@ -38,7 +38,6 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
-using Axiom.Graphics;
 using Axiom.Media;
 
 using Tao.DevIl;
@@ -63,8 +62,8 @@ namespace Axiom.Plugins.DevILCodecs
 		/// </summary>
 		protected static bool isInitialized;
 
-		private readonly int _ilType;
-		private readonly string _type;
+		private string _type;
+		private int _ilType;
 
 		#endregion Fields
 
@@ -75,7 +74,7 @@ namespace Axiom.Plugins.DevILCodecs
 		{
 			get
 			{
-				return this._type;
+				return _type;
 			}
 		}
 
@@ -86,8 +85,8 @@ namespace Axiom.Plugins.DevILCodecs
 		[OgreVersion( 1, 7, 2 )]
 		public ILImageCodec( string type, int ilType )
 		{
-			this._type = type;
-			this._ilType = ilType;
+			_type = type;
+			_ilType = ilType;
 			InitializeIL();
 		}
 
@@ -97,14 +96,14 @@ namespace Axiom.Plugins.DevILCodecs
 
 		/// <see cref="Axiom.Media.Codec.Encode"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override Stream Encode( Stream input, CodecData data )
+		public override Stream Encode( Stream input, Codec.CodecData data )
 		{
 			throw new NotImplementedException( "Encode to memory not implemented" );
 		}
 
 		/// <see cref="Axiom.Media.Codec.EncodeToFile"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override void EncodeToFile( Stream input, string outFileName, CodecData codecData )
+		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData codecData )
 		{
 			int imageID;
 
@@ -118,7 +117,7 @@ namespace Axiom.Plugins.DevILCodecs
 			var imgData = (ImageData)codecData;
 
 			PixelBox src;
-			using ( BufferBase bufHandle = BufferBase.Wrap( buffer ) )
+			using ( var bufHandle = BufferBase.Wrap( buffer ) )
 			{
 				src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, bufHandle );
 			}
@@ -139,7 +138,7 @@ namespace Axiom.Plugins.DevILCodecs
 			// save the image to file
 			Il.ilSaveImage( outFileName );
 
-			int error = Il.ilGetError();
+			var error = Il.ilGetError();
 
 			if ( error != Il.IL_NO_ERROR )
 			{
@@ -151,7 +150,7 @@ namespace Axiom.Plugins.DevILCodecs
 
 		/// <see cref="Axiom.Media.Codec.Decode"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override DecodeResult Decode( Stream input )
+		public override Codec.DecodeResult Decode( Stream input )
 		{
 			var imgData = new ImageData();
 			var output = new MemoryStream();
@@ -175,10 +174,10 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilSetInteger( Il.IL_KEEP_DXTC_DATA, Il.IL_TRUE );
 
 			// load the data into DevIL
-			Il.ilLoadL( this._ilType, buffer, buffer.Length );
+			Il.ilLoadL( _ilType, buffer, buffer.Length );
 
 			// check for an error
-			int ilError = Il.ilGetError();
+			var ilError = Il.ilGetError();
 
 			if ( ilError != Il.IL_NO_ERROR )
 			{
@@ -186,7 +185,7 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			imageFormat = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
-			int imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
+			var imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
 
 			// Convert image if imageType is incompatible with us (double or long)
 			if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE && imageType != Il.IL_FLOAT && imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
@@ -218,7 +217,7 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			// Check for cubemap
-			int numFaces = Il.ilGetInteger( Il.IL_NUM_IMAGES ) + 1;
+			var numFaces = Il.ilGetInteger( Il.IL_NUM_IMAGES ) + 1;
 			if ( numFaces == 6 )
 			{
 				imgData.flags |= ImageFlags.CubeMap;
@@ -229,8 +228,8 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			// Keep DXT data (if present at all and the GPU supports it)
-			int dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
-			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
+			var dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
+			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
 			{
 				imgData.format = ILUtil.Convert( dxtFormat, imageType );
 				imgData.flags |= ImageFlags.Compressed;
@@ -255,14 +254,14 @@ namespace Axiom.Plugins.DevILCodecs
 			BufferBase BufferHandle;
 
 			// Dimensions of current mipmap
-			int width = imgData.width;
-			int height = imgData.height;
-			int depth = imgData.depth;
+			var width = imgData.width;
+			var height = imgData.height;
+			var depth = imgData.depth;
 
 			// Transfer data
-			for ( int mip = 0; mip <= imgData.numMipMaps; ++mip )
+			for ( var mip = 0; mip <= imgData.numMipMaps; ++mip )
 			{
-				for ( int i = 0; i < numFaces; ++i )
+				for ( var i = 0; i < numFaces; ++i )
 				{
 					Il.ilBindImage( imageID );
 					if ( numFaces > 1 )
@@ -275,7 +274,7 @@ namespace Axiom.Plugins.DevILCodecs
 					}
 
 					// Size of this face
-					int imageSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
+					var imageSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
 					buffer = new byte[ imageSize ];
 
 					if ( ( imgData.flags & ImageFlags.Compressed ) != 0 )

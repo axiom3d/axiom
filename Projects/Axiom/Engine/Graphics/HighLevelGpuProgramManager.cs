@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Linq;
 
 using Axiom.Collections;
 using Axiom.Core;
@@ -79,6 +80,7 @@ namespace Axiom.Graphics
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal HighLevelGpuProgramManager()
+			: base()
 		{
 			if ( _instance == null )
 			{
@@ -124,7 +126,7 @@ namespace Axiom.Graphics
 		/// </param>
 		public void AddFactory( HighLevelGpuProgramFactory factory )
 		{
-			this.factories.Add( factory.Language, factory );
+			factories.Add( factory.Language, factory );
 		}
 
 		/// <summary>
@@ -132,7 +134,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveFactory( HighLevelGpuProgramFactory factory )
 		{
-			this.factories.Remove( factory.Language );
+			factories.Remove( factory.Language );
 		}
 
 		/// <summary>
@@ -151,7 +153,7 @@ namespace Axiom.Graphics
 		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
-			HighLevelGpuProgramFactory factory = GetFactory( language );
+			var factory = GetFactory( language );
 
 			if ( factory == null )
 			{
@@ -159,7 +161,7 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			HighLevelGpuProgram program = factory.CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, false, null );
+			var program = factory.CreateInstance( this, name, (ResourceHandle)name.ToLower().GetHashCode(), group, false, null );
 			program.Type = type;
 			program.SyntaxCode = language;
 
@@ -175,17 +177,17 @@ namespace Axiom.Graphics
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
-			if ( !this.factories.ContainsKey( language ) )
+			if ( !factories.ContainsKey( language ) )
 			{
 				// use the null factory to create programs that will never be supported
-				if ( this.factories.ContainsKey( NullLang ) )
+				if ( factories.ContainsKey( NullLang ) )
 				{
-					return this.factories[ NullLang ];
+					return (HighLevelGpuProgramFactory)factories[ NullLang ];
 				}
 			}
 			else
 			{
-				return this.factories[ language ];
+				return (HighLevelGpuProgramFactory)factories[ language ];
 			}
 
 			// wasn't found, so return null
@@ -198,12 +200,21 @@ namespace Axiom.Graphics
 
 		public bool IsLanguageSupported( string language )
 		{
-			return this.factories.ContainsKey( language );
+			return factories.ContainsKey( language );
 		}
 
 		#endregion Properties
 
 		#region ResourceManager Implementation
+
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			if ( createParams == null || !createParams.ContainsKey( "language" ) )
+			{
+				throw new Exception( "You must supply a 'language' parameter" );
+			}
+			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, handle, group, isManual, loader );
+		}
 
 		/// <summary>
 		///     Gets a HighLevelGpuProgram with the specified name.
@@ -231,15 +242,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			if ( createParams == null || !createParams.ContainsKey( "language" ) )
-			{
-				throw new Exception( "You must supply a 'language' parameter" );
-			}
-			return GetFactory( createParams[ "language" ] ).CreateInstance( this, name, handle, group, isManual, loader );
-		}
-
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
@@ -248,7 +250,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -57,19 +57,19 @@ namespace Axiom.Components.Terrain
 		public ushort BatchSize;
 
 		/// <summary>
-		/// Temp calc area for max height delta
-		/// </summary>
-		public Real CalcMaxHeightDelta;
-
-		/// <summary>
 		/// Index data on the gpu
 		/// </summary>
 		public IndexData GpuIndexData;
 
 		/// <summary>
-		/// The cFactor value used to calculate transitionDist
+		/// Maximum delta height between this and the next lower lod
 		/// </summary>
-		public Real LastCFactor;
+		public Real MaxHeightDelta;
+
+		/// <summary>
+		/// Temp calc area for max height delta
+		/// </summary>
+		public Real CalcMaxHeightDelta;
 
 		/// <summary>
 		/// The most recently calculated transition distance
@@ -77,9 +77,9 @@ namespace Axiom.Components.Terrain
 		public Real LastTransitionDist;
 
 		/// <summary>
-		/// Maximum delta height between this and the next lower lod
+		/// The cFactor value used to calculate transitionDist
 		/// </summary>
-		public Real MaxHeightDelta;
+		public Real LastCFactor;
 	}
 
 	[OgreVersion( 1, 7, 2 )]
@@ -87,16 +87,6 @@ namespace Axiom.Components.Terrain
 	{
 		public VertexData CpuVertexData;
 		public VertexData GpuVertexData;
-
-		/// <summary>
-		/// Is the GPU vertex data out of date?
-		/// </summary>
-		public bool IsGpuVertexDataDirty;
-
-		/// <summary>
-		/// Number of rows and columns of skirts
-		/// </summary>
-		public ushort NumSkirtRowsCols;
 
 		/// <summary>
 		/// resolution of the data compared to the base terrain data (NOT number of vertices!)
@@ -109,28 +99,38 @@ namespace Axiom.Components.Terrain
 		public ushort Size;
 
 		/// <summary>
+		/// Number of quadtree levels (including this one) this data applies to
+		/// </summary>
+		public ushort TreeLevels;
+
+		/// <summary>
+		/// Number of rows and columns of skirts
+		/// </summary>
+		public ushort NumSkirtRowsCols;
+
+		/// <summary>
 		/// The number of rows / cols to skip in between skirts
 		/// </summary>
 		public ushort SkirtRowColSkip;
 
 		/// <summary>
-		/// Number of quadtree levels (including this one) this data applies to
+		/// Is the GPU vertex data out of date?
 		/// </summary>
-		public ushort TreeLevels;
+		public bool IsGpuVertexDataDirty;
 
-		public VertexDataRecord() { }
+		public VertexDataRecord() {}
 
 		[OgreVersion( 1, 7, 2 )]
 		public VertexDataRecord( ushort res, ushort sz, ushort lvls )
 		{
-			this.CpuVertexData = null;
-			this.GpuVertexData = null;
-			this.Resolution = res;
-			this.Size = sz;
-			this.TreeLevels = lvls;
-			this.IsGpuVertexDataDirty = false;
-			this.NumSkirtRowsCols = 0;
-			this.SkirtRowColSkip = 0;
+			CpuVertexData = null;
+			GpuVertexData = null;
+			Resolution = res;
+			Size = sz;
+			TreeLevels = lvls;
+			IsGpuVertexDataDirty = false;
+			NumSkirtRowsCols = 0;
+			SkirtRowColSkip = 0;
 		}
 	}
 
@@ -172,22 +172,35 @@ namespace Axiom.Components.Terrain
 		/// <summary>
 		/// Buffer binding used for holding positions.
 		/// </summary>
-		public static short POSITION_BUFFER;
+		public static short POSITION_BUFFER = 0;
 
 		/// <summary>
 		/// Buffer binding used for holding delta values
 		/// </summary>
 		public static short DELTA_BUFFER = 1;
 
+		protected List<LodLevel> mLodLevels = new List<LodLevel>();
+		protected Terrain mTerrain;
+		protected TerrainQuadTreeNode mParent;
+		protected TerrainQuadTreeNode[] mChildren = new TerrainQuadTreeNode[ 4 ];
+		protected ushort mOffsetX;
+		protected ushort mOffsetY;
+		protected ushort mBoundaryX;
+		protected ushort mBoundaryY;
+		protected ushort mSize;
+		protected ushort mBaseLod;
+		protected ushort mDepth;
+		protected ushort mQuadrant;
+
+		/// <summary>
+		/// relative to terrain centre
+		/// </summary>
+		protected Vector3 mLocalCentre;
+
 		/// <summary>
 		/// relative to mLocalCentre
 		/// </summary>
 		protected AxisAlignedBox mAABB;
-
-		protected ushort mBaseLod;
-
-		protected ushort mBoundaryX;
-		protected ushort mBoundaryY;
 
 		/// <summary>
 		/// relative to mLocalCentre
@@ -195,144 +208,34 @@ namespace Axiom.Components.Terrain
 		protected Real mBoundingRadius;
 
 		/// <summary>
-		/// The child with the largest height delta 
-		/// </summary>
-		protected TerrainQuadTreeNode mChildWithMaxHeightDelta;
-
-		protected TerrainQuadTreeNode[] mChildren = new TerrainQuadTreeNode[ 4 ];
-
-		/// <summary>
 		/// -1 = none (do not render)
 		/// </summary>
 		protected int mCurrentLod;
-
-		protected ushort mDepth;
-
-		/// <summary>
-		/// relative to terrain centre
-		/// </summary>
-		protected Vector3 mLocalCentre;
-
-		protected SceneNode mLocalNode;
-		protected List<LodLevel> mLodLevels = new List<LodLevel>();
 
 		/// <summary>
 		/// // 0-1 transition to lower LOD
 		/// </summary>
 		protected float mLodTransition;
 
-		protected ushort mMaterialLodIndex;
-		protected Movable mMovable;
-		protected TerrainQuadTreeNode mNodeWithVertexData;
-		protected ushort mOffsetX;
-		protected ushort mOffsetY;
-		protected TerrainQuadTreeNode mParent;
-		protected ushort mQuadrant;
-		protected Rend mRend;
-		protected bool mSelfOrChildRendered;
-		protected ushort mSize;
-		protected Terrain mTerrain;
-		protected VertexDataRecord mVertexDataRecord;
-
 		/// <summary>
-		/// Default constructor.
+		/// The child with the largest height delta 
 		/// </summary>
-		/// <param name="terrain">The ultimate parent terrain</param>
-		/// <param name="parent">ptional parent node (in which case xoff, yoff are 0 and size must be entire terrain)</param>
-		/// <param name="xOff">Offsets from the start of the terrain data in 2D</param>
-		/// <param name="yOff">Offsets from the start of the terrain data in 2D</param>
-		/// <param name="size">The size of the node in vertices at the highest LOD</param>
-		/// <param name="lod">The base LOD level</param>
-		/// <param name="depth">The depth that this node is at in the tree (or convenience)</param>
-		/// <param name="quadrant">The index of the quadrant (0, 1, 2, 3)</param>
-		[OgreVersion( 1, 7, 2 )]
-		public TerrainQuadTreeNode( Terrain terrain, TerrainQuadTreeNode parent, ushort xOff, ushort yOff, ushort size, ushort lod, ushort depth, ushort quadrant )
-		{
-			this.mTerrain = terrain;
-			this.mParent = parent;
-			this.mOffsetX = xOff;
-			this.mOffsetY = yOff;
-			this.mBoundaryX = (ushort)( xOff + size );
-			this.mBoundaryY = (ushort)( yOff + size );
-			this.mSize = size;
-			this.mBaseLod = lod;
-			this.mDepth = depth;
-			this.mQuadrant = quadrant;
-			this.mBoundingRadius = 0;
-			this.mCurrentLod = -1;
-			this.mMaterialLodIndex = 0;
-			this.mLodTransition = 0;
-			this.mChildWithMaxHeightDelta = null;
-			this.mSelfOrChildRendered = false;
-			this.mNodeWithVertexData = null;
-			this.mAABB = new AxisAlignedBox();
-			if ( this.mTerrain.MaxBatchSize < size )
-			{
-				var childSize = (ushort)( ( ( size - 1 ) * 0.5f ) + 1 );
-				var childOff = (ushort)( childSize - 1 );
-				var childLod = (ushort)( lod - 1 ); // LOD levels decrease down the tree (higher detail)
-				var childDepth = (ushort)( depth + 1 );
-				// create children
-				this.mChildren[ 0 ] = new TerrainQuadTreeNode( this.mTerrain, this, xOff, yOff, childSize, childLod, childDepth, 0 );
-				this.mChildren[ 1 ] = new TerrainQuadTreeNode( this.mTerrain, this, (ushort)( xOff + childOff ), yOff, childSize, childLod, childDepth, 1 );
-				this.mChildren[ 2 ] = new TerrainQuadTreeNode( this.mTerrain, this, xOff, (ushort)( yOff + childOff ), childSize, childLod, childDepth, 2 );
-				this.mChildren[ 3 ] = new TerrainQuadTreeNode( this.mTerrain, this, (ushort)( xOff + childOff ), (ushort)( yOff + childOff ), childSize, childLod, childDepth, 3 );
+		protected TerrainQuadTreeNode mChildWithMaxHeightDelta;
 
-				var ll = new LodLevel();
-				// non-leaf nodes always render with minBatchSize vertices
-				ll.BatchSize = this.mTerrain.MinBatchSize;
-				ll.MaxHeightDelta = 0;
-				ll.CalcMaxHeightDelta = 0;
-				this.mLodLevels.Add( ll );
-			}
-			else
-			{
-				//no children
-				Array.Clear( this.mChildren, 0, this.mChildren.Length );
-				// this is a leaf node and may have internal LODs of its own
-				ushort ownLod = this.mTerrain.NumLodLevelsPerLeaf;
-
-				Debug.Assert( lod == ( ownLod - 1 ), "The lod passed in should reflect the number of lods in a leaf" );
-				// leaf nodes always have a base LOD of 0, because they're always handling
-				// the highest level of detail
-				this.mBaseLod = 0;
-				ushort sz = this.mTerrain.MaxBatchSize;
-
-				while ( ownLod-- != 0 )
-				{
-					var ll = new LodLevel();
-					ll.BatchSize = sz;
-					ll.MaxHeightDelta = 0;
-					ll.CalcMaxHeightDelta = 0;
-					this.mLodLevels.Add( ll );
-					if ( ownLod != 0 )
-					{
-						sz = (ushort)( ( ( sz - 1 ) * 0.5 ) + 1 );
-					}
-				}
-				Debug.Assert( sz == this.mTerrain.MinBatchSize );
-			}
-
-			// local centre calculation
-			// because of pow2 +1 there is always a middle point
-			var midoffset = (ushort)( ( size - 1 ) / 2 );
-			var midpointX = (ushort)( this.mOffsetX + midoffset );
-			var midpointY = (ushort)( this.mOffsetY + midoffset );
-
-			//derive the local centry, but give it a height if 0
-			//TODO: - what if we actually centred this at the terrain height at this point?
-			//would this be better?
-			this.mTerrain.GetPoint( midpointX, midpointY, 0, ref this.mLocalCentre );
-			this.mMovable = new Movable( this );
-			this.mRend = new Rend( this );
-		}
+		protected bool mSelfOrChildRendered;
+		protected ushort mMaterialLodIndex;
+		protected TerrainQuadTreeNode mNodeWithVertexData;
+		protected VertexDataRecord mVertexDataRecord;
+		protected Rend mRend;
+		protected Movable mMovable;
+		protected SceneNode mLocalNode;
 
 		public VertexDataRecord VertextDataRecord
 		{
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return ( this.mNodeWithVertexData != null ) ? this.mNodeWithVertexData.mVertexDataRecord : null;
+				return ( mNodeWithVertexData != null ) ? mNodeWithVertexData.mVertexDataRecord : null;
 			}
 		}
 
@@ -344,7 +247,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mOffsetX;
+				return mOffsetX;
 			}
 		}
 
@@ -356,7 +259,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mOffsetY;
+				return mOffsetY;
 			}
 		}
 
@@ -368,7 +271,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mBaseLod;
+				return mBaseLod;
 			}
 		}
 
@@ -380,7 +283,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return (ushort)this.mLodLevels.Count;
+				return (ushort)mLodLevels.Count;
 			}
 		}
 
@@ -392,7 +295,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mTerrain;
+				return mTerrain;
 			}
 		}
 
@@ -404,7 +307,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent;
+				return mParent;
 			}
 		}
 
@@ -416,7 +319,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mChildren[ 0 ] == null;
+				return mChildren[ 0 ] == null;
 			}
 		}
 
@@ -428,7 +331,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mAABB;
+				return mAABB;
 			}
 		}
 
@@ -440,7 +343,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mBoundingRadius;
+				return mBoundingRadius;
 			}
 		}
 
@@ -452,15 +355,15 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				switch ( this.mTerrain.Alignment )
+				switch ( mTerrain.Alignment )
 				{
 					case Alignment.Align_X_Y:
 					default:
-						return this.mAABB.Minimum.z;
+						return mAABB.Minimum.z;
 					case Alignment.Align_X_Z:
-						return this.mAABB.Minimum.y;
+						return mAABB.Minimum.y;
 					case Alignment.Align_Y_Z:
-						return this.mAABB.Minimum.x;
+						return mAABB.Minimum.x;
 				}
 			}
 		}
@@ -473,15 +376,15 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				switch ( this.mTerrain.Alignment )
+				switch ( mTerrain.Alignment )
 				{
 					case Alignment.Align_X_Y:
 					default:
-						return this.mAABB.Maximum.z;
+						return mAABB.Maximum.z;
 					case Alignment.Align_X_Z:
-						return this.mAABB.Maximum.y;
+						return mAABB.Maximum.y;
 					case Alignment.Align_Y_Z:
-						return this.mAABB.Maximum.x;
+						return mAABB.Maximum.x;
 				}
 			}
 		}
@@ -494,14 +397,14 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mCurrentLod;
+				return mCurrentLod;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mCurrentLod = value;
-				this.mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( this.mLodTransition, this.mCurrentLod + this.mBaseLod + 1, 0, 0 ) );
+				mCurrentLod = value;
+				mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( mLodTransition, mCurrentLod + mBaseLod + 1, 0, 0 ) );
 			}
 		}
 
@@ -513,7 +416,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mCurrentLod != -1;
+				return mCurrentLod != -1;
 			}
 		}
 
@@ -525,7 +428,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mSelfOrChildRendered;
+				return mSelfOrChildRendered;
 			}
 		}
 
@@ -537,14 +440,14 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mLodTransition;
+				return mLodTransition;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mLodTransition = value;
-				this.mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( this.mLodTransition, this.mCurrentLod + this.mBaseLod + 1, 0, 0 ) );
+				mLodTransition = value;
+				mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( mLodTransition, mCurrentLod + mBaseLod + 1, 0, 0 ) );
 			}
 		}
 
@@ -556,7 +459,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mLocalCentre;
+				return mLocalCentre;
 			}
 		}
 
@@ -565,7 +468,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mTerrain.Material;
+				return mTerrain.Material;
 			}
 		}
 
@@ -574,7 +477,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mTerrain.Material.GetBestTechnique( this.mMaterialLodIndex, this.mRend );
+				return mTerrain.Material.GetBestTechnique( mMaterialLodIndex, mRend );
 			}
 		}
 
@@ -583,7 +486,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMovable.QueryLights();
+				return mMovable.QueryLights();
 			}
 		}
 
@@ -592,12 +495,12 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				var op = new RenderOperation();
-				this.mNodeWithVertexData.UpdateGpuVertexData();
-				op.indexData = this.mLodLevels[ this.mCurrentLod ].GpuIndexData;
+				Graphics.RenderOperation op = new RenderOperation();
+				mNodeWithVertexData.UpdateGpuVertexData();
+				op.indexData = mLodLevels[ mCurrentLod ].GpuIndexData;
 				op.operationType = OperationType.TriangleStrip;
 				op.useIndices = true;
-				op.vertexData = VertextDataRecord.GpuVertexData;
+				op.vertexData = this.VertextDataRecord.GpuVertexData;
 
 				return op;
 			}
@@ -612,39 +515,133 @@ namespace Axiom.Components.Terrain
 			}
 		}
 
+		/// <summary>
+		/// Default constructor.
+		/// </summary>
+		/// <param name="terrain">The ultimate parent terrain</param>
+		/// <param name="parent">ptional parent node (in which case xoff, yoff are 0 and size must be entire terrain)</param>
+		/// <param name="xOff">Offsets from the start of the terrain data in 2D</param>
+		/// <param name="yOff">Offsets from the start of the terrain data in 2D</param>
+		/// <param name="size">The size of the node in vertices at the highest LOD</param>
+		/// <param name="lod">The base LOD level</param>
+		/// <param name="depth">The depth that this node is at in the tree (or convenience)</param>
+		/// <param name="quadrant">The index of the quadrant (0, 1, 2, 3)</param>
+		[OgreVersion( 1, 7, 2 )]
+		public TerrainQuadTreeNode( Terrain terrain, TerrainQuadTreeNode parent, ushort xOff, ushort yOff, ushort size, ushort lod, ushort depth, ushort quadrant )
+			: base()
+		{
+			mTerrain = terrain;
+			mParent = parent;
+			mOffsetX = xOff;
+			mOffsetY = yOff;
+			mBoundaryX = (ushort)( xOff + size );
+			mBoundaryY = (ushort)( yOff + size );
+			mSize = size;
+			mBaseLod = lod;
+			mDepth = depth;
+			mQuadrant = quadrant;
+			mBoundingRadius = 0;
+			mCurrentLod = -1;
+			mMaterialLodIndex = 0;
+			mLodTransition = 0;
+			mChildWithMaxHeightDelta = null;
+			mSelfOrChildRendered = false;
+			mNodeWithVertexData = null;
+			mAABB = new AxisAlignedBox();
+			if ( mTerrain.MaxBatchSize < size )
+			{
+				var childSize = (ushort)( ( ( size - 1 ) * 0.5f ) + 1 );
+				var childOff = (ushort)( childSize - 1 );
+				var childLod = (ushort)( lod - 1 ); // LOD levels decrease down the tree (higher detail)
+				var childDepth = (ushort)( depth + 1 );
+				// create children
+				mChildren[ 0 ] = new TerrainQuadTreeNode( mTerrain, this, xOff, yOff, childSize, childLod, childDepth, 0 );
+				mChildren[ 1 ] = new TerrainQuadTreeNode( mTerrain, this, (ushort)( xOff + childOff ), yOff, childSize, childLod, childDepth, 1 );
+				mChildren[ 2 ] = new TerrainQuadTreeNode( mTerrain, this, xOff, (ushort)( yOff + childOff ), childSize, childLod, childDepth, 2 );
+				mChildren[ 3 ] = new TerrainQuadTreeNode( mTerrain, this, (ushort)( xOff + childOff ), (ushort)( yOff + childOff ), childSize, childLod, childDepth, 3 );
+
+				LodLevel ll = new LodLevel();
+				// non-leaf nodes always render with minBatchSize vertices
+				ll.BatchSize = mTerrain.MinBatchSize;
+				ll.MaxHeightDelta = 0;
+				ll.CalcMaxHeightDelta = 0;
+				mLodLevels.Add( ll );
+			}
+			else
+			{
+				//no children
+				Array.Clear( mChildren, 0, mChildren.Length );
+				// this is a leaf node and may have internal LODs of its own
+				var ownLod = mTerrain.NumLodLevelsPerLeaf;
+
+				Debug.Assert( lod == ( ownLod - 1 ), "The lod passed in should reflect the number of lods in a leaf" );
+				// leaf nodes always have a base LOD of 0, because they're always handling
+				// the highest level of detail
+				mBaseLod = 0;
+				var sz = mTerrain.MaxBatchSize;
+
+				while ( ownLod-- != 0 )
+				{
+					var ll = new LodLevel();
+					ll.BatchSize = sz;
+					ll.MaxHeightDelta = 0;
+					ll.CalcMaxHeightDelta = 0;
+					mLodLevels.Add( ll );
+					if ( ownLod != 0 )
+					{
+						sz = (ushort)( ( ( sz - 1 ) * 0.5 ) + 1 );
+					}
+				}
+				Debug.Assert( sz == mTerrain.MinBatchSize );
+			}
+
+			// local centre calculation
+			// because of pow2 +1 there is always a middle point
+			var midoffset = (ushort)( ( size - 1 ) / 2 );
+			var midpointX = (ushort)( mOffsetX + midoffset );
+			var midpointY = (ushort)( mOffsetY + midoffset );
+
+			//derive the local centry, but give it a height if 0
+			//TODO: - what if we actually centred this at the terrain height at this point?
+			//would this be better?
+			mTerrain.GetPoint( midpointX, midpointY, 0, ref mLocalCentre );
+			mMovable = new Movable( this );
+			mRend = new Rend( this );
+		}
+
 		[OgreVersion( 1, 7, 2, "~TerrainQuadTreeNode" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.mMovable != null )
+					if ( mMovable != null )
 					{
-						if ( !this.mMovable.IsDisposed )
+						if ( !mMovable.IsDisposed )
 						{
-							this.mMovable.Dispose();
+							mMovable.Dispose();
 						}
 
-						this.mMovable = null;
+						mMovable = null;
 					}
 
-					if ( this.mRend != null )
+					if ( mRend != null )
 					{
-						this.mRend = null;
+						mRend = null;
 					}
 
-					if ( this.mLocalNode != null )
+					if ( mLocalNode != null )
 					{
-						this.mTerrain.RootSceneNode.RemoveAndDestroyChild( this.mLocalNode.Name );
-						this.mLocalNode = null;
+						mTerrain.RootSceneNode.RemoveAndDestroyChild( mLocalNode.Name );
+						mLocalNode = null;
 					}
 
-					for ( int i = 0; i < this.mChildren.Length; i++ )
+					for ( int i = 0; i < mChildren.Length; i++ )
 					{
-						if ( this.mChildren[ i ] != null )
+						if ( mChildren[ i ] != null )
 						{
-							this.mChildren[ i ].Dispose();
+							mChildren[ i ].Dispose();
 						}
 					}
 
@@ -652,13 +649,13 @@ namespace Axiom.Components.Terrain
 					DestroyGpuVertexData();
 					DestroyGpuIndexData();
 
-					if ( this.mLodLevels != null )
+					if ( mLodLevels != null )
 					{
-						this.mLodLevels.Clear();
-						this.mLodLevels = null;
+						mLodLevels.Clear();
+						mLodLevels = null;
 					}
 
-					this.mVertexDataRecord = null;
+					mVertexDataRecord = null;
 				}
 			}
 
@@ -678,7 +675,7 @@ namespace Axiom.Components.Terrain
 				return null;
 			}
 
-			return this.mChildren[ child ];
+			return mChildren[ child ];
 		}
 
 		/// <summary>
@@ -692,9 +689,9 @@ namespace Axiom.Components.Terrain
 				return;
 			}
 
-			for ( int i = 0; i < this.mChildren.Length; i++ )
+			for ( int i = 0; i < mChildren.Length; i++ )
 			{
-				this.mChildren[ i ].Prepare();
+				mChildren[ i ].Prepare();
 			}
 		}
 
@@ -705,9 +702,9 @@ namespace Axiom.Components.Terrain
 		public void Prepare( StreamSerializer stream )
 		{
 			// load LOD data we need
-			for ( int i = 0; i < this.mLodLevels.Count; ++i )
+			for ( int i = 0; i < mLodLevels.Count; ++i )
 			{
-				LodLevel ll = this.mLodLevels[ i ];
+				var ll = mLodLevels[ i ];
 				// only read 'calc' and then copy to final (separation is only for
 				// real-time calculation
 				// Basically this is what finaliseHeightDeltas does in calc path
@@ -720,18 +717,18 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; ++i )
 				{
-					this.mChildren[ i ].Prepare( stream );
+					mChildren[ i ].Prepare( stream );
 				}
 			}
 
 			// If this is the root, do the post delta calc to finish
-			if ( this.mParent == null )
+			if ( mParent == null )
 			{
 				var rect = new Rectangle();
-				rect.Top = this.mOffsetY;
-				rect.Bottom = this.mBoundaryY;
-				rect.Left = this.mOffsetX;
-				rect.Right = this.mBoundaryX;
+				rect.Top = mOffsetY;
+				rect.Bottom = mBoundaryY;
+				rect.Left = mOffsetX;
+				rect.Right = mBoundaryX;
 				PostDeltaCalculation( rect );
 			}
 		}
@@ -744,7 +741,7 @@ namespace Axiom.Components.Terrain
 		public void Save( StreamSerializer stream )
 		{
 			// save LOD data we need
-			foreach ( LodLevel ll in this.mLodLevels )
+			foreach ( var ll in mLodLevels )
 			{
 				stream.Write( ll.MaxHeightDelta );
 			}
@@ -753,7 +750,7 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; ++i )
 				{
-					this.mChildren[ i ].Save( stream );
+					mChildren[ i ].Save( stream );
 				}
 			}
 		}
@@ -771,16 +768,16 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; i++ )
 				{
-					this.mChildren[ i ].Load();
+					mChildren[ i ].Load();
 				}
 			}
 
-			if ( this.mLocalNode == null )
+			if ( mLocalNode == null )
 			{
-				this.mLocalNode = this.mTerrain.RootSceneNode.CreateChildSceneNode( this.mLocalCentre );
+				mLocalNode = mTerrain.RootSceneNode.CreateChildSceneNode( mLocalCentre );
 			}
 
-			this.mLocalNode.AttachObject( this.mMovable );
+			mLocalNode.AttachObject( mMovable );
 		}
 
 		/// <summary>
@@ -793,15 +790,15 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; i++ )
 				{
-					this.mChildren[ i ].Unload();
+					mChildren[ i ].Unload();
 				}
 			}
 
 			DestroyGpuVertexData();
 
-			if ( this.mMovable.IsAttached )
+			if ( mMovable.IsAttached )
 			{
-				this.mLocalNode.DetachObject( this.mMovable );
+				mLocalNode.DetachObject( mMovable );
 			}
 		}
 
@@ -815,7 +812,7 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; i++ )
 				{
-					this.mChildren[ i ].Unprepare();
+					mChildren[ i ].Unprepare();
 				}
 			}
 
@@ -834,9 +831,9 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public LodLevel GetLodLevel( ushort lod )
 		{
-			Debug.Assert( lod < this.mLodLevels.Count );
+			Debug.Assert( lod < mLodLevels.Count );
 
-			return this.mLodLevels[ lod ];
+			return mLodLevels[ lod ];
 		}
 
 		/// <summary>
@@ -846,7 +843,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void PreDeltaCalculation( Rectangle rect )
 		{
-			if ( rect.Left <= this.mBoundaryX || rect.Right > this.mOffsetX || rect.Top <= this.mBoundaryY || rect.Bottom > this.mOffsetY )
+			if ( rect.Left <= mBoundaryX || rect.Right > mOffsetX || rect.Top <= mBoundaryY || rect.Bottom > mOffsetY )
 			{
 				// relevant to this node (overlaps)
 
@@ -859,11 +856,11 @@ namespace Axiom.Components.Terrain
 				// Note we use the 'calc' field here to avoid interfering with any
 				// ongoing LOD calculations (this can be in the background)
 
-				if ( rect.Left <= this.mOffsetX && rect.Right > this.mBoundaryX && rect.Top <= this.mOffsetY && rect.Bottom > this.mBoundaryY )
+				if ( rect.Left <= mOffsetX && rect.Right > mBoundaryX && rect.Top <= mOffsetY && rect.Bottom > mBoundaryY )
 				{
-					for ( int i = 0; i < this.mLodLevels.Count; i++ )
+					for ( int i = 0; i < mLodLevels.Count; i++ )
 					{
-						LodLevel tmp = this.mLodLevels[ i ];
+						LodLevel tmp = mLodLevels[ i ];
 						tmp.CalcMaxHeightDelta = 0.0f;
 					}
 				}
@@ -873,7 +870,7 @@ namespace Axiom.Components.Terrain
 				{
 					for ( int i = 0; i < 4; i++ )
 					{
-						this.mChildren[ i ].PreDeltaCalculation( rect );
+						mChildren[ i ].PreDeltaCalculation( rect );
 					}
 				}
 			}
@@ -889,14 +886,14 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void NotifyDelta( ushort x, ushort y, ushort lod, float delta )
 		{
-			if ( x >= this.mOffsetX && x < this.mBoundaryX && y >= this.mOffsetY && y < this.mBoundaryY )
+			if ( x >= mOffsetX && x < mBoundaryX && y >= mOffsetY && y < mBoundaryY )
 			{
 				// within our bounds, check it's our LOD level
-				if ( lod >= this.mBaseLod && lod < this.mBaseLod + (ushort)( this.mLodLevels.Count ) )
+				if ( lod >= mBaseLod && lod < mBaseLod + (ushort)( mLodLevels.Count ) )
 				{
 					int iter = 0;
-					iter += lod - this.mBaseLod;
-					LodLevel tmp = this.mLodLevels[ iter ];
+					iter += lod - mBaseLod;
+					LodLevel tmp = mLodLevels[ iter ];
 					tmp.CalcMaxHeightDelta = System.Math.Max( tmp.CalcMaxHeightDelta, delta );
 				}
 
@@ -905,7 +902,7 @@ namespace Axiom.Components.Terrain
 				{
 					for ( int i = 0; i < 4; i++ )
 					{
-						this.mChildren[ i ].NotifyDelta( x, y, lod, delta );
+						mChildren[ i ].NotifyDelta( x, y, lod, delta );
 					}
 				}
 			}
@@ -918,7 +915,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void PostDeltaCalculation( Rectangle rect )
 		{
-			if ( rect.Left <= this.mBoundaryX || rect.Right > this.mOffsetX || rect.Top <= this.mBoundaryY || rect.Bottom > this.mOffsetY )
+			if ( rect.Left <= mBoundaryX || rect.Right > mOffsetX || rect.Top <= mBoundaryY || rect.Bottom > mOffsetY )
 			{
 				// relevant to this node (overlaps)
 
@@ -931,7 +928,7 @@ namespace Axiom.Components.Terrain
 					TerrainQuadTreeNode childWithMaxHeightDelta = null;
 					for ( int i = 0; i < 4; i++ )
 					{
-						TerrainQuadTreeNode child = this.mChildren[ i ];
+						TerrainQuadTreeNode child = mChildren[ i ];
 						child.PostDeltaCalculation( rect );
 						float childData = child.GetLodLevel( (ushort)( child.LodCount - 1 ) ).CalcMaxHeightDelta;
 
@@ -945,20 +942,20 @@ namespace Axiom.Components.Terrain
 					// make sure that our highest delta value is greater than all children's
 					// otherwise we could have some crossover problems
 					// for a non-leaf, there is only one LOD level
-					LodLevel tmp = this.mLodLevels[ 0 ];
+					LodLevel tmp = mLodLevels[ 0 ];
 					tmp.CalcMaxHeightDelta = System.Math.Max( tmp.CalcMaxHeightDelta, maxChildDelta * (Real)1.05 );
-					this.mChildWithMaxHeightDelta = childWithMaxHeightDelta;
+					mChildWithMaxHeightDelta = childWithMaxHeightDelta;
 				}
 				else
 				{
 					// make sure own LOD levels delta values ascend
-					for ( int i = 0; i < this.mLodLevels.Count - 1; i++ )
+					for ( int i = 0; i < mLodLevels.Count - 1; i++ )
 					{
 						// the next LOD after this one should have a higher delta
 						// otherwise it won't come into affect further back like it should!
-						LodLevel tmp = this.mLodLevels[ i ];
-						LodLevel tmpPlus = this.mLodLevels[ i + 1 ];
-						tmpPlus.CalcMaxHeightDelta = System.Math.Max( tmpPlus.CalcMaxHeightDelta, tmp.CalcMaxHeightDelta * 1.05 );
+						LodLevel tmp = mLodLevels[ i ];
+						LodLevel tmpPlus = mLodLevels[ i + 1 ];
+						tmpPlus.CalcMaxHeightDelta = System.Math.Max( tmpPlus.CalcMaxHeightDelta, tmp.CalcMaxHeightDelta * (Real)1.05 );
 					}
 				}
 			}
@@ -972,7 +969,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void FinaliseDeltaValues( Rectangle rect )
 		{
-			if ( rect.Left <= this.mBoundaryX || rect.Right > this.mOffsetX || rect.Top <= this.mBoundaryY || rect.Bottom > this.mOffsetY )
+			if ( rect.Left <= mBoundaryX || rect.Right > mOffsetX || rect.Top <= mBoundaryY || rect.Bottom > mOffsetY )
 			{
 				// relevant to this node (overlaps)
 
@@ -981,13 +978,13 @@ namespace Axiom.Components.Terrain
 				{
 					for ( int i = 0; i < 4; i++ )
 					{
-						TerrainQuadTreeNode child = this.mChildren[ i ];
+						TerrainQuadTreeNode child = mChildren[ i ];
 						child.FinaliseDeltaValues( rect );
 					}
 				}
 
 				// self
-				LodLevel[] lvls = this.mLodLevels.ToArray();
+				LodLevel[] lvls = mLodLevels.ToArray();
 				for ( int i = 0; i < lvls.Length; i++ )
 				{
 					LodLevel tmp = lvls[ i ];
@@ -1009,22 +1006,22 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void AssignVertexData( ushort treeDepthStart, ushort treeDepthEnd, ushort resolution, ushort sz )
 		{
-			Debug.Assert( treeDepthStart >= this.mDepth, "Should not be calling this" );
+			Debug.Assert( treeDepthStart >= mDepth, "Should not be calling this" );
 
-			if ( this.mDepth == treeDepthStart )
+			if ( mDepth == treeDepthStart )
 			{
 				//we own this vertex data
-				this.mNodeWithVertexData = this;
-				this.mVertexDataRecord = new VertexDataRecord( resolution, sz, (ushort)( treeDepthEnd - treeDepthStart ) );
+				mNodeWithVertexData = this;
+				mVertexDataRecord = new VertexDataRecord( resolution, sz, (ushort)( treeDepthEnd - treeDepthStart ) );
 
 				CreateCpuVertexData();
 
 				//pass on to children
-				if ( !IsLeaf && treeDepthEnd > ( this.mDepth + 1 ) ) // treeDepthEnd is exclusive, and this is children
+				if ( !IsLeaf && treeDepthEnd > ( mDepth + 1 ) ) // treeDepthEnd is exclusive, and this is children
 				{
 					for ( int i = 0; i < 4; ++i )
 					{
-						this.mChildren[ i ].UseAncestorVertexData( this, treeDepthEnd, resolution );
+						mChildren[ i ].UseAncestorVertexData( this, treeDepthEnd, resolution );
 					}
 				}
 			}
@@ -1034,7 +1031,7 @@ namespace Axiom.Components.Terrain
 
 				for ( int i = 0; i < 4; ++i )
 				{
-					this.mChildren[ i ].AssignVertexData( treeDepthStart, treeDepthEnd, resolution, sz );
+					mChildren[ i ].AssignVertexData( treeDepthStart, treeDepthEnd, resolution, sz );
 				}
 			}
 		}
@@ -1048,14 +1045,14 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void UseAncestorVertexData( TerrainQuadTreeNode owner, int treeDepthEnd, int resolution )
 		{
-			this.mNodeWithVertexData = owner;
-			this.mVertexDataRecord = null;
+			mNodeWithVertexData = owner;
+			mVertexDataRecord = null;
 
-			if ( !IsLeaf && treeDepthEnd > ( this.mDepth + 1 ) ) // treeDepthEnd is exclusive, and this is children
+			if ( !IsLeaf && treeDepthEnd > ( mDepth + 1 ) ) // treeDepthEnd is exclusive, and this is children
 			{
 				for ( int i = 0; i < 4; i++ )
 				{
-					this.mChildren[ i ].UseAncestorVertexData( owner, treeDepthEnd, resolution );
+					mChildren[ i ].UseAncestorVertexData( owner, treeDepthEnd, resolution );
 				}
 			}
 		}
@@ -1070,13 +1067,13 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void UpdateVertexData( bool positions, bool deltas, Rectangle rect, bool cpuData )
 		{
-			if ( rect.Left <= this.mBoundaryX || rect.Right > this.mOffsetX || rect.Top <= this.mBoundaryY || rect.Bottom > this.mOffsetY )
+			if ( rect.Left <= mBoundaryX || rect.Right > mOffsetX || rect.Top <= mBoundaryY || rect.Bottom > mOffsetY )
 			{
 				// Do we have vertex data?
-				if ( this.mVertexDataRecord != null )
+				if ( mVertexDataRecord != null )
 				{
 					// Trim to our bounds
-					var updateRect = new Rectangle( this.mOffsetX, this.mOffsetY, this.mBoundaryX, this.mBoundaryY );
+					var updateRect = new Rectangle( mOffsetX, mOffsetY, mBoundaryX, mBoundaryY );
 					updateRect.Left = System.Math.Max( updateRect.Left, rect.Left );
 					updateRect.Right = System.Math.Min( updateRect.Right, rect.Right );
 					updateRect.Top = System.Math.Max( updateRect.Top, rect.Top );
@@ -1088,7 +1085,7 @@ namespace Axiom.Components.Terrain
 					// to direct
 
 					HardwareVertexBuffer posbuf = null, deltabuf = null;
-					VertexData targetData = cpuData ? this.mVertexDataRecord.CpuVertexData : this.mVertexDataRecord.GpuVertexData;
+					var targetData = cpuData ? mVertexDataRecord.CpuVertexData : mVertexDataRecord.GpuVertexData;
 
 					if ( positions )
 					{
@@ -1107,23 +1104,23 @@ namespace Axiom.Components.Terrain
 				{
 					for ( int i = 0; i < 4; ++i )
 					{
-						this.mChildren[ i ].UpdateVertexData( positions, deltas, rect, cpuData );
+						mChildren[ i ].UpdateVertexData( positions, deltas, rect, cpuData );
 
 						// merge bounds from children
-						var childBox = new AxisAlignedBox( this.mChildren[ i ].AABB );
+						var childBox = new AxisAlignedBox( mChildren[ i ].AABB );
 
 						// this box is relative to child centre
-						Vector3 boxoffset = this.mChildren[ i ].LocalCentre - LocalCentre;
+						var boxoffset = mChildren[ i ].LocalCentre - LocalCentre;
 						childBox.Minimum = childBox.Minimum + boxoffset;
 						childBox.Maximum = childBox.Maximum + boxoffset;
-						this.mAABB.Merge( childBox );
+						mAABB.Merge( childBox );
 					}
 				}
 
 				// Make sure node knows to update
-				if ( this.mMovable != null && this.mMovable.IsAttached )
+				if ( mMovable != null && mMovable.IsAttached )
 				{
-					this.mMovable.ParentSceneNode.NeedUpdate();
+					mMovable.ParentSceneNode.NeedUpdate();
 				}
 			}
 		}
@@ -1142,14 +1139,14 @@ namespace Axiom.Components.Terrain
 		{
 			if ( PointIntersectsNode( x, y ) )
 			{
-				Vector3 localPos = pos - this.mLocalCentre;
-				this.mAABB.Merge( localPos );
-				this.mBoundingRadius = System.Math.Max( this.mBoundingRadius, localPos.Length );
+				var localPos = pos - mLocalCentre;
+				mAABB.Merge( localPos );
+				mBoundingRadius = System.Math.Max( mBoundingRadius, localPos.Length );
 				if ( !IsLeaf )
 				{
 					for ( int i = 0; i < 4; ++i )
 					{
-						this.mChildren[ i ].MergeIntoBounds( x, y, pos );
+						mChildren[ i ].MergeIntoBounds( x, y, pos );
 					}
 				}
 			}
@@ -1164,14 +1161,14 @@ namespace Axiom.Components.Terrain
 		{
 			if ( RectContainsNode( rect ) )
 			{
-				this.mAABB.IsNull = true;
-				this.mBoundingRadius = 0;
+				mAABB.IsNull = true;
+				mBoundingRadius = 0;
 
 				if ( !IsLeaf )
 				{
 					for ( int i = 0; i < 4; ++i )
 					{
-						this.mChildren[ i ].ResetBounds( rect );
+						mChildren[ i ].ResetBounds( rect );
 					}
 				}
 			}
@@ -1186,7 +1183,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool RectContainsNode( Rectangle rect )
 		{
-			return ( rect.Left <= this.mOffsetX && rect.Right > this.mBoundaryX && rect.Top <= this.mOffsetY && rect.Bottom > this.mBoundaryY );
+			return ( rect.Left <= mOffsetX && rect.Right > mBoundaryX && rect.Top <= mOffsetY && rect.Bottom > mBoundaryY );
 		}
 
 		/// <summary>
@@ -1198,7 +1195,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool RectIntersectsNode( Rectangle rect )
 		{
-			return ( rect.Right >= this.mOffsetX && rect.Left <= this.mBoundaryX && rect.Bottom >= this.mOffsetY && rect.Top <= this.mBoundaryY );
+			return ( rect.Right >= mOffsetX && rect.Left <= mBoundaryX && rect.Bottom >= mOffsetY && rect.Top <= mBoundaryY );
 		}
 
 		/// <summary>
@@ -1211,7 +1208,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool PointIntersectsNode( long x, long y )
 		{
-			return ( x >= this.mOffsetX && x < this.mBoundaryX && y >= this.mOffsetY && y < this.mBoundaryY );
+			return ( x >= mOffsetX && x < mBoundaryX && y >= mOffsetY && y < mBoundaryY );
 		}
 
 		/// <summary>
@@ -1223,7 +1220,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool CalculateCurrentLod( Camera cam, Real cFactor )
 		{
-			this.mSelfOrChildRendered = false;
+			mSelfOrChildRendered = false;
 
 			//check children first.
 			int childrenRenderedOut = 0;
@@ -1231,7 +1228,7 @@ namespace Axiom.Components.Terrain
 			{
 				for ( int i = 0; i < 4; ++i )
 				{
-					if ( this.mChildren[ i ].CalculateCurrentLod( cam, cFactor ) )
+					if ( mChildren[ i ].CalculateCurrentLod( cam, cFactor ) )
 					{
 						++childrenRenderedOut;
 					}
@@ -1241,16 +1238,16 @@ namespace Axiom.Components.Terrain
 			if ( childrenRenderedOut == 0 )
 			{
 				// no children were within their LOD ranges, so we should consider our own
-				Vector3 localPos = cam.DerivedPosition - this.mLocalCentre - this.mTerrain.Position;
+				Vector3 localPos = cam.DerivedPosition - mLocalCentre - mTerrain.Position;
 				Real dist;
 				if ( TerrainGlobalOptions.UseRayBoxDistanceCalculation )
 				{
 					// Get distance to this terrain node (to closest point of the box)
 					// head towards centre of the box (note, box may not cover mLocalCentre because of height)
-					Vector3 dir = this.mAABB.Center - localPos;
+					var dir = mAABB.Center - localPos;
 					dir.Normalize();
 					var ray = new Ray( localPos, dir );
-					IntersectResult intersectRes = ray.Intersects( this.mAABB );
+					var intersectRes = ray.Intersects( mAABB );
 
 					// ray will always intersect, we just want the distance
 					dist = intersectRes.Distance;
@@ -1261,31 +1258,31 @@ namespace Axiom.Components.Terrain
 					dist = localPos.Length;
 					// deduct half the radius of the box, assume that on average the 
 					// worst case is best approximated by this
-					dist -= ( this.mBoundingRadius * 0.5f );
+					dist -= ( mBoundingRadius * 0.5f );
 				}
 
 				// Do material LOD
-				Material material = Material;
+				var material = this.Material;
 				LodStrategy str = material.LodStrategy;
-				Real lodValue = str.GetValue( this.mMovable, cam );
+				Real lodValue = str.GetValue( mMovable, cam );
 				// Get the index at this biased depth
-				this.mMaterialLodIndex = (ushort)material.GetLodIndex( lodValue );
+				mMaterialLodIndex = (ushort)material.GetLodIndex( lodValue );
 
 
 				// For each LOD, the distance at which the LOD will transition *downwards*
 				// is given by 
 				// distTransition = maxDelta * cFactor;
 				int lodLvl = 0;
-				this.mCurrentLod = -1;
-				foreach ( LodLevel i in this.mLodLevels )
+				mCurrentLod = -1;
+				foreach ( LodLevel i in mLodLevels )
 				{
 					// If we have no parent, and this is the lowest LOD, we always render
 					// this is the 'last resort' so to speak, we always enoucnter this last
-					if ( lodLvl + 1 == this.mLodLevels.Count && this.mParent == null )
+					if ( lodLvl + 1 == mLodLevels.Count && mParent == null )
 					{
 						CurrentLod = lodLvl;
-						this.mSelfOrChildRendered = true;
-						this.mLodTransition = 0;
+						mSelfOrChildRendered = true;
+						mLodTransition = 0;
 					}
 					else
 					{
@@ -1308,9 +1305,9 @@ namespace Axiom.Components.Terrain
 						{
 							// we're within range of this LOD
 							CurrentLod = lodLvl;
-							this.mSelfOrChildRendered = true;
+							mSelfOrChildRendered = true;
 
-							if ( this.mTerrain.IsMorphRequired )
+							if ( mTerrain.IsMorphRequired )
 							{
 								// calculate the transition percentage
 								// we need a percentage of the total distance for just this LOD, 
@@ -1325,31 +1322,31 @@ namespace Axiom.Components.Terrain
 								if ( IsLeaf )
 								{
 									// Any higher LODs?
-									if ( !i.Equals( this.mLodLevels[ 0 ] ) )
+									if ( !i.Equals( mLodLevels[ 0 ] ) )
 									{
 										int prev = lodLvl - 1;
-										distTotal -= this.mLodLevels[ prev ].LastTransitionDist;
+										distTotal -= mLodLevels[ prev ].LastTransitionDist;
 									}
 								}
 								else
 								{
 									// Take the distance of the lowest LOD of child
-									LodLevel childLod = this.mChildWithMaxHeightDelta.GetLodLevel( (ushort)( this.mChildWithMaxHeightDelta.LodCount - 1 ) );
+									LodLevel childLod = mChildWithMaxHeightDelta.GetLodLevel( (ushort)( mChildWithMaxHeightDelta.LodCount - 1 ) );
 									distTotal -= childLod.LastTransitionDist;
 								}
 								// fade from 0 to 1 in the last 25% of the distance
 								Real distMorphRegion = distTotal * 0.25f;
 								Real distRemain = distTransition - dist;
 
-								this.mLodTransition = 1.0f - ( distRemain / distMorphRegion );
-								this.mLodTransition = System.Math.Min( 1.0f, this.mLodTransition );
-								this.mLodTransition = System.Math.Max( 0.0f, this.mLodTransition );
+								mLodTransition = 1.0f - ( distRemain / distMorphRegion );
+								mLodTransition = System.Math.Min( 1.0f, mLodTransition );
+								mLodTransition = System.Math.Max( 0.0f, mLodTransition );
 
 								// Pass both the transition % and target LOD (GLOBAL current + 1)
 								// this selectively applies the morph just to the
 								// vertices which would drop out at this LOD, even 
 								// while using the single shared vertex data
-								this.mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( this.mLodTransition, this.mCurrentLod + this.mBaseLod + 1, 0, 0 ) );
+								mRend.SetCustomParameter( Terrain.LOD_MORPH_CUSTOM_PARAM, new Vector4( mLodTransition, mCurrentLod + mBaseLod + 1, 0, 0 ) );
 							} //end if
 
 							// since LODs are ordered from highest to lowest detail, 
@@ -1363,15 +1360,15 @@ namespace Axiom.Components.Terrain
 			else
 			{
 				// we should not render ourself
-				this.mCurrentLod = -1;
-				this.mSelfOrChildRendered = true;
+				mCurrentLod = -1;
+				mSelfOrChildRendered = true;
 				if ( childrenRenderedOut < 4 )
 				{
 					// only *some* children decided to render on their own, but either 
 					// none or all need to render, so set the others manually to their lowest
 					for ( int i = 0; i < 4; ++i )
 					{
-						TerrainQuadTreeNode child = this.mChildren[ i ];
+						TerrainQuadTreeNode child = mChildren[ i ];
 						if ( !child.IsSelfOrChildrenRenderedAtCurrentLod )
 						{
 							child.CurrentLod = child.LodCount - 1;
@@ -1381,7 +1378,7 @@ namespace Axiom.Components.Terrain
 				} //(childRenderedCount < 4)
 			} // (childRenderedCount == 0)
 
-			return this.mSelfOrChildRendered;
+			return mSelfOrChildRendered;
 		}
 
 		/// <summary>
@@ -1391,19 +1388,19 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateVertexBuffer( HardwareVertexBuffer posBuf, HardwareVertexBuffer deltaBuf, Rectangle rect )
 		{
-			Debug.Assert( rect.Left >= this.mOffsetX && rect.Right <= this.mBoundaryX && rect.Top >= this.mOffsetY && rect.Bottom <= this.mBoundaryY );
+			Debug.Assert( rect.Left >= mOffsetX && rect.Right <= mBoundaryX && rect.Top >= mOffsetY && rect.Bottom <= mBoundaryY );
 
 			// potentially reset our bounds depending on coverage of the update
 			ResetBounds( rect );
 
 			//main data
-			var inc = (ushort)( ( this.mTerrain.Size - 1 ) / ( this.mVertexDataRecord.Resolution - 1 ) );
-			long destOffsetX = rect.Left <= this.mOffsetX ? 0 : ( rect.Left - this.mOffsetX ) / inc;
-			long destOffsetY = rect.Top <= this.mOffsetY ? 0 : ( rect.Top - this.mOffsetY ) / inc;
+			var inc = (ushort)( ( mTerrain.Size - 1 ) / ( mVertexDataRecord.Resolution - 1 ) );
+			long destOffsetX = rect.Left <= mOffsetX ? 0 : ( rect.Left - mOffsetX ) / inc;
+			long destOffsetY = rect.Top <= mOffsetY ? 0 : ( rect.Top - mOffsetY ) / inc;
 			// Fill the buffers
 
 			BufferLocking lockmode;
-			if ( destOffsetX != 0 || destOffsetY != 0 || rect.Width < this.mSize || rect.Height < this.mSize )
+			if ( destOffsetX != 0 || destOffsetY != 0 || rect.Width < mSize || rect.Height < mSize )
 			{
 				lockmode = BufferLocking.Normal;
 			}
@@ -1411,10 +1408,10 @@ namespace Axiom.Components.Terrain
 			{
 				lockmode = BufferLocking.Discard;
 			}
-			Real uvScale = 1.0f / ( this.mTerrain.Size - 1 );
-			BufferBase pBaseHeight = this.mTerrain.GetHeightData( rect.Left, rect.Top );
-			BufferBase pBaseDelta = this.mTerrain.GetDeltaData( rect.Left, rect.Top );
-			var rowskip = (ushort)( this.mTerrain.Size * inc );
+			Real uvScale = 1.0f / ( mTerrain.Size - 1 );
+			var pBaseHeight = mTerrain.GetHeightData( rect.Left, rect.Top );
+			var pBaseDelta = mTerrain.GetDeltaData( rect.Left, rect.Top );
+			var rowskip = (ushort)( mTerrain.Size * inc );
 			ushort destPosRowSkip = 0, destDeltaRowSkip = 0;
 			BufferBase pRootPosBuf = null;
 			BufferBase pRootDeltaBuf = null;
@@ -1423,7 +1420,7 @@ namespace Axiom.Components.Terrain
 
 			if ( posBuf != null )
 			{
-				destPosRowSkip = (ushort)( this.mVertexDataRecord.Size * posBuf.VertexSize );
+				destPosRowSkip = (ushort)( mVertexDataRecord.Size * posBuf.VertexSize );
 				pRootPosBuf = posBuf.Lock( lockmode );
 				pRowPosBuf = pRootPosBuf;
 				// skip dest buffer in by left/top
@@ -1431,7 +1428,7 @@ namespace Axiom.Components.Terrain
 			}
 			if ( deltaBuf != null )
 			{
-				destDeltaRowSkip = (ushort)( this.mVertexDataRecord.Size * deltaBuf.VertexSize );
+				destDeltaRowSkip = (ushort)( mVertexDataRecord.Size * deltaBuf.VertexSize );
 				pRootDeltaBuf = deltaBuf.Lock( lockmode );
 				pRowDeltaBuf = pRootDeltaBuf;
 				// skip dest buffer in by left/top
@@ -1439,29 +1436,29 @@ namespace Axiom.Components.Terrain
 			}
 			Vector3 pos = Vector3.Zero;
 
-			for ( var y = (ushort)rect.Top; y < rect.Bottom; y += inc )
+			for ( ushort y = (ushort)rect.Top; y < rect.Bottom; y += inc )
 			{
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					float* pHeight = pBaseHeight.ToFloatPointer();
-					int pHIdx = 0;
-					float* pDelta = pBaseDelta.ToFloatPointer();
-					int pDeltaIdx = 0;
-					float* pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
-					int pPosBufIdx = 0;
-					float* pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
-					int pDeltaBufIdx = 0;
-					for ( var x = (ushort)rect.Left; x < rect.Right; x += inc )
+					var pHeight = pBaseHeight.ToFloatPointer();
+					var pHIdx = 0;
+					var pDelta = pBaseDelta.ToFloatPointer();
+					var pDeltaIdx = 0;
+					var pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
+					var pPosBufIdx = 0;
+					var pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
+					var pDeltaBufIdx = 0;
+					for ( ushort x = (ushort)rect.Left; x < rect.Right; x += inc )
 					{
 						if ( pPosBuf != null )
 						{
-							this.mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
+							mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
 							// Update bounds *before* making relative
 							MergeIntoBounds( x, y, pos );
 							// relative to local centre
-							pos -= this.mLocalCentre;
+							pos -= mLocalCentre;
 							pHIdx += inc;
 
 							pPosBuf[ pPosBufIdx++ ] = pos.x;
@@ -1483,7 +1480,7 @@ namespace Axiom.Components.Terrain
 							// we want delta to apply to LODs no higher than this value
 							// at runtime this will be combined with a per-renderable parameter
 							// to ensure we only apply morph to the correct LOD
-							pDeltaBuf[ pDeltaBufIdx++ ] = this.mTerrain.GetLODLevelWhenVertexEliminated( x, y ) - 1.0f;
+							pDeltaBuf[ pDeltaBufIdx++ ] = (float)mTerrain.GetLODLevelWhenVertexEliminated( x, y ) - 1.0f;
 						}
 					} // end unsafe
 				} //end for
@@ -1502,14 +1499,14 @@ namespace Axiom.Components.Terrain
 
 			// Skirts now
 			// skirt spacing based on top-level resolution (* inc to cope with resolution which is not the max)
-			var skirtSpacing = (ushort)( this.mVertexDataRecord.SkirtRowColSkip * inc );
-			Vector3 skirtOffset = Vector3.Zero;
-			this.mTerrain.GetVector( 0, 0, -this.mTerrain.SkirtSize, ref skirtOffset );
+			var skirtSpacing = (ushort)( mVertexDataRecord.SkirtRowColSkip * inc );
+			var skirtOffset = Vector3.Zero;
+			mTerrain.GetVector( 0, 0, -mTerrain.SkirtSize, ref skirtOffset );
 
 			// skirt rows
 			// clamp rows to skirt spacing (round up)
-			long skirtStartX = rect.Left;
-			long skirtStartY = rect.Top;
+			var skirtStartX = rect.Left;
+			var skirtStartY = rect.Top;
 			// for rows, clamp Y to skirt frequency, X to inc (LOD resolution vs top)
 			if ( skirtStartY % skirtSpacing != 0 )
 			{
@@ -1520,44 +1517,44 @@ namespace Axiom.Components.Terrain
 				skirtStartX += inc - ( skirtStartX % inc );
 			}
 
-			skirtStartY = System.Math.Max( skirtStartY, this.mOffsetY );
-			pBaseHeight = this.mTerrain.GetHeightData( skirtStartX, skirtStartY );
+			skirtStartY = System.Math.Max( skirtStartY, (long)mOffsetY );
+			pBaseHeight = mTerrain.GetHeightData( skirtStartX, skirtStartY );
 			if ( posBuf != null )
 			{
 				// position dest buffer just after the main vertex data
-				pRowPosBuf = pRootPosBuf + posBuf.VertexSize * this.mVertexDataRecord.Size * this.mVertexDataRecord.Size;
+				pRowPosBuf = pRootPosBuf + posBuf.VertexSize * mVertexDataRecord.Size * mVertexDataRecord.Size;
 				// move it onwards to skip the skirts we don't need to update
-				pRowPosBuf += destPosRowSkip * ( ( skirtStartY - this.mOffsetY ) / skirtSpacing );
-				pRowPosBuf += posBuf.VertexSize * ( skirtStartX - this.mOffsetX ) / inc;
+				pRowPosBuf += destPosRowSkip * ( ( skirtStartY - mOffsetY ) / skirtSpacing );
+				pRowPosBuf += posBuf.VertexSize * ( skirtStartX - mOffsetX ) / inc;
 			}
 			if ( deltaBuf != null )
 			{
 				// position dest buffer just after the main vertex data
-				pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize * this.mVertexDataRecord.Size * this.mVertexDataRecord.Size;
+				pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize * mVertexDataRecord.Size * mVertexDataRecord.Size;
 				// move it onwards to skip the skirts we don't need to update
-				pRowDeltaBuf += destDeltaRowSkip * ( skirtStartY - this.mOffsetY ) / skirtSpacing;
-				pRowDeltaBuf += deltaBuf.VertexSize * ( skirtStartX - this.mOffsetX ) / inc;
+				pRowDeltaBuf += destDeltaRowSkip * ( skirtStartY - mOffsetY ) / skirtSpacing;
+				pRowDeltaBuf += deltaBuf.VertexSize * ( skirtStartX - mOffsetX ) / inc;
 			}
 
-			for ( var y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += skirtSpacing )
+			for ( ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += skirtSpacing )
 			{
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					float* pHeight = pBaseHeight.ToFloatPointer();
-					int pHIdx = 0;
-					float* pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
-					int pPosIdx = 0;
-					float* pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
-					int pDeltaIdx = 0;
-					for ( var x = (ushort)skirtStartX; x < (ushort)rect.Right; x += inc )
+					var pHeight = pBaseHeight.ToFloatPointer();
+					var pHIdx = 0;
+					var pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
+					var pPosIdx = 0;
+					var pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
+					var pDeltaIdx = 0;
+					for ( ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += inc )
 					{
 						if ( pPosBuf != null )
 						{
-							this.mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
+							mTerrain.GetPoint( x, y, pHeight[ pHIdx ], ref pos );
 							// relative to local centre
-							pos -= this.mLocalCentre;
+							pos -= mLocalCentre;
 							pHIdx += inc;
 							pos += skirtOffset;
 							pPosBuf[ pPosIdx++ ] = pos.x;
@@ -1576,7 +1573,7 @@ namespace Axiom.Components.Terrain
 							pDeltaBuf[ pDeltaIdx++ ] = 99;
 						}
 					} //end for
-					pBaseHeight += this.mTerrain.Size * skirtSpacing;
+					pBaseHeight += mTerrain.Size * skirtSpacing;
 					if ( pRowPosBuf != null )
 					{
 						pRowPosBuf += destPosRowSkip;
@@ -1601,47 +1598,47 @@ namespace Axiom.Components.Terrain
 			{
 				skirtStartY += inc - ( skirtStartY % inc );
 			}
-			skirtStartX = System.Math.Max( skirtStartX, this.mOffsetX );
+			skirtStartX = System.Math.Max( skirtStartX, (long)mOffsetX );
 
 			if ( posBuf != null )
 			{
 				// position dest buffer just after the main vertex data and skirt rows
-				pRowPosBuf = pRootPosBuf + posBuf.VertexSize * this.mVertexDataRecord.Size * this.mVertexDataRecord.Size;
+				pRowPosBuf = pRootPosBuf + posBuf.VertexSize * mVertexDataRecord.Size * mVertexDataRecord.Size;
 				// skip the row skirts
-				pRowPosBuf += this.mVertexDataRecord.NumSkirtRowsCols * this.mVertexDataRecord.Size * posBuf.VertexSize;
+				pRowPosBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * posBuf.VertexSize;
 				// move it onwards to skip the skirts we don't need to update
-				pRowPosBuf += destPosRowSkip * ( skirtStartX - this.mOffsetX ) / skirtSpacing;
-				pRowPosBuf += posBuf.VertexSize * ( skirtStartY - this.mOffsetY ) / inc;
+				pRowPosBuf += destPosRowSkip * ( skirtStartX - mOffsetX ) / skirtSpacing;
+				pRowPosBuf += posBuf.VertexSize * ( skirtStartY - mOffsetY ) / inc;
 			}
 			if ( deltaBuf != null )
 			{
 				// Deltaition dest buffer just after the main vertex data and skirt rows
-				pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize * this.mVertexDataRecord.Size * this.mVertexDataRecord.Size;
+				pRowDeltaBuf = pRootDeltaBuf + deltaBuf.VertexSize * mVertexDataRecord.Size * mVertexDataRecord.Size;
 
 				// skip the row skirts
-				pRowDeltaBuf += this.mVertexDataRecord.NumSkirtRowsCols * this.mVertexDataRecord.Size * deltaBuf.VertexSize;
+				pRowDeltaBuf += mVertexDataRecord.NumSkirtRowsCols * mVertexDataRecord.Size * deltaBuf.VertexSize;
 				// move it onwards to skip the skirts we don't need to update
-				pRowDeltaBuf += destDeltaRowSkip * ( skirtStartX - this.mOffsetX ) / skirtSpacing;
-				pRowDeltaBuf += deltaBuf.VertexSize * ( skirtStartY - this.mOffsetY ) / inc;
+				pRowDeltaBuf += destDeltaRowSkip * ( skirtStartX - mOffsetX ) / skirtSpacing;
+				pRowDeltaBuf += deltaBuf.VertexSize * ( skirtStartY - mOffsetY ) / inc;
 			}
 
-			for ( var x = (ushort)skirtStartX; x < (ushort)rect.Right; x += skirtSpacing )
+			for ( ushort x = (ushort)skirtStartX; x < (ushort)rect.Right; x += skirtSpacing )
 			{
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					float* pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
-					int pPosIdx = 0;
-					float* pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
-					int pDeltaIdx = 0;
-					for ( var y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += inc )
+					var pPosBuf = pRowPosBuf != null ? pRowPosBuf.ToFloatPointer() : null;
+					var pPosIdx = 0;
+					var pDeltaBuf = pRowDeltaBuf != null ? pRowDeltaBuf.ToFloatPointer() : null;
+					var pDeltaIdx = 0;
+					for ( ushort y = (ushort)skirtStartY; y < (ushort)rect.Bottom; y += inc )
 					{
 						if ( pPosBuf != null )
 						{
-							this.mTerrain.GetPoint( x, y, this.mTerrain.GetHeightAtPoint( x, y ), ref pos );
+							mTerrain.GetPoint( x, y, mTerrain.GetHeightAtPoint( x, y ), ref pos );
 							// relative to local centre
-							pos -= this.mLocalCentre;
+							pos -= mLocalCentre;
 							pos += skirtOffset;
 
 							pPosBuf[ pPosIdx++ ] = pos.x;
@@ -1684,7 +1681,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateCpuVertexData()
 		{
-			if ( this.mVertexDataRecord != null )
+			if ( mVertexDataRecord != null )
 			{
 				DestroyCpuVertexData();
 
@@ -1692,7 +1689,7 @@ namespace Axiom.Components.Terrain
 				var dcl = new VertexDeclaration();
 				var bufbind = new VertexBufferBinding();
 
-				this.mVertexDataRecord.CpuVertexData = new VertexData( dcl, bufbind );
+				mVertexDataRecord.CpuVertexData = new VertexData( dcl, bufbind );
 
 				// Vertex declaration
 				// TODO: consider vertex compression
@@ -1711,8 +1708,8 @@ namespace Axiom.Components.Terrain
 
 				// Calculate number of vertices
 				// Base geometry size * size
-				var baseNumVerts = (int)Utility.Sqr( this.mVertexDataRecord.Size );
-				int numVerts = baseNumVerts;
+				var baseNumVerts = (int)Utility.Sqr( mVertexDataRecord.Size );
+				var numVerts = baseNumVerts;
 				// Now add space for skirts
 				// Skirts will be rendered as copies of the edge vertices translated downwards
 				// Some people use one big fan with only 3 vertices at the bottom, 
@@ -1720,22 +1717,22 @@ namespace Axiom.Components.Terrain
 				// more unnecessary overdraw, so we'll use more vertices 
 				// You need 2^levels + 1 rows of full resolution (max 129) vertex copies, plus
 				// the same number of columns. There are common vertices at intersections
-				ushort levels = this.mVertexDataRecord.TreeLevels;
-				this.mVertexDataRecord.NumSkirtRowsCols = (ushort)( System.Math.Pow( 2, levels ) + 1 );
-				this.mVertexDataRecord.SkirtRowColSkip = (ushort)( ( this.mVertexDataRecord.Size - 1 ) / ( this.mVertexDataRecord.NumSkirtRowsCols - 1 ) );
-				numVerts += this.mVertexDataRecord.Size * this.mVertexDataRecord.NumSkirtRowsCols;
-				numVerts += this.mVertexDataRecord.Size * this.mVertexDataRecord.NumSkirtRowsCols;
+				var levels = mVertexDataRecord.TreeLevels;
+				mVertexDataRecord.NumSkirtRowsCols = (ushort)( System.Math.Pow( 2, levels ) + 1 );
+				mVertexDataRecord.SkirtRowColSkip = (ushort)( ( mVertexDataRecord.Size - 1 ) / ( mVertexDataRecord.NumSkirtRowsCols - 1 ) );
+				numVerts += mVertexDataRecord.Size * mVertexDataRecord.NumSkirtRowsCols;
+				numVerts += mVertexDataRecord.Size * mVertexDataRecord.NumSkirtRowsCols;
 
 				//manually create CPU-side buffer
-				HardwareVertexBuffer posBuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( POSITION_BUFFER ), numVerts, BufferUsage.StaticWriteOnly, false );
-				HardwareVertexBuffer deltabuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( DELTA_BUFFER ), numVerts, BufferUsage.StaticWriteOnly, false );
+				var posBuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( POSITION_BUFFER ), numVerts, BufferUsage.StaticWriteOnly, false );
+				var deltabuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( DELTA_BUFFER ), numVerts, BufferUsage.StaticWriteOnly, false );
 
-				this.mVertexDataRecord.CpuVertexData.vertexStart = 0;
-				this.mVertexDataRecord.CpuVertexData.vertexCount = numVerts;
+				mVertexDataRecord.CpuVertexData.vertexStart = 0;
+				mVertexDataRecord.CpuVertexData.vertexCount = numVerts;
 
-				var updateRect = new Rectangle( this.mOffsetX, this.mOffsetY, this.mBoundaryX, this.mBoundaryY );
+				var updateRect = new Rectangle( mOffsetX, mOffsetY, mBoundaryX, mBoundaryY );
 				UpdateVertexBuffer( posBuf, deltabuf, updateRect );
-				this.mVertexDataRecord.IsGpuVertexDataDirty = true;
+				mVertexDataRecord.IsGpuVertexDataDirty = true;
 				bufbind.SetBinding( POSITION_BUFFER, posBuf );
 				bufbind.SetBinding( DELTA_BUFFER, deltabuf );
 			}
@@ -1744,19 +1741,19 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void PopulateIndexData( ushort batchSize, IndexData destData )
 		{
-			VertexDataRecord vdr = VertextDataRecord;
+			var vdr = this.VertextDataRecord;
 
 			// Ratio of the main terrain resolution in relation to this vertex data resolution
-			int resolutionRatio = ( this.mTerrain.Size - 1 ) / ( vdr.Resolution - 1 );
+			var resolutionRatio = ( mTerrain.Size - 1 ) / ( vdr.Resolution - 1 );
 			// At what frequency do we sample the vertex data we're using?
 			// mSize is the coverage in terms of the original terrain data (not split to fit in 16-bit)
-			int vertexIncrement = ( this.mSize - 1 ) / ( batchSize - 1 );
+			int vertexIncrement = ( mSize - 1 ) / ( batchSize - 1 );
 			// however, the vertex data we're referencing may not be at the full resolution anyway
 			vertexIncrement /= resolutionRatio;
-			var vdatasizeOffsetX = (ushort)( ( this.mOffsetX - this.mNodeWithVertexData.mOffsetX ) / resolutionRatio );
-			var vdatasizeOffsetY = (ushort)( ( this.mOffsetY - this.mNodeWithVertexData.mOffsetY ) / resolutionRatio );
+			var vdatasizeOffsetX = (ushort)( ( mOffsetX - mNodeWithVertexData.mOffsetX ) / resolutionRatio );
+			var vdatasizeOffsetY = (ushort)( ( mOffsetY - mNodeWithVertexData.mOffsetY ) / resolutionRatio );
 
-			destData.indexBuffer = this.mTerrain.GpuBufferAllocator.GetSharedIndexBuffer( batchSize, vdr.Size, vertexIncrement, vdatasizeOffsetX, vdatasizeOffsetY, vdr.NumSkirtRowsCols, vdr.SkirtRowColSkip );
+			destData.indexBuffer = mTerrain.GpuBufferAllocator.GetSharedIndexBuffer( batchSize, vdr.Size, vertexIncrement, vdatasizeOffsetX, vdatasizeOffsetY, vdr.NumSkirtRowsCols, vdr.SkirtRowColSkip );
 
 			destData.indexStart = 0;
 			destData.indexCount = destData.indexBuffer.IndexCount;
@@ -1767,26 +1764,26 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void DestroyCpuVertexData()
 		{
-			if ( this.mVertexDataRecord != null && this.mVertexDataRecord.CpuVertexData != null )
+			if ( mVertexDataRecord != null && mVertexDataRecord.CpuVertexData != null )
 			{
 				// delete the bindings and declaration manually since not from a buf mgr
-				if ( !this.mVertexDataRecord.CpuVertexData.vertexDeclaration.IsDisposed )
+				if ( !mVertexDataRecord.CpuVertexData.vertexDeclaration.IsDisposed )
 				{
-					this.mVertexDataRecord.CpuVertexData.vertexDeclaration.Dispose();
+					mVertexDataRecord.CpuVertexData.vertexDeclaration.Dispose();
 				}
-				this.mVertexDataRecord.CpuVertexData.vertexDeclaration = null;
+				mVertexDataRecord.CpuVertexData.vertexDeclaration = null;
 
-				if ( !this.mVertexDataRecord.CpuVertexData.vertexBufferBinding.IsDisposed )
+				if ( !mVertexDataRecord.CpuVertexData.vertexBufferBinding.IsDisposed )
 				{
-					this.mVertexDataRecord.CpuVertexData.vertexBufferBinding.Dispose();
+					mVertexDataRecord.CpuVertexData.vertexBufferBinding.Dispose();
 				}
-				this.mVertexDataRecord.CpuVertexData.vertexBufferBinding = null;
+				mVertexDataRecord.CpuVertexData.vertexBufferBinding = null;
 
-				if ( !this.mVertexDataRecord.CpuVertexData.IsDisposed )
+				if ( !mVertexDataRecord.CpuVertexData.IsDisposed )
 				{
-					this.mVertexDataRecord.CpuVertexData.Dispose();
+					mVertexDataRecord.CpuVertexData.Dispose();
 				}
-				this.mVertexDataRecord.CpuVertexData = null;
+				mVertexDataRecord.CpuVertexData = null;
 			}
 		}
 
@@ -1794,17 +1791,17 @@ namespace Axiom.Components.Terrain
 		protected void CreateGpuVertexData()
 		{
 			// TODO - mutex cpu data
-			if ( this.mVertexDataRecord != null && this.mVertexDataRecord.CpuVertexData != null && this.mVertexDataRecord.GpuVertexData == null )
+			if ( mVertexDataRecord != null && mVertexDataRecord.CpuVertexData != null && mVertexDataRecord.GpuVertexData == null )
 			{
 				// copy data from CPU to GPU, but re-use vertex buffers (so don't use regular clone)
-				this.mVertexDataRecord.GpuVertexData = new VertexData();
-				VertexData srcData = this.mVertexDataRecord.CpuVertexData;
-				VertexData destData = this.mVertexDataRecord.GpuVertexData;
+				mVertexDataRecord.GpuVertexData = new VertexData();
+				var srcData = mVertexDataRecord.CpuVertexData;
+				var destData = mVertexDataRecord.GpuVertexData;
 
 				// copy vertex buffers
 				// get new buffers
 				HardwareVertexBuffer destPosBuf, destDeltaBuf;
-				this.mTerrain.GpuBufferAllocator.AllocateVertexBuffers( this.mTerrain, srcData.vertexCount, out destPosBuf, out destDeltaBuf );
+				mTerrain.GpuBufferAllocator.AllocateVertexBuffers( mTerrain, srcData.vertexCount, out destPosBuf, out destDeltaBuf );
 
 				// copy data
 				destPosBuf.CopyTo( srcData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ) );
@@ -1818,12 +1815,12 @@ namespace Axiom.Components.Terrain
 				destData.vertexStart = srcData.vertexStart;
 				destData.vertexCount = srcData.vertexCount;
 				// Copy elements
-				foreach ( VertexElement ei in srcData.vertexDeclaration.Elements )
+				foreach ( var ei in srcData.vertexDeclaration.Elements )
 				{
 					destData.vertexDeclaration.AddElement( ei.Source, ei.Offset, ei.Type, ei.Semantic, ei.Index );
 				}
 
-				this.mVertexDataRecord.IsGpuVertexDataDirty = false;
+				mVertexDataRecord.IsGpuVertexDataDirty = false;
 
 				// We don't need the CPU copy anymore
 				DestroyCpuVertexData();
@@ -1833,39 +1830,39 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void DestroyGpuVertexData()
 		{
-			if ( this.mVertexDataRecord != null && this.mVertexDataRecord.GpuVertexData != null )
+			if ( mVertexDataRecord != null && mVertexDataRecord.GpuVertexData != null )
 			{
 				// Before we delete, free up the vertex buffers for someone else
-				this.mTerrain.GpuBufferAllocator.FreeVertexBuffers( this.mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ), this.mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
+				mTerrain.GpuBufferAllocator.FreeVertexBuffers( mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ), mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
 
-				if ( !this.mVertexDataRecord.GpuVertexData.IsDisposed )
+				if ( !mVertexDataRecord.GpuVertexData.IsDisposed )
 				{
-					this.mVertexDataRecord.GpuVertexData.Dispose();
+					mVertexDataRecord.GpuVertexData.Dispose();
 				}
 
-				this.mVertexDataRecord.GpuVertexData = null;
+				mVertexDataRecord.GpuVertexData = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateGpuVertexData()
 		{
-			if ( this.mVertexDataRecord != null && this.mVertexDataRecord.IsGpuVertexDataDirty )
+			if ( mVertexDataRecord != null && mVertexDataRecord.IsGpuVertexDataDirty )
 			{
-				this.mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ).CopyTo( this.mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ) );
+				mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ).CopyTo( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( POSITION_BUFFER ) );
 
-				this.mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ).CopyTo( this.mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
+				mVertexDataRecord.GpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ).CopyTo( mVertexDataRecord.CpuVertexData.vertexBufferBinding.GetBuffer( DELTA_BUFFER ) );
 
-				this.mVertexDataRecord.IsGpuVertexDataDirty = false;
+				mVertexDataRecord.IsGpuVertexDataDirty = false;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateGpuIndexData()
 		{
-			for ( int lod = 0; lod < this.mLodLevels.Count; ++lod )
+			for ( int lod = 0; lod < mLodLevels.Count; ++lod )
 			{
-				LodLevel ll = this.mLodLevels[ lod ];
+				var ll = mLodLevels[ lod ];
 
 				if ( ll.GpuIndexData == null )
 				{
@@ -1873,16 +1870,16 @@ namespace Axiom.Components.Terrain
 					ll.GpuIndexData = new IndexData();
 					PopulateIndexData( ll.BatchSize, ll.GpuIndexData );
 				}
-				this.mLodLevels[ lod ] = ll;
+				mLodLevels[ lod ] = ll;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void DestroyGpuIndexData()
 		{
-			for ( int lod = 0; lod < this.mLodLevels.Count; ++lod )
+			for ( int lod = 0; lod < mLodLevels.Count; ++lod )
 			{
-				LodLevel ll = this.mLodLevels[ lod ];
+				LodLevel ll = mLodLevels[ lod ];
 
 				if ( ll.GpuIndexData != null )
 				{
@@ -1894,14 +1891,14 @@ namespace Axiom.Components.Terrain
 					ll.GpuIndexData = null;
 				}
 
-				this.mLodLevels[ lod ] = ll;
+				mLodLevels[ lod ] = ll;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected ushort CalcSkirtVertexIndex( ushort mainIndex, bool isCol )
 		{
-			VertexDataRecord vdr = VertextDataRecord;
+			var vdr = this.VertextDataRecord;
 			// row / col in main vertex resolution
 			var row = (ushort)( mainIndex / vdr.Size );
 			var col = (ushort)( mainIndex % vdr.Size );
@@ -1935,7 +1932,7 @@ namespace Axiom.Components.Terrain
 		{
 			if ( IsRenderedAtCurrentLod )
 			{
-				queue.AddRenderable( this.mRend, this.mTerrain.RenderQueueGroupID );
+				queue.AddRenderable( mRend, mTerrain.RenderQueueGroupID );
 			}
 		}
 
@@ -1950,13 +1947,13 @@ namespace Axiom.Components.Terrain
 		public void GetWorldTransforms( Matrix4[] xform )
 		{
 			// the vertex data is relative to the node that owns the vertex data
-			xform[ 0 ] = this.mNodeWithVertexData.mMovable.ParentNodeFullTransform;
+			xform[ 0 ] = mNodeWithVertexData.mMovable.ParentNodeFullTransform;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public Real GetSquaredViewDepth( Camera cam )
 		{
-			return this.mMovable.ParentSceneNode.GetSquaredViewDepth( cam );
+			return mMovable.ParentSceneNode.GetSquaredViewDepth( cam );
 		}
 
 		#region - implementation of Movable -
@@ -2008,7 +2005,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.AABB;
+					return mParent.AABB;
 				}
 			}
 
@@ -2017,7 +2014,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.BoundingRadius;
+					return mParent.BoundingRadius;
 				}
 			}
 
@@ -2026,7 +2023,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					if ( this.mParent.CurrentLod == -1 )
+					if ( mParent.CurrentLod == -1 )
 					{
 						return false;
 					}
@@ -2047,7 +2044,7 @@ namespace Axiom.Components.Terrain
 				get
 				{
 					// Combine own vis (in case anyone sets this) and terrain overall
-					return base.visibilityFlags & this.mParent.Terrain.VisibilityFlags;
+					return base.visibilityFlags & mParent.Terrain.VisibilityFlags;
 				}
 			}
 
@@ -2057,7 +2054,7 @@ namespace Axiom.Components.Terrain
 				get
 				{
 					// Combine own vis (in case anyone sets this) and terrain overall
-					return base.queryFlags & this.mParent.Terrain.QueryFlags;
+					return base.queryFlags & mParent.Terrain.QueryFlags;
 				}
 			}
 
@@ -2066,7 +2063,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.CastsShadows;
+					return mParent.CastsShadows;
 				}
 				set
 				{
@@ -2078,13 +2075,14 @@ namespace Axiom.Components.Terrain
 
 			[OgreVersion( 1, 7, 2 )]
 			public Movable( TerrainQuadTreeNode parent )
+				: base()
 			{
-				this.mParent = parent;
+				mParent = parent;
 			}
 
 			public override void UpdateRenderQueue( RenderQueue queue )
 			{
-				this.mParent.UpdateRenderQueue( queue );
+				mParent.UpdateRenderQueue( queue );
 			}
 
 			//TODO
@@ -2109,13 +2107,6 @@ namespace Axiom.Components.Terrain
 			protected bool mUseIdentityProjection;
 			protected bool mUseIdentityView;
 
-			public Rend( TerrainQuadTreeNode parent )
-			{
-				this.mParent = parent;
-			}
-
-			#region IRenderable Members
-
 			/// <summary>
 			/// Retrieves a weak reference to the material this renderable object uses.
 			/// </summary>
@@ -2124,7 +2115,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.Material;
+					return mParent.Material;
 				}
 			}
 
@@ -2136,7 +2127,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.Technique;
+					return mParent.Technique;
 				}
 			}
 
@@ -2145,20 +2136,20 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.RenderOperation;
+					return mParent.RenderOperation;
 				}
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void GetWorldTransforms( Matrix4[] transforms )
 			{
-				this.mParent.GetWorldTransforms( transforms );
+				mParent.GetWorldTransforms( transforms );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public Real GetSquaredViewDepth( Camera cam )
 			{
-				return this.mParent.GetSquaredViewDepth( cam );
+				return mParent.GetSquaredViewDepth( cam );
 			}
 
 			/// <summary>
@@ -2169,7 +2160,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.Lights;
+					return mParent.Lights;
 				}
 			}
 
@@ -2178,7 +2169,7 @@ namespace Axiom.Components.Terrain
 				[OgreVersion( 1, 7, 2 )]
 				get
 				{
-					return this.mParent.CastsShadows;
+					return mParent.CastsShadows;
 				}
 			}
 
@@ -2205,7 +2196,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return this.mUseIdentityProjection;
+					return mUseIdentityProjection;
 				}
 			}
 
@@ -2216,7 +2207,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return this.mUseIdentityView;
+					return mUseIdentityView;
 				}
 			}
 
@@ -2224,7 +2215,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return this.mPolygoneModeOverridable;
+					return mPolygoneModeOverridable;
 				}
 			}
 
@@ -2232,7 +2223,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return this.mParent.mMovable.ParentNode.DerivedOrientation;
+					return mParent.mMovable.ParentNode.DerivedOrientation;
 				}
 			}
 
@@ -2240,14 +2231,19 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return this.mParent.mMovable.ParentNode.DerivedPosition;
+					return mParent.mMovable.ParentNode.DerivedPosition;
 				}
+			}
+
+			public Rend( TerrainQuadTreeNode parent )
+			{
+				mParent = parent;
 			}
 
 			public Vector4 GetCustomParameter( int parameter )
 			{
 				Vector4 retVal;
-				if ( this.mCustomParameters.TryGetValue( parameter, out retVal ) )
+				if ( mCustomParameters.TryGetValue( parameter, out retVal ) )
 				{
 					return retVal;
 				}
@@ -2259,7 +2255,7 @@ namespace Axiom.Components.Terrain
 
 			public void SetCustomParameter( int parameter, Vector4 value )
 			{
-				this.mCustomParameters[ parameter ] = value;
+				mCustomParameters[ parameter ] = value;
 			}
 
 			/// <summary>
@@ -2272,8 +2268,6 @@ namespace Axiom.Components.Terrain
 			{
 				//not implement now
 			}
-
-			#endregion
 		}
 
 		#endregion

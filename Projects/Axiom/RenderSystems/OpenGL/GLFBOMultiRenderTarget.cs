@@ -48,8 +48,8 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		protected GLFrameBufferObject _fbo;
 		protected GLFBORTTManager _manager;
+		protected GLFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			var fbObject = (GLFrameBufferObject)target[ "FBO" ];
+			GLFrameBufferObject fbObject = (GLFrameBufferObject)target[ "FBO" ];
 			Proclaim.NotNull( fbObject );
 
 			this._fbo.BindSurface( attachment, fbObject.SurfaceDesc );
@@ -87,8 +87,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Initialize?
 
 			// Set width and height
-			width = this._fbo.Width;
-			height = this._fbo.Height;
+			this.width = this._fbo.Width;
+			this.height = this._fbo.Height;
 		}
 
 		/// <summary>
@@ -98,8 +98,8 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			this._fbo.UnbindSurface( attachment );
-			width = this._fbo.Width;
-			height = this._fbo.Height;
+			this.width = this._fbo.Width;
+			this.height = this._fbo.Height;
 		}
 
 		#endregion Methods

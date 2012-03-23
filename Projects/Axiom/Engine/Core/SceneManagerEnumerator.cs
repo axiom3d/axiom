@@ -37,10 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
-using Axiom.Collections;
 using Axiom.Graphics;
+using Axiom.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -51,6 +54,8 @@ namespace Axiom.Core
 	/// </summary>
 	public class SceneManagerDefaultFactory : SceneManagerFactory
 	{
+		public SceneManagerDefaultFactory() {}
+
 		protected override void InitMetaData()
 		{
 			metaData.typeName = "DefaultSceneManager";
@@ -76,7 +81,7 @@ namespace Axiom.Core
 	public class DefaultSceneManager : SceneManager
 	{
 		public DefaultSceneManager( string name )
-			: base( name ) { }
+			: base( name ) {}
 
 		public override string TypeName
 		{
@@ -113,16 +118,16 @@ namespace Axiom.Core
 	{
 		public SceneManagerEnumerator()
 		{
-			this._defaultFactory = new SceneManagerDefaultFactory();
-			AddFactory( this._defaultFactory );
+			_defaultFactory = new SceneManagerDefaultFactory();
+			AddFactory( _defaultFactory );
 		}
 
 		#region Fields
 
-		private readonly SceneManagerDefaultFactory _defaultFactory;
-		private readonly List<SceneManagerFactory> _factories = new List<SceneManagerFactory>();
-		private readonly SceneManagerCollection _instances = new SceneManagerCollection();
-		private readonly List<SceneManagerMetaData> _metaDataList = new List<SceneManagerMetaData>();
+		private SceneManagerCollection _instances = new SceneManagerCollection();
+		private List<SceneManagerFactory> _factories = new List<SceneManagerFactory>();
+		private List<SceneManagerMetaData> _metaDataList = new List<SceneManagerMetaData>();
+		private SceneManagerDefaultFactory _defaultFactory;
 		private RenderSystem _currentRenderSystem;
 
 		private ulong _instanceCreateCount;
@@ -138,9 +143,9 @@ namespace Axiom.Core
 		{
 			set
 			{
-				this._currentRenderSystem = value;
+				_currentRenderSystem = value;
 
-				foreach ( SceneManager instance in this._instances.Values )
+				foreach ( var instance in _instances.Values )
 				{
 					instance.TargetRenderSystem = value;
 				}
@@ -155,7 +160,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._metaDataList;
+				return _metaDataList;
 			}
 		}
 
@@ -167,7 +172,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._instances;
+				return _instances;
 			}
 		}
 
@@ -183,8 +188,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public void AddFactory( SceneManagerFactory factory )
 		{
-			this._factories.Add( factory );
-			this._metaDataList.Add( factory.MetaData );
+			_factories.Add( factory );
+			_metaDataList.Add( factory.MetaData );
 
 			LogManager.Instance.Write( "SceneManagerFactory for type '{0}' registered", factory.MetaData.typeName );
 		}
@@ -196,27 +201,27 @@ namespace Axiom.Core
 		{
 			// destroy all instances for this factory
 			var tempList = new SceneManagerCollection();
-			tempList.AddRange( this._instances );
-			foreach ( SceneManager sm in tempList.Values )
+			tempList.AddRange( _instances );
+			foreach ( var sm in tempList.Values )
 			{
 				if ( sm.TypeName == fact.MetaData.typeName )
 				{
 					fact.DestroyInstance( sm );
-					this._instances.Remove( sm.Name );
+					_instances.Remove( sm.Name );
 				}
 			}
 
 			// remove from metadata
-			for ( int i = 0; i < this._metaDataList.Count; i++ )
+			for ( var i = 0; i < _metaDataList.Count; i++ )
 			{
-				if ( this._metaDataList[ i ].Equals( fact.MetaData ) )
+				if ( _metaDataList[ i ].Equals( fact.MetaData ) )
 				{
-					this._metaDataList.Remove( this._metaDataList[ i ] );
+					_metaDataList.Remove( _metaDataList[ i ] );
 					break;
 				}
 			}
 
-			this._factories.Remove( fact );
+			_factories.Remove( fact );
 		}
 
 		/// <summary>
@@ -239,7 +244,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( SceneType sceneType, string instanceName )
 		{
-			if ( this._instances.ContainsKey( instanceName ) )
+			if ( _instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance called '{0}' already exists", instanceName );
 			}
@@ -248,15 +253,15 @@ namespace Axiom.Core
 
 			if ( instanceName == string.Empty )
 			{
-				instanceName = "SceneManagerInstance" + ( ++this._instanceCreateCount ).ToString();
+				instanceName = "SceneManagerInstance" + ( ++_instanceCreateCount ).ToString();
 			}
 
 			// iterate backwards to find the matching factory registered last
-			for ( int i = this._factories.Count - 1; i > -1; i-- )
+			for ( var i = _factories.Count - 1; i > -1; i-- )
 			{
-				if ( ( this._factories[ i ].MetaData.sceneTypeMask & sceneType ) > 0 )
+				if ( ( _factories[ i ].MetaData.sceneTypeMask & sceneType ) > 0 )
 				{
-					instance = this._factories[ i ].CreateInstance( instanceName );
+					instance = _factories[ i ].CreateInstance( instanceName );
 					break;
 				}
 			}
@@ -264,16 +269,16 @@ namespace Axiom.Core
 			// use default factory if none
 			if ( instance == null )
 			{
-				instance = this._defaultFactory.CreateInstance( instanceName );
+				instance = _defaultFactory.CreateInstance( instanceName );
 			}
 
 			// assign render system if already configured
-			if ( this._currentRenderSystem != null )
+			if ( _currentRenderSystem != null )
 			{
-				instance.TargetRenderSystem = this._currentRenderSystem;
+				instance.TargetRenderSystem = _currentRenderSystem;
 			}
 
-			this._instances.Add( instanceName, instance );
+			_instances.Add( instanceName, instance );
 
 			return instance;
 		}
@@ -297,20 +302,20 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager CreateSceneManager( string typeName, string instanceName )
 		{
-			if ( this._instances.ContainsKey( instanceName ) )
+			if ( _instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance called '{0}' already exists", instanceName );
 			}
 
 			SceneManager instance = null;
 
-			foreach ( SceneManagerFactory factory in this._factories )
+			foreach ( var factory in _factories )
 			{
 				if ( factory.MetaData.typeName == typeName )
 				{
 					if ( instanceName == string.Empty )
 					{
-						instanceName = "SceneManagerInstance" + ( ++this._instanceCreateCount ).ToString();
+						instanceName = "SceneManagerInstance" + ( ++_instanceCreateCount ).ToString();
 					}
 
 					instance = factory.CreateInstance( instanceName );
@@ -324,12 +329,12 @@ namespace Axiom.Core
 			}
 
 			// assign render system if already configured
-			if ( this._currentRenderSystem != null )
+			if ( _currentRenderSystem != null )
 			{
-				instance.TargetRenderSystem = this._currentRenderSystem;
+				instance.TargetRenderSystem = _currentRenderSystem;
 			}
 
-			this._instances.Add( instance.Name, instance );
+			_instances.Add( instance.Name, instance );
 
 			return instance;
 		}
@@ -342,9 +347,9 @@ namespace Axiom.Core
 		public void DestroySceneManager( SceneManager sm )
 		{
 			// erase instance from list
-			this._instances.Remove( sm.Name );
+			_instances.Remove( sm.Name );
 
-			foreach ( SceneManagerFactory factory in this._factories )
+			foreach ( var factory in _factories )
 			{
 				if ( factory.MetaData.typeName == sm.TypeName )
 				{
@@ -362,12 +367,12 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManager GetSceneManager( string instanceName )
 		{
-			if ( !this._instances.ContainsKey( instanceName ) )
+			if ( !_instances.ContainsKey( instanceName ) )
 			{
 				throw new AxiomException( "SceneManager instance with name '{0}' not found", instanceName );
 			}
 
-			SceneManager sceneManager = this._instances[ instanceName ];
+			var sceneManager = _instances[ instanceName ];
 
 			return sceneManager;
 		}
@@ -379,7 +384,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public bool HasSceneManager( string instanceName )
 		{
-			return this._instances.ContainsKey( instanceName );
+			return _instances.ContainsKey( instanceName );
 		}
 
 		/// <summary>
@@ -398,7 +403,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneManagerMetaData GetMetaData( string typeName )
 		{
-			foreach ( SceneManagerMetaData metaData in this._metaDataList )
+			foreach ( var metaData in _metaDataList )
 			{
 				if ( typeName == metaData.typeName )
 				{
@@ -414,7 +419,7 @@ namespace Axiom.Core
 		///</summary>
 		public void ShutdownAll()
 		{
-			foreach ( SceneManager instance in this._instances.Values )
+			foreach ( var instance in _instances.Values )
 			{
 				instance.ClearScene();
 			}

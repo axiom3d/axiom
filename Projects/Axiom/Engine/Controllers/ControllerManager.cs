@@ -64,6 +64,7 @@ namespace Axiom.Controllers
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal ControllerManager()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -87,18 +88,17 @@ namespace Axiom.Controllers
 		#region Member variables
 
 		/// <summary>
-		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
-		/// </summary>
-		private readonly IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
-
-		private readonly IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
-
-		/// <summary>
 		///		List of references to controllers in a scene.
 		/// </summary>
 		private List<Controller<Real>> controllers = new List<Controller<Real>>();
 
-		private ulong lastFrameNumber;
+		/// <summary>
+		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
+		/// </summary>
+		private IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
+
+		private IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
+		private ulong lastFrameNumber = 0;
 
 		/// <summary>
 		/// Returns a ControllerValue which provides the time since the last frame as a control value source.
@@ -115,7 +115,7 @@ namespace Axiom.Controllers
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.frameTimeController;
+				return frameTimeController;
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Axiom.Controllers
 		public Controller<Real> CreateController( IControllerValue<Real> destination, IControllerFunction<Real> function )
 		{
 			// call the overloaded method passing in our precreated frame time controller value as the source
-			return CreateController( this.frameTimeController, destination, function );
+			return CreateController( frameTimeController, destination, function );
 		}
 
 		/// <summary>
@@ -149,25 +149,25 @@ namespace Axiom.Controllers
 			var controller = new Controller<Real>( source, destination, function );
 
 			// add the new controller to our list
-			this.controllers.Add( controller );
+			controllers.Add( controller );
 
 			return controller;
 		}
 
 		public void DestroyController( Controller<Real> controller )
 		{
-			this.controllers.Remove( controller );
+			controllers.Remove( controller );
 		}
 
 		public Controller<Real> CreateFrameTimePassthroughController( IControllerValue<Real> dest )
 		{
-			return CreateController( this.frameTimeController, dest, this.passthroughFunction );
+			return CreateController( frameTimeController, dest, passthroughFunction );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public Real GetElapsedTime()
 		{
-			return ( (FrameTimeControllerValue)this.frameTimeController ).ElapsedTime;
+			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
 		}
 
 
@@ -370,7 +370,7 @@ namespace Axiom.Controllers
 			function = new WaveformControllerFunction( waveType, baseVal, frequency, phase, amplitude, true );
 
 			// finally, create the controller using frame time as the source value
-			return CreateController( this.frameTimeController, val, function );
+			return CreateController( frameTimeController, val, function );
 		}
 
 		/// <summary>
@@ -379,15 +379,15 @@ namespace Axiom.Controllers
 		/// </summary>
 		public void UpdateAll()
 		{
-			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
-			if ( thisFrameNumber != this.lastFrameNumber )
+			var thisFrameNumber = Root.Instance.CurrentFrameCount;
+			if ( thisFrameNumber != lastFrameNumber )
 			{
 				// loop through each controller and tell it to update
-				foreach ( var controller in this.controllers )
+				foreach ( var controller in controllers )
 				{
 					controller.Update();
 				}
-				this.lastFrameNumber = thisFrameNumber;
+				lastFrameNumber = thisFrameNumber;
 			}
 		}
 
@@ -400,12 +400,12 @@ namespace Axiom.Controllers
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.controllers.Clear();
-					this.controllers = null;
+					controllers.Clear();
+					controllers = null;
 					instance = null;
 				}
 			}

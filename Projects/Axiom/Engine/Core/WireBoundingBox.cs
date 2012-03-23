@@ -39,8 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -95,19 +95,19 @@ namespace Axiom.Core
 			renderOperation.useIndices = false;
 
 			// get a reference to the vertex declaration and buffer binding
-			VertexDeclaration decl = vertexData.vertexDeclaration;
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+			var decl = vertexData.vertexDeclaration;
+			var binding = vertexData.vertexBufferBinding;
 
 			// add elements for position and color only
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
 
-			material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+			this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 		}
 
 		#endregion Constructors
@@ -118,22 +118,22 @@ namespace Axiom.Core
 		public void InitAABB( AxisAlignedBox box )
 		{
 			// store the bounding box locally
-			BoundingBox = box;
+			this.BoundingBox = box;
 		}
 
 		[Obsolete( "Use WireBoundingBox.BoundingBox property." )]
 		public void SetupBoundingBox( AxisAlignedBox aabb )
 		{
 			// store the bounding box locally
-			BoundingBox = box;
+			this.BoundingBox = box;
 		}
 
 		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
 		{
-			Vector3 vmax = aab.Maximum;
-			Vector3 vmin = aab.Minimum;
+			var vmax = aab.Maximum;
+			var vmin = aab.Minimum;
 
-			float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
+			var sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
 			//mRadius = System.Math.Sqrt(sqLen);
 
 			float maxx = vmax.x;
@@ -144,14 +144,14 @@ namespace Axiom.Core
 			float miny = vmin.y;
 			float minz = vmin.z;
 
-			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
+			var buffer = vertexData.vertexBufferBinding.GetBuffer( PositionBinding );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				float* posPtr = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
-				int pPos = 0;
+				var posPtr = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
+				var pPos = 0;
 
 				// line 0
 				posPtr[ pPos++ ] = minx;
@@ -246,17 +246,6 @@ namespace Axiom.Core
 		#region Implementation of SimpleRenderable
 
 		/// <summary>
-		///    Get the local bounding radius of the wire bounding box.
-		/// </summary>
-		public override Real BoundingRadius
-		{
-			get
-			{
-				return this.Radius;
-			}
-		}
-
-		/// <summary>
 		///
 		/// </summary>
 		/// <param name="matrices"></param>
@@ -276,6 +265,17 @@ namespace Axiom.Core
 			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min ) * 0.5f ) + min, dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
+		}
+
+		/// <summary>
+		///    Get the local bounding radius of the wire bounding box.
+		/// </summary>
+		public override Real BoundingRadius
+		{
+			get
+			{
+				return this.Radius;
+			}
 		}
 
 		#endregion Implementation of SimpleRenderable

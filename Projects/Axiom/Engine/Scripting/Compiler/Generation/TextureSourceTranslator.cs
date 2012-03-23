@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -47,10 +48,11 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: TextureSourceTranslator
-
 		public class TextureSourceTranslator : Translator
 		{
+			public TextureSourceTranslator()
+				: base() {}
+
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
@@ -145,7 +147,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

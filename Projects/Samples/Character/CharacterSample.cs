@@ -25,12 +25,8 @@
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
-
-using SharpInputSystem;
-
-using Vector3 = Axiom.Math.Vector3;
+using Axiom.Graphics;
 
 namespace Axiom.Samples.CharacterSample
 {
@@ -55,7 +51,7 @@ namespace Axiom.Samples.CharacterSample
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			// let character update animations and camera
-			this.chara.AddTime( evt.TimeSinceLastFrame );
+			chara.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
 
@@ -69,12 +65,12 @@ namespace Axiom.Samples.CharacterSample
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyPressed( KeyEventArgs evt )
+		public override bool KeyPressed( SharpInputSystem.KeyEventArgs evt )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				this.chara.InjectKeyDown( evt );
+				chara.InjectKeyDown( evt );
 			}
 
 			return base.KeyPressed( evt );
@@ -85,11 +81,11 @@ namespace Axiom.Samples.CharacterSample
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool KeyReleased( KeyEventArgs evt )
+		public override bool KeyReleased( SharpInputSystem.KeyEventArgs evt )
 		{
 			if ( !TrayManager.IsDialogVisible )
 			{
-				this.chara.InjectKeyUp( evt );
+				chara.InjectKeyUp( evt );
 			}
 
 			return base.KeyReleased( evt );
@@ -100,12 +96,12 @@ namespace Axiom.Samples.CharacterSample
 		/// </summary>
 		/// <param name="evt"></param>
 		/// <returns></returns>
-		public override bool MouseMoved( MouseEventArgs evt )
+		public override bool MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				this.chara.InjectMouseMove( evt );
+				chara.InjectMouseMove( evt );
 			}
 
 			return base.MouseMoved( evt );
@@ -117,12 +113,12 @@ namespace Axiom.Samples.CharacterSample
 		/// <param name="evt"></param>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public override bool MousePressed( MouseEventArgs evt, MouseButtonID id )
+		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				this.chara.InjectMouseDown( evt, id );
+				chara.InjectMouseDown( evt, id );
 			}
 
 			return base.MousePressed( evt, id );
@@ -165,11 +161,11 @@ namespace Axiom.Samples.CharacterSample
 
 
 			// create our character controller
-			this.chara = new SinbadCharacterController( Camera );
+			chara = new SinbadCharacterController( Camera );
 
 			TrayManager.ToggleAdvancedFrameStats();
 
-			var items = new List<string>();
+			List<string> items = new List<string>();
 			items.Add( "Help" );
 			ParamsPanel help = TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "HelpMessage", 100, items );
 			help.SetParamValue( "Help", " H / F1" );
@@ -177,9 +173,9 @@ namespace Axiom.Samples.CharacterSample
 
 		protected override void CleanupContent()
 		{
-			if ( this.chara != null )
+			if ( chara != null )
 			{
-				this.chara = null;
+				chara = null;
 			}
 
 			MeshManager.Instance.Remove( "floor" );

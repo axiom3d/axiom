@@ -63,14 +63,14 @@ namespace Axiom.Controllers.Canned
 		#region Fields
 
 		/// <summary>
-		///     The constant register index of the parameter to set.
-		/// </summary>
-		protected int index;
-
-		/// <summary>
 		///     Gpu parameters to access.
 		/// </summary>
 		protected GpuProgramParameters parms;
+
+		/// <summary>
+		///     The constant register index of the parameter to set.
+		/// </summary>
+		protected int index;
 
 		/// <summary>
 		///     Member level Vector to use for returning.
@@ -94,7 +94,7 @@ namespace Axiom.Controllers.Canned
 
 		#endregion Constructor
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		/// <summary>
 		/// Gets or Sets the value of the GPU parameter
@@ -103,15 +103,15 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				return this.parms.GetFloatConstant( this.index );
+				return parms.GetFloatConstant( index );
 			}
 			set
 			{
 				// set the x component, since this is a single value only
-				this.vec4.x = value;
+				vec4.x = value;
 
 				// send the vector along to the gpu program params
-				this.parms.SetConstant( this.index, this.vec4 );
+				parms.SetConstant( index, vec4 );
 			}
 		}
 

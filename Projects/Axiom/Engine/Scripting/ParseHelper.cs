@@ -43,6 +43,7 @@ using System.IO;
 using System.Text;
 
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -66,9 +67,9 @@ namespace Axiom.Scripting
 		{
 			var sb = new StringBuilder();
 
-			for ( int i = start; i < end; i++ )
+			for ( var i = start; i < end; i++ )
 			{
-				sb.AppendFormat( CultureInfo.CurrentCulture, "{0} ", items[ i ] );
+				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
 			}
 
 			return sb.ToString( 0, sb.Length - 1 );
@@ -80,7 +81,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void LogParserError( string attribute, string context, string reason )
 		{
-			string error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
+			var error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
 
 			LogManager.Instance.Write( error );
 		}
@@ -93,7 +94,7 @@ namespace Axiom.Scripting
 		/// <returns></returns>
 		public static string ReadLine( TextReader reader )
 		{
-			string line = reader.ReadLine();
+			var line = reader.ReadLine();
 
 			if ( line != null )
 			{
@@ -108,12 +109,12 @@ namespace Axiom.Scripting
 
 				var sb = new StringBuilder();
 
-				string[] values = line.Split( ' ' );
+				var values = line.Split( ' ' );
 
 				// reduce big space gaps between values down to a single space
-				for ( int i = 0; i < values.Length; i++ )
+				for ( var i = 0; i < values.Length; i++ )
 				{
-					string val = values[ i ];
+					var val = values[ i ];
 
 					if ( val.Length != 0 )
 					{
@@ -148,7 +149,7 @@ namespace Axiom.Scripting
 		/// </summary>
 		public static void SkipToNextOpenBrace( TextReader reader )
 		{
-			string line = "";
+			var line = "";
 			while ( line != null && line != "{" )
 			{
 				line = ReadLine( reader );
@@ -161,7 +162,7 @@ namespace Axiom.Scripting
 		/// <param name="reader"></param>
 		public static void SkipToNextCloseBrace( TextReader reader )
 		{
-			string line = "";
+			var line = "";
 			while ( line != null && line != "}" )
 			{
 				line = ReadLine( reader );

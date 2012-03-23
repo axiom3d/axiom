@@ -2,8 +2,6 @@
 {
 	public partial class EngineConfig
 	{
-		#region Nested type: ConfigOptionDataTable
-
 		public partial class ConfigOptionDataTable
 		{
 			public ConfigOptionRow FindByNameRenderSystem( string Name, string RenderSystem )
@@ -18,7 +16,5 @@
 				return null;
 			}
 		}
-
-		#endregion
 	}
 }

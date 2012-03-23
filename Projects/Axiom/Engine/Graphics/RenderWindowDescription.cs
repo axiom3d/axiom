@@ -7,12 +7,12 @@ namespace Axiom.Graphics
 {
 	public class RenderWindowDescription
 	{
-		public uint Height;
-		public NamedParameterList MiscParams;
 		public String Name;
-		public bool UseFullScreen;
 		public uint Width;
+		public uint Height;
+		public bool UseFullScreen;
+		public NamedParameterList MiscParams;
 	}
 
-	public class RenderWindowDescriptionList : List<RenderWindowDescription> { }
+	public class RenderWindowDescriptionList : List<RenderWindowDescription> {}
 }

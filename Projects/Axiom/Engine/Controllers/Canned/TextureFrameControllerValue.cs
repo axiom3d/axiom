@@ -71,7 +71,7 @@ namespace Axiom.Controllers.Canned
 
 		#endregion Constructor
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		/// <summary>
 		///     Gets/Sets the frame of animation for a texture unit.
@@ -83,14 +83,14 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				return this.texUnit.CurrentFrame / this.texUnit.NumFrames;
+				return texUnit.CurrentFrame / texUnit.NumFrames;
 			}
 			set
 			{
-				this.texUnit.CurrentFrame = (int)( value * this.texUnit.NumFrames );
+				texUnit.CurrentFrame = (int)( value * texUnit.NumFrames );
 			}
 		}
 
-		#endregion
+		#endregion IControllerValue Members
 	}
 }

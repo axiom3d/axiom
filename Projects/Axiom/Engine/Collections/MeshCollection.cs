@@ -44,5 +44,5 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="SubMesh">SubMeshes</see> that are sorted by name.
 	/// </summary>
-	public class SubMeshCollection : AxiomCollection<SubMesh> { }
+	public class SubMeshCollection : AxiomCollection<SubMesh> {}
 }

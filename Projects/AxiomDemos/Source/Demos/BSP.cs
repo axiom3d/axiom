@@ -1,9 +1,15 @@
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.ComponentModel.Composition;
 
+using Axiom.Animating;
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Input;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -12,12 +18,12 @@ namespace Axiom.Demos
 	/// <summary>
 	/// Summary description for BspDemo.
 	/// </summary>
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 	public class Bsp : TechDemo
 	{
-		private readonly LoadingBar loadingBar = new LoadingBar();
-		private string bspMap;
 		private string bspPath;
+		private string bspMap;
+		private LoadingBar loadingBar = new LoadingBar();
 
 		public override void ChooseSceneManager()
 		{
@@ -26,7 +32,7 @@ namespace Axiom.Demos
 
 		protected override void LoadResources()
 		{
-			this.loadingBar.Start( Window, 1, 1, 0.75 );
+			loadingBar.Start( Window, 1, 1, 0.75 );
 
 			// Turn off rendering of everything except overlays
 			scene.SpecialCaseRenderQueueList.ClearRenderQueues();
@@ -34,25 +40,25 @@ namespace Axiom.Demos
 			scene.SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Include;
 
 			// Set up the world geometry link
-			ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( ResourceGroupManager.Instance.WorldResourceGroupName, this.bspMap, scene );
+			Core.ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( Core.ResourceGroupManager.Instance.WorldResourceGroupName, bspMap, scene );
 
 			// Initialise the rest of the resource groups, parse scripts etc
-			ResourceGroupManager.Instance.InitializeAllResourceGroups();
-			ResourceGroupManager.Instance.LoadResourceGroup( ResourceGroupManager.Instance.WorldResourceGroupName, false, true );
+			Core.ResourceGroupManager.Instance.InitializeAllResourceGroups();
+			Core.ResourceGroupManager.Instance.LoadResourceGroup( Core.ResourceGroupManager.Instance.WorldResourceGroupName, false, true );
 
 			// Back to full rendering
 			scene.SpecialCaseRenderQueueList.ClearRenderQueues();
 			scene.SpecialCaseRenderQueueList.RenderQueueMode = SpecialCaseRenderQueueMode.Exclude;
 
-			this.loadingBar.Finish();
+			loadingBar.Finish();
 		}
 
 		public override void SetupResources()
 		{
-			this.bspPath = "Media/Archives/chiropteraDM.zip";
-			this.bspMap = "maps/chiropteradm.bsp";
+			bspPath = "Media/Archives/chiropteraDM.zip";
+			bspMap = "maps/chiropteradm.bsp";
 
-			ResourceGroupManager.Instance.AddResourceLocation( this.bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
+			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
 
 		public override void CreateScene()

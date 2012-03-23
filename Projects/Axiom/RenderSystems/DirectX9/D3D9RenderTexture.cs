@@ -37,9 +37,6 @@ using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using SharpDX;
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -52,6 +49,15 @@ namespace Axiom.RenderSystems.DirectX9
 	public class D3D9RenderTexture : RenderTexture
 	{
 		[OgreVersion( 1, 7, 2 )]
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		[OgreVersion( 1, 7, 2 )]
 		public D3D9RenderTexture( string name, D3D9HardwarePixelBuffer buffer, bool writeGamma, int fsaa )
 			: base( buffer, 0 )
 		{
@@ -60,12 +66,30 @@ namespace Axiom.RenderSystems.DirectX9
 			this.fsaa = fsaa;
 		}
 
-		[OgreVersion( 1, 7, 2 )]
-		public override bool RequiresTextureFlipping
+		[OgreVersion( 1, 7, 2790 )]
+		public override void Update( bool swapBuffers )
 		{
-			get
+			var deviceManager = D3D9RenderSystem.DeviceManager;
+			var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
+
+			if ( currRenderWindowDevice != null )
 			{
-				return false;
+				if ( currRenderWindowDevice.IsDeviceLost == false )
+				{
+					base.Update( swapBuffers );
+				}
+			}
+			else
+			{
+				foreach ( var device in deviceManager )
+				{
+					if ( device.IsDeviceLost == false )
+					{
+						deviceManager.ActiveRenderTargetDevice = device;
+						base.Update( swapBuffers );
+						deviceManager.ActiveRenderTargetDevice = null;
+					}
+				}
 			}
 		}
 
@@ -77,7 +101,7 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( attribute.ToUpper() )
 				{
 					case "DDBACKBUFFER":
-						var surface = new Surface[ Config.MaxMultipleRenderTargets ];
+						var surface = new D3D9.Surface[ Config.MaxMultipleRenderTargets ];
 						if ( fsaa > 0 )
 						{
 							surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetFSAASurface( D3D9RenderSystem.ActiveD3D9Device );
@@ -93,37 +117,10 @@ namespace Axiom.RenderSystems.DirectX9
 						return null;
 
 					case "BUFFER":
-						return pixelBuffer;
+						return (HardwarePixelBuffer)pixelBuffer;
 
 					default:
 						return null;
-				}
-			}
-		}
-
-		[OgreVersion( 1, 7, 2790 )]
-		public override void Update( bool swapBuffers )
-		{
-			D3D9DeviceManager deviceManager = D3D9RenderSystem.DeviceManager;
-			D3D9Device currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
-
-			if ( currRenderWindowDevice != null )
-			{
-				if ( currRenderWindowDevice.IsDeviceLost == false )
-				{
-					base.Update( swapBuffers );
-				}
-			}
-			else
-			{
-				foreach ( D3D9Device device in deviceManager )
-				{
-					if ( device.IsDeviceLost == false )
-					{
-						deviceManager.ActiveRenderTargetDevice = device;
-						base.Update( swapBuffers );
-						deviceManager.ActiveRenderTargetDevice = null;
-					}
 				}
 			}
 		}
@@ -137,15 +134,15 @@ namespace Axiom.RenderSystems.DirectX9
 			// Only needed if we have to blit from AA surface
 			if ( fsaa > 0 )
 			{
-				D3D9DeviceManager deviceManager = D3D9RenderSystem.DeviceManager;
+				var deviceManager = D3D9RenderSystem.DeviceManager;
 				var buf = (D3D9HardwarePixelBuffer)( pixelBuffer );
 
-				foreach ( D3D9Device device in deviceManager )
+				foreach ( var device in deviceManager )
 				{
 					if ( device.IsDeviceLost == false )
 					{
-						Device d3d9Device = device.D3DDevice;
-						Result res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ), TextureFilter.None );
+						var d3d9Device = device.D3DDevice;
+						var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ), D3D9.TextureFilter.None );
 
 						if ( res.Failure )
 						{

@@ -40,8 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Media;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -74,6 +74,7 @@ namespace Axiom.Core
 		///     created by a render system plugin.
 		/// </remarks>
 		protected internal TextureManager()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -85,7 +86,7 @@ namespace Axiom.Core
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 		}
 
@@ -109,7 +110,22 @@ namespace Axiom.Core
 		/// <summary>
 		///    Flag that indicates whether 32-bit texture are being used.
 		/// </summary>
-		public bool Is32Bit { get; protected set; }
+		private bool _is32Bit;
+
+		/// <summary>
+		///    Flag that indicates whether 32-bit texture are being used.
+		/// </summary>
+		public bool Is32Bit
+		{
+			get
+			{
+				return _is32Bit;
+			}
+			protected set
+			{
+				_is32Bit = value;
+			}
+		}
 
 		#endregion Is32Bit Property
 
@@ -127,11 +143,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._defaultMipmapCount;
+				return _defaultMipmapCount;
 			}
 			set
 			{
-				this._defaultMipmapCount = value;
+				_defaultMipmapCount = value;
 			}
 		}
 
@@ -141,13 +157,13 @@ namespace Axiom.Core
 
 		#region PreferredIntegerBitDepth Property
 
-		private ushort _preferredIntegerBitDepth;
+		private ushort _preferredIntegerBitDepth = 0;
 
 		public ushort PreferredIntegerBitDepth
 		{
 			get
 			{
-				return this._preferredIntegerBitDepth;
+				return _preferredIntegerBitDepth;
 			}
 			set
 			{
@@ -157,7 +173,7 @@ namespace Axiom.Core
 
 		public void SetPreferredIntegerBitDepth( ushort bits, bool reloadTextures )
 		{
-			this._preferredIntegerBitDepth = bits;
+			_preferredIntegerBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -183,13 +199,13 @@ namespace Axiom.Core
 
 		#region PreferredFloatBitDepth Property
 
-		private ushort _preferredFloatBitDepth;
+		private ushort _preferredFloatBitDepth = 0;
 
 		public ushort PreferredFloatBitDepth
 		{
 			get
 			{
-				return this._preferredFloatBitDepth;
+				return _preferredFloatBitDepth;
 			}
 			set
 			{
@@ -199,7 +215,7 @@ namespace Axiom.Core
 
 		public void SetPreferredFloatBitDepth( ushort bits, bool reloadTextures )
 		{
-			this._preferredFloatBitDepth = bits;
+			_preferredFloatBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -225,8 +241,8 @@ namespace Axiom.Core
 
 		public void SetPreferredBitDepths( ushort integerBits, ushort floatBits, bool reloadTextures )
 		{
-			this._preferredFloatBitDepth = floatBits;
-			this._preferredIntegerBitDepth = integerBits;
+			_preferredFloatBitDepth = floatBits;
+			_preferredIntegerBitDepth = integerBits;
 
 			if ( reloadTextures )
 			{
@@ -302,7 +318,7 @@ namespace Axiom.Core
 			ret.Width = width;
 			ret.Height = height;
 			ret.Depth = depth;
-			ret.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
+			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 			ret.SetFormat( format );
 			ret.Usage = usage;
 			ret.HardwareGammaEnabled = hwGammaCorrection;
@@ -454,15 +470,15 @@ namespace Axiom.Core
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
-			Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
+			var result = CreateOrRetrieve( name, group );
 
 			var texture = (Texture)result.First;
 
 			// was it created?
-			if ( result.Second )
+			if ( result.Second == true )
 			{
 				texture.TextureType = type;
-				texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
+				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 				// set bit depth and gamma
 				texture.Gamma = gamma;
 				texture.TreatLuminanceAsAlpha = isAlpha;
@@ -509,7 +525,7 @@ namespace Axiom.Core
 
 			texture.TextureType = texType;
 			// set the number of mipmaps to use for this texture
-			texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
+			texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 
 			// set bit depth and gamma
 			texture.Gamma = gamma;
@@ -541,7 +557,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -581,7 +597,7 @@ namespace Axiom.Core
 
 		public bool IsEquivalentFormatSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
-			PixelFormat supportedFormat = GetNativeFormat( ttype, format, usage );
+			var supportedFormat = GetNativeFormat( ttype, format, usage );
 			// Assume that same or greater number of bits means quality not degraded
 			return PixelUtil.GetNumElemBits( supportedFormat ) >= PixelUtil.GetNumElemBits( format );
 		}

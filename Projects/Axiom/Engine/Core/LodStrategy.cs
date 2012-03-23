@@ -37,10 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 
-using Axiom.Core.Collections;
+using Axiom.Controllers;
+using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -58,7 +62,22 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		public string Name { get; protected set; }
+		/// <summary>
+		/// Name of this strategy.
+		/// </summary>
+		private string _name;
+
+		public string Name
+		{
+			get
+			{
+				return this._name;
+			}
+			protected set
+			{
+				this._name = value;
+			}
+		}
 
 		#endregion Fields and Properties
 
@@ -70,7 +89,7 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		public LodStrategy( string name )
 		{
-			this.Name = name;
+			_name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -110,7 +129,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedAscending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for ( var i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
@@ -131,7 +150,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected static bool IsSortedDescending( LodValueList values )
 		{
-			for ( int i = 0; i < values.Count; i++ )
+			for ( var i = 0; i < values.Count; i++ )
 			{
 				float prev = values[ i ];
 				if ( i + 1 < values.Count )
@@ -172,7 +191,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value > value )
 				{
@@ -191,7 +210,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < meshLodUsageList.Count; i++, index++ )
+			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
 			{
 				if ( meshLodUsageList[ i ].Value < value )
 				{
@@ -206,7 +225,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] > value )
 				{
@@ -221,7 +240,7 @@ namespace Axiom.Core
 		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
-			for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
+			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
 			{
 				if ( materialLodValueList[ i ] < value )
 				{
@@ -271,8 +290,6 @@ namespace Axiom.Core
 	/// </summary>
 	public class LodUsageSortGreater : IComparer<MeshLodUsage>
 	{
-		#region IComparer<MeshLodUsage> Members
-
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
 			if ( mesh1.Value > mesh2.Value )
@@ -284,8 +301,6 @@ namespace Axiom.Core
 				return 0;
 			}
 		}
-
-		#endregion
 	}
 
 	/// <summary>
@@ -293,8 +308,6 @@ namespace Axiom.Core
 	/// </summary>
 	public class LodUsageSortLess : IComparer<MeshLodUsage>
 	{
-		#region IComparer<MeshLodUsage> Members
-
 		public int Compare( MeshLodUsage mesh1, MeshLodUsage mesh2 )
 		{
 			if ( mesh1.Value < mesh2.Value )
@@ -306,7 +319,5 @@ namespace Axiom.Core
 				return 0;
 			}
 		}
-
-		#endregion
 	}
 }

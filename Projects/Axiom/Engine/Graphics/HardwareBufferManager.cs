@@ -63,11 +63,12 @@ namespace Axiom.Graphics
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		protected internal HardwareBufferManager( HardwareBufferManagerBase baseInstance )
+			: base()
 		{
 			if ( instance == null )
 			{
 				instance = this;
-				this._baseInstance = baseInstance;
+				_baseInstance = baseInstance;
 			}
 		}
 
@@ -91,7 +92,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -115,7 +116,7 @@ namespace Axiom.Graphics
 		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 #endif
 		{
-			return this._baseInstance.CreateVertexBuffer( vertexDeclaration, numVerts, usage, useShadowBuffer );
+			return _baseInstance.CreateVertexBuffer( vertexDeclaration, numVerts, usage, useShadowBuffer );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.CreateIndexBuffer"/>
@@ -126,7 +127,7 @@ namespace Axiom.Graphics
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 #endif
 		{
-			return this._baseInstance.CreateIndexBuffer( type, numIndices, usage, useShadowBuffer );
+			return _baseInstance.CreateIndexBuffer( type, numIndices, usage, useShadowBuffer );
 		}
 
 		//TODO
@@ -139,35 +140,35 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public override VertexDeclaration CreateVertexDeclaration()
 		{
-			return this._baseInstance.CreateVertexDeclaration();
+			return _baseInstance.CreateVertexDeclaration();
 		}
 
 		/// <see cref="HardwareBufferManagerBase.DestroyVertexDeclaration"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void DestroyVertexDeclaration( VertexDeclaration decl )
 		{
-			this._baseInstance.DestroyVertexDeclaration( decl );
+			_baseInstance.DestroyVertexDeclaration( decl );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.CreateVertexBufferBinding"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override VertexBufferBinding CreateVertexBufferBinding()
 		{
-			return this._baseInstance.CreateVertexBufferBinding();
+			return _baseInstance.CreateVertexBufferBinding();
 		}
 
 		/// <see cref="HardwareBufferManagerBase.DestroyVertexBufferBinding"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void DestroyVertexBufferBinding( VertexBufferBinding binding )
 		{
-			this._baseInstance.DestroyVertexBufferBinding( binding );
+			_baseInstance.DestroyVertexBufferBinding( binding );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.RegisterVertexBufferSourceAndCopy"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void RegisterVertexBufferSourceAndCopy( HardwareVertexBuffer sourceBuffer, HardwareVertexBuffer copy )
 		{
-			this._baseInstance.RegisterVertexBufferSourceAndCopy( sourceBuffer, copy );
+			_baseInstance.RegisterVertexBufferSourceAndCopy( sourceBuffer, copy );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.AllocateVertexBufferCopy"/>
@@ -176,59 +177,59 @@ namespace Axiom.Graphics
 #if NET_40
             IHardwareBufferLicensee licensee, bool copyData = false )
 #else
- IHardwareBufferLicensee licensee, bool copyData )
+		                                                               IHardwareBufferLicensee licensee, bool copyData )
 #endif
 		{
-			return this._baseInstance.AllocateVertexBufferCopy( sourceBuffer, licenseType, licensee, copyData );
+			return _baseInstance.AllocateVertexBufferCopy( sourceBuffer, licenseType, licensee, copyData );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.ReleaseVertexBufferCopy"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void ReleaseVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			this._baseInstance.ReleaseVertexBufferCopy( bufferCopy );
+			_baseInstance.ReleaseVertexBufferCopy( bufferCopy );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.TouchVertexBufferCopy"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void TouchVertexBufferCopy( HardwareVertexBuffer bufferCopy )
 		{
-			this._baseInstance.TouchVertexBufferCopy( bufferCopy );
+			_baseInstance.TouchVertexBufferCopy( bufferCopy );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.FreeUnusedBufferCopies"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void FreeUnusedBufferCopies()
 		{
-			this._baseInstance.FreeUnusedBufferCopies();
+			_baseInstance.FreeUnusedBufferCopies();
 		}
 
 		/// <see cref="HardwareBufferManagerBase.ReleaseBufferCopies"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void ReleaseBufferCopies( bool forceFreeUnused )
 		{
-			this._baseInstance.ReleaseBufferCopies( forceFreeUnused );
+			_baseInstance.ReleaseBufferCopies( forceFreeUnused );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.ForceReleaseBufferCopies"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void ForceReleaseBufferCopies( HardwareVertexBuffer sourceBuffer )
 		{
-			this._baseInstance.ForceReleaseBufferCopies( sourceBuffer );
+			_baseInstance.ForceReleaseBufferCopies( sourceBuffer );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.NotifyVertexBufferDestroyed"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void NotifyVertexBufferDestroyed( HardwareVertexBuffer buffer )
 		{
-			this._baseInstance.NotifyVertexBufferDestroyed( buffer );
+			_baseInstance.NotifyVertexBufferDestroyed( buffer );
 		}
 
 		/// <see cref="HardwareBufferManagerBase.NotifyIndexBufferDestroyed"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override void NotifyIndexBufferDestroyed( HardwareIndexBuffer buffer )
 		{
-			this._baseInstance.NotifyIndexBufferDestroyed( buffer );
+			_baseInstance.NotifyIndexBufferDestroyed( buffer );
 		}
 	};
 }

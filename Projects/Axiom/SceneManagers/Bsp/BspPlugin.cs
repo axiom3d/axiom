@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -45,24 +46,20 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.Bsp
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class BspPlugin : IPlugin
 	{
-		private BspSceneManagerFactory _bspSMFactory;
-
-		#region IPlugin Members
-
 		public void Initialize()
 		{
-			this._bspSMFactory = new BspSceneManagerFactory();
-			Root.Instance.AddSceneManagerFactory( this._bspSMFactory );
+			_bspSMFactory = new BspSceneManagerFactory();
+			Root.Instance.AddSceneManagerFactory( _bspSMFactory );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( this._bspSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( _bspSMFactory );
 		}
 
-		#endregion
+		private BspSceneManagerFactory _bspSMFactory;
 	}
 }

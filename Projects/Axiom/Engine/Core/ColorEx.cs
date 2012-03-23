@@ -38,10 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-using Axiom.Math;
 using Axiom.Utilities;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -90,7 +91,7 @@ namespace Axiom.Core
 		/// <param name="g">Green color component.</param>
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float r, float g, float b )
-			: this( 1.0f, r, g, b ) { }
+			: this( 1.0f, r, g, b ) {}
 
 		/// <summary>
 		///		Constructor taking all component values.
@@ -131,12 +132,12 @@ namespace Axiom.Core
 
 		public int ToRGBA()
 		{
-			int result = 0;
+			var result = 0;
 
-			result += ( (int)( this.r * 255.0f ) ) << 24;
-			result += ( (int)( this.g * 255.0f ) ) << 16;
-			result += ( (int)( this.b * 255.0f ) ) << 8;
-			result += ( (int)( this.a * 255.0f ) );
+			result += ( (int)( r * 255.0f ) ) << 24;
+			result += ( (int)( g * 255.0f ) ) << 16;
+			result += ( (int)( b * 255.0f ) ) << 8;
+			result += ( (int)( a * 255.0f ) );
 
 			return result;
 		}
@@ -148,12 +149,12 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int ToABGR()
 		{
-			int result = 0;
+			var result = 0;
 
-			result += ( (int)( this.a * 255.0f ) ) << 24;
-			result += ( (int)( this.b * 255.0f ) ) << 16;
-			result += ( (int)( this.g * 255.0f ) ) << 8;
-			result += ( (int)( this.r * 255.0f ) );
+			result += ( (int)( a * 255.0f ) ) << 24;
+			result += ( (int)( b * 255.0f ) ) << 16;
+			result += ( (int)( g * 255.0f ) ) << 8;
+			result += ( (int)( r * 255.0f ) );
 
 			return result;
 		}
@@ -164,12 +165,12 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int ToARGB()
 		{
-			int result = 0;
+			var result = 0;
 
-			result += ( (int)( this.a * 255.0f ) ) << 24;
-			result += ( (int)( this.r * 255.0f ) ) << 16;
-			result += ( (int)( this.g * 255.0f ) ) << 8;
-			result += ( (int)( this.b * 255.0f ) );
+			result += ( (int)( a * 255.0f ) ) << 24;
+			result += ( (int)( r * 255.0f ) ) << 16;
+			result += ( (int)( g * 255.0f ) ) << 8;
+			result += ( (int)( b * 255.0f ) );
 
 			return result;
 		}
@@ -183,10 +184,10 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public void ToArrayRGBA( float[] vals )
 		{
-			vals[ 0 ] = this.r;
-			vals[ 1 ] = this.g;
-			vals[ 2 ] = this.b;
-			vals[ 3 ] = this.a;
+			vals[ 0 ] = r;
+			vals[ 1 ] = g;
+			vals[ 2 ] = b;
+			vals[ 3 ] = a;
 		}
 
 		/// <summary>
@@ -194,10 +195,10 @@ namespace Axiom.Core
 		/// </summary>
 		public void Saturate()
 		{
-			this.r = Utility.Clamp( this.r, 1.0f, 0.0f );
-			this.g = Utility.Clamp( this.g, 1.0f, 0.0f );
-			this.b = Utility.Clamp( this.b, 1.0f, 0.0f );
-			this.a = Utility.Clamp( this.a, 1.0f, 0.0f );
+			r = Utility.Clamp( r, 1.0f, 0.0f );
+			g = Utility.Clamp( g, 1.0f, 0.0f );
+			b = Utility.Clamp( b, 1.0f, 0.0f );
+			a = Utility.Clamp( a, 1.0f, 0.0f );
 		}
 
 		/// <summary>
@@ -206,10 +207,10 @@ namespace Axiom.Core
 		public ColorEx SaturateCopy()
 		{
 			ColorEx saturated;
-			saturated.r = Utility.Clamp( this.r, 1.0f, 0.0f );
-			saturated.g = Utility.Clamp( this.g, 1.0f, 0.0f );
-			saturated.b = Utility.Clamp( this.b, 1.0f, 0.0f );
-			saturated.a = Utility.Clamp( this.a, 1.0f, 0.0f );
+			saturated.r = Utility.Clamp( r, 1.0f, 0.0f );
+			saturated.g = Utility.Clamp( g, 1.0f, 0.0f );
+			saturated.b = Utility.Clamp( b, 1.0f, 0.0f );
+			saturated.a = Utility.Clamp( a, 1.0f, 0.0f );
 
 			return saturated;
 		}
@@ -230,7 +231,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator *( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a *= right.a;
 			retVal.r *= right.r;
 			retVal.g *= right.g;
@@ -240,7 +241,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator *( ColorEx left, float scalar )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a *= scalar;
 			retVal.r *= scalar;
 			retVal.g *= scalar;
@@ -251,7 +252,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator /( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a /= right.a;
 			retVal.r /= right.r;
 			retVal.g /= right.g;
@@ -261,7 +262,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator /( ColorEx left, float scalar )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a /= scalar;
 			retVal.r /= scalar;
 			retVal.g /= scalar;
@@ -271,7 +272,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator -( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a -= right.a;
 			retVal.r -= right.r;
 			retVal.g -= right.g;
@@ -281,7 +282,7 @@ namespace Axiom.Core
 
 		public static ColorEx operator +( ColorEx left, ColorEx right )
 		{
-			ColorEx retVal = left;
+			var retVal = left;
 			retVal.a += right.a;
 			retVal.r += right.r;
 			retVal.g += right.g;
@@ -2557,7 +2558,7 @@ namespace Axiom.Core
 			{
 				throw new ArgumentException( "The parsableText parameter cannot be null." );
 			}
-			string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
+			var vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 			if ( vals.Length < 3 )
 			{
 				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)", parsableText ) );
@@ -2587,7 +2588,7 @@ namespace Axiom.Core
 		//TODO : Move this to StringConverter
 		public string To_0_255_String()
 		{
-			return string.Format( "({0},{1},{2},{3})", (int)( this.r * 255f ), (int)( this.g * 255f ), (int)( this.b * 255f ), (int)( this.a * 255f ) );
+			return string.Format( "({0},{1},{2},{3})", (int)( r * 255f ), (int)( g * 255f ), (int)( b * 255f ), (int)( a * 255f ) );
 		}
 
 		#endregion Static color properties
@@ -2603,7 +2604,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return ToARGB();
+			return this.ToARGB();
 		}
 
 		public override bool Equals( object obj )
@@ -2618,7 +2619,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return To_0_255_String();
+			return this.To_0_255_String();
 		}
 
 		#endregion Object overloads

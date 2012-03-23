@@ -47,8 +47,6 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public static string FACTORY_NAME = "Simple";
 
-		#region IPageContentCollectionFactory Members
-
 		public string Name
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -69,7 +67,5 @@ namespace Axiom.Components.Paging
 		{
 			c.SafeDispose();
 		}
-
-		#endregion
 	};
 }

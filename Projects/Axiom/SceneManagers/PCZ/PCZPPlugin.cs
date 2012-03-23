@@ -37,7 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Text;
 
 using Axiom.Core;
 
@@ -45,30 +48,26 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class PCZPPlugin : IPlugin
 	{
-		private PCZSceneManagerFactory PCZSMFactory;
-
-		private PCZLightFactory lightFactory;
-
-		#region IPlugin Members
-
 		public void Initialize()
 		{
-			this.PCZSMFactory = new PCZSceneManagerFactory();
-			this.lightFactory = new PCZLightFactory();
+			PCZSMFactory = new PCZSceneManagerFactory();
+			lightFactory = new PCZLightFactory();
 
-			Root.Instance.AddSceneManagerFactory( this.PCZSMFactory );
-			Root.Instance.AddMovableObjectFactory( this.lightFactory, true );
+			Root.Instance.AddSceneManagerFactory( PCZSMFactory );
+			Root.Instance.AddMovableObjectFactory( lightFactory, true );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( this.PCZSMFactory );
-			Root.Instance.RemoveMovableObjectFactory( this.lightFactory );
+			Root.Instance.RemoveSceneManagerFactory( PCZSMFactory );
+			Root.Instance.RemoveMovableObjectFactory( lightFactory );
 		}
 
-		#endregion
+		private PCZSceneManagerFactory PCZSMFactory;
+
+		private PCZLightFactory lightFactory;
 	}
 }

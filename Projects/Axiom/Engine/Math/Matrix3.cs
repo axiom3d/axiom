@@ -43,6 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -114,15 +115,15 @@ namespace Axiom.Math
 		/// <param name="zAxis"></param>
 		public Matrix3( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
-			this.m00 = xAxis.x;
-			this.m01 = yAxis.x;
-			this.m02 = zAxis.x;
-			this.m10 = xAxis.y;
-			this.m11 = yAxis.y;
-			this.m12 = zAxis.y;
-			this.m20 = xAxis.z;
-			this.m21 = yAxis.z;
-			this.m22 = zAxis.z;
+			m00 = xAxis.x;
+			m01 = yAxis.x;
+			m02 = zAxis.x;
+			m10 = xAxis.y;
+			m11 = yAxis.y;
+			m12 = zAxis.y;
+			m20 = xAxis.z;
+			m21 = yAxis.z;
+			m22 = zAxis.z;
 		}
 
 		#endregion
@@ -161,7 +162,7 @@ namespace Axiom.Math
 		/// <returns>A transposed Matrix.</returns>
 		public Matrix3 Transpose()
 		{
-			return new Matrix3( this.m00, this.m10, this.m20, this.m01, this.m11, this.m21, this.m02, this.m12, this.m22 );
+			return new Matrix3( m00, m10, m20, m01, m11, m21, m02, m12, m22 );
 		}
 
 		/// <summary>
@@ -184,11 +185,11 @@ namespace Axiom.Math
 #else
 			unsafe
 			{
-				fixed ( Real* pM = &this.m00 )
+				fixed ( Real* pM = &m00 )
 				{
 					return new Vector3( *( pM + col ), //m[0,col], 
-										*( pM + 3 + col ), //m[1,col], 
-										*( pM + 6 + col ) ); //m[2,col]);
+					                    *( pM + 3 + col ), //m[1,col], 
+					                    *( pM + 6 + col ) ); //m[2,col]);
 				}
 			}
 #endif
@@ -230,8 +231,8 @@ namespace Axiom.Math
 		/// <param name="roll"></param>
 		public void FromEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
 		{
-			Real cos = Utility.Cos( yaw );
-			Real sin = Utility.Sin( yaw );
+			var cos = Utility.Cos( yaw );
+			var sin = Utility.Sin( yaw );
 			var xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
 			cos = Utility.Cos( pitch );
@@ -251,18 +252,18 @@ namespace Axiom.Math
 			Real rAngle;
 			Real pAngle;
 
-			pAngle = Utility.ASin( this.m01 );
+			pAngle = Utility.ASin( m01 );
 			if ( pAngle < Utility.PI / 2 )
 			{
 				if ( pAngle > -Utility.PI / 2 )
 				{
-					yAngle = Utility.ATan2( this.m21, this.m11 );
-					rAngle = Utility.ATan2( this.m02, this.m00 );
+					yAngle = Utility.ATan2( m21, m11 );
+					rAngle = Utility.ATan2( m02, m00 );
 				}
 				else
 				{
 					// WARNING. Not a unique solution.
-					Real fRmY = Utility.ATan2( -this.m20, this.m22 );
+					var fRmY = (Real)Utility.ATan2( -m20, m22 );
 					rAngle = 0.0f; // any angle works
 					yAngle = rAngle - fRmY;
 				}
@@ -270,7 +271,7 @@ namespace Axiom.Math
 			else
 			{
 				// WARNING. Not a unique solution.
-				Real fRpY = Utility.ATan2( -this.m20, this.m22 );
+				var fRpY = Utility.ATan2( -m20, m22 );
 				rAngle = 0.0f; // any angle works
 				yAngle = fRpY - rAngle;
 			}
@@ -463,9 +464,9 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for ( var row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for ( var col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] + right[ row, col ];
 				}
@@ -495,9 +496,9 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			for ( int row = 0; row < 3; row++ )
+			for ( var row = 0; row < 3; row++ )
 			{
-				for ( int col = 0; col < 3; col++ )
+				for ( var col = 0; col < 3; col++ )
 				{
 					result[ row, col ] = left[ row, col ] - right[ row, col ];
 				}
@@ -600,7 +601,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &this.m00 )
+					fixed ( Real* pM = &m00 )
 					{
 						return *( pM + ( ( 3 * row ) + col ) );
 					}
@@ -642,7 +643,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &this.m00 )
+					fixed ( Real* pM = &m00 )
 					{
 						*( pM + ( ( 3 * row ) + col ) ) = value;
 					}
@@ -677,7 +678,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -704,7 +705,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &this.m00 )
+					fixed ( Real* pMatrix = &m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -721,11 +722,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				Real cofactor00 = this.m11 * this.m22 - this.m12 * this.m21;
-				Real cofactor10 = this.m12 * this.m20 - this.m10 * this.m22;
-				Real cofactor20 = this.m10 * this.m21 - this.m11 * this.m20;
+				var cofactor00 = m11 * m22 - m12 * m21;
+				var cofactor10 = m12 * m20 - m10 * m22;
+				var cofactor20 = m10 * m21 - m11 * m20;
 
-				Real result = this.m00 * cofactor00 + this.m01 * cofactor10 + this.m02 * cofactor20;
+				var result = m00 * cofactor00 + m01 * cofactor10 + m02 * cofactor20;
 
 				return result;
 			}
@@ -744,9 +745,9 @@ namespace Axiom.Math
 		{
 			var builder = new StringBuilder();
 
-			builder.AppendFormat( " | {0} {1} {2} |\n", this.m00, this.m01, this.m02 );
-			builder.AppendFormat( " | {0} {1} {2} |\n", this.m10, this.m11, this.m12 );
-			builder.AppendFormat( " | {0} {1} {2} |", this.m20, this.m21, this.m22 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", m00, m01, m02 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", m10, m11, m12 );
+			builder.AppendFormat( " | {0} {1} {2} |", m20, m21, m22 );
 
 			return builder.ToString();
 		}
@@ -767,12 +768,12 @@ namespace Axiom.Math
 		           (int) (m10) ^ (int) (m11) ^ (int) (m12) ^ 
 		           (int) (m20) ^ (int) (m21) ^ (int) (m22);
 #else
-			int hashCode = 0;
+			var hashCode = 0;
 			unsafe
 			{
-				fixed ( Real* pM = &this.m00 )
+				fixed ( Real* pM = &m00 )
 				{
-					for ( int i = 0; i < 9; i++ )
+					for ( var i = 0; i < 9; i++ )
 					{
 						hashCode ^= (int)( *( pM + i ) );
 					}

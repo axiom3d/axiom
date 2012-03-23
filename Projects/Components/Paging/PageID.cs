@@ -39,19 +39,19 @@ namespace Axiom.Components.Paging
 {
 	public struct PageID
 	{
-		private readonly uint mValue;
-
-		public PageID( uint pageId )
-		{
-			this.mValue = pageId;
-		}
+		private uint mValue;
 
 		public uint Value
 		{
 			get
 			{
-				return this.mValue;
+				return mValue;
 			}
+		}
+
+		public PageID( uint pageId )
+		{
+			mValue = pageId;
 		}
 
 		public static implicit operator PageID( uint val )
@@ -61,7 +61,7 @@ namespace Axiom.Components.Paging
 
 		public override string ToString()
 		{
-			return this.mValue.ToString();
+			return mValue.ToString();
 		}
 	};
 }

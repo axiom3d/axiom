@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -61,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///     Reference to the link program manager we create.
 		/// </summary>
-		private readonly GLSLLinkProgramManager glslLinkProgramMgr;
+		private GLSLLinkProgramManager glslLinkProgramMgr;
 
 		#endregion Fields
 
@@ -73,23 +75,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		internal GLSLProgramFactory()
 		{
 			// instantiate the singleton
-			this.glslLinkProgramMgr = new GLSLLinkProgramManager();
+			glslLinkProgramMgr = new GLSLLinkProgramManager();
 		}
 
 		#endregion Constructor
 
 		#region HighLevelGpuProgramFactory Implementation
-
-		/// <summary>
-		///		Returns the language code for this high level program manager.
-		/// </summary>
-		public override string Language
-		{
-			get
-			{
-				return languageName;
-			}
-		}
 
 		/// <summary>
 		///		Creates and returns a new GLSL program object.
@@ -100,6 +91,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new GLSLProgram( parent, name, handle, group, isManual, loader );
+		}
+
+		/// <summary>
+		///		Returns the language code for this high level program manager.
+		/// </summary>
+		public override string Language
+		{
+			get
+			{
+				return languageName;
+			}
 		}
 
 		#endregion HighLevelGpuProgramFactory Implementation
@@ -113,7 +115,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			if ( disposeManagedResources )
 			{
-				this.glslLinkProgramMgr.Dispose();
+				glslLinkProgramMgr.Dispose();
 			}
 			base.dispose( disposeManagedResources );
 		}

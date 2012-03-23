@@ -37,6 +37,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -66,25 +69,23 @@ namespace Axiom.Core
 	{
 		#region Member variables
 
-		public ColorEx Color = ColorEx.White;
+		protected bool hasOwnDimensions;
+		internal float width, height;
+		protected bool useTexcoordRect;
+		protected short texcoordIndex;
+		protected RectangleF texcoordRect;
+
+		// Intentional public access, since having a property for these for 1,000s of billboards
+		// could be too costly
+		public Vector3 Position = Vector3.Zero;
 		public Vector3 Direction = Vector3.Zero;
 		public BillboardSet ParentSet;
-		public Vector3 Position = Vector3.Zero;
-		protected bool hasOwnDimensions;
-		internal float height;
+		public ColorEx Color = ColorEx.White;
 
 		/// <summary>
 		///		Needed for particle systems
 		/// </summary>
-		public float rotationInRadians;
-
-		protected short texcoordIndex;
-		protected RectangleF texcoordRect;
-		protected bool useTexcoordRect;
-		internal float width;
-
-		// Intentional public access, since having a property for these for 1,000s of billboards
-		// could be too costly
+		public float rotationInRadians = 0;
 
 		#endregion Member variables
 
@@ -93,7 +94,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-		public Billboard() { }
+		public Billboard() {}
 
 		/// <summary>
 		///
@@ -131,13 +132,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.width;
+				return width;
 			}
 			set
 			{
-				this.hasOwnDimensions = true;
-				this.width = value;
-				this.ParentSet.NotifyBillboardResized();
+				hasOwnDimensions = true;
+				width = value;
+				ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -148,13 +149,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.height;
+				return height;
 			}
 			set
 			{
-				this.hasOwnDimensions = true;
-				this.height = value;
-				this.ParentSet.NotifyBillboardResized();
+				hasOwnDimensions = true;
+				height = value;
+				ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -165,11 +166,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.hasOwnDimensions;
+				return hasOwnDimensions;
 			}
 			set
 			{
-				this.hasOwnDimensions = value;
+				hasOwnDimensions = value;
 			}
 		}
 
@@ -178,68 +179,11 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///		Gets/Sets the rotation in degrees.
-		/// </summary>
-		public float Rotation
-		{
-			get
-			{
-				return this.rotationInRadians * Utility.DEGREES_PER_RADIAN;
-			}
-			set
-			{
-				this.rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-				if ( this.rotationInRadians != 0 )
-				{
-					this.ParentSet.NotifyBillboardRotated();
-				}
-			}
-		}
-
-		public RectangleF TexcoordRect
-		{
-			get
-			{
-				return this.texcoordRect;
-			}
-			set
-			{
-				this.texcoordRect = value;
-				this.useTexcoordRect = true;
-			}
-		}
-
-		public bool UseTexcoordRect
-		{
-			get
-			{
-				return this.useTexcoordRect;
-			}
-			set
-			{
-				this.useTexcoordRect = value;
-			}
-		}
-
-		public short TexcoordIndex
-		{
-			get
-			{
-				return this.texcoordIndex;
-			}
-			set
-			{
-				this.texcoordIndex = value;
-				this.useTexcoordRect = false;
-			}
-		}
-
-		/// <summary>
 		///		Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
 		/// </summary>
 		public virtual void ResetDimensions()
 		{
-			this.hasOwnDimensions = false;
+			hasOwnDimensions = false;
 		}
 
 		/// <summary>
@@ -249,10 +193,10 @@ namespace Axiom.Core
 		/// <param name="height">Height of the billboard.</param>
 		public virtual void SetDimensions( float width, float height )
 		{
-			this.hasOwnDimensions = true;
+			hasOwnDimensions = true;
 			this.width = width;
 			this.height = height;
-			this.ParentSet.NotifyBillboardResized();
+			ParentSet.NotifyBillboardResized();
 		}
 
 		/// <summary>
@@ -261,7 +205,64 @@ namespace Axiom.Core
 		/// <param name="owner"></param>
 		internal void NotifyOwner( BillboardSet owner )
 		{
-			this.ParentSet = owner;
+			ParentSet = owner;
+		}
+
+		/// <summary>
+		///		Gets/Sets the rotation in degrees.
+		/// </summary>
+		public float Rotation
+		{
+			get
+			{
+				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+			}
+			set
+			{
+				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				if ( rotationInRadians != 0 )
+				{
+					ParentSet.NotifyBillboardRotated();
+				}
+			}
+		}
+
+		public RectangleF TexcoordRect
+		{
+			get
+			{
+				return texcoordRect;
+			}
+			set
+			{
+				texcoordRect = value;
+				useTexcoordRect = true;
+			}
+		}
+
+		public bool UseTexcoordRect
+		{
+			get
+			{
+				return useTexcoordRect;
+			}
+			set
+			{
+				useTexcoordRect = value;
+			}
+		}
+
+		public short TexcoordIndex
+		{
+			get
+			{
+				return texcoordIndex;
+			}
+			set
+			{
+				texcoordIndex = value;
+				useTexcoordRect = false;
+			}
 		}
 
 		#endregion Methods

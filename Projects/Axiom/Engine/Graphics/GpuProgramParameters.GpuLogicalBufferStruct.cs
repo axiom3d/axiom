@@ -1,9 +1,12 @@
-﻿namespace Axiom.Graphics
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-		#region Nested type: GpuLogicalBufferStruct
-
 		/// <summary>
 		/// Container struct to allow params to safely & update shared list of logical buffer assignments
 		/// </summary>
@@ -17,7 +20,7 @@
 			{
 				get
 				{
-					return this.Map;
+					return Map;
 				}
 			}
 
@@ -45,15 +48,13 @@
 			public GpuLogicalBufferStruct Clone()
 			{
 				var p = new GpuLogicalBufferStruct();
-				p.BufferSize = this.BufferSize;
-				foreach ( var i in this.Map )
+				p.BufferSize = BufferSize;
+				foreach ( var i in Map )
 				{
 					p.Map.Add( i.Key, i.Value.Clone() );
 				}
 				return p;
 			}
 		};
-
-		#endregion
 	}
 }

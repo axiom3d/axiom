@@ -80,7 +80,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of passes with dirty hashes.
 		/// </summary>
-		private static readonly PassList _dirtyList = new PassList();
+		private static PassList _dirtyList = new PassList();
 
 		/// <summary>
 		///		Gets a list of dirty passes.
@@ -100,7 +100,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of passes queued for deletion.
 		/// </summary>
-		private static readonly PassList _graveyardList = new PassList();
+		private static PassList _graveyardList = new PassList();
 
 		/// <summary>
 		///		Gets a list of passes queued for deletion.
@@ -115,7 +115,7 @@ namespace Axiom.Graphics
 
 		#endregion GraveyardList Property
 
-		protected static int nextPassId;
+		protected static int nextPassId = 0;
 		protected static Object passLock = new Object();
 
 		#endregion Static Interface
@@ -145,11 +145,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._parent;
+				return _parent;
 			}
 			set
 			{
-				this._parent = value;
+				_parent = value;
 			}
 		}
 
@@ -169,12 +169,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._index;
+				return _index;
 			}
 			set
 			{
-				this._index = value;
-				DirtyHash();
+				_index = value;
+				this.DirtyHash();
 			}
 		}
 
@@ -199,11 +199,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._name;
+				return _name;
 			}
 			set
 			{
-				this._name = value;
+				_name = value;
 			}
 		}
 
@@ -234,11 +234,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._ambient;
+				return _ambient;
 			}
 			set
 			{
-				this._ambient = value;
+				_ambient = value;
 			}
 		}
 
@@ -267,11 +267,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._diffuse;
+				return _diffuse;
 			}
 			set
 			{
-				this._diffuse = value;
+				_diffuse = value;
 			}
 		}
 
@@ -302,11 +302,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._specular;
+				return _specular;
 			}
 			set
 			{
-				this._specular = value;
+				_specular = value;
 			}
 		}
 
@@ -326,11 +326,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._emissive;
+				return _emissive;
 			}
 			set
 			{
-				this._emissive = value;
+				_emissive = value;
 			}
 		}
 
@@ -341,11 +341,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._emissive;
+				return _emissive;
 			}
 			set
 			{
-				this._emissive = value;
+				_emissive = value;
 			}
 		}
 
@@ -369,11 +369,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._shininess;
+				return _shininess;
 			}
 			set
 			{
-				this._shininess = value;
+				_shininess = value;
 			}
 		}
 
@@ -393,11 +393,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._tracking;
+				return _tracking;
 			}
 			set
 			{
-				this._tracking = value;
+				_tracking = value;
 			}
 		}
 
@@ -417,11 +417,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._sourceBlendFactor;
+				return _sourceBlendFactor;
 			}
 			set
 			{
-				this._sourceBlendFactor = value;
+				_sourceBlendFactor = value;
 			}
 		}
 
@@ -441,7 +441,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._destinationBlendFactor;
+				return _destinationBlendFactor;
 			}
 		}
 
@@ -456,7 +456,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this._sourceBlendFactorAlpha;
+				return _sourceBlendFactorAlpha;
 			}
 		}
 
@@ -471,7 +471,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this._destinationBlendFactorAlpha;
+				return _destinationBlendFactorAlpha;
 			}
 		}
 
@@ -499,11 +499,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._depthCheck;
+				return _depthCheck;
 			}
 			set
 			{
-				this._depthCheck = value;
+				_depthCheck = value;
 			}
 		}
 
@@ -532,11 +532,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._depthWrite;
+				return _depthWrite;
 			}
 			set
 			{
-				this._depthWrite = value;
+				_depthWrite = value;
 			}
 		}
 
@@ -562,11 +562,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._depthFunction;
+				return _depthFunction;
 			}
 			set
 			{
-				this._depthFunction = value;
+				_depthFunction = value;
 			}
 		}
 
@@ -607,8 +607,8 @@ namespace Axiom.Graphics
 		/// <param name="slopeBias">The slope-relative bias value, expressed as a factor of the depth slope</param>
 		public void SetDepthBias( float constantBias, float slopeBias )
 		{
-			this._depthBiasConstant = constantBias;
-			this._depthBiasSlopeScale = slopeBias;
+			_depthBiasConstant = constantBias;
+			_depthBiasSlopeScale = slopeBias;
 		}
 
 		public void SetDepthBias( float constantBias )
@@ -624,7 +624,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._depthBiasConstant;
+				return _depthBiasConstant;
 			}
 		}
 
@@ -636,7 +636,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._depthBiasSlopeScale;
+				return _depthBiasSlopeScale;
 			}
 		}
 
@@ -665,11 +665,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._colorWriteEnabled;
+				return _colorWriteEnabled;
 			}
 			set
 			{
-				this._colorWriteEnabled = value;
+				_colorWriteEnabled = value;
 			}
 		}
 
@@ -679,6 +679,7 @@ namespace Axiom.Graphics
 
 		private CompareFunction _alphaRejectFunction = CompareFunction.AlwaysPass;
 		private int _alphaRejectValue;
+		private bool _alphaToCoverageEnabled;
 
 		/// <summary>
 		/// Sets the way the pass will have use alpha to totally reject pixels from the pipeline.
@@ -690,8 +691,8 @@ namespace Axiom.Graphics
 		/// <param name="value">value against which alpha values will be tested [(0-255]</param>
 		public void SetAlphaRejectSettings( CompareFunction alphaRejectFunction, int value )
 		{
-			this._alphaRejectFunction = alphaRejectFunction;
-			this._alphaRejectValue = value;
+			_alphaRejectFunction = alphaRejectFunction;
+			_alphaRejectValue = value;
 		}
 
 		/// <summary>
@@ -701,11 +702,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._alphaRejectFunction;
+				return _alphaRejectFunction;
 			}
 			set
 			{
-				this._alphaRejectFunction = value;
+				_alphaRejectFunction = value;
 			}
 		}
 
@@ -716,19 +717,29 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._alphaRejectValue;
+				return _alphaRejectValue;
 			}
 			set
 			{
 				Debug.Assert( value < 255 && value > 0, "AlphaRejectValue must be between 0 and 255" );
-				this._alphaRejectValue = value;
+				_alphaRejectValue = value;
 			}
 		}
 
 		/// <summary>
 		/// Whether to use alpha to coverage (A2C) when blending alpha rejected values
 		/// </summary>
-		public bool IsAlphaToCoverageEnabled { get; set; }
+		public bool IsAlphaToCoverageEnabled
+		{
+			get
+			{
+				return _alphaToCoverageEnabled;
+			}
+			set
+			{
+				_alphaToCoverageEnabled = value;
+			}
+		}
 
 		#endregion AlphaReject Properties
 
@@ -757,11 +768,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._cullingMode;
+				return _cullingMode;
 			}
 			set
 			{
-				this._cullingMode = value;
+				_cullingMode = value;
 			}
 		}
 
@@ -791,11 +802,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._manualCullingMode;
+				return _manualCullingMode;
 			}
 			set
 			{
-				this._manualCullingMode = value;
+				_manualCullingMode = value;
 			}
 		}
 
@@ -820,11 +831,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._lightingEnabled;
+				return _lightingEnabled;
 			}
 			set
 			{
-				this._lightingEnabled = value;
+				_lightingEnabled = value;
 			}
 		}
 
@@ -851,17 +862,22 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._maxSimultaneousLights;
+				return _maxSimultaneousLights;
 			}
 			set
 			{
-				this._maxSimultaneousLights = value;
+				_maxSimultaneousLights = value;
 			}
 		}
 
 		#endregion MaxLights Property
 
 		#region StartLight Property
+
+		/// <summary>
+		///    the light index that this pass will start at in the light list.
+		/// </summary>
+		private bool _startLight;
 
 		/// <summary>
 		///    Sets the light index that this pass will start at in the light list.
@@ -875,7 +891,17 @@ namespace Axiom.Graphics
 		/// if you choose to iterate this pass per light too, the iteration will
 		/// only begin from light 4.
 		/// </remarks>
-		public bool StartLight { get; set; }
+		public bool StartLight
+		{
+			get
+			{
+				return _startLight;
+			}
+			set
+			{
+				_startLight = value;
+			}
+		}
 
 		#endregion StartLight Property
 
@@ -893,11 +919,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._iteratePerLight;
+				return _iteratePerLight;
 			}
 			set
 			{
-				this._iteratePerLight = value;
+				_iteratePerLight = value;
 			}
 		}
 
@@ -921,11 +947,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._lightsPerIteration;
+				return _lightsPerIteration;
 			}
 			set
 			{
-				this._lightsPerIteration = value;
+				_lightsPerIteration = value;
 			}
 		}
 
@@ -945,11 +971,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._runOnlyForOneLightType;
+				return _runOnlyForOneLightType;
 			}
 			set
 			{
-				this._runOnlyForOneLightType = value;
+				_runOnlyForOneLightType = value;
 			}
 		}
 
@@ -970,11 +996,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._onlyLightType;
+				return _onlyLightType;
 			}
 			set
 			{
-				this._onlyLightType = value;
+				_onlyLightType = value;
 			}
 		}
 
@@ -997,11 +1023,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._shadingMode;
+				return _shadingMode;
 			}
 			set
 			{
-				this._shadingMode = value;
+				_shadingMode = value;
 			}
 		}
 
@@ -1024,11 +1050,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._polygonMode;
+				return _polygonMode;
 			}
 			set
 			{
-				this._polygonMode = value;
+				_polygonMode = value;
 			}
 		}
 
@@ -1050,11 +1076,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogOverride;
+				return _fogOverride;
 			}
 			protected set
 			{
-				this._fogOverride = value;
+				_fogOverride = value;
 			}
 		}
 
@@ -1077,11 +1103,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogMode;
+				return _fogMode;
 			}
 			protected set
 			{
-				this._fogMode = value;
+				_fogMode = value;
 			}
 		}
 
@@ -1104,11 +1130,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogColor;
+				return _fogColor;
 			}
 			protected set
 			{
-				this._fogColor = value;
+				_fogColor = value;
 			}
 		}
 
@@ -1131,11 +1157,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogStart;
+				return _fogStart;
 			}
 			protected set
 			{
-				this._fogStart = value;
+				_fogStart = value;
 			}
 		}
 
@@ -1158,11 +1184,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogEnd;
+				return _fogEnd;
 			}
 			set
 			{
-				this._fogEnd = value;
+				_fogEnd = value;
 			}
 		}
 
@@ -1185,11 +1211,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fogDensity;
+				return _fogDensity;
 			}
 			protected set
 			{
-				this._fogDensity = value;
+				_fogDensity = value;
 			}
 		}
 
@@ -1212,7 +1238,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.textureUnitStates.Count;
+				return textureUnitStates.Count;
 			}
 		}
 
@@ -1229,9 +1255,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < this.textureUnitStates.Count; i++ )
+				for ( var i = 0; i < textureUnitStates.Count; i++ )
 				{
-					( this.textureUnitStates[ i ] ).TextureAnisotropy = value;
+					( (TextureUnitState)textureUnitStates[ i ] ).TextureAnisotropy = value;
 				}
 			}
 		}
@@ -1249,9 +1275,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( int i = 0; i < this.textureUnitStates.Count; i++ )
+				for ( var i = 0; i < textureUnitStates.Count; i++ )
 				{
-					( this.textureUnitStates[ i ] ).SetTextureFiltering( value );
+					( (TextureUnitState)textureUnitStates[ i ] ).SetTextureFiltering( value );
 				}
 			}
 		}
@@ -1267,7 +1293,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._vertexProgramUsage != null || this._fragmentProgramUsage != null;
+				return _vertexProgramUsage != null || _fragmentProgramUsage != null;
 			}
 		}
 
@@ -1285,7 +1311,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._vertexProgramUsage != null;
+				return _vertexProgramUsage != null;
 			}
 		}
 
@@ -1299,8 +1325,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
-				return this._vertexProgramUsage.Program;
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				return _vertexProgramUsage.Program;
 			}
 		}
 
@@ -1322,9 +1348,9 @@ namespace Axiom.Graphics
 			{
 				lock ( _gpuProgramChangeMutex )
 				{
-					if ( HasVertexProgram )
+					if ( this.HasVertexProgram )
 					{
-						return this._vertexProgramUsage.ProgramName;
+						return _vertexProgramUsage.ProgramName;
 					}
 					else
 					{
@@ -1350,13 +1376,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
-				return this._vertexProgramUsage.Parameters;
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				return _vertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
-				this._vertexProgramUsage.Parameters = value;
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				_vertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1376,7 +1402,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._fragmentProgramUsage != null;
+				return _fragmentProgramUsage != null;
 			}
 		}
 
@@ -1390,8 +1416,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return this._fragmentProgramUsage.Program;
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				return _fragmentProgramUsage.Program;
 			}
 		}
 
@@ -1411,9 +1437,9 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no fragment program in this pass
-				if ( HasFragmentProgram )
+				if ( this.HasFragmentProgram )
 				{
-					return this._fragmentProgramUsage.ProgramName;
+					return _fragmentProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1438,13 +1464,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return this._fragmentProgramUsage.Parameters;
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				return _fragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
-				this._fragmentProgramUsage.Parameters = value;
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				_fragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1464,7 +1490,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._geometryProgramUsage != null;
+				return _geometryProgramUsage != null;
 			}
 		}
 
@@ -1478,8 +1504,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasGeometryProgram, "This pass does not contain a geometry program!" );
-				return this._geometryProgramUsage.Program;
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				return _geometryProgramUsage.Program;
 			}
 		}
 
@@ -1499,9 +1525,9 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no geometry program in this pass
-				if ( HasGeometryProgram )
+				if ( this.HasGeometryProgram )
 				{
-					return this._geometryProgramUsage.ProgramName;
+					return _geometryProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1526,13 +1552,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasGeometryProgram, "This pass does not contain a geomtery program!" );
-				return this._geometryProgramUsage.Parameters;
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
+				return _geometryProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasGeometryProgram, "This pass does not contain a geometry program!" );
-				this._geometryProgramUsage.Parameters = value;
+				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				_geometryProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1552,7 +1578,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.shadowCasterVertexProgramUsage != null;
+				return shadowCasterVertexProgramUsage != null;
 			}
 		}
 
@@ -1560,9 +1586,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( HasShadowCasterVertexProgram )
+				if ( this.HasShadowCasterVertexProgram )
 				{
-					return this.shadowCasterVertexProgramUsage.ProgramName;
+					return shadowCasterVertexProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1575,13 +1601,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				return this.shadowCasterVertexProgramUsage.Parameters;
+				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				return shadowCasterVertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				this.shadowCasterVertexProgramUsage.Parameters = value;
+				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				shadowCasterVertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1601,7 +1627,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._shadowCasterFragmentProgramUsage != null;
+				return _shadowCasterFragmentProgramUsage != null;
 			}
 		}
 
@@ -1609,9 +1635,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( HasShadowCasterFragmentProgram )
+				if ( this.HasShadowCasterFragmentProgram )
 				{
-					return this._shadowCasterFragmentProgramUsage.ProgramName;
+					return _shadowCasterFragmentProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1624,13 +1650,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				return this._shadowCasterFragmentProgramUsage.Parameters;
+				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				return _shadowCasterFragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				this._shadowCasterFragmentProgramUsage.Parameters = value;
+				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				_shadowCasterFragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1650,7 +1676,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._shadowReceiverVertexProgramUsage != null;
+				return _shadowReceiverVertexProgramUsage != null;
 			}
 		}
 
@@ -1658,9 +1684,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( HasShadowReceiverVertexProgram )
+				if ( this.HasShadowReceiverVertexProgram )
 				{
-					return this._shadowReceiverVertexProgramUsage.ProgramName;
+					return _shadowReceiverVertexProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1673,13 +1699,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				return this._shadowReceiverVertexProgramUsage.Parameters;
+				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				return _shadowReceiverVertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				this._shadowReceiverVertexProgramUsage.Parameters = value;
+				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				_shadowReceiverVertexProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1699,7 +1725,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._shadowReceiverFragmentProgramUsage != null;
+				return _shadowReceiverFragmentProgramUsage != null;
 			}
 		}
 
@@ -1707,9 +1733,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( HasShadowReceiverFragmentProgram )
+				if ( this.HasShadowReceiverFragmentProgram )
 				{
-					return this._shadowReceiverFragmentProgramUsage.ProgramName;
+					return _shadowReceiverFragmentProgramUsage.ProgramName;
 				}
 				else
 				{
@@ -1722,13 +1748,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				return this._shadowReceiverFragmentProgramUsage.Parameters;
+				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				return _shadowReceiverFragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				this._shadowReceiverFragmentProgramUsage.Parameters = value;
+				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				_shadowReceiverFragmentProgramUsage.Parameters = value;
 			}
 		}
 
@@ -1738,25 +1764,73 @@ namespace Axiom.Graphics
 
 		#region PointSize Property
 
-		public float PointSize { get; set; }
+		private float _pointSize;
+
+		public float PointSize
+		{
+			get
+			{
+				return _pointSize;
+			}
+			set
+			{
+				_pointSize = value;
+			}
+		}
 
 		#endregion PointSize Property
 
 		#region PointMinSize Property
 
-		public float PointMinSize { get; set; }
+		private float _pointMinSize;
+
+		public float PointMinSize
+		{
+			get
+			{
+				return _pointMinSize;
+			}
+			set
+			{
+				_pointMinSize = value;
+			}
+		}
 
 		#endregion PointMinSize Property
 
 		#region PointMaxSize Property
 
-		public float PointMaxSize { get; set; }
+		private float _pointMaxSize;
+
+		public float PointMaxSize
+		{
+			get
+			{
+				return _pointMaxSize;
+			}
+			set
+			{
+				_pointMaxSize = value;
+			}
+		}
 
 		#endregion PointMaxSize Property
 
 		#region PointSpritesEnabled Property
 
-		public bool PointSpritesEnabled { get; set; }
+		private bool _pointSpritesEnabled;
+
+		public bool PointSpritesEnabled
+		{
+			get
+			{
+				return _pointSpritesEnabled;
+			}
+			set
+			{
+				_pointSpritesEnabled = value;
+			}
+		}
 
 		#endregion PointSpritesEnabled Property
 
@@ -1772,14 +1846,14 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.blendOperation;
+				return blendOperation;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.blendOperation = value;
-				this.separateBlendOperation = false;
+				blendOperation = value;
+				separateBlendOperation = false;
 			}
 		}
 
@@ -1797,7 +1871,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.slphaBlendOperation;
+				return slphaBlendOperation;
 			}
 		}
 
@@ -1816,7 +1890,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.separateBlend;
+				return separateBlend;
 			}
 		}
 
@@ -1833,7 +1907,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.separateBlendOperation;
+				return separateBlendOperation;
 			}
 		}
 
@@ -1874,7 +1948,7 @@ namespace Axiom.Graphics
 				// programs are expected to indicate they are ambient only by 
 				// setting the state so it matches one of the conditions above, even 
 				// though this state is not used in rendering.
-				return ( !this._lightingEnabled || !this._colorWriteEnabled || ( this._diffuse == ColorEx.Black && this._specular == ColorEx.Black ) );
+				return ( !_lightingEnabled || !_colorWriteEnabled || ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
 			}
 		}
 
@@ -1885,7 +1959,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._parent.IsLoaded;
+				return _parent.IsLoaded;
 			}
 		}
 
@@ -1898,7 +1972,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// Transparent if any of the destination color is taken into account
-				return ( this._destinationBlendFactor != SceneBlendFactor.Zero );
+				return ( _destinationBlendFactor != SceneBlendFactor.Zero );
 			}
 		}
 
@@ -1912,6 +1986,7 @@ namespace Axiom.Graphics
 		/// <param name="parent">Technique that owns this Pass.</param>
 		/// <param name="index">Index of this pass.</param>
 		public Pass( Technique parent, int index )
+			: base()
 		{
 			this._parent = parent;
 			this._index = index;
@@ -1922,43 +1997,43 @@ namespace Axiom.Graphics
 			}
 
 			// color defaults
-			this._ambient = ColorEx.White;
-			this._diffuse = ColorEx.White;
-			this._specular = ColorEx.Black;
-			this._emissive = ColorEx.Black;
+			_ambient = ColorEx.White;
+			_diffuse = ColorEx.White;
+			_specular = ColorEx.Black;
+			_emissive = ColorEx.Black;
 
 			// by default, don't override the scene's fog settings
-			this._fogOverride = false;
-			this._fogMode = FogMode.None;
-			this._fogColor = ColorEx.White;
-			this._fogStart = 0;
-			this._fogEnd = 1;
-			this._fogDensity = 0.001f;
+			_fogOverride = false;
+			_fogMode = FogMode.None;
+			_fogColor = ColorEx.White;
+			_fogStart = 0;
+			_fogEnd = 1;
+			_fogDensity = 0.001f;
 
 			// default blending (overwrite)
-			this._sourceBlendFactor = SceneBlendFactor.One;
-			this._destinationBlendFactor = SceneBlendFactor.Zero;
+			_sourceBlendFactor = SceneBlendFactor.One;
+			_destinationBlendFactor = SceneBlendFactor.Zero;
 
 			// depth buffer settings
-			this._depthCheck = true;
-			this._depthWrite = true;
-			this._colorWriteEnabled = true;
-			this._depthFunction = CompareFunction.LessEqual;
+			_depthCheck = true;
+			_depthWrite = true;
+			_colorWriteEnabled = true;
+			_depthFunction = CompareFunction.LessEqual;
 
 			// cull settings
-			this._cullingMode = CullingMode.Clockwise;
-			this._manualCullingMode = ManualCullingMode.Back;
+			_cullingMode = CullingMode.Clockwise;
+			_manualCullingMode = ManualCullingMode.Back;
 
 			// light settings
-			this._lightingEnabled = true;
-			this._runOnlyForOneLightType = true;
-			this._onlyLightType = LightType.Point;
-			this._shadingMode = Shading.Gouraud;
+			_lightingEnabled = true;
+			_runOnlyForOneLightType = true;
+			_onlyLightType = LightType.Point;
+			_shadingMode = Shading.Gouraud;
 
 			// Default max lights to the global max
-			this._maxSimultaneousLights = Config.MaxSimultaneousLights;
+			_maxSimultaneousLights = Config.MaxSimultaneousLights;
 
-			this._name = index.ToString();
+			_name = index.ToString();
 
 			IterationCount = 1;
 
@@ -1967,15 +2042,15 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this._fragmentProgramUsage != null )
+					if ( _fragmentProgramUsage != null )
 					{
-						if ( !this._fragmentProgramUsage.IsDisposed )
+						if ( !_fragmentProgramUsage.IsDisposed )
 						{
-							this._fragmentProgramUsage.Dispose();
+							_fragmentProgramUsage.Dispose();
 						}
 					}
 				}
@@ -1994,18 +2069,18 @@ namespace Axiom.Graphics
 		/// <param name="state">TextureUnitState to add to this pass.</param>
 		public void AddTextureUnitState( TextureUnitState state )
 		{
-			this.textureUnitStates.Add( state );
+			textureUnitStates.Add( state );
 			if ( state.Name == null )
 			{
 				// it's the last entry in the container so it's index is count - 1
-				state.Name = ( this.textureUnitStates.Count - 1 ).ToString();
+				state.Name = ( textureUnitStates.Count - 1 ).ToString();
 				// Since the anme was never set and a default one has been made, 
 				// clear the alias name so that when the texture unit name is set 
 				// by the user, the alias name will be set to that name.
 				state.TextureNameAlias = null;
 			}
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 		}
 
@@ -2033,52 +2108,52 @@ namespace Axiom.Graphics
 		/// <param name="target">Destination pass to copy this pass's attributes to.</param>
 		public void CopyTo( Pass target )
 		{
-			target._name = this._name;
-			target._hashCode = this._hashCode;
+			target._name = _name;
+			target._hashCode = _hashCode;
 
 			// surface
-			target._ambient = this._ambient.Clone();
-			target._diffuse = this._diffuse.Clone();
-			target._specular = this._specular.Clone();
-			target._emissive = this._emissive.Clone();
-			target._shininess = this._shininess;
-			target._tracking = this._tracking;
+			target._ambient = _ambient.Clone();
+			target._diffuse = _diffuse.Clone();
+			target._specular = _specular.Clone();
+			target._emissive = _emissive.Clone();
+			target._shininess = _shininess;
+			target._tracking = _tracking;
 
 			// fog
-			target._fogOverride = this._fogOverride;
-			target._fogMode = this._fogMode;
-			target._fogColor = this._fogColor.Clone();
-			target._fogStart = this._fogStart;
-			target._fogEnd = this._fogEnd;
-			target._fogDensity = this._fogDensity;
+			target._fogOverride = _fogOverride;
+			target._fogMode = _fogMode;
+			target._fogColor = _fogColor.Clone();
+			target._fogStart = _fogStart;
+			target._fogEnd = _fogEnd;
+			target._fogDensity = _fogDensity;
 
 			// default blending
-			target._sourceBlendFactor = this._sourceBlendFactor;
-			target._destinationBlendFactor = this._destinationBlendFactor;
+			target._sourceBlendFactor = _sourceBlendFactor;
+			target._destinationBlendFactor = _destinationBlendFactor;
 
-			target._depthCheck = this._depthCheck;
-			target._depthWrite = this._depthWrite;
-			target._alphaRejectFunction = this._alphaRejectFunction;
-			target._alphaRejectValue = this._alphaRejectValue;
-			target._colorWriteEnabled = this._colorWriteEnabled;
-			target._depthFunction = this._depthFunction;
-			target._depthBiasConstant = this._depthBiasConstant;
-			target._depthBiasSlopeScale = this._depthBiasSlopeScale;
-			target._cullingMode = this._cullingMode;
-			target._manualCullingMode = this._manualCullingMode;
-			target._lightingEnabled = this._lightingEnabled;
-			target._maxSimultaneousLights = this._maxSimultaneousLights;
-			target._iteratePerLight = this._iteratePerLight;
-			target._runOnlyForOneLightType = this._runOnlyForOneLightType;
-			target._onlyLightType = this._onlyLightType;
-			target._shadingMode = this._shadingMode;
-			target._polygonMode = this._polygonMode;
+			target._depthCheck = _depthCheck;
+			target._depthWrite = _depthWrite;
+			target._alphaRejectFunction = _alphaRejectFunction;
+			target._alphaRejectValue = _alphaRejectValue;
+			target._colorWriteEnabled = _colorWriteEnabled;
+			target._depthFunction = _depthFunction;
+			target._depthBiasConstant = _depthBiasConstant;
+			target._depthBiasSlopeScale = _depthBiasSlopeScale;
+			target._cullingMode = _cullingMode;
+			target._manualCullingMode = _manualCullingMode;
+			target._lightingEnabled = _lightingEnabled;
+			target._maxSimultaneousLights = _maxSimultaneousLights;
+			target._iteratePerLight = _iteratePerLight;
+			target._runOnlyForOneLightType = _runOnlyForOneLightType;
+			target._onlyLightType = _onlyLightType;
+			target._shadingMode = _shadingMode;
+			target._polygonMode = _polygonMode;
 			target.IterationCount = IterationCount;
 
 			// vertex program
-			if ( this._vertexProgramUsage != null )
+			if ( _vertexProgramUsage != null )
 			{
-				target._vertexProgramUsage = new GpuProgramUsage( this._vertexProgramUsage, this );
+				target._vertexProgramUsage = new GpuProgramUsage( _vertexProgramUsage, this );
 			}
 			else
 			{
@@ -2086,9 +2161,9 @@ namespace Axiom.Graphics
 			}
 
 			// shadow caster vertex program
-			if ( this.shadowCasterVertexProgramUsage != null )
+			if ( shadowCasterVertexProgramUsage != null )
 			{
-				target.shadowCasterVertexProgramUsage = new GpuProgramUsage( this.shadowCasterVertexProgramUsage, this );
+				target.shadowCasterVertexProgramUsage = new GpuProgramUsage( shadowCasterVertexProgramUsage, this );
 			}
 			else
 			{
@@ -2096,9 +2171,9 @@ namespace Axiom.Graphics
 			}
 
 			// shadow receiver vertex program
-			if ( this._shadowReceiverVertexProgramUsage != null )
+			if ( _shadowReceiverVertexProgramUsage != null )
 			{
-				target._shadowReceiverVertexProgramUsage = new GpuProgramUsage( this._shadowReceiverVertexProgramUsage, this );
+				target._shadowReceiverVertexProgramUsage = new GpuProgramUsage( _shadowReceiverVertexProgramUsage, this );
 			}
 			else
 			{
@@ -2106,9 +2181,9 @@ namespace Axiom.Graphics
 			}
 
 			// fragment program
-			if ( this._fragmentProgramUsage != null )
+			if ( _fragmentProgramUsage != null )
 			{
-				target._fragmentProgramUsage = new GpuProgramUsage( this._fragmentProgramUsage, this );
+				target._fragmentProgramUsage = new GpuProgramUsage( _fragmentProgramUsage, this );
 			}
 			else
 			{
@@ -2116,9 +2191,9 @@ namespace Axiom.Graphics
 			}
 
 			// shadow caster fragment program
-			if ( this._shadowCasterFragmentProgramUsage != null )
+			if ( _shadowCasterFragmentProgramUsage != null )
 			{
-				target._shadowCasterFragmentProgramUsage = new GpuProgramUsage( this._shadowCasterFragmentProgramUsage, this );
+				target._shadowCasterFragmentProgramUsage = new GpuProgramUsage( _shadowCasterFragmentProgramUsage, this );
 			}
 			else
 			{
@@ -2126,9 +2201,9 @@ namespace Axiom.Graphics
 			}
 
 			// shadow receiver fragment program
-			if ( this._shadowReceiverFragmentProgramUsage != null )
+			if ( _shadowReceiverFragmentProgramUsage != null )
 			{
-				target._shadowReceiverFragmentProgramUsage = new GpuProgramUsage( this._shadowReceiverFragmentProgramUsage, this );
+				target._shadowReceiverFragmentProgramUsage = new GpuProgramUsage( _shadowReceiverFragmentProgramUsage, this );
 			}
 			else
 			{
@@ -2142,10 +2217,10 @@ namespace Axiom.Graphics
 
 			// Copy texture units
 
-			for ( int i = 0; i < this.textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
 				var newState = new TextureUnitState( target );
-				TextureUnitState src = this.textureUnitStates[ i ];
+				var src = (TextureUnitState)textureUnitStates[ i ];
 				src.CopyTo( newState );
 
 				target.textureUnitStates.Add( newState );
@@ -2161,9 +2236,9 @@ namespace Axiom.Graphics
 		public TextureUnitState CreateTextureUnitState()
 		{
 			var state = new TextureUnitState( this );
-			this.textureUnitStates.Add( state );
+			textureUnitStates.Add( state );
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 			return state;
 		}
@@ -2194,9 +2269,9 @@ namespace Axiom.Graphics
 			var state = new TextureUnitState( this );
 			state.SetTextureName( textureName );
 			state.TextureCoordSet = texCoordSet;
-			this.textureUnitStates.Add( state );
+			textureUnitStates.Add( state );
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 			return state;
 		}
@@ -2208,9 +2283,9 @@ namespace Axiom.Graphics
 		/// <returns>TextureUnitState at the specified index.</returns>
 		public TextureUnitState GetTextureUnitState( int index )
 		{
-			Debug.Assert( index >= 0 && index < this.textureUnitStates.Count, "index out of range" );
+			Debug.Assert( index >= 0 && index < textureUnitStates.Count, "index out of range" );
 
-			return this.textureUnitStates[ index ];
+			return (TextureUnitState)textureUnitStates[ index ];
 		}
 
 		/// <summary>
@@ -2221,46 +2296,46 @@ namespace Axiom.Graphics
 			// it is assumed this is only being called when the Material is being loaded
 
 			// load each texture unit state
-			for ( int i = 0; i < this.textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
-				( this.textureUnitStates[ i ] ).Load();
+				( (TextureUnitState)textureUnitStates[ i ] ).Load();
 			}
 
 			// load programs
-			if ( HasVertexProgram )
+			if ( this.HasVertexProgram )
 			{
 				// load vertex program
-				this._vertexProgramUsage.Load();
+				_vertexProgramUsage.Load();
 			}
 
-			if ( HasFragmentProgram )
+			if ( this.HasFragmentProgram )
 			{
 				// load vertex program
-				this._fragmentProgramUsage.Load();
+				_fragmentProgramUsage.Load();
 			}
 
-			if ( HasShadowCasterVertexProgram )
+			if ( this.HasShadowCasterVertexProgram )
 			{
 				// load shadow caster vertex program
-				this.shadowCasterVertexProgramUsage.Load();
+				shadowCasterVertexProgramUsage.Load();
 			}
 
-			if ( HasShadowCasterFragmentProgram )
+			if ( this.HasShadowCasterFragmentProgram )
 			{
 				// load shadow caster fragment program
-				this._shadowCasterFragmentProgramUsage.Load();
+				_shadowCasterFragmentProgramUsage.Load();
 			}
 
-			if ( HasShadowReceiverVertexProgram )
+			if ( this.HasShadowReceiverVertexProgram )
 			{
 				// load shadow receiver vertex program
-				this._shadowReceiverVertexProgramUsage.Load();
+				_shadowReceiverVertexProgramUsage.Load();
 			}
 
-			if ( HasShadowReceiverFragmentProgram )
+			if ( this.HasShadowReceiverFragmentProgram )
 			{
 				// load shadow receiver fragment program
-				this._shadowReceiverFragmentProgramUsage.Load();
+				_shadowReceiverFragmentProgramUsage.Load();
 			}
 
 			// recalculate hash code
@@ -2272,7 +2347,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		internal void NotifyNeedsRecompile()
 		{
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -2290,18 +2365,18 @@ namespace Axiom.Graphics
 			   on the assumption that these are less frequently used; sorting on 
 			   the first 2 gives us the most benefit for now.
 		   */
-			this._hashCode = ( this._index << 28 );
-			int count = TextureUnitStatesCount;
+			_hashCode = ( _index << 28 );
+			var count = TextureUnitStatesCount;
 
 			// Fix from Multiverse
 			//    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
-			if ( count > 0 && !( this.textureUnitStates[ 0 ] ).IsBlank )
+			if ( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
 			{
-				this._hashCode += ( ( this.textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
+				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
 			}
-			if ( count > 1 && !( this.textureUnitStates[ 1 ] ).IsBlank )
+			if ( count > 1 && !( (TextureUnitState)textureUnitStates[ 1 ] ).IsBlank )
 			{
-				this._hashCode += ( ( this.textureUnitStates[ 1 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) );
+				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 1 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) );
 			}
 		}
 
@@ -2310,12 +2385,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveAllTextureUnitStates()
 		{
-			this.textureUnitStates.Clear();
+			textureUnitStates.Clear();
 
-			if ( !this.queuedForDeletion )
+			if ( !queuedForDeletion )
 			{
 				// needs recompilation
-				this._parent.NotifyNeedsRecompile();
+				_parent.NotifyNeedsRecompile();
 			}
 
 			DirtyHash();
@@ -2327,12 +2402,12 @@ namespace Axiom.Graphics
 		/// <param name="state">A reference to the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( TextureUnitState state )
 		{
-			this.textureUnitStates.Remove( state );
+			textureUnitStates.Remove( state );
 
-			if ( !this.queuedForDeletion )
+			if ( !queuedForDeletion )
 			{
 				// needs recompilation
-				this._parent.NotifyNeedsRecompile();
+				_parent.NotifyNeedsRecompile();
 			}
 
 			DirtyHash();
@@ -2344,7 +2419,7 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the TextureUnitState to remove from this pass.</param>
 		public void RemoveTextureUnitState( int index )
 		{
-			TextureUnitState state = this.textureUnitStates[ index ];
+			var state = (TextureUnitState)textureUnitStates[ index ];
 
 			if ( state != null )
 			{
@@ -2391,16 +2466,16 @@ namespace Axiom.Graphics
 		/// </param>
 		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, float density, float start, float end )
 		{
-			this._fogOverride = overrideScene;
+			_fogOverride = overrideScene;
 
 			// set individual params if overriding scene level fog
 			if ( overrideScene )
 			{
-				this._fogMode = mode;
-				this._fogColor = color;
-				this._fogDensity = density;
-				this._fogStart = start;
-				this._fogEnd = end;
+				_fogMode = mode;
+				_fogColor = color;
+				_fogDensity = density;
+				_fogStart = start;
+				_fogEnd = end;
 			}
 		}
 
@@ -2519,9 +2594,9 @@ namespace Axiom.Graphics
 		/// <param name="lightType">The single light type which will be considered for this pass.</param>
 		public void SetRunOncePerLight( bool enabled, bool onlyForOneLightType, LightType lightType )
 		{
-			this._iteratePerLight = enabled;
-			this._runOnlyForOneLightType = onlyForOneLightType;
-			this._onlyLightType = lightType;
+			_iteratePerLight = enabled;
+			_runOnlyForOneLightType = onlyForOneLightType;
+			_onlyLightType = lightType;
 		}
 
 		public void SetRunOncePerLight( bool enabled, bool onlyForOneLightType )
@@ -2662,10 +2737,10 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// copy settings
-			this._sourceBlendFactor = src;
-			this._destinationBlendFactor = dest;
+			_sourceBlendFactor = src;
+			_destinationBlendFactor = dest;
 
-			this.separateBlend = false;
+			separateBlend = false;
 		}
 
 		/// <summary>
@@ -2695,12 +2770,12 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-			this._sourceBlendFactor = sourceFactor;
-			this._destinationBlendFactor = destFactor;
-			this._sourceBlendFactorAlpha = sourceFactorAlpha;
-			this._destinationBlendFactorAlpha = destFactorAlpha;
+			_sourceBlendFactor = sourceFactor;
+			_destinationBlendFactor = destFactor;
+			_sourceBlendFactorAlpha = sourceFactorAlpha;
+			_destinationBlendFactorAlpha = destFactorAlpha;
 
-			this.separateBlend = true;
+			separateBlend = true;
 		}
 
 		public void SetFragmentProgram( string name )
@@ -2718,21 +2793,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this._fragmentProgramUsage = null;
+				_fragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasFragmentProgram )
+				if ( !this.HasFragmentProgram )
 				{
-					this._fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				this._fragmentProgramUsage.SetProgramName( name, resetParams );
+				_fragmentProgramUsage.SetProgramName( name, resetParams );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		public void SetGeometryProgram( string name )
@@ -2745,21 +2820,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this._geometryProgramUsage = null;
+				_geometryProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasGeometryProgram )
+				if ( !this.HasGeometryProgram )
 				{
-					this._geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry, this );
+					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry, this );
 				}
 
-				this._geometryProgramUsage.SetProgramName( name, resetParams );
+				_geometryProgramUsage.SetProgramName( name, resetParams );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		public void SetShadowCasterFragmentProgram( string name )
@@ -2767,21 +2842,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this._shadowCasterFragmentProgramUsage = null;
+				_shadowCasterFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasShadowCasterFragmentProgram )
+				if ( !this.HasShadowCasterFragmentProgram )
 				{
-					this._shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				this._shadowCasterFragmentProgramUsage.SetProgramName( name );
+				_shadowCasterFragmentProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		public void SetShadowReceiverFragmentProgram( string name )
@@ -2789,21 +2864,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this._shadowReceiverFragmentProgramUsage = null;
+				_shadowReceiverFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasShadowReceiverFragmentProgram )
+				if ( !this.HasShadowReceiverFragmentProgram )
 				{
-					this._shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
+					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
 
-				this._shadowReceiverFragmentProgramUsage.SetProgramName( name );
+				_shadowReceiverFragmentProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -2836,7 +2911,7 @@ namespace Axiom.Graphics
 		{
 			lock ( _gpuProgramChangeMutex )
 			{
-				if ( VertexProgramName == name )
+				if ( this.VertexProgramName == name )
 				{
 					return;
 				}
@@ -2844,22 +2919,22 @@ namespace Axiom.Graphics
 				// turn off vertex programs when the name is set to null
 				if ( string.IsNullOrEmpty( name ) )
 				{
-					this._vertexProgramUsage.SafeDispose();
-					this._vertexProgramUsage = null;
+					_vertexProgramUsage.SafeDispose();
+					_vertexProgramUsage = null;
 				}
 				else
 				{
 					// create a new usage object
-					if ( !HasVertexProgram )
+					if ( !this.HasVertexProgram )
 					{
-						this._vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+						_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 					}
 
-					this._vertexProgramUsage.SetProgramName( name, resetParams );
+					_vertexProgramUsage.SetProgramName( name, resetParams );
 				}
 
 				// needs recompilation
-				this._parent.NotifyNeedsRecompile();
+				_parent.NotifyNeedsRecompile();
 
 				//TODO
 				//if( Pass::getHashFunction() == Pass::getBuiltinHashFunction( Pass::MIN_GPU_PROGRAM_CHANGE ) )
@@ -2880,21 +2955,21 @@ namespace Axiom.Graphics
 			// turn off vertex programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this.shadowCasterVertexProgramUsage = null;
+				shadowCasterVertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasShadowCasterVertexProgram )
+				if ( !this.HasShadowCasterVertexProgram )
 				{
-					this.shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
 
-				this.shadowCasterVertexProgramUsage.SetProgramName( name );
+				shadowCasterVertexProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		public void SetShadowReceiverVertexProgram( string name )
@@ -2902,21 +2977,21 @@ namespace Axiom.Graphics
 			// turn off vertex programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				this._shadowReceiverVertexProgramUsage = null;
+				_shadowReceiverVertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
-				if ( !HasShadowReceiverVertexProgram )
+				if ( !this.HasShadowReceiverVertexProgram )
 				{
-					this._shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
+					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
 
-				this._shadowReceiverVertexProgramUsage.SetProgramName( name );
+				_shadowReceiverVertexProgramUsage.SetProgramName( name );
 			}
 
 			// needs recompilation
-			this._parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -2937,9 +3012,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSeparateSceneBlendingOperation( SceneBlendOperation op, SceneBlendOperation alphaOp )
 		{
-			this.blendOperation = op;
-			this.slphaBlendOperation = alphaOp;
-			this.separateBlendOperation = true;
+			blendOperation = op;
+			slphaBlendOperation = alphaOp;
+			separateBlendOperation = true;
 		}
 
 		/// <summary>
@@ -2957,19 +3032,19 @@ namespace Axiom.Graphics
 		public Pass Split( int numUnits )
 		{
 			// can't split programmable passes
-			if ( this._vertexProgramUsage != null || this._geometryProgramUsage != null || this._fragmentProgramUsage != null )
+			if ( _vertexProgramUsage != null || _geometryProgramUsage != null || _fragmentProgramUsage != null )
 			{
 				throw new AxiomException( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
 			}
 
-			if ( this.textureUnitStates.Count > numUnits )
+			if ( textureUnitStates.Count > numUnits )
 			{
-				int start = this.textureUnitStates.Count - numUnits;
+				var start = textureUnitStates.Count - numUnits;
 
-				Pass newPass = this._parent.CreatePass();
+				var newPass = _parent.CreatePass();
 
 				// get a reference ot the texture unit state at the split position
-				TextureUnitState state = this.textureUnitStates[ start ];
+				var state = (TextureUnitState)textureUnitStates[ start ];
 
 				// set the new pass to fallback using scene blending
 				newPass.SetSceneBlending( state.ColorBlendFallbackSource, state.ColorBlendFallbackDest );
@@ -2980,16 +3055,16 @@ namespace Axiom.Graphics
 				state.SetAlphaOperation( LayerBlendOperationEx.Source1, LayerBlendSource.Texture, LayerBlendSource.Current, 1, 1, 0 );
 
 				// add the rest of the texture units to the new pass
-				for ( int i = start; i < this.textureUnitStates.Count; i++ )
+				for ( var i = start; i < textureUnitStates.Count; i++ )
 				{
-					state = this.textureUnitStates[ i ];
+					state = (TextureUnitState)textureUnitStates[ i ];
 					// detach from parent first
 					state.Parent = null;
 					newPass.AddTextureUnitState( state );
 				}
 
 				// remove the extra texture units from this pass
-				this.textureUnitStates.RemoveRange( start, this.textureUnitStates.Count - start );
+				textureUnitStates.RemoveRange( start, textureUnitStates.Count - start );
 				//TODO
 				//_dirtyHash();
 				//mContentTypeLookupBuilt = false;
@@ -3005,17 +3080,17 @@ namespace Axiom.Graphics
 		internal void Unload()
 		{
 			// load each texture unit state
-			for ( int i = 0; i < this.textureUnitStates.Count; i++ )
+			for ( var i = 0; i < textureUnitStates.Count; i++ )
 			{
-				( this.textureUnitStates[ i ] ).Unload();
+				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
 
-			if ( HasFragmentProgram )
+			if ( this.HasFragmentProgram )
 			{
 				this._fragmentProgramUsage.Program.Unload();
 			}
 
-			if ( HasVertexProgram )
+			if ( this.HasVertexProgram )
 			{
 				this._vertexProgramUsage.Program.Unload();
 			}
@@ -3034,7 +3109,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void QueueForDeletion()
 		{
-			this.queuedForDeletion = true;
+			queuedForDeletion = true;
 
 			RemoveAllTextureUnitStates();
 
@@ -3053,9 +3128,9 @@ namespace Axiom.Graphics
 			_graveyardList.Clear();
 
 			// recalc the hashcode for each pass
-			for ( int i = 0; i < _dirtyList.Count; i++ )
+			for ( var i = 0; i < _dirtyList.Count; i++ )
 			{
-				Pass pass = _dirtyList[ i ];
+				var pass = (Pass)_dirtyList[ i ];
 				pass.RecalculateHash();
 			}
 
@@ -3066,9 +3141,9 @@ namespace Axiom.Graphics
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
 		{
 			// iterate through all TextureUnitStates and apply texture aliases
-			bool testResult = false;
+			var testResult = false;
 
-			foreach ( TextureUnitState tus in this.textureUnitStates )
+			foreach ( var tus in textureUnitStates )
 			{
 				if ( tus.ApplyTextureAliases( aliasList, apply ) )
 				{
@@ -3094,7 +3169,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this._hashCode;
+			return _hashCode;
 		}
 
 		#endregion Object overrides
@@ -3105,19 +3180,19 @@ namespace Axiom.Graphics
 			if ( HasVertexProgram )
 			{
 				// Update vertex program auto params
-				this._vertexProgramUsage.Parameters.UpdateAutoParams( source, mask );
+				_vertexProgramUsage.Parameters.UpdateAutoParams( source, mask );
 			}
 
 			if ( HasGeometryProgram )
 			{
 				// Update geometry program auto params
-				this._geometryProgramUsage.Parameters.UpdateAutoParams( source, mask );
+				_geometryProgramUsage.Parameters.UpdateAutoParams( source, mask );
 			}
 
 			if ( HasFragmentProgram )
 			{
 				// Update fragment program auto params
-				this._fragmentProgramUsage.Parameters.UpdateAutoParams( source, mask );
+				_fragmentProgramUsage.Parameters.UpdateAutoParams( source, mask );
 			}
 		}
 	}
@@ -3136,6 +3211,16 @@ namespace Axiom.Graphics
 	public struct IlluminationPass
 	{
 		/// <summary>
+		///		The stage at which this pass is relevant.
+		/// </summary>
+		public IlluminationStage Stage;
+
+		/// <summary>
+		///		The pass to use in this stage.
+		/// </summary>
+		public Pass Pass;
+
+		/// <summary>
 		///		Whether this pass is one which should be deleted itself.
 		/// </summary>
 		public bool DestroyOnShutdown;
@@ -3144,15 +3229,5 @@ namespace Axiom.Graphics
 		///		The original pass which spawned this one.
 		/// </summary>
 		public Pass OriginalPass;
-
-		/// <summary>
-		///		The pass to use in this stage.
-		/// </summary>
-		public Pass Pass;
-
-		/// <summary>
-		///		The stage at which this pass is relevant.
-		/// </summary>
-		public IlluminationStage Stage;
 	}
 }

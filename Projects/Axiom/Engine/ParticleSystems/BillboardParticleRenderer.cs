@@ -38,13 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Text;
 using System.Reflection;
+using System.Diagnostics;
 
+using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -55,13 +58,13 @@ namespace Axiom.ParticleSystems
 	{
 		#region Fields and Properties
 
-		private const string PARTICLE = "Particle";
 		private static string rendererTypeName = "billboard";
+		private const string PARTICLE = "Particle";
 
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private readonly Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
+		private Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
 
 		private BillboardSet billboardSet;
 
@@ -69,11 +72,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.BillboardType;
+				return billboardSet.BillboardType;
 			}
 			set
 			{
-				this.billboardSet.BillboardType = value;
+				billboardSet.BillboardType = value;
 			}
 		}
 
@@ -81,11 +84,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.BillboardOrigin;
+				return billboardSet.BillboardOrigin;
 			}
 			set
 			{
-				this.billboardSet.BillboardOrigin = value;
+				billboardSet.BillboardOrigin = value;
 			}
 		}
 
@@ -93,11 +96,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.UseAccurateFacing;
+				return billboardSet.UseAccurateFacing;
 			}
 			set
 			{
-				this.billboardSet.UseAccurateFacing = value;
+				billboardSet.UseAccurateFacing = value;
 			}
 		}
 
@@ -105,11 +108,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.BillboardRotationType;
+				return billboardSet.BillboardRotationType;
 			}
 			set
 			{
-				this.billboardSet.BillboardRotationType = value;
+				billboardSet.BillboardRotationType = value;
 			}
 		}
 
@@ -117,11 +120,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.CommonDirection;
+				return billboardSet.CommonDirection;
 			}
 			set
 			{
-				this.billboardSet.CommonDirection = value;
+				billboardSet.CommonDirection = value;
 			}
 		}
 
@@ -129,11 +132,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.CommonUpVector;
+				return billboardSet.CommonUpVector;
 			}
 			set
 			{
-				this.billboardSet.CommonUpVector = value;
+				billboardSet.CommonUpVector = value;
 			}
 		}
 
@@ -147,11 +150,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.billboardSet.PointRenderingEnabled;
+				return billboardSet.PointRenderingEnabled;
 			}
 			set
 			{
-				this.billboardSet.PointRenderingEnabled = value;
+				billboardSet.PointRenderingEnabled = value;
 			}
 		}
 
@@ -167,7 +170,7 @@ namespace Axiom.ParticleSystems
 		{
 			set
 			{
-				this.billboardSet.MaterialName = value.Name;
+				billboardSet.MaterialName = value.Name;
 			}
 		}
 
@@ -176,14 +179,15 @@ namespace Axiom.ParticleSystems
 		#region Construction and Destruction
 
 		public BillboardParticleRenderer()
+			: base()
 		{
-			this.billboardSet = new BillboardSet( string.Empty, 0, true );
-			this.billboardSet.SetBillboardsInWorldSpace( true );
+			billboardSet = new BillboardSet( string.Empty, 0, true );
+			billboardSet.SetBillboardsInWorldSpace( true );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -208,21 +212,13 @@ namespace Axiom.ParticleSystems
 
 		#region Methods
 
-		public override RenderQueueGroupID RenderQueueGroup
-		{
-			set
-			{
-				this.billboardSet.RenderQueueGroup = value;
-			}
-		}
-
 		public override void CopyParametersTo( ParticleSystemRenderer other )
 		{
 			var otherBpr = (BillboardParticleRenderer)other;
 			Debug.Assert( otherBpr != null );
-			otherBpr.BillboardType = BillboardType;
-			otherBpr.CommonUpVector = CommonUpVector;
-			otherBpr.CommonDirection = CommonDirection;
+			otherBpr.BillboardType = this.BillboardType;
+			otherBpr.CommonUpVector = this.CommonUpVector;
+			otherBpr.CommonDirection = this.CommonDirection;
 		}
 
 		/// <summary>
@@ -230,12 +226,12 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public override bool SetParameter( string attr, string val )
 		{
-			if ( this.attribParsers.ContainsKey( attr ) )
+			if ( attribParsers.ContainsKey( attr ) )
 			{
 				var args = new object[ 2 ];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
-				this.attribParsers[ attr ].Invoke( null, args );
+				attribParsers[ attr ].Invoke( null, args );
 				//ParticleSystemRendererAttributeParser parser =
 				//        (ParticleSystemRendererAttributeParser)attribParsers[attr];
 
@@ -248,15 +244,15 @@ namespace Axiom.ParticleSystems
 
 		public override void UpdateRenderQueue( RenderQueue queue, List<Particle> currentParticles, bool cullIndividually )
 		{
-			this.billboardSet.CullIndividual = cullIndividually;
+			billboardSet.CullIndividual = cullIndividually;
 
 			// Update billboard set geometry
-			this.billboardSet.BeginBillboards();
+			billboardSet.BeginBillboards();
 			var bb = new Billboard();
-			foreach ( Particle p in currentParticles )
+			foreach ( var p in currentParticles )
 			{
 				bb.Position = p.Position;
-				if ( this.billboardSet.BillboardType == BillboardType.OrientedSelf || this.billboardSet.BillboardType == BillboardType.PerpendicularSelf )
+				if ( billboardSet.BillboardType == BillboardType.OrientedSelf || billboardSet.BillboardType == BillboardType.PerpendicularSelf )
 				{
 					// Normalise direction vector
 					bb.Direction = p.Direction;
@@ -270,48 +266,56 @@ namespace Axiom.ParticleSystems
 					bb.width = p.Width;
 					bb.height = p.Height;
 				}
-				this.billboardSet.InjectBillboard( bb );
+				billboardSet.InjectBillboard( bb );
 			}
 
-			this.billboardSet.EndBillboards();
+			billboardSet.EndBillboards();
 
 			// Update the queue
-			this.billboardSet.UpdateRenderQueue( queue );
+			billboardSet.UpdateRenderQueue( queue );
 		}
 
 		public override void NotifyCurrentCamera( Camera cam )
 		{
-			this.billboardSet.NotifyCurrentCamera( cam );
+			billboardSet.NotifyCurrentCamera( cam );
 		}
 
 		public override void NotifyParticleRotated()
 		{
-			this.billboardSet.NotifyBillboardRotated();
+			billboardSet.NotifyBillboardRotated();
 		}
 
 		public override void NotifyDefaultDimensions( float width, float height )
 		{
-			this.billboardSet.SetDefaultDimensions( width, height );
+			billboardSet.SetDefaultDimensions( width, height );
 		}
 
 		public override void NotifyParticleResized()
 		{
-			this.billboardSet.NotifyBillboardResized();
+			billboardSet.NotifyBillboardResized();
 		}
 
 		public override void NotifyParticleQuota( int quota )
 		{
-			this.billboardSet.PoolSize = quota;
+			billboardSet.PoolSize = quota;
 		}
 
 		public override void NotifyAttached( Node parent, bool isTagPoint )
 		{
-			this.billboardSet.NotifyAttached( parent, isTagPoint );
+			billboardSet.NotifyAttached( parent, isTagPoint );
+		}
+
+		public override RenderQueueGroupID RenderQueueGroup
+		{
+			set
+			{
+				billboardSet.RenderQueueGroup = value;
+			}
 		}
 
 		public override void SetKeepParticlesInLocalSpace( bool keepLocal )
 		{
-			this.billboardSet.SetBillboardsInWorldSpace( !keepLocal );
+			billboardSet.SetBillboardsInWorldSpace( !keepLocal );
 		}
 
 		#endregion Methods
@@ -334,16 +338,16 @@ namespace Axiom.ParticleSystems
 			public string Get( object target )
 			{
 				BillboardType t = ( (BillboardParticleRenderer)target ).BillboardType;
-				return ScriptEnumAttribute.GetScriptAttribute( (int)t, typeof( BillboardType ) );
+				return ScriptEnumAttribute.GetScriptAttribute( (int)t, typeof ( BillboardType ) );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardType = (BillboardType)ScriptEnumAttribute.Lookup( val, typeof( BillboardType ) );
+				( (BillboardParticleRenderer)target ).BillboardType = (BillboardType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardType ) );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion BillboardTypeCommand
@@ -362,16 +366,16 @@ namespace Axiom.ParticleSystems
 			public string Get( object target )
 			{
 				BillboardOrigin o = ( (BillboardParticleRenderer)target ).BillboardOrigin;
-				return ScriptEnumAttribute.GetScriptAttribute( (int)o, typeof( BillboardOrigin ) );
+				return ScriptEnumAttribute.GetScriptAttribute( (int)o, typeof ( BillboardOrigin ) );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardOrigin = (BillboardOrigin)ScriptEnumAttribute.Lookup( val, typeof( BillboardOrigin ) );
+				( (BillboardParticleRenderer)target ).BillboardOrigin = (BillboardOrigin)ScriptEnumAttribute.Lookup( val, typeof ( BillboardOrigin ) );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion BillboardOriginCommand
@@ -390,16 +394,16 @@ namespace Axiom.ParticleSystems
 			public string Get( object target )
 			{
 				BillboardRotationType r = ( (BillboardParticleRenderer)target ).BillboardRotationType;
-				return ScriptEnumAttribute.GetScriptAttribute( (int)r, typeof( BillboardRotationType ) );
+				return ScriptEnumAttribute.GetScriptAttribute( (int)r, typeof ( BillboardRotationType ) );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardRotationType = (BillboardRotationType)ScriptEnumAttribute.Lookup( val, typeof( BillboardRotationType ) );
+				( (BillboardParticleRenderer)target ).BillboardRotationType = (BillboardRotationType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardRotationType ) );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion BillboardRotationTypeCommand
@@ -428,7 +432,7 @@ namespace Axiom.ParticleSystems
 				( (BillboardParticleRenderer)target ).CommonDirection = StringConverter.ParseVector3( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion CommonDirectionCommand
@@ -455,7 +459,7 @@ namespace Axiom.ParticleSystems
 				( (BillboardParticleRenderer)target ).CommonUpVector = StringConverter.ParseVector3( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion CommonUpVectorCommand
@@ -484,7 +488,7 @@ namespace Axiom.ParticleSystems
 				( (BillboardParticleRenderer)target ).PointRenderingEnabled = StringConverter.ParseBool( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion PointRenderingCommand
@@ -512,7 +516,7 @@ namespace Axiom.ParticleSystems
 				( (BillboardParticleRenderer)target ).UseAccurateFacing = StringConverter.ParseBool( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion AccurateFacingCommand
@@ -525,6 +529,8 @@ namespace Axiom.ParticleSystems
 	public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
 	{
 		private const string rendererTypeName = "billboard";
+
+		#region IParticleSystemRendererFactory Members
 
 		public override string Type
 		{
@@ -539,5 +545,7 @@ namespace Axiom.ParticleSystems
 		{
 			return new BillboardParticleRenderer();
 		}
+
+		#endregion IParticleSystemRendererFactory Members
 	};
 }

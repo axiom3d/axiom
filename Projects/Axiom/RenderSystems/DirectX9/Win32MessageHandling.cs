@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -52,6 +51,71 @@ namespace Axiom.RenderSystems.DirectX9
 	internal class Win32MessageHandling
 	{
 		#region P/Invoke Declarations
+
+		private enum WindowMessage
+		{
+			Create = 0x0001,
+			Destroy = 0x0002,
+			Move = 0x0003,
+			Size = 0x0005,
+			Activate = 0x0006,
+			Close = 0x0010,
+
+			GetMinMaxInfo = 0x0024,
+			SysKeyDown = 0x0104,
+			SysKeyUp = 0x0105,
+			EnterSizeMove = 0x0231,
+			ExitSizeMove = 0x0232
+		}
+
+		private enum ActivateState
+		{
+			InActive = 0,
+			Active = 1,
+			ClickActive = 2
+		}
+
+		private enum VirtualKeys
+		{
+			Shift = 0x10,
+			Control = 0x11,
+			Menu = 0x12
+		}
+
+		[StructLayout( LayoutKind.Sequential )]
+		private struct Msg
+		{
+			public IntPtr hWnd;
+			public uint Message;
+			public IntPtr wParam;
+			public IntPtr lParam;
+			public uint time;
+			public POINTAPI pt;
+		}
+
+		[StructLayout( LayoutKind.Sequential )]
+		private struct POINTAPI
+		{
+			public int x;
+			public int y;
+
+			// Just to get rid of Warning CS0649.
+			public POINTAPI( int x, int y )
+			{
+				this.x = x;
+				this.y = y;
+			}
+
+			public static implicit operator System.Drawing.Point( POINTAPI p )
+			{
+				return new System.Drawing.Point( p.x, p.y );
+			}
+
+			public static implicit operator POINTAPI( System.Drawing.Point p )
+			{
+				return new POINTAPI( p.X, p.Y );
+			}
+		}
 
 		/// <summary>
 		///		PeekMessage option to remove the message from the queue after processing.
@@ -91,94 +155,11 @@ namespace Axiom.RenderSystems.DirectX9
 		[DllImport( USER_DLL )]
 		private static extern IntPtr DispatchMessage( ref Msg msg );
 
-		#region Nested type: ActivateState
-
-		private enum ActivateState
-		{
-			InActive = 0,
-			Active = 1,
-			ClickActive = 2
-		}
-
-		#endregion
-
-		#region Nested type: Msg
-
-		[StructLayout( LayoutKind.Sequential )]
-		private struct Msg
-		{
-			public readonly IntPtr hWnd;
-			public readonly uint Message;
-			public readonly IntPtr wParam;
-			public readonly IntPtr lParam;
-			public readonly uint time;
-			public readonly POINTAPI pt;
-		}
-
-		#endregion
-
-		#region Nested type: POINTAPI
-
-		[StructLayout( LayoutKind.Sequential )]
-		private struct POINTAPI
-		{
-			public readonly int x;
-			public readonly int y;
-
-			// Just to get rid of Warning CS0649.
-			public POINTAPI( int x, int y )
-			{
-				this.x = x;
-				this.y = y;
-			}
-
-			public static implicit operator Point( POINTAPI p )
-			{
-				return new Point( p.x, p.y );
-			}
-
-			public static implicit operator POINTAPI( Point p )
-			{
-				return new POINTAPI( p.X, p.Y );
-			}
-		}
-
-		#endregion
-
-		#region Nested type: VirtualKeys
-
-		private enum VirtualKeys
-		{
-			Shift = 0x10,
-			Control = 0x11,
-			Menu = 0x12
-		}
-
-		#endregion
-
-		#region Nested type: WindowMessage
-
-		private enum WindowMessage
-		{
-			Create = 0x0001,
-			Destroy = 0x0002,
-			Move = 0x0003,
-			Size = 0x0005,
-			Activate = 0x0006,
-			Close = 0x0010,
-
-			GetMinMaxInfo = 0x0024,
-			SysKeyDown = 0x0104,
-			SysKeyUp = 0x0105,
-			EnterSizeMove = 0x0231,
-			ExitSizeMove = 0x0232
-		}
-
-		#endregion
-
 		#endregion P/Invoke Declarations
 
 		#region Construction and Destruction
+
+		public Win32MessageHandling() {}
 
 		#endregion Construction and Destruction
 
@@ -192,12 +173,12 @@ namespace Axiom.RenderSystems.DirectX9
 			switch ( (WindowMessage)m.Msg )
 			{
 				case WindowMessage.Activate:
-					{
-						bool active = ( (ActivateState)( m.WParam.ToInt32() & 0xFFFF ) ) != ActivateState.InActive;
-						win.IsActive = active;
-						WindowEventMonitor.Instance.WindowFocusChange( win, active );
-						break;
-					}
+				{
+					bool active = ( (ActivateState)( m.WParam.ToInt32() & 0xFFFF ) ) != ActivateState.InActive;
+					win.IsActive = active;
+					WindowEventMonitor.Instance.WindowFocusChange( win, active );
+					break;
+				}
 				case WindowMessage.SysKeyDown:
 					switch ( (VirtualKeys)m.WParam )
 					{

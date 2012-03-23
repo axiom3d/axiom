@@ -5,14 +5,19 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Input;
-using Axiom.Math;
 using Axiom.Overlays;
-using Axiom.Utilities;
+using Axiom.Math;
+using Axiom.Graphics;
 #if !( SIS )
+using MouseButtons = Axiom.Input.MouseButtons;
+
+using Axiom.Utilities;
+using Axiom.Input;
+
+using InputReader = Axiom.Input.InputReader;
 
 #else
 using InputReader = SharpInputSystem.InputManager;
@@ -33,7 +38,7 @@ namespace Axiom.Demos
 
 		public TechDemo()
 		{
-			this.SetupInput = _setupInput;
+			SetupInput = new ConfigureInput( _setupInput );
 		}
 
 		#region Protected Fields
@@ -44,11 +49,11 @@ namespace Axiom.Demos
 		{
 			get
 			{
-				return this.engine;
+				return engine;
 			}
 			set
 			{
-				this.engine = value;
+				engine = value;
 			}
 		}
 
@@ -61,11 +66,11 @@ namespace Axiom.Demos
 		{
 			get
 			{
-				return this.window;
+				return window;
 			}
 			set
 			{
-				this.window = value;
+				window = value;
 			}
 		}
 
@@ -77,8 +82,8 @@ namespace Axiom.Demos
 		protected Vector3 cameraVector = Vector3.Zero;
 		protected float cameraScale;
 		protected bool showDebugOverlay = true;
-		protected float statDelay;
-		protected float debugTextDelay;
+		protected float statDelay = 0.0f;
+		protected float debugTextDelay = 0.0f;
 		protected string debugText = "";
 		protected float keypressDelay = 0.5f;
 		protected Vector3 camVelocity = Vector3.Zero;
@@ -98,14 +103,14 @@ namespace Axiom.Demos
 		public virtual void CreateCamera()
 		{
 			// create a camera and initialize its position
-			this.camera = this.scene.CreateCamera( "MainCamera" );
-			this.camera.Position = new Vector3( 0, 0, 500 );
-			this.camera.LookAt( new Vector3( 0, 0, -300 ) );
+			camera = scene.CreateCamera( "MainCamera" );
+			camera.Position = new Vector3( 0, 0, 500 );
+			camera.LookAt( new Vector3( 0, 0, -300 ) );
 
 			// set the near clipping plane to be very close
-			this.camera.Near = 5;
+			camera.Near = 5;
 
-			this.camera.AutoAspectRatio = true;
+			camera.AutoAspectRatio = true;
 		}
 
 		/// <summary>
@@ -134,7 +139,7 @@ namespace Axiom.Demos
 
 		protected void TakeScreenshot( string fileName )
 		{
-			this.window.WriteContentsToFile( fileName );
+			window.WriteContentsToFile( fileName );
 		}
 
 		#endregion Protected Methods
@@ -144,36 +149,36 @@ namespace Axiom.Demos
 		public virtual void ChooseSceneManager()
 		{
 			// Get the SceneManager, a generic one by default
-			this.scene = this.engine.CreateSceneManager( "DefaultSceneManager", "TechDemoSMInstance" );
-			this.scene.ClearScene();
+			scene = engine.CreateSceneManager( "DefaultSceneManager", "TechDemoSMInstance" );
+			scene.ClearScene();
 		}
 
 		public virtual void CreateViewports()
 		{
-			Debug.Assert( this.window != null, "Attempting to use a null RenderWindow." );
+			Debug.Assert( window != null, "Attempting to use a null RenderWindow." );
 
 			// create a new viewport and set it's background color
-			this.viewport = this.window.AddViewport( this.camera, 0, 0, 1.0f, 1.0f, 100 );
-			this.viewport.BackgroundColor = ColorEx.Black;
+			viewport = window.AddViewport( camera, 0, 0, 1.0f, 1.0f, 100 );
+			viewport.BackgroundColor = ColorEx.Black;
 		}
 
-		public virtual void SetupResources() { }
+		public virtual void SetupResources() {}
 
 		public virtual bool Setup()
 		{
 			// instantiate the Root singleton
 			//engine = new Root( "AxiomEngine.log" );
-			this.engine = Root.Instance;
+			engine = Root.Instance;
 
 			// add event handlers for frame events
-			this.engine.FrameStarted += OnFrameStarted;
-			this.engine.FrameRenderingQueued += OnFrameRenderingQueued;
-			this.engine.FrameEnded += OnFrameEnded;
+			engine.FrameStarted += OnFrameStarted;
+			engine.FrameRenderingQueued += OnFrameRenderingQueued;
+			engine.FrameEnded += OnFrameEnded;
 
 #if !WINDOWS_PHONE
-			this.window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
-			var rwl = new TechDemoListener( this.window );
-			WindowEventMonitor.Instance.RegisterListener( this.window, rwl );
+			window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
+			TechDemoListener rwl = new TechDemoListener( window );
+			WindowEventMonitor.Instance.RegisterListener( window, rwl );
 #endif
 
 			ChooseSceneManager();
@@ -186,17 +191,17 @@ namespace Axiom.Demos
 			TextureManager.Instance.DefaultMipmapCount = 5;
 
 			// Create any resource listeners (for loading screens)
-			CreateResourceListener();
+			this.CreateResourceListener();
 			// Load resources
 
-			LoadResources();
+			this.LoadResources();
 
-			ShowDebugOverlay( this.showDebugOverlay );
+			ShowDebugOverlay( showDebugOverlay );
 
 			//CreateGUI();
 
 
-			this.input = this.SetupInput();
+			input = SetupInput();
 
 			// call the overridden CreateScene method
 
@@ -207,7 +212,7 @@ namespace Axiom.Demos
 		/// <summary>
 		/// Optional override method where you can create resource listeners (e.g. for loading screens)
 		/// </summary>
-		protected virtual void CreateResourceListener() { }
+		protected virtual void CreateResourceListener() {}
 
 		/// <summary>
 		/// Optional override method where you can perform resource group loading
@@ -224,7 +229,7 @@ namespace Axiom.Demos
 #if  !( XBOX || XBOX360 ) && !( SIS )
 			// retrieve and initialize the input system
 			ir = PlatformManager.Instance.CreateInputReader();
-			ir.Initialize( this.window, true, true, false, false );
+			ir.Initialize( window, true, true, false, false );
 #endif
 
 #if ( SIS )
@@ -372,7 +377,7 @@ namespace Axiom.Demos
 				if ( Setup() )
 				{
 					// start the engines rendering loop
-					this.engine.StartRendering();
+					engine.StartRendering();
 				}
 			}
 			catch ( Exception ex )
@@ -387,28 +392,28 @@ namespace Axiom.Demos
 
 		public virtual void Dispose()
 		{
-			if ( this.engine != null )
+			if ( engine != null )
 			{
 				// remove event handlers
-				this.engine.FrameStarted -= OnFrameStarted;
-				this.engine.FrameEnded -= OnFrameEnded;
+				engine.FrameStarted -= OnFrameStarted;
+				engine.FrameEnded -= OnFrameEnded;
 			}
-			if ( this.scene != null )
+			if ( scene != null )
 			{
-				this.scene.RemoveAllCameras();
+				scene.RemoveAllCameras();
 			}
-			this.camera = null;
+			camera = null;
 			if ( Root.Instance != null )
 			{
-				Root.Instance.RenderSystem.DetachRenderTarget( this.window );
+				Root.Instance.RenderSystem.DetachRenderTarget( window );
 			}
-			if ( this.window != null )
+			if ( window != null )
 			{
-				this.window.Dispose();
+				window.Dispose();
 			}
-			if ( this.engine != null )
+			if ( engine != null )
 			{
-				this.engine.Dispose();
+				engine.Dispose();
 			}
 		}
 
@@ -421,121 +426,121 @@ namespace Axiom.Demos
 			float scaleMove = 200 * evt.TimeSinceLastFrame;
 
 			// reset acceleration zero
-			this.camAccel = Vector3.Zero;
+			camAccel = Vector3.Zero;
 
 			// set the scaling of camera motion
-			this.cameraScale = 100 * evt.TimeSinceLastFrame;
+			cameraScale = 100 * evt.TimeSinceLastFrame;
 
 #if !( SIS )
 			// TODO: Move this into an event queueing mechanism that is processed every frame
-			this.input.Capture();
+			input.Capture();
 
-			if ( this.input.IsKeyPressed( KeyCodes.Escape ) )
+			if ( input.IsKeyPressed( KeyCodes.Escape ) )
 			{
 				//Root.Instance.QueueEndRendering();
 				evt.StopRendering = true;
 				return;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.A ) )
+			if ( input.IsKeyPressed( KeyCodes.A ) )
 			{
-				this.camAccel.x = -0.5f;
+				camAccel.x = -0.5f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.D ) )
+			if ( input.IsKeyPressed( KeyCodes.D ) )
 			{
-				this.camAccel.x = 0.5f;
+				camAccel.x = 0.5f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.W ) )
+			if ( input.IsKeyPressed( KeyCodes.W ) )
 			{
-				this.camAccel.z = -1.0f;
+				camAccel.z = -1.0f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.S ) )
+			if ( input.IsKeyPressed( KeyCodes.S ) )
 			{
-				this.camAccel.z = 1.0f;
+				camAccel.z = 1.0f;
 			}
 
 			//camAccel.y += (float)( input.RelativeMouseZ * 0.1f );
 
-			if ( this.input.IsKeyPressed( KeyCodes.Left ) )
+			if ( input.IsKeyPressed( KeyCodes.Left ) )
 			{
-				this.camera.Yaw( this.cameraScale );
+				camera.Yaw( cameraScale );
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.Right ) )
+			if ( input.IsKeyPressed( KeyCodes.Right ) )
 			{
-				this.camera.Yaw( -this.cameraScale );
+				camera.Yaw( -cameraScale );
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.Up ) )
+			if ( input.IsKeyPressed( KeyCodes.Up ) )
 			{
-				this.camera.Pitch( this.cameraScale );
+				camera.Pitch( cameraScale );
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.Down ) )
+			if ( input.IsKeyPressed( KeyCodes.Down ) )
 			{
-				this.camera.Pitch( -this.cameraScale );
+				camera.Pitch( -cameraScale );
 			}
 
 			// subtract the time since last frame to delay specific key presses
-			this.keypressDelay -= evt.TimeSinceLastFrame;
+			keypressDelay -= evt.TimeSinceLastFrame;
 
 			// toggle rendering mode
-			if ( this.input.IsKeyPressed( KeyCodes.R ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.R ) && keypressDelay < 0 )
 			{
-				if ( this.camera.PolygonMode == PolygonMode.Points )
+				if ( camera.PolygonMode == PolygonMode.Points )
 				{
-					this.camera.PolygonMode = PolygonMode.Solid;
+					camera.PolygonMode = PolygonMode.Solid;
 				}
-				else if ( this.camera.PolygonMode == PolygonMode.Solid )
+				else if ( camera.PolygonMode == PolygonMode.Solid )
 				{
-					this.camera.PolygonMode = PolygonMode.Wireframe;
+					camera.PolygonMode = PolygonMode.Wireframe;
 				}
 				else
 				{
-					this.camera.PolygonMode = PolygonMode.Points;
+					camera.PolygonMode = PolygonMode.Points;
 				}
 
-				SetDebugText( String.Format( "Rendering mode changed to '{0}'.", this.camera.PolygonMode ) );
+				SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.T ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.T ) && keypressDelay < 0 )
 			{
 				// toggle the texture settings
-				switch ( this.filtering )
+				switch ( filtering )
 				{
 					case TextureFiltering.None:
-						this.filtering = TextureFiltering.Bilinear;
-						this.aniso = 1;
+						filtering = TextureFiltering.Bilinear;
+						aniso = 1;
 						break;
 					case TextureFiltering.Bilinear:
-						this.filtering = TextureFiltering.Trilinear;
-						this.aniso = 1;
+						filtering = TextureFiltering.Trilinear;
+						aniso = 1;
 						break;
 					case TextureFiltering.Trilinear:
-						this.filtering = TextureFiltering.Anisotropic;
-						this.aniso = 8;
+						filtering = TextureFiltering.Anisotropic;
+						aniso = 8;
 						break;
 					case TextureFiltering.Anisotropic:
-						this.filtering = TextureFiltering.None;
-						this.aniso = 1;
+						filtering = TextureFiltering.None;
+						aniso = 1;
 						break;
 				}
-				SetDebugText( String.Format( "Texture Filtering changed to '{0}'.", this.filtering ) );
+				SetDebugText( String.Format( "Texture Filtering changed to '{0}'.", filtering ) );
 
 				// set the new default
-				MaterialManager.Instance.SetDefaultTextureFiltering( this.filtering );
-				MaterialManager.Instance.DefaultAnisotropy = this.aniso;
+				MaterialManager.Instance.SetDefaultTextureFiltering( filtering );
+				MaterialManager.Instance.DefaultAnisotropy = aniso;
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 
 #if !( SILVERLIGHT || XBOX || XBOX360 )
-			if ( this.input.IsKeyPressed( KeyCodes.P ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.P ) && keypressDelay < 0 )
 			{
 				string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
 				string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
@@ -545,74 +550,74 @@ namespace Axiom.Demos
 				// show on the screen for some seconds
 				SetDebugText( string.Format( "Wrote screenshot '{0}'.", fileName ) );
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 #endif
 
-			if ( this.input.IsKeyPressed( KeyCodes.B ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.B ) && keypressDelay < 0 )
 			{
-				this.scene.ShowBoundingBoxes = !this.scene.ShowBoundingBoxes;
+				scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
 
-				SetDebugText( String.Format( "Bounding boxes {0}.", this.scene.ShowBoundingBoxes ? "visible" : "hidden" ) );
+				SetDebugText( String.Format( "Bounding boxes {0}.", scene.ShowBoundingBoxes ? "visible" : "hidden" ) );
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.F ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.F ) && keypressDelay < 0 )
 			{
 				// hide all overlays, includes ones besides the debug overlay
-				this.viewport.ShowOverlays = !this.viewport.ShowOverlays;
-				this.keypressDelay = .3f;
+				viewport.ShowOverlays = !viewport.ShowOverlays;
+				keypressDelay = .3f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.Comma ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.Comma ) && keypressDelay < 0 )
 			{
 				Root.Instance.MaxFramesPerSecond = 60;
 
 				SetDebugText( String.Format( "Limiting framerate to {0} FPS.", Root.Instance.MaxFramesPerSecond ) );
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 
-			if ( this.input.IsKeyPressed( KeyCodes.Period ) && this.keypressDelay < 0 )
+			if ( input.IsKeyPressed( KeyCodes.Period ) && keypressDelay < 0 )
 			{
 				Root.Instance.MaxFramesPerSecond = 0;
 
 				SetDebugText( String.Format( "Framerate limit OFF.", Root.Instance.MaxFramesPerSecond ) );
 
-				this.keypressDelay = .3f;
+				keypressDelay = .3f;
 			}
 
 			// turn off debug text when delay ends
-			if ( this.debugTextDelay < 0.0f )
+			if ( debugTextDelay < 0.0f )
 			{
-				this.debugTextDelay = 0.0f;
-				this.debugText = "";
+				debugTextDelay = 0.0f;
+				debugText = "";
 			}
-			else if ( this.debugTextDelay > 0.0f )
+			else if ( debugTextDelay > 0.0f )
 			{
-				this.debugTextDelay -= evt.TimeSinceLastFrame;
+				debugTextDelay -= evt.TimeSinceLastFrame;
 			}
 
 #if DEBUG
-			if ( !this.input.IsMousePressed( MouseButtons.Left ) )
+			if ( !input.IsMousePressed( MouseButtons.Left ) )
 			{
-				float cameraYaw = -this.input.RelativeMouseX * .13f;
-				float cameraPitch = -this.input.RelativeMouseY * .13f;
+				float cameraYaw = -input.RelativeMouseX * .13f;
+				float cameraPitch = -input.RelativeMouseY * .13f;
 
-				this.camera.Yaw( cameraYaw );
-				this.camera.Pitch( cameraPitch );
+				camera.Yaw( cameraYaw );
+				camera.Pitch( cameraPitch );
 			}
 			else
 			{
 				// TODO unused
-				this.cameraVector.x += this.input.RelativeMouseX * 0.13f;
+				cameraVector.x += input.RelativeMouseX * 0.13f;
 			}
 #endif
 #endif
 
 #if ( SIS )
-    // TODO: Move this into an event queueing mechanism that is processed every frame
+	// TODO: Move this into an event queueing mechanism that is processed every frame
 			mouse.Capture();
 			keyboard.Capture();
 
@@ -755,15 +760,15 @@ namespace Axiom.Demos
 			}
 
 #endif
-			this.camVelocity += ( this.camAccel * scaleMove * this.camSpeed );
+			camVelocity += ( camAccel * scaleMove * camSpeed );
 
 			// move the camera based on the accumulated movement vector
-			this.camera.MoveRelative( this.camVelocity * evt.TimeSinceLastFrame );
+			camera.MoveRelative( camVelocity * evt.TimeSinceLastFrame );
 
 			// Now dampen the Velocity - only if user is not accelerating
-			if ( this.camAccel == Vector3.Zero )
+			if ( camAccel == Vector3.Zero )
 			{
-				this.camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
+				camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
 			}
 			evt.StopRendering = false;
 		}
@@ -777,24 +782,24 @@ namespace Axiom.Demos
 
 		protected virtual void OnFrameEnded( object source, FrameEventArgs evt )
 		{
-			this.statsDelay -= evt.TimeSinceLastFrame;
-			if ( this.statsDelay > 0 )
+			statsDelay -= evt.TimeSinceLastFrame;
+			if ( statsDelay > 0 )
 			{
 				UpdateStats();
-				this.statsDelay = 1.0f;
+				statsDelay = 1.0f;
 			}
 			evt.StopRendering = false;
 		}
 
 
-		private readonly DateTime averageStart = DateTime.Now;
-		private float sum;
-		private float average;
+		private DateTime averageStart = DateTime.Now;
+		private float sum = 0;
+		private float average = 0;
 		private int elapsedFrames = 1;
 
 		protected void UpdateStats()
 		{
-			if ( !this.showDebugOverlay )
+			if ( !showDebugOverlay )
 			{
 				return;
 			}
@@ -822,30 +827,30 @@ namespace Axiom.Demos
 			//element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
 			element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
 
-			this.sum += Root.Instance.CurrentFPS;
-			this.average = this.sum / this.elapsedFrames;
-			this.elapsedFrames++;
+			sum += Root.Instance.CurrentFPS;
+			average = sum / elapsedFrames;
+			elapsedFrames++;
 			if ( element != null )
 			{
-				element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", this.average, ( DateTime.Now - this.averageStart ).TotalSeconds );
+				element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
 			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
 			if ( element != null )
 			{
-				element.Text = string.Format( "Triangle Count: {0}", this.scene.TargetRenderSystem.FaceCount );
+				element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FaceCount );
 			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/NumBatches" );
 			if ( element != null )
 			{
-				element.Text = string.Format( "Batch Count: {0}", this.scene.TargetRenderSystem.BatchCount );
+				element.Text = string.Format( "Batch Count: {0}", scene.TargetRenderSystem.BatchCount );
 			}
 
 			element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
 			if ( element != null )
 			{
-				element.Text = this.debugText;
+				element.Text = debugText;
 			}
 		}
 
@@ -866,8 +871,8 @@ namespace Axiom.Demos
 		/// <param name="delay">Duration in seconds</param>
 		protected void SetDebugText( string text, float delay )
 		{
-			this.debugText = text;
-			this.debugTextDelay = delay;
+			debugText = text;
+			debugTextDelay = delay;
 		}
 
 
@@ -880,9 +885,9 @@ namespace Axiom.Demos
 
 		protected void IfKeyPressed( KeyCodes key, float delay, KeyPressCommand command )
 		{
-			if ( this.input.IsKeyPressed( key ) && this.keypressDelay < 0.0f )
+			if ( input.IsKeyPressed( key ) && keypressDelay < 0.0f )
 			{
-				this.keypressDelay = delay;
+				keypressDelay = delay;
 				command();
 			}
 		}
@@ -890,28 +895,26 @@ namespace Axiom.Demos
 
 	public class TechDemoListener : IWindowEventListener
 	{
-		private readonly RenderWindow _mw;
+		private RenderWindow _mw;
 
 		public TechDemoListener( RenderWindow mainWindow )
 		{
 			Contract.RequiresNotNull( mainWindow, "mainWindow" );
 
-			this._mw = mainWindow;
+			_mw = mainWindow;
 		}
-
-		#region IWindowEventListener Members
 
 		/// <summary>
 		/// Window has moved position
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowMoved( RenderWindow rw ) { }
+		public void WindowMoved( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has resized
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowResized( RenderWindow rw ) { }
+		public void WindowResized( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has closed
@@ -922,7 +925,7 @@ namespace Axiom.Demos
 			Contract.RequiresNotNull( rw, "RenderWindow" );
 
 			// Only do this for the Main Window
-			if ( rw == this._mw )
+			if ( rw == _mw )
 			{
 				Root.Instance.QueueEndRendering();
 			}
@@ -932,8 +935,6 @@ namespace Axiom.Demos
 		/// Window lost/regained the focus
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowFocusChange( RenderWindow rw ) { }
-
-		#endregion
+		public void WindowFocusChange( RenderWindow rw ) {}
 	}
 }

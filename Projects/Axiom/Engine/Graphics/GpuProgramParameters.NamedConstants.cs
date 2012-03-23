@@ -33,6 +33,8 @@
 
 #region Namespace Declarations
 
+using System.Diagnostics;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -59,7 +61,7 @@ namespace Axiom.Graphics
 		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound )
 #endif
 		{
-			if ( this._namedConstants == null )
+			if ( _namedConstants == null )
 			{
 				if ( throwExceptionIfNotFound )
 				{
@@ -70,7 +72,7 @@ namespace Axiom.Graphics
 			}
 
 			GpuConstantDefinition def;
-			if ( !this._namedConstants.Map.TryGetValue( name, out def ) )
+			if ( !_namedConstants.Map.TryGetValue( name, out def ) )
 			{
 				if ( throwExceptionIfNotFound )
 				{

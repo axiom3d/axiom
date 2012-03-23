@@ -40,6 +40,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
+using Axiom.Core;
+using Axiom.Graphics;
+
+using System.Runtime.InteropServices;
+using System.Reflection;
+
+using Axiom.Utilities;
+
+using System.Diagnostics;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
@@ -88,11 +98,11 @@ namespace Axiom.Collections
 	public class RadixSortSingle<TContainer, TContainerValueType>
 		where TContainer : IList<TContainerValueType>
 	{
-		#region Delegates
+		#region Delegates and Events
 
-		public delegate Single TFunctor( TContainerValueType value );
+		public delegate System.Single TFunctor( TContainerValueType value );
 
-		#endregion
+		#endregion Delegates and Events
 
 		#region Constants and Enumerations
 
@@ -102,13 +112,13 @@ namespace Axiom.Collections
 
 		protected struct SortEntry
 		{
-			public Single Key;
+			public System.Single Key;
 			public TContainerValueType Value;
 
-			public SortEntry( Single k, TContainerValueType v )
+			public SortEntry( System.Single k, TContainerValueType v )
 			{
-				this.Key = k;
-				this.Value = v;
+				Key = k;
+				Value = v;
 			}
 		}
 
@@ -118,23 +128,21 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4, 256 ];
-
-		protected SortEntry[] _dest;
+		protected int[ , ] _counters = new int[ 4,256 ];
 
 		/// Beta-pass offsets
 		protected int[] _offsets = new int[ 256 ];
 
+		/// Sort area size
+		protected int _sortSize = 0;
+
 		/// Number of passes for this type
 		protected int _passCount = 4;
 
-		protected SortEntry[] _sortArea1, _sortArea2;
-
-		/// Sort area size
-		protected int _sortSize;
-
-		protected SortEntry[] _src;
 		protected float mask = 0x000000FF;
+
+		protected SortEntry[] _sortArea1, _sortArea2;
+		protected SortEntry[] _src, _dest;
 
 		#endregion Fields and Properties
 
@@ -159,20 +167,20 @@ namespace Axiom.Collections
 			}
 
 			// Setup container areas
-			this._sortSize = container.Count;
-			this._sortArea1 = new SortEntry[ this._sortSize ];
-			this._sortArea2 = new SortEntry[ this._sortSize ];
+			_sortSize = container.Count;
+			_sortArea1 = new SortEntry[ _sortSize ];
+			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			float prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				float val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
-				if ( !needsSorting && ( ( (IComparable<Single>)val ).CompareTo( prevValue ) < 0 ) )
+				if ( !needsSorting && ( ( (IComparable<System.Single>)val ).CompareTo( prevValue ) < 0 ) )
 				{
 					needsSorting = true;
 				}
@@ -181,12 +189,12 @@ namespace Axiom.Collections
 				SortEntry ne;
 				ne.Value = item;
 				ne.Key = val;
-				this._sortArea1[ u++ ] = ne;
+				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < this._passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
-					this._counters[ p, _getByte( p, val ) ]++;
+					_counters[ p, _getByte( p, val ) ]++;
 				}
 
 				prevValue = val;
@@ -199,38 +207,38 @@ namespace Axiom.Collections
 			}
 
 			// Sort passes
-			this._src = this._sortArea1;
-			this._dest = this._sortArea2;
+			_src = _sortArea1;
+			_dest = _sortArea2;
 
-			for ( int p = 0; p < this._passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = this._src;
-				this._src = this._dest;
-				this._dest = tmp;
+				var tmp = _src;
+				_src = _dest;
+				_dest = tmp;
 			}
 
 			// Final Pass
-			finalPass( this._passCount - 1, prevValue );
+			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < this._sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
-				container[ c ] = this._dest[ c ].Value;
+				container[ c ] = _dest[ c ].Value;
 			}
 		}
 
-		protected void finalPass( int byteIndex, Single value )
+		protected void finalPass( int byteIndex, System.Single value )
 		{
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
-				negativeCount += this._counters[ byteIndex, i ];
+				negativeCount += _counters[ byteIndex, i ];
 			}
 			// Calculate offsets - positive ones start at the number of negatives
 			// do positive numbers normally
@@ -238,27 +246,27 @@ namespace Axiom.Collections
 			// In order to preserve the stability of the sort (essential since
 			// we rely on previous bytes already being sorted) we have to count
 			// backwards in our offsets
-			this._offsets[ 0 ] = negativeCount;
-			this._offsets[ 255 ] = this._counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			_offsets[ 0 ] = negativeCount;
+			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
+			for ( var i = 1; i < 128; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
-				this._offsets[ 255 - i ] = this._offsets[ 255 - i + 1 ] + this._counters[ byteIndex, 255 - i ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
+				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
-					this._dest[ --this._offsets[ byteVal ] ] = item;
+					_dest[ --_offsets[ byteVal ] ] = item;
 				}
 				else
 				{
 					// +ve
-					this._dest[ this._offsets[ byteVal ]++ ] = item;
+					_dest[ _offsets[ byteVal ]++ ] = item;
 				}
 			}
 		}
@@ -267,20 +275,20 @@ namespace Axiom.Collections
 		{
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
-			this._offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			_offsets[ 0 ] = 0;
+			for ( var i = 1; i < 256; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				this._dest[ this._offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
+				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
 		}
 
-		private byte _getByte( int byteIndex, Single val )
+		private byte _getByte( int byteIndex, System.Single val )
 		{
 #if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];
@@ -342,11 +350,11 @@ namespace Axiom.Collections
 	public class RadixSortInt32<TContainer, TContainerValueType>
 		where TContainer : IList<TContainerValueType>
 	{
-		#region Delegates
+		#region Delegates and Events
 
-		public delegate Int32 TFunctor( TContainerValueType value );
+		public delegate System.Int32 TFunctor( TContainerValueType value );
 
-		#endregion
+		#endregion Delegates and Events
 
 		#region Constants and Enumerations
 
@@ -356,13 +364,13 @@ namespace Axiom.Collections
 
 		protected struct SortEntry
 		{
-			public Int32 Key;
+			public System.Int32 Key;
 			public TContainerValueType Value;
 
-			public SortEntry( Int32 k, TContainerValueType v )
+			public SortEntry( System.Int32 k, TContainerValueType v )
 			{
-				this.Key = k;
-				this.Value = v;
+				Key = k;
+				Value = v;
 			}
 		}
 
@@ -372,23 +380,21 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4, 256 ];
-
-		protected SortEntry[] _dest;
+		protected int[ , ] _counters = new int[ 4,256 ];
 
 		/// Beta-pass offsets
 		protected int[] _offsets = new int[ 256 ];
 
+		/// Sort area size
+		protected int _sortSize = 0;
+
 		/// Number of passes for this type
 		protected int _passCount = 4;
 
-		protected SortEntry[] _sortArea1, _sortArea2;
-
-		/// Sort area size
-		protected int _sortSize;
-
-		protected SortEntry[] _src;
 		protected float mask = 0x000000FF;
+
+		protected SortEntry[] _sortArea1, _sortArea2;
+		protected SortEntry[] _src, _dest;
 
 		#endregion Fields and Properties
 
@@ -413,20 +419,20 @@ namespace Axiom.Collections
 			}
 
 			// Setup container areas
-			this._sortSize = container.Count;
-			this._sortArea1 = new SortEntry[ this._sortSize ];
-			this._sortArea2 = new SortEntry[ this._sortSize ];
+			_sortSize = container.Count;
+			_sortArea1 = new SortEntry[ _sortSize ];
+			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			int prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				int val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
-				if ( !needsSorting && ( ( (IComparable<Int32>)val ).CompareTo( prevValue ) < 0 ) )
+				if ( !needsSorting && ( ( (IComparable<System.Int32>)val ).CompareTo( prevValue ) < 0 ) )
 				{
 					needsSorting = true;
 				}
@@ -435,12 +441,12 @@ namespace Axiom.Collections
 				SortEntry ne;
 				ne.Value = item;
 				ne.Key = val;
-				this._sortArea1[ u++ ] = ne;
+				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < this._passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
-					this._counters[ p, _getByte( p, val ) ]++;
+					_counters[ p, _getByte( p, val ) ]++;
 				}
 
 				prevValue = val;
@@ -453,39 +459,39 @@ namespace Axiom.Collections
 			}
 
 			// Sort passes
-			this._src = this._sortArea1;
-			this._dest = this._sortArea2;
+			_src = _sortArea1;
+			_dest = _sortArea2;
 
-			for ( int p = 0; p < this._passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = this._src;
-				this._src = this._dest;
-				this._dest = tmp;
+				var tmp = _src;
+				_src = _dest;
+				_dest = tmp;
 			}
 
 			// Final pass
 
-			finalPass( this._passCount - 1, prevValue );
+			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < this._sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
-				container[ c ] = this._dest[ c ].Value;
+				container[ c ] = _dest[ c ].Value;
 			}
 		}
 
-		protected void finalPass( int byteIndex, Int32 value )
+		protected void finalPass( int byteIndex, System.Int32 value )
 		{
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
-				negativeCount += this._counters[ byteIndex, i ];
+				negativeCount += _counters[ byteIndex, i ];
 			}
 			// Calculate offsets - positive ones start at the number of negatives
 			// do positive numbers normally
@@ -493,27 +499,27 @@ namespace Axiom.Collections
 			// In order to preserve the stability of the sort (essential since
 			// we rely on previous bytes already being sorted) we have to count
 			// backwards in our offsets			_
-			this._offsets[ 0 ] = negativeCount;
-			this._offsets[ 255 ] = this._counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			_offsets[ 0 ] = negativeCount;
+			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
+			for ( var i = 1; i < 128; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
-				this._offsets[ 255 - i ] = this._offsets[ 255 - i + 1 ] + this._counters[ byteIndex, 255 - i ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
+				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
-					this._dest[ --this._offsets[ byteVal ] ] = item;
+					_dest[ --_offsets[ byteVal ] ] = item;
 				}
 				else
 				{
 					// +ve
-					this._dest[ this._offsets[ byteVal ]++ ] = item;
+					_dest[ _offsets[ byteVal ]++ ] = item;
 				}
 			}
 		}
@@ -522,20 +528,20 @@ namespace Axiom.Collections
 		{
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
-			this._offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			_offsets[ 0 ] = 0;
+			for ( var i = 1; i < 256; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				this._dest[ this._offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
+				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
 		}
 
-		private byte _getByte( int byteIndex, Int32 val )
+		private byte _getByte( int byteIndex, System.Int32 val )
 		{
 #if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];
@@ -597,11 +603,11 @@ namespace Axiom.Collections
 	public class RadixSortUInt32<TContainer, TContainerValueType>
 		where TContainer : IList<TContainerValueType>
 	{
-		#region Delegates
+		#region Delegates and Events
 
-		public delegate UInt32 TFunctor( TContainerValueType value );
+		public delegate System.UInt32 TFunctor( TContainerValueType value );
 
-		#endregion
+		#endregion Delegates and Events
 
 		#region Constants and Enumerations
 
@@ -611,13 +617,13 @@ namespace Axiom.Collections
 
 		protected struct SortEntry
 		{
-			public UInt32 Key;
+			public System.UInt32 Key;
 			public TContainerValueType Value;
 
-			public SortEntry( UInt32 k, TContainerValueType v )
+			public SortEntry( System.UInt32 k, TContainerValueType v )
 			{
-				this.Key = k;
-				this.Value = v;
+				Key = k;
+				Value = v;
 			}
 		}
 
@@ -627,23 +633,21 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4, 256 ];
-
-		protected SortEntry[] _dest;
+		protected int[ , ] _counters = new int[ 4,256 ];
 
 		/// Beta-pass offsets
 		protected int[] _offsets = new int[ 256 ];
 
+		/// Sort area size
+		protected int _sortSize = 0;
+
 		/// Number of passes for this type
 		protected int _passCount = 4;
 
-		protected SortEntry[] _sortArea1, _sortArea2;
-
-		/// Sort area size
-		protected int _sortSize;
-
-		protected SortEntry[] _src;
 		protected float mask = 0x000000FF;
+
+		protected SortEntry[] _sortArea1, _sortArea2;
+		protected SortEntry[] _src, _dest;
 
 		#endregion Fields and Properties
 
@@ -668,20 +672,20 @@ namespace Axiom.Collections
 			}
 
 			// Setup container areas
-			this._sortSize = container.Count;
-			this._sortArea1 = new SortEntry[ this._sortSize ];
-			this._sortArea2 = new SortEntry[ this._sortSize ];
+			_sortSize = container.Count;
+			_sortArea1 = new SortEntry[ _sortSize ];
+			_sortArea2 = new SortEntry[ _sortSize ];
 
 			// Perform alpha pass to count
-			uint prevValue = valueFunction( container[ 0 ] );
-			bool needsSorting = false;
-			int u = 0;
-			foreach ( TContainerValueType item in container )
+			var prevValue = valueFunction( container[ 0 ] );
+			var needsSorting = false;
+			var u = 0;
+			foreach ( var item in container )
 			{
 				// get sort value
-				uint val = valueFunction( item );
+				var val = valueFunction( item );
 				// cheap check to see if needs sorting (temporal coherence)
-				if ( !needsSorting && ( ( (IComparable<UInt32>)val ).CompareTo( prevValue ) < 0 ) )
+				if ( !needsSorting && ( ( (IComparable<System.UInt32>)val ).CompareTo( prevValue ) < 0 ) )
 				{
 					needsSorting = true;
 				}
@@ -690,12 +694,12 @@ namespace Axiom.Collections
 				SortEntry ne;
 				ne.Value = item;
 				ne.Key = val;
-				this._sortArea1[ u++ ] = ne;
+				_sortArea1[ u++ ] = ne;
 
 				// increase counters
-				for ( int p = 0; p < this._passCount; ++p )
+				for ( var p = 0; p < _passCount; ++p )
 				{
-					this._counters[ p, _getByte( p, val ) ]++;
+					_counters[ p, _getByte( p, val ) ]++;
 				}
 
 				prevValue = val;
@@ -708,39 +712,39 @@ namespace Axiom.Collections
 			}
 
 			// Sort passes
-			this._src = this._sortArea1;
-			this._dest = this._sortArea2;
+			_src = _sortArea1;
+			_dest = _sortArea2;
 
-			for ( int p = 0; p < this._passCount - 1; ++p )
+			for ( var p = 0; p < _passCount - 1; ++p )
 			{
 				_sortPass( p );
 				// flip src/dst
-				SortEntry[] tmp = this._src;
-				this._src = this._dest;
-				this._dest = tmp;
+				var tmp = _src;
+				_src = _dest;
+				_dest = tmp;
 			}
 
 			// Final pass
 
-			finalPass( this._passCount - 1, prevValue );
+			finalPass( _passCount - 1, prevValue );
 
 			// Copy everything back
-			for ( int c = 0; c < this._sortSize; c++ )
+			for ( var c = 0; c < _sortSize; c++ )
 			{
-				container[ c ] = this._dest[ c ].Value;
+				container[ c ] = _dest[ c ].Value;
 			}
 		}
 
-		protected void finalPass( int byteIndex, UInt32 value )
+		protected void finalPass( int byteIndex, System.UInt32 value )
 		{
 			// floats need to be special cased since negative numbers will come
 			// after positives (high bit = sign) and will be in reverse order
 			// (no ones-complement of the +ve value)
-			int negativeCount = 0;
+			var negativeCount = 0;
 			// all negative values are in entries 128+ in most significant byte
-			for ( int i = 128; i < 256; ++i )
+			for ( var i = 128; i < 256; ++i )
 			{
-				negativeCount += this._counters[ byteIndex, i ];
+				negativeCount += _counters[ byteIndex, i ];
 			}
 			// Calculate offsets - positive ones start at the number of negatives
 			// do positive numbers normally
@@ -748,27 +752,27 @@ namespace Axiom.Collections
 			// In order to preserve the stability of the sort (essential since
 			// we rely on previous bytes already being sorted) we have to count
 			// backwards in our offsets			_
-			this._offsets[ 0 ] = negativeCount;
-			this._offsets[ 255 ] = this._counters[ byteIndex, 255 ];
-			for ( int i = 1; i < 128; ++i )
+			_offsets[ 0 ] = negativeCount;
+			_offsets[ 255 ] = _counters[ byteIndex, 255 ];
+			for ( var i = 1; i < 128; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
-				this._offsets[ 255 - i ] = this._offsets[ 255 - i + 1 ] + this._counters[ byteIndex, 255 - i ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
+				_offsets[ 255 - i ] = _offsets[ 255 - i + 1 ] + _counters[ byteIndex, 255 - i ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				byte byteVal = _getByte( byteIndex, item.Key );
+				var byteVal = _getByte( byteIndex, item.Key );
 				if ( byteVal > 127 )
 				{
 					// -ve; pre-decrement since offsets set to count
-					this._dest[ --this._offsets[ byteVal ] ] = item;
+					_dest[ --_offsets[ byteVal ] ] = item;
 				}
 				else
 				{
 					// +ve
-					this._dest[ this._offsets[ byteVal ]++ ] = item;
+					_dest[ _offsets[ byteVal ]++ ] = item;
 				}
 			}
 		}
@@ -777,20 +781,20 @@ namespace Axiom.Collections
 		{
 			// Calculate offsets
 			// Basically this just leaves gaps for duplicate entries to fill
-			this._offsets[ 0 ] = 0;
-			for ( int i = 1; i < 256; ++i )
+			_offsets[ 0 ] = 0;
+			for ( var i = 1; i < 256; ++i )
 			{
-				this._offsets[ i ] = this._offsets[ i - 1 ] + this._counters[ byteIndex, i - 1 ];
+				_offsets[ i ] = _offsets[ i - 1 ] + _counters[ byteIndex, i - 1 ];
 			}
 
 			// Sort pass
-			foreach ( SortEntry item in this._src )
+			foreach ( var item in _src )
 			{
-				this._dest[ this._offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
+				_dest[ _offsets[ _getByte( byteIndex, item.Key ) ]++ ] = item;
 			}
 		}
 
-		private byte _getByte( int byteIndex, UInt32 val )
+		private byte _getByte( int byteIndex, System.UInt32 val )
 		{
 #if !AXIOM_USE_SAFE_CODE
 			return BitConverter.GetBytes( val )[ byteIndex ];

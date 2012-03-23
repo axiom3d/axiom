@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -51,9 +51,19 @@ namespace Axiom.Input
 		#region Fields
 
 		/// <summary>
-		///		Mouse button pressed during this event.
+		///		X coordinate of the mouse.
 		/// </summary>
-		protected MouseButtons button;
+		protected float x;
+
+		/// <summary>
+		///		Y coordinate of the mouse.
+		/// </summary>
+		protected float y;
+
+		/// <summary>
+		///		Z coordinate of the mouse.
+		/// </summary>
+		protected float z;
 
 		/// <summary>
 		///		Relative X coordinate of the mouse.
@@ -71,19 +81,9 @@ namespace Axiom.Input
 		protected float relativeZ;
 
 		/// <summary>
-		///		X coordinate of the mouse.
+		///		Mouse button pressed during this event.
 		/// </summary>
-		protected float x;
-
-		/// <summary>
-		///		Y coordinate of the mouse.
-		/// </summary>
-		protected float y;
-
-		/// <summary>
-		///		Z coordinate of the mouse.
-		/// </summary>
-		protected float z;
+		protected MouseButtons button;
 
 		#endregion Fields
 
@@ -98,7 +98,7 @@ namespace Axiom.Input
 		/// <param name="y">Mouse Y position.</param>
 		/// <param name="z">Mouse Z position.</param>
 		public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z )
-			: this( button, modifiers, x, y, z, 0, 0, 0 ) { }
+			: this( button, modifiers, x, y, z, 0, 0, 0 ) {}
 
 		/// <summary>
 		///		Constructor.
@@ -134,7 +134,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.button;
+				return button;
 			}
 		}
 
@@ -145,7 +145,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.x;
+				return x;
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.y;
+				return y;
 			}
 		}
 
@@ -167,7 +167,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.z;
+				return z;
 			}
 		}
 
@@ -178,7 +178,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.relativeX;
+				return relativeX;
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.relativeY;
+				return relativeY;
 			}
 		}
 
@@ -200,7 +200,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.relativeZ;
+				return relativeZ;
 			}
 		}
 

@@ -38,11 +38,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
-using Resource = Axiom.Core.Resource;
-using Texture = SharpDX.Direct3D9.Texture;
 
 #endregion Namespace Declarations
 
@@ -52,6 +48,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9TextureManager()
+			: base()
 		{
 			// register with group manager
 			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
@@ -60,7 +57,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9TextureManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -81,43 +78,43 @@ namespace Axiom.RenderSystems.DirectX9
 		// This ends up just discarding the format passed in; the C# methods don't let you supply
 		// a "recommended" format.  Ah well.
 		[OgreVersion( 1, 7, 2 )]
-		public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
+		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
 			// Basic filtering
-			Format d3dPF = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( format ) );
+			var d3dPF = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( format ) );
 
 			// Calculate usage
-			Usage d3dusage = Usage.None;
-			Pool pool = Pool.Managed;
+			var d3dusage = D3D9.Usage.None;
+			var pool = D3D9.Pool.Managed;
 			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
-				d3dusage |= Usage.RenderTarget;
-				pool = Pool.Default;
+				d3dusage |= D3D9.Usage.RenderTarget;
+				pool = D3D9.Pool.Default;
 			}
 			if ( ( usage & TextureUsage.Dynamic ) != 0 )
 			{
-				d3dusage |= Usage.Dynamic;
-				pool = Pool.Default;
+				d3dusage |= D3D9.Usage.Dynamic;
+				pool = D3D9.Pool.Default;
 			}
 
-			Device curDevice = D3D9RenderSystem.ActiveD3D9Device;
+			var curDevice = D3D9RenderSystem.ActiveD3D9Device;
 
 			// Use D3DX to adjust pixel format
 			switch ( ttype )
 			{
 				case TextureType.OneD:
 				case TextureType.TwoD:
-					TextureRequirements tReqs = Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
+					var tReqs = D3D9.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
 					d3dPF = tReqs.Format;
 					break;
 
 				case TextureType.ThreeD:
-					VolumeTextureRequirements volReqs = VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
+					var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
 					d3dPF = volReqs.Format;
 					break;
 
 				case TextureType.CubeMap:
-					CubeTextureRequirements cubeReqs = CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
+					var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
 					d3dPF = cubeReqs.Format;
 					break;
 			}

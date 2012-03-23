@@ -37,6 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
+using Axiom.Graphics;
+
 using System.Collections.Generic;
 
 using Axiom.Utilities;
@@ -51,14 +56,14 @@ namespace Axiom.Math
 
 		protected readonly Matrix4 hermitePoly = new Matrix4( 2, -2, 1, 1, -3, 3, -2, -1, 0, 0, 1, 0, 1, 0, 0, 0 );
 
-		/// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
-		protected bool autoCalculateTangents;
-
 		/// <summary>Collection of control points.</summary>
 		protected List<T> pointList;
 
 		/// <summary>Collection of generated tangents for the spline controls points.</summary>
 		protected List<T> tangentList;
+
+		/// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
+		protected bool autoCalculateTangents;
 
 		/// <summary>
 		///		Specifies whether or not to recalculate tangents as each control point is added.
@@ -67,11 +72,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.autoCalculateTangents;
+				return autoCalculateTangents;
 			}
 			set
 			{
-				this.autoCalculateTangents = value;
+				autoCalculateTangents = value;
 			}
 		}
 
@@ -82,7 +87,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.pointList.Count;
+				return pointList.Count;
 			}
 		}
 
@@ -93,11 +98,11 @@ namespace Axiom.Math
 		public Spline()
 		{
 			// intialize the vector collections
-			this.pointList = new List<T>();
-			this.tangentList = new List<T>();
+			pointList = new List<T>();
+			tangentList = new List<T>();
 
 			// do not auto calculate tangents by default
-			this.autoCalculateTangents = false;
+			autoCalculateTangents = false;
 		}
 
 		#endregion Construction and Destruction
@@ -110,10 +115,10 @@ namespace Axiom.Math
 		/// <param name="point"></param>
 		public void AddPoint( T point )
 		{
-			this.pointList.Add( point );
+			pointList.Add( point );
 
 			// recalc tangents if necessary
-			if ( this.autoCalculateTangents )
+			if ( autoCalculateTangents )
 			{
 				RecalculateTangents();
 			}
@@ -124,8 +129,8 @@ namespace Axiom.Math
 		/// </summary>
 		public void Clear()
 		{
-			this.pointList.Clear();
-			this.tangentList.Clear();
+			pointList.Clear();
+			tangentList.Clear();
 		}
 
 		/// <summary>
@@ -135,9 +140,9 @@ namespace Axiom.Math
 		/// <returns>Vector3 containing the point data.</returns>
 		public T GetPoint( int index )
 		{
-			Contract.Requires( index < this.pointList.Count );
+			Contract.Requires( index < pointList.Count );
 
-			return this.pointList[ index ];
+			return pointList[ index ];
 		}
 
 

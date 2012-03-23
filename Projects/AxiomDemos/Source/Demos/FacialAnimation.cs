@@ -1,31 +1,26 @@
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
+using Axiom.Controllers;
+using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.Math;
+using Axiom.Graphics;
 
 namespace Axiom.Demos
 {
 	/// <summary>
 	/// 	Summary description for Controllers.
 	/// </summary>
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 	public class FacialAnimation : TechDemo
 	{
 		#region Member variables
 
-		private readonly ushort[] poseIndexes = {
-                                                    1, 2, 3, 4, 7, 8, 6, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
-                                                };
-
+		private AnimationState speakAnimState;
 		private AnimationState manualAnimState;
 		private VertexPoseKeyFrame manualKeyFrame;
-
-		private string[] scrollbarNames = {
-                                              "Facial/Happy_Scroll", "Facial/Sad_Scroll", "Facial/Angry_Scroll", "Facial/A_Scroll", "Facial/E_Scroll", "Facial/I_Scroll", "Facial/O_Scroll", "Facial/U_Scroll", "Facial/C_Scroll", "Facial/W_Scroll", "Facial/M_Scroll", "Facial/L_Scroll", "Facial/F_Scroll", "Facial/T_Scroll", "Facial/P_Scroll", "Facial/R_Scroll", "Facial/S_Scroll", "Facial/TH_Scroll",
-                                          };
-
-		private AnimationState speakAnimState;
 
 		private enum ScrollbarIndex
 		{
@@ -49,6 +44,14 @@ namespace Axiom.Demos
 			Th = 17,
 			Count = 18
 		}
+
+		private string[] scrollbarNames = {
+		                                  	"Facial/Happy_Scroll", "Facial/Sad_Scroll", "Facial/Angry_Scroll", "Facial/A_Scroll", "Facial/E_Scroll", "Facial/I_Scroll", "Facial/O_Scroll", "Facial/U_Scroll", "Facial/C_Scroll", "Facial/W_Scroll", "Facial/M_Scroll", "Facial/L_Scroll", "Facial/F_Scroll", "Facial/T_Scroll", "Facial/P_Scroll", "Facial/R_Scroll", "Facial/S_Scroll", "Facial/TH_Scroll",
+		                                  };
+
+		private ushort[] poseIndexes = {
+		                               	1, 2, 3, 4, 7, 8, 6, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
+		                               };
 
 		#endregion
 
@@ -80,22 +83,22 @@ namespace Axiom.Demos
 			//Entity iraqf = scene.CreateEntity("iraqf", "iraq-f.mesh");
 
 			// Pre-load the mesh so that we can tweak it with a manual animation
-			Mesh mesh = MeshManager.Instance.Load( "facial.mesh", ResourceGroupManager.DefaultResourceGroupName );
+			Mesh mesh = (Mesh)MeshManager.Instance.Load( "facial.mesh", ResourceGroupManager.DefaultResourceGroupName );
 			Animation anim = mesh.CreateAnimation( "manual", 0 );
 			VertexAnimationTrack track = anim.CreateVertexTrack( 4, VertexAnimationType.Pose );
-			this.manualKeyFrame = track.CreateVertexPoseKeyFrame( 0 );
+			manualKeyFrame = track.CreateVertexPoseKeyFrame( 0 );
 			// create pose references, initially zero
 			for ( int i = 0; i < (int)ScrollbarIndex.Count; ++i )
 			{
-				this.manualKeyFrame.AddPoseReference( this.poseIndexes[ i ], 0.0f );
+				manualKeyFrame.AddPoseReference( poseIndexes[ i ], 0.0f );
 			}
 
 			Entity head = scene.CreateEntity( "Head", "facial.mesh" );
-			this.speakAnimState = head.GetAnimationState( "Speak" );
-			this.speakAnimState.IsEnabled = true;
-			this.manualAnimState = head.GetAnimationState( "manual" );
-			this.manualAnimState.IsEnabled = false;
-			this.manualAnimState.Time = 0;
+			speakAnimState = head.GetAnimationState( "Speak" );
+			speakAnimState.IsEnabled = true;
+			manualAnimState = head.GetAnimationState( "manual" );
+			manualAnimState.IsEnabled = false;
+			manualAnimState.Time = 0;
 
 			SceneNode headNode = scene.RootSceneNode.CreateChildSceneNode();
 			headNode.AttachObject( head );
@@ -106,7 +109,7 @@ namespace Axiom.Demos
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			this.speakAnimState.AddTime( evt.TimeSinceLastFrame );
+			speakAnimState.AddTime( evt.TimeSinceLastFrame );
 			base.OnFrameStarted( source, evt );
 		}
 

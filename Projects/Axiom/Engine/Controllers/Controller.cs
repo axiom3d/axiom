@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -69,6 +69,11 @@ namespace Axiom.Controllers
 		/// <summary>
 		/// 
 		/// </summary>
+		protected IControllerValue<T> source;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		protected IControllerValue<T> destination;
 
 		/// <summary>
@@ -80,11 +85,6 @@ namespace Axiom.Controllers
 		///		States whether or not this controller is enabled.
 		/// </summary>
 		protected bool isEnabled;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected IControllerValue<T> source;
 
 		#endregion
 
@@ -104,7 +104,7 @@ namespace Axiom.Controllers
 			this.function = function;
 
 			// enabled by default, of course
-			this.isEnabled = true;
+			isEnabled = true;
 		}
 
 		#endregion
@@ -119,9 +119,9 @@ namespace Axiom.Controllers
 		{
 			// if we are enabled, set the destination value based on the return value of the
 			// controller function ran using the source value
-			if ( this.isEnabled )
+			if ( isEnabled )
 			{
-				this.destination.Value = this.function.Execute( this.source.Value );
+				destination.Value = function.Execute( source.Value );
 			}
 		}
 
@@ -136,11 +136,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.source;
+				return source;
 			}
 			set
 			{
-				this.source = value;
+				source = value;
 			}
 		}
 
@@ -151,11 +151,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.destination;
+				return destination;
 			}
 			set
 			{
-				this.destination = value;
+				destination = value;
 			}
 		}
 
@@ -166,11 +166,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.function;
+				return function;
 			}
 			set
 			{
-				this.function = value;
+				function = value;
 			}
 		}
 
@@ -181,11 +181,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.isEnabled;
+				return isEnabled;
 			}
 			set
 			{
-				this.isEnabled = value;
+				isEnabled = value;
 			}
 		}
 

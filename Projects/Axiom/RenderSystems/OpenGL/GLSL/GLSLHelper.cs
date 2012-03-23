@@ -38,11 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
+using Tao.OpenGl;
+
 using System.Text;
 
 using Axiom.Core;
-
-using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
@@ -108,7 +109,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <returns></returns>
 		public static string LogObjectInfo( string message, int handle )
 		{
-			var logMessage = new StringBuilder();
+			StringBuilder logMessage = new StringBuilder();
 
 			if ( handle > 0 )
 			{
@@ -125,7 +126,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					if ( charsWritten > 0 )
 					{
 						logMessage.Append( "\n" );
-						message += "\n" + logMessage;
+						message += "\n" + logMessage.ToString();
 					}
 					LogManager.Instance.Write( message );
 				}

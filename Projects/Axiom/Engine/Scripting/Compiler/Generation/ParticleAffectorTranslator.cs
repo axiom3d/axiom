@@ -46,15 +46,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: ParticleAffectorTranslator
-
 		public class ParticleAffectorTranslator : Translator
 		{
 			protected ParticleAffector _Affector;
 
 			public ParticleAffectorTranslator()
+				: base()
 			{
-				this._Affector = null;
+				_Affector = null;
 			}
 
 			#region Translator Implementation
@@ -77,7 +76,7 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				string type = string.Empty;
+				var type = string.Empty;
 				if ( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
@@ -85,27 +84,27 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				var system = (ParticleSystem)obj.Parent.Context;
-				this._Affector = system.AddAffector( type );
+				_Affector = system.AddAffector( type );
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
 						var prop = (PropertyAbstractNode)i;
-						string value = string.Empty;
+						var value = string.Empty;
 
 						// Glob the values together
-						foreach ( AbstractNode it in prop.Values )
+						foreach ( var it in prop.Values )
 						{
 							if ( it is AtomAbstractNode )
 							{
 								if ( string.IsNullOrEmpty( value ) )
 								{
-									value = ( it ).Value;
+									value = ( (AtomAbstractNode)it ).Value;
 								}
 								else
 								{
-									value = value + " " + ( it ).Value;
+									value = value + " " + ( (AtomAbstractNode)it ).Value;
 								}
 							}
 							else
@@ -115,7 +114,7 @@ namespace Axiom.Scripting.Compiler
 							}
 						}
 
-						if ( !this._Affector.SetParam( prop.Name, value ) )
+						if ( !_Affector.SetParam( prop.Name, value ) )
 						{
 							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 						}
@@ -129,7 +128,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

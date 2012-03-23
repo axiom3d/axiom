@@ -37,7 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Diagnostics;
+
+using Axiom.Core;
 using Axiom.Graphics;
+
+using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
@@ -50,8 +56,8 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		protected int Fsaa;
 		protected bool HwGamma;
+		protected int Fsaa;
 
 		#endregion Fields and Properties
 

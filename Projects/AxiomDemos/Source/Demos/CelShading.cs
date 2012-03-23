@@ -1,8 +1,10 @@
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.ComponentModel.Composition;
 
+using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -15,7 +17,7 @@ namespace Axiom.Demos
 	/// Summary description for CelShading.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class CelShading : TechDemo
 	{
@@ -44,8 +46,8 @@ namespace Axiom.Demos
 			Light light = scene.CreateLight( "MainLight" );
 			light.Position = new Vector3( 20, 80, 50 );
 
-			this.rotNode = scene.RootSceneNode.CreateChildSceneNode();
-			this.rotNode.CreateChildSceneNode( new Vector3( 20, 40, 50 ), Quaternion.Identity ).AttachObject( light );
+			rotNode = scene.RootSceneNode.CreateChildSceneNode();
+			rotNode.CreateChildSceneNode( new Vector3( 20, 40, 50 ), Quaternion.Identity ).AttachObject( light );
 
 			Entity entity = scene.CreateEntity( "Head", "ogrehead.mesh" );
 
@@ -88,7 +90,7 @@ namespace Axiom.Demos
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			this.rotNode.Yaw( evt.TimeSinceLastFrame * 30 );
+			rotNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
 			base.OnFrameStarted( source, evt );
 		}

@@ -65,6 +65,7 @@ namespace Axiom.Core
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PluginManager()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -90,7 +91,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		List of loaded plugins.
 		/// </summary>
-		private static readonly List<IPlugin> _plugins = new List<IPlugin>();
+		private static List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
@@ -116,11 +117,11 @@ namespace Axiom.Core
 		/// </summary>
 		public void LoadAll()
 		{
-			IList<ObjectCreator> newPlugins = ScanForPlugins();
+			var newPlugins = ScanForPlugins();
 
-			foreach ( ObjectCreator pluginCreator in newPlugins )
+			foreach ( var pluginCreator in newPlugins )
 			{
-				IPlugin plugin = LoadPlugin( pluginCreator );
+				var plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -130,11 +131,11 @@ namespace Axiom.Core
 
 		public void LoadDirectory( string path )
 		{
-			IList<ObjectCreator> newPlugins = ScanForPlugins( path );
+			var newPlugins = ScanForPlugins( path );
 
-			foreach ( ObjectCreator pluginCreator in newPlugins )
+			foreach ( var pluginCreator in newPlugins )
 			{
-				IPlugin plugin = LoadPlugin( pluginCreator );
+				var plugin = LoadPlugin( pluginCreator );
 				if ( plugin != null )
 				{
 					_plugins.Add( plugin );
@@ -166,7 +167,7 @@ namespace Axiom.Core
 				using ( var reader = new BinaryReader( fs ) )
 				{
 					fs.Position = 0x3C;
-					uint offset = reader.ReadUInt32(); // go to NT_HEADER
+					var offset = reader.ReadUInt32(); // go to NT_HEADER
 					offset += 24; // go to optional header
 					offset += 208; // go to CLI header directory
 
@@ -205,18 +206,18 @@ namespace Axiom.Core
 #elif !( WINDOWS_PHONE )
 			if ( Directory.Exists( folder ) )
 			{
-				string[] files = Directory.GetFiles( folder );
+				var files = Directory.GetFiles( folder );
 				//var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
-				foreach ( string file in files )
+				foreach ( var file in files )
 				{
-					string currentFile = Path.GetFileName( file );
+					var currentFile = Path.GetFileName( file );
 
 					if ( Path.GetExtension( file ) != ".dll" /*|| currentFile == assemblyName */ )
 					{
 						continue;
 					}
-					string fullPath = Path.GetFullPath( file );
+					var fullPath = Path.GetFullPath( file );
 
 					if ( !_isValidModule( fullPath ) )
 					{
@@ -226,7 +227,7 @@ namespace Axiom.Core
 
 					var loader = new DynamicLoader( fullPath );
 
-					pluginFactories.AddRange( loader.Find( typeof( IPlugin ) ) );
+					pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
 				}
 			}
 #endif
@@ -239,9 +240,9 @@ namespace Axiom.Core
 		public void UnloadAll()
 		{
 			// loop through and stop all loaded plugins
-			for ( int i = _plugins.Count - 1; i >= 0; i-- )
+			for ( var i = _plugins.Count - 1; i >= 0; i-- )
 			{
-				IPlugin plugin = _plugins[ i ];
+				var plugin = (IPlugin)_plugins[ i ];
 
 				LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
@@ -254,8 +255,8 @@ namespace Axiom.Core
 
 		public static string GetAssemblyTitle( Type type )
 		{
-			Assembly assembly = type.Assembly;
-			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( assembly, typeof( AssemblyTitleAttribute ) );
+			var assembly = type.Assembly;
+			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
 			if ( title == null )
 			{
 				return assembly.GetName().Name;
@@ -276,9 +277,9 @@ namespace Axiom.Core
 				// Avoid duplicates of plugins of the same type.
 				if ( _plugins.Count > 0 )
 				{
-					IEnumerable<IPlugin> byTypePlugins = from p in _plugins
-														 where p.GetType() == creator.CreatedType
-														 select p;
+					var byTypePlugins = from p in _plugins
+					                    where p.GetType() == creator.CreatedType
+					                    select p;
 
 					if ( byTypePlugins.Count() > 0 )
 					{
@@ -316,7 +317,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

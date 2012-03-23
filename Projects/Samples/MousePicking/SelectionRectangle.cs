@@ -1,6 +1,8 @@
-﻿using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
+﻿using System;
+
+using Axiom.Core;
+
+using Math = Axiom.Math;
 
 namespace Axiom.Samples.MousePicking
 {
@@ -93,7 +95,7 @@ namespace Axiom.Samples.MousePicking
 			 * rectangle)
 			 */
 			Clear();
-			Begin( "", OperationType.LineStrip );
+			Begin( "", Axiom.Graphics.OperationType.LineStrip );
 			Position( left, top, -1 );
 			Position( right, top, -1 );
 			Position( right, bottom, -1 );
@@ -123,7 +125,7 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		/// <param name="topLeft"></param>
 		/// <param name="bottomRight"></param>
-		public void SetCorners( Vector2 topLeft, Vector2 bottomRight )
+		public void SetCorners( Math.Vector2 topLeft, Math.Vector2 bottomRight )
 		{
 			SetCorners( topLeft.x, topLeft.y, bottomRight.x, bottomRight.y );
 		}

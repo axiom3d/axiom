@@ -54,7 +54,7 @@ namespace Axiom.Core
 				return;
 			}
 
-			bool canCallDispose = disposable is DisposableObject ? !( (DisposableObject)disposable ).IsDisposed : true;
+			var canCallDispose = disposable is DisposableObject ? !( (DisposableObject)disposable ).IsDisposed : true;
 
 			if ( canCallDispose )
 			{

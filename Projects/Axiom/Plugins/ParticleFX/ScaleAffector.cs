@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -56,19 +58,19 @@ namespace Axiom.ParticleFX
 		public ScaleAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			type = "Scaler";
-			this.scaleAdjust = 0;
+			this.type = "Scaler";
+			scaleAdjust = 0;
 		}
 
 		public float ScaleAdjust
 		{
 			get
 			{
-				return this.scaleAdjust;
+				return scaleAdjust;
 			}
 			set
 			{
-				this.scaleAdjust = value;
+				scaleAdjust = value;
 			}
 		}
 
@@ -77,7 +79,7 @@ namespace Axiom.ParticleFX
 			float ds;
 
 			// Scale adjustments by time
-			ds = this.scaleAdjust * timeElapsed;
+			ds = scaleAdjust * timeElapsed;
 
 			float newWide, newHigh;
 
@@ -85,7 +87,7 @@ namespace Axiom.ParticleFX
 
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = system.Particles[ i ];
+				Particle p = (Particle)system.Particles[ i ];
 
 				if ( p.HasOwnDimensions == false )
 				{
@@ -103,24 +105,24 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		[ScriptableProperty( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
+		[ScriptableProperty( "rate", "Rate of particle scaling.", typeof ( ParticleAffector ) )]
 		public class RateCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				var affector = target as ScaleAffector;
+				ScaleAffector affector = target as ScaleAffector;
 				return StringConverter.ToString( affector.ScaleAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				var affector = target as ScaleAffector;
+				ScaleAffector affector = target as ScaleAffector;
 				affector.ScaleAdjust = StringConverter.ParseFloat( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion Command definition classes

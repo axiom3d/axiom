@@ -58,7 +58,7 @@ namespace Axiom.Samples.ParticleFX
 		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			this.fountainPivot.Yaw( evt.TimeSinceLastFrame * 30 ); // spin the fountains around
+			fountainPivot.Yaw( evt.TimeSinceLastFrame * 30 ); // spin the fountains around
 			return base.FrameRenderingQueued( evt ); // don't forget the parent class updates!
 		}
 
@@ -66,7 +66,7 @@ namespace Axiom.Samples.ParticleFX
 		{
 			// show or hide the particle system with the same name as the check box
 
-			int hash = sender.Name.ToLower().GetHashCode();
+			var hash = sender.Name.ToLower().GetHashCode();
 			if ( ParticleSystemManager.Instance.ParticleSystems.ContainsKey( hash ) )
 			{
 				ParticleSystemManager.Instance.ParticleSystems[ hash ].IsVisible = sender.IsChecked;
@@ -99,7 +99,7 @@ namespace Axiom.Samples.ParticleFX
 			ParticleSystem.DefaultNonVisibleUpdateTimeout = 5; // set nonvisible timeout
 
 			// create some nice fireworks and place it at the origin
-			ParticleSystem ps = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "Examples/Fireworks" );
+			var ps = ParticleSystemManager.Instance.CreateSystem( "Fireworks", "Examples/Fireworks" );
 			SceneManager.RootSceneNode.AttachObject( ps );
 
 			// create a green nimbus around the ogre head
@@ -116,14 +116,14 @@ namespace Axiom.Samples.ParticleFX
 			ps = ParticleSystemManager.Instance.CreateSystem( "Aureola", "Examples/Aureola" );
 			SceneManager.RootSceneNode.AttachObject( ps );
 			// create shared pivot node for spinning the fountains
-			this.fountainPivot = SceneManager.RootSceneNode.CreateChildSceneNode();
+			fountainPivot = SceneManager.RootSceneNode.CreateChildSceneNode();
 
 			ps = ParticleSystemManager.Instance.CreateSystem( "Fountain1", "Examples/PurpleFountain" ); // create fountain 1
 			// attach the fountain to a child node of the pivot at a distance and angle
-			this.fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
+			fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
 			ps = ParticleSystemManager.Instance.CreateSystem( "Fountain2", "Examples/PurpleFountain" ); // create fountain 2
 			// attach the fountain to a child node of the pivot at a distance and angle
-			this.fountainPivot.CreateChildSceneNode( new Vector3( -200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
+			fountainPivot.CreateChildSceneNode( new Vector3( -200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
 		}
 
 		[AxiomHelper( 0, 9 )]
@@ -142,23 +142,23 @@ namespace Axiom.Samples.ParticleFX
 		{
 			// create check boxes to toggle the visibility of our particle systems
 			TrayManager.CreateLabel( TrayLocation.TopLeft, "VisLabel", "Particles" );
-			CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fireworks", "Fireworks", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			var box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fireworks", "Fireworks", 130 );
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = true;
 			box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fountain1", "Fountain A", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = true;
 			box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Fountain2", "Fountain B", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = true;
 			box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Aureola", "Aureola", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = false;
 			box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Nimbus", "Nimbus", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = false;
 			box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Rain", "Rain", 130 );
-			box.CheckChanged += _checkBoxToggled;
+			box.CheckChanged += new CheckChangedHandler( _checkBoxToggled );
 			box.IsChecked = false;
 		}
 	};

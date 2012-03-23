@@ -22,8 +22,8 @@
 
 #endregion License
 
-using Axiom.Animating;
 using Axiom.Core;
+using Axiom.Animating;
 using Axiom.Math;
 
 namespace Axiom.Samples.CameraTrack
@@ -56,7 +56,7 @@ namespace Axiom.Samples.CameraTrack
 		/// <returns></returns>
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			this.animState.AddTime( evt.TimeSinceLastFrame );
+			animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
 
@@ -96,8 +96,8 @@ namespace Axiom.Samples.CameraTrack
 			track.CreateNodeKeyFrame( 10 ).Translate = new Vector3( 200, 0, 0 );
 
 			// create a new animation state to track this
-			this.animState = SceneManager.CreateAnimationState( "CameraTrack" );
-			this.animState.IsEnabled = true;
+			animState = SceneManager.CreateAnimationState( "CameraTrack" );
+			animState.IsEnabled = true;
 			base.SetupContent();
 		}
 	}

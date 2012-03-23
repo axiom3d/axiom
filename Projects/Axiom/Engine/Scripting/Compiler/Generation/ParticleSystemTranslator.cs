@@ -46,15 +46,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: ParticleSystemTranslator
-
 		public class ParticleSystemTranslator : Translator
 		{
 			protected ParticleSystem _System;
 
 			public ParticleSystemTranslator()
+				: base()
 			{
-				this._System = null;
+				_System = null;
 			}
 
 			#region Translator Implementation
@@ -88,30 +87,30 @@ namespace Axiom.Scripting.Compiler
 				// Allocate the particle system
 				object sysObject;
 				ScriptCompilerEvent evt = new CreateParticleSystemScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				bool processed = compiler._fireEvent( ref evt, out sysObject );
+				var processed = compiler._fireEvent( ref evt, out sysObject );
 
 				if ( !processed )
 				{
-					this._System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
+					_System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
 				}
 				else
 				{
-					this._System = (ParticleSystem)sysObject;
+					_System = (ParticleSystem)sysObject;
 				}
 
-				if ( this._System == null )
+				if ( _System == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
-				this._System.Origin = obj.File;
-				this._System.RemoveAllEmitters();
-				this._System.RemoveAllAffectors();
+				_System.Origin = obj.File;
+				_System.RemoveAllEmitters();
+				_System.RemoveAllAffectors();
 
-				obj.Context = this._System;
+				obj.Context = _System;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is PropertyAbstractNode )
 					{
@@ -128,18 +127,18 @@ namespace Axiom.Scripting.Compiler
 								{
 									if ( prop.Values[ 0 ] is AtomAbstractNode )
 									{
-										string name = ( prop.Values[ 0 ] ).Value;
+										var name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
 										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
 
 										compiler._fireEvent( ref locEvt );
-										string locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
+										var locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
-										if ( !this._System.SetParameter( "material", locEvtName ) )
+										if ( !_System.SetParameter( "material", locEvtName ) )
 										{
-											if ( this._System.Renderer != null )
+											if ( _System.Renderer != null )
 											{
-												if ( !this._System.Renderer.SetParameter( "material", locEvtName ) )
+												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "material property could not be set with material \"" + locEvtName + "\"" );
 												}
@@ -160,17 +159,17 @@ namespace Axiom.Scripting.Compiler
 									string name = prop.Name, value = string.Empty;
 
 									// Glob the values together
-									foreach ( AbstractNode it in prop.Values )
+									foreach ( var it in prop.Values )
 									{
 										if ( it is AtomAbstractNode )
 										{
 											if ( string.IsNullOrEmpty( value ) )
 											{
-												value = ( it ).Value;
+												value = ( (AtomAbstractNode)it ).Value;
 											}
 											else
 											{
-												value = value + " " + ( it ).Value;
+												value = value + " " + ( (AtomAbstractNode)it ).Value;
 											}
 										}
 										else
@@ -180,11 +179,11 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									if ( !this._System.SetParameter( name, value ) )
+									if ( !_System.SetParameter( name, value ) )
 									{
-										if ( this._System.Renderer != null )
+										if ( _System.Renderer != null )
 										{
-											if ( !this._System.Renderer.SetParameter( name, value ) )
+											if ( !_System.Renderer.SetParameter( name, value ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 											}
@@ -203,7 +202,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

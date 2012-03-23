@@ -53,8 +53,6 @@ namespace Axiom.Core
 	/// </remarks>
 	public class DefaultShadowCameraSetup : IShadowCameraSetup
 	{
-		#region IShadowCameraSetup Members
-
 		/// <summary>
 		/// Gets a default implementation of a ShadowCamera.
 		/// </summary>
@@ -73,13 +71,13 @@ namespace Axiom.Core
 
 
 			// get the shadow frustum's far distance
-			Real shadowDist = light.ShadowFarDistance;
+			var shadowDist = light.ShadowFarDistance;
 			if ( shadowDist == 0.0f )
 			{
 				// need a shadow distance, make one up
 				shadowDist = camera.Near * 300;
 			}
-			Real shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
+			var shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
 
 			// Directional lights
 			if ( light.Type == LightType.Directional )
@@ -93,7 +91,7 @@ namespace Axiom.Core
 				// Calculate look at position
 				// We want to look at a spot shadowOffset away from near plane
 				// 0.5 is a litle too close for angles
-				Vector3 target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
+				var target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
 
 				// Calculate direction, which same as directional light direction
 				dir = -light.DerivedDirection; // backwards since point down -z
@@ -111,11 +109,11 @@ namespace Axiom.Core
 				//~ pos.x -= fmod(pos.x, worldTexelSize);
 				//~ pos.y -= fmod(pos.y, worldTexelSize);
 				//~ pos.z -= fmod(pos.z, worldTexelSize);
-				Real worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
+				var worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
 
 				//get texCam orientation
 
-				Vector3 up = Vector3.UnitY;
+				var up = Vector3.UnitY;
 				// Check it's not coincident with dir
 				if ( Utility.Abs( up.Dot( dir ) ) >= 1.0f )
 				{
@@ -123,7 +121,7 @@ namespace Axiom.Core
 					up = Vector3.UnitZ;
 				}
 				// cross twice to rederive, only direction is unaltered
-				Vector3 left = dir.Cross( up );
+				var left = dir.Cross( up );
 				left.Normalize();
 				up = dir.Cross( left );
 				up.Normalize();
@@ -131,7 +129,7 @@ namespace Axiom.Core
 				q = Quaternion.FromAxes( left, up, dir );
 
 				//convert world space camera position into light space
-				Vector3 lightSpacePos = q.Inverse() * pos;
+				var lightSpacePos = q.Inverse() * pos;
 
 				//snap to nearest texel
 				lightSpacePos.x -= lightSpacePos.x % worldTexelSize; //fmod(lightSpacePos.x, worldTexelSize);
@@ -140,13 +138,13 @@ namespace Axiom.Core
 				//convert back to world space
 				pos = q * lightSpacePos;
 			}
-			// Spotlight
+				// Spotlight
 			else if ( light.Type == LightType.Spotlight )
 			{
 				// Set perspective projection
 				textureCamera.ProjectionType = Projection.Perspective;
 				// set FOV slightly larger than the spotlight range to ensure coverage
-				Radian fovy = light.SpotlightOuterAngle * 1.2;
+				var fovy = light.SpotlightOuterAngle * 1.2;
 
 				// limit angle
 				if ( fovy.InDegrees > 175 )
@@ -162,7 +160,7 @@ namespace Axiom.Core
 				dir = -light.DerivedDirection; // backwards since point down -z
 				dir.Normalize();
 			}
-			// Point light
+				// Point light
 			else
 			{
 				// Set perspective projection
@@ -173,7 +171,7 @@ namespace Axiom.Core
 				// Calculate look at position
 				// We want to look at a spot shadowOffset away from near plane
 				// 0.5 is a litle too close for angles
-				Vector3 target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
+				var target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
 
 				// Calculate position, which same as point light position
 				pos = light.GetDerivedPosition();
@@ -187,21 +185,21 @@ namespace Axiom.Core
 
 			// Calculate orientation based on direction calculated above
 			/*
-			// Next section (camera oriented shadow map) abandoned
-			// Always point in the same direction, if we don't do this then
-			// we get 'shadow swimming' as camera rotates
-			// As it is, we get swimming on moving but this is less noticeable
+            // Next section (camera oriented shadow map) abandoned
+            // Always point in the same direction, if we don't do this then
+            // we get 'shadow swimming' as camera rotates
+            // As it is, we get swimming on moving but this is less noticeable
 
-			// calculate up vector, we want it aligned with cam direction
-			Vector3 up = cam->getDerivedDirection();
-			// Check it's not coincident with dir
-			if (up.dotProduct(dir) >= 1.0f)
-			{
-			// Use camera up
-			up = cam->getUp();
-			}
-			*/
-			Vector3 up2 = Vector3.UnitY;
+            // calculate up vector, we want it aligned with cam direction
+            Vector3 up = cam->getDerivedDirection();
+            // Check it's not coincident with dir
+            if (up.dotProduct(dir) >= 1.0f)
+            {
+            // Use camera up
+            up = cam->getUp();
+            }
+            */
+			var up2 = Vector3.UnitY;
 
 			// Check it's not coincident with dir
 			if ( Utility.Abs( up2.Dot( dir ) ) >= 1.0f )
@@ -211,7 +209,7 @@ namespace Axiom.Core
 			}
 
 			// cross twice to rederive, only direction is unaltered
-			Vector3 left2 = dir.Cross( up2 );
+			var left2 = dir.Cross( up2 );
 			left2.Normalize();
 			up2 = dir.Cross( left2 );
 			up2.Normalize();
@@ -220,7 +218,5 @@ namespace Axiom.Core
 			q = Quaternion.FromAxes( left2, up2, dir );
 			textureCamera.Orientation = q;
 		}
-
-		#endregion
 	}
 }

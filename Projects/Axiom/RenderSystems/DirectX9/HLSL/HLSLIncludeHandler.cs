@@ -33,46 +33,57 @@
 
 #region Namespace Declarations
 
-using System;
 using System.IO;
 
 using Axiom.Core;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
-using Resource = Axiom.Core.Resource;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
-	public class HLSLIncludeHandler : DisposableObject, Include
+	public class HLSLIncludeHandler : DisposableObject, D3D9.Include
 	{
 		protected Resource program;
+
+		public System.IDisposable Shadow
+		{
+			get
+			{
+				throw new System.NotImplementedException();
+			}
+			set
+			{
+				throw new System.NotImplementedException();
+			}
+		}
 
 
 		[OgreVersion( 1, 7, 2 )]
 		public HLSLIncludeHandler( Resource sourceProgram )
+			: base()
 		{
 			this.program = sourceProgram;
 		}
 
-		#region Include Members
-
-		public IDisposable Shadow
+		protected override void dispose( bool disposeManagedResources )
 		{
-			get
+			if ( !this.IsDisposed && disposeManagedResources )
 			{
-				throw new NotImplementedException();
+				program.SafeDispose();
+				program = null;
 			}
-			set
-			{
-				throw new NotImplementedException();
-			}
+
+			base.dispose( disposeManagedResources );
 		}
 
-		public Stream Open( IncludeType type, string fileName, Stream parentStream )
+		public void Open( D3D9.IncludeType type, string fileName, out Stream fileStream )
+		{
+			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+		}
+
+		public Stream Open( D3D9.IncludeType type, string fileName, Stream parentStream )
 		{
 			return ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
 		}
@@ -80,24 +91,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		public void Close( Stream fileStream )
 		{
 			fileStream.Close();
-		}
-
-		#endregion
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed && disposeManagedResources )
-			{
-				this.program.SafeDispose();
-				this.program = null;
-			}
-
-			base.dispose( disposeManagedResources );
-		}
-
-		public void Open( IncludeType type, string fileName, out Stream fileStream )
-		{
-			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
 		}
 	};
 }

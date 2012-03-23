@@ -1,11 +1,11 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -15,7 +15,7 @@ namespace Axiom.Demos
 	/// Summary description for RenderToTexture.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class RenderToTexture : TechDemo
 	{
@@ -33,11 +33,11 @@ namespace Axiom.Demos
 			}
 
 			// make sure reflection camera is updated too
-			this.reflectCam.Orientation = camera.Orientation;
-			this.reflectCam.Position = camera.Position;
+			reflectCam.Orientation = camera.Orientation;
+			reflectCam.Position = camera.Position;
 
 			// rotate plane
-			this.planeNode.Yaw( 30 * evt.TimeSinceLastFrame, TransformSpace.Parent );
+			planeNode.Yaw( 30 * evt.TimeSinceLastFrame, TransformSpace.Parent );
 		}
 
 		public override void CreateScene()
@@ -50,24 +50,24 @@ namespace Axiom.Demos
 			// create a default point light
 			Light light = scene.CreateLight( "MainLight" );
 			light.Type = LightType.Directional;
-			var dir = new Vector3( 0.5f, -1, 0 );
+			Vector3 dir = new Vector3( 0.5f, -1, 0 );
 			dir.Normalize();
 			light.Direction = dir;
 			light.Diffuse = new ColorEx( 1.0f, 1.0f, 0.8f );
 			light.Specular = ColorEx.White;
 
 			// create a plane
-			this.plane = new MovablePlane( "ReflectPlane" );
-			this.plane.D = 0;
-			this.plane.Normal = Vector3.UnitY;
+			plane = new MovablePlane( "ReflectPlane" );
+			plane.D = 0;
+			plane.Normal = Vector3.UnitY;
 
 			// create another plane to create the mesh.  Ogre's MovablePlane uses multiple inheritance, bah!
-			var tmpPlane = new Plane();
+			Plane tmpPlane = new Plane();
 			tmpPlane.D = 0;
 			tmpPlane.Normal = Vector3.UnitY;
 
 			MeshManager.Instance.CreatePlane( "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
-			this.planeEntity = scene.CreateEntity( "Plane", "ReflectionPlane" );
+			planeEntity = scene.CreateEntity( "Plane", "ReflectionPlane" );
 
 			// create an entity from a model
 			Entity knot = scene.CreateEntity( "Knot", "knot.mesh" );
@@ -78,51 +78,51 @@ namespace Axiom.Demos
 
 			// attach the render to texture entity to the root of the scene
 			SceneNode rootNode = scene.RootSceneNode;
-			this.planeNode = rootNode.CreateChildSceneNode();
+			planeNode = rootNode.CreateChildSceneNode();
 
-			this.planeNode.AttachObject( this.planeEntity );
-			this.planeNode.AttachObject( this.plane );
-			this.planeNode.Translate( new Vector3( 0, -10, 0 ) );
+			planeNode.AttachObject( planeEntity );
+			planeNode.AttachObject( plane );
+			planeNode.Translate( new Vector3( 0, -10, 0 ) );
 
 			// tilt it a little to make it interesting
-			this.planeNode.Roll( 5 );
+			planeNode.Roll( 5 );
 
 			rootNode.CreateChildSceneNode( "Head" ).AttachObject( head );
 
 			// create a render texture
-			Texture texture = TextureManager.Instance.CreateManual( "RttTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			Texture texture = TextureManager.Instance.CreateManual( "RttTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			RenderTarget rttTex = texture.GetBuffer().GetRenderTarget();
 
-			this.reflectCam = scene.CreateCamera( "ReflectCam" );
-			this.reflectCam.Near = camera.Near;
-			this.reflectCam.Far = camera.Far;
-			this.reflectCam.AspectRatio = window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
+			reflectCam = scene.CreateCamera( "ReflectCam" );
+			reflectCam.Near = camera.Near;
+			reflectCam.Far = camera.Far;
+			reflectCam.AspectRatio = (float)window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
 
-			Viewport viewport = rttTex.AddViewport( this.reflectCam );
+			Viewport viewport = rttTex.AddViewport( reflectCam );
 			viewport.SetClearEveryFrame( true );
 			viewport.ShowOverlays = false;
 			viewport.BackgroundColor = ColorEx.Black;
 
-			var mat = (Material)MaterialManager.Instance.Create( "RttMat", ResourceGroupManager.DefaultResourceGroupName );
+			Material mat = (Material)MaterialManager.Instance.Create( "RttMat", ResourceGroupManager.DefaultResourceGroupName );
 			TextureUnitState t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RustedMetal.jpg" );
 			t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RttTex" );
 
 			// blend with base texture
 			t.SetColorOperationEx( LayerBlendOperationEx.BlendManual, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.White, ColorEx.White, 0.25f );
 
-			t.SetProjectiveTexturing( true, this.reflectCam );
+			t.SetProjectiveTexturing( true, reflectCam );
 
 			// register events for viewport before/after update
-			rttTex.AfterUpdate += rttTex_AfterUpdate;
-			rttTex.BeforeUpdate += rttTex_BeforeUpdate;
+			rttTex.AfterUpdate += new RenderTargetEventHandler( rttTex_AfterUpdate );
+			rttTex.BeforeUpdate += new RenderTargetEventHandler( rttTex_BeforeUpdate );
 
 			// set up linked reflection
-			this.reflectCam.EnableReflection( this.plane );
+			reflectCam.EnableReflection( plane );
 
 			// also clip
-			this.reflectCam.EnableCustomNearClipPlane( this.plane );
+			reflectCam.EnableCustomNearClipPlane( plane );
 
-			this.planeEntity.MaterialName = "RttMat";
+			planeEntity.MaterialName = "RttMat";
 
 			Entity clone = null;
 
@@ -132,7 +132,7 @@ namespace Axiom.Demos
 				SceneNode node = scene.CreateSceneNode();
 
 				// calculate a random position
-				var nodePosition = new Vector3();
+				Vector3 nodePosition = new Vector3();
 				nodePosition.x = Utility.SymmetricRandom() * 750.0f;
 				nodePosition.y = Utility.SymmetricRandom() * 100.0f + 25;
 				nodePosition.z = Utility.SymmetricRandom() * 750.0f;
@@ -162,7 +162,7 @@ namespace Axiom.Demos
 		/// <param name="e"></param>
 		private void rttTex_BeforeUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEntity.IsVisible = false;
+			planeEntity.IsVisible = false;
 		}
 
 		/// <summary>
@@ -172,7 +172,7 @@ namespace Axiom.Demos
 		/// <param name="e"></param>
 		private void rttTex_AfterUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEntity.IsVisible = true;
+			planeEntity.IsVisible = true;
 		}
 	}
 }

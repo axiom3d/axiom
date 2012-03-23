@@ -1,5 +1,6 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
@@ -15,15 +16,15 @@ namespace Axiom.Demos
 	/// 	Summary description for SkeletalAnimation.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class SkeletalAnimation : TechDemo
 	{
 		#region Fields
 
 		private const int NumRobots = 10;
-		private readonly AnimationState[] animState = new AnimationState[ NumRobots ];
-		private readonly float[] animationSpeed = new float[ NumRobots ];
+		private AnimationState[] animState = new AnimationState[ NumRobots ];
+		private float[] animationSpeed = new float[ NumRobots ];
 
 		#endregion Fields
 
@@ -45,9 +46,9 @@ namespace Axiom.Demos
 				SceneNode node = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
 				node.ScaleBy( new Vector3( 0.5f, 0.5f, 0.5f ) );
 				node.AttachObject( entity );
-				this.animState[ i ] = entity.GetAnimationState( "Walk" );
-				this.animState[ i ].IsEnabled = true;
-				this.animationSpeed[ i ] = Utility.RangeRandom( 0.5f, 1.5f );
+				animState[ i ] = entity.GetAnimationState( "Walk" );
+				animState[ i ].IsEnabled = true;
+				animationSpeed[ i ] = Utility.RangeRandom( 0.5f, 1.5f );
 			}
 
 			Light light = scene.CreateLight( "BlueLight" );
@@ -86,7 +87,7 @@ namespace Axiom.Demos
 			for ( int i = 0; i < NumRobots; i++ )
 			{
 				// add time to the robot animation
-				this.animState[ i ].AddTime( evt.TimeSinceLastFrame * this.animationSpeed[ i ] );
+				animState[ i ].AddTime( evt.TimeSinceLastFrame * animationSpeed[ i ] );
 			}
 		}
 

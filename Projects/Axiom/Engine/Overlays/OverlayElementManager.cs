@@ -77,6 +77,7 @@ namespace Axiom.Overlays
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal OverlayElementManager()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -104,11 +105,11 @@ namespace Axiom.Overlays
 
 		#region Fields & Properties
 
-		private readonly Dictionary<string, IOverlayElementFactory> _elementFactories = new Dictionary<string, IOverlayElementFactory>();
+		private Dictionary<string, IOverlayElementFactory> _elementFactories = new Dictionary<string, IOverlayElementFactory>();
 
 		#region Instances Property
 
-		private readonly Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
+		private Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
 		/// returns all elemnt instances
@@ -117,7 +118,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return this._elementInstances.Values;
+				return _elementInstances.Values;
 			}
 		}
 
@@ -125,7 +126,7 @@ namespace Axiom.Overlays
 
 		#region Templates Property
 
-		private readonly Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
+		private Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
 		/// returns all element templates
@@ -134,7 +135,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return this._elementTemplates.Values;
+				return _elementTemplates.Values;
 			}
 		}
 
@@ -154,135 +155,10 @@ namespace Axiom.Overlays
 		/// <param name="factory"></param>
 		public void AddElementFactory( IOverlayElementFactory factory )
 		{
-			this._elementFactories.Add( factory.Type, factory );
+			_elementFactories.Add( factory.Type, factory );
 
 			LogManager.Instance.Write( "OverlayElementFactory for type '{0}' registered.", factory.Type );
 		}
-
-		/// <summary>
-		/// Clones an overlay element from a template
-		/// </summary>
-		/// <param name="template">template to clone</param>
-		/// <param name="name">name of the new element</param>
-		/// <returns></returns>
-		public OverlayElement CloneOverlayElementFromTemplate( string template, string name )
-		{
-			OverlayElement element = GetElement( template, true );
-			return element.Clone( name );
-		}
-
-		/// <summary>
-		///    Gets a reference to an existing element.
-		/// </summary>
-		/// <param name="name">Name of the element to retrieve.</param>
-		/// <returns></returns>
-		public OverlayElement GetElement( string name )
-		{
-			return GetElement( name, false );
-		}
-
-		/// <summary>
-		///    Gets a reference to an existing element.
-		/// </summary>
-		/// <param name="name">Name of the element to retrieve.</param>
-		/// <param name="isTemplate"></param>
-		/// <returns></returns>
-		public OverlayElement GetElement( string name, bool isTemplate )
-		{
-			Contract.RequiresNotEmpty( name, "name" );
-
-			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
-
-			if ( !elements.ContainsKey( name ) )
-			{
-				LogManager.Instance.Write( "OverlayElement with the name'{0}' was not found.", name );
-				return null;
-			}
-			else
-			{
-				return elements[ name ];
-			}
-		}
-
-		/// <summary>
-		///    Quick helper method to return the lookup table for the right element type.
-		/// </summary>
-		/// <param name="isTemplate"></param>
-		/// <returns></returns>
-		private Dictionary<string, OverlayElement> GetElementTable( bool isTemplate )
-		{
-			return isTemplate ? this._elementTemplates : this._elementInstances;
-		}
-
-		#region Destroy*OverlayElement
-
-		/// <summary>
-		/// Destroys the specified OverlayElement
-		/// </summary>
-		/// <param name="name"></param>
-		public void DestroyElement( string name )
-		{
-			DestroyElement( name, false );
-		}
-
-		/// <summary>
-		/// Destroys the specified OverlayElement
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="isTemplate"></param>
-		public void DestroyElement( string name, bool isTemplate )
-		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? this._elementTemplates : this._elementInstances;
-			if ( !elements.ContainsKey( name ) )
-			{
-				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
-			}
-			elements[ name ].Dispose();
-			elements.Remove( name );
-		}
-
-		/// <summary>
-		/// Destroys the supplied OvelayElement
-		/// </summary>
-		/// <param name="element"></param>
-		public void DestroyElement( OverlayElement element )
-		{
-			DestroyElement( element, false );
-		}
-
-		/// <summary>
-		/// Destroys the supplied OvelayElement
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="isTemplate"></param>
-		public void DestroyElement( OverlayElement element, bool isTemplate )
-		{
-			Dictionary<string, OverlayElement> elements = isTemplate ? this._elementTemplates : this._elementInstances;
-			if ( !elements.ContainsValue( element ) )
-			{
-				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );
-			}
-
-			elements.Remove( element.Name );
-		}
-
-		/// <summary>
-		/// destroys all OverlayElements
-		/// </summary>
-		public void DestroyAllElements()
-		{
-			DestroyAllElements( false );
-		}
-
-		/// <summary>
-		/// destroys all OverlayElements
-		/// </summary>
-		public void DestroyAllElements( bool isTemplate )
-		{
-			( isTemplate ? this._elementTemplates : this._elementInstances ).Clear();
-		}
-
-		#endregion Destroy*OverlayElement
 
 		#region Creat* Methods
 
@@ -308,15 +184,15 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElement CreateElement( string typeName, string instanceName, bool isTemplate )
 		{
-			Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
+			var elements = GetElementTable( isTemplate );
 
 			if ( elements.ContainsKey( instanceName ) )
 			{
 				//throw new AxiomException( "OverlayElement with the name '{0}' already exists.", instanceName );
-				return elements[ instanceName ];
+				return (OverlayElement)elements[ instanceName ];
 			}
 
-			OverlayElement element = CreateElementFromFactory( typeName, instanceName );
+			var element = CreateElementFromFactory( typeName, instanceName );
 
 			// register
 			elements.Add( instanceName, element );
@@ -335,13 +211,13 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElement CreateElementFromFactory( string typeName, string instanceName )
 		{
-			if ( !this._elementFactories.ContainsKey( typeName ) )
+			if ( !_elementFactories.ContainsKey( typeName ) )
 			{
 				throw new AxiomException( "Cannot locate factory for element type '{0}'", typeName );
 			}
 
 			// create the element
-			return ( this._elementFactories[ typeName ] ).Create( instanceName );
+			return ( (IOverlayElementFactory)_elementFactories[ typeName ] ).Create( instanceName );
 		}
 
 		/// <summary>
@@ -363,9 +239,9 @@ namespace Axiom.Overlays
 			}
 			else
 			{
-				OverlayElement template = GetElement( templateName, true );
+				var template = GetElement( templateName, true );
 
-				string typeToCreate = "";
+				var typeToCreate = "";
 				if ( String.IsNullOrEmpty( typeName ) )
 				{
 					typeToCreate = template.GetType().Name;
@@ -386,6 +262,131 @@ namespace Axiom.Overlays
 
 		#endregion Creat* Methods
 
+		/// <summary>
+		/// Clones an overlay element from a template
+		/// </summary>
+		/// <param name="template">template to clone</param>
+		/// <param name="name">name of the new element</param>
+		/// <returns></returns>
+		public OverlayElement CloneOverlayElementFromTemplate( string template, string name )
+		{
+			var element = GetElement( template, true );
+			return element.Clone( name );
+		}
+
+		/// <summary>
+		///    Gets a reference to an existing element.
+		/// </summary>
+		/// <param name="name">Name of the element to retrieve.</param>
+		/// <returns></returns>
+		public OverlayElement GetElement( string name )
+		{
+			return GetElement( name, false );
+		}
+
+		/// <summary>
+		///    Gets a reference to an existing element.
+		/// </summary>
+		/// <param name="name">Name of the element to retrieve.</param>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
+		public OverlayElement GetElement( string name, bool isTemplate )
+		{
+			Contract.RequiresNotEmpty( name, "name" );
+
+			var elements = GetElementTable( isTemplate );
+
+			if ( !elements.ContainsKey( name ) )
+			{
+				LogManager.Instance.Write( "OverlayElement with the name'{0}' was not found.", name );
+				return null;
+			}
+			else
+			{
+				return (OverlayElement)elements[ name ];
+			}
+		}
+
+		/// <summary>
+		///    Quick helper method to return the lookup table for the right element type.
+		/// </summary>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
+		private Dictionary<string, OverlayElement> GetElementTable( bool isTemplate )
+		{
+			return isTemplate ? _elementTemplates : _elementInstances;
+		}
+
+		#region Destroy*OverlayElement
+
+		/// <summary>
+		/// Destroys the specified OverlayElement
+		/// </summary>
+		/// <param name="name"></param>
+		public void DestroyElement( string name )
+		{
+			DestroyElement( name, false );
+		}
+
+		/// <summary>
+		/// Destroys the specified OverlayElement
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="isTemplate"></param>
+		public void DestroyElement( string name, bool isTemplate )
+		{
+			var elements = isTemplate ? _elementTemplates : _elementInstances;
+			if ( !elements.ContainsKey( name ) )
+			{
+				throw new Exception( "OverlayElement with the name '" + name + "' not found to destroy." );
+			}
+			elements[ name ].Dispose();
+			elements.Remove( name );
+		}
+
+		/// <summary>
+		/// Destroys the supplied OvelayElement
+		/// </summary>
+		/// <param name="element"></param>
+		public void DestroyElement( OverlayElement element )
+		{
+			DestroyElement( element, false );
+		}
+
+		/// <summary>
+		/// Destroys the supplied OvelayElement
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="isTemplate"></param>
+		public void DestroyElement( OverlayElement element, bool isTemplate )
+		{
+			var elements = isTemplate ? _elementTemplates : _elementInstances;
+			if ( !elements.ContainsValue( element ) )
+			{
+				throw new Exception( "OverlayElement with the name '" + element.Name + "' not found to destroy." );
+			}
+
+			elements.Remove( element.Name );
+		}
+
+		/// <summary>
+		/// destroys all OverlayElements
+		/// </summary>
+		public void DestroyAllElements()
+		{
+			DestroyAllElements( false );
+		}
+
+		/// <summary>
+		/// destroys all OverlayElements
+		/// </summary>
+		public void DestroyAllElements( bool isTemplate )
+		{
+			( isTemplate ? _elementTemplates : _elementInstances ).Clear();
+		}
+
+		#endregion Destroy*OverlayElement
+
 		#endregion Methods
 
 		#region IDisposable Implementation
@@ -395,7 +396,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

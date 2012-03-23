@@ -116,33 +116,14 @@ namespace Axiom.Components.Paging
 		#region - fields -
 
 		/// <summary>
-		/// Grid cell (page) size.
-		/// </summary>
-		protected Real mCellSize = 1000;
-
-		/// <summary>
-		/// hold radius.
-		/// </summary>
-		protected Real mHoldRadius = 3000;
-
-		protected Real mHoldRadiusInCells;
-
-		/// <summary>
-		/// Load radius
-		/// </summary>
-		protected Real mLoadRadius = 2000;
-
-		protected Real mLoadRadiusInCells;
-
-		protected int mMaxCellX = 32767;
-		protected int mMaxCellY = 32767;
-		protected int mMinCellX = -32768;
-		protected int mMinCellY = -32768;
-
-		/// <summary>
 		/// Orientation of the grid.
 		/// </summary>
 		protected Grid2Mode mMode = Grid2Mode.G2D_X_Z;
+
+		/// <summary>
+		/// Origin (world space)
+		/// </summary>
+		protected Vector3 mWorldOrigin = Vector3.Zero;
 
 		/// <summary>
 		/// Origin (grid-aligned world space)
@@ -150,9 +131,27 @@ namespace Axiom.Components.Paging
 		protected Vector2 mOrigin = Vector2.Zero;
 
 		/// <summary>
-		/// Origin (world space)
+		/// Grid cell (page) size.
 		/// </summary>
-		protected Vector3 mWorldOrigin = Vector3.Zero;
+		protected Real mCellSize = 1000;
+
+		/// <summary>
+		/// Load radius
+		/// </summary>
+		protected Real mLoadRadius = 2000;
+
+		/// <summary>
+		/// hold radius.
+		/// </summary>
+		protected Real mHoldRadius = 3000;
+
+		protected Real mLoadRadiusInCells;
+		protected Real mHoldRadiusInCells;
+
+		protected int mMinCellX = -32768;
+		protected int mMinCellY = -32768;
+		protected int mMaxCellX = 32767;
+		protected int mMaxCellY = 32767;
 
 		#endregion - fields -
 
@@ -166,15 +165,15 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMode;
+				return mMode;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mMode = value;
+				mMode = value;
 				//reset origin
-				Origin = this.mWorldOrigin;
+				Origin = mWorldOrigin;
 			}
 		}
 
@@ -186,14 +185,14 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mWorldOrigin;
+				return mWorldOrigin;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mWorldOrigin = value;
-				ConvertWorldToGridSpace( this.mWorldOrigin, ref this.mOrigin );
+				mWorldOrigin = value;
+				ConvertWorldToGridSpace( mWorldOrigin, ref mOrigin );
 				UpdateDerivedMetrics();
 			}
 		}
@@ -206,13 +205,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mCellSize;
+				return mCellSize;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mCellSize = value;
+				mCellSize = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -222,13 +221,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMinCellX;
+				return mMinCellX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mMinCellX = value;
+				mMinCellX = value;
 			}
 		}
 
@@ -237,13 +236,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMinCellY;
+				return mMinCellY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mMinCellY = value;
+				mMinCellY = value;
 			}
 		}
 
@@ -252,13 +251,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMaxCellX;
+				return mMaxCellX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mMaxCellX = value;
+				mMaxCellX = value;
 			}
 		}
 
@@ -267,13 +266,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mMaxCellY;
+				return mMaxCellY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mMaxCellY = value;
+				mMaxCellY = value;
 			}
 		}
 
@@ -285,13 +284,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mLoadRadius;
+				return mLoadRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mLoadRadius = value;
+				mLoadRadius = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -304,13 +303,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mHoldRadius;
+				return mHoldRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mHoldRadius = value;
+				mHoldRadius = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -323,7 +322,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mLoadRadiusInCells;
+				return mLoadRadiusInCells;
 			}
 		}
 
@@ -335,7 +334,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mHoldRadiusInCells;
+				return mHoldRadiusInCells;
 			}
 		}
 
@@ -347,72 +346,16 @@ namespace Axiom.Components.Paging
 			UpdateDerivedMetrics();
 		}
 
-		#region IPageStrategyData Members
-
-		/// <summary>
-		/// Load this data from a stream (returns true if successful)
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public bool Load( StreamSerializer stream )
-		{
-			if ( stream.ReadChunkBegin( CHUNK_ID, CHUNK_VERSION, "Grid2DPageStrategyData" ) == null )
-			{
-				return false;
-			}
-
-			byte readMode = 0;
-			stream.Read( out readMode );
-			this.mMode = (Grid2Mode)readMode;
-
-			Vector3 orgin;
-			stream.Read( out orgin );
-			Origin = orgin;
-
-			stream.Read( out this.mCellSize );
-			stream.Read( out this.mLoadRadius );
-			stream.Read( out this.mHoldRadius );
-			stream.Read( out this.mMinCellX );
-			stream.Read( out this.mMaxCellX );
-			stream.Read( out this.mMinCellY );
-			stream.Read( out this.mMaxCellY );
-
-			stream.ReadChunkEnd( CHUNK_ID );
-
-			return true;
-		}
-
-		/// <summary>
-		/// Save this data to a stream
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public void Save( StreamSerializer stream )
-		{
-			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
-			stream.Write( (byte)this.mMode );
-			stream.Write( this.mWorldOrigin );
-			stream.Write( this.mCellSize );
-			stream.Write( this.mLoadRadius );
-			stream.Write( this.mHoldRadius );
-			stream.Write( this.mMinCellX );
-			stream.Write( this.mMaxCellX );
-			stream.Write( this.mMinCellY );
-			stream.Write( this.mMaxCellY );
-
-			stream.WriteChunkEnd( CHUNK_ID );
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Set the index range of all cells (values outside this will be ignored)
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void SetCellRange( int minX, int minY, int maxX, int maxY )
 		{
-			this.mMinCellX = minX;
-			this.mMinCellY = minY;
-			this.mMaxCellX = maxX;
-			this.mMaxCellY = maxY;
+			mMinCellX = minX;
+			mMinCellY = minY;
+			mMaxCellX = maxX;
+			mMaxCellY = maxY;
 		}
 
 		/// <summary>
@@ -421,7 +364,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void ConvertWorldToGridSpace( Vector3 world, ref Vector2 grid )
 		{
-			switch ( this.mMode )
+			switch ( mMode )
 			{
 				case Grid2Mode.G2D_X_Z:
 					grid.x = world.x;
@@ -451,7 +394,7 @@ namespace Axiom.Components.Paging
 		public virtual void ConvertGridToWorldSpace( Vector2 grid, ref Vector3 world )
 		{
 			// Note that we don't set the 3rd coordinate, let the caller determine that
-			switch ( this.mMode )
+			switch ( mMode )
 			{
 				case Grid2Mode.G2D_X_Z:
 					world.x = grid.x;
@@ -477,8 +420,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateDerivedMetrics()
 		{
-			this.mLoadRadiusInCells = this.mLoadRadius / this.mCellSize;
-			this.mHoldRadiusInCells = this.mHoldRadius / this.mCellSize;
+			mLoadRadiusInCells = mLoadRadius / mCellSize;
+			mHoldRadiusInCells = mHoldRadius / mCellSize;
 		}
 
 		/// <summary>
@@ -487,13 +430,13 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DetermineGridLocation( Vector2 gridPos, out int x, out int y )
 		{
-			Vector2 relPos = gridPos - this.mOrigin;
-			Real offset = this.mCellSize * 0.5f;
+			Vector2 relPos = gridPos - mOrigin;
+			Real offset = mCellSize * 0.5f;
 			relPos.x += offset;
 			relPos.y += offset;
 
-			x = (int)System.Math.Floor( relPos.x / this.mCellSize );
-			y = (int)System.Math.Floor( relPos.y / this.mCellSize );
+			x = (int)System.Math.Floor( relPos.x / mCellSize );
+			y = (int)System.Math.Floor( relPos.y / mCellSize );
 		}
 
 		/// <summary>
@@ -502,9 +445,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetBottomLeftGridSpace( int x, int y, ref Vector2 bl )
 		{
-			Real offset = this.mCellSize * 0.5f;
-			bl.x = this.mOrigin.x - offset + x * this.mCellSize;
-			bl.y = this.mOrigin.y - offset + y * this.mCellSize;
+			Real offset = mCellSize * 0.5f;
+			bl.x = mOrigin.x - offset + x * mCellSize;
+			bl.y = mOrigin.y - offset + y * mCellSize;
 		}
 
 		/// <summary>
@@ -513,8 +456,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetMidPointGridSpace( int x, int y, ref Vector2 mid )
 		{
-			mid.x = this.mOrigin.x + x * this.mCellSize;
-			mid.y = this.mOrigin.y + y * this.mCellSize;
+			mid.x = mOrigin.x + x * mCellSize;
+			mid.y = mOrigin.y + y * mCellSize;
 		}
 
 		/// <summary>
@@ -526,22 +469,22 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetCornersGridSpace( int x, int y, ref Vector2[] fourPoints )
 		{
-			GetBottomLeftGridSpace( x, y, ref fourPoints[ 0 ] );
-			fourPoints[ 1 ] = fourPoints[ 0 ] + new Vector2( this.mCellSize, 0 );
-			fourPoints[ 2 ] = fourPoints[ 0 ] + new Vector2( this.mCellSize, this.mCellSize );
-			fourPoints[ 3 ] = fourPoints[ 0 ] + new Vector2( 0, this.mCellSize );
+			this.GetBottomLeftGridSpace( x, y, ref fourPoints[ 0 ] );
+			fourPoints[ 1 ] = fourPoints[ 0 ] + new Vector2( mCellSize, 0 );
+			fourPoints[ 2 ] = fourPoints[ 0 ] + new Vector2( mCellSize, mCellSize );
+			fourPoints[ 3 ] = fourPoints[ 0 ] + new Vector2( 0, mCellSize );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public PageID CalculatePageID( int x, int y )
 		{
 			// Convert to signed 16-bit so sign bit is in bit 15
-			var xs16 = (Int16)x;
-			var ys16 = (Int16)y;
+			Int16 xs16 = (Int16)x;
+			Int16 ys16 = (Int16)y;
 
 			// convert to unsigned because we do not want to propagate sign bit to 32-bits
-			var x16 = (UInt16)xs16;
-			var y16 = (UInt16)ys16;
+			UInt16 x16 = (UInt16)xs16;
+			UInt16 y16 = (UInt16)ys16;
 
 			uint key = 0;
 			key = (uint)( ( x16 << 16 ) | y16 );
@@ -554,11 +497,63 @@ namespace Axiom.Components.Paging
 		{
 			// inverse of calculatePageID
 			// unsigned versions
-			var y16 = (UInt16)( inPageID.Value & 0xFFFF );
-			var x16 = (UInt16)( ( inPageID.Value >> 16 ) & 0xFFFF );
+			UInt16 y16 = (UInt16)( inPageID.Value & 0xFFFF );
+			UInt16 x16 = (UInt16)( ( inPageID.Value >> 16 ) & 0xFFFF );
 
 			x = (Int16)x16;
 			y = (Int16)y16;
+		}
+
+		/// <summary>
+		/// Load this data from a stream (returns true if successful)
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public bool Load( StreamSerializer stream )
+		{
+			if ( stream.ReadChunkBegin( CHUNK_ID, CHUNK_VERSION, "Grid2DPageStrategyData" ) == null )
+			{
+				return false;
+			}
+
+			byte readMode = 0;
+			stream.Read( out readMode );
+			mMode = (Grid2Mode)readMode;
+
+			Vector3 orgin;
+			stream.Read( out orgin );
+			Origin = orgin;
+
+			stream.Read( out mCellSize );
+			stream.Read( out mLoadRadius );
+			stream.Read( out mHoldRadius );
+			stream.Read( out mMinCellX );
+			stream.Read( out mMaxCellX );
+			stream.Read( out mMinCellY );
+			stream.Read( out mMaxCellY );
+
+			stream.ReadChunkEnd( CHUNK_ID );
+
+			return true;
+		}
+
+		/// <summary>
+		/// Save this data to a stream
+		/// </summary>
+		[OgreVersion( 1, 7, 2 )]
+		public void Save( StreamSerializer stream )
+		{
+			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
+			stream.Write( (byte)mMode );
+			stream.Write( mWorldOrigin );
+			stream.Write( mCellSize );
+			stream.Write( mLoadRadius );
+			stream.Write( mHoldRadius );
+			stream.Write( mMinCellX );
+			stream.Write( mMaxCellX );
+			stream.Write( mMinCellY );
+			stream.Write( mMaxCellY );
+
+			stream.WriteChunkEnd( CHUNK_ID );
 		}
 	};
 }

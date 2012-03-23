@@ -47,10 +47,10 @@ namespace Axiom.Controllers.Canned
 	public class PassthroughControllerFunction : BaseControllerFunction
 	{
 		public PassthroughControllerFunction()
-			: base( false ) { }
+			: base( false ) {}
 
 		public PassthroughControllerFunction( bool deltaInput )
-			: base( deltaInput ) { }
+			: base( deltaInput ) {}
 
 		public override Real Execute( Real source )
 		{

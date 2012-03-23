@@ -38,6 +38,7 @@
 using System.Collections.Generic;
 
 using Axiom.Core;
+using Axiom.Collections;
 
 #endregion
 
@@ -77,5 +78,5 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
 	/// </summary>
-	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory> { }
+	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory> {}
 }

@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
@@ -58,6 +59,11 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
+		///		Current position (as a byte offset) into the stream.
+		/// </summary>
+		protected long position;
+
+		/// <summary>
 		///     Pointer to the raw data we will be writing to.
 		/// </summary>
 		protected BufferBase data;
@@ -66,11 +72,6 @@ namespace Axiom.Graphics
 		///     Reference to the hardware buffer who owns this stream.
 		/// </summary>
 		protected HardwareBuffer owner;
-
-		/// <summary>
-		///		Current position (as a byte offset) into the stream.
-		/// </summary>
-		protected long position;
 
 		/// <summary>
 		///     Temp array.
@@ -103,7 +104,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.owner.Size;
+				return owner.Size;
 			}
 		}
 
@@ -114,16 +115,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.position;
+				return position;
 			}
 			set
 			{
-				if ( value > Length )
+				if ( value > this.Length )
 				{
 					throw new ArgumentException( "Position of the buffer may not exceed the length." );
 				}
 
-				this.position = value;
+				position = value;
 			}
 		}
 
@@ -142,47 +143,47 @@ namespace Axiom.Graphics
 
 		public void Write( Vector3 vec, int offset )
 		{
-			this.tmp[ 0 ] = vec;
+			tmp[ 0 ] = vec;
 
-			Write( this.tmp, offset );
+			Write( tmp, offset );
 		}
 
 		public void Write( Vector4 vec, int offset )
 		{
-			this.tmp[ 0 ] = vec;
+			tmp[ 0 ] = vec;
 
-			Write( this.tmp, offset );
+			Write( tmp, offset );
 		}
 
 		public void Write( float val, int offset )
 		{
-			this.tmp[ 0 ] = val;
+			tmp[ 0 ] = val;
 
-			Write( this.tmp, offset );
+			Write( tmp, offset );
 		}
 
 		public void Write( short val, int offset )
 		{
-			this.tmp[ 0 ] = val;
+			tmp[ 0 ] = val;
 
-			Write( this.tmp, offset );
+			Write( tmp, offset );
 		}
 
 		public void Write( byte val, int offset )
 		{
-			this.tmp[ 0 ] = val;
+			tmp[ 0 ] = val;
 
-			Write( this.tmp, offset );
+			Write( tmp, offset );
 		}
 
-		public void Write( Array val )
+		public void Write( System.Array val )
 		{
 			Write( val, 0 );
 		}
 
-		public void Write( Array val, int offset )
+		public void Write( System.Array val, int offset )
 		{
-			int count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
+			var count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
 
 			Write( val, offset, count );
 		}
@@ -193,35 +194,35 @@ namespace Axiom.Graphics
 		/// <param name="val"></param>
 		/// <param name="offset"></param>
 		/// <param name="count"></param>
-		public void Write( Array val, int offset, int count )
+		public void Write( System.Array val, int offset, int count )
 		{
 			// can't write to unlocked buffers
-			if ( !this.owner.IsLocked )
+			if ( !owner.IsLocked )
 			{
 				throw new AxiomException( "Cannot write to a buffer stream when the buffer is not locked." );
 			}
 
-			long newOffset = this.position + offset;
+			var newOffset = position + offset;
 
 			// ensure we won't go past the end of the stream
-			if ( newOffset + count > Length )
+			if ( newOffset + count > this.Length )
 			{
 				throw new AxiomException( "Unable to write data past the end of a BufferStream" );
 			}
 
 			// pin the array so we can get a pointer to it
-			BufferBase handle = Memory.PinObject( val );
+			var handle = Memory.PinObject( val );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
 				// get byte pointers for the source and target
-				byte* b = handle.ToBytePointer();
-				byte* dataPtr = this.data.ToBytePointer();
+				var b = handle.ToBytePointer();
+				var dataPtr = data.ToBytePointer();
 
 				// copy the data from the source to the target
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					dataPtr[ (int)( i + newOffset ) ] = b[ i ];
 				}
@@ -250,33 +251,33 @@ namespace Axiom.Graphics
 		{
 			switch ( origin )
 			{
-				// seeks from the beginning of the stream
+					// seeks from the beginning of the stream
 				case SeekOrigin.Begin:
-					this.position = offset;
+					position = offset;
 					break;
 
-				// offset is from the current stream position
+					// offset is from the current stream position
 				case SeekOrigin.Current:
-					if ( this.position + offset > Length )
+					if ( position + offset > this.Length )
 					{
 						throw new ArgumentException( "Cannot seek past the end of the stream." );
 					}
 
-					this.position = this.position + offset;
+					position = position + offset;
 					break;
 
-				// seeks backwards from the end of the stream
+					// seeks backwards from the end of the stream
 				case SeekOrigin.End:
-					if ( Length - offset < 0 )
+					if ( this.Length - offset < 0 )
 					{
 						throw new ArgumentException( "Cannot seek past the beginning of the stream." );
 					}
 
-					this.position = Length - offset;
+					position = this.Length - offset;
 					break;
 			}
 
-			return this.position;
+			return position;
 		}
 
 		#endregion Methods

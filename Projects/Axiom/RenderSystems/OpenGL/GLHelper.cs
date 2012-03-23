@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Graphics;
 
 using Tao.OpenGl;
@@ -61,17 +63,17 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				case BufferUsage.Static:
 				case BufferUsage.StaticWriteOnly:
-					return Gl.GL_STATIC_DRAW_ARB;
+					return (int)Gl.GL_STATIC_DRAW_ARB;
 
 				case BufferUsage.Dynamic:
 				case BufferUsage.DynamicWriteOnly:
-					return Gl.GL_DYNAMIC_DRAW_ARB;
+					return (int)Gl.GL_DYNAMIC_DRAW_ARB;
 
 				case BufferUsage.DynamicWriteOnlyDiscardable:
-					return Gl.GL_STREAM_DRAW_ARB;
+					return (int)Gl.GL_STREAM_DRAW_ARB;
 
 				default:
-					return Gl.GL_DYNAMIC_DRAW_ARB;
+					return (int)Gl.GL_DYNAMIC_DRAW_ARB;
 			}
 		}
 
@@ -228,7 +230,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public static int ConvertEnum( TextureAddressing tam )
 		{
-			int type = 0;
+			var type = 0;
 
 			switch ( tam )
 			{

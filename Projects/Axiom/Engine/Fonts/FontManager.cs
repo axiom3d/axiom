@@ -38,8 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.IO;
-using System.Text;
 
 using Axiom.Collections;
 using Axiom.Core;
@@ -91,6 +91,7 @@ namespace Axiom.Fonts
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
+			: base()
 		{
 			// Loading order
 			LoadingOrder = 200.0f;
@@ -118,11 +119,11 @@ namespace Axiom.Fonts
 		/// <param name="font"></param>
 		protected void parseAttribute( string line, Font font )
 		{
-			string[] parms = line.Split( new[]
-                                         {
-                                             ' ', '\t'
-                                         } );
-			string attrib = parms[ 0 ].ToLower();
+			var parms = line.Split( new char[]
+			                        {
+			                        	' ', '\t'
+			                        } );
+			var attrib = parms[ 0 ].ToLower();
 
 			switch ( attrib )
 			{
@@ -164,7 +165,7 @@ namespace Axiom.Fonts
 						return;
 					}
 
-					char glyph = parms[ 1 ][ 0 ];
+					var glyph = parms[ 1 ][ 0 ];
 
 					// set the texcoords for this glyph
 					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ), StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
@@ -224,7 +225,7 @@ namespace Axiom.Fonts
 		/// </summary>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			var script = new StreamReader( stream, Encoding.UTF8 );
+			var script = new StreamReader( stream, System.Text.Encoding.UTF8 );
 
 			Font font = null;
 
@@ -277,7 +278,7 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

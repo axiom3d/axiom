@@ -57,9 +57,9 @@ namespace Axiom.Serialization
 		#region Fields
 
 		/// <summary>
-		///		Chunk ID + size (short + long).
+		///		Version string of this serializer.
 		/// </summary>
-		public const int ChunkOverheadSize = 6;
+		protected string version;
 
 		/// <summary>
 		///		Length of the chunk that is currently being processed.
@@ -67,9 +67,9 @@ namespace Axiom.Serialization
 		protected int currentChunkLength;
 
 		/// <summary>
-		///		Version string of this serializer.
+		///		Chunk ID + size (short + long).
 		/// </summary>
-		protected string version;
+		public const int ChunkOverheadSize = 6;
 
 		#endregion Fields
 
@@ -81,7 +81,7 @@ namespace Axiom.Serialization
 		public Serializer()
 		{
 			// default binary file version
-			this.version = "[Serializer_v1.00]";
+			version = "[Serializer_v1.00]";
 		}
 
 		#endregion Constructor
@@ -96,7 +96,7 @@ namespace Axiom.Serialization
 		/// </remarks>
 		protected void IgnoreCurrentChunk( BinaryReader reader )
 		{
-			Seek( reader, this.currentChunkLength - ChunkOverheadSize );
+			Seek( reader, currentChunkLength - ChunkOverheadSize );
 		}
 
 		/// <summary>
@@ -112,9 +112,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				byte* pointer = dest.ToBytePointer();
+				var pointer = dest.ToBytePointer();
 #if !(XBOX || XBOX360)
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
@@ -142,9 +142,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				byte* pointer = src.ToBytePointer();
+				var pointer = src.ToBytePointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -164,9 +164,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				float* pointer = dest.ToFloatPointer();
+				var pointer = dest.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadFloat( reader );
 				}
@@ -185,9 +185,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				float* pointer = src.ToFloatPointer();
+				var pointer = src.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -209,11 +209,11 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				float* pointer = dest.ToFloatPointer();
+				var pointer = dest.ToFloatPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
-					float val = ReadFloat( reader );
+					var val = ReadFloat( reader );
 					pointer[ i ] = val;
 					destArray[ i ] = val;
 				}
@@ -374,9 +374,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				int* pointer = dest.ToIntPointer();
+				var pointer = dest.ToIntPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadInt( reader );
 				}
@@ -396,9 +396,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				int* pointer = src.ToIntPointer();
+				var pointer = src.ToIntPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -418,8 +418,8 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				short* pointer = dest.ToShortPointer();
-				for ( int i = 0; i < count; i++ )
+				var pointer = dest.ToShortPointer();
+				for ( var i = 0; i < count; i++ )
 				{
 					pointer[ i ] = ReadShort( reader );
 				}
@@ -439,9 +439,9 @@ namespace Axiom.Serialization
 			unsafe
 #endif
 			{
-				short* pointer = src.ToShortPointer();
+				var pointer = src.ToShortPointer();
 
-				for ( int i = 0; i < count; i++ )
+				for ( var i = 0; i < count; i++ )
 				{
 					writer.Write( pointer[ i ] );
 				}
@@ -588,7 +588,7 @@ namespace Axiom.Serialization
 		protected short ReadFileChunk( BinaryReader reader )
 		{
 			// get the chunk id
-			short id = ReadShort( reader );
+			var id = ReadShort( reader );
 #if ( XBOX || XBOX360 )
             if (id == 0)
             {
@@ -597,7 +597,7 @@ namespace Axiom.Serialization
             }
 #endif
 			// read the length for this chunk
-			this.currentChunkLength = ReadInt( reader );
+			currentChunkLength = ReadInt( reader );
 
 			return id;
 		}
@@ -635,12 +635,12 @@ namespace Axiom.Serialization
 			// better hope this is the header
 			if ( headerID == (short)MeshChunkID.Header )
 			{
-				string fileVersion = ReadString( reader );
+				var fileVersion = ReadString( reader );
 
 				// read the version string
-				if ( this.version != fileVersion )
+				if ( version != fileVersion )
 				{
-					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}", fileVersion, this.version );
+					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}", fileVersion, version );
 				}
 			}
 			else

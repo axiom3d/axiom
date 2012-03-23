@@ -22,22 +22,23 @@
 
 #endregion License
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
 
 namespace Axiom.Samples.DynamicTexture
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private DynamicTexture sample;
 
 		public override void Initialize()
 		{
-			this.sample = new DynamicTexture();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
+			sample = new DynamicTexture();
+			Name = sample.Metadata[ "Title" ] + " Sample";
+			AddSample( sample );
 		}
 	}
 }

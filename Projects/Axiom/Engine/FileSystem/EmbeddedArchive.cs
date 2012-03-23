@@ -40,9 +40,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
 
 using Axiom.Core;
 
@@ -73,9 +75,9 @@ namespace Axiom.FileSystem
 
 		protected override bool DirectoryExists( string directory )
 		{
-			return ( from res in this.resources
-					 where res.StartsWith( directory )
-					 select res ).Any();
+			return ( from res in resources
+			         where res.StartsWith( directory )
+			         select res ).Any();
 		}
 
 		protected override void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
@@ -89,9 +91,9 @@ namespace Axiom.FileSystem
 				currentDir = _basePath;
 			}
 
-			string[] files = getFilesRecursively( currentDir, pattern );
+			var files = getFilesRecursively( currentDir, pattern );
 
-			foreach ( string file in files )
+			foreach ( var file in files )
 			{
 				if ( simpleList != null )
 				{
@@ -101,38 +103,32 @@ namespace Axiom.FileSystem
 				if ( detailList != null )
 				{
 					detailList.Add( new FileInfo
-									{
-										Archive = this,
-										Filename = file,
-										Basename = file.Substring( currentDir.Length ),
-										Path = currentDir,
-										CompressedSize = 0,
-										UncompressedSize = 0,
-										ModifiedTime = DateTime.Now
-									} );
+					                {
+					                	Archive = this, Filename = file, Basename = file.Substring( currentDir.Length ), Path = currentDir, CompressedSize = 0, UncompressedSize = 0, ModifiedTime = DateTime.Now
+					                } );
 				}
 			}
 		}
 
 		protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
-			IEnumerable<string> files = !pattern.Contains( "*" ) && Exists( dir + pattern ) ? new[]
-                                                                                              {
-                                                                                                  pattern
-                                                                                              } : from res in this.resources
-																								  where res.StartsWith( dir )
-																								  select res;
+			var files = !pattern.Contains( "*" ) && Exists( dir + pattern ) ? new[]
+			                                                                  {
+			                                                                  	pattern
+			                                                                  } : from res in resources
+			                                                                      where res.StartsWith( dir )
+			                                                                      select res;
 
 			if ( pattern == "*" )
 			{
-				return files.ToArray();
+				return files.ToArray<string>();
 			}
 
 			pattern = pattern.Substring( pattern.LastIndexOf( '*' ) + 1 );
 
 			return ( from file in files
-					 where file.EndsWith( pattern )
-					 select file ).ToArray<string>();
+			         where file.EndsWith( pattern )
+			         select file ).ToArray<string>();
 		}
 
 		protected override string[] getFilesRecursively( string dir, string pattern )
@@ -147,16 +143,16 @@ namespace Axiom.FileSystem
 		public EmbeddedArchive( string name, string archType )
 			: base( name.Split( '/' )[ 0 ], archType )
 		{
-			string named = Name + ",";
+			var named = Name + ",";
 
-			this.assembly = ( from a in AssemblyEx.Neighbors()
-							  where a.FullName.StartsWith( named )
-							  select a ).First();
+			assembly = ( from a in AssemblyEx.Neighbors()
+			             where a.FullName.StartsWith( named )
+			             select a ).First();
 			Name = name.Replace( '/', '.' );
-			this.resources = ( from resource in this.assembly.GetManifestResourceNames()
-							   //where resource.StartsWith(Name)
-							   select resource ).ToList();
-			this.resources.Sort();
+			resources = ( from resource in assembly.GetManifestResourceNames()
+			              //where resource.StartsWith(Name)
+			              select resource ).ToList();
+			resources.Sort();
 		}
 
 		#endregion Constructors and Destructors
@@ -188,12 +184,12 @@ namespace Axiom.FileSystem
 			{
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
-			return this.assembly.GetManifestResourceStream( this.resources[ this.resources.BinarySearch( _basePath + filename ) ] );
+			return assembly.GetManifestResourceStream( resources[ resources.BinarySearch( _basePath + filename ) ] );
 		}
 
 		public override bool Exists( string fileName )
 		{
-			return this.resources.BinarySearch( _basePath + fileName ) >= 0;
+			return resources.BinarySearch( _basePath + fileName ) >= 0;
 		}
 
 		#endregion Archive Implementation

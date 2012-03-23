@@ -55,22 +55,12 @@ namespace Axiom.Media
 			}
 		}
 
-		#region Nested type: ImageData
-
 		/// <summary>
 		/// Codec return class for images. Has information about the size and the
 		/// pixel format of the image.
 		/// </summary>
 		public class ImageData : CodecData
 		{
-			public int depth = 1;
-			public ImageFlags flags;
-			public PixelFormat format;
-			public int height;
-			public int numMipMaps;
-			public int size;
-			public int width;
-
 			[OgreVersion( 1, 7, 2 )]
 			public override string DataType
 			{
@@ -79,8 +69,14 @@ namespace Axiom.Media
 					return "ImageData";
 				}
 			}
-		};
 
-		#endregion
+			public int width;
+			public int height;
+			public int depth = 1;
+			public int size;
+			public ImageFlags flags;
+			public int numMipMaps;
+			public PixelFormat format;
+		};
 	};
 }

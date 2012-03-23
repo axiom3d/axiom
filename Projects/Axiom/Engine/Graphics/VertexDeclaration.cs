@@ -90,17 +90,6 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///  Returns the entire vertexelement list
-		/// </summary>
-		public List<VertexElement> Elements
-		{
-			get
-			{
-				return this.elements;
-			}
-		}
-
-		/// <summary>
 		///     Adds a new VertexElement to this declaration.
 		/// </summary>
 		/// <remarks>
@@ -137,7 +126,7 @@ namespace Axiom.Graphics
 		public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			var element = new VertexElement( source, offset, type, semantic, index );
-			this.elements.Add( element );
+			elements.Add( element );
 			return element;
 		}
 
@@ -162,9 +151,9 @@ namespace Axiom.Graphics
 		/// <returns>If the element is not found, this method returns null.</returns>
 		public virtual VertexElement FindElementBySemantic( VertexElementSemantic semantic, short index )
 		{
-			for ( int i = 0; i < this.elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Semantic == semantic && element.Index == index )
@@ -184,9 +173,9 @@ namespace Axiom.Graphics
 		{
 			var rv = new List<VertexElement>();
 
-			for ( int i = 0; i < this.elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Source == source )
@@ -206,44 +195,109 @@ namespace Axiom.Graphics
 		/// <returns>Element at the requested index.</returns>
 		public VertexElement GetElement( int index )
 		{
-			Debug.Assert( index < this.elements.Count && index >= 0, "Element index out of bounds." );
+			Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
 
-			return this.elements[ index ];
+			return elements[ index ];
+		}
+
+		/// <summary>
+		///  Returns the entire vertexelement list
+		/// </summary>
+		public List<VertexElement> Elements
+		{
+			get
+			{
+				return elements;
+			}
+		}
+
+		public class VertexElementLess : IComparer<Axiom.Graphics.VertexElement>
+		{
+			// Sort routine for VertexElement
+
+			#region IComparer Members
+
+			public int Compare( VertexElement e1, VertexElement e2 )
+			{
+				// Sort by source first
+
+				if ( e1 == null && e2 == null )
+				{
+					return 0;
+				}
+
+				if ( e1 == null )
+				{
+					return -1;
+				}
+				else if ( e2 == null )
+				{
+					return 1;
+				}
+
+				if ( e1.Source < e2.Source )
+				{
+					return -1;
+				}
+				else if ( e1.Source == e2.Source )
+				{
+					// Use ordering of semantics to sort
+					if ( e1.Semantic < e2.Semantic )
+					{
+						return -1;
+					}
+					else if ( e1.Semantic == e2.Semantic )
+					{
+						// Use index to sort
+						if ( e1.Index < e2.Index )
+						{
+							return -1;
+						}
+						else if ( e1.Index == e2.Index )
+						{
+							return 0;
+						}
+					}
+				}
+				return 1;
+			}
+
+			#endregion IComparer Members
 		}
 
 		public void Sort()
 		{
 			var compareFunction = new VertexElementLess();
-			this.elements.Sort( compareFunction );
+			elements.Sort( compareFunction );
 		}
 
 		public VertexDeclaration GetAutoOrganizedDeclaration( bool skeletalAnimation, bool vertexAnimation )
 		{
-			var newDecl = (VertexDeclaration)Clone();
+			var newDecl = (VertexDeclaration)this.Clone();
 			// Set all sources to the same buffer (for now)
-			List<VertexElement> elems = newDecl.Elements;
+			var elems = newDecl.Elements;
 
-			int c = 0;
+			var c = 0;
 
-			for ( int i = 0; i < elems.Count; i++, ++c )
+			for ( var i = 0; i < elems.Count; i++, ++c )
 			{
-				VertexElement elem = elems[ i ];
+				var elem = elems[ i ];
 				newDecl.ModifyElement( c, 0, 0, elem.Type, elem.Semantic, elem.Index );
 			}
 
 			newDecl.Sort();
 
 			// Now sort out proper buffer assignments and offsets
-			int offset = 0;
+			var offset = 0;
 			c = 0;
 			short buffer = 0;
-			VertexElementSemantic prevSemantic = VertexElementSemantic.Position;
+			var prevSemantic = VertexElementSemantic.Position;
 
-			for ( int i = 0; i < elems.Count; i++, ++c )
+			for ( var i = 0; i < elems.Count; i++, ++c )
 			{
-				VertexElement elem = elems[ i ];
-				bool splitWithPrev = false;
-				bool splitWithNext = false;
+				var elem = elems[ i ];
+				var splitWithPrev = false;
+				var splitWithNext = false;
 				switch ( elem.Semantic )
 				{
 					case VertexElementSemantic.Position:
@@ -296,11 +350,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual int GetVertexSize()
 		{
-			int size = 0;
+			var size = 0;
 
-			for ( int i = 0; i < this.elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = elements[ i ];
 				size += element.Size;
 			}
 			return size;
@@ -312,11 +366,11 @@ namespace Axiom.Graphics
 		/// <param name="source">The buffer binding index for which to get the vertex size.</param>
 		public virtual int GetVertexSize( short source )
 		{
-			int size = 0;
+			var size = 0;
 
-			for ( int i = 0; i < this.elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = elements[ i ];
 
 				// do they match?
 				if ( element.Source == source )
@@ -365,14 +419,14 @@ namespace Axiom.Graphics
 		/// <returns>A reference to the newly created element.</returns>
 		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
-			if ( position >= this.elements.Count )
+			if ( position >= elements.Count )
 			{
 				return AddElement( source, offset, type, semantic, index );
 			}
 
 			var element = new VertexElement( source, offset, type, semantic, index );
 
-			this.elements.Insert( position, element );
+			elements.Insert( position, element );
 
 			return element;
 		}
@@ -384,9 +438,9 @@ namespace Axiom.Graphics
 		/// <returns>Element at the requested index.</returns>
 		public virtual void RemoveElement( int index )
 		{
-			Debug.Assert( index < this.elements.Count && index >= 0, "Element index out of bounds." );
+			Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
 
-			this.elements.RemoveAt( index );
+			elements.RemoveAt( index );
 		}
 
 		/// <summary>
@@ -394,7 +448,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllElements()
 		{
-			this.elements.Clear();
+			elements.Clear();
 		}
 
 		/// <summary>
@@ -421,7 +475,7 @@ namespace Axiom.Graphics
 		/// <param name="index">Usage index of the element.</param>
 		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
-			this.elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
+			elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
 		}
 
 		/// <summary>
@@ -443,14 +497,14 @@ namespace Axiom.Graphics
 		/// <param name="index">Usage index to remove, typically only applies to tex coords.</param>
 		public virtual void RemoveElement( VertexElementSemantic semantic, int index )
 		{
-			for ( int i = this.elements.Count - 1; i >= 0; i-- )
+			for ( var i = elements.Count - 1; i >= 0; i-- )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = elements[ i ];
 
 				if ( element.Semantic == semantic && element.Index == index )
 				{
 					// we have a winner!
-					this.elements.RemoveAt( i );
+					elements.RemoveAt( i );
 				}
 			}
 		}
@@ -464,7 +518,7 @@ namespace Axiom.Graphics
 		public static bool operator ==( VertexDeclaration left, VertexDeclaration right )
 		{
 			// If both are null, or both are same instance, return true.
-			if ( ReferenceEquals( left, right ) )
+			if ( System.Object.ReferenceEquals( left, right ) )
 			{
 				return true;
 			}
@@ -481,10 +535,10 @@ namespace Axiom.Graphics
 				return false;
 			}
 
-			for ( int i = 0; i < right.elements.Count; i++ )
+			for ( var i = 0; i < right.elements.Count; i++ )
 			{
-				VertexElement a = left.elements[ i ];
-				VertexElement b = right.elements[ i ];
+				var a = left.elements[ i ];
+				var b = right.elements[ i ];
 
 				// if they are not equal, this declaration differs
 				if ( !( a == b ) )
@@ -508,60 +562,6 @@ namespace Axiom.Graphics
 			return !( left == right );
 		}
 
-		public class VertexElementLess : IComparer<VertexElement>
-		{
-			// Sort routine for VertexElement
-
-			#region IComparer<VertexElement> Members
-
-			public int Compare( VertexElement e1, VertexElement e2 )
-			{
-				// Sort by source first
-
-				if ( e1 == null && e2 == null )
-				{
-					return 0;
-				}
-
-				if ( e1 == null )
-				{
-					return -1;
-				}
-				else if ( e2 == null )
-				{
-					return 1;
-				}
-
-				if ( e1.Source < e2.Source )
-				{
-					return -1;
-				}
-				else if ( e1.Source == e2.Source )
-				{
-					// Use ordering of semantics to sort
-					if ( e1.Semantic < e2.Semantic )
-					{
-						return -1;
-					}
-					else if ( e1.Semantic == e2.Semantic )
-					{
-						// Use index to sort
-						if ( e1.Index < e2.Index )
-						{
-							return -1;
-						}
-						else if ( e1.Index == e2.Index )
-						{
-							return 0;
-						}
-					}
-				}
-				return 1;
-			}
-
-			#endregion
-		}
-
 		#endregion Methods
 
 		#region Properties
@@ -573,7 +573,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.elements.Count;
+				return elements.Count;
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.elements[ index ];
+				return (VertexElement)elements[ index ];
 			}
 		}
 
@@ -624,18 +624,16 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public object Clone()
 		{
-			VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
 
-			for ( int i = 0; i < this.elements.Count; i++ )
+			for ( var i = 0; i < elements.Count; i++ )
 			{
-				VertexElement element = this.elements[ i ];
+				var element = (VertexElement)elements[ i ];
 				clone.AddElement( element.Source, element.Offset, element.Type, element.Semantic, element.Index );
 			}
 
 			return clone;
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds for the given source.
@@ -645,17 +643,19 @@ namespace Axiom.Graphics
 		/// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
 		public VertexDeclaration Clone( short source )
 		{
-			VertexDeclaration clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			List<VertexElement> sourceElements = FindElementBySource( source );
+			var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			var sourceElements = FindElementBySource( source );
 
-			for ( int i = 0; i < sourceElements.Count; i++ )
+			for ( var i = 0; i < sourceElements.Count; i++ )
 			{
-				VertexElement element = sourceElements[ i ];
+				var element = (VertexElement)sourceElements[ i ];
 				clone.AddElement( 0, element.Offset, element.Type, element.Semantic, element.Index );
 			}
 
 			return clone;
 		}
+
+		#endregion ICloneable Members
 
 		#region IDisposable Implementation
 
@@ -685,7 +685,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

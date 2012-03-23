@@ -37,14 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.IO;
+using System;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -56,41 +55,20 @@ namespace Axiom.SceneManagers.Bsp
 	public class TextureLight : Light
 	{
 		protected BspSceneManager creator;
-		protected LightIntensity intensity;
 		protected bool isTextureLight;
-		protected int priority;
 		protected ColorEx textureColor;
-
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public TextureLight( BspSceneManager creator )
-			: this( "", creator ) { }
-
-		/// <summary>
-		///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
-		/// </summary>
-		/// <param name="name"></param>
-		public TextureLight( string name, BspSceneManager creator )
-			: base( name )
-		{
-			this.creator = creator;
-			this.isTextureLight = true;
-			diffuse = ColorEx.White;
-			this.textureColor = ColorEx.White;
-			this.intensity = LightIntensity.Normal;
-			this.priority = 100;
-		}
+		protected LightIntensity intensity;
+		protected int priority;
 
 		public bool IsTextureLight
 		{
 			get
 			{
-				return this.isTextureLight;
+				return isTextureLight;
 			}
 			set
 			{
-				this.isTextureLight = value;
+				isTextureLight = value;
 			}
 		}
 
@@ -98,11 +76,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return this.intensity;
+				return intensity;
 			}
 			set
 			{
-				this.intensity = value;
+				intensity = value;
 			}
 		}
 
@@ -110,11 +88,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return this.priority;
+				return priority;
 			}
 			set
 			{
-				this.priority = value;
+				priority = value;
 			}
 		}
 
@@ -131,27 +109,25 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		public override ColorEx Diffuse
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public TextureLight( BspSceneManager creator )
+			: this( "", creator ) {}
+
+		/// <summary>
+		///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
+		/// </summary>
+		/// <param name="name"></param>
+		public TextureLight( string name, BspSceneManager creator )
+			: base( name )
 		{
-			get
-			{
-				return diffuse;
-			}
-			set
-			{
-				diffuse = value;
-
-				float maxParam = Utility.Max( Utility.Max( diffuse.r, diffuse.g ), diffuse.b );
-				if ( maxParam > 0f )
-				{
-					float inv = 1 / maxParam;
-					this.textureColor.r = diffuse.r * inv;
-					this.textureColor.g = diffuse.g * inv;
-					this.textureColor.b = diffuse.b * inv;
-				}
-
-				this.textureColor.a = maxParam;
-			}
+			this.creator = creator;
+			isTextureLight = true;
+			diffuse = ColorEx.White;
+			textureColor = ColorEx.White;
+			intensity = LightIntensity.Normal;
+			priority = 100;
 		}
 
 		public bool AffectsFaceGroup( StaticFaceGroup faceGroup, ManualCullingMode cullMode )
@@ -159,9 +135,9 @@ namespace Axiom.SceneManagers.Bsp
 			bool affects = false;
 			float lightDist = 0, angle;
 
-			if ( Type == LightType.Directional )
+			if ( this.Type == LightType.Directional )
 			{
-				angle = faceGroup.plane.Normal.Dot( DerivedDirection );
+				angle = faceGroup.plane.Normal.Dot( this.DerivedDirection );
 
 				if ( cullMode != ManualCullingMode.None )
 				{
@@ -173,7 +149,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else
 			{
-				lightDist = faceGroup.plane.GetDistance( GetDerivedPosition() );
+				lightDist = faceGroup.plane.GetDistance( this.GetDerivedPosition() );
 
 				if ( cullMode != ManualCullingMode.None )
 				{
@@ -184,7 +160,7 @@ namespace Axiom.SceneManagers.Bsp
 				}
 			}
 
-			switch ( Type )
+			switch ( this.Type )
 			{
 				case LightType.Directional:
 					affects = true;
@@ -200,8 +176,8 @@ namespace Axiom.SceneManagers.Bsp
 				case LightType.Spotlight:
 					if ( Utility.Abs( lightDist ) < range )
 					{
-						angle = faceGroup.plane.Normal.Dot( DerivedDirection );
-						if ( ( ( lightDist < 0 && angle > 0 ) || ( lightDist > 0 && angle < 0 ) ) && Utility.Abs( angle ) >= Utility.Cos( spotOuter * 0.5 ) )
+						angle = faceGroup.plane.Normal.Dot( this.DerivedDirection );
+						if ( ( ( lightDist < 0 && angle > 0 ) || ( lightDist > 0 && angle < 0 ) ) && Utility.Abs( angle ) >= Utility.Cos( this.spotOuter * 0.5 ) )
 						{
 							affects = true;
 						}
@@ -214,7 +190,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		public bool CalculateTexCoordsAndColors( Plane plane, Vector3[] vertices, out Vector2[] texCoors, out ColorEx[] colors )
 		{
-			switch ( Type )
+			switch ( this.Type )
 			{
 				case LightType.Directional:
 					return CalculateForDirectionalLight( plane, vertices, out texCoors, out colors );
@@ -238,7 +214,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			Vector3 lightPos, faceLightPos;
 
-			lightPos = GetDerivedPosition();
+			lightPos = this.GetDerivedPosition();
 
 			float dist = plane.GetDistance( lightPos );
 			if ( Utility.Abs( dist ) < range )
@@ -250,8 +226,8 @@ namespace Axiom.SceneManagers.Bsp
 
 				Vector3 verAxis = plane.Normal.Perpendicular();
 				Vector3 horAxis = verAxis.Cross( plane.Normal );
-				var verPlane = new Plane( verAxis, faceLightPos );
-				var horPlane = new Plane( horAxis, faceLightPos );
+				Plane verPlane = new Plane( verAxis, faceLightPos );
+				Plane horPlane = new Plane( horAxis, faceLightPos );
 
 				float lightRadiusSqr = range * range;
 				float relRadiusSqr = lightRadiusSqr - dist * dist;
@@ -259,7 +235,7 @@ namespace Axiom.SceneManagers.Bsp
 				float scale = 0.5f / relRadius;
 
 				float brightness = relRadiusSqr / lightRadiusSqr;
-				var lightCol = new ColorEx( brightness * this.textureColor.a, this.textureColor.r, this.textureColor.g, this.textureColor.b );
+				ColorEx lightCol = new ColorEx( brightness * textureColor.a, textureColor.r, textureColor.g, textureColor.b );
 
 				for ( int i = 0; i < vertices.Length; i++ )
 				{
@@ -279,7 +255,7 @@ namespace Axiom.SceneManagers.Bsp
 			texCoors = new Vector2[ vertices.Length ];
 			colors = new ColorEx[ vertices.Length ];
 
-			var lightCol = new ColorEx( this.textureColor.a, this.textureColor.r, this.textureColor.g, this.textureColor.b );
+			ColorEx lightCol = new ColorEx( textureColor.a, textureColor.r, textureColor.g, textureColor.b );
 
 			for ( int i = 0; i < vertices.Length; i++ )
 			{
@@ -294,9 +270,9 @@ namespace Axiom.SceneManagers.Bsp
 			texCoors = new Vector2[ vertices.Length ];
 			colors = new ColorEx[ vertices.Length ];
 
-			float angle = Utility.Abs( plane.Normal.Dot( DerivedDirection ) );
+			float angle = Utility.Abs( plane.Normal.Dot( this.DerivedDirection ) );
 
-			var lightCol = new ColorEx( this.textureColor.a * angle, this.textureColor.r, this.textureColor.g, this.textureColor.b );
+			ColorEx lightCol = new ColorEx( textureColor.a * angle, textureColor.r, textureColor.g, textureColor.b );
 
 			for ( int i = 0; i < vertices.Length; i++ )
 			{
@@ -308,10 +284,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		public static Texture CreateTexture()
 		{
-			var tex = (Texture)TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
+			Texture tex = (Texture)TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
 			if ( tex == null )
 			{
-				var fotbuf = new byte[ 128 * 128 * 4 ];
+				byte[] fotbuf = new byte[ 128 * 128 * 4 ];
 				for ( int y = 0; y < 128; y++ )
 				{
 					for ( int x = 0; x < 128; x++ )
@@ -330,9 +306,9 @@ namespace Axiom.SceneManagers.Bsp
 					}
 				}
 
-				var stream = new MemoryStream( fotbuf );
-				Image img = Image.FromRawStream( stream, 128, 128, PixelFormat.A8R8G8B8 );
-				TextureManager.Instance.LoadImage( "Axiom/LightingTexture", ResourceGroupManager.DefaultResourceGroupName, img, TextureType.TwoD, 0, 1, false, PixelFormat.A8R8G8B8 );
+				System.IO.MemoryStream stream = new System.IO.MemoryStream( fotbuf );
+				Axiom.Media.Image img = Axiom.Media.Image.FromRawStream( stream, 128, 128, Axiom.Media.PixelFormat.A8R8G8B8 );
+				TextureManager.Instance.LoadImage( "Axiom/LightingTexture", ResourceGroupManager.DefaultResourceGroupName, img, TextureType.TwoD, 0, 1, false, Axiom.Media.PixelFormat.A8R8G8B8 );
 
 				tex = (Texture)TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
 			}
@@ -340,6 +316,29 @@ namespace Axiom.SceneManagers.Bsp
 			return tex;
 		}
 
+
+		public override ColorEx Diffuse
+		{
+			get
+			{
+				return diffuse;
+			}
+			set
+			{
+				diffuse = value;
+
+				float maxParam = Utility.Max( Utility.Max( diffuse.r, diffuse.g ), diffuse.b );
+				if ( maxParam > 0f )
+				{
+					float inv = 1 / maxParam;
+					textureColor.r = diffuse.r * inv;
+					textureColor.g = diffuse.g * inv;
+					textureColor.b = diffuse.b * inv;
+				}
+
+				textureColor.a = maxParam;
+			}
+		}
 
 		public override void Update()
 		{
@@ -350,7 +349,7 @@ namespace Axiom.SceneManagers.Bsp
 			// if the position is changed notify BspSceneManager to put it in the bsp tree
 			if ( derivedPosition != prevPosition )
 			{
-				this.creator.NotifyObjectMoved( this, derivedPosition );
+				creator.NotifyObjectMoved( this, derivedPosition );
 			}
 		}
 	}
@@ -402,51 +401,38 @@ namespace Axiom.SceneManagers.Bsp
 
 	public class ManagedBufferTextureLightMap : ManagedBuffer, ITypePointer<TextureLightMap>
 	{
-		internal static readonly int Size = typeof( TextureLightMap ).Size();
-
 		public ManagedBufferTextureLightMap( ManagedBuffer buffer )
-			: base( buffer ) { }
+			: base( buffer ) {}
 
-		#region ITypePointer<TextureLightMap> Members
+		internal static readonly int Size = typeof ( TextureLightMap ).Size();
 
 		TextureLightMap ITypePointer<TextureLightMap>.this[ int index ]
 		{
 			get
 			{
-				byte[] buf = Buf;
+				var buf = Buf;
 				index = index * Size + IdxPtr;
 				return new TextureLightMap
-					   {
-						   color = new FourByte
-								   {
-									   b0 = buf[ index++ ],
-									   b1 = buf[ index++ ],
-									   b2 = buf[ index++ ],
-									   b3 = buf[ index++ ]
-								   }.Int,
-						   textureLightMap = new Vector2
-											 {
-												 x = new FourByte
-													 {
-														 b0 = buf[ index++ ],
-														 b1 = buf[ index++ ],
-														 b2 = buf[ index++ ],
-														 b3 = buf[ index++ ]
-													 }.Float,
-												 y = new FourByte
-													 {
-														 b0 = buf[ index++ ],
-														 b1 = buf[ index++ ],
-														 b2 = buf[ index++ ],
-														 b3 = buf[ index ]
-													 }.Float
-											 },
-					   };
+				       {
+				       	color = new FourByte
+				       	        {
+				       	        	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
+				       	        }.Int, textureLightMap = new Vector2
+				       	                                 {
+				       	                                 	x = new FourByte
+				       	                                 	    {
+				       	                                 	    	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
+				       	                                 	    }.Float, y = new FourByte
+				       	                                 	                 {
+				       	                                 	                 	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index ]
+				       	                                 	                 }.Float
+				       	                                 },
+				       };
 			}
 			set
 			{
 				var f = new FourByte();
-				byte[] buf = Buf;
+				var buf = Buf;
 				index = index * Size + IdxPtr;
 				f.Int = value.color;
 				buf[ index++ ] = f.b0;
@@ -465,7 +451,5 @@ namespace Axiom.SceneManagers.Bsp
 				buf[ index ] = f.b3;
 			}
 		}
-
-		#endregion
 	}
 }

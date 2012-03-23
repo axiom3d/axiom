@@ -23,11 +23,15 @@
 #endregion License
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Globalization;
+using System.Security.Permissions;
 using System.Threading;
-
-using Axiom.Framework.Exceptions;
 #if (XBOX || XBOX360) || !( WINDOWS_PHONE || SILVERLIGHT || ANDROID || IOS )
+using Axiom.Core;
+using Axiom.Framework.Exceptions;
 
 #endif
 
@@ -48,7 +52,7 @@ namespace Axiom.Samples
 			{
 #if !(XBOX || XBOX360)
 				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( var sb = new SampleBrowser() )
+				using ( SampleBrowser sb = new SampleBrowser() )
 #else
 				using (SampleBrowser sb = new Xna.SampleBrowser())
 #endif

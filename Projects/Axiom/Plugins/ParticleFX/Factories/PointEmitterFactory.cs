@@ -43,6 +43,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
 using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
@@ -58,7 +61,7 @@ namespace Axiom.ParticleFX.Factories
 
 		public override ParticleEmitter Create( ParticleSystem ps )
 		{
-			var emitter = new PointEmitter( ps );
+			PointEmitter emitter = new PointEmitter( ps );
 			emitterList.Add( emitter );
 			return emitter;
 		}

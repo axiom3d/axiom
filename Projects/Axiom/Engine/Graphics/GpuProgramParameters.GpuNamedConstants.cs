@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
-		#region Nested type: GpuNamedConstants
-
 		/// <summary>
 		/// class collecting together the information for named constants.
 		/// </summary>
@@ -79,7 +80,7 @@ namespace Axiom.Graphics
 			public void GenerateConstantDefinitionArrayEntries( String paramName, GpuConstantDefinition baseDef )
 			{
 				// Copy definition for use with arrays
-				GpuConstantDefinition arrayDef = baseDef.Clone();
+				var arrayDef = baseDef.Clone();
 				arrayDef.ArraySize = 1;
 
 				// Add parameters for array accessors
@@ -88,16 +89,16 @@ namespace Axiom.Graphics
 				// unless the system has been explicitly configured to allow all the parameters to be added
 
 				// paramName[0] version will always exist
-				int maxArrayIndex = 1;
+				var maxArrayIndex = 1;
 				if ( baseDef.ArraySize <= 16 || GenerateAllConstantDefinitionArrayEntries )
 				{
 					maxArrayIndex = baseDef.ArraySize;
 				}
 
-				for ( int i = 0; i < maxArrayIndex; i++ )
+				for ( var i = 0; i < maxArrayIndex; i++ )
 				{
-					string arrayName = string.Format( "{0}[{1}]", paramName, i );
-					this.Map.Add( arrayName, arrayDef );
+					var arrayName = string.Format( "{0}[{1}]", paramName, i );
+					Map.Add( arrayName, arrayDef );
 					// increment location
 					arrayDef.PhysicalIndex += arrayDef.ElementSize;
 				}
@@ -138,9 +139,9 @@ namespace Axiom.Graphics
 			public GpuNamedConstants Clone()
 			{
 				var p = new GpuNamedConstants();
-				p.FloatBufferSize = this.FloatBufferSize;
-				p.IntBufferSize = this.IntBufferSize;
-				foreach ( var i in this.Map )
+				p.FloatBufferSize = FloatBufferSize;
+				p.IntBufferSize = IntBufferSize;
+				foreach ( var i in Map )
 				{
 					p.Map.Add( i.Key, i.Value );
 				}
@@ -148,7 +149,5 @@ namespace Axiom.Graphics
 				return p;
 			}
 		}
-
-		#endregion
 	}
 }

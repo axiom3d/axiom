@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
 
+using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -20,25 +24,25 @@ namespace Axiom.RenderSystems.OpenGL
 			// Call super class
 			base.Render( op );
 
-			HardwareVertexBuffer globalInstanceVertexBuffer = GlobalInstanceVertexBuffer;
-			VertexDeclaration globalVertexDeclaration = GlobalInstanceVertexBufferVertexDeclaration;
-			bool hasInstanceData = op.useGlobalInstancingVertexBufferIsAvailable && globalInstanceVertexBuffer != null && globalVertexDeclaration != null || op.vertexData.vertexBufferBinding.HasInstanceData;
+			var globalInstanceVertexBuffer = GlobalInstanceVertexBuffer;
+			var globalVertexDeclaration = GlobalInstanceVertexBufferVertexDeclaration;
+			var hasInstanceData = op.useGlobalInstancingVertexBufferIsAvailable && globalInstanceVertexBuffer != null && globalVertexDeclaration != null || op.vertexData.vertexBufferBinding.HasInstanceData;
 
-			int numberOfInstances = op.numberOfInstances;
+			var numberOfInstances = op.numberOfInstances;
 
 			if ( op.useGlobalInstancingVertexBufferIsAvailable )
 			{
 				numberOfInstances *= GlobalNumberOfInstances;
 			}
 
-			List<VertexElement> decl = op.vertexData.vertexDeclaration.Elements;
+			var decl = op.vertexData.vertexDeclaration.Elements;
 			var attribsBound = new List<int>();
 			var instanceAttribsBound = new List<int>();
-			int maxSource = 0;
+			var maxSource = 0;
 
-			foreach ( VertexElement elem in decl )
+			foreach ( var elem in decl )
 			{
-				short source = elem.Source;
+				var source = elem.Source;
 				if ( maxSource < source )
 				{
 					maxSource = source;
@@ -49,20 +53,20 @@ namespace Axiom.RenderSystems.OpenGL
 					continue; // skip unbound elements
 				}
 
-				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( source );
+				var vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( source );
 
 				BindVertexElementToGpu( elem, vertexBuffer, op.vertexData.vertexStart, attribsBound, instanceAttribsBound );
 			}
 
 			if ( globalInstanceVertexBuffer != null && globalVertexDeclaration != null )
 			{
-				foreach ( VertexElement elem in globalVertexDeclaration.Elements )
+				foreach ( var elem in globalVertexDeclaration.Elements )
 				{
 					BindVertexElementToGpu( elem, globalInstanceVertexBuffer, 0, attribsBound, instanceAttribsBound );
 				}
 			}
 
-			bool multitexturing = ( Capabilities.TextureUnitCount > 1 );
+			var multitexturing = ( Capabilities.TextureUnitCount > 1 );
 			if ( multitexturing )
 			{
 				Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 );
@@ -71,7 +75,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Find the correct type to render
 			int primType;
 			//Use adjacency if there is a geometry program and it requested adjacency info
-			bool useAdjacency = ( geometryProgramBound && this.currentGeometryProgram != null && this.currentGeometryProgram.IsAdjacencyInfoRequired );
+			var useAdjacency = ( geometryProgramBound && currentGeometryProgram != null && currentGeometryProgram.IsAdjacencyInfoRequired );
 			switch ( op.operationType )
 			{
 				case OperationType.PointList:
@@ -110,7 +114,7 @@ namespace Axiom.RenderSystems.OpenGL
 					pBufferData = ( (GLDefaultHardwareIndexBuffer)( op.indexData.indexBuffer ) ).DataPtr( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
 				}
 
-				int indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 ) ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
+				var indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 ) ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
 				do
 				{
@@ -156,7 +160,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// only valid up to GL_MAX_TEXTURE_UNITS, which is recorded in mFixedFunctionTextureUnits
 			if ( multitexturing )
 			{
-				for ( int i = 0; i < this._fixedFunctionTextureUnits; i++ )
+				for ( var i = 0; i < _fixedFunctionTextureUnits; i++ )
 				{
 					Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
 					Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
@@ -170,24 +174,24 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 
-			if ( this.GLEW_EXT_secondary_color )
+			if ( GLEW_EXT_secondary_color )
 			{
 				Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 			}
 			// unbind any custom attributes
-			foreach ( int ai in attribsBound )
+			foreach ( var ai in attribsBound )
 			{
 				Gl.glDisableVertexAttribArrayARB( ai );
 			}
 
 			// unbind any instance attributes
-			foreach ( int ai in instanceAttribsBound )
+			foreach ( var ai in instanceAttribsBound )
 			{
 				glVertexAttribDivisor( ai, 0 );
 			}
 
 			Gl.glColor4f( 1, 1, 1, 1 );
-			if ( this.GLEW_EXT_secondary_color )
+			if ( GLEW_EXT_secondary_color )
 			{
 				Gl.glSecondaryColor3fEXT( 0.0f, 0.0f, 0.0f );
 			}
@@ -219,17 +223,17 @@ namespace Axiom.RenderSystems.OpenGL
 				pBufferData = pBufferData.Offset( vertexStart * vertexBuffer.VertexSize );
 			}
 
-			VertexElementSemantic sem = elem.Semantic;
-			bool multitexturing = Capabilities.TextureUnitCount > 1;
+			var sem = elem.Semantic;
+			var multitexturing = Capabilities.TextureUnitCount > 1;
 
-			bool isCustomAttrib = false;
-			if ( this.currentVertexProgram != null )
+			var isCustomAttrib = false;
+			if ( currentVertexProgram != null )
 			{
-				isCustomAttrib = this.currentVertexProgram.IsAttributeValid( sem, (uint)elem.Index );
+				isCustomAttrib = currentVertexProgram.IsAttributeValid( sem, (uint)elem.Index );
 
 				if ( hwGlBuffer.IsInstanceData )
 				{
-					uint attrib = this.currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
+					var attrib = currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
 					glVertexAttribDivisor( (int)attrib, hwGlBuffer.InstanceDataStepRate );
 					instanceAttribsBound.Add( (int)attrib );
 				}
@@ -241,9 +245,9 @@ namespace Axiom.RenderSystems.OpenGL
 			// builtins may be done this way too
 			if ( isCustomAttrib )
 			{
-				uint attrib = this.currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
-				int typeCount = VertexElement.GetTypeCount( elem.Type );
-				int normalised = Gl.GL_FALSE;
+				var attrib = currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
+				var typeCount = VertexElement.GetTypeCount( elem.Type );
+				var normalised = Gl.GL_FALSE;
 				switch ( elem.Type )
 				{
 					case VertexElementType.Color:
@@ -282,7 +286,7 @@ namespace Axiom.RenderSystems.OpenGL
 						Gl.glEnableClientState( Gl.GL_COLOR_ARRAY );
 						break;
 					case VertexElementSemantic.Specular:
-						if ( this.GLEW_EXT_secondary_color )
+						if ( GLEW_EXT_secondary_color )
 						{
 							Gl.glSecondaryColorPointerEXT( 4, GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
 							Gl.glEnableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
@@ -290,7 +294,7 @@ namespace Axiom.RenderSystems.OpenGL
 						break;
 					case VertexElementSemantic.TexCoords:
 
-						if ( this.currentVertexProgram != null )
+						if ( currentVertexProgram != null )
 						{
 							// Programmable pipeline - direct UV assignment
 							Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + elem.Index );
@@ -300,11 +304,11 @@ namespace Axiom.RenderSystems.OpenGL
 						else
 						{
 							// fixed function matching to units based on tex_coord_set
-							for ( int i = 0; i < disabledTexUnitsFrom; i++ )
+							for ( var i = 0; i < disabledTexUnitsFrom; i++ )
 							{
 								// Only set this texture unit's texcoord pointer if it
 								// is supposed to be using this element's index
-								if ( this.texCoordIndex[ i ] != elem.Index || i >= this._fixedFunctionTextureUnits )
+								if ( texCoordIndex[ i ] != elem.Index || i >= _fixedFunctionTextureUnits )
 								{
 									continue;
 								}

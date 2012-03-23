@@ -37,8 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
-using System.IO;
 
 using Axiom.Core;
 using Axiom.Math;
@@ -57,17 +57,18 @@ namespace Axiom.Scripting.Compiler
 	{
 		#region Fields and Properties
 
-		private readonly ScriptTranslatorManager _builtinTranslatorManager;
-		private readonly ScriptCompiler _compiler;
-		private readonly List<string> _scriptPatterns = new List<string>();
+		private List<string> _scriptPatterns = new List<string>();
 
-		private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+		private ScriptCompiler _compiler;
+
+		private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+		private ScriptTranslatorManager _builtinTranslatorManager;
 
 		public IList<ScriptTranslatorManager> TranslatorManagers
 		{
 			get
 			{
-				return this._translatorManagers;
+				return _translatorManagers;
 			}
 		}
 
@@ -76,6 +77,7 @@ namespace Axiom.Scripting.Compiler
 		#region Construction and Destruction
 
 		public ScriptCompilerManager()
+			: base()
 		{
 #if AXIOM_USENEWCOMPILERS
 			this._scriptPatterns.Add( "*.program" );
@@ -107,11 +109,11 @@ namespace Axiom.Scripting.Compiler
 			ScriptCompiler.Translator translator = null;
 
 			// Start looking from the back
-			if ( this._translatorManagers.Count > 0 )
+			if ( _translatorManagers.Count > 0 )
 			{
-				for ( int i = this._translatorManagers.Count - 1; i >= 0; i-- )
+				for ( var i = _translatorManagers.Count - 1; i >= 0; i-- )
 				{
-					translator = this._translatorManagers[ i ].GetTranslator( node );
+					translator = _translatorManagers[ i ].GetTranslator( node );
 					if ( translator != null )
 					{
 						break;
@@ -133,31 +135,22 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return this._scriptPatterns;
+				return _scriptPatterns;
 			}
 		}
 
-		public void ParseScript( Stream stream, string groupName, string fileName )
+		public void ParseScript( System.IO.Stream stream, string groupName, string fileName )
 		{
 			// Set the listener on the compiler before we continue
 			_unsetCompilerEvents(); // Double tap
 			_setCompilerEvents();
 
-			var rdr = new StreamReader( stream );
-			string script = rdr.ReadToEnd();
-			this._compiler.Compile( script, fileName, groupName );
+			var rdr = new System.IO.StreamReader( stream );
+			var script = rdr.ReadToEnd();
+			_compiler.Compile( script, fileName, groupName );
 
 			// Unset events in order to avoid that compiler's events will be called twice next time
 			_unsetCompilerEvents();
-		}
-
-		public Real LoadingOrder
-		{
-			get
-			{
-				// Load relatively early, before most script loaders run
-				return 90.0f;
-			}
 		}
 
 		/// <summary>
@@ -165,31 +158,31 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		private void _setCompilerEvents()
 		{
-			Contract.RequiresNotNull( this._compiler, "_compiler" );
+			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( OnImportFile != null )
+			if ( this.OnImportFile != null )
 			{
-				this._compiler.OnImportFile += OnImportFile;
+				_compiler.OnImportFile += this.OnImportFile;
 			}
 
-			if ( OnPreConversion != null )
+			if ( this.OnPreConversion != null )
 			{
-				this._compiler.OnPreConversion += OnPreConversion;
+				_compiler.OnPreConversion += this.OnPreConversion;
 			}
 
-			if ( OnPostConversion != null )
+			if ( this.OnPostConversion != null )
 			{
-				this._compiler.OnPostConversion += OnPostConversion;
+				_compiler.OnPostConversion += this.OnPostConversion;
 			}
 
-			if ( OnCompileError != null )
+			if ( this.OnCompileError != null )
 			{
-				this._compiler.OnCompileError += OnCompileError;
+				_compiler.OnCompileError += this.OnCompileError;
 			}
 
-			if ( OnCompilerEvent != null )
+			if ( this.OnCompilerEvent != null )
 			{
-				this._compiler.OnCompilerEvent += OnCompilerEvent;
+				_compiler.OnCompilerEvent += this.OnCompilerEvent;
 			}
 		}
 
@@ -198,31 +191,40 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		private void _unsetCompilerEvents()
 		{
-			Contract.RequiresNotNull( this._compiler, "_compiler" );
+			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( OnImportFile != null )
+			if ( this.OnImportFile != null )
 			{
-				this._compiler.OnImportFile -= OnImportFile;
+				_compiler.OnImportFile -= this.OnImportFile;
 			}
 
-			if ( OnPreConversion != null )
+			if ( this.OnPreConversion != null )
 			{
-				this._compiler.OnPreConversion -= OnPreConversion;
+				_compiler.OnPreConversion -= this.OnPreConversion;
 			}
 
-			if ( OnPostConversion != null )
+			if ( this.OnPostConversion != null )
 			{
-				this._compiler.OnPostConversion -= OnPostConversion;
+				_compiler.OnPostConversion -= this.OnPostConversion;
 			}
 
-			if ( OnCompileError != null )
+			if ( this.OnCompileError != null )
 			{
-				this._compiler.OnCompileError -= OnCompileError;
+				_compiler.OnCompileError -= this.OnCompileError;
 			}
 
-			if ( OnCompilerEvent != null )
+			if ( this.OnCompilerEvent != null )
 			{
-				this._compiler.OnCompilerEvent -= OnCompilerEvent;
+				_compiler.OnCompilerEvent -= this.OnCompilerEvent;
+			}
+		}
+
+		public Real LoadingOrder
+		{
+			get
+			{
+				// Load relatively early, before most script loaders run
+				return 90.0f;
 			}
 		}
 
@@ -246,7 +248,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return this._translators.Count;
+				return _translators.Count;
 			}
 		}
 
@@ -260,10 +262,10 @@ namespace Axiom.Scripting.Compiler
 			if ( node is ObjectAbstractNode )
 			{
 				var obj = (ObjectAbstractNode)node;
-				ObjectAbstractNode parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
-				Keywords parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
+				var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
+				var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( ScriptCompiler.Translator currentTranslator in this._translators )
+				foreach ( var currentTranslator in _translators )
 				{
 					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
 					{
@@ -282,6 +284,7 @@ namespace Axiom.Scripting.Compiler
 	public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
 	{
 		public BuiltinScriptTranslatorManager()
+			: base()
 		{
 			_translators.Add( new ScriptCompiler.MaterialTranslator() );
 			_translators.Add( new ScriptCompiler.TechniqueTranslator() );

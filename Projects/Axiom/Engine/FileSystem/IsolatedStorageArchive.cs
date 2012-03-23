@@ -90,27 +90,27 @@ namespace Axiom.FileSystem
 
 		protected override bool DirectoryExists( string directory )
 		{
-			return this.isolatedStorage.DirectoryExists( directory );
+			return isolatedStorage.DirectoryExists( directory );
 		}
 
 		protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
 			var searchResults = new List<string>();
-			string[] folders = this.isolatedStorage.GetDirectoryNames( dir );
-			string[] files = this.isolatedStorage.GetFileNames( dir );
+			var folders = isolatedStorage.GetDirectoryNames( dir );
+			var files = isolatedStorage.GetFileNames( dir );
 
 			if ( recurse )
 			{
-				foreach ( string folder in folders )
+				foreach ( var folder in folders )
 				{
 					searchResults.AddRange( getFilesRecursively( dir, pattern ) );
 				}
 			}
 			else
 			{
-				foreach ( string file in files )
+				foreach ( var file in files )
 				{
-					string ext = Path.GetExtension( file );
+					var ext = Path.GetExtension( file );
 
 					if ( pattern == "*" || pattern.Contains( ext ) )
 					{
@@ -124,17 +124,17 @@ namespace Axiom.FileSystem
 		protected override string[] getFilesRecursively( string dir, string pattern )
 		{
 			var searchResults = new List<string>();
-			string[] folders = this.isolatedStorage.GetDirectoryNames( dir );
-			string[] files = this.isolatedStorage.GetFileNames( dir );
+			var folders = isolatedStorage.GetDirectoryNames( dir );
+			var files = isolatedStorage.GetFileNames( dir );
 
-			foreach ( string folder in folders )
+			foreach ( var folder in folders )
 			{
 				searchResults.AddRange( getFilesRecursively( dir + Path.GetFileName( folder ) + Path.DirectorySeparatorChar, pattern ) );
 			}
 
-			foreach ( string file in files )
+			foreach ( var file in files )
 			{
-				string ext = Path.GetExtension( file );
+				var ext = Path.GetExtension( file );
 
 				if ( pattern == "*" || pattern.Contains( ext ) )
 				{
@@ -151,7 +151,7 @@ namespace Axiom.FileSystem
 		public IsolatedStorageArchive( string name, string archType )
 			: base( name, archType )
 		{
-			this.isolatedStorage = IsolatedStorageFile.GetUserStoreForApplication();
+			isolatedStorage = IsolatedStorageFile.GetUserStoreForApplication();
 		}
 
 		#endregion Constructors and Destructors
@@ -164,17 +164,17 @@ namespace Axiom.FileSystem
 			IsReadOnly = false;
 
 			SafeDirectoryChange( _basePath, () =>
-											{
-												try
-												{
-													this.isolatedStorage.CreateFile( _basePath + @"__testWrite.Axiom" );
-													this.isolatedStorage.DeleteFile( _basePath + @"__testWrite.Axiom" );
-												}
-												catch ( Exception )
-												{
-													IsReadOnly = true;
-												}
-											} );
+			                                {
+			                                	try
+			                                	{
+			                                		isolatedStorage.CreateFile( _basePath + @"__testWrite.Axiom" );
+			                                		isolatedStorage.DeleteFile( _basePath + @"__testWrite.Axiom" );
+			                                	}
+			                                	catch ( Exception )
+			                                	{
+			                                		IsReadOnly = true;
+			                                	}
+			                                } );
 		}
 
 		public override Stream Create( string filename, bool overwrite )
@@ -184,13 +184,13 @@ namespace Axiom.FileSystem
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
 
-			string fullPath = _basePath + Path.DirectorySeparatorChar + filename;
-			bool exists = this.isolatedStorage.FileExists( fullPath );
+			var fullPath = _basePath + Path.DirectorySeparatorChar + filename;
+			var exists = isolatedStorage.FileExists( fullPath );
 			if ( !exists || overwrite )
 			{
 				try
 				{
-					return this.isolatedStorage.CreateFile( fullPath );
+					return isolatedStorage.CreateFile( fullPath );
 				}
 				catch ( Exception ex )
 				{
@@ -205,18 +205,18 @@ namespace Axiom.FileSystem
 			Stream strm = null;
 
 			SafeDirectoryChange( _basePath, () =>
-											{
-												if ( this.isolatedStorage.FileExists( _basePath + filename ) )
-												{
-													strm = this.isolatedStorage.OpenFile( _basePath + filename, FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
-												}
-											} );
+			                                {
+			                                	if ( isolatedStorage.FileExists( _basePath + filename ) )
+			                                	{
+			                                		strm = isolatedStorage.OpenFile( _basePath + filename, FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                	}
+			                                } );
 			return strm;
 		}
 
 		public override bool Exists( string fileName )
 		{
-			return this.isolatedStorage.FileExists( _basePath + fileName );
+			return isolatedStorage.FileExists( _basePath + fileName );
 		}
 
 		#endregion Archive Implementation

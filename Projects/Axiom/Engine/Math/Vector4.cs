@@ -105,7 +105,7 @@ namespace Axiom.Math
 		/// <returns>A Real representing the dot product value.</returns>
 		public Real Dot( Vector4 vec )
 		{
-			return this.x * vec.x + this.y * vec.y + this.z * vec.z + this.w * vec.w;
+			return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
 		}
 
 		#endregion Methods
@@ -268,7 +268,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &this.x )
+					fixed ( Real* pX = &x )
 					{
 						return *( pX + index );
 					}
@@ -291,7 +291,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &this.x )
+					fixed ( Real* pX = &x )
 					{
 						*( pX + index ) = value;
 					}
@@ -354,7 +354,7 @@ namespace Axiom.Math
 		/// </returns>
 		public static Vector4 Parse( string vector )
 		{
-			string[] vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
+			var vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
 			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
 		}

@@ -46,15 +46,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: CompositionTargetPassTranslator
-
 		public class CompositionTargetPassTranslator : Translator
 		{
 			protected CompositionTargetPass _Target;
 
 			public CompositionTargetPassTranslator()
+				: base()
 			{
-				this._Target = null;
+				_Target = null;
 			}
 
 			#region Translator Implementation
@@ -73,19 +72,19 @@ namespace Axiom.Scripting.Compiler
 				var technique = (CompositionTechnique)obj.Parent.Context;
 				if ( obj.Id == (uint)Keywords.ID_TARGET )
 				{
-					this._Target = technique.CreateTargetPass();
+					_Target = technique.CreateTargetPass();
 					if ( !string.IsNullOrEmpty( obj.Name ) )
 					{
-						this._Target.OutputName = obj.Name;
+						_Target.OutputName = obj.Name;
 					}
 				}
 				else if ( obj.Id == (uint)Keywords.ID_TARGET_OUTPUT )
 				{
-					this._Target = technique.OutputTarget;
+					_Target = technique.OutputTarget;
 				}
-				obj.Context = this._Target;
+				obj.Context = _Target;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -96,7 +95,7 @@ namespace Axiom.Scripting.Compiler
 						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
-							#region ID_INPUT
+								#region ID_INPUT
 
 							case Keywords.ID_INPUT:
 								if ( prop.Values.Count == 0 )
@@ -117,11 +116,11 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
-												this._Target.InputMode = CompositorInputMode.None;
+												_Target.InputMode = CompositorInputMode.None;
 												break;
 
 											case Keywords.ID_PREVIOUS:
-												this._Target.InputMode = CompositorInputMode.Previous;
+												_Target.InputMode = CompositorInputMode.Previous;
 												break;
 
 											default:
@@ -136,9 +135,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_INPUT
+								#endregion ID_INPUT
 
-							#region ID_ONLY_INITIAL
+								#region ID_ONLY_INITIAL
 
 							case Keywords.ID_ONLY_INITIAL:
 								if ( prop.Values.Count == 0 )
@@ -153,10 +152,10 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									bool val = false;
+									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										this._Target.OnlyInitial = val;
+										_Target.OnlyInitial = val;
 									}
 									else
 									{
@@ -165,9 +164,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_ONLY_INITIAL
+								#endregion ID_ONLY_INITIAL
 
-							#region ID_VISIBILITY_MASK
+								#region ID_VISIBILITY_MASK
 
 							case Keywords.ID_VISIBILITY_MASK:
 								if ( prop.Values.Count == 0 )
@@ -185,7 +184,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										this._Target.VisibilityMask = val;
+										_Target.VisibilityMask = val;
 									}
 									else
 									{
@@ -194,9 +193,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_VISIBILITY_MASK
+								#endregion ID_VISIBILITY_MASK
 
-							#region ID_LOD_BIAS
+								#region ID_LOD_BIAS
 
 							case Keywords.ID_LOD_BIAS:
 								if ( prop.Values.Count == 0 )
@@ -214,7 +213,7 @@ namespace Axiom.Scripting.Compiler
 									float val;
 									if ( getFloat( prop.Values[ 0 ], out val ) )
 									{
-										this._Target.LodBias = val;
+										_Target.LodBias = val;
 									}
 									else
 									{
@@ -223,9 +222,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_LOD_BIAS
+								#endregion ID_LOD_BIAS
 
-							#region ID_MATERIAL_SCHEME
+								#region ID_MATERIAL_SCHEME
 
 							case Keywords.ID_MATERIAL_SCHEME:
 								if ( prop.Values.Count == 0 )
@@ -243,7 +242,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										this._Target.MaterialScheme = val;
+										_Target.MaterialScheme = val;
 									}
 									else
 									{
@@ -252,9 +251,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_MATERIAL_SCHEME
+								#endregion ID_MATERIAL_SCHEME
 
-							#region ID_SHADOWS_ENABLED
+								#region ID_SHADOWS_ENABLED
 
 							case Keywords.ID_SHADOWS_ENABLED:
 								if ( prop.Values.Count == 0 )
@@ -272,7 +271,7 @@ namespace Axiom.Scripting.Compiler
 									bool val;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										this._Target.ShadowsEnabled = val;
+										_Target.ShadowsEnabled = val;
 									}
 									else
 									{
@@ -281,7 +280,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_SHADOWS_ENABLED
+								#endregion ID_SHADOWS_ENABLED
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -293,7 +292,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

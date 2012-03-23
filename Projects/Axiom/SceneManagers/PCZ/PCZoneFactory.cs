@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 using Axiom.Core;
 
@@ -53,19 +54,19 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PCZoneFactory( string typeName )
 		{
-			this.factoryTypeName = typeName;
+			factoryTypeName = typeName;
 		}
+
+		public abstract bool SupportsPCZoneType( string zoneType );
+		public abstract PCZone CreatePCZone( PCZSceneManager pczsm, string zoneName );
 
 		public string FactoryTypeName
 		{
 			get
 			{
-				return this.factoryTypeName;
+				return factoryTypeName;
 			}
 		}
-
-		public abstract bool SupportsPCZoneType( string zoneType );
-		public abstract PCZone CreatePCZone( PCZSceneManager pczsm, string zoneName );
 	}
 
 	public class DefaultZoneFactory : PCZoneFactory
@@ -90,12 +91,12 @@ namespace Axiom.SceneManagers.PortalConnected
 	public class PCZoneFactoryManager
 	{
 		private static PCZoneFactoryManager instance;
-		private readonly DefaultZoneFactory defaultFactory = new DefaultZoneFactory( "ZoneType_Default" );
-		private readonly Dictionary<string, PCZoneFactory> pCZoneFactories = new Dictionary<string, PCZoneFactory>();
+		private Dictionary<string, PCZoneFactory> pCZoneFactories = new Dictionary<string, PCZoneFactory>();
+		private DefaultZoneFactory defaultFactory = new DefaultZoneFactory( "ZoneType_Default" );
 
 		private PCZoneFactoryManager()
 		{
-			RegisterPCZoneFactory( this.defaultFactory );
+			RegisterPCZoneFactory( defaultFactory );
 		}
 
 		public static PCZoneFactoryManager Instance
@@ -114,7 +115,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		public void RegisterPCZoneFactory( PCZoneFactory factory )
 		{
 			String name = factory.FactoryTypeName;
-			this.pCZoneFactories.Add( name, factory );
+			pCZoneFactories.Add( name, factory );
 			LogManager.Instance.Write( "PCZone Factory Type '" + name + "' registered" );
 		}
 
@@ -125,9 +126,9 @@ namespace Axiom.SceneManagers.PortalConnected
 				//find and remove factory from mPCZoneFactories
 				// Note that this does not free the factory from memory, just removes from the factory manager
 				string name = factory.FactoryTypeName;
-				if ( this.pCZoneFactories.ContainsKey( name ) )
+				if ( pCZoneFactories.ContainsKey( name ) )
 				{
-					this.pCZoneFactories.Remove( name );
+					pCZoneFactories.Remove( name );
 					LogManager.Instance.Write( "PCZone Factory Type '" + name + "' unregistered" );
 				}
 			}
@@ -138,7 +139,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			//find a factory that supports this zone type and then call createPCZone() on it
 			PCZone inst = null;
-			foreach ( PCZoneFactory factory in this.pCZoneFactories.Values )
+			foreach ( PCZoneFactory factory in pCZoneFactories.Values )
 			{
 				if ( factory.SupportsPCZoneType( zoneType ) )
 				{

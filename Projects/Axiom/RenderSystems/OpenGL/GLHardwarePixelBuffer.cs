@@ -55,9 +55,9 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		private GCHandle _bufferPinndedHandle;
 		private BufferLocking _currentLockOptions;
-		private byte[] _data;
+		private GCHandle _bufferPinndedHandle;
+		private byte[] _data = null;
 
 		#region buffer Property
 
@@ -67,11 +67,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this._buffer;
+				return _buffer;
 			}
 			set
 			{
-				this._buffer = value;
+				_buffer = value;
 			}
 		}
 
@@ -79,7 +79,20 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLInternalFormat Property
 
-		public int GLFormat { get; protected set; }
+		private int _glInternalFormat;
+
+		public int GLFormat
+		{
+			get
+			{
+				return _glInternalFormat;
+			}
+
+			protected set
+			{
+				_glInternalFormat = value;
+			}
+		}
 
 		#endregion GLInternalFormat Property
 
@@ -120,8 +133,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Allocate storage
-			this._data = new byte[ sizeInBytes ];
-			buffer.Data = BufferBase.Wrap( this._data );
+			_data = new byte[ this.sizeInBytes ];
+			buffer.Data = BufferBase.Wrap( _data );
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
@@ -129,11 +142,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				if ( this._bufferPinndedHandle.IsAllocated )
+				if ( _bufferPinndedHandle.IsAllocated )
 				{
 					buffer.Data = null;
-					this._bufferPinndedHandle.Free();
-					this._data = null;
+					_bufferPinndedHandle.Free();
+					_data = null;
 				}
 			}
 		}
@@ -158,15 +171,15 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0 )
 			{
 				// Download the old contents of the texture
-				download( this._buffer );
+				download( _buffer );
 			}
-			this._currentLockOptions = options;
-			return this._buffer.GetSubVolume( lockBox );
+			_currentLockOptions = options;
+			return _buffer.GetSubVolume( lockBox );
 		}
 
 		protected override void UnlockImpl()
 		{
-			if ( this._currentLockOptions != BufferLocking.ReadOnly )
+			if ( _currentLockOptions != BufferLocking.ReadOnly )
 			{
 				// From buffer to card, only upload if was locked for writing
 				upload( CurrentLock );
@@ -179,7 +192,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			PixelBox scaled;
 
-			if ( !this._buffer.Contains( dstBox ) )
+			if ( !_buffer.Contains( dstBox ) )
 			{
 				throw new ArgumentException( "Destination box out of range." );
 			}
@@ -190,7 +203,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// floating point textures and cannot cope with 3D images.
 				// This also does pixel format conversion if needed
 				allocateBuffer();
-				scaled = this._buffer.GetSubVolume( dstBox );
+				scaled = _buffer.GetSubVolume( dstBox );
 
 				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
@@ -199,7 +212,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// Extents match, but format is not accepted as valid source format for GL
 				// do conversion in temporary buffer
 				allocateBuffer();
-				scaled = this._buffer.GetSubVolume( dstBox );
+				scaled = _buffer.GetSubVolume( dstBox );
 				PixelConverter.BulkPixelConversion( src, scaled );
 			}
 			else
@@ -221,7 +234,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
 		{
-			if ( !this._buffer.Contains( srcBox ) )
+			if ( !_buffer.Contains( srcBox ) )
 			{
 				throw new ArgumentException( "Source box out of range." );
 			}
@@ -236,7 +249,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// Use buffer for intermediate copy
 				allocateBuffer();
 				// Download entire buffer
-				download( this._buffer );
+				download( _buffer );
 				if ( srcBox.Width != dst.Width || srcBox.Height != dst.Height || srcBox.Depth != dst.Depth )
 				{
 					//TODO Implement Image.Scale
@@ -247,7 +260,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// Just copy the bit that we need
-					PixelConverter.BulkPixelConversion( this._buffer.GetSubVolume( srcBox ), dst );
+					PixelConverter.BulkPixelConversion( _buffer.GetSubVolume( srcBox ), dst );
 				}
 				freeBuffer();
 			}
@@ -264,9 +277,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
-				if ( this._bufferPinndedHandle.IsAllocated )
+				if ( _bufferPinndedHandle.IsAllocated )
 				{
-					this._bufferPinndedHandle.Free();
+					_bufferPinndedHandle.Free();
 				}
 				buffer.Data = null;
 				buffer = null;

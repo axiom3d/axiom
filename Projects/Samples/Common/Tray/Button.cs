@@ -40,17 +40,17 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
+		protected ButtonState buttonState;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		protected BorderPanel BorderPanel;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		protected TextArea TextArea;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected ButtonState buttonState;
 
 		/// <summary>
 		/// 
@@ -68,7 +68,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.buttonState;
+				return buttonState;
 			}
 			protected set
 			{
@@ -106,7 +106,7 @@ namespace Axiom.Samples
 				this.TextArea.Text = value;
 				if ( this.isFitToContents )
 				{
-					element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
+					this.element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
 				}
 			}
 		}
@@ -140,8 +140,8 @@ namespace Axiom.Samples
 				this.isFitToContents = true;
 			}
 
-			Caption = caption;
-			State = ButtonState.Up;
+			this.Caption = caption;
+			this.State = ButtonState.Up;
 		}
 
 		#endregion Construction and Destruction
@@ -154,7 +154,7 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( element, cursorPos, 4 ) )
 			{
-				State = ButtonState.Down;
+				this.State = ButtonState.Down;
 				base.OnCursorPressed( cursorPos );
 			}
 		}
@@ -165,10 +165,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorReleased( Vector2 cursorPos )
 		{
-			if ( State == ButtonState.Down )
+			if ( this.State == ButtonState.Down )
 			{
-				State = ButtonState.Over;
-				if ( listener != null )
+				this.State = ButtonState.Over;
+				if ( this.listener != null )
 				{
 					listener.OnButtonHit( this, this );
 				}
@@ -185,16 +185,16 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( element, cursorPos, 4 ) )
 			{
-				if ( State == ButtonState.Up )
+				if ( this.State == ButtonState.Up )
 				{
-					State = ButtonState.Over;
+					this.State = ButtonState.Over;
 				}
 			}
 			else
 			{
-				if ( State != ButtonState.Up )
+				if ( this.State != ButtonState.Up )
 				{
-					State = ButtonState.Up;
+					this.State = ButtonState.Up;
 				}
 			}
 
@@ -206,7 +206,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			State = ButtonState.Up; // reset button if cursor was lost
+			this.State = ButtonState.Up; // reset button if cursor was lost
 
 			base.OnLostFocus();
 		}

@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -45,29 +46,25 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.Octree
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class OctreePlugin : IPlugin
 	{
-		private OctreeSceneManagerFactory _octreeSMFactory;
-		private TerrainSceneManagerFactory _terrainSMFactory;
-
-		#region IPlugin Members
-
 		public void Initialize()
 		{
-			this._octreeSMFactory = new OctreeSceneManagerFactory();
-			this._terrainSMFactory = new TerrainSceneManagerFactory();
+			_octreeSMFactory = new OctreeSceneManagerFactory();
+			_terrainSMFactory = new TerrainSceneManagerFactory();
 
-			Root.Instance.AddSceneManagerFactory( this._octreeSMFactory );
-			Root.Instance.AddSceneManagerFactory( this._terrainSMFactory );
+			Root.Instance.AddSceneManagerFactory( _octreeSMFactory );
+			Root.Instance.AddSceneManagerFactory( _terrainSMFactory );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( this._octreeSMFactory );
-			Root.Instance.RemoveSceneManagerFactory( this._terrainSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( _octreeSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( _terrainSMFactory );
 		}
 
-		#endregion
+		private OctreeSceneManagerFactory _octreeSMFactory;
+		private TerrainSceneManagerFactory _terrainSMFactory;
 	}
 }

@@ -37,11 +37,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Diagnostics;
+using System;
 
+using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+using Axiom.Core.Collections;
+
+using System.Collections.Generic;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -56,16 +62,16 @@ namespace Axiom.SceneManagers.Octree
 
 		protected static long green = 0xFFFFFFFF;
 
-		protected long[] Colors = {
-                                      green, green, green, green, green, green, green, green
-                                  };
-
 		protected short[] Indexes = {
-                                        0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
-                                    };
+		                            	0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
+		                            };
 
+		protected long[] Colors = {
+		                          	green, green, green, green, green, green, green, green
+		                          };
+
+		protected Octree octant = null;
 		protected AxisAlignedBox localAABB = new AxisAlignedBox();
-		protected Octree octant;
 
 		#endregion Member Variables
 
@@ -78,7 +84,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.localAABB;
+				return localAABB;
 			}
 		}
 
@@ -89,11 +95,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.octant;
+				return octant;
 			}
 			set
 			{
-				this.octant = value;
+				octant = value;
 			}
 		}
 
@@ -102,10 +108,10 @@ namespace Axiom.SceneManagers.Octree
 		#region Constructors
 
 		public OctreeNode( SceneManager scene )
-			: base( scene ) { }
+			: base( scene ) {}
 
 		public OctreeNode( SceneManager scene, string name )
-			: base( scene, name ) { }
+			: base( scene, name ) {}
 
 		#endregion Constructors
 
@@ -152,14 +158,14 @@ namespace Axiom.SceneManagers.Octree
 			//update bounds from attached objects
 			foreach ( MovableObject obj in objectList.Values )
 			{
-				this.localAABB.Merge( obj.BoundingBox );
+				localAABB.Merge( obj.BoundingBox );
 
 				worldAABB = obj.GetWorldBoundingBox( true );
 			}
 
 			if ( !worldAABB.IsNull )
 			{
-				var oManager = (OctreeSceneManager)creator;
+				OctreeSceneManager oManager = (OctreeSceneManager)this.creator;
 				oManager.UpdateOctreeNode( this );
 			}
 		}

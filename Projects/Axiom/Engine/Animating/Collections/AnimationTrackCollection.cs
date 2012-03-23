@@ -35,8 +35,9 @@
 
 #region Namespace Declarations
 
-using Axiom.Collections;
+using Axiom.Animating;
 using Axiom.Core;
+using Axiom.Collections;
 
 #endregion
 

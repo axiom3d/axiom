@@ -33,6 +33,8 @@
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Serialization;
 
 #endregion Namespace Declarations

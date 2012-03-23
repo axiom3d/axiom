@@ -73,7 +73,7 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
-		private readonly List<String> _delegateNames = new List<string>();
+		private List<String> _delegateNames = new List<string>();
 
 		private HighLevelGpuProgram _chosenDelegate;
 
@@ -81,11 +81,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this._chosenDelegate == null )
+				if ( _chosenDelegate == null )
 				{
 					chooseDelegate();
 				}
-				return this._chosenDelegate;
+				return _chosenDelegate;
 			}
 		}
 
@@ -94,10 +94,10 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null ) { }
+			: this( creator, name, handle, group, false, null ) {}
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader ) { }
+			: base( creator, name, handle, group, isManual, loader ) {}
 
 		#endregion Construction and Destruction
 
@@ -106,19 +106,19 @@ namespace Axiom.Graphics
 		/// Choose the delegate to use
 		protected virtual void chooseDelegate()
 		{
-			this._chosenDelegate = null;
-			foreach ( string delegateName in this._delegateNames )
+			_chosenDelegate = null;
+			foreach ( var delegateName in _delegateNames )
 			{
-				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
+				var program = HighLevelGpuProgramManager.Instance[ delegateName ];
 				if ( program != null && program.IsSupported )
 				{
-					this._chosenDelegate = program;
+					_chosenDelegate = program;
 					break;
 				}
 			}
 		}
 
-		protected virtual void buildConstantDefinitions() { }
+		protected virtual void buildConstantDefinitions() {}
 
 		/// <summary>
 		/// Adds a new delegate program to the list.
@@ -129,9 +129,9 @@ namespace Axiom.Graphics
 		/// <param name="delegateName"></param>
 		public void AddDelegateProgram( string delegateName )
 		{
-			this._delegateNames.Add( delegateName );
+			_delegateNames.Add( delegateName );
 			// Invalidate current selection
-			this._chosenDelegate = null;
+			_chosenDelegate = null;
 		}
 
 		/// <summary>
@@ -139,9 +139,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void ClearDelegatePrograms()
 		{
-			this._delegateNames.Clear();
+			_delegateNames.Clear();
 			// Invalidate current selection
-			this._chosenDelegate = null;
+			_chosenDelegate = null;
 		}
 
 		#endregion Methods
@@ -169,7 +169,7 @@ namespace Axiom.Graphics
 				( (UnifiedHighLevelGpuProgram)target ).AddDelegateProgram( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion DelegateCommand
@@ -307,7 +307,7 @@ namespace Axiom.Graphics
 			else
 			{
 				//return a default set
-				GpuProgramParameters p = GpuProgramManager.Instance.CreateParameters();
+				var p = GpuProgramManager.Instance.CreateParameters();
 				p.IgnoreMissingParameters = true;
 				return p;
 			}
@@ -345,6 +345,8 @@ namespace Axiom.Graphics
 
 	public class UnifiedHighLevelGpuProgramFactory : HighLevelGpuProgramFactory
 	{
+		#region IHighLevelGpuProgramFactory Members
+
 		public override string Language
 		{
 			get
@@ -357,5 +359,7 @@ namespace Axiom.Graphics
 		{
 			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}
+
+		#endregion
 	}
 }

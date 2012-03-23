@@ -37,11 +37,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -66,12 +67,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.innerX;
+				return innerX;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				this.innerX = value;
+				innerX = value;
 			}
 		}
 
@@ -79,12 +80,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.innerY;
+				return innerY;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				this.innerY = value;
+				innerY = value;
 			}
 		}
 
@@ -94,8 +95,8 @@ namespace Axiom.ParticleFX
 			: base( ps )
 		{
 			InitDefaults( "Ring" );
-			this.innerX = 0.5f;
-			this.innerY = 0.5f;
+			innerX = 0.5f;
+			innerY = 0.5f;
 		}
 
 		public override void InitParticle( Particle particle )
@@ -134,140 +135,100 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		#region Nested type: DepthCommand
-
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as RingEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as RingEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: HeightCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as RingEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as RingEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: InnerHeightCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		public class InnerHeightCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as RingEmitter;
-				emitter.InnerY = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as RingEmitter;
-				return StringConverter.ToString( emitter.InnerY );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: InnerWidthCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-		public class InnerWidthCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as RingEmitter;
-				emitter.InnerX = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as RingEmitter;
-				return StringConverter.ToString( emitter.InnerX );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: WidthCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "width", "Width of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
 		public class WidthCommand : IPropertyCommand
 		{
-			#region IPropertyCommand Members
-
 			public void Set( object target, string val )
 			{
-				var emitter = target as RingEmitter;
+				RingEmitter emitter = target as RingEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				var emitter = target as RingEmitter;
+				RingEmitter emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
-
-			#endregion
 		}
 
-		#endregion
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "height", "Height of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
+		public class HeightCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				emitter.Height = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				return StringConverter.ToString( emitter.Height );
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "depth", "Depth of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
+		public class DepthCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				emitter.Depth = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				return StringConverter.ToString( emitter.Depth );
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		public class InnerWidthCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				emitter.InnerX = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				return StringConverter.ToString( emitter.InnerX );
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		public class InnerHeightCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				emitter.InnerY = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				RingEmitter emitter = target as RingEmitter;
+				return StringConverter.ToString( emitter.InnerY );
+			}
+		}
 
 		#endregion Command definition classes
 	}

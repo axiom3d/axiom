@@ -72,10 +72,6 @@ namespace Axiom.Components.Paging
 
 		protected List<PageContent> mContentList;
 
-		[OgreVersion( 1, 7, 2 )]
-		public SimplePageContentCollection( SimplePageContentCollectionFactory creator )
-			: base( creator ) { }
-
 		/// <summary>
 		/// Get const access to the list of content
 		/// </summary>
@@ -84,23 +80,27 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mContentList;
+				return mContentList;
 			}
 		}
+
+		[OgreVersion( 1, 7, 2 )]
+		public SimplePageContentCollection( SimplePageContentCollectionFactory creator )
+			: base( creator ) {}
 
 		[OgreVersion( 1, 7, 2, "~SimplePageContentCollection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( PageContent i in this.mContentList )
+					foreach ( var i in mContentList )
 					{
 						i.SafeDispose();
 					}
 
-					this.mContentList.Clear();
+					mContentList.Clear();
 				}
 			}
 
@@ -114,8 +114,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual PageContent CreateContent( string typeName )
 		{
-			PageContent c = Manager.CreateContent( typeName );
-			this.mContentList.Add( c );
+			var c = Manager.CreateContent( typeName );
+			mContentList.Add( c );
 			return c;
 		}
 
@@ -127,9 +127,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void DestroyContent( PageContent c )
 		{
-			if ( this.mContentList.Contains( c ) )
+			if ( mContentList.Contains( c ) )
 			{
-				this.mContentList.Remove( c );
+				mContentList.Remove( c );
 			}
 
 			Manager.DestroyContent( ref c );
@@ -140,7 +140,7 @@ namespace Axiom.Components.Paging
 		{
 			stream.WriteChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION );
 
-			foreach ( PageContent c in this.mContentList )
+			foreach ( var c in mContentList )
 			{
 				c.Save( stream );
 			}
@@ -151,7 +151,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void FrameStart( Real timeSinceLastFrame )
 		{
-			foreach ( PageContent c in this.mContentList )
+			foreach ( var c in mContentList )
 			{
 				c.FrameStart( timeSinceLastFrame );
 			}
@@ -160,7 +160,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void FrameEnd( Real timeElapsed )
 		{
-			foreach ( PageContent c in this.mContentList )
+			foreach ( var c in mContentList )
 			{
 				c.FrameEnd( timeElapsed );
 			}
@@ -169,7 +169,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void NotifyCamera( Camera camera )
 		{
-			foreach ( PageContent c in this.mContentList )
+			foreach ( var c in mContentList )
 			{
 				c.NotifyCamera( camera );
 			}
@@ -184,7 +184,7 @@ namespace Axiom.Components.Paging
 			}
 
 			bool ret = true;
-			foreach ( PageContent i in this.mContentList )
+			foreach ( var i in mContentList )
 			{
 				ret &= i.Prepare( stream );
 			}
@@ -196,7 +196,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void Load()
 		{
-			foreach ( PageContent i in this.mContentList )
+			foreach ( var i in mContentList )
 			{
 				i.Load();
 			}
@@ -205,7 +205,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void UnLoad()
 		{
-			foreach ( PageContent i in this.mContentList )
+			foreach ( var i in mContentList )
 			{
 				i.UnLoad();
 			}
@@ -214,7 +214,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override void UnPrepare()
 		{
-			foreach ( PageContent i in this.mContentList )
+			foreach ( var i in mContentList )
 			{
 				i.UnPrepare();
 			}

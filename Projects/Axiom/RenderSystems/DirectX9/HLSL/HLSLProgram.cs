@@ -40,13 +40,9 @@ using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
 
-using SharpDX;
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 using ResourceHandle = System.UInt64;
-using ResourceManager = Axiom.Core.ResourceManager;
 
 #endregion Namespace Declarations
 
@@ -66,8 +62,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	{
 		#region Properties and Fields
 
+		protected D3D9.ConstantTable constTable;
 		protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
-		protected ConstantTable constTable;
 
 		/// <summary>
 		/// Returns whether this program can be supported on the current renderer and hardware.
@@ -82,7 +78,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					return false;
 				}
 
-				return GpuProgramManager.Instance.IsSyntaxSupported( Target );
+				return GpuProgramManager.Instance.IsSyntaxSupported( this.Target );
 			}
 		}
 
@@ -111,7 +107,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// Holds the low level program instructions after the compile.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public ShaderBytecode MicroCode { get; protected set; }
+		public D3D9.ShaderBytecode MicroCode { get; protected set; }
 
 		/// <summary>
 		/// Get/Sets the preprocessor definitions to use to compile the program
@@ -145,7 +141,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		public D3D9HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			UseColumnMajorMatrices = true;
+			this.UseColumnMajorMatrices = true;
 		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HLSLProgram" )]
@@ -157,7 +153,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				{
 					// have to call this here reather than in Resource destructor
 					// since calling virtual methods in base destructors causes crash
-					if ( IsLoaded )
+					if ( this.IsLoaded )
 					{
 						unload();
 					}
@@ -178,6 +174,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#endregion Construction and Destruction
 
+		#region GpuProgram Members
+
 		/// <summary>
 		/// Compiles the high level shader source to low level microcode.
 		/// </summary>
@@ -185,16 +183,16 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		protected override void LoadFromSource()
 		{
 			// Populate preprocessor defines
-			var defines = new List<Macro>();
-			if ( !string.IsNullOrEmpty( PreprocessorDefines ) )
+			var defines = new List<D3D9.Macro>();
+			if ( !string.IsNullOrEmpty( this.PreprocessorDefines ) )
 			{
-				string[] tmp = PreprocessorDefines.Split( ' ', ',', ';' );
+				var tmp = this.PreprocessorDefines.Split( ' ', ',', ';' );
 				foreach ( string define in tmp )
 				{
-					var macro = new Macro();
+					var macro = new D3D9.Macro();
 					if ( define.Contains( "=" ) )
 					{
-						string[] split = define.Split( '=' );
+						var split = define.Split( '=' );
 						macro.Name = split[ 0 ];
 						macro.Definition = split[ 1 ];
 					}
@@ -211,56 +209,56 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 
 			// Populate compile flags
-			ShaderFlags compileFlags = UseColumnMajorMatrices ? ShaderFlags.PackMatrixColumnMajor : ShaderFlags.PackMatrixRowMajor;
+			var compileFlags = this.UseColumnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
 
 #if DEBUG
-			compileFlags |= ShaderFlags.Debug;
+			compileFlags |= D3D9.ShaderFlags.Debug;
 #endif
-			switch ( OptimizationLevel )
+			switch ( this.OptimizationLevel )
 			{
 				case OptimizationLevel.Default:
-					compileFlags |= ShaderFlags.OptimizationLevel1;
+					compileFlags |= D3D9.ShaderFlags.OptimizationLevel1;
 					break;
 
 				case OptimizationLevel.None:
-					compileFlags |= ShaderFlags.SkipOptimization;
+					compileFlags |= D3D9.ShaderFlags.SkipOptimization;
 					break;
 
 				case OptimizationLevel.LevelZero:
-					compileFlags |= ShaderFlags.OptimizationLevel0;
+					compileFlags |= D3D9.ShaderFlags.OptimizationLevel0;
 					break;
 
 				case OptimizationLevel.LevelOne:
-					compileFlags |= ShaderFlags.OptimizationLevel1;
+					compileFlags |= D3D9.ShaderFlags.OptimizationLevel1;
 					break;
 
 				case OptimizationLevel.LevelTwo:
-					compileFlags |= ShaderFlags.OptimizationLevel2;
+					compileFlags |= D3D9.ShaderFlags.OptimizationLevel2;
 					break;
 
 				case OptimizationLevel.LevelThree:
-					compileFlags |= ShaderFlags.OptimizationLevel3;
+					compileFlags |= D3D9.ShaderFlags.OptimizationLevel3;
 					break;
 			}
 
-			ShaderFlags parseFlags = compileFlags;
-			compileFlags ^= UseColumnMajorMatrices ? ShaderFlags.PackMatrixColumnMajor : ShaderFlags.PackMatrixRowMajor;
+			var parseFlags = compileFlags;
+			compileFlags ^= this.UseColumnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
 
 			// include handler
 			var includeHandler = new HLSLIncludeHandler( this );
 
 			// Compile & assemble into microcode
-			var effectCompiler = new EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
+			var effectCompiler = new D3D9.EffectCompiler( Source, defines.ToArray(), includeHandler, parseFlags );
 
-			string errors = string.Empty;
+			var errors = string.Empty;
 
 			try
 			{
-				MicroCode = effectCompiler.CompileShader( new EffectHandle( EntryPoint ), Target, compileFlags, out this.constTable );
+				this.MicroCode = effectCompiler.CompileShader( new D3D9.EffectHandle( this.EntryPoint ), this.Target, compileFlags, out constTable );
 			}
-			catch ( SharpDXException ex )
+			catch ( DX.SharpDXException ex )
 			{
-				if ( ex is CompilationException )
+				if ( ex is DX.CompilationException )
 				{
 					errors = ex.Message;
 				}
@@ -268,7 +266,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				// check for errors
 				if ( !string.IsNullOrEmpty( errors ) )
 				{
-					if ( MicroCode != null )
+					if ( this.MicroCode != null )
 					{
 						if ( LogManager.Instance != null )
 						{
@@ -299,10 +297,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			{
 				// create a new program, without source since we are setting the microcode manually
 				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", // dummy source, since we'll be using microcode
-																					   Type, Target );
+				                                                                       Type, this.Target );
 
 				// set the microcode for this program
-				( (D3D9GpuProgram)assemblerProgram ).ExternalMicrocode = MicroCode;
+				( (D3D9GpuProgram)assemblerProgram ).ExternalMicrocode = this.MicroCode;
 			}
 		}
 
@@ -312,24 +310,24 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void UnloadHighLevelImpl()
 		{
-			MicroCode.SafeDispose();
-			MicroCode = null;
+			this.MicroCode.SafeDispose();
+			this.MicroCode = null;
 
-			this.constTable.SafeDispose();
-			this.constTable = null;
+			constTable.SafeDispose();
+			constTable = null;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void BuildConstantDefinitions()
 		{
 			// Derive parameter names from const table
-			Contract.RequiresNotNull( this.constTable, "Program not loaded!" );
+			Contract.RequiresNotNull( constTable, "Program not loaded!" );
 			// Get contents of the constant table
-			ConstantTableDescription desc = this.constTable.Description;
+			var desc = constTable.Description;
 
 			CreateParameterMappingStructures( true );
 
-			for ( int i = 0; i < desc.Constants; ++i )
+			for ( var i = 0; i < desc.Constants; ++i )
 			{
 				// Recursively descend through the structure levels
 				ProcessParamElement( null, string.Empty, i );
@@ -340,15 +338,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// Recursive utility method for buildParamNameMap
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		protected void ProcessParamElement( EffectHandle parent, string prefix, int index )
+		protected void ProcessParamElement( D3D9.EffectHandle parent, string prefix, int index )
 		{
-			EffectHandle constant = this.constTable.GetConstant( parent, index );
+			var constant = constTable.GetConstant( parent, index );
 
 			// Since D3D HLSL doesn't deal with naming of array and struct parameters
 			// automatically, we have to do it by hand
-			ConstantDescription desc = this.constTable.GetConstantDescription( constant );
+			var desc = constTable.GetConstantDescription( constant );
 
-			string paramName = desc.Name;
+			var paramName = desc.Name;
 
 			// trim the odd '$' which appears at the start of the names in HLSL
 			if ( paramName.StartsWith( "$" ) )
@@ -362,12 +360,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				paramName.Remove( paramName.Length - 3 );
 			}
 
-			if ( desc.Class == ParameterClass.Struct )
+			if ( desc.Class == D3D9.ParameterClass.Struct )
 			{
 				// work out a new prefix for the nextest members if its an array, we need the index
 				prefix += paramName + ".";
 				// Cascade into struct
-				for ( int i = 0; i < desc.StructMembers; ++i )
+				for ( var i = 0; i < desc.StructMembers; ++i )
 				{
 					ProcessParamElement( constant, prefix, i );
 				}
@@ -375,10 +373,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			else
 			{
 				// process params
-				if ( desc.Type == ParameterType.Float || desc.Type == ParameterType.Int || desc.Type == ParameterType.Bool )
+				if ( desc.Type == D3D9.ParameterType.Float || desc.Type == D3D9.ParameterType.Int || desc.Type == D3D9.ParameterType.Bool )
 				{
-					int paramIndex = desc.RegisterIndex;
-					string name = prefix + paramName;
+					var paramIndex = desc.RegisterIndex;
+					var name = prefix + paramName;
 
 					var def = new GpuProgramParameters.GpuConstantDefinition();
 					def.LogicalIndex = paramIndex;
@@ -407,9 +405,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					}
 
 					//mConstantDefs->map.insert(GpuConstantDefinitionMap::value_type(name, def));
-					if ( !this.parametersMap.ContainsKey( paramName ) )
+					if ( !parametersMap.ContainsKey( paramName ) )
 					{
-						this.parametersMap.Add( paramName, def );
+						parametersMap.Add( paramName, def );
 					}
 
 					// Now deal with arrays
@@ -419,12 +417,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected void PopulateDef( ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
+		protected void PopulateDef( D3D9.ConstantDescription d3DDesc, GpuProgramParameters.GpuConstantDefinition def )
 		{
 			def.ArraySize = d3DDesc.Elements;
 			switch ( d3DDesc.Type )
 			{
-				case ParameterType.Int:
+				case D3D9.ParameterType.Int:
 					switch ( d3DDesc.Columns )
 					{
 						case 1:
@@ -444,79 +442,79 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 							break;
 					} // columns
 					break;
-				case ParameterType.Float:
+				case D3D9.ParameterType.Float:
 					switch ( d3DDesc.Class )
 					{
-						case ParameterClass.MatrixColumns:
-						case ParameterClass.MatrixRows:
+						case D3D9.ParameterClass.MatrixColumns:
+						case D3D9.ParameterClass.MatrixRows:
+						{
+							var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
+							var secondDim = d3DDesc.Class == D3D9.ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
+
+							switch ( firstDim )
 							{
-								int firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
-								int secondDim = d3DDesc.Class == ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
+								case 2:
+									switch ( secondDim )
+									{
+										case 2:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X2;
+											def.ElementSize = 8; // HLSL always packs
+											break;
 
-								switch ( firstDim )
-								{
-									case 2:
-										switch ( secondDim )
-										{
-											case 2:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X2;
-												def.ElementSize = 8; // HLSL always packs
-												break;
+										case 3:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X3;
+											def.ElementSize = 8; // HLSL always packs
+											break;
 
-											case 3:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X3;
-												def.ElementSize = 8; // HLSL always packs
-												break;
+										case 4:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X4;
+											def.ElementSize = 8;
+											break;
+									} // columns
+									break;
+								case 3:
+									switch ( secondDim )
+									{
+										case 2:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X2;
+											def.ElementSize = 12; // HLSL always packs
+											break;
 
-											case 4:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_2X4;
-												def.ElementSize = 8;
-												break;
-										} // columns
-										break;
-									case 3:
-										switch ( secondDim )
-										{
-											case 2:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X2;
-												def.ElementSize = 12; // HLSL always packs
-												break;
+										case 3:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X3;
+											def.ElementSize = 12; // HLSL always packs
+											break;
 
-											case 3:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X3;
-												def.ElementSize = 12; // HLSL always packs
-												break;
+										case 4:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X4;
+											def.ElementSize = 12;
+											break;
+									} // columns
+									break;
+								case 4:
+									switch ( secondDim )
+									{
+										case 2:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X2;
+											def.ElementSize = 16; // HLSL always packs
+											break;
 
-											case 4:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_3X4;
-												def.ElementSize = 12;
-												break;
-										} // columns
-										break;
-									case 4:
-										switch ( secondDim )
-										{
-											case 2:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X2;
-												def.ElementSize = 16; // HLSL always packs
-												break;
+										case 3:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X3;
+											def.ElementSize = 16; // HLSL always packs
+											break;
 
-											case 3:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X3;
-												def.ElementSize = 16; // HLSL always packs
-												break;
-
-											case 4:
-												def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X4;
-												def.ElementSize = 16;
-												break;
-										} // secondDim
-										break;
-								} // firstDim
-							}
+										case 4:
+											def.ConstantType = GpuProgramParameters.GpuConstantType.Matrix_4X4;
+											def.ElementSize = 16;
+											break;
+									} // secondDim
+									break;
+							} // firstDim
+						}
 							break;
-						case ParameterClass.Scalar:
-						case ParameterClass.Vector:
+						case D3D9.ParameterClass.Scalar:
+						case D3D9.ParameterClass.Vector:
 							switch ( d3DDesc.Columns )
 							{
 								case 1:
@@ -562,13 +560,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		public override GpuProgramParameters CreateParameters()
 		{
 			// Call superclass
-			GpuProgramParameters parms = base.CreateParameters();
+			var parms = base.CreateParameters();
 
 			// Need to transpose matrices if compiled with column-major matrices
-			parms.TransposeMatrices = UseColumnMajorMatrices;
+			parms.TransposeMatrices = this.UseColumnMajorMatrices;
 
 			return parms;
 		}
+
+		#endregion GpuProgram Members
 
 		#region Command Objects
 
@@ -592,7 +592,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				( (D3D9HLSLProgram)target ).EntryPoint = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion EntryPointCommand
@@ -617,7 +617,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				( (D3D9HLSLProgram)target ).Target = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion TargetCommand
@@ -642,7 +642,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				( (D3D9HLSLProgram)target ).PreprocessorDefines = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion PreProcessorDefinesCommand
@@ -667,7 +667,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				( (D3D9HLSLProgram)target ).UseColumnMajorMatrices = StringConverter.ParseBool( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion ColumnMajorMatricesCommand
@@ -685,16 +685,16 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			public string Get( object target )
 			{
 				OptimizationLevel level = ( (D3D9HLSLProgram)target ).OptimizationLevel;
-				return ScriptEnumAttribute.GetScriptAttribute( (int)level, typeof( OptimizationLevel ) );
+				return ScriptEnumAttribute.GetScriptAttribute( (int)level, typeof ( OptimizationLevel ) );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (D3D9HLSLProgram)target ).OptimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof( OptimizationLevel ) );
+				( (D3D9HLSLProgram)target ).OptimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof ( OptimizationLevel ) );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion OptimizationCommand
@@ -710,7 +710,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			[OgreVersion( 1, 7, 2 )]
 			public string Get( object target )
 			{
-				ShaderBytecode buffer = ( (D3D9HLSLProgram)target ).MicroCode;
+				var buffer = ( (D3D9HLSLProgram)target ).MicroCode;
 				if ( buffer != null )
 				{
 					//TODO
@@ -730,7 +730,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				//nothing to do
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion MicrocodeCommand
@@ -746,7 +746,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			[OgreVersion( 1, 7, 2 )]
 			public string Get( object target )
 			{
-				ShaderBytecode buffer = ( (D3D9HLSLProgram)target ).MicroCode;
+				var buffer = ( (D3D9HLSLProgram)target ).MicroCode;
 				if ( buffer != null )
 				{
 					//TODO
@@ -774,7 +774,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				//nothing to do
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		};
 
 		#endregion AssemblerCodeCommand

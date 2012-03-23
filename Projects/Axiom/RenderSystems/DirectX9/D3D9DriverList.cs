@@ -39,8 +39,6 @@ using System.Linq;
 
 using Axiom.Core;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -49,12 +47,6 @@ namespace Axiom.RenderSystems.DirectX9
 {
 	public class D3D9DriverList : List<D3D9Driver>, IDisposable
 	{
-		[OgreVersion( 1, 7, 2 )]
-		public D3D9DriverList()
-		{
-			Enumerate();
-		}
-
 		[OgreVersion( 1, 7, 2, "D3D9DriverList::item( const String &name )" )]
 		public D3D9Driver this[ string description ]
 		{
@@ -64,41 +56,44 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		#region IDisposable Members
+		[OgreVersion( 1, 7, 2 )]
+		public D3D9DriverList()
+			: base()
+		{
+			Enumerate();
+		}
+
+		~D3D9DriverList()
+		{
+			this.Dispose();
+		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
 		public void Dispose()
 		{
-			foreach ( D3D9Driver it in this )
+			foreach ( var it in this )
 			{
 				it.SafeDispose();
 			}
 
-			Clear();
+			this.Clear();
 			GC.SuppressFinalize( this );
-		}
-
-		#endregion
-
-		~D3D9DriverList()
-		{
-			Dispose();
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public bool Enumerate()
 		{
-			Direct3D lpD3D9 = D3D9RenderSystem.Direct3D9;
+			var lpD3D9 = D3D9RenderSystem.Direct3D9;
 
 			LogManager.Instance.Write( "D3D9: Driver Detection Starts" );
 
-			for ( int iAdapter = 0; iAdapter < lpD3D9.AdapterCount; ++iAdapter )
+			for ( var iAdapter = 0; iAdapter < lpD3D9.AdapterCount; ++iAdapter )
 			{
-				AdapterDetails adapterIdentifier = lpD3D9.GetAdapterIdentifier( iAdapter );
-				DisplayMode d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
-				Capabilities d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, DeviceType.Hardware );
+				var adapterIdentifier = lpD3D9.GetAdapterIdentifier( iAdapter );
+				var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
+				var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
 
-				Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
+				this.Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
 			}
 
 			LogManager.Instance.Write( "D3D9: Driver Detection Ends" );

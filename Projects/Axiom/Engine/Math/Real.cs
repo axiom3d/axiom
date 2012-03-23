@@ -39,19 +39,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // The Real datatype is actually one of these under the covers
 #if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
+using Numeric = System.Single;
+#else
+using Numeric = System.Double;
+#endif
 using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
-
-using Numeric = System.Single;
-#else
-using Numeric = System.Double;
-#endif
 
 #endregion Namespace Declarations
 
@@ -77,7 +76,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
-		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
+		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		/// <summary>Internal storage for value</summary>
 		private Numeric _value;
@@ -119,7 +118,7 @@ namespace Axiom.Math
 		/// <returns>a boolean</returns>
 		public static bool IsPositiveInfinity( Real number )
 		{
-			return Numeric.IsPositiveInfinity( number );
+			return Numeric.IsPositiveInfinity( (Numeric)number );
 		}
 
 		/// <summary>
@@ -129,7 +128,7 @@ namespace Axiom.Math
 		/// <returns>a boolean</returns>
 		public static bool IsNegativeInfinity( Real number )
 		{
-			return Numeric.IsNegativeInfinity( number );
+			return Numeric.IsNegativeInfinity( (Numeric)number );
 		}
 
 		/// <summary>
@@ -139,7 +138,7 @@ namespace Axiom.Math
 		/// <returns>a boolean</returns>
 		public static bool IsInfinity( Real number )
 		{
-			return Numeric.IsInfinity( number );
+			return Numeric.IsInfinity( (Numeric)number );
 		}
 
 		/// <summary>
@@ -149,7 +148,7 @@ namespace Axiom.Math
 		/// <returns>a boolean</returns>
 		public static bool IsNaN( Real number )
 		{
-			return Numeric.IsNaN( number );
+			return Numeric.IsNaN( (Numeric)number );
 		}
 
 		/// <overloads>
@@ -178,14 +177,14 @@ namespace Axiom.Math
 		/// <param name="value"></param>
 		/// <param name="style"></param>
 		/// <param name="provider"></param>
-		public static Real Parse( string value, NumberStyles style, IFormatProvider provider )
+		public static Real Parse( string value, System.Globalization.NumberStyles style, IFormatProvider provider )
 		{
 			return new Real( Numeric.Parse( value, style, provider ) );
 		}
 
 		/// <param name="value">a floating point number</param>
 		/// <param name="style"></param>
-		public static Real Parse( string value, NumberStyles style )
+		public static Real Parse( string value, System.Globalization.NumberStyles style )
 		{
 			return new Real( Numeric.Parse( value, style ) );
 		}
@@ -326,7 +325,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static implicit operator float( Real real )
 		{
-			return real._value;
+			return (float)real._value;
 		}
 
 		#endregion Float Conversions
@@ -623,7 +622,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Floor()
 		{
-			return System.Math.Floor( this._value );
+			return System.Math.Floor( _value );
 		}
 
 		/// <summary>
@@ -632,7 +631,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Ceiling()
 		{
-			return System.Math.Ceiling( this._value );
+			return System.Math.Ceiling( _value );
 		}
 
 		#endregion Methods
@@ -662,7 +661,7 @@ namespace Axiom.Math
 		/// </summary>
 		public bool Equals( Real obj )
 		{
-			return Equals( obj, Tolerance );
+			return this.Equals( obj, Tolerance );
 		}
 
 		/// <summary>
@@ -692,7 +691,7 @@ namespace Axiom.Math
 		/// <param name="context"></param>
 		private Real( SerializationInfo info, StreamingContext context )
 		{
-			this._value = (Numeric)info.GetValue( "value", typeof( Numeric ) );
+			_value = (Numeric)info.GetValue( "value", typeof ( Numeric ) );
 		}
 
 		/// <summary>
@@ -703,7 +702,7 @@ namespace Axiom.Math
 		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
-			info.AddValue( "value", this._value );
+			info.AddValue( "value", _value );
 		}
 
 		#endregion ISerializable Implementation
@@ -783,7 +782,7 @@ namespace Axiom.Math
 
 		public float ToSingle( IFormatProvider provider )
 		{
-			return this;
+			return (float)this;
 		}
 
 		public string ToString( IFormatProvider provider )
@@ -818,7 +817,7 @@ namespace Axiom.Math
 			get
 			{
 				// The Real datatype is actually one of these under the covers
-				return sizeof( Numeric );
+				return sizeof ( Numeric );
 			}
 		}
 
@@ -843,7 +842,7 @@ namespace Axiom.Math
 #if !( XBOX || XBOX360 )
 			Numeric retval;
 			b = Numeric.TryParse( s, out retval );
-			result = retval;
+			result = (Real)retval;
 #else
 			try
 			{
@@ -862,7 +861,7 @@ namespace Axiom.Math
 		public static float[] ToFloatArray( Real[] real )
 		{
 			var floatArray = new float[ real.Length ];
-			for ( int myIndex = 0; myIndex < real.Length; myIndex++ )
+			for ( var myIndex = 0; myIndex < real.Length; myIndex++ )
 			{
 				floatArray[ myIndex ] = real[ myIndex ];
 			}
@@ -896,7 +895,7 @@ namespace Axiom.Math
 #if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
 			try
 			{
-				string v = reader.ReadElementContentAsString();
+				var v = reader.ReadElementContentAsString();
 				this._value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )

@@ -84,12 +84,12 @@ namespace Axiom.Core
 		/// </summary>
 		public class ViewportEventArgs : EventArgs
 		{
+			public Viewport Source { get; internal set; }
+
 			public ViewportEventArgs( Viewport source )
 			{
 				Source = source;
 			}
-
-			public Viewport Source { get; internal set; }
 		}
 
 		/// <summary>
@@ -129,19 +129,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._camera;
+				return _camera;
 			}
 			set
 			{
-				if ( this._camera != null )
+				if ( _camera != null )
 				{
-					if ( this._camera.Viewport == this )
+					if ( _camera.Viewport == this )
 					{
-						this._camera.NotifyViewport( null );
+						_camera.NotifyViewport( null );
 					}
 				}
 
-				this._camera = value;
+				_camera = value;
 
 				if ( value != null )
 				{
@@ -471,12 +471,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._rqSequenceName;
+				return _rqSequenceName;
 			}
 			set
 			{
-				this._rqSequenceName = value;
-				if ( this._rqSequenceName == string.Empty )
+				_rqSequenceName = value;
+				if ( _rqSequenceName == string.Empty )
 				{
 					RenderQueueInvocationSequence = null;
 				}
@@ -551,6 +551,7 @@ namespace Axiom.Core
 		/// <param name="height">Height</param>
 		/// <param name="zOrder">Relative Z-order on the target. Lower = further to the front.</param>
 		public Viewport( Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder )
+			: base()
 		{
 			LogManager.Instance.Write( "Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}", camera.Name, left, top, width, height, zOrder );
 
@@ -719,13 +720,13 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void Clear( FrameBufferType buffers, ColorEx col, Real depth, ushort stencil )
 		{
-			RenderSystem rs = Root.Instance.RenderSystem;
+			var rs = Root.Instance.RenderSystem;
 			if ( rs == null )
 			{
 				return;
 			}
 
-			Viewport currentvp = rs.Viewport;
+			var currentvp = rs.Viewport;
 			rs.Viewport = this;
 			rs.ClearFrameBuffer( buffers, col, depth, stencil );
 			if ( currentvp != null && currentvp != this )
@@ -807,7 +808,7 @@ namespace Axiom.Core
 
 			// Update the render system config
 #if AXIOM_PLATFORM == AXIOM_PLATFORM_APPLE_IOS
-			RenderSystem rs = Root.Instance.RenderSystem;
+			var rs = Root.Instance.RenderSystem;
 
 			switch ( OrientationMode )
 			{
@@ -838,8 +839,8 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void PointOrientedToScreen( Real orientedX, Real orientedY, OrientationMode orientationMode, out Real screenX, out Real screenY )
 		{
-			Real orX = orientedX;
-			Real orY = orientedY;
+			var orX = orientedX;
+			var orY = orientedY;
 			switch ( orientationMode )
 			{
 				case OrientationMode.Degree90:
@@ -891,10 +892,10 @@ namespace Axiom.Core
 		{
 			if ( !IsDisposed )
 			{
-				Root ri = Root.Instance;
+				var ri = Root.Instance;
 				if ( ri != null )
 				{
-					RenderSystem rs = ri.RenderSystem;
+					var rs = ri.RenderSystem;
 					if ( rs != null && rs.Viewport == this )
 					{
 						rs.Viewport = null;

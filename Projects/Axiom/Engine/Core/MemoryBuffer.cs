@@ -44,7 +44,7 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-	public interface IMemoryBuffer : IDisposable { }
+	public interface IMemoryBuffer : IDisposable {}
 
 	public interface IBitConverter
 	{
@@ -53,20 +53,8 @@ namespace Axiom.Core
 
 	public class MemoryManager : Singleton<MemoryManager>
 	{
-		private static readonly Dictionary<Type, IBitConverter> _bitConverters;
 		private readonly List<IMemoryBuffer> _memoryPool = new List<IMemoryBuffer>();
-
-		static MemoryManager()
-		{
-			_bitConverters = new Dictionary<Type, IBitConverter>
-                             {
-                                 {
-                                     typeof ( int ), new IntBitConverter()
-                                     }, {
-                                            typeof ( float ), new SingleBitConverter()
-                                            }
-                             };
-		}
+		private static readonly Dictionary<Type, IBitConverter> _bitConverters;
 
 		public Dictionary<Type, IBitConverter> BitConverters
 		{
@@ -74,6 +62,18 @@ namespace Axiom.Core
 			{
 				return _bitConverters;
 			}
+		}
+
+		static MemoryManager()
+		{
+			_bitConverters = new Dictionary<Type, IBitConverter>()
+			                 {
+			                 	{
+			                 		typeof ( int ), new IntBitConverter()
+			                 		}, {
+			                 		   	typeof ( float ), new SingleBitConverter()
+			                 		   	}
+			                 };
 		}
 
 		public MemoryBuffer<T> Allocate<T>( long size ) where T : struct
@@ -85,9 +85,9 @@ namespace Axiom.Core
 
 		public void Deallocate( IMemoryBuffer buffer )
 		{
-			if ( this._memoryPool.Contains( buffer ) )
+			if ( _memoryPool.Contains( buffer ) )
 			{
-				this._memoryPool.Remove( buffer );
+				_memoryPool.Remove( buffer );
 				buffer.Dispose();
 			}
 		}
@@ -97,51 +97,35 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-		#region Nested type: IntBitConverter
-
 		private class IntBitConverter : IBitConverter
 		{
-			#region IBitConverter Members
-
 			public Array Convert( Array buffer, int startIndex )
 			{
 				int[] retVal;
-				int size = buffer.Length / 4;
+				var size = buffer.Length / 4;
 				retVal = new int[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}
 				return retVal;
 			}
-
-			#endregion
 		}
-
-		#endregion
-
-		#region Nested type: SingleBitConverter
 
 		private class SingleBitConverter : IBitConverter
 		{
-			#region IBitConverter Members
-
 			public Array Convert( Array buffer, int startIndex )
 			{
 				float[] retVal;
-				int size = buffer.Length / 4;
+				var size = buffer.Length / 4;
 				retVal = new float[ size ];
-				for ( int index = startIndex; index < size; index++, startIndex += 4 )
+				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
 				}
 				return retVal;
 			}
-
-			#endregion
 		}
-
-		#endregion
 	}
 
 	public class MemoryBuffer<T> : DisposableObject, IMemoryBuffer
@@ -149,38 +133,38 @@ namespace Axiom.Core
 	{
 		private T[] _buffer;
 
-		internal MemoryBuffer( MemoryManager owner )
-		{
-			IsDisposed = false;
-			Owner = owner;
-		}
-
-		internal MemoryBuffer( MemoryManager owner, long size )
-			: this( owner )
-		{
-			this._buffer = new T[ size ];
-		}
-
 		public MemoryManager Owner { get; private set; }
 
 		public T this[ long index ]
 		{
 			get
 			{
-				return this._buffer[ index ];
+				return _buffer[ index ];
 			}
 
 			set
 			{
-				this._buffer[ index ] = value;
+				_buffer[ index ] = value;
 			}
+		}
+
+		internal MemoryBuffer( MemoryManager owner )
+		{
+			IsDisposed = false;
+			this.Owner = owner;
+		}
+
+		internal MemoryBuffer( MemoryManager owner, long size )
+			: this( owner )
+		{
+			_buffer = new T[ size ];
 		}
 
 		public TDestType[] AsArray<TDestType>()
 		{
-			if ( Owner.BitConverters.ContainsKey( typeof( TDestType ) ) )
+			if ( Owner.BitConverters.ContainsKey( typeof ( TDestType ) ) )
 			{
-				return (TDestType[])( Owner.BitConverters[ typeof( TDestType ) ].Convert( this._buffer, 0 ) );
+				return (TDestType[])( Owner.BitConverters[ typeof ( TDestType ) ].Convert( _buffer, 0 ) );
 			}
 			return new TDestType[ 0 ];
 		}

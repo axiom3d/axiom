@@ -7,12 +7,14 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 
+using System.Runtime.InteropServices;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class BezierPatch : TechDemo
 	{
@@ -32,9 +34,9 @@ namespace Axiom.Demos
 
 		private struct PatchVertex
 		{
+			public float X, Y, Z;
 			public float Nx, Ny, Nz;
 			public float U, V;
-			public float X, Y, Z;
 		}
 
 		#endregion Private Structs
@@ -59,13 +61,13 @@ namespace Axiom.Demos
 			light.Direction = new Vector3( -0.5f, -0.5f, 0 );
 
 			// Create patch with positions, normals, and 1 set of texcoords
-			this.patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			this.patchDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-			this.patchDeclaration.AddElement( 0, 12, VertexElementType.Float3, VertexElementSemantic.Normal );
-			this.patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+			patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			patchDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			patchDeclaration.AddElement( 0, 12, VertexElementType.Float3, VertexElementSemantic.Normal );
+			patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 			// Patch data
-			var patchVertices = new PatchVertex[ 9 ];
+			PatchVertex[] patchVertices = new PatchVertex[ 9 ];
 
 			patchVertices[ 0 ].X = -500;
 			patchVertices[ 0 ].Y = 200;
@@ -148,21 +150,21 @@ namespace Axiom.Demos
 			patchVertices[ 8 ].U = 1;
 			patchVertices[ 8 ].V = 1;
 
-			this.patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, this.patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+			patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
 			// Start patch at 0 detail
-			this.patch.Subdivision = 0;
+			patch.Subdivision = 0;
 
 			// Create entity based on patch
-			this.patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
-			var material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
+			patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
+			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
 			material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
 
-			this.patchEntity.MaterialName = "TextMat";
-			this.patchPass = material.GetTechnique( 0 ).GetPass( 0 );
+			patchEntity.MaterialName = "TextMat";
+			patchPass = material.GetTechnique( 0 ).GetPass( 0 );
 
 			// Attach the entity to the root of the scene
-			scene.RootSceneNode.AttachObject( this.patchEntity );
+			scene.RootSceneNode.AttachObject( patchEntity );
 
 			camera.Position = new Vector3( 500, 500, 1500 );
 			camera.LookAt( new Vector3( 0, 200, -300 ) );
@@ -177,23 +179,23 @@ namespace Axiom.Demos
 		// Event handler to add ability to alter subdivision
 		protected override void OnFrameRenderingQueued( Object source, FrameEventArgs evt )
 		{
-			this.timeLapse += evt.TimeSinceLastFrame;
+			timeLapse += evt.TimeSinceLastFrame;
 
 			// Progressively grow the patch
-			if ( this.timeLapse > 1.0f )
+			if ( timeLapse > 1.0f )
 			{
-				this.factor += 0.2f;
+				factor += 0.2f;
 
-				if ( this.factor > 1.0f )
+				if ( factor > 1.0f )
 				{
-					this.isWireframe = !this.isWireframe;
-					this.patchPass.PolygonMode = ( this.isWireframe ? PolygonMode.Wireframe : PolygonMode.Solid );
-					this.factor = 0.0f;
+					isWireframe = !isWireframe;
+					patchPass.PolygonMode = ( isWireframe ? PolygonMode.Wireframe : PolygonMode.Solid );
+					factor = 0.0f;
 				}
 
-				this.patch.Subdivision = this.factor;
-				debugText = "Bezier subdivision factor: " + this.factor;
-				this.timeLapse = 0.0f;
+				patch.Subdivision = factor;
+				debugText = "Bezier subdivision factor: " + factor;
+				timeLapse = 0.0f;
 			}
 
 			// Call default

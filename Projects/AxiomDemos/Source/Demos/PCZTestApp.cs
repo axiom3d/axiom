@@ -10,15 +10,15 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace PCZDemo
 {
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 	public class PCZTestApp : TechDemo
 	{
-		private readonly Listener l = new Listener();
+		private SceneNode mCameraNode;
 		private PCZSceneNode buildingNode;
 		private Vector3 buildingTranslate;
-		private SceneNode mCameraNode;
+		private RaySceneQuery raySceneQuery = null;
 		private float mMoveSpeed;
-		private RaySceneQuery raySceneQuery;
+		private Listener l = new Listener();
 
 		public override void CreateScene()
 		{
@@ -37,13 +37,13 @@ namespace PCZDemo
 			// Accept default settings: point light, white diffuse, just set position
 			// attach light to a scene node so the PCZSM can handle it properly (zone-wise)
 			// IMPORTANT: Lights (just like cameras) MUST be connected to a scene node!
-			SceneNode lightNode = this.mCameraNode.CreateChildSceneNode( "light_Node" );
+			SceneNode lightNode = mCameraNode.CreateChildSceneNode( "light_Node" );
 			lightNode.AttachObject( l );
 
 			// Fog
 			// NB it's VERY important to set this before calling setWorldGeometry
 			// because the vertex program picked will be different
-			var fadeColour = new ColorEx( 0.101f, 0.125f, 0.1836f );
+			ColorEx fadeColour = new ColorEx( 0.101f, 0.125f, 0.1836f );
 			scene.SetFog( FogMode.Linear, fadeColour, .001f, 500, 1000 );
 			window.GetViewport( 0 ).BackgroundColor = fadeColour;
 
@@ -112,62 +112,62 @@ namespace PCZDemo
 			camera.Far = 1500;
 
 			// create test buildinig
-			var roomObj = new RoomObject();
-			this.buildingNode = roomObj.createTestBuilding( scene, "1" );
-			this.buildingNode.Position = new Vector3( 500, 165, 570 );
+			RoomObject roomObj = new RoomObject();
+			buildingNode = roomObj.createTestBuilding( scene, "1" );
+			buildingNode.Position = new Vector3( 500, 165, 570 );
 			//Ogre::Radian r = Radian(3.1416/7.0);
 			//buildingNode->rotate(Vector3::UNIT_Y, r);
 
 			// create another test buildinig
-			var roomObj2 = new RoomObject();
-			this.buildingNode = roomObj2.createTestBuilding( scene, "2" );
-			this.buildingNode.Position = new Vector3( 400, 165, 570 );
+			RoomObject roomObj2 = new RoomObject();
+			buildingNode = roomObj2.createTestBuilding( scene, "2" );
+			buildingNode.Position = new Vector3( 400, 165, 570 );
 			//Ogre::Radian r = Radian(3.1416/7.0);
 			//buildingNode->rotate(Vector3::UNIT_Y, r);
 
 			// Position camera in the center of the building
-			this.mCameraNode.Position = this.buildingNode.Position;
+			mCameraNode.Position = buildingNode.Position;
 			// Look back along -Z
-			camera.LookAt( this.mCameraNode.DerivedPosition + new Vector3( 0, 0, -300 ) );
+			camera.LookAt( mCameraNode.DerivedPosition + new Vector3( 0, 0, -300 ) );
 			// Update bounds for camera
 			//mCameraNode.->_updateBounds();
 
 			// create the ray scene query
-			this.raySceneQuery = scene.CreateRayQuery( new Ray( camera.ParentNode.Position, Vector3.NegativeUnitZ ) );
-			this.raySceneQuery.SortByDistance = true;
+			raySceneQuery = scene.CreateRayQuery( new Ray( camera.ParentNode.Position, Vector3.NegativeUnitZ ) );
+			raySceneQuery.SortByDistance = true;
 		}
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			this.buildingTranslate = new Vector3( 0, 0, 0 );
+			buildingTranslate = new Vector3( 0, 0, 0 );
 			if ( input.IsKeyPressed( KeyCodes.U ) )
 			{
-				this.buildingTranslate = new Vector3( 0, -10, 0 );
+				buildingTranslate = new Vector3( 0, -10, 0 );
 			}
 			if ( input.IsKeyPressed( KeyCodes.I ) )
 			{
-				this.buildingTranslate = new Vector3( 0, 10, 0 );
+				buildingTranslate = new Vector3( 0, 10, 0 );
 			}
 
 			if ( input.IsKeyPressed( KeyCodes.LeftShift ) || input.IsKeyPressed( KeyCodes.RightShift ) )
 			{
-				this.mMoveSpeed = 150;
+				mMoveSpeed = 150;
 			}
 			else
 			{
-				this.mMoveSpeed = 15;
+				mMoveSpeed = 15;
 			}
 
 			// test the ray scene query by showing bounding box of whatever the camera is pointing directly at
 			// (takes furthest hit)
-			var updateRay = new Ray();
+			Ray updateRay = new Ray();
 			updateRay.Origin = camera.ParentSceneNode.Position;
 			updateRay.Direction = camera.ParentSceneNode.Orientation * Vector3.NegativeUnitZ;
-			this.raySceneQuery.Ray = updateRay;
+			raySceneQuery.Ray = updateRay;
 			PCZone zone = ( (PCZSceneNode)( camera.ParentSceneNode ) ).HomeZone;
-			( (PCZRaySceneQuery)this.raySceneQuery ).StartZone = zone;
-			( (PCZRaySceneQuery)this.raySceneQuery ).ExcludeNode = camera.ParentSceneNode;
-			this.raySceneQuery.Execute( this.l );
+			( (PCZRaySceneQuery)raySceneQuery ).StartZone = zone;
+			( (PCZRaySceneQuery)raySceneQuery ).ExcludeNode = camera.ParentSceneNode;
+			raySceneQuery.Execute( l );
 
 			base.OnFrameStarted( source, evt );
 		}
@@ -190,11 +190,11 @@ namespace PCZDemo
 
 			// NEW: create a node for the camera and control that instead of camera directly.
 			// We do this because PCZSceneManager requires camera to have a node
-			this.mCameraNode = scene.RootSceneNode.CreateChildSceneNode( "PlayerCamNode" );
+			mCameraNode = scene.RootSceneNode.CreateChildSceneNode( "PlayerCamNode" );
 			// attach the camera to the node
-			this.mCameraNode.AttachObject( camera );
+			mCameraNode.AttachObject( camera );
 			// fix the yaw axis of the camera
-			this.mCameraNode.SetFixedYawAxis( true );
+			mCameraNode.SetFixedYawAxis( true );
 
 			camera.Near = 2;
 			camera.Far = 1000;
@@ -210,7 +210,7 @@ namespace PCZDemo
 
 			// create aab portal(s) around the terrain
 			String portalName;
-			var corners = new Vector3[ 2 ];
+			Vector3[] corners = new Vector3[ 2 ];
 			AxisAlignedBox aabb = AxisAlignedBox.Null;
 
 			// make portal from terrain to default
@@ -258,20 +258,18 @@ namespace PCZDemo
 
 	public class Listener : IRaySceneQueryListener
 	{
-		private MovableObject targetMO;
-
-		#region IRaySceneQueryListener Members
+		private MovableObject targetMO = null;
 
 		public bool OnQueryResult( MovableObject sceneObject, float distance )
 		{
 			if ( sceneObject != null )
 			{
-				if ( sceneObject != this.targetMO )
+				if ( sceneObject != targetMO )
 				{
 					sceneObject.ParentSceneNode.ShowBoundingBox = true;
 				}
 
-				this.targetMO = sceneObject;
+				targetMO = sceneObject;
 			}
 
 			return false;
@@ -281,7 +279,5 @@ namespace PCZDemo
 		{
 			throw new NotImplementedException();
 		}
-
-		#endregion
 	}
 }

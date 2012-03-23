@@ -35,9 +35,9 @@
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
-
 using Axiom.Core;
+
+using System.Collections.Generic;
 
 #endregion
 
@@ -83,5 +83,5 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Represents a collection of <see cref="SceneQueryMovableObjectWorldFragmentPair">SceneQueryMovableObjectWorldFragmentPairs</see> that are sorted by name.
 	/// </summary>
-	public class SceneQueryMovableObjectWorldFragmentIntersectionList : List<SceneQueryMovableObjectWorldFragmentPair> { }
+	public class SceneQueryMovableObjectWorldFragmentIntersectionList : List<SceneQueryMovableObjectWorldFragmentPair> {}
 }

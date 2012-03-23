@@ -38,11 +38,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Media;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 using Tao.OpenGl;
+
+using Axiom.Media;
+using Axiom.Graphics;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -189,12 +193,12 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.A2B10G10R10:
 					return Gl.GL_UNSIGNED_INT_2_10_10_10_REV;
 				case PixelFormat.FLOAT16_R:
-				//case PixelFormat.FLOAT16_GR:
+					//case PixelFormat.FLOAT16_GR:
 				case PixelFormat.FLOAT16_RGB:
 				case PixelFormat.FLOAT16_RGBA:
 					return Gl.GL_HALF_FLOAT_ARB;
 				case PixelFormat.FLOAT32_R:
-				//case PixelFormat.FLOAT32_GR:
+					//case PixelFormat.FLOAT32_GR:
 				case PixelFormat.FLOAT32_RGB:
 				case PixelFormat.FLOAT32_RGBA:
 					return Gl.GL_FLOAT;
@@ -319,11 +323,11 @@ namespace Axiom.RenderSystems.OpenGL
 					return PixelFormat.L16;
 				case Gl.GL_ALPHA8:
 					return PixelFormat.A8;
-				//case Gl.GL_LUMINANCE4_ALPHA4:
-				//    // Unsupported by GL as input format, use the byte packed format
-				//    return PixelFormat.BYTE_LA;
-				//case Gl.GL_LUMINANCE8_ALPHA8:
-				//    return PixelFormat.BYTE_LA;
+					//case Gl.GL_LUMINANCE4_ALPHA4:
+					//    // Unsupported by GL as input format, use the byte packed format
+					//    return PixelFormat.BYTE_LA;
+					//case Gl.GL_LUMINANCE8_ALPHA8:
+					//    return PixelFormat.BYTE_LA;
 				case Gl.GL_R3_G3_B2:
 					return PixelFormat.R3G3B2;
 				case Gl.GL_RGB5_A1:
@@ -340,16 +344,16 @@ namespace Axiom.RenderSystems.OpenGL
 					return PixelFormat.A2R10G10B10;
 				case Gl.GL_RGBA16:
 					return PixelFormat.SHORT_RGBA;
-				//case Gl.GL_RGB16:
-				//    return PixelFormat.SHORT_RGB;
-				//case Gl.GL_LUMINANCE16_ALPHA16:
-				//    return PixelFormat.SHORT_GR;
+					//case Gl.GL_RGB16:
+					//    return PixelFormat.SHORT_RGB;
+					//case Gl.GL_LUMINANCE16_ALPHA16:
+					//    return PixelFormat.SHORT_GR;
 				case Gl.GL_LUMINANCE_FLOAT16_ATI:
 					return PixelFormat.FLOAT16_R;
-				//case Gl.GL_LUMINANCE_ALPHA_FLOAT16_ATI:
-				//    return PixelFormat.FLOAT16_GR;
-				//case Gl.GL_LUMINANCE_ALPHA_FLOAT32_ATI:
-				//    return PixelFormat.FLOAT32_GR;
+					//case Gl.GL_LUMINANCE_ALPHA_FLOAT16_ATI:
+					//    return PixelFormat.FLOAT16_GR;
+					//case Gl.GL_LUMINANCE_ALPHA_FLOAT32_ATI:
+					//    return PixelFormat.FLOAT32_GR;
 				case Gl.GL_LUMINANCE_FLOAT32_ATI:
 					return PixelFormat.FLOAT32_R;
 				case Gl.GL_RGB_FLOAT16_ATI: // Gl.GL_RGB16F_ARB

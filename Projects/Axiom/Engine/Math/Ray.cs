@@ -43,7 +43,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 
+using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -56,8 +58,8 @@ namespace Axiom.Math
 	{
 		#region Fields
 
-		internal Vector3 direction;
 		internal Vector3 origin;
+		internal Vector3 direction;
 
 		#endregion
 
@@ -68,8 +70,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Ray()
 		{
-			this.origin = Vector3.Zero;
-			this.direction = Vector3.UnitZ;
+			origin = Vector3.Zero;
+			direction = Vector3.UnitZ;
 		}
 
 		/// <summary>
@@ -92,12 +94,9 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public Vector3 this[ Real t ]
+		public Vector3 GetPoint( Real t )
 		{
-			get
-			{
-				return this.origin + ( this.direction * t );
-			}
+			return origin + ( direction * t );
 		}
 
 		/// <summary>
@@ -105,9 +104,12 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		public Vector3 GetPoint( Real t )
+		public Vector3 this[ Real t ]
 		{
-			return this.origin + ( this.direction * t );
+			get
+			{
+				return origin + ( direction * t );
+			}
 		}
 
 		#endregion Methods
@@ -198,7 +200,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return this.direction.GetHashCode() ^ this.origin.GetHashCode();
+			return direction.GetHashCode() ^ origin.GetHashCode();
 		}
 
 		#endregion Operator Overloads
@@ -212,11 +214,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.origin;
+				return origin;
 			}
 			set
 			{
-				this.origin = value;
+				origin = value;
 			}
 		}
 
@@ -230,11 +232,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.direction;
+				return direction;
 			}
 			set
 			{
-				this.direction = value;
+				direction = value;
 			}
 		}
 

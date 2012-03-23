@@ -39,11 +39,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
+using Axiom.Collections;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Core.Collections;
-using Axiom.CrossPlatform;
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
@@ -58,11 +61,6 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		/// List of software index buffers that were created and to be disposed by this class.
-		/// </summary>
-		protected List<DefaultHardwareIndexBuffer> customIndexBufferList = new List<DefaultHardwareIndexBuffer>();
-
-		/// <summary>
 		/// List of objects that will provide index data to the build process.
 		/// </summary>
 		protected IndexDataList indexDataList = new IndexDataList();
@@ -73,14 +71,19 @@ namespace Axiom.Graphics
 		protected IntList indexDataVertexDataSetList = new IntList();
 
 		/// <summary>
+		/// List of vertex data objects.
+		/// </summary>
+		protected VertexDataList vertexDataList = new VertexDataList();
+
+		/// <summary>
 		/// Mappings of operation type to vertex data.
 		/// </summary>
 		protected OperationTypeList operationTypes = new OperationTypeList();
 
 		/// <summary>
-		/// List of vertex data objects.
+		/// List of software index buffers that were created and to be disposed by this class.
 		/// </summary>
-		protected VertexDataList vertexDataList = new VertexDataList();
+		protected List<DefaultHardwareIndexBuffer> customIndexBufferList = new List<DefaultHardwareIndexBuffer>();
 
 		#endregion Fields
 
@@ -96,7 +99,7 @@ namespace Axiom.Graphics
 		/// <param name="vertexData">Vertex data to consider for edge detection.</param>
 		public void AddVertexData( VertexData vertexData )
 		{
-			this.vertexDataList.Add( vertexData );
+			vertexDataList.Add( vertexData );
 		}
 
 		/// <summary>
@@ -132,9 +135,9 @@ namespace Axiom.Graphics
 		/// <param name="opType"></param>
 		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
-			this.indexDataList.Add( indexData );
-			this.indexDataVertexDataSetList.Add( vertexSet );
-			this.operationTypes.Add( opType );
+			indexDataList.Add( indexData );
+			indexDataVertexDataSetList.Add( vertexSet );
+			operationTypes.Add( opType );
 		}
 
 		/// <summary>
@@ -153,7 +156,7 @@ namespace Axiom.Graphics
 				throw new ArgumentNullException();
 			}
 
-			RenderOperation renderOp = obj.RenderOperation;
+			var renderOp = obj.RenderOperation;
 
 			IndexData indexData;
 			if ( renderOp.useIndices )
@@ -163,11 +166,11 @@ namespace Axiom.Graphics
 			else
 			{
 				//Create custom index buffer
-				int vertexCount = renderOp.vertexData.vertexCount;
-				IndexType itype = vertexCount > UInt16.MaxValue ? IndexType.Size32 : IndexType.Size16;
+				var vertexCount = renderOp.vertexData.vertexCount;
+				var itype = vertexCount > UInt16.MaxValue ? IndexType.Size32 : IndexType.Size16;
 
 				var ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
-				this.customIndexBufferList.Add( ibuf ); //to be disposed later
+				customIndexBufferList.Add( ibuf ); //to be disposed later
 
 				indexData = new IndexData();
 				indexData.indexBuffer = ibuf;
@@ -175,16 +178,16 @@ namespace Axiom.Graphics
 				indexData.indexStart = 0;
 
 				//Fill buffer with indices
-				BufferBase ibuffer = indexData.indexBuffer.Lock( BufferLocking.Normal );
+				var ibuffer = indexData.indexBuffer.Lock( BufferLocking.Normal );
 				try
 				{
 #if !AXIOM_SAFE_ONLY
 					unsafe
 #endif
 					{
-						short* ibuf16 = ibuffer.ToShortPointer();
-						int* ibuf32 = ibuffer.ToIntPointer();
-						for ( int i = 0; i < indexData.indexCount; i++ )
+						var ibuf16 = ibuffer.ToShortPointer();
+						var ibuf32 = ibuffer.ToIntPointer();
+						for ( var i = 0; i < indexData.indexCount; i++ )
 						{
 							if ( itype == IndexType.Size16 )
 							{
@@ -204,7 +207,7 @@ namespace Axiom.Graphics
 			}
 
 			AddVertexData( renderOp.vertexData );
-			AddIndexData( indexData, this.vertexDataList.Count - 1, renderOp.operationType );
+			AddIndexData( indexData, vertexDataList.Count - 1, renderOp.operationType );
 		}
 
 
@@ -230,8 +233,8 @@ namespace Axiom.Graphics
 			//TODO: find out whether custom index buffer needs to be created in cases (like in the AddObject(IRenderable)).
 			//Borrilis, do you know?
 
-			int vertexSetCount = this.vertexDataList.Count;
-			int indexOfSharedVertexSet = vertexSetCount;
+			var vertexSetCount = vertexDataList.Count;
+			var indexOfSharedVertexSet = vertexSetCount;
 
 			if ( mesh.SharedVertexData != null )
 			{
@@ -240,9 +243,9 @@ namespace Axiom.Graphics
 			}
 
 			// Prepare the builder using the submesh information
-			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			for ( var i = 0; i < mesh.SubMeshCount; i++ )
 			{
-				SubMesh sm = mesh.GetSubMesh( i );
+				var sm = mesh.GetSubMesh( i );
 
 				if ( sm.useSharedVertices )
 				{
@@ -285,14 +288,14 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( DefaultHardwareIndexBuffer buf in this.customIndexBufferList )
+					foreach ( var buf in customIndexBufferList )
 					{
 						buf.SafeDispose();
-						HardwareBufferManager.Instance.NotifyIndexBufferDestroyed( buf );
+						DefaultHardwareBufferManager.Instance.NotifyIndexBufferDestroyed( buf );
 					}
 				}
 			}

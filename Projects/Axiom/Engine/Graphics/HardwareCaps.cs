@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 
 using Axiom.Core;
@@ -86,7 +87,7 @@ namespace Axiom.Graphics
 		Nokia = 10,
 	};
 
-	public class ShaderProfiles : List<string> { }
+	public class ShaderProfiles : List<string> {}
 
 	/// <summary>
 	/// 	This serves as a way to query information about the capabilies of a 3D API and the
@@ -104,100 +105,262 @@ namespace Axiom.Graphics
 
 		#region RendersystemName
 
+		private string _rendersystemName;
+
 		/// <summary>
 		/// Gets or sets the current rendersystem name.
 		/// </summary>
-		public string RendersystemName { get; set; }
+		public string RendersystemName
+		{
+			get
+			{
+				return _rendersystemName;
+			}
+			set
+			{
+				_rendersystemName = value;
+			}
+		}
 
 		#endregion
 
 		#region TextureUnitCount Property
 
 		/// <summary>
+		///    Max number of texture units available on the current hardware.
+		/// </summary>
+		private int _textureUnitCount;
+
+		/// <summary>
 		///		Reports on the number of texture units the graphics hardware has available.
 		/// </summary>
-		public int TextureUnitCount { get; set; }
+		public int TextureUnitCount
+		{
+			get
+			{
+				return _textureUnitCount;
+			}
+			set
+			{
+				_textureUnitCount = value;
+			}
+		}
 
 		#endregion TextureUnitCount Property
 
 		#region WorlMatrixCount Property
 
 		/// <summary>
+		///    Max number of world matrices supported.
+		/// </summary>
+		private int _worldMatrixCount;
+
+		/// <summary>
 		///    Max number of world matrices supported by the hardware.
 		/// </summary>
-		public int WorldMatrixCount { get; set; }
+		public int WorldMatrixCount
+		{
+			get
+			{
+				return _worldMatrixCount;
+			}
+			set
+			{
+				_worldMatrixCount = value;
+			}
+		}
 
 		#endregion WorlMatrixCount Property
 
 		#region MaxVertexProgramVersion Property
 
 		/// <summary>
+		///    The best vertex program version supported by the hardware.
+		/// </summary>
+		private string _maxVertexProgramVersion;
+
+		/// <summary>
 		///    Best vertex program version supported by the hardware.
 		/// </summary>
-		public string MaxVertexProgramVersion { get; set; }
+		public string MaxVertexProgramVersion
+		{
+			get
+			{
+				return _maxVertexProgramVersion;
+			}
+			set
+			{
+				_maxVertexProgramVersion = value;
+			}
+		}
 
 		#endregion MaxVertexProgramVersion Property
 
 		#region VertexProgramConstantFloatCount Property
 
 		/// <summary>
+		///    The number of floating point constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantFloatCount;
+
+		/// <summary>
 		///    Max number of floating point constants supported by the hardware for vertex programs.
 		/// </summary>
-		public int VertexProgramConstantFloatCount { get; set; }
+		public int VertexProgramConstantFloatCount
+		{
+			get
+			{
+				return _vertexProgramConstantFloatCount;
+			}
+			set
+			{
+				_vertexProgramConstantFloatCount = value;
+			}
+		}
 
 		#endregion VertexProgramConstantFloatCount Property
 
 		#region VertexProgramConstantIntCount Property
 
 		/// <summary>
+		///    The number of integer constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantIntCount;
+
+		/// <summary>
 		///    Max number of integer constants supported by the hardware for vertex programs.
 		/// </summary>
-		public int VertexProgramConstantIntCount { get; set; }
+		public int VertexProgramConstantIntCount
+		{
+			get
+			{
+				return _vertexProgramConstantIntCount;
+			}
+			set
+			{
+				_vertexProgramConstantIntCount = value;
+			}
+		}
 
 		#endregion VertexProgramConstantIntCount Property
 
 		#region VertexProgramConstantBoolCount Property
 
 		/// <summary>
+		///    The number of boolean constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantBoolCount;
+
+		/// <summary>
 		///    Max number of boolean constants supported by the hardware for vertex programs.
 		/// </summary>
-		public int VertexProgramConstantBoolCount { get; set; }
+		public int VertexProgramConstantBoolCount
+		{
+			get
+			{
+				return _vertexProgramConstantBoolCount;
+			}
+			set
+			{
+				_vertexProgramConstantBoolCount = value;
+			}
+		}
 
 		#endregion VertexProgramConstantBoolCount Property
 
 		#region MaxFragmentProgramVersion Property
 
 		/// <summary>
+		///    The best fragment program version supported by the hardware.
+		/// </summary>
+		private string _maxFragmentProgramVersion;
+
+		/// <summary>
 		///    Best fragment program version supported by the hardware.
 		/// </summary>
-		public string MaxFragmentProgramVersion { get; set; }
+		public string MaxFragmentProgramVersion
+		{
+			get
+			{
+				return _maxFragmentProgramVersion;
+			}
+			set
+			{
+				_maxFragmentProgramVersion = value;
+			}
+		}
 
 		#endregion MaxFragmentProgramVersion Property
 
 		#region FragmentProgramConstantFloatCount Property
 
 		/// <summary>
+		///    The number of floating point constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantFloatCount;
+
+		/// <summary>
 		///    Max number of floating point constants supported by the hardware for fragment programs.
 		/// </summary>
-		public int FragmentProgramConstantFloatCount { get; set; }
+		public int FragmentProgramConstantFloatCount
+		{
+			get
+			{
+				return _fragmentProgramConstantFloatCount;
+			}
+			set
+			{
+				_fragmentProgramConstantFloatCount = value;
+			}
+		}
 
 		#endregion FragmentProgramConstantFloatCount Property
 
 		#region FragmentProgramConstantIntCount Property
 
 		/// <summary>
+		///    The number of integer constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantIntCount;
+
+		/// <summary>
 		///    Max number of integer constants supported by the hardware for fragment programs.
 		/// </summary>
-		public int FragmentProgramConstantIntCount { get; set; }
+		public int FragmentProgramConstantIntCount
+		{
+			get
+			{
+				return _fragmentProgramConstantIntCount;
+			}
+			set
+			{
+				_fragmentProgramConstantIntCount = value;
+			}
+		}
 
 		#endregion FragmentProgramConstantIntCount Property
 
 		#region FragmentProgramConstantBoolCount Property
 
 		/// <summary>
+		///    The number of boolean constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantBoolCount;
+
+		/// <summary>
 		///    Max number of boolean constants supported by the hardware for fragment programs.
 		/// </summary>
-		public int FragmentProgramConstantBoolCount { get; set; }
+		public int FragmentProgramConstantBoolCount
+		{
+			get
+			{
+				return _fragmentProgramConstantBoolCount;
+			}
+			set
+			{
+				_fragmentProgramConstantBoolCount = value;
+			}
+		}
 
 		#endregion FragmentProgramConstantBoolCount Property
 
@@ -214,7 +377,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The number of simultaneous render targets supported
 		/// </summary>
-		public int MultiRenderTargetCount { get; set; }
+		private int _multiRenderTargetCount;
+
+		/// <summary>
+		/// The number of simultaneous render targets supported
+		/// </summary>
+		public int MultiRenderTargetCount
+		{
+			get
+			{
+				return _multiRenderTargetCount;
+			}
+			set
+			{
+				_multiRenderTargetCount = value;
+			}
+		}
 
 		#endregion MultiRenderTargetCount Property
 
@@ -232,11 +410,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._stencilBufferBitCount;
+				return _stencilBufferBitCount;
 			}
 			set
 			{
-				this._stencilBufferBitCount = value;
+				_stencilBufferBitCount = value;
 			}
 		}
 
@@ -245,9 +423,24 @@ namespace Axiom.Graphics
 		#region MaxLights Property
 
 		/// <summary>
+		///    Maximum number of lights that can be active in the scene at any given time.
+		/// </summary>
+		private int _maxLights;
+
+		/// <summary>
 		///		Maximum number of lights that can be active in the scene at any given time.
 		/// </summary>
-		public int MaxLights { get; set; }
+		public int MaxLights
+		{
+			get
+			{
+				return _maxLights;
+			}
+			set
+			{
+				_maxLights = value;
+			}
+		}
 
 		#endregion MaxLights Property
 
@@ -259,11 +452,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._vendor;
+				return _vendor;
 			}
 			set
 			{
-				this._vendor = value;
+				_vendor = value;
 			}
 		}
 
@@ -283,11 +476,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._deviceName;
+				return _deviceName;
 			}
 			set
 			{
-				this._deviceName = value;
+				_deviceName = value;
 			}
 		}
 
@@ -300,7 +493,7 @@ namespace Axiom.Graphics
 		/// if a RSC with same name, but newer version is introduced, the older one 
 		/// will be removed
 		/// </summary>
-		private DriverVersion _driverVersion;
+		private DriverVersion _driverVersion = new DriverVersion();
 
 		/// <summary>
 		/// The driver version string
@@ -309,11 +502,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._driverVersion;
+				return _driverVersion;
 			}
 			set
 			{
-				this._driverVersion = value;
+				_driverVersion = value;
 			}
 		}
 
@@ -324,7 +517,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The maximum point size
 		/// </summary>
-		public float MaxPointSize { get; set; }
+		private float _maxPointSize;
+
+		/// <summary>
+		/// The maximum point size
+		/// </summary>
+		public float MaxPointSize
+		{
+			get
+			{
+				return _maxPointSize;
+			}
+			set
+			{
+				_maxPointSize = value;
+			}
+		}
 
 		#endregion MaxPointSize Property
 
@@ -333,7 +541,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Are non-POW2 textures feature-limited?
 		/// </summary>
-		public bool NonPOW2TexturesLimited { get; set; }
+		private bool _nonPOW2TexturesLimited;
+
+		/// <summary>
+		/// Are non-POW2 textures feature-limited?
+		/// </summary>
+		public bool NonPOW2TexturesLimited
+		{
+			get
+			{
+				return _nonPOW2TexturesLimited;
+			}
+			set
+			{
+				_nonPOW2TexturesLimited = value;
+			}
+		}
 
 		#endregion NonPOW2TexturesLimited Property
 
@@ -342,7 +565,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// The number of vertex texture units supported
 		/// </summary>
-		public int VertexTextureUnitCount { get; set; }
+		private int _vertexTextureUnitCount;
+
+		/// <summary>
+		/// The number of vertex texture units supported
+		/// </summary>
+		public int VertexTextureUnitCount
+		{
+			get
+			{
+				return _vertexTextureUnitCount;
+			}
+			set
+			{
+				_vertexTextureUnitCount = value;
+			}
+		}
 
 		#endregion VertexTextureUnitCount Property
 
@@ -351,7 +589,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Are vertex texture units shared with fragment processor?
 		/// </summary>
-		public bool VertexTextureUnitsShared { get; set; }
+		private bool _vertexTextureUnitsShared;
+
+		/// <summary>
+		/// Are vertex texture units shared with fragment processor?
+		/// </summary>
+		public bool VertexTextureUnitsShared
+		{
+			get
+			{
+				return _vertexTextureUnitsShared;
+			}
+			set
+			{
+				_vertexTextureUnitsShared = value;
+			}
+		}
 
 		#endregion VertexTextureUnitsShared Property
 
@@ -364,7 +617,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderSystemCapabilities()
 		{
-			this._caps = 0;
+			_caps = 0;
 		}
 
 		#endregion Construction and Destruction
@@ -378,7 +631,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public bool HasCapability( Capabilities cap )
 		{
-			return ( this._caps & cap ) > 0;
+			return ( _caps & cap ) > 0;
 		}
 
 		/// <summary>
@@ -387,7 +640,7 @@ namespace Axiom.Graphics
 		/// <param name="cap"></param>
 		public void SetCapability( Capabilities cap )
 		{
-			this._caps |= cap;
+			_caps |= cap;
 		}
 
 		/// <summary>
@@ -405,10 +658,10 @@ namespace Axiom.Graphics
 		{
 			logMgr.Write( "---RenderSystem capabilities---" );
 			logMgr.Write( "\t-GPU Vendor: {0}", VendorToString( Vendor ) );
-			logMgr.Write( "\t-Device Name: {0}", this._deviceName );
-			logMgr.Write( "\t-Driver Version: {0}", this._driverVersion.ToString() );
-			logMgr.Write( "\t-Available texture units: {0}", TextureUnitCount );
-			logMgr.Write( "\t-Maximum lights available: {0}", MaxLights );
+			logMgr.Write( "\t-Device Name: {0}", _deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
+			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
+			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
 			logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.Blending ) ) );
 			logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
@@ -419,7 +672,7 @@ namespace Axiom.Graphics
 
 			if ( HasCapability( Capabilities.StencilBuffer ) )
 			{
-				logMgr.Write( "\t\t-Stencil depth: {0} bits", this._stencilBufferBitCount );
+				logMgr.Write( "\t\t-Stencil depth: {0} bits", _stencilBufferBitCount );
 				logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
 				logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
 			}
@@ -430,14 +683,14 @@ namespace Axiom.Graphics
 
 			if ( HasCapability( Capabilities.VertexPrograms ) )
 			{
-				logMgr.Write( "\t\t-Max vertex program version: {0}", MaxVertexProgramVersion );
+				logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
 			}
 
 			logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
 
 			if ( HasCapability( Capabilities.FragmentPrograms ) )
 			{
-				logMgr.Write( "\t\t-Max fragment program version: {0}", MaxFragmentProgramVersion );
+				logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
 			}
 
 			logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
@@ -480,8 +733,8 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		internal static GPUVendor VendorFromString( string vendorString )
 		{
-			GPUVendor ret = GPUVendor.Unknown;
-			object lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof( GPUVendor ) );
+			var ret = GPUVendor.Unknown;
+			var lookUpResult = ScriptEnumAttribute.Lookup( vendorString, typeof ( GPUVendor ) );
 
 			if ( lookUpResult != null )
 			{
@@ -498,7 +751,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		internal static string VendorToString( GPUVendor v )
 		{
-			return ScriptEnumAttribute.GetScriptAttribute( (int)v, typeof( GPUVendor ) );
+			return ScriptEnumAttribute.GetScriptAttribute( (int)v, typeof ( GPUVendor ) );
 		}
 
 		#endregion Methods
@@ -515,7 +768,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void AddShaderProfile( string profile )
 		{
-			this.ShaderProfiles.Add( profile );
+			ShaderProfiles.Add( profile );
 		}
 
 		/// <summary>
@@ -523,7 +776,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveShaderProfile( string profile )
 		{
-			this.ShaderProfiles.Remove( profile );
+			ShaderProfiles.Remove( profile );
 		}
 
 		/// <summary>
@@ -531,7 +784,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool IsShaderProfileSupported( string profile )
 		{
-			return this.ShaderProfiles.Contains( profile );
+			return ShaderProfiles.Contains( profile );
 		}
 
 		#endregion
@@ -543,7 +796,7 @@ namespace Axiom.Graphics
 
 		public void UnsetCapability( Capabilities cap )
 		{
-			this._caps &= ~cap;
+			_caps &= ~cap;
 		}
 	}
 }

@@ -43,9 +43,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
 
+using Axiom.Math.Collections;
 using Axiom.Utilities;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -70,6 +74,7 @@ namespace Axiom.Math
 		///		Creates a new Positional Spline.
 		/// </summary>
 		public PositionalSpline()
+			: base()
 		{
 			// intialize the vector collections
 			pointList = new List<Vector3>();
@@ -98,7 +103,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			Real segment = t * ( pointList.Count - 1 );
+			var segment = t * ( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -146,10 +151,10 @@ namespace Axiom.Math
 			var powers = new Vector4( t3, t2, t, 1 );
 
 			// Algorithm is result = powers * hermitePoly * Matrix4(point1, point2, tangent1, tangent2)
-			Vector3 point1 = pointList[ index ];
-			Vector3 point2 = pointList[ index + 1 ];
-			Vector3 tangent1 = tangentList[ index ];
-			Vector3 tangent2 = tangentList[ index + 1 ];
+			var point1 = pointList[ index ];
+			var point2 = pointList[ index + 1 ];
+			var tangent1 = tangentList[ index ];
+			var tangent2 = tangentList[ index + 1 ];
 			var point = new Matrix4();
 
 			// create the matrix 4 with the 2 point and tangent values
@@ -171,7 +176,7 @@ namespace Axiom.Math
 			point.m33 = 1.0f;
 
 			// get the final result in a Vector4
-			Vector4 result = powers * hermitePoly * point;
+			var result = powers * hermitePoly * point;
 
 			// return the final result
 			return new Vector3( result.x, result.y, result.z );

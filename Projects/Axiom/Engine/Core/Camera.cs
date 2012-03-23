@@ -81,16 +81,45 @@ namespace Axiom.Core
 	/// </remarks>
 	public class Camera : Frustum
 	{
-		#region events
+		// Not implemented/missing
+		// SetPosition(x,y,z) as Position is exposed as Vector3
+		// SetDirection(x,y,z) as Direction is exposed as Vector3
+		// LookAt(x,y,z) we might expose LookAt as setter property
+		// string MovableType (not implemented in base, yet?)
+		// IsVisible overrides from Frustum
+		// getWorldSpaceCorners override from Frustum
+		// getFrustumPlane override from Frustum
+		// getNearClipDistance override from Frustum
+		// getFarClipDistance override from Frustum
+		//
+		// the current impl shadows some props above that were overriden in ogre
+		// this is most likeley a bug!
+		//
+		// Differences:
+		// FixedYawAxis is exposed as Vector3 whereas
+		// Ogre exposes it together with a bool (isYawFixed)
+		// we might want to expose both rather than implicitly set
+		// the isYawFixed
 
-		#region Delegates
+		#region events
 
 		/// <summary>
 		///    Delegate for Viewport update events.
 		/// </summary>
 		public delegate void CameraEventHandler( CameraEventArgs e );
 
-		#endregion
+		/// <summary>
+		///    Event arguments for render target updates.
+		/// </summary>
+		public class CameraEventArgs : EventArgs
+		{
+			public Camera Source { get; internal set; }
+
+			public CameraEventArgs( Camera source )
+			{
+				Source = source;
+			}
+		}
 
 		/// <summary>
 		/// Called prior to the scene being rendered with this camera
@@ -109,19 +138,6 @@ namespace Axiom.Core
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Merged from Listener subclass" )]
 		public event CameraEventHandler CameraDestroyed;
-
-		/// <summary>
-		///    Event arguments for render target updates.
-		/// </summary>
-		public class CameraEventArgs : EventArgs
-		{
-			public CameraEventArgs( Camera source )
-			{
-				Source = source;
-			}
-
-			public Camera Source { get; internal set; }
-		}
 
 		#endregion
 
@@ -153,12 +169,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.orientation;
+				return orientation;
 			}
 			set
 			{
-				this.orientation = value;
-				this.orientation.Normalize();
+				orientation = value;
+				orientation.Normalize();
 				InvalidateView();
 			}
 		}
@@ -181,11 +197,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.position;
+				return position;
 			}
 			set
 			{
-				this.position = value;
+				position = value;
 				InvalidateView();
 			}
 		}
@@ -202,7 +218,7 @@ namespace Axiom.Core
 			// Direction points down the negatize Z axis by default.
 			get
 			{
-				return this.orientation * -Vector3.UnitZ;
+				return orientation * -Vector3.UnitZ;
 			}
 			set
 			{
@@ -217,16 +233,16 @@ namespace Axiom.Core
 
 				// Remember, camera points down -Z of local axes!
 				// Therefore reverse direction of direction vector before determining local Z
-				Vector3 zAdjustVector = -value;
+				var zAdjustVector = -value;
 				zAdjustVector.Normalize();
 
 				Quaternion targetWorldOrientation;
-				if ( this.isYawFixed )
+				if ( isYawFixed )
 				{
-					Vector3 xVector = this.yawFixedAxis.Cross( zAdjustVector );
+					var xVector = yawFixedAxis.Cross( zAdjustVector );
 					xVector.Normalize();
 
-					Vector3 yVector = zAdjustVector.Cross( xVector );
+					var yVector = zAdjustVector.Cross( xVector );
 					yVector.Normalize();
 
 					targetWorldOrientation = Quaternion.FromAxes( xVector, yVector, zAdjustVector );
@@ -239,7 +255,7 @@ namespace Axiom.Core
 					UpdateView();
 
 					// get the vector components of the derived orientation vector
-					this.realOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
+					realOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
 
 					Quaternion rotationQuat;
 
@@ -255,17 +271,17 @@ namespace Axiom.Core
 						rotationQuat = zAxis.GetRotationTo( zAdjustVector );
 					}
 
-					targetWorldOrientation = rotationQuat * this.orientation;
+					targetWorldOrientation = rotationQuat * orientation;
 				}
 
 				// transform to parent space
 				if ( parentNode != null )
 				{
-					this.orientation = parentNode.DerivedOrientation.Inverse() * targetWorldOrientation;
+					orientation = parentNode.DerivedOrientation.Inverse() * targetWorldOrientation;
 				}
 				else
 				{
-					this.orientation = targetWorldOrientation;
+					orientation = targetWorldOrientation;
 				}
 
 				// TODO: If we have a fixed yaw axis, we musn't break it by using the
@@ -326,7 +342,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.derivedOrientation;
+				return derivedOrientation;
 			}
 		}
 
@@ -350,7 +366,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.derivedPosition;
+				return derivedPosition;
 			}
 		}
 
@@ -370,7 +386,7 @@ namespace Axiom.Core
 				UpdateView();
 
 				// RH coords, direction points down -Z by default
-				return this.derivedOrientation * -Vector3.UnitZ;
+				return derivedOrientation * -Vector3.UnitZ;
 			}
 		}
 
@@ -388,7 +404,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.derivedOrientation * Vector3.UnitY;
+				return derivedOrientation * Vector3.UnitY;
 			}
 		}
 
@@ -406,7 +422,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.derivedOrientation * Vector3.UnitX;
+				return derivedOrientation * Vector3.UnitX;
 			}
 		}
 
@@ -430,7 +446,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.realOrientation;
+				return realOrientation;
 			}
 		}
 
@@ -454,7 +470,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.realPosition;
+				return realPosition;
 			}
 		}
 
@@ -474,7 +490,7 @@ namespace Axiom.Core
 				UpdateView();
 
 				// RH coords, direction points down -Z by default
-				return this.realOrientation * -Vector3.UnitZ;
+				return realOrientation * -Vector3.UnitZ;
 			}
 		}
 
@@ -492,7 +508,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.realOrientation * Vector3.UnitY;
+				return realOrientation * Vector3.UnitY;
 			}
 		}
 
@@ -510,7 +526,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return this.realOrientation * Vector3.UnitX;
+				return realOrientation * Vector3.UnitX;
 			}
 		}
 
@@ -546,19 +562,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.yawFixedAxis;
+				return yawFixedAxis;
 			}
 			set
 			{
-				this.yawFixedAxis = value;
+				yawFixedAxis = value;
 
-				if ( this.yawFixedAxis != Vector3.Zero )
+				if ( yawFixedAxis != Vector3.Zero )
 				{
-					this.isYawFixed = true;
+					isYawFixed = true;
 				}
 				else
 				{
-					this.isYawFixed = false;
+					isYawFixed = false;
 				}
 			}
 		}
@@ -649,13 +665,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.sceneLodFactor;
+				return sceneLodFactor;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f, "Lod bias must be greater than 0" );
-				this.sceneLodFactor = value;
-				this.invSceneLodFactor = 1.0f / this.sceneLodFactor;
+				sceneLodFactor = value;
+				invSceneLodFactor = 1.0f / sceneLodFactor;
 			}
 		}
 
@@ -684,11 +700,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._lodCamera ?? this;
+				return _lodCamera ?? this;
 			}
 			set
 			{
-				this._lodCamera = this == value ? null : value;
+				_lodCamera = this == value ? null : value;
 			}
 		}
 
@@ -710,21 +726,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.invSceneLodFactor;
+				return invSceneLodFactor;
 			}
 		}
 
 		#endregion InverseLodBias Property
-
-		/// <summary>
-		///		Was viewing window changed?
-		/// </summary>
-		protected bool recalculateWindow;
-
-		/// <summary>
-		///		Bottom window edge (window clip planes).
-		/// </summary>
-		protected float windowBottom;
 
 		/// <summary>
 		///		Left window edge (window clip planes).
@@ -740,6 +746,62 @@ namespace Axiom.Core
 		///		Top window edge (window clip planes).
 		/// </summary>
 		protected float windowTop;
+
+		/// <summary>
+		///		Bottom window edge (window clip planes).
+		/// </summary>
+		protected float windowBottom;
+
+		#region IsWindowSet Property
+
+		/// <summary>
+		///		Is viewing window used.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool isWindowSet;
+
+		/// <summary>
+		///		Gets the flag specifying if a viewport window is being used.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual bool IsWindowSet
+		{
+			get
+			{
+				return isWindowSet;
+			}
+		}
+
+		#endregion IsWindowSet Property
+
+		#region WindowPlanes Property
+
+		/// <summary>
+		/// Windowed viewport clip planes.
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		protected List<Plane> windowClipPlanes = new List<Plane>();
+
+		/// <summary>
+		///  Gets the window clip planes, only applicable if isWindowSet == true
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public IList<Plane> WindowPlanes
+		{
+			get
+			{
+				UpdateView();
+				SetWindowImpl();
+				return windowClipPlanes;
+			}
+		}
+
+		#endregion WindowPlanes Property
+
+		/// <summary>
+		///		Was viewing window changed?
+		/// </summary>
+		protected bool recalculateWindow;
 
 		#region Viewport Property
 
@@ -786,61 +848,15 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.useRenderingDistance;
+				return useRenderingDistance;
 			}
 			set
 			{
-				this.useRenderingDistance = value;
+				useRenderingDistance = value;
 			}
 		}
 
 		#endregion UseRenderingQueue Property
-
-		#region IsWindowSet Property
-
-		/// <summary>
-		///		Is viewing window used.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool isWindowSet;
-
-		/// <summary>
-		///		Gets the flag specifying if a viewport window is being used.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual bool IsWindowSet
-		{
-			get
-			{
-				return this.isWindowSet;
-			}
-		}
-
-		#endregion IsWindowSet Property
-
-		#region WindowPlanes Property
-
-		/// <summary>
-		/// Windowed viewport clip planes.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected List<Plane> windowClipPlanes = new List<Plane>();
-
-		/// <summary>
-		///  Gets the window clip planes, only applicable if isWindowSet == true
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public IList<Plane> WindowPlanes
-		{
-			get
-			{
-				UpdateView();
-				SetWindowImpl();
-				return this.windowClipPlanes;
-			}
-		}
-
-		#endregion WindowPlanes Property
 
 		/// <summary>
 		///     Tells the camera to use a separate Frustum instance to perform culling.
@@ -871,8 +887,8 @@ namespace Axiom.Core
 			// Init camera location & direction
 
 			// Point down -Z axis
-			this.orientation = Quaternion.Identity;
-			this.position = Vector3.Zero;
+			orientation = Quaternion.Identity;
+			position = Vector3.Zero;
 
 			// Reasonable defaults to camera params
 			PolygonMode = PolygonMode.Solid;
@@ -882,9 +898,9 @@ namespace Axiom.Core
 			AutoTrackingOffset = Vector3.Zero;
 
 			// default these to 1 so Lod default to normal
-			this.sceneLodFactor = this.invSceneLodFactor = 1.0f;
+			sceneLodFactor = invSceneLodFactor = 1.0f;
 
-			this.useRenderingDistance = true;
+			useRenderingDistance = true;
 
 
 			FieldOfView = (float)System.Math.PI / 4.0f;
@@ -896,7 +912,7 @@ namespace Axiom.Core
 			//SetFixedYawAxis( true );
 			FixedYawAxis = Vector3.UnitY; // Axiom specific
 
-			this.derivedOrientation = Quaternion.Identity;
+			derivedOrientation = Quaternion.Identity;
 
 			InvalidateFrustum();
 			InvalidateView();
@@ -912,25 +928,43 @@ namespace Axiom.Core
 
 		#endregion Constructors
 
-		// Not implemented/missing
-		// SetPosition(x,y,z) as Position is exposed as Vector3
-		// SetDirection(x,y,z) as Direction is exposed as Vector3
-		// LookAt(x,y,z) we might expose LookAt as setter property
-		// string MovableType (not implemented in base, yet?)
-		// IsVisible overrides from Frustum
-		// getWorldSpaceCorners override from Frustum
-		// getFrustumPlane override from Frustum
-		// getNearClipDistance override from Frustum
-		// getFarClipDistance override from Frustum
-		//
-		// the current impl shadows some props above that were overriden in ogre
-		// this is most likeley a bug!
-		//
-		// Differences:
-		// FixedYawAxis is exposed as Vector3 whereas
-		// Ogre exposes it together with a bool (isYawFixed)
-		// we might want to expose both rather than implicitly set
-		// the isYawFixed
+		#region Frustum Members
+
+		/// <summary>
+		///		Get the derived orientation of this frustum.
+		/// </summary>
+		/// <returns></returns>
+		protected override Quaternion GetOrientationForViewUpdate()
+		{
+			return realOrientation;
+		}
+
+		/// <summary>
+		///		Get the derived position of this frustum.
+		/// </summary>
+		/// <returns></returns>
+		protected override Vector3 GetPositionForViewUpdate()
+		{
+			return realPosition;
+		}
+
+		/// <summary>
+		///		Signal to update view information.
+		/// </summary>
+		protected override void InvalidateView()
+		{
+			recalculateWindow = true;
+			base.InvalidateView();
+		}
+
+		/// <summary>
+		///		Signal to update frustum information.
+		/// </summary>
+		protected override void InvalidateFrustum()
+		{
+			_recalculateFrustum = true;
+			base.InvalidateFrustum();
+		}
 
 		/// <summary>
 		///		Evaluates whether or not the view matrix is out of date.
@@ -949,17 +983,17 @@ namespace Axiom.Core
 						// we are out of date with the parent scene node
 						_lastParentOrientation = parentNode.DerivedOrientation;
 						_lastParentPosition = parentNode.DerivedPosition;
-						this.realOrientation = _lastParentOrientation * this.orientation;
-						this.realPosition = ( _lastParentOrientation * this.position ) + _lastParentPosition;
+						realOrientation = _lastParentOrientation * orientation;
+						realPosition = ( _lastParentOrientation * position ) + _lastParentPosition;
 						_recalculateView = true;
-						this.recalculateWindow = true;
+						recalculateWindow = true;
 					}
 				}
 				else
 				{
 					// rely on own updates
-					this.realOrientation = this.orientation;
-					this.realPosition = this.position;
+					realOrientation = orientation;
+					realPosition = position;
 				}
 
 				if ( IsReflected && linkedReflectionPlane != null && lastLinkedReflectionPlane != linkedReflectionPlane.DerivedPlane )
@@ -968,7 +1002,7 @@ namespace Axiom.Core
 					ReflectionMatrix = Utility.BuildReflectionMatrix( ReflectionPlane );
 					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					_recalculateView = true;
-					this.recalculateWindow = true;
+					recalculateWindow = true;
 				}
 
 				// Deriving reflected orientation / position
@@ -977,18 +1011,18 @@ namespace Axiom.Core
 					if ( IsReflected )
 					{
 						// Calculate reflected orientation, use up-vector as fallback axis.
-						Vector3 dir = this.realOrientation * Vector3.NegativeUnitZ;
-						Vector3 rdir = dir.Reflect( ReflectionPlane.Normal );
-						Vector3 up = this.realOrientation * Vector3.UnitY;
-						this.derivedOrientation = dir.GetRotationTo( rdir, up ) * this.realOrientation;
+						var dir = realOrientation * Vector3.NegativeUnitZ;
+						var rdir = dir.Reflect( ReflectionPlane.Normal );
+						var up = realOrientation * Vector3.UnitY;
+						derivedOrientation = dir.GetRotationTo( rdir, up ) * realOrientation;
 
 						// Calculate reflected position.
-						this.derivedPosition = ReflectionMatrix.TransformAffine( this.realPosition );
+						derivedPosition = ReflectionMatrix.TransformAffine( realPosition );
 					}
 					else
 					{
-						this.derivedOrientation = this.realOrientation;
-						this.derivedPosition = this.realPosition;
+						derivedOrientation = realOrientation;
+						derivedPosition = realPosition;
 					}
 				}
 
@@ -997,6 +1031,78 @@ namespace Axiom.Core
 		}
 
 		#region Custom Frustum culling implementation
+
+		public new bool IsObjectVisible( AxisAlignedBox box )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( box );
+			}
+			else
+			{
+				return base.IsObjectVisible( box );
+			}
+		}
+
+		public new bool IsObjectVisible( AxisAlignedBox box, out FrustumPlane culledBy )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( box, out culledBy );
+			}
+			else
+			{
+				return base.IsObjectVisible( box, out culledBy );
+			}
+		}
+
+		public new bool IsObjectVisible( Sphere sphere )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( sphere );
+			}
+			else
+			{
+				return base.IsObjectVisible( sphere );
+			}
+		}
+
+		public new bool IsObjectVisible( Sphere sphere, out FrustumPlane culledBy )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( sphere, out culledBy );
+			}
+			else
+			{
+				return base.IsObjectVisible( sphere, out culledBy );
+			}
+		}
+
+		public new bool IsObjectVisible( Vector3 vertex )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( vertex );
+			}
+			else
+			{
+				return base.IsObjectVisible( vertex );
+			}
+		}
+
+		public new bool IsObjectVisible( Vector3 vertex, out FrustumPlane culledBy )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.IsObjectVisible( vertex, out culledBy );
+			}
+			else
+			{
+				return base.IsObjectVisible( vertex, out culledBy );
+			}
+		}
 
 		public new Vector3[] WorldSpaceCorners
 		{
@@ -1019,6 +1125,19 @@ namespace Axiom.Core
 				{
 					return base.FrustumPlanes;
 				}
+			}
+		}
+
+		[OgreVersion( 1, 7, 2790 )]
+		public override bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
+		{
+			if ( null != CullFrustum )
+			{
+				return CullFrustum.ProjectSphere( sphere, out left, out top, out right, out bottom );
+			}
+			//else
+			{
+				return base.ProjectSphere( sphere, out left, out top, out right, out bottom );
 			}
 		}
 
@@ -1111,94 +1230,16 @@ namespace Axiom.Core
 			}
 		}
 
-		public new bool IsObjectVisible( AxisAlignedBox box )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( box );
-			}
-			else
-			{
-				return base.IsObjectVisible( box );
-			}
-		}
-
-		public new bool IsObjectVisible( AxisAlignedBox box, out FrustumPlane culledBy )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( box, out culledBy );
-			}
-			else
-			{
-				return base.IsObjectVisible( box, out culledBy );
-			}
-		}
-
-		public new bool IsObjectVisible( Sphere sphere )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( sphere );
-			}
-			else
-			{
-				return base.IsObjectVisible( sphere );
-			}
-		}
-
-		public new bool IsObjectVisible( Sphere sphere, out FrustumPlane culledBy )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( sphere, out culledBy );
-			}
-			else
-			{
-				return base.IsObjectVisible( sphere, out culledBy );
-			}
-		}
-
-		public new bool IsObjectVisible( Vector3 vertex )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( vertex );
-			}
-			else
-			{
-				return base.IsObjectVisible( vertex );
-			}
-		}
-
-		public new bool IsObjectVisible( Vector3 vertex, out FrustumPlane culledBy )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.IsObjectVisible( vertex, out culledBy );
-			}
-			else
-			{
-				return base.IsObjectVisible( vertex, out culledBy );
-			}
-		}
-
-		[OgreVersion( 1, 7, 2790 )]
-		public override bool ProjectSphere( Sphere sphere, out float left, out float top, out float right, out float bottom )
-		{
-			if ( null != CullFrustum )
-			{
-				return CullFrustum.ProjectSphere( sphere, out left, out top, out right, out bottom );
-			}
-			//else
-			{
-				return base.ProjectSphere( sphere, out left, out top, out right, out bottom );
-			}
-		}
-
 		#endregion Custom Frustum culling implementation
 
+		#endregion Frustum Members
+
 		#region SceneObject Implementation
+
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
+			// Do nothing
+		}
 
 		public override AxisAlignedBox BoundingBox
 		{
@@ -1223,12 +1264,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			// Do nothing
-		}
-
-		public override void NotifyCurrentCamera( Camera camera )
+		public override void NotifyCurrentCamera( Axiom.Core.Camera camera )
 		{
 			// Do nothing
 		}
@@ -1264,7 +1300,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void Move( Vector3 offset )
 		{
-			this.position = this.position + offset;
+			position = position + offset;
 			InvalidateView();
 		}
 
@@ -1276,9 +1312,9 @@ namespace Axiom.Core
 		public void MoveRelative( Vector3 offset )
 		{
 			// Transform the axes of the relative vector by camera's local axes
-			Vector3 transform = this.orientation * offset;
+			var transform = orientation * offset;
 
-			this.position += transform;
+			position += transform;
 			InvalidateView();
 		}
 
@@ -1289,7 +1325,7 @@ namespace Axiom.Core
 		public void LookAt( Vector3 target )
 		{
 			UpdateView();
-			Direction = ( target - this.realPosition );
+			Direction = ( target - realPosition );
 		}
 
 		/// <summary>
@@ -1299,7 +1335,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void Pitch( float degrees )
 		{
-			Vector3 xAxis = this.orientation * Vector3.UnitX;
+			var xAxis = orientation * Vector3.UnitX;
 			Rotate( xAxis, degrees );
 
 			InvalidateView();
@@ -1314,15 +1350,15 @@ namespace Axiom.Core
 		{
 			Vector3 yAxis;
 
-			if ( this.isYawFixed )
+			if ( isYawFixed )
 			{
 				// Rotate around fixed yaw axis
-				yAxis = this.yawFixedAxis;
+				yAxis = yawFixedAxis;
 			}
 			else
 			{
 				// Rotate around local Y axis
-				yAxis = this.orientation * Vector3.UnitY;
+				yAxis = orientation * Vector3.UnitY;
 			}
 
 			Rotate( yAxis, degrees );
@@ -1338,7 +1374,7 @@ namespace Axiom.Core
 		public void Roll( float degrees )
 		{
 			// Rotate around local Z axis
-			Vector3 zAxis = this.orientation * Vector3.UnitZ;
+			var zAxis = orientation * Vector3.UnitZ;
 			Rotate( zAxis, degrees );
 
 			InvalidateView();
@@ -1355,7 +1391,7 @@ namespace Axiom.Core
 
 			// Normalise the quat to avoid cumulative problems with precision
 			qnorm.Normalize();
-			this.orientation = qnorm * this.orientation;
+			orientation = qnorm * orientation;
 
 			InvalidateView();
 		}
@@ -1368,7 +1404,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void Rotate( Vector3 axis, float degrees )
 		{
-			Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( degrees ), axis );
+			var q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
 			Rotate( q );
 		}
 
@@ -1475,13 +1511,13 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetWindow( float left, float top, float right, float bottom )
 		{
-			this.windowLeft = left;
-			this.windowTop = top;
-			this.windowRight = right;
-			this.windowBottom = bottom;
+			windowLeft = left;
+			windowTop = top;
+			windowRight = right;
+			windowBottom = bottom;
 
-			this.isWindowSet = true;
-			this.recalculateWindow = true;
+			isWindowSet = true;
+			recalculateWindow = true;
 		}
 
 		//-----------------------------------------------------------------------
@@ -1509,23 +1545,23 @@ namespace Axiom.Core
 
 			var vec = new Vector3[ 4 ];
 			var infpt = new[]
-                        {
-                            0, 0, 0, 0
-                        }; // 0=finite, 1=infinite, 2=straddles infinity
+			            {
+			            	0, 0, 0, 0
+			            }; // 0=finite, 1=infinite, 2=straddles infinity
 
 
 			// find how much the anchor point must be displaced in the plane's
 			// constant variable
-			Real delta = planeOffset - anchor.z;
+			var delta = planeOffset - anchor.z;
 
 			// now set the intersection point and note whether it is a 
 			// point at infinity or straddles infinity
-			IEnumerator<Vector3> edir = dir.GetEnumerator();
-			for ( int i = 0; i < 4; i++ )
+			var edir = dir.GetEnumerator();
+			for ( var i = 0; i < 4; i++ )
 			{
 				edir.MoveNext();
-				Vector3 cur = edir.Current;
-				Real test = cur.z * delta;
+				var cur = edir.Current;
+				var test = cur.z * delta;
 				if ( test == 0.0 )
 				{
 					vec[ i ] = cur;
@@ -1533,7 +1569,7 @@ namespace Axiom.Core
 				}
 				else
 				{
-					Real lambda = delta / cur.z;
+					var lambda = delta / cur.z;
 					vec[ i ] = anchor + ( lambda * cur );
 					if ( test < 0.0 )
 					{
@@ -1542,9 +1578,9 @@ namespace Axiom.Core
 				}
 			}
 
-			for ( int i = 0; i < 4; i++ )
+			for ( var i = 0; i < 4; i++ )
 			{
-				Vector3 v = vec[ i ];
+				var v = vec[ i ];
 				// store the finite intersection points
 				if ( infpt[ i ] == 0 )
 				{
@@ -1555,8 +1591,8 @@ namespace Axiom.Core
 					// handle the infinite points of intersection;
 					// cases split up into the possible frustum planes 
 					// pieces which may contain a finite intersection point
-					int nextind = ( i + 1 ) % 4;
-					int prevind = ( i + 3 ) % 4;
+					var nextind = ( i + 1 ) % 4;
+					var prevind = ( i + 3 ) % 4;
 					if ( ( infpt[ prevind ] == 0 ) || ( infpt[ nextind ] == 0 ) )
 					{
 						if ( infpt[ i ] == 1 )
@@ -1568,12 +1604,12 @@ namespace Axiom.Core
 							// handle the intersection points that straddle infinity (back-project)
 							if ( infpt[ prevind ] == 0 )
 							{
-								Vector3 temp = vec[ prevind ] - vec[ i ];
+								var temp = vec[ prevind ] - vec[ i ];
 								yield return new Vector4( temp.x, temp.y, temp.z, 0.0 );
 							}
 							if ( infpt[ nextind ] == 0 )
 							{
-								Vector3 temp = vec[ nextind ] - vec[ i ];
+								var temp = vec[ nextind ] - vec[ i ];
 								yield return new Vector4( temp.x, temp.y, temp.z, 0.0 );
 							}
 						}
@@ -1613,39 +1649,39 @@ namespace Axiom.Core
 				return;
 			}
 
-			Vector3 trCorner = WorldSpaceCorners[ 0 ];
-			Vector3 tlCorner = WorldSpaceCorners[ 1 ];
-			Vector3 blCorner = WorldSpaceCorners[ 2 ];
-			Vector3 brCorner = WorldSpaceCorners[ 3 ];
+			var trCorner = WorldSpaceCorners[ 0 ];
+			var tlCorner = WorldSpaceCorners[ 1 ];
+			var blCorner = WorldSpaceCorners[ 2 ];
+			var brCorner = WorldSpaceCorners[ 3 ];
 
 			// need some sort of rotation that will bring the plane normal to the z axis
-			Plane pval = worldPlane;
+			var pval = worldPlane;
 			if ( pval.Normal.z < 0.0 )
 			{
 				pval.Normal *= -1.0;
 				pval.D *= -1.0;
 			}
-			Quaternion invPlaneRot = pval.Normal.GetRotationTo( Vector3.UnitZ );
+			var invPlaneRot = pval.Normal.GetRotationTo( Vector3.UnitZ );
 
 			var vec = new Vector3[ 4 ];
 
 			// get rotated light
-			Vector3 lPos = invPlaneRot * DerivedPosition;
+			var lPos = invPlaneRot * DerivedPosition;
 			vec[ 0 ] = invPlaneRot * trCorner - lPos;
 			vec[ 1 ] = invPlaneRot * tlCorner - lPos;
 			vec[ 2 ] = invPlaneRot * blCorner - lPos;
 			vec[ 3 ] = invPlaneRot * brCorner - lPos;
 
-			IEnumerable<Vector4> iPnt = GetRayForwardIntersect( lPos, vec, -pval.D );
+			var iPnt = GetRayForwardIntersect( lPos, vec, -pval.D );
 
 			// return wanted data
 			//if (intersect3D != null) // cant be null
 			{
-				Quaternion planeRot = invPlaneRot.Inverse();
+				var planeRot = invPlaneRot.Inverse();
 				intersect3D.Clear();
-				foreach ( Vector4 v in iPnt )
+				foreach ( var v in iPnt )
 				{
-					Vector3 intersection = planeRot * new Vector3( v.x, v.y, v.z );
+					var intersection = planeRot * new Vector3( v.x, v.y, v.z );
 					intersect3D.Add( new Vector4( intersection.x, intersection.y, intersection.z, v.w ) );
 				}
 			}
@@ -1657,7 +1693,7 @@ namespace Axiom.Core
 		/// <remarks>The method is called after projection matrix each change.</remarks>
 		protected void SetWindowImpl()
 		{
-			if ( !this.isWindowSet || !this.recalculateWindow )
+			if ( !isWindowSet || !recalculateWindow )
 			{
 				return;
 			}
@@ -1669,33 +1705,33 @@ namespace Axiom.Core
 			float vpWidth = vpRight - vpLeft;
 			float vpHeight = vpTop - vpBottom;
 
-			float wvpLeft = vpLeft + this.windowLeft * vpWidth;
-			float wvpRight = vpLeft + this.windowRight * vpWidth;
-			float wvpTop = vpTop - this.windowTop * vpHeight;
-			float wvpBottom = vpTop - this.windowBottom * vpHeight;
+			float wvpLeft = vpLeft + windowLeft * vpWidth;
+			float wvpRight = vpLeft + windowRight * vpWidth;
+			float wvpTop = vpTop - windowTop * vpHeight;
+			float wvpBottom = vpTop - windowBottom * vpHeight;
 
 			var vpUpLeft = new Vector3( wvpLeft, wvpTop, -Near );
 			var vpUpRight = new Vector3( wvpRight, wvpTop, -Near );
 			var vpBottomLeft = new Vector3( wvpLeft, wvpBottom, -Near );
 			var vpBottomRight = new Vector3( wvpRight, wvpBottom, -Near );
 
-			Matrix4 inv = _viewMatrix.Inverse();
+			var inv = _viewMatrix.Inverse();
 
-			Vector3 vwUpLeft = inv.TransformAffine( vpUpLeft );
-			Vector3 vwUpRight = inv.TransformAffine( vpUpRight );
-			Vector3 vwBottomLeft = inv.TransformAffine( vpBottomLeft );
-			Vector3 vwBottomRight = inv.TransformAffine( vpBottomRight );
+			var vwUpLeft = inv.TransformAffine( vpUpLeft );
+			var vwUpRight = inv.TransformAffine( vpUpRight );
+			var vwBottomLeft = inv.TransformAffine( vpBottomLeft );
+			var vwBottomRight = inv.TransformAffine( vpBottomRight );
 
-			this.windowClipPlanes.Clear();
+			windowClipPlanes.Clear();
 
 			if ( ProjectionType == Projection.Perspective )
 			{
-				Vector3 pos = GetPositionForViewUpdate();
+				var pos = GetPositionForViewUpdate();
 
-				this.windowClipPlanes.Add( new Plane( pos, vwBottomLeft, vwUpLeft ) );
-				this.windowClipPlanes.Add( new Plane( pos, vwUpLeft, vwUpRight ) );
-				this.windowClipPlanes.Add( new Plane( pos, vwUpRight, vwBottomRight ) );
-				this.windowClipPlanes.Add( new Plane( pos, vwBottomRight, vwBottomLeft ) );
+				windowClipPlanes.Add( new Plane( pos, vwBottomLeft, vwUpLeft ) );
+				windowClipPlanes.Add( new Plane( pos, vwUpLeft, vwUpRight ) );
+				windowClipPlanes.Add( new Plane( pos, vwUpRight, vwBottomRight ) );
+				windowClipPlanes.Add( new Plane( pos, vwBottomRight, vwBottomLeft ) );
 			}
 			else
 			{
@@ -1704,13 +1740,13 @@ namespace Axiom.Core
 				x_axis.Normalize();
 				y_axis.Normalize();
 
-				this.windowClipPlanes.Add( new Plane( x_axis, vwBottomLeft ) );
-				this.windowClipPlanes.Add( new Plane( -x_axis, vwUpRight ) );
-				this.windowClipPlanes.Add( new Plane( y_axis, vwBottomLeft ) );
-				this.windowClipPlanes.Add( new Plane( -y_axis, vwUpLeft ) );
+				windowClipPlanes.Add( new Plane( x_axis, vwBottomLeft ) );
+				windowClipPlanes.Add( new Plane( -x_axis, vwUpRight ) );
+				windowClipPlanes.Add( new Plane( y_axis, vwBottomLeft ) );
+				windowClipPlanes.Add( new Plane( -y_axis, vwUpLeft ) );
 			}
 
-			this.recalculateWindow = false;
+			recalculateWindow = false;
 		}
 
 		/// <summary>
@@ -1719,7 +1755,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void ResetWindow()
 		{
-			this.isWindowSet = false;
+			isWindowSet = false;
 		}
 
 		/// <summary>
@@ -1729,12 +1765,12 @@ namespace Axiom.Core
 		/// <returns>The window plane at the specified index.</returns>
 		public Plane GetWindowPlane( int index )
 		{
-			Debug.Assert( index < this.windowClipPlanes.Count, "Window clip plane index out of bounds." );
+			Debug.Assert( index < windowClipPlanes.Count, "Window clip plane index out of bounds." );
 
 			// ensure the window is recalced
 			SetWindowImpl();
 
-			return this.windowClipPlanes[ index ];
+			return (Plane)windowClipPlanes[ index ];
 		}
 
 		/// <summary>
@@ -1755,7 +1791,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790, "Slightly different" )]
 		public void GetCameraToViewportRay( float screenX, float screenY, out Ray ray )
 		{
-			Matrix4 inverseVP = ( _projectionMatrix * _viewMatrix ).Inverse();
+			var inverseVP = ( _projectionMatrix * _viewMatrix ).Inverse();
 
 #if !AXIOM_NO_VIEWPORT_ORIENTATIONMODE
 			// We need to convert screen point to our oriented viewport (temp solution)
@@ -1777,10 +1813,10 @@ namespace Axiom.Core
 
 			// Get ray origin and ray target on near plane in world space
 
-			Vector3 rayOrigin = inverseVP * nearPoint;
-			Vector3 rayTarget = inverseVP * midPoint;
+			var rayOrigin = inverseVP * nearPoint;
+			var rayTarget = inverseVP * midPoint;
 
-			Vector3 rayDirection = rayTarget - rayOrigin;
+			var rayDirection = rayTarget - rayOrigin;
 			rayDirection.Normalize();
 
 			ray = new Ray( rayOrigin, rayDirection );
@@ -1845,13 +1881,13 @@ namespace Axiom.Core
 			if ( ProjectionType == Projection.Perspective )
 			{
 				// Use the corner rays to generate planes
-				Ray ul = GetCameraToViewportRay( screenLeft, screenTop );
-				Ray ur = GetCameraToViewportRay( screenRight, screenTop );
-				Ray bl = GetCameraToViewportRay( screenLeft, screenBottom );
-				Ray br = GetCameraToViewportRay( screenRight, screenBottom );
+				var ul = GetCameraToViewportRay( screenLeft, screenTop );
+				var ur = GetCameraToViewportRay( screenRight, screenTop );
+				var bl = GetCameraToViewportRay( screenLeft, screenBottom );
+				var br = GetCameraToViewportRay( screenRight, screenBottom );
 
 				// top plane
-				Vector3 normal = ul.Direction.Cross( ur.Direction );
+				var normal = ul.Direction.Cross( ur.Direction );
 				normal.Normalize();
 				outVolume.planes.Add( new Plane( normal, DerivedPosition ) );
 
@@ -1874,8 +1910,8 @@ namespace Axiom.Core
 			{
 				// ortho planes are parallel to frustum planes
 
-				Ray ul = GetCameraToViewportRay( screenLeft, screenTop );
-				Ray br = GetCameraToViewportRay( screenRight, screenBottom );
+				var ul = GetCameraToViewportRay( screenLeft, screenTop );
+				var br = GetCameraToViewportRay( screenRight, screenBottom );
 
 				UpdateFrustumPlanes();
 				outVolume.planes.Add( new Plane( FrustumPlanes[ (int)FrustumPlane.Top ].Normal, ul.Origin ) );
@@ -1957,50 +1993,14 @@ namespace Axiom.Core
 
 		#endregion
 
-		/// <summary>
-		///		Get the derived orientation of this frustum.
-		/// </summary>
-		/// <returns></returns>
-		protected override Quaternion GetOrientationForViewUpdate()
-		{
-			return this.realOrientation;
-		}
-
-		/// <summary>
-		///		Get the derived position of this frustum.
-		/// </summary>
-		/// <returns></returns>
-		protected override Vector3 GetPositionForViewUpdate()
-		{
-			return this.realPosition;
-		}
-
-		/// <summary>
-		///		Signal to update view information.
-		/// </summary>
-		protected override void InvalidateView()
-		{
-			this.recalculateWindow = true;
-			base.InvalidateView();
-		}
-
-		/// <summary>
-		///		Signal to update frustum information.
-		/// </summary>
-		protected override void InvalidateFrustum()
-		{
-			_recalculateFrustum = true;
-			base.InvalidateFrustum();
-		}
-
 		public override string ToString()
 		{
-			Vector3 dir = this.orientation * new Vector3( 0, 0, -1 );
+			var dir = orientation * new Vector3( 0, 0, -1 );
 			var s = new StringBuilder();
 
 			s.Append( "Camera(" );
 			s.AppendFormat( "Name='{0}, ", name );
-			s.AppendFormat( "pos={0}, ", this.position );
+			s.AppendFormat( "pos={0}, ", position );
 			s.AppendFormat( "direction={0}, ", dir );
 			s.AppendFormat( "near={0}, ", Near );
 			s.AppendFormat( "far={0}, ", Far );

@@ -39,9 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
-using Axiom.Graphics;
+using Axiom.Core;
 using Axiom.Media;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -52,13 +55,13 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal abstract class GLRTTManager : IDisposable
 	{
-		private readonly BaseGLSupport _glSupport;
+		private BaseGLSupport _glSupport;
 
 		public BaseGLSupport GLSupport
 		{
 			get
 			{
-				return this._glSupport;
+				return _glSupport;
 			}
 		}
 
@@ -81,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( _instance == null )
 			{
 				_instance = this;
-				this._glSupport = glSupport;
+				_glSupport = glSupport;
 			}
 		}
 
@@ -182,18 +185,24 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region isDisposed Property
 
+		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed { get; set; }
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
 
 		#endregion isDisposed Property
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -226,7 +235,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this == Instance )
+					if ( this == GLRTTManager.Instance )
 					{
 						_instance = null;
 					}
@@ -236,6 +245,12 @@ namespace Axiom.RenderSystems.OpenGL
 				// if we add them, they need to be released here.
 			}
 			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Implementation

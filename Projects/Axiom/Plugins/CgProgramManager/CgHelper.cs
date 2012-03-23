@@ -65,7 +65,7 @@ namespace Axiom.CgPrograms
 
 			if ( error != Cg.CG_NO_ERROR )
 			{
-				var sb = new StringBuilder();
+				StringBuilder sb = new StringBuilder();
 				sb.Append( Environment.NewLine );
 				sb.Append( potentialError );
 				sb.Append( Environment.NewLine );

@@ -175,11 +175,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._creator;
+				return _creator;
 			}
 			protected set
 			{
-				this._creator = value;
+				_creator = value;
 			}
 		}
 
@@ -196,11 +196,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._name;
+				return _name;
 			}
 			protected set
 			{
-				this._name = value;
+				_name = value;
 			}
 		}
 
@@ -217,14 +217,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._group;
+				return _group;
 			}
 			set
 			{
-				if ( this._group != value )
+				if ( _group != value )
 				{
-					string oldGroup = this._group;
-					this._group = value;
+					var oldGroup = _group;
+					_group = value;
 					ResourceGroupManager.Instance.notifyResourceGroupChanged( oldGroup, this );
 				}
 			}
@@ -243,7 +243,7 @@ namespace Axiom.Core
 			get
 			{
 				// No lock required to read this state since no modify
-				return this._loadingState.Value == LoadingState.Loaded;
+				return _loadingState.Value == LoadingState.Loaded;
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this._loadingState.Value == LoadingState.Loading;
+				return _loadingState.Value == LoadingState.Loading;
 			}
 		}
 
@@ -273,11 +273,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._isManuallyLoaded;
+				return _isManuallyLoaded;
 			}
 			protected set
 			{
-				this._isManuallyLoaded = value;
+				_isManuallyLoaded = value;
 			}
 		}
 
@@ -294,11 +294,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._size;
+				return _size;
 			}
 			protected set
 			{
-				this._size = value;
+				_size = value;
 			}
 		}
 
@@ -306,28 +306,64 @@ namespace Axiom.Core
 
 		#region LastAccessed Property
 
+		private long _lastAccessed;
+
 		/// <summary>
 		///		Timestamp of the last time this resource was accessed.
 		/// </summary>
-		public long LastAccessed { get; protected set; }
+		public long LastAccessed
+		{
+			get
+			{
+				return _lastAccessed;
+			}
+			protected set
+			{
+				_lastAccessed = value;
+			}
+		}
 
 		#endregion LastAccessed Property
 
 		#region Handle Property
 
+		private ResourceHandle _handle;
+
 		/// <summary>
 		///		Unique handle of this resource.
 		/// </summary>
-		public ResourceHandle Handle { get; set; }
+		public ResourceHandle Handle
+		{
+			get
+			{
+				return _handle;
+			}
+			set
+			{
+				_handle = value;
+			}
+		}
 
 		#endregion Handle Property
 
 		#region Origin Property
 
+		private string _origin;
+
 		/// <summary>
 		/// Origin of this resource (e.g. script name) - optional
 		/// </summary>
-		public string Origin { get; set; }
+		public string Origin
+		{
+			get
+			{
+				return _origin;
+			}
+			set
+			{
+				_origin = value;
+			}
+		}
 
 		#endregion Origin Property
 
@@ -342,11 +378,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._loader;
+				return _loader;
 			}
 			set
 			{
-				this._loader = value;
+				_loader = value;
 			}
 		}
 
@@ -366,7 +402,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._loadingState.Value;
+				return _loadingState.Value;
 			}
 		}
 
@@ -398,11 +434,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._isBackgroundLoaded;
+				return _isBackgroundLoaded;
 			}
 			set
 			{
-				this._isBackgroundLoaded = value;
+				_isBackgroundLoaded = value;
 			}
 		}
 
@@ -416,7 +452,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._isManuallyLoaded || ( this._loader != null );
+				return _isManuallyLoaded || ( _loader != null );
 			}
 		}
 
@@ -428,7 +464,7 @@ namespace Axiom.Core
 		///	Protected unnamed constructor to prevent default construction.
 		/// </summary>
 		protected Resource()
-			: this( null, string.Empty, 0, string.Empty, false, null ) { }
+			: this( null, string.Empty, 0, string.Empty, false, null ) {}
 
 		/// <overloads>
 		/// <summary>
@@ -440,7 +476,7 @@ namespace Axiom.Core
 		/// <param name="group">The name of the resource group to which this resource belongs</param>
 		/// </overloads>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) { }
+			: this( parent, name, handle, group, false, null ) {}
 
 		/// <param name="group"></param>
 		/// <param name="isManual">
@@ -460,14 +496,15 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		/// <param name="handle"></param>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base()
 		{
-			this._creator = parent;
-			this._name = name;
-			this.Handle = handle;
-			this._group = group;
-			this._size = 0;
-			this._isManuallyLoaded = isManual;
-			this._loader = loader;
+			_creator = parent;
+			_name = name;
+			_handle = handle;
+			_group = group;
+			_size = 0;
+			_isManuallyLoaded = isManual;
+			_loader = loader;
 		}
 
 		~Resource()
@@ -490,7 +527,7 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preLoad() { }
+		protected virtual void preLoad() {}
 
 		/// <summary>
 		/// Internal hook to perform actions after the load process, but
@@ -501,7 +538,7 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postLoad() { }
+		protected virtual void postLoad() {}
 
 		/// <summary>
 		/// Internal hook to perform actions before the unload process, but
@@ -512,7 +549,7 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preUnload() { }
+		protected virtual void preUnload() {}
 
 		/// <summary>
 		/// Internal hook to perform actions after the unload process, but
@@ -523,19 +560,19 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postUnload() { }
+		protected virtual void postUnload() {}
 
 		/// <summary>
 		/// Internal implementation of the meat of the 'prepare' action.
 		/// </summary>
-		protected virtual void prepare() { }
+		protected virtual void prepare() {}
 
 		/// <summary>
 		/// Internal function for undoing the 'prepare' action.  Called when
 		/// the load is completed, and when resources are unloaded when they
 		/// are prepared but not yet loaded.
 		/// </summary>
-		protected virtual void unPrepare() { }
+		protected virtual void unPrepare() {}
 
 		#endregion Load/Unload Stage Notifiers
 
@@ -572,7 +609,7 @@ namespace Axiom.Core
 		/// <see cref="Resource.Prepare(bool)"/>
 		public void Prepare()
 		{
-			Prepare( false );
+			this.Prepare( false );
 		}
 #endif
 
@@ -618,29 +655,29 @@ namespace Axiom.Core
 			// 2. Another thread is loading right now
 			// 3. We're marked for background loading and this is not the background
 			//    loading thread we're being called by
-			if ( this._isBackgroundLoaded && !background )
+			if ( _isBackgroundLoaded && !background )
 			{
 				return;
 			}
 
 			// This next section is to deal with cases where 2 threads are fighting over
 			// who gets to prepare / load - this will only usually happen if loading is escalated
-			bool keepChecking = true;
-			LoadingState old = LoadingState.Unloaded;
+			var keepChecking = true;
+			var old = LoadingState.Unloaded;
 			while ( keepChecking )
 			{
 				// quick check that avoids any synchronisation
-				old = this._loadingState.Value;
+				old = _loadingState.Value;
 
 				if ( old == LoadingState.Preparing )
 				{
-					while ( this._loadingState.Value == LoadingState.Preparing )
+					while ( _loadingState.Value == LoadingState.Preparing )
 					{
 #if AXIOM_THREAD_SUPPORT
 				        lock ( _autoMutex ) { }
 #endif
 					}
-					old = this._loadingState.Value;
+					old = _loadingState.Value;
 				}
 
 				if ( old != LoadingState.Unloaded && old != LoadingState.Prepared && old != LoadingState.Loading )
@@ -650,16 +687,16 @@ namespace Axiom.Core
 
 				// atomically do slower check to make absolutely sure,
 				// and set the load state to LOADING
-				if ( old == LoadingState.Loading || !this._loadingState.Cas( old, LoadingState.Loading ) )
+				if ( old == Core.LoadingState.Loading || !_loadingState.Cas( old, Core.LoadingState.Loading ) )
 				{
-					while ( this._loadingState.Value == LoadingState.Loading )
+					while ( _loadingState.Value == LoadingState.Loading )
 					{
 #if AXIOM_THREAD_SUPPORT
 				        lock ( _autoMutex ) { }
 #endif
 					}
 
-					LoadingState state = this._loadingState.Value;
+					var state = _loadingState.Value;
 					if ( state == LoadingState.Prepared || state == LoadingState.Preparing )
 					{
 						// another thread is preparing, loop around
@@ -677,23 +714,23 @@ namespace Axiom.Core
 			try
 			{
 #if AXIOM_THREAD_SUPPORT
-    // Scope lock for actual load
+	// Scope lock for actual load
 				lock ( _autoMutex )
 #endif
 				{
-					if ( this._isManuallyLoaded )
+					if ( _isManuallyLoaded )
 					{
 						preLoad();
 
 						// Load from manual loader
-						if ( this._loader != null )
+						if ( _loader != null )
 						{
-							this._loader.LoadResource( this );
+							_loader.LoadResource( this );
 						}
 						else
 						{
 							// Warn that this resource is not reloadable
-							LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " + "will be lost if it has to be reloaded.", this._creator.ResourceType, this._name );
+							LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " + "will be lost if it has to be reloaded.", _creator.ResourceType, _name );
 						}
 						postLoad();
 					}
@@ -718,7 +755,7 @@ namespace Axiom.Core
 					}
 
 					// Calculate resource size
-					this._size = calculateSize();
+					_size = calculateSize();
 				}
 			}
 			catch ( Exception ex )
@@ -727,21 +764,21 @@ namespace Axiom.Core
 				// We reset it to UNLOADED because the only other case is when
 				// old == PREPARED in which case the loadImpl should wipe out
 				// any prepared data since it might be invalid.
-				this._loadingState.Value = LoadingState.Unloaded;
+				_loadingState.Value = LoadingState.Unloaded;
 				// Re-throw
 				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				throw;
 			}
 
-			this._loadingState.Value = LoadingState.Loaded;
+			_loadingState.Value = LoadingState.Loaded;
 
 			//TODO
 			//_dirtyState();
 
 			// Notify manager
-			if ( this._creator != null )
+			if ( _creator != null )
 			{
-				this._creator.NotifyResourceLoaded( this );
+				_creator.NotifyResourceLoaded( this );
 			}
 
 			// Fire events, if not background
@@ -772,24 +809,24 @@ namespace Axiom.Core
 			}
 
 			// Scope lock over load status
-			lock ( this._loadingStatusMutex )
+			lock ( _loadingStatusMutex )
 			{
 				// Check again just in case status changed (since we didn't lock above)
-				if ( this._loadingState.Value == LoadingState.Loading )
+				if ( _loadingState.Value == LoadingState.Loading )
 				{
 					throw new Exception( "Cannot unload resource " + Name + " whilst loading is in progress!" );
 				}
 
-				if ( this._loadingState.Value != LoadingState.Loaded )
+				if ( _loadingState.Value != LoadingState.Loaded )
 				{
 					return; // nothing to do
 				}
 
-				this._loadingState.Value = LoadingState.Unloading;
+				_loadingState.Value = LoadingState.Unloading;
 			}
 
 #if AXIOM_THREAD_SUPPORT
-    // Scope lock for actual unload
+	// Scope lock for actual unload
 			lock ( _autoMutex )
 #endif
 			{
@@ -799,15 +836,15 @@ namespace Axiom.Core
 			}
 
 			// Scope lock over load status
-			lock ( this._loadingStatusMutex )
+			lock ( _loadingStatusMutex )
 			{
-				this._loadingState.Value = LoadingState.Unloaded;
+				_loadingState.Value = LoadingState.Unloaded;
 			}
 
 			// Notify manager
-			if ( this._creator != null )
+			if ( _creator != null )
 			{
-				this._creator.NotifyResourceUnloaded( this );
+				_creator.NotifyResourceUnloaded( this );
 			}
 		}
 
@@ -824,7 +861,7 @@ namespace Axiom.Core
 			lock( _autoMutex )
 #endif
 			{
-				if ( this._loadingState.Value == LoadingState.Loaded )
+				if ( _loadingState.Value == LoadingState.Loaded )
 				{
 					Unload();
 					Load();
@@ -841,9 +878,9 @@ namespace Axiom.Core
 			// make sure loaded
 			Load();
 
-			if ( this._creator != null )
+			if ( _creator != null )
 			{
-				this._creator.NotifyResourceTouched( this );
+				_creator.NotifyResourceTouched( this );
 			}
 		}
 
@@ -856,7 +893,7 @@ namespace Axiom.Core
 		{
 			lock ( listenerListMutex )
 			{
-				this.listenerList.Add( lis );
+				listenerList.Add( lis );
 			}
 		}
 
@@ -869,7 +906,7 @@ namespace Axiom.Core
 		{
 			lock ( listenerListMutex )
 			{
-				this.listenerList.Remove( lis );
+				listenerList.Remove( lis );
 			}
 		}
 
@@ -889,7 +926,7 @@ namespace Axiom.Core
 			// Lock the listener list
 			lock ( listenerListMutex )
 			{
-				foreach ( IListener i in this.listenerList )
+				foreach ( var i in listenerList )
 				{
 					// deprecated call
 					if ( wasBackgroundLoaded )
@@ -918,7 +955,7 @@ namespace Axiom.Core
 			// Lock the listener list
 			lock ( listenerListMutex )
 			{
-				foreach ( IListener i in this.listenerList )
+				foreach ( var i in listenerList )
 				{
 					// deprecated call
 					if ( wasBackgroundLoaded )
@@ -946,7 +983,7 @@ namespace Axiom.Core
 			// Lock the listener list
 			lock ( listenerListMutex )
 			{
-				foreach ( IListener i in this.listenerList )
+				foreach ( var i in listenerList )
 				{
 					i.UnloadingComplete( this );
 				}

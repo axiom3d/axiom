@@ -1,5 +1,7 @@
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
@@ -9,6 +11,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Input;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 
@@ -18,7 +21,7 @@ namespace Axiom.Demos
 	/// Summary description for Shadows.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class Shadows : TechDemo
 	{
@@ -27,25 +30,25 @@ namespace Axiom.Demos
 		private Light light;
 		private Light sunLight;
 		private SceneNode lightNode;
-		private readonly ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
-		private readonly ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
-		private readonly Real minFlareSize = 40;
-		private readonly Real maxFlareSize = 80;
+		private ColorEx minLightColor = new ColorEx( 0.3f, 0, 0 );
+		private ColorEx maxLightColor = new ColorEx( 0.5f, 0.3f, 0.1f );
+		private Real minFlareSize = 40;
+		private Real maxFlareSize = 80;
 
-		private readonly string[] atheneMaterials = new[]
-                                                    {
-                                                        "Examples/Athene/NormalMapped", "Examples/Athene/Basic"
-                                                    };
+		private string[] atheneMaterials = new string[]
+		                                   {
+		                                   	"Examples/Athene/NormalMapped", "Examples/Athene/Basic"
+		                                   };
 
-		private readonly string[] shadowTechniqueDescriptions = new[]
-                                                                {
-                                                                    "Texture Shadows (Modulative)", "Texture Shadows (Additive)", "Stencil Shadows (Additive)", "Stencil Shadows (Modulative)", "None"
-                                                                };
+		private string[] shadowTechniqueDescriptions = new string[]
+		                                               {
+		                                               	"Texture Shadows (Modulative)", "Texture Shadows (Additive)", "Stencil Shadows (Additive)", "Stencil Shadows (Modulative)", "None"
+		                                               };
 
-		private readonly ShadowTechnique[] shadowTechniques = new[]
-                                                              {
-                                                                  ShadowTechnique.TextureModulative, ShadowTechnique.TextureAdditive, ShadowTechnique.StencilAdditive, ShadowTechnique.StencilModulative, ShadowTechnique.None
-                                                              };
+		private ShadowTechnique[] shadowTechniques = new ShadowTechnique[]
+		                                             {
+		                                             	ShadowTechnique.TextureModulative, ShadowTechnique.TextureAdditive, ShadowTechnique.StencilAdditive, ShadowTechnique.StencilModulative, ShadowTechnique.None
+		                                             };
 
 		private int currentShadowTechnique = 3;
 
@@ -58,49 +61,49 @@ namespace Axiom.Demos
 			int currentAtheneMaterial = 1;
 
 			// fixed light, dim
-			this.sunLight = scene.CreateLight( "SunLight" );
-			this.sunLight.Type = LightType.Directional;
-			this.sunLight.Position = new Vector3( 1000, 1250, 500 );
-			this.sunLight.SetSpotlightRange( 30, 50 );
-			Vector3 dir = -this.sunLight.Position;
+			sunLight = scene.CreateLight( "SunLight" );
+			sunLight.Type = LightType.Directional;
+			sunLight.Position = new Vector3( 1000, 1250, 500 );
+			sunLight.SetSpotlightRange( 30, 50 );
+			Vector3 dir = -sunLight.Position;
 			dir.Normalize();
-			this.sunLight.Direction = dir;
-			this.sunLight.Diffuse = new ColorEx( 0.35f, 0.35f, 0.38f );
-			this.sunLight.Specular = new ColorEx( 0.9f, 0.9f, 1 );
+			sunLight.Direction = dir;
+			sunLight.Diffuse = new ColorEx( 0.35f, 0.35f, 0.38f );
+			sunLight.Specular = new ColorEx( 0.9f, 0.9f, 1 );
 
 			// point light, movable, reddish
-			this.light = scene.CreateLight( "Light2" );
-			this.light.Diffuse = this.minLightColor;
-			this.light.Specular = ColorEx.White;
-			this.light.SetAttenuation( 8000, 1, .0005f, 0 );
+			light = scene.CreateLight( "Light2" );
+			light.Diffuse = minLightColor;
+			light.Specular = ColorEx.White;
+			light.SetAttenuation( 8000, 1, .0005f, 0 );
 
 			// create light node
-			this.lightNode = scene.RootSceneNode.CreateChildSceneNode( "MovingLightNode" );
-			this.lightNode.AttachObject( this.light );
+			lightNode = scene.RootSceneNode.CreateChildSceneNode( "MovingLightNode" );
+			lightNode.AttachObject( light );
 
 			// create billboard set
 			BillboardSet bbs = scene.CreateBillboardSet( "LightBBS", 1 );
 			bbs.MaterialName = "Examples/Flare";
-			Billboard bb = bbs.CreateBillboard( Vector3.Zero, this.minLightColor );
+			Billboard bb = bbs.CreateBillboard( Vector3.Zero, minLightColor );
 			// attach to the scene
-			this.lightNode.AttachObject( bbs );
+			lightNode.AttachObject( bbs );
 
 			// create controller, after this is will get updated on its own
-			var func = new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
+			WaveformControllerFunction func = new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
 
-			var val = new LightWibbler( this.light, bb, this.minLightColor, this.maxLightColor, this.minFlareSize, this.maxFlareSize );
+			LightWibbler val = new LightWibbler( light, bb, minLightColor, maxLightColor, minFlareSize, maxFlareSize );
 			ControllerManager.Instance.CreateController( val, func );
 
-			this.lightNode.Position = new Vector3( 300, 250, -300 );
+			lightNode.Position = new Vector3( 300, 250, -300 );
 
 			// create a track for the light
 			Animation anim = scene.CreateAnimation( "LightTrack", 20 );
 			// spline it for nice curves
 			anim.InterpolationMode = InterpolationMode.Spline;
 			// create a track to animate the camera's node
-			AnimationTrack track = anim.CreateNodeTrack( 0, this.lightNode );
+			AnimationTrack track = anim.CreateNodeTrack( 0, lightNode );
 			// setup keyframes
-			var key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
+			TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
 			key.Translate = new Vector3( 300, 250, -300 );
 			key = (TransformKeyFrame)track.CreateKeyFrame( 2 );
 			key.Translate = new Vector3( 150, 300, -250 );
@@ -124,12 +127,12 @@ namespace Axiom.Demos
 			key.Translate = new Vector3( 300, 250, -300 );
 
 			// create a new animation state to track this
-			this.animState = scene.CreateAnimationState( "LightTrack" );
-			this.animState.IsEnabled = true;
+			animState = scene.CreateAnimationState( "LightTrack" );
+			animState.IsEnabled = true;
 
 			// Make light node look at origin, this is for when we
 			// change the moving light to a spotlight
-			this.lightNode.SetAutoTracking( true, scene.RootSceneNode );
+			lightNode.SetAutoTracking( true, scene.RootSceneNode );
 
 			Mesh mesh = MeshManager.Instance.Load( "athene.mesh", ResourceGroupManager.DefaultResourceGroupName );
 
@@ -142,9 +145,9 @@ namespace Axiom.Demos
 			}
 
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
-			this.athene = scene.CreateEntity( "Athene", "athene.mesh" );
-			this.athene.MaterialName = this.atheneMaterials[ currentAtheneMaterial ];
-			node.AttachObject( this.athene );
+			athene = scene.CreateEntity( "Athene", "athene.mesh" );
+			athene.MaterialName = atheneMaterials[ currentAtheneMaterial ];
+			node.AttachObject( athene );
 			node.Translate( new Vector3( 0, -20, 0 ) );
 			node.Yaw( 90 );
 
@@ -176,7 +179,7 @@ namespace Axiom.Demos
 
 			scene.SetSkyBox( true, "Skybox/Stormy", 3000 );
 
-			var plane = new Plane( Vector3.UnitY, -100 );
+			Plane plane = new Plane( Vector3.UnitY, -100 );
 			MeshManager.Instance.CreatePlane( "MyPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
 
 			Entity planeEnt = scene.CreateEntity( "Plane", "MyPlane" );
@@ -227,13 +230,13 @@ namespace Axiom.Demos
 				keypressDelay = 1;
 
 				// show briefly on the screen
-				debugText = string.Format( "Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off" );
+				this.debugText = string.Format( "Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off" );
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
 			}
 
-			this.animState.AddTime( evt.TimeSinceLastFrame );
+			animState.AddTime( evt.TimeSinceLastFrame );
 		}
 
 		/// <summary>
@@ -241,23 +244,23 @@ namespace Axiom.Demos
 		/// </summary>
 		protected void ChangeShadowTechnique()
 		{
-			this.currentShadowTechnique = ++this.currentShadowTechnique % this.shadowTechniques.Length;
+			currentShadowTechnique = ++currentShadowTechnique % shadowTechniques.Length;
 
-			scene.ShadowTechnique = this.shadowTechniques[ this.currentShadowTechnique ];
+			scene.ShadowTechnique = shadowTechniques[ currentShadowTechnique ];
 
-			var direction = new Vector3();
+			Vector3 direction = new Vector3();
 
-			switch ( this.shadowTechniques[ this.currentShadowTechnique ] )
+			switch ( shadowTechniques[ currentShadowTechnique ] )
 			{
 				case ShadowTechnique.StencilAdditive:
 					// fixed light, dim
-					this.sunLight.CastShadows = true;
+					sunLight.CastShadows = true;
 
-					this.light.Type = LightType.Point;
-					this.light.CastShadows = true;
-					this.light.Diffuse = this.minLightColor;
-					this.light.Specular = ColorEx.White;
-					this.light.SetAttenuation( 8000, 1, 0.0005f, 0 );
+					light.Type = LightType.Point;
+					light.CastShadows = true;
+					light.Diffuse = minLightColor;
+					light.Specular = ColorEx.White;
+					light.SetAttenuation( 8000, 1, 0.0005f, 0 );
 
 					break;
 
@@ -266,14 +269,14 @@ namespace Axiom.Demos
 					// So turn off shadows on the direct light
 					// Fixed light, dim
 
-					this.sunLight.CastShadows = false;
+					sunLight.CastShadows = false;
 
 					// point light, movable, reddish
-					this.light.Type = LightType.Point;
-					this.light.CastShadows = true;
-					this.light.Diffuse = this.minLightColor;
-					this.light.Specular = ColorEx.White;
-					this.light.SetAttenuation( 8000, 1, 0.0005f, 0 );
+					light.Type = LightType.Point;
+					light.CastShadows = true;
+					light.Diffuse = minLightColor;
+					light.Specular = ColorEx.White;
+					light.SetAttenuation( 8000, 1, 0.0005f, 0 );
 
 					break;
 
@@ -282,19 +285,19 @@ namespace Axiom.Demos
 					// Fixed light, dim
 					//sunLight.CastShadows = true;
 
-					this.light.Type = LightType.Spotlight;
-					this.light.Direction = Vector3.NegativeUnitZ;
-					this.light.CastShadows = true;
-					this.light.Diffuse = this.minLightColor;
-					this.light.Specular = ColorEx.White;
-					this.light.SetAttenuation( 8000, 1, 0.0005f, 0 );
-					this.light.SetSpotlightRange( 80, 90 );
+					light.Type = LightType.Spotlight;
+					light.Direction = Vector3.NegativeUnitZ;
+					light.CastShadows = true;
+					light.Diffuse = minLightColor;
+					light.Specular = ColorEx.White;
+					light.SetAttenuation( 8000, 1, 0.0005f, 0 );
+					light.SetSpotlightRange( 80, 90 );
 
 					break;
 			}
 
 			// show briefly on the screen
-			debugText = string.Format( "Using {0} Technique.", this.shadowTechniqueDescriptions[ this.currentShadowTechnique ] );
+			this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
 		}
 	}
 
@@ -305,13 +308,13 @@ namespace Axiom.Demos
 	{
 		#region Fields
 
-		protected Billboard billboard;
-		protected ColorEx colorRange;
-		protected Real intensity;
 		protected Light light;
+		protected Billboard billboard;
+		protected ColorEx colorRange = new ColorEx();
 		protected ColorEx minColor;
 		protected Real minSize;
 		protected Real sizeRange;
+		protected Real intensity;
 
 		#endregion Fields
 
@@ -322,43 +325,43 @@ namespace Axiom.Demos
 			this.light = light;
 			this.billboard = billboard;
 			this.minColor = minColor;
-			this.colorRange.r = maxColor.r - minColor.r;
-			this.colorRange.g = maxColor.g - minColor.g;
-			this.colorRange.b = maxColor.b - minColor.b;
+			colorRange.r = maxColor.r - minColor.r;
+			colorRange.g = maxColor.g - minColor.g;
+			colorRange.b = maxColor.b - minColor.b;
 			this.minSize = minSize;
-			this.sizeRange = maxSize - minSize;
+			sizeRange = maxSize - minSize;
 		}
 
 		#endregion Constructor
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		public Real Value
 		{
 			get
 			{
-				return this.intensity;
+				return intensity;
 			}
 			set
 			{
-				this.intensity = value;
+				intensity = value;
 
-				var newColor = new ColorEx();
+				ColorEx newColor = new ColorEx();
 
 				// Attenuate the brightness of the light
-				newColor.r = this.minColor.r + ( this.colorRange.r * this.intensity );
-				newColor.g = this.minColor.g + ( this.colorRange.g * this.intensity );
-				newColor.b = this.minColor.b + ( this.colorRange.b * this.intensity );
+				newColor.r = minColor.r + ( colorRange.r * intensity );
+				newColor.g = minColor.g + ( colorRange.g * intensity );
+				newColor.b = minColor.b + ( colorRange.b * intensity );
 
-				this.light.Diffuse = newColor;
-				this.billboard.Color = newColor;
+				light.Diffuse = newColor;
+				billboard.Color = newColor;
 
 				// set billboard size
-				Real newSize = this.minSize + ( this.intensity * this.sizeRange );
-				this.billboard.SetDimensions( newSize, newSize );
+				Real newSize = minSize + ( intensity * sizeRange );
+				billboard.SetDimensions( newSize, newSize );
 			}
 		}
 
-		#endregion
+		#endregion IControllerValue Members
 	}
 }

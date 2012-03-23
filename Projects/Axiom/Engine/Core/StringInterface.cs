@@ -1,21 +1,27 @@
-﻿/*
+﻿using System;
+using System.Collections.Generic;
+
+using Axiom.Collections;
+
+
+/*
 Axiom wraps this in ScriptableObject
 ParamCommands are defined like this:
 
 [ScriptableProperty("includes_skeletal_animation")]
 private class IncludesSkeletalAnimationPropertyCommand : Scripting.IPropertyCommand
 {
-   public string Get(object target)
-   {
-	   return ((GpuProgram)target).IsSkeletalAnimationIncluded.ToString();
-   }
+    public string Get(object target)
+    {
+        return ((GpuProgram)target).IsSkeletalAnimationIncluded.ToString();
+    }
 
-   public void Set(object target, string val)
-   {
-	   ((GpuProgram)target).IsSkeletalAnimationIncluded = bool.Parse(val);
-   }
+    public void Set(object target, string val)
+    {
+        ((GpuProgram)target).IsSkeletalAnimationIncluded = bool.Parse(val);
+    }
 }
-*/
+ */
 
 
 #if false

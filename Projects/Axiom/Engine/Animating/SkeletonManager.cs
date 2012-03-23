@@ -37,8 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Collections;
+using System;
+
 using Axiom.Core;
+using Axiom.Collections;
 
 using ResourceHandle = System.UInt64;
 
@@ -82,6 +84,7 @@ namespace Axiom.Animating
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public SkeletonManager()
+			: base()
 		{
 			LoadingOrder = 300.0f;
 			ResourceType = "Skeleton";
@@ -103,7 +106,7 @@ namespace Axiom.Animating
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

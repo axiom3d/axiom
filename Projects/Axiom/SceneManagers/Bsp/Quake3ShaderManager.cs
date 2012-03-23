@@ -81,7 +81,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected void ParseNewShaderPass( StreamReader stream, Quake3Shader shader )
 		{
 			string line;
-			var pass = new ShaderPass();
+			ShaderPass pass = new ShaderPass();
 
 			// Default pass details
 			pass.animNumFrames = 0;
@@ -178,7 +178,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else if ( attribParams[ 0 ] == "fogparms" )
 			{
-				var fogValues = new string[ 4 ];
+				string[] fogValues = new string[ 4 ];
 				Array.Copy( attribParams, 1, fogValues, 0, 4 );
 
 				shader.Fog = true;
@@ -218,7 +218,7 @@ namespace Axiom.SceneManagers.Bsp
 					pass.texGen = ShaderTextureGen.Lightmap;
 				}
 			}
-			// CLAMPMAP
+				// CLAMPMAP
 			else if ( attribParams[ 0 ] == "clampmap" )
 			{
 				pass.textureName = attribParams[ 1 ];
@@ -230,7 +230,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				pass.addressMode = TextureAddressing.Clamp;
 			}
-			// ANIMMAP
+				// ANIMMAP
 			else if ( attribParams[ 0 ] == "animmap" )
 			{
 				pass.animFps = StringConverter.ParseFloat( attribParams[ 1 ] );
@@ -241,7 +241,7 @@ namespace Axiom.SceneManagers.Bsp
 					pass.frames[ frame ] = attribParams[ frame + 2 ];
 				}
 			}
-			// BLENDFUNC
+				// BLENDFUNC
 			else if ( attribParams[ 0 ] == "blendfunc" )
 			{
 				if ( ( attribParams[ 1 ] == "add" ) || ( attribParams[ 1 ] == "gl_add" ) )
@@ -293,17 +293,17 @@ namespace Axiom.SceneManagers.Bsp
 					// NB other custom blends might not work due to OGRE trying to use multitexture over multipass
 				}
 			}
-			// RGBGEN
+				// RGBGEN
 			else if ( attribParams[ 0 ] == "rgbgen" )
 			{
 				// TODO
 			}
-			// ALPHAGEN
+				// ALPHAGEN
 			else if ( attribParams[ 0 ] == "alphagen" )
 			{
 				// TODO
 			}
-			// TCGEN
+				// TCGEN
 			else if ( attribParams[ 0 ] == "tcgen" )
 			{
 				if ( attribParams[ 1 ] == "base" )
@@ -319,7 +319,7 @@ namespace Axiom.SceneManagers.Bsp
 					pass.texGen = ShaderTextureGen.Environment;
 				}
 			}
-			// TCMOD
+				// TCMOD
 			else if ( attribParams[ 0 ] == "tcmod" )
 			{
 				if ( attribParams[ 1 ] == "rotate" )
@@ -365,7 +365,7 @@ namespace Axiom.SceneManagers.Bsp
 					pass.tcModStretchParams[ 3 ] = StringConverter.ParseFloat( attribParams[ 6 ] );
 				}
 			}
-			// TURB
+				// TURB
 			else if ( attribParams[ 0 ] == "turb" )
 			{
 				pass.tcModTurbOn = true;
@@ -374,17 +374,17 @@ namespace Axiom.SceneManagers.Bsp
 				pass.tcModTurb[ 2 ] = StringConverter.ParseFloat( attribParams[ 4 ] );
 				pass.tcModTurb[ 3 ] = StringConverter.ParseFloat( attribParams[ 5 ] );
 			}
-			// DEPTHFUNC
+				// DEPTHFUNC
 			else if ( attribParams[ 0 ] == "depthfunc" )
 			{
 				// TODO
 			}
-			// DEPTHWRITE
+				// DEPTHWRITE
 			else if ( attribParams[ 0 ] == "depthwrite" )
 			{
 				// TODO
 			}
-			// ALPHAFUNC
+				// ALPHAFUNC
 			else if ( attribParams[ 0 ] == "alphafunc" )
 			{
 				if ( attribParams[ 1 ] == "gt0" )
@@ -461,7 +461,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <returns></returns>
 		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			var s = new Quake3Shader( this, name, handle, ResourceGroupManager.Instance.WorldResourceGroupName );
+			Quake3Shader s = new Quake3Shader( this, name, handle, ResourceGroupManager.Instance.WorldResourceGroupName );
 
 			return s;
 		}
@@ -474,7 +474,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="fileName"></param>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			var file = new StreamReader( stream, Encoding.UTF8 );
+			StreamReader file = new StreamReader( stream, Encoding.UTF8 );
 			string line;
 			Quake3Shader shader = null;
 
@@ -524,7 +524,16 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected static Quake3ShaderManager instance;
 
+		public static Quake3ShaderManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
+
 		internal Quake3ShaderManager()
+			: base()
 		{
 			if ( instance == null )
 			{
@@ -535,15 +544,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
-			}
-		}
-
-		public static Quake3ShaderManager Instance
-		{
-			get
-			{
-				return instance;
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 		}
 
@@ -563,7 +564,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

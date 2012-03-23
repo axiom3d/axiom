@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 
+using Axiom.Collections;
+using Axiom.ParticleSystems.Collections;
 
 #endregion Namespace Declarations
 
@@ -65,6 +69,11 @@ namespace Axiom.ParticleSystems
 		#endregion
 
 		#region Constructors
+
+		/// <summary>
+		///		Default constructor
+		/// </summary>
+		public ParticleEmitterFactory() {}
 
 		#endregion
 
@@ -95,7 +104,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleEmitter emitter )
 		{
 			// remove the emitter from the list
-			this.emitterList.Remove( emitter );
+			emitterList.Remove( emitter );
 		}
 
 		#endregion

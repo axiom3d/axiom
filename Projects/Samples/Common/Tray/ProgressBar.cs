@@ -40,12 +40,12 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea commentTextArea;
+		protected TextArea textArea;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected OverlayElement fill;
+		protected TextArea commentTextArea;
 
 		/// <summary>
 		/// 
@@ -55,12 +55,12 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real progress;
+		protected OverlayElement fill;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea textArea;
+		protected Real progress;
 
 		#endregion fields
 
@@ -73,13 +73,13 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				this.progress = value;
-				this.progress = Utility.Clamp( this.progress, 1, 0 );
-				this.fill.Width = System.Math.Max( (int)this.fill.Height, (int)( this.progress * ( this.meter.Width - 2 * this.fill.Left ) ) );
+				progress = value;
+				this.progress = Utility.Clamp<Real>( progress, 1, 0 );
+				fill.Width = System.Math.Max( (int)fill.Height, (int)( progress * ( meter.Width - 2 * fill.Left ) ) );
 			}
 			get
 			{
-				return this.progress;
+				return progress;
 			}
 		}
 
@@ -90,11 +90,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.Text;
+				return textArea.Text;
 			}
 			set
 			{
-				this.textArea.Text = value;
+				textArea.Text = value;
 			}
 		}
 
@@ -105,11 +105,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.commentTextArea.Text;
+				return commentTextArea.Text;
 			}
 			set
 			{
-				this.commentTextArea.Text = value;
+				commentTextArea.Text = value;
 			}
 		}
 
@@ -126,16 +126,16 @@ namespace Axiom.Samples
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ProgressBar", "BorderPanel", name );
 			element.Width = ( width );
-			var c = (OverlayElementContainer)element;
+			OverlayElementContainer c = (OverlayElementContainer)element;
 			this.textArea = (TextArea)c.Children[ Name + "/ProgressCaption" ];
-			var commentBox = (OverlayElementContainer)c.Children[ Name + "/ProgressCommentBox" ];
+			OverlayElementContainer commentBox = (OverlayElementContainer)c.Children[ Name + "/ProgressCommentBox" ];
 			commentBox.Width = ( commentBoxWidth );
 			commentBox.Left = ( -( commentBoxWidth + 5 ) );
 			this.commentTextArea = (TextArea)commentBox.Children[ commentBox.Name + "/ProgressCommentText" ];
 			this.meter = c.Children[ Name + "/ProgressMeter" ];
 			this.meter.Width = ( width - 10 );
 			this.fill = ( (OverlayElementContainer)this.meter ).Children[ this.meter.Name + "/ProgressFill" ];
-			Caption = caption;
+			this.Caption = caption;
 		}
 	};
 }

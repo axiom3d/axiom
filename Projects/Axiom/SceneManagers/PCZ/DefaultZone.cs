@@ -39,10 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
 
@@ -54,15 +56,6 @@ namespace Axiom.SceneManagers.PortalConnected
 			: base( creator, name )
 		{
 			mZoneTypeName = "ZoneType_Default";
-		}
-
-		public override bool RequiresZoneSpecificNodeData
-		{
-			get
-			{
-				// regular DefaultZones don't require any zone specific node data
-				return false;
-			}
 		}
 
 		/** Set the enclosure node for this Zone
@@ -108,6 +101,15 @@ namespace Axiom.SceneManagers.PortalConnected
 		/** Indicates whether or not this zone requires zone-specific data for
 		*  each scene node
 		*/
+
+		public override bool RequiresZoneSpecificNodeData
+		{
+			get
+			{
+				// regular DefaultZones don't require any zone specific node data
+				return false;
+			}
+		}
 
 		/** Indicates whether or not this zone requires zone-specific data for
 		*  each scene node
@@ -306,7 +308,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public override void UpdatePortalsZoneData()
 		{
-			var transferPortalList = new List<Portal>();
+			List<Portal> transferPortalList = new List<Portal>();
 
 			// check each portal to see if it's intersecting another portal of greater size
 			foreach ( Portal p in mPortals )
@@ -833,17 +835,17 @@ namespace Axiom.SceneManagers.PortalConnected
 		/** called when the scene manager creates a camera because
 			some zone managers (like TerrainZone) need the camera info.
 		*/
-		public override void NotifyCameraCreated( Camera c ) { }
+		public override void NotifyCameraCreated( Camera c ) {}
 		//-------------------------------------------------------------------------
-		public override void NotifyWorldGeometryRenderQueue( int qid ) { }
+		public override void NotifyWorldGeometryRenderQueue( int qid ) {}
 		//-------------------------------------------------------------------------
-		public override void NotifyBeginRenderScene() { }
+		public override void NotifyBeginRenderScene() {}
 		//-------------------------------------------------------------------------
 		public override void SetZoneGeometry( string filename, PCZSceneNode parentNode )
 		{
 			String entityName, nodeName;
-			entityName = Name + "_entity";
-			nodeName = Name + "_Node";
+			entityName = this.Name + "_entity";
+			nodeName = this.Name + "_Node";
 			Entity ent = mPCZSM.CreateEntity( entityName, filename );
 			// create a node for the entity
 			PCZSceneNode node;

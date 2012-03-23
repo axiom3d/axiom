@@ -42,11 +42,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
+using System.IO;
 
-using Axiom.Core.Collections;
 using Axiom.Graphics;
-using Axiom.Graphics.Collections;
 using Axiom.Math;
+using Axiom.Collections;
+using Axiom.Graphics.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -54,8 +57,6 @@ namespace Axiom.Core
 {
 	public partial class StaticGeometry
 	{
-		#region Nested type: Region
-
 		/// <summary>
 		/// The details of a topological region which is the highest level of
 		/// partitioning for this class.
@@ -82,13 +83,13 @@ namespace Axiom.Core
 				}
 
 				public RegionShadowRenderable( Region parent, HardwareIndexBuffer indexBuffer, VertexData vertexData, bool createSeparateLightCap )
-					: this( parent, indexBuffer, vertexData, createSeparateLightCap, false ) { }
+					: this( parent, indexBuffer, vertexData, createSeparateLightCap, false ) {}
 
 				public HardwareVertexBuffer PositionBuffer
 				{
 					get
 					{
-						return this.positionBuffer;
+						return positionBuffer;
 					}
 				}
 
@@ -96,15 +97,20 @@ namespace Axiom.Core
 				{
 					get
 					{
-						return this.wBuffer;
+						return wBuffer;
 					}
+				}
+
+				public override void GetWorldTransforms( Matrix4[] matrices )
+				{
+					matrices[ 0 ] = parent.ParentNodeFullTransform;
 				}
 
 				public override Quaternion WorldOrientation
 				{
 					get
 					{
-						return this.parent.ParentNode.DerivedOrientation;
+						return parent.ParentNode.DerivedOrientation;
 					}
 				}
 
@@ -112,13 +118,8 @@ namespace Axiom.Core
 				{
 					get
 					{
-						return this.parent.Center;
+						return parent.Center;
 					}
-				}
-
-				public override void GetWorldTransforms( Matrix4[] matrices )
-				{
-					matrices[ 0 ] = this.parent.ParentNodeFullTransform;
 				}
 			}
 
@@ -126,20 +127,20 @@ namespace Axiom.Core
 
 			#region Fields and Properties
 
-			protected AxisAlignedBox aabb;
-			protected Real boundingRadius;
-			protected float camDistanceSquared;
-			protected Vector3 center;
-			protected ushort currentLod;
-			protected EdgeData edgeList;
-			protected List<LODBucket> lodBucketList;
-			protected LodStrategy lodStrategy;
-			protected LodValueList lodValues;
-			protected SceneNode node;
 			protected StaticGeometry parent;
+			protected SceneManager sceneMgr;
+			protected SceneNode node;
 			protected List<QueuedSubMesh> queuedSubMeshes;
 			protected UInt32 regionID;
-			protected SceneManager sceneMgr;
+			protected Vector3 center;
+			protected LodValueList lodValues;
+			protected LodStrategy lodStrategy;
+			protected AxisAlignedBox aabb;
+			protected Real boundingRadius;
+			protected ushort currentLod;
+			protected float camDistanceSquared;
+			protected List<LODBucket> lodBucketList;
+			protected EdgeData edgeList;
 			protected ShadowRenderableList shadowRenderables;
 			protected bool vertexProgramInUse;
 
@@ -147,7 +148,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.parent;
+					return parent;
 				}
 			}
 
@@ -155,7 +156,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.regionID;
+					return regionID;
 				}
 			}
 
@@ -163,7 +164,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.center;
+					return center;
 				}
 			}
 
@@ -171,7 +172,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.aabb;
+					return aabb;
 				}
 			}
 
@@ -188,7 +189,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.boundingRadius;
+					return boundingRadius;
 				}
 			}
 
@@ -198,10 +199,10 @@ namespace Axiom.Core
 				{
 					// Make sure we only update this once per frame no matter how many
 					// times we're asked
-					ulong frame = Root.Instance.CurrentFrameCount;
+					var frame = Root.Instance.CurrentFrameCount;
 					if ( frame > lightListUpdated )
 					{
-						lightList = this.node.FindLights( this.boundingRadius );
+						lightList = node.FindLights( boundingRadius );
 						lightListUpdated = frame;
 					}
 					return lightList;
@@ -212,7 +213,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.edgeList;
+					return edgeList;
 				}
 			}
 
@@ -220,7 +221,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this.lodBucketList;
+					return lodBucketList;
 				}
 			}
 
@@ -231,37 +232,29 @@ namespace Axiom.Core
 			public Region( StaticGeometry parent, string name, SceneManager mgr, UInt32 regionID, Vector3 center )
 				: base( name )
 			{
-				MovableType = "StaticGeometry";
+				this.MovableType = "StaticGeometry";
 				this.parent = parent;
 				this.sceneMgr = mgr;
 				this.regionID = regionID;
 				this.center = center;
-				this.queuedSubMeshes = new List<QueuedSubMesh>();
-				this.lodValues = new LodValueList();
-				this.aabb = new AxisAlignedBox();
-				this.lodBucketList = new List<LODBucket>();
-				this.shadowRenderables = new ShadowRenderableList();
+				queuedSubMeshes = new List<QueuedSubMesh>();
+				lodValues = new LodValueList();
+				aabb = new AxisAlignedBox();
+				lodBucketList = new List<LODBucket>();
+				shadowRenderables = new ShadowRenderableList();
 			}
 
 			#endregion
 
 			#region Public Methods
 
-			public override bool IsVisible
-			{
-				get
-				{
-					return isVisible && !beyondFarDistance;
-				}
-			}
-
 			public void Assign( QueuedSubMesh qsm )
 			{
-				this.queuedSubMeshes.Add( qsm );
+				queuedSubMeshes.Add( qsm );
 
 				// update lod distances
-				Mesh mesh = qsm.submesh.Parent;
-				LodStrategy lodStrategy = mesh.LodStrategy;
+				var mesh = qsm.submesh.Parent;
+				var lodStrategy = mesh.LodStrategy;
 				if ( this.lodStrategy == null )
 				{
 					this.lodStrategy = lodStrategy;
@@ -276,48 +269,48 @@ namespace Axiom.Core
 					}
 				}
 
-				int lodLevels = mesh.LodLevelCount;
+				var lodLevels = mesh.LodLevelCount;
 				if ( qsm.geometryLodList.Count != lodLevels )
 				{
-					string msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
+					var msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
 					throw new AxiomException( msg );
 				}
 
-				while ( this.lodValues.Count < lodLevels )
+				while ( lodValues.Count < lodLevels )
 				{
-					this.lodValues.Add( 0.0f );
+					lodValues.Add( 0.0f );
 				}
 				// Make sure LOD levels are max of all at the requested level
 				for ( ushort lod = 1; lod < lodLevels; ++lod )
 				{
-					MeshLodUsage meshLod = qsm.submesh.Parent.GetLodLevel( lod );
-					this.lodValues[ lod ] = Utility.Max( (float)this.lodValues[ lod ], meshLod.Value );
+					var meshLod = qsm.submesh.Parent.GetLodLevel( lod );
+					lodValues[ lod ] = Utility.Max( (float)lodValues[ lod ], meshLod.Value );
 				}
 
 				// update bounds
 				// Transform world bounds relative to our center
-				var localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - this.center, qsm.worldBounds.Maximum - this.center );
-				this.aabb.Merge( localBounds );
-				foreach ( Vector3 corner in localBounds.Corners )
+				var localBounds = new AxisAlignedBox( qsm.worldBounds.Minimum - center, qsm.worldBounds.Maximum - center );
+				aabb.Merge( localBounds );
+				foreach ( var corner in localBounds.Corners )
 				{
-					this.boundingRadius = Utility.Max( this.boundingRadius, corner.Length );
+					boundingRadius = Utility.Max( boundingRadius, corner.Length );
 				}
 			}
 
 			public void Build( bool stencilShadows, int logLevel )
 			{
 				// Create a node
-				this.node = this.sceneMgr.RootSceneNode.CreateChildSceneNode( name, this.center );
-				this.node.AttachObject( this );
+				node = sceneMgr.RootSceneNode.CreateChildSceneNode( name, center );
+				node.AttachObject( this );
 				// We need to create enough LOD buckets to deal with the highest LOD
 				// we encountered in all the meshes queued
-				for ( ushort lod = 0; lod < this.lodValues.Count; ++lod )
+				for ( ushort lod = 0; lod < lodValues.Count; ++lod )
 				{
-					var lodBucket = new LODBucket( this, lod, this.lodValues[ lod ] );
-					this.lodBucketList.Add( lodBucket );
+					var lodBucket = new LODBucket( this, lod, (float)lodValues[ lod ] );
+					lodBucketList.Add( lodBucket );
 					// Now iterate over the meshes and assign to LODs
 					// LOD bucket will pick the right LOD to use
-					IEnumerator iter = this.queuedSubMeshes.GetEnumerator();
+					IEnumerator iter = queuedSubMeshes.GetEnumerator();
 					while ( iter.MoveNext() )
 					{
 						var qsm = (QueuedSubMesh)iter.Current;
@@ -332,25 +325,25 @@ namespace Axiom.Core
 				{
 					var eb = new EdgeListBuilder();
 					//int vertexSet = 0;
-					foreach ( LODBucket lod in this.lodBucketList )
+					foreach ( var lod in lodBucketList )
 					{
-						foreach ( MaterialBucket mat in lod.MaterialBucketMap.Values )
+						foreach ( var mat in lod.MaterialBucketMap.Values )
 						{
 							// Check if we have vertex programs here
-							Technique t = mat.Material.GetBestTechnique();
+							var t = mat.Material.GetBestTechnique();
 							if ( null != t )
 							{
-								Pass p = t.GetPass( 0 );
+								var p = t.GetPass( 0 );
 								if ( null != p )
 								{
 									if ( p.HasVertexProgram )
 									{
-										this.vertexProgramInUse = true;
+										vertexProgramInUse = true;
 									}
 								}
 							}
 
-							foreach ( GeometryBucket geom in mat.GeometryBucketList )
+							foreach ( var geom in mat.GeometryBucketList )
 							{
 								// Check we're dealing with 16-bit indexes here
 								// Since stencil shadows can only deal with 16-bit
@@ -365,21 +358,21 @@ namespace Axiom.Core
 							}
 						}
 					}
-					this.edgeList = eb.Build();
+					edgeList = eb.Build();
 				}
 			}
 
 			public override void NotifyCurrentCamera( Camera cam )
 			{
 				// Determine active lod
-				Vector3 diff = cam.DerivedPosition - this.center;
+				var diff = cam.DerivedPosition - center;
 				// Distance from the edge of the bounding sphere
-				this.camDistanceSquared = diff.LengthSquared - this.boundingRadius * this.boundingRadius;
+				camDistanceSquared = diff.LengthSquared - boundingRadius * boundingRadius;
 				// Clamp to 0
-				this.camDistanceSquared = Utility.Max( 0.0f, this.camDistanceSquared );
+				camDistanceSquared = Utility.Max( 0.0f, camDistanceSquared );
 
-				float maxDist = this.parent.SquaredRenderingDistance;
-				if ( this.parent.RenderingDistance > 0 && this.camDistanceSquared > maxDist && cam.UseRenderingDistance )
+				var maxDist = parent.SquaredRenderingDistance;
+				if ( parent.RenderingDistance > 0 && camDistanceSquared > maxDist && cam.UseRenderingDistance )
 				{
 					beyondFarDistance = true;
 				}
@@ -387,12 +380,12 @@ namespace Axiom.Core
 				{
 					beyondFarDistance = false;
 
-					this.currentLod = (ushort)( this.lodValues.Count - 1 );
-					for ( ushort i = 0; i < this.lodValues.Count; ++i )
+					currentLod = (ushort)( lodValues.Count - 1 );
+					for ( ushort i = 0; i < lodValues.Count; ++i )
 					{
-						if ( (float)this.lodValues[ i ] > this.camDistanceSquared )
+						if ( (float)lodValues[ i ] > camDistanceSquared )
 						{
-							this.currentLod = (ushort)( i - 1 );
+							currentLod = (ushort)( i - 1 );
 							break;
 						}
 					}
@@ -401,8 +394,16 @@ namespace Axiom.Core
 
 			public override void UpdateRenderQueue( RenderQueue queue )
 			{
-				LODBucket lodBucket = this.lodBucketList[ this.currentLod ];
-				lodBucket.AddRenderables( queue, renderQueueID, this.camDistanceSquared );
+				var lodBucket = lodBucketList[ currentLod ];
+				lodBucket.AddRenderables( queue, renderQueueID, camDistanceSquared );
+			}
+
+			public override bool IsVisible
+			{
+				get
+				{
+					return isVisible && !beyondFarDistance;
+				}
 			}
 
 			public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, ulong flags )
@@ -411,36 +412,36 @@ namespace Axiom.Core
 				Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
 
 				// Calculate the object space light details
-				Vector4 lightPos = light.GetAs4DVector();
-				Matrix4 world2Obj = parentNode.FullTransform.Inverse();
+				var lightPos = light.GetAs4DVector();
+				var world2Obj = parentNode.FullTransform.Inverse();
 				lightPos = world2Obj * lightPos;
 
 				// We need to search the edge list for silhouette edges
-				if ( this.edgeList == null )
+				if ( edgeList == null )
 				{
 					throw new Exception( "You enabled stencil shadows after the buid process!  In " + "Region.GetShadowVolumeRenderableIterator" );
 				}
 
 				// Init shadow renderable list if required
-				bool init = this.shadowRenderables.Count == 0;
+				var init = shadowRenderables.Count == 0;
 
 				RegionShadowRenderable esr = null;
 				//bool updatedSharedGeomNormals = false;
-				for ( int i = 0; i < this.edgeList.EdgeGroups.Count; i++ )
+				for ( var i = 0; i < edgeList.EdgeGroups.Count; i++ )
 				{
-					EdgeData.EdgeGroup group = this.edgeList.EdgeGroups[ i ];
+					var group = (EdgeData.EdgeGroup)edgeList.EdgeGroups[ i ];
 					if ( init )
 					{
 						// Create a new renderable, create a separate light cap if
 						// we're using a vertex program (either for this model, or
 						// for extruding the shadow volume) since otherwise we can
 						// get depth-fighting on the light cap
-						esr = new RegionShadowRenderable( this, indexBuffer, group.vertexData, this.vertexProgramInUse || !extrudeVertices );
-						this.shadowRenderables.Add( esr );
+						esr = new RegionShadowRenderable( this, indexBuffer, group.vertexData, vertexProgramInUse || !extrudeVertices );
+						shadowRenderables.Add( esr );
 					}
 					else
 					{
-						esr = (RegionShadowRenderable)this.shadowRenderables[ i ];
+						esr = (RegionShadowRenderable)shadowRenderables[ i ];
 					}
 					// Extrude vertices in software if required
 					if ( extrudeVertices )
@@ -448,18 +449,18 @@ namespace Axiom.Core
 						ExtrudeVertices( esr.PositionBuffer, group.vertexData.vertexCount, lightPos, extrusionDistance );
 					}
 				}
-				return (IEnumerator)this.shadowRenderables;
+				return (IEnumerator)shadowRenderables;
 			}
 
 			public void Dump()
 			{
-				LogManager.Instance.Write( "Region {0}", this.regionID );
+				LogManager.Instance.Write( "Region {0}", regionID );
 				LogManager.Instance.Write( "--------------------------" );
-				LogManager.Instance.Write( "Center: {0}", this.center );
-				LogManager.Instance.Write( "Local AABB: {0}", this.aabb );
-				LogManager.Instance.Write( "Bounding radius: {0}", this.boundingRadius );
-				LogManager.Instance.Write( "Number of LODs: {0}", this.lodBucketList.Count );
-				foreach ( LODBucket lodBucket in this.lodBucketList )
+				LogManager.Instance.Write( "Center: {0}", center );
+				LogManager.Instance.Write( "Local AABB: {0}", aabb );
+				LogManager.Instance.Write( "Bounding radius: {0}", boundingRadius );
+				LogManager.Instance.Write( "Number of LODs: {0}", lodBucketList.Count );
+				foreach ( var lodBucket in lodBucketList )
 				{
 					lodBucket.Dump();
 				}
@@ -477,18 +478,18 @@ namespace Axiom.Core
 				{
 					if ( disposeManagedResources )
 					{
-						if ( this.node != null )
+						if ( node != null )
 						{
-							this.node.RemoveFromParent();
-							this.sceneMgr.DestroySceneNode( this.node );
-							this.node = null;
+							node.RemoveFromParent();
+							sceneMgr.DestroySceneNode( node );
+							node = null;
 						}
 
-						foreach ( LODBucket lodBucket in this.lodBucketList )
+						foreach ( var lodBucket in lodBucketList )
 						{
 							lodBucket.Dispose();
 						}
-						this.lodBucketList.Clear();
+						lodBucketList.Clear();
 					}
 				}
 			}
@@ -509,7 +510,5 @@ namespace Axiom.Core
 
 			#endregion MovableObject Implementation
 		}
-
-		#endregion
 	}
 }

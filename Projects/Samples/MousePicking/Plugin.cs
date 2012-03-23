@@ -22,22 +22,25 @@
 
 #endregion License
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Text;
 
 using Axiom.Core;
 
 namespace Axiom.Samples.MousePicking
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private MousePickingSample sample;
 
 		public override void Initialize()
 		{
-			this.sample = new MousePickingSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
+			sample = new MousePickingSample();
+			Name = sample.Metadata[ "Title" ] + " Sample";
+			AddSample( sample );
 		}
 	}
 }

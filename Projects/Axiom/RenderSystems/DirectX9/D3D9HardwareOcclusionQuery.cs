@@ -38,9 +38,6 @@ using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using SharpDX;
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -68,7 +65,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		private readonly Dictionary<Device, Query> _mapDeviceToQuery = new Dictionary<Device, Query>();
+		private Dictionary<D3D9.Device, D3D9.Query> _mapDeviceToQuery = new Dictionary<D3D9.Device, D3D9.Query>();
 
 		#endregion Fields
 
@@ -79,6 +76,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareOcclusionQuery()
+			: base()
 		{
 			D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
 		}
@@ -86,16 +84,16 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareOcclusionQuery" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var it in this._mapDeviceToQuery )
+					foreach ( var it in _mapDeviceToQuery )
 					{
 						it.SafeDispose();
 					}
 
-					this._mapDeviceToQuery.Clear();
+					_mapDeviceToQuery.Clear();
 					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 				}
 			}
@@ -113,9 +111,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public override void Begin()
 		{
-			Device pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
-			Query pOccQuery;
-			bool queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
+			D3D9.Query pOccQuery;
+			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			// No resource exits for current device -> create it.
 			if ( !queryWasFound || pOccQuery == null )
@@ -124,11 +122,11 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Grab the query of the current device.
-			pOccQuery = this._mapDeviceToQuery[ pCurDevice ];
+			pOccQuery = _mapDeviceToQuery[ pCurDevice ];
 
 			if ( pOccQuery != null )
 			{
-				pOccQuery.Issue( Issue.Begin );
+				pOccQuery.Issue( D3D9.Issue.Begin );
 				isQueryResultStillOutstanding = true;
 				LastFragmentCount = 0;
 			}
@@ -140,18 +138,18 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public override void End()
 		{
-			Device pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
+			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 
-			if ( !this._mapDeviceToQuery.ContainsKey( pCurDevice ) )
+			if ( !_mapDeviceToQuery.ContainsKey( pCurDevice ) )
 			{
 				throw new AxiomException( "End occlusion called without matching begin call !!" );
 			}
 
-			Query pOccQuery = this._mapDeviceToQuery[ pCurDevice ];
+			var pOccQuery = _mapDeviceToQuery[ pCurDevice ];
 
 			if ( pOccQuery != null )
 			{
-				pOccQuery.Issue( Issue.End );
+				pOccQuery.Issue( D3D9.Issue.End );
 			}
 		}
 
@@ -161,9 +159,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// default to returning a high count.  will be set otherwise if the query runs
 			NumOfFragments = 100000;
-			Device pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
-			Query pOccQuery;
-			bool queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
+			D3D9.Query pOccQuery;
+			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			if ( !queryWasFound || pOccQuery == null )
 			{
@@ -180,15 +178,15 @@ namespace Axiom.RenderSystems.DirectX9
 					try
 					{
 						pixels = pOccQuery.GetData<int>( true );
-						LastFragmentCount = pixels;
+						this.LastFragmentCount = pixels;
 						NumOfFragments = pixels;
 						break;
 					}
-					catch ( SharpDXException ex )
+					catch ( DX.SharpDXException ex )
 					{
-						if ( ex.ResultCode == ResultCode.DeviceLost )
+						if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
 						{
-							LastFragmentCount = NumOfFragments = 0;
+							this.LastFragmentCount = NumOfFragments = 0;
 							pOccQuery.SafeDispose();
 							break;
 						}
@@ -200,7 +198,7 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// we already stored result from last frames.
-				NumOfFragments = LastFragmentCount;
+				NumOfFragments = this.LastFragmentCount;
 			}
 
 			return true;
@@ -219,9 +217,9 @@ namespace Axiom.RenderSystems.DirectX9
 				return false;
 			}
 
-			Device pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
-			Query pOccQuery;
-			bool queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
+			D3D9.Query pOccQuery;
+			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			if ( !queryWasFound || pOccQuery == null )
 			{
@@ -231,16 +229,16 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				var pixels = pOccQuery.GetData<int>( false );
-				LastFragmentCount = pixels;
+				this.LastFragmentCount = pixels;
 				isQueryResultStillOutstanding = false;
 
 				return false;
 			}
-			catch ( SharpDXException ex )
+			catch ( DX.SharpDXException ex )
 			{
-				if ( ex.ResultCode == ResultCode.DeviceLost )
+				if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
 				{
-					LastFragmentCount = 100000;
+					this.LastFragmentCount = 100000;
 					pOccQuery.SafeDispose();
 				}
 
@@ -249,28 +247,28 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		private void _createQuery( Device d3d9Device )
+		private void _createQuery( D3D9.Device d3d9Device )
 		{
 			// Check if query supported.
 			try
 			{
 				// create the occlusion query.
-				this._mapDeviceToQuery[ d3d9Device ] = new Query( d3d9Device, QueryType.Occlusion );
+				_mapDeviceToQuery[ d3d9Device ] = new D3D9.Query( d3d9Device, D3D9.QueryType.Occlusion );
 			}
 			catch
 			{
-				this._mapDeviceToQuery[ d3d9Device ] = null;
+				_mapDeviceToQuery[ d3d9Device ] = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		private void _releaseQuery( Device d3d9Device )
+		private void _releaseQuery( D3D9.Device d3d9Device )
 		{
-			if ( this._mapDeviceToQuery.ContainsKey( d3d9Device ) )
+			if ( _mapDeviceToQuery.ContainsKey( d3d9Device ) )
 			{
 				// Remove from query resource map.
-				this._mapDeviceToQuery[ d3d9Device ].SafeDispose();
-				this._mapDeviceToQuery.Remove( d3d9Device );
+				_mapDeviceToQuery[ d3d9Device ].SafeDispose();
+				_mapDeviceToQuery.Remove( d3d9Device );
 			}
 		}
 
@@ -280,26 +278,26 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceCreate( Device d3d9Device ) { }
+		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device ) {}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceDestroy( Device d3d9Device )
+		public void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
 		{
 			_releaseQuery( d3d9Device );
 		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceLost"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceLost( Device d3d9Device )
+		public void NotifyOnDeviceLost( D3D9.Device d3d9Device )
 		{
 			_releaseQuery( d3d9Device );
 		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceReset( Device d3d9Device ) { }
+		public void NotifyOnDeviceReset( D3D9.Device d3d9Device ) {}
 
-		#endregion
+		#endregion ID3D9Resource Members
 	};
 }
