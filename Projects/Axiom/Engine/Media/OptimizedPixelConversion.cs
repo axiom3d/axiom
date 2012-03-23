@@ -39,13 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
-
-using Axiom.Core;
-
-using System.Reflection;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Axiom.CrossPlatform;
 
@@ -105,9 +100,9 @@ namespace Axiom.Media
 
 		public Col3b( uint a, uint b, uint c )
 		{
-			x = (byte)a;
-			y = (byte)b;
-			z = (byte)c;
+			this.x = (byte)a;
+			this.y = (byte)b;
+			this.z = (byte)c;
 		}
 	}
 
@@ -141,7 +136,7 @@ namespace Axiom.Media
 	}
 
 	///<summary>
-	///    A class to convert/copy pixels of the same or different formats
+	///  A class to convert/copy pixels of the same or different formats
 	///</summary>
 	public static class OptimizedPixelConversion
 	{
@@ -916,21 +911,21 @@ namespace Axiom.Media
 
 		private class PixelConverterAttribute : Attribute
 		{
-			private PixelFormat _srcFormat;
-			private PixelFormat _dstFormat;
+			private readonly PixelFormat _srcFormat;
+			private readonly PixelFormat _dstFormat;
 
 			public int Id
 			{
 				get
 				{
-					return ( (int)_srcFormat << 8 ) + (int)_dstFormat;
+					return ( (int)this._srcFormat << 8 ) + (int)this._dstFormat;
 				}
 			}
 
 			public PixelConverterAttribute( PixelFormat srcFormat, PixelFormat dstFormat )
 			{
-				_srcFormat = srcFormat;
-				_dstFormat = dstFormat;
+				this._srcFormat = srcFormat;
+				this._dstFormat = dstFormat;
 			}
 		}
 
@@ -939,7 +934,7 @@ namespace Axiom.Media
 			void Convert( BufferBase input, BufferBase output, int offset );
 		}
 
-		private static Dictionary<int, IPixelConverter> _supportedConversions;
+		private static readonly Dictionary<int, IPixelConverter> _supportedConversions;
 
 		static OptimizedPixelConversion()
 		{

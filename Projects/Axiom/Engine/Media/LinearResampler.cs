@@ -41,25 +41,22 @@ using System;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
-using Axiom.Graphics;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
 	/// <summary>
-	/// default floating-point linear resampler, does format conversion
+	///   default floating-point linear resampler, does format conversion
 	/// </summary>
 	public partial class LinearResampler
 	{
 		#region Methods
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="dst"></param>
+		/// <param name="src"> </param>
+		/// <param name="dst"> </param>
 		public void Scale( PixelBox src, PixelBox dst )
 		{
 			var srcelemsize = PixelUtil.GetNumElemBytes( src.Format );

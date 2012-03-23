@@ -38,11 +38,10 @@
 namespace Axiom.Media
 {
 	/// <summary>
-	/// Codec specialized in images.
+	///   Codec specialized in images.
 	/// </summary>
 	/// <remarks>
-	/// The users implementing subclasses of ImageCodec are required to return
-	/// a valid pointer to a ImageData class from the decode(...) function.
+	///   The users implementing subclasses of ImageCodec are required to return a valid pointer to a ImageData class from the decode(...) function.
 	/// </remarks>
 	public abstract class ImageCodec : Codec
 	{
@@ -56,8 +55,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Codec return class for images. Has information about the size and the
-		/// pixel format of the image.
+		///   Codec return class for images. Has information about the size and the pixel format of the image.
 		/// </summary>
 		public class ImageData : CodecData
 		{

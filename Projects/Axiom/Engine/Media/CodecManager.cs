@@ -41,28 +41,28 @@ using Axiom.Core;
 namespace Axiom.Media
 {
 	/// <summary>
-	/// Manages registering/fulfilling requests for codecs that handle various types of media.
+	///   Manages registering/fulfilling requests for codecs that handle various types of media.
 	/// </summary>
 	public sealed class CodecManager : DisposableObject
 	{
 		#region Fields
 
 		/// <summary>
-		/// Singleton instance of this class.
+		///   Singleton instance of this class.
 		/// </summary>
 		private static CodecManager _instance;
 
 		/// <summary>
-		/// List of registered media codecs.
+		///   List of registered media codecs.
 		/// </summary>
-		private AxiomCollection<Codec> _mapCodecs = new AxiomCollection<Codec>();
+		private readonly AxiomCollection<Codec> _mapCodecs = new AxiomCollection<Codec>();
 
 		#endregion Fields
 
 		#region Properties
 
 		/// <summary>
-		/// Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static CodecManager Instance
 		{
@@ -73,15 +73,15 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gets the file extension list for the registered codecs.
+		///   Gets the file extension list for the registered codecs.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public string[] Extensions
 		{
 			get
 			{
-				var res = new string[ _mapCodecs.Count ];
-				_mapCodecs.Keys.CopyTo( res, 0 );
+				var res = new string[ this._mapCodecs.Count ];
+				this._mapCodecs.Keys.CopyTo( res, 0 );
 				return res;
 			}
 		}
@@ -89,7 +89,7 @@ namespace Axiom.Media
 		#endregion Properties
 
 		/// <summary>
-		/// Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		internal CodecManager()
 			: base()
@@ -114,48 +114,48 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Registers a new codec in the database.
+		///   Registers a new codec in the database.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void RegisterCodec( Codec codec )
 		{
-			if ( _mapCodecs.ContainsKey( codec.Type ) )
+			if ( this._mapCodecs.ContainsKey( codec.Type ) )
 			{
 				throw new AxiomException( "{0} already has a registered codec.", codec.Type );
 			}
 
-			_mapCodecs[ codec.Type ] = codec;
+			this._mapCodecs[ codec.Type ] = codec;
 		}
 
 		/// <summary>
-		/// Return whether a codec is registered already.
+		///   Return whether a codec is registered already.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public bool IsCodecRegistered( string codecType )
 		{
-			return _mapCodecs.ContainsKey( codecType );
+			return this._mapCodecs.ContainsKey( codecType );
 		}
 
 		/// <summary>
-		/// Unregisters a codec from the database.
+		///   Unregisters a codec from the database.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void UnregisterCodec( Codec codec )
 		{
-			_mapCodecs.TryRemove( codec.Type );
+			this._mapCodecs.TryRemove( codec.Type );
 		}
 
 		/// <summary>
-		/// Gets the codec registered for the passed in file extension.
+		///   Gets the codec registered for the passed in file extension.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public Codec GetCodec( string extension )
 		{
 			var lwrcase = extension.ToLower();
-			if ( !_mapCodecs.ContainsKey( lwrcase ) )
+			if ( !this._mapCodecs.ContainsKey( lwrcase ) )
 			{
 				var formatStr = string.Empty;
-				if ( _mapCodecs.Count == 0 )
+				if ( this._mapCodecs.Count == 0 )
 				{
 					formatStr = "There are no formats supported (no codecs registered).";
 				}
@@ -167,24 +167,19 @@ namespace Axiom.Media
 				throw new AxiomException( "Can not find codec for '{0}' image format.\n{1}", extension, formatStr );
 			}
 
-			return _mapCodecs[ lwrcase ];
+			return this._mapCodecs[ lwrcase ];
 		}
 
 		/// <summary>
-		/// Gets the codec that can handle the given 'magic' identifier.
+		///   Gets the codec that can handle the given 'magic' identifier.
 		/// </summary>
-		/// <param name="magicNumberBuf">
-		/// Pointer to a stream of bytes which should identify the file.
-		/// <note>
-		/// Note that this may be more than needed - each codec may be looking for 
-		/// a different size magic number.
-		/// </note>
-		/// </param>
-		/// <param name="maxBytes">The number of bytes passed</param>
+		/// <param name="magicNumberBuf"> Pointer to a stream of bytes which should identify the file. <note>Note that this may be more than needed - each codec may be looking for 
+		///                                                                                              a different size magic number.</note> </param>
+		/// <param name="maxBytes"> The number of bytes passed </param>
 		[OgreVersion( 1, 7, 2 )]
 		public Codec GetCodec( byte[] magicNumberBuf, int maxBytes )
 		{
-			foreach ( var i in _mapCodecs )
+			foreach ( var i in this._mapCodecs )
 			{
 				var ext = i.MagicNumberToFileExt( magicNumberBuf, maxBytes );
 				if ( !string.IsNullOrEmpty( ext ) )

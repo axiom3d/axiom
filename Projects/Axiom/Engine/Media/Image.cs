@@ -60,134 +60,127 @@ namespace Axiom.Media
 	}
 
 	/// <summary>
-	///    Class representing an image file.
+	///   Class representing an image file.
 	/// </summary>
 	/// <remarks>
-	///    The Image class usually holds uncompressed image data and is the
-	///    only object that can be loaded in a texture. Image objects handle 
-	///    image data decoding themselves by the means of locating the correct 
-	///    Codec implementation for each data type.
+	///   The Image class usually holds uncompressed image data and is the only object that can be loaded in a texture. Image objects handle image data decoding themselves by the means of locating the correct Codec implementation for each data type.
 	/// </remarks>
 	public class Image : DisposableObject
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		///    Byte array containing the image data.
+		///   Byte array containing the image data.
 		/// </summary>
 		protected byte[] buffer;
 
-		/// <summary>
-		///   This allows me to pin the buffer, so that I can return PixelBox 
-		///   objects representing subsets of this image.  Since the PixelBox
-		///   does not own the data, and has an IntPtr, I need to pin the
-		///   internal buffer here.
-		/// </summary>
 		//protected GCHandle bufferPinnedHandle;
+		/// <summary>
+		///   This allows me to pin the buffer, so that I can return PixelBox objects representing subsets of this image. Since the PixelBox does not own the data, and has an IntPtr, I need to pin the internal buffer here.
+		/// </summary>
 		/// <summary>
 		///   This is the pointer to the contents of buffer.
 		/// </summary>
 		protected BufferBase bufPtr;
 
 		/// <summary>
-		///    Gets the byte array that holds the image data.
+		///   Gets the byte array that holds the image data.
 		/// </summary>
 		public byte[] Data
 		{
 			get
 			{
-				return buffer;
+				return this.buffer;
 			}
 		}
 
 		/// <summary>
-		///    Gets the size (in bytes) of this image.
+		///   Gets the size (in bytes) of this image.
 		/// </summary>
 		public int Size
 		{
 			get
 			{
-				return buffer != null ? buffer.Length : 0;
+				return this.buffer != null ? this.buffer.Length : 0;
 			}
 		}
 
 		/// <summary>
-		///    Width of the image (in pixels).
+		///   Width of the image (in pixels).
 		/// </summary>
 		protected int width;
 
 		/// <summary>
-		///    Gets the width of this image.
+		///   Gets the width of this image.
 		/// </summary>
 		public int Width
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
 		/// <summary>
-		///    Width of the image (in pixels).
+		///   Width of the image (in pixels).
 		/// </summary>
 		protected int height;
 
 		/// <summary>
-		///    Gets the height of this image.
+		///   Gets the height of this image.
 		/// </summary>
 		public int Height
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
 		/// <summary>
-		///    Depth of the image
+		///   Depth of the image
 		/// </summary>
 		protected int depth;
 
 		/// <summary>
-		///    Gets the depth of this image.
+		///   Gets the depth of this image.
 		/// </summary>
 		public int Depth
 		{
 			get
 			{
-				return depth;
+				return this.depth;
 			}
 		}
 
 		/// <summary>
-		///    Size of the image buffer.
+		///   Size of the image buffer.
 		/// </summary>
 		protected int size;
 
 		/// <summary>
-		///    Number of mip maps in this image.
+		///   Number of mip maps in this image.
 		/// </summary>
 		protected int numMipMaps;
 
 		/// <summary>
-		///    Gets the number of mipmaps contained in this image.
+		///   Gets the number of mipmaps contained in this image.
 		/// </summary>
 		public int NumMipMaps
 		{
 			get
 			{
-				return numMipMaps;
+				return this.numMipMaps;
 			}
 		}
 
 		/// <summary>
-		///    Additional features on this image.
+		///   Additional features on this image.
 		/// </summary>
 		protected ImageFlags flags;
 
 		/// <summary>
-		///   Get the numer of faces of the image. This is usually 6 for a cubemap,
-		///   and 1 for a normal image.
+		///   Get the numer of faces of the image. This is usually 6 for a cubemap, and 1 for a normal image.
 		/// </summary>
 		public int NumFaces
 		{
@@ -202,51 +195,51 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		///    Image format.
+		///   Image format.
 		/// </summary>
 		protected PixelFormat format;
 
 		/// <summary>
-		///    Gets the format of this image.
+		///   Gets the format of this image.
 		/// </summary>
 		public PixelFormat Format
 		{
 			get
 			{
-				return format;
+				return this.format;
 			}
 		}
 
 		/// <summary>
-		///    Gets the number of bits per pixel in this image.
+		///   Gets the number of bits per pixel in this image.
 		/// </summary>
 		public int BitsPerPixel
 		{
 			get
 			{
-				return PixelUtil.GetNumElemBits( format );
+				return PixelUtil.GetNumElemBits( this.format );
 			}
 		}
 
 		/// <summary>
-		///    Gets whether or not this image has an alpha component in its pixel format.
+		///   Gets whether or not this image has an alpha component in its pixel format.
 		/// </summary>
 		public bool HasAlpha
 		{
 			get
 			{
-				return PixelUtil.HasAlpha( format );
+				return PixelUtil.HasAlpha( this.format );
 			}
 		}
 
 		/// <summary>
-		/// Width of the image in bytes
+		///   Width of the image in bytes
 		/// </summary>
 		public int RowSpan
 		{
 			get
 			{
-				return width * PixelUtil.GetNumElemBytes( format );
+				return this.width * PixelUtil.GetNumElemBytes( this.format );
 			}
 		}
 
@@ -258,58 +251,40 @@ namespace Axiom.Media
 			: base() {}
 
 		/// <summary>
-		/// Copy constructor
+		///   Copy constructor
 		/// </summary>
-		/// <param name="img"></param>
+		/// <param name="img"> </param>
 		public Image( Image img )
 			: base()
 		{
-			width = img.width;
-			height = img.height;
-			depth = img.depth;
-			size = img.size;
-			numMipMaps = img.numMipMaps;
-			flags = img.flags;
-			format = img.format;
-			buffer = img.buffer;
+			this.width = img.width;
+			this.height = img.height;
+			this.depth = img.depth;
+			this.size = img.size;
+			this.numMipMaps = img.numMipMaps;
+			this.flags = img.flags;
+			this.format = img.format;
+			this.buffer = img.buffer;
 			//TODO
 			//m_bAutoDelete
 		}
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		/// 
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		/// 	isDisposed = true;
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		///<summary>
+		///  Class level dispose method
+		///</summary>
+		///<remarks>
+		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } isDisposed = true; // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
+		///</remarks>
+		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					bufPtr.SafeDispose();
-					buffer = null;
+					this.bufPtr.SafeDispose();
+					this.buffer = null;
 				}
 
 #if !AXIOM_SAFE_ONLY
@@ -331,29 +306,28 @@ namespace Axiom.Media
 
 		protected void SetBuffer( byte[] newBuffer )
 		{
-			if ( buffer != null )
+			if ( this.buffer != null )
 			{
-				bufPtr = null;
-				buffer = null;
+				this.bufPtr = null;
+				this.buffer = null;
 			}
 			if ( newBuffer != null )
 			{
-				buffer = newBuffer;
-				bufPtr = BufferBase.Wrap( newBuffer );
+				this.buffer = newBuffer;
+				this.bufPtr = BufferBase.Wrap( newBuffer );
 			}
 		}
 
 		/// <summary>
-		///    Performs gamma adjustment on this image.
+		///   Performs gamma adjustment on this image.
 		/// </summary>
 		/// <remarks>
-		///    Basic algo taken from Titan Engine, copyright (c) 2000 Ignacio 
-		///    Castano Iguado.
+		///   Basic algo taken from Titan Engine, copyright (c) 2000 Ignacio Castano Iguado.
 		/// </remarks>
-		/// <param name="buffer"></param>
-		/// <param name="gamma"></param>
-		/// <param name="size"></param>
-		/// <param name="bpp"></param>
+		/// <param name="buffer"> </param>
+		/// <param name="gamma"> </param>
+		/// <param name="size"> </param>
+		/// <param name="bpp"> </param>
 		public static void ApplyGamma( byte[] buffer, float gamma, int size, int bpp )
 		{
 			if ( gamma == 1.0f )
@@ -409,10 +383,10 @@ namespace Axiom.Media
 		/// <summary>
 		///   Variant of ApplyGamma that operates on an unmanaged chunk of memory
 		/// </summary>
-		/// <param name="bufPtr"></param>
-		/// <param name="gamma"></param>
-		/// <param name="size"></param>
-		/// <param name="bpp"></param>
+		/// <param name="bufPtr"> </param>
+		/// <param name="gamma"> </param>
+		/// <param name="size"> </param>
+		/// <param name="bpp"> </param>
 		public static void ApplyGamma( BufferBase bufPtr, float gamma, int size, int bpp )
 		{
 			if ( gamma == 1.0f )
@@ -472,35 +446,32 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Flips (mirrors) the image around the Y-axis. 
+		///   Flips (mirrors) the image around the Y-axis.
 		/// </summary>
 		/// <remarks>
-		/// An example of an original and flipped image:
-		/// <pre>
-		///        flip axis
-		///            |
-		/// originalimg|gmilanigiro
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// </pre>
+		///   An example of an original and flipped image: <pre>flip axis
+		///                                                  |
+		///                                                  originalimg|gmilanigiro
+		///                                                  00000000000|00000000000
+		///                                                  00000000000|00000000000
+		///                                                  00000000000|00000000000
+		///                                                  00000000000|00000000000
+		///                                                  00000000000|00000000000</pre>
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void FlipAroundY()
 		{
-			if ( buffer == null )
+			if ( this.buffer == null )
 			{
 				throw new AxiomException( "Can not flip an unitialized texture" );
 			}
 
-			numMipMaps = 0; // Image operations lose precomputed mipmaps
+			this.numMipMaps = 0; // Image operations lose precomputed mipmaps
 
 			int src = 0, dst = 0;
 
-			var bytes = PixelUtil.GetNumElemBytes( format );
-			var tempBuffer = new byte[ width * height * bytes ];
+			var bytes = PixelUtil.GetNumElemBytes( this.format );
+			var tempBuffer = new byte[ this.width * this.height * bytes ];
 
 			if ( bytes > 4 || bytes < 1 )
 			{
@@ -509,12 +480,12 @@ namespace Axiom.Media
 
 			else if ( bytes == 3 )
 			{
-				for ( int y = 0; y < height; y++ )
+				for ( int y = 0; y < this.height; y++ )
 				{
-					dst = ( ( y * width ) + width - 1 ) * 3;
-					for ( int x = 0; x < width; x++ )
+					dst = ( ( y * this.width ) + this.width - 1 ) * 3;
+					for ( int x = 0; x < this.width; x++ )
 					{
-						Array.Copy( buffer, src, tempBuffer, dst, bytes );
+						Array.Copy( this.buffer, src, tempBuffer, dst, bytes );
 						src += 3;
 						dst -= 3;
 					}
@@ -523,75 +494,67 @@ namespace Axiom.Media
 
 			else
 			{
-				for ( int y = 0; y < height; y++ )
+				for ( int y = 0; y < this.height; y++ )
 				{
-					dst = ( ( y * width ) + width - 1 );
-					for ( int x = 0; x < width; x++ )
+					dst = ( ( y * this.width ) + this.width - 1 );
+					for ( int x = 0; x < this.width; x++ )
 					{
-						Array.Copy( buffer, src++, tempBuffer, dst--, bytes );
+						Array.Copy( this.buffer, src++, tempBuffer, dst--, bytes );
 					}
 				}
 			}
 
-			Array.Copy( tempBuffer, buffer, tempBuffer.Length );
+			Array.Copy( tempBuffer, this.buffer, tempBuffer.Length );
 		}
 
-		/// <summary>
-		///		Flips this image around the X axis.
-		///     This will invalidate any 
-		/// </summary>
-		/// <remarks>
-		/// An example of an original and flipped image:
-		/// <pre>
-		///        flip axis
-		///            |
-		/// originalimg|gmilanigiro
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// 00000000000|00000000000
-		/// </pre>
-		/// </remarks>
+		///<summary>
+		///  Flips this image around the X axis. This will invalidate any
+		///</summary>
+		///<remarks>
+		///  An example of an original and flipped image: <pre>flip axis
+		///                                                 |
+		///                                                 originalimg|gmilanigiro
+		///                                                 00000000000|00000000000
+		///                                                 00000000000|00000000000
+		///                                                 00000000000|00000000000
+		///                                                 00000000000|00000000000
+		///                                                 00000000000|00000000000</pre>
+		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void FlipAroundX()
 		{
-			if ( buffer == null )
+			if ( this.buffer == null )
 			{
 				throw new AxiomException( "Can not flip an unitialized texture" );
 			}
 
-			var bytes = PixelUtil.GetNumElemBytes( format );
-			numMipMaps = 0; // Image operations lose precomputed mipmaps
-			var rowSpan = width * bytes;
+			var bytes = PixelUtil.GetNumElemBytes( this.format );
+			this.numMipMaps = 0; // Image operations lose precomputed mipmaps
+			var rowSpan = this.width * bytes;
 
-			var tempBuffer = new byte[ rowSpan * height ];
+			var tempBuffer = new byte[ rowSpan * this.height ];
 
 			int srcOffset = 0, dstOffset = tempBuffer.Length - rowSpan;
 
-			for ( short y = 0; y < height; y++ )
+			for ( short y = 0; y < this.height; y++ )
 			{
-				Array.Copy( buffer, srcOffset, tempBuffer, dstOffset, rowSpan );
+				Array.Copy( this.buffer, srcOffset, tempBuffer, dstOffset, rowSpan );
 
 				srcOffset += rowSpan;
 				dstOffset -= rowSpan;
 			}
 
-			Array.Copy( tempBuffer, buffer, tempBuffer.Length );
+			Array.Copy( tempBuffer, this.buffer, tempBuffer.Length );
 		}
 
 		/// <summary>
-		/// Loads an image file.
+		///   Loads an image file.
 		/// </summary>
 		/// <remarks>
-		///  This method loads an image into memory. Any format for which 
-		/// and associated ImageCodec is registered can be loaded. 
-		/// This can include complex formats like DDS with embedded custom 
-		/// mipmaps, cube faces and volume textures.
-		/// The type can be determined by calling getFormat().
+		///   This method loads an image into memory. Any format for which and associated ImageCodec is registered can be loaded. This can include complex formats like DDS with embedded custom mipmaps, cube faces and volume textures. The type can be determined by calling getFormat().
 		/// </remarks>
-		/// <param name="fileName">Name of a file file to load.</param>
-		/// <param name="groupName">Name of the resource group to search for the image</param>
+		/// <param name="fileName"> Name of a file file to load. </param>
+		/// <param name="groupName"> Name of the resource group to search for the image </param>
 		/// <note>The memory associated with this buffer is destroyed with the Image object.</note>
 		[OgreVersion( 1, 7, 2 )]
 		public static Image FromFile( string fileName, string groupName )
@@ -606,27 +569,27 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		///    Loads raw image data from memory.
+		///   Loads raw image data from memory.
 		/// </summary>
-		/// <param name="stream">Stream containing the raw image data.</param>
-		/// <param name="width">Width of this image data (in pixels).</param>
-		/// <param name="height">Height of this image data (in pixels).</param>
-		/// <param name="format">Pixel format used in this texture.</param>
-		/// <returns>A new instance of Image containing the raw data supplied.</returns>
+		/// <param name="stream"> Stream containing the raw image data. </param>
+		/// <param name="width"> Width of this image data (in pixels). </param>
+		/// <param name="height"> Height of this image data (in pixels). </param>
+		/// <param name="format"> Pixel format used in this texture. </param>
+		/// <returns> A new instance of Image containing the raw data supplied. </returns>
 		public static Image FromRawStream( Stream stream, int width, int height, PixelFormat format )
 		{
 			return FromRawStream( stream, width, height, 1, format );
 		}
 
 		/// <summary>
-		///    Loads raw image data from memory.
+		///   Loads raw image data from memory.
 		/// </summary>
-		/// <param name="stream">Stream containing the raw image data.</param>
-		/// <param name="width">Width of this image data (in pixels).</param>
-		/// <param name="height">Height of this image data (in pixels).</param>
-		/// <param name="depth"></param>
-		/// <param name="format">Pixel format used in this texture.</param>
-		/// <returns>A new instance of Image containing the raw data supplied.</returns>
+		/// <param name="stream"> Stream containing the raw image data. </param>
+		/// <param name="width"> Width of this image data (in pixels). </param>
+		/// <param name="height"> Height of this image data (in pixels). </param>
+		/// <param name="depth"> </param>
+		/// <param name="format"> Pixel format used in this texture. </param>
+		/// <returns> A new instance of Image containing the raw data supplied. </returns>
 		public static Image FromRawStream( Stream stream, int width, int height, int depth, PixelFormat format )
 		{
 			// create a new buffer and write the image data directly to it
@@ -637,40 +600,26 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Stores a pointer to raw data in memory. The pixel format has to be specified.
+		///   Stores a pointer to raw data in memory. The pixel format has to be specified.
 		/// </summary>
 		/// <remarks>
-		/// This method loads an image into memory held in the object. The 
-		/// pixel format will be either greyscale or RGB with an optional
-		/// Alpha component.
-		/// The type can be determined by calling getFormat().             
-		/// @note
-		/// Whilst typically your image is likely to be a simple 2D image,
-		/// you can define complex images including cube maps, volume maps,
-		/// and images including custom mip levels. The layout of the 
-		/// internal memory should be:
-		/// <ul><li>face 0, mip 0 (top), width x height (x depth)</li>
-		/// <li>face 0, mip 1, width/2 x height/2 (x depth/2)</li>
-		/// <li>face 0, mip 2, width/4 x height/4 (x depth/4)</li>
-		/// <li>.. remaining mips for face 0 .. </li>
-		/// <li>face 1, mip 0 (top), width x height (x depth)</li
-		/// <li>.. and so on. </li>
-		/// </ul>
-		/// Of course, you will never have multiple faces (cube map) and
-		/// depth too.
+		///   This method loads an image into memory held in the object. The pixel format will be either greyscale or RGB with an optional Alpha component. The type can be determined by calling getFormat(). @note Whilst typically your image is likely to be a simple 2D image, you can define complex images including cube maps, volume maps, and images including custom mip levels. The layout of the internal memory should be: <ul>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>face 0, mip 0 (top), width x height (x depth)</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>face 0, mip 1, width/2 x height/2 (x depth/2)</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>face 0, mip 2, width/4 x height/4 (x depth/4)</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>.. remaining mips for face 0 ..</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>face 1, mip 0 (top), width x height (x depth)</li
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                <li>.. and so on.</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                              </ul> Of course, you will never have multiple faces (cube map) and depth too.
 		/// </remarks>
-		/// <param name="pData">The data pointer</param>
-		/// <param name="uWidth">Width of image</param>
-		/// <param name="uHeight">Height of image</param>
-		/// <param name="depth">Image Depth (in 3d images, numbers of layers, otherwhise 1)</param>
-		/// <param name="eFormat">Pixel Format</param>
-		/// <param name="autoDelete">if memory associated with this buffer is to be destroyed
-		/// with the Image object. Note: it's important that if you set
-		/// this option to true, that you allocated the memory using OGRE_ALLOC_T
-		/// with a category of MEMCATEGORY_GENERAL ensure the freeing of memory 
-		/// matches up.</param>
-		/// <param name="numFaces">the number of faces the image data has inside (6 for cubemaps, 1 otherwise)</param>
-		/// <param name="numMipMaps">the number of mipmaps the image data has inside</param>
+		/// <param name="pData"> The data pointer </param>
+		/// <param name="uWidth"> Width of image </param>
+		/// <param name="uHeight"> Height of image </param>
+		/// <param name="depth"> Image Depth (in 3d images, numbers of layers, otherwhise 1) </param>
+		/// <param name="eFormat"> Pixel Format </param>
+		/// <param name="autoDelete"> if memory associated with this buffer is to be destroyed with the Image object. Note: it's important that if you set this option to true, that you allocated the memory using OGRE_ALLOC_T with a category of MEMCATEGORY_GENERAL ensure the freeing of memory matches up. </param>
+		/// <param name="numFaces"> the number of faces the image data has inside (6 for cubemaps, 1 otherwise) </param>
+		/// <param name="numMipMaps"> the number of mipmaps the image data has inside </param>
 		[OgreVersion( 1, 7, 2, "Original name was LoadDynamicImage" )]
 		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat,
 #if NET_40
@@ -708,8 +657,8 @@ namespace Axiom.Media
 				throw new AxiomException( "Number of faces currently must be 6 or 1." );
 			}
 
-			size = CalculateSize( numMipMaps, numFaces, uWidth, uHeight, depth, eFormat );
-			this.SetBuffer( pData );
+			this.size = CalculateSize( numMipMaps, numFaces, uWidth, uHeight, depth, eFormat );
+			SetBuffer( pData );
 			//TODO
 			//m_bAutoDelete = autoDelete;
 
@@ -717,19 +666,19 @@ namespace Axiom.Media
 		}
 
 #if !NET_40
-		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)" />
 		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat )
 		{
 			return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, false, 1, 0 );
 		}
 
-		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)" />
 		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete )
 		{
 			return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, autoDelete, 1, 0 );
 		}
 
-		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)"/>
+		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)" />
 		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete, int numFaces )
 		{
 			return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, autoDelete, numFaces, 0 );
@@ -737,25 +686,13 @@ namespace Axiom.Media
 #endif
 
 		/// <summary>
-		/// Loads an image from a stream.
+		///   Loads an image from a stream.
 		/// </summary>
 		/// <remarks>
-		/// This method works in the same way as the filename-based load 
-		/// method except it loads the image from a DataStream object. 
-		/// This DataStream is expected to contain the 
-		/// encoded data as it would be held in a file. 
-		/// Any format for which and associated ImageCodec is registered 
-		/// can be loaded. 
-		/// This can include complex formats like DDS with embedded custom 
-		/// mipmaps, cube faces and volume textures.
-		/// The type can be determined by calling getFormat().
+		///   This method works in the same way as the filename-based load method except it loads the image from a DataStream object. This DataStream is expected to contain the encoded data as it would be held in a file. Any format for which and associated ImageCodec is registered can be loaded. This can include complex formats like DDS with embedded custom mipmaps, cube faces and volume textures. The type can be determined by calling getFormat().
 		/// </remarks>
-		/// <param name="stream">Stream serving as the data source.</param>
-		/// <param name="type">
-		/// The type of the image. Used to decide what decompression
-		/// codec to use. Can be left blank if the stream data includes
-		/// a header to identify the data.
-		/// </param>
+		/// <param name="stream"> Stream serving as the data source. </param>
+		/// <param name="type"> The type of the image. Used to decide what decompression codec to use. Can be left blank if the stream data includes a header to identify the data. </param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
         public static Image FromStream( Stream stream, string type = "" )
@@ -816,7 +753,7 @@ namespace Axiom.Media
 		}
 
 #if !NET_40
-		/// <see cref="Image.FromStream(Stream, string)"/>
+		/// <see cref="Image.FromStream(Stream, string)" />
 		public static Image FromStream( Stream stream )
 		{
 			return FromStream( stream, string.Empty );
@@ -824,14 +761,14 @@ namespace Axiom.Media
 #endif
 
 		/// <summary>
-		/// Static function to get an image type string from a stream via magic numbers
+		///   Static function to get an image type string from a stream via magic numbers
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static string GetFileExtFromMagic( Stream stream )
 		{
 			// read the first 32 bytes or file size, if less
 			var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
-			byte[] magicBuf = new byte[ magicLen ];
+			var magicBuf = new byte[ magicLen ];
 			stream.Read( magicBuf, 0, magicLen );
 			// return to start
 			stream.Position = 0;
@@ -846,13 +783,12 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Saves the Image as a file
+		///   Saves the Image as a file
 		/// </summary>
 		/// <remarks>
-		/// The codec used to save the file is determined by the extension of the filename passed in
-		/// Invalid or unrecognized extensions will throw an exception.
+		///   The codec used to save the file is determined by the extension of the filename passed in Invalid or unrecognized extensions will throw an exception.
 		/// </remarks>
-		/// <param name="filename">Filename to save as</param>
+		/// <param name="filename"> Filename to save as </param>
 		public void Save( String filename )
 		{
 			if ( this.buffer == null )
@@ -882,7 +818,7 @@ namespace Axiom.Media
 			imgData.depth = Depth;
 			imgData.size = Size;
 			// Wrap memory, be sure not to delete when stream destroyed
-			var wrapper = new MemoryStream( buffer );
+			var wrapper = new MemoryStream( this.buffer );
 
 			pCodec.EncodeToFile( wrapper, filename, imgData );
 		}
@@ -890,36 +826,36 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public ColorEx GetColorAt( int x, int y, int z )
 		{
-			return PixelConverter.UnpackColor( Format, this.bufPtr + PixelUtil.GetNumElemBytes( format ) * ( z * Width * Height + Width * y + x ) );
+			return PixelConverter.UnpackColor( Format, this.bufPtr + PixelUtil.GetNumElemBytes( this.format ) * ( z * Width * Height + Width * y + x ) );
 		}
 
 		/// <summary>
-		/// Get a PixelBox encapsulating the image data of a mipmap
+		///   Get a PixelBox encapsulating the image data of a mipmap
 		/// </summary>
-		/// <param name="face"></param>
-		/// <param name="mipmap"></param>
-		/// <returns></returns>
+		/// <param name="face"> </param>
+		/// <param name="mipmap"> </param>
+		/// <returns> </returns>
 		public PixelBox GetPixelBox( int face, int mipmap )
 		{
-			if ( mipmap > numMipMaps )
+			if ( mipmap > this.numMipMaps )
 			{
 				throw new IndexOutOfRangeException();
 			}
-			if ( face > this.NumFaces )
+			if ( face > NumFaces )
 			{
 				throw new IndexOutOfRangeException();
 			}
 			// Calculate mipmap offset and size
-			var width = this.Width;
-			var height = this.Height;
-			var depth = this.Depth;
+			var width = Width;
+			var height = Height;
+			var depth = Depth;
 			var faceSize = 0; // Size of one face of the image
 			var offset = 0;
 			for ( var mip = 0; mip < mipmap; ++mip )
 			{
-				faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
+				faceSize = PixelUtil.GetMemorySize( width, height, depth, Format );
 				// Skip all faces of this mipmap
-				offset += faceSize * this.NumFaces;
+				offset += faceSize * NumFaces;
 				// Half size in each dimension
 				if ( width != 1 )
 				{
@@ -935,12 +871,12 @@ namespace Axiom.Media
 				}
 			}
 			// We have advanced to the desired mipmap, offset to right face
-			faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
+			faceSize = PixelUtil.GetMemorySize( width, height, depth, Format );
 			offset += faceSize * face;
 			// Return subface as pixelbox
-			if ( bufPtr != null )
+			if ( this.bufPtr != null )
 			{
-				return new PixelBox( width, height, depth, this.Format, bufPtr + offset );
+				return new PixelBox( width, height, depth, Format, this.bufPtr + offset );
 			}
 			else
 			{
@@ -950,32 +886,31 @@ namespace Axiom.Media
 
 		public PixelBox GetPixelBox()
 		{
-			return this.GetPixelBox( 0, 0 );
+			return GetPixelBox( 0, 0 );
 		}
 
 		public PixelBox GetPixelBox( int face )
 		{
-			return this.GetPixelBox( face, 0 );
+			return GetPixelBox( face, 0 );
 		}
 
 		/// <summary>
-		///    Checks if the specified flag is set on this image.
+		///   Checks if the specified flag is set on this image.
 		/// </summary>
-		/// <param name="flag">The flag to check for.</param>
-		/// <returns>True if the flag is set, false otherwise.</returns>
+		/// <param name="flag"> The flag to check for. </param>
+		/// <returns> True if the flag is set, false otherwise. </returns>
 		public bool HasFlag( ImageFlags flag )
 		{
-			return ( flags & flag ) > 0;
+			return ( this.flags & flag ) > 0;
 		}
 
 		/// <summary>
-		/// Scale a 1D, 2D or 3D image volume.
+		///   Scale a 1D, 2D or 3D image volume.
 		/// </summary>
-		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-		/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
+		/// <param name="src"> PixelBox containing the source pointer, dimensions and format </param>
+		/// <param name="dst"> PixelBox containing the destination pointer, dimensions and format </param>
 		/// <remarks>
-		/// This function can do pixel format conversion in the process.
-		/// dst and src can point to the same PixelBox object without any problem
+		///   This function can do pixel format conversion in the process. dst and src can point to the same PixelBox object without any problem
 		/// </remarks>
 		public static void Scale( PixelBox src, PixelBox dst )
 		{
@@ -983,14 +918,13 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Scale a 1D, 2D or 3D image volume.
+		///   Scale a 1D, 2D or 3D image volume.
 		/// </summary>
-		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-		/// <param name="scaled">PixelBox containing the destination pointer, dimensions and format</param>
-		/// <param name="filter">Which filter to use</param>
+		/// <param name="src"> PixelBox containing the source pointer, dimensions and format </param>
+		/// <param name="scaled"> PixelBox containing the destination pointer, dimensions and format </param>
+		/// <param name="filter"> Which filter to use </param>
 		/// <remarks>
-		/// This function can do pixel format conversion in the process.
-		/// dst and src can point to the same PixelBox object without any problem
+		///   This function can do pixel format conversion in the process. dst and src can point to the same PixelBox object without any problem
 		/// </remarks>
 		public static void Scale( PixelBox src, PixelBox scaled, ImageFilter filter )
 		{
@@ -1100,38 +1034,38 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Resize a 2D image, applying the appropriate filter.
+		///   Resize a 2D image, applying the appropriate filter.
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
 		public void Resize( int width, int height )
 		{
 			Resize( width, height, ImageFilter.Bilinear );
 		}
 
 		/// <summary>
-		/// Resize a 2D image, applying the appropriate filter.
+		///   Resize a 2D image, applying the appropriate filter.
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="filter"></param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
+		/// <param name="filter"> </param>
 		public void Resize( int width, int height, ImageFilter filter )
 		{
 			// resizing dynamic images is not supported
 			//TODO : Debug.Assert( this._bAutoDelete);
-			Debug.Assert( this.Depth == 1 );
+			Debug.Assert( Depth == 1 );
 
 			// reassign buffer to temp image, make sure auto-delete is true
 			var temp = new Image();
-			temp.FromDynamicImage( buffer, this.width, this.height, 1, format );
+			temp.FromDynamicImage( this.buffer, this.width, this.height, 1, this.format );
 			// do not delete[] m_pBuffer!  temp will destroy it
 
 			// set new dimensions, allocate new buffer
 			this.width = width;
 			this.height = height;
-			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
-			SetBuffer( new byte[ size ] ); // AXIOM IMPORTANT: cant set buffer only as this wont sync the IntPtr!
-			numMipMaps = 0; // Loses precomputed mipmaps
+			this.size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
+			SetBuffer( new byte[ this.size ] ); // AXIOM IMPORTANT: cant set buffer only as this wont sync the IntPtr!
+			this.numMipMaps = 0; // Loses precomputed mipmaps
 
 			// scale the image from temp into our resized buffer
 			Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
@@ -1160,15 +1094,14 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Little utility function that crops an image
-		/// (Doesn't alter the source image, returns a cropped representation)
+		///   Little utility function that crops an image (Doesn't alter the source image, returns a cropped representation)
 		/// </summary>
-		/// <param name="source">The source image</param>
-		/// <param name="offsetX">The X offset from the origin</param>
-		/// <param name="offsetY">The Y offset from the origin</param>
-		/// <param name="width">The width to crop to</param>
-		/// <param name="height">The height to crop to</param>
-		/// <returns>Returns the cropped representation of the source image if the parameters are valid, otherwise, returns the source image.</returns>
+		/// <param name="source"> The source image </param>
+		/// <param name="offsetX"> The X offset from the origin </param>
+		/// <param name="offsetY"> The Y offset from the origin </param>
+		/// <param name="width"> The width to crop to </param>
+		/// <param name="height"> The height to crop to </param>
+		/// <returns> Returns the cropped representation of the source image if the parameters are valid, otherwise, returns the source image. </returns>
 		public Image CropImage( Image source, uint offsetX, uint offsetY, int width, int height )
 		{
 			if ( offsetX + width > source.Width )

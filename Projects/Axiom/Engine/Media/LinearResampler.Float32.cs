@@ -37,11 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -50,8 +46,7 @@ namespace Axiom.Media
 	partial class LinearResampler
 	{
 		/// <summary>
-		/// float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only.
-		/// avoids overhead of pixel unpack/repack function calls
+		///   float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only. avoids overhead of pixel unpack/repack function calls
 		/// </summary>
 		public class Float32
 		{

@@ -44,7 +44,7 @@ using System;
 namespace Axiom.Media
 {
 	/// <summary>
-	///    Various flags that give details on a particular image.
+	///   Various flags that give details on a particular image.
 	/// </summary>
 	[Flags]
 	public enum ImageFlags
@@ -55,7 +55,7 @@ namespace Axiom.Media
 	}
 
 	/// <summary>
-	///    The pixel format used for images.
+	///   The pixel format used for images.
 	/// </summary>
 	// These have been orangized in the source in ascending order of the size,
 	// However the values are important for GL. This need to change in the future
@@ -63,24 +63,24 @@ namespace Axiom.Media
 	public enum PixelFormat
 	{
 		/// <summary>
-		///    Unknown pixel format.
+		///   Unknown pixel format.
 		/// </summary>
 		Unknown = 0,
 
 		/// <summary>
-		///    8-bit pixel format, all bits luminance.
+		///   8-bit pixel format, all bits luminance.
 		/// </summary>
 		L8 = 1,
 		BYTE_L = L8,
 
 		/// <summary>
-		///    8-bit pixel format, all bits alpha.
+		///   8-bit pixel format, all bits alpha.
 		/// </summary>
 		A8 = 3,
 		BYTE_A = A8,
 
 		/// <summary>
-		///    8-bit pixel format, 4 bits alpha, 4 bits luminance.
+		///   8-bit pixel format, 4 bits alpha, 4 bits luminance.
 		/// </summary>
 		A4L4 = 4,
 
@@ -95,50 +95,50 @@ namespace Axiom.Media
 		R3G3B2 = 31,
 
 		/// <summary>
-		///    16-bit pixel format, 5 bits red, 6 bits green, 5 bits blue.
+		///   16-bit pixel format, 5 bits red, 6 bits green, 5 bits blue.
 		/// </summary>
 		R5G6B5 = 6,
 
 		/// <summary>
-		///    16-bit pixel format, 5 bits blue, 6 bits green, 5 bits red.
+		///   16-bit pixel format, 5 bits blue, 6 bits green, 5 bits red.
 		/// </summary>
 		B5G6R5 = 7,
 
 		/// <summary>
-		///    16-bit pixel format, 4 bits for alpha, red, green and blue.
+		///   16-bit pixel format, 4 bits for alpha, red, green and blue.
 		/// </summary>
 		A4R4G4B4 = 8,
 
 		/// <summary>
-		///    16-bit pixel format, 4 bits for blue, green, red and alpha.
+		///   16-bit pixel format, 4 bits for blue, green, red and alpha.
 		/// </summary>
 		B4G4R4A4 = 8,
 
 		/// <summary>
-		///    16-bit pixel format, 8 bits for alpha, 8 bits for luminance.
+		///   16-bit pixel format, 8 bits for alpha, 8 bits for luminance.
 		/// </summary>
 		A8L8 = 5,
 		BYTE_LA = A8L8,
 
 		/// <summary>
-		///    16-bit pixel format, all bits luminance.
+		///   16-bit pixel format, all bits luminance.
 		/// </summary>
 		L16 = 2,
 		SHORT_L = L16,
 
 		/// <summary>
-		///    16-bit pixel format, 1 bit for alpha, 5 bits for blue, green and red.
+		///   16-bit pixel format, 1 bit for alpha, 5 bits for blue, green and red.
 		/// </summary>
 		A1R5G5B5 = 9,
 
 		/// <summary>
-		///    24-bit pixel format, 8 bits for red, green and blue.
+		///   24-bit pixel format, 8 bits for red, green and blue.
 		/// </summary>
 		R8G8B8 = 10,
 		BYTE_BGR = R8G8B8,
 
 		/// <summary>
-		///    24-bit pixel format, 8 bits for blue, green and red.
+		///   24-bit pixel format, 8 bits for blue, green and red.
 		/// </summary>
 		B8G8R8 = 11,
 		BYTE_RGB = B8G8R8,
@@ -149,77 +149,75 @@ namespace Axiom.Media
 		//L24,
 
 		/// <summary>
-		///    32-bit pixel format, 8 bits for alpha, red, green and blue.
+		///   32-bit pixel format, 8 bits for alpha, red, green and blue.
 		/// </summary>
 		A8R8G8B8 = 12,
 		BYTE_BGRA = A8R8G8B8,
 
 		/// <summary>
-		///    32-bit pixel format, 8 bits for alpha, blue, green and red`.
+		///   32-bit pixel format, 8 bits for alpha, blue, green and red`.
 		/// </summary>
 		A8B8G8R8 = 13,
 		BYTE_RGBA = A8B8G8R8,
 
 		/// <summary>
-		///    32-bit pixel format, 8 bits for blue, green, red and alpha.
+		///   32-bit pixel format, 8 bits for blue, green, red and alpha.
 		/// </summary>
 		B8G8R8A8 = 14,
 
 		/// <summary>
-		///    32-bit pixel format, 8 bits for red, green, blue and alpha.
+		///   32-bit pixel format, 8 bits for red, green, blue and alpha.
 		/// </summary>
 		R8G8B8A8 = 28,
 
 		/// <summary>
-		///    32-bit pixel format, 8 bits for red, green and blue.
-		///    like PF_A8R8G8B8, but alpha will get discarded
+		///   32-bit pixel format, 8 bits for red, green and blue. like PF_A8R8G8B8, but alpha will get discarded
 		/// </summary>
 		X8R8G8B8 = 26,
 
-		/// <summary>
-		///    32-bit pixel format, 8 bits for blue, green and red.
-		///		like PF_A8R8G8B8, but alpha will get discarded
-		/// </summary>
+		///<summary>
+		///  32-bit pixel format, 8 bits for blue, green and red. like PF_A8R8G8B8, but alpha will get discarded
+		///</summary>
 		X8B8G8R8 = 27,
 
 		/// <summary>
-		///    32-bit pixel format, 2 bits for alpha, 10 bits for red, green and blue.
+		///   32-bit pixel format, 2 bits for alpha, 10 bits for red, green and blue.
 		/// </summary>
 		A2R10G10B10 = 15,
 
 		/// <summary>
-		///    32-bit pixel format, 10 bits for blue, green and red, 2 bits for alpha.
+		///   32-bit pixel format, 10 bits for blue, green and red, 2 bits for alpha.
 		/// </summary>
 		A2B10G10R10 = 16,
 
 		/// <summary>
-		///    DDS (DirectDraw Surface) DXT1 format.
+		///   DDS (DirectDraw Surface) DXT1 format.
 		/// </summary>
 		DXT1 = 17,
 
 		/// <summary>
-		///    DDS (DirectDraw Surface) DXT2 format.
+		///   DDS (DirectDraw Surface) DXT2 format.
 		/// </summary>
 		DXT2 = 18,
 
 		/// <summary>
-		///    DDS (DirectDraw Surface) DXT3 format.
+		///   DDS (DirectDraw Surface) DXT3 format.
 		/// </summary>
 		DXT3 = 19,
 
 		/// <summary>
-		///    DDS (DirectDraw Surface) DXT4 format.
+		///   DDS (DirectDraw Surface) DXT4 format.
 		/// </summary>
 		DXT4 = 20,
 
 		/// <summary>
-		///    DDS (DirectDraw Surface) DXT5 format.
+		///   DDS (DirectDraw Surface) DXT5 format.
 		/// </summary>
 		DXT5 = 21,
 
-		/// <summary>
-		///		Depth texture format
-		/// </summary>
+		///<summary>
+		///  Depth texture format
+		///</summary>
 		DEPTH = 29,
 
 		/// <summary>
@@ -228,83 +226,83 @@ namespace Axiom.Media
 		SHORT_RGBA = 30,
 
 		/// <summary>
-		///    16 bit floating point with a single channel (red)
+		///   16 bit floating point with a single channel (red)
 		/// </summary>
 		FLOAT16_R = 32,
 
 		/// <summary>
-		///    48-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue
+		///   48-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue
 		/// </summary>
 		FLOAT16_RGB = 22,
 
 		/// <summary>
-		///    64-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue, 16 bits (float) for alpha
+		///   64-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue, 16 bits (float) for alpha
 		/// </summary>
 		FLOAT16_RGBA = 23,
 
-		/// <summary>
-		///		32 bit floating point with a single channel (red)
-		/// </summary>
+		///<summary>
+		///  32 bit floating point with a single channel (red)
+		///</summary>
 		FLOAT32_R = 33,
 
 		/// <summary>
-		///    96-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue
+		///   96-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue
 		/// </summary>
 		FLOAT32_RGB = 24,
 
 		/// <summary>
-		///    128-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue, 32 bits (float) for alpha
+		///   128-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue, 32 bits (float) for alpha
 		/// </summary>
 		FLOAT32_RGBA = 25,
 
-		/// <summary>
-		///		32-bit pixel format, 2-channel floating point pixel format, 16 bits (float) for green, 16 bits (float) for red
-		/// </summary>
+		///<summary>
+		///  32-bit pixel format, 2-channel floating point pixel format, 16 bits (float) for green, 16 bits (float) for red
+		///</summary>
 		FLOAT16_GR = 35,
 
-		/// <summary>
-		///		64-bit pixel format, 2-channel floating point pixel format, 32 bits (float) for green, 32 bits (float) for red
-		/// </summary>
+		///<summary>
+		///  64-bit pixel format, 2-channel floating point pixel format, 32 bits (float) for green, 32 bits (float) for red
+		///</summary>
 		FLOAT32_GR = 36,
 
 		/// <summary>
-		/// 32-bit pixel format, 16-bit green, 16-bit red
+		///   32-bit pixel format, 16-bit green, 16-bit red
 		/// </summary>
 		SHORT_GR = 34,
 
 		/// <summary>
-		/// 48-bit pixel format, 16 bits for red, green and blue
+		///   48-bit pixel format, 16 bits for red, green and blue
 		/// </summary>
 		SHORT_RGB = 37,
 
 		/// <summary>
-		/// PVRTC (PowerVR) RGB 2 bpp
+		///   PVRTC (PowerVR) RGB 2 bpp
 		/// </summary>
 		PVRTC_RGB2 = 38,
 
 		/// <summary>
-		/// PVRTC (PowerVR) RGBA 2 bpp
+		///   PVRTC (PowerVR) RGBA 2 bpp
 		/// </summary>
 		PVRTC_RGBA2 = 39,
 
 		/// <summary>
-		/// PVRTC (PowerVR) RGB 4 bpp
+		///   PVRTC (PowerVR) RGB 4 bpp
 		/// </summary>
 		PVRTC_RGB4 = 40,
 
 		/// <summary>
-		/// PVRTC (PowerVR) RGBA 4 bpp
+		///   PVRTC (PowerVR) RGBA 4 bpp
 		/// </summary>
 		PVRTC_RGBA4 = 41,
 
 		/// <summary>
-		///    The last one, used to size arrays of PixelFormat.  Don't add anything after this one!
+		///   The last one, used to size arrays of PixelFormat. Don't add anything after this one!
 		/// </summary>
 		Count = 42
 	}
 
 	/// <summary>
-	///    Flags defining some on/off properties of pixel formats
+	///   Flags defining some on/off properties of pixel formats
 	/// </summary>
 	[Flags]
 	public enum PixelFormatFlags
@@ -329,33 +327,33 @@ namespace Axiom.Media
 	}
 
 	/// <summary>
-	///    Pixel component format
+	///   Pixel component format
 	/// </summary>
 	public enum PixelComponentType
 	{
 		/// <summary>
-		///  Byte per component (8 bit fixed 0.0..1.0)
+		///   Byte per component (8 bit fixed 0.0..1.0)
 		/// </summary>
 		Byte = 0,
 
 		/// <summary>
-		/// Short per component (16 bit fixed 0.0..1.0))
+		///   Short per component (16 bit fixed 0.0..1.0))
 		/// </summary>
 		Short = 1,
 
 		/// <summary>
-		/// 16 bit float per component
+		///   16 bit float per component
 		/// </summary>
 		Float16 = 2,
 
 		/// <summary>
-		/// 32 bit float per component
+		///   32 bit float per component
 		/// </summary>
 		Float32 = 3,
 
 		// this should not be part of the enum in C# ...
 		/// <summary>
-		/// Number of pixel types
+		///   Number of pixel types
 		/// </summary>
 		Count = 4
 	}
