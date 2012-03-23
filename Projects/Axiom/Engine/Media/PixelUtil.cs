@@ -49,10 +49,10 @@ namespace Axiom.Media
 	public class PixelUtil
 	{
 		/// <summary>
-		///    Returns the size in bytes of an element of the given pixel format.
+		///   Returns the size in bytes of an element of the given pixel format.
 		/// </summary>
-		/// <param name="format">Pixel format to test.</param>
-		/// <returns>Size in bytes.</returns>
+		/// <param name="format"> Pixel format to test. </param>
+		/// <returns> Size in bytes. </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static int GetNumElemBytes( PixelFormat format )
 		{
@@ -60,10 +60,10 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		///    Returns the size in bits of an element of the given pixel format.
+		///   Returns the size in bits of an element of the given pixel format.
 		/// </summary>
-		/// <param name="format">Pixel format to test.</param>
-		/// <returns>Size in bits.</returns>
+		/// <param name="format"> Pixel format to test. </param>
+		/// <returns> Size in bits. </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static int GetNumElemBits( PixelFormat format )
 		{
@@ -71,9 +71,11 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gives the number of bits (RGBA) for a format. See remarks.
+		///   Gives the number of bits (RGBA) for a format. See remarks.
 		/// </summary>
-		/// <remarks>For non-colour formats (dxt, depth) this returns [0,0,0,0].</remarks>
+		/// <remarks>
+		///   For non-colour formats (dxt, depth) this returns [0,0,0,0].
+		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static int[] GetBitDepths( PixelFormat format )
 		{
@@ -87,9 +89,11 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gives the masks for the R, G, B and A component
+		///   Gives the masks for the R, G, B and A component
 		/// </summary>
-		/// <remarks>Only valid for native endian formats</remarks>
+		/// <remarks>
+		///   Only valid for native endian formats
+		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
@@ -103,10 +107,10 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gives the bit shifts for R, G, B and A component
+		///   Gives the bit shifts for R, G, B and A component
 		/// </summary>
 		/// <remarks>
-		/// Only valid for native endian formats
+		///   Only valid for native endian formats
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static byte[] GetBitShifts( PixelFormat format )
@@ -122,18 +126,15 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		///    Returns the size in memory of a region with the given extents and pixel
-		///    format with consecutive memory layout.
+		///  Returns the size in memory of a region with the given extents and pixel format with consecutive memory layout.
 		///</summary>
-		///<param name="width">Width of the area</param>
-		///<param name="height">Height of the area</param>
-		///<param name="depth">Depth of the area</param>
-		///<param name="format">Format of the area</param>
-		///<returns>The size in bytes</returns>
+		///<param name="width"> Width of the area </param>
+		///<param name="height"> Height of the area </param>
+		///<param name="depth"> Depth of the area </param>
+		///<param name="format"> Format of the area </param>
+		///<returns> The size in bytes </returns>
 		///<remarks>
-		///    In case that the format is non-compressed, this simply returns
-		///    width * height * depth * PixelConverter.GetNumElemBytes(format). In the compressed
-		///    case, this does serious magic.
+		///  In case that the format is non-compressed, this simply returns width * height * depth * PixelConverter.GetNumElemBytes(format). In the compressed case, this does serious magic.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static int GetMemorySize( int width, int height, int depth, PixelFormat format )
@@ -175,12 +176,9 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Returns wether the format can be packed or unpacked with the packColour()
-		/// and unpackColour() functions. This is generally not true for compressed and
-		/// depth formats as they are special. It can only be true for formats with a
-		/// fixed element size.
+		///   Returns wether the format can be packed or unpacked with the packColour() and unpackColour() functions. This is generally not true for compressed and depth formats as they are special. It can only be true for formats with a fixed element size.
 		/// </summary>
-		/// <returns>true if yes, otherwise false</returns>
+		/// <returns> true if yes, otherwise false </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsAccessible( PixelFormat format )
 		{
@@ -193,7 +191,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Shortcut method to determine if the format is compressed
+		///   Shortcut method to determine if the format is compressed
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsCompressed( PixelFormat format )
@@ -202,7 +200,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Shortcut method to determine if the format is floating point
+		///   Shortcut method to determine if the format is floating point
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsFloatingPoint( PixelFormat format )
@@ -211,7 +209,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Shortcut method to determine if the format has an alpha component
+		///   Shortcut method to determine if the format has an alpha component
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool HasAlpha( PixelFormat format )
@@ -220,7 +218,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Shortcut method to determine if the format is a luminance format.
+		///   Shortcut method to determine if the format is a luminance format.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsLuminance( PixelFormat format )
@@ -229,7 +227,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Shortcut method to determine if the format is in native endian format.
+		///   Shortcut method to determine if the format is in native endian format.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsNativeEndian( PixelFormat format )
@@ -238,7 +236,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gets the name of an image format
+		///   Gets the name of an image format
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static string GetFormatName( PixelFormat format )
@@ -247,10 +245,9 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Returns the component type for a certain pixel format. Returns <see cref="PixelComponentType.Byte"/>
-		/// in case there is no clear component type like with compressed formats.
-		/// This is one of <see cref="PixelComponentType.Byte"/>, <see cref="PixelComponentType.Short"/>,
-		/// <see cref="PixelComponentType.Float16"/>, <see cref="PixelComponentType.Float32"/>.
+		///   Returns the component type for a certain pixel format. Returns <see cref="PixelComponentType.Byte" /> in case there is no clear component type like with compressed formats. This is one of <see
+		///    cref="PixelComponentType.Byte" /> , <see cref="PixelComponentType.Short" /> , <see cref="PixelComponentType.Float16" /> , <see
+		///    cref="PixelComponentType.Float32" /> .
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static PixelComponentType GetComponentType( PixelFormat format )
@@ -259,12 +256,12 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Gets the format from given name.
+		///   Gets the format from given name.
 		/// </summary>
-		/// <param name="name">The string of format name</param>
-		/// <param name="accessibleOnly">If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid.</param>
-		/// <param name="caseSensitive">Should be set true if string match should use case sensitivity.</param>
-		/// <returns>The format match the format name, or <see cref="PixelFormat.Unknown"/> if is invalid name.</returns>
+		/// <param name="name"> The string of format name </param>
+		/// <param name="accessibleOnly"> If true, non-accessible format will treat as invalid format, otherwise, all supported formats are valid. </param>
+		/// <param name="caseSensitive"> Should be set true if string match should use case sensitivity. </param>
+		/// <returns> The format match the format name, or <see cref="PixelFormat.Unknown" /> if is invalid name. </returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly = false, bool caseSensitive = false )
@@ -290,13 +287,13 @@ namespace Axiom.Media
 		}
 
 #if !NET_40
-		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		/// <see cref="GetFormatFromName(string, bool, bool)" />
 		public static PixelFormat GetFormatFromName( string name )
 		{
 			return GetFormatFromName( name, false, false );
 		}
 
-		/// <see cref="GetFormatFromName(string, bool, bool)"/>
+		/// <see cref="GetFormatFromName(string, bool, bool)" />
 		public static PixelFormat GetFormatFromName( string name, bool accessibleOnly )
 		{
 			return GetFormatFromName( name, accessibleOnly, false );
@@ -304,21 +301,12 @@ namespace Axiom.Media
 #endif
 
 		/// <summary>
-		/// Returns the similar format but acoording with given bit depths.
+		///   Returns the similar format but acoording with given bit depths.
 		/// </summary>
-		/// <param name="format">The original format.</param>
-		/// <param name="integerBits">
-		/// Preferred bit depth (pixel bits) for integer pixel format.
-		/// Available values: 0, 16 and 32, where 0 (the default) means as it is.
-		/// </param>
-		/// <param name="floatBits">
-		/// Preferred bit depth (channel bits) for float pixel format.
-		/// Available values: 0, 16 and 32, where 0 (the default) means as it is.
-		/// </param>
-		/// <returns>
-		/// The format that similar original format with bit depth according
-		/// with preferred bit depth, or original format if no convertion occuring.
-		/// </returns>
+		/// <param name="format"> The original format. </param>
+		/// <param name="integerBits"> Preferred bit depth (pixel bits) for integer pixel format. Available values: 0, 16 and 32, where 0 (the default) means as it is. </param>
+		/// <param name="floatBits"> Preferred bit depth (channel bits) for float pixel format. Available values: 0, 16 and 32, where 0 (the default) means as it is. </param>
+		/// <returns> The format that similar original format with bit depth according with preferred bit depth, or original format if no convertion occuring. </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
 		{

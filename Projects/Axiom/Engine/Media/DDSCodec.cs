@@ -47,11 +47,10 @@ using Axiom.Utilities;
 namespace Axiom.Media
 {
 	/// <summary>
-	/// Codec specialized in loading DDS (Direct Draw Surface) images.
+	///   Codec specialized in loading DDS (Direct Draw Surface) images.
 	/// </summary>
 	/// <remarks>
-	/// We implement our own codec here since we need to be able to keep DXT
-	/// data compressed if the card supports it.
+	///   We implement our own codec here since we need to be able to keep DXT data compressed if the card supports it.
 	/// </remarks>
 	public class DDSCodec : ImageCodec
 	{
@@ -86,14 +85,14 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( size );
-				br.Write( flags );
-				br.Write( fourCC );
-				br.Write( rgbBits );
-				br.Write( redMask );
-				br.Write( greenMask );
-				br.Write( blueMask );
-				br.Write( alphaMask );
+				br.Write( this.size );
+				br.Write( this.flags );
+				br.Write( this.fourCC );
+				br.Write( this.rgbBits );
+				br.Write( this.redMask );
+				br.Write( this.greenMask );
+				br.Write( this.blueMask );
+				br.Write( this.alphaMask );
 			}
 		};
 
@@ -119,15 +118,15 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( caps1 );
-				br.Write( caps2 );
-				br.Write( reserved[ 0 ] );
-				br.Write( reserved[ 1 ] );
+				br.Write( this.caps1 );
+				br.Write( this.caps2 );
+				br.Write( this.reserved[ 0 ] );
+				br.Write( this.reserved[ 1 ] );
 			}
 		};
 
 		/// <summary>
-		/// Main header, note preceded by 'DDS '
+		///   Main header, note preceded by 'DDS '
 		/// </summary>
 		private struct DDSHeader
 		{
@@ -171,28 +170,28 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( size );
-				br.Write( flags );
-				br.Write( height );
-				br.Write( width );
-				br.Write( sizeOrPitch );
-				br.Write( depth );
-				br.Write( mipMapCount );
+				br.Write( this.size );
+				br.Write( this.flags );
+				br.Write( this.height );
+				br.Write( this.width );
+				br.Write( this.sizeOrPitch );
+				br.Write( this.depth );
+				br.Write( this.mipMapCount );
 
-				foreach ( var cur in reserved1 )
+				foreach ( var cur in this.reserved1 )
 				{
 					br.Write( cur );
 				}
 
-				pixelFormat.Write( br );
-				caps.Write( br );
+				this.pixelFormat.Write( br );
+				this.caps.Write( br );
 
-				br.Write( reserved2 );
+				br.Write( this.reserved2 );
 			}
 		};
 
 		/// <summary>
-		/// An 8-byte DXT color block, represents a 4x4 texel area. Used by all DXT formats
+		///   An 8-byte DXT color block, represents a 4x4 texel area. Used by all DXT formats
 		/// </summary>
 		private struct DXTColorBlock
 		{
@@ -216,7 +215,7 @@ namespace Axiom.Media
 		};
 
 		/// <summary>
-		/// An 8-byte DXT explicit alpha block, represents a 4x4 texel area. Used by DXT2/3
+		///   An 8-byte DXT explicit alpha block, represents a 4x4 texel area. Used by DXT2/3
 		/// </summary>
 		private struct DXTExplicitAlphaBlock
 		{
@@ -238,7 +237,7 @@ namespace Axiom.Media
 		};
 
 		/// <summary>
-		/// An 8-byte DXT interpolated alpha block, represents a 4x4 texel area. Used by DXT4/5
+		///   An 8-byte DXT interpolated alpha block, represents a 4x4 texel area. Used by DXT4/5
 		/// </summary>
 		private struct DXTInterpolatedAlphaBlock
 		{
@@ -304,12 +303,12 @@ namespace Axiom.Media
 		#endregion Constants
 
 		/// <summary>
-		/// Single registered codec instance
+		///   Single registered codec instance
 		/// </summary>
 		private static DDSCodec _instance;
 
 		/// <summary>
-		/// Returns that this codec handles dds files.
+		///   Returns that this codec handles dds files.
 		/// </summary>
 		public override string Type
 		{
@@ -326,7 +325,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Static method to startup and register the DDS codec
+		///   Static method to startup and register the DDS codec
 		/// </summary>
 		[OgreVersion( 1, 7, 2, "Original name was startup" )]
 		public static void Initialize()
@@ -340,7 +339,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Static method to shutdown and unregister the DDS codec
+		///   Static method to shutdown and unregister the DDS codec
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static void Shutdown()
@@ -352,14 +351,14 @@ namespace Axiom.Media
 			}
 		}
 
-		/// <see cref="Axiom.Media.Codec.Encode"/>
+		/// <see cref="Axiom.Media.Codec.Encode" />
 		[OgreVersion( 1, 7, 2 )]
 		public override Stream Encode( Stream input, Codec.CodecData data )
 		{
 			throw new NotImplementedException( "DDS file encoding is not yet supported." );
 		}
 
-		/// <see cref="Axiom.Media.Codec.EncodeToFile"/>
+		/// <see cref="Axiom.Media.Codec.EncodeToFile" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
 		{
@@ -433,7 +432,7 @@ namespace Axiom.Media
 				var ddsHeaderSizeOrPitch = 0;
 				var ddsHeaderCaps1 = 0;
 				var ddsHeaderCaps2 = 0;
-				var ddsMagic = DDS_MAGIC;
+				var ddsMagic = this.DDS_MAGIC;
 
 				// Initalise the header flags
 				ddsHeaderFlags = ( isVolume ) ? DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_DEPTH | DDSD_PIXELFORMAT : DDSD_CAPS | DDSD_WIDTH | DDSD_HEIGHT | DDSD_PIXELFORMAT;
@@ -479,7 +478,7 @@ namespace Axiom.Media
 				}
 
 				// Populate the DDS header information
-				DDSHeader ddsHeader = new DDSHeader();
+				var ddsHeader = new DDSHeader();
 				ddsHeader.size = DDS_HEADER_SIZE;
 				ddsHeader.flags = ddsHeaderFlags;
 				ddsHeader.width = imgData.width;
@@ -610,7 +609,7 @@ namespace Axiom.Media
 					var testMasks = PixelUtil.GetBitMasks( pf );
 					var testBits = PixelUtil.GetBitDepths( pf );
 
-					if ( testMasks[ 0 ] == rMask && testMasks[ 1 ] == gMask && testMasks[ 2 ] == bMask &&// for alpha, deal with 'X8' formats by checking bit counts
+					if ( testMasks[ 0 ] == rMask && testMasks[ 1 ] == gMask && testMasks[ 2 ] == bMask && // for alpha, deal with 'X8' formats by checking bit counts
 					     ( testMasks[ 3 ] == aMask || ( aMask == 0 && testBits[ 3 ] == 0 ) ) )
 					{
 						return pf;
@@ -622,7 +621,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack DXT colors into array of 16 color values
+		///   Unpack DXT colors into array of 16 color values
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		private void _unpackDXTColor( PixelFormat pf, DXTColorBlock block, ColorEx[] pCol )
@@ -684,7 +683,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack DXT alphas into array of 16 color values
+		///   Unpack DXT alphas into array of 16 color values
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		private void _unpackDXTAlpha( DXTExplicitAlphaBlock block, ColorEx[] pCol )
@@ -705,7 +704,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack DXT alphas into array of 16 colour values
+		///   Unpack DXT alphas into array of 16 colour values
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		private void _unpackDXTAlpha( DXTInterpolatedAlphaBlock block, ColorEx[] pCol )
@@ -764,7 +763,7 @@ namespace Axiom.Media
 			}
 		}
 
-		/// <see cref="Axiom.Media.Codec.Decode"/>
+		/// <see cref="Axiom.Media.Codec.Decode" />
 		[OgreVersion( 1, 7, 2 )]
 		public override Codec.DecodeResult Decode( Stream input )
 		{
@@ -1121,7 +1120,7 @@ namespace Axiom.Media
 #endif
 		}
 
-		/// <see cref="Axiom.Media.Codec.MagicNumberToFileExt"/>
+		/// <see cref="Axiom.Media.Codec.MagicNumberToFileExt" />
 		[OgreVersion( 1, 7, 2 )]
 		public override string MagicNumberToFileExt( byte[] magicBuf, int maxbytes )
 		{
@@ -1133,7 +1132,7 @@ namespace Axiom.Media
 					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( DDS_MAGIC == fileType )
+				if ( this.DDS_MAGIC == fileType )
 				{
 					return "dds";
 				}

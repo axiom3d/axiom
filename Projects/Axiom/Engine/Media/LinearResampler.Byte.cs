@@ -39,10 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Media
@@ -50,17 +46,15 @@ namespace Axiom.Media
 	partial class LinearResampler
 	{
 		/// <summary>
-		/// byte linear resampler, does not do any format conversions.
+		///   byte linear resampler, does not do any format conversions.
 		/// </summary>
 		/// <remarks>
-		/// only handles pixel formats that use 1 byte per color channel.
-		/// 2D only; punts 3D pixelboxes to default <see cref="LinearResampler"/> (slow).
-		/// templated on bytes-per-pixel to allow compiler optimizations, such
-		/// as unrolling loops and replacing multiplies with bitshifts
+		///   only handles pixel formats that use 1 byte per color channel. 2D only; punts 3D pixelboxes to default <see
+		///    cref="LinearResampler" /> (slow). templated on bytes-per-pixel to allow compiler optimizations, such as unrolling loops and replacing multiplies with bitshifts
 		/// </remarks>
 		public class Byte
 		{
-			private int _channels;
+			private readonly int _channels;
 
 			public Byte()
 				: this( 1 ) {}

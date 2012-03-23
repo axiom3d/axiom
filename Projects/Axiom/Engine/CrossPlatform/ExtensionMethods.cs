@@ -2,21 +2,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-
-using Axiom.CrossPlatform;
 #if !(XBOX || XBOX360)
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Windows;
-using System.Linq.Expressions;
-
-using Expression = System.Linq.Expressions.Expression;
 
 #endif
 
@@ -571,7 +563,7 @@ namespace Axiom.Core
 	{
 		private T instance;
 
-		private Func<T> newT;
+		private readonly Func<T> newT;
 
 		private T New()
 		{
@@ -580,19 +572,19 @@ namespace Axiom.Core
 
 		public Lazy()
 		{
-			newT = New;
+			this.newT = New;
 		}
 
 		public Lazy( Func<T> newFunc )
 		{
-			newT = newFunc;
+			this.newT = newFunc;
 		}
 
 		public T Value
 		{
 			get
 			{
-				return Interlocked.CompareExchange( ref instance, newT(), null );
+				return Interlocked.CompareExchange( ref this.instance, this.newT(), null );
 			}
 		}
 	}

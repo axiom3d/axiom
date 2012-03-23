@@ -37,17 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
 	/// <summary>
-	/// nearest-neighbor resampler, does not convert formats.
+	///   nearest-neighbor resampler, does not convert formats.
 	/// </summary>
 	public class NearestResampler
 	{
@@ -62,10 +59,9 @@ namespace Axiom.Media
 		#region Methods
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="temp"></param>
+		/// <param name="src"> </param>
+		/// <param name="temp"> </param>
 		public static void Scale( PixelBox src, PixelBox temp )
 		{
 			Scale( src, temp, PixelUtil.GetNumElemBytes( src.Format ) );

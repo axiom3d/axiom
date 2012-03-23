@@ -44,11 +44,10 @@ using Axiom.CrossPlatform;
 namespace Axiom.Media
 {
 	/// <summary>
-	/// Codec specialized in loading PVRTC (PowerVR) images.
+	///   Codec specialized in loading PVRTC (PowerVR) images.
 	/// </summary>
 	/// <remarks>
-	/// We implement our own codec here since we need to be able to keep PVRTC
-	/// data compressed if the card supports it.
+	///   We implement our own codec here since we need to be able to keep PVRTC data compressed if the card supports it.
 	/// </remarks>
 	public class PVRTCCodec : ImageCodec
 	{
@@ -96,7 +95,7 @@ namespace Axiom.Media
 		};
 
 		/// <summary>
-		/// Single registered codec instance
+		///   Single registered codec instance
 		/// </summary>
 		private static PVRTCCodec _instance;
 
@@ -116,7 +115,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Static method to startup and register the PVRTC codec
+		///   Static method to startup and register the PVRTC codec
 		/// </summary>
 		[OgreVersion( 1, 7, 2, "Original name was startup" )]
 		public static void Initialize()
@@ -130,7 +129,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Static method to shutdown and unregister the PVRTC codec
+		///   Static method to shutdown and unregister the PVRTC codec
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static void Shutdown()
@@ -142,21 +141,21 @@ namespace Axiom.Media
 			}
 		}
 
-		/// <see cref="Axiom.Media.Codec.Encode"/>
+		/// <see cref="Axiom.Media.Codec.Encode" />
 		[OgreVersion( 1, 7, 2 )]
 		public override Stream Encode( Stream input, Codec.CodecData data )
 		{
 			throw new NotImplementedException( "PVRTC encoding not supported" );
 		}
 
-		/// <see cref="Axiom.Media.Codec.EncodeToFile"/>
+		/// <see cref="Axiom.Media.Codec.EncodeToFile" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
 		{
 			throw new NotImplementedException( "PVRTC encoding not supported" );
 		}
 
-		/// <see cref="Axiom.Media.Codec.Decode"/>
+		/// <see cref="Axiom.Media.Codec.Decode" />
 		[OgreVersion( 1, 7, 2 )]
 		public override Codec.DecodeResult Decode( Stream input )
 		{
@@ -171,7 +170,7 @@ namespace Axiom.Media
 				// Get the file type identifier
 				var pvrTag = header.pvrTag;
 
-				if ( PVR_MAGIC != pvrTag )
+				if ( this.PVR_MAGIC != pvrTag )
 				{
 					throw new AxiomException( "This is not a PVR file!" );
 				}
@@ -251,7 +250,7 @@ namespace Axiom.Media
 #endif
 		}
 
-		/// <see cref="Axiom.Media.Codec.MagicNumberToFileExt"/>
+		/// <see cref="Axiom.Media.Codec.MagicNumberToFileExt" />
 		[OgreVersion( 1, 7, 2 )]
 		public override string MagicNumberToFileExt( byte[] magicNumberBuf, int maxbytes )
 		{
@@ -263,7 +262,7 @@ namespace Axiom.Media
 					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( PVR_MAGIC == fileType )
+				if ( this.PVR_MAGIC == fileType )
 				{
 					return "pvr";
 				}

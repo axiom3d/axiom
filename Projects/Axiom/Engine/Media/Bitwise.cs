@@ -40,12 +40,12 @@ using Axiom.CrossPlatform;
 namespace Axiom.Media
 {
 	///<summary>
-	/// Class for manipulating bit patterns.
+	///  Class for manipulating bit patterns.
 	///</summary>
 	public static class Bitwise
 	{
 		///<summary>
-		/// Returns the most significant bit set in a value.
+		///  Returns the most significant bit set in a value.
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint MostSignificantBitSet( uint value )
@@ -60,10 +60,10 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Returns the closest power-of-two number greater or equal to value.
+		///  Returns the closest power-of-two number greater or equal to value.
 		///</summary>
 		///<remarks>
-		/// 0 and 1 are powers of two, so firstPO2From(0)==0 and firstPO2From(1)==1.
+		///  0 and 1 are powers of two, so firstPO2From(0)==0 and firstPO2From(1)==1.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint FirstPO2From( uint n )
@@ -79,12 +79,12 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Determines whether the number is power-of-two or not.
+		///   Determines whether the number is power-of-two or not.
 		/// </summary>
 		/// <remarks>
-		/// 0 and 1 are tread as power of two.
+		///   0 and 1 are tread as power of two.
 		/// </remarks>
-		/// <returns>true if the number is a power of two otherwise false</returns>
+		/// <returns> true if the number is a power of two otherwise false </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static bool IsPow2( int n )
 		{
@@ -92,8 +92,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Returns the number of bits a pattern must be shifted right by to
-		/// remove right-hand zeros.
+		///   Returns the number of bits a pattern must be shifted right by to remove right-hand zeros.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static int GetBitShift( int mask )
@@ -114,11 +113,10 @@ namespace Axiom.Media
 
 
 		/// <summary>
-		/// Takes a value with a given src bit mask, and produces another
-		/// value with a desired bit mask.
+		///   Takes a value with a given src bit mask, and produces another value with a desired bit mask.
 		/// </summary>
 		/// <remarks>
-		/// This routine is useful for colour conversion.
+		///   This routine is useful for colour conversion.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static int ConvertBitPattern( int srcValue, int srcBitMask, int destBitMask )
@@ -143,8 +141,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert N bit colour channel value to P bits. It fills P bits with the
-		/// bit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
+		///  Convert N bit colour channel value to P bits. It fills P bits with the bit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint FixedToFixed( uint value, int n, int p )
@@ -175,8 +172,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert floating point colour channel value between 0.0 and 1.0 (otherwise clamped) 
-		/// to integer of a certain number of bits. Works for any value of bits between 0 and 31.
+		///  Convert floating point colour channel value between 0.0 and 1.0 (otherwise clamped) to integer of a certain number of bits. Works for any value of bits between 0 and 31.
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint FloatToFixed( float value, int bits )
@@ -196,7 +192,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Fixed point to float
+		///  Fixed point to float
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static float FixedToFloat( uint value, int bits )
@@ -205,7 +201,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Write a n*8 bits integer value to memory in native endian.
+		///   Write a n*8 bits integer value to memory in native endian.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static void IntWrite( BufferBase dest, int n, uint value )
@@ -245,7 +241,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Read a n*8 bits integer value to memory in native endian.
+		///  Read a n*8 bits integer value to memory in native endian.
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint IntRead( BufferBase src, int n )
@@ -280,8 +276,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert a float32 to a float16 (NV_half_float)
-		/// Courtesy of OpenEXR
+		///  Convert a float32 to a float16 (NV_half_float) Courtesy of OpenEXR
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static ushort FloatToHalf( float f )
@@ -293,7 +288,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Converts float in uint format to a a half in ushort format
+		///  Converts float in uint format to a a half in ushort format
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static ushort FloatToHalfI( uint i )
@@ -336,8 +331,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert a float16 (NV_half_float) to a float32
-		/// Courtesy of OpenEXR
+		///  Convert a float16 (NV_half_float) to a float32 Courtesy of OpenEXR
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static float HalfToFloat( ushort y )
@@ -349,8 +343,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Converts a half in ushort format to a float
-		/// in uint format
+		///  Converts a half in ushort format to a float in uint format
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static uint HalfToFloatI( ushort y )
@@ -397,8 +390,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert N bit colour channel value to 8 bits, and return as a byte. It 
-		/// fills P bits with thebit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
+		///  Convert N bit colour channel value to 8 bits, and return as a byte. It fills P bits with thebit pattern repeated. (this is /((1&lt;&lt;n)-1) in fixed point)
 		///</summary>
 		public static byte FixedToByteFixed( uint value, int p )
 		{
@@ -406,8 +398,7 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert floating point colour channel value between 0.0 and 1.0 (otherwise clamped) 
-		/// to an 8-bit integer, and return as a byte.
+		///  Convert floating point colour channel value between 0.0 and 1.0 (otherwise clamped) to an 8-bit integer, and return as a byte.
 		///</summary>
 		public static byte FloatToByteFixed( float value )
 		{

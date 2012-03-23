@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -49,12 +48,12 @@ using Axiom.CrossPlatform;
 namespace Axiom.Media
 {
 	///<summary>
-	///    A class to convert/copy pixels of the same or different formats
+	///  A class to convert/copy pixels of the same or different formats
 	///</summary>
 	public class PixelConverter
 	{
 		///<summary>
-		/// Description of Pixel Formats.
+		///  Description of Pixel Formats.
 		///</summary>
 		public class PixelFormatDescription
 		{
@@ -109,7 +108,7 @@ namespace Axiom.Media
 		};
 
 		///<summary>
-		///    Pixel format database
+		///  Pixel format database
 		///</summary>
 		protected static PixelFormatDescription[] UnindexedPixelFormats = new PixelFormatDescription[]
 		                                                                  {
@@ -404,11 +403,11 @@ namespace Axiom.Media
 
 
 		///<summary>
-		/// Pack a color value to memory
+		///  Pack a color value to memory
 		///</summary>
-		///<param name="color">The color</param>
-		///<param name="format">Pixel format in which to write the color</param>
-		///<param name="dest">Destination memory location</param>
+		///<param name="color"> The color </param>
+		///<param name="format"> Pixel format in which to write the color </param>
+		///<param name="dest"> Destination memory location </param>
 		[OgreVersion( 1, 7, 2 )]
 		public static void PackColor( ColorEx color, PixelFormat format, BufferBase dest )
 		{
@@ -416,14 +415,14 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Pack a color value to memory
+		///  Pack a color value to memory
 		///</summary>
-		///<param name="r">Red component, range 0x00 to 0xFF</param>
-		///<param name="g">Green component, range 0x00 to 0xFF</param>
-		///<param name="b">Blue component, range 0x00 to 0xFF</param>
-		///<param name="a">Alpha component, range 0x00 to 0xFF</param>
-		///<param name="format">Pixelformat in which to write the color</param>
-		///<param name="dest">Destination memory location</param>
+		///<param name="r"> Red component, range 0x00 to 0xFF </param>
+		///<param name="g"> Green component, range 0x00 to 0xFF </param>
+		///<param name="b"> Blue component, range 0x00 to 0xFF </param>
+		///<param name="a"> Alpha component, range 0x00 to 0xFF </param>
+		///<param name="format"> Pixelformat in which to write the color </param>
+		///<param name="dest"> Destination memory location </param>
 		[OgreVersion( 1, 7, 2 )]
 		public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, BufferBase dest )
 		{
@@ -443,30 +442,14 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Pack a color value to memory
+		///  Pack a color value to memory
 		///</summary>
-		///<param name="r">
-		/// The four color components, range 0.0f to 1.0f
-		/// (an exception to this case exists for floating point pixel
-		/// formats, which don't clamp to 0.0f..1.0f)
-		///</param>
-		///<param name="g">
-		/// The four color components, range 0.0f to 1.0f
-		/// (an exception to this case exists for floating point pixel
-		/// formats, which don't clamp to 0.0f..1.0f)
-		///</param>
-		///<param name="b">
-		/// The four color components, range 0.0f to 1.0f
-		/// (an exception to this case exists for floating point pixel
-		/// formats, which don't clamp to 0.0f..1.0f)
-		///</param>
-		///<param name="a">
-		/// The four color components, range 0.0f to 1.0f
-		/// (an exception to this case exists for floating point pixel
-		/// formats, which don't clamp to 0.0f..1.0f)
-		///</param>
-		///<param name="format">Pixelformat in which to write the color</param>
-		///<param name="dest">Destination memory location</param>
+		///<param name="r"> The four color components, range 0.0f to 1.0f (an exception to this case exists for floating point pixel formats, which don't clamp to 0.0f..1.0f) </param>
+		///<param name="g"> The four color components, range 0.0f to 1.0f (an exception to this case exists for floating point pixel formats, which don't clamp to 0.0f..1.0f) </param>
+		///<param name="b"> The four color components, range 0.0f to 1.0f (an exception to this case exists for floating point pixel formats, which don't clamp to 0.0f..1.0f) </param>
+		///<param name="a"> The four color components, range 0.0f to 1.0f (an exception to this case exists for floating point pixel formats, which don't clamp to 0.0f..1.0f) </param>
+		///<param name="format"> Pixelformat in which to write the color </param>
+		///<param name="dest"> Destination memory location </param>
 		[OgreVersion( 1, 7, 2 )]
 		public static void PackColor( float r, float g, float b, float a, PixelFormat format, BufferBase dest )
 		{
@@ -568,11 +551,11 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack a color value from memory
+		///   Unpack a color value from memory
 		/// </summary>
-		/// <param name="pf">Pixelformat in which to read the color</param>
-		/// <param name="src">Source memory location</param>
-		/// <returns>The color is returned here</returns>
+		/// <param name="pf"> Pixelformat in which to read the color </param>
+		/// <param name="src"> Source memory location </param>
+		/// <returns> The color is returned here </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public static ColorEx UnpackColor( PixelFormat pf, BufferBase src )
 		{
@@ -582,18 +565,16 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack a color value from memory
+		///   Unpack a color value from memory
 		/// </summary>
-		/// <param name="r">The color is returned here (as byte)</param>
-		/// <param name="g">The color is returned here (as byte)</param>
-		/// <param name="b">The color is returned here (as byte)</param>
-		/// <param name="a">The color is returned here (as byte)</param>
-		/// <param name="pf">Pixelformat in which to read the color</param>
-		/// <param name="src">Source memory location</param>
+		/// <param name="r"> The color is returned here (as byte) </param>
+		/// <param name="g"> The color is returned here (as byte) </param>
+		/// <param name="b"> The color is returned here (as byte) </param>
+		/// <param name="a"> The color is returned here (as byte) </param>
+		/// <param name="pf"> Pixelformat in which to read the color </param>
+		/// <param name="src"> Source memory location </param>
 		/// <remarks>
-		/// This function returns the color components in 8 bit precision,
-		/// this will lose precision when coming from A2R10G10B10 or floating
-		/// point formats.
+		///   This function returns the color components in 8 bit precision, this will lose precision when coming from A2R10G10B10 or floating point formats.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a, PixelFormat pf, BufferBase src )
@@ -636,14 +617,14 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		/// Unpack a color value from memory
+		///   Unpack a color value from memory
 		/// </summary>
-		/// <param name="r">The color is returned here (as float)</param>
-		/// <param name="g">The color is returned here (as float)</param>
-		/// <param name="b">The color is returned here (as float)</param>
-		/// <param name="a">The color is returned here (as float)</param>
-		/// <param name="pf">Pixelformat in which to read the color</param>
-		/// <param name="src">Source memory location</param>
+		/// <param name="r"> The color is returned here (as float) </param>
+		/// <param name="g"> The color is returned here (as float) </param>
+		/// <param name="b"> The color is returned here (as float) </param>
+		/// <param name="a"> The color is returned here (as float) </param>
+		/// <param name="pf"> Pixelformat in which to read the color </param>
+		/// <param name="src"> Source memory location </param>
 		[OgreVersion( 1, 7, 2 )]
 		public static void UnpackColor( out float r, out float g, out float b, out float a, PixelFormat pf, BufferBase src )
 		{
@@ -765,14 +746,12 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert consecutive pixels from one format to another. No dithering or filtering is being done. 
-		/// Converting from RGB to luminance takes the R channel.  In case the source and destination format match,
-		/// just a copy is done.
+		///  Convert consecutive pixels from one format to another. No dithering or filtering is being done. Converting from RGB to luminance takes the R channel. In case the source and destination format match, just a copy is done.
 		///</summary>
-		///<param name="srcBytes">Pointer to source region</param>
-		///<param name="srcFormat">Pixel format of source region</param>
-		///<param name="dstBytes">Pointer to destination region</param>
-		///<param name="dstFormat">Pixel format of destination region</param>
+		///<param name="srcBytes"> Pointer to source region </param>
+		///<param name="srcFormat"> Pixel format of source region </param>
+		///<param name="dstBytes"> Pointer to destination region </param>
+		///<param name="dstFormat"> Pixel format of destination region </param>
 		[OgreVersion( 1, 7, 2 )]
 		public static void BulkPixelConversion( BufferBase srcBytes, PixelFormat srcFormat, BufferBase dstBytes, PixelFormat dstFormat, int count )
 		{
@@ -782,14 +761,12 @@ namespace Axiom.Media
 		}
 
 		///<summary>
-		/// Convert pixels from one format to another. No dithering or filtering is being done. Converting
-		/// from RGB to luminance takes the R channel. 
+		///  Convert pixels from one format to another. No dithering or filtering is being done. Converting from RGB to luminance takes the R channel.
 		///</summary>
-		///<param name="src">PixelBox containing the source pixels, pitches and format</param>
-		///<param name="dst">PixelBox containing the destination pixels, pitches and format</param>
+		///<param name="src"> PixelBox containing the source pixels, pitches and format </param>
+		///<param name="dst"> PixelBox containing the destination pixels, pitches and format </param>
 		///<remarks>
-		/// The source and destination boxes must have the same
-		/// dimensions. In case the source and destination format match, a plain copy is done.
+		///  The source and destination boxes must have the same dimensions. In case the source and destination format match, a plain copy is done.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public static void BulkPixelConversion( PixelBox src, PixelBox dst )
