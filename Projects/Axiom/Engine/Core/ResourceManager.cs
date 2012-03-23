@@ -117,7 +117,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._resourceHandleMap;
+				return _resourceHandleMap;
 			}
 		}
 
@@ -140,11 +140,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._memoryBudget;
+				return _memoryBudget;
 			}
 			set
 			{
-				this._memoryBudget = value;
+				_memoryBudget = value;
 				checkUsage();
 			}
 		}
@@ -162,7 +162,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._memoryUsage;
+				return _memoryUsage;
 			}
 		}
 
@@ -170,10 +170,22 @@ namespace Axiom.Core
 
 		#region ResourceType Property
 
+		private string _resourceType;
+
 		/// <summary>
 		/// Gets/Sets a string identifying the type of resource this manager handles.
 		/// </summary>
-		public string ResourceType { get; protected set; }
+		public string ResourceType
+		{
+			get
+			{
+				return _resourceType;
+			}
+			protected set
+			{
+				_resourceType = value;
+			}
+		}
 
 		#endregion ResourceType Property
 
@@ -188,6 +200,16 @@ namespace Axiom.Core
 		#endregion Verbose Property
 
 		#region Indexer Properties
+
+		public Resource GetByName( string name )
+		{
+			return this[ name ];
+		}
+
+		public Resource GetByHandle( ResourceHandle handle )
+		{
+			return this[ handle ];
+		}
 
 		/// <summary>
 		///    Gets a reference to the specified named resource.
@@ -214,12 +236,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( this._resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( _resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
 
 				Resource resource;
 
 				// try to obtain the resource
-				if ( this._resourceHandleMap.TryGetValue( handle, out resource ) )
+				if ( _resourceHandleMap.TryGetValue( handle, out resource ) )
 				{
 					resource.Touch();
 				}
@@ -227,16 +249,6 @@ namespace Axiom.Core
 				// return the resource or null
 				return resource;
 			}
-		}
-
-		public Resource GetByName( string name )
-		{
-			return this[ name ];
-		}
-
-		public Resource GetByHandle( ResourceHandle handle )
-		{
-			return this[ handle ];
 		}
 
 		#endregion Indexer Properties
@@ -249,10 +261,11 @@ namespace Axiom.Core
 		///		Default constructor
 		/// </summary>
 		protected ResourceManager()
+			: base()
 		{
-			this._memoryBudget = long.MaxValue;
-			this._memoryUsage = 0;
-			this._loadingOrder = 0;
+			_memoryBudget = long.MaxValue;
+			_memoryUsage = 0;
+			_loadingOrder = 0;
 		}
 
 		#endregion Constructors and Destructors
@@ -310,7 +323,7 @@ namespace Axiom.Core
 		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			// Call creation implementation
-			Resource ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
+			var ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
 			if ( createParams != null )
 			{
 				ret.SetParameters( createParams );
@@ -324,17 +337,17 @@ namespace Axiom.Core
 			return ret;
 		}
 
-		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
+		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group )
 		{
 			return CreateOrRetrieve( name, group, false, null, null );
 		}
 
-		public Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
+		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
 		{
-			var hashCode = (ResourceHandle)name.ToLower().GetHashCode();
+			ResourceHandle hashCode = (ResourceHandle)name.ToLower().GetHashCode();
 
-			Resource res = this[ hashCode ];
-			bool created = false;
+			var res = this[ hashCode ];
+			var created = false;
 
 			if ( res == null )
 			{
@@ -352,7 +365,7 @@ namespace Axiom.Core
 				created = true;
 			}
 
-			return new Tuple<Resource, bool>( res, created );
+			return new Axiom.Math.Tuple<Resource, bool>( res, created );
 		}
 
 		#endregion Create Method
@@ -378,7 +391,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
 		{
-			Resource r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+			var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
 			// ensure prepared
 			r.Prepare( backgroundThread );
 			return r;
@@ -386,22 +399,22 @@ namespace Axiom.Core
 
 		public Resource Prepare( string name, string group )
 		{
-			return Prepare( name, group, false, null, null, false );
+			return this.Prepare( name, group, false, null, null, false );
 		}
 
 		public Resource Prepare( string name, string group, bool isManual )
 		{
-			return Prepare( name, group, isManual, null, null, false );
+			return this.Prepare( name, group, isManual, null, null, false );
 		}
 
 		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return Prepare( name, group, isManual, loader, null, false );
+			return this.Prepare( name, group, isManual, loader, null, false );
 		}
 
 		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return Prepare( name, group, isManual, loader, loadParams, false );
+			return this.Prepare( name, group, isManual, loader, loadParams, false );
 		}
 
 		#endregion Prepare Method
@@ -429,7 +442,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
 		{
-			Resource r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
+			var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
 			// ensure loaded
 			r.Load( backgroundThread );
 			return r;
@@ -437,22 +450,22 @@ namespace Axiom.Core
 
 		public Resource Load( string name, string group )
 		{
-			return Load( name, group, false, null, null, false );
+			return this.Load( name, group, false, null, null, false );
 		}
 
 		public Resource Load( string name, string group, bool isManual )
 		{
-			return Load( name, group, isManual, null, null, false );
+			return this.Load( name, group, isManual, null, null, false );
 		}
 
 		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return Load( name, group, isManual, loader, null, false );
+			return this.Load( name, group, isManual, loader, null, false );
 		}
 
 		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return Load( name, group, isManual, loader, loadParams, false );
+			return this.Load( name, group, isManual, loader, loadParams, false );
 		}
 
 		#endregion Load Method
@@ -472,7 +485,7 @@ namespace Axiom.Core
 		/// <param name="name">Name of the resource.</param>
 		public virtual void Unload( string name )
 		{
-			Resource res = this[ name ];
+			var res = this[ name ];
 
 			if ( res != null )
 			{
@@ -484,7 +497,7 @@ namespace Axiom.Core
 		/// <param name="handle">Handle of the resource</param>
 		public virtual void Unload( ResourceHandle handle )
 		{
-			Resource res = this[ handle ];
+			var res = this[ handle ];
 
 			if ( res != null )
 			{
@@ -508,10 +521,10 @@ namespace Axiom.Core
 			resource.Unload();
 
 			// remove the resource
-			this._resources.Remove( resource.Name );
+			_resources.Remove( resource.Name );
 
 			// update memory usage
-			this._memoryUsage -= resource.Size;
+			_memoryUsage -= resource.Size;
 		}
 
 		#endregion Unload Method
@@ -526,7 +539,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void UnloadAll()
 		{
-			foreach ( Resource res in this._resources.Values )
+			foreach ( var res in _resources.Values )
 			{
 				res.Unload();
 			}
@@ -540,11 +553,62 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( Resource res in this._resources.Values )
+			foreach ( var res in _resources.Values )
 			{
 				res.Reload();
 			}
 		}
+
+		#region Remove Method
+
+		/// <overloads>
+		/// <summary>
+		/// Remove a single resource.
+		/// </summary>
+		/// <remarks>
+		/// Removes a single resource, meaning it will be removed from the list
+		/// of valid resources in this manager, also causing it to be unloaded.
+		/// <para/>
+		/// The word 'Destroy' is not used here, since
+		/// if any other pointers are referring to this resource, it will persist
+		/// until they have finished with it; however to all intents and purposes
+		/// it no longer exists and will likely get destroyed imminently.
+		/// <para/>
+		/// If you do have references to resources hanging around after the
+		/// ResourceManager is destroyed, you may get problems on destruction of
+		/// these resources if they were relying on the manager (especially if
+		/// it is a plugin). If you find you get problems on shutdown in the
+		/// destruction of resources, try making sure you release all your
+		/// references before you shutdown OGRE.
+		/// </remarks>
+		/// </overloads>
+		/// <param name="resource">The resource to remove</param>
+		public virtual void Remove( Resource resource )
+		{
+			_remove( resource );
+		}
+
+		/// <param name="name">The name of the resource to remove</param>
+		public virtual void Remove( string name )
+		{
+			var resource = this[ name ];
+			if ( resource != null )
+			{
+				_remove( resource );
+			}
+		}
+
+		/// <param name="handle">The Handle of the resource to remove</param>
+		public virtual void Remove( ResourceHandle handle )
+		{
+			var resource = this[ handle ];
+			if ( resource != null )
+			{
+				_remove( resource );
+			}
+		}
+
+		#endregion Remove Method
 
 		/// <summary>
 		/// Removes all resources.
@@ -567,18 +631,36 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAll()
 		{
-			foreach ( Resource resource in this._resources.Values )
+			foreach ( var resource in _resources.Values )
 			{
 				if ( !resource.IsDisposed )
 				{
 					resource.Dispose();
 				}
 			}
-			this._resources.Clear();
-			this._resourceHandleMap.Clear();
+			_resources.Clear();
+			_resourceHandleMap.Clear();
 
 			ResourceGroupManager.Instance.notifyAllResourcesRemoved( this );
 		}
+
+		#region ResourceExists Method
+
+		/// <summary>Returns whether the named resource exists in this manager</summary>
+		/// <param name="name">name of the resource</param>
+		public virtual bool ResourceExists( string name )
+		{
+			return this[ name ] != null;
+		}
+
+		/// <summary>Returns whether a resource with the given handle exists in this manager</summary>
+		/// <param name="handle">handle of the resource</param>
+		public virtual bool ResourceExists( ResourceHandle handle )
+		{
+			return this[ handle ] != null;
+		}
+
+		#endregion ResourceExists Method
 
 		/// <summary>Notify this manager that a resource which it manages has been 'touched', ie used. </summary>
 		/// <param name="res">the resource</param>
@@ -595,7 +677,7 @@ namespace Axiom.Core
 		{
 			lock ( _autoMutex )
 			{
-				this._memoryUsage += res.Size;
+				_memoryUsage += res.Size;
 			}
 		}
 
@@ -606,7 +688,7 @@ namespace Axiom.Core
 		{
 			lock ( _autoMutex )
 			{
-				this._memoryUsage -= res.Size;
+				_memoryUsage -= res.Size;
 			}
 		}
 
@@ -645,9 +727,9 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _add( Resource res )
 		{
-			if ( !this._resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				this._resourceHandleMap.Add( res.Handle, res );
+				_resourceHandleMap.Add( res.Handle, res );
 			}
 			else
 			{
@@ -661,14 +743,14 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _remove( Resource res )
 		{
-			if ( this._resources.ContainsKey( res.Name ) )
+			if ( _resources.ContainsKey( res.Name ) )
 			{
-				this._resources.Remove( res.Name );
+				_resources.Remove( res.Name );
 			}
 
-			if ( this._resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( _resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				this._resourceHandleMap.Remove( res.Handle );
+				_resourceHandleMap.Remove( res.Handle );
 			}
 
 			ResourceGroupManager.Instance.notifyResourceRemoved( res );
@@ -682,75 +764,6 @@ namespace Axiom.Core
 			// TODO Implementation of CheckUsage.
 			// Keep a sorted list of resource by LastAccessed for easy removal of oldest?
 		}
-
-		#region ResourceExists Method
-
-		/// <summary>Returns whether the named resource exists in this manager</summary>
-		/// <param name="name">name of the resource</param>
-		public virtual bool ResourceExists( string name )
-		{
-			return this[ name ] != null;
-		}
-
-		/// <summary>Returns whether a resource with the given handle exists in this manager</summary>
-		/// <param name="handle">handle of the resource</param>
-		public virtual bool ResourceExists( ResourceHandle handle )
-		{
-			return this[ handle ] != null;
-		}
-
-		#endregion ResourceExists Method
-
-		#region Remove Method
-
-		/// <overloads>
-		/// <summary>
-		/// Remove a single resource.
-		/// </summary>
-		/// <remarks>
-		/// Removes a single resource, meaning it will be removed from the list
-		/// of valid resources in this manager, also causing it to be unloaded.
-		/// <para/>
-		/// The word 'Destroy' is not used here, since
-		/// if any other pointers are referring to this resource, it will persist
-		/// until they have finished with it; however to all intents and purposes
-		/// it no longer exists and will likely get destroyed imminently.
-		/// <para/>
-		/// If you do have references to resources hanging around after the
-		/// ResourceManager is destroyed, you may get problems on destruction of
-		/// these resources if they were relying on the manager (especially if
-		/// it is a plugin). If you find you get problems on shutdown in the
-		/// destruction of resources, try making sure you release all your
-		/// references before you shutdown OGRE.
-		/// </remarks>
-		/// </overloads>
-		/// <param name="resource">The resource to remove</param>
-		public virtual void Remove( Resource resource )
-		{
-			_remove( resource );
-		}
-
-		/// <param name="name">The name of the resource to remove</param>
-		public virtual void Remove( string name )
-		{
-			Resource resource = this[ name ];
-			if ( resource != null )
-			{
-				_remove( resource );
-			}
-		}
-
-		/// <param name="handle">The Handle of the resource to remove</param>
-		public virtual void Remove( ResourceHandle handle )
-		{
-			Resource resource = this[ handle ];
-			if ( resource != null )
-			{
-				_remove( resource );
-			}
-		}
-
-		#endregion Remove Method
 
 		#endregion Methods
 
@@ -782,7 +795,7 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -798,6 +811,8 @@ namespace Axiom.Core
 		}
 
 		#endregion DisposableObject Implementation
+
+		#region IScriptLoader Members
 
 		#region ScriptPatterns Property
 
@@ -815,11 +830,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._scriptPatterns;
+				return _scriptPatterns;
 			}
 			protected set
 			{
-				this._scriptPatterns = value;
+				_scriptPatterns = value;
 			}
 		}
 
@@ -836,7 +851,7 @@ namespace Axiom.Core
 		/// are created during the parse of this script.
 		/// </param>
 		/// <param name="fileName"></param>
-		public virtual void ParseScript( Stream stream, string groupName, string fileName ) { }
+		public virtual void ParseScript( Stream stream, string groupName, string fileName ) {}
 
 		#endregion ParseScriptMethod
 
@@ -857,14 +872,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._loadingOrder;
+				return _loadingOrder;
 			}
 			protected set
 			{
-				this._loadingOrder = value;
+				_loadingOrder = value;
 			}
 		}
 
 		#endregion LoadingOrder Property
+
+		#endregion IScriptLoader Members
 	};
 }

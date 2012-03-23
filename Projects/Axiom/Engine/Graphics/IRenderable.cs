@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -85,6 +87,19 @@ namespace Axiom.Graphics
 		///    Gets the render operation required to send this object to the frame buffer.
 		/// </summary>
 		RenderOperation RenderOperation { get; }
+
+		/// <summary>
+		///    Gets the world transform matrix / matrices for this renderable object.
+		/// </summary>
+		/// <remarks>
+		///    If the object has any derived transforms, these are expected to be up to date as long as
+		///    all the SceneNode structures have been updated before this is called.
+		///  <p/>
+		///    This method will populate xform with 1 matrix if it does not use vertex blending. If it
+		///    does use vertex blending it will fill the passed in pointer with an array of matrices,
+		///    the length being the value returned from getNumWorldTransforms.
+		/// </remarks>
+		void GetWorldTransforms( Matrix4[] matrices );
 
 		/// <summary>
 		///    Gets a list of lights, ordered relative to how close they are to this renderable.
@@ -160,19 +175,6 @@ namespace Axiom.Graphics
 		///    eliminates problems introduced by scaling.
 		/// </summary>
 		Vector3 WorldPosition { get; }
-
-		/// <summary>
-		///    Gets the world transform matrix / matrices for this renderable object.
-		/// </summary>
-		/// <remarks>
-		///    If the object has any derived transforms, these are expected to be up to date as long as
-		///    all the SceneNode structures have been updated before this is called.
-		///  <p/>
-		///    This method will populate xform with 1 matrix if it does not use vertex blending. If it
-		///    does use vertex blending it will fill the passed in pointer with an array of matrices,
-		///    the length being the value returned from getNumWorldTransforms.
-		/// </remarks>
-		void GetWorldTransforms( Matrix4[] matrices );
 
 		#endregion Properties
 

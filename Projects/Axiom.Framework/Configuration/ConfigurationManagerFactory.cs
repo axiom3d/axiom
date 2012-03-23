@@ -30,7 +30,7 @@ namespace Axiom.Framework.Configuration
 	{
 		public static IConfigurationManager CreateDefault()
 		{
-			PlatformID platform = Environment.OSVersion.Platform;
+			var platform = Environment.OSVersion.Platform;
 			switch ( platform )
 			{
 				case PlatformID.Xbox:

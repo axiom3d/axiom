@@ -41,6 +41,7 @@ using System;
 using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.Scripting;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -73,33 +74,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		#region Fields
 
 		/// <summary>
-		///     Active Contexts pattern used in pass 1 to determine which tokens are valid for a certain context.
+		///     Container for tokens extracted from source.
 		/// </summary>
-		protected uint activeContexts;
-
-		/// <summary>
-		///     Current position in the source string.
-		/// </summary>
-		protected int charPos;
-
-		/// <summary>
-		///     Storage container for constants defined in source.
-		/// </summary>
-		protected RealList constants = new RealList();
-
-		/// <summary>
-		///     Current line in the source string.
-		/// </summary>
-		protected int currentLine;
-
-		protected int endOfSource;
-
-		/// <summary>
-		///     Reference to the root rule path - has to be set by subclass constructor.
-		/// </summary>
-		protected TokenRule[] rootRulePath;
-
-		protected int rulePathLibCount;
+		protected TokenInstructionList tokenInstructions = new TokenInstructionList();
 
 		/// <summary>
 		///     Source to be compiled.
@@ -111,18 +88,40 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// </summary>
 		protected SymbolDef[] symbolTypeLib;
 
-		protected int symbolTypeLibCount;
-
 		/// <summary>
-		///     Container for tokens extracted from source.
+		///     Reference to the root rule path - has to be set by subclass constructor.
 		/// </summary>
-		protected TokenInstructionList tokenInstructions = new TokenInstructionList();
+		protected TokenRule[] rootRulePath;
 
 		/// <summary>
 		///     Needs to be initialized by the subclass before compiling occurs
 		///     it defines the token ID used in the symbol type library.
 		/// </summary>
 		protected Symbol valueID;
+
+		/// <summary>
+		///     Storage container for constants defined in source.
+		/// </summary>
+		protected RealList constants = new RealList();
+
+		/// <summary>
+		///     Active Contexts pattern used in pass 1 to determine which tokens are valid for a certain context.
+		/// </summary>
+		protected uint activeContexts;
+
+		/// <summary>
+		///     Current line in the source string.
+		/// </summary>
+		protected int currentLine;
+
+		/// <summary>
+		///     Current position in the source string.
+		/// </summary>
+		protected int charPos;
+
+		protected int rulePathLibCount;
+		protected int symbolTypeLibCount;
+		protected int endOfSource;
 
 		#endregion Fields
 
@@ -136,7 +135,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			//tokenInstructions.Capacity = 100;
 			//constants.Capacity = 80;
 
-			this.activeContexts = 0xffffffff;
+			activeContexts = 0xffffffff;
 		}
 
 		#endregion Constructor
@@ -157,15 +156,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// scan through Source string and build a token list using TokenInstructions
 			// this is a simple brute force lexical scanner/analyzer that also parses the formed
 			// token for proper semantics and context in one pass
-			this.currentLine = 1;
-			this.charPos = 0;
+			currentLine = 1;
+			charPos = 0;
 
 			// reset position in Constants container
-			this.constants.Clear();
-			this.endOfSource = this.source.Length;
+			constants.Clear();
+			endOfSource = source.Length;
 
 			// start with a clean slate
-			this.tokenInstructions.Clear();
+			tokenInstructions.Clear();
 
 			// tokenize and check semantics untill an error occurs or end of source is reached
 			// assume RootRulePath has pointer to rules so start at index + 1 for first rule path
@@ -197,7 +196,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// <returns>String text.</returns>
 		protected string GetTypeDefText( Symbol symbol )
 		{
-			return this.rootRulePath[ this.symbolTypeLib[ (int)symbol ].defTextID ].symbol;
+			return rootRulePath[ symbolTypeLib[ (int)symbol ].defTextID ].symbol;
 		}
 
 		/// <summary>
@@ -210,11 +209,11 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		{
 			bool valueFound = false;
 
-			int currPos = this.charPos;
+			int currPos = charPos;
 			string floatString = "";
 			bool firstNonSpace = false;
 
-			char c = this.source[ currPos ];
+			char c = source[ currPos ];
 
 			// have the out param at least set to 0
 			val = 0.0f;
@@ -237,10 +236,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				}
 
 				floatString += c;
-				c = this.source[ ++currPos ];
+				c = source[ ++currPos ];
 			}
 
-			if ( this.charPos != currPos )
+			if ( charPos != currPos )
 			{
 				val = StringConverter.ParseFloat( floatString );
 				valueFound = true;
@@ -264,9 +263,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			symbolSize = symbol.Length;
 
-			if ( this.charPos + symbolSize <= this.endOfSource )
+			if ( charPos + symbolSize <= endOfSource )
 			{
-				if ( string.Compare( this.source.Substring( this.charPos, symbolSize ), symbol ) == 0 )
+				if ( string.Compare( source.Substring( charPos, symbolSize ), symbol ) == 0 )
 				{
 					symbolFound = true;
 				}
@@ -291,14 +290,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				SkipComments();
 
 				// have we reached the end of the string?
-				if ( this.charPos == this.endOfSource )
+				if ( charPos == endOfSource )
 				{
 					eos = true;
 				}
 				else
 				{
 					// if ASCII > space then assume valid character is found
-					if ( this.source[ this.charPos ] > ' ' )
+					if ( source[ charPos ] > ' ' )
 					{
 						validSymbolFound = true;
 					}
@@ -335,13 +334,13 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			// record position of last token in container
 			// to be used as the rollback position if a valid token is not found
-			int tokenContainerOldSize = this.tokenInstructions.Count;
-			int oldCharPos = this.charPos;
-			int oldLinePos = this.currentLine;
-			int oldConstantsSize = this.constants.Count;
+			int tokenContainerOldSize = tokenInstructions.Count;
+			int oldCharPos = charPos;
+			int oldLinePos = currentLine;
+			int oldConstantsSize = constants.Count;
 
 			// keep track of what non-terminal token activated the rule
-			Symbol activeNTTRule = this.rootRulePath[ rulePathIdx ].tokenID;
+			Symbol activeNTTRule = rootRulePath[ rulePathIdx ].tokenID;
 
 			// start rule path at next position for definition
 			rulePathIdx++;
@@ -353,7 +352,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// keep following rulepath until the end is reached
 			while ( !endFound )
 			{
-				switch ( this.rootRulePath[ rulePathIdx ].operation )
+				switch ( rootRulePath[ rulePathIdx ].operation )
 				{
 					case OperationType.And:
 						// only validate if the previous rule passed
@@ -368,7 +367,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 						if ( !passed )
 						{
 							// clear previous tokens from entry and try again
-							this.tokenInstructions.Resize( tokenContainerOldSize );
+							tokenInstructions.Resize( tokenContainerOldSize );
 							passed = ValidateToken( rulePathIdx, activeNTTRule );
 						}
 						else
@@ -417,10 +416,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 							// roll back the token container end position to what it was when rule started
 							// this will get rid of all tokens that had been pushed on the container while
 							// trying to validating this rule
-							this.tokenInstructions.Resize( tokenContainerOldSize );
-							this.constants.Resize( oldConstantsSize );
-							this.charPos = oldCharPos;
-							this.currentLine = oldLinePos;
+							tokenInstructions.Resize( tokenContainerOldSize );
+							constants.Resize( oldConstantsSize );
+							charPos = oldCharPos;
+							currentLine = oldLinePos;
 						}
 						break;
 
@@ -444,7 +443,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// <param name="contexts"></param>
 		protected void SetActiveContexts( uint contexts )
 		{
-			this.activeContexts = contexts;
+			activeContexts = contexts;
 		}
 
 		/// <summary>
@@ -453,9 +452,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		protected void SkipComments()
 		{
 			// if current char and next are // then search for EOL
-			if ( this.charPos < this.endOfSource )
+			if ( charPos < endOfSource )
 			{
-				if ( ( ( this.source[ this.charPos ] == '/' ) && ( this.source[ this.charPos + 1 ] == '/' ) ) || ( this.source[ this.charPos ] == ';' ) || ( this.source[ this.charPos ] == '#' ) )
+				if ( ( ( source[ charPos ] == '/' ) && ( source[ charPos + 1 ] == '/' ) ) || ( source[ charPos ] == ';' ) || ( source[ charPos ] == '#' ) )
 				{
 					FindEndOfLine();
 				}
@@ -464,15 +463,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		protected void FindEndOfLine()
 		{
-			int newPos = this.source.IndexOf( '\n', this.charPos );
+			int newPos = source.IndexOf( '\n', charPos );
 
 			if ( newPos != -1 )
 			{
-				this.charPos += newPos - this.charPos;
+				charPos += newPos - charPos;
 			}
 			else
 			{
-				this.charPos = this.endOfSource - 1;
+				charPos = endOfSource - 1;
 			}
 		}
 
@@ -481,19 +480,19 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// </summary>
 		protected void SkipEndOfLine()
 		{
-			if ( this.charPos == this.endOfSource )
+			if ( charPos == endOfSource )
 			{
 				return;
 			}
 
-			if ( ( this.source[ this.charPos ] == '\n' ) || ( this.source[ this.charPos ] == '\r' ) )
+			if ( ( source[ charPos ] == '\n' ) || ( source[ charPos ] == '\r' ) )
 			{
-				this.currentLine++;
-				this.charPos++;
+				currentLine++;
+				charPos++;
 
-				if ( ( this.charPos != this.endOfSource ) && ( ( this.source[ this.charPos ] == '\n' ) || ( this.source[ this.charPos ] == '\r' ) ) )
+				if ( ( charPos != endOfSource ) && ( ( source[ charPos ] == '\n' ) || ( source[ charPos ] == '\r' ) ) )
 				{
-					this.charPos++;
+					charPos++;
 				}
 			}
 		}
@@ -503,15 +502,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		/// </summary>
 		protected void SkipWhitespace()
 		{
-			if ( this.charPos == this.endOfSource )
+			if ( charPos == endOfSource )
 			{
 				return;
 			}
 
 			// FIX - this method kinda slow
-			while ( this.charPos != this.endOfSource && ( ( this.source[ this.charPos ] == ' ' ) || ( this.source[ this.charPos ] == '\t' ) ) )
+			while ( charPos != endOfSource && ( ( source[ charPos ] == ' ' ) || ( source[ charPos ] == '\t' ) ) )
 			{
-				this.charPos++; // find first non white space character
+				charPos++; // find first non white space character
 			}
 		}
 
@@ -530,30 +529,30 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			int tokenlength = 0;
 			// assume the test is going to fail
 			bool passed = false;
-			Symbol tokenID = this.rootRulePath[ rulePathIdx ].tokenID;
+			Symbol tokenID = rootRulePath[ rulePathIdx ].tokenID;
 
 			// only validate token if context is correct
-			if ( ( this.symbolTypeLib[ (int)tokenID ].contextKey & this.activeContexts ) > 0 )
+			if ( ( symbolTypeLib[ (int)tokenID ].contextKey & activeContexts ) > 0 )
 			{
-				int ruleID = this.symbolTypeLib[ (int)tokenID ].ruleID;
+				int ruleID = symbolTypeLib[ (int)tokenID ].ruleID;
 				// if terminal token then compare text of symbol with what is in source
 				if ( ruleID == 0 )
 				{
 					if ( PositionToNextSymbol() )
 					{
 						// if Token is supposed to be a number then check if its a numerical constant
-						if ( tokenID == this.valueID )
+						if ( tokenID == valueID )
 						{
 							float constantvalue;
 							if ( passed = IsFloatValue( out constantvalue, out tokenlength ) )
 							{
-								this.constants.Add( constantvalue );
+								constants.Add( constantvalue );
 							}
 						}
-						// compare token symbol text with source text
+							// compare token symbol text with source text
 						else
 						{
-							passed = IsSymbol( this.rootRulePath[ rulePathIdx ].symbol, out tokenlength );
+							passed = IsSymbol( rootRulePath[ rulePathIdx ].symbol, out tokenlength );
 						}
 
 						if ( passed )
@@ -563,27 +562,27 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 							// push token onto end of container
 							newtoken.ID = tokenID;
 							newtoken.NTTRuleID = activeRuleID;
-							newtoken.line = this.currentLine;
-							newtoken.pos = this.charPos;
+							newtoken.line = currentLine;
+							newtoken.pos = charPos;
 
-							this.tokenInstructions.Add( newtoken );
+							tokenInstructions.Add( newtoken );
 							// update source position
-							this.charPos += tokenlength;
+							charPos += tokenlength;
 
 							// allow token instruction to change the ActiveContexts
 							// use token contexts pattern to clear ActiveContexts pattern bits
-							this.activeContexts &= ~this.symbolTypeLib[ (int)tokenID ].contextPatternClear;
+							activeContexts &= ~symbolTypeLib[ (int)tokenID ].contextPatternClear;
 							// use token contexts pattern to set ActiveContexts pattern bits
-							this.activeContexts |= this.symbolTypeLib[ (int)tokenID ].contextPatternSet;
+							activeContexts |= symbolTypeLib[ (int)tokenID ].contextPatternSet;
 						}
 					}
 				}
-				// else a non terminal token was found
+					// else a non terminal token was found
 				else
 				{
 					// execute rule for non-terminal
 					// get rule_ID for index into  rulepath to be called
-					passed = ProcessRulePath( this.symbolTypeLib[ (int)tokenID ].ruleID );
+					passed = ProcessRulePath( symbolTypeLib[ (int)tokenID ].ruleID );
 				}
 			}
 
@@ -602,25 +601,25 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// find a default text for all Symbol Types in library
 
 			// scan through all the rules and initialize TypeLib with index to text and index to rules for non-terminal tokens
-			for ( int i = 0; i < this.rulePathLibCount; i++ )
+			for ( int i = 0; i < rulePathLibCount; i++ )
 			{
-				tokenID = this.rootRulePath[ i ].tokenID;
+				tokenID = rootRulePath[ i ].tokenID;
 
-				Debug.Assert( this.symbolTypeLib[ (int)tokenID ].ID == tokenID );
+				Debug.Assert( symbolTypeLib[ (int)tokenID ].ID == tokenID );
 
-				switch ( this.rootRulePath[ i ].operation )
+				switch ( rootRulePath[ i ].operation )
 				{
 					case OperationType.Rule:
 						// if operation is a rule then update typelib
-						this.symbolTypeLib[ (int)tokenID ].ruleID = i;
+						symbolTypeLib[ (int)tokenID ].ruleID = i;
 						break;
 
 					case OperationType.And:
 					case OperationType.Or:
 					case OperationType.Optional:
-						if ( this.rootRulePath[ i ].symbol != null )
+						if ( rootRulePath[ i ].symbol != null )
 						{
-							this.symbolTypeLib[ (int)tokenID ].defTextID = i;
+							symbolTypeLib[ (int)tokenID ].defTextID = i;
 						}
 						break;
 				} // switch
@@ -644,7 +643,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			this.source = source;
 
 			// start compiling if there is a rule base to work with
-			if ( this.rootRulePath != null )
+			if ( rootRulePath != null )
 			{
 				passed = DoPass1();
 

@@ -28,16 +28,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.CharacterSample
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private CharacterSample sample;
 
 		public override void Initialize()
 		{
-			this.sample = new CharacterSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
+			sample = new CharacterSample();
+			Name = sample.Metadata[ "Title" ] + " Sample";
+			AddSample( sample );
 		}
 	}
 }

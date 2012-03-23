@@ -26,6 +26,7 @@ using System;
 
 using Axiom.Math;
 using Axiom.Overlays;
+using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
@@ -39,12 +40,12 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool isFitToTray;
+		public OverlayElement textArea;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public OverlayElement textArea;
+		protected bool isFitToTray;
 
 		#endregion
 
@@ -72,7 +73,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.isFitToTray;
+				return isFitToTray;
 			}
 		}
 
@@ -87,9 +88,9 @@ namespace Axiom.Samples
 		public Label( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Label", "BorderPanel", name );
-			this.textArea = ( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
+			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
 			this.textArea.Text = caption;
-			Caption = caption;
+			this.Caption = caption;
 			if ( width <= 0 )
 			{
 				this.isFitToTray = true;

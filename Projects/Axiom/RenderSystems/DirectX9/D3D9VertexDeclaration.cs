@@ -38,11 +38,7 @@ using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
-using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
-using VertexElement = Axiom.Graphics.VertexElement;
 
 #endregion Namespace Declarations
 
@@ -55,7 +51,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Member variables
 
-		private readonly Dictionary<Device, SharpDX.Direct3D9.VertexDeclaration> _mapDeviceToDeclaration = new Dictionary<Device, SharpDX.Direct3D9.VertexDeclaration>();
+		private Dictionary<D3D9.Device, D3D9.VertexDeclaration> _mapDeviceToDeclaration = new Dictionary<D3D9.Device, D3D9.VertexDeclaration>();
 
 		#endregion Member variables
 
@@ -65,26 +61,26 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Gets the D3D9-specific vertex declaration.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public SharpDX.Direct3D9.VertexDeclaration D3DVertexDecl
+		public D3D9.VertexDeclaration D3DVertexDecl
 		{
 			get
 			{
-				Device pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
-				SharpDX.Direct3D9.VertexDeclaration it, lpVertDecl;
-				bool declFound = this._mapDeviceToDeclaration.TryGetValue( pCurDevice, out it );
+				var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
+				D3D9.VertexDeclaration it, lpVertDecl;
+				var declFound = _mapDeviceToDeclaration.TryGetValue( pCurDevice, out it );
 
 				// Case we have to create the declaration for this device.
 				if ( declFound = false || it == null )
 				{
-					var d3dElements = new SharpDX.Direct3D9.VertexElement[ elements.Count + 1 ];
+					var d3dElements = new D3D9.VertexElement[ elements.Count + 1 ];
 
 					// loop through and configure each element for D3D
 					ushort idx;
 					for ( idx = 0; idx < elements.Count; ++idx )
 					{
-						VertexElement element = elements[ idx ];
+						var element = elements[ idx ];
 
-						d3dElements[ idx ].Method = DeclarationMethod.Default;
+						d3dElements[ idx ].Method = D3D9.DeclarationMethod.Default;
 						d3dElements[ idx ].Offset = (short)element.Offset;
 						d3dElements[ idx ].Stream = element.Source;
 						d3dElements[ idx ].Type = D3D9Helper.ConvertEnum( element.Type );
@@ -110,27 +106,27 @@ namespace Axiom.RenderSystems.DirectX9
 					// Add terminator
 					d3dElements[ idx ].Stream = 0xff;
 					d3dElements[ idx ].Offset = 0;
-					d3dElements[ idx ].Type = DeclarationType.Unused;
+					d3dElements[ idx ].Type = D3D9.DeclarationType.Unused;
 					d3dElements[ idx ].Method = 0;
 					d3dElements[ idx ].Usage = 0;
 					d3dElements[ idx ].UsageIndex = 0;
 
-					lpVertDecl = new SharpDX.Direct3D9.VertexDeclaration( pCurDevice, d3dElements );
+					lpVertDecl = new D3D9.VertexDeclaration( pCurDevice, d3dElements );
 
 					if ( declFound )
 					{
-						this._mapDeviceToDeclaration[ pCurDevice ] = lpVertDecl;
+						_mapDeviceToDeclaration[ pCurDevice ] = lpVertDecl;
 					}
 					else
 					{
-						this._mapDeviceToDeclaration.Add( pCurDevice, lpVertDecl );
+						_mapDeviceToDeclaration.Add( pCurDevice, lpVertDecl );
 					}
 				}
 
 					// Declaration already exits.
 				else
 				{
-					lpVertDecl = this._mapDeviceToDeclaration[ pCurDevice ];
+					lpVertDecl = _mapDeviceToDeclaration[ pCurDevice ];
 				}
 
 				return lpVertDecl;
@@ -143,6 +139,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9VertexDeclaration()
+			: base()
 		{
 			D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
 		}
@@ -150,7 +147,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9VertexDeclaration" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -173,7 +170,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.VertexDeclaration.AddElement(short, int, VertexElementType, VertexElementSemantic, int)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			_releaseDeclaration();
 			return base.AddElement( source, offset, type, semantic, index );
@@ -181,7 +178,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.VertexDeclaration.InsertElement(int, short, int, VertexElementType, VertexElementSemantic, int)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			_releaseDeclaration();
 			return base.InsertElement( position, source, offset, type, semantic, index );
@@ -225,12 +222,12 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			foreach ( SharpDX.Direct3D9.VertexDeclaration it in this._mapDeviceToDeclaration.Values )
+			foreach ( var it in _mapDeviceToDeclaration.Values )
 			{
 				it.SafeDispose();
 			}
 
-			this._mapDeviceToDeclaration.Clear();
+			_mapDeviceToDeclaration.Clear();
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
@@ -242,19 +239,19 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceCreate( Device d3d9Device ) { }
+		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device ) {}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceDestroy( Device d3d9Device )
+		public void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
 		{
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( this._mapDeviceToDeclaration.ContainsKey( d3d9Device ) )
+			if ( _mapDeviceToDeclaration.ContainsKey( d3d9Device ) )
 			{
-				this._mapDeviceToDeclaration[ d3d9Device ].SafeDispose();
-				this._mapDeviceToDeclaration.Remove( d3d9Device );
+				_mapDeviceToDeclaration[ d3d9Device ].SafeDispose();
+				_mapDeviceToDeclaration.Remove( d3d9Device );
 			}
 
 			//Leaving critical section
@@ -263,12 +260,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceLost"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceLost( Device d3d9Device ) { }
+		public void NotifyOnDeviceLost( D3D9.Device d3d9Device ) {}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceReset( Device d3d9Device ) { }
+		public void NotifyOnDeviceReset( D3D9.Device d3d9Device ) {}
 
-		#endregion
+		#endregion ID3D9Resource Members
 	};
 }

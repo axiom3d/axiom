@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 using Axiom.Collections;
 
@@ -66,7 +67,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return typeof( T ).Name;
+				return typeof ( T ).Name;
 			}
 			protected set
 			{
@@ -84,17 +85,7 @@ namespace Axiom.Core
 		/// </returns>
 		public virtual T CreateInstance( string name )
 		{
-			return CreateInstance( name, new NameValuePairList() );
-		}
-
-		/// <summary>
-		/// Destroys an object which was created by this factory.
-		/// </summary>
-		/// <param name="obj">the object to destroy</param>
-		public virtual void DestroyInstance( ref T obj )
-		{
-			_instances.Remove( obj );
-			obj = null;
+			return this.CreateInstance( name, new NameValuePairList() );
 		}
 
 		/// <summary>
@@ -108,10 +99,20 @@ namespace Axiom.Core
 		/// </returns>
 		public virtual T CreateInstance( string name, NameValuePairList parms )
 		{
-			var creator = new ObjectCreator( typeof( T ) );
+			var creator = new ObjectCreator( typeof ( T ) );
 			var instance = creator.CreateInstance<T>();
 			_instances.Add( instance );
 			return instance;
+		}
+
+		/// <summary>
+		/// Destroys an object which was created by this factory.
+		/// </summary>
+		/// <param name="obj">the object to destroy</param>
+		public virtual void DestroyInstance( ref T obj )
+		{
+			_instances.Remove( obj );
+			obj = null;
 		}
 
 		#endregion Implementation of IAbstractFactory<T>

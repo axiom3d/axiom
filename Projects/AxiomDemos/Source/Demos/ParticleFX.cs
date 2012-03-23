@@ -1,5 +1,6 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -14,7 +15,7 @@ namespace Axiom.Demos
 	/// 	Summary description for Particles.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class ParticleFX : TechDemo
 	{
@@ -47,18 +48,18 @@ namespace Axiom.Demos
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( fireWorks );
 
 			// shared node for the 2 fountains
-			this.fountainNode = scene.RootSceneNode.CreateChildSceneNode();
+			fountainNode = scene.RootSceneNode.CreateChildSceneNode();
 
 			// create the first fountain
 			ParticleSystem fountain1 = ParticleSystemManager.Instance.CreateSystem( "Fountain1", "ParticleSystems/Fountain" );
-			SceneNode node = this.fountainNode.CreateChildSceneNode();
+			SceneNode node = fountainNode.CreateChildSceneNode();
 			node.Translate( new Vector3( 200, -100, 0 ) );
 			node.Rotate( Vector3.UnitZ, 20 );
 			node.AttachObject( fountain1 );
 
 			// create the second fountain
 			ParticleSystem fountain2 = ParticleSystemManager.Instance.CreateSystem( "Fountain2", "ParticleSystems/Fountain" );
-			node = this.fountainNode.CreateChildSceneNode();
+			node = fountainNode.CreateChildSceneNode();
 			node.Translate( new Vector3( -200, -100, 0 ) );
 			node.Rotate( Vector3.UnitZ, -20 );
 			node.AttachObject( fountain2 );
@@ -79,7 +80,7 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// rotate fountains
-			this.fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
+			fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
 			// call base method
 			base.OnFrameStarted( source, evt );

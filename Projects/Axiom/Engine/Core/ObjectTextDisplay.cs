@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Math;
 using Axiom.Overlays;
 
@@ -51,20 +55,19 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		protected Camera camera;
-		protected bool enabled;
 		protected MovableObject parent;
-		protected OverlayElementContainer parentContainer;
+		protected Camera camera;
 		protected Overlay parentOverlay;
 		protected OverlayElement parentText;
+		protected OverlayElementContainer parentContainer;
 
-		protected string text;
+		protected bool enabled;
 
 		public bool IsEnabled
 		{
 			get
 			{
-				return this.enabled;
+				return enabled;
 			}
 			set
 			{
@@ -80,11 +83,13 @@ namespace Axiom.Core
 			}
 		}
 
+		protected string text;
+
 		public string Text
 		{
 			get
 			{
-				return this.text;
+				return text;
 			}
 			set
 			{
@@ -107,7 +112,7 @@ namespace Axiom.Core
 			// create an overlay that we can use for later
 
 			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			this.parentOverlay = OverlayManager.Instance.Create( "shapeName" );
+			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
 
 			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
 			this.parentContainer = (OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
@@ -149,25 +154,25 @@ namespace Axiom.Core
 			}
 
 			// get the projection of the object's AABB into screen space
-			AxisAlignedBox bbox = this.parent.GetWorldBoundingBox( true ); //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			var bbox = this.parent.GetWorldBoundingBox( true ); //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			Matrix4 mat = this.camera.ViewMatrix;
+			var mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
-			Vector3[] corners = bbox.Corners;
+			var corners = bbox.Corners;
 
 
-			float min_x = 1.0f;
-			float max_x = 0.0f;
-			float min_y = 1.0f;
-			float max_y = 0.0f;
+			var min_x = 1.0f;
+			var max_x = 0.0f;
+			var min_y = 1.0f;
+			var max_y = 0.0f;
 
 			// expand the screen-space bounding-box so that it completely encloses
 			// the object's AABB
-			for ( int i = 0; i < 8; i++ )
+			for ( var i = 0; i < 8; i++ )
 			{
-				Vector3 corner = corners[ i ];
+				var corner = corners[ i ];
 
 				// multiply the AABB corner vertex by the view matrix to
 				// get a camera-space vertex

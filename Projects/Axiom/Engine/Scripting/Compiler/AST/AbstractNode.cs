@@ -62,16 +62,16 @@ namespace Axiom.Scripting.Compiler.AST
 	/// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
-		/// <summary>
-		/// An holder for translation context data
-		/// </summary>
-		public object Context;
-
 		public string File;
 
 		public uint Line;
 
 		public AbstractNode Parent;
+
+		/// <summary>
+		/// An holder for translation context data
+		/// </summary>
+		public object Context;
 
 		/// <summary>
 		/// Constructor
@@ -92,7 +92,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		object ICloneable.Clone()
 		{
-			return Clone();
+			return (object)Clone();
 		}
 
 		/// <summary>
@@ -107,12 +107,12 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override bool Equals( object obj )
 		{
-			return GetHashCode() == obj.GetHashCode();
+			return this.GetHashCode() == obj.GetHashCode();
 		}
 
 		public override int GetHashCode()
 		{
-			return this.File.GetHashCode() | this.Line.GetHashCode();
+			return File.GetHashCode() | Line.GetHashCode();
 		}
 
 		#endregion System.Object Implementation

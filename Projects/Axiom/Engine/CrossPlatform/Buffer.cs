@@ -6,6 +6,8 @@ using System.Threading;
 
 using Axiom.Core;
 
+using System.Collections.Generic;
+
 #endregion Namespace Declarations
 
 namespace Axiom.CrossPlatform
@@ -39,14 +41,14 @@ namespace Axiom.CrossPlatform
 			get
 			{
 				return new[]
-                       {
-                           this.b0, this.b1
-                       };
+				       {
+				       	b0, b1
+				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
 			}
 		}
 #endif
@@ -88,16 +90,16 @@ namespace Axiom.CrossPlatform
 			get
 			{
 				return new[]
-                       {
-                           this.b0, this.b1, this.b2, this.b3
-                       };
+				       {
+				       	b0, b1, b2, b3
+				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
-				this.b2 = value[ 2 ];
-				this.b3 = value[ 3 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
+				b2 = value[ 2 ];
+				b3 = value[ 3 ];
 			}
 		}
 	};
@@ -154,20 +156,20 @@ namespace Axiom.CrossPlatform
 			get
 			{
 				return new[]
-                       {
-                           this.b0, this.b1, this.b2, this.b3, this.b4, this.b5, this.b6, this.b7
-                       };
+				       {
+				       	b0, b1, b2, b3, b4, b5, b6, b7
+				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
-				this.b2 = value[ 2 ];
-				this.b3 = value[ 3 ];
-				this.b4 = value[ 4 ];
-				this.b5 = value[ 5 ];
-				this.b6 = value[ 6 ];
-				this.b7 = value[ 7 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
+				b2 = value[ 2 ];
+				b3 = value[ 3 ];
+				b4 = value[ 4 ];
+				b5 = value[ 5 ];
+				b6 = value[ 6 ];
+				b7 = value[ 7 ];
 			}
 		}
 	};
@@ -199,7 +201,7 @@ namespace Axiom.CrossPlatform
 			}
 
 			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += offset;
+			buf.Ptr += (int)offset;
 			return buf;
 		}
 
@@ -216,9 +218,9 @@ namespace Axiom.CrossPlatform
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
-				if ( disposeManagedResources ) { }
+				if ( disposeManagedResources ) {}
 
 				UnPin( true );
 			}
@@ -239,15 +241,15 @@ namespace Axiom.CrossPlatform
 		public void UnPin( bool all )
 #endif
 		{
-			if ( !this.PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref this.PinCount ) == 0 ) )
+			if ( !PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref PinCount ) == 0 ) )
 			{
 				return;
 			}
 
 			lock ( _mutex )
 			{
-				this.PinHandle.Free();
-				this.PinCount = 0;
+				PinHandle.Free();
+				PinCount = 0;
 			}
 		}
 
@@ -402,393 +404,99 @@ namespace Axiom.CrossPlatform
 
 	public class ManagedBuffer : BufferBase, ITypePointer<byte>, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
 	{
-		private static readonly object _pinMutex = new object();
 		protected internal readonly byte[] Buf;
 		protected internal int IdxPtr;
 		private object obj;
-
-		public ManagedBuffer( ManagedBuffer buffer )
-		{
-			this.Buf = buffer.Buf;
-			this.IdxPtr = buffer.IdxPtr;
-		}
-
-		public ManagedBuffer( byte[] buffer )
-		{
-			this.Buf = buffer;
-		}
-
-		public ManagedBuffer( object buffer )
-		{
-			this.obj = buffer;
-			int size;
-			Type t = this.obj.GetType();
-			if ( t.IsArray )
-			{
-				var buf = (Array)this.obj;
-				Type te = t.GetElementType();
-				size = buf.Length * te.Size();
-				this.Buf = new byte[ size ];
-				if ( te.IsPrimitive )
-				{
-					Buffer.BlockCopy( buf, 0, this.Buf, 0, size );
-					return;
-				}
-				this.Buf.CopyFrom( buf );
-				return;
-			}
-			size = t.Size();
-			this.Buf = new byte[ size ];
-			this.Buf.CopyFrom( this.obj );
-		}
-
-		public ManagedBuffer( IntPtr buffer, int size )
-		{
-			this.obj = buffer;
-			this.Buf = new byte[ size ];
-			Marshal.Copy( buffer, this.Buf, 0, size );
-		}
+		private static readonly object _pinMutex = new object();
 
 		public override int Ptr
 		{
 			get
 			{
-				return this.IdxPtr;
+				return IdxPtr;
 			}
 			set
 			{
-				this.IdxPtr = value;
+				IdxPtr = value;
 			}
 		}
 
-		//---------------------------------------------------------------------
-
-		#region ITypePointer<byte> Members
-
-		byte ITypePointer<byte>.this[ int index ]
+		public ManagedBuffer( ManagedBuffer buffer )
+			: base()
 		{
-			get
-			{
-				return this.Buf[ index + this.IdxPtr ];
-			}
-			set
-			{
-				this.Buf[ index + this.IdxPtr ] = value;
-			}
+			Buf = buffer.Buf;
+			IdxPtr = buffer.IdxPtr;
 		}
 
-		#endregion
-
-		#region ITypePointer<double> Members
-
-		double ITypePointer<double>.this[ int index ]
+		public ManagedBuffer( byte[] buffer )
+			: base()
 		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				return new EightByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-						   b4 = buf[ ++index ],
-						   b5 = buf[ ++index ],
-						   b6 = buf[ ++index ],
-						   b7 = buf[ ++index ],
-					   }.Double;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				var v = new EightByte
-						{
-							Double = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-				buf[ ++index ] = v.b4;
-				buf[ ++index ] = v.b5;
-				buf[ ++index ] = v.b6;
-				buf[ ++index ] = v.b7;
-			}
+			Buf = buffer;
 		}
 
-		#endregion
-
-		#region ITypePointer<float> Members
-
-		float ITypePointer<float>.this[ int index ]
+		public ManagedBuffer( object buffer )
+			: base()
 		{
-			get
+			obj = buffer;
+			int size;
+			var t = obj.GetType();
+			if ( t.IsArray )
 			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				return new FourByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-					   }.Float;
+				var buf = (Array)obj;
+				var te = t.GetElementType();
+				size = buf.Length * te.Size();
+				Buf = new byte[ size ];
+				if ( te.IsPrimitive )
+				{
+					Buffer.BlockCopy( buf, 0, Buf, 0, size );
+					return;
+				}
+				Buf.CopyFrom( buf );
+				return;
 			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				var v = new FourByte
-						{
-							Float = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-			}
+			size = t.Size();
+			Buf = new byte[ size ];
+			Buf.CopyFrom( obj );
 		}
 
-		#endregion
-
-		#region ITypePointer<int> Members
-
-		int ITypePointer<int>.this[ int index ]
+		public ManagedBuffer( IntPtr buffer, int size )
+			: base()
 		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				return new FourByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-					   }.Int;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				var v = new FourByte
-						{
-							Int = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-			}
+			obj = buffer;
+			Buf = new byte[ size ];
+			Marshal.Copy( buffer, Buf, 0, size );
 		}
-
-		#endregion
-
-		#region ITypePointer<long> Members
-
-		long ITypePointer<long>.this[ int index ]
-		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				return new EightByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-						   b4 = buf[ ++index ],
-						   b5 = buf[ ++index ],
-						   b6 = buf[ ++index ],
-						   b7 = buf[ ++index ],
-					   }.Long;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				var v = new EightByte
-						{
-							Long = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-				buf[ ++index ] = v.b4;
-				buf[ ++index ] = v.b5;
-				buf[ ++index ] = v.b6;
-				buf[ ++index ] = v.b7;
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<short> Members
-
-		short ITypePointer<short>.this[ int index ]
-		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 1;
-				return new TwoByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-					   }.Short;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 1;
-				var v = new TwoByte
-						{
-							Short = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<uint> Members
-
-		uint ITypePointer<uint>.this[ int index ]
-		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				return new FourByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-					   }.UInt;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 2;
-				var v = new FourByte
-						{
-							UInt = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ulong> Members
-
-		ulong ITypePointer<ulong>.this[ int index ]
-		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				return new EightByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-						   b2 = buf[ ++index ],
-						   b3 = buf[ ++index ],
-						   b4 = buf[ ++index ],
-						   b5 = buf[ ++index ],
-						   b6 = buf[ ++index ],
-						   b7 = buf[ ++index ],
-					   }.ULong;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 3;
-				var v = new EightByte
-						{
-							ULong = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-				buf[ ++index ] = v.b2;
-				buf[ ++index ] = v.b3;
-				buf[ ++index ] = v.b4;
-				buf[ ++index ] = v.b5;
-				buf[ ++index ] = v.b6;
-				buf[ ++index ] = v.b7;
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ushort> Members
-
-		ushort ITypePointer<ushort>.this[ int index ]
-		{
-			get
-			{
-				byte[] buf = this.Buf;
-				index <<= 1;
-				return new TwoByte
-					   {
-						   b0 = buf[ index += this.IdxPtr ],
-						   b1 = buf[ ++index ],
-					   }.UShort;
-			}
-			set
-			{
-				byte[] buf = this.Buf;
-				index <<= 1;
-				var v = new TwoByte
-						{
-							UShort = value
-						};
-				buf[ index += this.IdxPtr ] = v.b0;
-				buf[ ++index ] = v.b1;
-			}
-		}
-
-		#endregion
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
-				if ( disposeManagedResources && this.obj != null )
+				if ( disposeManagedResources && obj != null )
 				{
-					if ( this.obj is IntPtr )
+					if ( obj is IntPtr )
 					{
-						Marshal.Copy( this.Buf, 0, (IntPtr)this.obj, this.Buf.Length );
+						Marshal.Copy( Buf, 0, (IntPtr)obj, Buf.Length );
 					}
 					else
 					{
-						Type t = this.obj.GetType();
+						var t = obj.GetType();
 						if ( t.IsArray )
 						{
 							if ( t.GetElementType().IsPrimitive )
 							{
-								Buffer.BlockCopy( this.Buf, 0, (Array)this.obj, 0, this.Buf.Length );
+								Buffer.BlockCopy( Buf, 0, (Array)obj, 0, Buf.Length );
 							}
 							else
 							{
-								this.Buf.CopyTo( (Array)this.obj );
+								Buf.CopyTo( (Array)obj );
 							}
 						}
 						else
 						{
-							this.Buf.CopyTo( ref this.obj );
+							Buf.CopyTo( ref obj );
 						}
 					}
-					this.obj = null;
+					obj = null;
 				}
 			}
 
@@ -804,12 +512,12 @@ namespace Axiom.CrossPlatform
 		{
 			if ( src is ManagedBuffer )
 			{
-				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, this.Buf, this.IdxPtr + destOffset, length );
+				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, Buf, IdxPtr + destOffset, length );
 			}
 #if !AXIOM_SAFE_ONLY
 			else if ( src is UnsafeBuffer )
 			{
-				Marshal.Copy( (IntPtr)( (int)src.Pin() + srcOffset ), this.Buf, this.IdxPtr + destOffset, length );
+				Marshal.Copy( (IntPtr)( (int)src.Pin() + srcOffset ), Buf, IdxPtr + destOffset, length );
 				src.UnPin();
 			}
 #endif
@@ -821,112 +529,256 @@ namespace Axiom.CrossPlatform
 			{
 				lock ( _pinMutex )
 				{
-					return new IntPtr( ( PinHandle.IsAllocated ? PinHandle : PinHandle = GCHandle.Alloc( this.Buf, GCHandleType.Pinned ) ).AddrOfPinnedObject().ToInt32() + this.IdxPtr );
+					return new IntPtr( ( PinHandle.IsAllocated ? PinHandle : PinHandle = GCHandle.Alloc( Buf, GCHandleType.Pinned ) ).AddrOfPinnedObject().ToInt32() + IdxPtr );
 				}
 			}
 			throw new AxiomException( "LockCount <= 0" );
+		}
+
+		//---------------------------------------------------------------------
+
+		byte ITypePointer<byte>.this[ int index ]
+		{
+			get
+			{
+				return Buf[ index + IdxPtr ];
+			}
+			set
+			{
+				Buf[ index + IdxPtr ] = value;
+			}
+		}
+
+		short ITypePointer<short>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 1;
+				return new TwoByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ],
+				       }.Short;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 1;
+				var v = new TwoByte
+				        {
+				        	Short = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+			}
+		}
+
+		ushort ITypePointer<ushort>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 1;
+				return new TwoByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ],
+				       }.UShort;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 1;
+				var v = new TwoByte
+				        {
+				        	UShort = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+			}
+		}
+
+		int ITypePointer<int>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 2;
+				return new FourByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       }.Int;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 2;
+				var v = new FourByte
+				        {
+				        	Int = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+			}
+		}
+
+		uint ITypePointer<uint>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 2;
+				return new FourByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       }.UInt;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 2;
+				var v = new FourByte
+				        {
+				        	UInt = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+			}
+		}
+
+		long ITypePointer<long>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 3;
+				return new EightByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       }.Long;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 3;
+				var v = new EightByte
+				        {
+				        	Long = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
+			}
+		}
+
+		ulong ITypePointer<ulong>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 3;
+				return new EightByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       }.ULong;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 3;
+				var v = new EightByte
+				        {
+				        	ULong = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
+			}
+		}
+
+		float ITypePointer<float>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 2;
+				return new FourByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       }.Float;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 2;
+				var v = new FourByte
+				        {
+				        	Float = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+			}
+		}
+
+		double ITypePointer<double>.this[ int index ]
+		{
+			get
+			{
+				var buf = Buf;
+				index <<= 3;
+				return new EightByte
+				       {
+				       	b0 = buf[ index += IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       }.Double;
+			}
+			set
+			{
+				var buf = Buf;
+				index <<= 3;
+				var v = new EightByte
+				        {
+				        	Double = value
+				        };
+				buf[ index += IdxPtr ] = v.b0;
+				buf[ ++index ] = v.b1;
+				buf[ ++index ] = v.b2;
+				buf[ ++index ] = v.b3;
+				buf[ ++index ] = v.b4;
+				buf[ ++index ] = v.b5;
+				buf[ ++index ] = v.b6;
+				buf[ ++index ] = v.b7;
+			}
 		}
 	};
 
 	public class BitConvertBuffer : ManagedBuffer, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
 	{
 		public BitConvertBuffer( ManagedBuffer buffer )
-			: base( buffer ) { }
+			: base( buffer ) {}
 
 		public BitConvertBuffer( byte[] buffer )
-			: base( buffer ) { }
+			: base( buffer ) {}
 
 		public BitConvertBuffer( object buffer )
-			: base( buffer ) { }
+			: base( buffer ) {}
 
 		public BitConvertBuffer( IntPtr buffer, int size )
-			: base( buffer, size ) { }
-
-		#region ITypePointer<double> Members
-
-		double ITypePointer<double>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToDouble( Buf, ( index << 3 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 3 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( double ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<float> Members
-
-		float ITypePointer<float>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToSingle( Buf, ( index << 2 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 2 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( float ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<int> Members
-
-		int ITypePointer<int>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToInt32( Buf, ( index << 2 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 2 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( int ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<long> Members
-
-		long ITypePointer<long>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToInt64( Buf, ( index << 3 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 3 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( long ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<short> Members
+			: base( buffer, size ) {}
 
 		short ITypePointer<short>.this[ int index ]
 		{
@@ -937,59 +789,13 @@ namespace Axiom.CrossPlatform
 			set
 			{
 				index = ( index << 2 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( short ); ++i, ++index )
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( short ); ++i, ++index )
 				{
 					Buf[ index ] = v[ i ];
 				}
 			}
 		}
-
-		#endregion
-
-		#region ITypePointer<uint> Members
-
-		uint ITypePointer<uint>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToUInt32( Buf, ( index << 2 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 2 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( uint ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ulong> Members
-
-		ulong ITypePointer<ulong>.this[ int index ]
-		{
-			get
-			{
-				return BitConverter.ToUInt64( Buf, ( index << 3 ) + IdxPtr );
-			}
-			set
-			{
-				index = ( index << 3 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( ulong ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ushort> Members
 
 		ushort ITypePointer<ushort>.this[ int index ]
 		{
@@ -1000,15 +806,115 @@ namespace Axiom.CrossPlatform
 			set
 			{
 				index = ( index << 2 ) + IdxPtr;
-				byte[] v = BitConverter.GetBytes( value );
-				for ( int i = 0; i < sizeof( ushort ); ++i, ++index )
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( ushort ); ++i, ++index )
 				{
 					Buf[ index ] = v[ i ];
 				}
 			}
 		}
 
-		#endregion
+		int ITypePointer<int>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToInt32( Buf, ( index << 2 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( int ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
+
+		uint ITypePointer<uint>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToUInt32( Buf, ( index << 2 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( uint ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
+
+		long ITypePointer<long>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToInt64( Buf, ( index << 3 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( long ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
+
+		ulong ITypePointer<ulong>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToUInt64( Buf, ( index << 3 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( ulong ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
+
+		float ITypePointer<float>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToSingle( Buf, ( index << 2 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 2 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( float ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
+
+		double ITypePointer<double>.this[ int index ]
+		{
+			get
+			{
+				return BitConverter.ToDouble( Buf, ( index << 3 ) + IdxPtr );
+			}
+			set
+			{
+				index = ( index << 3 ) + IdxPtr;
+				var v = BitConverter.GetBytes( value );
+				for ( var i = 0; i < sizeof ( double ); ++i, ++index )
+				{
+					Buf[ index ] = v[ i ];
+				}
+			}
+		}
 	};
 
 #if !AXIOM_SAFE_ONLY
@@ -1017,267 +923,53 @@ namespace Axiom.CrossPlatform
 		internal readonly unsafe byte* Buf;
 		internal unsafe byte* PtrBuf;
 
-		public UnsafeBuffer( object buffer )
-		{
-			unsafe
-			{
-				this.Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
-				PinCount = 1;
-				this.PtrBuf = this.Buf;
-			}
-		}
-
-		public UnsafeBuffer( IntPtr buffer )
-		{
-			unsafe
-			{
-				this.Buf = (byte*)buffer;
-				this.PtrBuf = this.Buf;
-			}
-		}
-
 		public override int Ptr
 		{
 			get
 			{
 				unsafe
 				{
-					return (int)( this.PtrBuf - this.Buf );
+					return (int)( PtrBuf - Buf );
 				}
 			}
 			set
 			{
 				unsafe
 				{
-					this.PtrBuf = this.Buf + value;
+					PtrBuf = Buf + value;
 				}
 			}
 		}
 
-		//---------------------------------------------------------------------
-
-		#region ITypePointer<byte> Members
-
-		byte ITypePointer<byte>.this[ int index ]
+		public UnsafeBuffer( object buffer )
+			: base()
 		{
-			get
+			unsafe
 			{
-				unsafe
-				{
-					return *( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					*( this.PtrBuf + index ) = value;
-				}
+				Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
+				PinCount = 1;
+				PtrBuf = Buf;
 			}
 		}
 
-		#endregion
-
-		#region ITypePointer<double> Members
-
-		double ITypePointer<double>.this[ int index ]
+		public UnsafeBuffer( IntPtr buffer )
+			: base()
 		{
-			get
+			unsafe
 			{
-				unsafe
-				{
-					index <<= 3;
-					return *(double*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 3;
-					*(double*)( this.PtrBuf + index ) = value;
-				}
+				Buf = (byte*)buffer;
+				PtrBuf = Buf;
 			}
 		}
-
-		#endregion
-
-		#region ITypePointer<float> Members
-
-		float ITypePointer<float>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 2;
-					return *(float*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 2;
-					*(float*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<int> Members
-
-		int ITypePointer<int>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 2;
-					return *(int*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 2;
-					*(int*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<long> Members
-
-		long ITypePointer<long>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 3;
-					return *(long*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 3;
-					*(long*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<short> Members
-
-		short ITypePointer<short>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 1;
-					return *(short*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 1;
-					*(short*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<uint> Members
-
-		uint ITypePointer<uint>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 2;
-					return *(uint*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 2;
-					*(uint*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ulong> Members
-
-		ulong ITypePointer<ulong>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 3;
-					return *(ulong*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 3;
-					*(ulong*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
-
-		#region ITypePointer<ushort> Members
-
-		ushort ITypePointer<ushort>.this[ int index ]
-		{
-			get
-			{
-				unsafe
-				{
-					index <<= 1;
-					return *(ushort*)( this.PtrBuf + index );
-				}
-			}
-			set
-			{
-				unsafe
-				{
-					index <<= 1;
-					*(ushort*)( this.PtrBuf + index ) = value;
-				}
-			}
-		}
-
-		#endregion
 
 		public override object Clone()
 		{
 			unsafe
 			{
-				return new UnsafeBuffer( (IntPtr)this.Buf )
-					   {
-						   Ptr = Ptr
-					   };
+				return new UnsafeBuffer( (IntPtr)Buf )
+				       {
+				       	Ptr = Ptr
+				       };
 			}
 		}
 
@@ -1287,13 +979,13 @@ namespace Axiom.CrossPlatform
 			{
 				if ( src is ManagedBuffer )
 				{
-					Marshal.Copy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, (IntPtr)( this.PtrBuf + destOffset ), length );
+					Marshal.Copy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, (IntPtr)( PtrBuf + destOffset ), length );
 				}
 				else if ( src is UnsafeBuffer )
 				{
-					byte* pSrc = (byte*)src.Pin() + srcOffset;
-					byte* pDest = (byte*)Pin() + destOffset;
-					for ( int i = 0; i < length; i++ )
+					var pSrc = (byte*)src.Pin() + srcOffset;
+					var pDest = (byte*)Pin() + destOffset;
+					for ( var i = 0; i < length; i++ )
 					{
 						*pDest++ = *pSrc++;
 					}
@@ -1308,7 +1000,187 @@ namespace Axiom.CrossPlatform
 			unsafe
 			{
 				Interlocked.Increment( ref PinCount );
-				return (IntPtr)this.PtrBuf;
+				return (IntPtr)PtrBuf;
+			}
+		}
+
+		//---------------------------------------------------------------------
+
+		byte ITypePointer<byte>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					return *( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					*( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		short ITypePointer<short>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 1;
+					return *(short*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 1;
+					*(short*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		ushort ITypePointer<ushort>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 1;
+					return *(ushort*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 1;
+					*(ushort*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		int ITypePointer<int>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 2;
+					return *(int*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 2;
+					*(int*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		uint ITypePointer<uint>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 2;
+					return *(uint*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 2;
+					*(uint*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		long ITypePointer<long>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 3;
+					return *(long*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 3;
+					*(long*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		ulong ITypePointer<ulong>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 3;
+					return *(ulong*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 3;
+					*(ulong*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		float ITypePointer<float>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 2;
+					return *(float*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 2;
+					*(float*)( PtrBuf + index ) = value;
+				}
+			}
+		}
+
+		double ITypePointer<double>.this[ int index ]
+		{
+			get
+			{
+				unsafe
+				{
+					index <<= 3;
+					return *(double*)( PtrBuf + index );
+				}
+			}
+			set
+			{
+				unsafe
+				{
+					index <<= 3;
+					*(double*)( PtrBuf + index ) = value;
+				}
 			}
 		}
 	};

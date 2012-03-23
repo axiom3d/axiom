@@ -46,15 +46,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: CompositorTranslator
-
 		public class CompositorTranslator : Translator
 		{
 			protected Compositor _Compositor;
 
 			public CompositorTranslator()
+				: base()
 			{
-				this._Compositor = null;
+				_Compositor = null;
 			}
 
 			#region Translator Implementation
@@ -86,7 +85,7 @@ namespace Axiom.Scripting.Compiler
 				// Create the compositor
 				object compObject;
 				ScriptCompilerEvent evt = new CreateCompositorScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
-				bool processed = compiler._fireEvent( ref evt, out compObject );
+				var processed = compiler._fireEvent( ref evt, out compObject );
 
 				if ( !processed )
 				{
@@ -101,30 +100,30 @@ namespace Axiom.Scripting.Compiler
 
 					if ( checkForExistingComp == null )
 					{
-						this._Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
 					}
 					else
 					{
-						this._Compositor = checkForExistingComp;
+						_Compositor = checkForExistingComp;
 					}
 				}
 				else
 				{
-					this._Compositor = (Compositor)compObject;
+					_Compositor = (Compositor)compObject;
 				}
 
-				if ( this._Compositor == null )
+				if ( _Compositor == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
 				// Prepare the compositor
-				this._Compositor.RemoveAllTechniques();
-				this._Compositor.Origin = obj.File;
-				obj.Context = this._Compositor;
+				_Compositor.RemoveAllTechniques();
+				_Compositor.Origin = obj.File;
+				obj.Context = _Compositor;
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -139,7 +138,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

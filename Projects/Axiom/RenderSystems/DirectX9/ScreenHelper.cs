@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.DirectX9.Helpers
 		[AxiomHelper( 0, 9 )]
 		public static Screen FromHandle( IntPtr handle )
 		{
-			Screen s = Screen.AllScreens.Where( x => x.GetHashCode() == (int)handle ).FirstOrDefault();
+			var s = Screen.AllScreens.Where( x => x.GetHashCode() == (int)handle ).FirstOrDefault();
 			if ( s == null )
 			{
 				s = Screen.FromHandle( handle );
@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9.Helpers
 		[AxiomHelper( 0, 9 )]
 		public static IntPtr GetHandle( Point p )
 		{
-			Screen s = Screen.FromPoint( p );
+			var s = Screen.FromPoint( p );
 			return new IntPtr( s.GetHashCode() );
 		}
 
@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.DirectX9.Helpers
 		[AxiomHelper( 0, 9 )]
 		public static IntPtr GetHandle( IntPtr windowHandle )
 		{
-			Screen s = FromHandle( windowHandle );
+			var s = ScreenHelper.FromHandle( windowHandle );
 			return new IntPtr( s.GetHashCode() );
 		}
 	};

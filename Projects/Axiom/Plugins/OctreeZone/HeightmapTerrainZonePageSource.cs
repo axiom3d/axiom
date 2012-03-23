@@ -38,11 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-using Axiom.Core;
 using Axiom.Math;
 using Axiom.Media;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -50,37 +52,37 @@ namespace OctreeZone
 {
 	public class HeightmapTerrainZonePageSource : TerrainZonePageSource
 	{
+		/// Is this input RAW?
+		protected bool mIsRaw;
+
 		/// Should we flip terrain vertically?
 		protected bool mFlipTerrainZone;
 
 		/// Image containing the source heightmap if loaded from non-RAW
 		protected Image mImage;
 
-		/// Is this input RAW?
-		protected bool mIsRaw;
+		/// Arbitrary data loaded from RAW
+		protected MemoryStream mRawData;
 
 		/// The (single) terrain page this source will provide
 		protected TerrainZonePage mPage;
 
-		/// Manual bpp if source is RAW
-		protected byte mRawBpp;
-
-		/// Arbitrary data loaded from RAW
-		protected MemoryStream mRawData;
+		/// Source file name
+		protected string mSource;
 
 		/// Manual size if source is RAW
 		protected int mRawSize;
 
-		/// Source file name
-		protected string mSource;
+		/// Manual bpp if source is RAW
+		protected byte mRawBpp;
 
 
 		//-------------------------------------------------------------------------
 		public HeightmapTerrainZonePageSource()
 		{
-			this.mIsRaw = false;
-			this.mFlipTerrainZone = false;
-			this.mPage = null;
+			mIsRaw = false;
+			mFlipTerrainZone = false;
+			mPage = null;
 		}
 
 		//-------------------------------------------------------------------------
@@ -92,11 +94,11 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public override void Shutdown()
 		{
-			if ( null != this.mImage )
+			if ( null != mImage )
 			{
-				this.mImage.Dispose();
+				mImage.Dispose();
 			}
-			this.mPage = null;
+			mPage = null;
 		}
 
 		//-------------------------------------------------------------------------
@@ -104,37 +106,37 @@ namespace OctreeZone
 		{
 			int imgSize;
 			// Special-case RAW format
-			if ( this.mIsRaw )
+			if ( mIsRaw )
 			{
 				// Image size comes from setting (since RAW is not self-describing)
-				imgSize = this.mRawSize;
+				imgSize = mRawSize;
 
 				// Load data
-				this.mRawData = null;
-				Stream stream = ResourceGroupManager.Instance.OpenResource( this.mSource, ResourceGroupManager.Instance.WorldResourceGroupName );
-				var buffer = new byte[ stream.Length ];
+				mRawData = null;
+				Stream stream = ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName );
+				byte[] buffer = new byte[ stream.Length ];
 				stream.Read( buffer, 0, (int)stream.Length );
-				this.mRawData = new MemoryStream( buffer );
+				mRawData = new MemoryStream( buffer );
 
 				// Validate size
-				int numBytes = imgSize * imgSize * this.mRawBpp;
-				if ( this.mRawData.Length != numBytes )
+				int numBytes = imgSize * imgSize * mRawBpp;
+				if ( mRawData.Length != numBytes )
 				{
 					Shutdown();
-					throw new AxiomException( "RAW size (" + this.mRawData.Length + ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
+					throw new AxiomException( "RAW size (" + mRawData.Length + ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
 				}
 			}
 			else
 			{
-				this.mImage = Image.FromStream( ResourceGroupManager.Instance.OpenResource( this.mSource, ResourceGroupManager.Instance.WorldResourceGroupName ), this.mSource.Split( '.' )[ 1 ] );
+				mImage = Image.FromStream( ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName ), mSource.Split( '.' )[ 1 ] );
 
 				// Must be square (dimensions checked later)
-				if ( this.mImage.Width != this.mImage.Height )
+				if ( mImage.Width != mImage.Height )
 				{
 					Shutdown();
 					throw new AxiomException( "Heightmap must be square. HeightmapTerrainZonePageSource.LoadHeightmap" );
 				}
-				imgSize = this.mImage.Width;
+				imgSize = mImage.Width;
 			}
 			//check to make sure it's the expected size
 			if ( imgSize != mPageSize )
@@ -155,32 +157,32 @@ namespace OctreeZone
 			// Get source image
 
 			bool imageFound = false;
-			this.mIsRaw = false;
+			mIsRaw = false;
 			bool rawSizeFound = false;
 			bool rawBppFound = false;
-			foreach ( var opt in optionList )
+			foreach ( KeyValuePair<string, string> opt in optionList )
 			{
 				string key = opt.Key;
 				key = key.Trim();
 				if ( key.StartsWith( "HeightmapImage".ToLower(), StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					this.mSource = opt.Value;
+					mSource = opt.Value;
 					imageFound = true;
 					// is it a raw?
-					if ( this.mSource.ToLowerInvariant().Trim().EndsWith( "raw" ) )
+					if ( mSource.ToLowerInvariant().Trim().EndsWith( "raw" ) )
 					{
-						this.mIsRaw = true;
+						mIsRaw = true;
 					}
 				}
 				else if ( key.StartsWith( "Heightmap.raw.size", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					this.mRawSize = Convert.ToInt32( opt.Value );
+					mRawSize = Convert.ToInt32( opt.Value );
 					rawSizeFound = true;
 				}
 				else if ( key.StartsWith( "Heightmap.raw.bpp", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					this.mRawBpp = Convert.ToByte( opt.Value );
-					if ( this.mRawBpp < 1 || this.mRawBpp > 2 )
+					mRawBpp = Convert.ToByte( opt.Value );
+					if ( mRawBpp < 1 || mRawBpp > 2 )
 					{
 						throw new AxiomException( "Invalid value for 'Heightmap.raw.bpp', must be 1 or 2. HeightmapTerrainZonePageSource.Initialise" );
 					}
@@ -188,7 +190,7 @@ namespace OctreeZone
 				}
 				else if ( key.StartsWith( "Heightmap.flip", StringComparison.InvariantCultureIgnoreCase ) )
 				{
-					this.mFlipTerrainZone = Convert.ToBoolean( opt.Value );
+					mFlipTerrainZone = Convert.ToBoolean( opt.Value );
 				}
 				else
 				{
@@ -199,7 +201,7 @@ namespace OctreeZone
 			{
 				throw new AxiomException( "Missing option 'HeightmapImage'. HeightmapTerrainZonePageSource.Initialise" );
 			}
-			if ( this.mIsRaw && ( !rawSizeFound || !rawBppFound ) )
+			if ( mIsRaw && ( !rawSizeFound || !rawBppFound ) )
 			{
 				throw new AxiomException( "Options 'Heightmap.raw.size' and 'Heightmap.raw.bpp' must be specified for RAW heightmap sources. HeightmapTerrainZonePageSource.Initialise" );
 			}
@@ -211,30 +213,30 @@ namespace OctreeZone
 		public override void RequestPage( ushort x, ushort y )
 		{
 			// Only 1 page provided
-			if ( x == 0 && y == 0 && this.mPage == null )
+			if ( x == 0 && y == 0 && mPage == null )
 			{
 				// Convert the image data to unscaled floats
-				var totalPageSize = (ulong)( mPageSize * mPageSize );
-				var heightData = new Real[ totalPageSize ];
+				ulong totalPageSize = (ulong)( mPageSize * mPageSize );
+				Real[] heightData = new Real[ totalPageSize ];
 				byte[] pOrigSrc, pSrc;
 				Real[] pDest = heightData;
 				Real invScale;
 				bool is16bit = false;
 
-				if ( this.mIsRaw )
+				if ( mIsRaw )
 				{
-					pOrigSrc = this.mRawData.GetBuffer();
-					is16bit = ( this.mRawBpp == 2 );
+					pOrigSrc = mRawData.GetBuffer();
+					is16bit = ( mRawBpp == 2 );
 				}
 				else
 				{
-					PixelFormat pf = this.mImage.Format;
+					PixelFormat pf = mImage.Format;
 					if ( pf != PixelFormat.L8 && pf != PixelFormat.L16 )
 					{
 						throw new AxiomException( "Error: Image is not a grayscale image. HeightmapTerrainZonePageSource.RequestPage" );
 					}
 
-					pOrigSrc = this.mImage.Data;
+					pOrigSrc = mImage.Data;
 					is16bit = ( pf == PixelFormat.L16 );
 				}
 				// Determine mapping from fixed to floating
@@ -295,8 +297,8 @@ namespace OctreeZone
 				// Note that we're using a single material for now
 				if ( null != mTerrainZone )
 				{
-					this.mPage = BuildPage( heightData, mTerrainZone.Options.terrainMaterial );
-					mTerrainZone.AttachPage( 0, 0, this.mPage );
+					mPage = BuildPage( heightData, mTerrainZone.Options.terrainMaterial );
+					mTerrainZone.AttachPage( 0, 0, mPage );
 				}
 
 				// Free temp store
@@ -308,9 +310,9 @@ namespace OctreeZone
 		public void ExpirePage( ushort x, ushort y )
 		{
 			// Single page
-			if ( x == 0 && y == 0 && null != this.mPage )
+			if ( x == 0 && y == 0 && null != mPage )
 			{
-				this.mPage = null;
+				mPage = null;
 			}
 		}
 

@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections.Generic;
 
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -48,8 +49,6 @@ namespace Axiom.SceneManagers.PortalConnected
 {
 	public class PCZFrustum
 	{
-		#region Visibility enum
-
 		public enum Visibility
 		{
 			None,
@@ -57,33 +56,18 @@ namespace Axiom.SceneManagers.PortalConnected
 			Full
 		}
 
-		#endregion
-
-		private readonly List<PCPlane> mActiveCullingPlanes = new List<PCPlane>();
-		private readonly List<PCPlane> mCullingPlaneReservoir = new List<PCPlane>();
-
 		private Vector3 mOrigin;
 		private Plane mOriginPlane;
 		private bool mUseOriginPlane;
+		private List<PCPlane> mActiveCullingPlanes = new List<PCPlane>();
+		private List<PCPlane> mCullingPlaneReservoir = new List<PCPlane>();
 		private Projection projType;
 
 
 		public PCZFrustum()
 		{
-			this.projType = Projection.Perspective;
-			this.mUseOriginPlane = false;
-		}
-
-		public Projection ProjectionType
-		{
-			get
-			{
-				return this.projType;
-			}
-			set
-			{
-				this.projType = value;
-			}
+			projType = Projection.Perspective;
+			mUseOriginPlane = false;
 		}
 
 		~PCZFrustum()
@@ -91,19 +75,19 @@ namespace Axiom.SceneManagers.PortalConnected
 			RemoveAllCullingPlanes();
 
 			// clear out the culling plane reservoir
-			this.mCullingPlaneReservoir.Clear();
+			mCullingPlaneReservoir.Clear();
 		}
 
 		// set the origin value
 		public void SetOrigin( Vector3 newOrigin )
 		{
-			this.mOrigin = newOrigin;
+			mOrigin = newOrigin;
 		}
 
 		// tell the frustum whether or not to use the originplane
 		public void SetUseOriginPlane( bool yesno )
 		{
-			this.mUseOriginPlane = yesno;
+			mUseOriginPlane = yesno;
 		}
 
 		public bool IsObjectVisible( AxisAlignedBox bound )
@@ -126,9 +110,9 @@ namespace Axiom.SceneManagers.PortalConnected
 			Vector3 halfSize = bound.HalfSize;
 
 			// Check originplane if told to
-			if ( this.mUseOriginPlane )
+			if ( mUseOriginPlane )
 			{
-				PlaneSide side = this.mOriginPlane.GetSide( centre, halfSize );
+				PlaneSide side = mOriginPlane.GetSide( centre, halfSize );
 				if ( side == PlaneSide.Negative )
 				{
 					return false;
@@ -137,7 +121,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// For each extra active culling plane, see if the entire aabb is on the negative side
 			// If so, object is not visible
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				PlaneSide xside = plane.GetSide( centre, halfSize );
 				if ( xside == PlaneSide.Negative )
@@ -151,12 +135,12 @@ namespace Axiom.SceneManagers.PortalConnected
 		public bool IsObjectVisible( Sphere bound )
 		{
 			// Check originplane if told to
-			if ( this.mUseOriginPlane )
+			if ( mUseOriginPlane )
 			{
-				PlaneSide side = this.mOriginPlane.GetSide( bound.Center );
+				PlaneSide side = mOriginPlane.GetSide( bound.Center );
 				if ( side == PlaneSide.Negative )
 				{
-					Real dist = this.mOriginPlane.GetDistance( bound.Center );
+					Real dist = mOriginPlane.GetDistance( bound.Center );
 					if ( dist > bound.Radius )
 					{
 						return false;
@@ -166,12 +150,12 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// For each extra active culling plane, see if the entire sphere is on the negative side
 			// If so, object is not visible
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				PlaneSide xside = plane.GetSide( bound.Center );
 				if ( xside == PlaneSide.Negative )
 				{
-					float dist = this.mOriginPlane.GetDistance( bound.Center );
+					float dist = mOriginPlane.GetDistance( bound.Center );
 					if ( dist > bound.Radius )
 					{
 						return false;
@@ -204,13 +188,13 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			// if the frustum has no planes, just return true
-			if ( this.mActiveCullingPlanes.Count == 0 )
+			if ( mActiveCullingPlanes.Count == 0 )
 			{
 				return true;
 			}
 			// check if this portal is already in the list of active culling planes (avoid
 			// infinite recursion case)
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				if ( plane.Portal == portal )
 				{
@@ -221,7 +205,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// if portal is of type AABB or Sphere, then use simple bound check against planes
 			if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_AABB )
 			{
-				var aabb = new AxisAlignedBox();
+				AxisAlignedBox aabb = new AxisAlignedBox();
 				aabb.SetExtents( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
 				return IsObjectVisible( aabb );
 			}
@@ -231,7 +215,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			// check if the portal norm is facing the frustum
-			Vector3 frustumToPortal = portal.getDerivedCP() - this.mOrigin;
+			Vector3 frustumToPortal = portal.getDerivedCP() - mOrigin;
 			Vector3 portalDirection = portal.getDerivedDirection();
 			Real dotProduct = frustumToPortal.Dot( portalDirection );
 			if ( dotProduct > 0 )
@@ -244,14 +228,14 @@ namespace Axiom.SceneManagers.PortalConnected
 			bool visible_flag;
 
 			// Check originPlane if told to
-			if ( this.mUseOriginPlane )
+			if ( mUseOriginPlane )
 			{
 				// set the visible flag to false
 				visible_flag = false;
 				// we have to check each corner of the portal
 				for ( int corner = 0; corner < 4; corner++ )
 				{
-					PlaneSide side = this.mOriginPlane.GetSide( portal.getDerivedCorner( corner ) );
+					PlaneSide side = mOriginPlane.GetSide( portal.getDerivedCorner( corner ) );
 					if ( side != PlaneSide.Negative )
 					{
 						visible_flag = true;
@@ -268,7 +252,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// For each active culling plane, see if all portal points are on the negative
 			// side. If so, the portal is not visible
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				visible_flag = false;
 				// we have to check each corner of the portal
@@ -320,9 +304,9 @@ namespace Axiom.SceneManagers.PortalConnected
 			bool all_inside = true;
 
 			// Check originplane if told to
-			if ( this.mUseOriginPlane )
+			if ( mUseOriginPlane )
 			{
-				PlaneSide side = this.mOriginPlane.GetSide( centre, halfSize );
+				PlaneSide side = mOriginPlane.GetSide( centre, halfSize );
 				if ( side == PlaneSide.Negative )
 				{
 					return Visibility.None;
@@ -336,7 +320,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// For each active culling plane, see if the entire aabb is on the negative side
 			// If so, object is not visible
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				PlaneSide xside = plane.GetSide( centre, halfSize );
 				if ( xside == PlaneSide.Negative )
@@ -374,9 +358,9 @@ namespace Axiom.SceneManagers.PortalConnected
 			if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_AABB || portal.Type == PORTAL_TYPE.PORTAL_TYPE_SPHERE )
 			{
 				PCPlane newPlane = GetUnusedCullingPlane();
-				newPlane.SetFromAxiomPlane( this.mOriginPlane );
+				newPlane.SetFromAxiomPlane( mOriginPlane );
 				newPlane.Portal = portal;
-				this.mActiveCullingPlanes.Add( newPlane );
+				mActiveCullingPlanes.Add( newPlane );
 				addedcullingplanes++;
 				return addedcullingplanes;
 			}
@@ -397,7 +381,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 				visible = true;
 
-				foreach ( PCPlane plane in this.mActiveCullingPlanes )
+				foreach ( PCPlane plane in mActiveCullingPlanes )
 				{
 					pt0_side = plane.GetSide( portal.getDerivedCorner( i ) );
 					pt1_side = plane.GetSide( portal.getDerivedCorner( j ) );
@@ -412,16 +396,16 @@ namespace Axiom.SceneManagers.PortalConnected
 					// add the plane created from the two portal corner points and the frustum location
 					// to the  culling plane
 					PCPlane newPlane = GetUnusedCullingPlane();
-					if ( this.projType == Projection.Orthographic ) // use camera direction if projection is orthographic.
+					if ( projType == Projection.Orthographic ) // use camera direction if projection is orthographic.
 					{
-						newPlane.Redefine( portal.getDerivedCorner( j ) + this.mOriginPlane.Normal, portal.getDerivedCorner( j ), portal.getDerivedCorner( i ) );
+						newPlane.Redefine( portal.getDerivedCorner( j ) + mOriginPlane.Normal, portal.getDerivedCorner( j ), portal.getDerivedCorner( i ) );
 					}
 					else
 					{
-						newPlane.Redefine( this.mOrigin, portal.getDerivedCorner( j ), portal.getDerivedCorner( i ) );
+						newPlane.Redefine( mOrigin, portal.getDerivedCorner( j ), portal.getDerivedCorner( i ) );
 					}
 					newPlane.Portal = portal;
-					this.mActiveCullingPlanes.Add( newPlane );
+					mActiveCullingPlanes.Add( newPlane );
 					addedcullingplanes++;
 				}
 			}
@@ -432,7 +416,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				PCPlane newPlane = GetUnusedCullingPlane();
 				newPlane.Redefine( portal.getDerivedCorner( 2 ), portal.getDerivedCorner( 1 ), portal.getDerivedCorner( 0 ) );
 				newPlane.Portal = portal;
-				this.mActiveCullingPlanes.Add( newPlane );
+				mActiveCullingPlanes.Add( newPlane );
 				addedcullingplanes++;
 			}
 			return addedcullingplanes;
@@ -441,13 +425,13 @@ namespace Axiom.SceneManagers.PortalConnected
 		// remove culling planes created from the given portal
 		public void RemovePortalCullingPlanes( Portal portal )
 		{
-			for ( int i = 0; i < this.mActiveCullingPlanes.Count; i++ )
+			for ( int i = 0; i < mActiveCullingPlanes.Count; i++ )
 			{
-				PCPlane plane = this.mActiveCullingPlanes[ i ];
+				PCPlane plane = mActiveCullingPlanes[ i ];
 				if ( plane.Portal == portal )
 				{
-					this.mCullingPlaneReservoir.Add( plane );
-					this.mActiveCullingPlanes.Remove( plane );
+					mCullingPlaneReservoir.Add( plane );
+					mActiveCullingPlanes.Remove( plane );
 				}
 			}
 		}
@@ -456,19 +440,19 @@ namespace Axiom.SceneManagers.PortalConnected
 		// NOTE: Does not change the use of the originPlane!
 		public void RemoveAllCullingPlanes()
 		{
-			foreach ( PCPlane plane in this.mActiveCullingPlanes )
+			foreach ( PCPlane plane in mActiveCullingPlanes )
 			{
 				// put the plane back in the reservoir
-				this.mCullingPlaneReservoir.Add( plane );
+				mCullingPlaneReservoir.Add( plane );
 			}
 
-			this.mActiveCullingPlanes.Clear();
+			mActiveCullingPlanes.Clear();
 		}
 
 		// set the origin plane
 		public void SetOriginPlane( Vector3 rkNormal, Vector3 rkPoint )
 		{
-			this.mOriginPlane.Redefine( rkNormal, rkPoint );
+			mOriginPlane.Redefine( rkNormal, rkPoint );
 		}
 
 		// get an unused PCPlane from the CullingPlane Reservoir
@@ -476,15 +460,27 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCPlane GetUnusedCullingPlane()
 		{
 			PCPlane plane = null;
-			if ( this.mCullingPlaneReservoir.Count > 0 )
+			if ( mCullingPlaneReservoir.Count > 0 )
 			{
-				plane = this.mCullingPlaneReservoir[ 0 ];
-				this.mCullingPlaneReservoir.RemoveAt( 0 );
+				plane = mCullingPlaneReservoir[ 0 ];
+				mCullingPlaneReservoir.RemoveAt( 0 );
 				return plane;
 			}
 			// no available planes! create one
 			plane = new PCPlane();
 			return plane;
+		}
+
+		public Projection ProjectionType
+		{
+			get
+			{
+				return projType;
+			}
+			set
+			{
+				projType = value;
+			}
 		}
 	}
 }

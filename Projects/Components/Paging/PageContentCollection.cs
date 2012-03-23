@@ -71,7 +71,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent.Manager;
+				return mParent.Manager;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mCreator.Name;
+				return mCreator.Name;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent.SceneManager;
+				return mParent.SceneManager;
 			}
 		}
 
@@ -103,8 +103,9 @@ namespace Axiom.Components.Paging
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public PageContentCollection( IPageContentCollectionFactory creator )
+			: base()
 		{
-			this.mCreator = creator;
+			mCreator = creator;
 		}
 
 		/// <summary>
@@ -113,7 +114,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void NotifyAttached( Page page )
 		{
-			this.mParent = page;
+			mParent = page;
 		}
 
 		/// <summary>

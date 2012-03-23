@@ -56,8 +56,6 @@ namespace Axiom.Media
 	{
 		#region Nested Types
 
-		#region Nested type: CodecData
-
 		public class CodecData
 		{
 			/// <summary>
@@ -73,10 +71,6 @@ namespace Axiom.Media
 			}
 		};
 
-		#endregion
-
-		#region Nested type: DecodeResult
-
 		/// <summary>
 		/// Result of a decoding; both a decoded data stream and CodecData metadata
 		/// </summary>
@@ -84,16 +78,11 @@ namespace Axiom.Media
 		{
 			private readonly Tuple<Stream, CodecData> _tuple;
 
-			public DecodeResult( Stream s, CodecData data )
-			{
-				this._tuple = new Tuple<Stream, CodecData>( s, data );
-			}
-
 			public Stream First
 			{
 				get
 				{
-					return this._tuple.First;
+					return _tuple.First;
 				}
 			}
 
@@ -101,12 +90,15 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return this._tuple.Second;
+					return _tuple.Second;
 				}
 			}
-		};
 
-		#endregion
+			public DecodeResult( Stream s, CodecData data )
+			{
+				_tuple = new Tuple<Stream, CodecData>( s, data );
+			}
+		};
 
 		#endregion Nested Types
 

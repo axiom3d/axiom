@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.IO;
 
 using Axiom.Core;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -70,10 +72,10 @@ namespace Axiom.FileSystem
 			this._monitor.IncludeSubdirectories = recurse;
 
 			// Add event handlers.
-			this._monitor.Changed += OnChanged;
-			this._monitor.Created += OnChanged;
-			this._monitor.Deleted += OnChanged;
-			this._monitor.Renamed += OnRenamed;
+			this._monitor.Changed += new FileSystemEventHandler( OnChanged );
+			this._monitor.Created += new FileSystemEventHandler( OnChanged );
+			this._monitor.Deleted += new FileSystemEventHandler( OnChanged );
+			this._monitor.Renamed += new RenamedEventHandler( OnRenamed );
 
 			// Begin watching.
 			this._monitor.EnableRaisingEvents = true;

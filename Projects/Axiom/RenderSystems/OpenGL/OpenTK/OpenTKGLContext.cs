@@ -38,16 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
-using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 
 using Axiom.Core;
 
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Platform;
 
 #endregion Namespace Declarations
 
@@ -55,52 +51,52 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	internal class OpenTKGLContext : GLContext
 	{
-		private readonly GLControl glControl;
-		private readonly GraphicsContext graphicsContext;
-		private readonly IWindowInfo windowInfo;
+		private GLControl glControl;
+		private GraphicsContext graphicsContext;
+		private OpenTK.Platform.IWindowInfo windowInfo;
 
-		public OpenTKGLContext( IWindowInfo windowInfo )
+		public OpenTKGLContext( OpenTK.Platform.IWindowInfo windowInfo )
 		{
 			// setup created glcontrol / gtk control
 			this.windowInfo = windowInfo;
-			this.graphicsContext = new GraphicsContext( GraphicsMode.Default, this.windowInfo );
+			graphicsContext = new GraphicsContext( GraphicsMode.Default, this.windowInfo );
 			Initialized = true;
 		}
 
 		public OpenTKGLContext( Control control, Control parent )
 		{
 			// replaces form's (parent) picturebox (control) by glControl
-			this.glControl = new GLControl();
-			this.glControl.VSync = false;
-			this.glControl.Dock = control.Dock;
-			this.glControl.BackColor = control.BackColor;
-			this.glControl.Location = control.Location;
-			this.glControl.Name = control.Name;
-			this.glControl.Size = control.Size;
-			this.glControl.TabIndex = control.TabIndex;
-			this.glControl.Show();
+			glControl = new GLControl();
+			glControl.VSync = false;
+			glControl.Dock = control.Dock;
+			glControl.BackColor = control.BackColor;
+			glControl.Location = control.Location;
+			glControl.Name = control.Name;
+			glControl.Size = control.Size;
+			glControl.TabIndex = control.TabIndex;
+			glControl.Show();
 
 			int count = 0;
-			while ( this.glControl.Context == null && ++count < 10 )
+			while ( glControl.Context == null && ++count < 10 )
 			{
-				Thread.Sleep( 10 );
+				System.Threading.Thread.Sleep( 10 );
 			}
-			if ( this.glControl.Context == null )
+			if ( glControl.Context == null )
 			{
 				throw new Exception( "glControl.Context == null" );
 			}
 
-			var form = (Form)parent;
-			form.Controls.Add( this.glControl );
+			Form form = (Form)parent;
+			form.Controls.Add( glControl );
 			control.Hide();
 
 			if ( ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" ).Count > 0 )
 			{
-				using ( Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
+				using ( System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
 				{
 					if ( icon != null )
 					{
-						form.Icon = new Icon( icon );
+						form.Icon = new System.Drawing.Icon( icon );
 					}
 				}
 			}
@@ -111,41 +107,41 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this.graphicsContext.VSync;
+				return graphicsContext.VSync;
 			}
 			set
 			{
-				this.graphicsContext.VSync = value;
+				graphicsContext.VSync = value;
 			}
 		}
 
 		public void SwapBuffers()
 		{
-			if ( this.glControl != null )
+			if ( glControl != null )
 			{
-				this.glControl.MakeCurrent();
-				this.glControl.SwapBuffers();
+				glControl.MakeCurrent();
+				glControl.SwapBuffers();
 			}
-			else if ( this.graphicsContext != null )
+			else if ( graphicsContext != null )
 			{
-				this.graphicsContext.MakeCurrent( this.windowInfo );
-				this.graphicsContext.SwapBuffers();
+				graphicsContext.MakeCurrent( windowInfo );
+				graphicsContext.SwapBuffers();
 			}
 		}
 
 		public override void SetCurrent()
 		{
-			if ( this.glControl != null )
+			if ( glControl != null )
 			{
-				this.glControl.MakeCurrent();
+				glControl.MakeCurrent();
 			}
-			else if ( this.graphicsContext != null )
+			else if ( graphicsContext != null )
 			{
-				this.graphicsContext.MakeCurrent( this.windowInfo );
+				graphicsContext.MakeCurrent( windowInfo );
 			}
 		}
 
-		public override void EndCurrent() { }
+		public override void EndCurrent() {}
 
 		public override GLContext Clone()
 		{

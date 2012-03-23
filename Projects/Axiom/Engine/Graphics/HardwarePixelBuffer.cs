@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -73,7 +74,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.width;
+				return width;
 			}
 		}
 
@@ -83,7 +84,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.height;
+				return height;
 			}
 		}
 
@@ -93,7 +94,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.depth;
+				return depth;
 			}
 		}
 
@@ -107,7 +108,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.rowPitch;
+				return rowPitch;
 			}
 		}
 
@@ -117,20 +118,20 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.slicePitch;
+				return slicePitch;
 			}
 		}
 
 		///<summary>
 		///    Internal format
 		///</summary>
-		protected PixelFormat format;
+		protected Axiom.Media.PixelFormat format;
 
-		public PixelFormat Format
+		public Axiom.Media.PixelFormat Format
 		{
 			get
 			{
-				return this.format;
+				return format;
 			}
 		}
 
@@ -150,7 +151,7 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( IsLocked, "Cannot get current lock: buffer not locked" );
-				return this.currentLock;
+				return currentLock;
 			}
 		}
 
@@ -162,7 +163,7 @@ namespace Axiom.Graphics
 		/// Should be called by HardwareBufferManager
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
-		public HardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwarePixelBuffer( int width, int height, int depth, Axiom.Media.PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.width = width;
@@ -170,8 +171,8 @@ namespace Axiom.Graphics
 			this.depth = depth;
 			this.format = format;
 			// Default
-			this.rowPitch = width;
-			this.slicePitch = height * width;
+			rowPitch = width;
+			slicePitch = height * width;
 			sizeInBytes = height * width * PixelUtil.GetNumElemBytes( format );
 		}
 
@@ -228,7 +229,7 @@ namespace Axiom.Graphics
 			Debug.Assert( offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer" );
 
 			var myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
-			PixelBox rv = Lock( myBox, options );
+			var rv = Lock( myBox, options );
 			return rv.Data;
 		}
 
@@ -252,16 +253,16 @@ namespace Axiom.Graphics
 					// and tag for sync on unlock()
 					shadowUpdated = true;
 				}
-				this.currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
+				currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
 			}
 			else
 			{
 				// Lock the real buffer if there is no shadow buffer 
-				this.currentLock = LockImpl( lockBox, options );
+				currentLock = LockImpl( lockBox, options );
 				isLocked = true;
 			}
 
-			return this.currentLock;
+			return currentLock;
 		}
 
 		///<summary>
@@ -290,16 +291,16 @@ namespace Axiom.Graphics
 				throw new AxiomException( "Source must not be the same object." );
 			}
 
-			PixelBox srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
+			var srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
-			BufferLocking method = BufferLocking.Normal;
-			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == this.width && dstBox.Bottom == this.height && dstBox.Back == this.depth )
+			var method = BufferLocking.Normal;
+			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height && dstBox.Back == depth )
 			{
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 			}
 
-			PixelBox dstlock = Lock( dstBox, method );
+			var dstlock = Lock( dstBox, method );
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 			{
 				// Scaling desired
@@ -326,7 +327,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void Blit( HardwarePixelBuffer src )
 		{
-			Blit( src, new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ), new BasicBox( 0, 0, 0, this.width, this.height, this.depth ) );
+			Blit( src, new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ), new BasicBox( 0, 0, 0, width, height, depth ) );
 		}
 
 		/// <summary>
@@ -384,7 +385,7 @@ namespace Axiom.Graphics
 		/// <see cref="HardwarePixelBuffer.GetRenderTarget(int)"/>
 		public RenderTexture GetRenderTarget()
 		{
-			return GetRenderTarget( 0 );
+			return this.GetRenderTarget( 0 );
 		}
 #endif
 
@@ -409,7 +410,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitFromMemory( PixelBox src )
 		{
-			BlitFromMemory( src, new BasicBox( 0, 0, 0, this.width, this.height, this.depth ) );
+			BlitFromMemory( src, new BasicBox( 0, 0, 0, width, height, depth ) );
 		}
 
 
@@ -424,7 +425,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitToMemory( PixelBox dst )
 		{
-			BlitToMemory( new BasicBox( 0, 0, 0, this.width, this.height, this.depth ), dst );
+			BlitToMemory( new BasicBox( 0, 0, 0, width, height, depth ), dst );
 		}
 
 		#endregion Methods

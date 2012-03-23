@@ -20,15 +20,15 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
+		public Widget Widget { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="widget"></param>
 		public WidgetEventArgs( Widget widget )
 		{
 			Widget = widget;
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public Widget Widget { get; set; }
 	}
 }

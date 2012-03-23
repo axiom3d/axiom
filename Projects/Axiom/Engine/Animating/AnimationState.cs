@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Controllers;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -71,24 +72,24 @@ namespace Axiom.Animating
 		protected string animationName;
 
 		/// <summary></summary>
+		protected float time;
+
+		/// <summary></summary>
+		protected float length;
+
+		/// <summary></summary>
 		protected float inverseLength;
+
+		/// <summary></summary>
+		protected float weight;
 
 		/// <summary></summary>
 		protected bool isEnabled;
 
 		/// <summary></summary>
-		protected float length;
-
-		protected bool loop;
-
-		/// <summary></summary>
 		protected AnimationStateSet parent;
 
-		/// <summary></summary>
-		protected float time;
-
-		/// <summary></summary>
-		protected float weight;
+		protected bool loop;
 
 		#endregion
 
@@ -111,10 +112,10 @@ namespace Axiom.Animating
 			this.weight = weight;
 
 			// Set using Property
-			IsEnabled = isEnabled;
+			this.IsEnabled = isEnabled;
 
 			// set using the Length property
-			Length = length;
+			this.Length = length;
 			this.loop = true;
 
 			parent.NotifyDirty();
@@ -128,7 +129,7 @@ namespace Axiom.Animating
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
-			: this( animationName, animationStates, time, length, 1.0f, false ) { }
+			: this( animationName, animationStates, time, length, 1.0f, false ) {}
 
 		/// <summary>
 		///     The moral equivalent of a copy constructor
@@ -138,7 +139,7 @@ namespace Axiom.Animating
 		public AnimationState( AnimationStateSet parent, AnimationState source )
 		{
 			this.parent = parent;
-			CopyFrom( source );
+			this.CopyFrom( source );
 
 			parent.NotifyDirty();
 		}
@@ -154,11 +155,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.animationName;
+				return animationName;
 			}
 			set
 			{
-				this.animationName = value;
+				animationName = value;
 			}
 		}
 
@@ -169,30 +170,30 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.time;
+				return time;
 			}
 			set
 			{
-				this.time = value;
-				if ( this.loop )
+				time = value;
+				if ( loop )
 				{
 					// Wrap
-					this.time = (float)System.Math.IEEERemainder( this.time, this.length );
-					if ( this.time < 0 )
+					time = (float)System.Math.IEEERemainder( time, length );
+					if ( time < 0 )
 					{
-						this.time += this.length;
+						time += length;
 					}
 				}
 				else
 				{
 					// Clamp
-					if ( this.time < 0 )
+					if ( time < 0 )
 					{
-						this.time = 0;
+						time = 0;
 					}
-					else if ( this.time > this.length )
+					else if ( time > length )
 					{
-						this.time = this.length;
+						time = length;
 					}
 				}
 			}
@@ -205,20 +206,20 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.length;
+				return length;
 			}
 			set
 			{
-				this.length = value;
+				length = value;
 
 				// update the inverse length of the animation
-				if ( this.length != 0 )
+				if ( length != 0 )
 				{
-					this.inverseLength = 1.0f / this.length;
+					inverseLength = 1.0f / length;
 				}
 				else
 				{
-					this.inverseLength = 0.0f;
+					inverseLength = 0.0f;
 				}
 			}
 		}
@@ -230,11 +231,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.weight;
+				return weight;
 			}
 			set
 			{
-				this.weight = value;
+				weight = value;
 			}
 		}
 
@@ -245,12 +246,12 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.isEnabled;
+				return isEnabled;
 			}
 			set
 			{
-				this.isEnabled = value;
-				this.parent.NotifyAnimationStateEnabled( this, this.isEnabled );
+				isEnabled = value;
+				parent.NotifyAnimationStateEnabled( this, isEnabled );
 			}
 		}
 
@@ -258,11 +259,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.loop;
+				return loop;
 			}
 			set
 			{
-				this.loop = value;
+				loop = value;
 			}
 		}
 
@@ -273,11 +274,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.parent;
+				return parent;
 			}
 			set
 			{
-				this.parent = value;
+				parent = value;
 			}
 		}
 
@@ -301,13 +302,13 @@ namespace Axiom.Animating
 		/// <param name="source">animation state which will use as source.</param>
 		public void CopyFrom( AnimationState source )
 		{
-			source.isEnabled = this.isEnabled;
-			source.inverseLength = this.inverseLength;
-			source.length = this.length;
-			source.time = this.time;
-			source.weight = this.weight;
-			source.loop = this.loop;
-			this.parent.NotifyDirty();
+			source.isEnabled = isEnabled;
+			source.inverseLength = inverseLength;
+			source.length = length;
+			source.time = time;
+			source.weight = weight;
+			source.loop = loop;
+			parent.NotifyDirty();
 		}
 
 		#endregion
@@ -321,11 +322,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.time * this.inverseLength;
+				return time * inverseLength;
 			}
 			set
 			{
-				this.time = value * this.length;
+				time = value * length;
 			}
 		}
 
@@ -345,11 +346,11 @@ namespace Axiom.Animating
 
 		public static bool operator ==( AnimationState left, AnimationState right )
 		{
-			if ( ReferenceEquals( left, null ) && ReferenceEquals( right, null ) )
+			if ( object.ReferenceEquals( left, null ) && object.ReferenceEquals( right, null ) )
 			{
 				return true;
 			}
-			if ( ReferenceEquals( left, null ) || ReferenceEquals( right, null ) )
+			if ( object.ReferenceEquals( left, null ) || object.ReferenceEquals( right, null ) )
 			{
 				return false;
 			}
@@ -372,7 +373,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this.animationName.GetHashCode();
+			return animationName.GetHashCode();
 		}
 
 		#endregion Object overloads
@@ -388,7 +389,7 @@ namespace Axiom.Animating
 		{
 			var other = obj as AnimationState;
 
-			if ( this.animationName == other.animationName && this.isEnabled == other.isEnabled && this.time == other.time && this.weight == other.weight && this.length == other.length )
+			if ( animationName == other.animationName && isEnabled == other.isEnabled && time == other.time && weight == other.weight && length == other.length )
 			{
 				return 0;
 			}

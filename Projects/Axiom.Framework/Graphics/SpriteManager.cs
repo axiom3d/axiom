@@ -24,8 +24,11 @@
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -67,9 +70,9 @@ namespace Axiom.Framework.Graphics
 
 		public static void EnqueueTexture( string textureName, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2, float alpha )
 		{
-			const float z = -1.0f;
+			float z = -1.0f;
 
-			var spr = new Sprite();
+			Sprite spr = new Sprite();
 			spr.Alpha = alpha;
 
 			spr.Pos = new Vector3[ 6 ];
@@ -93,7 +96,7 @@ namespace Axiom.Framework.Graphics
 			spr.Pos[ 5 ] = new Vector3( x2, y2, z );
 			spr.UV[ 5 ] = new Vector2( tx2, ty2 );
 
-			var tp = (Texture)TextureManager.Instance.GetByName( textureName );
+			Texture tp = (Texture)TextureManager.Instance.GetByName( textureName );
 			if ( tp == null || !tp.IsLoaded )
 			{
 				tp = TextureManager.Instance.Load( textureName, ResourceGroupManager.DefaultResourceGroupName );
@@ -132,11 +135,13 @@ namespace Axiom.Framework.Graphics
 
 		private static void HardwareBuffer_Create( int size )
 		{
+			VertexDeclaration vd;
+
 			renderOp = new RenderOperation();
 			renderOp.vertexData = new VertexData();
 			renderOp.vertexData.vertexStart = 0;
 
-			VertexDeclaration vd = renderOp.vertexData.vertexDeclaration;
+			vd = renderOp.vertexData.vertexDeclaration;
 			vd.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			vd.AddElement( 0, VertexElement.GetTypeSize( VertexElementType.Float3 ), VertexElementType.Float2, VertexElementSemantic.TexCoords );
@@ -163,12 +168,14 @@ namespace Axiom.Framework.Graphics
 				return;
 			}
 
-			RenderSystem rs = Root.Instance.RenderSystem;
+			Axiom.Graphics.RenderSystem rs = Root.Instance.RenderSystem;
 
-			var thisChunk = new Chunk();
-			var chunks = new List<Chunk>();
+			Chunk thisChunk = new Chunk();
+			List<Chunk> chunks = new List<Chunk>();
 
-			int newSize = sprites.Count * 6;
+			int newSize;
+
+			newSize = sprites.Count * 6;
 			if ( newSize < MinimalHardwareBufferSize )
 			{
 				newSize = MinimalHardwareBufferSize;
@@ -188,13 +195,14 @@ namespace Axiom.Framework.Graphics
 			// write quads to the hardware buffer, and remember chunks
 			unsafe
 			{
-				var buffer = (Vertex*)hardwareBuffer.Lock( BufferLocking.Discard ).Pin();
+				Vertex* buffer = (Vertex*)hardwareBuffer.Lock( BufferLocking.Discard ).Pin();
 
 				LinkedListNode<Sprite> node = sprites.First;
+				Sprite currSpr;
 
 				while ( node != null )
 				{
-					Sprite currSpr = node.Value;
+					currSpr = node.Value;
 					thisChunk.Alpha = currSpr.Alpha;
 					thisChunk.TexHandle = currSpr.TexHandle;
 
@@ -232,7 +240,7 @@ namespace Axiom.Framework.Graphics
 				rs.SetTextureUnitFiltering( 0, FilterOptions.Linear, FilterOptions.Linear, FilterOptions.Point );
 
 				// set alpha
-				var alphaBlendMode = new LayerBlendModeEx();
+				LayerBlendModeEx alphaBlendMode = new LayerBlendModeEx();
 				alphaBlendMode.alphaArg1 = 0;
 				alphaBlendMode.alphaArg2 = currChunk.Alpha;
 				alphaBlendMode.source1 = LayerBlendSource.Texture;
@@ -275,14 +283,14 @@ namespace Axiom.Framework.Graphics
 
 		private static void RenderSystem_Setup()
 		{
-			RenderSystem rs = Root.Instance.RenderSystem;
+			Axiom.Graphics.RenderSystem rs = Root.Instance.RenderSystem;
 
-			var colorBlendMode = new LayerBlendModeEx();
+			LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
 			colorBlendMode.blendType = LayerBlendType.Color;
 			colorBlendMode.source1 = LayerBlendSource.Texture;
 			colorBlendMode.operation = LayerBlendOperationEx.Source1;
 
-			var uvwAddressMode = new UVWAddressing( TextureAddressing.Clamp );
+			UVWAddressing uvwAddressMode = new UVWAddressing( TextureAddressing.Clamp );
 
 			rs.WorldMatrix = Matrix4.Identity;
 			rs.ViewMatrix = Matrix4.Identity;
@@ -310,8 +318,6 @@ namespace Axiom.Framework.Graphics
 
 		#region Nested Types
 
-		#region Nested type: Chunk
-
 		internal struct Chunk
 		{
 			#region Properties
@@ -324,10 +330,6 @@ namespace Axiom.Framework.Graphics
 
 			#endregion Properties
 		}
-
-		#endregion
-
-		#region Nested type: Sprite
 
 		internal struct Sprite
 		{
@@ -359,7 +361,7 @@ namespace Axiom.Framework.Graphics
 			{
 				if ( obj is Sprite )
 				{
-					return Equals( (Sprite)obj ); // use Equals method below
+					return this.Equals( (Sprite)obj ); // use Equals method below
 				}
 				else
 				{
@@ -369,7 +371,7 @@ namespace Axiom.Framework.Graphics
 
 			public bool Equals( Sprite other )
 			{
-				bool equal = TexHandle == other.TexHandle && Alpha == other.Alpha;
+				bool equal = this.TexHandle == other.TexHandle && this.Alpha == other.Alpha;
 
 				if ( !equal )
 				{
@@ -378,12 +380,12 @@ namespace Axiom.Framework.Graphics
 
 				for ( int i = 0; i < 6; i++ )
 				{
-					if ( Pos[ i ] != other.Pos[ i ] )
+					if ( this.Pos[ i ] != other.Pos[ i ] )
 					{
 						return false;
 					}
 
-					if ( UV[ i ] != other.UV[ i ] )
+					if ( this.UV[ i ] != other.UV[ i ] )
 					{
 						return false;
 					}
@@ -394,15 +396,11 @@ namespace Axiom.Framework.Graphics
 
 			public override int GetHashCode()
 			{
-				return Alpha.GetHashCode() ^ Pos.GetHashCode() ^ UV.GetHashCode() ^ TexHandle.GetHashCode();
+				return this.Alpha.GetHashCode() ^ this.Pos.GetHashCode() ^ this.UV.GetHashCode() ^ this.TexHandle.GetHashCode();
 			}
 
 			#endregion Methods
 		}
-
-		#endregion
-
-		#region Nested type: Vertex
 
 		[StructLayout( LayoutKind.Explicit )]
 		internal struct Vertex
@@ -423,8 +421,6 @@ namespace Axiom.Framework.Graphics
 
 			#endregion Constructors
 		}
-
-		#endregion
 
 		#endregion Nested Types
 	}

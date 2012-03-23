@@ -42,9 +42,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
+using System.Diagnostics;
+using System.IO;
 
-using Axiom.Configuration;
 using Axiom.Core;
+using Axiom.Configuration;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -56,19 +61,17 @@ namespace Axiom.Graphics
 	///</summary>
 	public class CompositionPass : DisposableObject
 	{
-		#region Nested type: InputTexture
-
 		public struct InputTexture
 		{
-			/// <summary>
-			/// MRT surface index if applicable
-			/// </summary>
-			public int MrtIndex;
-
 			/// <summary>
 			/// Name (local) of the input texture (empty == no input)
 			/// </summary>
 			public string Name;
+
+			/// <summary>
+			/// MRT surface index if applicable
+			/// </summary>
+			public int MrtIndex;
 
 			/// <summary>
 			/// 
@@ -76,7 +79,7 @@ namespace Axiom.Graphics
 			/// <param name="name">Name (local) of the input texture (empty == no input)</param>
 			public InputTexture( string name )
 			{
-				this.Name = name;
+				Name = name;
 				this.MrtIndex = 0;
 			}
 
@@ -87,125 +90,17 @@ namespace Axiom.Graphics
 			/// <param name="mrtIndex">MRT surface index if applicable</param>
 			public InputTexture( string name, int mrtIndex )
 			{
-				this.Name = name;
+				Name = name;
 				this.MrtIndex = mrtIndex;
 			}
 		}
 
-		#endregion
-
 		#region Fields and Properties
-
-		///<summary>
-		///    Clear buffers (in case of CompositorPassType.Clear)
-		///</summary>
-		protected FrameBufferType clearBuffers;
-
-		///<summary>
-		///    Clear colour (in case of CompositorPassType.Clear)
-		///</summary>
-		protected ColorEx clearColor;
-
-		///<summary>
-		///    Clear depth (in case of CompositorPassType.Clear)
-		///</summary>
-		protected float clearDepth;
-
-		///<summary>
-		///    Clear stencil value (in case of CompositorPassType.Clear)
-		///</summary>
-		protected int clearStencil;
-
-		protected string customType;
-
-		///<summary>
-		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
-		///</summary>
-		protected RenderQueueGroupID firstRenderQueue;
-
-		///<summary>
-		///    Identifier for this pass
-		///</summary>
-		protected uint identifier;
-
-		///<summary>
-		///    Inputs (for material used for rendering the quad)
-		///    An empty string signifies that no input is used
-		///</summary>
-		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
-
-		///<summary>
-		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
-		///</summary>
-		protected RenderQueueGroupID lastRenderQueue;
-
-		///<summary>
-		///    Material used for rendering
-		///</summary>
-		protected Material material;
-
-		/// <summary>
-		/// Material scheme name
-		/// </summary>
-		protected string materialSchemeName;
 
 		///<summary>
 		///    Parent technique
 		///</summary>
 		protected CompositionTargetPass parent;
-
-		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
-		/// </summary>
-		protected float quadBottom;
-
-		/// <summary>
-		/// true if quad should not cover whole screen
-		/// </summary>
-		protected bool quadCornerModified;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool quadFarCorners;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool quadFarCornersViewSpace;
-
-		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
-		/// </summary>
-		protected float quadLeft;
-
-		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
-		/// </summary>
-		protected float quadRight;
-
-		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
-		/// </summary>
-		protected float quadTop;
-
-		///<summary>
-		///    Stencil operation parameters
-		///</summary>
-		protected bool stencilCheck;
-
-		protected StencilOperation stencilDepthFailOp;
-		protected StencilOperation stencilFailOp;
-		protected CompareFunction stencilFunc;
-		protected int stencilMask;
-		protected StencilOperation stencilPassOp;
-		protected int stencilRefValue;
-		protected bool stencilTwoSidedOperation;
-
-		///<summary>
-		///    Type of composition pass
-		///</summary>
-		protected CompositorPassType type;
 
 		///<summary>
 		///    Parent technique
@@ -214,9 +109,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.parent;
+				return parent;
 			}
 		}
+
+		///<summary>
+		///    Type of composition pass
+		///</summary>
+		protected CompositorPassType type;
 
 		///<summary>
 		///    Type of composition pass
@@ -225,13 +125,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 			set
 			{
-				this.type = value;
+				type = value;
 			}
 		}
+
+		///<summary>
+		///    Identifier for this pass
+		///</summary>
+		protected uint identifier;
 
 		///<summary>
 		///    Identifier for this pass
@@ -240,13 +145,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.identifier;
+				return identifier;
 			}
 			set
 			{
-				this.identifier = value;
+				identifier = value;
 			}
 		}
+
+		///<summary>
+		///    Material used for rendering
+		///</summary>
+		protected Material material;
 
 		///<summary>
 		///    Material used for rendering
@@ -255,11 +165,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.material;
+				return material;
 			}
 			set
 			{
-				this.material = value;
+				material = value;
 			}
 		}
 
@@ -270,17 +180,22 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.material != null )
+				if ( material != null )
 				{
-					return this.material.Name;
+					return material.Name;
 				}
 				return string.Empty;
 			}
 			set
 			{
-				this.material = (Material)MaterialManager.Instance[ value ];
+				material = (Material)MaterialManager.Instance[ value ];
 			}
 		}
+
+		/// <summary>
+		/// Material scheme name
+		/// </summary>
+		protected string materialSchemeName;
 
 		/// <summary>
 		/// Get's or set's the material scheme used by this pass
@@ -293,13 +208,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.materialSchemeName;
+				return materialSchemeName;
 			}
 			set
 			{
-				this.materialSchemeName = value;
+				materialSchemeName = value;
 			}
 		}
+
+		///<summary>
+		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///</summary>
+		protected RenderQueueGroupID firstRenderQueue;
 
 		///<summary>
 		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
@@ -308,13 +228,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.firstRenderQueue;
+				return firstRenderQueue;
 			}
 			set
 			{
-				this.firstRenderQueue = value;
+				firstRenderQueue = value;
 			}
 		}
+
+		///<summary>
+		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///</summary>
+		protected RenderQueueGroupID lastRenderQueue;
 
 		///<summary>
 		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
@@ -323,13 +248,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.lastRenderQueue;
+				return lastRenderQueue;
 			}
 			set
 			{
-				this.lastRenderQueue = value;
+				lastRenderQueue = value;
 			}
 		}
+
+		///<summary>
+		///    Clear buffers (in case of CompositorPassType.Clear)
+		///</summary>
+		protected FrameBufferType clearBuffers;
 
 		///<summary>
 		///    Clear buffers (in case of CompositorPassType.Clear)
@@ -338,13 +268,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.clearBuffers;
+				return clearBuffers;
 			}
 			set
 			{
-				this.clearBuffers = value;
+				clearBuffers = value;
 			}
 		}
+
+		///<summary>
+		///    Clear colour (in case of CompositorPassType.Clear)
+		///</summary>
+		protected ColorEx clearColor;
 
 		///<summary>
 		///    Clear colour (in case of CompositorPassType.Clear)
@@ -353,13 +288,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.clearColor;
+				return clearColor;
 			}
 			set
 			{
-				this.clearColor = value;
+				clearColor = value;
 			}
 		}
+
+		///<summary>
+		///    Clear depth (in case of CompositorPassType.Clear)
+		///</summary>
+		protected float clearDepth;
 
 		///<summary>
 		///    Clear depth (in case of CompositorPassType.Clear)
@@ -368,13 +308,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.clearDepth;
+				return clearDepth;
 			}
 			set
 			{
-				this.clearDepth = value;
+				clearDepth = value;
 			}
 		}
+
+		///<summary>
+		///    Clear stencil value (in case of CompositorPassType.Clear)
+		///</summary>
+		protected int clearStencil;
 
 		///<summary>
 		///    Clear stencil value (in case of CompositorPassType.Clear)
@@ -383,13 +328,19 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.clearStencil;
+				return clearStencil;
 			}
 			set
 			{
-				this.clearStencil = value;
+				clearStencil = value;
 			}
 		}
+
+		///<summary>
+		///    Inputs (for material used for rendering the quad)
+		///    An empty string signifies that no input is used
+		///</summary>
+		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
 
 		///<summary>
 		///    Inputs (for material used for rendering the quad)
@@ -399,105 +350,154 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.inputs;
+				return inputs;
 			}
 		}
+
+		///<summary>
+		///    Stencil operation parameters
+		///</summary>
+		protected bool stencilCheck;
 
 		public bool StencilCheck
 		{
 			get
 			{
-				return this.stencilCheck;
+				return stencilCheck;
 			}
 			set
 			{
-				this.stencilCheck = value;
+				stencilCheck = value;
 			}
 		}
+
+		protected CompareFunction stencilFunc;
 
 		public CompareFunction StencilFunc
 		{
 			get
 			{
-				return this.stencilFunc;
+				return stencilFunc;
 			}
 			set
 			{
-				this.stencilFunc = value;
+				stencilFunc = value;
 			}
 		}
+
+		protected int stencilRefValue;
 
 		public int StencilRefValue
 		{
 			get
 			{
-				return this.stencilRefValue;
+				return stencilRefValue;
 			}
 			set
 			{
-				this.stencilRefValue = value;
+				stencilRefValue = value;
 			}
 		}
+
+		protected int stencilMask;
 
 		public int StencilMask
 		{
 			get
 			{
-				return this.stencilMask;
+				return stencilMask;
 			}
 			set
 			{
-				this.stencilMask = value;
+				stencilMask = value;
 			}
 		}
+
+		protected StencilOperation stencilFailOp;
 
 		public StencilOperation StencilFailOp
 		{
 			get
 			{
-				return this.stencilFailOp;
+				return stencilFailOp;
 			}
 			set
 			{
-				this.stencilFailOp = value;
+				stencilFailOp = value;
 			}
 		}
+
+		protected StencilOperation stencilDepthFailOp;
 
 		public StencilOperation StencilDepthFailOp
 		{
 			get
 			{
-				return this.stencilDepthFailOp;
+				return stencilDepthFailOp;
 			}
 			set
 			{
-				this.stencilDepthFailOp = value;
+				stencilDepthFailOp = value;
 			}
 		}
+
+		protected StencilOperation stencilPassOp;
 
 		public StencilOperation StencilPassOp
 		{
 			get
 			{
-				return this.stencilPassOp;
+				return stencilPassOp;
 			}
 			set
 			{
-				this.stencilPassOp = value;
+				stencilPassOp = value;
 			}
 		}
+
+		protected bool stencilTwoSidedOperation;
 
 		public bool StencilTwoSidedOperation
 		{
 			get
 			{
-				return this.stencilTwoSidedOperation;
+				return stencilTwoSidedOperation;
 			}
 			set
 			{
-				this.stencilTwoSidedOperation = value;
+				stencilTwoSidedOperation = value;
 			}
 		}
+
+		/// <summary>
+		/// true if quad should not cover whole screen
+		/// </summary>
+		protected bool quadCornerModified;
+
+		/// <summary>
+		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		/// </summary>
+		protected float quadLeft;
+
+		/// <summary>
+		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		/// </summary>
+		protected float quadTop;
+
+		/// <summary>
+		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		/// </summary>
+		protected float quadRight;
+
+		/// <summary>
+		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		/// </summary>
+		protected float quadBottom;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected bool quadFarCorners;
 
 		/// <summary>
 		/// Returns true if camera frustum far corners are provided in the quad.
@@ -506,9 +506,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.quadFarCorners;
+				return quadFarCorners;
 			}
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected bool quadFarCornersViewSpace;
 
 		/// <summary>
 		/// Returns true if the far corners provided in the quad are in view space
@@ -517,9 +522,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.quadFarCornersViewSpace;
+				return quadFarCornersViewSpace;
 			}
 		}
+
+		protected string customType;
 
 		/// <summary>
 		/// Get's or set's the type name of this custom composition pass.
@@ -532,11 +539,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.customType;
+				return customType;
 			}
 			set
 			{
-				this.customType = value;
+				customType = value;
 			}
 		}
 
@@ -544,14 +551,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.type == CompositorPassType.RenderQuad )
+				if ( type == CompositorPassType.RenderQuad )
 				{
-					if ( this.material == null )
+					if ( material == null )
 					{
 						return false;
 					}
-					this.material.Compile();
-					if ( this.material.SupportedTechniques.Count == 0 )
+					material.Compile();
+					if ( material.SupportedTechniques.Count == 0 )
 					{
 						return false;
 					}
@@ -567,30 +574,30 @@ namespace Axiom.Graphics
 		public CompositionPass( CompositionTargetPass parent )
 		{
 			this.parent = parent;
-			this.type = CompositorPassType.RenderQuad;
-			this.identifier = 0;
-			this.firstRenderQueue = RenderQueueGroupID.Background;
-			this.lastRenderQueue = RenderQueueGroupID.SkiesLate;
-			this.materialSchemeName = string.Empty;
-			this.clearBuffers = FrameBufferType.Color | FrameBufferType.Depth;
-			this.clearColor = new ColorEx( 0f, 0f, 0f, 0f );
-			this.clearDepth = 1.0f;
-			this.clearStencil = 0;
-			this.stencilCheck = false;
-			this.stencilFunc = CompareFunction.AlwaysPass;
-			this.stencilRefValue = 0;
-			this.stencilMask = 0x7FFFFFFF;
-			this.stencilFailOp = StencilOperation.Keep;
-			this.stencilDepthFailOp = StencilOperation.Keep;
-			this.stencilPassOp = StencilOperation.Keep;
-			this.stencilTwoSidedOperation = false;
-			this.quadCornerModified = false;
-			this.quadLeft = -1;
-			this.quadTop = 1;
-			this.quadRight = 1;
-			this.quadBottom = -1;
-			this.quadFarCorners = false;
-			this.quadFarCornersViewSpace = false;
+			type = CompositorPassType.RenderQuad;
+			identifier = 0;
+			firstRenderQueue = RenderQueueGroupID.Background;
+			lastRenderQueue = RenderQueueGroupID.SkiesLate;
+			materialSchemeName = string.Empty;
+			clearBuffers = FrameBufferType.Color | FrameBufferType.Depth;
+			clearColor = new ColorEx( 0f, 0f, 0f, 0f );
+			clearDepth = 1.0f;
+			clearStencil = 0;
+			stencilCheck = false;
+			stencilFunc = CompareFunction.AlwaysPass;
+			stencilRefValue = 0;
+			stencilMask = 0x7FFFFFFF;
+			stencilFailOp = StencilOperation.Keep;
+			stencilDepthFailOp = StencilOperation.Keep;
+			stencilPassOp = StencilOperation.Keep;
+			stencilTwoSidedOperation = false;
+			quadCornerModified = false;
+			quadLeft = -1;
+			quadTop = 1;
+			quadRight = 1;
+			quadBottom = -1;
+			quadFarCorners = false;
+			quadFarCornersViewSpace = false;
 		}
 
 		#endregion Constructor
@@ -598,29 +605,6 @@ namespace Axiom.Graphics
 		#region Methods
 
 		#region InputTexture Management
-
-		///<summary>
-		///    Get the number of inputs used.  If there are holes in the inputs array,
-		///    this number will include those entries as well.
-		///</summary>
-		///<remarks>
-		///    Note applies when CompositorPassType is RenderQuad 
-		///</remarks>	
-		public int InputsCount
-		{
-			get
-			{
-				int count = 0;
-				for ( int i = 0; i < this.inputs.Length; ++i )
-				{
-					if ( !string.IsNullOrEmpty( this.inputs[ i ].Name ) )
-					{
-						count = i + 1;
-					}
-				}
-				return count;
-			}
-		}
 
 		///<summary>
 		///    Set an input local texture. An empty string clears the input.
@@ -633,7 +617,7 @@ namespace Axiom.Graphics
 		///</remarks>	
 		public void SetInput( int id, string name, int mrtIndex )
 		{
-			this.inputs[ id ] = new InputTexture( name, mrtIndex );
+			inputs[ id ] = new InputTexture( name, mrtIndex );
 		}
 
 		public void SetInput( int id, string name )
@@ -655,7 +639,30 @@ namespace Axiom.Graphics
 		///</remarks>	
 		public InputTexture GetInput( int id )
 		{
-			return this.inputs[ id ];
+			return inputs[ id ];
+		}
+
+		///<summary>
+		///    Get the number of inputs used.  If there are holes in the inputs array,
+		///    this number will include those entries as well.
+		///</summary>
+		///<remarks>
+		///    Note applies when CompositorPassType is RenderQuad 
+		///</remarks>	
+		public int InputsCount
+		{
+			get
+			{
+				var count = 0;
+				for ( var i = 0; i < inputs.Length; ++i )
+				{
+					if ( !string.IsNullOrEmpty( inputs[ i ].Name ) )
+					{
+						count = i + 1;
+					}
+				}
+				return count;
+			}
 		}
 
 		///<summary>
@@ -666,9 +673,9 @@ namespace Axiom.Graphics
 		///</remarks>	
 		public void ClearAllInputs()
 		{
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for ( var i = 0; i < Config.MaxTextureLayers; i++ )
 			{
-				this.inputs[ i ].Name = String.Empty;
+				inputs[ i ].Name = String.Empty;
 			}
 		}
 
@@ -685,11 +692,11 @@ namespace Axiom.Graphics
 		/// <param name="bottom"></param>
 		public void SetQuadCorners( float left, float top, float right, float bottom )
 		{
-			this.quadCornerModified = true;
-			this.quadLeft = left;
-			this.quadRight = right;
-			this.quadTop = top;
-			this.quadBottom = bottom;
+			quadCornerModified = true;
+			quadLeft = left;
+			quadRight = right;
+			quadTop = top;
+			quadBottom = bottom;
 		}
 
 		/// <summary>
@@ -702,11 +709,11 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public bool GetQuadCorners( out float left, out float top, out float right, out float bottom )
 		{
-			left = this.quadLeft;
-			top = this.quadTop;
-			right = this.quadRight;
-			bottom = this.quadBottom;
-			return this.quadCornerModified;
+			left = quadLeft;
+			top = quadTop;
+			right = quadRight;
+			bottom = quadBottom;
+			return quadCornerModified;
 		}
 
 		/// <summary>
@@ -716,8 +723,8 @@ namespace Axiom.Graphics
 		/// <param name="farCornersViewSpace"></param>
 		public void SetQuadFarCorners( bool farCorners, bool farCornersViewSpace )
 		{
-			this.quadFarCorners = farCorners;
-			this.quadFarCornersViewSpace = farCornersViewSpace;
+			quadFarCorners = farCorners;
+			quadFarCornersViewSpace = farCornersViewSpace;
 		}
 
 		#endregion Quad Management

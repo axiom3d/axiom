@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Reflection;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -49,8 +51,8 @@ namespace Axiom.Scripting
 	[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
 	public sealed class ParserCommandAttribute : Attribute
 	{
-		private readonly string attributeName;
-		private readonly string parserType;
+		private string attributeName;
+		private string parserType;
 
 		public ParserCommandAttribute( string name, string parserType )
 		{
@@ -62,7 +64,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return this.attributeName;
+				return attributeName;
 			}
 		}
 
@@ -70,7 +72,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return this.parserType;
+				return parserType;
 			}
 		}
 	}

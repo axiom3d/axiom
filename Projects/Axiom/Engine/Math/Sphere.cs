@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -61,8 +61,8 @@ namespace Axiom.Math
 	{
 		#region Protected member variables
 
-		private Vector3 center;
 		private Real radius;
+		private Vector3 center;
 
 		#endregion
 
@@ -73,8 +73,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Sphere()
 		{
-			this.radius = 1.0f;
-			this.center = Vector3.Zero;
+			radius = 1.0f;
+			center = Vector3.Zero;
 		}
 
 		/// <summary>
@@ -99,11 +99,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.center;
+				return center;
 			}
 			set
 			{
-				this.center = value;
+				center = value;
 			}
 		}
 
@@ -114,11 +114,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.radius;
+				return radius;
 			}
 			set
 			{
-				this.radius = value;
+				radius = value;
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return this.center.GetHashCode() ^ this.radius.GetHashCode();
+			return center.GetHashCode() ^ radius.GetHashCode();
 		}
 
 
@@ -154,7 +154,7 @@ namespace Axiom.Math
 		/// <returns>True if the spheres intersect, false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			return ( ( sphere.center - this.center ).Length <= ( sphere.radius + this.radius ) );
+			return ( ( sphere.center - center ).Length <= ( sphere.radius + radius ) );
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace Axiom.Math
 		/// <returns>True if the vector intersects, false otherwise.</returns>
 		public bool Intersects( Vector3 vector )
 		{
-			return ( vector - this.center ).Length <= this.radius;
+			return ( vector - center ).Length <= radius;
 		}
 
 		#endregion Intersection methods

@@ -58,6 +58,9 @@ namespace Axiom.Math.Collections
 	/// </remarks>
 	public abstract class BaseCollection : ICollection, IEnumerable, IEnumerator
 	{
+		/// <summary></summary>
+		protected ArrayList objectList;
+
 		//		protected int nextUniqueKeyCounter;
 
 		private const int INITIAL_CAPACITY = 50;
@@ -69,13 +72,10 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public BaseCollection()
 		{
-			this.objectList = new ArrayList( INITIAL_CAPACITY );
+			objectList = new ArrayList( INITIAL_CAPACITY );
 		}
 
 		#endregion
-
-		/// <summary></summary>
-		protected ArrayList objectList;
 
 		/// <summary>
 		///		
@@ -84,11 +84,11 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return this.objectList[ index ];
+				return objectList[ index ];
 			}
 			set
 			{
-				this.objectList[ index ] = value;
+				objectList[ index ] = value;
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace Axiom.Math.Collections
 		/// <param name="item"></param>
 		protected void Add( object item )
 		{
-			this.objectList.Add( item );
+			objectList.Add( item );
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public void Clear()
 		{
-			this.objectList.Clear();
+			objectList.Clear();
 		}
 
 		/// <summary>
@@ -115,11 +115,11 @@ namespace Axiom.Math.Collections
 		/// <param name="item"></param>
 		public void Remove( object item )
 		{
-			int index = this.objectList.IndexOf( item );
+			var index = objectList.IndexOf( item );
 
 			if ( index != -1 )
 			{
-				this.objectList.RemoveAt( index );
+				objectList.RemoveAt( index );
 			}
 		}
 
@@ -130,9 +130,9 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		/// <param name="array"></param>
 		/// <param name="index"></param>
-		public void CopyTo( Array array, int index )
+		public void CopyTo( System.Array array, int index )
 		{
-			this.objectList.CopyTo( array, index );
+			objectList.CopyTo( array, index );
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return this.objectList.IsSynchronized;
+				return objectList.IsSynchronized;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return this.objectList.Count;
+				return objectList.Count;
 			}
 		}
 
@@ -164,7 +164,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return this.objectList.SyncRoot;
+				return objectList.SyncRoot;
 			}
 		}
 
@@ -172,9 +172,9 @@ namespace Axiom.Math.Collections
 
 		#region Implementation of IEnumerable
 
-		public IEnumerator GetEnumerator()
+		public System.Collections.IEnumerator GetEnumerator()
 		{
-			return this;
+			return (IEnumerator)this;
 		}
 
 		#endregion
@@ -189,7 +189,7 @@ namespace Axiom.Math.Collections
 		public void Reset()
 		{
 			// reset the enumerator position
-			this.position = -1;
+			position = -1;
 		}
 
 		/// <summary>
@@ -198,9 +198,9 @@ namespace Axiom.Math.Collections
 		/// <returns></returns>
 		public bool MoveNext()
 		{
-			this.position += 1;
+			position += 1;
 
-			if ( this.position >= this.objectList.Count )
+			if ( position >= objectList.Count )
 			{
 				return false;
 			}
@@ -217,7 +217,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return this.objectList[ this.position ];
+				return objectList[ position ];
 			}
 		}
 

@@ -43,7 +43,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Diagnostics;
+
+using Axiom.Math.Collections;
 using Axiom.Utilities;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,6 +75,12 @@ namespace Axiom.Math
 	public sealed class RotationalSpline : Spline<Quaternion>
 	{
 		#region Constructors
+
+		/// <summary>
+		///		Creates a new Rotational Spline.
+		/// </summary>
+		public RotationalSpline()
+			: base() {}
 
 		#endregion
 
@@ -115,7 +127,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			Real segment = t * ( pointList.Count - 1 );
+			var segment = t * ( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -156,10 +168,10 @@ namespace Axiom.Math
 			// Time for real interpolation
 
 			// Algorithm uses spherical quadratic interpolation
-			Quaternion p = pointList[ index ];
-			Quaternion q = pointList[ index + 1 ];
-			Quaternion a = tangentList[ index ];
-			Quaternion b = tangentList[ index + 1 ];
+			var p = pointList[ index ];
+			var q = pointList[ index + 1 ];
+			var a = tangentList[ index ];
+			var b = tangentList[ index + 1 ];
 
 			// return the final result
 			return Quaternion.Squad( t, p, a, b, q, useShortestPath );
@@ -207,7 +219,7 @@ namespace Axiom.Math
 			// loop through the points and generate the tangents
 			for ( i = 0; i < numPoints; i++ )
 			{
-				Quaternion p = pointList[ i ];
+				var p = pointList[ i ];
 
 				// Get the inverse of p
 				invp = p.Inverse();

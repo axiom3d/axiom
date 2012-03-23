@@ -51,8 +51,9 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		public uint Id;
 		public String Name;
+
+		public uint Id;
 
 		public IList<AbstractNode> Values = new List<AbstractNode>();
 
@@ -61,23 +62,10 @@ namespace Axiom.Scripting.Compiler.AST
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			this.Id = 0;
+			Id = 0;
 		}
 
 		#region AbstractNode Implementation
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Name;
-			}
-			set
-			{
-				this.Name = value;
-			}
-		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -85,15 +73,28 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = this.Name;
-			node.Id = this.Id;
-			foreach ( AbstractNode an in this.Values )
+			node.Name = Name;
+			node.Id = Id;
+			foreach ( var an in Values )
 			{
-				AbstractNode newNode = ( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}
 			return node;
+		}
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return Name;
+			}
+			set
+			{
+				Name = value;
+			}
 		}
 
 		#endregion AbstractNode Implementation

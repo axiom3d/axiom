@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -81,7 +81,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.key;
+				return key;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return InputReader.GetKeyChar( this.key, modifiers );
+				return InputReader.GetKeyChar( key, modifiers );
 			}
 		}
 

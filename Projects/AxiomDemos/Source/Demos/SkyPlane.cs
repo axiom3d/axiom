@@ -1,5 +1,6 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -13,7 +14,7 @@ namespace Axiom.Demos
 	/// 	Summary description for SkyPlane.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class SkyPlane : TechDemo
 	{
@@ -24,7 +25,7 @@ namespace Axiom.Demos
 			// set some ambient light
 			scene.AmbientLight = ColorEx.Gray;
 
-			var plane = new Plane();
+			Plane plane = new Plane();
 			// 5000 units from the camera
 			plane.D = 5000;
 			// above the camera, facing down

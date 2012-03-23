@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
 
 #endregion Namespace Declarations
 
@@ -48,25 +48,25 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	/// </summary>
 	public struct TokenRule
 	{
-		public int errorID;
 		public OperationType operation;
-		public string symbol;
 		public Symbol tokenID;
+		public string symbol;
+		public int errorID;
 
 		public TokenRule( OperationType op )
 		{
 			this.operation = op;
-			this.tokenID = 0;
-			this.symbol = "";
-			this.errorID = 0;
+			tokenID = 0;
+			symbol = "";
+			errorID = 0;
 		}
 
 		public TokenRule( OperationType op, Symbol tokenID )
 		{
 			this.operation = op;
 			this.tokenID = tokenID;
-			this.symbol = "";
-			this.errorID = 0;
+			symbol = "";
+			errorID = 0;
 		}
 
 		public TokenRule( OperationType op, Symbol tokenID, string symbol )
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			this.operation = op;
 			this.tokenID = tokenID;
 			this.symbol = symbol;
-			this.errorID = 0;
+			errorID = 0;
 		}
 	}
 
@@ -89,14 +89,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public Symbol ID;
 
 		/// <summary>
+		///     Data used by pass 2 to build native instructions.
+		/// </summary>
+		public int pass2Data;
+
+		/// <summary>
 		///     Context key to fit the Active Context.
 		/// </summary>
 		public uint contextKey;
-
-		/// <summary>
-		///     Contexts bits to clear Active Context bits.
-		/// </summary>
-		public uint contextPatternClear;
 
 		/// <summary>
 		///     New pattern to set for Active Context bits.
@@ -104,14 +104,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		public uint contextPatternSet;
 
 		/// <summary>
+		///     Contexts bits to clear Active Context bits.
+		/// </summary>
+		public uint contextPatternClear;
+
+		/// <summary>
 		///     Index into text table for default name : set at runtime.
 		/// </summary>
 		public int defTextID;
-
-		/// <summary>
-		///     Data used by pass 2 to build native instructions.
-		/// </summary>
-		public int pass2Data;
 
 		/// <summary>
 		///     Index into Rule database for non-terminal toke rulepath.
@@ -124,10 +124,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			this.ID = symbol;
 			this.pass2Data = glEnum;
 			this.contextKey = (uint)ckp;
-			this.contextPatternSet = 0;
-			this.contextPatternClear = 0;
-			this.defTextID = 0;
-			this.ruleID = 0;
+			contextPatternSet = 0;
+			contextPatternClear = 0;
+			defTextID = 0;
+			ruleID = 0;
 		}
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps )
@@ -136,9 +136,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			this.pass2Data = glEnum;
 			this.contextKey = (uint)ckp;
 			this.contextPatternSet = cps;
-			this.contextPatternClear = 0;
-			this.defTextID = 0;
-			this.ruleID = 0;
+			contextPatternClear = 0;
+			defTextID = 0;
+			ruleID = 0;
 		}
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps )
@@ -147,9 +147,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			this.pass2Data = glEnum;
 			this.contextKey = (uint)ckp;
 			this.contextPatternSet = (uint)cps;
-			this.contextPatternClear = 0;
-			this.defTextID = 0;
-			this.ruleID = 0;
+			contextPatternClear = 0;
+			defTextID = 0;
+			ruleID = 0;
 		}
 	}
 
@@ -159,14 +159,14 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	public struct TokenInstruction
 	{
 		/// <summary>
-		///     Token ID.
-		/// </summary>
-		public Symbol ID;
-
-		/// <summary>
 		///     Non-Terminal Token Rule ID that generated Token.
 		/// </summary>
 		public Symbol NTTRuleID;
+
+		/// <summary>
+		///     Token ID.
+		/// </summary>
+		public Symbol ID;
 
 		/// <summary>
 		///     Line number in source code where Token was found
@@ -182,15 +182,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		{
 			this.NTTRuleID = symbol;
 			this.ID = ID;
-			this.line = 0;
-			this.pos = 0;
+			line = 0;
+			pos = 0;
 		}
 	}
 
 	public struct TokenInstType
 	{
-		public int ID;
 		public string Name;
+		public int ID;
 	}
 
 	public struct RegisterUsage
@@ -213,8 +213,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	internal struct RegModOffset
 	{
 		public int MacroOffset;
-		public int OpParamsIndex;
 		public int RegisterBase;
+		public int OpParamsIndex;
 
 		public RegModOffset( int offset, Symbol regBase, int index )
 		{
@@ -228,8 +228,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	{
 		public TokenInstruction[] Macro;
 		public int MacroSize;
-		public int RegModSize;
 		public RegModOffset[] RegMods;
+		public int RegModSize;
 
 		public MacroRegModify( TokenInstruction[] tokens, RegModOffset[] offsets )
 		{

@@ -80,14 +80,14 @@ namespace Axiom.Components.Paging
 
 		#region - fields -
 
-		protected AxisAlignedBox mAABB;
-		protected string mName;
-		protected PageProvider mPageProvider;
 		protected Dictionary<PageID, Page> mPages = new Dictionary<PageID, Page>();
+		protected string mName;
+		protected AxisAlignedBox mAABB;
 		protected PagedWorld mParent;
-		protected SceneManager mSceneMgr;
 		protected PageStrategy mStrategy;
 		protected IPageStrategyData mStrategyData;
+		protected PageProvider mPageProvider;
+		protected SceneManager mSceneMgr;
 
 		#endregion - fields -
 
@@ -101,7 +101,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mStrategyData;
+				return mStrategyData;
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mName;
+				return mName;
 			}
 		}
 
@@ -141,25 +141,25 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mStrategy;
+				return mStrategy;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
 				PageStrategy strat = value;
-				if ( strat != this.mStrategy )
+				if ( strat != mStrategy )
 				{
-					if ( this.mStrategy != null )
+					if ( mStrategy != null )
 					{
-						this.mStrategy.DestroyData( this.mStrategyData );
-						this.mStrategy = null;
-						this.mStrategyData = null;
+						mStrategy.DestroyData( mStrategyData );
+						mStrategy = null;
+						mStrategyData = null;
 					}
-					this.mStrategy = strat;
-					if ( this.mStrategy != null )
+					mStrategy = strat;
+					if ( mStrategy != null )
 					{
-						this.mStrategyData = this.mStrategy.CreateData();
+						mStrategyData = mStrategy.CreateData();
 					}
 
 					RemoveAllPages();
@@ -172,7 +172,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent.Manager;
+				return mParent.Manager;
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent;
+				return mParent;
 			}
 		}
 
@@ -193,13 +193,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mAABB;
+				return mAABB;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mAABB = value;
+				mAABB = value;
 			}
 		}
 
@@ -215,15 +215,15 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mSceneMgr;
+				return mSceneMgr;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				if ( value != this.mSceneMgr )
+				if ( value != mSceneMgr )
 				{
-					this.mSceneMgr = value;
+					mSceneMgr = value;
 					RemoveAllPages();
 				}
 			}
@@ -247,13 +247,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mPageProvider;
+				return mPageProvider;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mPageProvider = value;
+				mPageProvider = value;
 			}
 		}
 
@@ -266,12 +266,13 @@ namespace Axiom.Components.Paging
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection( string name, PagedWorld parent, SceneManager sm )
+			: base()
 		{
-			this.mName = name;
-			this.mParent = parent;
+			mName = name;
+			mParent = parent;
 			Strategy = null;
-			this.mPageProvider = null;
-			this.mSceneMgr = sm;
+			mPageProvider = null;
+			mSceneMgr = sm;
 		}
 
 		#endregion - constructor -
@@ -279,15 +280,15 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~PagedWorldSection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.mStrategy != null )
+					if ( mStrategy != null )
 					{
-						this.mStrategy.DestroyData( this.mStrategyData );
-						this.mStrategy.SafeDispose();
-						this.mStrategyData = null;
+						mStrategy.DestroyData( mStrategyData );
+						mStrategy.SafeDispose();
+						mStrategyData = null;
 					}
 
 					RemoveAllPages();
@@ -307,7 +308,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetStrategy( string stratName )
 		{
-			Strategy = Manager.GetStrategy( stratName );
+			this.Strategy = this.Manager.GetStrategy( stratName );
 		}
 
 		/// <summary>
@@ -317,7 +318,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetSceneManager( string smName )
 		{
-			SceneManager = Root.Instance.GetSceneManager( smName );
+			this.SceneManager = Root.Instance.GetSceneManager( smName );
 		}
 
 		/// <summary>
@@ -332,9 +333,9 @@ namespace Axiom.Components.Paging
 			}
 
 			//name
-			stream.Read( out this.mName );
+			stream.Read( out mName );
 			// AABB
-			stream.Read( out this.mAABB );
+			stream.Read( out mAABB );
 			// SceneManager type
 			string smType, smInstanceName;
 			SceneManager sm = null;
@@ -348,16 +349,16 @@ namespace Axiom.Components.Paging
 			{
 				sm = Root.Instance.CreateSceneManager( smType, smInstanceName );
 			}
-			SceneManager = sm;
+			this.SceneManager = sm;
 			//page strategy name
 			string stratName = string.Empty;
 			stream.Read( out stratName );
 			SetStrategy( stratName );
 			//page strategy data
-			bool strategyDataOk = this.mStrategyData.Load( stream );
+			bool strategyDataOk = mStrategyData.Load( stream );
 			if ( !strategyDataOk )
 			{
-				LogManager.Instance.Write( "Error: PageStrategyData for section '{0}' was not loaded correctly, check file contens", this.mName );
+				LogManager.Instance.Write( "Error: PageStrategyData for section '{0}' was not loaded correctly, check file contens", mName );
 			}
 
 			// Load any data specific to a subtype of this class
@@ -372,10 +373,10 @@ namespace Axiom.Components.Paging
 		/// Load data specific to a subtype of this class (if any)
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		protected virtual void LoadSubtypeData( StreamSerializer stream ) { }
+		protected virtual void LoadSubtypeData( StreamSerializer stream ) {}
 
 		[OgreVersion( 1, 7, 2 )]
-		protected virtual void SaveSubtypeData( StreamSerializer stream ) { }
+		protected virtual void SaveSubtypeData( StreamSerializer stream ) {}
 
 		/// <summary>
 		/// Save this section to a stream
@@ -386,16 +387,16 @@ namespace Axiom.Components.Paging
 			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
 
 			//name 
-			stream.Write( this.mName );
+			stream.Write( mName );
 			//AABB
-			stream.Write( this.mAABB );
+			stream.Write( mAABB );
 			// SceneManager type & name
-			stream.Write( this.mSceneMgr.TypeName );
-			stream.Write( this.mSceneMgr.Name );
+			stream.Write( mSceneMgr.TypeName );
+			stream.Write( mSceneMgr.Name );
 			//page strategy name
-			stream.Write( this.mStrategy.Name );
+			stream.Write( mStrategy.Name );
 			//page strategy data
-			this.mStrategyData.Save( stream );
+			mStrategyData.Save( stream );
 
 			// Save any data specific to a subtype of this class
 			SaveSubtypeData( stream );
@@ -403,7 +404,7 @@ namespace Axiom.Components.Paging
 			stream.WriteChunkEnd( CHUNK_ID );
 
 			// save all pages (in separate files)
-			foreach ( var i in this.mPages )
+			foreach ( var i in mPages )
 			{
 				i.Value.Save();
 			}
@@ -415,7 +416,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual PageID GetPageID( Vector3 worldPos )
 		{
-			return this.mStrategy.GetPageID( worldPos, this );
+			return mStrategy.GetPageID( worldPos, this );
 		}
 
 		/// <summary>
@@ -468,20 +469,20 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void LoadPage( PageID pageID, bool forceSynchronous )
 		{
-			if ( !this.mParent.Manager.ArePagingOperationsEnabled )
+			if ( !mParent.Manager.ArePagingOperationsEnabled )
 			{
 				return;
 			}
 
-			if ( !this.mPages.ContainsKey( pageID ) )
+			if ( !mPages.ContainsKey( pageID ) )
 			{
-				var page = new Page( pageID, this );
+				Page page = new Page( pageID, this );
 				page.Load( forceSynchronous );
-				this.mPages.Add( pageID, page );
+				mPages.Add( pageID, page );
 			}
 			else
 			{
-				this.mPages[ pageID ].Touch();
+				mPages[ pageID ].Touch();
 			}
 		}
 
@@ -497,15 +498,15 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void UnloadPage( PageID pageID, bool forceSynchonous )
 		{
-			if ( !this.mParent.Manager.ArePagingOperationsEnabled )
+			if ( !mParent.Manager.ArePagingOperationsEnabled )
 			{
 				return;
 			}
 
-			if ( this.mPages.ContainsKey( pageID ) )
+			if ( mPages.ContainsKey( pageID ) )
 			{
-				Page page = this.mPages[ pageID ];
-				this.mPages.Remove( pageID );
+				Page page = mPages[ pageID ];
+				mPages.Remove( pageID );
 				page.UnLoad();
 				page.SafeDispose();
 			}
@@ -549,13 +550,13 @@ namespace Axiom.Components.Paging
 		public virtual bool PrepareProcedualePage( Page page )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.PrepareProcedualPage( page, this );
+				generated = mPageProvider.PrepareProcedualPage( page, this );
 			}
 			if ( !generated )
 			{
-				generated = this.mParent.PrepareProcedualPage( page, this );
+				generated = mParent.PrepareProcedualPage( page, this );
 			}
 
 			return generated;
@@ -574,13 +575,13 @@ namespace Axiom.Components.Paging
 		public virtual bool LoadProcedualPage( Page page )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.LoadProcedualPage( page, this );
+				generated = mPageProvider.LoadProcedualPage( page, this );
 			}
 			if ( !generated )
 			{
-				generated = this.mParent.LoadProcedualPage( page, this );
+				generated = mParent.LoadProcedualPage( page, this );
 			}
 
 			return generated;
@@ -599,13 +600,13 @@ namespace Axiom.Components.Paging
 		public virtual bool UnloadProcedualPage( Page page )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.UnloadProcedualPage( page, this );
+				generated = mPageProvider.UnloadProcedualPage( page, this );
 			}
 			if ( !generated )
 			{
-				generated = this.mParent.UnloadProcedualPage( page, this );
+				generated = mParent.UnloadProcedualPage( page, this );
 			}
 
 			return generated;
@@ -624,13 +625,13 @@ namespace Axiom.Components.Paging
 		public virtual bool UnprepareProcedualPage( Page page )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.UnPrepareProcedualPage( page, this );
+				generated = mPageProvider.UnPrepareProcedualPage( page, this );
 			}
 			if ( !generated )
 			{
-				generated = this.mParent.UnPrepareProcedualPage( page, this );
+				generated = mParent.UnPrepareProcedualPage( page, this );
 			}
 
 			return generated;
@@ -655,7 +656,7 @@ namespace Axiom.Components.Paging
 		public virtual void HoldPage( PageID pageID )
 		{
 			Page page;
-			if ( this.mPages.TryGetValue( pageID, out page ) )
+			if ( mPages.TryGetValue( pageID, out page ) )
 			{
 				page.Touch();
 			}
@@ -672,7 +673,7 @@ namespace Axiom.Components.Paging
 		public virtual Page GetPage( PageID pageID )
 		{
 			Page page;
-			this.mPages.TryGetValue( pageID, out page );
+			mPages.TryGetValue( pageID, out page );
 			return page;
 		}
 
@@ -685,17 +686,17 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void RemoveAllPages()
 		{
-			if ( !this.mParent.Manager.ArePagingOperationsEnabled )
+			if ( !mParent.Manager.ArePagingOperationsEnabled )
 			{
 				return;
 			}
 
-			foreach ( Page page in this.mPages.Values )
+			foreach ( var page in mPages.Values )
 			{
 				page.SafeDispose();
 			}
 
-			this.mPages.Clear();
+			mPages.Clear();
 		}
 
 		/// <summary>
@@ -704,8 +705,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void FrameStart( Real timeSinceLastFrame )
 		{
-			this.mStrategy.FrameStart( timeSinceLastFrame, this );
-			foreach ( Page page in this.mPages.Values )
+			mStrategy.FrameStart( timeSinceLastFrame, this );
+			foreach ( var page in mPages.Values )
 			{
 				page.FrameStart( timeSinceLastFrame );
 			}
@@ -717,22 +718,22 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void FrameEnd( Real timeElapsed )
 		{
-			this.mStrategy.FrameEnd( timeElapsed, this );
-			var ids = new PageID[ this.mPages.Count ];
-			this.mPages.Keys.CopyTo( ids, 0 );
+			mStrategy.FrameEnd( timeElapsed, this );
+			PageID[] ids = new PageID[ mPages.Count ];
+			mPages.Keys.CopyTo( ids, 0 );
 
-			for ( int i = 0; i < this.mPages.Count; ++i )
+			for ( int i = 0; i < mPages.Count; ++i )
 			{
 				// if this page wasn't used, unload
-				Page p = this.mPages[ ids[ i ] ];
+				Page p = mPages[ ids[ i ] ];
 
 				if ( !p.IsHeld )
 				{
 					UnloadPage( p );
 
 					// update indices since unloading will invalidate it
-					ids = new PageID[ this.mPages.Count ];
-					this.mPages.Keys.CopyTo( ids, 0 );
+					ids = new PageID[ mPages.Count ];
+					mPages.Keys.CopyTo( ids, 0 );
 
 					// pre-decrement since unloading will remove it
 					--i;
@@ -750,9 +751,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyCamerea( Camera cam )
 		{
-			this.mStrategy.NotifyCamera( cam, this );
+			mStrategy.NotifyCamera( cam, this );
 
-			foreach ( Page page in this.mPages.Values )
+			foreach ( var page in mPages.Values )
 			{
 				page.NotifyCamera( cam );
 			}
@@ -770,13 +771,13 @@ namespace Axiom.Components.Paging
 		public virtual StreamSerializer ReadPageStream( PageID pageID )
 		{
 			StreamSerializer stream = null;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				stream = this.mPageProvider.ReadPageStream( pageID, this );
+				stream = mPageProvider.ReadPageStream( pageID, this );
 			}
 			if ( stream == null )
 			{
-				stream = this.mParent.ReadPageStream( pageID, this );
+				stream = mParent.ReadPageStream( pageID, this );
 			}
 
 			return stream;
@@ -794,13 +795,13 @@ namespace Axiom.Components.Paging
 		public StreamSerializer WritePageStream( PageID pageID )
 		{
 			StreamSerializer stream = null;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				stream = this.mPageProvider.WritePageStream( pageID, this );
+				stream = mPageProvider.WritePageStream( pageID, this );
 			}
 			if ( stream == null )
 			{
-				stream = this.mParent.WritePageStream( pageID, this );
+				stream = mParent.WritePageStream( pageID, this );
 			}
 
 			return stream;
@@ -809,7 +810,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "PagedWorldSection({0}, world:{1})", this.mName, World.Name );
+			return string.Format( "PagedWorldSection({0}, world:{1})", mName, this.World.Name );
 		}
 	};
 

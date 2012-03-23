@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -51,27 +52,6 @@ namespace Axiom.Graphics
 	public class DepthBuffer : DisposableObject
 	{
 		[OgreVersion( 1, 7, 2790 )]
-		protected RenderTargetSet attachedRenderTargets = new RenderTargetSet();
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected ushort bitDepth;
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected int fsaa;
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected string fsaaHint;
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected int height;
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool manual;
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected int width;
-
-		[OgreVersion( 1, 7, 2790 )]
 		public DepthBuffer( PoolId poolId, ushort bitDepth, int width, int height, int fsaa, string fsaaHint, bool manual )
 		{
 			this.poolId = poolId;
@@ -84,11 +64,65 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				DetachFromAllRenderTargets();
+			}
+			base.dispose( disposeManagedResources );
+		}
+
+		#region PoolId
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected PoolId poolId;
+
+		/// <summary>
+		/// Gets the pool id in which this DepthBuffer lives
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public virtual PoolId PoolId
+		{
+			get
+			{
+				return poolId;
+			}
+
+			set
+			{
+				//Change the pool Id
+				poolId = value;
+
+				//Render Targets were attached to us, but they have a different pool Id,
+				//so detach ourselves from them
+				DetachFromAllRenderTargets();
+			}
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Sets the pool id in which this DepthBuffer lives
+		/// Note this will detach any render target from this depth buffer
+		/// </summary>
+		[OgreVersion( 1, 7, 2790, "The setter is nonvirtual, thus cant be part of the PoolId property" )]
+		public void SetPoolId( PoolId id )
+		{
+			//Change the pool Id
+			poolId = id;
+
+			//Render Targets were attached to us, but they have a different pool Id,
+			//so detach ourselves from them
+			DetachFromAllRenderTargets();
+		}
+
+		[OgreVersion( 1, 7, 2790 )]
 		public virtual ushort BitDepth
 		{
 			get
 			{
-				return this.bitDepth;
+				return bitDepth;
 			}
 		}
 
@@ -97,7 +131,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.width;
+				return width;
 			}
 		}
 
@@ -106,7 +140,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.height;
+				return height;
 			}
 		}
 
@@ -115,7 +149,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.fsaa;
+				return fsaa;
 			}
 		}
 
@@ -124,7 +158,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.fsaaHint;
+				return fsaaHint;
 			}
 		}
 
@@ -137,33 +171,8 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.manual;
+				return manual;
 			}
-		}
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				DetachFromAllRenderTargets();
-			}
-			base.dispose( disposeManagedResources );
-		}
-
-		/// <summary>
-		/// Sets the pool id in which this DepthBuffer lives
-		/// Note this will detach any render target from this depth buffer
-		/// </summary>
-		[OgreVersion( 1, 7, 2790, "The setter is nonvirtual, thus cant be part of the PoolId property" )]
-		public void SetPoolId( PoolId id )
-		{
-			//Change the pool Id
-			this.poolId = id;
-
-			//Render Targets were attached to us, but they have a different pool Id,
-			//so detach ourselves from them
-			DetachFromAllRenderTargets();
 		}
 
 		/// <summary>
@@ -196,8 +205,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyRenderTargetAttached( RenderTarget renderTarget )
 		{
-			Debug.Assert( !this.attachedRenderTargets.Contains( renderTarget ) );
-			this.attachedRenderTargets.Add( renderTarget );
+			Debug.Assert( !attachedRenderTargets.Contains( renderTarget ) );
+			attachedRenderTargets.Add( renderTarget );
 		}
 
 		/// <summary>
@@ -210,53 +219,41 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyRenderTargetDetached( RenderTarget renderTarget )
 		{
-			bool success = this.attachedRenderTargets.Remove( renderTarget );
+			var success = attachedRenderTargets.Remove( renderTarget );
 			Debug.Assert( success );
 		}
+
+		protected class RenderTargetSet : List<RenderTarget> {}
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected ushort bitDepth;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected int width;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected int height;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected int fsaa;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected string fsaaHint;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool manual;
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected RenderTargetSet attachedRenderTargets = new RenderTargetSet();
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected void DetachFromAllRenderTargets()
 		{
-			foreach ( RenderTarget itor in this.attachedRenderTargets )
+			foreach ( var itor in attachedRenderTargets )
 			{
 				itor._DetachDepthBuffer();
 			}
-			this.attachedRenderTargets.Clear();
+			attachedRenderTargets.Clear();
 		}
-
-		#region PoolId
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected PoolId poolId;
-
-		/// <summary>
-		/// Gets the pool id in which this DepthBuffer lives
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public virtual PoolId PoolId
-		{
-			get
-			{
-				return this.poolId;
-			}
-
-			set
-			{
-				//Change the pool Id
-				this.poolId = value;
-
-				//Render Targets were attached to us, but they have a different pool Id,
-				//so detach ourselves from them
-				DetachFromAllRenderTargets();
-			}
-		}
-
-		#endregion
-
-		#region Nested type: RenderTargetSet
-
-		protected class RenderTargetSet : List<RenderTarget> { }
-
-		#endregion
 	}
 }

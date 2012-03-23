@@ -38,14 +38,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Xml.Serialization;
 
 using Axiom.Core;
 using Axiom.Core.Collections;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -58,42 +59,41 @@ namespace Axiom.SceneManagers.Octree
 	{
 		#region Fields
 
+		protected Vector3 center;
+		protected Material material;
+		protected TerrainRenderable[] neighbors = new TerrainRenderable[ 4 ];
+		protected AxisAlignedBox box = new AxisAlignedBox();
+		protected TerrainOptions options;
+		protected VertexData terrain;
+		protected IndexData[ , ] levelIndex = new IndexData[ 16,16 ];
+		protected int renderLevel;
+		protected int forcedRenderLevel;
+		protected float currentL;
+		protected int numMipMaps;
+		protected int size;
+		protected float[] minLevelDistSqr;
+		protected List<Vector4> customParams = new List<Vector4>();
+
 		private const int POSITION = 0;
 		private const int NORMAL = 1;
 		private const int TEXCOORD = 2;
 		private const int COLORS = 3;
 
 		private float[] _vertex = new float[ 1 ]; //for GetVertex() buffer retrieval
-		protected AxisAlignedBox box = new AxisAlignedBox();
-		protected Vector3 center;
-		protected float currentL;
-		protected List<Vector4> customParams = new List<Vector4>();
-		protected int forcedRenderLevel;
-		protected IndexData[ , ] levelIndex = new IndexData[ 16, 16 ];
-		protected Material material;
-		protected float[] minLevelDistSqr;
-		protected TerrainRenderable[] neighbors = new TerrainRenderable[ 4 ];
-		protected int numMipMaps;
-		protected TerrainOptions options;
-		protected int renderLevel;
-		protected int size;
-		protected VertexData terrain;
 
 		#endregion Fields
-
-		protected RenderOperation renderOperation = new RenderOperation();
 
 		/// <summary>
 		///     Default constructor.
 		/// </summary>
 		public TerrainRenderable()
-			: this( string.Empty ) { }
+			: this( string.Empty ) {}
 
 		public TerrainRenderable( string name )
 			: base( name )
 		{
-			this.renderLevel = 1;
-			this.forcedRenderLevel = -1;
+			renderLevel = 1;
+			forcedRenderLevel = -1;
 		}
 
 		#region Methods
@@ -107,16 +107,16 @@ namespace Axiom.SceneManagers.Octree
 		{
 			this.options = options;
 
-			this.numMipMaps = options.maxMipmap;
-			this.size = options.size;
+			numMipMaps = options.maxMipmap;
+			size = options.size;
 
-			this.terrain = new VertexData();
-			this.terrain.vertexStart = 0;
+			terrain = new VertexData();
+			terrain.vertexStart = 0;
 
-			this.terrain.vertexCount = options.size * options.size;
+			terrain.vertexCount = options.size * options.size;
 
-			VertexDeclaration decl = this.terrain.vertexDeclaration;
-			VertexBufferBinding binding = this.terrain.vertexBufferBinding;
+			VertexDeclaration decl = terrain.vertexDeclaration;
+			VertexBufferBinding binding = terrain.vertexBufferBinding;
 
 			int offset = 0;
 
@@ -131,29 +131,29 @@ namespace Axiom.SceneManagers.Octree
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 			// TODO: Color
 
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), this.terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( POSITION, buffer );
 
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), this.terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( NORMAL, buffer );
 
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), this.terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), terrain.vertexCount, BufferUsage.StaticWriteOnly, true );
 
 			binding.SetBinding( TEXCOORD, buffer );
 
-			this.minLevelDistSqr = new float[ this.numMipMaps ];
+			minLevelDistSqr = new float[ numMipMaps ];
 
 			int endx = options.startx + options.size;
 			int endz = options.startz + options.size;
 
 			// TODO: name buffers different so we can unlock
 			HardwareVertexBuffer posBuffer = binding.GetBuffer( POSITION );
-			BufferBase pos = posBuffer.Lock( BufferLocking.Discard );
+			var pos = posBuffer.Lock( BufferLocking.Discard );
 
 			HardwareVertexBuffer texBuffer = binding.GetBuffer( TEXCOORD );
-			BufferBase tex = texBuffer.Lock( BufferLocking.Discard );
+			var tex = texBuffer.Lock( BufferLocking.Discard );
 
 			float min = 99999999, max = 0;
 
@@ -161,8 +161,8 @@ namespace Axiom.SceneManagers.Octree
 			unsafe
 #endif
 			{
-				float* posPtr = pos.ToFloatPointer();
-				float* texPtr = tex.ToFloatPointer();
+				var posPtr = pos.ToFloatPointer();
+				var texPtr = tex.ToFloatPointer();
 
 				int posCount = 0;
 				int texCount = 0;
@@ -200,9 +200,9 @@ namespace Axiom.SceneManagers.Octree
 			posBuffer.Unlock();
 			texBuffer.Unlock();
 
-			this.box.SetExtents( new Vector3( options.startx * options.scalex, min, options.startz * options.scalez ), new Vector3( ( endx - 1 ) * options.scalex, max, ( endz - 1 ) * options.scalez ) );
+			box.SetExtents( new Vector3( options.startx * options.scalex, min, options.startz * options.scalez ), new Vector3( ( endx - 1 ) * options.scalex, max, ( endz - 1 ) * options.scalez ) );
 
-			this.center = new Vector3( ( options.startx * options.scalex + endx - 1 ) / 2, ( min + max ) / 2, ( options.startz * options.scalez + endz - 1 ) / 2 );
+			center = new Vector3( ( options.startx * options.scalex + endx - 1 ) / 2, ( min + max ) / 2, ( options.startz * options.scalez + endz - 1 ) / 2 );
 
 			float C = CalculateCFactor();
 
@@ -217,9 +217,9 @@ namespace Axiom.SceneManagers.Octree
 			start.y = GetVertex( 0, 0, 1 );
 			start.z = GetVertex( 0, 0, 2 );
 
-			end.x = GetVertex( this.options.size - 1, this.options.size - 1, 0 );
-			end.y = GetVertex( this.options.size - 1, this.options.size - 1, 1 );
-			end.z = GetVertex( this.options.size - 1, this.options.size - 1, 2 );
+			end.x = GetVertex( options.size - 1, options.size - 1, 0 );
+			end.y = GetVertex( options.size - 1, options.size - 1, 1 );
+			end.z = GetVertex( options.size - 1, options.size - 1, 2 );
 
 			// safety catch.  if the point asked for is outside of this tile, ask a neighbor
 
@@ -274,11 +274,11 @@ namespace Axiom.SceneManagers.Octree
 			float xPct = ( x - start.x ) / ( end.x - start.x );
 			float zPct = ( z - start.z ) / ( end.z - start.z );
 
-			float xPt = xPct * ( this.options.size - 1 );
-			float zPt = zPct * ( this.options.size - 1 );
+			float xPt = xPct * (float)( options.size - 1 );
+			float zPt = zPct * (float)( options.size - 1 );
 
-			var xIndex = (int)xPt;
-			var zIndex = (int)zPt;
+			int xIndex = (int)xPt;
+			int zIndex = (int)zPt;
 
 			xPct = xPt - xIndex;
 			zPct = zPt - zIndex;
@@ -309,7 +309,7 @@ namespace Axiom.SceneManagers.Octree
 
 		public TerrainRenderable GetNeighbor( Neighbor n )
 		{
-			return this.neighbors[ (int)n ];
+			return neighbors[ (int)n ];
 		}
 
 		/// <summary>
@@ -321,13 +321,13 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns></returns>
 		public float GetVertex( int x, int z, int n )
 		{
-			HardwareVertexBuffer buffer = this.terrain.vertexBufferBinding.GetBuffer( POSITION );
+			HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( POSITION );
 
-			var vertex = new float[ 1 ];
+			float[] vertex = new float[ 1 ];
 
-			BufferBase ptr = Memory.PinObject( vertex );
+			var ptr = Memory.PinObject( vertex );
 
-			int offset = ( x * 3 + z * this.options.size * 3 + n ) * 4;
+			int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
 
 			buffer.ReadData( offset, 4, ptr );
 
@@ -338,12 +338,12 @@ namespace Axiom.SceneManagers.Octree
 
 		public void SetNeighbor( Neighbor n, TerrainRenderable t )
 		{
-			this.neighbors[ (int)n ] = t;
+			neighbors[ (int)n ] = t;
 		}
 
 		public void AdjustRenderLevel( int i )
 		{
-			this.renderLevel = i;
+			renderLevel = i;
 			AlignNeighbors();
 		}
 
@@ -352,9 +352,9 @@ namespace Axiom.SceneManagers.Octree
 			//ensure that there aren't any gaps...
 			for ( int i = 0; i < 4; i++ )
 			{
-				if ( this.neighbors[ i ] != null && this.neighbors[ i ].renderLevel + 1 < this.renderLevel )
+				if ( neighbors[ i ] != null && neighbors[ i ].renderLevel + 1 < renderLevel )
 				{
-					this.neighbors[ i ].AdjustRenderLevel( this.renderLevel - 1 );
+					neighbors[ i ].AdjustRenderLevel( renderLevel - 1 );
 				}
 			}
 		}
@@ -363,9 +363,9 @@ namespace Axiom.SceneManagers.Octree
 		{
 			float A, T;
 
-			A = (float)this.options.nearPlane / Utility.Abs( this.options.topCoord );
+			A = (float)options.nearPlane / Utility.Abs( (float)options.topCoord );
 
-			T = 2 * (float)this.options.maxPixelError / this.options.vertRes;
+			T = 2 * (float)options.maxPixelError / (float)options.vertRes;
 
 			return A / T;
 		}
@@ -373,17 +373,17 @@ namespace Axiom.SceneManagers.Octree
 		public void CalculateMinLevelDist2( float C )
 		{
 			// level 1 has no delta
-			this.minLevelDistSqr[ 0 ] = 0;
+			minLevelDistSqr[ 0 ] = 0;
 
-			for ( int level = 1; level < this.numMipMaps; level++ )
+			for ( int level = 1; level < numMipMaps; level++ )
 			{
-				this.minLevelDistSqr[ level ] = 0;
+				minLevelDistSqr[ level ] = 0;
 
 				int step = 1 << level;
 
-				for ( int j = 0; j < this.size - step; j += step )
+				for ( int j = 0; j < size - step; j += step )
 				{
-					for ( int i = 0; i < this.size - step; i += step )
+					for ( int i = 0; i < size - step; i += step )
 					{
 						//check each height inbetween the steps.
 						float h1 = GetVertex( i, j, 1 );
@@ -409,9 +409,9 @@ namespace Axiom.SceneManagers.Octree
 
 								float D2 = delta * delta * C * C;
 
-								if ( this.minLevelDistSqr[ level ] < D2 )
+								if ( minLevelDistSqr[ level ] < D2 )
 								{
-									this.minLevelDistSqr[ level ] = D2;
+									minLevelDistSqr[ level ] = D2;
 								}
 							}
 						}
@@ -420,11 +420,11 @@ namespace Axiom.SceneManagers.Octree
 			}
 
 			//make sure the levels are increasing...
-			for ( int i = 1; i < this.numMipMaps; i++ )
+			for ( int i = 1; i < numMipMaps; i++ )
 			{
-				if ( this.minLevelDistSqr[ i ] < this.minLevelDistSqr[ i - 1 ] )
+				if ( minLevelDistSqr[ i ] < minLevelDistSqr[ i - 1 ] )
 				{
-					this.minLevelDistSqr[ i ] = this.minLevelDistSqr[ i - 1 ] + 1;
+					minLevelDistSqr[ i ] = minLevelDistSqr[ i - 1 ] + 1;
 				}
 			}
 		}
@@ -437,16 +437,16 @@ namespace Axiom.SceneManagers.Octree
 			{
 				Vector3 normal;
 
-				HardwareVertexBuffer buffer = this.terrain.vertexBufferBinding.GetBuffer( NORMAL );
+				HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( NORMAL );
 
-				BufferBase norm = buffer.Lock( BufferLocking.Discard );
+				var norm = buffer.Lock( BufferLocking.Discard );
 
-				float* normPtr = norm.ToFloatPointer();
+				var normPtr = norm.ToFloatPointer();
 				int count = 0;
 
-				for ( int j = 0; j < this.size; j++ )
+				for ( int j = 0; j < size; j++ )
 				{
-					for ( int i = 0; i < this.size; i++ )
+					for ( int i = 0; i < size; i++ )
 					{
 						GetNormalAt( GetVertex( i, j, 0 ), GetVertex( i, j, 2 ), out normal );
 
@@ -506,7 +506,7 @@ namespace Axiom.SceneManagers.Octree
 			//dir.y *= mScale.y;
 			//dir.z *= mScale.z;
 
-			AxisAlignedBox box = BoundingBox;
+			AxisAlignedBox box = this.BoundingBox;
 			//start with the next one...
 			ray += dir;
 
@@ -550,11 +550,13 @@ namespace Axiom.SceneManagers.Octree
 
 		#endregion Methods
 
+		#region SceneObject Members
+
 		public override AxisAlignedBox BoundingBox
 		{
 			get
 			{
-				return this.box;
+				return box;
 			}
 		}
 
@@ -578,6 +580,47 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
+		public override void NotifyCurrentCamera( Camera camera )
+		{
+			if ( forcedRenderLevel >= 0 )
+			{
+				renderLevel = forcedRenderLevel;
+				return;
+			}
+
+			int oldLevel = renderLevel;
+
+			Vector3 cpos = camera.Position;
+			Vector3 diff = center - cpos;
+
+			float L = diff.LengthSquared;
+
+			currentL = L;
+
+			renderLevel = -1;
+
+			for ( int i = 0; i < numMipMaps; i++ )
+			{
+				if ( minLevelDistSqr[ i ] > L )
+				{
+					renderLevel = i - 1;
+					break;
+				}
+			}
+
+			if ( renderLevel < 0 )
+			{
+				renderLevel = numMipMaps - 1;
+			}
+		}
+
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
+			queue.AddRenderable( this );
+		}
+
+		#endregion SceneObject Members
+
 		#region IRenderable Members
 
 		public bool CastsShadows
@@ -590,7 +633,7 @@ namespace Axiom.SceneManagers.Octree
 
 		public Real GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 diff = this.center - camera.DerivedPosition;
+			Vector3 diff = center - camera.DerivedPosition;
 
 			return diff.LengthSquared;
 		}
@@ -611,7 +654,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public Vector3 WorldPosition
+		public Axiom.Math.Vector3 WorldPosition
 		{
 			get
 			{
@@ -619,153 +662,23 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
+		protected RenderOperation renderOperation = new RenderOperation();
+
 		public RenderOperation RenderOperation
 		{
 			get
 			{
-				IndexData indexData = GetIndexData();
+				IndexData indexData = this.GetIndexData();
 
-				this.renderOperation.useIndices = true;
-				this.renderOperation.operationType = OperationType.TriangleList;
-				this.renderOperation.vertexData = this.terrain;
-				this.renderOperation.indexData = indexData;
-				return this.renderOperation;
+				renderOperation.useIndices = true;
+				renderOperation.operationType = OperationType.TriangleList;
+				renderOperation.vertexData = this.terrain;
+				renderOperation.indexData = indexData;
+				return renderOperation;
 				//renderedTris += ( indexData->indexCount / 3 );
 
 				//mRenderLevelChanged = false;
 			}
-		}
-
-		public void GetWorldTransforms( Matrix4[] matrices )
-		{
-			// TODO: Add Node.FullTransform?
-			parentNode.GetWorldTransforms( matrices );
-		}
-
-		public Quaternion WorldOrientation
-		{
-			get
-			{
-				return parentNode.DerivedOrientation;
-			}
-		}
-
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		public Material Material
-		{
-			get
-			{
-				return this.material;
-			}
-		}
-
-		public LightList Lights
-		{
-			get
-			{
-				return QueryLights();
-			}
-		}
-
-		public Technique Technique
-		{
-			get
-			{
-				return this.material.GetBestTechnique();
-			}
-		}
-
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
-
-		public Vector4 GetCustomParameter( int index )
-		{
-			if ( this.customParams[ index ] == null )
-			{
-				throw new Exception( "A parameter was not found at the given index" );
-			}
-			else
-			{
-				return this.customParams[ index ];
-			}
-		}
-
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-			while ( this.customParams.Count <= index )
-			{
-				this.customParams.Add( Vector4.Zero );
-			}
-			this.customParams[ index ] = val;
-		}
-
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-		{
-			if ( this.customParams[ entry.Data ] != null )
-			{
-				gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
-			}
-		}
-
-		#endregion
-
-		public override void NotifyCurrentCamera( Camera camera )
-		{
-			if ( this.forcedRenderLevel >= 0 )
-			{
-				this.renderLevel = this.forcedRenderLevel;
-				return;
-			}
-
-			int oldLevel = this.renderLevel;
-
-			Vector3 cpos = camera.Position;
-			Vector3 diff = this.center - cpos;
-
-			float L = diff.LengthSquared;
-
-			this.currentL = L;
-
-			this.renderLevel = -1;
-
-			for ( int i = 0; i < this.numMipMaps; i++ )
-			{
-				if ( this.minLevelDistSqr[ i ] > L )
-				{
-					this.renderLevel = i - 1;
-					break;
-				}
-			}
-
-			if ( this.renderLevel < 0 )
-			{
-				this.renderLevel = this.numMipMaps - 1;
-			}
-		}
-
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			queue.AddRenderable( this );
 		}
 
 		private IndexData GetIndexData()
@@ -820,12 +733,12 @@ namespace Axiom.SceneManagers.Octree
 
 				numIndexes = 0;
 
-				BufferBase idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					short* idxPtr = idx.ToShortPointer();
+					var idxPtr = idx.ToShortPointer();
 					int count = 0;
 
 					for ( int j = north; j < this.size - 1 - south; j += step )
@@ -833,18 +746,18 @@ namespace Axiom.SceneManagers.Octree
 						for ( int i = west; i < this.size - 1 - east; i += step )
 						{
 							//triangles
-							idxPtr[ count++ ] = GetIndex( i, j );
+							idxPtr[ count++ ] = this.GetIndex( i, j );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( i, j + step );
+							idxPtr[ count++ ] = this.GetIndex( i, j + step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( i + step, j );
+							idxPtr[ count++ ] = this.GetIndex( i + step, j );
 							numIndexes++;
 
-							idxPtr[ count++ ] = GetIndex( i, j + step );
+							idxPtr[ count++ ] = this.GetIndex( i, j + step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( i + step, j + step );
+							idxPtr[ count++ ] = this.GetIndex( i + step, j + step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( i + step, j );
+							idxPtr[ count++ ] = this.GetIndex( i + step, j );
 							numIndexes++;
 						}
 					}
@@ -858,28 +771,28 @@ namespace Axiom.SceneManagers.Octree
 							//skip the first bit of the corner if the north side is a different level as well.
 							if ( j > 0 || north == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( 0, j );
+								idxPtr[ count++ ] = this.GetIndex( 0, j );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( step, j + step );
+								idxPtr[ count++ ] = this.GetIndex( step, j + step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( step, j );
+								idxPtr[ count++ ] = this.GetIndex( step, j );
 								numIndexes++;
 							}
 
-							idxPtr[ count++ ] = GetIndex( step, j + step );
+							idxPtr[ count++ ] = this.GetIndex( step, j + step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( 0, j );
+							idxPtr[ count++ ] = this.GetIndex( 0, j );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( 0, j + step + step );
+							idxPtr[ count++ ] = this.GetIndex( 0, j + step + step );
 							numIndexes++;
 
 							if ( j < this.options.size - 1 - substep || south == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( step, j + step );
+								idxPtr[ count++ ] = this.GetIndex( step, j + step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( 0, j + step + step );
+								idxPtr[ count++ ] = this.GetIndex( 0, j + step + step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( step, j + step + step );
+								idxPtr[ count++ ] = this.GetIndex( step, j + step + step );
 								numIndexes++;
 							}
 						}
@@ -894,28 +807,28 @@ namespace Axiom.SceneManagers.Octree
 							//skip the first bit of the corner if the north side is a different level as well.
 							if ( j > 0 || north == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( x, j );
+								idxPtr[ count++ ] = this.GetIndex( x, j );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( x - step, j );
+								idxPtr[ count++ ] = this.GetIndex( x - step, j );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( x - step, j + step );
+								idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
 								numIndexes++;
 							}
 
-							idxPtr[ count++ ] = GetIndex( x, j );
+							idxPtr[ count++ ] = this.GetIndex( x, j );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x - step, j + step );
+							idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x, j + step + step );
+							idxPtr[ count++ ] = this.GetIndex( x, j + step + step );
 							numIndexes++;
 
 							if ( j < this.options.size - 1 - substep || south == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( x, j + step + step );
+								idxPtr[ count++ ] = this.GetIndex( x, j + step + step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( x - step, j + step );
+								idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( x - step, j + step + step );
+								idxPtr[ count++ ] = this.GetIndex( x - step, j + step + step );
 								numIndexes++;
 							}
 						}
@@ -930,28 +843,28 @@ namespace Axiom.SceneManagers.Octree
 							//skip the first bit of the corner if the north side is a different level as well.
 							if ( j > 0 || west == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( j, x - step );
+								idxPtr[ count++ ] = this.GetIndex( j, x - step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j, x );
+								idxPtr[ count++ ] = this.GetIndex( j, x );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step, x - step );
+								idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
 								numIndexes++;
 							}
 
-							idxPtr[ count++ ] = GetIndex( j + step, x - step );
+							idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j, x );
+							idxPtr[ count++ ] = this.GetIndex( j, x );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step + step, x );
+							idxPtr[ count++ ] = this.GetIndex( j + step + step, x );
 							numIndexes++;
 
 							if ( j < this.options.size - 1 - substep || east == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( j + step, x - step );
+								idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step + step, x );
+								idxPtr[ count++ ] = this.GetIndex( j + step + step, x );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step + step, x - step );
+								idxPtr[ count++ ] = this.GetIndex( j + step + step, x - step );
 								numIndexes++;
 							}
 						}
@@ -964,28 +877,28 @@ namespace Axiom.SceneManagers.Octree
 							//skip the first bit of the corner if the north side is a different level as well.
 							if ( j > 0 || west == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( j, 0 );
+								idxPtr[ count++ ] = this.GetIndex( j, 0 );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j, step );
+								idxPtr[ count++ ] = this.GetIndex( j, step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step, step );
+								idxPtr[ count++ ] = this.GetIndex( j + step, step );
 								numIndexes++;
 							}
 
-							idxPtr[ count++ ] = GetIndex( j, 0 );
+							idxPtr[ count++ ] = this.GetIndex( j, 0 );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step, step );
+							idxPtr[ count++ ] = this.GetIndex( j + step, step );
 							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
+							idxPtr[ count++ ] = this.GetIndex( j + step + step, 0 );
 							numIndexes++;
 
 							if ( j < this.options.size - 1 - substep || east == 0 )
 							{
-								idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
+								idxPtr[ count++ ] = this.GetIndex( j + step + step, 0 );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step, step );
+								idxPtr[ count++ ] = this.GetIndex( j + step, step );
 								numIndexes++;
-								idxPtr[ count++ ] = GetIndex( j + step + step, step );
+								idxPtr[ count++ ] = this.GetIndex( j + step + step, step );
 								numIndexes++;
 							}
 						}
@@ -1002,42 +915,158 @@ namespace Axiom.SceneManagers.Octree
 
 		public short GetIndex( int x, int z )
 		{
-			return (short)( x + z * this.options.size );
+			return (short)( x + z * options.size );
 		}
+
+		public void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )
+		{
+			// TODO: Add Node.FullTransform?
+			parentNode.GetWorldTransforms( matrices );
+		}
+
+		public Axiom.Math.Quaternion WorldOrientation
+		{
+			get
+			{
+				return parentNode.DerivedOrientation;
+			}
+		}
+
+		public virtual bool PolygonModeOverrideable
+		{
+			get
+			{
+				return true;
+			}
+		}
+
+		public Material Material
+		{
+			get
+			{
+				return material;
+			}
+		}
+
+		public LightList Lights
+		{
+			get
+			{
+				return QueryLights();
+			}
+		}
+
+		public Technique Technique
+		{
+			get
+			{
+				return material.GetBestTechnique();
+			}
+		}
+
+		public bool NormalizeNormals
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		public ushort NumWorldTransforms
+		{
+			get
+			{
+				return 1;
+			}
+		}
+
+		public Vector4 GetCustomParameter( int index )
+		{
+			if ( customParams[ index ] == null )
+			{
+				throw new Exception( "A parameter was not found at the given index" );
+			}
+			else
+			{
+				return (Vector4)customParams[ index ];
+			}
+		}
+
+		public void SetCustomParameter( int index, Vector4 val )
+		{
+			while ( customParams.Count <= index )
+			{
+				customParams.Add( Vector4.Zero );
+			}
+			customParams[ index ] = val;
+		}
+
+		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+		{
+			if ( customParams[ entry.Data ] != null )
+			{
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+			}
+		}
+
+		#endregion IRenderable Members
 	}
 
 	[XmlRoot( ElementName = "TerrainConfig", IsNullable = false )]
 	public class TerrainOptions
 	{
+		public TerrainOptions()
+		{
+			size = 0;
+			worldSize = 0;
+			startx = 0;
+			startz = 0;
+			maxMipmap = 0;
+			scalex = 1;
+			scaley = 1;
+			scalez = 1;
+			maxPixelError = 4;
+			vertRes = 768;
+			topCoord = 1;
+			nearPlane = 1;
+			detailTile = 1;
+			isLit = false;
+		}
+
+		public Real GetWorldHeight( int x, int z )
+		{
+			return data[ ( ( z * worldSize ) + x ) ];
+		}
+
+		[XmlElement( ElementName = "Terrain" )]
+		public string Terrain;
+
 		[XmlElement( ElementName = "DetailTexture" )]
 		public string DetailTexture;
 
 		[XmlElement( ElementName = "MaterialName" )]
 		public string MaterialName;
 
-		[XmlElement( ElementName = "Terrain" )]
-		public string Terrain;
-
 		[XmlElement( ElementName = "WorldTexture" )]
 		public string WorldTexture;
 
-		[XmlIgnore]
+		[XmlIgnore()]
 		public Real[] data; //pointer to the world 2D data.
 
-		[XmlElement( ElementName = "DetailTile" )]
-		public int detailTile;
+		[XmlElement( ElementName = "TileSize" )]
+		public int size; //size of this square block
 
-		[XmlElement( ElementName = "VertexNormals" )]
-		public bool isLit;
+		[XmlElement( ElementName = "WorldSize" )]
+		public int worldSize; //size of the world.
+
+		[XmlIgnore()]
+		public int startx;
+
+		[XmlIgnore()]
+		public int startz; //starting coords of this block.
 
 		[XmlElement( ElementName = "MaxMipMapLevel" )]
 		public int maxMipmap; //max mip_map level
-
-		[XmlElement( ElementName = "MaxPixelError" )]
-		public int maxPixelError;
-
-		[XmlIgnore]
-		public int nearPlane;
 
 		[XmlElement( ElementName = "ScaleX" )]
 		public float scalex;
@@ -1048,45 +1077,22 @@ namespace Axiom.SceneManagers.Octree
 		[XmlElement( ElementName = "ScaleZ" )]
 		public float scalez;
 
-		[XmlElement( ElementName = "TileSize" )]
-		public int size; //size of this square block
+		[XmlElement( ElementName = "MaxPixelError" )]
+		public int maxPixelError;
 
-		[XmlIgnore]
-		public int startx;
+		[XmlIgnore()]
+		public int nearPlane;
 
-		[XmlIgnore]
-		public int startz; //starting coords of this block.
-
-		[XmlIgnore]
-		public float topCoord;
-
-		[XmlIgnore]
+		[XmlIgnore()]
 		public int vertRes;
 
-		[XmlElement( ElementName = "WorldSize" )]
-		public int worldSize; //size of the world.
+		[XmlElement( ElementName = "DetailTile" )]
+		public int detailTile;
 
-		public TerrainOptions()
-		{
-			this.size = 0;
-			this.worldSize = 0;
-			this.startx = 0;
-			this.startz = 0;
-			this.maxMipmap = 0;
-			this.scalex = 1;
-			this.scaley = 1;
-			this.scalez = 1;
-			this.maxPixelError = 4;
-			this.vertRes = 768;
-			this.topCoord = 1;
-			this.nearPlane = 1;
-			this.detailTile = 1;
-			this.isLit = false;
-		}
+		[XmlIgnore()]
+		public float topCoord;
 
-		public Real GetWorldHeight( int x, int z )
-		{
-			return this.data[ ( ( z * this.worldSize ) + x ) ];
-		}
+		[XmlElement( ElementName = "VertexNormals" )]
+		public bool isLit;
 	}
 }

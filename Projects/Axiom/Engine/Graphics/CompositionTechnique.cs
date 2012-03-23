@@ -41,10 +41,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using Axiom.Core;
+using Axiom.Configuration;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -56,8 +60,6 @@ namespace Axiom.Graphics
 	///</summary>
 	public class CompositionTechnique : DisposableObject
 	{
-		#region TextureScope enum
-
 		///<summary>
 		/// The scope of a texture defined by the compositor.
 		///</summary>
@@ -79,239 +81,13 @@ namespace Axiom.Graphics
 			Global
 		}
 
-		#endregion
-
 		//end enum TextureScope
-
-		/// <summary>
-		/// Create's a new Composition technique
-		/// </summary>
-		/// <param name="parent">parent of this technique</param>
-		public CompositionTechnique( Compositor parent )
-		{
-			this.parent = parent;
-			this.outputTarget = new CompositionTargetPass( this );
-			this.textureDefinitions = new List<TextureDefinition>();
-			this.targetPasses = new List<CompositionTargetPass>();
-		}
-
-		#region TextureDefinition Management
-
-		/// <summary>
-		/// Create a new local texture definition, and return a pointer to it.
-		/// </summary>
-		/// <param name="name">name of the local texture</param>
-		/// <returns>pointer to a texture definition</returns>
-		public virtual TextureDefinition CreateTextureDefinition( string name )
-		{
-			var t = new TextureDefinition();
-			t.Name = name;
-			this.textureDefinitions.Add( t );
-			return t;
-		}
-
-		/// <summary>
-		/// Remove and destroy a local texture definition.
-		/// </summary>
-		/// <param name="index"></param>
-		public virtual void RemoveTextureDefinition( int index )
-		{
-			Debug.Assert( index < this.textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.RemoveTextureDefinition" );
-			this.textureDefinitions.RemoveAt( index );
-		}
-
-		/// <summary>
-		/// Get's a local texture definition by index.
-		/// </summary>
-		/// <param name="index">index of the texture definition</param>
-		/// <returns>texture definition for the given index</returns>
-		public virtual TextureDefinition GetTextureDefinition( int index )
-		{
-			Debug.Assert( index < this.textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.GetTextureDefinition" );
-			return this.textureDefinitions[ index ];
-		}
-
-		/// <summary>
-		/// Get's a local texture definition by name.
-		/// </summary>
-		/// <param name="name">name of the texture definition</param>
-		/// <returns>texture definition for the given name.if noone exists, null</returns>
-		public virtual TextureDefinition GetTextureDefinition( string name )
-		{
-			foreach ( TextureDefinition t in this.textureDefinitions )
-			{
-				if ( t.Name == name )
-				{
-					return t;
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Remove's all texture definitions.
-		/// </summary>
-		public virtual void RemoveAllTextureDefinitions()
-		{
-			this.textureDefinitions.Clear();
-		}
-
-		#endregion TextureDefinition Management
-
-		#region TargetPass Management
-
-		/// <summary>
-		/// Create's a new target pass.
-		/// </summary>
-		/// <returns>pointer to a new target pass</returns>
-		public virtual CompositionTargetPass CreateTargetPass()
-		{
-			var t = new CompositionTargetPass( this );
-			this.targetPasses.Add( t );
-			return t;
-		}
-
-		/// <summary>
-		/// Remove's and destroys a target pass.
-		/// </summary>
-		/// <param name="index">index of the target pass to remove to.</param>
-		public virtual void RemoveTargetPass( int index )
-		{
-			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
-			this.targetPasses[ index ].Dispose();
-			this.targetPasses[ index ] = null;
-			this.targetPasses.RemoveAt( index );
-		}
-
-		/// <summary>
-		/// Get's a target passs by index.
-		/// </summary>
-		/// <param name="index">index of the target pass</param>
-		/// <returns>target pass for the given index</returns>
-		public virtual CompositionTargetPass GetTargetPass( int index )
-		{
-			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.GetTargetPass" );
-			return this.targetPasses[ index ];
-		}
-
-		/// <summary>
-		/// Remove's all target passes from this technique.
-		/// </summary>
-		public virtual void RemoveAllTargetPasses()
-		{
-			for ( int i = 0; i < this.targetPasses.Count; i++ )
-			{
-				this.targetPasses[ i ].Dispose();
-				this.targetPasses[ i ] = null;
-			}
-			this.targetPasses.Clear();
-		}
-
-		#endregion TargetPass Management
-
-		/// <summary>
-		/// Determine if this technique is supported on the current rendering device.
-		/// </summary>
-		/// <param name="allowTextureDegradation">True to accept a reduction in texture depth</param>
-		/// <returns>true if supported, otherwise false</returns>
-		/// <remarks>
-		/// A technique is supported if all materials referenced have a supported
-		/// technique, and the intermediate texture formats requested are supported
-		/// Material support is a cast-iron requirement, but if no texture formats
-		/// are directly supported we can let the rendersystem create the closest
-		/// match for the least demanding technique
-		/// </remarks>
-		public virtual bool IsSupported( bool allowTextureDegradation )
-		{
-			// Check output target pass is supported
-			if ( !this.outputTarget.IsSupported )
-			{
-				return false;
-			}
-			// Check all target passes is supported
-			foreach ( CompositionTargetPass targetPass in this.targetPasses )
-			{
-				if ( !targetPass.IsSupported )
-				{
-					return false;
-				}
-			}
-
-			TextureManager texMgr = TextureManager.Instance;
-			// Check all Texture Definitions is supported
-			foreach ( TextureDefinition td in this.textureDefinitions )
-			{
-				// Firstly check MRTs
-				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
-				{
-					return false;
-				}
-
-				foreach ( PixelFormat pf in td.PixelFormats )
-				{
-					// Check whether equivalent supported
-					if ( allowTextureDegradation )
-					{
-						// Don't care about exact format so long as something is supported
-						if ( texMgr.GetNativeFormat( TextureType.TwoD, pf, TextureUsage.RenderTarget ) == PixelFormat.Unknown )
-						{
-							return false;
-						}
-					}
-					else
-					{
-						// Need a format which is the same number of bits to pass
-						if ( !texMgr.IsEquivalentFormatSupported( TextureType.TwoD, pf, TextureUsage.RenderTarget ) )
-						{
-							return false;
-						}
-					}
-				}
-			}
-
-			// must be ok
-			return true;
-		}
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					return;
-					RemoveAllTextureDefinitions();
-					RemoveAllTargetPasses();
-					this.outputTarget.Dispose();
-					this.outputTarget = null;
-				}
-			}
-			base.dispose( disposeManagedResources );
-		}
-
-		#region Nested type: TextureDefinition
 
 		///<summary>
 		/// Local texture definitions
 		///</summary>
 		public class TextureDefinition
 		{
-			/// <summary>
-			/// Creates a new local texture definition.
-			/// </summary>
-			public TextureDefinition()
-			{
-				WidthFactor = 1.0f;
-				HeightFactor = 1.0f;
-				Fsaa = true;
-				DepthBufferId = PoolId.Default;
-				Scope = TextureScope.Local;
-				ReferenceCompositorName = string.Empty;
-				ReferenceTextureName = string.Empty;
-				PixelFormats = new List<PixelFormat>();
-			}
-
 			///<summary>
 			/// Name of the texture definition.
 			///</summary>
@@ -377,36 +153,24 @@ namespace Axiom.Graphics
 			/// Which scope has access to this texture
 			/// </summary>
 			public TextureScope Scope { get; set; }
+
+			/// <summary>
+			/// Creates a new local texture definition.
+			/// </summary>
+			public TextureDefinition()
+			{
+				WidthFactor = 1.0f;
+				HeightFactor = 1.0f;
+				Fsaa = true;
+				DepthBufferId = PoolId.Default;
+				Scope = TextureScope.Local;
+				ReferenceCompositorName = string.Empty;
+				ReferenceTextureName = string.Empty;
+				PixelFormats = new List<PixelFormat>();
+			}
 		}
 
-		#endregion
-
 		#region Fields and Properties
-
-		/// <summary>
-		/// Optional compositor logic name
-		/// </summary>
-		protected string compositorLogicName;
-
-		/// <summary>
-		/// Output target pass (can be only one)
-		/// </summary>
-		protected CompositionTargetPass outputTarget;
-
-		/// <summary>
-		/// Parent compositor.
-		/// </summary>
-		protected Compositor parent;
-
-		/// <summary>
-		/// Optional scheme name
-		/// </summary>
-		protected string schemeName;
-
-		/// <summary>
-		/// Intermediate target passes
-		/// </summary>
-		protected List<CompositionTargetPass> targetPasses;
 
 		/// <summary>
 		/// local texture definitions.
@@ -425,6 +189,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// Intermediate target passes
+		/// </summary>
+		protected List<CompositionTargetPass> targetPasses;
+
+		/// <summary>
 		/// Get's a list of all target passes of this technique.
 		/// </summary>
 		public IList<CompositionTargetPass> TargetPasses
@@ -436,6 +205,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// Output target pass (can be only one)
+		/// </summary>
+		protected CompositionTargetPass outputTarget;
+
+		/// <summary>
 		/// Get's the output (final) target pass.
 		/// </summary>
 		public CompositionTargetPass OutputTarget
@@ -445,6 +219,11 @@ namespace Axiom.Graphics
 				return this.outputTarget;
 			}
 		}
+
+		/// <summary>
+		/// Optional scheme name
+		/// </summary>
+		protected string schemeName;
 
 		/// <summary>
 		/// Get's or set's a scheme name for this technique,
@@ -464,6 +243,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// Optional compositor logic name
+		/// </summary>
+		protected string compositorLogicName;
+
+		/// <summary>
 		/// Get's or set's the logic name, assigned to this technique.
 		/// Instances if this technique will be auto-coupled with the matching logic.
 		/// </summary>
@@ -480,6 +264,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// Parent compositor.
+		/// </summary>
+		protected Compositor parent;
+
+		/// <summary>
 		/// Get's the parent of this technique.
 		/// </summary>
 		public Compositor Parent
@@ -491,5 +280,212 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Fields and Properties
+
+		/// <summary>
+		/// Create's a new Composition technique
+		/// </summary>
+		/// <param name="parent">parent of this technique</param>
+		public CompositionTechnique( Compositor parent )
+		{
+			this.parent = parent;
+			this.outputTarget = new CompositionTargetPass( this );
+			this.textureDefinitions = new List<TextureDefinition>();
+			this.targetPasses = new List<CompositionTargetPass>();
+		}
+
+		#region TextureDefinition Management
+
+		/// <summary>
+		/// Create a new local texture definition, and return a pointer to it.
+		/// </summary>
+		/// <param name="name">name of the local texture</param>
+		/// <returns>pointer to a texture definition</returns>
+		public virtual TextureDefinition CreateTextureDefinition( string name )
+		{
+			var t = new TextureDefinition();
+			t.Name = name;
+			this.textureDefinitions.Add( t );
+			return t;
+		}
+
+		/// <summary>
+		/// Remove and destroy a local texture definition.
+		/// </summary>
+		/// <param name="index"></param>
+		public virtual void RemoveTextureDefinition( int index )
+		{
+			Debug.Assert( index < this.textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.RemoveTextureDefinition" );
+			this.textureDefinitions.RemoveAt( index );
+		}
+
+		/// <summary>
+		/// Get's a local texture definition by index.
+		/// </summary>
+		/// <param name="index">index of the texture definition</param>
+		/// <returns>texture definition for the given index</returns>
+		public virtual TextureDefinition GetTextureDefinition( int index )
+		{
+			Debug.Assert( index < this.textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.GetTextureDefinition" );
+			return this.textureDefinitions[ index ];
+		}
+
+		/// <summary>
+		/// Get's a local texture definition by name.
+		/// </summary>
+		/// <param name="name">name of the texture definition</param>
+		/// <returns>texture definition for the given name.if noone exists, null</returns>
+		public virtual TextureDefinition GetTextureDefinition( string name )
+		{
+			foreach ( var t in this.textureDefinitions )
+			{
+				if ( t.Name == name )
+				{
+					return t;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Remove's all texture definitions.
+		/// </summary>
+		public virtual void RemoveAllTextureDefinitions()
+		{
+			this.textureDefinitions.Clear();
+		}
+
+		#endregion TextureDefinition Management
+
+		#region TargetPass Management
+
+		/// <summary>
+		/// Create's a new target pass.
+		/// </summary>
+		/// <returns>pointer to a new target pass</returns>
+		public virtual CompositionTargetPass CreateTargetPass()
+		{
+			var t = new CompositionTargetPass( this );
+			this.targetPasses.Add( t );
+			return t;
+		}
+
+		/// <summary>
+		/// Remove's and destroys a target pass.
+		/// </summary>
+		/// <param name="index">index of the target pass to remove to.</param>
+		public virtual void RemoveTargetPass( int index )
+		{
+			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
+			this.targetPasses[ index ].Dispose();
+			this.targetPasses[ index ] = null;
+			this.targetPasses.RemoveAt( index );
+		}
+
+		/// <summary>
+		/// Get's a target passs by index.
+		/// </summary>
+		/// <param name="index">index of the target pass</param>
+		/// <returns>target pass for the given index</returns>
+		public virtual CompositionTargetPass GetTargetPass( int index )
+		{
+			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.GetTargetPass" );
+			return this.targetPasses[ index ];
+		}
+
+		/// <summary>
+		/// Remove's all target passes from this technique.
+		/// </summary>
+		public virtual void RemoveAllTargetPasses()
+		{
+			for ( int i = 0; i < targetPasses.Count; i++ )
+			{
+				targetPasses[ i ].Dispose();
+				targetPasses[ i ] = null;
+			}
+			this.targetPasses.Clear();
+		}
+
+		#endregion TargetPass Management
+
+		/// <summary>
+		/// Determine if this technique is supported on the current rendering device.
+		/// </summary>
+		/// <param name="allowTextureDegradation">True to accept a reduction in texture depth</param>
+		/// <returns>true if supported, otherwise false</returns>
+		/// <remarks>
+		/// A technique is supported if all materials referenced have a supported
+		/// technique, and the intermediate texture formats requested are supported
+		/// Material support is a cast-iron requirement, but if no texture formats
+		/// are directly supported we can let the rendersystem create the closest
+		/// match for the least demanding technique
+		/// </remarks>
+		public virtual bool IsSupported( bool allowTextureDegradation )
+		{
+			// Check output target pass is supported
+			if ( !this.outputTarget.IsSupported )
+			{
+				return false;
+			}
+			// Check all target passes is supported
+			foreach ( var targetPass in this.targetPasses )
+			{
+				if ( !targetPass.IsSupported )
+				{
+					return false;
+				}
+			}
+
+			var texMgr = TextureManager.Instance;
+			// Check all Texture Definitions is supported
+			foreach ( var td in this.textureDefinitions )
+			{
+				// Firstly check MRTs
+				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
+				{
+					return false;
+				}
+
+				foreach ( var pf in td.PixelFormats )
+				{
+					// Check whether equivalent supported
+					if ( allowTextureDegradation )
+					{
+						// Don't care about exact format so long as something is supported
+						if ( texMgr.GetNativeFormat( TextureType.TwoD, pf, TextureUsage.RenderTarget ) == PixelFormat.Unknown )
+						{
+							return false;
+						}
+					}
+					else
+					{
+						// Need a format which is the same number of bits to pass
+						if ( !texMgr.IsEquivalentFormatSupported( TextureType.TwoD, pf, TextureUsage.RenderTarget ) )
+						{
+							return false;
+						}
+					}
+				}
+			}
+
+			// must be ok
+			return true;
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					return;
+					RemoveAllTextureDefinitions();
+					RemoveAllTargetPasses();
+					outputTarget.Dispose();
+					outputTarget = null;
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
 	}
 }

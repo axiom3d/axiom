@@ -49,22 +49,9 @@ namespace Axiom.Scripting.Compiler.AST
 		public string Name;
 
 		public VariableSetAbstractNode( AbstractNode parent )
-			: base( parent ) { }
+			: base( parent ) {}
 
 		#region AbstractNode Implementation
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Name;
-			}
-			set
-			{
-				this.Name = value;
-			}
-		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -72,8 +59,21 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new VariableSetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = this.Name;
+			node.Name = Name;
 			return node;
+		}
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return Name;
+			}
+			set
+			{
+				Name = value;
+			}
 		}
 
 		#endregion AbstractNode Implementation

@@ -36,9 +36,10 @@
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 #if !USE_CUSTOM_SORTEDLIST
+using System.Collections;
+using System.Collections.Generic;
 
 #endif
 
@@ -78,9 +79,10 @@ namespace Axiom.Collections
 		#region Constructors
 
 		public AxiomCollection()
+			: base()
 		{
 			this.parent = null;
-			this.typeName = typeof( T ).Name;
+			this.typeName = typeof ( T ).Name;
 		}
 
 		protected AxiomCollection( Object parent )
@@ -91,11 +93,11 @@ namespace Axiom.Collections
 #endif
 		{
 			this.parent = parent;
-			this.typeName = typeof( T ).Name;
+			this.typeName = typeof ( T ).Name;
 		}
 
 		public AxiomCollection( AxiomCollection<int> copy )
-			: base( (IDictionary<string, T>)copy ) { }
+			: base( (IDictionary<string, T>)copy ) {}
 
 		#endregion Constructors
 
@@ -133,7 +135,7 @@ namespace Axiom.Collections
 		/// <param name="item">The object to add.</param>
 		public virtual void Add( T item )
 		{
-			Add( this.typeName + ( nextUniqueKeyCounter++ ), item );
+			Add( typeName + ( nextUniqueKeyCounter++ ), item );
 		}
 
 		/// <summary>
@@ -143,7 +145,7 @@ namespace Axiom.Collections
 		{
 			foreach ( var entry in source )
 			{
-				Add( entry.Key, entry.Value );
+				this.Add( entry.Key, entry.Value );
 			}
 		}
 
@@ -172,13 +174,13 @@ namespace Axiom.Collections
 			}
 			set
 			{
-				if ( ContainsKey( key ) )
+				if ( this.ContainsKey( key ) )
 				{
 					base[ key ] = value;
 				}
 				else
 				{
-					Add( key, value );
+					this.Add( key, value );
 				}
 			}
 		}
@@ -237,7 +239,7 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.
 		/// </exception>
 		public AxiomSortedCollection( int capacity, IComparer<TKey> comparer )
-			: base( capacity, comparer ) { }
+			: base( capacity, comparer ) {}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2"/>, has sufficient capacity to accommodate the number of elements copied, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -252,7 +254,7 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentException"><paramref name="dictionary"/> contains one or more duplicate keys.
 		/// </exception>
 		public AxiomSortedCollection( IDictionary<TKey, TValue> dictionary, IComparer<TKey> comparer )
-			: base( dictionary, comparer ) { }
+			: base( dictionary, comparer ) {}
 
 		#endregion Constructors
 	}

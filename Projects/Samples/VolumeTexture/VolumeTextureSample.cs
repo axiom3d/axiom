@@ -1,24 +1,21 @@
-﻿using Axiom.Animating;
-using Axiom.Core;
-using Axiom.CrossPlatform;
-using Axiom.Graphics;
+﻿using Axiom.CrossPlatform;
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Animating;
 using Axiom.Media;
+using Axiom.Overlays;
 
 namespace Axiom.Samples.VolumeTexture
 {
 	public class VolumeTextureSample : SdkSample
 	{
-		protected AnimationState animState;
-		protected SceneNode fnode;
-		protected float globalImag;
-		protected float globalReal;
-		protected float globalTheta;
 		protected Texture ptex;
-		protected SceneNode snode;
-		protected SimpleRenderable trend;
 		protected SimpleRenderable vrend;
-		protected float xtime;
+		protected SimpleRenderable trend;
+		protected SceneNode snode, fnode;
+		protected AnimationState animState;
+		protected float globalReal, globalImag, globalTheta, xtime;
 
 		public VolumeTextureSample()
 		{
@@ -55,10 +52,10 @@ namespace Axiom.Samples.VolumeTexture
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			this.xtime += evt.TimeSinceLastFrame;
-			this.xtime = (float)System.Math.IEEERemainder( this.xtime, 10 );
-			( (ThingRendable)this.trend ).AddTime( evt.TimeSinceLastFrame * 0.05f );
-			this.animState.AddTime( evt.TimeSinceLastFrame );
+			xtime += evt.TimeSinceLastFrame;
+			xtime = (float)System.Math.IEEERemainder( xtime, 10 );
+			( (ThingRendable)trend ).AddTime( evt.TimeSinceLastFrame * 0.05f );
+			animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
 
@@ -67,7 +64,7 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summary>
 		protected override void SetupContent()
 		{
-			this.ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.ThreeD, 64, 64, 64, 0, PixelFormat.A8R8G8B8, TextureUsage.Default, null );
+			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8, TextureUsage.Default, null );
 
 			SceneManager.AmbientLight = new ColorEx( 0.6f, 0.6f, 0.6f );
 			SceneManager.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
@@ -79,36 +76,36 @@ namespace Axiom.Samples.VolumeTexture
 			SceneManager.RootSceneNode.AttachObject( light );
 
 			// Create volume renderable
-			this.snode = SceneManager.RootSceneNode.CreateChildSceneNode( Vector3.Zero );
+			snode = SceneManager.RootSceneNode.CreateChildSceneNode( Vector3.Zero );
 
-			this.vrend = new VolumeRendable( 32, 750, "DynaTex" );
-			this.snode.AttachObject( this.vrend );
+			vrend = new VolumeRendable( 32, 750, "DynaTex" );
+			snode.AttachObject( vrend );
 
-			this.trend = new ThingRendable( 90, 32, 7.5f );
-			this.trend.Material = (Material)MaterialManager.Instance.GetByName( "Examples/VTDarkStuff" );
-			this.trend.Material.Load();
-			this.snode.AttachObject( this.trend );
+			trend = new ThingRendable( 90, 32, 7.5f );
+			trend.Material = (Material)MaterialManager.Instance.GetByName( "Examples/VTDarkStuff" );
+			trend.Material.Load();
+			snode.AttachObject( trend );
 
-			this.fnode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			fnode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			Entity head = SceneManager.CreateEntity( "head", "ogrehead.mesh" );
-			this.fnode.AttachObject( head );
+			fnode.AttachObject( head );
 
 			Animation anim = SceneManager.CreateAnimation( "OgreTrack", 10 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 
-			NodeAnimationTrack track = anim.CreateNodeTrack( 0, this.fnode );
+			NodeAnimationTrack track = anim.CreateNodeTrack( 0, fnode );
 			TransformKeyFrame key = track.CreateNodeKeyFrame( 0 );
 			key.Translate = new Vector3( 0, -15, 0 );
 			key = track.CreateNodeKeyFrame( 5 );
 			key.Translate = new Vector3( 0, 15, 0 );
 			key = track.CreateNodeKeyFrame( 10 );
 			key.Translate = new Vector3( 0, -15, 0 );
-			this.animState = SceneManager.CreateAnimationState( "OgreTrack" );
-			this.animState.IsEnabled = true;
+			animState = SceneManager.CreateAnimationState( "OgreTrack" );
+			animState.IsEnabled = true;
 
-			this.globalReal = 0.4f;
-			this.globalImag = 0.6f;
-			this.globalTheta = 0.0f;
+			globalReal = 0.4f;
+			globalImag = 0.6f;
+			globalTheta = 0.0f;
 
 			CreateControls();
 
@@ -122,14 +119,14 @@ namespace Axiom.Samples.VolumeTexture
 		{
 			TrayManager.CreateLabel( TrayLocation.TopLeft, "JuliaParamLabel", "Julia Parameters", 200 );
 			Slider sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "RealSlider", "Real", 200, 80, -1, 1, 50 );
-			sl.SetValue( this.globalReal, false );
-			sl.SliderMoved += sl_SliderMoved;
+			sl.SetValue( globalReal, false );
+			sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
 			sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ImagSlider", "Imag", 200, 80, -1, 1, 50 );
-			sl.SetValue( this.globalImag, false );
-			sl.SliderMoved += sl_SliderMoved;
+			sl.SetValue( globalImag, false );
+			sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
 			sl = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "ThetaSlider", "Theta", 200, 80, -1, 1, 50 );
-			sl.SetValue( this.globalTheta, false );
-			sl.SliderMoved += sl_SliderMoved;
+			sl.SetValue( globalTheta, false );
+			sl.SliderMoved += new SliderMovedHandler( sl_SliderMoved );
 
 			TrayManager.ShowCursor();
 		}
@@ -139,13 +136,13 @@ namespace Axiom.Samples.VolumeTexture
 			switch ( slider.Name )
 			{
 				case "RealSlider":
-					this.globalReal = slider.Value;
+					globalReal = slider.Value;
 					break;
 				case "ImagSlider":
-					this.globalImag = slider.Value;
+					globalImag = slider.Value;
 					break;
 				case "ThetaSlider":
-					this.globalTheta = slider.Value;
+					globalTheta = slider.Value;
 					break;
 			}
 			Generate();
@@ -153,12 +150,12 @@ namespace Axiom.Samples.VolumeTexture
 
 		protected void Generate()
 		{
-			var julia = new Julia( this.globalReal, this.globalImag, this.globalTheta );
+			Julia julia = new Julia( globalReal, globalImag, globalTheta );
 			float scale = 2.5f;
 			float vcut = 29.0f;
 			float vscale = 1.0f / vcut;
 
-			HardwarePixelBuffer buffer = this.ptex.GetBuffer( 0, 0 );
+			HardwarePixelBuffer buffer = ptex.GetBuffer( 0, 0 );
 
 			LogManager.Instance.Write( "Volume Texture Sample [info]: HardwarePixelBuffer " + buffer.Width + "x" + buffer.Height );
 
@@ -174,7 +171,7 @@ namespace Axiom.Samples.VolumeTexture
 				{
 					for ( int y = pb.Top; y < pb.Bottom; y++ )
 					{
-						pbptr += pb.Left * sizeof( uint );
+						pbptr += pb.Left * sizeof ( uint );
 						for ( int x = pb.Left; x < pb.Right; x++ )
 						{
 							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) || x == pb.Left || x == ( pb.Right - 1 ) )
@@ -193,9 +190,9 @@ namespace Axiom.Samples.VolumeTexture
 							}
 							pbptr++;
 						}
-						pbptr += ( pb.RowPitch - pb.Right ) * sizeof( uint );
+						pbptr += ( pb.RowPitch - pb.Right ) * sizeof ( uint );
 					}
-					pbptr += pb.SliceSkip * sizeof( uint );
+					pbptr += pb.SliceSkip * sizeof ( uint );
 				}
 				buffer.Unlock();
 			}

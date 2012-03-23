@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Axiom.Core;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -53,7 +54,7 @@ namespace Axiom.Graphics
 		#region Fields
 
 		protected HardwarePixelBuffer pixelBuffer;
-		protected int zOffset;
+		protected int zOffset = 0;
 
 		#endregion Fields
 
@@ -61,8 +62,9 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2 )]
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+			: base()
 		{
-			this.pixelBuffer = buffer;
+			pixelBuffer = buffer;
 			this.zOffset = zOffset;
 			Priority = RenderTargetPriority.RenderToTexture;
 			width = buffer.Width;
@@ -74,7 +76,7 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
+		public override void CopyContentsToMemory( PixelBox dst, RenderTarget.FrameBuffer buffer )
 		{
 			if ( buffer == FrameBuffer.Auto )
 			{
@@ -85,12 +87,12 @@ namespace Axiom.Graphics
 				throw new Exception( "Invalid buffer." );
 			}
 
-			this.pixelBuffer.BlitToMemory( dst );
+			pixelBuffer.BlitToMemory( dst );
 		}
 
 		public override PixelFormat SuggestPixelFormat()
 		{
-			return this.pixelBuffer.Format;
+			return pixelBuffer.Format;
 		}
 
 		/// <summary>
@@ -102,7 +104,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					this.pixelBuffer.ClearSliceRTT( 0 );
+					pixelBuffer.ClearSliceRTT( 0 );
 				}
 			}
 

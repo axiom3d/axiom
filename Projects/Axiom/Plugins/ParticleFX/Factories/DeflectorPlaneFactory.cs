@@ -48,19 +48,19 @@ namespace Axiom.ParticleFX.Factories
 	/// </summary>
 	public class DeflectorPlaneAffectorFactory : ParticleAffectorFactory
 	{
+		public override ParticleAffector CreateAffector( ParticleSystem psys )
+		{
+			ParticleAffector p = new DeflectorPlaneAffector( psys );
+			affectorList.Add( p );
+			return p;
+		}
+
 		public override string Name
 		{
 			get
 			{
 				return "DeflectorPlane";
 			}
-		}
-
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new DeflectorPlaneAffector( psys );
-			affectorList.Add( p );
-			return p;
 		}
 	}
 }

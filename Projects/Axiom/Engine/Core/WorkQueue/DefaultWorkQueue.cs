@@ -68,21 +68,21 @@ namespace Axiom.Core
 		public DefaultWorkQueue( string name = "" )
 #else
 		public DefaultWorkQueue()
-			: this( string.Empty ) { }
+			: this( string.Empty ) {}
 
 
 		public DefaultWorkQueue( string name )
 #endif
-			: base( name ) { }
+			: base( name ) {}
 
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					Shutdown();
+					this.Shutdown();
 				}
 			}
 
@@ -147,10 +147,10 @@ namespace Axiom.Core
 		{
 			lock ( initSync )
 			{
-				++this.numThreadsRegisteredWithRS;
+				++numThreadsRegisteredWithRS;
 
 #if AXIOM_THREAD_SUPPORT
-    // wake up main thread
+	// wake up main thread
 				Monitor.PulseAll( initSync );
 #endif
 			}
@@ -185,7 +185,7 @@ namespace Axiom.Core
 		protected override void NotifyWorkers()
 		{
 #if AXIOM_THREAD_SUPPORT
-    // wake up waiting thread
+	// wake up waiting thread
             Monitor.Pulse( requestMutex );
 #endif
 		}
@@ -197,7 +197,7 @@ namespace Axiom.Core
 		protected virtual void WaitForNextRequest()
 		{
 #if AXIOM_THREAD_SUPPORT
-    // Lock; note that OGRE_THREAD_WAIT will free the lock
+	// Lock; note that OGRE_THREAD_WAIT will free the lock
 			lock ( requestMutex )
 			{
 				if ( requestQueue.Count == 0 )

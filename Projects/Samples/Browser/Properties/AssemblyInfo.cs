@@ -23,6 +23,7 @@
 #endregion License
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -33,8 +34,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyProduct( "Axiom.Samples.Browser" )]
-[assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyCopyright( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
+[assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

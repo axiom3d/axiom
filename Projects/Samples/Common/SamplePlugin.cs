@@ -32,7 +32,7 @@ namespace Axiom.Samples
 	/// Utility class used to hold a set of samples in an Axiom plugin.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 #endif
 	public class SamplePlugin : IPlugin
 	{
@@ -55,12 +55,12 @@ namespace Axiom.Samples
 		public SamplePlugin()
 		{
 			//this ctor is for axiom's plugin manager
-			Name = string.Empty;
+			this.Name = string.Empty;
 		}
 
 		public SamplePlugin( string name )
 		{
-			Name = name;
+			this.Name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -69,16 +69,16 @@ namespace Axiom.Samples
 
 		public void AddSample( Sample s )
 		{
-			this.Samples.Add( s );
+			Samples.Add( s );
 		}
 
 		#endregion Methods
 
 		#region IPlugin Implementation
 
-		public virtual void Initialize() { }
+		public virtual void Initialize() {}
 
-		public virtual void Shutdown() { }
+		public virtual void Shutdown() {}
 
 		#endregion
 	}

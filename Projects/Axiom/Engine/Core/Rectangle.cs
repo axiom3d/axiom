@@ -45,57 +45,59 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		private long _bottom;
 		private long _left;
-		private long _right;
-
-		private long _top;
 
 		public long Left
 		{
 			get
 			{
-				return this._left;
+				return _left;
 			}
 			set
 			{
-				this._left = value;
+				_left = value;
 			}
 		}
+
+		private long _top;
 
 		public long Top
 		{
 			get
 			{
-				return this._top;
+				return _top;
 			}
 			set
 			{
-				this._top = value;
+				_top = value;
 			}
 		}
+
+		private long _right;
 
 		public long Right
 		{
 			get
 			{
-				return this._right;
+				return _right;
 			}
 			set
 			{
-				this._right = value;
+				_right = value;
 			}
 		}
+
+		private long _bottom;
 
 		public long Bottom
 		{
 			get
 			{
-				return this._bottom;
+				return _bottom;
 			}
 			set
 			{
-				this._bottom = value;
+				_bottom = value;
 			}
 		}
 
@@ -103,11 +105,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._right - this._left;
+				return _right - _left;
 			}
 			set
 			{
-				this._left = value - this._right;
+				_left = value - _right;
 			}
 		}
 
@@ -115,11 +117,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._bottom - this._top;
+				return _bottom - _top;
 			}
 			set
 			{
-				this._bottom = value - this._top;
+				_bottom = value - _top;
 			}
 		}
 
@@ -127,13 +129,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return Width == 0 || Height == 0;
+				return this.Width == 0 || this.Height == 0;
 			}
 			set
 			{
 				if ( value )
 				{
-					this._left = this._right = this._top = this._bottom = 0;
+					_left = _right = _top = _bottom = 0;
 				}
 			}
 		}
@@ -144,18 +146,18 @@ namespace Axiom.Core
 
 		public Rectangle( long left, long top, long right, long bottom )
 		{
-			this._left = left;
-			this._top = top;
-			this._right = right;
-			this._bottom = bottom;
+			_left = left;
+			_top = top;
+			_right = right;
+			_bottom = bottom;
 		}
 
 		public Rectangle( Rectangle copy )
 		{
-			this._left = copy._left;
-			this._top = copy._top;
-			this._right = copy._right;
-			this._bottom = copy._bottom;
+			_left = copy._left;
+			_top = copy._top;
+			_right = copy._right;
+			_bottom = copy._bottom;
 		}
 
 		#endregion Construction and Destruction
@@ -164,7 +166,7 @@ namespace Axiom.Core
 
 		public bool Contains( long x, long y )
 		{
-			return x >= this._left && x <= this._right && y >= this._top && y <= this._bottom;
+			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
 
 		public Rectangle Intersect( Rectangle rhs )
@@ -175,7 +177,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public Rectangle Merge( Rectangle rhs )
 		{
-			if ( IsNull )
+			if ( this.IsNull )
 			{
 				this = rhs;
 			}
@@ -196,7 +198,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
 		{
-			var ret = new Rectangle();
+			Rectangle ret = new Rectangle();
 
 			if ( lhs.IsNull || rhs.IsNull )
 			{
@@ -222,7 +224,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return string.Format( "Rectangle<>(l:{0}, t:{1}, r:{2}, b:{3})", this._left, this._top, this._right, this._bottom );
+			return string.Format( "Rectangle<>(l:{0}, t:{1}, r:{2}, b:{3})", _left, _top, _right, _bottom );
 		}
 	}
 
@@ -230,57 +232,59 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		private float _bottom;
 		private float _left;
-		private float _right;
-
-		private float _top;
 
 		public float Left
 		{
 			get
 			{
-				return this._left;
+				return _left;
 			}
 			set
 			{
-				this._left = value;
+				_left = value;
 			}
 		}
+
+		private float _top;
 
 		public float Top
 		{
 			get
 			{
-				return this._top;
+				return _top;
 			}
 			set
 			{
-				this._top = value;
+				_top = value;
 			}
 		}
+
+		private float _right;
 
 		public float Right
 		{
 			get
 			{
-				return this._right;
+				return _right;
 			}
 			set
 			{
-				this._right = value;
+				_right = value;
 			}
 		}
+
+		private float _bottom;
 
 		public float Bottom
 		{
 			get
 			{
-				return this._bottom;
+				return _bottom;
 			}
 			set
 			{
-				this._bottom = value;
+				_bottom = value;
 			}
 		}
 
@@ -288,11 +292,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._right - this._left;
+				return _right - _left;
 			}
 			set
 			{
-				this._right = value - this._left;
+				_right = value - _left;
 			}
 		}
 
@@ -300,11 +304,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._bottom - this._top;
+				return _bottom - _top;
 			}
 			set
 			{
-				this._bottom = value - this._top;
+				_bottom = value - _top;
 			}
 		}
 
@@ -314,18 +318,18 @@ namespace Axiom.Core
 
 		public RectangleF( float left, float top, float right, float bottom )
 		{
-			this._left = left;
-			this._top = top;
-			this._right = right;
-			this._bottom = bottom;
+			_left = left;
+			_top = top;
+			_right = right;
+			_bottom = bottom;
 		}
 
 		public RectangleF( RectangleF copy )
 		{
-			this._left = copy._left;
-			this._top = copy._top;
-			this._right = copy._right;
-			this._bottom = copy._bottom;
+			_left = copy._left;
+			_top = copy._top;
+			_right = copy._right;
+			_bottom = copy._bottom;
 		}
 
 		#endregion Construction and Destruction
@@ -334,7 +338,7 @@ namespace Axiom.Core
 
 		public bool Contains( float x, float y )
 		{
-			return x >= this._left && x <= this._right && y >= this._top && y <= this._bottom;
+			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
 
 		public RectangleF Intersect( RectangleF rhs )

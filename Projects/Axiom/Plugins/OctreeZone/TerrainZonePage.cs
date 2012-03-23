@@ -46,47 +46,47 @@ using Axiom.Math;
 
 namespace OctreeZone
 {
-	public class TerrainZoneRow : List<TerrainZoneRenderable> { }
+	public class TerrainZoneRow : List<TerrainZoneRenderable> {}
 
-	public class TerrainZone2D : List<TerrainZoneRow> { }
+	public class TerrainZone2D : List<TerrainZoneRow> {}
 
 	public class TerrainZonePage
 	{
+		/// 2-dimensional vector of tiles, pre-allocated to the correct size
+		protected internal TerrainZone2D tiles = new TerrainZone2D();
+
 		/// The number of tiles across a page
-		private readonly ushort tilesPerPage;
+		private ushort tilesPerPage;
 
 		/// The scene node to which all the tiles for this page are attached
 		protected SceneNode pageSceneNode;
 
-		/// 2-dimensional vector of tiles, pre-allocated to the correct size
-		protected internal TerrainZone2D tiles = new TerrainZone2D();
-
 		public TerrainZonePage( ushort numTiles )
 		{
-			this.tilesPerPage = numTiles;
+			tilesPerPage = numTiles;
 			// Set up an empty array of TerrainZoneRenderable pointers
 			int i, j;
-			for ( i = 0; i < this.tilesPerPage; i++ )
+			for ( i = 0; i < tilesPerPage; i++ )
 			{
-				this.tiles.Add( new TerrainZoneRow() );
+				tiles.Add( new TerrainZoneRow() );
 
-				for ( j = 0; j < this.tilesPerPage; j++ )
+				for ( j = 0; j < tilesPerPage; j++ )
 				{
-					this.tiles[ i ].Add( null );
+					tiles[ i ].Add( null );
 				}
 			}
-			this.pageSceneNode = null;
+			pageSceneNode = null;
 		}
 
 		public SceneNode PageSceneNode
 		{
 			get
 			{
-				return this.pageSceneNode;
+				return pageSceneNode;
 			}
 			set
 			{
-				this.pageSceneNode = value;
+				pageSceneNode = value;
 			}
 		}
 
@@ -94,20 +94,20 @@ namespace OctreeZone
 		{
 			//setup the neighbor links.
 
-			for ( int j = 0; j < this.tilesPerPage; j++ )
+			for ( int j = 0; j < tilesPerPage; j++ )
 			{
-				for ( int i = 0; i < this.tilesPerPage; i++ )
+				for ( int i = 0; i < tilesPerPage; i++ )
 				{
-					if ( j != this.tilesPerPage - 1 )
+					if ( j != tilesPerPage - 1 )
 					{
-						this.tiles[ i ][ j ].SetNeighbor( Neighbor.SOUTH, this.tiles[ i ][ j + 1 ] );
-						this.tiles[ i ][ j + 1 ].SetNeighbor( Neighbor.NORTH, this.tiles[ i ][ j ] );
+						tiles[ i ][ j ].SetNeighbor( Neighbor.SOUTH, tiles[ i ][ j + 1 ] );
+						tiles[ i ][ j + 1 ].SetNeighbor( Neighbor.NORTH, tiles[ i ][ j ] );
 					}
 
-					if ( i != this.tilesPerPage - 1 )
+					if ( i != tilesPerPage - 1 )
 					{
-						this.tiles[ i ][ j ].SetNeighbor( Neighbor.EAST, this.tiles[ i + 1 ][ j ] );
-						this.tiles[ i + 1 ][ j ].SetNeighbor( Neighbor.WEST, this.tiles[ i ][ j ] );
+						tiles[ i ][ j ].SetNeighbor( Neighbor.EAST, tiles[ i + 1 ][ j ] );
+						tiles[ i + 1 ][ j ].SetNeighbor( Neighbor.WEST, tiles[ i ][ j ] );
 					}
 				}
 			}
@@ -119,7 +119,7 @@ namespace OctreeZone
 			to find the containing tile...
 			*/
 
-			TerrainZoneRenderable tile = this.tiles[ 0 ][ 0 ];
+			TerrainZoneRenderable tile = tiles[ 0 ][ 0 ];
 
 			while ( null != tile )
 			{
@@ -159,18 +159,18 @@ namespace OctreeZone
 			/* Todo: error checking!
 			*/
 			//TerrainZoneRenderable * tile = tiles[ 0 ][ 0 ];
-			return this.tiles[ x ][ z ];
+			return tiles[ x ][ z ];
 		}
 
 		public void SetRenderQueue( int qid )
 		{
-			for ( int j = 0; j < this.tilesPerPage; j++ )
+			for ( int j = 0; j < tilesPerPage; j++ )
 			{
-				for ( int i = 0; i < this.tilesPerPage; i++ )
+				for ( int i = 0; i < tilesPerPage; i++ )
 				{
-					if ( j != this.tilesPerPage - 1 )
+					if ( j != tilesPerPage - 1 )
 					{
-						this.tiles[ i ][ j ].RenderQueueGroup = (RenderQueueGroupID)qid;
+						tiles[ i ][ j ].RenderQueueGroup = (RenderQueueGroupID)qid;
 					}
 				}
 			}

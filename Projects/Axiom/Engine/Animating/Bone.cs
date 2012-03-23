@@ -38,10 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 
-using Axiom.Core;
 using Axiom.Math;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -68,17 +67,17 @@ namespace Axiom.Animating
 	{
 		#region Fields
 
-		/// <summary>The inverse derived transform of the bone in the binding pose.</summary>
-		protected Matrix4 bindDerivedInverseTransform;
-
-		/// <summary>The skeleton that created this bone.</summary>
-		protected Skeleton creator;
-
 		/// <summary>Numeric handle of this bone.</summary>
 		protected ushort handle;
 
 		/// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
 		protected bool isManuallyControlled;
+
+		/// <summary>The skeleton that created this bone.</summary>
+		protected Skeleton creator;
+
+		/// <summary>The inverse derived transform of the bone in the binding pose.</summary>
+		protected Matrix4 bindDerivedInverseTransform;
 
 		#endregion Fields
 
@@ -88,6 +87,7 @@ namespace Axiom.Animating
 		///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
 		/// </summary>
 		public Bone( ushort handle, Skeleton creator )
+			: base()
 		{
 			this.handle = handle;
 			this.isManuallyControlled = false;
@@ -115,7 +115,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl()
 		{
-			return this.creator.CreateBone();
+			return creator.CreateBone();
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
-			return this.creator.CreateBone( name );
+			return creator.CreateBone( name );
 		}
 
 		/// <summary>
@@ -147,10 +147,10 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
 		{
-			Bone bone = this.creator.CreateBone( handle );
+			var bone = creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
-			AddChild( bone );
+			this.AddChild( bone );
 
 			return bone;
 		}
@@ -177,7 +177,7 @@ namespace Axiom.Animating
 			SetInitialState();
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
-			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref this.bindDerivedInverseTransform );
+			MakeInverseTransform( this.DerivedPosition, Vector3.UnitScale, this.DerivedOrientation, ref bindDerivedInverseTransform );
 		}
 
 		#endregion
@@ -191,11 +191,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.isManuallyControlled;
+				return isManuallyControlled;
 			}
 			set
 			{
-				this.isManuallyControlled = value;
+				isManuallyControlled = value;
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.bindDerivedInverseTransform;
+				return bindDerivedInverseTransform;
 			}
 		}
 
@@ -217,7 +217,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.handle;
+				return handle;
 			}
 		}
 
@@ -236,17 +236,17 @@ namespace Axiom.Animating
 	/// </remarks>
 	public class VertexBoneAssignment : IComparable
 	{
-		public ushort boneIndex;
 		public int vertexIndex;
+		public ushort boneIndex;
 		public float weight;
 
-		public VertexBoneAssignment() { }
+		public VertexBoneAssignment() {}
 
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{
-			this.vertexIndex = other.vertexIndex;
-			this.boneIndex = other.boneIndex;
-			this.weight = other.weight;
+			vertexIndex = other.vertexIndex;
+			boneIndex = other.boneIndex;
+			weight = other.weight;
 		}
 
 		#region IComparable Members
@@ -257,23 +257,23 @@ namespace Axiom.Animating
 			{
 				var v = (VertexBoneAssignment)obj;
 
-				if ( this.weight > v.weight )
+				if ( weight > v.weight )
 				{
 					return 1;
 				}
-				if ( this.weight < v.weight )
+				if ( weight < v.weight )
 				{
 					return -1;
 				}
 
-				if ( this.vertexIndex != v.vertexIndex )
+				if ( vertexIndex != v.vertexIndex )
 				{
-					return this.vertexIndex - v.vertexIndex;
+					return vertexIndex - v.vertexIndex;
 				}
 
-				if ( this.boneIndex != v.boneIndex )
+				if ( boneIndex != v.boneIndex )
 				{
-					return this.boneIndex - v.boneIndex;
+					return boneIndex - v.boneIndex;
 				}
 
 				return 0;
@@ -284,10 +284,8 @@ namespace Axiom.Animating
 		#endregion
 	}
 
-	public class VertexBoneAssignmentWeightComparer : IComparer<VertexBoneAssignment>
+	public class VertexBoneAssignmentWeightComparer : System.Collections.Generic.IComparer<VertexBoneAssignment>
 	{
-		#region IComparer<VertexBoneAssignment> Members
-
 		/// <summary>Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.</summary>
 		/// <returns>Value Condition Less than zero x is less than y. Zero x equals y. Greater than zero x is greater than y. </returns>
 		/// <param name="yVba">Second object to compare. </param>
@@ -320,7 +318,5 @@ namespace Axiom.Animating
 				return 1;
 			}
 		}
-
-		#endregion
 	}
 }

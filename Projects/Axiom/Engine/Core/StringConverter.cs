@@ -39,7 +39,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 
 using Axiom.Math;
 
@@ -61,7 +63,7 @@ namespace Axiom.Core
 			return obj.ToLower().GetHashCode();
 		}
 
-		#endregion
+		#endregion IEqualityComparer<string> Members
 	}
 
 
@@ -75,7 +77,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
-		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
+		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		#endregion Fields
 
@@ -84,7 +86,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Private constructor so no instances can be created.
 		/// </summary>
-		private StringConverter() { }
+		private StringConverter() {}
 
 		#endregion Constructor
 
@@ -280,7 +282,7 @@ namespace Axiom.Core
 		public static ColorEx ParseColor( string val )
 		{
 			ColorEx color;
-			string[] vals = val.Split( ' ' );
+			var vals = val.Split( ' ' );
 
 			color.r = ParseFloat( vals[ 0 ] );
 			color.g = ParseFloat( vals[ 1 ] );
@@ -309,7 +311,7 @@ namespace Axiom.Core
 		/// <param name="val"></param>
 		public static Vector3 ParseVector3( string val )
 		{
-			string[] values = val.Split( ' ' );
+			var values = val.Split( ' ' );
 
 			var vec = new Vector3();
 			vec.x = ParseFloat( values[ 0 ] );

@@ -39,6 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -47,15 +49,12 @@ namespace Axiom.Scripting.Compiler.Parser
 	public struct ScriptToken
 	{
 		/// This is the lexeme for this token
-		public String file;
-
-		/// This is the lexeme for this token
-		public String lexeme;
-
-		/// This holds the line number of the input stream where the token was found.
-		public uint line;
+		public String lexeme, file;
 
 		/// This is the id associated with the lexeme, which comes from a lexeme-token id mapping
 		public Tokens type;
+
+		/// This holds the line number of the input stream where the token was found.
+		public uint line;
 	}
 }

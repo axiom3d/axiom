@@ -49,18 +49,19 @@ namespace Axiom.Controllers
 	/// </summary>
 	public sealed class FrameTimeControllerValue : IControllerValue<Real>
 	{
-		private Real elapsedTime;
-		private float frameDelay;
-
 		/// <summary>
 		///		Stores the value of the time elapsed since the last frame.
 		/// </summary>
 		private Real frameTime;
 
+		private float frameDelay;
+
 		/// <summary>
 		///		Float value that should be used to scale controller time.
 		/// </summary>
 		private float timeFactor;
+
+		private Real elapsedTime;
 
 		public FrameTimeControllerValue()
 		{
@@ -70,12 +71,12 @@ namespace Axiom.Controllers
 			//frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
 			// default to 1 for standard timing
-			this.timeFactor = 1;
-			this.frameDelay = 0;
-			this.elapsedTime = 0;
+			timeFactor = 1;
+			frameDelay = 0;
+			elapsedTime = 0;
 		}
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		/// <summary>
 		///		Gets a time scaled value to use for controller functions.
@@ -84,7 +85,7 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.frameTime;
+				return frameTime;
 			}
 			set
 			{
@@ -105,14 +106,14 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.timeFactor;
+				return timeFactor;
 			}
 			set
 			{
 				if ( value >= 0 )
 				{
-					this.timeFactor = value;
-					this.frameDelay = 0;
+					timeFactor = value;
+					frameDelay = 0;
 				}
 			}
 		}
@@ -121,12 +122,12 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.frameDelay;
+				return frameDelay;
 			}
 			set
 			{
-				this.timeFactor = 0;
-				this.frameDelay = value;
+				timeFactor = 0;
+				frameDelay = value;
 			}
 		}
 
@@ -134,11 +135,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return this.elapsedTime;
+				return elapsedTime;
 			}
 			set
 			{
-				this.elapsedTime = value;
+				elapsedTime = value;
 			}
 		}
 
@@ -153,19 +154,19 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
-			if ( this.frameDelay != 0 )
+			if ( frameDelay != 0 )
 			{
 				// Fixed frame time
-				this.frameTime = this.frameDelay;
-				this.timeFactor = this.frameDelay / e.TimeSinceLastFrame;
+				frameTime = frameDelay;
+				timeFactor = frameDelay / e.TimeSinceLastFrame;
 			}
 			else
 			{
 				// Save the time value after applying time factor
-				this.frameTime = this.timeFactor * e.TimeSinceLastFrame;
+				frameTime = timeFactor * e.TimeSinceLastFrame;
 			}
 			// Accumulate the elapsed time
-			this.elapsedTime += this.frameTime;
+			elapsedTime += frameTime;
 		}
 	}
 }

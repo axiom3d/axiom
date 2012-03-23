@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -61,14 +63,14 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual bool Fire( object sender, T arg, Predicate<T> compare )
 		{
-			bool continueChain = true;
+			var continueChain = true;
 
 			// Assuming the multicast delegate is not null...
-			if ( this.EventSinks != null )
+			if ( EventSinks != null )
 			{
 				// Call the methods until one of them handles the event
 				// or all the methods in the delegate list are processed.
-				foreach ( EventHandler<T> sink in this.EventSinks.GetInvocationList() )
+				foreach ( EventHandler<T> sink in EventSinks.GetInvocationList() )
 				{
 					sink( sender, arg );
 					continueChain = compare( arg );

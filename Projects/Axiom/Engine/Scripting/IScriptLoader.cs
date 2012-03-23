@@ -80,17 +80,6 @@ namespace Axiom.Scripting
 		List<string> ScriptPatterns { get; }
 
 		/// <summary>
-		/// Gets the relative loading order of scripts of this type.
-		/// </summary>
-		/// <remarks>
-		/// There are dependencies between some kinds of scripts, and to enforce
-		/// this all implementors of this interface must define a loading order.
-		/// Returns a value representing the relative loading order of these scripts
-		/// compared to other script users, where higher values load later.
-		/// </remarks>
-		Real LoadingOrder { get; }
-
-		/// <summary>
 		/// Parse a script file.
 		/// </summary>
 		/// <param name="stream">reference to a data stream which is the source of the script</param>
@@ -100,5 +89,16 @@ namespace Axiom.Scripting
 		/// </param>
 		/// <param name="fileName"></param>
 		void ParseScript( Stream stream, string groupName, string fileName );
+
+		/// <summary>
+		/// Gets the relative loading order of scripts of this type.
+		/// </summary>
+		/// <remarks>
+		/// There are dependencies between some kinds of scripts, and to enforce
+		/// this all implementors of this interface must define a loading order.
+		/// Returns a value representing the relative loading order of these scripts
+		/// compared to other script users, where higher values load later.
+		/// </remarks>
+		Real LoadingOrder { get; }
 	};
 }

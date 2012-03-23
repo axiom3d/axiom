@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Math;
@@ -48,8 +50,6 @@ namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
-		#region Nested type: GpuSharedParameters
-
 		/// <summary>
 		/// A group of manually updated parameters that are shared between many parameter sets.
 		/// </summary>
@@ -110,7 +110,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return this.NamedConstants;
+					return NamedConstants;
 				}
 			}
 
@@ -194,32 +194,30 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790, "will not expose ConstantDefinitionIterator" )]
 			public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
 			{
-				if ( this.NamedConstants.Map.ContainsKey( name ) )
+				if ( NamedConstants.Map.ContainsKey( name ) )
 				{
 					throw new Exception( string.Format( "Constant entry with name '{0}' allready exists.", name ) );
 				}
 
 				var def = new GpuConstantDefinition
-						  {
-							  ArraySize = arrraySize,
-							  ConstantType = constType, // for compatibility we do not pad values to multiples of 4
-							  // when it comes to arrays, user is responsible for creating matching defs
-							  ElementSize = GpuConstantDefinition.GetElementSize( constType, false ), // not used
-							  LogicalIndex = 0,
-							  Variability = GpuParamVariability.Global
-						  };
+				          {
+				          	ArraySize = arrraySize, ConstantType = constType, // for compatibility we do not pad values to multiples of 4
+				          	// when it comes to arrays, user is responsible for creating matching defs
+				          	ElementSize = GpuConstantDefinition.GetElementSize( constType, false ), // not used
+				          	LogicalIndex = 0, Variability = GpuParamVariability.Global
+				          };
 
 				if ( def.IsFloat )
 				{
-					def.PhysicalIndex = this.FloatConstants.Count;
-					this.FloatConstants.Resize( this.FloatConstants.Count + def.ArraySize * def.ElementSize );
+					def.PhysicalIndex = FloatConstants.Count;
+					FloatConstants.Resize( FloatConstants.Count + def.ArraySize * def.ElementSize );
 				}
 				else
 				{
-					def.PhysicalIndex = this.IntConstants.Count;
-					this.IntConstants.Resize( this.IntConstants.Count + def.ArraySize * def.ElementSize );
+					def.PhysicalIndex = IntConstants.Count;
+					IntConstants.Resize( IntConstants.Count + def.ArraySize * def.ElementSize );
 				}
-				this.NamedConstants.Map.Add( name, def );
+				NamedConstants.Map.Add( name, def );
 
 				++Version;
 			}
@@ -235,15 +233,15 @@ namespace Axiom.Graphics
 			public virtual void RemoveConstantDefinition( string name )
 			{
 				GpuConstantDefinition def;
-				if ( !this.NamedConstants.Map.TryGetValue( name, out def ) )
+				if ( !NamedConstants.Map.TryGetValue( name, out def ) )
 				{
 					return;
 				}
 
-				bool isFloat = def.IsFloat;
-				int numElems = def.ElementSize * def.ArraySize;
+				var isFloat = def.IsFloat;
+				var numElems = def.ElementSize * def.ArraySize;
 
-				foreach ( GpuConstantDefinition otherDef in this.NamedConstants.Map.Values )
+				foreach ( var otherDef in NamedConstants.Map.Values )
 				{
 					// same type, and comes after in the buffer
 					if ( ( isFloat == otherDef.IsFloat ) && otherDef.PhysicalIndex > def.PhysicalIndex )
@@ -256,13 +254,13 @@ namespace Axiom.Graphics
 				// remove floats and reduce buffer
 				if ( isFloat )
 				{
-					this.NamedConstants.FloatBufferSize -= numElems;
-					this.FloatConstants.RemoveRange( def.PhysicalIndex, numElems );
+					NamedConstants.FloatBufferSize -= numElems;
+					FloatConstants.RemoveRange( def.PhysicalIndex, numElems );
 				}
 				else
 				{
-					this.NamedConstants.IntBufferSize -= numElems;
-					this.IntConstants.RemoveRange( def.PhysicalIndex, numElems );
+					NamedConstants.IntBufferSize -= numElems;
+					IntConstants.RemoveRange( def.PhysicalIndex, numElems );
 				}
 
 				++Version;
@@ -278,11 +276,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void RemoveAllConstantDefinitions()
 			{
-				this.NamedConstants.Map.Clear();
-				this.NamedConstants.FloatBufferSize = 0;
-				this.NamedConstants.IntBufferSize = 0;
-				this.FloatConstants.Clear();
-				this.IntConstants.Clear();
+				NamedConstants.Map.Clear();
+				NamedConstants.FloatBufferSize = 0;
+				NamedConstants.IntBufferSize = 0;
+				FloatConstants.Clear();
+				IntConstants.Clear();
 			}
 
 			#endregion
@@ -295,7 +293,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuConstantDefinition GetConstantDefinition( string name )
 			{
-				return this.NamedConstants.Map[ name ];
+				return NamedConstants.Map[ name ];
 			}
 
 			#endregion
@@ -306,36 +304,36 @@ namespace Axiom.Graphics
 			public void SetNamedConstant( string name, Real value )
 			{
 				SetNamedConstant( name, new float[]
-                                        {
-                                            value
-                                        } );
+				                        {
+				                        	value
+				                        } );
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, int value )
 			{
 				SetNamedConstant( name, new[]
-                                        {
-                                            value
-                                        } );
+				                        {
+				                        	value
+				                        } );
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Vector4 value )
 			{
 				SetNamedConstant( name, new float[]
-                                        {
-                                            value.x, value.y, value.z, value.w
-                                        } );
+				                        {
+				                        	value.x, value.y, value.z, value.w
+				                        } );
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Vector3 value )
 			{
 				SetNamedConstant( name, new float[]
-                                        {
-                                            value.x, value.y, value.z
-                                        } );
+				                        {
+				                        	value.x, value.y, value.z
+				                        } );
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
@@ -349,9 +347,9 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Matrix4[] value )
 			{
-				int size = value.Length * 16;
+				var size = value.Length * 16;
 				var floats = new float[ size ];
-				for ( int i = 0; i < value.Length; i++ )
+				for ( var i = 0; i < value.Length; i++ )
 				{
 					value[ i ].MakeFloatArray( floats, i * 16 );
 				}
@@ -362,13 +360,13 @@ namespace Axiom.Graphics
 			public void SetNamedConstant( string name, float[] value )
 			{
 				GpuConstantDefinition def;
-				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-					for ( int v = 0; v < count; v++ )
+					for ( var v = 0; v < count; v++ )
 					{
-						this.FloatConstants[ def.PhysicalIndex + v ] = value[ v ];
+						FloatConstants[ def.PhysicalIndex + v ] = value[ v ];
 					}
 				}
 
@@ -379,13 +377,13 @@ namespace Axiom.Graphics
 			public void SetNamedConstant( string name, double[] value )
 			{
 				GpuConstantDefinition def;
-				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-					for ( int v = 0; v < count; v++ )
+					for ( var v = 0; v < count; v++ )
 					{
-						this.FloatConstants[ def.PhysicalIndex + v ] = (float)value[ v ];
+						FloatConstants[ def.PhysicalIndex + v ] = (float)value[ v ];
 					}
 				}
 
@@ -404,13 +402,13 @@ namespace Axiom.Graphics
 			public void SetNamedConstant( string name, int[] value )
 			{
 				GpuConstantDefinition def;
-				if ( this.NamedConstants.Map.TryGetValue( name, out def ) )
+				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					int count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
 
-					for ( int v = 0; v < count; v++ )
+					for ( var v = 0; v < count; v++ )
 					{
-						this.IntConstants[ def.PhysicalIndex + v ] = value[ v ];
+						IntConstants[ def.PhysicalIndex + v ] = value[ v ];
 					}
 				}
 
@@ -444,7 +442,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<float>.FixedPointer GetFloatPointer( int pos )
 			{
-				return this.FloatConstants.Fix( pos );
+				return FloatConstants.Fix( pos );
 			}
 
 			#endregion
@@ -457,12 +455,10 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<int>.FixedPointer GetIntPointer( int pos )
 			{
-				return this.IntConstants.Fix( pos );
+				return IntConstants.Fix( pos );
 			}
 
 			#endregion
 		}
-
-		#endregion
 	};
 }

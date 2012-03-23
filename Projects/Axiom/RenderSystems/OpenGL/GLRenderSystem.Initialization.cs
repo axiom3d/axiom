@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.RenderSystems.OpenGL.ATI;
-using Axiom.RenderSystems.OpenGL.GLSL;
-using Axiom.RenderSystems.OpenGL.Nvidia;
 
 using Tao.OpenGl;
 
@@ -21,17 +20,17 @@ namespace Axiom.RenderSystems.OpenGL
 		private void InitializeContext( RenderTarget primary )
 		{
 			// Set main and current context
-			this._mainContext = (GLContext)primary[ "GLCONTEXT" ];
-			this._currentContext = this._mainContext;
+			_mainContext = (GLContext)primary[ "GLCONTEXT" ];
+			_currentContext = _mainContext;
 
 			// Set primary context as active
-			if ( this._currentContext != null )
+			if ( _currentContext != null )
 			{
-				this._currentContext.SetCurrent();
+				_currentContext.SetCurrent();
 			}
 
 			// Setup GLSupport
-			this._glSupport.InitializeExtensions();
+			_glSupport.InitializeExtensions();
 
 			LogManager.Instance.Write( "***************************" );
 			LogManager.Instance.Write( "*** GL Renderer Started ***" );
@@ -67,23 +66,23 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// create the window
-			RenderWindow window = this._glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
+			var window = _glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
 
 			// add the new render target
 			AttachRenderTarget( window );
 
-			if ( !this._glInitialised )
+			if ( !_glInitialised )
 			{
 				InitializeContext( window );
 
-				string _glSupportVersion = this._glSupport.Version.Split( new[]
-                                                                          {
-                                                                              ' '
-                                                                          } )[ 0 ];
-				string[] tokens = _glSupportVersion.Split( new[]
-                                                           {
-                                                               '.'
-                                                           } );
+				var _glSupportVersion = _glSupport.Version.Split( new[]
+				                                                  {
+				                                                  	' '
+				                                                  } )[ 0 ];
+				var tokens = _glSupportVersion.Split( new[]
+				                                      {
+				                                      	'.'
+				                                      } );
 
 				if ( tokens.Length != 0 )
 				{
@@ -116,9 +115,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Initialise the main context
 				OneTimeContextInitialization();
-				if ( this._currentContext != null )
+				if ( _currentContext != null )
 				{
-					this._currentContext.Initialized = true;
+					_currentContext.Initialized = true;
 				}
 			}
 
@@ -152,7 +151,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// set texture the number of texture units
-			this._fixedFunctionTextureUnits = caps.TextureUnitCount;
+			_fixedFunctionTextureUnits = caps.TextureUnitCount;
 
 			//In GL there can be less fixed function texture units than general
 			//texture units. Get the minimum of the two.
@@ -160,73 +159,73 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				int maxTexCoords;
 				Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_COORDS_ARB, out maxTexCoords );
-				if ( this._fixedFunctionTextureUnits > maxTexCoords )
+				if ( _fixedFunctionTextureUnits > maxTexCoords )
 				{
-					this._fixedFunctionTextureUnits = maxTexCoords;
+					_fixedFunctionTextureUnits = maxTexCoords;
 				}
 			}
 
 			/* Axiom: assume that OpenTK/Tao does this already
-			 * otherwise we will need to use delegates for these gl calls ..
-			 * 
-			if (caps.HasCapability(Graphics.Capabilities.GL15NoVbo))
-			{
-				// Assign ARB functions same to GL 1.5 version since
-				// interface identical
+             * otherwise we will need to use delegates for these gl calls ..
+             * 
+            if (caps.HasCapability(Graphics.Capabilities.GL15NoVbo))
+            {
+                // Assign ARB functions same to GL 1.5 version since
+                // interface identical
 
-				Gl.glBindBufferARB = Gl.glBindBuffer;
-				Gl.glBufferDataARB = Gl.glBufferData;
-				Gl.glBufferSubDataARB = Gl.glBufferSubData;
-				Gl.glDeleteBuffersARB = Gl.glDeleteBuffers;
-				Gl.glGenBuffersARB = Gl.glGenBuffers;
-				Gl.glGetBufferParameterivARB = Gl.glGetBufferParameteriv;
-				Gl.glGetBufferPointervARB = Gl.glGetBufferPointerv;
-				Gl.glGetBufferSubDataARB = Gl.glGetBufferSubData;
-				Gl.glIsBufferARB = Gl.glIsBuffer;
-				Gl.glMapBufferARB = Gl.glMapBuffer;
-				Gl.glUnmapBufferARB = Gl.glUnmapBuffer;
-			}
-			 */
+                Gl.glBindBufferARB = Gl.glBindBuffer;
+                Gl.glBufferDataARB = Gl.glBufferData;
+                Gl.glBufferSubDataARB = Gl.glBufferSubData;
+                Gl.glDeleteBuffersARB = Gl.glDeleteBuffers;
+                Gl.glGenBuffersARB = Gl.glGenBuffers;
+                Gl.glGetBufferParameterivARB = Gl.glGetBufferParameteriv;
+                Gl.glGetBufferPointervARB = Gl.glGetBufferPointerv;
+                Gl.glGetBufferSubDataARB = Gl.glGetBufferSubData;
+                Gl.glIsBufferARB = Gl.glIsBuffer;
+                Gl.glMapBufferARB = Gl.glMapBuffer;
+                Gl.glUnmapBufferARB = Gl.glUnmapBuffer;
+            }
+             */
 
 			if ( caps.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 			{
-				this._hardwareBufferManager = new GLHardwareBufferManager();
+				_hardwareBufferManager = new GLHardwareBufferManager();
 			}
 			else
 			{
-				this._hardwareBufferManager = new GLDefaultHardwareBufferManager();
+				_hardwareBufferManager = new GLDefaultHardwareBufferManager();
 			}
 
 			// XXX Need to check for nv2 support and make a program manager for it
 			// XXX Probably nv1 as well for older cards
 			// GPU Program Manager setup
-			this.gpuProgramMgr = new GLGpuProgramManager();
+			gpuProgramMgr = new GLGpuProgramManager();
 
 			if ( caps.HasCapability( Graphics.Capabilities.VertexPrograms ) )
 			{
 				if ( caps.IsShaderProfileSupported( "arbvp1" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "vp30" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "vp40" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "gp4vp" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "gp4vp", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "gp4vp", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "gpu_vp" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "gpu_vp", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "gpu_vp", new ARBGpuProgramFactory() );
 				}
 			}
 
@@ -235,15 +234,15 @@ namespace Axiom.RenderSystems.OpenGL
 				//TODO : Should these be createGLArbGpuProgram or createGLGpuNVparseProgram?
 				if ( caps.IsShaderProfileSupported( "nvgp4" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "nvgp4", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "nvgp4", new ARBGpuProgramFactory() );
 				}
 				if ( caps.IsShaderProfileSupported( "gp4gp" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "gp4gp", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "gp4gp", new ARBGpuProgramFactory() );
 				}
 				if ( caps.IsShaderProfileSupported( "gpu_gp" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "gpu_gp", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "gpu_gp", new ARBGpuProgramFactory() );
 				}
 			}
 
@@ -251,78 +250,78 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( caps.IsShaderProfileSupported( "fp20" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "fp20", new NvparseProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_4" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATIFragmentShaderFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_3" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATIFragmentShaderFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_2" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATIFragmentShaderFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_1" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATIFragmentShaderFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "arbfp1" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "fp40" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "fp30" ) )
 				{
-					this.gpuProgramMgr.RegisterProgramFactory( "fp30", new ARBGpuProgramFactory() );
+					gpuProgramMgr.RegisterProgramFactory( "fp30", new ARBGpuProgramFactory() );
 				}
 			}
 
 			if ( caps.IsShaderProfileSupported( "glsl" ) )
 			{
 				// NFZ - check for GLSL vertex and fragment shader support successful
-				this._GLSLProgramFactory = new GLSLProgramFactory();
-				HighLevelGpuProgramManager.Instance.AddFactory( this._GLSLProgramFactory );
+				_GLSLProgramFactory = new GLSL.GLSLProgramFactory();
+				HighLevelGpuProgramManager.Instance.AddFactory( _GLSLProgramFactory );
 				LogManager.Instance.Write( "GLSL support detected" );
 			}
 
 			/* Axiom: assume that OpenTK/Tao does this already
-			 * otherwise we will need to use delegates for these gl calls ..
-			 * 
-			if ( caps.HasCapability( Graphics.Capabilities.HardwareOcculusion ) )
-			{
-				if ( caps.HasCapability( Graphics.Capabilities.GL15NoHardwareOcclusion ) )
-				{
-					// Assign ARB functions same to GL 1.5 version since
-					// interface identical
-					Gl.glBeginQueryARB = Gl.glBeginQuery;
-					Gl.glDeleteQueriesARB = Gl.glDeleteQueries;
-					Gl.glEndQueryARB = Gl.glEndQuery;
-					Gl.glGenQueriesARB = Gl.glGenQueries;
-					Gl.glGetQueryObjectivARB = Gl.glGetQueryObjectiv;
-					Gl.glGetQueryObjectuivARB = Gl.glGetQueryObjectuiv;
-					Gl.glGetQueryivARB = Gl.glGetQueryiv;
-					Gl.glIsQueryARB = Gl.glIsQuery;
-				}
-			}
-			 */
+             * otherwise we will need to use delegates for these gl calls ..
+             * 
+            if ( caps.HasCapability( Graphics.Capabilities.HardwareOcculusion ) )
+            {
+                if ( caps.HasCapability( Graphics.Capabilities.GL15NoHardwareOcclusion ) )
+                {
+                    // Assign ARB functions same to GL 1.5 version since
+                    // interface identical
+                    Gl.glBeginQueryARB = Gl.glBeginQuery;
+                    Gl.glDeleteQueriesARB = Gl.glDeleteQueries;
+                    Gl.glEndQueryARB = Gl.glEndQuery;
+                    Gl.glGenQueriesARB = Gl.glGenQueries;
+                    Gl.glGetQueryObjectivARB = Gl.glGetQueryObjectiv;
+                    Gl.glGetQueryObjectuivARB = Gl.glGetQueryObjectuiv;
+                    Gl.glGetQueryivARB = Gl.glGetQueryiv;
+                    Gl.glIsQueryARB = Gl.glIsQuery;
+                }
+            }
+             */
 
 			// Do this after extension function pointers are initialised as the extension
 			// is used to probe further capabilities.
 			ConfigOption cfi;
-			int rttMode = 0;
+			var rttMode = 0;
 			if ( ConfigOptions.TryGetValue( "RTT Preferred Mode", out cfi ) )
 			{
 				if ( cfi.Value == "PBuffer" )
@@ -349,7 +348,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// Create FBO manager
 					LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-					this.rttManager = new GLFBORTTManager( this._glSupport, false );
+					rttManager = new GLFBORTTManager( _glSupport, false );
 					caps.SetCapability( Graphics.Capabilities.RTTSerperateDepthBuffer );
 
 					//TODO: Check if we're using OpenGL 3.0 and add RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL flag
@@ -363,7 +362,7 @@ namespace Axiom.RenderSystems.OpenGL
 					if ( caps.HasCapability( Graphics.Capabilities.HardwareRenderToTexture ) )
 					{
 						// Use PBuffers
-						this.rttManager = new GLPBRTTManager( this._glSupport, primary );
+						rttManager = new GLPBRTTManager( _glSupport, primary );
 						LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
 
 						//TODO: Depth buffer sharing in pbuffer is left unsupported
@@ -372,7 +371,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					this.rttManager = new GLCopyingRTTManager( this._glSupport );
+					rttManager = new GLCopyingRTTManager( _glSupport );
 					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
 					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
 
@@ -385,16 +384,16 @@ namespace Axiom.RenderSystems.OpenGL
 				caps.MultiRenderTargetCount = 1;
 			}
 
-			Log defaultLog = LogManager.Instance.DefaultLog;
+			var defaultLog = LogManager.Instance.DefaultLog;
 			if ( defaultLog != null )
 			{
 				caps.Log( defaultLog );
 			}
 
 			// Create the texture manager        
-			textureManager = new GLTextureManager( this._glSupport );
+			textureManager = new GLTextureManager( _glSupport );
 
-			this._glInitialised = true;
+			_glInitialised = true;
 		}
 
 		#endregion

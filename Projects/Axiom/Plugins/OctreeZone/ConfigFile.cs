@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Xml;
+using System.Collections;
+using System.Xml.Linq;
 
 #endregion Namespace Declarations
 
@@ -47,11 +49,11 @@ namespace OctreeZone
 {
 	public class ConfigFile
 	{
-		private readonly string baseSchema;
+		private string baseSchema;
 
 		public ConfigFile( string baseSchemaName )
 		{
-			this.baseSchema = baseSchemaName;
+			baseSchema = baseSchemaName;
 		}
 
 #if SILVERLIGHT || WINDOWS_PHONE
@@ -82,11 +84,11 @@ namespace OctreeZone
             }
 		}
 #else
-		private readonly XmlDocument _doc = new XmlDocument();
+		private XmlDocument _doc = new XmlDocument();
 
 		public bool Load( Stream stream )
 		{
-			this._doc.Load( stream );
+			_doc.Load( stream );
 			return true;
 		}
 
@@ -94,18 +96,18 @@ namespace OctreeZone
 		{
 			get
 			{
-				return this._doc[ this.baseSchema ][ key ].InnerText;
+				return _doc[ baseSchema ][ key ].InnerText;
 			}
 		}
 
 		public IEnumerable GetEnumerator()
 		{
-			foreach ( XmlElement el in this._doc[ this.baseSchema ] )
+			foreach ( XmlElement el in _doc[ baseSchema ] )
 			{
-				yield return new[]
-                             {
-                                 el.Name, el.InnerText
-                             };
+				yield return new string[]
+				             {
+				             	el.Name, el.InnerText
+				             };
 			}
 		}
 #endif

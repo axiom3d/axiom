@@ -37,8 +37,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Math;
+using System;
+
+using Axiom.Core;
 using Axiom.ParticleSystems;
+using Axiom.Math;
+using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
@@ -59,11 +63,11 @@ namespace Axiom.ParticleFX
 		#endregion Fields
 
 		public AreaEmitter( ParticleSystem ps )
-			: base( ps ) { }
+			: base( ps ) {}
 
 		#region Properties
 
-		public override Vector3 Direction
+		public override Axiom.Math.Vector3 Direction
 		{
 			get
 			{
@@ -82,11 +86,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.size;
+				return size;
 			}
 			set
 			{
-				this.size = value;
+				size = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -95,11 +99,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.size.x;
+				return size.x;
 			}
 			set
 			{
-				this.size.x = value;
+				size.x = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -108,11 +112,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.size.y;
+				return size.y;
 			}
 			set
 			{
-				this.size.y = value;
+				size.y = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -121,11 +125,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.size.z;
+				return size.z;
 			}
 			set
 			{
-				this.size.z = value;
+				size.z = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -138,9 +142,9 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 left = up.Cross( direction );
 
-			this.xRange = left * ( this.size.x * 0.5f );
-			this.yRange = up * ( this.size.y * 0.5f );
-			this.zRange = direction * ( this.size.z * 0.5f );
+			xRange = left * ( size.x * 0.5f );
+			yRange = up * ( size.y * 0.5f );
+			zRange = direction * ( size.z * 0.5f );
 		}
 
 		protected void InitDefaults( string type )
@@ -148,7 +152,7 @@ namespace Axiom.ParticleFX
 			// TODO: Revisit this
 			direction = Vector3.UnitZ;
 			up = Vector3.UnitZ;
-			Size = new Vector3( 50, 50, 0 );
+			this.Size = new Vector3( 50, 50, 0 );
 			this.type = type;
 		}
 

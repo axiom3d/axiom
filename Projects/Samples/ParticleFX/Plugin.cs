@@ -41,16 +41,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.ParticleFX
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private ParticleFXSample _sample;
 
 		public override void Initialize()
 		{
-			this._sample = new ParticleFXSample();
-			Name = this._sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this._sample );
+			_sample = new ParticleFXSample();
+			Name = _sample.Metadata[ "Title" ] + " Sample";
+			AddSample( _sample );
 		}
 	};
 }

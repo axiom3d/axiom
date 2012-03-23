@@ -52,25 +52,25 @@ namespace Axiom.ParticleFX
 	public class ColorFaderAffector : ParticleAffector
 	{
 		protected float alphaAdjust;
-		protected float blueAdjust;
-		protected float greenAdjust;
 		protected float redAdjust;
+		protected float greenAdjust;
+		protected float blueAdjust;
 
 		public ColorFaderAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			type = "ColourFader";
+			this.type = "ColourFader";
 		}
 
 		public float AlphaAdjust
 		{
 			get
 			{
-				return this.alphaAdjust;
+				return alphaAdjust;
 			}
 			set
 			{
-				this.alphaAdjust = value;
+				alphaAdjust = value;
 			}
 		}
 
@@ -78,11 +78,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.redAdjust;
+				return redAdjust;
 			}
 			set
 			{
-				this.redAdjust = value;
+				redAdjust = value;
 			}
 		}
 
@@ -90,11 +90,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.greenAdjust;
+				return greenAdjust;
 			}
 			set
 			{
-				this.greenAdjust = value;
+				greenAdjust = value;
 			}
 		}
 
@@ -102,11 +102,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return this.blueAdjust;
+				return blueAdjust;
 			}
 			set
 			{
-				this.blueAdjust = value;
+				blueAdjust = value;
 			}
 		}
 
@@ -127,22 +127,22 @@ namespace Axiom.ParticleFX
 			return component;
 		}
 
-		public override void InitParticle( ref Particle particle ) { }
+		public override void InitParticle( ref Particle particle ) {}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float da, dr, dg, db;
 
-			da = this.alphaAdjust * timeElapsed;
-			dr = this.redAdjust * timeElapsed;
-			dg = this.greenAdjust * timeElapsed;
-			db = this.blueAdjust * timeElapsed;
+			da = alphaAdjust * timeElapsed;
+			dr = redAdjust * timeElapsed;
+			dg = greenAdjust * timeElapsed;
+			db = blueAdjust * timeElapsed;
 
 			// loop through the particles
 
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = system.Particles[ i ];
+				Particle p = (Particle)system.Particles[ i ];
 
 				// adjust the values with clamping ([0,1] in this case)
 				p.Color.a = AdjustWithClamp( p.Color.a, da );
@@ -154,101 +154,85 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		#region Nested type: AlphaCommand
-
-		[ScriptableProperty( "alpha", "Alpha component.", typeof( ParticleAffector ) )]
-		public class AlphaCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public string Get( object target )
-			{
-				var affector = target as ColorFaderAffector;
-				return StringConverter.ToString( affector.AlphaAdjust );
-			}
-
-			public void Set( object target, string val )
-			{
-				var affector = target as ColorFaderAffector;
-				affector.AlphaAdjust = StringConverter.ParseFloat( val );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: BlueCommand
-
-		[ScriptableProperty( "blue", "Blue component.", typeof( ParticleAffector ) )]
-		public class BlueCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public string Get( object target )
-			{
-				var affector = target as ColorFaderAffector;
-				return StringConverter.ToString( affector.BlueAdjust );
-			}
-
-			public void Set( object target, string val )
-			{
-				var affector = target as ColorFaderAffector;
-				affector.BlueAdjust = StringConverter.ParseFloat( val );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: GreenCommand
-
-		[ScriptableProperty( "green", "Green component.", typeof( ParticleAffector ) )]
-		public class GreenCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public string Get( object target )
-			{
-				var affector = target as ColorFaderAffector;
-				return StringConverter.ToString( affector.GreenAdjust );
-			}
-
-			public void Set( object target, string val )
-			{
-				var affector = target as ColorFaderAffector;
-				affector.GreenAdjust = StringConverter.ParseFloat( val );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: RedCommand
-
-		[ScriptableProperty( "red", "Red component.", typeof( ParticleAffector ) )]
+		[ScriptableProperty( "red", "Red component.", typeof ( ParticleAffector ) )]
 		public class RedCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				var affector = target as ColorFaderAffector;
+				ColorFaderAffector affector = target as ColorFaderAffector;
 				return StringConverter.ToString( affector.RedAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				var affector = target as ColorFaderAffector;
+				ColorFaderAffector affector = target as ColorFaderAffector;
 				affector.RedAdjust = StringConverter.ParseFloat( val );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
-		#endregion
+		[ScriptableProperty( "green", "Green component.", typeof ( ParticleAffector ) )]
+		public class GreenCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				return StringConverter.ToString( affector.GreenAdjust );
+			}
+
+			public void Set( object target, string val )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				affector.GreenAdjust = StringConverter.ParseFloat( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		[ScriptableProperty( "blue", "Blue component.", typeof ( ParticleAffector ) )]
+		public class BlueCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				return StringConverter.ToString( affector.BlueAdjust );
+			}
+
+			public void Set( object target, string val )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				affector.BlueAdjust = StringConverter.ParseFloat( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
+
+		[ScriptableProperty( "alpha", "Alpha component.", typeof ( ParticleAffector ) )]
+		public class AlphaCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
+
+			public string Get( object target )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				return StringConverter.ToString( affector.AlphaAdjust );
+			}
+
+			public void Set( object target, string val )
+			{
+				ColorFaderAffector affector = target as ColorFaderAffector;
+				affector.AlphaAdjust = StringConverter.ParseFloat( val );
+			}
+
+			#endregion IPropertyCommand Members
+		}
 
 		#endregion Command definition classes
 	}

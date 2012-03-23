@@ -103,7 +103,7 @@ namespace Axiom.Media
 				return 0;
 			}
 
-			int result = 0;
+			var result = 0;
 			while ( ( mask & 1 ) == 0 )
 			{
 				++result;
@@ -127,18 +127,18 @@ namespace Axiom.Media
 			srcValue = srcValue & srcBitMask;
 
 			// Shift source down to bottom of DWORD
-			int srcBitShift = GetBitShift( srcBitMask );
+			var srcBitShift = GetBitShift( srcBitMask );
 			srcValue >>= srcBitShift;
 
 			// Get max value possible in source from srcMask
-			int srcMax = srcBitMask >> srcBitShift;
+			var srcMax = srcBitMask >> srcBitShift;
 
 			// Get max available in dest
-			int destBitShift = GetBitShift( destBitMask );
-			int destMax = destBitMask >> destBitShift;
+			var destBitShift = GetBitShift( destBitMask );
+			var destMax = destBitMask >> destBitShift;
 
 			// Scale source value into destination, and shift back
-			int destValue = ( srcValue * destMax ) / srcMax;
+			var destValue = ( srcValue * destMax ) / srcMax;
 			return ( destValue << destBitShift );
 		}
 
@@ -201,7 +201,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static float FixedToFloat( uint value, int bits )
 		{
-			return value / (float)( ( 1u << bits ) - 1 );
+			return (float)value / (float)( ( 1u << bits ) - 1 );
 		}
 
 		/// <summary>
@@ -225,7 +225,7 @@ namespace Axiom.Media
 						break;
 
 					case 3:
-						byte* d = dest.ToBytePointer();
+						var d = dest.ToBytePointer();
 #if AXIOM_BIG_ENDIAN
                         d[ 0 ] = (byte)( ( value >> 16 ) & 0xFF );
                         d[ 1 ] = (byte)( ( value >> 8 ) & 0xFF );
@@ -263,7 +263,7 @@ namespace Axiom.Media
 						return src.ToUShortPointer()[ 0 ];
 
 					case 3:
-						byte* s = src.ToBytePointer();
+						var s = src.ToBytePointer();
 #if AXIOM_BIG_ENDIAN
                         return (uint)( s[ 0 ] << 16 |
                                        ( s[ 1 ] << 8 ) |
@@ -287,9 +287,9 @@ namespace Axiom.Media
 		public static ushort FloatToHalf( float f )
 		{
 			return FloatToHalfI( new FourByte
-								 {
-									 Float = f
-								 }.UInt );
+			                     {
+			                     	Float = f
+			                     }.UInt );
 		}
 
 		///<summary>
@@ -298,9 +298,9 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static ushort FloatToHalfI( uint i )
 		{
-			int s = (int)( i >> 16 ) & 0x00008000;
-			int e = (int)( ( i >> 23 ) & 0x000000ff ) - ( 127 - 15 );
-			int m = (int)i & 0x007fffff;
+			var s = (int)( i >> 16 ) & 0x00008000;
+			var e = (int)( ( i >> 23 ) & 0x000000ff ) - ( 127 - 15 );
+			var m = (int)i & 0x007fffff;
 
 			if ( e <= 0 )
 			{
@@ -343,9 +343,9 @@ namespace Axiom.Media
 		public static float HalfToFloat( ushort y )
 		{
 			return new FourByte
-				   {
-					   UInt = HalfToFloatI( y )
-				   }.Float;
+			       {
+			       	UInt = HalfToFloatI( y )
+			       }.Float;
 		}
 
 		///<summary>
@@ -356,9 +356,9 @@ namespace Axiom.Media
 		public static uint HalfToFloatI( ushort y )
 		{
 			var yuint = (uint)y;
-			uint s = ( yuint >> 15 ) & 0x00000001;
-			uint e = ( yuint >> 10 ) & 0x0000001f;
-			uint m = yuint & 0x000003ff;
+			var s = ( yuint >> 15 ) & 0x00000001;
+			var e = ( yuint >> 10 ) & 0x0000001f;
+			var m = yuint & 0x000003ff;
 
 			if ( e == 0 )
 			{

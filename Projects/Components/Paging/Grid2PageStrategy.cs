@@ -80,12 +80,12 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public Grid2PageStrategy( PageManager manager )
-			: base( "Grid2D", manager ) { }
+			: base( "Grid2D", manager ) {}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void NotifyCamera( Camera cam, PagedWorldSection section )
 		{
-			var stratData = (Grid2DPageStrategyData)section.StrategyData;
+			Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)section.StrategyData;
 
 			Vector3 pos = cam.DerivedPosition;
 			Vector2 gridpos = Vector2.Zero;
@@ -96,10 +96,10 @@ namespace Axiom.Components.Paging
 			Real loadRadius = stratData.LoadRadiusInCells;
 			Real holdRadius = stratData.HoldRadiusInCells;
 			//scan the whole hold range
-			Real fxmin = x - holdRadius;
-			Real fxmax = x + holdRadius;
-			Real fymin = y - holdRadius;
-			Real fymax = y + holdRadius;
+			Real fxmin = (Real)x - holdRadius;
+			Real fxmax = (Real)x + holdRadius;
+			Real fymin = (Real)y - holdRadius;
+			Real fymax = (Real)y + holdRadius;
 
 			int xmin = stratData.CellRangeMinX;
 			int xmax = stratData.CellRangeMaxX;
@@ -112,10 +112,10 @@ namespace Axiom.Components.Paging
 			ymin = fymin < ymin ? ymin : (int)System.Math.Floor( fymin );
 			ymax = fymax > ymax ? ymax : (int)System.Math.Ceiling( fymax );
 			// the inner, active load range
-			fxmin = x - loadRadius;
-			fxmax = x + loadRadius;
-			fymin = y - loadRadius;
-			fymax = y + loadRadius;
+			fxmin = (Real)x - loadRadius;
+			fxmax = (Real)x + loadRadius;
+			fymin = (Real)y - loadRadius;
+			fymax = (Real)y + loadRadius;
 			// Round UP max, round DOWN min
 			int loadxmin = fxmin < xmin ? xmin : (int)System.Math.Floor( fxmin );
 			int loadxmax = fxmax > xmax ? xmax : (int)System.Math.Ceiling( fxmax );
@@ -164,10 +164,10 @@ namespace Axiom.Components.Paging
 				// wouldn't easily deal with paging parameter changes. There shouldn't 
 				// be that many pages anyway, and this is debug after all, so update every time
 				int x, y;
-				var stratData = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
+				Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
 				stratData.CalculateCell( p.PageID, out x, out y );
 
-				var data = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
+				Grid2DPageStrategyData data = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
 
 				// Determine our centre point, we'll anchor here
 				// Note that world points are initialised to ZERO since only 2 dimensions
@@ -179,8 +179,8 @@ namespace Axiom.Components.Paging
 
 				sn.Position = worldMidPoint;
 
-				var gridCorners = new Vector2[ 4 ];
-				var worldCorners = new Vector3[ 4 ];
+				Vector2[] gridCorners = new Vector2[ 4 ];
+				Vector3[] worldCorners = new Vector3[ 4 ];
 
 				data.GetCornersGridSpace( x, y, ref gridCorners );
 				for ( int i = 0; i < 4; ++i )
@@ -192,7 +192,7 @@ namespace Axiom.Components.Paging
 				}
 
 				string matName = "Axiom/G2D/Debug";
-				var mat = (Material)MaterialManager.Instance.GetByName( matName );
+				Material mat = (Material)MaterialManager.Instance.GetByName( matName );
 				if ( mat == null )
 				{
 					mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.DefaultResourceGroupName );
@@ -234,7 +234,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override PageID GetPageID( Vector3 worldPos, PagedWorldSection section )
 		{
-			var stratData = (Grid2DPageStrategyData)section.StrategyData;
+			Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)section.StrategyData;
 
 			Vector2 gridpos = Vector2.Zero;
 			stratData.ConvertWorldToGridSpace( worldPos, ref gridpos );

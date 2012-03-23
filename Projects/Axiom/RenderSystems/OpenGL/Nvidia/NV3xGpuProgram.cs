@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Text;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -76,6 +76,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 		#endregion Constructor
 
+		#region GpuProgram Members
+
 		/// <summary>
 		///     Loads NV3x level assembler programs into the hardware.
 		/// </summary>
@@ -85,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-			Gl.glLoadProgramNV( programType, programId, Source.Length, Encoding.ASCII.GetBytes( Source ) ); // TAO 2.0
+			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) ); // TAO 2.0
 			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
@@ -115,6 +117,10 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glDeleteProgramsNV( 1, ref programId );
 		}
 
+		#endregion GpuProgram Members
+
+		#region GLGpuProgram Members
+
 		/// <summary>
 		///     Binds an NV program.
 		/// </summary>
@@ -135,6 +141,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			// disable this program type
 			Gl.glDisable( programType );
 		}
+
+		#endregion GLGpuProgram Members
 	}
 
 	/// <summary>
@@ -151,6 +159,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 		}
 
 		#endregion Constructor
+
+		#region GpuProgram Members
 
 		/// <summary>
 		///     Binds params by index to the vp30 program.
@@ -186,6 +196,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 			return parms;
 		}
+
+		#endregion GpuProgram Members
 	}
 
 	/// <summary>
@@ -222,18 +234,18 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 					if ( name != null )
 					{
 						using (var entry = parms.GetFloatPointer( index ))
-						{
+					    {
 
-							// send the params 4 at a time
-							throw new AxiomException( "Update this!" );
-							Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ),
-															 entry.Pointer ); // TAO 2.0
-							//Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
-						}
+					        // send the params 4 at a time
+					        throw new AxiomException( "Update this!" );
+					        Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ),
+					                                         entry.Pointer ); // TAO 2.0
+					        //Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					    }
 					}
 				}
 			}
-			 */
+             */
 		}
 
 		#endregion GpuProgram members

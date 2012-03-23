@@ -6,13 +6,14 @@ using System.ComponentModel.Composition;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Math;
+using Axiom.ParticleSystems;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Demos
 {
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class SkyDome : TechDemo
 	{
@@ -20,7 +21,7 @@ namespace Axiom.Demos
 
 		private float curvature = 1;
 		private float tiling = 15;
-		private float timeDelay;
+		private float timeDelay = 0;
 		private Entity ogre;
 
 		#endregion Fields
@@ -35,42 +36,42 @@ namespace Axiom.Demos
 
 			bool updateSky = false;
 
-			if ( input.IsKeyPressed( KeyCodes.H ) && this.timeDelay <= 0 )
+			if ( input.IsKeyPressed( KeyCodes.H ) && timeDelay <= 0 )
 			{
-				this.curvature += 1;
-				this.timeDelay = 0.1f;
+				curvature += 1;
+				timeDelay = 0.1f;
 				updateSky = true;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.G ) && this.timeDelay <= 0 )
+			if ( input.IsKeyPressed( KeyCodes.G ) && timeDelay <= 0 )
 			{
-				this.curvature -= 1;
-				this.timeDelay = 0.1f;
+				curvature -= 1;
+				timeDelay = 0.1f;
 				updateSky = true;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.U ) && this.timeDelay <= 0 )
+			if ( input.IsKeyPressed( KeyCodes.U ) && timeDelay <= 0 )
 			{
-				this.tiling += 1;
-				this.timeDelay = 0.1f;
+				tiling += 1;
+				timeDelay = 0.1f;
 				updateSky = true;
 			}
 
-			if ( input.IsKeyPressed( KeyCodes.Y ) && this.timeDelay <= 0 )
+			if ( input.IsKeyPressed( KeyCodes.Y ) && timeDelay <= 0 )
 			{
-				this.tiling -= 1;
-				this.timeDelay = 0.1f;
+				tiling -= 1;
+				timeDelay = 0.1f;
 				updateSky = true;
 			}
 
-			if ( this.timeDelay > 0 )
+			if ( timeDelay > 0 )
 			{
-				this.timeDelay -= evt.TimeSinceLastFrame;
+				timeDelay -= evt.TimeSinceLastFrame;
 			}
 
 			if ( updateSky )
 			{
-				scene.SetSkyDome( true, "Examples/CloudySky", this.curvature, this.tiling );
+				scene.SetSkyDome( true, "Examples/CloudySky", curvature, tiling );
 			}
 		}
 
@@ -89,7 +90,7 @@ namespace Axiom.Demos
 			light.Position = new Vector3( 20, 80, 50 );
 
 			// add a floor plane
-			var p = new Plane();
+			Plane p = new Plane();
 			p.Normal = Vector3.UnitY;
 			p.D = 200;
 			MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, p, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ );
@@ -99,8 +100,8 @@ namespace Axiom.Demos
 			floor.MaterialName = "Examples/RustySteel";
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( floor );
 
-			this.ogre = scene.CreateEntity( "Ogre", "ogrehead.mesh" );
-			scene.RootSceneNode.CreateChildSceneNode().AttachObject( this.ogre );
+			ogre = scene.CreateEntity( "Ogre", "ogrehead.mesh" );
+			scene.RootSceneNode.CreateChildSceneNode().AttachObject( ogre );
 		}
 
 		#endregion Methods

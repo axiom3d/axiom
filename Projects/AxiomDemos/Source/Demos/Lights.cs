@@ -1,13 +1,16 @@
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
 using Axiom.Controllers;
+using Axiom.Controllers.Canned;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -17,7 +20,7 @@ namespace Axiom.Demos
 	/// 	Summary description for Controllers.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class Lights : TechDemo
 	{
@@ -43,7 +46,7 @@ namespace Axiom.Demos
 		private IControllerValue<float> yellowLightFlasher;
 		private IControllerValue<float> greenLightFlasher;
 		private IControllerValue<float> blueLightFlasher;
-		private readonly List<AnimationState> animationStateList = new List<AnimationState>();
+		private List<AnimationState> animationStateList = new List<AnimationState>();
 
 		#endregion Member variables
 
@@ -68,7 +71,7 @@ namespace Axiom.Demos
 
 		private void setupLightTrails()
 		{
-			var dir = new Vector3( -1.0f, -1.0f, 0.5f );
+			Vector3 dir = new Vector3( -1.0f, -1.0f, 0.5f );
 			dir.Normalize();
 
 			Light l = scene.CreateLight( "light1" );
@@ -88,7 +91,7 @@ namespace Axiom.Demos
 			Animation anim = scene.CreateAnimation( "an1", 14 );
 			anim.InterpolationMode = InterpolationMode.Spline;
 			NodeAnimationTrack track = anim.CreateNodeTrack( 1, animNode );
-			var kf = (TransformKeyFrame)track.CreateKeyFrame( 0 );
+			TransformKeyFrame kf = (TransformKeyFrame)track.CreateKeyFrame( 0 );
 			kf.Translate = new Vector3( 50, 30, 0 );
 			kf = (TransformKeyFrame)track.CreateKeyFrame( 2 );
 			kf.Translate = new Vector3( 100, -30, 0 );
@@ -107,7 +110,7 @@ namespace Axiom.Demos
 
 			AnimationState animState = scene.CreateAnimationState( "an1" );
 			animState.IsEnabled = true;
-			this.animationStateList.Add( animState );
+			animationStateList.Add( animState );
 
 			trail.SetInitialColor( 0, new ColorEx( 1.0f, 1.0f, 0.8f, 0f ) );
 			trail.SetColorChange( 0, new ColorEx( 0.5f, 0.5f, 0.5f, 0.5f ) );
@@ -145,7 +148,7 @@ namespace Axiom.Demos
 
 			animState = scene.CreateAnimationState( "an2" );
 			animState.IsEnabled = true;
-			this.animationStateList.Add( animState );
+			animationStateList.Add( animState );
 
 			trail.SetInitialColor( 1, new ColorEx( 1.0f, 0.0f, 1.0f, 0.4f ) );
 			trail.SetColorChange( 1, new ColorEx( 0.5f, 0.5f, 0.5f, 0.5f ) );
@@ -167,7 +170,7 @@ namespace Axiom.Demos
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// move the billboards around a bit
-			foreach ( AnimationState anim in this.animationStateList )
+			foreach ( AnimationState anim in animationStateList )
 			{
 				anim.AddTime( evt.TimeSinceLastFrame );
 			}
@@ -179,8 +182,8 @@ namespace Axiom.Demos
 
 	public class LightFlasherControllerValue : IControllerValue<float>
 	{
-		private readonly Billboard billboard;
-		private readonly Light light;
+		private Billboard billboard;
+		private Light light;
 		private float intensity;
 		private ColorEx maxColor;
 
@@ -191,29 +194,29 @@ namespace Axiom.Demos
 			this.maxColor = maxColor;
 		}
 
-		#region IControllerValue<float> Members
+		#region IControllerValue Members
 
 		public float Value
 		{
 			get
 			{
-				return this.intensity;
+				return intensity;
 			}
 			set
 			{
-				this.intensity = value;
+				intensity = value;
 
-				var newColor = new ColorEx();
+				ColorEx newColor = new ColorEx();
 
-				newColor.r = this.maxColor.r * this.intensity;
-				newColor.g = this.maxColor.g * this.intensity;
-				newColor.b = this.maxColor.b * this.intensity;
+				newColor.r = maxColor.r * intensity;
+				newColor.g = maxColor.g * intensity;
+				newColor.b = maxColor.b * intensity;
 
-				this.billboard.Color = newColor;
-				this.light.Diffuse = newColor;
+				billboard.Color = newColor;
+				light.Diffuse = newColor;
 			}
 		}
 
-		#endregion
+		#endregion IControllerValue Members
 	}
 }

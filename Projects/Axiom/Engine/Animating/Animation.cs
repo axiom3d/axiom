@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -109,20 +110,11 @@ namespace Axiom.Animating
 	{
 		#region Member variables
 
-		/// <summary>Default interpolation mode of any animations.</summary>
-		protected static InterpolationMode defaultInterpolationMode;
-
-		/// <summary>default rotation interpolation mode of this animation.</summary>
-		protected static RotationInterpolationMode defaultRotationInterpolationMode;
-
-		/// <summary>Interpolation mode of this animation.</summary>
-		protected InterpolationMode interpolationMode;
+		/// <summary>Name of this animation.</summary>
+		protected string name;
 
 		/// <summary>The total length of this animation (sum of the tracks).</summary>
 		protected float length;
-
-		/// <summary>Name of this animation.</summary>
-		protected string name;
 
 		/// <summary>Collection of NodeAnimationTracks.</summary>
 		protected Dictionary<ushort, NodeAnimationTrack> nodeTrackList;
@@ -130,11 +122,20 @@ namespace Axiom.Animating
 		/// <summary>Collection of NumericAnimationTracks.</summary>
 		protected Dictionary<ushort, NumericAnimationTrack> numericTrackList;
 
+		/// <summary>Collection of VertexAnimationTracks.</summary>
+		protected Dictionary<ushort, VertexAnimationTrack> vertexTrackList;
+
+		/// <summary>Interpolation mode of this animation.</summary>
+		protected InterpolationMode interpolationMode;
+
 		/// <summary>Rotation interpolation mode of this animation.</summary>
 		protected RotationInterpolationMode rotationInterpolationMode;
 
-		/// <summary>Collection of VertexAnimationTracks.</summary>
-		protected Dictionary<ushort, VertexAnimationTrack> vertexTrackList;
+		/// <summary>Default interpolation mode of any animations.</summary>
+		protected static InterpolationMode defaultInterpolationMode;
+
+		/// <summary>default rotation interpolation mode of this animation.</summary>
+		protected static RotationInterpolationMode defaultRotationInterpolationMode;
 
 		#endregion
 
@@ -159,8 +160,8 @@ namespace Axiom.Animating
 			this.length = length;
 
 			// use the default interpolation modes
-			this.interpolationMode = DefaultInterpolationMode;
-			this.rotationInterpolationMode = DefaultRotationInterpolationMode;
+			this.interpolationMode = Animation.DefaultInterpolationMode;
+			this.rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
 
 			// Create the track lists
 			this.nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
@@ -179,7 +180,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.name;
+				return name;
 			}
 		}
 
@@ -190,7 +191,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.length;
+				return length;
 			}
 		}
 
@@ -201,11 +202,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.interpolationMode;
+				return interpolationMode;
 			}
 			set
 			{
-				this.interpolationMode = value;
+				interpolationMode = value;
 			}
 		}
 
@@ -216,11 +217,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.rotationInterpolationMode;
+				return rotationInterpolationMode;
 			}
 			set
 			{
-				this.rotationInterpolationMode = value;
+				rotationInterpolationMode = value;
 			}
 		}
 
@@ -232,7 +233,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.nodeTrackList;
+				return nodeTrackList;
 			}
 		}
 
@@ -244,7 +245,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.numericTrackList;
+				return numericTrackList;
 			}
 		}
 
@@ -256,7 +257,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.vertexTrackList;
+				return vertexTrackList;
 			}
 		}
 
@@ -304,7 +305,7 @@ namespace Axiom.Animating
 			var track = new NodeAnimationTrack( this, handle );
 
 			// add the track to the list
-			this.nodeTrackList[ handle ] = track;
+			nodeTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -318,7 +319,7 @@ namespace Axiom.Animating
 		public NodeAnimationTrack CreateNodeTrack( ushort handle, Node targetNode )
 		{
 			// create a new track and set it's target
-			NodeAnimationTrack track = CreateNodeTrack( handle );
+			var track = CreateNodeTrack( handle );
 			track.TargetNode = targetNode;
 
 			return track;
@@ -334,7 +335,7 @@ namespace Axiom.Animating
 			var track = new NumericAnimationTrack( this, handle );
 
 			// add the track to the list
-			this.numericTrackList[ handle ] = track;
+			numericTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -348,7 +349,7 @@ namespace Axiom.Animating
 		public NumericAnimationTrack CreateNumericTrack( ushort handle, AnimableValue animable )
 		{
 			// create a new track and set it's target
-			NumericAnimationTrack track = CreateNumericTrack( handle );
+			var track = CreateNumericTrack( handle );
 			track.TargetAnimable = animable;
 
 			return track;
@@ -365,7 +366,7 @@ namespace Axiom.Animating
 			var track = new VertexAnimationTrack( this, handle, animType );
 
 			// add the track to the list
-			this.vertexTrackList[ handle ] = track;
+			vertexTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -380,7 +381,7 @@ namespace Axiom.Animating
 		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexData targetVertexData, VertexAnimationType type )
 		{
 			// create a new track and set it's target
-			VertexAnimationTrack track = CreateVertexTrack( handle, type );
+			var track = CreateVertexTrack( handle, type );
 			track.TargetVertexData = targetVertexData;
 			return track;
 		}
@@ -400,15 +401,15 @@ namespace Axiom.Animating
 		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
-			foreach ( NodeAnimationTrack nodeTrack in this.nodeTrackList.Values )
+			foreach ( var nodeTrack in nodeTrackList.Values )
 			{
 				nodeTrack.Apply( time, weight, accumulate, scale );
 			}
-			foreach ( NumericAnimationTrack numericTrack in this.numericTrackList.Values )
+			foreach ( var numericTrack in numericTrackList.Values )
 			{
 				numericTrack.Apply( time, weight, accumulate, scale );
 			}
-			foreach ( VertexAnimationTrack vertexTrack in this.vertexTrackList.Values )
+			foreach ( var vertexTrack in vertexTrackList.Values )
 			{
 				vertexTrack.Apply( time, weight, accumulate, scale );
 			}
@@ -417,25 +418,25 @@ namespace Axiom.Animating
 		public void Apply( Skeleton skeleton, float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
-			foreach ( var pair in this.nodeTrackList )
+			foreach ( var pair in nodeTrackList )
 			{
-				NodeAnimationTrack track = pair.Value;
-				Bone bone = skeleton.GetBone( pair.Key );
+				var track = pair.Value;
+				var bone = skeleton.GetBone( pair.Key );
 				track.ApplyToNode( bone, time, weight, accumulate, scale );
 			}
 		}
 
 		public void Apply( Entity entity, float time, float weight, bool software, bool hardware )
 		{
-			foreach ( var pair in this.vertexTrackList )
+			foreach ( var pair in vertexTrackList )
 			{
 				int handle = pair.Key;
-				VertexAnimationTrack track = pair.Value;
+				var track = pair.Value;
 
 				VertexData swVertexData;
 				VertexData hwVertexData;
 				VertexData origVertexData;
-				bool firstAnim = false;
+				var firstAnim = false;
 				if ( handle == 0 )
 				{
 					// shared vertex data
@@ -448,7 +449,7 @@ namespace Axiom.Animating
 				else
 				{
 					// sub entity vertex data (-1)
-					SubEntity s = entity.GetSubEntity( handle - 1 );
+					var s = entity.GetSubEntity( handle - 1 );
 					firstAnim = !s.BuffersMarkedForAnimation;
 					swVertexData = s.SoftwareVertexAnimVertexData;
 					hwVertexData = s.HardwareVertexAnimVertexData;
@@ -458,17 +459,17 @@ namespace Axiom.Animating
 				// Apply to both hardware and software, if requested
 				if ( software )
 				{
-					Debug.Assert( !ReferenceEquals( origVertexData, swVertexData ) );
+					Debug.Assert( !EqualityComparer<VertexData>.ReferenceEquals( origVertexData, swVertexData ) );
 					if ( firstAnim && track.AnimationType == VertexAnimationType.Pose )
 					{
 						// First time through for a piece of pose animated vertex data
 						// We need to copy the original position values to the temp accumulator
-						VertexElement origelem = origVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-						VertexElement destelem = swVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-						HardwareVertexBuffer origBuffer = origVertexData.vertexBufferBinding.GetBuffer( origelem.Source );
-						HardwareVertexBuffer destBuffer = swVertexData.vertexBufferBinding.GetBuffer( destelem.Source );
+						var origelem = origVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+						var destelem = swVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+						var origBuffer = origVertexData.vertexBufferBinding.GetBuffer( origelem.Source );
+						var destBuffer = swVertexData.vertexBufferBinding.GetBuffer( destelem.Source );
 						// 						Debug.Assert(!EqualityComparer<HardwareVertexBuffer>.ReferenceEquals(origBuffer, destBuffer));
-						if ( !ReferenceEquals( origBuffer, destBuffer ) )
+						if ( !EqualityComparer<HardwareVertexBuffer>.ReferenceEquals( origBuffer, destBuffer ) )
 						{
 							destBuffer.CopyTo( origBuffer, 0, 0, destBuffer.Size, true );
 						}
@@ -488,9 +489,9 @@ namespace Axiom.Animating
 
 		#region Event handlers
 
-		private void TrackAdded( object source, EventArgs e ) { }
+		private void TrackAdded( object source, System.EventArgs e ) {}
 
-		private void TracksCleared( object source, EventArgs e )
+		private void TracksCleared( object source, System.EventArgs e )
 		{
 			// clear the tangents list when the points are cleared
 			//tangentList.Clear();

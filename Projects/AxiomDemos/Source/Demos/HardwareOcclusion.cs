@@ -1,5 +1,6 @@
 #region Namespace Declarations
 
+using System;
 using System.ComponentModel.Composition;
 
 using Axiom.Core;
@@ -21,7 +22,7 @@ namespace Axiom.Demos
 	///		totally occluded, it will say "Object is occluded".
 	/// </remarks>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class HardwareOcclusion : TechDemo
 	{
@@ -61,14 +62,14 @@ namespace Axiom.Demos
 			node.AttachObject( cube );
 
 			// create an occlusion query via the render system
-			this.query = Root.Instance.RenderSystem.CreateHardwareOcclusionQuery();
+			query = Root.Instance.RenderSystem.CreateHardwareOcclusionQuery();
 		}
 
 		public override void Dispose()
 		{
-			if ( this.query != null )
+			if ( query != null )
 			{
-				this.query.Dispose();
+				query.Dispose();
 			}
 			base.Dispose();
 		}
@@ -85,7 +86,7 @@ namespace Axiom.Demos
 			// begin the occlusion query
 			if ( e.RenderQueueId == RenderQueueGroupID.Six )
 			{
-				this.query.Begin();
+				query.Begin();
 			}
 
 			return;
@@ -102,12 +103,12 @@ namespace Axiom.Demos
 			// end our occlusion query
 			if ( e.RenderQueueId == RenderQueueGroupID.Six )
 			{
-				this.query.End();
+				query.End();
 			}
 
 			// get the fragment count from the query
 			int count;
-			this.query.PullResults( out count );
+			query.PullResults( out count );
 
 			// report the results
 			if ( count <= 0 )

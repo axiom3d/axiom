@@ -41,10 +41,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using Axiom.Core;
+using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
@@ -72,7 +76,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.parent;
+				return parent;
 			}
 		}
 
@@ -92,11 +96,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.inputMode;
+				return inputMode;
 			}
 			set
 			{
-				this.inputMode = value;
+				inputMode = value;
 			}
 		}
 
@@ -116,11 +120,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.outputName;
+				return outputName;
 			}
 			set
 			{
-				this.outputName = value;
+				outputName = value;
 			}
 		}
 
@@ -140,7 +144,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.passes;
+				return passes;
 			}
 		}
 
@@ -162,11 +166,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.onlyInitial;
+				return onlyInitial;
 			}
 			set
 			{
-				this.onlyInitial = value;
+				onlyInitial = value;
 			}
 		}
 
@@ -186,11 +190,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.visibilityMask;
+				return visibilityMask;
 			}
 			set
 			{
-				this.visibilityMask = value;
+				visibilityMask = value;
 			}
 		}
 
@@ -210,11 +214,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.lodBias;
+				return lodBias;
 			}
 			set
 			{
-				this.lodBias = value;
+				lodBias = value;
 			}
 		}
 
@@ -234,11 +238,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.materialScheme;
+				return materialScheme;
 			}
 			set
 			{
-				this.materialScheme = value;
+				materialScheme = value;
 			}
 		}
 
@@ -247,9 +251,24 @@ namespace Axiom.Graphics
 		#region ShadowsEnabled Property
 
 		/// <summary>
+		/// Shadows option
+		/// </summary>
+		private bool shadowsEnabled;
+
+		/// <summary>
 		/// Get's or Set's  whether shadows are enabled in this target pass.
 		/// </summary>
-		public bool ShadowsEnabled { get; set; }
+		public bool ShadowsEnabled
+		{
+			get
+			{
+				return this.shadowsEnabled;
+			}
+			set
+			{
+				this.shadowsEnabled = value;
+			}
+		}
 
 		#endregion ShadowsEnabled Property
 
@@ -261,7 +280,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// A target pass is supported if all passes are supported
-				foreach ( CompositionPass pass in this.passes )
+				foreach ( var pass in passes )
 				{
 					if ( !pass.IsSupported )
 					{
@@ -279,17 +298,17 @@ namespace Axiom.Graphics
 		public CompositionTargetPass( CompositionTechnique parent )
 		{
 			this.parent = parent;
-			this.inputMode = CompositorInputMode.None;
-			this.passes = new List<CompositionPass>();
-			this.onlyInitial = false;
-			this.visibilityMask = 0xFFFFFFFF;
-			this.lodBias = 1.0f;
-			this.materialScheme = MaterialManager.DefaultSchemeName;
-			this.ShadowsEnabled = true;
+			inputMode = CompositorInputMode.None;
+			passes = new List<CompositionPass>();
+			onlyInitial = false;
+			visibilityMask = 0xFFFFFFFF;
+			lodBias = 1.0f;
+			materialScheme = MaterialManager.DefaultSchemeName;
+			this.shadowsEnabled = true;
 
 			if ( Root.Instance.RenderSystem != null )
 			{
-				this.materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
+				materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
 			}
 		}
 
@@ -303,23 +322,23 @@ namespace Axiom.Graphics
 		public CompositionPass CreatePass()
 		{
 			var t = new CompositionPass( this );
-			this.passes.Add( t );
+			passes.Add( t );
 			return t;
 		}
 
 		public void RemovePass( int index )
 		{
-			Debug.Assert( index < this.passes.Count, "Index out of bounds." );
-			this.passes[ index ].Dispose();
-			this.passes[ index ] = null;
+			Debug.Assert( index < passes.Count, "Index out of bounds." );
+			passes[ index ].Dispose();
+			passes[ index ] = null;
 		}
 
 		public void RemoveAllPasses()
 		{
-			for ( int i = 0; i < this.passes.Count; i++ )
+			for ( int i = 0; i < passes.Count; i++ )
 			{
-				this.passes[ i ].Dispose();
-				this.passes[ i ] = null;
+				passes[ i ].Dispose();
+				passes[ i ] = null;
 			}
 		}
 

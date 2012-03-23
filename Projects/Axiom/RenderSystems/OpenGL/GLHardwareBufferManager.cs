@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Graphics;
 
 using Tao.OpenGl;
@@ -55,6 +57,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion
 
 		#region Constructors
+
+		public GLHardwareBufferManagerBase() {}
 
 		#endregion
 
@@ -100,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGL
 	public class GLHardwareBufferManager : HardwareBufferManager
 	{
 		public GLHardwareBufferManager()
-			: base( new GLHardwareBufferManagerBase() ) { }
+			: base( new GLHardwareBufferManagerBase() ) {}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -138,5 +142,5 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 	}
 
-	public class GLSoftwareBufferManager : DefaultHardwareBufferManager { }
+	public class GLSoftwareBufferManager : DefaultHardwareBufferManager {}
 }

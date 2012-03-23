@@ -51,6 +51,11 @@ namespace Axiom.Graphics
 	/// </summary>
 	public struct DriverVersion
 	{
+		public int Major { get; set; }
+		public int Minor { get; set; }
+		public int Release { get; set; }
+		public int Build { get; set; }
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -107,18 +112,13 @@ namespace Axiom.Graphics
 
 		#endregion System.Object overrides
 
-		public int Major { get; set; }
-		public int Minor { get; set; }
-		public int Release { get; set; }
-		public int Build { get; set; }
-
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="versionString"></param>
 		public void FromString( string versionString )
 		{
-			string[] tokens = versionString.Split( '.' );
+			var tokens = versionString.Split( '.' );
 			if ( tokens.Length > 0 )
 			{
 				try
@@ -151,7 +151,7 @@ namespace Axiom.Graphics
 
 		public static bool operator ==( DriverVersion a, DriverVersion b )
 		{
-			if ( ReferenceEquals( a, b ) )
+			if ( Object.ReferenceEquals( a, b ) )
 			{
 				return true;
 			}
@@ -166,9 +166,9 @@ namespace Axiom.Graphics
 
 		public static bool operator >( DriverVersion a, DriverVersion b )
 		{
-			bool majorCmp = a.Major == b.Major;
-			bool minorCmp = a.Minor == b.Minor;
-			bool releaseCmp = a.Release == b.Release;
+			var majorCmp = a.Major == b.Major;
+			var minorCmp = a.Minor == b.Minor;
+			var releaseCmp = a.Release == b.Release;
 
 			if ( a.Major > b.Major )
 			{
@@ -195,9 +195,9 @@ namespace Axiom.Graphics
 
 		public static bool operator <( DriverVersion a, DriverVersion b )
 		{
-			bool majorCmp = a.Major == b.Major;
-			bool minorCmp = a.Minor == b.Minor;
-			bool releaseCmp = a.Release == b.Release;
+			var majorCmp = a.Major == b.Major;
+			var minorCmp = a.Minor == b.Minor;
+			var releaseCmp = a.Release == b.Release;
 
 			if ( a.Major < b.Major )
 			{

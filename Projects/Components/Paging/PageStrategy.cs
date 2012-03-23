@@ -53,22 +53,15 @@ namespace Axiom.Components.Paging
 	/// </remarks>
 	public abstract class PageStrategy : DisposableObject
 	{
-		protected PageManager mManager;
 		protected string mName;
-
-		[OgreVersion( 1, 7, 2 )]
-		public PageStrategy( string name, PageManager manager )
-		{
-			this.mName = name;
-			this.mManager = manager;
-		}
+		protected PageManager mManager;
 
 		public string Name
 		{
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mName;
+				return mName;
 			}
 		}
 
@@ -77,21 +70,29 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mManager;
+				return mManager;
 			}
+		}
+
+		[OgreVersion( 1, 7, 2 )]
+		public PageStrategy( string name, PageManager manager )
+			: base()
+		{
+			mName = name;
+			mManager = manager;
 		}
 
 		/// <summary>
 		/// Called when the frame starts
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameStart( Real timeSinceLastFrame, PagedWorldSection section ) { }
+		public virtual void FrameStart( Real timeSinceLastFrame, PagedWorldSection section ) {}
 
 		/// <summary>
 		/// Called when the frame ends
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameEnd( Real timeElapsed, PagedWorldSection section ) { }
+		public virtual void FrameEnd( Real timeElapsed, PagedWorldSection section ) {}
 
 		/// <summary>
 		/// Called when a camera is used for any kind of rendering.
@@ -103,7 +104,7 @@ namespace Axiom.Components.Paging
 		/// rely on this pointer remaining valid permanently because no notification 
 		/// will be given when the camera is destroyed.</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void NotifyCamera( Camera cam, PagedWorldSection section ) { }
+		public virtual void NotifyCamera( Camera cam, PagedWorldSection section ) {}
 
 		/// <summary>
 		/// Create a PageStrategyData instance containing the data specific to this

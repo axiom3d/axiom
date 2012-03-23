@@ -38,13 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Fonts;
-using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Graphics;
+
+using Font = Axiom.Fonts.Font;
+
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -66,24 +69,25 @@ namespace Axiom.Overlays.Elements
 	{
 		#region Member variables
 
-		private const int DEFAULT_INITIAL_CHARS = 12;
-		private const int POSITION_TEXCOORD_BINDING = 0;
-		private const int COLOR_BINDING = 1;
-		protected int allocSize;
+		protected HorizontalAlignment textAlign;
+		protected bool isTransparent;
+		protected Font font;
 		protected float charHeight;
+		protected float pixelCharHeight;
+		protected float spaceWidth;
+		protected int pixelSpaceWidth;
+		protected int allocSize;
+		protected float viewportAspectCoef;
 
 		/// Colors to use for the vertices
 		protected ColorEx colorBottom;
 
 		protected ColorEx colorTop;
-		protected Font font;
 		protected bool haveColorsChanged;
-		protected bool isTransparent;
-		protected float pixelCharHeight;
-		protected int pixelSpaceWidth;
-		protected float spaceWidth;
-		protected HorizontalAlignment textAlign;
-		protected float viewportAspectCoef;
+
+		private const int DEFAULT_INITIAL_CHARS = 12;
+		private const int POSITION_TEXCOORD_BINDING = 0;
+		private const int COLOR_BINDING = 1;
 
 		#endregion
 
@@ -97,16 +101,16 @@ namespace Axiom.Overlays.Elements
 			: base( name )
 		{
 			//isTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
-			this.textAlign = HorizontalAlignment.Center;
+			textAlign = HorizontalAlignment.Center;
 
 
-			this.colorTop = ColorEx.White;
-			this.colorBottom = ColorEx.White;
-			this.haveColorsChanged = true;
+			colorTop = ColorEx.White;
+			colorBottom = ColorEx.White;
+			haveColorsChanged = true;
 
-			this.charHeight = 0.02f;
-			this.pixelCharHeight = 12;
-			this.viewportAspectCoef = 1f;
+			charHeight = 0.02f;
+			pixelCharHeight = 12;
+			viewportAspectCoef = 1f;
 		}
 
 		#endregion
@@ -117,21 +121,21 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void CheckMemoryAllocation( int numChars )
 		{
-			if ( this.allocSize < numChars )
+			if ( allocSize < numChars )
 			{
 				// Create and bind new buffers
 				// Note that old buffers will be deleted automatically through reference counting
 
 				// 6 verts per char since we're doing tri lists without indexes
 				// Allocate space for positions & texture coords
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
-				VertexBufferBinding binding = renderOperation.vertexData.vertexBufferBinding;
+				var decl = renderOperation.vertexData.vertexDeclaration;
+				var binding = renderOperation.vertexData.vertexBufferBinding;
 
 				renderOperation.vertexData.vertexCount = numChars * 6;
 
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
-				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
@@ -142,9 +146,9 @@ namespace Axiom.Overlays.Elements
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
 
-				this.allocSize = numChars;
+				allocSize = numChars;
 				// force color buffer regeneration
-				this.haveColorsChanged = true;
+				haveColorsChanged = true;
 			}
 		}
 
@@ -159,9 +163,9 @@ namespace Axiom.Overlays.Elements
 				// Combine positions and texture coords since they tend to change together
 				// since character sizes are different
 				renderOperation.vertexData = new VertexData();
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+				var decl = renderOperation.vertexData.vertexDeclaration;
 
-				int offset = 0;
+				var offset = 0;
 
 				// positions
 				decl.AddElement( POSITION_TEXCOORD_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
@@ -191,12 +195,12 @@ namespace Axiom.Overlays.Elements
 		{
 			float vpWidth = OverlayManager.Instance.ViewportWidth;
 			float vpHeight = OverlayManager.Instance.ViewportHeight;
-			this.viewportAspectCoef = vpHeight / vpWidth;
+			viewportAspectCoef = vpHeight / vpWidth;
 
 			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				this.charHeight = this.pixelCharHeight / vpHeight;
-				this.spaceWidth = this.pixelSpaceWidth / vpHeight;
+				charHeight = (float)pixelCharHeight / vpHeight;
+				spaceWidth = (float)pixelSpaceWidth / vpHeight;
 
 				isGeomPositionsOutOfDate = true;
 			}
@@ -206,7 +210,7 @@ namespace Axiom.Overlays.Elements
 			if ( this.haveColorsChanged && isInitialized )
 			{
 				UpdateColors();
-				this.haveColorsChanged = false;
+				haveColorsChanged = false;
 			}
 		}
 
@@ -216,21 +220,21 @@ namespace Axiom.Overlays.Elements
 		protected void UpdateColors()
 		{
 			// convert to API specific color values
-			int topColor = Root.Instance.ConvertColor( this.colorTop );
-			int bottomColor = Root.Instance.ConvertColor( this.colorBottom );
+			var topColor = Root.Instance.ConvertColor( colorTop );
+			var bottomColor = Root.Instance.ConvertColor( colorBottom );
 
 			// get the seperate color buffer
-			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
 
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				BufferBase data = buffer.Lock( BufferLocking.Discard );
-				int* colPtr = data.ToIntPointer();
-				int index = 0;
+				var data = buffer.Lock( BufferLocking.Discard );
+				var colPtr = data.ToIntPointer();
+				var index = 0;
 
-				for ( int i = 0; i < this.allocSize; i++ )
+				for ( var i = 0; i < allocSize; i++ )
 				{
 					// first tri (top, bottom, top);
 					colPtr[ index++ ] = topColor;
@@ -252,62 +256,62 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void UpdateGeometry()
 		{
-			if ( this.font == null || text == null || !isGeomPositionsOutOfDate )
+			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
 			{
 				// must not be initialized yet, probably due to order of creation in a template
 				return;
 			}
 
-			int charLength = text.Length;
+			var charLength = text.Length;
 			// make sure the buffers are big enough
 			CheckMemoryAllocation( charLength );
 
 			renderOperation.vertexData.vertexCount = charLength * 6;
 
 			// get pos/tex buffer
-			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
-			BufferBase data = buffer.Lock( BufferLocking.Discard );
-			float largestWidth = 0.0f;
-			float left = DerivedLeft * 2.0f - 1.0f;
-			float top = -( ( DerivedTop * 2.0f ) - 1.0f );
+			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
+			var data = buffer.Lock( BufferLocking.Discard );
+			var largestWidth = 0.0f;
+			var left = this.DerivedLeft * 2.0f - 1.0f;
+			var top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
-			if ( this.spaceWidth == 0 )
+			if ( spaceWidth == 0 )
 			{
-				this.spaceWidth = this.font.GetGlyphAspectRatio( 'A' ) * this.charHeight * 2.0f * this.viewportAspectCoef;
+				spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f * viewportAspectCoef;
 			}
 
 
-			bool newLine = true;
-			int index = 0;
+			var newLine = true;
+			var index = 0;
 
 			// go through each character and process
-			for ( int i = 0; i < charLength; i++ )
+			for ( var i = 0; i < charLength; i++ )
 			{
-				char c = text[ i ];
+				var c = text[ i ];
 
 				if ( newLine )
 				{
-					float length = 0.0f;
+					var length = 0.0f;
 
 					// precalc the length of this line
-					for ( int j = i; j < charLength && text[ j ] != '\n'; j++ )
+					for ( var j = i; j < charLength && text[ j ] != '\n'; j++ )
 					{
 						if ( text[ j ] == ' ' )
 						{
-							length += this.spaceWidth;
+							length += spaceWidth;
 						}
 						else
 						{
-							length += this.font.GetGlyphAspectRatio( text[ j ] ) * this.charHeight * 2f * this.viewportAspectCoef;
+							length += font.GetGlyphAspectRatio( text[ j ] ) * charHeight * 2f * viewportAspectCoef;
 						}
 					} // for j
 
-					if ( horzAlign == HorizontalAlignment.Right )
+					if ( this.horzAlign == HorizontalAlignment.Right )
 					{
 						left -= length;
 					}
-					else if ( horzAlign == HorizontalAlignment.Center )
+					else if ( this.horzAlign == HorizontalAlignment.Center )
 					{
 						left -= length * 0.5f;
 					}
@@ -317,8 +321,8 @@ namespace Axiom.Overlays.Elements
 
 				if ( c == '\n' )
 				{
-					left = DerivedLeft * 2.0f - 1.0f;
-					top -= this.charHeight * 2.0f;
+					left = this.DerivedLeft * 2.0f - 1.0f;
+					top -= charHeight * 2.0f;
 					newLine = true;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
@@ -328,17 +332,17 @@ namespace Axiom.Overlays.Elements
 				if ( c == ' ' )
 				{
 					// leave a gap, no tris required
-					left += this.spaceWidth;
+					left += spaceWidth;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
 					continue;
 				}
 
-				float horizHeight = this.font.GetGlyphAspectRatio( c ) * this.viewportAspectCoef;
+				var horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
 				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
-				this.font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
+				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
 
 #if !AXIOM_SAFE_ONLY
 				unsafe
@@ -347,14 +351,14 @@ namespace Axiom.Overlays.Elements
 					// each vert is (x, y, z, u, v)
 					// first tri
 					// upper left
-					float* vertPtr = data.ToFloatPointer();
+					var vertPtr = data.ToFloatPointer();
 					vertPtr[ index++ ] = left;
 					vertPtr[ index++ ] = top;
 					vertPtr[ index++ ] = -1.0f;
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v1;
 
-					top -= this.charHeight * 2.0f;
+					top -= charHeight * 2.0f;
 
 					// bottom left
 					vertPtr[ index++ ] = left;
@@ -363,8 +367,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					top += this.charHeight * 2.0f;
-					left += horizHeight * this.charHeight * 2.0f;
+					top += charHeight * 2.0f;
+					left += horizHeight * charHeight * 2.0f;
 
 					// top right
 					vertPtr[ index++ ] = left;
@@ -382,8 +386,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u2;
 					vertPtr[ index++ ] = v1;
 
-					top -= this.charHeight * 2.0f;
-					left -= horizHeight * this.charHeight * 2.0f;
+					top -= charHeight * 2.0f;
+					left -= horizHeight * charHeight * 2.0f;
 
 					// bottom left (again)
 					vertPtr[ index++ ] = left;
@@ -392,7 +396,7 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					left += horizHeight * this.charHeight * 2.0f;
+					left += horizHeight * charHeight * 2.0f;
 
 					// bottom right
 					vertPtr[ index++ ] = left;
@@ -403,9 +407,9 @@ namespace Axiom.Overlays.Elements
 				}
 
 				// go back up with top
-				top += this.charHeight * 2.0f;
+				top += charHeight * 2.0f;
 
-				float currentWidth = ( left + 1 ) / 2 - DerivedLeft;
+				var currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
 
 				if ( currentWidth > largestWidth )
 				{
@@ -425,9 +429,9 @@ namespace Axiom.Overlays.Elements
 			}
 
 			// record the width as the longest width calculated for any of the lines
-			if ( Width < largestWidth )
+			if ( this.Width < largestWidth )
 			{
-				Width = largestWidth;
+				this.Width = largestWidth;
 			}
 		}
 
@@ -457,22 +461,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return this.pixelCharHeight;
+					return (float)pixelCharHeight;
 				}
 				else
 				{
-					return this.charHeight;
+					return charHeight;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					this.pixelCharHeight = value;
+					pixelCharHeight = value;
 				}
 				else
 				{
-					this.charHeight = value;
+					charHeight = value;
 				}
 				isGeomPositionsOutOfDate = true;
 			}
@@ -486,13 +490,13 @@ namespace Axiom.Overlays.Elements
 			get
 			{
 				// doesnt matter if they are both the same
-				return this.colorTop;
+				return colorTop;
 			}
 			set
 			{
-				this.colorTop = value;
-				this.colorBottom = value;
-				this.haveColorsChanged = true;
+				colorTop = value;
+				colorBottom = value;
+				haveColorsChanged = true;
 			}
 		}
 
@@ -503,12 +507,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return this.colorTop;
+				return colorTop;
 			}
 			set
 			{
-				this.colorTop = value;
-				this.haveColorsChanged = true;
+				colorTop = value;
+				haveColorsChanged = true;
 			}
 		}
 
@@ -519,12 +523,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return this.colorBottom;
+				return colorBottom;
 			}
 			set
 			{
-				this.colorBottom = value;
-				this.haveColorsChanged = true;
+				colorBottom = value;
+				haveColorsChanged = true;
 			}
 		}
 
@@ -535,19 +539,19 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return this.font != null ? this.font.Name : null;
+				return font != null ? font.Name : null;
 			}
 			set
 			{
-				this.font = (Font)FontManager.Instance[ value ];
-				if ( this.font == null )
+				font = (Font)FontManager.Instance[ value ];
+				if ( font == null )
 				{
 					throw new Exception( "Could not find font " + value );
 				}
-				this.font.Load();
+				font.Load();
 
 				// note: font materials are created with lighting and depthcheck disabled by default
-				material = this.font.Material;
+				material = font.Material;
 
 				// TODO See if this can be eliminated
 
@@ -587,7 +591,7 @@ namespace Axiom.Overlays.Elements
 			{
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
 				float vpHeight = OverlayManager.Instance.ViewportHeight;
-				this.viewportAspectCoef = vpHeight / vpWidth;
+				viewportAspectCoef = vpHeight / vpWidth;
 				base.MetricsMode = value;
 
 				// configure pixel variables based on current viewport
@@ -595,13 +599,13 @@ namespace Axiom.Overlays.Elements
 				{
 					case MetricsMode.Pixels:
 						// set pixel variables multiplied by the viewport multipliers
-						this.pixelCharHeight = (int)( this.charHeight * vpHeight );
-						this.pixelSpaceWidth = (int)( this.spaceWidth * vpHeight );
+						pixelCharHeight = (int)( charHeight * vpHeight );
+						pixelSpaceWidth = (int)( spaceWidth * vpHeight );
 						break;
 					case MetricsMode.Relative:
 						// set pixel variables multiplied by the height constant
-						this.pixelCharHeight = (int)( this.charHeight * 10000.0 );
-						this.pixelSpaceWidth = (int)( this.spaceWidth * 10000.0 );
+						pixelCharHeight = (int)( charHeight * 10000.0 );
+						pixelSpaceWidth = (int)( spaceWidth * 10000.0 );
 						break;
 				}
 			}
@@ -616,22 +620,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return this.pixelSpaceWidth;
+					return (float)pixelSpaceWidth;
 				}
 				else
 				{
-					return this.spaceWidth;
+					return spaceWidth;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					this.pixelSpaceWidth = (int)value;
+					pixelSpaceWidth = (int)value;
 				}
 				else
 				{
-					this.spaceWidth = value;
+					spaceWidth = value;
 				}
 
 				isGeomPositionsOutOfDate = true;
@@ -645,11 +649,11 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return this.textAlign;
+				return textAlign;
 			}
 			set
 			{
-				this.textAlign = value;
+				textAlign = value;
 				isGeomPositionsOutOfDate = true;
 			}
 		}
@@ -675,54 +679,7 @@ namespace Axiom.Overlays.Elements
 
 		#region ScriptableObject Interface Command Classes
 
-		#region Nested type: BottomColorAttributeCommand
-
-		[ScriptableProperty( "color_bottom", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour_bottom", "", typeof( TextArea ) )]
-		public class BottomColorAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return StringConverter.ToString( element.ColorBottom );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.ColorBottom = StringConverter.ParseColor( val );
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: CharacterHeightAttributeCommand
-
-		[ScriptableProperty( "char_height", "", typeof( TextArea ) )]
+		[ScriptableProperty( "char_height", "", typeof ( TextArea ) )]
 		public class CharacterHeightAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -762,144 +719,7 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion
-
-		#region Nested type: ColorAttributeCommand
-
-		[ScriptableProperty( "color", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour", "", typeof( TextArea ) )]
-		public class ColorAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return StringConverter.ToString( element.Color );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.Color = StringConverter.ParseColor( val );
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: FontNameAttributeCommand
-
-		[ScriptableProperty( "font_name", "", typeof( TextArea ) )]
-		public class FontNameAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return element.FontName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.FontName = val;
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: HorizontalAlignmentAttributeCommand
-
-		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
-		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
-
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof( HorizontalAlignment ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as TextArea;
-				if ( element != null )
-				{
-					element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
-				}
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: SpaceWidthAttributeCommand
-
-		[ScriptableProperty( "space_width", "", typeof( TextArea ) )]
+		[ScriptableProperty( "space_width", "", typeof ( TextArea ) )]
 		public class SpaceWidthAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -939,12 +759,129 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion
+		[ScriptableProperty( "font_name", "", typeof ( TextArea ) )]
+		public class FontNameAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
 
-		#region Nested type: TopColorAttributeCommand
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return element.FontName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
 
-		[ScriptableProperty( "color_top", "", typeof( TextArea ) )]
-		[ScriptableProperty( "colour_top", "", typeof( TextArea ) )]
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.FontName = val;
+				}
+			}
+
+			#endregion
+		}
+
+		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof ( TextArea ) )]
+		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof ( HorizontalAlignment ) );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof ( HorizontalAlignment ) );
+				}
+			}
+
+			#endregion
+		}
+
+		[ScriptableProperty( "color", "", typeof ( TextArea ) )]
+		[ScriptableProperty( "colour", "", typeof ( TextArea ) )]
+		public class ColorAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return StringConverter.ToString( element.Color );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.Color = StringConverter.ParseColor( val );
+				}
+			}
+
+			#endregion
+		}
+
+		[ScriptableProperty( "color_top", "", typeof ( TextArea ) )]
+		[ScriptableProperty( "colour_top", "", typeof ( TextArea ) )]
 		public class TopColorAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -984,7 +921,46 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion
+		[ScriptableProperty( "color_bottom", "", typeof ( TextArea ) )]
+		[ScriptableProperty( "colour_bottom", "", typeof ( TextArea ) )]
+		public class BottomColorAttributeCommand : IPropertyCommand
+		{
+			#region Implementation of IPropertyCommand<object,string>
+
+			/// <summary>
+			///    Gets the value for this command from the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <returns></returns>
+			public string Get( object target )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					return StringConverter.ToString( element.ColorBottom );
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+
+			/// <summary>
+			///    Sets the value for this command on the target object.
+			/// </summary>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
+			public void Set( object target, string val )
+			{
+				var element = target as TextArea;
+				if ( element != null )
+				{
+					element.ColorBottom = StringConverter.ParseColor( val );
+				}
+			}
+
+			#endregion
+		}
 
 		#endregion ScriptableObject Interface Command Classes
 	}

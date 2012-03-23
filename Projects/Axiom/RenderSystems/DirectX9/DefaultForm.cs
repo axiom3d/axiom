@@ -38,13 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 using Axiom.Core;
 using Axiom.Graphics;
+
+using IO = System.IO;
 
 #endregion Namespace Declarations
 
@@ -66,11 +66,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this._renderWindow;
+				return _renderWindow;
 			}
 			set
 			{
-				this._renderWindow = value;
+				_renderWindow = value;
 			}
 		}
 
@@ -87,22 +87,34 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this._windowStyle;
+				return _windowStyle;
 			}
 
 			set
 			{
-				this._windowStyle = value;
+				_windowStyle = value;
 			}
 		}
 
 		#endregion WindowStyles
 
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				var cp = base.CreateParams;
+				cp.Style = (int)_windowStyle;
+				cp.ExStyle = (int)_dwStyleEx;
+				cp.ClassStyle = (int)_classStyle;
+				return cp;
+			}
+		}
+
 		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title, WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
 		{
-			this._classStyle = classStyle;
-			this._dwStyleEx = dwStyleEx;
-			this._windowStyle = windowStyle;
+			_classStyle = classStyle;
+			_dwStyleEx = dwStyleEx;
+			_windowStyle = windowStyle;
 
 			SuspendLayout();
 
@@ -127,21 +139,9 @@ namespace Axiom.RenderSystems.DirectX9
 			ResumeLayout( false );
 		}
 
-		protected override CreateParams CreateParams
-		{
-			get
-			{
-				CreateParams cp = base.CreateParams;
-				cp.Style = (int)this._windowStyle;
-				cp.ExStyle = (int)this._dwStyleEx;
-				cp.ClassStyle = (int)this._classStyle;
-				return cp;
-			}
-		}
-
 		protected override void WndProc( ref Message m )
 		{
-			if ( !Win32MessageHandling.WndProc( this._renderWindow, ref m ) )
+			if ( !Win32MessageHandling.WndProc( _renderWindow, ref m ) )
 			{
 				base.WndProc( ref m );
 			}
@@ -149,26 +149,26 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public void _defaultFormDeactivate( object source, EventArgs e )
 		{
-			if ( this._renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				this._renderWindow.IsActive = false;
+				_renderWindow.IsActive = false;
 			}
 		}
 
 		public void _defaultFormActivated( object source, EventArgs e )
 		{
-			if ( this._renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				this._renderWindow.IsActive = true;
+				_renderWindow.IsActive = true;
 			}
 		}
 
-		public void _defaultFormClose( object source, CancelEventArgs e )
+		public void _defaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
-			if ( this._renderWindow != null )
+			if ( _renderWindow != null )
 			{
-				this._renderWindow.IsActive = false;
+				_renderWindow.IsActive = false;
 			}
 		}
 
@@ -176,13 +176,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			try
 			{
-				Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
 				{
 					Icon = new Icon( strm );
 				}
 			}
-			catch ( FileNotFoundException ) { }
+			catch ( IO.FileNotFoundException ) {}
 		}
 
 		private void _defaultFormResize( object sender, EventArgs e )

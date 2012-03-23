@@ -51,12 +51,12 @@ namespace Axiom.Controllers.Canned
 	{
 		#region Member variables
 
-		protected bool rotate;
-		protected bool scaleU;
-		protected bool scaleV;
-		protected TextureUnitState texUnit;
 		protected bool transU;
 		protected bool transV;
+		protected bool scaleU;
+		protected bool scaleV;
+		protected bool rotate;
+		protected TextureUnitState texUnit;
 
 		#endregion
 
@@ -66,7 +66,7 @@ namespace Axiom.Controllers.Canned
 		}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU )
-			: this( texUnit, scrollU, false ) { }
+			: this( texUnit, scrollU, false ) {}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
 		{
@@ -85,27 +85,27 @@ namespace Axiom.Controllers.Canned
 			this.rotate = rotate;
 		}
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		public Real Value
 		{
 			get
 			{
-				Matrix4 trans = this.texUnit.TextureMatrix;
+				var trans = texUnit.TextureMatrix;
 
-				if ( this.transU )
+				if ( transU )
 				{
 					return trans.m03;
 				}
-				else if ( this.transV )
+				else if ( transV )
 				{
 					return trans.m13;
 				}
-				else if ( this.scaleU )
+				else if ( scaleU )
 				{
 					return trans.m00;
 				}
-				else if ( this.scaleV )
+				else if ( scaleV )
 				{
 					return trans.m11;
 				}
@@ -115,43 +115,43 @@ namespace Axiom.Controllers.Canned
 			}
 			set
 			{
-				if ( this.transU )
+				if ( transU )
 				{
-					this.texUnit.SetTextureScrollU( value );
+					texUnit.SetTextureScrollU( value );
 				}
 
-				if ( this.transV )
+				if ( transV )
 				{
-					this.texUnit.SetTextureScrollV( value );
+					texUnit.SetTextureScrollV( value );
 				}
 
-				if ( this.scaleU )
+				if ( scaleU )
 				{
 					if ( value >= 0 )
 					{
-						this.texUnit.SetTextureScaleU( 1 + value );
+						texUnit.SetTextureScaleU( 1 + value );
 					}
 					else
 					{
-						this.texUnit.SetTextureScaleU( 1 / -value );
+						texUnit.SetTextureScaleU( 1 / -value );
 					}
 				}
 
-				if ( this.scaleV )
+				if ( scaleV )
 				{
 					if ( value >= 0 )
 					{
-						this.texUnit.SetTextureScaleV( 1 + value );
+						texUnit.SetTextureScaleV( 1 + value );
 					}
 					else
 					{
-						this.texUnit.SetTextureScaleV( 1 / -value );
+						texUnit.SetTextureScaleV( 1 / -value );
 					}
 				}
 
-				if ( this.rotate )
+				if ( rotate )
 				{
-					this.texUnit.SetTextureRotate( value * 360 );
+					texUnit.SetTextureRotate( value * 360 );
 				}
 			}
 		}

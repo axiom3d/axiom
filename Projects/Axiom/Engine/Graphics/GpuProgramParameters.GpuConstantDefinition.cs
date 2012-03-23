@@ -8,8 +8,6 @@ namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
-		#region Nested type: GpuConstantDefinition
-
 		/// <summary>
 		/// Information about predefined program constants.
 		/// </summary>
@@ -31,7 +29,24 @@ namespace Axiom.Graphics
 
 			#region PhysicalIndex
 
-			public int PhysicalIndex { get; set; }
+			/// <summary>
+			/// Physical start index in buffer (either float or int buffer)
+			/// </summary>
+			//[OgreVersion(1, 7, 2790)]
+			//public int PhysicalIndex;
+			private int _physIndex;
+
+			public int PhysicalIndex
+			{
+				get
+				{
+					return _physIndex;
+				}
+				set
+				{
+					_physIndex = value;
+				}
+			}
 
 			#endregion
 
@@ -85,7 +100,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return IsFloatConst( this.ConstantType );
+					return IsFloatConst( ConstantType );
 				}
 			}
 
@@ -127,7 +142,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return IsSamplerConst( this.ConstantType );
+					return IsSamplerConst( ConstantType );
 				}
 			}
 
@@ -254,11 +269,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuConstantDefinition()
 			{
-				this.ConstantType = GpuConstantType.Unknown;
+				ConstantType = GpuConstantType.Unknown;
 				PhysicalIndex = Int32.MaxValue;
-				this.ElementSize = 0;
-				this.ArraySize = 1;
-				this.Variability = GpuParamVariability.Global;
+				ElementSize = 0;
+				ArraySize = 1;
+				Variability = GpuParamVariability.Global;
 			}
 
 			#endregion
@@ -266,16 +281,14 @@ namespace Axiom.Graphics
 			public GpuConstantDefinition Clone()
 			{
 				var result = new GpuConstantDefinition();
-				result.ConstantType = this.ConstantType;
+				result.ConstantType = ConstantType;
 				result.PhysicalIndex = PhysicalIndex;
-				result.LogicalIndex = this.LogicalIndex;
-				result.ElementSize = this.ElementSize;
-				result.ArraySize = this.ArraySize;
-				result.Variability = this.Variability;
+				result.LogicalIndex = LogicalIndex;
+				result.ElementSize = ElementSize;
+				result.ArraySize = ArraySize;
+				result.Variability = Variability;
 				return result;
 			}
 		}
-
-		#endregion
 	};
 }

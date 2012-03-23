@@ -55,12 +55,13 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Constructors
 
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9HardwareBufferManagerBase() { }
+		public D3D9HardwareBufferManagerBase()
+			: base() {}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManagerBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -172,12 +173,12 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManager()
-			: base( new D3D9HardwareBufferManagerBase() ) { }
+			: base( new D3D9HardwareBufferManagerBase() ) {}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

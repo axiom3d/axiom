@@ -37,8 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Core;
+using System;
+
 using Axiom.Graphics;
+using Axiom.Core;
 
 using ResourceHandle = System.UInt64;
 

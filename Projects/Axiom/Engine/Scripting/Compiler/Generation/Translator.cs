@@ -41,9 +41,9 @@ using System;
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -51,8 +51,6 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: Translator
-
 		public abstract class Translator
 		{
 			/// <summary>
@@ -92,7 +90,7 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				// Retrieve the translator to use
-				Translator translator = ScriptCompilerManager.Instance.GetTranslator( node );
+				var translator = ScriptCompilerManager.Instance.GetTranslator( node );
 
 				if ( translator != null )
 				{
@@ -100,7 +98,7 @@ namespace Axiom.Scripting.Compiler
 				}
 				else
 				{
-					string msg = string.Format( "token {0} is not recognized", objNode.Cls );
+					var msg = string.Format( "token {0} is not recognized", objNode.Cls );
 					compiler.AddError( CompileErrorCode.UnexpectedToken, node.File, node.Line, msg );
 				}
 			}
@@ -298,9 +296,9 @@ namespace Axiom.Scripting.Compiler
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result, int maxEntries )
 			{
 				var vals = new Real[ 4 ]
-                           {
-                               0, 0, 0, 0
-                           };
+				           {
+				           	0, 0, 0, 0
+				           };
 				result = ColorEx.White;
 
 				if ( nodes == null )
@@ -308,7 +306,7 @@ namespace Axiom.Scripting.Compiler
 					return false;
 				}
 
-				int n = 0;
+				var n = 0;
 				while ( i != nodes.Count && n < maxEntries )
 				{
 					if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
@@ -344,7 +342,7 @@ namespace Axiom.Scripting.Compiler
 					return false;
 				}
 
-				int n = 0;
+				var n = 0;
 				while ( i != nodes.Count && n < 16 )
 				{
 					if ( i != nodes.Count )
@@ -376,7 +374,7 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getInts( IList<AbstractNode> nodes, int i, out int[] vals, int count )
 			{
-				bool success = true;
+				var success = true;
 				vals = new int[ count ];
 
 				if ( nodes == null )
@@ -384,7 +382,7 @@ namespace Axiom.Scripting.Compiler
 					return false;
 				}
 
-				int n = 0;
+				var n = 0;
 				while ( n < count )
 				{
 					if ( i != nodes.Count )
@@ -424,7 +422,7 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getFloats( IList<AbstractNode> nodes, int i, out float[] vals, int count )
 			{
-				bool success = true;
+				var success = true;
 				vals = new float[ count ];
 
 				if ( nodes == null )
@@ -432,7 +430,7 @@ namespace Axiom.Scripting.Compiler
 					return false;
 				}
 
-				int n = 0;
+				var n = 0;
 				while ( n < count )
 				{
 					if ( i != nodes.Count )
@@ -474,7 +472,7 @@ namespace Axiom.Scripting.Compiler
 
 				if ( val.Contains( "float" ) )
 				{
-					int count = 1;
+					var count = 1;
 					if ( val.Length == 6 )
 					{
 						count = int.Parse( val.Substring( 5 ) );
@@ -493,7 +491,7 @@ namespace Axiom.Scripting.Compiler
 				}
 				else if ( val.Contains( "int" ) )
 				{
-					int count = 1;
+					var count = 1;
 					if ( val.Length == 4 )
 					{
 						count = int.Parse( val.Substring( 3 ) );
@@ -576,7 +574,7 @@ namespace Axiom.Scripting.Compiler
 				var atom = (AtomAbstractNode)node;
 				if ( compiler.KeywordMap.ContainsValue( atom.Id ) )
 				{
-					string keyText = string.Empty;
+					var keyText = string.Empty;
 
 					// For this ID, find the script Token 
 					foreach ( var item in compiler.KeywordMap )
@@ -588,7 +586,7 @@ namespace Axiom.Scripting.Compiler
 					}
 
 					// Now reflect over the enumeration to find the Token value
-					object val = ScriptEnumAttribute.Lookup( keyText, typeof( T ) );
+					var val = ScriptEnumAttribute.Lookup( keyText, typeof ( T ) );
 					if ( val != null )
 					{
 						property = (T)val;
@@ -599,7 +597,5 @@ namespace Axiom.Scripting.Compiler
 				return false;
 			}
 		}
-
-		#endregion
 	};
 }

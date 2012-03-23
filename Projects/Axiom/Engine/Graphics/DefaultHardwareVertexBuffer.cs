@@ -38,6 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 
 using Axiom.Core;
 using Axiom.CrossPlatform;
@@ -48,63 +51,63 @@ namespace Axiom.Graphics
 {
 	public class DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		private readonly byte[] mpData;
+		private byte[] mpData = null;
 
 		public DefaultHardwareVertexBuffer( VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
 			: base( null, vertexDeclaration, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			this.mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[ base.sizeInBytes ];
 		}
 
 		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
 			: base( manager, vertexDeclaration, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			this.mpData = new byte[ base.sizeInBytes ];
+			mpData = new byte[ base.sizeInBytes ];
 		}
 
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
-			BufferBase data = Memory.PinObject( this.mpData ).Offset( offset );
+			var data = Memory.PinObject( mpData ).Offset( offset );
 			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( this.mpData );
+			Memory.UnpinObject( mpData );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
-			BufferBase pSource = Memory.PinObject( data );
-			BufferBase pIntData = Memory.PinObject( this.mpData ).Offset( offset );
+			var pSource = Memory.PinObject( data );
+			var pIntData = Memory.PinObject( mpData ).Offset( offset );
 			Memory.Copy( pSource, pIntData, length );
 			Memory.UnpinObject( data );
-			Memory.UnpinObject( this.mpData );
+			Memory.UnpinObject( mpData );
 		}
 
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
-			BufferBase pIntData = Memory.PinObject( this.mpData ).Offset( offset );
+			var pIntData = Memory.PinObject( mpData ).Offset( offset );
 			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( this.mpData );
+			Memory.UnpinObject( mpData );
 		}
 
 		public override void Unlock()
 		{
-			Memory.UnpinObject( this.mpData );
+			Memory.UnpinObject( mpData );
 			base.isLocked = false;
 		}
 
 		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			base.isLocked = true;
-			return Memory.PinObject( this.mpData ).Offset( offset );
+			return Memory.PinObject( mpData ).Offset( offset );
 		}
 
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
-			return Memory.PinObject( this.mpData ).Offset( offset );
+			return Memory.PinObject( mpData ).Offset( offset );
 		}
 
 		protected override void UnlockImpl()
 		{
-			Memory.UnpinObject( this.mpData );
+			Memory.UnpinObject( mpData );
 		}
 	}
 }

@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -133,10 +135,11 @@ namespace Axiom.Graphics
 		/// <param name="parent"></param>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramUsage( GpuProgramType type, Pass parent )
+			: base()
 		{
 			this.type = type;
 			this.parent = parent;
-			this.recreateParams = false;
+			recreateParams = false;
 		}
 
 		/// <summary>
@@ -144,13 +147,14 @@ namespace Axiom.Graphics
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramUsage( GpuProgramUsage oth, Pass parent )
+			: base()
 		{
-			this.type = oth.type;
+			type = oth.type;
 			this.parent = parent;
-			this.program = oth.Program;
+			program = oth.Program;
 			// nfz: parameters should be copied not just use a shared ptr to the original
-			this.parameters = new GpuProgramParameters( oth.parameters );
-			this.recreateParams = false;
+			parameters = new GpuProgramParameters( oth.parameters );
+			recreateParams = false;
 		}
 
 		#endregion
@@ -160,13 +164,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.program != null )
+					if ( program != null )
 					{
-						this.program.RemoveListener( this );
+						program.RemoveListener( this );
 					}
 				}
 			}
@@ -186,21 +190,21 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		internal void Load()
 		{
-			if ( !this.program.IsLoaded )
+			if ( !program.IsLoaded )
 			{
-				this.program.Load();
+				program.Load();
 			}
 
 			// check type
-			if ( this.program.IsLoaded && this.program.Type != this.type )
+			if ( program.IsLoaded && program.Type != type )
 			{
-				string myType = this.type.ToString();
-				string yourType = this.program.Type.ToString();
-				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.", this.program.Name, yourType, myType );
+				var myType = type.ToString();
+				var yourType = program.Type.ToString();
+				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.", program.Name, yourType, myType );
 			}
 
 			// hackaround as Listener::loadingComplete is not in place, yet
-			if ( this.recreateParams )
+			if ( recreateParams )
 			{
 				RecreateParameters();
 			}
@@ -219,7 +223,7 @@ namespace Axiom.Graphics
 			// TODO?
 
 			// hackaround as Listener::unloadingComplete is not in place, yet
-			this.recreateParams = true;
+			recreateParams = true;
 		}
 
 		#endregion
@@ -230,19 +234,19 @@ namespace Axiom.Graphics
 		protected void RecreateParameters()
 		{
 			// Keep a reference to old ones to copy
-			GpuProgramParameters savedParams = this.parameters;
+			var savedParams = parameters;
 
 			// Create new params
-			this.parameters = this.program.CreateParameters();
+			parameters = program.CreateParameters();
 
 			// Copy old (matching) values across
 			// Don't use copyConstantsFrom since program may be different
 			if ( savedParams != null )
 			{
-				this.parameters.CopyMatchingNamedConstantsFrom( savedParams );
+				parameters.CopyMatchingNamedConstantsFrom( savedParams );
 			}
 
-			this.recreateParams = false;
+			recreateParams = false;
 		}
 
 		#endregion
@@ -272,29 +276,29 @@ namespace Axiom.Graphics
 		public void SetProgramName( string name, bool resetParams )
 #endif
 		{
-			if ( this.program != null )
+			if ( program != null )
 			{
-				this.program.RemoveListener( this );
-				this.recreateParams = true;
+				program.RemoveListener( this );
+				recreateParams = true;
 			}
 
 			// get a reference to the gpu program
-			this.program = GpuProgramManager.Instance.GetByName( name );
+			program = GpuProgramManager.Instance.GetByName( name );
 
-			if ( this.program == null )
+			if ( program == null )
 			{
-				string progType = this.type == GpuProgramType.Vertex ? "vertex" : this.type == GpuProgramType.Geometry ? "geometry" : "fragment";
+				var progType = type == GpuProgramType.Vertex ? "vertex" : type == GpuProgramType.Geometry ? "geometry" : "fragment";
 				throw new AxiomException( "Unable to locate {0} program called '{1}'", progType, name );
 			}
 
 			// Reset parameters 
-			if ( resetParams || this.parameters == null || this.recreateParams )
+			if ( resetParams || parameters == null || recreateParams )
 			{
 				RecreateParameters();
 			}
 
 			// Listen in on reload events so we can regenerate params
-			this.program.AddListener( this );
+			program.AddListener( this );
 		}
 
 #if !NET_40
@@ -317,7 +321,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.program.Name;
+				return program.Name;
 			}
 		}
 
@@ -339,14 +343,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.program;
+				return program;
 			}
 			set
 			{
-				this.program = value;
+				program = value;
 
 				// create program specific parameters
-				this.parameters = this.program.CreateParameters();
+				parameters = program.CreateParameters();
 			}
 		}
 
@@ -364,16 +368,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.parameters == null )
+				if ( parameters == null )
 				{
 					throw new AxiomException( "A program must be loaded before its parameters can be retreived." );
 				}
 
-				return this.parameters;
+				return parameters;
 			}
 			set
 			{
-				this.parameters = value;
+				parameters = value;
 			}
 		}
 
@@ -389,7 +393,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 		}
 
@@ -413,7 +417,7 @@ namespace Axiom.Graphics
 		public void LoadingComplete( Resource res )
 		{
 			// Need to re-create parameters
-			if ( this.recreateParams )
+			if ( recreateParams )
 			{
 				RecreateParameters();
 			}
@@ -427,7 +431,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void UnloadingComplete( Resource res )
 		{
-			this.recreateParams = true;
+			recreateParams = true;
 		}
 
 		#endregion Resource.IListener Members

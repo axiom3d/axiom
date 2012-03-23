@@ -51,8 +51,8 @@ namespace Axiom.Controllers.Canned
 	{
 		// commented out (read access only private)
 		//private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
-		private readonly Vector3 axis;
-		private readonly Node node;
+		private Node node;
+		private Vector3 axis;
 
 		public NodeRotationControllerValue( Node node, Vector3 axis )
 		{
@@ -60,7 +60,7 @@ namespace Axiom.Controllers.Canned
 			this.axis = axis;
 		}
 
-		#region IControllerValue<Real> Members
+		#region IControllerValue Members
 
 		public Real Value
 		{
@@ -71,7 +71,7 @@ namespace Axiom.Controllers.Canned
 			}
 			set
 			{
-				this.node.Rotate( this.axis, value );
+				node.Rotate( axis, value );
 			}
 		}
 

@@ -37,8 +37,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Core;
+using System;
+
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -75,6 +79,11 @@ namespace Axiom.Animating
 		#region Fields and Properties
 
 		/// <summary>
+		///		Reference to the entity that owns this tagpoint.
+		/// </summary>
+		protected Entity parentEntity;
+
+		/// <summary>
 		///		Object attached to this tagpoint.
 		/// </summary>
 		protected MovableObject childObject;
@@ -85,22 +94,17 @@ namespace Axiom.Animating
 		protected Matrix4 fullLocalTransform;
 
 		/// <summary>
-		///		Reference to the entity that owns this tagpoint.
-		/// </summary>
-		protected Entity parentEntity;
-
-		/// <summary>
 		///		Gets/Sets the object attached to this tagpoint.
 		/// </summary>
 		public MovableObject ChildObject
 		{
 			get
 			{
-				return this.childObject;
+				return childObject;
 			}
 			set
 			{
-				this.childObject = value;
+				childObject = value;
 			}
 		}
 
@@ -111,11 +115,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.parentEntity;
+				return parentEntity;
 			}
 			set
 			{
-				this.parentEntity = value;
+				parentEntity = value;
 			}
 		}
 
@@ -126,7 +130,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.fullLocalTransform;
+				return fullLocalTransform;
 			}
 		}
 
@@ -137,7 +141,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.parentEntity.ParentNodeFullTransform;
+				return parentEntity.ParentNodeFullTransform;
 			}
 		}
 
@@ -171,6 +175,8 @@ namespace Axiom.Animating
 
 		#endregion Construction and Destruction
 
+		#region Bone Members
+
 		/// <summary>
 		///		Gets the transform of this node including the parent entity and skeleton.
 		/// </summary>
@@ -189,9 +195,9 @@ namespace Axiom.Animating
 		{
 			needParentUpdate = true;
 			// // We need to tell parent entities node
-			if ( this.parentEntity != null )
+			if ( parentEntity != null )
 			{
-				Node n = this.parentEntity.ParentNode;
+				var n = parentEntity.ParentNode;
 
 				if ( n != null )
 				{
@@ -205,22 +211,22 @@ namespace Axiom.Animating
 			base.UpdateFromParent();
 
 			// Save transform for local skeleton
-			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref this.fullLocalTransform );
+			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
 
 			// Include Entity transform
-			if ( this.parentEntity != null )
+			if ( parentEntity != null )
 			{
-				Node entityParentNode = this.parentEntity.ParentNode;
+				var entityParentNode = parentEntity.ParentNode;
 				if ( entityParentNode != null )
 				{
-					Quaternion parentQ = entityParentNode.DerivedOrientation;
+					var parentQ = entityParentNode.DerivedOrientation;
 					if ( InheritParentEntityOrientation )
 					{
 						derivedOrientation = parentQ * derivedOrientation;
 					}
 
 					// Incorporate parent entity scale
-					Vector3 parentScale = entityParentNode.Scale;
+					var parentScale = entityParentNode.Scale;
 					if ( InheritParentEntityScale )
 					{
 						derivedScale *= parentScale;
@@ -236,10 +242,12 @@ namespace Axiom.Animating
 				}
 			}
 
-			if ( this.childObject != null )
+			if ( childObject != null )
 			{
-				this.childObject.NotifyMoved();
+				childObject.NotifyMoved();
 			}
 		}
+
+		#endregion Bone Members
 	}
 }

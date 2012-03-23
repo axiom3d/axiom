@@ -79,14 +79,14 @@ namespace Axiom.FileSystem
 		protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
 			var searchResults = new List<string>();
-			string[] files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern ) ? new[]
-                                                                                         {
-                                                                                             pattern
-                                                                                         } : new string[ 0 ]; //Directory.EnumerateFiles( dir );
+			var files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern ) ? new[]
+			                                                                        {
+			                                                                        	pattern
+			                                                                        } : new string[ 0 ]; //Directory.EnumerateFiles( dir );
 
-			foreach ( string file in files )
+			foreach ( var file in files )
 			{
-				string ext = Path.GetExtension( file );
+				var ext = Path.GetExtension( file );
 
 				if ( pattern == "*" || pattern.Contains( ext ) )
 				{
@@ -102,7 +102,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructors
 
 		public WebArchive( string name, string archType )
-			: base( name, archType ) { }
+			: base( name, archType ) {}
 
 		#endregion Constructors and Destructors
 
@@ -138,13 +138,13 @@ namespace Axiom.FileSystem
 			var wait = new AutoResetEvent( false );
 			var wc = new WebClient();
 			wc.OpenReadCompleted += ( s, o ) =>
-									{
-										if ( o.Error == null )
-										{
-											result = o.Result;
-										}
-										wait.Set();
-									};
+			                        {
+			                        	if ( o.Error == null )
+			                        	{
+			                        		result = o.Result;
+			                        	}
+			                        	wait.Set();
+			                        };
 			wc.OpenReadAsync( new Uri( _basePath + filename, UriKind.RelativeOrAbsolute ) );
 			wait.WaitOne();
 			return result;

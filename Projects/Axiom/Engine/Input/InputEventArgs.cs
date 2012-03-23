@@ -51,14 +51,14 @@ namespace Axiom.Input
 		#region Fields
 
 		/// <summary>
-		///		Has this event been handled?
-		/// </summary>
-		protected bool handled;
-
-		/// <summary>
 		///		Special keys currently pressed during this event.
 		/// </summary>
 		protected ModifierKeys modifiers;
+
+		/// <summary>
+		///		Has this event been handled?
+		/// </summary>
+		protected bool handled;
 
 		#endregion Fields
 
@@ -84,11 +84,11 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.handled;
+				return handled;
 			}
 			set
 			{
-				this.handled = value;
+				handled = value;
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( this.modifiers & ModifierKeys.Alt ) != 0;
+				return ( modifiers & ModifierKeys.Alt ) != 0;
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( this.modifiers & ModifierKeys.Shift ) != 0;
+				return ( modifiers & ModifierKeys.Shift ) != 0;
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( this.modifiers & ModifierKeys.Control ) != 0;
+				return ( modifiers & ModifierKeys.Control ) != 0;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return this.modifiers;
+				return modifiers;
 			}
 		}
 

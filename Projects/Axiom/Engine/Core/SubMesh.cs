@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 
 using Axiom.Animating;
@@ -65,18 +66,8 @@ namespace Axiom.Core
 	{
 		#region Member variables
 
-		/// <summary>List of bone assignment for this mesh.</summary>
-		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
-
-		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
-		protected internal bool boneAssignmentsOutOfDate;
-
-		public IndexData indexData = new IndexData();
-
-		/// <summary></summary>
-		protected bool isMaterialInitialized;
-
-		protected internal List<IndexData> lodFaceList = new List<IndexData>();
+		/// <summary>The parent mesh that this subMesh belongs to.</summary>
+		protected Mesh parent;
 
 		/// <summary>Name of the material assigned to this subMesh.</summary>
 		protected string materialName;
@@ -84,19 +75,28 @@ namespace Axiom.Core
 		/// <summary>Name of this SubMesh.</summary>
 		internal string name;
 
-		/// <summary>Mode used for rendering this submesh.</summary>
-		protected internal OperationType operationType;
+		/// <summary></summary>
+		protected bool isMaterialInitialized;
 
-		/// <summary>The parent mesh that this subMesh belongs to.</summary>
-		protected Mesh parent;
+		/// <summary>List of bone assignment for this mesh.</summary>
+		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+
+		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
+		protected internal bool boneAssignmentsOutOfDate;
+
+		/// <summary>Mode used for rendering this submesh.</summary>
+		protected internal Axiom.Graphics.OperationType operationType;
+
+		public VertexData vertexData;
+		public IndexData indexData = new IndexData();
 
 		/// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
 		public bool useSharedVertices;
 
+		protected internal List<IndexData> lodFaceList = new List<IndexData>();
+
 		/// <summary>Type of vertex animation for dedicated vertex data (populated by Mesh)</summary>
 		protected VertexAnimationType vertexAnimationType = VertexAnimationType.None;
-
-		public VertexData vertexData;
 
 		#endregion Member variables
 
@@ -106,12 +106,13 @@ namespace Axiom.Core
 		///		Basic contructor.
 		/// </summary>
 		public SubMesh( /*string name*/ )
+			: base()
 		{
 			//this.name = name;
 
-			this.useSharedVertices = true;
+			useSharedVertices = true;
 
-			this.operationType = OperationType.TriangleList;
+			operationType = OperationType.TriangleList;
 		}
 
 		#endregion Constructor
@@ -130,12 +131,12 @@ namespace Axiom.Core
 		/// <param name="boneAssignment"></param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !this.boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			if ( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
 			{
-				this.boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+				boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
 			}
-			this.boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
-			this.boneAssignmentsOutOfDate = true;
+			boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
+			boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -147,8 +148,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
-			this.boneAssignmentList.Clear();
-			this.boneAssignmentsOutOfDate = true;
+			boneAssignmentList.Clear();
+			boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -156,7 +157,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			int maxBones = this.parent.RationalizeBoneAssignments( this.vertexData.vertexCount, this.boneAssignmentList );
+			var maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
 
 			// return if no bone assigments
 			if ( maxBones != 0 )
@@ -164,14 +165,14 @@ namespace Axiom.Core
 				// FIXME: For now, to support hardware skinning with a single shader,
 				// we always want to have 4 bones. (robin@multiverse.net)
 				// maxBones = 4;
-				this.parent.CompileBoneAssignments( this.boneAssignmentList, maxBones, this.vertexData );
+				parent.CompileBoneAssignments( boneAssignmentList, maxBones, vertexData );
 			}
-			this.boneAssignmentsOutOfDate = false;
+			boneAssignmentsOutOfDate = false;
 		}
 
 		public void RemoveLodLevels()
 		{
-			this.lodFaceList.Clear();
+			lodFaceList.Clear();
 		}
 
 		#endregion Methods
@@ -185,11 +186,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.name;
+				return name;
 			}
 			set
 			{
-				this.name = value;
+				name = value;
 			}
 		}
 
@@ -200,12 +201,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.materialName;
+				return materialName;
 			}
 			set
 			{
-				this.materialName = value;
-				this.isMaterialInitialized = true;
+				materialName = value;
+				isMaterialInitialized = true;
 			}
 		}
 
@@ -216,114 +217,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.parent;
+				return parent;
 			}
 			set
 			{
-				this.parent = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets whether or not a material has been set for this subMesh.
-		/// </summary>
-		public bool IsMaterialInitialized
-		{
-			get
-			{
-				return this.isMaterialInitialized;
-			}
-		}
-
-		/// <summary>
-		///		Gets bone assigment list
-		/// </summary>
-		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
-		{
-			get
-			{
-				return this.boneAssignmentList;
-			}
-		}
-
-		public int NumFaces
-		{
-			get
-			{
-				int numFaces = 0;
-				if ( this.indexData == null )
-				{
-					return 0;
-				}
-				if ( this.operationType == OperationType.TriangleList )
-				{
-					numFaces = this.indexData.indexCount / 3;
-				}
-				else
-				{
-					numFaces = this.indexData.indexCount - 2;
-				}
-				return numFaces;
-			}
-		}
-
-		public OperationType OperationType
-		{
-			get
-			{
-				return this.operationType;
-			}
-			set
-			{
-				this.operationType = value;
-			}
-		}
-
-		public VertexAnimationType VertexAnimationType
-		{
-			get
-			{
-				if ( this.parent.AnimationTypesDirty )
-				{
-					this.parent.DetermineAnimationTypes();
-				}
-				return this.vertexAnimationType;
-			}
-			set
-			{
-				this.vertexAnimationType = value;
-			}
-		}
-
-		public VertexAnimationType CurrentVertexAnimationType
-		{
-			get
-			{
-				return this.vertexAnimationType;
-			}
-		}
-
-		public List<IndexData> LodFaceList
-		{
-			get
-			{
-				return this.lodFaceList;
-			}
-		}
-
-		public VertexData VertexData
-		{
-			get
-			{
-				return this.vertexData;
-			}
-		}
-
-		public IndexData IndexData
-		{
-			get
-			{
-				return this.indexData;
+				parent = value;
 			}
 		}
 
@@ -349,21 +247,124 @@ namespace Axiom.Core
 			op.useIndices = true;
 
 			// use lod face list if requested, else pass the normal face list
-			if ( lodIndex > 0 && ( lodIndex - 1 ) < this.lodFaceList.Count )
+			if ( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
 			{
 				// Use the set of indices defined for this LOD level
-				op.indexData = this.lodFaceList[ lodIndex - 1 ];
+				op.indexData = lodFaceList[ lodIndex - 1 ];
 			}
 			else
 			{
-				op.indexData = this.indexData;
+				op.indexData = indexData;
 			}
 
 			// set the operation type
-			op.operationType = this.operationType;
+			op.operationType = operationType;
 
 			// set the vertex data correctly
-			op.vertexData = this.useSharedVertices ? this.parent.SharedVertexData : this.vertexData;
+			op.vertexData = useSharedVertices ? parent.SharedVertexData : vertexData;
+		}
+
+		/// <summary>
+		///		Gets whether or not a material has been set for this subMesh.
+		/// </summary>
+		public bool IsMaterialInitialized
+		{
+			get
+			{
+				return isMaterialInitialized;
+			}
+		}
+
+		/// <summary>
+		///		Gets bone assigment list
+		/// </summary>
+		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
+		{
+			get
+			{
+				return boneAssignmentList;
+			}
+		}
+
+		public int NumFaces
+		{
+			get
+			{
+				var numFaces = 0;
+				if ( indexData == null )
+				{
+					return 0;
+				}
+				if ( operationType == OperationType.TriangleList )
+				{
+					numFaces = indexData.indexCount / 3;
+				}
+				else
+				{
+					numFaces = indexData.indexCount - 2;
+				}
+				return numFaces;
+			}
+		}
+
+		public OperationType OperationType
+		{
+			get
+			{
+				return operationType;
+			}
+			set
+			{
+				operationType = value;
+			}
+		}
+
+		public VertexAnimationType VertexAnimationType
+		{
+			get
+			{
+				if ( parent.AnimationTypesDirty )
+				{
+					parent.DetermineAnimationTypes();
+				}
+				return vertexAnimationType;
+			}
+			set
+			{
+				vertexAnimationType = value;
+			}
+		}
+
+		public VertexAnimationType CurrentVertexAnimationType
+		{
+			get
+			{
+				return vertexAnimationType;
+			}
+		}
+
+		public List<IndexData> LodFaceList
+		{
+			get
+			{
+				return lodFaceList;
+			}
+		}
+
+		public VertexData VertexData
+		{
+			get
+			{
+				return vertexData;
+			}
+		}
+
+		public IndexData IndexData
+		{
+			get
+			{
+				return indexData;
+			}
 		}
 
 		#endregion Properties
@@ -377,23 +378,23 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.indexData != null )
+					if ( indexData != null )
 					{
-						if ( !this.indexData.IsDisposed )
+						if ( !indexData.IsDisposed )
 						{
-							this.indexData.Dispose();
+							indexData.Dispose();
 						}
 					}
 
-					if ( this.vertexData != null )
+					if ( vertexData != null )
 					{
-						if ( !this.vertexData.IsDisposed )
+						if ( !vertexData.IsDisposed )
 						{
-							this.vertexData.Dispose();
+							vertexData.Dispose();
 						}
 					}
 
-					foreach ( IndexData data in this.lodFaceList )
+					foreach ( var data in lodFaceList )
 					{
 						if ( !data.IsDisposed )
 						{

@@ -38,12 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-using Axiom.Core.Collections;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -80,23 +81,21 @@ namespace Axiom.Core
 	{
 		public class DebugRenderable : DisposableObject, IRenderable
 		{
-			private readonly LightList _emptyLightList = new LightList();
-			private readonly Material _material;
-			private readonly Mesh _mesh;
-			private readonly Node _parent;
-
-			private float _scaling;
+			private Node _parent;
+			private Material _material;
+			private Mesh _mesh;
+			private LightList _emptyLightList = new LightList();
 
 			public DebugRenderable( Node parent )
 			{
-				this._parent = parent;
+				_parent = parent;
 
-				string materialName = "Axiom/Debug/AxesMat";
-				this._material = (Material)MaterialManager.Instance[ materialName ];
-				if ( this._material == null )
+				var materialName = "Axiom/Debug/AxesMat";
+				_material = (Material)MaterialManager.Instance[ materialName ];
+				if ( _material == null )
 				{
-					this._material = (Material)MaterialManager.Instance.Create( materialName, ResourceGroupManager.InternalResourceGroupName );
-					Pass p = this._material.GetTechnique( 0 ).GetPass( 0 );
+					_material = (Material)MaterialManager.Instance.Create( materialName, ResourceGroupManager.InternalResourceGroupName );
+					var p = _material.GetTechnique( 0 ).GetPass( 0 );
 					p.LightingEnabled = false;
 					//TODO: p.PolygonModeOverrideable = false;
 					p.VertexColorTracking = TrackVertexColor.Ambient;
@@ -105,9 +104,9 @@ namespace Axiom.Core
 					p.DepthWrite = false;
 				}
 
-				string meshName = "Axiom/Debug/AxesMesh";
-				this._mesh = MeshManager.Instance[ meshName ];
-				if ( this._mesh == null )
+				var meshName = "Axiom/Debug/AxesMesh";
+				_mesh = MeshManager.Instance[ meshName ];
+				if ( _mesh == null )
 				{
 					var mo = new ManualObject( "tmp" );
 					mo.Begin( Material.Name, OperationType.TriangleList );
@@ -137,21 +136,21 @@ namespace Axiom.Core
 					col[ 2 ].a = 0.8f;
 
 					var basepos = new Vector3[ 7 ]
-                                  {
-                                      // stalk
-                                      new Vector3( 0f, 0.05f, 0f ), new Vector3( 0f, -0.05f, 0f ), new Vector3( 0.7f, -0.05f, 0f ), new Vector3( 0.7f, 0.05f, 0f ), // head
-                                      new Vector3( 0.7f, -0.15f, 0f ), new Vector3( 1f, 0f, 0f ), new Vector3( 0.7f, 0.15f, 0f )
-                                  };
+					              {
+					              	// stalk
+					              	new Vector3( 0f, 0.05f, 0f ), new Vector3( 0f, -0.05f, 0f ), new Vector3( 0.7f, -0.05f, 0f ), new Vector3( 0.7f, 0.05f, 0f ), // head
+					              	new Vector3( 0.7f, -0.15f, 0f ), new Vector3( 1f, 0f, 0f ), new Vector3( 0.7f, 0.15f, 0f )
+					              };
 
 
 					// vertices
 					// 6 arrows
-					for ( int i = 0; i < 6; ++i )
+					for ( var i = 0; i < 6; ++i )
 					{
 						// 7 points
-						for ( int p = 0; p < 7; ++p )
+						for ( var p = 0; p < 7; ++p )
 						{
-							Vector3 pos = quat[ i ] * basepos[ p ];
+							var pos = quat[ i ] * basepos[ p ];
 							mo.Position( pos );
 							mo.Color( col[ i / 2 ] );
 						}
@@ -159,7 +158,7 @@ namespace Axiom.Core
 
 					// indices
 					// 6 arrows
-					for ( int i = 0; i < 6; ++i )
+					for ( var i = 0; i < 6; ++i )
 					{
 						var baseIndex = (ushort)( i * 7 );
 						mo.Triangle( (ushort)( baseIndex + 0 ), (ushort)( baseIndex + 1 ), (ushort)( baseIndex + 2 ) );
@@ -169,26 +168,25 @@ namespace Axiom.Core
 
 					mo.End();
 
-					this._mesh = mo.ConvertToMesh( meshName, ResourceGroupManager.InternalResourceGroupName );
+					_mesh = mo.ConvertToMesh( meshName, ResourceGroupManager.InternalResourceGroupName );
 				}
 			}
+
+			private float _scaling;
 
 			public float Scaling
 			{
 				get
 				{
-					return this._scaling;
+					return _scaling;
 				}
 				set
 				{
-					this._scaling = value;
+					_scaling = value;
 				}
 			}
 
 			#region IRenderable implementation
-
-			private readonly List<Vector4> customParams = new List<Vector4>();
-			protected RenderOperation renderOperation = new RenderOperation();
 
 			public bool CastsShadows
 			{
@@ -220,6 +218,8 @@ namespace Axiom.Core
 				}
 			}
 
+			protected RenderOperation renderOperation = new RenderOperation();
+
 			/// <summary>
 			///		This is only used if the SceneManager chooses to render the node. This option can be set
 			///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal
@@ -229,8 +229,8 @@ namespace Axiom.Core
 			{
 				get
 				{
-					this._mesh.GetSubMesh( 0 ).GetRenderOperation( this.renderOperation );
-					return this.renderOperation;
+					_mesh.GetSubMesh( 0 ).GetRenderOperation( renderOperation );
+					return renderOperation;
 				}
 			}
 
@@ -246,7 +246,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._material;
+					return _material;
 				}
 			}
 
@@ -262,7 +262,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return Material.GetBestTechnique();
+					return this.Material.GetBestTechnique();
 				}
 			}
 
@@ -314,18 +314,18 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return this._emptyLightList;
+					return _emptyLightList;
 				}
 			}
 
 			public void GetWorldTransforms( Matrix4[] matrices )
 			{
 				// Assumes up to date
-				matrices[ 0 ] = this._parent.cachedTransform;
-				if ( !Utility.RealEqual( this._scaling, 1.0 ) )
+				matrices[ 0 ] = _parent.cachedTransform;
+				if ( !Utility.RealEqual( _scaling, 1.0 ) )
 				{
-					Matrix4 m = Matrix4.Identity;
-					var s = new Vector3( this._scaling, this._scaling, this._scaling );
+					var m = Matrix4.Identity;
+					var s = new Vector3( _scaling, _scaling, _scaling );
 					m.Scale = s;
 					matrices[ 0 ] = matrices[ 0 ] * m;
 				}
@@ -333,35 +333,37 @@ namespace Axiom.Core
 
 			public Real GetSquaredViewDepth( Camera camera )
 			{
-				return this._parent.GetSquaredViewDepth( camera );
+				return _parent.GetSquaredViewDepth( camera );
 			}
+
+			private List<Vector4> customParams = new List<Vector4>();
 
 			public Vector4 GetCustomParameter( int index )
 			{
-				if ( this.customParams[ index ] == null )
+				if ( customParams[ index ] == null )
 				{
 					throw new Exception( "A parameter was not found at the given index" );
 				}
 				else
 				{
-					return this.customParams[ index ];
+					return (Vector4)customParams[ index ];
 				}
 			}
 
 			public void SetCustomParameter( int index, Vector4 val )
 			{
-				while ( this.customParams.Count <= index )
+				while ( customParams.Count <= index )
 				{
-					this.customParams.Add( Vector4.Zero );
+					customParams.Add( Vector4.Zero );
 				}
-				this.customParams[ index ] = val;
+				customParams[ index ] = val;
 			}
 
 			public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 			{
-				if ( this.customParams[ entry.Data ] != null )
+				if ( customParams[ entry.Data ] != null )
 				{
-					gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
+					gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 				}
 			}
 
@@ -376,11 +378,11 @@ namespace Axiom.Core
 					if ( disposeManagedResources )
 					{
 						// Dispose managed resources.
-						if ( this.renderOperation != null )
+						if ( renderOperation != null )
 						{
-							this.renderOperation.vertexData = null;
-							this.renderOperation.indexData = null;
-							this.renderOperation = null;
+							renderOperation.vertexData = null;
+							renderOperation.indexData = null;
+							renderOperation = null;
 						}
 					}
 				}
@@ -419,7 +421,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.childNodes.Values;
+				return childNodes.Values;
 			}
 		}
 
@@ -500,7 +502,7 @@ namespace Axiom.Core
 
 		protected List<Vector4> customParams = new List<Vector4>();
 
-		protected bool suppressUpdateEvent;
+		protected bool suppressUpdateEvent = false;
 
 		private DebugRenderable _debugRenderable;
 
@@ -508,8 +510,8 @@ namespace Axiom.Core
 
 		#region Static member variables
 
-		protected static Material material;
-		protected static SubMesh subMesh;
+		protected static Material material = null;
+		protected static SubMesh subMesh = null;
 		protected static long nextUnnamedNodeExtNum = 1;
 
 		/// <summary>
@@ -527,29 +529,30 @@ namespace Axiom.Core
 		///
 		/// </summary>
 		public Node()
-			: this( "Unnamed_" + nextUnnamedNodeExtNum++ ) { }
+			: this( "Unnamed_" + nextUnnamedNodeExtNum++ ) {}
 
 		/// <summary>
 		///
 		/// </summary>
 		/// <param name="name"></param>
 		public Node( string name )
+			: base()
 		{
 			this.name = name;
 
 			// initialize objects
-			this.orientation = this.initialOrientation = this.derivedOrientation = Quaternion.Identity;
-			this.position = this.initialPosition = this.derivedPosition = Vector3.Zero;
-			this.scale = this.initialScale = this.derivedScale = Vector3.UnitScale;
-			this.cachedTransform = Matrix4.Identity;
+			orientation = initialOrientation = derivedOrientation = Quaternion.Identity;
+			position = initialPosition = derivedPosition = Vector3.Zero;
+			scale = initialScale = derivedScale = Vector3.UnitScale;
+			cachedTransform = Matrix4.Identity;
 
-			this.inheritOrientation = true;
-			this.inheritScale = true;
+			inheritOrientation = true;
+			inheritScale = true;
 
-			this.accumAnimWeight = 0.0f;
+			accumAnimWeight = 0.0f;
 
-			this.childNodes = new NodeCollection();
-			this.childrenToUpdate = new NodeCollection();
+			childNodes = new NodeCollection();
+			childrenToUpdate = new NodeCollection();
 
 			NeedUpdate();
 		}
@@ -563,9 +566,9 @@ namespace Axiom.Core
 		/// </summary>
 		public void RemoveFromParent()
 		{
-			if ( this.parent != null )
+			if ( parent != null )
 			{
-				this.parent.RemoveChild( this.name ); //if this errors, then the parent is out of sync with the child
+				parent.RemoveChild( name ); //if this errors, then the parent is out of sync with the child
 			}
 		}
 
@@ -574,19 +577,19 @@ namespace Axiom.Core
 		/// </summary>
 		public void AddChild( Node child )
 		{
-			string childName = child.Name;
+			var childName = child.Name;
 			if ( child == this )
 			{
 				throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
 			}
-			if ( this.childNodes.ContainsKey( childName ) )
+			if ( childNodes.ContainsKey( childName ) )
 			{
 				throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 			}
 
 			child.RemoveFromParent();
 
-			this.childNodes.Add( childName, child );
+			childNodes.Add( childName, child );
 
 			child.NotifyOfNewParent( this );
 		}
@@ -596,7 +599,7 @@ namespace Axiom.Core
 		/// </summary>
 		internal virtual void Clear()
 		{
-			this.childNodes.Clear();
+			childNodes.Clear();
 		}
 
 		/// <summary>
@@ -604,13 +607,13 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void RemoveAllChildren()
 		{
-			foreach ( Node child in Children )
+			foreach ( var child in Children )
 			{
 				child.NotifyOfNewParent( null );
 			}
 
-			this.childNodes.Clear();
-			this.childrenToUpdate.Clear();
+			childNodes.Clear();
+			childrenToUpdate.Clear();
 		}
 
 		/// <summary>
@@ -630,7 +633,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public bool HasChild( string name )
 		{
-			return this.childNodes.ContainsKey( name );
+			return childNodes.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -640,7 +643,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public Node GetChild( string name )
 		{
-			return this.childNodes[ name ];
+			return childNodes[ name ];
 		}
 
 		/// <summary>
@@ -651,7 +654,7 @@ namespace Axiom.Core
 		public virtual Node RemoveChild( string name )
 		{
 			Node child;
-			if ( !this.childNodes.TryGetValue( name, out child ) )
+			if ( !childNodes.TryGetValue( name, out child ) )
 			{
 				throw new AxiomException( "Node named '{0}' not found.", name );
 			}
@@ -683,7 +686,7 @@ namespace Axiom.Core
 
 			if ( removeFromInternalList )
 			{
-				this.childNodes.Remove( child.Name );
+				childNodes.Remove( child.Name );
 			}
 		}
 
@@ -700,7 +703,7 @@ namespace Axiom.Core
 		///</remarks>
 		public virtual void ScaleBy( Vector3 factor )
 		{
-			this.scale = this.scale * factor;
+			scale = scale * factor;
 			NeedUpdate();
 		}
 
@@ -730,23 +733,23 @@ namespace Axiom.Core
 			{
 				case TransformSpace.Local:
 					// position is relative to parent so transform downwards
-					this.position += this.orientation * translate;
+					position += orientation * translate;
 					break;
 
 				case TransformSpace.World:
-					if ( this.parent != null )
+					if ( parent != null )
 					{
-						this.position += ( this.parent.DerivedOrientation.Inverse() * translate ) / this.parent.DerivedScale;
+						position += ( parent.DerivedOrientation.Inverse() * translate ) / parent.DerivedScale;
 					}
 					else
 					{
-						this.position += translate;
+						position += translate;
 					}
 
 					break;
 
 				case TransformSpace.Parent:
-					this.position += translate;
+					position += translate;
 					break;
 			}
 
@@ -770,7 +773,7 @@ namespace Axiom.Core
 		/// <param name="move">Vector relative to the supplied axes.</param>
 		public virtual void Translate( Matrix3 axes, Vector3 move )
 		{
-			Vector3 derived = axes * move;
+			var derived = axes * move;
 			Translate( derived, TransformSpace.Parent );
 		}
 
@@ -792,7 +795,7 @@ namespace Axiom.Core
 		/// <param name="relativeTo"></param>
 		public virtual void Translate( Matrix3 axes, Vector3 move, TransformSpace relativeTo )
 		{
-			Vector3 derived = axes * move;
+			var derived = axes * move;
 			Translate( derived, relativeTo );
 		}
 
@@ -852,7 +855,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
 		{
-			Quaternion q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( degrees ), axis );
+			var q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
 			Rotate( q, relativeTo );
 		}
 
@@ -875,16 +878,16 @@ namespace Axiom.Core
 			{
 				case TransformSpace.Parent:
 					// Rotations are normally relative to local axes, transform up
-					this.orientation = rotation * this.orientation;
+					orientation = rotation * orientation;
 					break;
 
 				case TransformSpace.World:
-					this.orientation = this.orientation * DerivedOrientation.Inverse() * rotation * DerivedOrientation;
+					orientation = orientation * DerivedOrientation.Inverse() * rotation * DerivedOrientation;
 					break;
 
 				case TransformSpace.Local:
 					// Note the order of the mult, i.e. q comes after
-					this.orientation = this.orientation * rotation;
+					orientation = orientation * rotation;
 					break;
 			}
 
@@ -904,7 +907,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ResetOrientation()
 		{
-			this.orientation = Quaternion.Identity;
+			orientation = Quaternion.Identity;
 			NeedUpdate();
 		}
 
@@ -913,15 +916,15 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ResetToInitialState()
 		{
-			this.position = this.initialPosition;
-			this.orientation = this.initialOrientation;
-			this.scale = this.initialScale;
+			position = initialPosition;
+			orientation = initialOrientation;
+			scale = initialScale;
 
 			// Reset weights
-			this.accumAnimWeight = 0.0f;
-			this.translationFromInitial = Vector3.Zero;
-			this.rotationFromInitial = Quaternion.Identity;
-			this.scaleFromInitial = Vector3.UnitScale;
+			accumAnimWeight = 0.0f;
+			translationFromInitial = Vector3.Zero;
+			rotationFromInitial = Quaternion.Identity;
+			scaleFromInitial = Vector3.UnitScale;
 
 			NeedUpdate();
 		}
@@ -940,9 +943,9 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void SetInitialState()
 		{
-			this.initialOrientation = this.orientation;
-			this.initialPosition = this.position;
-			this.initialScale = this.scale;
+			initialOrientation = orientation;
+			initialPosition = position;
+			initialScale = scale;
 		}
 
 		/// <summary>
@@ -974,7 +977,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Node CreateChild( string name, Vector3 translate, Quaternion rotate )
 		{
-			Node newChild = CreateChildImpl( name );
+			var newChild = CreateChildImpl( name );
 			newChild.Translate( translate );
 			newChild.Rotate( rotate );
 			AddChild( newChild );
@@ -1008,7 +1011,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Node CreateChild( Vector3 translate, Quaternion rotate )
 		{
-			Node newChild = CreateChildImpl();
+			var newChild = CreateChildImpl();
 			newChild.Translate( translate );
 			newChild.Rotate( rotate );
 			AddChild( newChild );
@@ -1016,19 +1019,19 @@ namespace Axiom.Core
 			return newChild;
 		}
 
-		public virtual DebugRenderable GetDebugRenderable()
+		public virtual Node.DebugRenderable GetDebugRenderable()
 		{
 			return GetDebugRenderable( 0.0f );
 		}
 
-		public virtual DebugRenderable GetDebugRenderable( Real scaling )
+		public virtual Node.DebugRenderable GetDebugRenderable( Real scaling )
 		{
-			if ( this._debugRenderable == null )
+			if ( _debugRenderable == null )
 			{
-				this._debugRenderable = new DebugRenderable( this );
+				_debugRenderable = new DebugRenderable( this );
 			}
-			this._debugRenderable.Scaling = scaling;
-			return this._debugRenderable;
+			_debugRenderable.Scaling = scaling;
+			return _debugRenderable;
 		}
 
 		/// <summary>
@@ -1038,7 +1041,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public float GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 difference = DerivedPosition - camera.DerivedPosition;
+			var difference = this.DerivedPosition - camera.DerivedPosition;
 
 			// return squared length to avoid doing a square root when it is not imperative
 			return difference.LengthSquared;
@@ -1050,7 +1053,7 @@ namespace Axiom.Core
 		/// <param name="matrices"></param>
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
-			matrices[ 0 ] = FullTransform;
+			matrices[ 0 ] = this.FullTransform;
 		}
 
 		/// <summary>
@@ -1068,20 +1071,20 @@ namespace Axiom.Core
 
 		public virtual void NeedUpdate( bool forceParentUpdate )
 		{
-			this.needParentUpdate = true;
-			this.needChildUpdate = true;
-			this.needTransformUpdate = true;
-			this.needRelativeTransformUpdate = true;
+			needParentUpdate = true;
+			needChildUpdate = true;
+			needTransformUpdate = true;
+			needRelativeTransformUpdate = true;
 
 			// make sure we are not the root node
-			if ( this.parent != null && ( !this.isParentNotified || forceParentUpdate ) )
+			if ( parent != null && ( !isParentNotified || forceParentUpdate ) )
 			{
-				this.parent.RequestUpdate( this );
-				this.isParentNotified = true;
+				parent.RequestUpdate( this );
+				isParentNotified = true;
 			}
 
 			// all children will be updated shortly
-			this.childrenToUpdate.Clear();
+			childrenToUpdate.Clear();
 		}
 
 		public static void QueueNeedUpdate( Node node )
@@ -1099,7 +1102,7 @@ namespace Axiom.Core
 		{
 			lock ( _queuedForUpdate )
 			{
-				foreach ( Node node in _queuedForUpdate )
+				foreach ( var node in _queuedForUpdate )
 				{
 					node.NeedUpdate( true );
 				}
@@ -1114,22 +1117,22 @@ namespace Axiom.Core
 		public virtual void RequestUpdate( Node child )
 		{
 			// if we are already going to update everything, this wont matter
-			if ( this.needChildUpdate )
+			if ( needChildUpdate )
 			{
 				return;
 			}
 
 			// add to the list of children that need updating
-			if ( !this.childrenToUpdate.ContainsKey( child.name ) )
+			if ( !childrenToUpdate.ContainsKey( child.name ) )
 			{
-				this.childrenToUpdate.Add( child );
+				childrenToUpdate.Add( child );
 			}
 
 			// request to update me
-			if ( this.parent != null && !this.isParentNotified )
+			if ( parent != null && !isParentNotified )
 			{
-				this.parent.RequestUpdate( this );
-				this.isParentNotified = true;
+				parent.RequestUpdate( this );
+				isParentNotified = true;
 			}
 		}
 
@@ -1140,13 +1143,13 @@ namespace Axiom.Core
 		public virtual void CancelUpdate( Node child )
 		{
 			// remove this from the list of children to update
-			this.childrenToUpdate.Remove( child.Name );
+			childrenToUpdate.Remove( child.Name );
 
 			// propogate this changed if we are done
-			if ( this.childrenToUpdate.Count == 0 && this.parent != null && !this.needChildUpdate )
+			if ( childrenToUpdate.Count == 0 && parent != null && !needChildUpdate )
 			{
-				this.parent.CancelUpdate( this );
-				this.isParentNotified = false;
+				parent.CancelUpdate( this );
+				isParentNotified = false;
 			}
 		}
 
@@ -1161,7 +1164,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.childNodes.Count;
+				return childNodes.Count;
 			}
 		}
 
@@ -1173,7 +1176,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.name;
+				return name;
 			}
 			//set
 			//{
@@ -1195,7 +1198,7 @@ namespace Axiom.Core
 		/// Can be overriden in derived classes to fire an event or rekey this node in the collections which contain it
 		/// </summary>
 		/// <param name="oldName"></param>
-		protected virtual void OnRename( string oldName ) { }
+		protected virtual void OnRename( string oldName ) {}
 
 		/// <summary>
 		/// Get the Parent Node of the current Node.
@@ -1204,22 +1207,22 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.parent;
+				return parent;
 			}
 			set
 			{
-				if ( this.parent != value )
+				if ( parent != value )
 				{
-					if ( this.parent != null )
+					if ( parent != null )
 					{
-						this.parent.RemoveChild( this );
+						parent.RemoveChild( this );
 					}
 
-					this.parent = value;
+					parent = value;
 
-					if ( this.parent != null )
+					if ( parent != null )
 					{
-						this.parent.AddChild( this );
+						parent.AddChild( this );
 					}
 				}
 			}
@@ -1227,8 +1230,8 @@ namespace Axiom.Core
 
 		protected virtual void NotifyOfNewParent( Node newParent )
 		{
-			this.parent = newParent;
-			this.isParentNotified = false;
+			parent = newParent;
+			isParentNotified = false;
 			NeedUpdate();
 		}
 
@@ -1239,12 +1242,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.orientation;
+				return orientation;
 			}
 			set
 			{
-				this.orientation = value;
-				this.orientation.Normalize(); // avoid drift
+				orientation = value;
+				orientation.Normalize(); // avoid drift
 				NeedUpdate();
 			}
 		}
@@ -1256,11 +1259,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.position;
+				return position;
 			}
 			set
 			{
-				this.position = value;
+				position = value;
 				NeedUpdate();
 			}
 		}
@@ -1284,11 +1287,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.scale;
+				return scale;
 			}
 			set
 			{
-				this.scale = value;
+				scale = value;
 				NeedUpdate();
 			}
 		}
@@ -1312,11 +1315,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.inheritScale;
+				return inheritScale;
 			}
 			set
 			{
-				this.inheritScale = value;
+				inheritScale = value;
 				NeedUpdate();
 			}
 		}
@@ -1328,11 +1331,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.inheritOrientation;
+				return inheritOrientation;
 			}
 			set
 			{
-				this.inheritOrientation = value;
+				inheritOrientation = value;
 				NeedUpdate();
 			}
 		}
@@ -1346,14 +1349,14 @@ namespace Axiom.Core
 			get
 			{
 				// get the 3 unit Vectors
-				Vector3 xAxis = Vector3.UnitX;
-				Vector3 yAxis = Vector3.UnitY;
-				Vector3 zAxis = Vector3.UnitZ;
+				var xAxis = Vector3.UnitX;
+				var yAxis = Vector3.UnitY;
+				var zAxis = Vector3.UnitZ;
 
 				// multpliy each times the current orientation
-				xAxis = this.orientation * xAxis;
-				yAxis = this.orientation * yAxis;
-				zAxis = this.orientation * zAxis;
+				xAxis = orientation * xAxis;
+				yAxis = orientation * yAxis;
+				zAxis = orientation * zAxis;
 
 				return new Matrix3( xAxis, yAxis, zAxis );
 			}
@@ -1372,53 +1375,53 @@ namespace Axiom.Core
 		/// </summary>
 		protected virtual void UpdateFromParent()
 		{
-			if ( this.parent != null )
+			if ( parent != null )
 			{
 				// Update orientation
-				Quaternion parentOrientation = this.parent.DerivedOrientation;
-				if ( this.inheritOrientation )
+				var parentOrientation = parent.DerivedOrientation;
+				if ( inheritOrientation )
 				{
 					// combine local orientation with parents
-					this.derivedOrientation = parentOrientation * this.orientation;
+					derivedOrientation = parentOrientation * orientation;
 				}
 				else
 				{
 					// no inheritance
-					this.derivedOrientation = this.orientation;
+					derivedOrientation = orientation;
 				}
 
 				// update scale
-				Vector3 parentScale = this.parent.DerivedScale;
-				if ( this.inheritScale )
+				var parentScale = parent.DerivedScale;
+				if ( inheritScale )
 				{
 					// set own scale, just combine as equivalent axes, no shearing
-					this.derivedScale = parentScale * this.scale;
+					derivedScale = parentScale * scale;
 				}
 				else
 				{
 					// do not inherit parents scale
-					this.derivedScale = this.scale;
+					derivedScale = scale;
 				}
 
 				// Change position vector based on parent's orientation & scale
-				this.derivedPosition = parentOrientation * ( parentScale * this.position );
+				derivedPosition = parentOrientation * ( parentScale * position );
 
 				// add parents positition to local altered position
-				this.derivedPosition += this.parent.DerivedPosition;
+				derivedPosition += parent.DerivedPosition;
 			}
 			else
 			{
 				// Root node, no parent
-				this.derivedOrientation = this.orientation;
-				this.derivedPosition = this.position;
-				this.derivedScale = this.scale;
+				derivedOrientation = orientation;
+				derivedPosition = position;
+				derivedScale = scale;
 			}
 
-			this.needParentUpdate = false;
-			this.needTransformUpdate = true;
-			this.needRelativeTransformUpdate = true;
+			needParentUpdate = false;
+			needTransformUpdate = true;
+			needRelativeTransformUpdate = true;
 
-			if ( this.suppressUpdateEvent == false )
+			if ( suppressUpdateEvent == false )
 			{
 				OnUpdatedFromParent();
 			}
@@ -1428,7 +1431,7 @@ namespace Axiom.Core
 		{
 			if ( UpdatedFromParent != null )
 			{
-				UpdatedFromParent( this.derivedPosition, this.derivedOrientation, this.derivedScale );
+				UpdatedFromParent( derivedPosition, derivedOrientation, derivedScale );
 			}
 		}
 
@@ -1471,14 +1474,14 @@ namespace Axiom.Core
 		protected void MakeInverseTransform( Vector3 position, Vector3 scale, Quaternion orientation, ref Matrix4 destMatrix )
 		{
 			// Invert the parameters
-			Vector3 invTranslate = -position;
-			Vector3 invScale = Vector3.Zero;
+			var invTranslate = -position;
+			var invScale = Vector3.Zero;
 
 			invScale.x = 1.0f / scale.x;
 			invScale.y = 1.0f / scale.y;
 			invScale.z = 1.0f / scale.z;
 
-			Quaternion invRot = orientation.Inverse();
+			var invRot = orientation.Inverse();
 
 			// Because we're inverting, order is translation, rotation, scale
 			// So make translation relative to scale & rotation
@@ -1488,8 +1491,8 @@ namespace Axiom.Core
 			invTranslate = invRot * invTranslate; // rotate
 
 			// Next, make a 3x3 rotation matrix and apply inverse scale
-			Matrix3 rot3x3 = invRot.ToRotationMatrix();
-			Matrix3 scale3x3 = Matrix3.Zero;
+			var rot3x3 = invRot.ToRotationMatrix();
+			var scale3x3 = Matrix3.Zero;
 
 			scale3x3.m00 = invScale.x;
 			scale3x3.m11 = invScale.y;
@@ -1525,25 +1528,25 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( this.needParentUpdate )
+				if ( needParentUpdate )
 				{
 					UpdateFromParent();
 				}
 
-				return this.derivedOrientation;
+				return derivedOrientation;
 			}
 			set
 			{
-				if ( this.inheritOrientation && this.parent != null )
+				if ( inheritOrientation && parent != null )
 				{
-					this.orientation = this.parent.DerivedOrientation.Inverse() * value;
+					orientation = parent.DerivedOrientation.Inverse() * value;
 				}
 				else
 				{
-					this.orientation = value;
+					orientation = value;
 				}
 
-				this.orientation.Normalize(); // avoid drift
+				orientation.Normalize(); // avoid drift
 				NeedUpdate();
 			}
 		}
@@ -1555,22 +1558,22 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( this.needParentUpdate )
+				if ( needParentUpdate )
 				{
 					UpdateFromParent();
 				}
 
-				return this.derivedPosition;
+				return derivedPosition;
 			}
 			set
 			{
-				if ( this.parent != null )
+				if ( parent != null )
 				{
-					this.position = this.parent.DerivedOrientation.Inverse() * ( value - this.parent.DerivedPosition ) / this.parent.DerivedScale;
+					position = parent.DerivedOrientation.Inverse() * ( value - parent.DerivedPosition ) / parent.DerivedScale;
 				}
 				else
 				{
-					this.position = value;
+					position = value;
 				}
 
 				NeedUpdate();
@@ -1584,22 +1587,22 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( this.needParentUpdate )
+				if ( needParentUpdate )
 				{
 					UpdateFromParent();
 				}
 
-				return this.derivedScale;
+				return derivedScale;
 			}
 			set
 			{
-				if ( this.inheritScale & this.parent != null )
+				if ( inheritScale & parent != null )
 				{
-					this.scale = value / this.parent.DerivedScale;
+					scale = value / parent.DerivedScale;
 				}
 				else
 				{
-					this.scale = value;
+					scale = value;
 				}
 
 				NeedUpdate();
@@ -1623,15 +1626,15 @@ namespace Axiom.Core
 			{
 				//if needs an update from parent or it has been updated from parent
 				//yet this hasn't been called after that yet
-				if ( this.needTransformUpdate )
+				if ( needTransformUpdate )
 				{
 					//derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
-					MakeTransform( DerivedPosition, DerivedScale, DerivedOrientation, ref this.cachedTransform );
+					MakeTransform( this.DerivedPosition, this.DerivedScale, this.DerivedOrientation, ref cachedTransform );
 					//dont need to update this again until next invalidation
-					this.needTransformUpdate = false;
+					needTransformUpdate = false;
 				}
 
-				return this.cachedTransform;
+				return cachedTransform;
 			}
 		}
 
@@ -1652,15 +1655,15 @@ namespace Axiom.Core
 			{
 				//if needs an update from parent or it has been updated from parent
 				//yet this hasn't been called after that yet
-				if ( this.needRelativeTransformUpdate )
+				if ( needRelativeTransformUpdate )
 				{
 					//derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
-					MakeTransform( Position, Scale, Orientation, ref this.cachedRelativeTransform );
+					MakeTransform( this.Position, this.Scale, this.Orientation, ref cachedRelativeTransform );
 					//dont need to update this again until next invalidation
-					this.needRelativeTransformUpdate = false;
+					needRelativeTransformUpdate = false;
 				}
 
-				return this.cachedRelativeTransform;
+				return cachedRelativeTransform;
 			}
 		}
 
@@ -1678,21 +1681,21 @@ namespace Axiom.Core
 		/// <param name="hasParentChanged">if true then this will update its derived properties (scale, orientation, position) accoarding to the parent's</param>
 		protected internal virtual void Update( bool updateChildren, bool hasParentChanged )
 		{
-			if ( this.parent == null )
+			if ( parent == null )
 			{
 				Monitor.Enter( _queuedForUpdate );
 			}
 
-			this.isParentNotified = false;
+			isParentNotified = false;
 
 			// skip update if not needed
-			if ( !updateChildren && !this.needParentUpdate && !this.needChildUpdate && !hasParentChanged )
+			if ( !updateChildren && !needParentUpdate && !needChildUpdate && !hasParentChanged )
 			{
 				return;
 			}
 
 			// see if need to process everyone
-			if ( this.needParentUpdate || hasParentChanged )
+			if ( needParentUpdate || hasParentChanged )
 			{
 				// update transforms from parent
 				UpdateFromParent();
@@ -1704,32 +1707,32 @@ namespace Axiom.Core
 			}
 
 			// see if we need to process all
-			if ( this.needChildUpdate || hasParentChanged )
+			if ( needChildUpdate || hasParentChanged )
 			{
 				// update all children
-				foreach ( Node child in this.childNodes.Values )
+				foreach ( var child in childNodes.Values )
 				{
 					child.Update( true, true );
 				}
 
-				this.childrenToUpdate.Clear();
+				childrenToUpdate.Clear();
 			}
 			else
 			{
 				// just update selected children
-				foreach ( Node child in this.childrenToUpdate.Values )
+				foreach ( var child in childrenToUpdate.Values )
 				{
 					child.Update( true, false );
 				}
 
 				// clear the list
-				this.childrenToUpdate.Clear();
+				childrenToUpdate.Clear();
 			}
 
 			// reset the flag
-			this.needChildUpdate = false;
+			needChildUpdate = false;
 
-			if ( this.parent == null )
+			if ( parent == null )
 			{
 				Monitor.Exit( _queuedForUpdate );
 			}
@@ -1761,34 +1764,34 @@ namespace Axiom.Core
 		internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale, bool lookInMovementDirection )
 		{
 			// If no previous transforms, we can just apply
-			if ( this.accumAnimWeight == 0.0f )
+			if ( accumAnimWeight == 0.0f )
 			{
-				this.rotationFromInitial = rotate;
-				this.translationFromInitial = translate;
-				this.scaleFromInitial = scale;
-				this.accumAnimWeight = weight;
+				rotationFromInitial = rotate;
+				translationFromInitial = translate;
+				scaleFromInitial = scale;
+				accumAnimWeight = weight;
 			}
 			else
 			{
 				// Blend with existing
-				float factor = weight / ( this.accumAnimWeight + weight );
+				var factor = weight / ( accumAnimWeight + weight );
 
-				this.translationFromInitial += ( translate - this.translationFromInitial ) * factor;
-				this.rotationFromInitial = Quaternion.Slerp( factor, this.rotationFromInitial, rotate );
+				translationFromInitial += ( translate - translationFromInitial ) * factor;
+				rotationFromInitial = Quaternion.Slerp( factor, rotationFromInitial, rotate );
 
 				// For scale, find delta from 1.0, factor then add back before applying
-				Vector3 scaleDiff = ( scale - Vector3.UnitScale ) * factor;
-				this.scaleFromInitial = this.scaleFromInitial * ( scaleDiff + Vector3.UnitScale );
-				this.accumAnimWeight += weight;
+				var scaleDiff = ( scale - Vector3.UnitScale ) * factor;
+				scaleFromInitial = scaleFromInitial * ( scaleDiff + Vector3.UnitScale );
+				accumAnimWeight += weight;
 			}
 
 			// Update final based on bind position + offsets
-			this.orientation = this.initialOrientation * this.rotationFromInitial;
-			this.position = this.initialPosition + this.translationFromInitial;
-			Scale = this.initialScale * this.scaleFromInitial;
+			orientation = initialOrientation * rotationFromInitial;
+			position = initialPosition + translationFromInitial;
+			this.Scale = initialScale * scaleFromInitial;
 			if ( lookInMovementDirection )
 			{
-				this.orientation = -Vector3.UnitX.GetRotationTo( translate.ToNormalized() );
+				orientation = -Vector3.UnitX.GetRotationTo( translate.ToNormalized() );
 			}
 
 			NeedUpdate();
@@ -1824,7 +1827,7 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -67,7 +66,6 @@ namespace Axiom.CgPrograms
 	{
 		#region Fields
 
-		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
 		protected string[] cgArguments = new string[ 0 ];
 
 		/// <summary>
@@ -90,13 +88,16 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		protected string[] profiles;
 
-		private string programString;
-		protected int selectedCgProfile;
-
 		/// <summary>
 		///    Chosen profile for this program.
 		/// </summary>
 		protected string selectedProfile;
+
+		protected int selectedCgProfile;
+
+		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
+
+		private string programString;
 
 		#endregion Fields
 
@@ -112,8 +113,8 @@ namespace Axiom.CgPrograms
 		public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, IntPtr context )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			this.cgContext = context;
-			this.selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
+			cgContext = context;
+			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 		}
 
 		#endregion Constructors
@@ -128,19 +129,19 @@ namespace Axiom.CgPrograms
 		[OgreVersion( 1, 7, 2790 )]
 		protected void SelectProfile()
 		{
-			this.selectedProfile = "";
-			this.selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
+			selectedProfile = "";
+			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 
-			if ( this.profiles != null )
+			if ( profiles != null )
 			{
-				foreach ( string i in this.profiles )
+				foreach ( var i in profiles )
 				{
 					if ( GpuProgramManager.Instance.IsSyntaxSupported( i ) )
 					{
-						this.selectedProfile = i;
-						this.selectedCgProfile = Cg.cgGetProfile( this.selectedProfile );
+						selectedProfile = i;
+						selectedCgProfile = Cg.cgGetProfile( selectedProfile );
 
-						CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, this.cgContext );
+						CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
 
 						break;
 					}
@@ -162,11 +163,11 @@ namespace Axiom.CgPrograms
 			}
 
 
-			if ( this.selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
+			if ( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
 			{
 				// Need the 'dcls' argument whenever we use this profile
 				// otherwise compilation of the assembler will fail
-				bool dclsFound = args.Contains( "dcls" );
+				var dclsFound = args.Contains( "dcls" );
 
 				if ( !dclsFound )
 				{
@@ -176,7 +177,7 @@ namespace Axiom.CgPrograms
 			}
 
 			args.Add( null );
-			this.cgArguments = args.ToArray();
+			cgArguments = args.ToArray();
 		}
 
 		#endregion
@@ -188,11 +189,11 @@ namespace Axiom.CgPrograms
 		{
 			SelectProfile();
 			/*
-			if ( GpuProgramManager.Instance.IsMicrocodeAvailableInCache( "CG_" + _name ) )
-			{
-				GetMicrocodeFromCache();
-			}
-			else*/
+		    if ( GpuProgramManager.Instance.IsMicrocodeAvailableInCache( "CG_" + _name ) )
+		    {
+		        GetMicrocodeFromCache();
+		    }
+		    else*/
 			{
 				CompileMicrocode();
 			}
@@ -209,14 +210,14 @@ namespace Axiom.CgPrograms
 
 			if ( false
 				/*Cg.CG_VERSION_NUM >= 2200 && 
-							(selectedCgProfile ==  Cg.CG_PROFILE_VS_4_0
-							|| selectedCgProfile == Cg.CG_PROFILE_PS_4_0) */ )
+                            (selectedCgProfile ==  Cg.CG_PROFILE_VS_4_0
+                            || selectedCgProfile == Cg.CG_PROFILE_PS_4_0) */ )
 			{
 				// Create a high-level program, give it the same name as us
-				HighLevelGpuProgram vp = HighLevelGpuProgramManager.Instance.CreateProgram( _name, _group, "hlsl", type );
-				vp.Source = this.programString;
+				var vp = HighLevelGpuProgramManager.Instance.CreateProgram( _name, _group, "hlsl", type );
+				vp.Source = programString;
 
-				vp.Properties[ "target" ] = this.selectedProfile;
+				vp.Properties[ "target" ] = selectedProfile;
 				vp.Properties[ "entry_point" ] = "main";
 
 				vp.Load();
@@ -229,10 +230,10 @@ namespace Axiom.CgPrograms
 				{
 					//HACK : http://developer.nvidia.com/forums/index.php?showtopic=1063&pid=2378&mode=threaded&start=#entry2378
 					//Still happens in CG 2.2. Remove hack when fixed.
-					this.programString = this.programString.Replace( "oDepth.z", "oDepth" );
+					programString = programString.Replace( "oDepth.z", "oDepth" );
 				}
 				// Create a low-level program, give it the same name as us
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( _name, _group, this.programString, type, this.selectedProfile );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( _name, _group, programString, type, selectedProfile );
 			}
 			// Shader params need to be forwarded to low level implementation
 			assemblerProgram.IsAdjacencyInfoRequired = IsAdjacencyInfoRequired;
@@ -255,7 +256,7 @@ namespace Axiom.CgPrograms
 			while ( parameter != IntPtr.Zero )
 			{
 				// get the type of this param up front
-				int paramType = Cg.cgGetParameterType( parameter );
+				var paramType = Cg.cgGetParameterType( parameter );
 
 				// Look for uniform parameters only
 				// Don't bother enumerating unused parameters, especially since they will
@@ -276,13 +277,13 @@ namespace Axiom.CgPrograms
 							break;
 						default:
 							// Normal path (leaf)
-							string paramName = Cg.cgGetParameterName( parameter );
-							int logicalIndex = Cg.cgGetParameterResourceIndex( parameter );
+							var paramName = Cg.cgGetParameterName( parameter );
+							var logicalIndex = Cg.cgGetParameterResourceIndex( parameter );
 
 							// Get the parameter resource, to calculate the physical index
-							int res = Cg.cgGetParameterResource( parameter );
-							bool isRegisterCombiner = false;
-							int regCombinerPhysicalIndex = 0;
+							var res = Cg.cgGetParameterResource( parameter );
+							var isRegisterCombiner = false;
+							var regCombinerPhysicalIndex = 0;
 							switch ( res )
 							{
 								case Cg.CG_COMBINER_STAGE_CONST0:
@@ -339,14 +340,14 @@ namespace Axiom.CgPrograms
 
 							def.LogicalIndex = logicalIndex;
 
-							if ( !this.parametersMap.ContainsKey( paramName ) )
+							if ( !parametersMap.ContainsKey( paramName ) )
 							{
-								this.parametersMap.Add( paramName, def );
+								parametersMap.Add( paramName, def );
 								/*
-								mParametersMapSizeAsBuffer += sizeof ( size_t );
-								mParametersMapSizeAsBuffer += paramName.size();
-								mParametersMapSizeAsBuffer += sizeof ( GpuConstantDefinition );
-								 */
+                                mParametersMapSizeAsBuffer += sizeof ( size_t );
+                                mParametersMapSizeAsBuffer += paramName.size();
+                                mParametersMapSizeAsBuffer += sizeof ( GpuConstantDefinition );
+                                 */
 							}
 
 							// Record logical / physical mapping
@@ -480,7 +481,7 @@ namespace Axiom.CgPrograms
 		{
 			// Create Cg Program
 
-			if ( this.selectedCgProfile == Cg.CG_PROFILE_UNKNOWN )
+			if ( selectedCgProfile == Cg.CG_PROFILE_UNKNOWN )
 			{
 				LogManager.Instance.Write( "Attempted to load Cg program '" + _name + "', but no suported profile was found. " );
 				return;
@@ -490,35 +491,35 @@ namespace Axiom.CgPrograms
 			// deal with includes
 			String sourceToUse = ResolveCgIncludes( source, this, fileName );
 
-			IntPtr cgProgram = Cg.cgCreateProgram( this.cgContext, Cg.CG_SOURCE, sourceToUse, this.selectedCgProfile, this.entry, this.cgArguments );
+			var cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, sourceToUse, selectedCgProfile, entry, cgArguments );
 
 			// Test
 			//LogManager::getSingleton().logMessage(cgGetProgramString(mCgProgram, CG_COMPILED_PROGRAM));
 
 			// Check for errors
-			CgHelper.CheckCgError( "Unable to compile Cg program " + _name + ": ", this.cgContext );
+			CgHelper.CheckCgError( "Unable to compile Cg program " + _name + ": ", cgContext );
 
-			int error = Cg.cgGetError();
+			var error = Cg.cgGetError();
 			if ( error == Cg.CG_NO_ERROR )
 			{
 				// get program string (result of cg compile)
-				this.programString = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
+				programString = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
 
 				// get params
-				this.parametersMap.Clear();
+				parametersMap.Clear();
 				RecurseParams( Cg.cgGetFirstParameter( cgProgram, Cg.CG_PROGRAM ) );
 				RecurseParams( Cg.cgGetFirstParameter( cgProgram, Cg.CG_GLOBAL ) );
 
 				// Unload Cg Program - we don't need it anymore
 				Cg.cgDestroyProgram( cgProgram );
-				CgHelper.CheckCgError( "Error while unloading Cg program " + _name + ": ", this.cgContext );
+				CgHelper.CheckCgError( "Error while unloading Cg program " + _name + ": ", cgContext );
 				cgProgram = IntPtr.Zero;
 
 				/*
-				if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
-				{
-					AddMicrocodeToCache();
-				}*/
+                if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
+                {
+                    AddMicrocodeToCache();
+                }*/
 			}
 		}
 
@@ -532,7 +533,7 @@ namespace Axiom.CgPrograms
 			// Derive parameter names from Cg
 			CreateParameterMappingStructures( true );
 
-			if ( string.IsNullOrEmpty( this.programString ) )
+			if ( string.IsNullOrEmpty( programString ) )
 			{
 				return;
 			}
@@ -540,10 +541,10 @@ namespace Axiom.CgPrograms
 			constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
 			constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
 
-			foreach ( var iter in this.parametersMap )
+			foreach ( var iter in parametersMap )
 			{
-				string paramName = iter.Key;
-				GpuProgramParameters.GpuConstantDefinition def = iter.Value;
+				var paramName = iter.Key;
+				var def = iter.Value;
 
 				constantDefs.Map.Add( iter.Key, iter.Value );
 
@@ -575,7 +576,7 @@ namespace Axiom.CgPrograms
 		#region UnloadHighLevelImpl
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void UnloadHighLevelImpl() { }
+		protected override void UnloadHighLevelImpl() {}
 
 		#endregion
 
@@ -584,17 +585,17 @@ namespace Axiom.CgPrograms
 		[OgreVersion( 1, 7, 2790 )]
 		private string ResolveCgIncludes( string inSource, Resource resourceBeingLoaded, string fileName )
 		{
-			string outSource = "";
-			int startMarker = 0;
-			int i = inSource.IndexOf( "#include" );
+			var outSource = "";
+			var startMarker = 0;
+			var i = inSource.IndexOf( "#include" );
 			while ( i != -1 )
 			{
-				int includePos = i;
-				int afterIncludePos = includePos + 8;
-				int newLineBefore = inSource.LastIndexOf( "\n", 0, includePos );
+				var includePos = i;
+				var afterIncludePos = includePos + 8;
+				var newLineBefore = inSource.LastIndexOf( "\n", 0, includePos );
 
 				// check we're not in a comment
-				int lineCommentIt = inSource.LastIndexOf( "//", 0, includePos );
+				var lineCommentIt = inSource.LastIndexOf( "//", 0, includePos );
 				if ( lineCommentIt != -1 )
 				{
 					if ( newLineBefore == -1 || lineCommentIt > newLineBefore )
@@ -605,10 +606,10 @@ namespace Axiom.CgPrograms
 					}
 				}
 
-				int blockCommentIt = inSource.LastIndexOf( "/*", 0, includePos );
+				var blockCommentIt = inSource.LastIndexOf( "/*", 0, includePos );
 				if ( blockCommentIt != -1 )
 				{
-					int closeCommentIt = inSource.LastIndexOf( "*/", 0, includePos );
+					var closeCommentIt = inSource.LastIndexOf( "*/", 0, includePos );
 					if ( closeCommentIt == -1 || closeCommentIt < blockCommentIt )
 					{
 						// commented
@@ -618,10 +619,10 @@ namespace Axiom.CgPrograms
 				}
 
 				// find following newline (or EOF)
-				int newLineAfter = inSource.IndexOf( "\n", afterIncludePos );
+				var newLineAfter = inSource.IndexOf( "\n", afterIncludePos );
 				// find include file string container
-				string endDelimeter = "\"";
-				int startIt = inSource.IndexOf( "\"", afterIncludePos );
+				var endDelimeter = "\"";
+				var startIt = inSource.IndexOf( "\"", afterIncludePos );
 				if ( startIt == -1 || startIt > newLineAfter )
 				{
 					// try <>
@@ -635,17 +636,17 @@ namespace Axiom.CgPrograms
 						endDelimeter = ">";
 					}
 				}
-				int endIt = inSource.IndexOf( endDelimeter, startIt + 1 );
+				var endIt = inSource.IndexOf( endDelimeter, startIt + 1 );
 				if ( endIt == -1 || endIt <= startIt )
 				{
 					throw new AxiomException( "Badly formed #include directive (expected " + endDelimeter + ") in file " + fileName + ": " + inSource.Substring( includePos, newLineAfter - includePos ) );
 				}
 
 				// extract filename
-				string filename = inSource.Substring( startIt + 1, endIt - startIt - 1 );
+				var filename = inSource.Substring( startIt + 1, endIt - startIt - 1 );
 
 				// open included file
-				Stream resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true, resourceBeingLoaded );
+				var resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true, resourceBeingLoaded );
 
 				// replace entire include directive line
 				// copy up to just before include
@@ -654,8 +655,8 @@ namespace Axiom.CgPrograms
 					outSource += inSource.Substring( startMarker, newLineBefore - startMarker + 1 );
 				}
 
-				int lineCount = 0;
-				int lineCountPos = 0;
+				var lineCount = 0;
+				var lineCountPos = 0;
 
 				// Count the line number of #include statement
 				lineCountPos = outSource.IndexOf( '\n' );
@@ -698,7 +699,7 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		public override void Touch()
 		{
-			if ( IsSupported )
+			if ( this.IsSupported )
 			{
 				base.Touch();
 			}
@@ -721,17 +722,17 @@ namespace Axiom.CgPrograms
 				}
 
 				// If skeletal animation is being done, we need support for UBYTE4
-				if ( IsSkeletalAnimationIncluded && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				if ( this.IsSkeletalAnimationIncluded && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
 					return false;
 				}
 
 				// see if any profiles are supported
-				if ( this.profiles != null )
+				if ( profiles != null )
 				{
-					for ( int i = 0; i < this.profiles.Length; i++ )
+					for ( int i = 0; i < profiles.Length; i++ )
 					{
-						if ( GpuProgramManager.Instance.IsSyntaxSupported( this.profiles[ i ] ) )
+						if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
 						{
 							return true;
 						}
@@ -769,7 +770,7 @@ namespace Axiom.CgPrograms
 				( (CgProgram)target ).entry = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion EntryPointCommand
@@ -794,7 +795,7 @@ namespace Axiom.CgPrograms
 				( (CgProgram)target ).profiles = val.Split( ' ' );
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion ProfilesCommand
@@ -819,7 +820,7 @@ namespace Axiom.CgPrograms
 				( (CgProgram)target ).CompileArguments = val;
 			}
 
-			#endregion
+			#endregion IPropertyCommand Members
 		}
 
 		#endregion CompileArgumentsCommand

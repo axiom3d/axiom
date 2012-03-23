@@ -37,6 +37,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -55,25 +58,20 @@ namespace Axiom.Graphics
 		#region Member variables
 
 		/// <summary>
-		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
-		///		buffer containing indices into the vertices stored here. 
-		/// </summary>
-		public IndexData indexData;
-
-		/// <summary>
-		/// The number of instances for the render operation - this option is supported 
-		/// in only a part of the render systems.
-		/// </summary>
-		public int numberOfInstances;
-
-		/// <summary>
 		///		Type of operation to perform.
 		/// </summary>
 		public OperationType operationType;
 
 		/// <summary>
+		///		Contains a list of hardware vertex buffers for this complete render operation.
 		/// </summary>
-		public bool useGlobalInstancingVertexBufferIsAvailable;
+		public VertexData vertexData;
+
+		/// <summary>
+		///		When <code>useIndices</code> is set to true, this must hold a reference to an index
+		///		buffer containing indices into the vertices stored here. 
+		/// </summary>
+		public IndexData indexData;
 
 		/// <summary>
 		///		Specifies whether or not a list of indices should be used when rendering the vertices in
@@ -82,9 +80,14 @@ namespace Axiom.Graphics
 		public bool useIndices;
 
 		/// <summary>
-		///		Contains a list of hardware vertex buffers for this complete render operation.
+		/// The number of instances for the render operation - this option is supported 
+		/// in only a part of the render systems.
 		/// </summary>
-		public VertexData vertexData;
+		public int numberOfInstances;
+
+		/// <summary>
+		/// </summary>
+		public bool useGlobalInstancingVertexBufferIsAvailable;
 
 		#endregion
 
@@ -95,7 +98,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderOperation()
 		{
-			this.numberOfInstances = 1;
+			numberOfInstances = 1;
 		}
 
 		#endregion
@@ -106,7 +109,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

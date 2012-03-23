@@ -129,21 +129,13 @@ namespace Axiom.Core
 		/// </summary>
 		protected PlaneBoundedVolume nearClipVolume = new PlaneBoundedVolume();
 
-		protected bool ownShadowFarDistance;
-
 		/// <summary>
 		///    Position of this light.
 		/// </summary>
 		protected Vector3 position = Vector3.Zero;
 
-		protected Real powerScale = 1.0f;
-
 		/// <summary></summary>
 		protected float range;
-
-		protected Real shadowFarDistance = -1;
-		protected Real shadowFarDistanceSquared = 0.0f;
-		protected Real shadowNearDistance = -1;
 
 		/// <summary>
 		///		Specular color.
@@ -169,6 +161,12 @@ namespace Axiom.Core
 		/// </summary>
 		protected LightType type;
 
+		protected Real powerScale = 1.0f;
+		protected bool ownShadowFarDistance = false;
+		protected Real shadowNearDistance = -1;
+		protected Real shadowFarDistance = -1;
+		protected Real shadowFarDistanceSquared = 0.0f;
+
 		#endregion Fields
 
 		#region Constructors
@@ -177,7 +175,7 @@ namespace Axiom.Core
 		///		Default constructor.
 		/// </summary>
 		public Light()
-			: this( string.Empty ) { }
+			: this( string.Empty ) {}
 
 		/// <summary>
 		///		Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
@@ -403,12 +401,39 @@ namespace Axiom.Core
 		/// <summary>
 		///		Gets the derived position of this light.
 		/// </summary>
+		public virtual Vector3 GetDerivedPosition()
+		{
+			return GetDerivedPosition( false );
+		}
+
+		/// <summary>
+		///		Gets the derived position of this light.
+		/// </summary>
+		public virtual Vector3 GetDerivedPosition( bool cameraRelative )
+		{
+			// this is called to force an update
+			Update();
+
+			if ( cameraRelative && _cameraToBeRelativeTo != null )
+			{
+				throw new NotImplementedException();
+				//return mDerivedCamRelativePosition;
+			}
+			else
+			{
+				return this.derivedPosition;
+			}
+		}
+
+		/// <summary>
+		///		Gets the derived position of this light.
+		/// </summary>
 		public virtual Vector3 DerivedDirection
 		{
 			get
 			{
 				// this is called to force an update
-				Update();
+				this.Update();
 
 				return this.derivedDirection;
 			}
@@ -439,13 +464,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.shadowNearDistance;
+				return shadowNearDistance;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.shadowNearDistance = value;
+				shadowNearDistance = value;
 			}
 		}
 
@@ -453,13 +478,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.ownShadowFarDistance ? this.shadowFarDistance : Manager.ShadowFarDistance;
+				return ownShadowFarDistance ? shadowFarDistance : Manager.ShadowFarDistance;
 			}
 			set
 			{
-				this.ownShadowFarDistance = true;
-				this.shadowFarDistance = value;
-				this.shadowFarDistanceSquared = value * value;
+				ownShadowFarDistance = true;
+				shadowFarDistance = value;
+				shadowFarDistanceSquared = value * value;
 			}
 		}
 
@@ -467,7 +492,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.ownShadowFarDistance ? this.shadowFarDistanceSquared : Manager.ShadowFarDistanceSquared;
+				return ownShadowFarDistance ? shadowFarDistanceSquared : Manager.ShadowFarDistanceSquared;
 			}
 		}
 
@@ -475,11 +500,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.powerScale;
+				return powerScale;
 			}
 			set
 			{
-				this.powerScale = value;
+				powerScale = value;
 			}
 		}
 
@@ -491,38 +516,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.tempSquaredDist;
+				return tempSquaredDist;
 			}
 			set
 			{
-				this.tempSquaredDist = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets the derived position of this light.
-		/// </summary>
-		public virtual Vector3 GetDerivedPosition()
-		{
-			return GetDerivedPosition( false );
-		}
-
-		/// <summary>
-		///		Gets the derived position of this light.
-		/// </summary>
-		public virtual Vector3 GetDerivedPosition( bool cameraRelative )
-		{
-			// this is called to force an update
-			Update();
-
-			if ( cameraRelative && this._cameraToBeRelativeTo != null )
-			{
-				throw new NotImplementedException();
-				//return mDerivedCamRelativePosition;
-			}
-			else
-			{
-				return this.derivedPosition;
+				tempSquaredDist = value;
 			}
 		}
 
@@ -535,14 +533,14 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void Update()
 		{
-			if ( parentNode != null )
+			if ( this.parentNode != null )
 			{
-				if ( !this.localTransformDirty && parentNode.DerivedOrientation == this.lastParentOrientation && parentNode.DerivedPosition == this.lastParentPosition ) { }
+				if ( !this.localTransformDirty && this.parentNode.DerivedOrientation == this.lastParentOrientation && this.parentNode.DerivedPosition == this.lastParentPosition ) {}
 				else
 				{
 					// we are out of date with the scene node we are attached to
-					this.lastParentOrientation = parentNode.DerivedOrientation;
-					this.lastParentPosition = parentNode.DerivedPosition;
+					this.lastParentOrientation = this.parentNode.DerivedOrientation;
+					this.lastParentPosition = this.parentNode.DerivedPosition;
 					this.derivedDirection = this.lastParentOrientation * this.direction;
 					this.derivedPosition = ( this.lastParentOrientation * this.position ) + this.lastParentPosition;
 				}
@@ -588,7 +586,7 @@ namespace Axiom.Core
 		{
 			Vector4 vec;
 
-			if ( this.type == LightType.Directional )
+			if ( type == LightType.Directional )
 			{
 				// negate direction as 'position'
 				vec = -DerivedDirection;
@@ -612,7 +610,7 @@ namespace Axiom.Core
 		/// <param name="outerAngle"></param>
 		public void SetSpotlightRange( float innerAngle, float outerAngle )
 		{
-			SetSpotlightRange( innerAngle, outerAngle, 1.0f );
+			this.SetSpotlightRange( innerAngle, outerAngle, 1.0f );
 		}
 
 		/// <summary>
@@ -666,7 +664,7 @@ namespace Axiom.Core
 		{
 			const float THRESHOLD = -1e-06f;
 
-			Real n = camera.Near;
+			var n = camera.Near;
 
 			// First check if the light is close to the near plane, since
 			// in this case we have to build a degenerate clip volume
@@ -674,15 +672,15 @@ namespace Axiom.Core
 			this.nearClipVolume.outside = PlaneSide.Negative;
 
 			// Homogenous position
-			Vector4 lightPos = GetAs4DVector();
+			var lightPos = this.GetAs4DVector();
 			// 3D version (not the same as DerivedPosition, is -direction for
 			// directional lights)
 			var lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
 
 			// Get eye-space light position
 			// use 4D vector so directional lights still work
-			Vector4 eyeSpaceLight = camera.ViewMatrix * lightPos;
-			Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
+			var eyeSpaceLight = camera.ViewMatrix * lightPos;
+			var eyeToWorld = camera.ViewMatrix.Inverse();
 
 			// Find distance to light, project onto -Z axis
 			float d = eyeSpaceLight.Dot( new Vector4( 0, 0, -1, -n ) );
@@ -691,19 +689,19 @@ namespace Axiom.Core
 			{
 				// light is not too close to the near plane
 				// First find the worldspace positions of the corners of the viewport
-				Vector3[] corners = camera.WorldSpaceCorners;
+				var corners = camera.WorldSpaceCorners;
 
 				// Iterate over world points and form side planes
-				Vector3 normal = Vector3.Zero;
-				Vector3 lightDir = Vector3.Zero;
+				var normal = Vector3.Zero;
+				var lightDir = Vector3.Zero;
 
-				for ( int i = 0; i < 4; i++ )
+				for ( var i = 0; i < 4; i++ )
 				{
 					// Figure out light dir
 					lightDir = lightPos3 - ( corners[ i ] * lightPos.w );
 					// Cross with anticlockwise corner, therefore normal points in
 					// Note: C++ mod returns 3 for the first case where C# returns -1
-					int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+					var test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
 
 					normal = ( corners[ i ] - corners[ test ] ).Cross( lightDir );
 					normal.Normalize();
@@ -772,7 +770,7 @@ namespace Axiom.Core
 		internal virtual PlaneBoundedVolumeList GetFrustumClipVolumes( Camera camera )
 		{
 			// Homogenous light position
-			Vector4 lightPos = GetAs4DVector();
+			var lightPos = this.GetAs4DVector();
 
 			// 3D version (not the same as DerivedPosition, is -direction for
 			// directional lights)
@@ -781,16 +779,16 @@ namespace Axiom.Core
 
 			var clockwiseVerts = new Vector3[ 4 ];
 
-			Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
+			var eyeToWorld = camera.ViewMatrix.Inverse();
 
 			// Get worldspace frustum corners
-			Vector3[] corners = camera.WorldSpaceCorners;
+			var corners = camera.WorldSpaceCorners;
 
-			bool infiniteViewDistance = ( camera.Far == 0 );
+			var infiniteViewDistance = ( camera.Far == 0 );
 
 			this.frustumClipVolumes.Clear();
 
-			for ( int n = 0; n < 6; n++ )
+			for ( var n = 0; n < 6; n++ )
 			{
 				var frustumPlane = (FrustumPlane)n;
 
@@ -800,7 +798,7 @@ namespace Axiom.Core
 					continue;
 				}
 
-				Plane plane = camera[ frustumPlane ];
+				var plane = camera[ frustumPlane ];
 
 				var planeVec = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 
@@ -813,7 +811,7 @@ namespace Axiom.Core
 					// clockwise verts mean we can cross-product and always get normals
 					// facing into the volume we create
 					this.frustumClipVolumes.Add( new PlaneBoundedVolume() );
-					PlaneBoundedVolume vol = this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
+					var vol = (PlaneBoundedVolume)this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
 
 					switch ( frustumPlane )
 					{
@@ -859,14 +857,14 @@ namespace Axiom.Core
 					// Iterate over world points and form side planes
 					Vector3 normal;
 
-					for ( int i = 0; i < 4; i++ )
+					for ( var i = 0; i < 4; i++ )
 					{
 						// Figure out light dir
 						lightDir = lightPos3 - ( clockwiseVerts[ i ] * lightPos.w );
 
 						// Cross with anticlockwise corner, therefore normal points in
 						// Note: C++ mod returns 3 for the first case where C# returns -1
-						int test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
+						var test = i > 0 ? ( ( i - 1 ) % 4 ) : 3;
 
 						// Cross with anticlockwise corner, therefore normal points in
 						normal = ( clockwiseVerts[ i ] - clockwiseVerts[ test ] ).Cross( lightDir );
@@ -915,12 +913,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this._customShadowCameraSetup;
+				return _customShadowCameraSetup;
 			}
 
 			set
 			{
-				this._customShadowCameraSetup = value;
+				_customShadowCameraSetup = value;
 			}
 		}
 
@@ -930,7 +928,7 @@ namespace Axiom.Core
 		/// <seealso cref="IShadowCameraSetup"/>
 		public virtual void ResetCustomShadowCameraSetup()
 		{
-			this._customShadowCameraSetup = null;
+			_customShadowCameraSetup = null;
 		}
 
 		#endregion CustomShadowCameraSetup Implementation
@@ -938,8 +936,8 @@ namespace Axiom.Core
 		#region IAnimable Implementation
 
 		public static string[] animableAttributes = {
-                                                        "diffuseColour", "specularColour", "attenuation", "AttenuationRange", "AttenuationConstant", "AttenuationLinear", "AttenuationQuadratic", "spotlightInner", "spotlightOuter", "spotlightFalloff", "Diffuse", "Specular"
-                                                    };
+		                                            	"diffuseColour", "specularColour", "attenuation", "AttenuationRange", "AttenuationConstant", "AttenuationLinear", "AttenuationQuadratic", "spotlightInner", "spotlightOuter", "spotlightFalloff", "Diffuse", "Specular"
+		                                            };
 
 		private Camera _cameraToBeRelativeTo;
 		private bool _derivedCamRelativeDirty;
@@ -948,8 +946,8 @@ namespace Axiom.Core
 		{
 			set
 			{
-				this._cameraToBeRelativeTo = value;
-				this._derivedCamRelativeDirty = true;
+				_cameraToBeRelativeTo = value;
+				_derivedCamRelativeDirty = true;
 			}
 		}
 
@@ -1004,7 +1002,7 @@ namespace Axiom.Core
 				: base( AnimableType.Real )
 			{
 				this.light = light;
-				SetAsBaseValue( 0.0f );
+				this.SetAsBaseValue( 0.0f );
 			}
 
 			public override void SetValue( Real val )
@@ -1014,16 +1012,16 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + this.light.AttenuationConstant );
+				this.SetValue( val + this.light.AttenuationConstant );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.AttenuationConstant );
+				this.SetAsBaseValue( this.light.AttenuationConstant );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightAttenuationConstantValue
 
 		#region Nested type: LightAttenuationLinearValue
 
@@ -1035,7 +1033,7 @@ namespace Axiom.Core
 				: base( AnimableType.Real )
 			{
 				this.light = light;
-				SetAsBaseValue( 0.0f );
+				this.SetAsBaseValue( 0.0f );
 			}
 
 			public override void SetValue( Real val )
@@ -1045,16 +1043,16 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + this.light.AttenuationLinear );
+				this.SetValue( val + this.light.AttenuationLinear );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.AttenuationLinear );
+				this.SetAsBaseValue( this.light.AttenuationLinear );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightAttenuationLinearValue
 
 		#region Nested type: LightAttenuationQuadraticValue
 
@@ -1066,7 +1064,7 @@ namespace Axiom.Core
 				: base( AnimableType.Real )
 			{
 				this.light = light;
-				SetAsBaseValue( 0.0f );
+				this.SetAsBaseValue( 0.0f );
 			}
 
 			public override void SetValue( Real val )
@@ -1076,16 +1074,16 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + this.light.AttenuationQuadratic );
+				this.SetValue( val + this.light.AttenuationQuadratic );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.AttenuationQuadratic );
+				this.SetAsBaseValue( this.light.AttenuationQuadratic );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightAttenuationQuadraticValue
 
 		#region Nested type: LightAttenuationRangeValue
 
@@ -1097,7 +1095,7 @@ namespace Axiom.Core
 				: base( AnimableType.Real )
 			{
 				this.light = light;
-				SetAsBaseValue( 0.0f );
+				this.SetAsBaseValue( 0.0f );
 			}
 
 			public override void SetValue( Real val )
@@ -1107,16 +1105,16 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + this.light.AttenuationRange );
+				this.SetValue( val + this.light.AttenuationRange );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.AttenuationRange );
+				this.SetAsBaseValue( this.light.AttenuationRange );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightAttenuationRangeValue
 
 		#region Nested type: LightAttenuationValue
 
@@ -1137,17 +1135,17 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Vector4 val )
 			{
-				Vector4 v = this.light.GetAs4DVector();
-				SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
+				var v = this.light.GetAs4DVector();
+				this.SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.GetAs4DVector() );
+				this.SetAsBaseValue( this.light.GetAs4DVector() );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightAttenuationValue
 
 		#region Nested type: LightDiffuseColorValue
 
@@ -1159,7 +1157,7 @@ namespace Axiom.Core
 				: base( AnimableType.ColorEx )
 			{
 				this.light = light;
-				SetAsBaseValue( ColorEx.Black );
+				this.SetAsBaseValue( ColorEx.Black );
 			}
 
 			public override void SetValue( ColorEx val )
@@ -1169,17 +1167,17 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				ColorEx c = this.light.Diffuse;
-				SetValue( new ColorEx( c.a * val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
+				var c = this.light.Diffuse;
+				this.SetValue( new ColorEx( c.a * val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.Diffuse );
+				this.SetAsBaseValue( this.light.Diffuse );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightDiffuseColorValue
 
 		#region Nested type: LightSpecularColorValue
 
@@ -1191,7 +1189,7 @@ namespace Axiom.Core
 				: base( AnimableType.ColorEx )
 			{
 				this.light = light;
-				SetAsBaseValue( ColorEx.Black );
+				this.SetAsBaseValue( ColorEx.Black );
 			}
 
 			public override void SetValue( ColorEx val )
@@ -1201,17 +1199,17 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				ColorEx c = this.light.Specular;
-				SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
+				var c = this.light.Specular;
+				this.SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.Specular );
+				this.SetAsBaseValue( this.light.Specular );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightSpecularColorValue
 
 		#region Nested type: LightSpotlightFalloffValue
 
@@ -1232,16 +1230,16 @@ namespace Axiom.Core
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( this.light.SpotlightFalloff + val );
+				this.SetValue( this.light.SpotlightFalloff + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( this.light.SpotlightFalloff );
+				this.SetAsBaseValue( this.light.SpotlightFalloff );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightSpotlightFalloffValue
 
 		#region Nested type: LightSpotlightInnerValue
 
@@ -1257,21 +1255,21 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( val );
+				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
+				this.SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) );
+				this.SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightSpotlightInnerValue
 
 		#region Nested type: LightSpotlightOuterValue
 
@@ -1287,21 +1285,21 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( val );
+				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
+				this.SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) );
+				this.SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) );
 			}
 		}
 
-		#endregion
+		#endregion Nested type: LightSpotlightOuterValue
 
 		#endregion IAnimable Implementation
 
@@ -1318,6 +1316,16 @@ namespace Axiom.Core
 			}
 		}
 
+		public override void NotifyCurrentCamera( Camera camera )
+		{
+			// Do nothing
+		}
+
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
+			// Do Nothing
+		}
+
 		/// <summary>
 		/// Get the 'type flags' for this <see cref="Light"/>.
 		/// </summary>
@@ -1330,39 +1338,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public override void NotifyCurrentCamera( Camera camera )
-		{
-			// Do nothing
-		}
-
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			// Do Nothing
-		}
-
 		#endregion MovableObject Implementation
-
-		/// <summary>
-		/// Gets the index at which this light is in the current render.
-		/// </summary>
-		/// <remarks>
-		/// Lights will be present in the in a list for every renderable,
-		/// detected and sorted appropriately, and sometimes it's useful to know 
-		/// what position in that list a given light occupies. This can vary 
-		/// from frame to frame (and object to object) so you should not use this
-		/// value unless you're sure the context is correct.
-		/// </remarks>
-		public int IndexInFrame
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
 
 		#region IComparable Members
 
@@ -1385,7 +1361,29 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion
+		#endregion IComparable Members
+
+		/// <summary>
+		/// Gets the index at which this light is in the current render.
+		/// </summary>
+		/// <remarks>
+		/// Lights will be present in the in a list for every renderable,
+		/// detected and sorted appropriately, and sometimes it's useful to know 
+		/// what position in that list a given light occupies. This can vary 
+		/// from frame to frame (and object to object) so you should not use this
+		/// value unless you're sure the context is correct.
+		/// </remarks>
+		public int IndexInFrame
+		{
+			get
+			{
+				throw new System.NotImplementedException();
+			}
+			set
+			{
+				throw new System.NotImplementedException();
+			}
+		}
 
 		/// <summary>
 		/// Update a custom GpuProgramParameters constant which is derived from 
@@ -1424,9 +1422,9 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal Real DeriveShadowNearClipDistance( Camera camera )
 		{
-			if ( this.shadowNearDistance > 0 )
+			if ( shadowNearDistance > 0 )
 			{
-				return this.shadowNearDistance;
+				return shadowNearDistance;
 			}
 			else
 			{
@@ -1441,19 +1439,19 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal Real DeriveShadowFarClipDistance( Camera camera )
 		{
-			if ( this.shadowFarDistance >= 0 )
+			if ( shadowFarDistance >= 0 )
 			{
-				return this.shadowFarDistance;
+				return shadowFarDistance;
 			}
 			else
 			{
-				if ( this.type == LightType.Directional )
+				if ( type == LightType.Directional )
 				{
 					return 0;
 				}
 				else
 				{
-					return this.range;
+					return range;
 				}
 			}
 		}
@@ -1466,8 +1464,9 @@ namespace Axiom.Core
 		public new const string TypeName = "Light";
 
 		public LightFactory()
+			: base()
 		{
-			base.Type = TypeName;
+			base.Type = LightFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Light;
 		}
 
@@ -1520,7 +1519,7 @@ namespace Axiom.Core
 
 				if ( param.ContainsKey( "attenuation" ) )
 				{
-					Vector4 attenuation = Vector4.Parse( param[ "attenuation" ].ToString() );
+					var attenuation = Vector4.Parse( param[ "attenuation" ].ToString() );
 					light.SetAttenuation( attenuation.x, attenuation.y, attenuation.z, attenuation.w );
 				}
 

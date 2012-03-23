@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom;
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -63,10 +67,10 @@ namespace Axiom.SceneManagers.Bsp
 		#region Constructors
 
 		public BspSceneNode( SceneManager creator )
-			: base( creator ) { }
+			: base( creator ) {}
 
 		public BspSceneNode( SceneManager creator, string name )
-			: base( creator, name ) { }
+			: base( creator, name ) {}
 
 		#endregion Constructors
 
@@ -78,7 +82,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			//needChildUpdate is more appropriate than needParentUpdate. needParentUpdate
 			//is set to false when there is a DerivedPosition/DerivedOrientation.
-			if ( needChildUpdate || parentHasChanged )
+			if ( this.needChildUpdate || parentHasChanged )
 			{
 				checkMovables = true;
 			}
@@ -87,7 +91,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( checkMovables )
 			{
-				foreach ( MovableObject obj in objectList.Values )
+				foreach ( MovableObject obj in this.objectList.Values )
 				{
 					if ( obj is TextureLight )
 					{
@@ -95,7 +99,7 @@ namespace Axiom.SceneManagers.Bsp
 						// the light is changed, is taken care of at TextureLight.Update()
 						continue;
 					}
-					( (BspSceneManager)Creator ).NotifyObjectMoved( obj, DerivedPosition );
+					( (BspSceneManager)this.Creator ).NotifyObjectMoved( obj, this.DerivedPosition );
 				}
 			}
 		}
@@ -105,7 +109,7 @@ namespace Axiom.SceneManagers.Bsp
 			// TextureLights are detached only when removed at the BspSceneManager
 			if ( !( obj is TextureLight ) )
 			{
-				( (BspSceneManager)Creator ).NotifyObjectDetached( obj );
+				( (BspSceneManager)this.Creator ).NotifyObjectDetached( obj );
 			}
 
 			base.DetachObject( obj );
@@ -113,9 +117,9 @@ namespace Axiom.SceneManagers.Bsp
 
 		public override void DetachAllObjects()
 		{
-			var mgr = (BspSceneManager)Creator;
+			BspSceneManager mgr = (BspSceneManager)this.Creator;
 
-			foreach ( MovableObject obj in objectList.Values )
+			foreach ( MovableObject obj in this.objectList.Values )
 			{
 				// TextureLights are detached only when removed at the BspSceneManager
 				if ( obj is TextureLight )

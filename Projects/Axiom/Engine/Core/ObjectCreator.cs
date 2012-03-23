@@ -53,68 +53,68 @@ namespace Axiom.Core
 	/// </summary>
 	public class ObjectCreator
 	{
-		private readonly Assembly _assembly;
-		private readonly Type _type;
-
-		public ObjectCreator( Type type )
-			: this( type.Assembly, type ) { }
-
-		public ObjectCreator( Assembly assembly, Type type )
-		{
-			this._assembly = assembly;
-			this._type = type;
-		}
-
-		public ObjectCreator( string assemblyName, string className )
-		{
-			string assemblyFile = Path.Combine( Directory.GetCurrentDirectory(), assemblyName );
-			try
-			{
-#if SILVERLIGHT
-                _assembly = Assembly.Load(assemblyFile);
-#else
-				this._assembly = Assembly.LoadFrom( assemblyFile );
-#endif
-			}
-			catch ( Exception )
-			{
-				this._assembly = Assembly.GetExecutingAssembly();
-			}
-
-			this._type = this._assembly.GetType( className );
-		}
-
-		public ObjectCreator( string className )
-		{
-			this._assembly = Assembly.GetExecutingAssembly();
-			this._type = this._assembly.GetType( className );
-		}
+		private Assembly _assembly;
+		private Type _type;
 
 		public Type CreatedType
 		{
 			get
 			{
-				return this._type;
+				return _type;
 			}
+		}
+
+		public ObjectCreator( Type type )
+			: this( type.Assembly, type ) {}
+
+		public ObjectCreator( Assembly assembly, Type type )
+		{
+			_assembly = assembly;
+			_type = type;
+		}
+
+		public ObjectCreator( string assemblyName, string className )
+		{
+			var assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
+			try
+			{
+#if SILVERLIGHT
+                _assembly = Assembly.Load(assemblyFile);
+#else
+				_assembly = Assembly.LoadFrom( assemblyFile );
+#endif
+			}
+			catch ( Exception )
+			{
+				_assembly = Assembly.GetExecutingAssembly();
+			}
+
+			_type = _assembly.GetType( className );
+		}
+
+		public ObjectCreator( string className )
+		{
+			_assembly = Assembly.GetExecutingAssembly();
+			_type = _assembly.GetType( className );
 		}
 
 		public string GetAssemblyTitle()
 		{
-			Attribute title = Attribute.GetCustomAttribute( this._assembly, typeof( AssemblyTitleAttribute ) );
+			var title = Attribute.GetCustomAttribute( _assembly, typeof ( AssemblyTitleAttribute ) );
 			if ( title == null )
 			{
-				return this._assembly.GetName().Name;
+				return _assembly.GetName().Name;
 			}
 			return ( (AssemblyTitleAttribute)title ).Title;
 		}
 
 		public T CreateInstance<T>() where T : class
 		{
-			Type type = this._type;
-			Assembly assembly = this._assembly;
+			var type = _type;
+			var assembly = _assembly;
 #if !( XBOX || XBOX360 )
 			// Check interfaces or Base type for casting purposes
-			if ( type.GetInterface( typeof( T ).Name, false ) != null || type.BaseType.Name == typeof( T ).Name )
+			if ( type.GetInterface( typeof ( T ).Name, false ) != null || type.BaseType.Name == typeof ( T ).Name )
 #else
 			bool typeFound = false;
 			for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
@@ -135,7 +135,7 @@ namespace Axiom.Core
 				}
 				catch ( Exception e )
 				{
-					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
+					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof ( T ).Name, type, assembly.FullName );
 					LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
 				}
 			}
@@ -149,7 +149,7 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		private static readonly object _mutex = new object();
-		private readonly string _assemblyFilename;
+		private string _assemblyFilename;
 		private Assembly _assembly;
 
 		#endregion Fields and Properties
@@ -159,7 +159,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Creates a loader instance for the current executing assembly
 		/// </summary>
-		public DynamicLoader() { }
+		public DynamicLoader() {}
 
 		/// <summary>
 		/// Creates a loader instance for the specified assembly
@@ -167,7 +167,7 @@ namespace Axiom.Core
 		public DynamicLoader( string assemblyFilename )
 			: this()
 		{
-			this._assemblyFilename = assemblyFilename;
+			_assemblyFilename = assemblyFilename;
 		}
 
 		#endregion Construction and Destruction
@@ -176,26 +176,26 @@ namespace Axiom.Core
 
 		public Assembly GetAssembly()
 		{
-			if ( this._assembly == null )
+			if ( _assembly == null )
 			{
 				lock ( _mutex )
 				{
-					if ( String.IsNullOrEmpty( this._assemblyFilename ) )
+					if ( String.IsNullOrEmpty( _assemblyFilename ) )
 					{
-						this._assembly = Assembly.GetExecutingAssembly();
+						_assembly = Assembly.GetExecutingAssembly();
 					}
 					else
 					{
-						Debug.WriteLine( String.Format( "Loading {0}", this._assemblyFilename ) );
+						Debug.WriteLine( String.Format( "Loading {0}", _assemblyFilename ) );
 #if SILVERLIGHT
                         _assembly = Assembly.Load(_assemblyFilename);
 #else
-						this._assembly = Assembly.LoadFrom( this._assemblyFilename );
+						_assembly = Assembly.LoadFrom( _assemblyFilename );
 #endif
 					}
 				}
 			}
-			return this._assembly;
+			return _assembly;
 		}
 
 		public IList<ObjectCreator> Find( Type baseType )
@@ -209,7 +209,7 @@ namespace Axiom.Core
 				assembly = GetAssembly();
 				assemblyTypes = assembly.GetTypes();
 
-				foreach ( Type type in assemblyTypes )
+				foreach ( var type in assemblyTypes )
 				{
 #if !(XBOX || XBOX360)
 					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) || ( !baseType.IsInterface && type.BaseType == baseType ) )
@@ -234,7 +234,7 @@ namespace Axiom.Core
 			{
 				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
 				LogManager.Instance.Write( "Loader Exceptions:" );
-				foreach ( Exception lex in ex.LoaderExceptions )
+				foreach ( var lex in ex.LoaderExceptions )
 				{
 					LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
 				}

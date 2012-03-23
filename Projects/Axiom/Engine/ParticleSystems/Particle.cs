@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -57,31 +59,28 @@ namespace Axiom.ParticleSystems
 	{
 		#region Member variables
 
-		/// Current colour
-		public ColorEx Color = ColorEx.White;
-
-		/// Direction (and speed) 
-		public Vector3 Direction = Vector3.Zero;
-
-		/// World position
-		public Vector3 Position = Vector3.Zero;
-
 		/// Does this particle have it's own dimensions?
 		public bool hasOwnDimensions;
 
+		/// Personal width if mOwnDimensions == true
+		public float width;
+
 		/// Personal height if mOwnDimensions == true
 		public float height;
-
-		/// Parent ParticleSystem
-		protected ParticleSystem parentSystem;
-
-		protected ParticleType particleType = ParticleType.Visual;
 
 		/// Current rotation value
 		public float rotationInRadians;
 
 		// Note the intentional public access to internal variables
 		// Accessing via get/set would be too costly for 000's of particles
+		/// World position
+		public Vector3 Position = Vector3.Zero;
+
+		/// Direction (and speed) 
+		public Vector3 Direction = Vector3.Zero;
+
+		/// Current colour
+		public ColorEx Color = ColorEx.White;
 
 		/// <summary>Time (in seconds) before this particle is destroyed.</summary>
 		public float timeToLive;
@@ -89,27 +88,42 @@ namespace Axiom.ParticleSystems
 		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
 		public float totalTimeToLive;
 
+		/// <summary>Speed of rotation in radians</summary>
+		private float rotationSpeed;
+
+		/// Parent ParticleSystem
+		protected ParticleSystem parentSystem;
+
 		/// Additional visual data you might want to associate with the Particle
 		protected ParticleVisualData visual;
 
-		/// Personal width if mOwnDimensions == true
-		public float width;
+		protected ParticleType particleType = ParticleType.Visual;
 
 		#endregion
 
 		#region Properties
 
-		public float RotationSpeed { get; set; }
+		public float RotationSpeed
+		{
+			get
+			{
+				return rotationSpeed;
+			}
+			set
+			{
+				rotationSpeed = value;
+			}
+		}
 
 		public ParticleType ParticleType
 		{
 			get
 			{
-				return this.particleType;
+				return particleType;
 			}
 			set
 			{
-				this.particleType = value;
+				particleType = value;
 			}
 		}
 
@@ -120,75 +134,15 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public Particle()
 		{
-			this.timeToLive = 10;
-			this.totalTimeToLive = 10;
-			this.RotationSpeed = 0;
+			timeToLive = 10;
+			totalTimeToLive = 10;
+			rotationSpeed = 0;
 		}
 
-
-		public bool HasOwnDimensions
-		{
-			get
-			{
-				return this.hasOwnDimensions;
-			}
-			set
-			{
-				this.hasOwnDimensions = value;
-			}
-		}
-
-		public float Rotation
-		{
-			get
-			{
-				return this.rotationInRadians * Utility.DEGREES_PER_RADIAN;
-			}
-			set
-			{
-				this.rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-				if ( this.rotationInRadians != 0 )
-				{
-					this.parentSystem.NotifyParticleRotated();
-				}
-			}
-		}
-
-		public float Width
-		{
-			get
-			{
-				return this.width;
-			}
-			set
-			{
-				this.width = value;
-			}
-		}
-
-		public float Height
-		{
-			get
-			{
-				return this.height;
-			}
-			set
-			{
-				this.height = value;
-			}
-		}
-
-		public ParticleVisualData VisualData
-		{
-			get
-			{
-				return this.visual;
-			}
-		}
 
 		public void NotifyVisualData( ParticleVisualData vdata )
 		{
-			this.visual = vdata;
+			visual = vdata;
 		}
 
 		public void NotifyOwner( ParticleSystem owner )
@@ -198,15 +152,75 @@ namespace Axiom.ParticleSystems
 
 		public void SetDimensions( float width, float height )
 		{
-			this.hasOwnDimensions = true;
+			hasOwnDimensions = true;
 			this.width = width;
 			this.height = height;
-			this.parentSystem.NotifyParticleResized();
+			parentSystem.NotifyParticleResized();
 		}
 
 		public void ResetDimensions()
 		{
-			this.hasOwnDimensions = false;
+			hasOwnDimensions = false;
+		}
+
+		public bool HasOwnDimensions
+		{
+			get
+			{
+				return hasOwnDimensions;
+			}
+			set
+			{
+				hasOwnDimensions = value;
+			}
+		}
+
+		public float Rotation
+		{
+			get
+			{
+				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+			}
+			set
+			{
+				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				if ( rotationInRadians != 0 )
+				{
+					parentSystem.NotifyParticleRotated();
+				}
+			}
+		}
+
+		public float Width
+		{
+			get
+			{
+				return width;
+			}
+			set
+			{
+				width = value;
+			}
+		}
+
+		public float Height
+		{
+			get
+			{
+				return height;
+			}
+			set
+			{
+				height = value;
+			}
+		}
+
+		public ParticleVisualData VisualData
+		{
+			get
+			{
+				return visual;
+			}
 		}
 	}
 }

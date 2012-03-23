@@ -1,7 +1,9 @@
-﻿using Axiom.Core;
-using Axiom.Utilities;
+﻿using System.Collections.Generic;
 
 using ShaderControlsContainer = System.Collections.Generic.List<Axiom.Samples.Ocean.ShaderControl>;
+
+using Axiom.Utilities;
+using Axiom.Core;
 
 namespace Axiom.Samples.Ocean
 {
@@ -17,22 +19,11 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="displayName"></param>
-		/// <param name="materialName"></param>
-		public MaterialControls( string displayName, string materialName )
-		{
-			this.displayName = displayName;
-			this.materialName = materialName;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
 		public string DisplayName
 		{
 			get
 			{
-				return this.displayName;
+				return displayName;
 			}
 		}
 
@@ -43,7 +34,7 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return this.materialName;
+				return materialName;
 			}
 		}
 
@@ -54,8 +45,19 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return this.shaderControlsContainer.Count;
+				return shaderControlsContainer.Count;
 			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="displayName"></param>
+		/// <param name="materialName"></param>
+		public MaterialControls( string displayName, string materialName )
+		{
+			this.displayName = displayName;
+			this.materialName = materialName;
 		}
 
 		/// <summary>
@@ -86,14 +88,14 @@ namespace Axiom.Samples.Ocean
 
 			try
 			{
-				var newControl = new ShaderControl();
+				ShaderControl newControl = new ShaderControl();
 				newControl.Name = lineParams[ 0 ].Trim();
 				newControl.ParamName = lineParams[ 1 ].Trim();
 				newControl.Type = lineParams[ 2 ].Trim() == "GPU_VERTEX" ? ShaderType.GpuVertex : ShaderType.GpuFragment;
 				newControl.MinVal = float.Parse( lineParams[ 3 ].Trim() );
 				newControl.MaxVal = float.Parse( lineParams[ 4 ].Trim() );
 				newControl.ElementIndex = int.Parse( lineParams[ 5 ].Trim() );
-				this.shaderControlsContainer.Add( newControl );
+				shaderControlsContainer.Add( newControl );
 			}
 			catch
 			{
@@ -109,7 +111,7 @@ namespace Axiom.Samples.Ocean
 		public ShaderControl GetShaderControl( int index )
 		{
 			Contract.Requires( index < ShaderControlsCount );
-			return this.shaderControlsContainer[ index ];
+			return shaderControlsContainer[ index ];
 		}
 	}
 }

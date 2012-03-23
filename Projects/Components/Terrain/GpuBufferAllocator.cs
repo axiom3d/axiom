@@ -36,7 +36,6 @@
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -95,8 +94,8 @@ namespace Axiom.Components.Terrain
 	/// </summary>
 	public class DefaultGpuBufferAllocator : GpuBufferAllocator
 	{
-		protected List<HardwareVertexBuffer> FreeDeltaBufList = new List<HardwareVertexBuffer>();
 		protected List<HardwareVertexBuffer> FreePosBufList = new List<HardwareVertexBuffer>();
+		protected List<HardwareVertexBuffer> FreeDeltaBufList = new List<HardwareVertexBuffer>();
 		protected Dictionary<int, HardwareIndexBuffer> SharedIBufMap = new Dictionary<int, HardwareIndexBuffer>();
 
 		[OgreVersion( 1, 7, 2 )]
@@ -105,46 +104,46 @@ namespace Axiom.Components.Terrain
 			//destPos = this.GetVertexBuffer( ref FreePosBufList, forTerrain.PositionBufVertexSize, numVertices );
 			//destDelta = this.GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaBufVertexSize, numVertices );
 
-			destPos = GetVertexBuffer( ref this.FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
-			destDelta = GetVertexBuffer( ref this.FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
+			destPos = this.GetVertexBuffer( ref FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
+			destDelta = this.GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void FreeVertexBuffers( HardwareVertexBuffer posbuf, HardwareVertexBuffer deltabuf )
 		{
-			this.FreePosBufList.Add( posbuf );
-			this.FreeDeltaBufList.Add( deltabuf );
+			FreePosBufList.Add( posbuf );
+			FreeDeltaBufList.Add( deltabuf );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override HardwareIndexBuffer GetSharedIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols, ushort skirtRowColSkip )
 		{
-			int hsh = HashIndexBuffer( batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
+			int hsh = this.HashIndexBuffer( batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
 
-			if ( !this.SharedIBufMap.ContainsKey( hsh ) )
+			if ( !SharedIBufMap.ContainsKey( hsh ) )
 			{
 				// create new
 				int indexCount = Terrain.GetNumIndexesForBatchSize( batchSize );
 				HardwareIndexBuffer ret = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, indexCount, BufferUsage.StaticWriteOnly );
-				BufferBase pI = ret.Lock( BufferLocking.Discard );
+				var pI = ret.Lock( BufferLocking.Discard );
 				Terrain.PopulateIndexBuffer( pI, batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
 				ret.Unlock();
 
-				this.SharedIBufMap.Add( hsh, ret );
+				SharedIBufMap.Add( hsh, ret );
 				return ret;
 			}
 			else
 			{
-				return this.SharedIBufMap[ hsh ];
+				return SharedIBufMap[ hsh ];
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void FreeAllBuffers()
 		{
-			this.FreePosBufList.Clear();
-			this.FreeDeltaBufList.Clear();
-			this.SharedIBufMap.Clear();
+			FreePosBufList.Clear();
+			FreeDeltaBufList.Clear();
+			SharedIBufMap.Clear();
 		}
 
 		/// <summary>
@@ -160,11 +159,11 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "~DefaultGpuBufferAllocator" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					FreeAllBuffers();
+					this.FreeAllBuffers();
 				}
 			}
 
@@ -189,7 +188,7 @@ namespace Axiom.Components.Terrain
 		protected HardwareVertexBuffer GetVertexBuffer( ref List<HardwareVertexBuffer> list, VertexDeclaration decl, int numVertices )
 		{
 			int sz = decl.GetVertexSize() * numVertices; // vertexSize* numVertices;
-			foreach ( HardwareVertexBuffer i in list )
+			foreach ( var i in list )
 			{
 				if ( i.Size == sz )
 				{

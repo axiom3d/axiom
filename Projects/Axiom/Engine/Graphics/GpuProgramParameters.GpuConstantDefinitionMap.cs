@@ -46,8 +46,6 @@ namespace Axiom.Graphics
 	[OgreVersion( 1, 7, 2790 )]
 	public partial class GpuProgramParameters
 	{
-		#region Nested type: GpuConstantDefinitionMap
-
 		/// <summary>
 		/// Named Gpu constant lookup table
 		/// </summary>
@@ -62,7 +60,5 @@ namespace Axiom.Graphics
 				}
 			}
 		}
-
-		#endregion
 	}
 }

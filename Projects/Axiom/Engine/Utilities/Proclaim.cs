@@ -38,8 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,8 +69,8 @@ namespace Axiom.Utilities
 		/// <param name="vars"></param>
 		public static void NotNull( params object[] vars )
 		{
-			bool result = true;
-			foreach ( object obj in vars )
+			var result = true;
+			foreach ( var obj in vars )
 			{
 				result &= ( obj != null );
 			}

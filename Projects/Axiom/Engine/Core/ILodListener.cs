@@ -37,7 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-
+using System;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -65,14 +66,14 @@ namespace Axiom.Core
 	public struct EntityMeshLodChangedEvent
 	{
 		/// <summary>
-		/// The camera with respect to which the level of detail has changed.
-		/// </summary>
-		public Camera Camera;
-
-		/// <summary>
 		/// The entity whose level of detail has changed.
 		/// </summary>
 		public Entity Entity;
+
+		/// <summary>
+		/// The camera with respect to which the level of detail has changed.
+		/// </summary>
+		public Camera Camera;
 
 		/// <summary>
 		/// Lod value as determined by lod strategy.
@@ -80,14 +81,14 @@ namespace Axiom.Core
 		public float LodValue;
 
 		/// <summary>
-		/// New level of detail index.
-		/// </summary>
-		public int NewLodIndex;
-
-		/// <summary>
 		/// Previous level of detail index.
 		/// </summary>
 		public int PreviousLodIndex;
+
+		/// <summary>
+		/// New level of detail index.
+		/// </summary>
+		public int NewLodIndex;
 	}
 
 	/// <summary>
@@ -96,6 +97,11 @@ namespace Axiom.Core
 	public struct EntityMaterialLodChangedEvent
 	{
 		/// <summary>
+		/// The sub-entity whose material's level of detail has changed.
+		/// </summary>
+		public SubEntity SubEntity;
+
+		/// <summary>
 		/// The camera with respect to which the level of detail has changed.
 		/// </summary>
 		public Camera Camera;
@@ -106,19 +112,14 @@ namespace Axiom.Core
 		public float LodValue;
 
 		/// <summary>
-		/// New level of detail index.
-		/// </summary>
-		public int NewLodIndex;
-
-		/// <summary>
 		/// Previous level of detail index.
 		/// </summary>
 		public int PreviousLodIndex;
 
 		/// <summary>
-		/// The sub-entity whose material's level of detail has changed.
+		/// New level of detail index.
 		/// </summary>
-		public SubEntity SubEntity;
+		public int NewLodIndex;
 	}
 
 	/// <summary>

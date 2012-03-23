@@ -50,6 +50,12 @@ namespace Axiom.Core
 	/// </summary>
 	internal class ObjectManager : Singleton<ObjectManager>
 	{
+		private struct ObjectEntry
+		{
+			public WeakReference Instance;
+			public string ConstructionStack;
+		};
+
 		private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
 		/// <summary>
@@ -62,23 +68,22 @@ namespace Axiom.Core
 		[AxiomHelper( 0, 9 )]
 		public void Add( DisposableObject instance, string stackTrace )
 		{
-			List<ObjectEntry> objectList = _getOrCreateObjectList( instance.GetType() );
+			var objectList = _getOrCreateObjectList( instance.GetType() );
 
 			objectList.Add( new ObjectEntry
-							{
-								Instance = new WeakReference( instance ),
-								ConstructionStack = stackTrace
-							} );
+			                {
+			                	Instance = new WeakReference( instance ), ConstructionStack = stackTrace
+			                } );
 		}
 
 		[AxiomHelper( 0, 9 )]
 		private List<ObjectEntry> _getOrCreateObjectList( Type type )
 		{
 			List<ObjectEntry> objectList;
-			if ( !this._objects.TryGetValue( type, out objectList ) )
+			if ( !_objects.TryGetValue( type, out objectList ) )
 			{
 				objectList = new List<ObjectEntry>();
-				this._objects.Add( type, objectList );
+				_objects.Add( type, objectList );
 			}
 			return objectList;
 		}
@@ -97,11 +102,11 @@ namespace Axiom.Core
                     var msg = new StringBuilder();
 #endif
 					// Dispose managed resources.
-					foreach ( var item in this._objects )
+					foreach ( var item in _objects )
 					{
-						string typeName = item.Key.Name;
-						List<ObjectEntry> objectList = item.Value;
-						foreach ( ObjectEntry objectEntry in objectList )
+						var typeName = item.Key.Name;
+						var objectList = item.Value;
+						foreach ( var objectEntry in objectList )
 						{
 							if ( objectEntry.Instance.IsAlive && !( (DisposableObject)objectEntry.Instance.Target ).IsDisposed )
 							{
@@ -125,7 +130,7 @@ namespace Axiom.Core
 						}
 					}
 
-					Log report = LogManager.Instance.CreateLog( "AxiomDisposalReport.log" );
+					var report = LogManager.Instance.CreateLog( "AxiomDisposalReport.log" );
 					report.Write( "[ObjectManager] Axiom Disposal Report:" );
 
 					if ( objectCount > 0 )
@@ -161,16 +166,6 @@ namespace Axiom.Core
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-
-		#region Nested type: ObjectEntry
-
-		private struct ObjectEntry
-		{
-			public string ConstructionStack;
-			public WeakReference Instance;
-		};
-
-		#endregion
 	};
 #endif
 
@@ -181,10 +176,10 @@ namespace Axiom.Core
 		{
 			IsDisposed = false;
 #if DEBUG
-			string stackTrace = string.Empty;
+			var stackTrace = string.Empty;
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
 			stackTrace = Environment.StackTrace;
-#endif
+    #endif
 			ObjectManager.Instance.Add( this, stackTrace );
 #endif
 		}
@@ -205,13 +200,6 @@ namespace Axiom.Core
 		/// </summary>
 		[AxiomHelper( 0, 9 )]
 		public bool IsDisposed { get; set; }
-
-		[AxiomHelper( 0, 9 )]
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -251,6 +239,13 @@ namespace Axiom.Core
 				// if we add them, they need to be released here.
 			}
 			IsDisposed = true;
+		}
+
+		[AxiomHelper( 0, 9 )]
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
 		#endregion IDisposable Implementation

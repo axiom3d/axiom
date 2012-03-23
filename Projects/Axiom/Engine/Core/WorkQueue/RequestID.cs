@@ -42,19 +42,19 @@ namespace Axiom.Core
 	/// </summary>
 	public struct RequestID
 	{
-		private readonly uint mValue;
-
-		public RequestID( uint reqId )
-		{
-			this.mValue = reqId;
-		}
+		private uint mValue;
 
 		public uint Value
 		{
 			get
 			{
-				return this.mValue;
+				return mValue;
 			}
+		}
+
+		public RequestID( uint reqId )
+		{
+			mValue = reqId;
 		}
 
 		public static bool operator ==( RequestID lr, RequestID rr )
@@ -84,7 +84,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return this.mValue.ToString();
+			return mValue.ToString();
 		}
 	};
 }

@@ -38,15 +38,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 #if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
-using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-
 using Numeric = System.Single;
 #else
 using Numeric = System.Double;
 #endif
+using System;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
@@ -69,30 +68,30 @@ namespace Axiom.Math
 	{
 		private static readonly Real _degreesToRadians = Utility.PI / 180.0f;
 
-		public static readonly Degree Zero = Real.Zero;
+		public static readonly Degree Zero = (Degree)Real.Zero;
 
 		private Real _value;
 
 		public Degree( Real r )
 		{
-			this._value = r;
+			_value = r;
 		}
 
 		public Degree( Degree d )
 		{
-			this._value = d._value;
+			_value = d._value;
 		}
 
 		public Degree( Radian r )
 		{
-			this._value = r.InDegrees;
+			_value = r.InDegrees;
 		}
 
 		public Radian InRadians
 		{
 			get
 			{
-				return this._value * _degreesToRadians;
+				return _value * _degreesToRadians;
 			}
 		}
 
@@ -126,12 +125,12 @@ namespace Axiom.Math
 
 		public static implicit operator Real( Degree value )
 		{
-			return value._value;
+			return (Real)value._value;
 		}
 
 		public static explicit operator Numeric( Degree value )
 		{
-			return value._value;
+			return (Numeric)value._value;
 		}
 
 		public static Degree operator +( Degree left, Real right )
@@ -221,7 +220,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return this._value.GetHashCode();
+			return _value.GetHashCode();
 		}
 
 #if !( XBOX || XBOX360 )
@@ -230,13 +229,13 @@ namespace Axiom.Math
 
 		private Degree( SerializationInfo info, StreamingContext context )
 		{
-			this._value = (Real)info.GetValue( "value", typeof( Real ) );
+			_value = (Real)info.GetValue( "value", typeof ( Real ) );
 		}
 
 		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
-			info.AddValue( "value", this._value );
+			info.AddValue( "value", _value );
 		}
 
 		#endregion ISerializableImplementation

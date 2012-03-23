@@ -42,6 +42,11 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
+		protected TextArea textArea;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		protected BorderPanel captionBar;
 
 		/// <summary>
@@ -52,12 +57,17 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real dragOffset;
+		protected BorderPanel scrollTrack;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool isDragging;
+		protected Panel scrollHandle;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected String text;
 
 		/// <summary>
 		/// 
@@ -72,7 +82,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Panel scrollHandle;
+		protected bool isDragging;
 
 		/// <summary>
 		/// 
@@ -82,22 +92,12 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected BorderPanel scrollTrack;
+		protected Real dragOffset;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		protected int startingLine;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected String text;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TextArea textArea;
 
 		#endregion fields
 
@@ -112,16 +112,16 @@ namespace Axiom.Samples
 		/// <param name="height"></param>
 		public TextBox( String name, String caption, Real width, Real height )
 		{
-			this.lines = new List<string>();
+			lines = new List<string>();
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/TextBox", "BorderPanel", name );
 			element.Width = width;
 			element.Height = height;
-			var container = (OverlayElementContainer)element;
+			OverlayElementContainer container = (OverlayElementContainer)element;
 			this.textArea = (TextArea)container.Children[ Name + "/TextBoxText" ];
 			this.captionBar = (BorderPanel)container.Children[ Name + "/TextBoxCaptionBar" ];
 			this.captionBar.Width = width - 4;
 			this.captionTextArea = (TextArea)this.captionBar.Children[ this.captionBar.Name + "/TextBoxCaption" ];
-			Caption = caption;
+			this.Caption = caption;
 			this.scrollTrack = (BorderPanel)container.Children[ Name + "/TextBoxScrollTrack" ];
 			this.scrollHandle = (Panel)this.scrollTrack.Children[ this.scrollTrack.Name + "/TextBoxScrollHandle" ];
 			this.scrollHandle.Hide();
@@ -130,7 +130,7 @@ namespace Axiom.Samples
 			this.startingLine = 0;
 			this.padding = 15;
 			this.text = "";
-			RefitContents();
+			this.RefitContents();
 		}
 
 		#endregion
@@ -144,12 +144,12 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				this.padding = value;
+				padding = value;
 				RefitContents();
 			}
 			get
 			{
-				return this.padding;
+				return padding;
 			}
 		}
 
@@ -160,11 +160,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.captionTextArea.Text;
+				return captionTextArea.Text;
 			}
 			set
 			{
-				this.captionTextArea.Text = value;
+				captionTextArea.Text = value;
 			}
 		}
 
@@ -182,9 +182,9 @@ namespace Axiom.Samples
 				this.text = value;
 				this.lines.Clear();
 
-				var font = (Font)FontManager.Instance.GetByName( this.textArea.FontName );
+				Font font = (Font)FontManager.Instance.GetByName( this.textArea.FontName );
 
-				String current = this.text;
+				String current = text;
 				bool firstWord = true;
 				int lastSpace = 0;
 				int lineBegin = 0;
@@ -248,12 +248,12 @@ namespace Axiom.Samples
 
 				this.lines.Add( current.Substring( lineBegin ) );
 
-				int maxLines = HeightInLines;
+				int maxLines = this.HeightInLines;
 
 				if ( this.lines.Count > maxLines ) // if too much text, filter based on scroll percentage
 				{
 					this.scrollHandle.Show();
-					FilterLines();
+					this.FilterLines();
 				}
 				else // otherwise just show all the text
 				{
@@ -272,11 +272,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.HorizontalAlignment;
+				return textArea.HorizontalAlignment;
 			}
 			set
 			{
-				this.textArea.HorizontalAlignment = value;
+				textArea.HorizontalAlignment = value;
 				RefitContents();
 			}
 		}
@@ -288,13 +288,13 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				this.scrollPercentage = Utility.Clamp( value, 1, 0 );
+				this.scrollPercentage = Math.Utility.Clamp<Real>( value, 1, 0 );
 				this.scrollHandle.Top = (int)( value * ( this.scrollTrack.Height - this.scrollHandle.Height ) );
-				FilterLines();
+				this.FilterLines();
 			}
 			get
 			{
-				return this.scrollPercentage;
+				return scrollPercentage;
 			}
 		}
 
@@ -318,7 +318,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ClearText()
 		{
-			Text = string.Empty;
+			this.Text = string.Empty;
 		}
 
 		/// <summary>
@@ -327,7 +327,7 @@ namespace Axiom.Samples
 		/// <param name="text"></param>
 		public void AppendText( String text )
 		{
-			Text = Text + text;
+			this.Text = this.Text + text;
 		}
 
 		/// <summary>
@@ -352,7 +352,7 @@ namespace Axiom.Samples
 				this.textArea.Left = this.scrollTrack.Left / 2;
 			}
 
-			Text = Text;
+			Text = this.Text;
 		}
 
 		/// <summary>
@@ -366,22 +366,22 @@ namespace Axiom.Samples
 				return; // don't care about clicks if text not scrollable
 			}
 
-			Vector2 co = CursorOffset( this.scrollHandle, cursorPos );
+			Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 
 			if ( co.LengthSquared <= 81 )
 			{
 				this.isDragging = true;
 				this.dragOffset = co.y;
 			}
-			else if ( IsCursorOver( this.scrollTrack, cursorPos ) )
+			else if ( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
 			{
 				Real newTop = this.scrollHandle.Top + co.y;
 				Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
-				this.scrollHandle.Top = Utility.Clamp( newTop, lowerBoundary, 0 );
+				this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
 				// update text area contents based on new scroll percentage
-				this.scrollPercentage = Utility.Clamp( newTop / lowerBoundary, 1, 0 );
-				FilterLines();
+				this.scrollPercentage = Math.Utility.Clamp<Real>( newTop / lowerBoundary, 1, 0 );
+				this.FilterLines();
 			}
 
 			base.OnCursorPressed( cursorPos );
@@ -406,14 +406,14 @@ namespace Axiom.Samples
 		{
 			if ( this.isDragging )
 			{
-				Vector2 co = CursorOffset( this.scrollHandle, cursorPos );
+				Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 				Real newTop = this.scrollHandle.Top + co.y - this.dragOffset;
 				Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
-				this.scrollHandle.Top = Utility.Clamp( newTop, lowerBoundary, 0 );
+				this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
 				// update text area contents based on new scroll percentage
-				this.scrollPercentage = Utility.Clamp( newTop / lowerBoundary, 1, 0 );
-				FilterLines();
+				this.scrollPercentage = Math.Utility.Clamp<Real>( newTop / lowerBoundary, 1, 0 );
+				this.FilterLines();
 			}
 
 			base.OnCursorMoved( cursorPos );
@@ -434,8 +434,8 @@ namespace Axiom.Samples
 		protected void FilterLines()
 		{
 			String shown = "";
-			int maxLines = HeightInLines;
-			var newStart = (int)( this.scrollPercentage * ( this.lines.Count - maxLines ) + 0.5f );
+			int maxLines = this.HeightInLines;
+			int newStart = (int)( this.scrollPercentage * ( this.lines.Count - maxLines ) + 0.5f );
 
 			this.startingLine = newStart;
 

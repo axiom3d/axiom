@@ -67,11 +67,11 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLRenderBuffer( int format, int width, int height, int fsaa )
 			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
 		{
-			GLFormat = format;
+			this.GLFormat = format;
 			/// Generate renderbuffer
-			Gl.glGenRenderbuffersEXT( 1, out this._renderBufferId );
+			Gl.glGenRenderbuffersEXT( 1, out _renderBufferId );
 			/// Bind it to FBO
-			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
+			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
 
 			/// Allocate storage for depth buffer
 			Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, format, width, height );
@@ -84,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void BindToFramebuffer( int attachment, int zOffset )
 		{
 			Debug.Assert( zOffset < Depth );
-			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
+			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// Dispose managed resources.
 				}
 
-				Gl.glDeleteRenderbuffersEXT( 1, ref this._renderBufferId );
+				Gl.glDeleteRenderbuffersEXT( 1, ref _renderBufferId );
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}

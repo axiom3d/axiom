@@ -39,15 +39,11 @@ namespace Axiom.Samples
 	{
 		#region events
 
-		#region Delegates
-
 		/// <summary>
 		/// Delegate used by SelectedIndexChanged event
 		/// </summary>
 		/// <param name="sender"></param>
 		public delegate void SelectionChangedHandler( SelectMenu sender );
-
-		#endregion
 
 		/// <summary>
 		/// Occours when the selcted index has changed.
@@ -73,17 +69,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool IsCursorOver;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected int displayIndex;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected Real dragOffset;
+		protected BorderPanel smallBox;
 
 		/// <summary>
 		/// 
@@ -93,12 +79,42 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected int highlightIndex;
+		protected TextArea textArea;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool isDragging;
+		protected TextArea smallTextArea;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected BorderPanel scrollTrack;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected Panel scrollHandle;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected List<BorderPanel> itemElements;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected int maxItemsShown;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected int itemsShown;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected bool IsCursorOver;
 
 		/// <summary>
 		/// 
@@ -113,7 +129,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected List<BorderPanel> itemElements;
+		protected bool isDragging;
 
 		/// <summary>
 		/// 
@@ -123,42 +139,22 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected int itemsShown;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected int maxItemsShown;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected Panel scrollHandle;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected BorderPanel scrollTrack;
-
-		/// <summary>
-		/// 
-		/// </summary>
 		protected int sectionIndex;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected BorderPanel smallBox;
+		protected int highlightIndex;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea smallTextArea;
+		protected int displayIndex;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected TextArea textArea;
+		protected Real dragOffset;
 
 		#endregion fields
 
@@ -205,7 +201,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.isExpanded;
+				return isExpanded;
 			}
 		}
 
@@ -216,7 +212,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.Text;
+				return textArea.Text;
 			}
 			set
 			{
@@ -236,7 +232,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.items;
+				return items;
 			}
 			set
 			{
@@ -253,7 +249,7 @@ namespace Axiom.Samples
 
 				for ( int i = 0; i < this.itemsShown; i++ ) // create all the item elements
 				{
-					var e = (BorderPanel)OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/SelectMenuItem", "BorderPanel", this.expandedBox.Name + "/Item" + ( i + 1 ) );
+					BorderPanel e = (BorderPanel)OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/SelectMenuItem", "BorderPanel", this.expandedBox.Name + "/Item" + ( i + 1 ) );
 
 					e.Top = 6 + i * ( this.smallBox.Height - 8 );
 					e.Width = this.expandedBox.Width - 32;
@@ -262,9 +258,9 @@ namespace Axiom.Samples
 					this.itemElements.Add( e );
 				}
 
-				if ( !( this.items.Count == 0 ) )
+				if ( !( items.Count == 0 ) )
 				{
-					SelectItem( 0, false );
+					this.SelectItem( 0, false );
 				}
 				else
 				{
@@ -280,7 +276,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.items.Count;
+				return items.Count;
 			}
 		}
 
@@ -311,7 +307,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.sectionIndex;
+				return sectionIndex;
 			}
 		}
 
@@ -329,8 +325,8 @@ namespace Axiom.Samples
 		/// <param name="maxItemsShown"></param>
 		public SelectMenu( String name, String caption, Real width, Real boxWidth, int maxItemsShown )
 		{
-			this.items = new List<string>();
-			this.itemElements = new List<BorderPanel>();
+			items = new List<string>();
+			itemElements = new List<BorderPanel>();
 
 			this.sectionIndex = -1;
 			this.isFitToContents = false;
@@ -339,7 +335,7 @@ namespace Axiom.Samples
 			this.isDragging = false;
 			this.maxItemsShown = maxItemsShown;
 			this.itemsShown = 0;
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/SelectMenu", "BorderPanel", name );
+			element = (BorderPanel)OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/SelectMenu", "BorderPanel", name );
 			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ name + "/MenuCaption" ];
 			this.smallBox = (BorderPanel)( (OverlayElementContainer)element ).Children[ name + "/MenuSmallBox" ];
 			this.smallBox.Width = width - 10;
@@ -368,7 +364,7 @@ namespace Axiom.Samples
 			this.scrollTrack = (BorderPanel)this.expandedBox.Children[ this.expandedBox.Name + "/MenuScrollTrack" ];
 			this.scrollHandle = (Panel)this.scrollTrack.Children[ this.scrollTrack.Name + "/MenuScrollHandle" ];
 
-			Caption = caption;
+			this.Caption = caption;
 		}
 
 		#endregion construction
@@ -382,7 +378,7 @@ namespace Axiom.Samples
 		public void AddItem( String item )
 		{
 			this.items.Add( item );
-			Items = this.items;
+			this.Items = this.items;
 		}
 
 		/// <summary>
@@ -391,14 +387,14 @@ namespace Axiom.Samples
 		/// <param name="item"></param>
 		public void RemoveItem( String item )
 		{
-			if ( this.items.Contains( item ) )
+			if ( items.Contains( item ) )
 			{
-				this.items.Remove( item );
+				items.Remove( item );
 				if ( this.items.Count < this.itemsShown )
 				{
 					this.itemsShown = this.items.Count;
 					NukeOverlayElement( this.itemElements[ this.itemElements.Count - 1 ] );
-					this.itemElements.RemoveAt( this.itemElements.Count - 1 );
+					this.itemElements.RemoveAt( itemElements.Count - 1 );
 				}
 			}
 			else
@@ -416,7 +412,7 @@ namespace Axiom.Samples
 		{
 			try
 			{
-				this.items.RemoveAt( index );
+				items.RemoveAt( index );
 			}
 			catch ( ArgumentOutOfRangeException ex )
 			{
@@ -441,7 +437,7 @@ namespace Axiom.Samples
 		/// <param name="index"></param>
 		public void SelectItem( int index )
 		{
-			SelectItem( index, true );
+			this.SelectItem( index, true );
 		}
 
 		/// <summary>
@@ -488,7 +484,7 @@ namespace Axiom.Samples
 			{
 				if ( item == this.items[ i ] )
 				{
-					SelectItem( i, notifyListener );
+					this.SelectItem( i, notifyListener );
 					return;
 				}
 			}
@@ -510,7 +506,7 @@ namespace Axiom.Samples
 			{
 				if ( this.scrollHandle.IsVisible ) // check for scrolling
 				{
-					Vector2 co = CursorOffset( this.scrollHandle, cursorPos );
+					Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 
 					if ( co.LengthSquared <= 81 )
 					{
@@ -518,13 +514,13 @@ namespace Axiom.Samples
 						this.dragOffset = co.y;
 						return;
 					}
-					else if ( IsCursorOver( this.scrollTrack, cursorPos ) )
+					else if ( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
 					{
 						Real newTop = this.scrollHandle.Top + co.y;
 						Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
-						this.scrollHandle.Top = Utility.Clamp( newTop, lowerBoundary, 0 );
+						this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
-						Real scrollPercentage = Utility.Clamp( newTop / lowerBoundary, 1, 0 );
+						Real scrollPercentage = Math.Utility.Clamp<Real>( newTop / lowerBoundary, 1, 0 );
 						DisplayIndex = (int)( scrollPercentage * ( this.items.Count - this.itemElements.Count ) + 0.5 );
 						return;
 					}
@@ -532,22 +528,22 @@ namespace Axiom.Samples
 
 				if ( !IsCursorOver( this.expandedBox, cursorPos, 3 ) )
 				{
-					Retract();
+					this.Retract();
 				}
 				else
 				{
 					Real l = this.itemElements[ 0 ].DerivedLeft * om.ViewportWidth + 5;
 					Real t = this.itemElements[ 0 ].DerivedTop * om.ViewportHeight + 5;
-					Real r = l + this.itemElements[ this.itemElements.Count - 1 ].Width - 10;
-					Real b = this.itemElements[ this.itemElements.Count - 1 ].DerivedTop * om.ViewportHeight + this.itemElements[ this.itemElements.Count - 1 ].Height - 5;
+					Real r = l + this.itemElements[ itemElements.Count - 1 ].Width - 10;
+					Real b = this.itemElements[ itemElements.Count - 1 ].DerivedTop * om.ViewportHeight + this.itemElements[ itemElements.Count - 1 ].Height - 5;
 
 					if ( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
 					{
 						if ( this.highlightIndex != this.sectionIndex )
 						{
-							SelectItem( this.highlightIndex );
+							this.SelectItem( this.highlightIndex );
 						}
-						Retract();
+						this.Retract();
 					}
 				}
 			}
@@ -628,13 +624,13 @@ namespace Axiom.Samples
 			{
 				if ( this.isDragging )
 				{
-					Vector2 co = CursorOffset( this.scrollHandle, cursorPos );
+					Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 					Real newTop = this.scrollHandle.Top + co.y - this.dragOffset;
 					Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
-					this.scrollHandle.Top = Utility.Clamp( newTop, lowerBoundary, 0 );
+					this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
-					Real scrollPercentage = Utility.Clamp( newTop / lowerBoundary, 0, 1 );
-					var newIndex = (int)( scrollPercentage * ( this.items.Count - this.itemElements.Count ) + 0.5 );
+					Real scrollPercentage = Math.Utility.Clamp<Real>( newTop / lowerBoundary, 0, 1 );
+					int newIndex = (int)( scrollPercentage * ( this.items.Count - this.itemElements.Count ) + 0.5 );
 					if ( newIndex != this.displayIndex )
 					{
 						DisplayIndex = newIndex;
@@ -644,12 +640,12 @@ namespace Axiom.Samples
 
 				Real l = this.itemElements[ 0 ].DerivedLeft * om.ViewportWidth + 5;
 				Real t = this.itemElements[ 0 ].DerivedTop * om.ViewportHeight + 5;
-				Real r = l + this.itemElements[ this.itemElements.Count - 1 ].Width - 10;
-				Real b = this.itemElements[ this.itemElements.Count - 1 ].DerivedTop * om.ViewportHeight + this.itemElements[ this.itemElements.Count - 1 ].Height - 5;
+				Real r = l + this.itemElements[ itemElements.Count - 1 ].Width - 10;
+				Real b = this.itemElements[ itemElements.Count - 1 ].DerivedTop * om.ViewportHeight + this.itemElements[ itemElements.Count - 1 ].Height - 5;
 
 				if ( cursorPos.x >= l && cursorPos.x <= r && cursorPos.y >= t && cursorPos.y <= b )
 				{
-					var newIndex = (int)( this.displayIndex + ( cursorPos.y - t ) / ( b - t ) * this.itemElements.Count );
+					int newIndex = (int)( this.displayIndex + ( cursorPos.y - t ) / ( b - t ) * this.itemElements.Count );
 					if ( this.highlightIndex != newIndex )
 					{
 						this.highlightIndex = newIndex;
@@ -686,7 +682,7 @@ namespace Axiom.Samples
 		{
 			if ( this.expandedBox.IsVisible )
 			{
-				Retract();
+				this.Retract();
 			}
 
 			base.OnLostFocus();

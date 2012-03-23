@@ -31,9 +31,6 @@ using Axiom.Core;
 using Axiom.Framework.Configuration;
 using Axiom.Graphics;
 
-using SharpInputSystem;
-
-using RenderSystem = Axiom.Graphics.RenderSystem;
 using Vector3 = Axiom.Math.Vector3;
 
 #endregion Namespace Declarations
@@ -42,17 +39,17 @@ namespace Axiom.Framework
 {
 	public abstract class Game : IDisposable, IWindowEventListener
 	{
-		protected Camera Camera;
+		protected Root Engine;
 		protected IConfigurationManager ConfigurationManager;
 		protected ResourceGroupManager Content;
-		protected Root Engine;
-		protected InputManager InputManager;
-		protected RenderSystem RenderSystem;
 		protected SceneManager SceneManager;
+		protected Camera Camera;
 		protected Viewport Viewport;
 		protected RenderWindow Window;
-		protected Keyboard keyboard;
-		protected Mouse mouse;
+		protected Axiom.Graphics.RenderSystem RenderSystem;
+		protected SharpInputSystem.InputManager InputManager;
+		protected SharpInputSystem.Mouse mouse;
+		protected SharpInputSystem.Keyboard keyboard;
 
 		public virtual void Run()
 		{
@@ -67,7 +64,7 @@ namespace Axiom.Framework
 			CreateViewports();
 			CreateInput();
 			CreateScene();
-			this.Engine.StartRendering();
+			Engine.StartRendering();
 		}
 
 		private void PreInitialize()
@@ -75,15 +72,15 @@ namespace Axiom.Framework
 			this.ConfigurationManager = new DefaultConfigurationManager();
 
 			// instantiate the Root singleton
-			this.Engine = new Root( this.ConfigurationManager.LogFilename );
+			Engine = new Root( ConfigurationManager.LogFilename );
 
 			// add event handlers for frame events
-			this.Engine.FrameStarted += Engine_FrameRenderingQueued;
+			Engine.FrameStarted += Engine_FrameRenderingQueued;
 		}
 
 		public virtual void LoadConfiguration()
 		{
-			this.ConfigurationManager.RestoreConfiguration( this.Engine );
+			ConfigurationManager.RestoreConfiguration( this.Engine );
 		}
 
 
@@ -92,25 +89,25 @@ namespace Axiom.Framework
 			Update( e.TimeSinceLastFrame );
 		}
 
-		public virtual void Initialize() { }
+		public virtual void Initialize() {}
 
 		public virtual void CreateRenderSystem()
 		{
-			if ( this.Engine.RenderSystem == null )
+			if ( Engine.RenderSystem == null )
 			{
-				this.RenderSystem = this.Engine.RenderSystem = this.Engine.RenderSystems.First().Value;
+				RenderSystem = Engine.RenderSystem = Engine.RenderSystems.First().Value;
 			}
 			else
 			{
-				this.RenderSystem = this.Engine.RenderSystem;
+				RenderSystem = Engine.RenderSystem;
 			}
 		}
 
 		public virtual void CreateRenderWindow()
 		{
-			this.Window = Root.Instance.Initialize( true, "Axiom Framework Window" );
+			Window = Root.Instance.Initialize( true, "Axiom Framework Window" );
 
-			WindowEventMonitor.Instance.RegisterListener( this.Window, this );
+			WindowEventMonitor.Instance.RegisterListener( Window, this );
 		}
 
 		public virtual void LoadContent()
@@ -121,71 +118,74 @@ namespace Axiom.Framework
 		public virtual void CreateSceneManager()
 		{
 			// Get the SceneManager, a generic one by default
-			this.SceneManager = this.Engine.CreateSceneManager( "DefaultSceneManager", "GameSMInstance" );
-			this.SceneManager.ClearScene();
+			SceneManager = Engine.CreateSceneManager( "DefaultSceneManager", "GameSMInstance" );
+			SceneManager.ClearScene();
 		}
 
 		public virtual void CreateCamera()
 		{
 			// create a camera and initialize its position
-			this.Camera = this.SceneManager.CreateCamera( "MainCamera" );
-			this.Camera.Position = new Vector3( 0, 0, 500 );
-			this.Camera.LookAt( new Vector3( 0, 0, -300 ) );
+			Camera = SceneManager.CreateCamera( "MainCamera" );
+			Camera.Position = new Vector3( 0, 0, 500 );
+			Camera.LookAt( new Vector3( 0, 0, -300 ) );
 
 			// set the near clipping plane to be very close
-			this.Camera.Near = 5;
+			Camera.Near = 5;
 
-			this.Camera.AutoAspectRatio = true;
+			Camera.AutoAspectRatio = true;
 		}
 
 		public virtual void CreateViewports()
 		{
 			// create a new viewport and set it's background color
-			this.Viewport = this.Window.AddViewport( this.Camera, 0, 0, 1.0f, 1.0f, 100 );
-			this.Viewport.BackgroundColor = ColorEx.SteelBlue;
+			Viewport = Window.AddViewport( Camera, 0, 0, 1.0f, 1.0f, 100 );
+			Viewport.BackgroundColor = ColorEx.SteelBlue;
 		}
 
 		public virtual void CreateInput()
 		{
-			var pl = new ParameterList();
-			pl.Add( new Parameter( "WINDOW", this.Window[ "WINDOW" ] ) );
+			SharpInputSystem.ParameterList pl = new SharpInputSystem.ParameterList();
+			pl.Add( new SharpInputSystem.Parameter( "WINDOW", this.Window[ "WINDOW" ] ) );
 
-			if ( this.RenderSystem.Name.Contains( "DirectX" ) )
+			if ( RenderSystem.Name.Contains( "DirectX" ) )
 			{
 				//Default mode is foreground exclusive..but, we want to show mouse - so nonexclusive
-				pl.Add( new Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
-				pl.Add( new Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+				pl.Add( new SharpInputSystem.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
+				pl.Add( new SharpInputSystem.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
 			}
 
 			//This never returns null.. it will raise an exception on errors
-			this.InputManager = InputManager.CreateInputSystem( pl );
+			InputManager = SharpInputSystem.InputManager.CreateInputSystem( pl );
 			//mouse = InputManager.CreateInputObject<SharpInputSystem.Mouse>( true, "" );
 			//keyboard = InputManager.CreateInputObject<SharpInputSystem.Keyboard>( true, "" );
 		}
 
 		public abstract void CreateScene();
 
-		public virtual void Update( float timeSinceLastFrame ) { }
+		public virtual void Update( float timeSinceLastFrame ) {}
 
 		#region IDisposable Implementation
 
 		#region IsDisposed Property
 
+		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		public bool IsDisposed { get; set; }
+		public bool IsDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
 
 		#endregion IsDisposed Property
-
-		/// <summary>
-		/// Call to when class is no longer needed 
-		/// </summary>
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -217,28 +217,28 @@ namespace Axiom.Framework
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.Engine != null )
+					if ( Engine != null )
 					{
 						// remove event handlers
-						this.Engine.FrameStarted -= Engine_FrameRenderingQueued;
+						Engine.FrameStarted -= Engine_FrameRenderingQueued;
 					}
-					if ( this.SceneManager != null )
+					if ( SceneManager != null )
 					{
-						this.SceneManager.RemoveAllCameras();
+						SceneManager.RemoveAllCameras();
 					}
-					this.Camera = null;
+					Camera = null;
 					if ( Root.Instance != null )
 					{
-						Root.Instance.RenderSystem.DetachRenderTarget( this.Window );
+						Root.Instance.RenderSystem.DetachRenderTarget( Window );
 					}
-					if ( this.Window != null )
+					if ( Window != null )
 					{
-						WindowEventMonitor.Instance.UnregisterWindow( this.Window );
-						this.Window.Dispose();
+						WindowEventMonitor.Instance.UnregisterWindow( Window );
+						Window.Dispose();
 					}
-					if ( this.Engine != null )
+					if ( Engine != null )
 					{
-						this.Engine.Dispose();
+						Engine.Dispose();
 					}
 				}
 
@@ -246,6 +246,15 @@ namespace Axiom.Framework
 				// if we add them, they need to be released here.
 			}
 			IsDisposed = true;
+		}
+
+		/// <summary>
+		/// Call to when class is no longer needed 
+		/// </summary>
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
 		~Game()
@@ -261,13 +270,13 @@ namespace Axiom.Framework
 		/// Window has moved position
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowMoved( RenderWindow rw ) { }
+		public void WindowMoved( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has resized
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowResized( RenderWindow rw ) { }
+		public void WindowResized( RenderWindow rw ) {}
 
 		/// <summary>
 		/// Window has closed
@@ -276,7 +285,7 @@ namespace Axiom.Framework
 		public void WindowClosed( RenderWindow rw )
 		{
 			// Only do this for the Main Window
-			if ( rw == this.Window )
+			if ( rw == Window )
 			{
 				Root.Instance.QueueEndRendering();
 			}
@@ -286,7 +295,7 @@ namespace Axiom.Framework
 		/// Window lost/regained the focus
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowFocusChange( RenderWindow rw ) { }
+		public void WindowFocusChange( RenderWindow rw ) {}
 
 		#endregion
 	}

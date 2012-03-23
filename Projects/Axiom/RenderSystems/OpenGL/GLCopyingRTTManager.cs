@@ -38,8 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using Axiom.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+
+using Axiom.Core;
 using Axiom.Media;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -50,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Construction and Destruction
 
 		internal GLCopyingRTTManager( BaseGLSupport glSupport )
-			: base( glSupport ) { }
+			: base( glSupport ) {}
 
 		#endregion Construction and Destruction
 
@@ -77,7 +82,7 @@ namespace Axiom.RenderSystems.OpenGL
 			object attr = target.GetCustomAttribute( "target" );
 			if ( attr != null )
 			{
-				var surface = (GLSurfaceDesc)attr;
+				GLSurfaceDesc surface = (GLSurfaceDesc)attr;
 				if ( surface.Buffer != null )
 				{
 					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );

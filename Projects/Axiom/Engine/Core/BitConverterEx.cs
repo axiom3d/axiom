@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
-using Axiom.CrossPlatform;
+	#region LGPL License
 
-#region LGPL License
-
-/*
+	/*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
 
@@ -29,18 +26,23 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#endregion LGPL License
+	#endregion LGPL License
 
-#region SVN Version Information
+	#region SVN Version Information
 
-// <file>
-//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: Memory.cs 1663 2009-06-12 21:27:34Z borrillis $"/>
-// </file>
+	// <file>
+	//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+	//     <id value="$Id: Memory.cs 1663 2009-06-12 21:27:34Z borrillis $"/>
+	// </file>
 
-#endregion SVN Version Information
+	#endregion SVN Version Information
 
-#region Namespace Declarations
+	#region Namespace Declarations
+
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+using Axiom.CrossPlatform;
 
 #endregion Namespace Declarations
 
@@ -53,9 +55,9 @@ namespace Axiom.Core
 			int size;
 			byte[] buffer;
 			BufferBase dst;
-			if ( !typeof( T ).IsArray )
+			if ( !typeof ( T ).IsArray )
 			{
-				size = Memory.SizeOf( typeof( T ) );
+				size = Memory.SizeOf( typeof ( T ) );
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
 				Marshal.StructureToPtr( value, dst.Pin(), true );
@@ -63,11 +65,11 @@ namespace Axiom.Core
 			}
 			else
 			{
-				size = Memory.SizeOf( typeof( T ).GetElementType() ) * (int)typeof( T ).GetProperty( "Length" ).GetValue( value, null );
+				size = Memory.SizeOf( typeof ( T ).GetElementType() ) * (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
 				buffer = new byte[ size ];
 				dst = Memory.PinObject( buffer );
 
-				BufferBase src = Memory.PinObject( value as Array );
+				var src = Memory.PinObject( value as Array );
 				Memory.Copy( src, dst, size );
 				Memory.UnpinObject( value );
 			}
@@ -79,8 +81,8 @@ namespace Axiom.Core
 
 		public static T SetBytes<T>( byte[] buffer )
 		{
-			int size = Memory.SizeOf( typeof( T ) );
-			BufferBase src = Memory.PinObject( buffer );
+			var size = Memory.SizeOf( typeof ( T ) );
+			var src = Memory.PinObject( buffer );
 			var retStruct = src.Pin().PtrToStructure<T>();
 			src.UnPin();
 			Memory.UnpinObject( buffer );
@@ -89,10 +91,10 @@ namespace Axiom.Core
 
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
-			int size = buffer.Length / Memory.SizeOf( typeof( T ) );
+			var size = buffer.Length / Memory.SizeOf( typeof ( T ) );
 			dest = new T[ size ];
-			BufferBase src = Memory.PinObject( buffer );
-			BufferBase dst = Memory.PinObject( dest );
+			var src = Memory.PinObject( buffer );
+			var dst = Memory.PinObject( dest );
 			Memory.Copy( src, dst, buffer.Length );
 			Memory.UnpinObject( buffer );
 			Memory.UnpinObject( dest );

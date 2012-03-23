@@ -43,6 +43,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
@@ -57,14 +59,14 @@ namespace Axiom.Math
 		#region Fields
 
 		/// <summary>
-		///		Side of the plane to be considered 'outside'.
-		/// </summary>
-		public PlaneSide outside;
-
-		/// <summary>
 		///		Publicly accessible plane list, you can modify this direct.
 		/// </summary>
 		public PlaneList planes = new PlaneList();
+
+		/// <summary>
+		///		Side of the plane to be considered 'outside'.
+		/// </summary>
+		public PlaneSide outside;
 
 		#endregion Fields
 
@@ -74,7 +76,7 @@ namespace Axiom.Math
 		///		Default constructor.
 		/// </summary>
 		public PlaneBoundedVolume()
-			: this( PlaneSide.Negative ) { }
+			: this( PlaneSide.Negative ) {}
 
 		/// <summary>
 		///		Constructor.
@@ -110,19 +112,19 @@ namespace Axiom.Math
 			}
 
 			// Get centre of the box
-			Vector3 center = box.Center;
+			var center = box.Center;
 			// Get the half-size of the box
-			Vector3 halfSize = box.HalfSize;
+			var halfSize = box.HalfSize;
 
 			// If all points are on outside of any plane, we fail
-			Vector3[] points = box.Corners;
+			var points = box.Corners;
 
-			for ( int i = 0; i < this.planes.Count; i++ )
+			for ( var i = 0; i < planes.Count; i++ )
 			{
-				Plane plane = this.planes[ i ];
+				var plane = (Plane)planes[ i ];
 
-				PlaneSide side = plane.GetSide( center, halfSize );
-				if ( side == this.outside )
+				var side = plane.GetSide( center, halfSize );
+				if ( side == outside )
 				{
 					// Found a splitting plane therefore return not intersecting
 					return false;
@@ -140,15 +142,15 @@ namespace Axiom.Math
 		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			for ( int i = 0; i < this.planes.Count; i++ )
+			for ( var i = 0; i < planes.Count; i++ )
 			{
-				Plane plane = this.planes[ i ];
+				var plane = (Plane)planes[ i ];
 
 				// Test which side of the plane the sphere is
-				Real d = plane.GetDistance( sphere.Center );
+				var d = plane.GetDistance( sphere.Center );
 
 				// Negate d if planes point inwards
-				if ( this.outside == PlaneSide.Negative )
+				if ( outside == PlaneSide.Negative )
 				{
 					d = -d;
 				}

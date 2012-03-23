@@ -38,13 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Core.Collections;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Graphics;
 
 using MathHelper = Axiom.Math.Utility;
+
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -79,20 +82,18 @@ namespace Axiom.Core
 				// Ensure reference value has been set before being enabled
 				if ( value )
 				{
-					Debug.Assert( this.ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+					Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
 				}
 
-				this._referenceViewEnabled = value;
+				_referenceViewEnabled = value;
 			}
 			get
 			{
-				return this._referenceViewEnabled;
+				return _referenceViewEnabled;
 			}
 		}
 
 		#endregion Fields and Properties
-
-		protected static DistanceLodStrategy instance;
 
 		/// <summary>
 		/// Default constructor.
@@ -103,30 +104,13 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				instance = this;
-				this.ReferenceViewValue = float.NaN;
+				ReferenceViewValue = float.NaN;
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 		}
-
-		public static DistanceLodStrategy Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
-
-		#region ISingleton<DistanceLodStrategy> Members
-
-		public bool Initialize( params object[] args )
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 
 		/// <summary>
 		/// Sets the reference view upon which the distances were based.
@@ -142,16 +126,16 @@ namespace Axiom.Core
 		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
-			Radian fovX = fovY * ( viewportWidth / (Real)viewportHeight );
+			var fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
 
 			// Determine viewport area
-			float viewportArea = viewportHeight * viewportWidth;
+			var viewportArea = viewportHeight * viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
-			this.ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
+			ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
 
 			// Enable use of reference view
-			this._referenceViewEnabled = true;
+			_referenceViewEnabled = true;
 		}
 
 		#region LodStrategy Implemention
@@ -174,25 +158,25 @@ namespace Axiom.Core
 			Real squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
-			if ( this._referenceViewEnabled )
+			if ( _referenceViewEnabled )
 			{
 				// Reference view only applicable to perspective projection
-				Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
+				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
 
 				// Get camera viewport
-				Viewport viewport = cam.Viewport;
+				var viewport = cam.Viewport;
 
 				// Get viewport area
 				Real viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
 				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
-				Matrix4 projectionMatrix = cam.ProjectionMatrix;
+				var projectionMatrix = cam.ProjectionMatrix;
 
 				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
 				Real biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
 
 				// Scale squared depth appropriately
-				squaredDepth *= ( this.ReferenceViewValue / biasValue );
+				squaredDepth *= ( ReferenceViewValue / biasValue );
 			}
 
 			// Squared depth should never be below 0, so clamp
@@ -234,5 +218,24 @@ namespace Axiom.Core
 		}
 
 		#endregion LodStrategy Implemention
+
+		#region ISingleton<DistanceLodStrategy> Members
+
+		protected static DistanceLodStrategy instance;
+
+		public static DistanceLodStrategy Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
+
+		public bool Initialize( params object[] args )
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }

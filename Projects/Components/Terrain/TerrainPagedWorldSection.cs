@@ -77,20 +77,6 @@ namespace Axiom.Components.Terrain
 		protected TerrainGroup terrainGroup;
 
 		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">The name of the section</param>
-		/// <param name="parent">The parent world</param>
-		/// <param name="sm">The SceneManager to use (can be left as null if to be loaded)</param>
-		[OgreVersion( 1, 7, 2 )]
-		public TerrainPagedWorldSection( string name, PagedWorld parent, SceneManager sm )
-			: base( name, parent, sm )
-		{
-			// we always use a grid strategy
-			Strategy = parent.Manager.GetStrategy( "Grid2D" );
-		}
-
-		/// <summary>
 		/// Get the TerrainGroup which this world section is using. 
 		/// </summary>
 		/// <remarks>
@@ -103,7 +89,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.terrainGroup;
+				return terrainGroup;
 			}
 		}
 
@@ -114,7 +100,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return (Grid2PageStrategy)Strategy;
+				return (Grid2PageStrategy)this.Strategy;
 			}
 		}
 
@@ -137,13 +123,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.LoadRadius;
+				return this.GridStrategyData.LoadRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.LoadRadius = value;
+				this.GridStrategyData.LoadRadius = value;
 			}
 		}
 
@@ -155,13 +141,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.HoldRadius;
+				return this.GridStrategyData.HoldRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.HoldRadius = value;
+				this.GridStrategyData.HoldRadius = value;
 			}
 		}
 
@@ -173,13 +159,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.CellRangeMinX;
+				return this.GridStrategyData.CellRangeMinX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.CellRangeMinX = value;
+				this.GridStrategyData.CellRangeMinX = value;
 			}
 		}
 
@@ -191,13 +177,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.CellRangeMinY;
+				return this.GridStrategyData.CellRangeMinY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.CellRangeMinY = value;
+				this.GridStrategyData.CellRangeMinY = value;
 			}
 		}
 
@@ -209,13 +195,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.CellRangeMaxX;
+				return this.GridStrategyData.CellRangeMaxX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.CellRangeMaxX = value;
+				this.GridStrategyData.CellRangeMaxX = value;
 			}
 		}
 
@@ -227,24 +213,38 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GridStrategyData.CellRangeMaxY;
+				return this.GridStrategyData.CellRangeMaxY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				GridStrategyData.CellRangeMaxY = value;
+				this.GridStrategyData.CellRangeMaxY = value;
 			}
+		}
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="name">The name of the section</param>
+		/// <param name="parent">The parent world</param>
+		/// <param name="sm">The SceneManager to use (can be left as null if to be loaded)</param>
+		[OgreVersion( 1, 7, 2 )]
+		public TerrainPagedWorldSection( string name, PagedWorld parent, SceneManager sm )
+			: base( name, parent, sm )
+		{
+			// we always use a grid strategy
+			this.Strategy = parent.Manager.GetStrategy( "Grid2D" );
 		}
 
 		[OgreVersion( 1, 7, 2, "~TerrainPagedWorldSection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.terrainGroup.Dispose();
+					terrainGroup.Dispose();
 				}
 			}
 
@@ -265,45 +265,45 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "Original name was init" )]
 		public virtual void Initialize( TerrainGroup grp )
 		{
-			if ( this.terrainGroup == grp )
+			if ( terrainGroup == grp )
 			{
 				return;
 			}
 
-			if ( this.terrainGroup != null )
+			if ( terrainGroup != null )
 			{
-				this.terrainGroup.Dispose();
+				terrainGroup.Dispose();
 			}
 
-			this.terrainGroup = grp;
+			terrainGroup = grp;
 			SyncSettings();
 
 			// Unload all existing terrain pages, because we want the paging system
 			// to be in charge of this
-			this.terrainGroup.RemoveAllTerrains();
+			terrainGroup.RemoveAllTerrains();
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual void SyncSettings()
 		{
 			// Base grid on terrain settings
-			switch ( this.terrainGroup.Alignment )
+			switch ( terrainGroup.Alignment )
 			{
 				case Alignment.Align_X_Y:
-					GridStrategyData.Mode = Grid2Mode.G2D_X_Y;
+					this.GridStrategyData.Mode = Grid2Mode.G2D_X_Y;
 					break;
 
 				case Alignment.Align_X_Z:
-					GridStrategyData.Mode = Grid2Mode.G2D_X_Z;
+					this.GridStrategyData.Mode = Grid2Mode.G2D_X_Z;
 					break;
 
 				case Alignment.Align_Y_Z:
-					GridStrategyData.Mode = Grid2Mode.G2D_Y_Z;
+					this.GridStrategyData.Mode = Grid2Mode.G2D_Y_Z;
 					break;
 			}
 
-			GridStrategyData.Origin = this.terrainGroup.Origin;
-			GridStrategyData.CellSize = this.terrainGroup.TerrainWorldSize;
+			this.GridStrategyData.Origin = terrainGroup.Origin;
+			this.GridStrategyData.CellSize = terrainGroup.TerrainWorldSize;
 		}
 
 		/// <summary>
@@ -312,19 +312,19 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetPageRange( int minX, int minY, int maxX, int maxY )
 		{
-			GridStrategyData.SetCellRange( minX, minY, maxX, maxY );
+			this.GridStrategyData.SetCellRange( minX, minY, maxX, maxY );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected override void LoadSubtypeData( StreamSerializer ser )
 		{
 			// we load the TerrainGroup information from here
-			if ( this.terrainGroup == null )
+			if ( terrainGroup == null )
 			{
-				this.terrainGroup = new TerrainGroup( SceneManager );
+				terrainGroup = new TerrainGroup( this.SceneManager );
 			}
 
-			this.terrainGroup.LoadGroupDefinition( ref ser );
+			terrainGroup.LoadGroupDefinition( ref ser );
 
 			// params that are in the Grid2DStrategyData will have already been loaded
 			// as part of the main load() routine
@@ -334,7 +334,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected override void SaveSubtypeData( StreamSerializer ser )
 		{
-			this.terrainGroup.SaveGroupDefinition( ref ser );
+			terrainGroup.SaveGroupDefinition( ref ser );
 
 			// params that are in the Grid2DStrategyData will have already been saved
 			// as part of the main save() routine
@@ -353,9 +353,9 @@ namespace Axiom.Components.Terrain
 				// trigger terrain load
 				long x, y;
 				// pageID is the same as a packed index
-				this.terrainGroup.UnpackIndex( pageID.Value, out x, out y );
-				this.terrainGroup.DefineTerrain( x, y );
-				this.terrainGroup.LoadTerrain( x, y, forceSynchronous );
+				terrainGroup.UnpackIndex( pageID.Value, out x, out y );
+				terrainGroup.DefineTerrain( x, y );
+				terrainGroup.LoadTerrain( x, y, forceSynchronous );
 			}
 
 			base.LoadPage( pageID, forceSynchronous );
@@ -374,8 +374,8 @@ namespace Axiom.Components.Terrain
 			// trigger terrain unload
 			long x, y;
 			// pageID is the same as a packed index
-			this.terrainGroup.UnpackIndex( pageID.Value, out x, out y );
-			this.terrainGroup.UnloadTerrain( x, y );
+			terrainGroup.UnpackIndex( pageID.Value, out x, out y );
+			terrainGroup.UnloadTerrain( x, y );
 		}
 	};
 }

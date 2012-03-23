@@ -37,9 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.ParticleSystems;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -100,86 +102,62 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		#region Nested type: DepthCommand
-
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the cylinder emitter.", typeof( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as CylinderEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as CylinderEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: HeightCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the cylinder emitter.", typeof( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
-
-			public void Set( object target, string val )
-			{
-				var emitter = target as CylinderEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
-
-			public string Get( object target )
-			{
-				var emitter = target as CylinderEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-
-			#endregion
-		}
-
-		#endregion
-
-		#region Nested type: WidthCommand
-
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the cylinder emitter.", typeof( ParticleEmitter ) )]
+		[ScriptableProperty( "width", "Width of the cylinder emitter.", typeof ( ParticleEmitter ) )]
 		public class WidthCommand : IPropertyCommand
 		{
-			#region IPropertyCommand Members
-
 			public void Set( object target, string val )
 			{
-				var emitter = target as CylinderEmitter;
+				CylinderEmitter emitter = target as CylinderEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				var emitter = target as CylinderEmitter;
+				CylinderEmitter emitter = target as CylinderEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
-
-			#endregion
 		}
 
-		#endregion
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "height", "Height of the cylinder emitter.", typeof ( ParticleEmitter ) )]
+		public class HeightCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				CylinderEmitter emitter = target as CylinderEmitter;
+				emitter.Height = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				CylinderEmitter emitter = target as CylinderEmitter;
+				return StringConverter.ToString( emitter.Height );
+			}
+		}
+
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptableProperty( "depth", "Depth of the cylinder emitter.", typeof ( ParticleEmitter ) )]
+		public class DepthCommand : IPropertyCommand
+		{
+			public void Set( object target, string val )
+			{
+				CylinderEmitter emitter = target as CylinderEmitter;
+				emitter.Depth = StringConverter.ParseFloat( val );
+			}
+
+			public string Get( object target )
+			{
+				CylinderEmitter emitter = target as CylinderEmitter;
+				return StringConverter.ToString( emitter.Depth );
+			}
+		}
 
 		#endregion Command definition classes
 	}

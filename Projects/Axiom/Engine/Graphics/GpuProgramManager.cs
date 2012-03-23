@@ -37,9 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 using Axiom.Core;
 
@@ -74,6 +72,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		protected internal GpuProgramManager()
+			: base()
 		{
 			if ( _instance == null )
 			{
@@ -86,7 +85,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 
 			// subclasses should register with resource group manager
@@ -193,7 +192,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( name, group, type, syntaxCode );
+			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
 			program.Type = type;
 			program.SyntaxCode = syntaxCode;
@@ -224,7 +223,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( name, group, type, syntaxCode );
+			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
 			program.Type = type;
 			program.SyntaxCode = syntaxCode;
@@ -241,7 +240,7 @@ namespace Axiom.Graphics
 		public bool IsSyntaxSupported( string syntaxCode )
 		{
 			// Use the current render system
-			RenderSystem rs = Root.Instance.RenderSystem;
+			var rs = Root.Instance.RenderSystem;
 
 			// Get the supported syntaxed from RenderSystemCapabilities 
 			return rs.Capabilities.IsShaderProfileSupported( syntaxCode );
@@ -273,7 +272,7 @@ namespace Axiom.Graphics
 		{
 			lock ( _autoMutex )
 			{
-				GpuProgram program = GetByName( name );
+				var program = GetByName( name );
 
 				if ( program == null )
 				{
@@ -311,7 +310,7 @@ namespace Axiom.Graphics
 		{
 			lock ( _autoMutex )
 			{
-				GpuProgram program = GetByName( name );
+				var program = GetByName( name );
 
 				if ( program == null )
 				{
@@ -353,7 +352,7 @@ namespace Axiom.Graphics
 		/// <see cref="GetByName(string, bool)"/>
 		public new GpuProgram GetByName( string name )
 		{
-			return GetByName( name, true );
+			return this.GetByName( name, true );
 		}
 #endif
 
@@ -378,13 +377,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgramParameters.GpuSharedParameters CreateSharedParameters( string name )
 		{
-			if ( this.sharedParametersMap.ContainsKey( name ) )
+			if ( sharedParametersMap.ContainsKey( name ) )
 			{
 				throw new AxiomException( "The shared parameter set '{0}' already exists!" );
 			}
 
 			var ret = new GpuProgramParameters.GpuSharedParameters( name );
-			this.sharedParametersMap.Add( name, ret );
+			sharedParametersMap.Add( name, ret );
 			return ret;
 		}
 
@@ -395,12 +394,12 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgramParameters.GpuSharedParameters GetSharedParameters( string name )
 		{
-			if ( !this.sharedParametersMap.ContainsKey( name ) )
+			if ( !sharedParametersMap.ContainsKey( name ) )
 			{
 				throw new AxiomException( "No shared parameter set with name '{0}'!", name );
 			}
 
-			return this.sharedParametersMap[ name ];
+			return sharedParametersMap[ name ];
 		}
 
 		/// <summary>
@@ -408,7 +407,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -430,22 +429,22 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				throw new NotImplementedException();
+				throw new System.NotImplementedException();
 			}
 			set
 			{
-				throw new NotImplementedException();
+				throw new System.NotImplementedException();
 			}
 		}
 
-		public void LoadMicrocodeCache( Stream stream )
+		public void LoadMicrocodeCache( System.IO.Stream stream )
 		{
-			throw new NotImplementedException();
+			throw new System.NotImplementedException();
 		}
 
-		public void SaveMicrocodeCache( Stream stream )
+		public void SaveMicrocodeCache( System.IO.Stream stream )
 		{
-			throw new NotImplementedException();
+			throw new System.NotImplementedException();
 		}
 	};
 }

@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -52,12 +54,12 @@ namespace Axiom.Controllers.Canned
 	{
 		#region Member variables
 
-		protected Real amplitude = 1.0f;
+		protected WaveformType type;
 		protected Real baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
-		protected float dutyCycle = 0.5f;
 		protected Real frequency = 1.0f;
 		protected Real phase; //[FXCop Optimization : Do not initialize unnecessarily]
-		protected WaveformType type;
+		protected Real amplitude = 1.0f;
+		protected float dutyCycle = 0.5f;
 
 		#endregion
 
@@ -71,7 +73,7 @@ namespace Axiom.Controllers.Canned
 			this.frequency = frequency;
 			this.phase = phase;
 			this.amplitude = amplitude;
-			deltaCount = phase;
+			this.deltaCount = phase;
 		}
 
 		public WaveformControllerFunction( WaveformType type, Real baseVal )
@@ -120,8 +122,8 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			float input = AdjustInput( sourceValue * this.frequency ) % 1f;
-			float output = 0.0f;
+			var input = AdjustInput( sourceValue * frequency ) % 1f;
+			var output = 0.0f;
 
 			//For simplicity, factor input down to {0,1}
 			//Use looped subtract rather than divide / round
@@ -135,7 +137,7 @@ namespace Axiom.Controllers.Canned
 			}
 
 			// first, get output in range [-1,1] (typical for waveforms)
-			switch ( this.type )
+			switch ( type )
 			{
 				case WaveformType.Sine:
 					output = Utility.Sin( input * Utility.TWO_PI );
@@ -176,7 +178,7 @@ namespace Axiom.Controllers.Canned
 					output = -( ( input * 2 ) - 1 );
 					break;
 				case WaveformType.PulseWidthModulation:
-					if ( input <= this.dutyCycle )
+					if ( input <= dutyCycle )
 					{
 						output = 1.0f;
 					}
@@ -188,17 +190,17 @@ namespace Axiom.Controllers.Canned
 			} // end switch
 
 			// scale final output to range [0,1], and then by base and amplitude
-			return this.baseVal + ( ( output + 1.0f ) * 0.5f * this.amplitude );
+			return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
 		}
 
 		protected override Real AdjustInput( Real input )
 		{
-			Real adjusted = base.AdjustInput( input );
+			var adjusted = base.AdjustInput( input );
 
 			// if not using delta accumulation, adjust by phase value
 			if ( !useDeltaInput )
 			{
-				adjusted += this.phase;
+				adjusted += phase;
 			}
 
 			return adjusted;

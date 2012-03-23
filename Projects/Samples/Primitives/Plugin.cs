@@ -41,16 +41,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.Primitives
 {
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 	public class Plugin : SamplePlugin
 	{
 		private PrimitivesSample sample;
 
 		public override void Initialize()
 		{
-			this.sample = new PrimitivesSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
+			sample = new PrimitivesSample();
+			Name = sample.Metadata[ "Title" ] + " Sample";
+			AddSample( sample );
 		}
 	};
 }

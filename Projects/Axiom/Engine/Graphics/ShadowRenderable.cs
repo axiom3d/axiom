@@ -38,11 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -62,15 +63,15 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
-		protected List<Vector4> customParams = new List<Vector4>();
-		protected LightList dummyLightList = new LightList();
+		protected Material material;
 
 		/// <summary>
 		///		Used only if IsLightCapSeparate == true.
 		/// </summary>
 		protected ShadowRenderable lightCap;
 
-		protected Material material;
+		protected LightList dummyLightList = new LightList();
+		protected List<Vector4> customParams = new List<Vector4>();
 
 		/// <summary>
 		///		Does this renderable require a separate light cap?
@@ -88,7 +89,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.lightCap != null;
+				return lightCap != null;
 			}
 		}
 
@@ -99,7 +100,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.lightCap;
+				return lightCap;
 			}
 		}
 
@@ -135,12 +136,10 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderOperation GetRenderOperationForUpdate()
 		{
-			return this.renderOperation;
+			return renderOperation;
 		}
 
 		#endregion Methods
-
-		protected RenderOperation renderOperation;
 
 		#region IRenderable Members
 
@@ -162,11 +161,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.material;
+				return material;
 			}
 			set
 			{
-				this.material = value;
+				material = value;
 			}
 		}
 
@@ -174,9 +173,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return Material.GetBestTechnique();
+				return this.Material.GetBestTechnique();
 			}
 		}
+
+		protected RenderOperation renderOperation;
 
 		/// <summary>
 		///		Gets the render operation for this shadow renderable.
@@ -186,17 +187,17 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.renderOperation;
+				return renderOperation;
 			}
 		}
 
-		public abstract void GetWorldTransforms( Matrix4[] matrices );
+		public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
 
 		public LightList Lights
 		{
 			get
 			{
-				return this.dummyLightList;
+				return dummyLightList;
 			}
 		}
 
@@ -240,9 +241,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public abstract Quaternion WorldOrientation { get; }
+		public abstract Axiom.Math.Quaternion WorldOrientation { get; }
 
-		public abstract Vector3 WorldPosition { get; }
+		public abstract Axiom.Math.Vector3 WorldPosition { get; }
 
 		public virtual Real GetSquaredViewDepth( Camera camera )
 		{
@@ -251,34 +252,34 @@ namespace Axiom.Graphics
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( this.customParams[ index ] == null )
+			if ( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return this.customParams[ index ];
+				return (Vector4)customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( this.customParams.Count <= index )
+			while ( customParams.Count <= index )
 			{
-				this.customParams.Add( Vector4.Zero );
+				customParams.Add( Vector4.Zero );
 			}
-			this.customParams[ index ] = val;
+			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( this.customParams[ entry.Data ] != null )
+			if ( customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, this.customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
 		}
 
-		#endregion
+		#endregion IRenderable Members
 
 		#region IDisposable Implementation
 
@@ -308,19 +309,19 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.renderOperation != null )
+					if ( renderOperation != null )
 					{
 						if ( !this.renderOperation.IsDisposed )
 						{
 							this.renderOperation.Dispose();
 						}
 
-						this.renderOperation = null;
+						renderOperation = null;
 					}
 
 					if ( this.material != null )

@@ -33,13 +33,14 @@
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.Core.Collections;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
 using Axiom.Media;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -84,9 +85,9 @@ namespace Axiom.Components.Terrain
 		/// <summary>
 		/// Shader model 2 profile target.
 		/// </summary>
-		public class SM2Profile : Profile
+		public class SM2Profile : TerrainMaterialGenerator.Profile
 		{
-			#region Nested type: TechniqueType
+			#region - enumeration -
 
 			/// <summary>
 			/// 
@@ -105,12 +106,7 @@ namespace Axiom.Components.Terrain
 			/// <summary>
 			/// 
 			/// </summary>
-			protected bool mCompositeMapEnabled;
-
-			/// <summary>
-			/// 
-			/// </summary>
-			protected bool mGlobalColorMapEnabled;
+			protected ShaderHelper mShaderGen;
 
 			/// <summary>
 			/// 
@@ -130,12 +126,17 @@ namespace Axiom.Components.Terrain
 			/// <summary>
 			/// 
 			/// </summary>
+			protected bool mGlobalColorMapEnabled;
+
+			/// <summary>
+			/// 
+			/// </summary>
 			protected bool mLightMapEnabled;
 
 			/// <summary>
 			/// 
 			/// </summary>
-			protected ShaderHelper mShaderGen;
+			protected bool mCompositeMapEnabled;
 
 			#endregion
 
@@ -148,15 +149,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mLayerNormalMappingEnabled )
+					if ( value != mLayerNormalMappingEnabled )
 					{
-						this.mLayerNormalMappingEnabled = value;
+						mLayerNormalMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mLayerNormalMappingEnabled;
+					return mLayerNormalMappingEnabled;
 				}
 			}
 
@@ -167,15 +168,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mLayerParallaxMappingEnabled )
+					if ( value != mLayerParallaxMappingEnabled )
 					{
-						this.mLayerParallaxMappingEnabled = value;
+						mLayerParallaxMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mLayerParallaxMappingEnabled;
+					return mLayerParallaxMappingEnabled;
 				}
 			}
 
@@ -186,15 +187,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mLayerSpecularMappingEnabled )
+					if ( value != mLayerSpecularMappingEnabled )
 					{
-						this.mLayerSpecularMappingEnabled = value;
+						mLayerSpecularMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mLayerSpecularMappingEnabled;
+					return mLayerSpecularMappingEnabled;
 				}
 			}
 
@@ -206,15 +207,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mGlobalColorMapEnabled )
+					if ( value != mGlobalColorMapEnabled )
 					{
-						this.mGlobalColorMapEnabled = value;
+						mGlobalColorMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mGlobalColorMapEnabled;
+					return mGlobalColorMapEnabled;
 				}
 			}
 
@@ -226,15 +227,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mLightMapEnabled )
+					if ( value != mLightMapEnabled )
 					{
-						this.mLightMapEnabled = value;
+						mLightMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mLightMapEnabled;
+					return mLightMapEnabled;
 				}
 			}
 
@@ -246,15 +247,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != this.mCompositeMapEnabled )
+					if ( value != mCompositeMapEnabled )
 					{
-						this.mCompositeMapEnabled = value;
+						mCompositeMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return this.mCompositeMapEnabled;
+					return mCompositeMapEnabled;
 				}
 			}
 
@@ -271,12 +272,12 @@ namespace Axiom.Components.Terrain
 			public SM2Profile( TerrainMaterialGenerator parent, string name, string description )
 				: base( parent, name, description )
 			{
-				this.mLayerNormalMappingEnabled = true;
-				this.mLayerParallaxMappingEnabled = true;
-				this.mLayerSpecularMappingEnabled = true;
-				this.mGlobalColorMapEnabled = true;
-				this.mLightMapEnabled = false;
-				this.mCompositeMapEnabled = true;
+				mLayerNormalMappingEnabled = true;
+				mLayerParallaxMappingEnabled = true;
+				mLayerSpecularMappingEnabled = true;
+				mGlobalColorMapEnabled = true;
+				mLightMapEnabled = false;
+				mCompositeMapEnabled = true;
 			}
 
 			#endregion
@@ -314,30 +315,30 @@ namespace Axiom.Components.Terrain
 				GpuProgramManager gmgr = GpuProgramManager.Instance;
 				HighLevelGpuProgramManager hmgr = HighLevelGpuProgramManager.Instance;
 
-				if ( this.mShaderGen == null )
+				if ( mShaderGen == null )
 				{
-					bool check2x = this.mLayerNormalMappingEnabled || this.mLayerParallaxMappingEnabled;
+					bool check2x = mLayerNormalMappingEnabled || mLayerParallaxMappingEnabled;
 
 					/* if (hmgr.IsLanguageSupported("cg") &&
-						 (check2x && (gmgr.IsSyntaxSupported("fp40") || gmgr.IsSyntaxSupported("ps_2_x"))) ||
-						 (gmgr.IsSyntaxSupported("ps_2_0")))
-						 mShaderGen = new ShaderHelperCG();
-					 else*/
+                         (check2x && (gmgr.IsSyntaxSupported("fp40") || gmgr.IsSyntaxSupported("ps_2_x"))) ||
+                         (gmgr.IsSyntaxSupported("ps_2_0")))
+                         mShaderGen = new ShaderHelperCG();
+                     else*/
 					if ( hmgr.IsLanguageSupported( "hlsl" ) )
 					{
-						this.mShaderGen = new ShaderHelperHLSL();
+						mShaderGen = new ShaderHelperHLSL();
 					}
 					else if ( hmgr.IsLanguageSupported( "glsl" ) )
 					{
-						this.mShaderGen = new ShaderHelperGLSL();
+						mShaderGen = new ShaderHelperGLSL();
 					}
 					else
 					{
 						//TODO
 					}
 				}
-				HighLevelGpuProgram vprog = this.mShaderGen.GenerateVertexProgram( this, terrain, tt );
-				HighLevelGpuProgram fprog = this.mShaderGen.GenerateFragmentProgram( this, terrain, tt );
+				HighLevelGpuProgram vprog = mShaderGen.GenerateVertexProgram( this, terrain, tt );
+				HighLevelGpuProgram fprog = mShaderGen.GenerateFragmentProgram( this, terrain, tt );
 
 				pass.SetVertexProgram( vprog.Name );
 				pass.SetFragmentProgram( fprog.Name );
@@ -367,7 +368,7 @@ namespace Axiom.Components.Terrain
 					uint maxLayers = GetMaxLayers( terrain );
 
 					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ), terrain.GetBlendTextureCount() );
-					uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 					for ( uint i = 0; i < numBlendTextures; ++i )
 					{
 						tu = pass.CreateTextureUnitState( terrain.GetBlendTextureName( (byte)i ) );
@@ -384,7 +385,7 @@ namespace Axiom.Components.Terrain
 						tu = pass.CreateTextureUnitState( terrain.GetLayerTextureName( (byte)i, 1 ) );
 					}
 				} //end if
-				else if ( this.mCompositeMapEnabled )
+				else if ( mCompositeMapEnabled )
 				{
 					// LOW_LOD textures
 					// composite map
@@ -424,10 +425,10 @@ namespace Axiom.Components.Terrain
 				AddTechnique( mat, terrain, TechniqueType.HighLod );
 
 				//LOD
-				if ( this.mCompositeMapEnabled )
+				if ( mCompositeMapEnabled )
 				{
 					AddTechnique( mat, terrain, TechniqueType.LowLod );
-					var lodValues = new LodValueList();
+					LodValueList lodValues = new LodValueList();
 					lodValues.Add( 3000 ); //TerrainGlobalOptions.CompositeMapDistance);
 					mat.SetLodLevels( lodValues );
 					Technique lowLodTechnique = mat.GetTechnique( 1 );
@@ -496,7 +497,7 @@ namespace Axiom.Components.Terrain
 			/// <param name="terrain"></param>
 			public override void UpdateParams( Material mat, Terrain terrain )
 			{
-				this.mShaderGen.UpdateParams( this, mat, terrain, false );
+				mShaderGen.UpdateParams( this, mat, terrain, false );
 			}
 
 			/// <summary>
@@ -506,7 +507,7 @@ namespace Axiom.Components.Terrain
 			/// <param name="terrain"></param>
 			public override void UpdateParamsForCompositeMap( Material mat, Terrain terrain )
 			{
-				this.mShaderGen.UpdateParams( this, mat, terrain, true );
+				mShaderGen.UpdateParams( this, mat, terrain, true );
 			}
 
 			/// <summary>
@@ -517,8 +518,8 @@ namespace Axiom.Components.Terrain
 			{
 				terrain.IsMorphRequired = true;
 				terrain.NormalMapRequired = true;
-				terrain.SetLightMapRequired( this.mLightMapEnabled, true );
-				terrain.CompositeMapRequired = this.mCompositeMapEnabled;
+				terrain.SetLightMapRequired( mLightMapEnabled, true );
+				terrain.CompositeMapRequired = mCompositeMapEnabled;
 			}
 
 			#endregion
@@ -688,7 +689,7 @@ namespace Axiom.Components.Terrain
 					if ( tt != TechniqueType.LowLod )
 					{
 						uint maxLayers = prof.GetMaxLayers( terrain );
-						uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+						uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 
 						for ( uint i = 0; i < numLayers; ++i )
 						{
@@ -713,7 +714,7 @@ namespace Axiom.Components.Terrain
 					if ( tt != TechniqueType.LowLod )
 					{
 						uint maxLayers = prof.GetMaxLayers( terrain );
-						uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+						uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 
 						for ( uint i = 0; i < numLayers; ++i )
 						{
@@ -828,7 +829,7 @@ namespace Axiom.Components.Terrain
 				{
 					gpuparams.IgnoreMissingParameters = true;
 					uint maxLayers = prof.GetMaxLayers( terrain );
-					uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 					uint numUVMul = numLayers / 4;
 					if ( numUVMul % 4 == 0 )
 					{
@@ -836,7 +837,7 @@ namespace Axiom.Components.Terrain
 					}
 					for ( uint i = 0; i < numUVMul; ++i )
 					{
-						var uvMul = new Vector4( terrain.GetLayerUVMultiplier( (byte)( i * 4 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 1 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 2 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 3 ) ) );
+						Vector4 uvMul = new Vector4( terrain.GetLayerUVMultiplier( (byte)( i * 4 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 1 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 2 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 3 ) ) );
 #if true
 						gpuparams.SetNamedConstant( "uvMul" + i.ToString(), uvMul );
 #endif
@@ -854,7 +855,7 @@ namespace Axiom.Components.Terrain
 				{
 					gpuparams.IgnoreMissingParameters = true;
 					// TODO - parameterise this?
-					var scaleBiasSpecular = new Vector4( 0.03f, -0.04f, 32, 1 );
+					Vector4 scaleBiasSpecular = new Vector4( 0.03f, -0.04f, 32, 1 );
 					gpuparams.SetNamedConstant( "scaleBiasSpecular", scaleBiasSpecular );
 				}
 
@@ -897,7 +898,7 @@ namespace Axiom.Components.Terrain
 				{
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "cg", GpuProgramType.Vertex );
@@ -927,7 +928,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetFragmentProgramName( prof, terrain, tt );
 
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "cg", GpuProgramType.Fragment );
@@ -973,7 +974,7 @@ namespace Axiom.Components.Terrain
 
 					// uv multipliers
 					uint maxLayers = prof.GetMaxLayers( terrain );
-					uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 					uint numUVMutipliers = ( numLayers / 4 );
 					if ( numLayers % 4 != 0 )
 					{
@@ -1078,7 +1079,7 @@ namespace Axiom.Components.Terrain
 					// UV's premultiplied, packed as xy/zw
 					uint maxLayers = prof.GetMaxLayers( terrain );
 					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ), terrain.GetBlendTextureCount() );
-					uint numLayers = Utility.Min( maxLayers, terrain.LayerCount );
+					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 					uint numUVSets = numLayers / 2;
 					if ( numLayers % 2 != 0 )
 					{
@@ -1136,7 +1137,7 @@ namespace Axiom.Components.Terrain
 					}
 
 					source += ") : COLOR\n" + "{\n" + "	float4 outputCol;\n" + "	float shadow = 1.0;\n" +// base colour
-							  "	outputCol = float4(0,0,0,1);\n";
+					          "	outputCol = float4(0,0,0,1);\n";
 
 					if ( tt != TechniqueType.LowLod )
 					{
@@ -1145,7 +1146,7 @@ namespace Axiom.Components.Terrain
 					}
 
 					source += "	float3 lightDir = \n" + "		lightPosObjSpace.xyz -  (position.xyz * lightPosObjSpace.w);\n" + "	float3 eyeDir = eyePosObjSpace - position.xyz;\n" +// set up accumulation areas
-							  "	float3 diffuse = float3(0,0,0);\n" + "	float specular = 0;\n";
+					          "	float3 diffuse = float3(0,0,0);\n" + "	float specular = 0;\n";
 
 					if ( tt == TechniqueType.LowLod )
 					{
@@ -1371,7 +1372,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
 
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "hlsl", GpuProgramType.Vertex );
@@ -1401,7 +1402,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetFragmentProgramName( prof, terrain, tt );
 
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "hlsl", GpuProgramType.Fragment );
@@ -1453,7 +1454,7 @@ namespace Axiom.Components.Terrain
 							break;
 					}
 
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "glsl", GpuProgramType.Vertex );
@@ -1478,7 +1479,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
 
-					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 
 					if ( ret == null )
 					{

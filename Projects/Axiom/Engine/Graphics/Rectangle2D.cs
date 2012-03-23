@@ -37,7 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -57,13 +60,13 @@ namespace Axiom.Graphics
 		private const int TEXCOORD = 1;
 		private const int NORMAL = 2;
 
-		private static readonly float[] texCoords = new float[]
-                                                    {
-                                                        0, 0, 0, 1, 1, 0, 1, 1
-                                                    };
+		private static float[] texCoords = new float[]
+		                                   {
+		                                   	0, 0, 0, 1, 1, 0, 1, 1
+		                                   };
 
 		public Rectangle2D()
-			: this( false ) { }
+			: this( false ) {}
 
 		public Rectangle2D( bool includeTextureCoordinates )
 		{
@@ -75,12 +78,12 @@ namespace Axiom.Graphics
 			renderOperation.useIndices = false;
 			renderOperation.operationType = OperationType.TriangleStrip;
 
-			VertexDeclaration decl = vertexData.vertexDeclaration;
-			VertexBufferBinding binding = vertexData.vertexBufferBinding;
+			var decl = vertexData.vertexDeclaration;
+			var binding = vertexData.vertexBufferBinding;
 
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-			HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
 
@@ -94,8 +97,8 @@ namespace Axiom.Graphics
 			unsafe
 #endif
 			{
-				float* pNormBuf = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
-				int pNorm = 0;
+				var pNormBuf = buffer.Lock( BufferLocking.Discard ).ToFloatPointer();
+				var pNorm = 0;
 				pNormBuf[ pNorm++ ] = 0.0f;
 				pNormBuf[ pNorm++ ] = 0.0f;
 				pNormBuf[ pNorm++ ] = 1.0f;
@@ -130,12 +133,25 @@ namespace Axiom.Graphics
 			material.Lighting = false;
 		}
 
+		#region SimpleRenderable Members
+
 		public override Real BoundingRadius
 		{
 			get
 			{
 				return 0;
 			}
+		}
+
+		public override Real GetSquaredViewDepth( Camera camera )
+		{
+			return 0;
+		}
+
+		public override void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )
+		{
+			// return identity matrix to prevent parent transforms
+			matrices[ 0 ] = Matrix4.Identity;
 		}
 
 
@@ -171,6 +187,8 @@ namespace Axiom.Graphics
 			}
 		}
 
+		#endregion SimpleRenderable Members
+
 		#region Methods
 
 		/// <summary>
@@ -195,13 +213,13 @@ namespace Axiom.Graphics
 		/// <param name="updateAABB"></param>
 		public void SetCorners( float left, float top, float right, float bottom, bool updateAABB )
 		{
-			var data = new[]
-                       {
-                           left, top, -1, left, bottom, -1, right, top, -1, // Fix for Issue #1187096
-                           right, bottom, -1
-                       };
+			var data = new float[]
+			           {
+			           	left, top, -1, left, bottom, -1, right, top, -1, // Fix for Issue #1187096
+			           	right, bottom, -1
+			           };
 
-			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			var buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			buffer.WriteData( 0, buffer.Size, data, true );
 
@@ -217,13 +235,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void SetNormals( Vector3 topLeft, Vector3 bottomLeft, Vector3 topRight, Vector3 bottomRight )
 		{
-			HardwareVertexBuffer vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
+			var vbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( NORMAL );
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				float* pfloatBuf = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
-				int pfloat = 0;
+				var pfloatBuf = vbuf.Lock( BufferLocking.Discard ).ToFloatPointer();
+				var pfloat = 0;
 				pfloatBuf[ pfloat++ ] = topLeft.x;
 				pfloatBuf[ pfloat++ ] = topLeft.y;
 				pfloatBuf[ pfloat++ ] = topLeft.z;
@@ -245,16 +263,5 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Methods
-
-		public override Real GetSquaredViewDepth( Camera camera )
-		{
-			return 0;
-		}
-
-		public override void GetWorldTransforms( Matrix4[] matrices )
-		{
-			// return identity matrix to prevent parent transforms
-			matrices[ 0 ] = Matrix4.Identity;
-		}
 	}
 }

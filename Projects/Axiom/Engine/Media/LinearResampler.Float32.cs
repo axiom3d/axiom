@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -45,8 +49,6 @@ namespace Axiom.Media
 {
 	partial class LinearResampler
 	{
-		#region Nested type: Float32
-
 		/// <summary>
 		/// float32 linear resampler, converts FLOAT32_RGB/FLOAT32_RGBA only.
 		/// avoids overhead of pixel unpack/repack function calls
@@ -56,16 +58,14 @@ namespace Axiom.Media
 			private int _count;
 
 			public Float32()
-				: this( 1 ) { }
+				: this( 1 ) {}
 
 			public Float32( int count )
 			{
 				this._count = count;
 			}
 
-			public void Scale( PixelBox src, PixelBox dst ) { }
+			public void Scale( PixelBox src, PixelBox dst ) {}
 		}
-
-		#endregion
 	}
 }

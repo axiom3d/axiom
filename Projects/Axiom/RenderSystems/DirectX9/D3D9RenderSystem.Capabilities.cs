@@ -44,10 +44,6 @@ using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.HLSL;
 using Axiom.Utilities;
 
-using SharpDX;
-using SharpDX.Direct3D9;
-
-using Capabilities = SharpDX.Direct3D9.Capabilities;
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -60,11 +56,11 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private RenderSystemCapabilities _updateRenderSystemCapabilities( D3D9RenderWindow renderWindow )
 		{
-			RenderSystemCapabilities rsc = realCapabilities ?? new RenderSystemCapabilities();
+			var rsc = realCapabilities ?? new RenderSystemCapabilities();
 
 			rsc.SetCategoryRelevant( CapabilitiesCategory.D3D9, true );
 			rsc.DriverVersion = driverVersion;
-			rsc.DeviceName = this._activeD3DDriver.DriverDescription;
+			rsc.DeviceName = _activeD3DDriver.DriverDescription;
 			rsc.RendersystemName = Name;
 
 			// Supports fixed-function
@@ -101,19 +97,19 @@ namespace Axiom.RenderSystems.DirectX9
 			//rsc.SetCapability( Graphics.Capabilities.VertexBufferInstanceData );
 			//rsc.SetCapability( Graphics.Capabilities.CanGetCompiledShaderBuffer );
 
-			foreach ( D3D9Device device in this._deviceManager )
+			foreach ( var device in _deviceManager )
 			{
-				Device d3D9Device = device.D3DDevice;
+				var d3D9Device = device.D3DDevice;
 
 				// Check for hardware stencil support
-				Surface pSurf = d3D9Device.DepthStencilSurface;
+				var pSurf = d3D9Device.DepthStencilSurface;
 				if ( pSurf != null )
 				{
-					SurfaceDescription surfDesc = pSurf.Description;
+					var surfDesc = pSurf.Description;
 					//TODO
 					//pSurf.Release();
 
-					if ( surfDesc.Format != Format.D15S1 && surfDesc.Format != Format.D24S8 && surfDesc.Format != Format.D24X4S4 && surfDesc.Format != Format.D24SingleS8 )
+					if ( surfDesc.Format != D3D9.Format.D15S1 && surfDesc.Format != D3D9.Format.D24S8 && surfDesc.Format != D3D9.Format.D24X4S4 && surfDesc.Format != D3D9.Format.D24SingleS8 )
 					{
 						rsc.UnsetCapability( Graphics.Capabilities.StencilBuffer );
 					}
@@ -122,18 +118,18 @@ namespace Axiom.RenderSystems.DirectX9
 				// Check for hardware occlusion support
 				try
 				{
-					new Query( d3D9Device, QueryType.Occlusion );
+					new D3D9.Query( d3D9Device, D3D9.QueryType.Occlusion );
 				}
-				catch ( SharpDXException )
+				catch ( DX.SharpDXException )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.HardwareOcculusion );
 				}
 			}
 
 			// Update RS caps using the minimum value found in adapter list.
-			foreach ( D3D9Driver pCurDriver in this._driverList )
+			foreach ( var pCurDriver in _driverList )
 			{
-				Capabilities rkCurCaps = pCurDriver.D3D9DeviceCaps;
+				var rkCurCaps = pCurDriver.D3D9DeviceCaps;
 
 				if ( rkCurCaps.MaxSimultaneousTextures < rsc.TextureUnitCount )
 				{
@@ -147,37 +143,37 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// Check automatic mipmap generation.
-				if ( ( rkCurCaps.Caps2 & Caps2.CanAutoGenerateMipMap ) == 0 )
+				if ( ( rkCurCaps.Caps2 & D3D9.Caps2.CanAutoGenerateMipMap ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.HardwareMipMaps );
 				}
 
 				// Check Dot product 3.
-				if ( ( rkCurCaps.TextureOperationCaps & TextureOperationCaps.DotProduct3 ) == 0 )
+				if ( ( rkCurCaps.TextureOperationCaps & D3D9.TextureOperationCaps.DotProduct3 ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.Dot3 );
 				}
 
 				// Check cube map support.
-				if ( ( rkCurCaps.TextureCaps & TextureCaps.CubeMap ) == 0 )
+				if ( ( rkCurCaps.TextureCaps & D3D9.TextureCaps.CubeMap ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.CubeMapping );
 				}
 
 				// Scissor test
-				if ( ( rkCurCaps.RasterCaps & RasterCaps.ScissorTest ) == 0 )
+				if ( ( rkCurCaps.RasterCaps & D3D9.RasterCaps.ScissorTest ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.ScissorTest );
 				}
 
 				// Two-sided stencil
-				if ( ( rkCurCaps.StencilCaps & StencilCaps.TwoSided ) == 0 )
+				if ( ( rkCurCaps.StencilCaps & D3D9.StencilCaps.TwoSided ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.TwoSidedStencil );
 				}
 
 				// stencil wrap
-				if ( ( rkCurCaps.StencilCaps & StencilCaps.Increment ) == 0 || ( rkCurCaps.StencilCaps & StencilCaps.Decrement ) == 0 )
+				if ( ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Increment ) == 0 || ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Decrement ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.StencilWrap );
 				}
@@ -189,21 +185,21 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// UBYTE4 type?
-				if ( ( rkCurCaps.DeclarationTypes & DeclarationTypeCaps.UByte4 ) == 0 )
+				if ( ( rkCurCaps.DeclarationTypes & D3D9.DeclarationTypeCaps.UByte4 ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.VertexFormatUByte4 );
 				}
 
 				// 3D textures?
-				if ( ( rkCurCaps.TextureCaps & TextureCaps.VolumeMap ) == 0 )
+				if ( ( rkCurCaps.TextureCaps & D3D9.TextureCaps.VolumeMap ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.Texture3D );
 				}
 
-				if ( ( rkCurCaps.TextureCaps & TextureCaps.Pow2 ) != 0 )
+				if ( ( rkCurCaps.TextureCaps & D3D9.TextureCaps.Pow2 ) != 0 )
 				{
 					// Conditional support for non POW2
-					if ( ( rkCurCaps.TextureCaps & TextureCaps.NonPow2Conditional ) != 0 )
+					if ( ( rkCurCaps.TextureCaps & D3D9.TextureCaps.NonPow2Conditional ) != 0 )
 					{
 						rsc.NonPOW2TexturesLimited = true;
 					}
@@ -221,7 +217,7 @@ namespace Axiom.RenderSystems.DirectX9
 					rsc.MultiRenderTargetCount = Utility.Min( rkCurCaps.SimultaneousRTCount, Config.MaxMultipleRenderTargets );
 				}
 
-				if ( ( rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.MrtIndependentBitDepths ) == 0 )
+				if ( ( rkCurCaps.PrimitiveMiscCaps & D3D9.PrimitiveMiscCaps.MrtIndependentBitDepths ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.MRTDifferentBitDepths );
 				}
@@ -241,7 +237,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// Mipmap LOD biasing?
-				if ( ( rkCurCaps.RasterCaps & RasterCaps.MipMapLodBias ) == 0 )
+				if ( ( rkCurCaps.RasterCaps & D3D9.RasterCaps.MipMapLodBias ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.MipmapLODBias );
 				}
@@ -250,13 +246,13 @@ namespace Axiom.RenderSystems.DirectX9
 				// Do we support per-stage src_manual constants?
 				// HACK - ATI drivers seem to be buggy and don't support per-stage constants properly?
 				// TODO: move this to RSC
-				if ( ( rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.PerStageConstant ) == 0 )
+				if ( ( rkCurCaps.PrimitiveMiscCaps & D3D9.PrimitiveMiscCaps.PerStageConstant ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.PerStageConstant );
 				}
 
 				// Advanced blend operations? min max subtract rev 
-				if ( ( rkCurCaps.PrimitiveMiscCaps & PrimitiveMiscCaps.BlendOperation ) == 0 )
+				if ( ( rkCurCaps.PrimitiveMiscCaps & D3D9.PrimitiveMiscCaps.BlendOperation ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.AdvancedBlendOperations );
 				}
@@ -276,7 +272,7 @@ namespace Axiom.RenderSystems.DirectX9
 			_convertPixelShaderCaps( rsc );
 
 			// Adapter details
-			AdapterDetails adapterId = this._activeD3DDriver.AdapterIdentifier;
+			var adapterId = _activeD3DDriver.AdapterIdentifier;
 
 			// determine vendor
 			// Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
@@ -326,11 +322,11 @@ namespace Axiom.RenderSystems.DirectX9
 				// render infinite projection properly, even though it does in GL
 				// So exclude all cards prior to the FX range from doing infinite
 				if ( rsc.Vendor != GPUVendor.Nvidia || // not nVidia
-					 !( ( adapterId.DeviceId >= 0x200 && adapterId.DeviceId <= 0x20F ) || //gf3
-						( adapterId.DeviceId >= 0x250 && adapterId.DeviceId <= 0x25F ) || //gf4ti
-						( adapterId.DeviceId >= 0x280 && adapterId.DeviceId <= 0x28F ) || //gf4ti
-						( adapterId.DeviceId >= 0x170 && adapterId.DeviceId <= 0x18F ) || //gf4 go
-						( adapterId.DeviceId >= 0x280 && adapterId.DeviceId <= 0x28F ) ) ) //gf4ti go
+				     !( ( adapterId.DeviceId >= 0x200 && adapterId.DeviceId <= 0x20F ) || //gf3
+				        ( adapterId.DeviceId >= 0x250 && adapterId.DeviceId <= 0x25F ) || //gf4ti
+				        ( adapterId.DeviceId >= 0x280 && adapterId.DeviceId <= 0x28F ) || //gf4ti
+				        ( adapterId.DeviceId >= 0x170 && adapterId.DeviceId <= 0x18F ) || //gf4 go
+				        ( adapterId.DeviceId >= 0x280 && adapterId.DeviceId <= 0x28F ) ) ) //gf4ti go
 				{
 					rsc.SetCapability( Graphics.Capabilities.InfiniteFarPlane );
 				}
@@ -341,16 +337,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Determine if any floating point texture format is supported
 			var floatFormats = new[]
-                               {
-                                   Format.R16F, Format.G16R16F, Format.A16B16G16R16F, Format.R32F, Format.G32R32F, Format.A32B32G32R32F
-                               };
+			                   {
+			                   	D3D9.Format.R16F, D3D9.Format.G16R16F, D3D9.Format.A16B16G16R16F, D3D9.Format.R32F, D3D9.Format.G32R32F, D3D9.Format.A32B32G32R32F
+			                   };
 
-			var bbSurf = (Surface[])renderWindow[ "DDBACKBUFFER" ];
-			SurfaceDescription bbSurfDesc = bbSurf[ 0 ].Description;
+			var bbSurf = (D3D9.Surface[])renderWindow[ "DDBACKBUFFER" ];
+			var bbSurfDesc = bbSurf[ 0 ].Description;
 
-			for ( int i = 0; i < 6; ++i )
+			for ( var i = 0; i < 6; ++i )
 			{
-				if ( !this._pD3D.CheckDeviceFormat( this._activeD3DDriver.AdapterNumber, DeviceType.Hardware, bbSurfDesc.Format, 0, ResourceType.Texture, floatFormats[ i ] ) )
+				if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, 0, D3D9.ResourceType.Texture, floatFormats[ i ] ) )
 				{
 					continue;
 				}
@@ -384,7 +380,7 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( rsc.Vendor )
 				{
 					case GPUVendor.Nvidia:
-						if ( this._pD3D.CheckDeviceFormat( 0, DeviceType.Hardware, Format.X8R8G8B8, 0, ResourceType.Surface, (Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
+						if ( _pD3D.CheckDeviceFormat( 0, D3D9.DeviceType.Hardware, D3D9.Format.X8R8G8B8, 0, D3D9.ResourceType.Surface, (D3D9.Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
 						{
 							rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
 						}
@@ -420,15 +416,15 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private bool _checkVertexTextureFormats( D3D9RenderWindow renderWindow )
 		{
-			bool anySupported = false;
+			var anySupported = false;
 
-			var bbSurf = (Surface[])renderWindow[ "DDBACKBUFFER" ];
-			SurfaceDescription bbSurfDesc = bbSurf[ 0 ].Description;
+			var bbSurf = (D3D9.Surface[])renderWindow[ "DDBACKBUFFER" ];
+			var bbSurfDesc = bbSurf[ 0 ].Description;
 
-			for ( PixelFormat pf = PixelFormat.L8; pf < PixelFormat.Count; ++pf )
+			for ( var pf = PixelFormat.L8; pf < PixelFormat.Count; ++pf )
 			{
-				Format fmt = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( pf ) );
-				if ( !this._pD3D.CheckDeviceFormat( this._activeD3DDriver.AdapterNumber, DeviceType.Hardware, bbSurfDesc.Format, Usage.QueryVertexTexture, ResourceType.Texture, fmt ) )
+				var fmt = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( pf ) );
+				if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
 				{
 					continue;
 				}
@@ -444,16 +440,16 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private void _convertPixelShaderCaps( RenderSystemCapabilities rsc )
 		{
-			int major = 0xFF;
-			int minor = 0xFF;
-			var minPsCaps = new Capabilities();
+			var major = 0xFF;
+			var minor = 0xFF;
+			var minPsCaps = new D3D9.Capabilities();
 
 			// Find the device with the lowest vertex shader caps.
-			foreach ( D3D9Driver pCurDriver in this._driverList )
+			foreach ( var pCurDriver in _driverList )
 			{
-				Capabilities currCaps = pCurDriver.D3D9DeviceCaps;
-				int currMajor = currCaps.PixelShaderVersion.Major;
-				int currMinor = currCaps.PixelShaderVersion.Minor;
+				var currCaps = pCurDriver.D3D9DeviceCaps;
+				var currMajor = currCaps.PixelShaderVersion.Major;
+				var currMinor = currCaps.PixelShaderVersion.Minor;
 
 				if ( currMajor < major )
 				{
@@ -468,19 +464,19 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
-			bool ps2a = false;
-			bool ps2b = false;
-			bool ps2x = false;
+			var ps2a = false;
+			var ps2b = false;
+			var ps2x = false;
 
 			// Special case detection for ps_2_x/a/b support
 			if ( major >= 2 )
 			{
-				if ( ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 32 ) )
+				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 32 ) )
 				{
 					ps2b = true;
 				}
 
-				if ( ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.NoDependentReadLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.ArbitrarySwizzle ) != 0 && ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.GradientInstructions ) != 0 && ( minPsCaps.PS20Caps.Caps & PixelShaderCaps.Predication ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 22 ) )
+				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoDependentReadLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.ArbitrarySwizzle ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.GradientInstructions ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.Predication ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 22 ) )
 				{
 					ps2a = true;
 				}
@@ -576,16 +572,16 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private void _convertVertexShaderCaps( RenderSystemCapabilities rsc )
 		{
-			int major = 0xFF;
-			int minor = 0xFF;
-			var minVsCaps = new Capabilities();
+			var major = 0xFF;
+			var minor = 0xFF;
+			var minVsCaps = new D3D9.Capabilities();
 
 			// Find the device with the lowest vertex shader caps.
-			foreach ( D3D9Driver pCurDriver in this._driverList )
+			foreach ( var pCurDriver in _driverList )
 			{
-				Capabilities rkCurCaps = pCurDriver.D3D9DeviceCaps;
-				int currMajor = rkCurCaps.VertexShaderVersion.Major;
-				int currMinor = rkCurCaps.VertexShaderVersion.Minor;
+				var rkCurCaps = pCurDriver.D3D9DeviceCaps;
+				var currMajor = rkCurCaps.VertexShaderVersion.Major;
+				var currMinor = rkCurCaps.VertexShaderVersion.Minor;
 
 				if ( currMajor < major )
 				{
@@ -600,18 +596,18 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
-			bool vs2x = false;
-			bool vs2a = false;
+			var vs2x = false;
+			var vs2a = false;
 
 			// Special case detection for vs_2_x/a support
 			if ( major >= 2 )
 			{
-				if ( ( minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 12 ) )
+				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 12 ) )
 				{
 					vs2x = true;
 				}
 
-				if ( ( minVsCaps.VS20Caps.Caps & VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 13 ) )
+				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 13 ) )
 				{
 					vs2a = true;
 				}
@@ -684,49 +680,49 @@ namespace Axiom.RenderSystems.DirectX9
 			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
 			// Init using current settings
-			this._activeD3DDriver = this._driverList[ ConfigOptions[ "Rendering Device" ].Value ];
-			if ( this._activeD3DDriver == null )
+			_activeD3DDriver = _driverList[ ConfigOptions[ "Rendering Device" ].Value ];
+			if ( _activeD3DDriver == null )
 			{
 				throw new ArgumentException( "Problems finding requested Direct3D driver!" );
 			}
 
-			driverVersion.Major = this._activeD3DDriver.AdapterIdentifier.DriverVersion.Major;
-			driverVersion.Minor = this._activeD3DDriver.AdapterIdentifier.DriverVersion.Minor;
-			driverVersion.Release = this._activeD3DDriver.AdapterIdentifier.DriverVersion.MajorRevision;
-			driverVersion.Build = this._activeD3DDriver.AdapterIdentifier.DriverVersion.MinorRevision;
+			driverVersion.Major = _activeD3DDriver.AdapterIdentifier.DriverVersion.Major;
+			driverVersion.Minor = _activeD3DDriver.AdapterIdentifier.DriverVersion.Minor;
+			driverVersion.Release = _activeD3DDriver.AdapterIdentifier.DriverVersion.MajorRevision;
+			driverVersion.Build = _activeD3DDriver.AdapterIdentifier.DriverVersion.MinorRevision;
 
 			// Create the device manager.
-			this._deviceManager = new D3D9DeviceManager();
+			_deviceManager = new D3D9DeviceManager();
 
 			// Create the texture manager for use by others        
 			textureManager = new D3D9TextureManager();
 
 			// Also create hardware buffer manager
-			this._hardwareBufferManager = new D3D9HardwareBufferManager();
+			_hardwareBufferManager = new D3D9HardwareBufferManager();
 
 			// Create the GPU program manager    
-			this._gpuProgramManager = new D3D9GpuProgramManager();
+			_gpuProgramManager = new D3D9GpuProgramManager();
 
 			// Create & register HLSL factory
-			this._hlslProgramFactory = new D3D9HLSLProgramFactory();
+			_hlslProgramFactory = new D3D9HLSLProgramFactory();
 
 			RenderWindow autoWindow = null;
 
 			if ( autoCreateWindow )
 			{
-				bool fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+				var fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
 				D3D9VideoMode videoMode = null;
 
-				string vm = ConfigOptions[ "Video Mode" ].Value;
-				int width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
-				int height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
-				int bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+				var vm = ConfigOptions[ "Video Mode" ].Value;
+				var width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+				var height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
+				var bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-				foreach ( D3D9VideoMode currVideoMode in this._activeD3DDriver.VideoModeList )
+				foreach ( var currVideoMode in _activeD3DDriver.VideoModeList )
 				{
-					string temp = currVideoMode.Description;
-					int colorDepth = int.Parse( temp.Substring( temp.IndexOf( "@" ) + 1, temp.IndexOf( "-" ) - ( temp.IndexOf( "@" ) + 1 ) ) );
+					var temp = currVideoMode.Description;
+					var colorDepth = int.Parse( temp.Substring( temp.IndexOf( "@" ) + 1, temp.IndexOf( "-" ) - ( temp.IndexOf( "@" ) + 1 ) ) );
 
 					// In full screen we only want to allow supported resolutions, so temp and opt->second.currentValue need to 
 					// match exactly, but in windowed mode we can allow for arbitrary window sized, so we only need
@@ -750,18 +746,18 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "Can't find sRGB option!" );
 				}
 
-				bool hwGamma = opt.Value == "Yes";
+				var hwGamma = opt.Value == "Yes";
 
 				var miscParams = new NamedParameterList();
 				miscParams.Add( "title", windowTitle ); // Axiom only?
 				miscParams.Add( "colorDepth", bpp );
-				miscParams.Add( "FSAA", this._fsaaSamples );
-				miscParams.Add( "FSAAHint", this._fsaaHint );
+				miscParams.Add( "FSAA", _fsaaSamples );
+				miscParams.Add( "FSAAHint", _fsaaHint );
 				miscParams.Add( "vsync", vSync );
 				miscParams.Add( "vsyncInterval", vSyncInterval );
-				miscParams.Add( "useNVPerfHUD", this._useNVPerfHUD );
+				miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
 				miscParams.Add( "gamma", hwGamma );
-				miscParams.Add( "monitorIndex", this._activeD3DDriver.AdapterNumber );
+				miscParams.Add( "monitorIndex", _activeD3DDriver.AdapterNumber );
 
 				// create the render window
 				autoWindow = CreateRenderWindow( windowTitle, width, height, fullScreen, miscParams );
@@ -779,10 +775,10 @@ namespace Axiom.RenderSystems.DirectX9
 			base.Initialize( autoCreateWindow, windowTitle );
 
 			// Configure SharpDX
-			SharpDX.Configuration.ThrowOnShaderCompileError = true;
+			DX.Configuration.ThrowOnShaderCompileError = true;
 
 #if DEBUG
-			SharpDX.Configuration.EnableObjectTracking = true;
+			DX.Configuration.EnableObjectTracking = true;
 #endif
 			return autoWindow;
 		}
@@ -797,10 +793,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( caps.IsShaderProfileSupported( "hlsl" ) )
 			{
-				HighLevelGpuProgramManager.Instance.AddFactory( this._hlslProgramFactory );
+				HighLevelGpuProgramManager.Instance.AddFactory( _hlslProgramFactory );
 			}
 
-			Log defaultLog = LogManager.Instance.DefaultLog;
+			var defaultLog = LogManager.Instance.DefaultLog;
 
 			if ( defaultLog != null )
 			{

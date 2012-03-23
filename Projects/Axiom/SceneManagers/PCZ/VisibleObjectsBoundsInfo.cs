@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -52,21 +56,21 @@ namespace Axiom.Core
 		/// The axis-aligned bounds of the visible objects
 		public AxisAlignedBox aabb;
 
-		/// The farthest a visible objects is from the camera
-		public Real maxDistance;
+		/// The axis-aligned bounds of the visible shadow receiver objects
+		public AxisAlignedBox receiverAabb;
 
 		/// The closest a visible object is to the camera
 		public Real minDistance;
 
-		/// The axis-aligned bounds of the visible shadow receiver objects
-		public AxisAlignedBox receiverAabb;
+		/// The farthest a visible objects is from the camera
+		public Real maxDistance;
 
 		public void Reset()
 		{
-			this.aabb.IsNull = true;
-			this.receiverAabb.IsNull = true;
-			this.minDistance = float.NegativeInfinity;
-			this.maxDistance = 0;
+			aabb.IsNull = true;
+			receiverAabb.IsNull = true;
+			minDistance = float.NegativeInfinity;
+			maxDistance = 0;
 		}
 
 		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam )
@@ -76,14 +80,14 @@ namespace Axiom.Core
 
 		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam, bool receiver )
 		{
-			this.aabb.Merge( boxBounds );
+			aabb.Merge( boxBounds );
 			if ( receiver )
 			{
-				this.receiverAabb.Merge( boxBounds );
+				receiverAabb.Merge( boxBounds );
 			}
 			Real camDistToCenter = ( cam.DerivedPosition - sphereBounds.Center ).Length;
-			this.minDistance = System.Math.Min( this.minDistance, System.Math.Max( (Real)0, camDistToCenter - sphereBounds.Radius ) );
-			this.maxDistance = System.Math.Max( this.maxDistance, camDistToCenter + sphereBounds.Radius );
+			minDistance = System.Math.Min( minDistance, System.Math.Max( (Real)0, camDistToCenter - sphereBounds.Radius ) );
+			maxDistance = System.Math.Max( maxDistance, camDistToCenter + sphereBounds.Radius );
 		}
 	}
 }

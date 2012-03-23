@@ -33,6 +33,9 @@
 
 #region Namespace Declarations
 
+using System;
+using System.Runtime.InteropServices;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -70,7 +73,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 		}
 
@@ -90,7 +93,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.numIndices;
+				return numIndices;
 			}
 		}
 
@@ -111,7 +114,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.indexSize;
+				return indexSize;
 			}
 		}
 
@@ -141,26 +144,26 @@ namespace Axiom.Graphics
 
 			if ( type == IndexType.Size32 )
 			{
-				this.indexSize = Memory.SizeOf( typeof( int ) );
+				indexSize = Memory.SizeOf( typeof ( int ) );
 			}
 			else
 			{
-				this.indexSize = Memory.SizeOf( typeof( short ) );
+				indexSize = Memory.SizeOf( typeof ( short ) );
 			}
 
-			sizeInBytes *= this.indexSize;
+			sizeInBytes *= indexSize;
 
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new DefaultHardwareIndexBuffer( this.Manager, type, numIndices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareIndexBuffer( Manager, type, numIndices, BufferUsage.Dynamic );
 			}
 		}
 
 		[OgreVersion( 1, 7, 2, "~HardwareIndexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

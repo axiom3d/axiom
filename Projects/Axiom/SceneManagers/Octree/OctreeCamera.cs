@@ -37,9 +37,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Scripting;
+using Axiom.ParticleSystems;
+using Axiom.Input;
+using Axiom.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -66,28 +73,28 @@ namespace Axiom.SceneManagers.Octree
 	{
 		#region Fields
 
+		protected bool useIdentityProj;
+		protected bool useIdentityView;
+
 		private const int PositionBinding = 0;
 		private const int ColorBinding = 1;
 
 		private static long red = 0xFF0000FF;
 
-		private readonly int[] corners = {
-                                             0, 4, 3, 5, 2, 6, 1, 7
-                                         };
+		private short[] indexes = {
+		                          	0, 1, 1, 2, 2, 3, 3, 0, //back
+		                          	0, 6, 6, 5, 5, 1, //left
+		                          	3, 7, 7, 4, 4, 2, //right
+		                          	6, 7, 5, 4
+		                          };
 
 		private long[] colors = {
-                                    red, red, red, red, red, red, red, red
-                                };
+		                        	red, red, red, red, red, red, red, red
+		                        };
 
-		private short[] indexes = {
-                                      0, 1, 1, 2, 2, 3, 3, 0, //back
-                                      0, 6, 6, 5, 5, 1, //left
-                                      3, 7, 7, 4, 4, 2, //right
-                                      6, 7, 5, 4
-                                  };
-
-		protected bool useIdentityProj;
-		protected bool useIdentityView;
+		private int[] corners = {
+		                        	0, 4, 3, 5, 2, 6, 1, 7
+		                        };
 
 		#endregion Fields
 
@@ -128,7 +135,7 @@ namespace Axiom.SceneManagers.Octree
 
 				for ( int corner = 0; corner < 8; corner++ )
 				{
-					distance = _planes[ plane ].GetDistance( boxCorners[ this.corners[ corner ] ] );
+					distance = _planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
 					AllOutside = AllOutside && ( distance < 0 );
 					AllInside = AllInside && ( distance >= 0 );
 
@@ -213,19 +220,19 @@ namespace Axiom.SceneManagers.Octree
 				return Vector3.Zero; //some planes are parallel.
 			}
 
-			var mx = new Matrix3( -p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y, p3.Normal.z );
+			Matrix3 mx = new Matrix3( -p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y, p3.Normal.z );
 
 			float xdet = mx.Determinant;
 
-			var my = new Matrix3( p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D, p3.Normal.z );
+			Matrix3 my = new Matrix3( p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D, p3.Normal.z );
 
 			float ydet = my.Determinant;
 
-			var mz = new Matrix3( p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y, -p3.D );
+			Matrix3 mz = new Matrix3( p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y, -p3.D );
 
 			float zdet = mz.Determinant;
 
-			var r = new Vector3();
+			Vector3 r = new Vector3();
 			r.x = xdet / det;
 			r.y = ydet / det;
 			r.z = zdet / det;

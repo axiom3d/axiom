@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -53,14 +54,29 @@ namespace Axiom.Core
 		/// <summary>
 		/// Internal map of strategies.
 		/// </summary>
-		private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
+		private Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
 
 		#region DefaultStrategy
 
 		/// <summary>
+		/// Default strategy.
+		/// </summary>
+		private LodStrategy _defaultStrategy;
+
+		/// <summary>
 		/// Get's or set's the default strategy.
 		/// </summary>
-		public LodStrategy DefaultStrategy { set; get; }
+		public LodStrategy DefaultStrategy
+		{
+			set
+			{
+				this._defaultStrategy = value;
+			}
+			get
+			{
+				return this._defaultStrategy;
+			}
+		}
 
 		/// <summary>
 		/// Set the default strategy by name.
@@ -79,6 +95,7 @@ namespace Axiom.Core
 		/// Default constructor.
 		/// </summary>
 		public LodStrategyManager()
+			: base()
 		{
 			// Add default (distance) strategy
 			var distanceStrategy = new DistanceLodStrategy();
@@ -120,7 +137,8 @@ namespace Axiom.Core
 			// Check for invalid strategy name
 			if ( strategy.Name.ToLower() == "default" )
 			{
-				throw new AxiomException( "Lod strategy name must not be 'default'", new object[] { } );
+				throw new AxiomException( "Lod strategy name must not be 'default'", new object[]
+				                                                                     {} );
 			}
 
 			// Insert the strategy into the map with its name as the key

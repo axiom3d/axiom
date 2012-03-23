@@ -42,7 +42,6 @@ using System.Text;
 
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Media;
 
 using ResourceHandle = System.UInt64;
@@ -90,13 +89,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.width;
+				return width;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.width = this.srcWidth = value;
+				width = srcWidth = value;
 			}
 		}
 
@@ -117,13 +116,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.height;
+				return height;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.height = this.srcHeight = value;
+				height = srcHeight = value;
 			}
 		}
 
@@ -144,13 +143,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.depth;
+				return depth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.depth = this.srcDepth = value;
+				depth = srcDepth = value;
 			}
 		}
 
@@ -158,10 +157,23 @@ namespace Axiom.Core
 
 		#region Bpp Property
 
+		/// <summary>Bits per pixel in this texture.</summary>
+		private int _finalBpp;
+
 		/// <summary>
 		///    Gets the bits per pixel found within this texture data.
 		/// </summary>
-		public int Bpp { get; protected set; }
+		public int Bpp
+		{
+			get
+			{
+				return _finalBpp;
+			}
+			protected set
+			{
+				_finalBpp = value;
+			}
+		}
 
 		#endregion Bpp Property
 
@@ -176,7 +188,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return PixelUtil.HasAlpha( this.format );
+				return PixelUtil.HasAlpha( format );
 			}
 		}
 
@@ -197,13 +209,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.treatLuminanceAsAlpha;
+				return treatLuminanceAsAlpha;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.treatLuminanceAsAlpha = value;
+				treatLuminanceAsAlpha = value;
 			}
 		}
 
@@ -227,13 +239,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.gamma;
+				return gamma;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.gamma = value;
+				gamma = value;
 			}
 		}
 
@@ -253,7 +265,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.format;
+				return format;
 			}
 		}
 
@@ -274,13 +286,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mipmapCount;
+				return mipmapCount;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.requestedMipmapCount = this.mipmapCount = value;
+				requestedMipmapCount = mipmapCount = value;
 			}
 		}
 
@@ -302,7 +314,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mipmapsHardwareGenerated;
+				return mipmapsHardwareGenerated;
 			}
 		}
 
@@ -323,13 +335,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.textureType;
+				return textureType;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.textureType = value;
+				textureType = value;
 			}
 		}
 
@@ -351,13 +363,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.usage;
+				return usage;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.usage = value;
+				usage = value;
 			}
 		}
 
@@ -375,7 +387,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.srcWidth;
+				return srcWidth;
 			}
 		}
 
@@ -393,7 +405,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.srcHeight;
+				return srcHeight;
 			}
 		}
 
@@ -402,7 +414,20 @@ namespace Axiom.Core
 		#region SrcBpp Property
 
 		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
-		public int srcBpp { get; protected set; }
+		private int _srcBpp;
+
+		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
+		public int srcBpp
+		{
+			get
+			{
+				return _srcBpp;
+			}
+			protected set
+			{
+				_srcBpp = value;
+			}
+		}
 
 		#endregion SrcBpp Property
 
@@ -418,7 +443,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.srcDepth;
+				return srcDepth;
 			}
 		}
 
@@ -436,7 +461,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.srcFormat;
+				return srcFormat;
 			}
 		}
 
@@ -454,7 +479,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.desiredFormat;
+				return desiredFormat;
 			}
 		}
 
@@ -477,13 +502,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.desiredIntegerBitDepth;
+				return desiredIntegerBitDepth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.desiredIntegerBitDepth = value;
+				desiredIntegerBitDepth = value;
 			}
 		}
 
@@ -499,13 +524,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.desiredFloatBitDepth;
+				return desiredFloatBitDepth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.desiredFloatBitDepth = value;
+				desiredFloatBitDepth = value;
 			}
 		}
 
@@ -524,7 +549,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.fsaa;
+				return fsaa;
 			}
 		}
 
@@ -538,7 +563,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.fsaaHint;
+				return fsaaHint;
 			}
 		}
 
@@ -588,13 +613,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.hwGamma;
+				return hwGamma;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.hwGamma = value;
+				hwGamma = value;
 			}
 		}
 
@@ -643,7 +668,7 @@ namespace Axiom.Core
 
 			if ( TextureManager.Instance != null )
 			{
-				TextureManager mgr = TextureManager.Instance;
+				var mgr = TextureManager.Instance;
 				MipmapCount = mgr.DefaultMipmapCount;
 				SetDesiredBitDepths( mgr.PreferredIntegerBitDepth, mgr.PreferredFloatBitDepth );
 			}
@@ -651,7 +676,7 @@ namespace Axiom.Core
 
 #if !NET_40
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) { }
+			: this( parent, name, handle, group, false, null ) {}
 #endif
 
 		#endregion Construction and Destruction
@@ -676,7 +701,7 @@ namespace Axiom.Core
 		public virtual void LoadRawData( Stream data, int width, int height, PixelFormat format )
 		{
 			// load the raw data
-			Image image = Image.FromRawStream( data, width, height, format );
+			var image = Image.FromRawStream( data, width, height, format );
 
 			// call the polymorphic LoadImage implementation
 			LoadImage( image );
@@ -688,13 +713,13 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void LoadImage( Image image )
 		{
-			LoadingState old = _loadingState.Value;
-			if ( old != LoadingState.Unloaded && old != LoadingState.Prepared )
+			var old = _loadingState.Value;
+			if ( old != Core.LoadingState.Unloaded && old != Core.LoadingState.Prepared )
 			{
 				return;
 			}
 
-			if ( !_loadingState.Cas( old, LoadingState.Loading ) )
+			if ( !_loadingState.Cas( old, Core.LoadingState.Loading ) )
 			{
 				return;
 			}
@@ -704,10 +729,10 @@ namespace Axiom.Core
 			{
 				lock ( _loadingStatusMutex )
 				{
-					LoadImages( new[]
-                                {
-                                    image
-                                } );
+					LoadImages( new Image[]
+					            {
+					            	image
+					            } );
 				}
 			}
 			catch
@@ -718,12 +743,12 @@ namespace Axiom.Core
 				throw;
 			}
 
-			_loadingState.Value = LoadingState.Loaded;
+			_loadingState.Value = Core.LoadingState.Loaded;
 
 			// Notify manager
-			if ( Creator != null )
+			if ( this.Creator != null )
 			{
-				Creator.NotifyResourceLoaded( this );
+				this.Creator.NotifyResourceLoaded( this );
 			}
 
 			// No deferred loading events since this method is not called in background
@@ -735,9 +760,9 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetFormat( PixelFormat pf )
 		{
-			this.format = pf;
-			this.desiredFormat = pf;
-			this.srcFormat = pf;
+			format = pf;
+			desiredFormat = pf;
+			srcFormat = pf;
 
 			srcBpp = PixelUtil.GetNumElemBytes( pf );
 		}
@@ -748,8 +773,8 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetDesiredBitDepths( ushort integerBitDepth, ushort floatBitDepth )
 		{
-			this.desiredIntegerBitDepth = integerBitDepth;
-			this.desiredFloatBitDepth = floatBitDepth;
+			desiredIntegerBitDepth = integerBitDepth;
+			desiredFloatBitDepth = floatBitDepth;
 		}
 
 		/// <see cref="Resource.calculateSize"/>
@@ -781,35 +806,35 @@ namespace Axiom.Core
 			}
 
 			// Set desired texture size and properties from images[0]
-			this.srcWidth = this.width = images[ 0 ].Width;
-			this.srcHeight = this.height = images[ 0 ].Height;
-			this.srcDepth = this.depth = images[ 0 ].Depth;
+			srcWidth = width = images[ 0 ].Width;
+			srcHeight = height = images[ 0 ].Height;
+			srcDepth = depth = images[ 0 ].Depth;
 
 			// Get source image format and adjust if required
-			this.srcFormat = images[ 0 ].Format;
-			if ( this.treatLuminanceAsAlpha && this.srcFormat == PixelFormat.L8 )
+			srcFormat = images[ 0 ].Format;
+			if ( treatLuminanceAsAlpha && srcFormat == PixelFormat.L8 )
 			{
-				this.srcFormat = PixelFormat.A8;
+				srcFormat = PixelFormat.A8;
 			}
 
-			if ( this.desiredFormat != PixelFormat.Unknown )
+			if ( desiredFormat != PixelFormat.Unknown )
 			{
 				// If have desired format, use it
-				this.format = this.desiredFormat;
+				format = desiredFormat;
 			}
 			else
 			{
 				// Get the format according with desired bit depth
-				this.format = PixelUtil.GetFormatForBitDepths( this.srcFormat, this.desiredIntegerBitDepth, this.desiredFloatBitDepth );
+				format = PixelUtil.GetFormatForBitDepths( srcFormat, desiredIntegerBitDepth, desiredFloatBitDepth );
 			}
 
 			// The custom mipmaps in the image have priority over everything
-			int imageMips = images[ 0 ].NumMipMaps;
+			var imageMips = images[ 0 ].NumMipMaps;
 			if ( imageMips > 0 )
 			{
-				this.mipmapCount = this.requestedMipmapCount = imageMips;
+				mipmapCount = requestedMipmapCount = imageMips;
 				// Disable flag for auto mip generation
-				this.usage &= ~TextureUsage.AutoMipMap;
+				usage &= ~TextureUsage.AutoMipMap;
 			}
 
 			// Create the texture
@@ -832,9 +857,9 @@ namespace Axiom.Core
 
 			// Check wether number of faces in images exceeds number of faces
 			// in this texture. If so, clamp it.
-			if ( faces > FaceCount )
+			if ( faces > this.FaceCount )
 			{
-				faces = FaceCount;
+				faces = this.FaceCount;
 			}
 
 			// Say what we're doing
@@ -842,14 +867,14 @@ namespace Axiom.Core
 			{
 				var msg = new StringBuilder();
 				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
-				if ( !( this.mipmapsHardwareGenerated && this.mipmapCount == 0 ) )
+				if ( !( mipmapsHardwareGenerated && mipmapCount == 0 ) )
 				{
-					msg.AppendFormat( " {0}", this.mipmapCount );
+					msg.AppendFormat( " {0}", mipmapCount );
 				}
 
-				if ( ( this.usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
+				if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 				{
-					msg.AppendFormat( "{0} generated mipmaps", this.mipmapsHardwareGenerated ? " hardware" : string.Empty );
+					msg.AppendFormat( "{0} generated mipmaps", mipmapsHardwareGenerated ? " hardware" : string.Empty );
 				}
 				else
 				{
@@ -859,7 +884,7 @@ namespace Axiom.Core
 				msg.AppendFormat( " from {0}.\n\t", multiImage ? "multiple Images" : "an Image" );
 
 				// Print data about first destination surface
-				HardwarePixelBuffer buf = GetBuffer( 0, 0 );
+				var buf = GetBuffer( 0, 0 );
 				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width, buf.Height, buf.Depth );
 
 				LogManager.Instance.Write( msg.ToString() );
@@ -867,9 +892,9 @@ namespace Axiom.Core
 
 			// Main loading loop
 			// imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
-			for ( int mip = 0; mip <= imageMips; ++mip )
+			for ( var mip = 0; mip <= imageMips; ++mip )
 			{
-				for ( int i = 0; i < faces; ++i )
+				for ( var i = 0; i < faces; ++i )
 				{
 					PixelBox src;
 					if ( multiImage )
@@ -884,20 +909,20 @@ namespace Axiom.Core
 					}
 
 					// Sets to treated format in case is difference
-					src.Format = this.srcFormat;
+					src.Format = srcFormat;
 
-					if ( this.gamma != 1.0f )
+					if ( gamma != 1.0f )
 					{
 						// Apply gamma correction
 						// Do not overwrite original image but do gamma correction in temporary buffer
-						int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
+						var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
 						var buff = new byte[ bufSize ];
-						BufferBase buffer = BufferBase.Wrap( buff );
+						var buffer = BufferBase.Wrap( buff );
 
 						var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
 						PixelConverter.BulkPixelConversion( src, corrected );
 
-						Image.ApplyGamma( corrected.Data, this.gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
+						Image.ApplyGamma( corrected.Data, gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
 
 						// Destination: entire texture. BlitFromMemory does
 						// the scaling to a power of two for us when needed
@@ -913,7 +938,7 @@ namespace Axiom.Core
 			}
 
 			// Update size (the final size, not including temp space)
-			Size = FaceCount * PixelUtil.GetMemorySize( this.width, this.height, this.depth, this.format );
+			Size = this.FaceCount * PixelUtil.GetMemorySize( width, height, depth, format );
 		}
 
 		/// <summary>
@@ -932,10 +957,10 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void CreateInternalResources()
 		{
-			if ( !this.internalResourcesCreated )
+			if ( !internalResourcesCreated )
 			{
 				createInternalResources();
-				this.internalResourcesCreated = true;
+				internalResourcesCreated = true;
 			}
 		}
 
@@ -950,10 +975,10 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public void FreeInternalResources()
 		{
-			if ( this.internalResourcesCreated )
+			if ( internalResourcesCreated )
 			{
 				freeInternalResources();
-				this.internalResourcesCreated = false;
+				internalResourcesCreated = false;
 			}
 		}
 
@@ -978,20 +1003,20 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "Original name was CopyToTexture" )]
 		public virtual void CopyTo( Texture target )
 		{
-			if ( target.FaceCount != FaceCount )
+			if ( target.FaceCount != this.FaceCount )
 			{
 				throw new AxiomException( "Texture types must match!" );
 			}
 
-			int numMips = Utility.Min( MipmapCount, target.MipmapCount );
-			if ( ( this.usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap || ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
+			var numMips = Axiom.Math.Utility.Min( this.MipmapCount, target.MipmapCount );
+			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap || ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 			{
 				numMips = 0;
 			}
 
-			for ( int face = 0; face < FaceCount; face++ )
+			for ( var face = 0; face < this.FaceCount; face++ )
 			{
-				for ( int mip = 0; mip <= numMips; mip++ )
+				for ( var mip = 0; mip <= numMips; mip++ )
 				{
 					target.GetBuffer( face, mip ).Blit( GetBuffer( face, mip ) );
 				}
@@ -1010,7 +1035,7 @@ namespace Axiom.Core
 				return string.Empty;
 			}
 
-			int pos = _name.LastIndexOf( "." );
+			var pos = _name.LastIndexOf( "." );
 			if ( pos != -1 && pos < ( _name.Length - 1 ) )
 			{
 				return _name.Substring( pos + 1 ).ToLower();
@@ -1023,15 +1048,15 @@ namespace Axiom.Core
 				{
 					dstream = ResourceGroupManager.Instance.OpenResource( _name, _group, true, null );
 				}
-				catch { }
-				if ( dstream == null && TextureType == TextureType.CubeMap )
+				catch {}
+				if ( dstream == null && TextureType == Graphics.TextureType.CubeMap )
 				{
 					// try again with one of the faces (non-dds)
 					try
 					{
 						dstream = ResourceGroupManager.Instance.OpenResource( _name + "_rt", _group, true, null );
 					}
-					catch { }
+					catch {}
 				}
 
 				if ( dstream != null )
@@ -1055,21 +1080,21 @@ namespace Axiom.Core
 		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps )
 #endif
 		{
-			int numMips = includeMipMaps ? MipmapCount + 1 : 1;
-			int dataSize = Image.CalculateSize( numMips, FaceCount, Width, Height, Depth, Format );
+			var numMips = includeMipMaps ? this.MipmapCount + 1 : 1;
+			var dataSize = Image.CalculateSize( numMips, this.FaceCount, this.Width, this.Height, this.Depth, this.Format );
 
 			var pixData = new byte[ dataSize ];
 			// if there are multiple faces and mipmaps we must pack them into the data
 			// faces, then mips
-			BufferBase currentPixData = BufferBase.Wrap( pixData );
+			var currentPixData = BufferBase.Wrap( pixData );
 
-			for ( int face = 0; face < FaceCount; ++face )
+			for ( var face = 0; face < this.FaceCount; ++face )
 			{
-				for ( int mip = 0; mip < numMips; ++mip )
+				for ( var mip = 0; mip < numMips; ++mip )
 				{
-					int mipDataSize = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+					var mipDataSize = PixelUtil.GetMemorySize( this.Width, this.Height, this.Depth, this.Format );
 
-					var pixBox = new PixelBox( Width, Height, Depth, Format, currentPixData );
+					var pixBox = new PixelBox( this.Width, this.Height, this.Depth, this.Format, currentPixData );
 					GetBuffer( face, mip ).BlitToMemory( pixBox );
 
 					currentPixData += mipDataSize;
@@ -1079,7 +1104,7 @@ namespace Axiom.Core
 			currentPixData.Dispose();
 
 			// load, and tell Image to delete the memory when it's done.
-			destImage = ( new Image() ).FromDynamicImage( pixData, Width, Height, Depth, Format, true, FaceCount, numMips - 1 );
+			destImage = ( new Image() ).FromDynamicImage( pixData, this.Width, this.Height, this.Depth, this.Format, true, this.FaceCount, numMips - 1 );
 		}
 
 #if !NET_40

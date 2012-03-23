@@ -48,6 +48,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		#region Fields
 
 		private const float Parallel_Tolerance = 0.0001f;
+		private Vector3 origin;
+		private Vector3 direction;
+		private float extent;
 
 		#endregion Fields
 
@@ -62,20 +65,50 @@ namespace Axiom.SceneManagers.PortalConnected
 		//----------------------------------------------------------------------------
 		public Segment( Vector3 origin, Vector3 direction, float extent )
 		{
-			this.Origin = origin;
-			this.Direction = direction;
-			this.Extent = extent;
+			this.origin = origin;
+			this.direction = direction;
+			this.extent = extent;
 		}
 
 		#endregion Constructors
 
 		#region Propertys
 
-		public Vector3 Origin { get; set; }
+		public Vector3 Origin
+		{
+			get
+			{
+				return origin;
+			}
+			set
+			{
+				origin = value;
+			}
+		}
 
-		public Vector3 Direction { get; set; }
+		public Vector3 Direction
+		{
+			get
+			{
+				return direction;
+			}
+			set
+			{
+				direction = value;
+			}
+		}
 
-		public float Extent { get; set; }
+		public float Extent
+		{
+			get
+			{
+				return extent;
+			}
+			set
+			{
+				extent = value;
+			}
+		}
 
 		public Vector3 EndPoint
 		{

@@ -36,8 +36,6 @@
 using Axiom.Core;
 using Axiom.Graphics;
 
-using SharpDX.Direct3D9;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -51,14 +49,19 @@ namespace Axiom.RenderSystems.DirectX9
 	internal struct D3D9TextureStageDesc
 	{
 		/// <summary>
-		/// Type of auto tex. calc. used
+		/// The type of the texture
 		/// </summary>
-		public TexCoordCalcMethod AutoTexCoordType;
+		public D3D9TextureType TexType;
 
 		/// <summary>
 		/// Which texCoordIndex to use
 		/// </summary>
 		public int CoordIndex;
+
+		/// <summary>
+		/// Type of auto tex. calc. used
+		/// </summary>
+		public TexCoordCalcMethod AutoTexCoordType;
 
 		/// <summary>
 		/// Frustum, used if the above is projection
@@ -68,16 +71,11 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Texture
 		/// </summary>
-		public BaseTexture Tex;
-
-		/// <summary>
-		/// The type of the texture
-		/// </summary>
-		public D3D9TextureType TexType;
+		public D3D9.BaseTexture Tex;
 
 		/// <summary>
 		/// Vertex texture
 		/// </summary>
-		public BaseTexture VertexTex;
+		public D3D9.BaseTexture VertexTex;
 	};
 }

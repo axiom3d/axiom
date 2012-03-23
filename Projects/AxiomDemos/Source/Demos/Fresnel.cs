@@ -1,14 +1,15 @@
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.ComponentModel.Composition;
 
 using Axiom.Animating;
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Media;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -18,7 +19,7 @@ namespace Axiom.Demos
 	/// Summary description for Fresnel.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
-	[Export( typeof( TechDemo ) )]
+	[Export( typeof ( TechDemo ) )]
 #endif
 	public class Fresnel : TechDemo
 	{
@@ -26,18 +27,18 @@ namespace Axiom.Demos
 
 		private Camera theCam;
 		private Entity planeEnt;
-		private readonly EntityList aboveWaterEnts = new EntityList();
-		private readonly EntityList belowWaterEnts = new EntityList();
+		private EntityList aboveWaterEnts = new EntityList();
+		private EntityList belowWaterEnts = new EntityList();
 
 		private const int NUM_FISH = 30;
 		private const int NUM_FISH_WAYPOINTS = 10;
 		private const int FISH_PATH_LENGTH = 200;
-		private readonly AnimationState[] fishAnimations = new AnimationState[ NUM_FISH ];
-		private readonly PositionalSpline[] fishSplines = new PositionalSpline[ NUM_FISH ];
-		private readonly Vector3[] fishLastPosition = new Vector3[ NUM_FISH ];
-		private readonly SceneNode[] fishNodes = new SceneNode[ NUM_FISH ];
+		private AnimationState[] fishAnimations = new AnimationState[ NUM_FISH ];
+		private PositionalSpline[] fishSplines = new PositionalSpline[ NUM_FISH ];
+		private Vector3[] fishLastPosition = new Vector3[ NUM_FISH ];
+		private SceneNode[] fishNodes = new SceneNode[ NUM_FISH ];
 		private float animTime;
-		private Plane reflectionPlane;
+		private Plane reflectionPlane = new Plane();
 
 		#endregion Fields
 
@@ -47,7 +48,7 @@ namespace Axiom.Demos
 		{
 			for ( int i = 0; i < NUM_FISH; i++ )
 			{
-				this.fishSplines[ i ] = new PositionalSpline();
+				fishSplines[ i ] = new PositionalSpline();
 			}
 		}
 
@@ -65,8 +66,8 @@ namespace Axiom.Demos
 
 			Animation.DefaultInterpolationMode = InterpolationMode.Linear;
 
-			this.theCam = camera;
-			this.theCam.Position = new Vector3( -100, 20, 700 );
+			theCam = camera;
+			theCam.Position = new Vector3( -100, 20, 700 );
 
 			// set the ambient scene light
 			scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
@@ -75,39 +76,39 @@ namespace Axiom.Demos
 			light.Type = LightType.Directional;
 			light.Direction = -Vector3.UnitY;
 
-			var mat = (Material)MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
+			Material mat = (Material)MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
 
 			// Refraction texture
-			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			RenderTarget rttTex = mTexture.GetBuffer().GetRenderTarget();
 			//RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
 			{
 				Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
 				vp.ShowOverlays = false;
 				mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 2 ).SetTextureName( "Refraction" );
-				rttTex.BeforeUpdate += Refraction_BeforeUpdate;
-				rttTex.AfterUpdate += Refraction_AfterUpdate;
+				rttTex.BeforeUpdate += new RenderTargetEventHandler( Refraction_BeforeUpdate );
+				rttTex.AfterUpdate += new RenderTargetEventHandler( Refraction_AfterUpdate );
 			}
 
 			// Reflection texture
-			mTexture = TextureManager.Instance.CreateManual( "Reflection", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			mTexture = TextureManager.Instance.CreateManual( "Reflection", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			rttTex = mTexture.GetBuffer().GetRenderTarget();
 			//rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
 			{
 				Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
 				vp.ShowOverlays = false;
 				mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 1 ).SetTextureName( "Reflection" );
-				rttTex.BeforeUpdate += Reflection_BeforeUpdate;
-				rttTex.AfterUpdate += Reflection_AfterUpdate;
+				rttTex.BeforeUpdate += new RenderTargetEventHandler( Reflection_BeforeUpdate );
+				rttTex.AfterUpdate += new RenderTargetEventHandler( Reflection_AfterUpdate );
 			}
 
-			this.reflectionPlane.Normal = Vector3.UnitY;
-			this.reflectionPlane.D = 0;
-			MeshManager.Instance.CreatePlane( "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, this.reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
+			reflectionPlane.Normal = Vector3.UnitY;
+			reflectionPlane.D = 0;
+			MeshManager.Instance.CreatePlane( "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
 
-			this.planeEnt = scene.CreateEntity( "Plane", "ReflectionPlane" );
-			this.planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";
-			scene.RootSceneNode.CreateChildSceneNode().AttachObject( this.planeEnt );
+			planeEnt = scene.CreateEntity( "Plane", "ReflectionPlane" );
+			planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";
+			scene.RootSceneNode.CreateChildSceneNode().AttachObject( planeEnt );
 
 			scene.SetSkyBox( true, "Examples/CloudyNoonSkyBox", 2000 );
 
@@ -118,48 +119,48 @@ namespace Axiom.Demos
 			// Above water entities - NB all meshes are static
 			ent = scene.CreateEntity( "head1", "head1.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "Pillar1", "Pillar1.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "Pillar2", "Pillar2.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "Pillar3", "Pillar3.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "Pillar4", "Pillar4.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "UpperSurround", "UpperSurround.mesh" );
 			myRootNode.AttachObject( ent );
-			this.aboveWaterEnts.Add( ent );
+			aboveWaterEnts.Add( ent );
 
 			// Now the below water ents
 			ent = scene.CreateEntity( "LowerSurround", "LowerSurround.mesh" );
 			myRootNode.AttachObject( ent );
-			this.belowWaterEnts.Add( ent );
+			belowWaterEnts.Add( ent );
 			ent = scene.CreateEntity( "PoolFloor", "PoolFloor.mesh" );
 			myRootNode.AttachObject( ent );
-			this.belowWaterEnts.Add( ent );
+			belowWaterEnts.Add( ent );
 
 			for ( int fishNo = 0; fishNo < NUM_FISH; fishNo++ )
 			{
 				ent = scene.CreateEntity( string.Format( "fish{0}", fishNo ), "fish.mesh" );
-				this.fishNodes[ fishNo ] = myRootNode.CreateChildSceneNode();
-				this.fishAnimations[ fishNo ] = ent.GetAnimationState( "swim" );
-				this.fishAnimations[ fishNo ].IsEnabled = true;
-				this.fishNodes[ fishNo ].AttachObject( ent );
-				this.belowWaterEnts.Add( ent );
+				fishNodes[ fishNo ] = myRootNode.CreateChildSceneNode();
+				fishAnimations[ fishNo ] = ent.GetAnimationState( "swim" );
+				fishAnimations[ fishNo ].IsEnabled = true;
+				fishNodes[ fishNo ].AttachObject( ent );
+				belowWaterEnts.Add( ent );
 
 				// Generate a random selection of points for the fish to swim to
-				this.fishSplines[ fishNo ].AutoCalculate = false;
+				fishSplines[ fishNo ].AutoCalculate = false;
 
 				Vector3 lastPos = Vector3.Zero;
 
 				for ( int waypoint = 0; waypoint < NUM_FISH_WAYPOINTS; waypoint++ )
 				{
-					var pos = new Vector3( Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
+					Vector3 pos = new Vector3( Utility.SymmetricRandom() * 700, -10, Utility.SymmetricRandom() * 700 );
 
 					if ( waypoint > 0 )
 					{
@@ -172,41 +173,41 @@ namespace Axiom.Demos
 						}
 					}
 
-					this.fishSplines[ fishNo ].AddPoint( pos );
+					fishSplines[ fishNo ].AddPoint( pos );
 					lastPos = pos;
 				}
 
 				// close the spline
-				this.fishSplines[ fishNo ].AddPoint( this.fishSplines[ fishNo ].GetPoint( 0 ) );
+				fishSplines[ fishNo ].AddPoint( fishSplines[ fishNo ].GetPoint( 0 ) );
 				// recalc
-				this.fishSplines[ fishNo ].RecalculateTangents();
+				fishSplines[ fishNo ].RecalculateTangents();
 			}
 		}
 
 		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			this.animTime += evt.TimeSinceLastFrame;
+			animTime += evt.TimeSinceLastFrame;
 
-			while ( this.animTime > FISH_PATH_LENGTH )
+			while ( animTime > FISH_PATH_LENGTH )
 			{
-				this.animTime -= FISH_PATH_LENGTH;
+				animTime -= FISH_PATH_LENGTH;
 			}
 
 			for ( int i = 0; i < NUM_FISH; i++ )
 			{
 				// animate the fish
-				this.fishAnimations[ i ].AddTime( evt.TimeSinceLastFrame );
+				fishAnimations[ i ].AddTime( evt.TimeSinceLastFrame );
 
 				// move the fish
-				Vector3 newPos = this.fishSplines[ i ].Interpolate( this.animTime / FISH_PATH_LENGTH );
-				this.fishNodes[ i ].Position = newPos;
+				Vector3 newPos = fishSplines[ i ].Interpolate( animTime / FISH_PATH_LENGTH );
+				fishNodes[ i ].Position = newPos;
 
 				// work out the moving direction
-				Vector3 direction = this.fishLastPosition[ i ] - newPos;
+				Vector3 direction = fishLastPosition[ i ] - newPos;
 				direction.Normalize();
 				Quaternion orientation = -Vector3.UnitX.GetRotationTo( direction );
-				this.fishNodes[ i ].Orientation = orientation;
-				this.fishLastPosition[ i ] = newPos;
+				fishNodes[ i ].Orientation = orientation;
+				fishLastPosition[ i ] = newPos;
 			}
 
 			base.OnFrameStarted( source, evt );
@@ -218,45 +219,45 @@ namespace Axiom.Demos
 
 		private void Reflection_BeforeUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEnt.IsVisible = false;
+			planeEnt.IsVisible = false;
 
-			for ( int i = 0; i < this.belowWaterEnts.Count; i++ )
+			for ( int i = 0; i < belowWaterEnts.Count; i++ )
 			{
-				( this.belowWaterEnts[ i ] ).IsVisible = false;
+				( (Entity)belowWaterEnts[ i ] ).IsVisible = false;
 			}
 
-			this.theCam.EnableReflection( this.reflectionPlane );
+			theCam.EnableReflection( reflectionPlane );
 		}
 
 		private void Reflection_AfterUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEnt.IsVisible = true;
+			planeEnt.IsVisible = true;
 
-			for ( int i = 0; i < this.belowWaterEnts.Count; i++ )
+			for ( int i = 0; i < belowWaterEnts.Count; i++ )
 			{
-				( this.belowWaterEnts[ i ] ).IsVisible = true;
+				( (Entity)belowWaterEnts[ i ] ).IsVisible = true;
 			}
 
-			this.theCam.DisableReflection();
+			theCam.DisableReflection();
 		}
 
 		private void Refraction_BeforeUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEnt.IsVisible = false;
+			planeEnt.IsVisible = false;
 
-			for ( int i = 0; i < this.aboveWaterEnts.Count; i++ )
+			for ( int i = 0; i < aboveWaterEnts.Count; i++ )
 			{
-				( this.aboveWaterEnts[ i ] ).IsVisible = false;
+				( (Entity)aboveWaterEnts[ i ] ).IsVisible = false;
 			}
 		}
 
 		private void Refraction_AfterUpdate( RenderTargetEventArgs e )
 		{
-			this.planeEnt.IsVisible = true;
+			planeEnt.IsVisible = true;
 
-			for ( int i = 0; i < this.aboveWaterEnts.Count; i++ )
+			for ( int i = 0; i < aboveWaterEnts.Count; i++ )
 			{
-				( this.aboveWaterEnts[ i ] ).IsVisible = true;
+				( (Entity)aboveWaterEnts[ i ] ).IsVisible = true;
 			}
 		}
 

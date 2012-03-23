@@ -37,11 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
+using System.Collections;
 
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -63,14 +66,14 @@ namespace Axiom.Animating
 		#region Fields
 
 		/// <summary>
-		///		Used for auto generated tag point handles to ensure they are unique.
-		///	</summary>
-		protected internal ushort nextTagPointAutoHandle;
-
-		/// <summary>
 		///		Reference to the master Skeleton.
 		/// </summary>
 		protected Skeleton skeleton;
+
+		/// <summary>
+		///		Used for auto generated tag point handles to ensure they are unique.
+		///	</summary>
+		protected internal ushort nextTagPointAutoHandle;
 
 		protected AxiomSortedCollection<int, TagPoint> tagPointList = new AxiomSortedCollection<int, TagPoint>();
 
@@ -84,6 +87,7 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="masterCopy"></param>
 		public SkeletonInstance( Skeleton masterCopy )
+			: base()
 		{
 			this.skeleton = masterCopy;
 		}
@@ -99,7 +103,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.skeleton.Animations;
+				return skeleton.Animations;
 			}
 		}
 
@@ -110,7 +114,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return this.skeleton;
+				return skeleton;
 			}
 		}
 
@@ -169,8 +173,8 @@ namespace Axiom.Animating
 
 		public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition )
 		{
-			var tagPoint = new TagPoint( ++this.nextTagPointAutoHandle, this );
-			this.tagPointList[ this.nextTagPointAutoHandle ] = tagPoint;
+			var tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
+			tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
 			tagPoint.Translate( offsetPosition );
 			tagPoint.Rotate( offsetOrientation );
@@ -182,7 +186,7 @@ namespace Axiom.Animating
 
 		public void FreeTagPoint( TagPoint tagPoint )
 		{
-			if ( this.tagPointList.ContainsValue( tagPoint ) )
+			if ( tagPointList.ContainsValue( tagPoint ) )
 			{
 				if ( tagPoint.Parent != null )
 				{
@@ -192,6 +196,8 @@ namespace Axiom.Animating
 		}
 
 		#endregion Methods
+
+		#region Skeleton Members
 
 		/// <summary>
 		///		Creates a new Animation object for animating this skeleton.
@@ -204,7 +210,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public override Animation CreateAnimation( string name, float length )
 		{
-			return this.skeleton.CreateAnimation( name, length );
+			return skeleton.CreateAnimation( name, length );
 		}
 
 		/// <summary>
@@ -214,7 +220,7 @@ namespace Axiom.Animating
 		/// <returns>Animation with the specified name, or null if none exists.</returns>
 		public override Animation GetAnimation( string name )
 		{
-			return this.skeleton.GetAnimation( name );
+			return skeleton.GetAnimation( name );
 		}
 
 		/// <summary>
@@ -223,23 +229,27 @@ namespace Axiom.Animating
 		/// <param name="name">Name of the animation to remove.</param>
 		public override void RemoveAnimation( string name )
 		{
-			this.skeleton.RemoveAnimation( name );
+			skeleton.RemoveAnimation( name );
 		}
+
+		#endregion Skeleton Members
+
+		#region Resource Members
 
 		/// <summary>
 		///		Overriden to copy/clone the bones of the master skeleton.
 		/// </summary>
 		protected override void load()
 		{
-			nextAutoHandle = this.skeleton.nextAutoHandle;
-			this.nextTagPointAutoHandle = 0;
+			nextAutoHandle = skeleton.nextAutoHandle;
+			nextTagPointAutoHandle = 0;
 
-			BlendMode = this.skeleton.BlendMode;
+			this.BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
-			for ( int i = 0; i < this.skeleton.RootBoneCount; i++ )
+			for ( var i = 0; i < skeleton.RootBoneCount; i++ )
 			{
-				Bone rootBone = this.skeleton.GetRootBone( i );
+				var rootBone = skeleton.GetRootBone( i );
 				CloneBoneAndChildren( rootBone, null );
 				rootBone.Update( true, false );
 			}
@@ -247,11 +257,11 @@ namespace Axiom.Animating
 			SetBindingPose();
 
 			// Clone the attachment points
-			for ( int i = 0; i < this.skeleton.AttachmentPoints.Count; i++ )
+			for ( var i = 0; i < skeleton.AttachmentPoints.Count; i++ )
 			{
-				AttachmentPoint ap = this.skeleton.AttachmentPoints[ i ];
-				Bone parentBone = GetBone( ap.ParentBone );
-				CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
+				var ap = skeleton.AttachmentPoints[ i ];
+				var parentBone = this.GetBone( ap.ParentBone );
+				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
 			}
 		}
 
@@ -263,7 +273,9 @@ namespace Axiom.Animating
 			base.Unload();
 
 			// clear all tag points
-			this.tagPointList.Clear();
+			tagPointList.Clear();
 		}
+
+		#endregion Resource Members
 	}
 }

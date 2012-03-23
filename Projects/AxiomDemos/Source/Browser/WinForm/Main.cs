@@ -2,13 +2,15 @@
 
 using System;
 using System.IO;
+
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Configuration;
+
 using System.Reflection;
 using System.Windows.Forms;
 
-using Axiom.Configuration;
-using Axiom.Core;
 using Axiom.Demos.Configuration;
-using Axiom.Graphics;
 
 using CommandLine;
 using CommandLine.Text;
@@ -25,50 +27,63 @@ namespace Axiom.Demos.Browser.WinForm
 	/// </remarks>
 	public class Program : IDisposable
 	{
-		protected const string CONFIG_FILE = @"EngineConfig.xml";
 		private static readonly HeadingInfo _headingInfo = new HeadingInfo( "Axiom Samples", "0.8" );
 
-		private readonly string DemoAssembly = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + Path.DirectorySeparatorChar + @"Axiom.Demos.dll";
-		private EngineConfig config;
-		private DemoConfigDialog dlg;
-		private Root engine;
-
-		#region IDisposable Members
-
-		public void Dispose()
+		private sealed class Options
 		{
-			//throw new Exception( "The method or operation is not implemented." );
+			[Option( "s", "sample", Required = false, HelpText = "Initial sample to run." )]
+			public string Sample = String.Empty;
+
+			[HelpOption( HelpText = "Display this help screen." )]
+			public string GetUsage()
+			{
+				var help = new HelpText( Program._headingInfo );
+				help.AdditionalNewLineAfterOption = true;
+				help.Copyright = new CopyrightInfo( "Axiom Engine Team", 2003, 2010 );
+				help.AddPreOptionsLine( "This is free software. You may redistribute copies of it under the terms of" );
+				help.AddPreOptionsLine( "the LGPL License <http://www.opensource.org/licenses/lgpl-license.php>." );
+				help.AddPreOptionsLine( "Usage: SampleApp -sCompositor " );
+				help.AddOptions( this );
+
+				return help;
+			}
 		}
 
-		#endregion
+		protected const string CONFIG_FILE = @"EngineConfig.xml";
+
+		private Root engine;
+		private DemoConfigDialog dlg;
+		private EngineConfig config;
+
+		private readonly string DemoAssembly = Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll";
 
 		private bool _configure( Options options )
 		{
 			// instantiate the Root singleton
-			this.engine = new Root( "AxiomDemos.log" );
+			engine = new Root( "AxiomDemos.log" );
 
 			_setupResources();
 
-			this.dlg = new DemoConfigDialog();
-			this.dlg.LoadRenderSystemConfig += LoadRenderSystemConfiguration;
-			this.dlg.SaveRenderSystemConfig += SaveRenderSystemConfiguration;
-			this.dlg.LoadDemos( this.DemoAssembly );
+			dlg = new DemoConfigDialog();
+			dlg.LoadRenderSystemConfig += new ConfigDialog.LoadRenderSystemConfigEventHandler( LoadRenderSystemConfiguration );
+			dlg.SaveRenderSystemConfig += new ConfigDialog.SaveRenderSystemConfigEventHandler( SaveRenderSystemConfiguration );
+			dlg.LoadDemos( DemoAssembly );
 
 			if ( String.IsNullOrEmpty( options.Sample ) )
 			{
-				DialogResult result = this.dlg.ShowDialog();
+				DialogResult result = dlg.ShowDialog();
 
 				if ( result == DialogResult.Cancel )
 				{
 					Root.Instance.Dispose();
-					this.engine = null;
+					engine = null;
 					return false;
 				}
 			}
 			else
 			{
-				this.engine.RenderSystem = this.engine.RenderSystems[ 0 ];
-				LoadRenderSystemConfiguration( this, this.engine.RenderSystems[ 0 ] );
+				engine.RenderSystem = engine.RenderSystems[ 0 ];
+				this.LoadRenderSystemConfiguration( this, engine.RenderSystems[ 0 ] );
 			}
 
 			return true;
@@ -78,7 +93,7 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			string renderSystemId = rs.GetType().FullName;
 
-			var codt = ( (EngineConfig.ConfigOptionDataTable)this.config.Tables[ "ConfigOption" ] );
+			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
 			foreach ( ConfigOption opt in rs.ConfigOptions )
 			{
 				EngineConfig.ConfigOptionRow coRow = codt.FindByNameRenderSystem( opt.Name, renderSystemId );
@@ -91,15 +106,15 @@ namespace Axiom.Demos.Browser.WinForm
 				}
 				coRow.Value = opt.Value;
 			}
-			this.config.AcceptChanges();
-			this.config.WriteXml( CONFIG_FILE );
+			config.AcceptChanges();
+			config.WriteXml( CONFIG_FILE );
 		}
 
 		private void LoadRenderSystemConfiguration( object sender, RenderSystem rs )
 		{
 			string renderSystemId = rs.GetType().FullName;
 
-			var codt = ( (EngineConfig.ConfigOptionDataTable)this.config.Tables[ "ConfigOption" ] );
+			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
 			foreach ( EngineConfig.ConfigOptionRow row in codt )
 			{
 				if ( row.RenderSystem == renderSystemId )
@@ -121,14 +136,14 @@ namespace Axiom.Demos.Browser.WinForm
 
 			if ( File.Exists( resourceConfigPath ) )
 			{
-				this.config = new EngineConfig();
+				config = new EngineConfig();
 
 				// load the config file
 				// relative from the location of debug and releases executables
-				this.config.ReadXml( CONFIG_FILE );
+				config.ReadXml( CONFIG_FILE );
 
 				// interrogate the available resource paths
-				foreach ( EngineConfig.FilePathRow row in this.config.FilePath )
+				foreach ( EngineConfig.FilePathRow row in config.FilePath )
 				{
 					ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type, row.group, false, true );
 				}
@@ -144,18 +159,18 @@ namespace Axiom.Demos.Browser.WinForm
 					Type demoType = null;
 					if ( !String.IsNullOrEmpty( options.Sample ) )
 					{
-						Assembly demos = Assembly.LoadFrom( this.DemoAssembly );
+						Assembly demos = Assembly.LoadFrom( DemoAssembly );
 						Type[] demoTypes = demos.GetTypes();
 						demoType = demos.GetType( "Axiom.Demos." + options.Sample );
 					}
 					else
 					{
-						demoType = this.dlg.Demo;
+						demoType = dlg.Demo;
 					}
 
 					if ( demoType != null )
 					{
-						using ( var demo = (TechDemo)Activator.CreateInstance( demoType ) )
+						using ( TechDemo demo = (TechDemo)Activator.CreateInstance( demoType ) )
 						{
 							demo.SetupResources();
 							demo.Start(); //show and start rendering
@@ -188,7 +203,7 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			try
 			{
-				using ( var main = new Program() )
+				using ( Program main = new Program() )
 				{
 					main.Run( options ); //show and start rendering
 				} //dispose of it when done
@@ -228,28 +243,13 @@ namespace Axiom.Demos.Browser.WinForm
 
 		#endregion Main
 
-		#region Nested type: Options
+		#region IDisposable Members
 
-		private sealed class Options
+		public void Dispose()
 		{
-			[Option( "s", "sample", Required = false, HelpText = "Initial sample to run." )]
-			public readonly string Sample = String.Empty;
-
-			[HelpOption( HelpText = "Display this help screen." )]
-			public string GetUsage()
-			{
-				var help = new HelpText( _headingInfo );
-				help.AdditionalNewLineAfterOption = true;
-				help.Copyright = new CopyrightInfo( "Axiom Engine Team", 2003, 2010 );
-				help.AddPreOptionsLine( "This is free software. You may redistribute copies of it under the terms of" );
-				help.AddPreOptionsLine( "the LGPL License <http://www.opensource.org/licenses/lgpl-license.php>." );
-				help.AddPreOptionsLine( "Usage: SampleApp -sCompositor " );
-				help.AddOptions( this );
-
-				return help;
-			}
+			//throw new Exception( "The method or operation is not implemented." );
 		}
 
-		#endregion
+		#endregion IDisposable Members
 	}
 }

@@ -15,54 +15,6 @@ namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
-		#region Nested type: FloatConstantList
-
-		/// <summary>
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public class FloatConstantList : OffsetArray<float>
-		{
-			public FloatConstantList() { }
-
-			public FloatConstantList( FloatConstantList other )
-			{
-				Data = (float[])other.Data.Clone();
-			}
-
-			public override void Resize( int size )
-			{
-				Contract.Requires( size > Count );
-				AddRange( Enumerable.Repeat( 0.0f, size - Count ) );
-			}
-		};
-
-		#endregion
-
-		#region Nested type: IntConstantList
-
-		/// <summary>
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public class IntConstantList : OffsetArray<int>
-		{
-			public IntConstantList() { }
-
-			public IntConstantList( IntConstantList other )
-			{
-				Data = (int[])other.Data.Clone();
-			}
-
-			public override void Resize( int size )
-			{
-				Contract.Requires( size > Count );
-				AddRange( Enumerable.Repeat( 0, size - Count ) );
-			}
-		};
-
-		#endregion
-
-		#region Nested type: OffsetArray
-
 		/// <summary>
 		/// This class emulates the behaviour of a vector&lt;T&gt;
 		/// allowing T* access as IntPtr of a specified element
@@ -72,14 +24,16 @@ namespace Axiom.Graphics
 		{
 			#region Fields
 
-			private readonly int _size = Memory.SizeOf( typeof( T ) );
 			private FixedPointer _ptr;
+			private readonly int _size = Memory.SizeOf( typeof ( T ) );
 
 			#endregion Fields
 
 			#region Properties
 
 			public T[] Data { get; protected set; }
+
+			public int Count { get; private set; }
 
 			public int Capacity
 			{
@@ -88,8 +42,6 @@ namespace Axiom.Graphics
 					return Data.Length;
 				}
 			}
-
-			public int Count { get; private set; }
 
 			public bool IsReadOnly
 			{
@@ -118,43 +70,28 @@ namespace Axiom.Graphics
 
 			public struct FixedPointer : IDisposable
 			{
-				internal T[] Owner;
 				public BufferBase Pointer;
-
-				#region IDisposable Members
+				internal T[] Owner;
 
 				public void Dispose()
 				{
-					Memory.UnpinObject( this.Owner );
+					Memory.UnpinObject( Owner );
 				}
-
-				#endregion
 			};
 
 			#endregion Nested types
 
 			public OffsetArray()
+				: base()
 			{
 				Data = new T[ 16 ];
 			}
 
-			#region IList<T> Members
-
-			public IEnumerator<T> GetEnumerator()
-			{
-				for ( int i = 0; i < Count; i++ )
-				{
-					yield return Data[ i ];
-				}
-			}
-
-			#endregion
-
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !IsDisposed && disposeManagedResources )
+				if ( !this.IsDisposed && disposeManagedResources )
 				{
-					this._ptr.SafeDispose();
+					_ptr.SafeDispose();
 				}
 
 				base.dispose( disposeManagedResources );
@@ -162,21 +99,29 @@ namespace Axiom.Graphics
 
 			public FixedPointer Fix( int offset )
 			{
-				this._ptr.Owner = Data;
-				this._ptr.Pointer = Memory.PinObject( this._ptr.Owner ).Offset( this._size * offset );
-				return this._ptr;
+				_ptr.Owner = Data;
+				_ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size * offset );
+				return _ptr;
+			}
+
+			public IEnumerator<T> GetEnumerator()
+			{
+				for ( var i = 0; i < Count; i++ )
+				{
+					yield return Data[ i ];
+				}
 			}
 
 			private void _grow()
 			{
-				T[] tmp = Data;
+				var tmp = Data;
 				Array.Resize( ref tmp, Capacity + 16 );
 				Data = tmp;
 			}
 
 			public void AddRange( IEnumerable<T> entries )
 			{
-				foreach ( T v in entries )
+				foreach ( var v in entries )
 				{
 					Add( v );
 				}
@@ -184,11 +129,11 @@ namespace Axiom.Graphics
 
 			public void RemoveRange( int index, int count )
 			{
-				int behind = Count - index - 1; // number of elements behind the to be moved region
-				int next = index + count; // index of the first element behind
-				int todo = behind < count ? behind : count; // number of elements to shift down
+				var behind = Count - index - 1; // number of elements behind the to be moved region
+				var next = index + count; // index of the first element behind
+				var todo = behind < count ? behind : count; // number of elements to shift down
 
-				for ( int i = 0; i < todo; i++ )
+				for ( var i = 0; i < todo; i++ )
 				{
 					Data[ index + i ] = Data[ next + i ];
 				}
@@ -221,7 +166,7 @@ namespace Axiom.Graphics
 
 			public void CopyTo( T[] array, int arrayIndex )
 			{
-				for ( int i = 0; i < Count; i++ )
+				for ( var i = 0; i < Count; i++ )
 				{
 					array[ arrayIndex + i ] = Data[ i ];
 				}
@@ -259,6 +204,44 @@ namespace Axiom.Graphics
 			#endregion IList<T> implementation
 		};
 
-		#endregion
+		/// <summary>
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public class FloatConstantList : OffsetArray<float>
+		{
+			public FloatConstantList()
+				: base() {}
+
+			public FloatConstantList( FloatConstantList other )
+			{
+				Data = (float[])other.Data.Clone();
+			}
+
+			public override void Resize( int size )
+			{
+				Contract.Requires( size > Count );
+				AddRange( Enumerable.Repeat( 0.0f, size - Count ) );
+			}
+		};
+
+		/// <summary>
+		/// </summary>
+		[OgreVersion( 1, 7, 2790 )]
+		public class IntConstantList : OffsetArray<int>
+		{
+			public IntConstantList()
+				: base() {}
+
+			public IntConstantList( IntConstantList other )
+			{
+				Data = (int[])other.Data.Clone();
+			}
+
+			public override void Resize( int size )
+			{
+				Contract.Requires( size > Count );
+				AddRange( Enumerable.Repeat( 0, size - Count ) );
+			}
+		};
 	}
 }

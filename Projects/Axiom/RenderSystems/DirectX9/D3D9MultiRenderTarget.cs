@@ -39,9 +39,6 @@ using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Utilities;
 
-using SharpDX.Direct3D9;
-
-using Capabilities = Axiom.Graphics.Capabilities;
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -52,7 +49,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields and Properties
 
-		private readonly D3D9HardwarePixelBuffer[] _renderTargets = new D3D9HardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
+		private D3D9HardwarePixelBuffer[] _renderTargets = new D3D9HardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
 
 		#endregion Fields and Properties
 
@@ -60,7 +57,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9MultiRenderTarget( string name )
-			: base( name ) { }
+			: base( name ) {}
 
 		#endregion Construction and Destruction
 
@@ -87,7 +84,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Find first non null target
 			int y;
-			for ( y = 0; y < Config.MaxMultipleRenderTargets && this._renderTargets[ y ] == null; ++y )
+			for ( y = 0; y < Config.MaxMultipleRenderTargets && _renderTargets[ y ] == null; ++y )
 			{
 				;
 			}
@@ -95,18 +92,18 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( y != Config.MaxMultipleRenderTargets )
 			{
 				// If there is another target bound, compare sizes
-				if ( this._renderTargets[ y ].Width != buffer.Width || this._renderTargets[ y ].Height != buffer.Height )
+				if ( _renderTargets[ y ].Width != buffer.Width || _renderTargets[ y ].Height != buffer.Height )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
 
-				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) && ( PixelUtil.GetNumElemBits( this._renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
+				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) && ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
 				}
 			}
 
-			this._renderTargets[ attachment ] = buffer;
+			_renderTargets[ attachment ] = buffer;
 			_checkAndUpdate();
 		}
 
@@ -117,8 +114,8 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
-			this._renderTargets[ attachment ].SafeDispose();
-			this._renderTargets[ attachment ] = null;
+			_renderTargets[ attachment ].SafeDispose();
+			_renderTargets[ attachment ] = null;
 			_checkAndUpdate();
 		}
 
@@ -128,21 +125,49 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		private void _checkAndUpdate()
 		{
-			if ( this._renderTargets[ 0 ] != null )
+			if ( _renderTargets[ 0 ] != null )
 			{
-				width = this._renderTargets[ 0 ].Width;
-				height = this._renderTargets[ 0 ].Height;
+				this.width = _renderTargets[ 0 ].Width;
+				this.height = _renderTargets[ 0 ].Height;
 			}
 			else
 			{
-				width = 0;
-				height = 0;
+				this.width = 0;
+				this.height = 0;
 			}
 		}
 
 		#endregion Methods
 
 		#region RenderTarget Implementation
+
+		/// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
+		[OgreVersion( 1, 7, 2790 )]
+		public override void Update( bool swapBuffers )
+		{
+			var deviceManager = D3D9RenderSystem.DeviceManager;
+			var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
+
+			if ( currRenderWindowDevice != null )
+			{
+				if ( currRenderWindowDevice.IsDeviceLost == false )
+				{
+					base.Update( swapBuffers );
+				}
+			}
+			else
+			{
+				foreach ( var device in deviceManager )
+				{
+					if ( device.IsDeviceLost == false )
+					{
+						deviceManager.ActiveRenderTargetDevice = device;
+						base.Update( swapBuffers );
+						deviceManager.ActiveRenderTargetDevice = null;
+					}
+				}
+			}
+		}
 
 		public override object this[ string attribute ]
 		{
@@ -151,13 +176,13 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( attribute.ToUpper() == "DDBACKBUFFER" )
 				{
-					var surfaces = new Surface[ Config.MaxMultipleRenderTargets ];
+					var surfaces = new D3D9.Surface[ Config.MaxMultipleRenderTargets ];
 					// Transfer surfaces
-					for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
+					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{
-						if ( this._renderTargets[ x ] != null )
+						if ( _renderTargets[ x ] != null )
 						{
-							surfaces[ x ] = this._renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
+							surfaces[ x ] = _renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
 						}
 					}
 					return surfaces;
@@ -173,34 +198,6 @@ namespace Axiom.RenderSystems.DirectX9
 			get
 			{
 				return false;
-			}
-		}
-
-		/// <see cref="Axiom.Graphics.RenderTarget.Update(bool)"/>
-		[OgreVersion( 1, 7, 2790 )]
-		public override void Update( bool swapBuffers )
-		{
-			D3D9DeviceManager deviceManager = D3D9RenderSystem.DeviceManager;
-			D3D9Device currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
-
-			if ( currRenderWindowDevice != null )
-			{
-				if ( currRenderWindowDevice.IsDeviceLost == false )
-				{
-					base.Update( swapBuffers );
-				}
-			}
-			else
-			{
-				foreach ( D3D9Device device in deviceManager )
-				{
-					if ( device.IsDeviceLost == false )
-					{
-						deviceManager.ActiveRenderTargetDevice = device;
-						base.Update( swapBuffers );
-						deviceManager.ActiveRenderTargetDevice = null;
-					}
-				}
 			}
 		}
 

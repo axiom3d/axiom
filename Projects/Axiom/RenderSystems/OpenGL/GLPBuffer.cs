@@ -38,6 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -54,19 +58,55 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Format Property
 
-		public PixelComponentType Format { get; protected set; }
+		private PixelComponentType _format;
+
+		public PixelComponentType Format
+		{
+			get
+			{
+				return _format;
+			}
+			protected set
+			{
+				_format = value;
+			}
+		}
 
 		#endregion Format Property
 
 		#region Width Property
 
-		public int Width { get; protected set; }
+		private int _width;
+
+		public int Width
+		{
+			get
+			{
+				return _width;
+			}
+			protected set
+			{
+				_width = value;
+			}
+		}
 
 		#endregion Width Property
 
 		#region Height Property
 
-		public int Height { get; protected set; }
+		private int _height;
+
+		public int Height
+		{
+			get
+			{
+				return _height;
+			}
+			protected set
+			{
+				_height = value;
+			}
+		}
 
 		#endregion Height Property
 
@@ -90,7 +130,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="format"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public GLPBuffer( PixelComponentType format, int width, int height ) { }
+		public GLPBuffer( PixelComponentType format, int width, int height ) {}
 
 		#endregion Construction and Destruction
 

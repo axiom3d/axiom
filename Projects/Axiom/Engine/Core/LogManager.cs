@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 using Axiom.Collections;
@@ -56,7 +58,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of logs created by the log manager.
 		/// </summary>
-		private readonly AxiomCollection<Log> logList = new AxiomCollection<Log>();
+		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
 
 		/// <summary>
 		///     The default log to which output is done.
@@ -71,16 +73,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( this.defaultLog == null )
+				if ( defaultLog == null )
 				{
 					throw new AxiomException( "No logs have been created yet." );
 				}
 
-				return this.defaultLog;
+				return defaultLog;
 			}
 			set
 			{
-				this.defaultLog = value;
+				defaultLog = value;
 			}
 		}
 
@@ -150,16 +152,16 @@ namespace Axiom.Core
 			var newLog = new Log( name, debuggerOutput );
 
 			// set as the default log if need be
-			if ( this.defaultLog == null || isDefaultLog )
+			if ( defaultLog == null || isDefaultLog )
 			{
-				this.defaultLog = newLog;
+				defaultLog = newLog;
 			}
 
 			if ( name == null )
 			{
 				name = string.Empty;
 			}
-			this.logList.Add( name, newLog );
+			logList.Add( name, newLog );
 
 			return newLog;
 		}
@@ -171,12 +173,12 @@ namespace Axiom.Core
 		/// <returns>Log with the specified name.</returns>
 		public Log GetLog( string name )
 		{
-			if ( this.logList[ name ] == null )
+			if ( logList[ name ] == null )
 			{
 				throw new AxiomException( "Log with the name '{0}' not found.", name );
 			}
 
-			return this.logList[ name ];
+			return (Log)logList[ name ];
 		}
 
 		/// <summary>
@@ -244,7 +246,7 @@ namespace Axiom.Core
 
 		private static string BuildInnerExceptionString( Exception innerException )
 		{
-			string errMessage = string.Empty;
+			var errMessage = string.Empty;
 
 			errMessage += "\n" + " InnerException ";
 			errMessage += "\n" + innerException.Message + "\n" + innerException.StackTrace;
@@ -266,12 +268,12 @@ namespace Axiom.Core
 				{
 					// Dispose managed resources.
 					// dispose of all the logs
-					foreach ( IDisposable o in this.logList.Values )
+					foreach ( IDisposable o in logList.Values )
 					{
 						o.Dispose();
 					}
 
-					this.logList.Clear();
+					logList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

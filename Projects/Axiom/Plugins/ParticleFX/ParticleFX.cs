@@ -51,7 +51,7 @@ namespace Axiom.ParticleFX
 	/// Summary description for ParticleFX.
 	/// </summary>
 #if !( XBOX || XBOX360 || WINDOWS_PHONE )
-	[Export( typeof( IPlugin ) )]
+	[Export( typeof ( IPlugin ) )]
 #endif
 	public class ParticleFX : IPlugin
 	{

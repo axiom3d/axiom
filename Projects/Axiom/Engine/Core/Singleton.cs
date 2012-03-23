@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -62,10 +63,20 @@ namespace Axiom.Core
 	{
 		public Singleton()
 		{
-			if ( SingletonFactory.instance != null && !ReferenceEquals( this, SingletonFactory.instance ) )
+			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
 			{
-				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", GetType().Name ) );
+				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
 			}
+		}
+
+		~Singleton()
+		{
+			dispose( false );
+		}
+
+		public virtual bool Initialize( params object[] args )
+		{
+			return true;
 		}
 
 		public static T Instance
@@ -86,19 +97,17 @@ namespace Axiom.Core
 				}
 				catch ( /*TypeInitialization*/Exception )
 				{
-					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof( T ) ) );
+					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof ( T ) ) );
 				}
 			}
 		}
 
-		~Singleton()
+		private class SingletonFactory
 		{
-			dispose( false );
-		}
+			internal static object singletonLock = new object();
+			static SingletonFactory() {}
 
-		public virtual bool Initialize( params object[] args )
-		{
-			return true;
+			internal static T instance = new T();
 		}
 
 		public static void Destroy()
@@ -106,24 +115,30 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
-		public static void Reinitialize() { }
+		public static void Reinitialize() {}
 
 		#region IDisposable Implementation
 
 		#region isDisposed Property
 
+		private bool _disposed = false;
+
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed { get; set; }
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
 
 		#endregion isDisposed Property
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
 
 		/// <summary>
 		/// Class level dispose method
@@ -155,7 +170,7 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					Destroy();
+					Singleton<T>.Destroy();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -164,18 +179,12 @@ namespace Axiom.Core
 			isDisposed = true;
 		}
 
-		#endregion IDisposable Implementation
-
-		#region Nested type: SingletonFactory
-
-		private class SingletonFactory
+		public void Dispose()
 		{
-			internal static object singletonLock = new object();
-
-			internal static T instance = new T();
-			static SingletonFactory() { }
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
-		#endregion
+		#endregion IDisposable Implementation
 	}
 }

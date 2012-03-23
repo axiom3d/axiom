@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			: base( parent.Creator, parent.Name, parent.Handle, parent.Group, false, null )
 		{
 			// store off the reference to the parent program
-			this.glslProgram = parent;
+			glslProgram = parent;
 
 			type = parent.Type;
 			syntaxCode = "glsl";
@@ -129,7 +129,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 
 			// transfer skeletal animation status from parent
-			isSkeletalAnimationIncluded = this.glslProgram.IsSkeletalAnimationIncluded;
+			isSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
 			LoadFromFile = false;
@@ -166,7 +166,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			get
 			{
-				return this.glslProgram;
+				return glslProgram;
 			}
 		}
 
@@ -294,7 +294,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public override void BindProgramPassIterationParameters( GpuProgramParameters parms )
 		{
 			// activate the link program object
-			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+			var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			// pass on parameters from params to program object uniforms
 			linkProgram.UpdatePassIterationUniforms( parms );
@@ -308,7 +308,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		internal override uint AttributeIndex( VertexElementSemantic semantic, uint index )
 		{
 			// get link program - only call this in the context of bound program
-			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+			var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			if ( linkProgram.IsAttributeValid( semantic, index ) )
 			{
@@ -329,7 +329,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		internal override bool IsAttributeValid( VertexElementSemantic semantic, uint index )
 		{
 			// get link program - only call this in the context of bound program
-			GLSLLinkProgram linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
+			var linkProgram = GLSLLinkProgramManager.Instance.ActiveLinkProgram;
 
 			if ( linkProgram.IsAttributeValid( semantic, index ) )
 			{

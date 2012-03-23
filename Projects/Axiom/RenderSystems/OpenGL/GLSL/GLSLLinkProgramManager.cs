@@ -82,63 +82,63 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				instance = this;
 			}
 
-			this.typeEnumMap = new Dictionary<string, int>
-                               {
-                                   {
-                                       "float", Gl.GL_FLOAT
-                                       }, {
-                                              "vec2", Gl.GL_FLOAT_VEC2
-                                              }, {
-                                                     "vec3", Gl.GL_FLOAT_VEC3
-                                                     }, {
-                                                            "vec4", Gl.GL_FLOAT_VEC4
-                                                            }, {
-                                                                   "sampler1D", Gl.GL_SAMPLER_1D
-                                                                   }, {
-                                                                          "sampler2D", Gl.GL_SAMPLER_2D
-                                                                          }, {
-                                                                                 "sampler3D", Gl.GL_SAMPLER_3D
-                                                                                 }, {
-                                                                                        "samplerCube", Gl.GL_SAMPLER_CUBE
-                                                                                        }, {
-                                                                                               "sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
-                                                                                               }, {
-                                                                                                      "sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
-                                                                                                      }, {
-                                                                                                             "int", Gl.GL_INT
-                                                                                                             }, {
-                                                                                                                    "ivec2", Gl.GL_INT_VEC2
-                                                                                                                    }, {
-                                                                                                                           "ivec3", Gl.GL_INT_VEC3
-                                                                                                                           }, {
-                                                                                                                                  "ivec4", Gl.GL_INT_VEC4
-                                                                                                                                  }, {
-                                                                                                                                         "mat2", Gl.GL_FLOAT_MAT2
-                                                                                                                                         }, {
-                                                                                                                                                "mat3", Gl.GL_FLOAT_MAT3
-                                                                                                                                                }, {
-                                                                                                                                                       "mat4", Gl.GL_FLOAT_MAT4
-                                                                                                                                                       }, // GL 2.1
-                                   {
-                                       "mat2x2", Gl.GL_FLOAT_MAT2
-                                       }, {
-                                              "mat3x3", Gl.GL_FLOAT_MAT3
-                                              }, {
-                                                     "mat4x4", Gl.GL_FLOAT_MAT4
-                                                     }, {
-                                                            "mat2x3", Gl.GL_FLOAT_MAT2x3
-                                                            }, {
-                                                                   "mat3x2", Gl.GL_FLOAT_MAT3x2
-                                                                   }, {
-                                                                          "mat3x4", Gl.GL_FLOAT_MAT3x4
-                                                                          }, {
-                                                                                 "mat4x3", Gl.GL_FLOAT_MAT4x3
-                                                                                 }, {
-                                                                                        "mat2x4", Gl.GL_FLOAT_MAT2x4
-                                                                                        }, {
-                                                                                               "mat4x2", Gl.GL_FLOAT_MAT4x2
-                                                                                               },
-                               };
+			typeEnumMap = new Dictionary<string, int>
+			              {
+			              	{
+			              		"float", Gl.GL_FLOAT
+			              		}, {
+			              		   	"vec2", Gl.GL_FLOAT_VEC2
+			              		   	}, {
+			              		   	   	"vec3", Gl.GL_FLOAT_VEC3
+			              		   	   	}, {
+			              		   	   	   	"vec4", Gl.GL_FLOAT_VEC4
+			              		   	   	   	}, {
+			              		   	   	   	   	"sampler1D", Gl.GL_SAMPLER_1D
+			              		   	   	   	   	}, {
+			              		   	   	   	   	   	"sampler2D", Gl.GL_SAMPLER_2D
+			              		   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	"sampler3D", Gl.GL_SAMPLER_3D
+			              		   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	"samplerCube", Gl.GL_SAMPLER_CUBE
+			              		   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
+			              		   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
+			              		   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	"int", Gl.GL_INT
+			              		   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	"ivec2", Gl.GL_INT_VEC2
+			              		   	   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	   	"ivec3", Gl.GL_INT_VEC3
+			              		   	   	   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	"ivec4", Gl.GL_INT_VEC4
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat2", Gl.GL_FLOAT_MAT2
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat3", Gl.GL_FLOAT_MAT3
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat4", Gl.GL_FLOAT_MAT4
+			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, // GL 2.1
+			              	{
+			              		"mat2x2", Gl.GL_FLOAT_MAT2
+			              		}, {
+			              		   	"mat3x3", Gl.GL_FLOAT_MAT3
+			              		   	}, {
+			              		   	   	"mat4x4", Gl.GL_FLOAT_MAT4
+			              		   	   	}, {
+			              		   	   	   	"mat2x3", Gl.GL_FLOAT_MAT2x3
+			              		   	   	   	}, {
+			              		   	   	   	   	"mat3x2", Gl.GL_FLOAT_MAT3x2
+			              		   	   	   	   	}, {
+			              		   	   	   	   	   	"mat3x4", Gl.GL_FLOAT_MAT3x4
+			              		   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	"mat4x3", Gl.GL_FLOAT_MAT4x3
+			              		   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	"mat2x4", Gl.GL_FLOAT_MAT2x4
+			              		   	   	   	   	   	   	   	}, {
+			              		   	   	   	   	   	   	   	   	"mat4x2", Gl.GL_FLOAT_MAT4x2
+			              		   	   	   	   	   	   	   	   	},
+			              };
 		}
 
 		/// <summary>
@@ -161,12 +161,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private readonly Hashtable linkPrograms = new Hashtable();
 
-		private readonly Dictionary<string, int> typeEnumMap;
-
 		/// <summary>
-		///		Currently active fragment GPU program.
+		///		Currently active vertex GPU program.
 		/// </summary>
-		private GLSLGpuProgram activeFragmentProgram;
+		private GLSLGpuProgram activeVertexProgram;
 
 		/// <summary>
 		///		Currently active geometry GPU program.
@@ -174,14 +172,16 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		private GLSLGpuProgram activeGeometryProgram;
 
 		/// <summary>
+		///		Currently active fragment GPU program.
+		/// </summary>
+		private GLSLGpuProgram activeFragmentProgram;
+
+		/// <summary>
 		///		Currently active link program.
 		/// </summary>
 		private GLSLLinkProgram activeLinkProgram;
 
-		/// <summary>
-		///		Currently active vertex GPU program.
-		/// </summary>
-		private GLSLGpuProgram activeVertexProgram;
+		private Dictionary<string, int> typeEnumMap;
 
 		#endregion Fields
 
@@ -196,53 +196,53 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			get
 			{
 				// if there is an active link program then return it
-				if ( this.activeLinkProgram != null )
+				if ( activeLinkProgram != null )
 				{
-					return this.activeLinkProgram;
+					return activeLinkProgram;
 				}
 
 				// no active link program so find one or make a new one
 				// is there an active key?
 				long activeKey = 0;
 
-				if ( this.activeVertexProgram != null )
+				if ( activeVertexProgram != null )
 				{
-					activeKey = this.activeVertexProgram.ProgramID << 32;
+					activeKey = activeVertexProgram.ProgramID << 32;
 				}
-				if ( this.activeGeometryProgram != null )
+				if ( activeGeometryProgram != null )
 				{
-					activeKey += this.activeGeometryProgram.ProgramID << 16;
+					activeKey += activeGeometryProgram.ProgramID << 16;
 				}
-				if ( this.activeFragmentProgram != null )
+				if ( activeFragmentProgram != null )
 				{
-					activeKey += this.activeFragmentProgram.ProgramID;
+					activeKey += activeFragmentProgram.ProgramID;
 				}
 
 				// only return a link program object if a vertex or fragment program exist
 				if ( activeKey > 0 )
 				{
 					// find the key in the hash map
-					object programFound = this.linkPrograms[ activeKey ];
+					var programFound = linkPrograms[ activeKey ];
 					// program object not found for key so need to create it
 					if ( programFound == null )
 					{
-						this.activeLinkProgram = new GLSLLinkProgram( this.activeVertexProgram, this.activeGeometryProgram, this.activeFragmentProgram );
-						this.linkPrograms[ activeKey ] = this.activeLinkProgram;
+						activeLinkProgram = new GLSLLinkProgram( activeVertexProgram, activeGeometryProgram, activeFragmentProgram );
+						linkPrograms[ activeKey ] = activeLinkProgram;
 					}
 					else
 					{
 						// found a link program in map container so make it active
-						this.activeLinkProgram = (GLSLLinkProgram)programFound;
+						activeLinkProgram = (GLSLLinkProgram)programFound;
 					}
 				}
 
 				// make the program object active
-				if ( this.activeLinkProgram != null )
+				if ( activeLinkProgram != null )
 				{
-					this.activeLinkProgram.Activate();
+					activeLinkProgram.Activate();
 				}
 
-				return this.activeLinkProgram;
+				return activeLinkProgram;
 			}
 		}
 
@@ -264,12 +264,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="fragmentProgram"></param>
 		public void SetActiveFragmentShader( GLSLGpuProgram fragmentProgram )
 		{
-			if ( fragmentProgram != this.activeFragmentProgram )
+			if ( fragmentProgram != activeFragmentProgram )
 			{
-				this.activeFragmentProgram = fragmentProgram;
+				activeFragmentProgram = fragmentProgram;
 
 				// active link program is no longer valid
-				this.activeLinkProgram = null;
+				activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -286,12 +286,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveGeometryShader( GLSLGpuProgram geometryProgram )
 		{
-			if ( geometryProgram != this.activeGeometryProgram )
+			if ( geometryProgram != activeGeometryProgram )
 			{
-				this.activeGeometryProgram = geometryProgram;
+				activeGeometryProgram = geometryProgram;
 
 				// active link program is no longer valid
-				this.activeLinkProgram = null;
+				activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -308,12 +308,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveVertexShader( GLSLGpuProgram vertexProgram )
 		{
-			if ( vertexProgram != this.activeVertexProgram )
+			if ( vertexProgram != activeVertexProgram )
 			{
-				this.activeVertexProgram = vertexProgram;
+				activeVertexProgram = vertexProgram;
 
 				// active link program is no longer valid
-				this.activeLinkProgram = null;
+				activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -474,7 +474,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			// Loop over each of the active uniforms, and add them to the reference container
 			// only do this for user defined uniforms, ignore built in gl state uniforms
-			for ( int index = 0; index < uniformCount; index++ )
+			for ( var index = 0; index < uniformCount; index++ )
 			{
 				// important for Axiom: dont pull this var to the outer scope
 				// because UniformReference is by value (class)
@@ -491,14 +491,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				if ( newGLUniformReference.Location >= 0 )
 				{
 					// user defined uniform found, add it to the reference list
-					string paramName = uniformName.ToString();
+					var paramName = uniformName.ToString();
 
 					// currant ATI drivers (Catalyst 7.2 and earlier) and older NVidia drivers will include all array elements as uniforms but we only want the root array name and location
 					// Also note that ATI Catalyst 6.8 to 7.2 there is a bug with glUniform that does not allow you to update a uniform array past the first uniform array element
 					// ie you can't start updating an array starting at element 1, must always be element 0.
 
 					// if the uniform name has a "[" in it then its an array element uniform.
-					int arrayStart = paramName.IndexOf( '[' );
+					var arrayStart = paramName.IndexOf( '[' );
 					if ( arrayStart != -1 )
 					{
 						// if not the first array element then skip it and continue to the next uniform
@@ -511,7 +511,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					}
 
 					// find out which params object this comes from
-					bool foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs, fragmentConstantDefs, newGLUniformReference );
+					var foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs, fragmentConstantDefs, newGLUniformReference );
 
 					// only add this parameter if we found the source
 					if ( foundSource )
@@ -543,17 +543,17 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			string line;
 
-			int currPos = src.IndexOf( "uniform" );
+			var currPos = src.IndexOf( "uniform" );
 			while ( currPos != -1 )
 			{
 				var def = new GpuProgramParameters.GpuConstantDefinition();
-				string paramName = "";
+				var paramName = "";
 
 				// Now check for using the word 'uniform' in a larger string & ignore
 				bool inLargerString = false;
 				if ( currPos != 0 )
 				{
-					char prev = src[ currPos - 1 ];
+					var prev = src[ currPos - 1 ];
 					if ( prev != ' ' && prev != '\t' && prev != '\r' && prev != '\n' && prev != ';' )
 					{
 						inLargerString = true;
@@ -561,7 +561,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				}
 				if ( !inLargerString && currPos + 7 < src.Length )
 				{
-					char next = src[ currPos + 7 ];
+					var next = src[ currPos + 7 ];
 					if ( next != ' ' && next != '\t' && next != '\r' && next != '\n' )
 					{
 						inLargerString = true;
@@ -574,7 +574,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				if ( !inLargerString )
 				{
 					// find terminating semicolon
-					int endPos = src.IndexOf( ';', currPos );
+					var endPos = src.IndexOf( ';', currPos );
 					if ( endPos == -1 )
 					{
 						// problem, missing semicolon, abort
@@ -585,18 +585,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					// Remove spaces before opening square braces, otherwise
 					// the following split() can split the line at inappropriate
 					// places (e.g. "vec3 something [3]" won't work).
-					for ( int sqp = line.IndexOf( " [" ); sqp != -1; sqp = line.IndexOf( " [" ) )
+					for ( var sqp = line.IndexOf( " [" ); sqp != -1; sqp = line.IndexOf( " [" ) )
 					{
 						line.Remove( sqp, 1 );
 					}
 
 					// Split into tokens
-					string[] parts = line.Split( ", \t\r\n".ToCharArray() );
-					foreach ( string _i in parts )
+					var parts = line.Split( ", \t\r\n".ToCharArray() );
+					foreach ( var _i in parts )
 					{
-						string i = _i;
+						var i = _i;
 						int typei;
-						if ( this.typeEnumMap.TryGetValue( i, out typei ) )
+						if ( typeEnumMap.TryGetValue( i, out typei ) )
 						{
 							CompleteDefInfo( typei, def );
 						}
@@ -609,19 +609,19 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 								continue;
 							}
 
-							int arrayStart = i.IndexOf( '[' );
+							var arrayStart = i.IndexOf( '[' );
 							if ( arrayStart != -1 )
 							{
 								// potential name (if butted up to array)
-								string name = i.Substring( 0, arrayStart );
+								var name = i.Substring( 0, arrayStart );
 								name = name.Trim();
 								if ( name != string.Empty )
 								{
 									paramName = name;
 								}
 
-								int arrayEnd = i.IndexOf( ']', arrayStart );
-								string arrayDimTerm = i.Substring( arrayStart + 1, arrayEnd - arrayStart - 1 );
+								var arrayEnd = i.IndexOf( ']', arrayStart );
+								var arrayDimTerm = i.Substring( arrayStart + 1, arrayEnd - arrayStart - 1 );
 								arrayDimTerm = arrayDimTerm.Trim();
 								// the array term might be a simple number or it might be
 								// an expression (e.g. 24*3) or refer to a constant expression
@@ -680,14 +680,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			foreach ( GLSLLinkProgram program in this.linkPrograms.Values )
+			foreach ( GLSLLinkProgram program in linkPrograms.Values )
 			{
 				program.Dispose();
 			}
 
-			this.linkPrograms.Clear();
+			linkPrograms.Clear();
 		}
 
-		#endregion
+		#endregion IDisposable Members
 	}
 }

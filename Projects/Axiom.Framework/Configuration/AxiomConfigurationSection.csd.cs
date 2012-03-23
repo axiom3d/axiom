@@ -8,34 +8,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.CodeDom.Compiler;
-using System.ComponentModel;
-using System.Configuration;
-
 namespace Axiom.Framework.Configuration
 {
 	/// <summary>
 	/// The AxiomConfigurationSection Configuration Section.
 	/// </summary>
-	public class AxiomConfigurationSection : ConfigurationSection
+	public partial class AxiomConfigurationSection : global::System.Configuration.ConfigurationSection
 	{
 		#region Singleton Instance
 
 		/// <summary>
 		/// The XML name of the AxiomConfigurationSection Configuration Section.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string AxiomConfigurationSectionSectionName = "axiomConfigurationSection";
 
 		/// <summary>
 		/// Gets the AxiomConfigurationSection instance.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public static AxiomConfigurationSection Instance
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public static global::Axiom.Framework.Configuration.AxiomConfigurationSection Instance
 		{
 			get
 			{
-				return ( (AxiomConfigurationSection)( ConfigurationManager.GetSection( AxiomConfigurationSectionSectionName ) ) );
+				return ( (global::Axiom.Framework.Configuration.AxiomConfigurationSection)( global::System.Configuration.ConfigurationManager.GetSection( global::Axiom.Framework.Configuration.AxiomConfigurationSection.AxiomConfigurationSectionSectionName ) ) );
 			}
 		}
 
@@ -46,7 +42,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Xmlns"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string XmlnsPropertyName = "xmlns";
 
 		/// <summary>
@@ -56,13 +52,13 @@ namespace Axiom.Framework.Configuration
 		/// This property makes sure that if the configuration file contains the XML namespace,
 		/// the parser doesn't throw an exception because it encounters the unknown "xmlns" attribute.
 		/// </remarks>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[ConfigurationProperty( XmlnsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.AxiomConfigurationSection.XmlnsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Xmlns
 		{
 			get
 			{
-				return ( (string)( base[ XmlnsPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.XmlnsPropertyName ] ) );
 			}
 		}
 
@@ -73,7 +69,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -86,24 +82,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="LogFilename"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string LogFilenamePropertyName = "logFilename";
 
 		/// <summary>
 		/// Gets or sets the LogFilename.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The LogFilename." )]
-		[ConfigurationProperty( LogFilenamePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The LogFilename." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.AxiomConfigurationSection.LogFilenamePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string LogFilename
 		{
 			get
 			{
-				return ( (string)( base[ LogFilenamePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.LogFilenamePropertyName ] ) );
 			}
 			set
 			{
-				base[ LogFilenamePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.LogFilenamePropertyName ] = value;
 			}
 		}
 
@@ -114,24 +110,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Plugins"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string PluginsPropertyName = "plugins";
 
 		/// <summary>
 		/// Gets or sets the Plugins.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Plugins." )]
-		[ConfigurationProperty( PluginsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
-		public PluginsElementCollection Plugins
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Plugins." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.AxiomConfigurationSection.PluginsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		public global::Axiom.Framework.Configuration.PluginsElementCollection Plugins
 		{
 			get
 			{
-				return ( (PluginsElementCollection)( base[ PluginsPropertyName ] ) );
+				return ( (global::Axiom.Framework.Configuration.PluginsElementCollection)( base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.PluginsPropertyName ] ) );
 			}
 			set
 			{
-				base[ PluginsPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.PluginsPropertyName ] = value;
 			}
 		}
 
@@ -142,24 +138,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="ResourceLocations"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string ResourceLocationsPropertyName = "resourceLocations";
 
 		/// <summary>
 		/// Gets or sets the ResourceLocations.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The ResourceLocations." )]
-		[ConfigurationProperty( ResourceLocationsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
-		public ResourceLocationElementCollection ResourceLocations
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The ResourceLocations." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.AxiomConfigurationSection.ResourceLocationsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		public global::Axiom.Framework.Configuration.ResourceLocationElementCollection ResourceLocations
 		{
 			get
 			{
-				return ( (ResourceLocationElementCollection)( base[ ResourceLocationsPropertyName ] ) );
+				return ( (global::Axiom.Framework.Configuration.ResourceLocationElementCollection)( base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.ResourceLocationsPropertyName ] ) );
 			}
 			set
 			{
-				base[ ResourceLocationsPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.ResourceLocationsPropertyName ] = value;
 			}
 		}
 
@@ -170,24 +166,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="RenderSystems"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string RenderSystemsPropertyName = "renderSystems";
 
 		/// <summary>
 		/// Gets or sets the RenderSystems.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The RenderSystems." )]
-		[ConfigurationProperty( RenderSystemsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
-		public RenderSystemElementCollection RenderSystems
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The RenderSystems." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.AxiomConfigurationSection.RenderSystemsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		public global::Axiom.Framework.Configuration.RenderSystemElementCollection RenderSystems
 		{
 			get
 			{
-				return ( (RenderSystemElementCollection)( base[ RenderSystemsPropertyName ] ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystemElementCollection)( base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.RenderSystemsPropertyName ] ) );
 			}
 			set
 			{
-				base[ RenderSystemsPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.AxiomConfigurationSection.RenderSystemsPropertyName ] = value;
 			}
 		}
 
@@ -200,14 +196,14 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// The PluginElement Configuration Element.
 	/// </summary>
-	public class PluginElement : ConfigurationElement
+	public partial class PluginElement : global::System.Configuration.ConfigurationElement
 	{
 		#region IsReadOnly override
 
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -220,24 +216,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Path"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string PathPropertyName = "path";
 
 		/// <summary>
 		/// Gets or sets the Path.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Path." )]
-		[ConfigurationProperty( PathPropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Path." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.PluginElement.PathPropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
 		public string Path
 		{
 			get
 			{
-				return ( (string)( base[ PathPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.PluginElement.PathPropertyName ] ) );
 			}
 			set
 			{
-				base[ PathPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.PluginElement.PathPropertyName ] = value;
 			}
 		}
 
@@ -248,24 +244,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Enabled"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string EnabledPropertyName = "enabled";
 
 		/// <summary>
 		/// Gets or sets the Enabled.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Enabled." )]
-		[ConfigurationProperty( EnabledPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false, DefaultValue = true )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Enabled." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.PluginElement.EnabledPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false, DefaultValue = true )]
 		public bool Enabled
 		{
 			get
 			{
-				return ( (bool)( base[ EnabledPropertyName ] ) );
+				return ( (bool)( base[ global::Axiom.Framework.Configuration.PluginElement.EnabledPropertyName ] ) );
 			}
 			set
 			{
-				base[ EnabledPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.PluginElement.EnabledPropertyName ] = value;
 			}
 		}
 
@@ -278,15 +274,15 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// A collection of PluginElement instances.
 	/// </summary>
-	[ConfigurationCollection( typeof( PluginElement ), CollectionType = ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = PluginElementPropertyName )]
-	public class PluginsElementCollection : ConfigurationElementCollection
+	[global::System.Configuration.ConfigurationCollectionAttribute( typeof ( global::Axiom.Framework.Configuration.PluginElement ), CollectionType = global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = global::Axiom.Framework.Configuration.PluginsElementCollection.PluginElementPropertyName )]
+	public partial class PluginsElementCollection : global::System.Configuration.ConfigurationElementCollection
 	{
 		#region Constants
 
 		/// <summary>
 		/// The XML name of the individual <see cref="global::Axiom.Framework.Configuration.PluginElement"/> instances in this collection.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string PluginElementPropertyName = "pluginElement";
 
 		#endregion
@@ -297,24 +293,24 @@ namespace Axiom.Framework.Configuration
 		/// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public override ConfigurationElementCollectionType CollectionType
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
 		{
 			get
 			{
-				return ConfigurationElementCollectionType.BasicMapAlternate;
+				return global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate;
 			}
 		}
 
 		/// <summary>
 		/// Gets the name used to identify this collection of elements
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override string ElementName
 		{
 			get
 			{
-				return PluginElementPropertyName;
+				return global::Axiom.Framework.Configuration.PluginsElementCollection.PluginElementPropertyName;
 			}
 		}
 
@@ -325,10 +321,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override bool IsElementName( string elementName )
 		{
-			return ( elementName == PluginElementPropertyName );
+			return ( elementName == global::Axiom.Framework.Configuration.PluginsElementCollection.PluginElementPropertyName );
 		}
 
 		/// <summary>
@@ -338,10 +334,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override object GetElementKey( ConfigurationElement element )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override object GetElementKey( global::System.Configuration.ConfigurationElement element )
 		{
-			return ( (PluginElement)( element ) ).Path;
+			return ( (global::Axiom.Framework.Configuration.PluginElement)( element ) ).Path;
 		}
 
 		/// <summary>
@@ -350,10 +346,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// A new <see cref="global::Axiom.Framework.Configuration.PluginElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override ConfigurationElement CreateNewElement()
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override global::System.Configuration.ConfigurationElement CreateNewElement()
 		{
-			return new PluginElement();
+			return new global::Axiom.Framework.Configuration.PluginElement();
 		}
 
 		#endregion
@@ -364,12 +360,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.PluginElement"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The index of the <see cref="global::Axiom.Framework.Configuration.PluginElement"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public PluginElement this[ int index ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.PluginElement this[ int index ]
 		{
 			get
 			{
-				return ( (PluginElement)( base.BaseGet( index ) ) );
+				return ( (global::Axiom.Framework.Configuration.PluginElement)( base.BaseGet( index ) ) );
 			}
 		}
 
@@ -377,12 +373,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.PluginElement"/> with the specified key.
 		/// </summary>
 		/// <param name="path">The key of the <see cref="global::Axiom.Framework.Configuration.PluginElement"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public PluginElement this[ object path ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.PluginElement this[ object path ]
 		{
 			get
 			{
-				return ( (PluginElement)( base.BaseGet( path ) ) );
+				return ( (global::Axiom.Framework.Configuration.PluginElement)( base.BaseGet( path ) ) );
 			}
 		}
 
@@ -394,8 +390,8 @@ namespace Axiom.Framework.Configuration
 		/// Adds the specified <see cref="global::Axiom.Framework.Configuration.PluginElement"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="pluginElement">The <see cref="global::Axiom.Framework.Configuration.PluginElement"/> to add.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Add( PluginElement pluginElement )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Add( global::Axiom.Framework.Configuration.PluginElement pluginElement )
 		{
 			base.BaseAdd( pluginElement );
 		}
@@ -408,10 +404,10 @@ namespace Axiom.Framework.Configuration
 		/// Removes the specified <see cref="global::Axiom.Framework.Configuration.PluginElement"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="pluginElement">The <see cref="global::Axiom.Framework.Configuration.PluginElement"/> to remove.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Remove( PluginElement pluginElement )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Remove( global::Axiom.Framework.Configuration.PluginElement pluginElement )
 		{
-			base.BaseRemove( GetElementKey( pluginElement ) );
+			base.BaseRemove( this.GetElementKey( pluginElement ) );
 		}
 
 		#endregion
@@ -421,7 +417,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -434,24 +430,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="AutoScan"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string AutoScanPropertyName = "autoScan";
 
 		/// <summary>
 		/// Gets or sets the AutoScan.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The AutoScan." )]
-		[ConfigurationProperty( AutoScanPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false, DefaultValue = true )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The AutoScan." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.PluginsElementCollection.AutoScanPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false, DefaultValue = true )]
 		public bool AutoScan
 		{
 			get
 			{
-				return ( (bool)( base[ AutoScanPropertyName ] ) );
+				return ( (bool)( base[ global::Axiom.Framework.Configuration.PluginsElementCollection.AutoScanPropertyName ] ) );
 			}
 			set
 			{
-				base[ AutoScanPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.PluginsElementCollection.AutoScanPropertyName ] = value;
 			}
 		}
 
@@ -462,24 +458,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Path"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string PathPropertyName = "path";
 
 		/// <summary>
 		/// Gets or sets the Path.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Path." )]
-		[ConfigurationProperty( PathPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Path." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.PluginsElementCollection.PathPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Path
 		{
 			get
 			{
-				return ( (string)( base[ PathPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.PluginsElementCollection.PathPropertyName ] ) );
 			}
 			set
 			{
-				base[ PathPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.PluginsElementCollection.PathPropertyName ] = value;
 			}
 		}
 
@@ -492,15 +488,15 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// A collection of ResourceLocationElement instances.
 	/// </summary>
-	[ConfigurationCollection( typeof( ResourceLocationElement ), CollectionType = ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = ResourceLocationElementPropertyName )]
-	public class ResourceLocationElementCollection : ConfigurationElementCollection
+	[global::System.Configuration.ConfigurationCollectionAttribute( typeof ( global::Axiom.Framework.Configuration.ResourceLocationElement ), CollectionType = global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = global::Axiom.Framework.Configuration.ResourceLocationElementCollection.ResourceLocationElementPropertyName )]
+	public partial class ResourceLocationElementCollection : global::System.Configuration.ConfigurationElementCollection
 	{
 		#region Constants
 
 		/// <summary>
 		/// The XML name of the individual <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> instances in this collection.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string ResourceLocationElementPropertyName = "resourceLocation";
 
 		#endregion
@@ -511,24 +507,24 @@ namespace Axiom.Framework.Configuration
 		/// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public override ConfigurationElementCollectionType CollectionType
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
 		{
 			get
 			{
-				return ConfigurationElementCollectionType.BasicMapAlternate;
+				return global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate;
 			}
 		}
 
 		/// <summary>
 		/// Gets the name used to identify this collection of elements
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override string ElementName
 		{
 			get
 			{
-				return ResourceLocationElementPropertyName;
+				return global::Axiom.Framework.Configuration.ResourceLocationElementCollection.ResourceLocationElementPropertyName;
 			}
 		}
 
@@ -539,10 +535,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override bool IsElementName( string elementName )
 		{
-			return ( elementName == ResourceLocationElementPropertyName );
+			return ( elementName == global::Axiom.Framework.Configuration.ResourceLocationElementCollection.ResourceLocationElementPropertyName );
 		}
 
 		/// <summary>
@@ -552,10 +548,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override object GetElementKey( ConfigurationElement element )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override object GetElementKey( global::System.Configuration.ConfigurationElement element )
 		{
-			return ( (ResourceLocationElement)( element ) ).Path;
+			return ( (global::Axiom.Framework.Configuration.ResourceLocationElement)( element ) ).Path;
 		}
 
 		/// <summary>
@@ -564,10 +560,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// A new <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override ConfigurationElement CreateNewElement()
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override global::System.Configuration.ConfigurationElement CreateNewElement()
 		{
-			return new ResourceLocationElement();
+			return new global::Axiom.Framework.Configuration.ResourceLocationElement();
 		}
 
 		#endregion
@@ -578,12 +574,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The index of the <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public ResourceLocationElement this[ int index ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.ResourceLocationElement this[ int index ]
 		{
 			get
 			{
-				return ( (ResourceLocationElement)( base.BaseGet( index ) ) );
+				return ( (global::Axiom.Framework.Configuration.ResourceLocationElement)( base.BaseGet( index ) ) );
 			}
 		}
 
@@ -591,12 +587,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> with the specified key.
 		/// </summary>
 		/// <param name="path">The key of the <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public ResourceLocationElement this[ object path ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.ResourceLocationElement this[ object path ]
 		{
 			get
 			{
-				return ( (ResourceLocationElement)( base.BaseGet( path ) ) );
+				return ( (global::Axiom.Framework.Configuration.ResourceLocationElement)( base.BaseGet( path ) ) );
 			}
 		}
 
@@ -608,8 +604,8 @@ namespace Axiom.Framework.Configuration
 		/// Adds the specified <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="resourceLocation">The <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> to add.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Add( ResourceLocationElement resourceLocation )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Add( global::Axiom.Framework.Configuration.ResourceLocationElement resourceLocation )
 		{
 			base.BaseAdd( resourceLocation );
 		}
@@ -622,10 +618,10 @@ namespace Axiom.Framework.Configuration
 		/// Removes the specified <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="resourceLocation">The <see cref="global::Axiom.Framework.Configuration.ResourceLocationElement"/> to remove.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Remove( ResourceLocationElement resourceLocation )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Remove( global::Axiom.Framework.Configuration.ResourceLocationElement resourceLocation )
 		{
-			base.BaseRemove( GetElementKey( resourceLocation ) );
+			base.BaseRemove( this.GetElementKey( resourceLocation ) );
 		}
 
 		#endregion
@@ -635,7 +631,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -650,15 +646,15 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// A collection of RenderSystem instances.
 	/// </summary>
-	[ConfigurationCollection( typeof( RenderSystem ), CollectionType = ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = RenderSystemPropertyName )]
-	public class RenderSystemElementCollection : ConfigurationElementCollection
+	[global::System.Configuration.ConfigurationCollectionAttribute( typeof ( global::Axiom.Framework.Configuration.RenderSystem ), CollectionType = global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = global::Axiom.Framework.Configuration.RenderSystemElementCollection.RenderSystemPropertyName )]
+	public partial class RenderSystemElementCollection : global::System.Configuration.ConfigurationElementCollection
 	{
 		#region Constants
 
 		/// <summary>
 		/// The XML name of the individual <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> instances in this collection.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string RenderSystemPropertyName = "renderSystem";
 
 		#endregion
@@ -669,24 +665,24 @@ namespace Axiom.Framework.Configuration
 		/// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public override ConfigurationElementCollectionType CollectionType
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
 		{
 			get
 			{
-				return ConfigurationElementCollectionType.BasicMapAlternate;
+				return global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate;
 			}
 		}
 
 		/// <summary>
 		/// Gets the name used to identify this collection of elements
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override string ElementName
 		{
 			get
 			{
-				return RenderSystemPropertyName;
+				return global::Axiom.Framework.Configuration.RenderSystemElementCollection.RenderSystemPropertyName;
 			}
 		}
 
@@ -697,10 +693,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override bool IsElementName( string elementName )
 		{
-			return ( elementName == RenderSystemPropertyName );
+			return ( elementName == global::Axiom.Framework.Configuration.RenderSystemElementCollection.RenderSystemPropertyName );
 		}
 
 		/// <summary>
@@ -710,10 +706,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override object GetElementKey( ConfigurationElement element )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override object GetElementKey( global::System.Configuration.ConfigurationElement element )
 		{
-			return ( (RenderSystem)( element ) ).Name;
+			return ( (global::Axiom.Framework.Configuration.RenderSystem)( element ) ).Name;
 		}
 
 		/// <summary>
@@ -722,10 +718,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// A new <see cref="global::Axiom.Framework.Configuration.RenderSystem"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override ConfigurationElement CreateNewElement()
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override global::System.Configuration.ConfigurationElement CreateNewElement()
 		{
-			return new RenderSystem();
+			return new global::Axiom.Framework.Configuration.RenderSystem();
 		}
 
 		#endregion
@@ -736,12 +732,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The index of the <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public RenderSystem this[ int index ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.RenderSystem this[ int index ]
 		{
 			get
 			{
-				return ( (RenderSystem)( base.BaseGet( index ) ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystem)( base.BaseGet( index ) ) );
 			}
 		}
 
@@ -749,12 +745,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> with the specified key.
 		/// </summary>
 		/// <param name="name">The key of the <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public RenderSystem this[ object name ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.RenderSystem this[ object name ]
 		{
 			get
 			{
-				return ( (RenderSystem)( base.BaseGet( name ) ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystem)( base.BaseGet( name ) ) );
 			}
 		}
 
@@ -766,8 +762,8 @@ namespace Axiom.Framework.Configuration
 		/// Adds the specified <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="renderSystem">The <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> to add.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Add( RenderSystem renderSystem )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Add( global::Axiom.Framework.Configuration.RenderSystem renderSystem )
 		{
 			base.BaseAdd( renderSystem );
 		}
@@ -780,10 +776,10 @@ namespace Axiom.Framework.Configuration
 		/// Removes the specified <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="renderSystem">The <see cref="global::Axiom.Framework.Configuration.RenderSystem"/> to remove.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Remove( RenderSystem renderSystem )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Remove( global::Axiom.Framework.Configuration.RenderSystem renderSystem )
 		{
-			base.BaseRemove( GetElementKey( renderSystem ) );
+			base.BaseRemove( this.GetElementKey( renderSystem ) );
 		}
 
 		#endregion
@@ -793,7 +789,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -806,24 +802,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="DefaultRenderSystem"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string DefaultRenderSystemPropertyName = "defaultRenderSystem";
 
 		/// <summary>
 		/// Gets or sets the DefaultRenderSystem.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The DefaultRenderSystem." )]
-		[ConfigurationProperty( DefaultRenderSystemPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The DefaultRenderSystem." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.RenderSystemElementCollection.DefaultRenderSystemPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string DefaultRenderSystem
 		{
 			get
 			{
-				return ( (string)( base[ DefaultRenderSystemPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.RenderSystemElementCollection.DefaultRenderSystemPropertyName ] ) );
 			}
 			set
 			{
-				base[ DefaultRenderSystemPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.RenderSystemElementCollection.DefaultRenderSystemPropertyName ] = value;
 			}
 		}
 
@@ -836,14 +832,14 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// The ResourceLocationElement Configuration Element.
 	/// </summary>
-	public class ResourceLocationElement : ConfigurationElement
+	public partial class ResourceLocationElement : global::System.Configuration.ConfigurationElement
 	{
 		#region IsReadOnly override
 
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -856,24 +852,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Path"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string PathPropertyName = "path";
 
 		/// <summary>
 		/// Gets or sets the Path.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Path." )]
-		[ConfigurationProperty( PathPropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Path." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.ResourceLocationElement.PathPropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
 		public string Path
 		{
 			get
 			{
-				return ( (string)( base[ PathPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.ResourceLocationElement.PathPropertyName ] ) );
 			}
 			set
 			{
-				base[ PathPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.ResourceLocationElement.PathPropertyName ] = value;
 			}
 		}
 
@@ -884,24 +880,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Type"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string TypePropertyName = "type";
 
 		/// <summary>
 		/// Gets or sets the Type.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Type." )]
-		[ConfigurationProperty( TypePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Type." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.ResourceLocationElement.TypePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Type
 		{
 			get
 			{
-				return ( (string)( base[ TypePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.ResourceLocationElement.TypePropertyName ] ) );
 			}
 			set
 			{
-				base[ TypePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.ResourceLocationElement.TypePropertyName ] = value;
 			}
 		}
 
@@ -912,24 +908,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Recurse"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string RecursePropertyName = "recurse";
 
 		/// <summary>
 		/// Gets or sets the Recurse.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Recurse." )]
-		[ConfigurationProperty( RecursePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Recurse." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.ResourceLocationElement.RecursePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Recurse
 		{
 			get
 			{
-				return ( (string)( base[ RecursePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.ResourceLocationElement.RecursePropertyName ] ) );
 			}
 			set
 			{
-				base[ RecursePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.ResourceLocationElement.RecursePropertyName ] = value;
 			}
 		}
 
@@ -940,24 +936,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Group"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string GroupPropertyName = "group";
 
 		/// <summary>
 		/// Gets or sets the Group.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Group." )]
-		[ConfigurationProperty( GroupPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Group." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.ResourceLocationElement.GroupPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Group
 		{
 			get
 			{
-				return ( (string)( base[ GroupPropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.ResourceLocationElement.GroupPropertyName ] ) );
 			}
 			set
 			{
-				base[ GroupPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.ResourceLocationElement.GroupPropertyName ] = value;
 			}
 		}
 
@@ -970,14 +966,14 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// The RenderSystem Configuration Element.
 	/// </summary>
-	public class RenderSystem : ConfigurationElement
+	public partial class RenderSystem : global::System.Configuration.ConfigurationElement
 	{
 		#region IsReadOnly override
 
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -990,24 +986,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Name"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string NamePropertyName = "name";
 
 		/// <summary>
 		/// Gets or sets the Name.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Name." )]
-		[ConfigurationProperty( NamePropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Name." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.RenderSystem.NamePropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
 		public string Name
 		{
 			get
 			{
-				return ( (string)( base[ NamePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.RenderSystem.NamePropertyName ] ) );
 			}
 			set
 			{
-				base[ NamePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.RenderSystem.NamePropertyName ] = value;
 			}
 		}
 
@@ -1018,24 +1014,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Options"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string OptionsPropertyName = "options";
 
 		/// <summary>
 		/// Gets or sets the Options.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Options." )]
-		[ConfigurationProperty( OptionsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = true )]
-		public RenderSystemOptionElementCollection Options
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Options." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.RenderSystem.OptionsPropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = true )]
+		public global::Axiom.Framework.Configuration.RenderSystemOptionElementCollection Options
 		{
 			get
 			{
-				return ( (RenderSystemOptionElementCollection)( base[ OptionsPropertyName ] ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystemOptionElementCollection)( base[ global::Axiom.Framework.Configuration.RenderSystem.OptionsPropertyName ] ) );
 			}
 			set
 			{
-				base[ OptionsPropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.RenderSystem.OptionsPropertyName ] = value;
 			}
 		}
 
@@ -1048,15 +1044,15 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// A collection of RenderSystemOption instances.
 	/// </summary>
-	[ConfigurationCollection( typeof( RenderSystemOption ), CollectionType = ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = RenderSystemOptionPropertyName )]
-	public class RenderSystemOptionElementCollection : ConfigurationElementCollection
+	[global::System.Configuration.ConfigurationCollectionAttribute( typeof ( global::Axiom.Framework.Configuration.RenderSystemOption ), CollectionType = global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate, AddItemName = global::Axiom.Framework.Configuration.RenderSystemOptionElementCollection.RenderSystemOptionPropertyName )]
+	public partial class RenderSystemOptionElementCollection : global::System.Configuration.ConfigurationElementCollection
 	{
 		#region Constants
 
 		/// <summary>
 		/// The XML name of the individual <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> instances in this collection.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string RenderSystemOptionPropertyName = "option";
 
 		#endregion
@@ -1067,24 +1063,24 @@ namespace Axiom.Framework.Configuration
 		/// Gets the type of the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <returns>The <see cref="global::System.Configuration.ConfigurationElementCollectionType"/> of this collection.</returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public override ConfigurationElementCollectionType CollectionType
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public override global::System.Configuration.ConfigurationElementCollectionType CollectionType
 		{
 			get
 			{
-				return ConfigurationElementCollectionType.BasicMapAlternate;
+				return global::System.Configuration.ConfigurationElementCollectionType.BasicMapAlternate;
 			}
 		}
 
 		/// <summary>
 		/// Gets the name used to identify this collection of elements
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override string ElementName
 		{
 			get
 			{
-				return RenderSystemOptionPropertyName;
+				return global::Axiom.Framework.Configuration.RenderSystemOptionElementCollection.RenderSystemOptionPropertyName;
 			}
 		}
 
@@ -1095,10 +1091,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// <see langword="true"/> if the element exists in the collection; otherwise, <see langword="false"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		protected override bool IsElementName( string elementName )
 		{
-			return ( elementName == RenderSystemOptionPropertyName );
+			return ( elementName == global::Axiom.Framework.Configuration.RenderSystemOptionElementCollection.RenderSystemOptionPropertyName );
 		}
 
 		/// <summary>
@@ -1108,10 +1104,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// An <see cref="object"/> that acts as the key for the specified <see cref="global::System.Configuration.ConfigurationElement"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override object GetElementKey( ConfigurationElement element )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override object GetElementKey( global::System.Configuration.ConfigurationElement element )
 		{
-			return ( (RenderSystemOption)( element ) ).Name;
+			return ( (global::Axiom.Framework.Configuration.RenderSystemOption)( element ) ).Name;
 		}
 
 		/// <summary>
@@ -1120,10 +1116,10 @@ namespace Axiom.Framework.Configuration
 		/// <returns>
 		/// A new <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/>.
 		/// </returns>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		protected override ConfigurationElement CreateNewElement()
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		protected override global::System.Configuration.ConfigurationElement CreateNewElement()
 		{
-			return new RenderSystemOption();
+			return new global::Axiom.Framework.Configuration.RenderSystemOption();
 		}
 
 		#endregion
@@ -1134,12 +1130,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The index of the <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public RenderSystemOption this[ int index ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.RenderSystemOption this[ int index ]
 		{
 			get
 			{
-				return ( (RenderSystemOption)( base.BaseGet( index ) ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystemOption)( base.BaseGet( index ) ) );
 			}
 		}
 
@@ -1147,12 +1143,12 @@ namespace Axiom.Framework.Configuration
 		/// Gets the <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> with the specified key.
 		/// </summary>
 		/// <param name="name">The key of the <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> to retrieve.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public RenderSystemOption this[ object name ]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public global::Axiom.Framework.Configuration.RenderSystemOption this[ object name ]
 		{
 			get
 			{
-				return ( (RenderSystemOption)( base.BaseGet( name ) ) );
+				return ( (global::Axiom.Framework.Configuration.RenderSystemOption)( base.BaseGet( name ) ) );
 			}
 		}
 
@@ -1164,8 +1160,8 @@ namespace Axiom.Framework.Configuration
 		/// Adds the specified <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> to the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="option">The <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> to add.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Add( RenderSystemOption option )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Add( global::Axiom.Framework.Configuration.RenderSystemOption option )
 		{
 			base.BaseAdd( option );
 		}
@@ -1178,10 +1174,10 @@ namespace Axiom.Framework.Configuration
 		/// Removes the specified <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> from the <see cref="global::System.Configuration.ConfigurationElementCollection"/>.
 		/// </summary>
 		/// <param name="option">The <see cref="global::Axiom.Framework.Configuration.RenderSystemOption"/> to remove.</param>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		public void Remove( RenderSystemOption option )
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		public void Remove( global::Axiom.Framework.Configuration.RenderSystemOption option )
 		{
-			base.BaseRemove( GetElementKey( option ) );
+			base.BaseRemove( this.GetElementKey( option ) );
 		}
 
 		#endregion
@@ -1191,7 +1187,7 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -1206,14 +1202,14 @@ namespace Axiom.Framework.Configuration
 	/// <summary>
 	/// The RenderSystemOption Configuration Element.
 	/// </summary>
-	public class RenderSystemOption : ConfigurationElement
+	public partial class RenderSystemOption : global::System.Configuration.ConfigurationElement
 	{
 		#region IsReadOnly override
 
 		/// <summary>
 		/// Gets a value indicating whether the element is read-only.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		public override bool IsReadOnly()
 		{
 			return false;
@@ -1226,24 +1222,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Name"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string NamePropertyName = "name";
 
 		/// <summary>
 		/// Gets or sets the Name.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Name." )]
-		[ConfigurationProperty( NamePropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Name." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.RenderSystemOption.NamePropertyName, IsRequired = true, IsKey = true, IsDefaultCollection = false )]
 		public string Name
 		{
 			get
 			{
-				return ( (string)( base[ NamePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.RenderSystemOption.NamePropertyName ] ) );
 			}
 			set
 			{
-				base[ NamePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.RenderSystemOption.NamePropertyName ] = value;
 			}
 		}
 
@@ -1254,24 +1250,24 @@ namespace Axiom.Framework.Configuration
 		/// <summary>
 		/// The XML name of the <see cref="Value"/> property.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
 		internal const string ValuePropertyName = "value";
 
 		/// <summary>
 		/// Gets or sets the Value.
 		/// </summary>
-		[GeneratedCode( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
-		[Description( "The Value." )]
-		[ConfigurationProperty( ValuePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute( "ConfigurationSectionDesigner.CsdFileGenerator", "2.0.0.0" )]
+		[global::System.ComponentModel.DescriptionAttribute( "The Value." )]
+		[global::System.Configuration.ConfigurationPropertyAttribute( global::Axiom.Framework.Configuration.RenderSystemOption.ValuePropertyName, IsRequired = false, IsKey = false, IsDefaultCollection = false )]
 		public string Value
 		{
 			get
 			{
-				return ( (string)( base[ ValuePropertyName ] ) );
+				return ( (string)( base[ global::Axiom.Framework.Configuration.RenderSystemOption.ValuePropertyName ] ) );
 			}
 			set
 			{
-				base[ ValuePropertyName ] = value;
+				base[ global::Axiom.Framework.Configuration.RenderSystemOption.ValuePropertyName ] = value;
 			}
 		}
 

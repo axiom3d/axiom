@@ -117,7 +117,7 @@ namespace Axiom.Animating
 			}
 		}
 
-	#endregion Fields and Properties
+		#endregion Fields and Properties
 
 	#region Methods
 
@@ -145,7 +145,7 @@ namespace Axiom.Animating
 		/// Any instantiated derived class must implement this guy
 		public abstract void SetCurrentStateAsBaseValue();
 
-	#endregion Methods
+		#endregion Methods
 	}
 
 	public static class Math
@@ -172,18 +172,18 @@ namespace Axiom.Animating
 		{
 			this.type = type;
 
-			this.valueObject = null;
+			valueObject = null;
 		}
 
 		public AnimableType Type
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 			set
 			{
-				this.type = value;
+				type = value;
 			}
 		}
 
@@ -202,48 +202,48 @@ namespace Axiom.Animating
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( int val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Real val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector2 val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector3 val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector4 val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Quaternion val )
 		{
-			this.valueObject = val;
+			valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( ColorEx val )
 		{
-			this.valueObject = val.Clone();
+			valueObject = val.Clone();
 		}
 
 		private void SetAsBaseValue( Object val )
 		{
-			switch ( this.type )
+			switch ( type )
 			{
 				case AnimableType.Int:
 					SetAsBaseValue( (int)val );
@@ -271,28 +271,28 @@ namespace Axiom.Animating
 
 		public void ResetToBaseValue()
 		{
-			switch ( this.type )
+			switch ( type )
 			{
 				case AnimableType.Int:
-					SetValue( (int)this.valueObject );
+					SetValue( (int)valueObject );
 					break;
 				case AnimableType.Real:
-					SetValue( (Real)this.valueObject );
+					SetValue( (Real)valueObject );
 					break;
 				case AnimableType.Vector2:
-					SetValue( (Vector2)this.valueObject );
+					SetValue( (Vector2)valueObject );
 					break;
 				case AnimableType.Vector3:
-					SetValue( (Vector3)this.valueObject );
+					SetValue( (Vector3)valueObject );
 					break;
 				case AnimableType.Vector4:
-					SetValue( (Vector4)this.valueObject );
+					SetValue( (Vector4)valueObject );
 					break;
 				case AnimableType.Quaternion:
-					SetValue( (Quaternion)this.valueObject );
+					SetValue( (Quaternion)valueObject );
 					break;
 				case AnimableType.ColorEx:
-					SetValue( (ColorEx)this.valueObject );
+					SetValue( (ColorEx)valueObject );
 					break;
 			}
 		}
@@ -342,7 +342,7 @@ namespace Axiom.Animating
 		/// Set value 
 		public virtual void SetValue( Object val )
 		{
-			switch ( this.type )
+			switch ( type )
 			{
 				case AnimableType.Int:
 					SetValue( (int)val );
@@ -413,7 +413,7 @@ namespace Axiom.Animating
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Object val )
 		{
-			switch ( this.type )
+			switch ( type )
 			{
 				case AnimableType.Int:
 					ApplyDeltaValue( (int)val );
@@ -446,31 +446,31 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					var i1 = (int)k1;
 					var i2 = (int)k2;
-					return (int)( i1 + ( i2 - i1 ) * time );
+					return (Object)(int)( i1 + ( i2 - i1 ) * time );
 				case AnimableType.Real:
 					var f1 = (float)k1;
 					var f2 = (float)k2;
-					return ( f1 + ( f2 - f1 ) * time );
+					return (Object)( f1 + ( f2 - f1 ) * time );
 				case AnimableType.Vector2:
 					var v21 = (Vector2)k1;
 					var v22 = (Vector2)k2;
-					return ( v21 + ( v22 - v21 ) * time );
+					return (Object)( v21 + ( v22 - v21 ) * time );
 				case AnimableType.Vector3:
 					var v31 = (Vector3)k1;
 					var v32 = (Vector3)k2;
-					return ( v31 + ( v32 - v31 ) * time );
+					return (Object)( v31 + ( v32 - v31 ) * time );
 				case AnimableType.Vector4:
 					var v41 = (Vector4)k1;
 					var v42 = (Vector4)k2;
-					return ( v41 + ( v42 - v41 ) * time );
+					return (Object)( v41 + ( v42 - v41 ) * time );
 				case AnimableType.Quaternion:
 					var q1 = (Quaternion)k1;
 					var q2 = (Quaternion)k2;
-					return ( q1 + ( q2 + ( -1 * q1 ) ) * time );
+					return (Object)( q1 + ( q2 + ( -1 * q1 ) ) * time );
 				case AnimableType.ColorEx:
 					var c1 = (ColorEx)k1;
 					var c2 = (ColorEx)k2;
-					return ( new ColorEx( c1.a + ( c2.a - c1.a ) * time, c1.r + ( c2.r - c1.r ) * time, c1.g + ( c2.g - c1.g ) * time, c1.b + ( c2.b - c1.b ) * time ) );
+					return (Object)( new ColorEx( c1.a + ( c2.a - c1.a ) * time, c1.r + ( c2.r - c1.r ) * time, c1.g + ( c2.g - c1.g ) * time, c1.b + ( c2.b - c1.b ) * time ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
@@ -480,25 +480,25 @@ namespace Axiom.Animating
 			switch ( type )
 			{
 				case AnimableType.Int:
-					return (int)( ( (int)k ) * v );
+					return (Object)(int)( ( (int)k ) * v );
 				case AnimableType.Real:
 					var f = (Real)k;
-					return ( f * v );
+					return (Object)( f * v );
 				case AnimableType.Vector2:
 					var v2 = (Vector2)k;
-					return ( v2 * v );
+					return (Object)( v2 * v );
 				case AnimableType.Vector3:
 					var v3 = (Vector3)k;
-					return ( v3 * v );
+					return (Object)( v3 * v );
 				case AnimableType.Vector4:
 					var v4 = (Vector4)k;
-					return ( v4 * v );
+					return (Object)( v4 * v );
 				case AnimableType.Quaternion:
 					var q = (Quaternion)k;
-					return ( q * v );
+					return (Object)( q * v );
 				case AnimableType.ColorEx:
 					var c = (ColorEx)k;
-					return ( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
+					return (Object)( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}

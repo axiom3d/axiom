@@ -64,11 +64,11 @@ namespace Axiom.Components.Paging
 
 		#region - fields -
 
-		protected PageManager mManager;
 		protected string mName;
+		protected PageManager mManager;
 		protected PageProvider mPageProvider;
-		protected NameGenerator<PagedWorldSection> mSectionNameGenerator;
 		protected Dictionary<string, PagedWorldSection> mSections = new Dictionary<string, PagedWorldSection>();
+		protected NameGenerator<PagedWorldSection> mSectionNameGenerator;
 
 		#endregion - fields -
 
@@ -82,7 +82,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mPageProvider;
+				return mPageProvider;
 			}
 
 			/// <remarks>
@@ -98,7 +98,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.mPageProvider = value;
+				mPageProvider = value;
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mSections;
+				return mSections;
 			}
 		}
 
@@ -122,7 +122,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mSections.Count;
+				return mSections.Count;
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mName;
+				return mName;
 			}
 		}
 
@@ -146,7 +146,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mManager;
+				return mManager;
 			}
 		}
 
@@ -163,16 +163,17 @@ namespace Axiom.Components.Paging
 		/// services such as related object factories.</param>
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorld( string name, PageManager manager )
+			: base()
 		{
-			this.mName = name;
-			this.mManager = manager;
-			this.mSectionNameGenerator = new NameGenerator<PagedWorldSection>( "Section" );
+			mName = name;
+			mManager = manager;
+			mSectionNameGenerator = new NameGenerator<PagedWorldSection>( "Section" );
 		}
 
 		[OgreVersion( 1, 7, 2, "~PagedWorld" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -189,7 +190,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Load( string fileName )
 		{
-			StreamSerializer stream = this.mManager.ReadWorldStream( fileName );
+			StreamSerializer stream = mManager.ReadWorldStream( fileName );
 			Load( stream );
 			stream.SafeDispose();
 		}
@@ -200,7 +201,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Load( Stream stream )
 		{
-			var ser = new StreamSerializer( stream );
+			StreamSerializer ser = new StreamSerializer( stream );
 			Load( ser );
 		}
 
@@ -216,9 +217,9 @@ namespace Axiom.Components.Paging
 			}
 
 			//name
-			stream.Read( out this.mName );
+			stream.Read( out mName );
 			//sections
-			while ( stream.NextChunkId == CHUNK_SECTIONDECLARATION_ID )
+			while ( stream.NextChunkId == PagedWorld.CHUNK_SECTIONDECLARATION_ID )
 			{
 				stream.ReadChunkBegin();
 				string sectionType, sectionName;
@@ -249,7 +250,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Save( string fileName )
 		{
-			StreamSerializer stream = this.mManager.WriteWorldStream( fileName );
+			StreamSerializer stream = mManager.WriteWorldStream( fileName );
 			Save( stream );
 			stream.SafeDispose();
 		}
@@ -260,7 +261,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Save( Stream stream )
 		{
-			var ser = new StreamSerializer( stream );
+			StreamSerializer ser = new StreamSerializer( stream );
 			Save( ser );
 		}
 
@@ -273,9 +274,9 @@ namespace Axiom.Components.Paging
 			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
 
 			//name
-			stream.Write( this.mName );
+			stream.Write( mName );
 			//sections
-			foreach ( PagedWorldSection section in this.mSections.Values )
+			foreach ( var section in mSections.Values )
 			{
 				//declaration
 				stream.Write( CHUNK_SECTIONDECLARATION_ID );
@@ -309,16 +310,16 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName, string sectionName )
 		{
-			string theName = sectionName;
+			var theName = sectionName;
 			if ( theName == string.Empty )
 			{
 				do
 				{
-					theName = this.mSectionNameGenerator.GetNextUniqueName();
+					theName = mSectionNameGenerator.GetNextUniqueName();
 				}
-				while ( this.mSections.ContainsKey( theName ) );
+				while ( mSections.ContainsKey( theName ) );
 			}
-			else if ( this.mSections.ContainsKey( theName ) )
+			else if ( mSections.ContainsKey( theName ) )
 			{
 				throw new AxiomException( "World section named '{0}' already exists! PagedWorld.CreateSection", theName );
 			}
@@ -330,7 +331,7 @@ namespace Axiom.Components.Paging
 			}
 			else
 			{
-				PagedWorldSectionFactory fact = this.mManager.GetWorldSectionFactory( typeName );
+				PagedWorldSectionFactory fact = mManager.GetWorldSectionFactory( typeName );
 				if ( fact == null )
 				{
 					throw new AxiomException( "World section type '{0}' does not exist! PagedWorld::createSection", typeName );
@@ -338,14 +339,14 @@ namespace Axiom.Components.Paging
 
 				ret = fact.CreateInstance( theName, this, sceneMgr );
 			}
-			this.mSections.Add( theName, ret );
+			mSections.Add( theName, ret );
 
 			return ret;
 		}
 
 		public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName )
 		{
-			return CreateSection( sceneMgr, typeName, string.Empty );
+			return this.CreateSection( sceneMgr, typeName, string.Empty );
 		}
 
 		/// <summary>
@@ -367,13 +368,13 @@ namespace Axiom.Components.Paging
 		public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr, string sectionName )
 		{
 			// get the strategy
-			PageStrategy strategy = this.mManager.GetStrategy( strategyName );
-			return CreateSection( strategy, sceneMgr, sectionName );
+			PageStrategy strategy = mManager.GetStrategy( strategyName );
+			return this.CreateSection( strategy, sceneMgr, sectionName );
 		}
 
 		public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr )
 		{
-			return CreateSection( strategyName, sceneMgr, string.Empty );
+			return this.CreateSection( strategyName, sceneMgr, string.Empty );
 		}
 
 		/// <summary>
@@ -393,14 +394,14 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr, string sectionName )
 		{
-			PagedWorldSection ret = CreateSection( sceneMgr, "General", sectionName );
+			PagedWorldSection ret = this.CreateSection( sceneMgr, "General", sectionName );
 			ret.Strategy = strategy;
 			return ret;
 		}
 
 		public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr )
 		{
-			return CreateSection( strategy, sceneMgr, string.Empty );
+			return this.CreateSection( strategy, sceneMgr, string.Empty );
 		}
 
 		/// <summary>
@@ -409,10 +410,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroySection( string name )
 		{
-			if ( this.mSections.ContainsKey( name ) )
+			if ( mSections.ContainsKey( name ) )
 			{
-				this.mSections[ name ].SafeDispose();
-				this.mSections.Remove( name );
+				mSections[ name ].SafeDispose();
+				mSections.Remove( name );
 			}
 		}
 
@@ -431,12 +432,12 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyAllSections()
 		{
-			foreach ( PagedWorldSection i in this.mSections.Values )
+			foreach ( var i in mSections.Values )
 			{
 				i.SafeDispose();
 			}
 
-			this.mSections.Clear();
+			mSections.Clear();
 		}
 
 		/// <summary>
@@ -446,7 +447,7 @@ namespace Axiom.Components.Paging
 		public PagedWorldSection GetSection( string name )
 		{
 			PagedWorldSection section = null;
-			this.mSections.TryGetValue( name, out section );
+			mSections.TryGetValue( name, out section );
 			return section;
 		}
 
@@ -463,13 +464,13 @@ namespace Axiom.Components.Paging
 		internal virtual bool PrepareProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.PrepareProcedualPage( page, section );
+				generated = mPageProvider.PrepareProcedualPage( page, section );
 			}
 			if ( !generated )
 			{
-				generated = this.mManager.PrepareProcedualPage( page, section );
+				generated = mManager.PrepareProcedualPage( page, section );
 			}
 
 			return generated;
@@ -488,13 +489,13 @@ namespace Axiom.Components.Paging
 		internal virtual bool LoadProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.LoadProcedualPage( page, section );
+				generated = mPageProvider.LoadProcedualPage( page, section );
 			}
 			if ( !generated )
 			{
-				generated = this.mManager.LoadProcedualPage( page, section );
+				generated = mManager.LoadProcedualPage( page, section );
 			}
 
 			return generated;
@@ -513,13 +514,13 @@ namespace Axiom.Components.Paging
 		internal virtual bool UnPrepareProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.UnPrepareProcedualPage( page, section );
+				generated = mPageProvider.UnPrepareProcedualPage( page, section );
 			}
 			if ( !generated )
 			{
-				generated = this.mManager.UnPrepareProcedualPage( page, section );
+				generated = mManager.UnPrepareProcedualPage( page, section );
 			}
 
 			return generated;
@@ -538,13 +539,13 @@ namespace Axiom.Components.Paging
 		internal virtual bool UnloadProcedualPage( Page page, PagedWorldSection section )
 		{
 			bool generated = false;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				generated = this.mPageProvider.UnloadProcedualPage( page, section );
+				generated = mPageProvider.UnloadProcedualPage( page, section );
 			}
 			if ( !generated )
 			{
-				generated = this.mManager.UnloadProcedualPage( page, section );
+				generated = mManager.UnloadProcedualPage( page, section );
 			}
 
 			return generated;
@@ -562,13 +563,13 @@ namespace Axiom.Components.Paging
 		internal StreamSerializer ReadPageStream( PageID pageId, PagedWorldSection section )
 		{
 			StreamSerializer ser = null;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				ser = this.mPageProvider.ReadPageStream( pageId, section );
+				ser = mPageProvider.ReadPageStream( pageId, section );
 			}
 			if ( ser == null )
 			{
-				ser = this.mManager.ReadPageStream( pageId, section );
+				ser = mManager.ReadPageStream( pageId, section );
 			}
 
 			return ser;
@@ -586,13 +587,13 @@ namespace Axiom.Components.Paging
 		public StreamSerializer WritePageStream( PageID pageId, PagedWorldSection section )
 		{
 			StreamSerializer ser = null;
-			if ( this.mPageProvider != null )
+			if ( mPageProvider != null )
 			{
-				ser = this.mPageProvider.WritePageStream( pageId, section );
+				ser = mPageProvider.WritePageStream( pageId, section );
 			}
 			if ( ser == null )
 			{
-				ser = this.mManager.WritePageStream( pageId, section );
+				ser = mManager.WritePageStream( pageId, section );
 			}
 
 			return ser;
@@ -604,7 +605,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void FrameStart( Real t )
 		{
-			foreach ( PagedWorldSection section in this.mSections.Values )
+			foreach ( var section in mSections.Values )
 			{
 				section.FrameStart( t );
 			}
@@ -616,7 +617,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void FrameEnd( Real t )
 		{
-			foreach ( PagedWorldSection section in this.mSections.Values )
+			foreach ( var section in mSections.Values )
 			{
 				section.FrameEnd( t );
 			}
@@ -628,7 +629,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void NotifyCamera( Camera cam )
 		{
-			foreach ( PagedWorldSection section in this.mSections.Values )
+			foreach ( var section in mSections.Values )
 			{
 				section.NotifyCamerea( cam );
 			}
@@ -637,7 +638,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "PagedWorld({0})", Name );
+			return string.Format( "PagedWorld({0})", this.Name );
 		}
 	};
 }

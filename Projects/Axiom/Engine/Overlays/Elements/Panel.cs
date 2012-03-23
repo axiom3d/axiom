@@ -42,10 +42,9 @@ using System.Diagnostics;
 
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.CrossPlatform;
-using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -81,14 +80,15 @@ namespace Axiom.Overlays.Elements
 	{
 		#region Member variables
 
-		private const int POSITION = 0;
-		private const int TEXTURE_COORDS = 1;
-		protected Vector2 bottomRight;
-		protected bool isTransparent;
-		protected int numTexCoordsInBuffer;
 		protected float[] tileX = new float[ Config.MaxTextureLayers ];
 		protected float[] tileY = new float[ Config.MaxTextureLayers ];
-		protected Vector2 topLeft;
+		protected bool isTransparent;
+		protected int numTexCoordsInBuffer;
+		protected Vector2 topLeft, bottomRight;
+
+		// source bindings for vertex buffers
+		private const int POSITION = 0;
+		private const int TEXTURE_COORDS = 1;
 
 		#endregion
 
@@ -99,16 +99,16 @@ namespace Axiom.Overlays.Elements
 		{
 			//this.IsTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
 			// initialize the default tiling to 1 for all layers
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for ( var i = 0; i < Config.MaxTextureLayers; i++ )
 			{
-				this.tileX[ i ] = 1.0f;
-				this.tileY[ i ] = 1.0f;
+				tileX[ i ] = 1.0f;
+				tileY[ i ] = 1.0f;
 			}
 
 			// Defer creation of texcoord buffer until we know how big it needs to be
 			//this.numTexCoordsInBuffer = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
-			this.topLeft = new Vector2( 0.0f, 0.0f );
-			this.bottomRight = new Vector2( 1.0f, 1.0f );
+			topLeft = new Vector2( 0.0f, 0.0f );
+			bottomRight = new Vector2( 1.0f, 1.0f );
 		}
 
 		#endregion
@@ -120,7 +120,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Initialize()
 		{
-			bool init = !isInitialized;
+			var init = !isInitialized;
 			base.Initialize();
 			if ( init )
 			{
@@ -129,13 +129,13 @@ namespace Axiom.Overlays.Elements
 
 				// Vertex declaration: 1 position, add texcoords later depending on #layers
 				// Create as separate buffers so we can lock & discard separately
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+				var decl = renderOperation.vertexData.vertexDeclaration;
 				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 				renderOperation.vertexData.vertexStart = 0;
 				renderOperation.vertexData.vertexCount = 4;
 
 				// create the first vertex buffer, mostly static except during resizing
-				HardwareVertexBuffer buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind the vertex buffer
 				renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
@@ -154,20 +154,20 @@ namespace Axiom.Overlays.Elements
 			Debug.Assert( layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers" );
 			Debug.Assert( x != 0 && y != 0, "tileX != 0 && tileY != 0" );
 
-			this.tileX[ layer ] = x;
-			this.tileY[ layer ] = y;
+			tileX[ layer ] = x;
+			tileY[ layer ] = y;
 
 			isGeomUVsOutOfDate = true;
 		}
 
 		public float GetTileX( int layer )
 		{
-			return this.tileX[ layer ];
+			return tileX[ layer ];
 		}
 
 		public float GetTileY( int layer )
 		{
-			return this.tileY[ layer ];
+			return tileY[ layer ];
 		}
 
 		/// <summary>
@@ -192,17 +192,17 @@ namespace Axiom.Overlays.Elements
 				  1.0 to get the actual correct value).
 			*/
 
-			left = DerivedLeft * 2 - 1;
+			left = this.DerivedLeft * 2 - 1;
 			right = left + ( width * 2 );
-			top = -( ( DerivedTop * 2 ) - 1 );
+			top = -( ( this.DerivedTop * 2 ) - 1 );
 			bottom = top - ( height * 2 );
 
 			// get a reference to the position buffer
-			HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
 			// lock the buffer
-			BufferBase data = buffer.Lock( BufferLocking.Discard );
-			int index = 0;
+			var data = buffer.Lock( BufferLocking.Discard );
+			var index = 0;
 
 			// Use the furthest away depth value, since materials should have depth-check off
 			// This initialised the depth buffer for any 3D objects in front
@@ -211,7 +211,7 @@ namespace Axiom.Overlays.Elements
 			unsafe
 #endif
 			{
-				float* posPtr = data.ToFloatPointer();
+				var posPtr = data.ToFloatPointer();
 
 				posPtr[ index++ ] = left;
 				posPtr[ index++ ] = top;
@@ -241,12 +241,12 @@ namespace Axiom.Overlays.Elements
 				// only add this panel to the render queue if it is not transparent
 				// that would mean the panel should be a virtual container of sorts,
 				// and the children would still be rendered
-				if ( !this.isTransparent && material != null )
+				if ( !isTransparent && material != null )
 				{
 					base.UpdateRenderQueue( queue, false );
 				}
 
-				foreach ( OverlayElement child in children.Values )
+				foreach ( var child in children.Values )
 				{
 					child.UpdateRenderQueue( queue );
 				}
@@ -261,25 +261,25 @@ namespace Axiom.Overlays.Elements
 		{
 			if ( material != null && isInitialized )
 			{
-				int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStatesCount;
+				var numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStatesCount;
 
-				VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+				var decl = renderOperation.vertexData.vertexDeclaration;
 
 				// if the required layers is less than the current amount of tex coord buffers, remove
 				// the extraneous buffers
-				if ( this.numTexCoordsInBuffer > numLayers )
+				if ( numTexCoordsInBuffer > numLayers )
 				{
-					for ( int i = this.numTexCoordsInBuffer; i > numLayers; --i )
+					for ( var i = numTexCoordsInBuffer; i > numLayers; --i )
 					{
 						decl.RemoveElement( VertexElementSemantic.TexCoords, i );
 					}
 				}
-				else if ( this.numTexCoordsInBuffer < numLayers )
+				else if ( numTexCoordsInBuffer < numLayers )
 				{
 					// we need to add more buffers
-					int offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * this.numTexCoordsInBuffer;
+					var offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
-					for ( int i = this.numTexCoordsInBuffer; i < numLayers; ++i )
+					for ( var i = numTexCoordsInBuffer; i < numLayers; ++i )
 					{
 						decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
 						offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
@@ -287,38 +287,38 @@ namespace Axiom.Overlays.Elements
 				} // if
 
 				// if the number of layers changed at all, we'll need to reallocate buffer
-				if ( this.numTexCoordsInBuffer != numLayers )
+				if ( numTexCoordsInBuffer != numLayers )
 				{
-					HardwareVertexBuffer newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+					var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 					// Bind buffer, note this will unbind the old one and destroy the buffer it had
 					renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
 
 					// record the current number of tex layers now
-					this.numTexCoordsInBuffer = numLayers;
+					numTexCoordsInBuffer = numLayers;
 				} // if
 
-				if ( this.numTexCoordsInBuffer != 0 )
+				if ( numTexCoordsInBuffer != 0 )
 				{
 					// get the tex coord buffer
-					HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
-					BufferBase data = buffer.Lock( BufferLocking.Discard );
+					var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
+					var data = buffer.Lock( BufferLocking.Discard );
 
 #if !AXIOM_SAFE_ONLY
 					unsafe
 #endif
 					{
-						float* texPtr = data.ToFloatPointer();
-						int texIndex = 0;
+						var texPtr = data.ToFloatPointer();
+						var texIndex = 0;
 
-						int uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof( float );
-						int vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof( float );
+						var uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof ( float );
+						var vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof ( float );
 
-						for ( int i = 0; i < numLayers; i++ )
+						for ( var i = 0; i < numLayers; i++ )
 						{
 							// Calc upper tex coords
-							float upperX = this.bottomRight.x * this.tileX[ i ];
-							float upperY = this.bottomRight.y * this.tileY[ i ];
+							float upperX = bottomRight.x * tileX[ i ];
+							float upperY = bottomRight.y * tileY[ i ];
 
 							/*
 								0-----2
@@ -330,16 +330,16 @@ namespace Axiom.Overlays.Elements
 							// Find start offset for this set
 							texIndex = ( i * uvSize );
 
-							texPtr[ texIndex ] = this.topLeft.x;
-							texPtr[ texIndex + 1 ] = this.topLeft.y;
+							texPtr[ texIndex ] = topLeft.x;
+							texPtr[ texIndex + 1 ] = topLeft.y;
 
 							texIndex += vertexSize; // jump by 1 vertex stride
-							texPtr[ texIndex ] = this.topLeft.x;
+							texPtr[ texIndex ] = topLeft.x;
 							texPtr[ texIndex + 1 ] = upperY;
 
 							texIndex += vertexSize;
 							texPtr[ texIndex ] = upperX;
-							texPtr[ texIndex + 1 ] = this.topLeft.y;
+							texPtr[ texIndex + 1 ] = topLeft.y;
 
 							texIndex += vertexSize;
 							texPtr[ texIndex ] = upperX;
@@ -355,17 +355,17 @@ namespace Axiom.Overlays.Elements
 
 		public void SetUV( Real u1, Real v1, Real u2, Real v2 )
 		{
-			this.topLeft = new Vector2( u1, v1 );
-			this.bottomRight = new Vector2( u2, v2 );
-			isGeomUVsOutOfDate = true;
+			topLeft = new Vector2( u1, v1 );
+			bottomRight = new Vector2( u2, v2 );
+			this.isGeomUVsOutOfDate = true;
 		}
 
 		public void GetUV( out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
-			u1 = this.topLeft.x;
-			v1 = this.topLeft.y;
-			u2 = this.bottomRight.x;
-			v2 = this.bottomRight.y;
+			u1 = topLeft.x;
+			v1 = topLeft.y;
+			u2 = bottomRight.x;
+			v2 = bottomRight.y;
 		}
 
 		#endregion
@@ -379,11 +379,11 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return this.isTransparent;
+				return isTransparent;
 			}
 			set
 			{
-				this.isTransparent = value;
+				isTransparent = value;
 			}
 		}
 
@@ -407,9 +407,7 @@ namespace Axiom.Overlays.Elements
 
 		#region ScriptableObject Interface Command Classes
 
-		#region Nested type: TilingAttributeCommand
-
-		[ScriptableProperty( "tiling", "The number of times to repeat the background texture.", typeof( Panel ) )]
+		[ScriptableProperty( "tiling", "The number of times to repeat the background texture.", typeof ( Panel ) )]
 		public class TilingAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -441,7 +439,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
-				string[] parms = val.Split( ' ' );
+				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
 					element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), int.Parse( parms[ 0 ] ) );
@@ -451,11 +449,7 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion
-
-		#region Nested type: TransparentAttributeCommand
-
-		[ScriptableProperty( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.", typeof( Panel ) )]
+		[ScriptableProperty( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.", typeof ( Panel ) )]
 		public class TransparentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -495,11 +489,7 @@ namespace Axiom.Overlays.Elements
 			#endregion
 		}
 
-		#endregion
-
-		#region Nested type: UVCoordinatesAttributeCommand
-
-		[ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
+		[ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof ( Panel ) )]
 		public class UVCoordinatesAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -532,7 +522,7 @@ namespace Axiom.Overlays.Elements
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
-				string[] parms = val.Split( ' ' );
+				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
 					element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ) );
@@ -541,8 +531,6 @@ namespace Axiom.Overlays.Elements
 
 			#endregion
 		}
-
-		#endregion
 
 		#endregion ScriptableObject Interface Command Classes
 	}

@@ -45,9 +45,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 using Axiom.Core;
-using Axiom.Math;
+using Axiom.Configuration;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -70,17 +71,17 @@ namespace Axiom.Graphics
 	public class CompositorInstanceMaterialEventArgs : EventArgs
 	{
 		/// <summary>
+		/// Pass identifier within Compositor instance, this is specified
+		/// by the user by CompositionPass.SetIdentifier().
+		/// </summary>
+		public uint PassID;
+
+		/// <summary>
 		/// Material, this may be changed at will and will only affect
 		/// the current instance of the Compositor, not the global material
 		/// it was cloned from.
 		/// </summary>
 		public Material Material;
-
-		/// <summary>
-		/// Pass identifier within Compositor instance, this is specified
-		/// by the user by CompositionPass.SetIdentifier().
-		/// </summary>
-		public uint PassID;
 
 		/// <summary>
 		///
@@ -89,8 +90,8 @@ namespace Axiom.Graphics
 		/// <param name="material"></param>
 		public CompositorInstanceMaterialEventArgs( uint passId, Material material )
 		{
-			this.PassID = passId;
-			this.Material = material;
+			PassID = passId;
+			Material = material;
 		}
 	}
 
@@ -110,7 +111,7 @@ namespace Axiom.Graphics
 		/// <param name="forResizeOnly"></param>
 		public CompositorInstanceResourceEventArgs( bool forResizeOnly )
 		{
-			this.ForResizeOnly = forResizeOnly;
+			ForResizeOnly = forResizeOnly;
 		}
 	}
 
@@ -142,8 +143,6 @@ namespace Axiom.Graphics
 
 		#endregion Events
 
-		#region Nested type: QueueIDAndOperation
-
 		///<summary>
 		///    A pairing of int and CompositeRenderSystemOperation, needed because the collection
 		///    in TargetOperation must be ordered
@@ -152,30 +151,31 @@ namespace Axiom.Graphics
 		{
 			#region Fields and Properties
 
-			protected CompositeRenderSystemOperation operation;
 			protected RenderQueueGroupID queueID;
 
 			public RenderQueueGroupID QueueID
 			{
 				get
 				{
-					return this.queueID;
+					return queueID;
 				}
 				set
 				{
-					this.queueID = value;
+					queueID = value;
 				}
 			}
+
+			protected CompositeRenderSystemOperation operation;
 
 			public CompositeRenderSystemOperation Operation
 			{
 				get
 				{
-					return this.operation;
+					return operation;
 				}
 				set
 				{
-					this.operation = value;
+					operation = value;
 				}
 			}
 
@@ -192,98 +192,63 @@ namespace Axiom.Graphics
 			#endregion Constructor
 		}
 
-		#endregion
-
 		#region Fields and Properties
-
-		protected static int materialDummyCounter;
-
-		protected static int resourceDummyCounter;
-
-		/// <summary>
-		/// Store a list of MRTs we've created
-		/// </summary>
-		private readonly Dictionary<string, MultiRenderTarget> localMrts = new Dictionary<string, MultiRenderTarget>();
-
-		/// <summary>
-		/// Textures that are not currently in use, but that we want to keep for now,
-		/// for example if we switch techniques but want to keep all textures available
-		/// in case we switch back.
-		/// </summary>
-		private readonly Dictionary<CompositionTechnique.TextureDefinition, Texture> reservedTextures = new Dictionary<CompositionTechnique.TextureDefinition, Texture>();
-
-		///<summary>
-		///    Composition chain of which this instance is part
-		///</summary>
-		protected CompositorChain chain;
 
 		///<summary>
 		///    Compositor of which this is an instance
 		///</summary>
 		protected Compositor compositor;
 
-		///<summary>
-		///    Is this instance enabled?
-		///</summary>
-		protected bool enabled;
-
-		///<summary>
-		///    Map from name->local texture
-		///</summary>
-		protected Dictionary<string, Texture> localTextures;
-
-		///<summary>
-		///    Previous instance (set by chain)
-		///</summary>
-		protected CompositorInstance previousInstance;
-
-		///<summary>
-		///    Render System operations queued by last compile, these are created by this
-		///    instance thus managed and deleted by it. The list is cleared with
-		///    clearCompilationState()
-		///</summary>
-		protected List<QueueIDAndOperation> renderSystemOperations;
+		public Compositor Compositor
+		{
+			get
+			{
+				return compositor;
+			}
+			set
+			{
+				compositor = value;
+			}
+		}
 
 		///<summary>
 		///    Composition technique used by this instance
 		///</summary>
 		protected CompositionTechnique technique;
 
-		public Compositor Compositor
-		{
-			get
-			{
-				return this.compositor;
-			}
-			set
-			{
-				this.compositor = value;
-			}
-		}
-
 		public CompositionTechnique Technique
 		{
 			get
 			{
-				return this.technique;
+				return technique;
 			}
 			set
 			{
-				this.technique = value;
+				technique = value;
 			}
 		}
+
+		///<summary>
+		///    Composition chain of which this instance is part
+		///</summary>
+		protected CompositorChain chain;
 
 		public CompositorChain Chain
 		{
 			get
 			{
-				return this.chain;
+				return chain;
 			}
 			set
 			{
-				this.chain = value;
+				chain = value;
 			}
 		}
+
+		///<summary>
+		///    Is this instance enabled?
+		///</summary>
+		protected bool enabled;
 
 		/// <summary>
 		/// The compositor instance will only render if it is enabled, otherwise it is pass-through.
@@ -292,13 +257,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.enabled;
+				return enabled;
 			}
 			set
 			{
-				if ( this.enabled != value )
+				if ( enabled != value )
 				{
-					this.enabled = value;
+					enabled = value;
 					// Create of free resource.
 					if ( value )
 					{
@@ -310,41 +275,74 @@ namespace Axiom.Graphics
 					}
 				}
 				// Notify chain state needs recompile.
-				this.chain.Dirty = true;
+				chain.Dirty = true;
 			}
 		}
+
+		///<summary>
+		///    Map from name->local texture
+		///</summary>
+		protected Dictionary<string, Texture> localTextures;
 
 		public Dictionary<string, Texture> LocalTextures
 		{
 			get
 			{
-				return this.localTextures;
+				return localTextures;
 			}
 		}
+
+		/// <summary>
+		/// Store a list of MRTs we've created
+		/// </summary>
+		private Dictionary<string, MultiRenderTarget> localMrts = new Dictionary<string, MultiRenderTarget>();
+
+		/// <summary>
+		/// Textures that are not currently in use, but that we want to keep for now,
+		/// for example if we switch techniques but want to keep all textures available
+		/// in case we switch back.
+		/// </summary>
+		private Dictionary<CompositionTechnique.TextureDefinition, Texture> reservedTextures = new Dictionary<CompositionTechnique.TextureDefinition, Texture>();
+
+		///<summary>
+		///    Render System operations queued by last compile, these are created by this
+		///    instance thus managed and deleted by it. The list is cleared with
+		///    clearCompilationState()
+		///</summary>
+		protected List<QueueIDAndOperation> renderSystemOperations;
 
 		public List<QueueIDAndOperation> RenderSystemOperations
 		{
 			get
 			{
-				return this.renderSystemOperations;
+				return renderSystemOperations;
 			}
 			set
 			{
-				this.renderSystemOperations = value;
+				renderSystemOperations = value;
 			}
 		}
+
+		///<summary>
+		///    Previous instance (set by chain)
+		///</summary>
+		protected CompositorInstance previousInstance;
 
 		public CompositorInstance PreviousInstance
 		{
 			get
 			{
-				return this.previousInstance;
+				return previousInstance;
 			}
 			set
 			{
-				this.previousInstance = value;
+				previousInstance = value;
 			}
 		}
+
+		protected static int materialDummyCounter = 0;
+
+		protected static int resourceDummyCounter = 0;
 
 		#endregion Fields and Properties
 
@@ -357,14 +355,14 @@ namespace Axiom.Graphics
 			this.chain = chain;
 			this.enabled = false;
 
-			string logicName = technique.CompositorLogicName;
+			var logicName = technique.CompositorLogicName;
 			if ( !String.IsNullOrEmpty( logicName ) )
 			{
 				CompositorManager.Instance.CompositorLogics[ logicName ].CompositorInstanceCreated( this );
 			}
 
-			this.localTextures = new Dictionary<string, Texture>();
-			this.renderSystemOperations = new List<QueueIDAndOperation>();
+			localTextures = new Dictionary<string, Texture>();
+			renderSystemOperations = new List<QueueIDAndOperation>();
 		}
 
 		#endregion Constructor
@@ -382,114 +380,114 @@ namespace Axiom.Graphics
 			Technique srctech = null;
 			Material mat = null, srcmat = null;
 
-			foreach ( CompositionPass pass in target.Passes )
+			foreach ( var pass in target.Passes )
 			{
 				switch ( pass.Type )
 				{
 					case CompositorPassType.Clear:
-						{
-							QueueRenderSystemOp( finalState, new RSClearOperation( pass.ClearBuffers, pass.ClearColor, pass.ClearDepth, pass.ClearStencil ) );
-						}
+					{
+						QueueRenderSystemOp( finalState, new RSClearOperation( pass.ClearBuffers, pass.ClearColor, pass.ClearDepth, pass.ClearStencil ) );
+					}
 						break;
 					case CompositorPassType.Stencil:
-						{
-							QueueRenderSystemOp( finalState, new RSStencilOperation( pass.StencilCheck, pass.StencilFunc, pass.StencilRefValue, pass.StencilMask, pass.StencilFailOp, pass.StencilDepthFailOp, pass.StencilPassOp, pass.StencilTwoSidedOperation ) );
-						}
+					{
+						QueueRenderSystemOp( finalState, new RSStencilOperation( pass.StencilCheck, pass.StencilFunc, pass.StencilRefValue, pass.StencilMask, pass.StencilFailOp, pass.StencilDepthFailOp, pass.StencilPassOp, pass.StencilTwoSidedOperation ) );
+					}
 						break;
 					case CompositorPassType.RenderScene:
+					{
+						if ( pass.FirstRenderQueue < finalState.CurrentQueueGroupId )
 						{
-							if ( pass.FirstRenderQueue < finalState.CurrentQueueGroupId )
-							{
-								// Mismatch -- warn user
-								// XXX We could support repeating the last queue, with some effort
-								LogManager.Instance.Write( "Warning in compilation of Compositor {0}: Attempt to render queue {1} before {2}.", this.compositor.Name, pass.FirstRenderQueue, finalState.CurrentQueueGroupId );
-							}
-							RSSetSchemeOperation setSchemeOperation = null;
-							if ( pass.MaterialScheme != string.Empty )
-							{
-								//Add the triggers that will set the scheme and restore it each frame
-								finalState.CurrentQueueGroupId = pass.FirstRenderQueue;
-								setSchemeOperation = new RSSetSchemeOperation( pass.MaterialScheme );
-								QueueRenderSystemOp( finalState, setSchemeOperation );
-							}
-							// Add render queues
-							for ( var x = (int)pass.FirstRenderQueue; x < (int)pass.LastRenderQueue; x++ )
-							{
-								Debug.Assert( x >= 0 );
-								finalState.RenderQueues.Set( x, true );
-							}
-							finalState.CurrentQueueGroupId = pass.LastRenderQueue + 1;
-							if ( setSchemeOperation != null )
-							{
-								//Restoring the scheme after the queues have been rendered
-								QueueRenderSystemOp( finalState, new RSRestoreSchemeOperation( setSchemeOperation ) );
-							}
-							finalState.FindVisibleObjects = true;
-							finalState.MaterialScheme = target.MaterialScheme;
-							finalState.ShadowsEnabled = target.ShadowsEnabled;
+							// Mismatch -- warn user
+							// XXX We could support repeating the last queue, with some effort
+							LogManager.Instance.Write( "Warning in compilation of Compositor {0}: Attempt to render queue {1} before {2}.", compositor.Name, pass.FirstRenderQueue, finalState.CurrentQueueGroupId );
 						}
+						RSSetSchemeOperation setSchemeOperation = null;
+						if ( pass.MaterialScheme != string.Empty )
+						{
+							//Add the triggers that will set the scheme and restore it each frame
+							finalState.CurrentQueueGroupId = pass.FirstRenderQueue;
+							setSchemeOperation = new RSSetSchemeOperation( pass.MaterialScheme );
+							QueueRenderSystemOp( finalState, setSchemeOperation );
+						}
+						// Add render queues
+						for ( var x = (int)pass.FirstRenderQueue; x < (int)pass.LastRenderQueue; x++ )
+						{
+							Debug.Assert( x >= 0 );
+							finalState.RenderQueues.Set( x, true );
+						}
+						finalState.CurrentQueueGroupId = pass.LastRenderQueue + 1;
+						if ( setSchemeOperation != null )
+						{
+							//Restoring the scheme after the queues have been rendered
+							QueueRenderSystemOp( finalState, new RSRestoreSchemeOperation( setSchemeOperation ) );
+						}
+						finalState.FindVisibleObjects = true;
+						finalState.MaterialScheme = target.MaterialScheme;
+						finalState.ShadowsEnabled = target.ShadowsEnabled;
+					}
 						break;
 					case CompositorPassType.RenderQuad:
+					{
+						srcmat = pass.Material;
+						if ( srcmat == null )
 						{
-							srcmat = pass.Material;
-							if ( srcmat == null )
-							{
-								// No material -- warn user
-								LogManager.Instance.Write( "Warning in compilation of Compositor {0}: No material defined for composition pass.", this.compositor.Name );
-								break;
-							}
-							srcmat.Load();
-							if ( srcmat.SupportedTechniques.Count == 0 )
-							{
-								// No supported techniques -- warn user
-								LogManager.Instance.Write( "Warning in compilation of Compositor {0}: material {1} has no supported techniques.", this.compositor.Name, srcmat.Name );
-								break;
-							}
-
-							srctech = srcmat.GetBestTechnique( 0 );
-							// Create local material
-							mat = CreateLocalMaterial( srcmat.Name );
-							// Copy and adapt passes from source material
-							for ( int i = 0; i < srctech.PassCount; i++ )
-							{
-								Pass srcpass = srctech.GetPass( i );
-								// Create new target pass
-								targetPass = mat.GetTechnique( 0 ).CreatePass();
-								srcpass.CopyTo( targetPass );
-								// Set up inputs
-								for ( int x = 0; x < pass.InputsCount; x++ )
-								{
-									CompositionPass.InputTexture inp = pass.GetInput( x );
-									if ( !string.IsNullOrEmpty( inp.Name ) )
-									{
-										if ( x < targetPass.TextureUnitStatesCount )
-										{
-											targetPass.GetTextureUnitState( x ).SetTextureName( GetTextureInstance( inp.Name, inp.MrtIndex ).Name );
-										}
-										else
-										{
-											// Texture unit not there
-											LogManager.Instance.Write( "Warning in compilation of Compositor {0}: material {1} texture unit {2} out of bounds.", this.compositor.Name, srcmat.Name, x );
-										}
-									}
-								} //end for inputs.length
-							} //end for passcount
-
-							var rsQuadOperation = new RSQuadOperation( this, pass.Identifier, mat );
-							float left, top, right, bottom;
-							if ( pass.GetQuadCorners( out left, out top, out right, out bottom ) )
-							{
-								rsQuadOperation.SetQuadCorners( left, top, right, bottom );
-							}
-							rsQuadOperation.SetQuadFarCorners( pass.QuadFarCorners, pass.QuadFarCornersViewSpace );
-							QueueRenderSystemOp( finalState, rsQuadOperation );
+							// No material -- warn user
+							LogManager.Instance.Write( "Warning in compilation of Compositor {0}: No material defined for composition pass.", compositor.Name );
+							break;
 						}
+						srcmat.Load();
+						if ( srcmat.SupportedTechniques.Count == 0 )
+						{
+							// No supported techniques -- warn user
+							LogManager.Instance.Write( "Warning in compilation of Compositor {0}: material {1} has no supported techniques.", compositor.Name, srcmat.Name );
+							break;
+						}
+
+						srctech = srcmat.GetBestTechnique( 0 );
+						// Create local material
+						mat = CreateLocalMaterial( srcmat.Name );
+						// Copy and adapt passes from source material
+						for ( var i = 0; i < srctech.PassCount; i++ )
+						{
+							var srcpass = srctech.GetPass( i );
+							// Create new target pass
+							targetPass = mat.GetTechnique( 0 ).CreatePass();
+							srcpass.CopyTo( targetPass );
+							// Set up inputs
+							for ( var x = 0; x < pass.InputsCount; x++ )
+							{
+								var inp = pass.GetInput( x );
+								if ( !string.IsNullOrEmpty( inp.Name ) )
+								{
+									if ( x < targetPass.TextureUnitStatesCount )
+									{
+										targetPass.GetTextureUnitState( x ).SetTextureName( this.GetTextureInstance( inp.Name, inp.MrtIndex ).Name );
+									}
+									else
+									{
+										// Texture unit not there
+										LogManager.Instance.Write( "Warning in compilation of Compositor {0}: material {1} texture unit {2} out of bounds.", compositor.Name, srcmat.Name, x );
+									}
+								}
+							} //end for inputs.length
+						} //end for passcount
+
+						var rsQuadOperation = new RSQuadOperation( this, pass.Identifier, mat );
+						float left, top, right, bottom;
+						if ( pass.GetQuadCorners( out left, out top, out right, out bottom ) )
+						{
+							rsQuadOperation.SetQuadCorners( left, top, right, bottom );
+						}
+						rsQuadOperation.SetQuadFarCorners( pass.QuadFarCorners, pass.QuadFarCornersViewSpace );
+						QueueRenderSystemOp( finalState, rsQuadOperation );
+					}
 						break;
 					case CompositorPassType.RenderCustom:
-						{
-							CompositeRenderSystemOperation customOperation = CompositorManager.Instance.CustomCompositionPasses[ pass.CustomType ].CreateOperation( this, pass );
-							QueueRenderSystemOp( finalState, customOperation );
-						}
+					{
+						var customOperation = CompositorManager.Instance.CustomCompositionPasses[ pass.CustomType ].CreateOperation( this, pass );
+						QueueRenderSystemOp( finalState, customOperation );
+					}
 						break;
 				}
 			}
@@ -502,12 +500,12 @@ namespace Axiom.Graphics
 		public void CompileTargetOperations( List<CompositeTargetOperation> compiledState )
 		{
 			// Collect targets of previous state
-			if ( this.previousInstance != null )
+			if ( previousInstance != null )
 			{
-				this.previousInstance.CompileTargetOperations( compiledState );
+				previousInstance.CompileTargetOperations( compiledState );
 			}
 			// Texture targets
-			foreach ( CompositionTargetPass target in this.technique.TargetPasses )
+			foreach ( var target in technique.TargetPasses )
 			{
 				var ts = new CompositeTargetOperation( GetTextureInstance( target.OutputName ).GetBuffer().GetRenderTarget() );
 				// Set "only initial" flag, visibilityMask and lodBias according to CompositionTargetPass.
@@ -516,12 +514,12 @@ namespace Axiom.Graphics
 				ts.LodBias = target.LodBias;
 				ts.ShadowsEnabled = target.ShadowsEnabled;
 				// Check for input mode previous
-				if ( target.InputMode == CompositorInputMode.Previous && this.previousInstance != null )
+				if ( target.InputMode == CompositorInputMode.Previous && previousInstance != null )
 				{
 					// Collect target state for previous compositor
 					// The TargetOperation for the final target is collected seperately as it is merged
 					// with later operations
-					this.previousInstance.CompileOutputOperation( ts );
+					previousInstance.CompileOutputOperation( ts );
 				}
 				// Collect passes of our own target
 				CollectPasses( ts, target );
@@ -536,7 +534,7 @@ namespace Axiom.Graphics
 		public void CompileOutputOperation( CompositeTargetOperation finalState )
 		{
 			// Final target
-			CompositionTargetPass tpass = this.technique.OutputTarget;
+			var tpass = technique.OutputTarget;
 
 			// Logical-and together the visibilityMask, and multiply the lodBias
 			finalState.VisibilityMask &= tpass.VisibilityMask;
@@ -547,7 +545,7 @@ namespace Axiom.Graphics
 				// Collect target state for previous compositor
 				// The TargetOperation for the final target is collected seperately as it is merged
 				// with later operations
-				this.previousInstance.CompileOutputOperation( finalState );
+				previousInstance.CompileOutputOperation( finalState );
 			}
 			// Collect passes
 			CollectPasses( finalState, tpass );
@@ -585,11 +583,11 @@ namespace Axiom.Graphics
 		public Texture GetTextureInstance( string name, int mrtIndex )
 		{
 			Texture texture;
-			if ( this.localTextures.TryGetValue( name, out texture ) )
+			if ( localTextures.TryGetValue( name, out texture ) )
 			{
 				return texture;
 			}
-			if ( this.localTextures.TryGetValue( GetMrtTextureLocalName( name, mrtIndex ), out texture ) )
+			if ( localTextures.TryGetValue( this.GetMrtTextureLocalName( name, mrtIndex ), out texture ) )
 			{
 				return texture;
 			}
@@ -622,7 +620,7 @@ namespace Axiom.Graphics
 			// (CompositorChains). This will save a lot of memory in case more viewports
 			// are composited.
 			var assignedTextures = new List<Texture>();
-			foreach ( CompositionTechnique.TextureDefinition def in this.technique.TextureDefinitions )
+			foreach ( var def in technique.TextureDefinitions )
 			{
 				//This is a reference, isn't created in this compositor
 				if ( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
@@ -632,28 +630,28 @@ namespace Axiom.Graphics
 				//This is a global texture, just link the created resources from the parent
 				if ( def.Scope == CompositionTechnique.TextureScope.Global )
 				{
-					Compositor parentComp = this.technique.Parent;
+					var parentComp = technique.Parent;
 					if ( def.PixelFormats.Count > 1 )
 					{
-						int atch = 0;
-						foreach ( PixelFormat p in def.PixelFormats )
+						var atch = 0;
+						foreach ( var p in def.PixelFormats )
 						{
-							Texture tex = parentComp.GetTextureInstance( def.Name, atch++ );
-							this.localTextures.Add( GetMrtTextureLocalName( def.Name, atch ), tex );
+							var tex = parentComp.GetTextureInstance( def.Name, atch++ );
+							localTextures.Add( GetMrtTextureLocalName( def.Name, atch ), tex );
 						}
 						var mrt = (MultiRenderTarget)parentComp.GetRenderTarget( def.Name );
-						this.localMrts.Add( def.Name, mrt );
+						localMrts.Add( def.Name, mrt );
 					}
 					else
 					{
-						Texture tex = parentComp.GetTextureInstance( def.Name, 0 );
-						this.localTextures.Add( def.Name, tex );
+						var tex = parentComp.GetTextureInstance( def.Name, 0 );
+						localTextures.Add( def.Name, tex );
 					}
 					continue;
 				}
 				// Determine width and height
-				int width = def.Width;
-				int height = def.Height;
+				var width = def.Width;
+				var height = def.Height;
 				int fsaa;
 				string fsaahint;
 				bool hwGamma;
@@ -668,11 +666,11 @@ namespace Axiom.Graphics
 
 				if ( width == 0 )
 				{
-					width = (int)( this.chain.Viewport.ActualWidth * def.WidthFactor );
+					width = (int)( chain.Viewport.ActualWidth * def.WidthFactor );
 				}
 				if ( height == 0 )
 				{
-					height = (int)( this.chain.Viewport.ActualHeight * def.HeightFactor );
+					height = (int)( chain.Viewport.ActualHeight * def.HeightFactor );
 				}
 
 				// determine options as a combination of selected options and possible options
@@ -687,16 +685,16 @@ namespace Axiom.Graphics
 				RenderTarget rendTarget;
 				if ( def.PixelFormats.Count > 1 )
 				{
-					string mrtBaseName = "c" + resourceDummyCounter++ + "/" + def.Name + "/" + this.chain.Viewport.Target.Name;
-					MultiRenderTarget mrt = Root.Instance.RenderSystem.CreateMultiRenderTarget( mrtBaseName );
-					this.localMrts.Add( mrtBaseName, mrt );
+					var mrtBaseName = "c" + resourceDummyCounter++ + "/" + def.Name + "/" + chain.Viewport.Target.Name;
+					var mrt = Root.Instance.RenderSystem.CreateMultiRenderTarget( mrtBaseName );
+					localMrts.Add( mrtBaseName, mrt );
 
 					// create and bind individual surfaces
-					int atch = 0;
-					foreach ( PixelFormat p in def.PixelFormats )
+					var atch = 0;
+					foreach ( var p in def.PixelFormats )
 					{
-						string texName = mrtBaseName + "/" + atch;
-						string mrtLocalName = GetMrtTextureLocalName( def.Name, atch );
+						var texName = mrtBaseName + "/" + atch;
+						var mrtLocalName = GetMrtTextureLocalName( def.Name, atch );
 						Texture tex;
 						if ( def.Pooled )
 						{
@@ -708,18 +706,18 @@ namespace Axiom.Graphics
 							tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, p, TextureUsage.RenderTarget, null, hwGamma && !PixelUtil.IsFloatingPoint( p ), fsaa, fsaahint );
 						}
 
-						RenderTexture rt = tex.GetBuffer().GetRenderTarget();
+						var rt = tex.GetBuffer().GetRenderTarget();
 						rt.IsAutoUpdated = false;
 						mrt.BindSurface( atch++, rt );
 						// Also add to local textures so we can look up
-						this.localTextures.Add( mrtLocalName, tex );
+						localTextures.Add( mrtLocalName, tex );
 					}
 
 					rendTarget = mrt;
 				}
 				else
 				{
-					string texName = "c" + resourceDummyCounter++ + "/" + def.Name + "/" + this.chain.Viewport.Target.Name;
+					var texName = "c" + resourceDummyCounter++ + "/" + def.Name + "/" + chain.Viewport.Target.Name;
 					// spaces in the name can cause plugin problems.
 					// this is an auto generated name - so no spaces can't hurt us.
 					texName = texName.Replace( ' ', '_' );
@@ -736,7 +734,7 @@ namespace Axiom.Graphics
 					}
 
 					rendTarget = tex.GetBuffer().GetRenderTarget();
-					this.localTextures.Add( def.Name, tex );
+					localTextures.Add( def.Name, tex );
 				}
 
 				//Set DepthBuffer pool for sharing
@@ -748,12 +746,12 @@ namespace Axiom.Graphics
 				// We may be sharing / reusing this texture, so test before adding viewport
 				if ( rendTarget.NumViewports == 0 )
 				{
-					Camera camera = this.chain.Viewport.Camera;
+					var camera = chain.Viewport.Camera;
 					// Save last viewport and current aspect ratio
-					Viewport oldViewport = camera.Viewport;
-					Real aspectRatio = camera.AspectRatio;
+					var oldViewport = camera.Viewport;
+					var aspectRatio = camera.AspectRatio;
 
-					Viewport v = rendTarget.AddViewport( camera );
+					var v = rendTarget.AddViewport( camera );
 					v.SetClearEveryFrame( false );
 					v.ShowOverlays = false;
 					v.BackgroundColor = new ColorEx( 0, 0, 0, 0 );
@@ -780,7 +778,7 @@ namespace Axiom.Graphics
 			// We can also only free textures which are derived from the target size, if
 			// required (saves some time & memory thrashing / fragmentation on resize)
 			var assignedTextures = new List<Texture>();
-			foreach ( CompositionTechnique.TextureDefinition def in this.technique.TextureDefinitions )
+			foreach ( var def in technique.TextureDefinitions )
 			{
 				if ( !string.IsNullOrEmpty( def.ReferenceCompositorName ) )
 				{
@@ -790,33 +788,33 @@ namespace Axiom.Graphics
 				// potentially only remove this one if based on size
 				if ( !forResizeOnly || def.Width == 0 | def.Height == 0 )
 				{
-					int subSurfaceCount = def.PixelFormats.Count;
+					var subSurfaceCount = def.PixelFormats.Count;
 					// Potentially many surfaces
-					for ( int subSurface = 0; subSurface < subSurfaceCount; subSurface++ )
+					for ( var subSurface = 0; subSurface < subSurfaceCount; subSurface++ )
 					{
-						string texName = subSurfaceCount > 1 ? GetMrtTextureLocalName( def.Name, subSurface ) : def.Name;
+						var texName = subSurfaceCount > 1 ? GetMrtTextureLocalName( def.Name, subSurface ) : def.Name;
 						Texture tex = null;
-						if ( this.localTextures.TryGetValue( texName, out tex ) )
+						if ( localTextures.TryGetValue( texName, out tex ) )
 						{
 							if ( !def.Pooled && def.Scope != CompositionTechnique.TextureScope.Global )
 							{
 								// remove myself from central only if not pooled and not global
 								TextureManager.Instance.Remove( tex.Name );
 							}
-							this.localTextures.Remove( texName );
+							localTextures.Remove( texName );
 						}
 					}
 					if ( subSurfaceCount > 1 )
 					{
 						MultiRenderTarget i = null;
-						if ( this.localMrts.TryGetValue( def.Name, out i ) )
+						if ( localMrts.TryGetValue( def.Name, out i ) )
 						{
 							if ( def.Scope != CompositionTechnique.TextureScope.Global )
 							{
 								// remove MRT if not global
 								Root.Instance.RenderSystem.DestroyRenderTarget( i.Name );
 							}
-							this.localMrts.Remove( def.Name );
+							localMrts.Remove( def.Name );
 						}
 					}
 				}
@@ -827,7 +825,7 @@ namespace Axiom.Graphics
 				if ( forResizeOnly )
 				{
 					var toDelete = new List<CompositionTechnique.TextureDefinition>();
-					foreach ( CompositionTechnique.TextureDefinition def in this.reservedTextures.Keys )
+					foreach ( var def in reservedTextures.Keys )
 					{
 						if ( def.Width == 0 || def.Height == 0 )
 						{
@@ -835,7 +833,7 @@ namespace Axiom.Graphics
 						}
 					}
 					// just remove the ones which would be affected by a resize
-					for ( int i = 0; i < toDelete.Count; i++ )
+					for ( var i = 0; i < toDelete.Count; i++ )
 					{
 						this.reservedTextures.Remove( toDelete[ i ] );
 					}
@@ -844,7 +842,7 @@ namespace Axiom.Graphics
 				else
 				{
 					// clear all
-					this.reservedTextures.Clear();
+					reservedTextures.Clear();
 				}
 			}
 			// Now we tell the central list of textures to check if its unreferenced,
@@ -867,7 +865,7 @@ namespace Axiom.Graphics
 			// Store operation for current QueueGroup ID
 			finalState.RenderSystemOperations.Add( new QueueIDAndOperation( finalState.CurrentQueueGroupId, op ) );
 			// Save a pointer, so that it will be freed on recompile
-			this.chain.RenderSystemOperations.Add( op );
+			chain.RenderSystemOperations.Add( op );
 		}
 
 		/// <summary>
@@ -882,8 +880,8 @@ namespace Axiom.Graphics
 		{
 			// search for passes on this texture def that either include a render_scene
 			// or use input previous
-			bool renderingScene = false;
-			foreach ( CompositionTargetPass tp in this.technique.TargetPasses )
+			var renderingScene = false;
+			foreach ( var tp in technique.TargetPasses )
 			{
 				if ( tp.OutputName == texname )
 				{
@@ -893,7 +891,7 @@ namespace Axiom.Graphics
 						// Can't check _previousInstance against _Chain.OriginalSceneCompositor
 						// at this time, so check the position
 						renderingScene = true;
-						foreach ( CompositorInstance inst in this.chain.Instances )
+						foreach ( var inst in chain.Instances )
 						{
 							if ( inst == this )
 							{
@@ -914,7 +912,7 @@ namespace Axiom.Graphics
 					else
 					{
 						// look for a render_scene pass
-						foreach ( CompositionPass pass in tp.Passes )
+						foreach ( var pass in tp.Passes )
 						{
 							if ( pass.Type == CompositorPassType.RenderScene )
 							{
@@ -929,7 +927,7 @@ namespace Axiom.Graphics
 			if ( renderingScene )
 			{
 				// Ok, inherit settings from target
-				RenderTarget target = this.chain.Viewport.Target;
+				var target = chain.Viewport.Target;
 				hwGammaWrite = target.IsHardwareGammaEnabled;
 				fsaa = target.FSAA;
 				fsaaHint = target.FSAAHint;
@@ -986,8 +984,8 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					this.localTextures.Clear();
-					this.localMrts.Clear();
+					localTextures.Clear();
+					localMrts.Clear();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -1073,18 +1071,18 @@ namespace Axiom.Graphics
 
 		public CompositeTargetOperation( RenderTarget target )
 		{
-			RenderQueues = new BitArray( (int)RenderQueueGroupID.Count );
-			Target = target;
-			CurrentQueueGroupId = 0;
-			RenderSystemOperations = new List<CompositorInstance.QueueIDAndOperation>();
-			VisibilityMask = 0xFFFFFFFF;
-			LodBias = 1.0f;
-			OnlyInitial = false;
-			HasBeenRendered = false;
-			FindVisibleObjects = false;
+			this.RenderQueues = new BitArray( (int)RenderQueueGroupID.Count );
+			this.Target = target;
+			this.CurrentQueueGroupId = 0;
+			this.RenderSystemOperations = new List<CompositorInstance.QueueIDAndOperation>();
+			this.VisibilityMask = 0xFFFFFFFF;
+			this.LodBias = 1.0f;
+			this.OnlyInitial = false;
+			this.HasBeenRendered = false;
+			this.FindVisibleObjects = false;
 			// This fixes an issue, but seems to be wrong for some reason.
-			MaterialScheme = string.Empty;
-			ShadowsEnabled = true;
+			this.MaterialScheme = string.Empty;
+			this.ShadowsEnabled = true;
 		}
 
 		#endregion Constructors
@@ -1144,7 +1142,7 @@ namespace Axiom.Graphics
 
 		public override void Execute( SceneManager sm, RenderSystem rs )
 		{
-			rs.ClearFrameBuffer( this.buffers, this.color, this.depth, (ushort)this.stencil );
+			rs.ClearFrameBuffer( buffers, color, depth, (ushort)stencil );
 		}
 
 		#endregion CompositorInstance.CompositeRenderSystemOperation Implementation
@@ -1157,13 +1155,13 @@ namespace Axiom.Graphics
 	{
 		#region Fields
 
-		protected StencilOperation depthFailOp;
-		protected CompareFunction func;
-		protected int mask;
-		protected StencilOperation passOp;
-		protected int refValue;
 		protected bool stencilCheck;
+		protected CompareFunction func;
+		protected int refValue;
+		protected int mask;
 		protected StencilOperation stencilFailOp;
+		protected StencilOperation depthFailOp;
+		protected StencilOperation passOp;
 		protected bool twoSidedOperation;
 
 		#endregion Fields
@@ -1188,8 +1186,8 @@ namespace Axiom.Graphics
 
 		public override void Execute( SceneManager sm, RenderSystem rs )
 		{
-			rs.StencilCheckEnabled = this.stencilCheck;
-			rs.SetStencilBufferParams( this.func, this.refValue, this.mask, this.stencilFailOp, this.depthFailOp, this.passOp, this.twoSidedOperation );
+			rs.StencilCheckEnabled = stencilCheck;
+			rs.SetStencilBufferParams( func, refValue, mask, stencilFailOp, depthFailOp, passOp, twoSidedOperation );
 		}
 
 		#endregion CompositorInstance.CompositeRenderSystemOperation Implementation
@@ -1200,22 +1198,6 @@ namespace Axiom.Graphics
 	///</summary>
 	public class RSQuadOperation : CompositeRenderSystemOperation
 	{
-		public RSQuadOperation( CompositorInstance instance, uint pass_id, Material mat )
-		{
-			Material = mat;
-			Instance = instance;
-			PassId = pass_id;
-			QuadLeft = -1;
-			QuadRight = 1;
-			QuadTop = 1;
-			QuadBottom = -1;
-
-			mat.Load();
-			instance.OnMaterialSetup( new CompositorInstanceMaterialEventArgs( PassId, Material ) );
-			Technique = mat.GetTechnique( 0 );
-			Debug.Assert( Technique != null, "Material has no supported technique." );
-		}
-
 		/// <summary>
 		///
 		/// </summary>
@@ -1271,6 +1253,22 @@ namespace Axiom.Graphics
 		/// </summary>
 		public float QuadBottom { get; set; }
 
+		public RSQuadOperation( CompositorInstance instance, uint pass_id, Material mat )
+		{
+			Material = mat;
+			Instance = instance;
+			this.PassId = pass_id;
+			QuadLeft = -1;
+			QuadRight = 1;
+			QuadTop = 1;
+			QuadBottom = -1;
+
+			mat.Load();
+			instance.OnMaterialSetup( new CompositorInstanceMaterialEventArgs( this.PassId, Material ) );
+			Technique = mat.GetTechnique( 0 );
+			Debug.Assert( Technique != null, "Material has no supported technique." );
+		}
+
 		/// <summary>
 		///
 		/// </summary>
@@ -1306,9 +1304,9 @@ namespace Axiom.Graphics
 		public override void Execute( SceneManager sm, RenderSystem rs )
 		{
 			// Fire listener
-			Instance.OnMaterialRender( new CompositorInstanceMaterialEventArgs( PassId, Material ) );
+			Instance.OnMaterialRender( new CompositorInstanceMaterialEventArgs( this.PassId, Material ) );
 
-			Viewport vp = rs.Viewport;
+			var vp = rs.Viewport;
 			var rect = (Rectangle2D)CompositorManager.Instance.TexturedRectangle2D;
 			if ( QuadCornerModified )
 			{
@@ -1320,10 +1318,10 @@ namespace Axiom.Graphics
 
 			if ( QuadFarCorners )
 			{
-				Vector3[] corners = vp.Camera.WorldSpaceCorners;
+				var corners = vp.Camera.WorldSpaceCorners;
 				if ( QuadFarCornersViewSpace )
 				{
-					Matrix4 viewMat = vp.Camera.FrustumViewMatrix;
+					var viewMat = vp.Camera.FrustumViewMatrix;
 					rect.SetNormals( viewMat * corners[ 5 ], viewMat * corners[ 6 ], viewMat * corners[ 4 ], viewMat * corners[ 7 ] );
 				}
 				else
@@ -1332,9 +1330,9 @@ namespace Axiom.Graphics
 				}
 			}
 			// Queue passes from mat
-			for ( int i = 0; i < Technique.PassCount; i++ )
+			for ( var i = 0; i < Technique.PassCount; i++ )
 			{
-				Pass pass = Technique.GetPass( i );
+				var pass = Technique.GetPass( i );
 				sm.InjectRenderWithPass( pass, CompositorManager.Instance.TexturedRectangle2D, false /*don't allow replacement of shadow passes*/ );
 			}
 		}
@@ -1386,7 +1384,7 @@ namespace Axiom.Graphics
 		/// <param name="rs"></param>
 		public override void Execute( SceneManager sm, RenderSystem rs )
 		{
-			MaterialManager matMgr = MaterialManager.Instance;
+			var matMgr = MaterialManager.Instance;
 			PreviousSchemeName = matMgr.ActiveScheme;
 
 			PreviousLateResolving = sm.IsLateMaterialResolving;

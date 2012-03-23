@@ -33,6 +33,7 @@
 
 #region Namespace Declarations
 
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 

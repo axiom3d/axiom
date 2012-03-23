@@ -1,5 +1,5 @@
-﻿using Axiom.Core;
-using Axiom.Math;
+﻿using Axiom.Math;
+using Axiom.Core;
 
 namespace Axiom.Samples.SphereMapping
 {

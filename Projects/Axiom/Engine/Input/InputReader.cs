@@ -38,7 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 
+using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -59,11 +61,6 @@ namespace Axiom.Input
 		#region Fields
 
 		/// <summary>
-		///		Active modifier keys.
-		/// </summary>
-		protected ModifierKeys modifiers;
-
-		/// <summary>
 		///		Flag for whether or not to fire keyboard events.
 		/// </summary>
 		protected bool useKeyboardEvents;
@@ -73,7 +70,14 @@ namespace Axiom.Input
 		/// </summary>
 		protected bool useMouseEvents;
 
+		/// <summary>
+		///		Active modifier keys.
+		/// </summary>
+		protected ModifierKeys modifiers;
+
 		#endregion Fields
+
+		#region Abstract Members
 
 		#region Methods
 
@@ -108,14 +112,14 @@ namespace Axiom.Input
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public abstract bool IsKeyPressed( KeyCodes key );
+		public abstract bool IsKeyPressed( Axiom.Input.KeyCodes key );
 
 		/// <summary>
 		///    Returns true if the specified mouse button is currently down.
 		/// </summary>
 		/// <param name="button">Mouse button to query.</param>
 		/// <returns>True if the mouse button is down, false otherwise.</returns>
-		public abstract bool IsMousePressed( MouseButtons button );
+		public abstract bool IsMousePressed( Axiom.Input.MouseButtons button );
 
 		#endregion Methods
 
@@ -174,6 +178,10 @@ namespace Axiom.Input
 
 		#endregion Properties
 
+		#endregion Abstract Members
+
+		#region Base Members
+
 		#region Methods
 
 		/// <summary>
@@ -181,7 +189,7 @@ namespace Axiom.Input
 		/// </summary>
 		public static char GetKeyChar( KeyCodes keyCode, ModifierKeys modifiers )
 		{
-			bool isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
+			var isShiftDown = ( modifiers & ModifierKeys.Shift ) > 0;
 
 			switch ( keyCode )
 			{
@@ -301,21 +309,21 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						this.modifiers |= ModifierKeys.Alt;
+						modifiers |= ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						this.modifiers |= ModifierKeys.Shift;
+						modifiers |= ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						this.modifiers |= ModifierKeys.Control;
+						modifiers |= ModifierKeys.Control;
 						break;
 				}
 
-				var e = new KeyEventArgs( key, this.modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
 				OnKeyDown( e );
 			}
 			else
@@ -324,28 +332,32 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						this.modifiers &= ~ModifierKeys.Alt;
+						modifiers &= ~ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						this.modifiers &= ~ModifierKeys.Shift;
+						modifiers &= ~ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						this.modifiers &= ~ModifierKeys.Control;
+						modifiers &= ~ModifierKeys.Control;
 						break;
 				}
 
-				var e = new KeyEventArgs( key, this.modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
 				OnKeyUp( e );
 			}
 		}
 
 		#endregion Methods
 
+		#endregion Base Members
+
 		#region Events
+
+		// Note: Events are only applicable when UseMouseEvents or UseKeyboardEvents are set to true.
 
 		#region Declarations
 
@@ -389,8 +401,6 @@ namespace Axiom.Input
 
 		#endregion Trigger Methods
 
-		// Note: Events are only applicable when UseMouseEvents or UseKeyboardEvents are set to true.
-
 		#endregion Events
 
 		#region IDisposable Members
@@ -400,7 +410,7 @@ namespace Axiom.Input
 		/// </summary>
 		public abstract void Dispose();
 
-		#endregion
+		#endregion IDisposable Members
 	}
 
 	#region Delegates

@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 
 using ResourceHandle = System.UInt64;
@@ -48,11 +50,31 @@ namespace Axiom.Graphics
 	public class NullProgram : HighLevelGpuProgram
 	{
 		internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null ) { }
+			: this( creator, name, handle, group, false, null ) {}
 
 		[OgreVersion( 1, 7, 2790 )]
 		internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader ) { }
+			: base( creator, name, handle, group, isManual, loader ) {}
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected override void LoadFromSource() {}
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected override void CreateLowLevelImpl() {}
+
+		[OgreVersion( 1, 7, 2790, "might be unload()?" )]
+		protected override void UnloadHighLevelImpl() {}
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected override void PopulateParameterNames( GpuProgramParameters parms )
+		{
+			// Skip the normal implementation
+			// Ensure we don't complain about missing parameter names
+			parms.IgnoreMissingParameters = true;
+		}
+
+		[OgreVersion( 1, 7, 2790 )]
+		protected override void BuildConstantDefinitions() {}
 
 		/// <summary>
 		/// Overridden from GpuProgram - never supported
@@ -65,26 +87,6 @@ namespace Axiom.Graphics
 				return false;
 			}
 		}
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void LoadFromSource() { }
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void CreateLowLevelImpl() { }
-
-		[OgreVersion( 1, 7, 2790, "might be unload()?" )]
-		protected override void UnloadHighLevelImpl() { }
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void PopulateParameterNames( GpuProgramParameters parms )
-		{
-			// Skip the normal implementation
-			// Ensure we don't complain about missing parameter names
-			parms.IgnoreMissingParameters = true;
-		}
-
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void BuildConstantDefinitions() { }
 	};
 
 	public class NullProgramFactory : HighLevelGpuProgramFactory

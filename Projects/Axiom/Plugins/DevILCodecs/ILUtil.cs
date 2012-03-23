@@ -48,16 +48,78 @@ namespace Axiom.Plugins.DevILCodecs
 	internal class ILUtil
 	{
 		/// <summary>
+		/// Structure that encapsulates a devIL image format definition
+		/// </summary>
+		internal sealed class ILFormat
+		{
+			/// <summary>
+			/// Number of channels, usually 3 or 4
+			/// </summary>
+			public int Channels { get; private set; }
+
+			/// <summary>
+			/// IL_RGBA,IL_BGRA,IL_DXTx, ...
+			/// </summary>
+			public int Format { get; private set; }
+
+			/// <summary>
+			/// IL_UNSIGNED_BYTE, IL_UNSIGNED_SHORT, ... may be -1 for compressed formats
+			/// </summary>
+			public int Type { get; private set; }
+
+			/// <summary>
+			/// Return wether this structure represents a valid DevIL format
+			/// </summary>
+			[OgreVersion( 1, 7, 2 )]
+			public bool IsValid
+			{
+				get
+				{
+					return ( this.Format != -1 );
+				}
+			}
+
+			/// <summary>
+			/// Construct an invalidated ILFormat structure
+			/// </summary>
+			public ILFormat()
+				: this( 0, -1, -1 ) {}
+
+			/// <summary>
+			/// Construct an invalidated ILFormat structure
+			/// </summary>
+			public ILFormat( int channels )
+				: this( channels, -1, -1 ) {}
+
+			/// <summary>
+			/// Construct a ILFormat from parameters
+			/// </summary>
+			public ILFormat( int channels, int format )
+				: this( channels, format, -1 ) {}
+
+			/// <summary>
+			/// Construct a ILFormat from parameters
+			/// </summary>
+			[OgreVersion( 1, 7, 2 )]
+			public ILFormat( int channels, int format, int type )
+			{
+				this.Channels = channels;
+				this.Format = format;
+				this.Type = type;
+			}
+		};
+
+		/// <summary>
 		/// Get Axiom format to which a given IL format can be most optimally converted.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public static PixelFormat Convert( int imageFormat, int imageType )
 		{
-			PixelFormat fmt = PixelFormat.Unknown;
+			var fmt = PixelFormat.Unknown;
 
 			switch ( imageFormat )
 			{
-				/* Compressed formats -- ignore type */
+					/* Compressed formats -- ignore type */
 				case Il.IL_DXT1:
 					fmt = PixelFormat.DXT1;
 					break;
@@ -78,7 +140,7 @@ namespace Axiom.Plugins.DevILCodecs
 					fmt = PixelFormat.DXT5;
 					break;
 
-				/* Normal formats */
+					/* Normal formats */
 				case Il.IL_RGB:
 					switch ( imageType )
 					{
@@ -242,17 +304,17 @@ namespace Axiom.Plugins.DevILCodecs
 		[OgreVersion( 1, 7, 2 )]
 		private static void _packI<T>( T r, T g, T b, T a, PixelFormat pf, BufferBase dest )
 		{
-			Type destType = typeof( T );
+			var destType = typeof ( T );
 
-			if ( destType == typeof( byte ) )
+			if ( destType == typeof ( byte ) )
 			{
-				PixelConverter.PackColor( (uint)System.Convert.ChangeType( r, typeof( uint ) ), (uint)System.Convert.ChangeType( g, typeof( uint ) ), (uint)System.Convert.ChangeType( b, typeof( uint ) ), (uint)System.Convert.ChangeType( a, typeof( uint ) ), pf, dest );
+				PixelConverter.PackColor( (uint)System.Convert.ChangeType( r, typeof ( uint ) ), (uint)System.Convert.ChangeType( g, typeof ( uint ) ), (uint)System.Convert.ChangeType( b, typeof ( uint ) ), (uint)System.Convert.ChangeType( a, typeof ( uint ) ), pf, dest );
 			}
-			else if ( destType == typeof( ushort ) )
+			else if ( destType == typeof ( ushort ) )
 			{
 				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType ) / 65535.0f, (float)System.Convert.ChangeType( g, destType ) / 65535.0f, (float)System.Convert.ChangeType( b, destType ) / 65535.0f, (float)System.Convert.ChangeType( a, destType ) / 65535.0f, pf, dest );
 			}
-			else if ( destType == typeof( float ) )
+			else if ( destType == typeof ( float ) )
 			{
 				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType ), (float)System.Convert.ChangeType( g, destType ), (float)System.Convert.ChangeType( b, destType ), (float)System.Convert.ChangeType( a, destType ), pf, dest );
 			}
@@ -265,19 +327,19 @@ namespace Axiom.Plugins.DevILCodecs
 		[OgreVersion( 1, 7, 2 )]
 		private static void _ilToAxiomInternal<T>( BufferBase tar, PixelFormat fmt, T r, T g, T b, T a )
 		{
-			if ( !typeof( T ).IsPrimitive )
+			if ( !typeof ( T ).IsPrimitive )
 			{
 				throw new AxiomException( "Invalid type!" );
 			}
 
-			int ilfmt = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
-			IntPtr src = Il.ilGetData();
-			IntPtr srcend = Il.ilGetData().Offset( Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
-			int elemSize = PixelUtil.GetNumElemBytes( fmt );
+			var ilfmt = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
+			var src = Il.ilGetData();
+			var srcend = Il.ilGetData().Offset( Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
+			var elemSize = PixelUtil.GetNumElemBytes( fmt );
 
 			while ( (int)src < (int)srcend )
 			{
-				using ( BufferBase srcBuf = BufferBase.Wrap( src, (int)srcend - (int)src ) )
+				using ( var srcBuf = BufferBase.Wrap( src, (int)srcend - (int)src ) )
 				{
 					var srcPtr = srcBuf as ITypePointer<T>;
 
@@ -333,7 +395,7 @@ namespace Axiom.Plugins.DevILCodecs
 					}
 					;
 
-					_packI( r, g, b, a, fmt, tar );
+					_packI<T>( r, g, b, a, fmt, tar );
 					tar += elemSize;
 				}
 			}
@@ -374,16 +436,16 @@ namespace Axiom.Plugins.DevILCodecs
 				throw new AxiomException( "Destination dimensions must equal IL dimension" );
 			}
 
-			int ilfmt = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
-			int iltp = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
+			var ilfmt = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
+			var iltp = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
 
 			// Check if in-memory format just matches
 			// If yes, we can just copy it and save conversion
-			ILFormat ifmt = Convert( dst.Format );
+			var ifmt = Convert( dst.Format );
 			if ( ifmt.Format == ilfmt && _iLabs( ifmt.Type ) == _iLabs( iltp ) )
 			{
-				int size = Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA );
-				using ( BufferBase src = BufferBase.Wrap( Il.ilGetData(), size ) )
+				var size = Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA );
+				using ( var src = BufferBase.Wrap( Il.ilGetData(), size ) )
 				{
 					Memory.Copy( src, dst.Data, size );
 				}
@@ -391,12 +453,12 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 
 			// Try if buffer is in a known Axiom format so we can use its conversion routines
-			PixelFormat bufFmt = Convert( ilfmt, iltp );
+			var bufFmt = Convert( (int)ilfmt, (int)iltp );
 			ifmt = Convert( bufFmt );
 
 			if ( ifmt.Format == ilfmt && _iLabs( ifmt.Type ) == _iLabs( iltp ) )
 			{
-				using ( BufferBase dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
+				using ( var dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
 				{
 					// IL format matches another Axiom format
 					var src = new PixelBox( dst.Width, dst.Height, dst.Depth, bufFmt, dstbuf );
@@ -412,7 +474,7 @@ namespace Axiom.Plugins.DevILCodecs
 			}
 			else if ( iltp == Il.IL_FLOAT )
 			{
-				_ilToAxiomInternal( dst.Data, dst.Format, 0.0f, 0.0f, 0.0f, 1.0f );
+				_ilToAxiomInternal<float>( dst.Data, dst.Format, 0.0f, 0.0f, 0.0f, 1.0f );
 			}
 			else if ( iltp == Il.IL_SHORT || iltp == Il.IL_UNSIGNED_SHORT )
 			{
@@ -428,7 +490,7 @@ namespace Axiom.Plugins.DevILCodecs
 		public static void ConvertToIL( PixelBox src )
 		{
 			// ilTexImage http://openil.sourceforge.net/docs/il/f00059.htm
-			ILFormat ifmt = Convert( src.Format );
+			var ifmt = Convert( src.Format );
 			if ( src.IsConsecutive && ifmt.IsValid )
 			{
 				// The easy case, the buffer is laid out in memory just like 
@@ -446,7 +508,7 @@ namespace Axiom.Plugins.DevILCodecs
 				// Let DevIL allocate the memory for us, and copy the data consecutively
 				// to its memory
 				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero );
-				using ( BufferBase dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
+				using ( var dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
 				{
 					var dst = new PixelBox( src.Width, src.Height, src.Depth, src.Format, dstbuf );
 					PixelConverter.BulkPixelConversion( src, dst );
@@ -460,12 +522,12 @@ namespace Axiom.Plugins.DevILCodecs
 				// format to convert to.
 
 				// most general format supported by Axiom and DevIL
-				PixelFormat fmt = PixelUtil.HasAlpha( src.Format ) ? PixelFormat.FLOAT32_RGBA : PixelFormat.FLOAT32_RGB;
+				var fmt = PixelUtil.HasAlpha( src.Format ) ? PixelFormat.FLOAT32_RGBA : PixelFormat.FLOAT32_RGB;
 
 				// Make up a pixel format
 				// We don't have to consider luminance formats as they have
 				// straight conversions to DevIL, just weird permutations of RGBA an LA
-				int[] depths = PixelUtil.GetBitDepths( src.Format );
+				var depths = PixelUtil.GetBitDepths( src.Format );
 
 				// Native endian format with all bit depths<8 can safely and quickly be 
 				// converted to 24/32 bit
@@ -485,78 +547,12 @@ namespace Axiom.Plugins.DevILCodecs
 				ifmt = Convert( fmt );
 				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero ); // TAO 2.0
 				//Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
-				using ( BufferBase dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
+				using ( var dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
 				{
 					var dst = new PixelBox( src.Width, src.Height, src.Depth, fmt, dstbuf );
 					PixelConverter.BulkPixelConversion( src, dst );
 				}
 			}
 		}
-
-		#region Nested type: ILFormat
-
-		/// <summary>
-		/// Structure that encapsulates a devIL image format definition
-		/// </summary>
-		internal sealed class ILFormat
-		{
-			/// <summary>
-			/// Construct an invalidated ILFormat structure
-			/// </summary>
-			public ILFormat()
-				: this( 0, -1, -1 ) { }
-
-			/// <summary>
-			/// Construct an invalidated ILFormat structure
-			/// </summary>
-			public ILFormat( int channels )
-				: this( channels, -1, -1 ) { }
-
-			/// <summary>
-			/// Construct a ILFormat from parameters
-			/// </summary>
-			public ILFormat( int channels, int format )
-				: this( channels, format, -1 ) { }
-
-			/// <summary>
-			/// Construct a ILFormat from parameters
-			/// </summary>
-			[OgreVersion( 1, 7, 2 )]
-			public ILFormat( int channels, int format, int type )
-			{
-				Channels = channels;
-				Format = format;
-				Type = type;
-			}
-
-			/// <summary>
-			/// Number of channels, usually 3 or 4
-			/// </summary>
-			public int Channels { get; private set; }
-
-			/// <summary>
-			/// IL_RGBA,IL_BGRA,IL_DXTx, ...
-			/// </summary>
-			public int Format { get; private set; }
-
-			/// <summary>
-			/// IL_UNSIGNED_BYTE, IL_UNSIGNED_SHORT, ... may be -1 for compressed formats
-			/// </summary>
-			public int Type { get; private set; }
-
-			/// <summary>
-			/// Return wether this structure represents a valid DevIL format
-			/// </summary>
-			[OgreVersion( 1, 7, 2 )]
-			public bool IsValid
-			{
-				get
-				{
-					return ( Format != -1 );
-				}
-			}
-		};
-
-		#endregion
 	};
 }

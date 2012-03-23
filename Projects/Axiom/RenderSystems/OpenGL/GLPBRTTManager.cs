@@ -38,10 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
-using Axiom.Graphics;
+using Axiom.Core;
 using Axiom.Media;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -56,19 +59,19 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private struct PixelBufferUsage
 		{
-			public uint InUseCount;
 			public GLPBuffer PixelBuffer;
+			public uint InUseCount;
 		};
 
 		#endregion Inner Classes and Structures
 
 		#region Fields and Properties
 
-		private readonly BaseGLSupport _glSupport;
-		private readonly GLContext _mainGLContext;
-		private readonly RenderTarget _mainWindow;
+		private BaseGLSupport _glSupport;
+		private GLContext _mainGLContext;
+		private RenderTarget _mainWindow;
 
-		private readonly PixelBufferUsage[] pBuffers = new PixelBufferUsage[ (int)PixelComponentType.Count ];
+		private PixelBufferUsage[] pBuffers = new PixelBufferUsage[ (int)PixelComponentType.Count ];
 
 		#endregion Fields and Properties
 
@@ -77,10 +80,10 @@ namespace Axiom.RenderSystems.OpenGL
 		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target )
 			: base( glSupport )
 		{
-			this._glSupport = glSupport;
-			this._mainWindow = target;
+			_glSupport = glSupport;
+			_mainWindow = target;
 
-			this._mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
+			_mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
 		}
 
 		#endregion Construction and Destruction
@@ -109,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGL
 			object attr = target.GetCustomAttribute( "target" );
 			if ( attr != null )
 			{
-				var surface = (GLSurfaceDesc)attr;
+				GLSurfaceDesc surface = (GLSurfaceDesc)attr;
 				if ( surface.Buffer != null )
 				{
 					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
@@ -125,7 +128,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					for ( int i = 0; i < (int)PixelComponentType.Count; i++ )
 					{
-						this.pBuffers[ i ].PixelBuffer = null;
+						pBuffers[ i ].PixelBuffer = null;
 					}
 				}
 			}
@@ -145,23 +148,23 @@ namespace Axiom.RenderSystems.OpenGL
 		public void RequestPBuffer( PixelComponentType pcType, int width, int height )
 		{
 			// Check Size
-			GLPBuffer pBuffer = this.pBuffers[ (int)pcType ].PixelBuffer;
+			GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
 			if ( pBuffer != null )
 			{
 				if ( pBuffer.Width < width || pBuffer.Height < height )
 				{
 					// if the current buffer is too small destroy it and recreate it
 					pBuffer = null;
-					this.pBuffers[ (int)pcType ].PixelBuffer = null;
+					pBuffers[ (int)pcType ].PixelBuffer = null;
 				}
 			}
 
 			if ( pBuffer == null )
 			{
 				// create pixelbuffer via rendersystem
-				this.pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
+				pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
 			}
-			this.pBuffers[ (int)pcType ].InUseCount++;
+			pBuffers[ (int)pcType ].InUseCount++;
 		}
 
 		/// <summary>
@@ -170,10 +173,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="pcType"></param>
 		public void ReleasePBuffer( PixelComponentType pcType )
 		{
-			--this.pBuffers[ (int)pcType ].InUseCount;
-			if ( this.pBuffers[ (int)pcType ].InUseCount == 0 )
+			--pBuffers[ (int)pcType ].InUseCount;
+			if ( pBuffers[ (int)pcType ].InUseCount == 0 )
 			{
-				this.pBuffers[ (int)pcType ].PixelBuffer = null;
+				pBuffers[ (int)pcType ].PixelBuffer = null;
 			}
 		}
 
@@ -195,8 +198,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return this._mainGLContext;
 				}
 			}
-			Debug.Assert( this.pBuffers[ (int)pcType ].PixelBuffer != null );
-			return this.pBuffers[ (int)pcType ].PixelBuffer.Context;
+			Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
+			return pBuffers[ (int)pcType ].PixelBuffer.Context;
 		}
 
 		#endregion Methods

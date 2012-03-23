@@ -51,27 +51,27 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		private readonly List<string> _bases = new List<string>();
-		private readonly List<AbstractNode> _overrides = new List<AbstractNode>();
-		public IList<AbstractNode> Children = new List<AbstractNode>();
-		public string Cls;
-
-		public uint Id;
-
-		public bool IsAbstract;
 		public string Name;
 
-		public IList<AbstractNode> Values = new List<AbstractNode>();
-
-		private Dictionary<String, String> _environment = new Dictionary<string, string>();
+		public string Cls;
 
 		public IList<string> Bases
 		{
 			get
 			{
-				return this._bases;
+				return _bases;
 			}
 		}
+
+		private List<string> _bases = new List<string>();
+
+		public uint Id;
+
+		public bool IsAbstract;
+
+		public IList<AbstractNode> Children = new List<AbstractNode>();
+
+		public IList<AbstractNode> Values = new List<AbstractNode>();
 
 		/// <summary>
 		/// For use when processing object inheritance and overriding
@@ -80,15 +80,19 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return this._overrides;
+				return _overrides;
 			}
 		}
+
+		private List<AbstractNode> _overrides = new List<AbstractNode>();
+
+		private Dictionary<String, String> _environment = new Dictionary<string, string>();
 
 		public Dictionary<String, String> Variables
 		{
 			get
 			{
-				return this._environment;
+				return _environment;
 			}
 		}
 
@@ -97,29 +101,29 @@ namespace Axiom.Scripting.Compiler.AST
 		public ObjectAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			this.IsAbstract = false;
+			IsAbstract = false;
 		}
 
 		#region Methods
 
 		public void AddVariable( string name )
 		{
-			this._environment.Add( name, "" );
+			_environment.Add( name, "" );
 		}
 
 		public void SetVariable( string name, string value )
 		{
-			this._environment[ name ] = value;
+			_environment[ name ] = value;
 		}
 
 		public KeyValuePair<bool, string> GetVariable( string inName )
 		{
-			if ( this._environment.ContainsKey( inName ) )
+			if ( _environment.ContainsKey( inName ) )
 			{
-				return new KeyValuePair<bool, string>( true, this._environment[ inName ] );
+				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
 			}
 
-			var parentNode = (ObjectAbstractNode)Parent;
+			var parentNode = (ObjectAbstractNode)this.Parent;
 			while ( parentNode != null )
 			{
 				if ( parentNode._environment.ContainsKey( inName ) )
@@ -137,19 +141,6 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Cls;
-			}
-			set
-			{
-				this.Cls = value;
-			}
-		}
-
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
@@ -160,20 +151,33 @@ namespace Axiom.Scripting.Compiler.AST
 			node.Cls = this.Cls;
 			node.Id = this.Id;
 			node.IsAbstract = this.IsAbstract;
-			foreach ( AbstractNode an in this.Children )
+			foreach ( var an in this.Children )
 			{
-				AbstractNode newNode = ( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( AbstractNode an in this.Values )
+			foreach ( var an in this.Values )
 			{
-				AbstractNode newNode = ( an.Clone() );
+				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}
-			node._environment = new Dictionary<string, string>( this._environment );
+			node._environment = new Dictionary<string, string>( _environment );
 			return node;
+		}
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return Cls;
+			}
+			set
+			{
+				Cls = value;
+			}
 		}
 
 		#endregion AbstractNode Implementation

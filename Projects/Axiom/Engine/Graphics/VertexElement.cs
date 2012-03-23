@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 
@@ -54,9 +55,9 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		///     Index of the item, only applicable for some elements like texture coords.
+		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
 		/// </summary>
-		protected int index;
+		protected short source;
 
 		/// <summary>
 		///     The offset in the buffer that this element starts at.
@@ -64,19 +65,19 @@ namespace Axiom.Graphics
 		protected int offset;
 
 		/// <summary>
+		///     The type of element.
+		/// </summary>
+		protected VertexElementType type;
+
+		/// <summary>
 		///     The meaning of the element.
 		/// </summary>
 		protected VertexElementSemantic semantic;
 
 		/// <summary>
-		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
+		///     Index of the item, only applicable for some elements like texture coords.
 		/// </summary>
-		protected short source;
-
-		/// <summary>
-		///     The type of element.
-		/// </summary>
-		protected VertexElementType type;
+		protected int index;
 
 		#endregion Fields
 
@@ -90,7 +91,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 ) { }
+			: this( source, offset, type, semantic, 0 ) {}
 
 		/// <summary>
 		///     Constructor.
@@ -123,34 +124,34 @@ namespace Axiom.Graphics
 				case VertexElementType.Color_ABGR:
 				case VertexElementType.Color_ARGB:
 				case VertexElementType.Color:
-					return Memory.SizeOf( typeof( int ) );
+					return Memory.SizeOf( typeof ( int ) );
 
 				case VertexElementType.Float1:
-					return Memory.SizeOf( typeof( float ) );
+					return Memory.SizeOf( typeof ( float ) );
 
 				case VertexElementType.Float2:
-					return Memory.SizeOf( typeof( float ) ) * 2;
+					return Memory.SizeOf( typeof ( float ) ) * 2;
 
 				case VertexElementType.Float3:
-					return Memory.SizeOf( typeof( float ) ) * 3;
+					return Memory.SizeOf( typeof ( float ) ) * 3;
 
 				case VertexElementType.Float4:
-					return Memory.SizeOf( typeof( float ) ) * 4;
+					return Memory.SizeOf( typeof ( float ) ) * 4;
 
 				case VertexElementType.Short1:
-					return Memory.SizeOf( typeof( short ) );
+					return Memory.SizeOf( typeof ( short ) );
 
 				case VertexElementType.Short2:
-					return Memory.SizeOf( typeof( short ) ) * 2;
+					return Memory.SizeOf( typeof ( short ) ) * 2;
 
 				case VertexElementType.Short3:
-					return Memory.SizeOf( typeof( short ) ) * 3;
+					return Memory.SizeOf( typeof ( short ) ) * 3;
 
 				case VertexElementType.Short4:
-					return Memory.SizeOf( typeof( short ) ) * 4;
+					return Memory.SizeOf( typeof ( short ) ) * 4;
 
 				case VertexElementType.UByte4:
-					return Memory.SizeOf( typeof( byte ) ) * 4;
+					return Memory.SizeOf( typeof ( byte ) ) * 4;
 			} // end switch
 
 			// keep the compiler happy
@@ -262,7 +263,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.source;
+				return source;
 			}
 		}
 
@@ -273,7 +274,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.offset;
+				return offset;
 			}
 		}
 
@@ -284,7 +285,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.type;
+				return type;
 			}
 		}
 
@@ -295,7 +296,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.semantic;
+				return semantic;
 			}
 		}
 
@@ -306,7 +307,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.index;
+				return index;
 			}
 		}
 
@@ -317,7 +318,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return GetTypeSize( this.type );
+				return GetTypeSize( type );
 			}
 		}
 
@@ -331,7 +332,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public object Clone()
 		{
-			return MemberwiseClone();
+			return this.MemberwiseClone();
 		}
 
 		#endregion

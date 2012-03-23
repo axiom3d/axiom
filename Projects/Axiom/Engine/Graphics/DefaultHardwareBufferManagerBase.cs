@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
 
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -54,7 +58,9 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class DefaultHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
-		~DefaultHardwareBufferManagerBase() { }
+		public DefaultHardwareBufferManagerBase() {}
+
+		~DefaultHardwareBufferManagerBase() {}
 
 		/// Creates a vertex buffer
 		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )

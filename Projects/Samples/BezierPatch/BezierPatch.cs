@@ -22,6 +22,9 @@
 
 #endregion License
 
+using System;
+
+using Axiom.Samples;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -32,13 +35,13 @@ namespace Axiom.Samples.BezierPatch
 	{
 		#region Protected Fields
 
+		protected VertexDeclaration patchDeclaration;
+		protected float timeLapse;
 		protected float factor;
 		protected bool isWireframe;
 		protected PatchMesh patch;
-		protected VertexDeclaration patchDeclaration;
 		protected Entity patchEntity;
 		protected Pass patchPass;
-		protected float timeLapse;
 
 		#endregion Protected Fields
 
@@ -46,20 +49,20 @@ namespace Axiom.Samples.BezierPatch
 
 		private struct PatchVertex
 		{
+			public float X, Y, Z;
 			public float Nx, Ny, Nz;
 			public float U, V;
-			public float X, Y, Z;
 
 			public PatchVertex( float x, float y, float z, float nx, float ny, float nz, float u, float v )
 			{
-				this.X = x;
-				this.Y = y;
-				this.Z = z;
-				this.Nx = nx;
-				this.Ny = ny;
-				this.Nz = nz;
-				this.U = u;
-				this.V = v;
+				X = x;
+				Y = y;
+				Z = z;
+				Nx = nx;
+				Ny = ny;
+				Nz = nz;
+				U = u;
+				V = v;
 			}
 		}
 
@@ -82,7 +85,7 @@ namespace Axiom.Samples.BezierPatch
 
 			// define the control point vertices for our patch
 			// Patch data
-			var patchVertices = new PatchVertex[ 9 ];
+			PatchVertex[] patchVertices = new PatchVertex[ 9 ];
 
 			patchVertices[ 0 ].X = -500;
 			patchVertices[ 0 ].Y = 200;
@@ -165,32 +168,32 @@ namespace Axiom.Samples.BezierPatch
 			patchVertices[ 8 ].U = 1;
 			patchVertices[ 8 ].V = 1;
 			// specify a vertex format declaration for our patch: 3 floats for position, 3 floats for normal, 2 floats for UV
-			this.patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			this.patchDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-			this.patchDeclaration.AddElement( 0, 12, VertexElementType.Float3, VertexElementSemantic.Normal );
-			this.patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+			patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
+			patchDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			patchDeclaration.AddElement( 0, 12, VertexElementType.Float3, VertexElementSemantic.Normal );
+			patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 			// create a patch mesh using vertices and declaration
-			this.patch = MeshManager.Instance.CreateBezierPatch( "patch", ResourceGroupManager.DefaultResourceGroupName, patchVertices, this.patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+			patch = MeshManager.Instance.CreateBezierPatch( "patch", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
 			// Start patch at 0 detail
-			this.patch.Subdivision = 0;
+			patch.Subdivision = 0;
 
 			// Create entity based on patch
-			this.patchEntity = SceneManager.CreateEntity( "Entity1", "patch" );
-			var material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
+			patchEntity = SceneManager.CreateEntity( "Entity1", "patch" );
+			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
 			material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
 
-			this.patchEntity.MaterialName = "TextMat";
-			this.patchPass = material.GetTechnique( 0 ).GetPass( 0 );
+			patchEntity.MaterialName = "TextMat";
+			patchPass = material.GetTechnique( 0 ).GetPass( 0 );
 
 			// Attach the entity to the root of the scene
-			SceneManager.RootSceneNode.AttachObject( this.patchEntity );
+			SceneManager.RootSceneNode.AttachObject( patchEntity );
 
 			// save the main pass of the material so we can toggle wireframe on it
 			if ( material != null )
 			{
-				this.patchPass = material.GetTechnique( 0 ).GetPass( 0 );
+				patchPass = material.GetTechnique( 0 ).GetPass( 0 );
 
 				// use an orbit style camera
 				CameraManager.setStyle( CameraStyle.Orbit );
@@ -201,19 +204,19 @@ namespace Axiom.Samples.BezierPatch
 				// create slider to adjust detail and checkbox to toggle wireframe
 				Slider slider = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "Detail", "Detail", 120, 44, 0, 1, 6 );
 				CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Wireframe", "Wireframe", 120 );
-				slider.SliderMoved += slider_SliderMoved;
-				box.CheckChanged += box_CheckChanged;
+				slider.SliderMoved += new SliderMovedHandler( slider_SliderMoved );
+				box.CheckChanged += new CheckChangedHandler( box_CheckChanged );
 			}
 		}
 
 		private void box_CheckChanged( CheckBox sender )
 		{
-			this.patchPass.PolygonMode = ( sender.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
+			patchPass.PolygonMode = ( sender.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
 		}
 
 		private void slider_SliderMoved( object sender, Slider slider )
 		{
-			this.patch.Subdivision = slider.Value;
+			patch.Subdivision = slider.Value;
 		}
 
 		/// <summary>
@@ -221,8 +224,8 @@ namespace Axiom.Samples.BezierPatch
 		/// </summary>
 		protected override void CleanupContent()
 		{
-			this.patchPass.PolygonMode = PolygonMode.Solid;
-			MeshManager.Instance.Remove( this.patch.Handle );
+			patchPass.PolygonMode = PolygonMode.Solid;
+			MeshManager.Instance.Remove( patch.Handle );
 		}
 	}
 }

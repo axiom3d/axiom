@@ -37,9 +37,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
+
+using Axiom;
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -54,30 +59,33 @@ namespace Axiom.SceneManagers.Octree
 
 		/** Returns the number of scene nodes attached to this octree
         */
+		protected int numNodes;
+
+		/** Public list of SceneNodes attached to this particular octree
+		*/
+		protected NodeCollection nodeList = new NodeCollection();
 
 		/** The bounding box of the octree
 		@remarks
 		This is used for octant index determination and rendering, but not culling
 		*/
-		public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
 		protected AxisAlignedBox box = new AxisAlignedBox();
 		/** Creates the wire frame bounding box for this octant
 		*/
+		protected WireBoundingBox wireBoundingBox;
 
 		/** Vector containing the dimensions of this octree / 2
 		*/
 		protected Vector3 halfSize;
-		protected NodeCollection nodeList = new NodeCollection();
-		protected int numNodes;
 
 		/** 3D array of children of this octree.
 		@remarks
 		Children are dynamically created as needed when nodes are inserted in the Octree.
 		If, later, the all the nodes are removed from the child, it is still kept arround.
 		*/
+		public Octree[ ,, ] Children = new Octree[ 8,8,8 ];
 
-		protected Octree parent;
-		protected WireBoundingBox wireBoundingBox;
+		protected Octree parent = null;
 
 		#endregion Member Variables
 
@@ -87,11 +95,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.numNodes;
+				return numNodes;
 			}
 			set
 			{
-				this.numNodes = value;
+				numNodes = value;
 			}
 		}
 
@@ -99,7 +107,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.nodeList;
+				return nodeList;
 			}
 		}
 
@@ -107,11 +115,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.halfSize;
+				return halfSize;
 			}
 			set
 			{
-				this.halfSize = value;
+				halfSize = value;
 			}
 		}
 
@@ -119,11 +127,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return this.box;
+				return box;
 			}
 			set
 			{
-				this.box = value;
+				box = value;
 			}
 		}
 
@@ -132,48 +140,16 @@ namespace Axiom.SceneManagers.Octree
 		public Octree( Octree parent )
 		{
 			this.wireBoundingBox = null;
-			HalfSize = new Vector3();
+			this.HalfSize = new Vector3();
 
 			this.parent = parent;
-			NumNodes = 0;
-		}
-
-		/// <summary>
-		///  Creates the AxisAlignedBox used for culling this octree.
-		/// </summary>
-		/// <remarks>
-		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
-		/// </remarks>
-		public AxisAlignedBox CullBounds
-		{
-			get
-			{
-				Vector3[] Corners = this.box.Corners;
-				this.box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
-
-				return this.box;
-			}
-		}
-
-		public WireBoundingBox WireBoundingBox
-		{
-			get
-			{
-				// Create a WireBoundingBox if needed
-				if ( this.wireBoundingBox == null )
-				{
-					this.wireBoundingBox = new WireBoundingBox();
-				}
-
-				this.wireBoundingBox.BoundingBox = this.box;
-				return this.wireBoundingBox;
-			}
+			this.NumNodes = 0;
 		}
 
 		public void AddNode( OctreeNode node )
 		{
 			// TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
-			this.nodeList.Add( node );
+			nodeList.Add( node );
 			node.Octant = this;
 			Ref();
 		}
@@ -244,23 +220,55 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
+		/// <summary>
+		///  Creates the AxisAlignedBox used for culling this octree.
+		/// </summary>
+		/// <remarks>
+		///     Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
+		/// </remarks>
+		public AxisAlignedBox CullBounds
+		{
+			get
+			{
+				Vector3[] Corners = this.box.Corners;
+				box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
+
+				return box;
+			}
+		}
+
 		public void Ref()
 		{
-			this.numNodes++;
+			numNodes++;
 
-			if ( this.parent != null )
+			if ( parent != null )
 			{
-				this.parent.Ref();
+				parent.Ref();
 			}
 		}
 
 		public void UnRef()
 		{
-			this.numNodes--;
+			numNodes--;
 
-			if ( this.parent != null )
+			if ( parent != null )
 			{
-				this.parent.UnRef();
+				parent.UnRef();
+			}
+		}
+
+		public WireBoundingBox WireBoundingBox
+		{
+			get
+			{
+				// Create a WireBoundingBox if needed
+				if ( wireBoundingBox == null )
+				{
+					wireBoundingBox = new WireBoundingBox();
+				}
+
+				wireBoundingBox.BoundingBox = box;
+				return wireBoundingBox;
 			}
 		}
 	}

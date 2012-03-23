@@ -47,15 +47,14 @@ namespace Axiom.Scripting.Compiler
 {
 	public partial class ScriptCompiler
 	{
-		#region Nested type: CompositionPassTranslator
-
 		public class CompositionPassTranslator : Translator
 		{
 			protected CompositionPass _Pass;
 
 			public CompositionPassTranslator()
+				: base()
 			{
-				this._Pass = null;
+				_Pass = null;
 			}
 
 			#region Translator Implementation
@@ -72,8 +71,8 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var target = (CompositionTargetPass)obj.Parent.Context;
-				this._Pass = target.CreatePass();
-				obj.Context = this._Pass;
+				_Pass = target.CreatePass();
+				obj.Context = _Pass;
 
 				// The name is the type of the pass
 				if ( obj.Values.Count == 0 )
@@ -81,24 +80,24 @@ namespace Axiom.Scripting.Compiler
 					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 					return;
 				}
-				string type = string.Empty;
+				var type = string.Empty;
 				if ( !getString( obj.Values[ 0 ], out type ) )
 				{
 					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
 					return;
 				}
 
-				this._Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof( CompositorPassType ) );
-				if ( this._Pass.Type == CompositorPassType.RenderCustom )
+				_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof ( CompositorPassType ) );
+				if ( _Pass.Type == CompositorPassType.RenderCustom )
 				{
-					string customType = string.Empty;
+					var customType = string.Empty;
 					//This is the ugly one liner for safe access to the second parameter.
 					if ( obj.Values.Count < 2 || !getString( obj.Values[ 1 ], out customType ) )
 					{
 						compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 						return;
 					}
-					this._Pass.CustomType = customType;
+					_Pass.CustomType = customType;
 				}
 				else
 				{
@@ -106,7 +105,7 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				foreach ( AbstractNode i in obj.Children )
+				foreach ( var i in obj.Children )
 				{
 					if ( i is ObjectAbstractNode )
 					{
@@ -117,7 +116,7 @@ namespace Axiom.Scripting.Compiler
 						var prop = (PropertyAbstractNode)i;
 						switch ( (Keywords)prop.Id )
 						{
-							#region ID_MATERIAL
+								#region ID_MATERIAL
 
 							case Keywords.ID_MATERIAL:
 								if ( prop.Values.Count == 0 )
@@ -132,13 +131,13 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									string val = string.Empty;
+									var val = string.Empty;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
 										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
 
 										compiler._fireEvent( ref evt );
-										this._Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										_Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 									}
 									else
 									{
@@ -147,9 +146,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_MATERIAL
+								#endregion ID_MATERIAL
 
-							#region ID_INPUT
+								#region ID_INPUT
 
 							case Keywords.ID_INPUT:
 								if ( prop.Values.Count < 2 )
@@ -165,11 +164,11 @@ namespace Axiom.Scripting.Compiler
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
-									int id = 0;
-									string name = string.Empty;
+									var id = 0;
+									var name = string.Empty;
 									if ( getInt( i0, out id ) && getString( i1, out name ) )
 									{
-										int index = 0;
+										var index = 0;
 
 										if ( !getInt( i2, out index ) )
 										{
@@ -177,7 +176,7 @@ namespace Axiom.Scripting.Compiler
 											return;
 										}
 
-										this._Pass.SetInput( id, name, index );
+										_Pass.SetInput( id, name, index );
 									}
 									else
 									{
@@ -186,9 +185,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_INPUT
+								#endregion ID_INPUT
 
-							#region ID_IDENTIFIER
+								#region ID_IDENTIFIER
 
 							case Keywords.ID_IDENTIFIER:
 								if ( prop.Values.Count == 0 )
@@ -206,7 +205,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										this._Pass.Identifier = val;
+										_Pass.Identifier = val;
 									}
 									else
 									{
@@ -215,9 +214,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_IDENTIFIER
+								#endregion ID_IDENTIFIER
 
-							#region ID_FIRST_RENDER_QUEUE
+								#region ID_FIRST_RENDER_QUEUE
 
 							case Keywords.ID_FIRST_RENDER_QUEUE:
 								if ( prop.Values.Count == 0 )
@@ -235,7 +234,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										this._Pass.FirstRenderQueue = (RenderQueueGroupID)val;
+										_Pass.FirstRenderQueue = (RenderQueueGroupID)val;
 									}
 									else
 									{
@@ -244,9 +243,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_FIRST_RENDER_QUEUE
+								#endregion ID_FIRST_RENDER_QUEUE
 
-							#region ID_LAST_RENDER_QUEUE
+								#region ID_LAST_RENDER_QUEUE
 
 							case Keywords.ID_LAST_RENDER_QUEUE:
 								if ( prop.Values.Count == 0 )
@@ -264,7 +263,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										this._Pass.LastRenderQueue = (RenderQueueGroupID)val;
+										_Pass.LastRenderQueue = (RenderQueueGroupID)val;
 									}
 									else
 									{
@@ -273,9 +272,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_LAST_RENDER_QUEUE
+								#endregion ID_LAST_RENDER_QUEUE
 
-							#region ID_MATERIAL_SCHEME
+								#region ID_MATERIAL_SCHEME
 
 							case Keywords.ID_MATERIAL_SCHEME:
 								if ( prop.Values.Count == 0 )
@@ -293,7 +292,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										this._Pass.MaterialScheme = val;
+										_Pass.MaterialScheme = val;
 									}
 									else
 									{
@@ -302,9 +301,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_MATERIAL_SCHEME
+								#endregion ID_MATERIAL_SCHEME
 
-							#region ID_QUAD_NORMALS
+								#region ID_QUAD_NORMALS
 
 							case Keywords.ID_QUAD_NORMALS:
 								if ( prop.Values.Count == 0 )
@@ -324,11 +323,11 @@ namespace Axiom.Scripting.Compiler
 										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
 										{
-											this._Pass.SetQuadFarCorners( true, true );
+											_Pass.SetQuadFarCorners( true, true );
 										}
 										else if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )
 										{
-											this._Pass.SetQuadFarCorners( true, false );
+											_Pass.SetQuadFarCorners( true, false );
 										}
 										else
 										{
@@ -342,7 +341,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								break;
 
-							#endregion ID_QUAD_NORMALS
+								#endregion ID_QUAD_NORMALS
 
 							default:
 								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
@@ -354,7 +353,5 @@ namespace Axiom.Scripting.Compiler
 
 			#endregion Translator Implementation
 		}
-
-		#endregion
 	}
 }

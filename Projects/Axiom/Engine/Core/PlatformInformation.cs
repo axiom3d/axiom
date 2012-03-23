@@ -37,6 +37,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Text;
+
+using Axiom.Animating;
+using Axiom.Collections;
+using Axiom.Controllers;
+using Axiom.FileSystem;
+using Axiom.Fonts;
+using Axiom.Media;
+using Axiom.Overlays;
+using Axiom.Input;
+using Axiom.ParticleSystems;
+using Axiom.Graphics;
 
 #if MONO_SIMD
 using Mono.Simd;
@@ -51,8 +68,6 @@ namespace Axiom.Core
 {
 	internal class PlatformInformation
 	{
-		#region CPUFeature enum
-
 		public enum CPUFeature
 		{
 			SSE1,
@@ -65,9 +80,7 @@ namespace Axiom.Core
 			Count
 		}
 
-		#endregion
-
-		private static readonly bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
+		private static bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
 		private static string cpuIdentifier = "CPU Identification not available";
 
 		/// <summary>

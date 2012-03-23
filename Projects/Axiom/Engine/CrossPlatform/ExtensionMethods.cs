@@ -2,13 +2,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+
+using Axiom.CrossPlatform;
 #if !(XBOX || XBOX360)
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Windows;
+using System.Linq.Expressions;
+
+using Expression = System.Linq.Expressions.Expression;
 
 #endif
 
@@ -27,7 +35,7 @@ namespace Axiom.Core
 		public static IEnumerable<Assembly> Neighbors( IEnumerable<string> names )
 		{
 			Assembly assembly;
-			foreach ( string name in names )
+			foreach ( var name in names )
 			{
 				try
 				{
@@ -55,10 +63,10 @@ namespace Axiom.Core
 #elif (WINDOWS_PHONE || XBOX || XBOX360)
 			return Neighbors(from file in Directory.GetFiles(folder??".", filter??"*.dll") select file);
 #else
-			string loc = folder ?? Assembly.GetExecutingAssembly().Location;
+			var loc = folder ?? Assembly.GetExecutingAssembly().Location;
 			loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
 			return Neighbors( from file in Directory.GetFiles( loc, filter ?? "*.dll" )
-							  select file );
+			                  select file );
 #endif
 		}
 
@@ -202,28 +210,28 @@ namespace Axiom.Core
 #else
 		public static Func<T, TR> FieldGet<T, TR>( this Type type, string fieldName )
 		{
-			ParameterExpression param = Expression.Parameter( type, "arg" );
-			MemberExpression member = Expression.Field( param, fieldName );
-			LambdaExpression lambda = Expression.Lambda( member, param );
+			var param = Expression.Parameter( type, "arg" );
+			var member = Expression.Field( param, fieldName );
+			var lambda = Expression.Lambda( member, param );
 			return (Func<T, TR>)lambda.Compile();
 		}
 
 		public static Func<object, object> FieldGet( this Type type, string fieldName )
 		{
-			ParameterExpression param = Expression.Parameter( typeof( object ), "arg" );
-			UnaryExpression paramCast = Expression.Convert( param, type );
-			MemberExpression member = Expression.Field( paramCast, fieldName );
-			UnaryExpression memberCast = Expression.Convert( member, typeof( object ) );
-			LambdaExpression lambda = Expression.Lambda( memberCast, param );
+			var param = Expression.Parameter( typeof ( object ), "arg" );
+			var paramCast = Expression.Convert( param, type );
+			var member = Expression.Field( paramCast, fieldName );
+			var memberCast = Expression.Convert( member, typeof ( object ) );
+			var lambda = Expression.Lambda( memberCast, param );
 			return (Func<object, object>)lambda.Compile();
 		}
 
 		public static Func<object, object, object> FieldSet( this Type type, string fieldName )
 		{
-			ParameterExpression param = Expression.Parameter( typeof( object ), "arg" );
-			UnaryExpression paramCast = Expression.Convert( param, type );
-			MemberExpression member = Expression.Field( paramCast, fieldName );
-			ParameterExpression value = Expression.Parameter( typeof( object ), "value" );
+			var param = Expression.Parameter( typeof ( object ), "arg" );
+			var paramCast = Expression.Convert( param, type );
+			var member = Expression.Field( paramCast, fieldName );
+			var value = Expression.Parameter( typeof ( object ), "value" );
 #if NET_40 && !WINDOWS_PHONE
 			var valueCast = Expression.Convert(value, member.Type);
 			var assign = Expression.Assign( member, valueCast );
@@ -231,9 +239,9 @@ namespace Axiom.Core
 			var lambda = Expression.Lambda(memberCast, param, value);
 #else
 			// TODO: Check this alternative
-			UnaryExpression memberCast = Expression.Convert( member, typeof( object ) );
-			MethodCallExpression assign = Expression.Call( Class<object>.MethodInfoAssign, memberCast, value );
-			LambdaExpression lambda = Expression.Lambda( assign, param, value );
+			var memberCast = Expression.Convert( member, typeof ( object ) );
+			var assign = Expression.Call( Class<object>.MethodInfoAssign, memberCast, value );
+			var lambda = Expression.Lambda( assign, param, value );
 #endif
 			return (Func<object, object, object>)lambda.Compile();
 		}
@@ -242,19 +250,18 @@ namespace Axiom.Core
 		public static Field[] Fields<T>( this T obj )
 		{
 			Field[] reflectors;
-			Type type = obj.GetType();
+			var type = obj.GetType();
 			if ( !fastFields.TryGetValue( type, out reflectors ) )
 			{
-				FieldInfo[] fields = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
+				var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
 				var delegates = new List<Field>();
-				for ( int i = 0; i < fields.Length; ++i )
+				for ( var i = 0; i < fields.Length; ++i )
 				{
-					string name = fields[ i ].Name;
+					var name = fields[ i ].Name;
 					delegates.Add( new Field
-								   {
-									   Get = type.FieldGet( name ),
-									   Set = type.FieldSet( name )
-								   } );
+					               {
+					               	Get = type.FieldGet( name ), Set = type.FieldSet( name )
+					               } );
 				}
 				fastFields.Add( type, reflectors = delegates.ToArray() );
 			}
@@ -414,8 +421,8 @@ namespace Axiom.Core
 
 		public static int CopyFrom<T>( this byte[] dst, T obj, int ofs )
 		{
-			int size = Marshal.SizeOf( obj );
-			GCHandle handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+			var size = Marshal.SizeOf( obj );
+			var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
 			Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, size );
 			handle.Free();
 			return ofs + size;
@@ -428,8 +435,8 @@ namespace Axiom.Core
 
 		public static int CopyTo<T>( this byte[] src, ref T obj, int ofs )
 		{
-			int size = Marshal.SizeOf( obj );
-			GCHandle handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+			var size = Marshal.SizeOf( obj );
+			var handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
 			Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), size );
 			handle.Free();
 			return ofs + size;
@@ -437,14 +444,14 @@ namespace Axiom.Core
 
 		public static void CopyFrom( this byte[] dst, Array src )
 		{
-			GCHandle handle = GCHandle.Alloc( src, GCHandleType.Pinned );
+			var handle = GCHandle.Alloc( src, GCHandleType.Pinned );
 			Marshal.Copy( handle.AddrOfPinnedObject(), dst, 0, dst.Length );
 			handle.Free();
 		}
 
 		public static void CopyTo( this byte[] src, Array dst )
 		{
-			GCHandle handle = GCHandle.Alloc( dst, GCHandleType.Pinned );
+			var handle = GCHandle.Alloc( dst, GCHandleType.Pinned );
 			Marshal.Copy( src, 0, handle.AddrOfPinnedObject(), src.Length );
 			handle.Free();
 		}
@@ -457,7 +464,7 @@ namespace Axiom.Core
 			Marshal.PtrToStructure(ptr, obj);
 			return (T)obj;
 #else
-			return (T)Marshal.PtrToStructure( ptr, typeof( T ) );
+			return (T)Marshal.PtrToStructure( ptr, typeof ( T ) );
 #endif
 		}
 
@@ -525,7 +532,7 @@ namespace Axiom.Core
 		public delegate void Setter<TS>( T type, TS value );
 
 #if !NET_40 || WINDOWS_PHONE
-		internal static readonly MethodInfo MethodInfoAssign = typeof( Class<T> ).GetMethod( "Assign", BindingFlags.NonPublic | BindingFlags.Static );
+		internal static readonly MethodInfo MethodInfoAssign = typeof ( Class<T> ).GetMethod( "Assign", BindingFlags.NonPublic | BindingFlags.Static );
 
 		internal static T Assign( ref T target, T value )
 		{
@@ -536,23 +543,23 @@ namespace Axiom.Core
 #if !(XBOX || XBOX360)
 		public static Getter<TG> FieldGet<TG>( string fieldName )
 		{
-			ParameterExpression type = Expression.Parameter( typeof( T ), "type" );
-			MemberExpression field = Expression.Field( type, fieldName );
-			LambdaExpression lambda = Expression.Lambda( field, type );
+			var type = Expression.Parameter( typeof ( T ), "type" );
+			var field = Expression.Field( type, fieldName );
+			var lambda = Expression.Lambda( field, type );
 			return (Getter<TG>)lambda.Compile();
 		}
 
 		public static Setter<TS> FieldSet<TS>( string fieldName )
 		{
-			ParameterExpression type = Expression.Parameter( typeof( T ), "type" );
-			ParameterExpression value = Expression.Parameter( typeof( TS ), "value" );
-			MemberExpression field = Expression.Field( type, fieldName );
+			var type = Expression.Parameter( typeof ( T ), "type" );
+			var value = Expression.Parameter( typeof ( TS ), "value" );
+			var field = Expression.Field( type, fieldName );
 #if NET_40 && !WINDOWS_PHONE
 			var assign = Expression.Assign(field, value);
 #else
-			MethodCallExpression assign = Expression.Call( MethodInfoAssign, field, value );
+			var assign = Expression.Call( MethodInfoAssign, field, value );
 #endif
-			LambdaExpression lambda = Expression.Lambda( assign, type, value );
+			var lambda = Expression.Lambda( assign, type, value );
 			return (Setter<TS>)lambda.Compile();
 		}
 #endif
@@ -562,30 +569,31 @@ namespace Axiom.Core
 	public class Lazy<T>
 		where T : class, new()
 	{
-		private readonly Func<T> newT;
 		private T instance;
+
+		private Func<T> newT;
+
+		private T New()
+		{
+			return new T();
+		}
 
 		public Lazy()
 		{
-			this.newT = New;
+			newT = New;
 		}
 
 		public Lazy( Func<T> newFunc )
 		{
-			this.newT = newFunc;
+			newT = newFunc;
 		}
 
 		public T Value
 		{
 			get
 			{
-				return Interlocked.CompareExchange( ref this.instance, this.newT(), null );
+				return Interlocked.CompareExchange( ref instance, newT(), null );
 			}
-		}
-
-		private T New()
-		{
-			return new T();
 		}
 	}
 #endif
@@ -601,13 +609,13 @@ namespace System
 			[AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false )]
 			public class ExportAttribute : Attribute
 			{
-				public ExportAttribute( Type contractType ) { }
+				public ExportAttribute( Type contractType ) {}
 			}
 
 			[AttributeUsage( AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property, AllowMultiple = false, Inherited = false )]
 			public class ImportManyAttribute : Attribute
 			{
-				public ImportManyAttribute( Type contractType ) { }
+				public ImportManyAttribute( Type contractType ) {}
 			}
 #endif
 

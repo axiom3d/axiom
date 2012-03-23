@@ -38,14 +38,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 
 using Axiom.Math.Collections;
+	//
+	//using Radian = System.Single;
+	//using Degree = System.Single;
 using Axiom.Utilities;
-//
-//using Radian = System.Single;
-//using Degree = System.Single;
 
 #endregion Namespace Declarations
 
@@ -53,24 +53,14 @@ namespace Axiom.Math
 {
 	public sealed class Utility
 	{
-		#region Delegates
-
-		/// <summary>
-		///    Method delegate with a simple signature. 
-		///    Used to measure execution time of a method for instance.
-		/// </summary>
-		public delegate void SimpleMethodDelegate();
-
-		#endregion
-
-		public static readonly Real PI = System.Math.PI;
+		public static readonly Real PI = (Real)System.Math.PI;
 		public static readonly Real TWO_PI = PI * 2.0f;
 		public static readonly Real HALF_PI = PI * 0.5f;
 
 		public static readonly Real RADIANS_PER_DEGREE = PI / 180.0f;
 		public static readonly Real DEGREES_PER_RADIAN = 180.0f / PI;
 
-		private static readonly Random random = new Random();
+		private static Random random = new Random();
 
 		/// <summary>
 		/// Empty static constructor
@@ -84,12 +74,12 @@ namespace Axiom.Math
 		/// (from "Static Constructors Demystified" by Satya Komatineni
 		///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
 		/// </summary>
-		static Utility() { }
+		static Utility() {}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		private Utility() { }
+		private Utility() {}
 
 		/// <summary>
 		/// 
@@ -98,10 +88,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real BoundingRadiusFromAABB( AxisAlignedBox aabb )
 		{
-			Vector3 max = aabb.Maximum;
-			Vector3 min = aabb.Minimum;
+			var max = aabb.Maximum;
+			var min = aabb.Minimum;
 
-			Vector3 magnitude = max;
+			var magnitude = max;
 			magnitude.Ceil( -max );
 			magnitude.Ceil( min );
 			magnitude.Ceil( -min );
@@ -172,7 +162,7 @@ namespace Axiom.Math
 
 		public static Real ParseReal( string value )
 		{
-			return Real.Parse( value, new CultureInfo( "en-US" ) );
+			return Real.Parse( value, new System.Globalization.CultureInfo( "en-US" ) );
 		}
 
 		/// <summary>
@@ -191,7 +181,7 @@ namespace Axiom.Math
 		/// </summary>
 		public static Real Sin( Radian angle )
 		{
-			return System.Math.Sin( (double)angle );
+			return (Real)System.Math.Sin( (double)angle );
 		}
 
 		/// <summary>
@@ -207,7 +197,7 @@ namespace Axiom.Math
 		/// </summary>
 		public static Real Cos( Radian angle )
 		{
-			return System.Math.Cos( (double)angle );
+			return (Real)System.Math.Cos( (double)angle );
 		}
 
 		/// <summary>
@@ -232,7 +222,7 @@ namespace Axiom.Math
 		/// </summary>
 		public static Real Tan( Radian value )
 		{
-			return System.Math.Tan( (double)value );
+			return (Real)System.Math.Tan( (double)value );
 		}
 
 		/// <summary>
@@ -266,7 +256,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real Sqrt( Real number )
 		{
-			return System.Math.Sqrt( number );
+			return (Real)System.Math.Sqrt( number );
 		}
 
 		/// <summary>
@@ -287,7 +277,7 @@ namespace Axiom.Math
 		/// <returns>The number x raised to power y</returns>
 		public static Real Pow( Real x, Real y )
 		{
-			return System.Math.Pow( x, y );
+			return (Real)System.Math.Pow( (double)x, (double)y );
 		}
 
 		/// <summary>
@@ -297,7 +287,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real Abs( Real number )
 		{
-			return System.Math.Abs( number );
+			return (Real)System.Math.Abs( number );
 		}
 
 		/// <summary>
@@ -331,9 +321,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( values != null && values.Length > 0 );
 
-			int maxIndex = 0;
-			Real max = values[ 0 ];
-			for ( int i = 1; i < values.Length; i++ )
+			var maxIndex = 0;
+			var max = values[ 0 ];
+			for ( var i = 1; i < values.Length; i++ )
 			{
 				if ( values[ i ] > max )
 				{
@@ -376,9 +366,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( values != null && values.Length > 0 );
 
-			int minIndex = 0;
-			Real min = values[ 0 ];
-			for ( int i = 1; i < values.Length; i++ )
+			var minIndex = 0;
+			var min = values[ 0 ];
+			for ( var i = 1; i < values.Length; i++ )
 			{
 				if ( values[ i ] < min )
 				{
@@ -397,7 +387,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real Ceiling( Real number )
 		{
-			return System.Math.Ceiling( number );
+			return (Real)System.Math.Ceiling( number );
 		}
 
 		/// <summary>
@@ -417,7 +407,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real UnitRandom()
 		{
-			return random.Next( Int32.MaxValue ) / (Real)Int32.MaxValue;
+			return (Real)random.Next( Int32.MaxValue ) / (Real)Int32.MaxValue;
 		}
 
 		/// <summary>
@@ -426,7 +416,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real SymmetricRandom()
 		{
-			return ( 2.0f * UnitRandom() - 1.0f );
+			return (Real)( 2.0f * UnitRandom() - 1.0f );
 		}
 
 		/// <summary>
@@ -436,7 +426,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix4 BuildReflectionMatrix( Plane plane )
 		{
-			Vector3 normal = plane.Normal;
+			var normal = plane.Normal;
 
 			return new Matrix4( -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D, -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.D, -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.D, 0.0f, 0.0f, 0.0f, 1.0f );
 		}
@@ -450,7 +440,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector4 CalculateFaceNormal( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = CalculateBasicFaceNormal( v1, v2, v3 );
+			var normal = CalculateBasicFaceNormal( v1, v2, v3 );
 
 			// Now set up the w (distance of tri from origin
 			return new Vector4( normal.x, normal.y, normal.z, -( normal.Dot( v1 ) ) );
@@ -465,7 +455,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 CalculateBasicFaceNormal( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+			var normal = ( v2 - v1 ).Cross( v3 - v1 );
 			normal.Normalize();
 
 			return normal;
@@ -480,7 +470,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 CalculateBasicFaceNormalWithoutNormalize( Vector3 v1, Vector3 v2, Vector3 v3 )
 		{
-			Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+			var normal = ( v2 - v1 ).Cross( v3 - v1 );
 			return normal;
 		}
 
@@ -506,22 +496,22 @@ namespace Axiom.Math
 		{
 			// side0 is the vector along one side of the triangle of vertices passed in, 
 			// and side1 is the vector along another side. Taking the cross product of these returns the normal.
-			Vector3 side0 = position1 - position2;
-			Vector3 side1 = position3 - position1;
+			var side0 = position1 - position2;
+			var side1 = position3 - position1;
 			// Calculate face normal
-			Vector3 normal = side1.Cross( side0 );
+			var normal = side1.Cross( side0 );
 			normal.Normalize();
 
 			// Now we use a formula to calculate the tangent. 
-			Real deltaV0 = v1 - v2;
-			Real deltaV1 = v3 - v1;
-			Vector3 tangent = deltaV1 * side0 - deltaV0 * side1;
+			var deltaV0 = v1 - v2;
+			var deltaV1 = v3 - v1;
+			var tangent = deltaV1 * side0 - deltaV0 * side1;
 			tangent.Normalize();
 
 			// Calculate binormal
-			Real deltaU0 = u1 - u2;
-			Real deltaU1 = u3 - u1;
-			Vector3 binormal = deltaU1 * side0 - deltaU0 * side1;
+			var deltaU0 = u1 - u2;
+			var deltaU1 = u3 - u1;
+			var binormal = deltaU1 * side0 - deltaU0 * side1;
 			binormal.Normalize();
 
 			// Now, we take the cross product of the tangents to get a vector which 
@@ -530,7 +520,7 @@ namespace Axiom.Math
 			// then we need to reverse the s and t tangents. 
 			// This is because the triangle has been mirrored when going from tangent space to object space.
 			// reverse tangents if necessary.
-			Vector3 tangentCross = tangent.Cross( binormal );
+			var tangentCross = tangent.Cross( binormal );
 			if ( tangentCross.Dot( normal ) < 0.0f )
 			{
 				tangent = -tangent;
@@ -622,21 +612,717 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
+		///    Method delegate with a simple signature. 
+		///    Used to measure execution time of a method for instance.
+		/// </summary>
+		public delegate void SimpleMethodDelegate();
+
+		/// <summary>
 		///     Measure the execution time of a method.
 		/// </summary>
 		/// <param name="method"></param>
 		/// <returns>The elapsed time in seconds.</returns>
 		public static Real Measure( SimpleMethodDelegate method )
 		{
-			long start = Stopwatch.GetTimestamp();
+			var start = System.Diagnostics.Stopwatch.GetTimestamp();
 
 			method();
 
-			var elapsed = (double)( Stopwatch.GetTimestamp() - start );
-			var freq = (double)Stopwatch.Frequency;
+			var elapsed = (double)( System.Diagnostics.Stopwatch.GetTimestamp() - start );
+			var freq = (double)System.Diagnostics.Stopwatch.Frequency;
 
-			return ( elapsed / freq );
+			return (Real)( elapsed / freq );
 		}
+
+		#region Intersection Methods
+
+		/// <summary>
+		///    Tests an intersection between a ray and a box.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="box"></param>
+		/// <returns>A Pair object containing whether the intersection occurred, and the distance between the 2 objects.</returns>
+		public static IntersectResult Intersects( Ray ray, AxisAlignedBox box )
+		{
+			Contract.RequiresNotNull( ray, "ray" );
+			Contract.RequiresNotNull( box, "box" );
+
+			if ( box.IsNull )
+			{
+				return new IntersectResult( false, 0 );
+			}
+
+			if ( box.IsInfinite )
+			{
+				return new IntersectResult( true, 0 );
+			}
+
+			Real lowt = 0.0f;
+			Real t;
+			var hit = false;
+			Vector3 hitPoint;
+			var min = box.Minimum;
+			var max = box.Maximum;
+
+			// check origin inside first
+			if ( ray.origin > min && ray.origin < max )
+			{
+				return new IntersectResult( true, 0.0f );
+			}
+
+			// check each face in turn, only check closest 3
+
+			// Min X
+			if ( ray.origin.x <= min.x && ray.direction.x > 0 )
+			{
+				t = ( min.x - ray.origin.x ) / ray.direction.x;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			// Max X
+			if ( ray.origin.x >= max.x && ray.direction.x < 0 )
+			{
+				t = ( max.x - ray.origin.x ) / ray.direction.x;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			// Min Y
+			if ( ray.origin.y <= min.y && ray.direction.y > 0 )
+			{
+				t = ( min.y - ray.origin.y ) / ray.direction.y;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			// Max Y
+			if ( ray.origin.y >= max.y && ray.direction.y < 0 )
+			{
+				t = ( max.y - ray.origin.y ) / ray.direction.y;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			// Min Z
+			if ( ray.origin.z <= min.z && ray.direction.z > 0 )
+			{
+				t = ( min.z - ray.origin.z ) / ray.direction.z;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			// Max Z
+			if ( ray.origin.z >= max.z && ray.direction.z < 0 )
+			{
+				t = ( max.z - ray.origin.z ) / ray.direction.z;
+
+				if ( t >= 0 )
+				{
+					// substitue t back into ray and check bounds and distance
+					hitPoint = ray.origin + ray.direction * t;
+
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
+					{
+						hit = true;
+						lowt = t;
+					}
+				}
+			}
+
+			return new IntersectResult( hit, lowt );
+		}
+
+		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide )
+		{
+			// Calculate intersection with plane.
+			Real t;
+			{
+				var denom = normal.Dot( ray.Direction );
+				// Check intersect side
+				if ( denom > +Real.Epsilon )
+				{
+					if ( !negativeSide )
+					{
+						return new IntersectResult( false, 0 );
+					}
+				}
+				else if ( denom < -Real.Epsilon )
+				{
+					if ( !positiveSide )
+					{
+						return new IntersectResult( false, 0 );
+					}
+				}
+				else
+				{
+					// Parallel or triangle area is close to zero when
+					// the plane normal not normalised.
+					return new IntersectResult( false, 0 );
+				}
+
+				t = normal.Dot( a - ray.Origin ) / denom;
+				if ( t < 0 )
+				{
+					return new IntersectResult( false, 0 );
+				}
+			}
+
+			// Calculate the largest area projection plane in X, Y or Z.
+			int i0, i1;
+			{
+				var n0 = Math.Utility.Abs( normal[ 0 ] );
+				var n1 = Math.Utility.Abs( normal[ 1 ] );
+				var n2 = Math.Utility.Abs( normal[ 2 ] );
+
+				i0 = 1;
+				i1 = 2;
+				if ( n1 > n2 )
+				{
+					if ( n1 > n0 )
+					{
+						i0 = 0;
+					}
+				}
+				else
+				{
+					if ( n2 > n0 )
+					{
+						i1 = 0;
+					}
+				}
+			}
+
+			// Check the intersection point is inside the triangle.
+			{
+				var u1 = b[ i0 ] - a[ i0 ];
+				var v1 = b[ i1 ] - a[ i1 ];
+				var u2 = c[ i0 ] - a[ i0 ];
+				var v2 = c[ i1 ] - a[ i1 ];
+				var u0 = t * ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
+				var v0 = t * ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
+
+				var alpha = u0 * v2 - u2 * v0;
+				var beta = u1 * v0 - u0 * v1;
+				var area = u1 * v2 - u2 * v1;
+
+				// epsilon to avoid Real precision error
+				Real EPSILON = 1e-3f;
+
+				var tolerance = -EPSILON * area;
+
+				if ( area > 0 )
+				{
+					if ( alpha < tolerance || beta < tolerance || alpha + beta > area - tolerance )
+					{
+						return new IntersectResult( false, 0 );
+					}
+				}
+				else
+				{
+					if ( alpha > tolerance || beta > tolerance || alpha + beta < area - tolerance )
+					{
+						return new IntersectResult( false, 0 );
+					}
+				}
+			}
+
+			return new IntersectResult( true, t );
+		}
+
+		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, bool positiveSide, bool negativeSide )
+		{
+			var normal = CalculateBasicFaceNormalWithoutNormalize( a, b, c );
+			return Intersects( ray, a, b, c, normal, positiveSide, negativeSide );
+		}
+
+		/// <summary>
+		///    Tests an intersection between two boxes.
+		/// </summary>
+		/// <param name="boxA">
+		///    The primary box.
+		/// </param>
+		/// <param name="boxB">
+		///    The box to test intersection with boxA.
+		/// </param>
+		/// <returns>
+		///    <list type="bullet">
+		///        <item>
+		///            <description>None - There was no intersection between the 2 boxes.</description>
+		///        </item>
+		///        <item>
+		///            <description>Contained - boxA is fully within boxB.</description>
+		///         </item>
+		///        <item>
+		///            <description>Contains - boxB is fully within boxA.</description>
+		///         </item>
+		///        <item>
+		///            <description>Partial - boxA is partially intersecting with boxB.</description>
+		///         </item>
+		///     </list>
+		/// </returns>
+		/// Submitted by: romout
+		public static Intersection Intersects( AxisAlignedBox boxA, AxisAlignedBox boxB )
+		{
+			Contract.RequiresNotNull( boxA, "boxA" );
+			Contract.RequiresNotNull( boxB, "boxB" );
+
+			// grab the max and mix vectors for both boxes for comparison
+			var minA = boxA.Minimum;
+			var maxA = boxA.Maximum;
+			var minB = boxB.Minimum;
+			var maxB = boxB.Maximum;
+
+			if ( ( minB.x < minA.x ) && ( maxB.x > maxA.x ) && ( minB.y < minA.y ) && ( maxB.y > maxA.y ) && ( minB.z < minA.z ) && ( maxB.z > maxA.z ) )
+			{
+				// boxA is within boxB
+				return Intersection.Contained;
+			}
+
+			if ( ( minB.x > minA.x ) && ( maxB.x < maxA.x ) && ( minB.y > minA.y ) && ( maxB.y < maxA.y ) && ( minB.z > minA.z ) && ( maxB.z < maxA.z ) )
+			{
+				// boxB is within boxA
+				return Intersection.Contains;
+			}
+
+			if ( ( minB.x > maxA.x ) || ( minB.y > maxA.y ) || ( minB.z > maxA.z ) || ( maxB.x < minA.x ) || ( maxB.y < minA.y ) || ( maxB.z < minA.z ) )
+			{
+				// not interesting at all
+				return Intersection.None;
+			}
+
+			// if we got this far, they are partially intersecting
+			return Intersection.Partial;
+		}
+
+
+		public static IntersectResult Intersects( Ray ray, Sphere sphere )
+		{
+			return Intersects( ray, sphere, false );
+		}
+
+		/// <summary>
+		///		Ray/Sphere intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="sphere"></param>
+		/// <param name="discardInside"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects( Ray ray, Sphere sphere, bool discardInside )
+		{
+			Contract.RequiresNotNull( ray, "ray" );
+			Contract.RequiresNotNull( sphere, "sphere" );
+
+			var rayDir = ray.Direction;
+			//Adjust ray origin relative to sphere center
+			var rayOrig = ray.Origin - sphere.Center;
+			var radius = sphere.Radius;
+
+			// check origin inside first
+			if ( ( rayOrig.LengthSquared <= radius * radius ) && discardInside )
+			{
+				return new IntersectResult( true, 0 );
+			}
+
+			// mmm...sweet quadratics
+			// Build coeffs which can be used with std quadratic solver
+			// ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
+			var a = rayDir.Dot( rayDir );
+			var b = 2 * rayOrig.Dot( rayDir );
+			var c = rayOrig.Dot( rayOrig ) - ( radius * radius );
+
+			// calc determinant
+			var d = ( b * b ) - ( 4 * a * c );
+
+			if ( d < 0 )
+			{
+				// no intersection
+				return new IntersectResult( false, 0 );
+			}
+			else
+			{
+				// BTW, if d=0 there is one intersection, if d > 0 there are 2
+				// But we only want the closest one, so that's ok, just use the 
+				// '-' version of the solver
+				var t = ( -b - Utility.Sqrt( d ) ) / ( 2 * a );
+
+				if ( t < 0 )
+				{
+					t = ( -b + Utility.Sqrt( d ) ) / ( 2 * a );
+				}
+
+				return new IntersectResult( true, t );
+			}
+		}
+
+		/// <summary>
+		///		Ray/Plane intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="plane"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects( Ray ray, Plane plane )
+		{
+			Contract.RequiresNotNull( ray, "ray" );
+
+			var denom = plane.Normal.Dot( ray.Direction );
+
+			if ( Utility.Abs( denom ) < Real.Epsilon )
+			{
+				// Parellel
+				return new IntersectResult( false, 0 );
+			}
+			else
+			{
+				var nom = plane.Normal.Dot( ray.Origin ) + plane.D;
+				var t = -( nom / denom );
+				return new IntersectResult( t >= 0, t );
+			}
+		}
+
+		/// <summary>
+		///		Sphere/Box intersection test.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <param name="box"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects( Sphere sphere, AxisAlignedBox box )
+		{
+			Contract.RequiresNotNull( sphere, "sphere" );
+			Contract.RequiresNotNull( box, "box" );
+
+			if ( box.IsNull )
+			{
+				return false;
+			}
+
+			// Use splitting planes
+			var center = sphere.Center;
+			var radius = sphere.Radius;
+			var min = box.Minimum;
+			var max = box.Maximum;
+
+			// just test facing planes, early fail if sphere is totally outside
+			if ( center.x < min.x && min.x - center.x > radius )
+			{
+				return false;
+			}
+			if ( center.x > max.x && center.x - max.x > radius )
+			{
+				return false;
+			}
+
+			if ( center.y < min.y && min.y - center.y > radius )
+			{
+				return false;
+			}
+			if ( center.y > max.y && center.y - max.y > radius )
+			{
+				return false;
+			}
+
+			if ( center.z < min.z && min.z - center.z > radius )
+			{
+				return false;
+			}
+			if ( center.z > max.z && center.z - max.z > radius )
+			{
+				return false;
+			}
+
+			// Must intersect
+			return true;
+		}
+
+		/// <summary>
+		///		Plane/Box intersection test.
+		/// </summary>
+		/// <param name="plane"></param>
+		/// <param name="box"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects( Plane plane, AxisAlignedBox box )
+		{
+			Contract.RequiresNotNull( box, "box" );
+
+			if ( box.IsNull )
+			{
+				return false;
+			}
+
+			// Get corners of the box
+			var corners = box.Corners;
+
+			// Test which side of the plane the corners are
+			// Intersection occurs when at least one corner is on the 
+			// opposite side to another
+			var lastSide = plane.GetSide( corners[ 0 ] );
+
+			for ( var corner = 1; corner < 8; corner++ )
+			{
+				if ( plane.GetSide( corners[ corner ] ) != lastSide )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		///		Sphere/Plane intersection test.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <param name="plane"></param>
+		/// <returns>True if there was an intersection, false otherwise.</returns>
+		public static bool Intersects( Sphere sphere, Plane plane )
+		{
+			Contract.RequiresNotNull( sphere, "sphere" );
+
+			return Utility.Abs( plane.Normal.Dot( sphere.Center ) ) <= sphere.Radius;
+		}
+
+		/// <summary>
+		/// </summary>
+		public static Tuple<bool, Real, Real> Intersect( Ray ray, AxisAlignedBox box )
+		{
+			if ( box.IsNull )
+			{
+				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+			}
+
+			if ( box.IsInfinite )
+			{
+				return new Tuple<bool, Real, Real>( true, Real.NaN, Real.PositiveInfinity );
+			}
+
+			var min = box.Minimum;
+			var max = box.Maximum;
+			var rayorig = ray.origin;
+			var rayDir = ray.Direction;
+
+			var absDir = Vector3.Zero;
+			absDir[ 0 ] = Abs( rayDir[ 0 ] );
+			absDir[ 1 ] = Abs( rayDir[ 1 ] );
+			absDir[ 2 ] = Abs( rayDir[ 2 ] );
+
+			// Sort the axis, ensure check minimise floating error axis first
+			int imax = 0, imid = 1, imin = 2;
+			if ( absDir[ 0 ] < absDir[ 2 ] )
+			{
+				imax = 2;
+				imin = 0;
+			}
+			if ( absDir[ 1 ] < absDir[ imin ] )
+			{
+				imid = imin;
+				imin = 1;
+			}
+			else if ( absDir[ 1 ] > absDir[ imax ] )
+			{
+				imid = imax;
+				imax = 1;
+			}
+
+			Real start = 0, end = Real.PositiveInfinity;
+			// Check each axis in turn
+
+			if ( !CalcAxis( imax, rayDir, rayorig, min, max, ref end, ref start ) )
+			{
+				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+			}
+
+			if ( absDir[ imid ] < Real.Epsilon )
+			{
+				// Parallel with middle and minimise axis, check bounds only
+				if ( rayorig[ imid ] < min[ imid ] || rayorig[ imid ] > max[ imid ] || rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
+				{
+					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+				}
+			}
+			else
+			{
+				if ( !CalcAxis( imid, rayDir, rayorig, min, max, ref end, ref start ) )
+				{
+					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+				}
+
+				if ( absDir[ imin ] < Real.Epsilon )
+				{
+					// Parallel with minimise axis, check bounds only
+					if ( rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
+					{
+						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+					}
+				}
+				else
+				{
+					if ( !CalcAxis( imin, rayDir, rayorig, min, max, ref end, ref start ) )
+					{
+						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
+					}
+				}
+			}
+			return new Tuple<bool, Real, Real>( true, start, end );
+		}
+
+		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end, ref Real start )
+		{
+			var denom = 1 / raydir[ i ];
+			var newstart = ( min[ i ] - rayorig[ i ] ) * denom;
+			var newend = ( max[ i ] - rayorig[ i ] ) * denom;
+			if ( newstart > newend )
+			{
+				Swap<Real>( ref newstart, ref newend );
+			}
+			if ( newstart > end || newend < start )
+			{
+				return false;
+			}
+			if ( newstart > start )
+			{
+				start = newstart;
+			}
+			if ( newend < end )
+			{
+				end = newend;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		///    Ray/PlaneBoundedVolume intersection test.
+		/// </summary>
+		/// <param name="ray"></param>
+		/// <param name="volume"></param>
+		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
+		public static IntersectResult Intersects( Ray ray, PlaneBoundedVolume volume )
+		{
+			Contract.RequiresNotNull( ray, "ray" );
+			Contract.RequiresNotNull( volume, "volume" );
+
+			var planes = volume.planes;
+
+			Real maxExtDist = 0.0f;
+			var minIntDist = Real.PositiveInfinity;
+
+			Real dist, denom, nom;
+
+			for ( var i = 0; i < planes.Count; i++ )
+			{
+				var plane = (Plane)planes[ i ];
+
+				denom = plane.Normal.Dot( ray.Direction );
+				if ( Utility.Abs( denom ) < Real.Epsilon )
+				{
+					// Parallel
+					if ( plane.GetSide( ray.Origin ) == volume.outside )
+					{
+						return new IntersectResult( false, 0 );
+					}
+
+					continue;
+				}
+
+				nom = plane.Normal.Dot( ray.Origin ) + plane.D;
+				dist = -( nom / denom );
+
+				if ( volume.outside == PlaneSide.Negative )
+				{
+					nom = -nom;
+				}
+
+				if ( dist > 0.0f )
+				{
+					if ( nom > 0.0f )
+					{
+						if ( maxExtDist < dist )
+						{
+							maxExtDist = dist;
+						}
+					}
+					else
+					{
+						if ( minIntDist > dist )
+						{
+							minIntDist = dist;
+						}
+					}
+				}
+				else
+				{
+					//Ray points away from plane
+					if ( volume.outside == PlaneSide.Negative )
+					{
+						denom = -denom;
+					}
+
+					if ( denom > 0.0f )
+					{
+						return new IntersectResult( false, 0 );
+					}
+				}
+			}
+
+			if ( maxExtDist > minIntDist )
+			{
+				return new IntersectResult( false, 0 );
+			}
+
+			return new IntersectResult( true, maxExtDist );
+		}
+
+		#endregion Intersection Methods
 
 		/// <summary>
 		/// Swaps two values
@@ -646,7 +1332,7 @@ namespace Axiom.Math
 		/// <param name="v2"></param>
 		public static void Swap<T>( ref T v1, ref T v2 )
 		{
-			T temp = v1;
+			var temp = v1;
 			v1 = v2;
 			v2 = temp;
 		}
@@ -659,9 +1345,9 @@ namespace Axiom.Math
 		/// <param name="max"></param>
 		/// <param name="min"></param>
 		/// <returns></returns>
-		public static T Clamp<T>( T value, T max, T min ) where T : IComparable<T>
+		public static T Clamp<T>( T value, T max, T min ) where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( max ) > 0 )
 			{
 				result = max;
@@ -673,9 +1359,9 @@ namespace Axiom.Math
 			return result;
 		}
 
-		public static T Max<T>( T value, T max ) where T : IComparable<T>
+		public static T Max<T>( T value, T max ) where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( max ) < 0 )
 			{
 				result = max;
@@ -683,9 +1369,9 @@ namespace Axiom.Math
 			return result;
 		}
 
-		public static T Min<T>( T value, T min ) where T : IComparable<T>
+		public static T Min<T>( T value, T min ) where T : System.IComparable<T>
 		{
-			T result = value;
+			var result = value;
 			if ( value.CompareTo( min ) > 0 )
 			{
 				result = min;
@@ -838,701 +1524,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static float GaussianDistribution( Real x, Real offset, Real scale )
 		{
-			Real nom = System.Math.Exp( -Sqr( x - offset ) / ( 2 * Sqr( scale ) ) );
-			Real denom = scale * Sqrt( 2 * PI );
+			Real nom = System.Math.Exp( -Utility.Sqr( x - offset ) / ( 2 * Utility.Sqr( scale ) ) );
+			var denom = scale * Utility.Sqrt( 2 * Utility.PI );
 
 			return nom / denom;
 		}
-
-		#region Intersection Methods
-
-		/// <summary>
-		///    Tests an intersection between a ray and a box.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="box"></param>
-		/// <returns>A Pair object containing whether the intersection occurred, and the distance between the 2 objects.</returns>
-		public static IntersectResult Intersects( Ray ray, AxisAlignedBox box )
-		{
-			Contract.RequiresNotNull( ray, "ray" );
-			Contract.RequiresNotNull( box, "box" );
-
-			if ( box.IsNull )
-			{
-				return new IntersectResult( false, 0 );
-			}
-
-			if ( box.IsInfinite )
-			{
-				return new IntersectResult( true, 0 );
-			}
-
-			Real lowt = 0.0f;
-			Real t;
-			bool hit = false;
-			Vector3 hitPoint;
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
-
-			// check origin inside first
-			if ( ray.origin > min && ray.origin < max )
-			{
-				return new IntersectResult( true, 0.0f );
-			}
-
-			// check each face in turn, only check closest 3
-
-			// Min X
-			if ( ray.origin.x <= min.x && ray.direction.x > 0 )
-			{
-				t = ( min.x - ray.origin.x ) / ray.direction.x;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			// Max X
-			if ( ray.origin.x >= max.x && ray.direction.x < 0 )
-			{
-				t = ( max.x - ray.origin.x ) / ray.direction.x;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			// Min Y
-			if ( ray.origin.y <= min.y && ray.direction.y > 0 )
-			{
-				t = ( min.y - ray.origin.y ) / ray.direction.y;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			// Max Y
-			if ( ray.origin.y >= max.y && ray.direction.y < 0 )
-			{
-				t = ( max.y - ray.origin.y ) / ray.direction.y;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			// Min Z
-			if ( ray.origin.z <= min.z && ray.direction.z > 0 )
-			{
-				t = ( min.z - ray.origin.z ) / ray.direction.z;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			// Max Z
-			if ( ray.origin.z >= max.z && ray.direction.z < 0 )
-			{
-				t = ( max.z - ray.origin.z ) / ray.direction.z;
-
-				if ( t >= 0 )
-				{
-					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
-
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
-					{
-						hit = true;
-						lowt = t;
-					}
-				}
-			}
-
-			return new IntersectResult( hit, lowt );
-		}
-
-		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide )
-		{
-			// Calculate intersection with plane.
-			Real t;
-			{
-				Real denom = normal.Dot( ray.Direction );
-				// Check intersect side
-				if ( denom > +Real.Epsilon )
-				{
-					if ( !negativeSide )
-					{
-						return new IntersectResult( false, 0 );
-					}
-				}
-				else if ( denom < -Real.Epsilon )
-				{
-					if ( !positiveSide )
-					{
-						return new IntersectResult( false, 0 );
-					}
-				}
-				else
-				{
-					// Parallel or triangle area is close to zero when
-					// the plane normal not normalised.
-					return new IntersectResult( false, 0 );
-				}
-
-				t = normal.Dot( a - ray.Origin ) / denom;
-				if ( t < 0 )
-				{
-					return new IntersectResult( false, 0 );
-				}
-			}
-
-			// Calculate the largest area projection plane in X, Y or Z.
-			int i0, i1;
-			{
-				Real n0 = Abs( normal[ 0 ] );
-				Real n1 = Abs( normal[ 1 ] );
-				Real n2 = Abs( normal[ 2 ] );
-
-				i0 = 1;
-				i1 = 2;
-				if ( n1 > n2 )
-				{
-					if ( n1 > n0 )
-					{
-						i0 = 0;
-					}
-				}
-				else
-				{
-					if ( n2 > n0 )
-					{
-						i1 = 0;
-					}
-				}
-			}
-
-			// Check the intersection point is inside the triangle.
-			{
-				Real u1 = b[ i0 ] - a[ i0 ];
-				Real v1 = b[ i1 ] - a[ i1 ];
-				Real u2 = c[ i0 ] - a[ i0 ];
-				Real v2 = c[ i1 ] - a[ i1 ];
-				Real u0 = t * ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
-				Real v0 = t * ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
-
-				Real alpha = u0 * v2 - u2 * v0;
-				Real beta = u1 * v0 - u0 * v1;
-				Real area = u1 * v2 - u2 * v1;
-
-				// epsilon to avoid Real precision error
-				Real EPSILON = 1e-3f;
-
-				Real tolerance = -EPSILON * area;
-
-				if ( area > 0 )
-				{
-					if ( alpha < tolerance || beta < tolerance || alpha + beta > area - tolerance )
-					{
-						return new IntersectResult( false, 0 );
-					}
-				}
-				else
-				{
-					if ( alpha > tolerance || beta > tolerance || alpha + beta < area - tolerance )
-					{
-						return new IntersectResult( false, 0 );
-					}
-				}
-			}
-
-			return new IntersectResult( true, t );
-		}
-
-		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, bool positiveSide, bool negativeSide )
-		{
-			Vector3 normal = CalculateBasicFaceNormalWithoutNormalize( a, b, c );
-			return Intersects( ray, a, b, c, normal, positiveSide, negativeSide );
-		}
-
-		/// <summary>
-		///    Tests an intersection between two boxes.
-		/// </summary>
-		/// <param name="boxA">
-		///    The primary box.
-		/// </param>
-		/// <param name="boxB">
-		///    The box to test intersection with boxA.
-		/// </param>
-		/// <returns>
-		///    <list type="bullet">
-		///        <item>
-		///            <description>None - There was no intersection between the 2 boxes.</description>
-		///        </item>
-		///        <item>
-		///            <description>Contained - boxA is fully within boxB.</description>
-		///         </item>
-		///        <item>
-		///            <description>Contains - boxB is fully within boxA.</description>
-		///         </item>
-		///        <item>
-		///            <description>Partial - boxA is partially intersecting with boxB.</description>
-		///         </item>
-		///     </list>
-		/// </returns>
-		/// Submitted by: romout
-		public static Intersection Intersects( AxisAlignedBox boxA, AxisAlignedBox boxB )
-		{
-			Contract.RequiresNotNull( boxA, "boxA" );
-			Contract.RequiresNotNull( boxB, "boxB" );
-
-			// grab the max and mix vectors for both boxes for comparison
-			Vector3 minA = boxA.Minimum;
-			Vector3 maxA = boxA.Maximum;
-			Vector3 minB = boxB.Minimum;
-			Vector3 maxB = boxB.Maximum;
-
-			if ( ( minB.x < minA.x ) && ( maxB.x > maxA.x ) && ( minB.y < minA.y ) && ( maxB.y > maxA.y ) && ( minB.z < minA.z ) && ( maxB.z > maxA.z ) )
-			{
-				// boxA is within boxB
-				return Intersection.Contained;
-			}
-
-			if ( ( minB.x > minA.x ) && ( maxB.x < maxA.x ) && ( minB.y > minA.y ) && ( maxB.y < maxA.y ) && ( minB.z > minA.z ) && ( maxB.z < maxA.z ) )
-			{
-				// boxB is within boxA
-				return Intersection.Contains;
-			}
-
-			if ( ( minB.x > maxA.x ) || ( minB.y > maxA.y ) || ( minB.z > maxA.z ) || ( maxB.x < minA.x ) || ( maxB.y < minA.y ) || ( maxB.z < minA.z ) )
-			{
-				// not interesting at all
-				return Intersection.None;
-			}
-
-			// if we got this far, they are partially intersecting
-			return Intersection.Partial;
-		}
-
-
-		public static IntersectResult Intersects( Ray ray, Sphere sphere )
-		{
-			return Intersects( ray, sphere, false );
-		}
-
-		/// <summary>
-		///		Ray/Sphere intersection test.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="sphere"></param>
-		/// <param name="discardInside"></param>
-		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
-		public static IntersectResult Intersects( Ray ray, Sphere sphere, bool discardInside )
-		{
-			Contract.RequiresNotNull( ray, "ray" );
-			Contract.RequiresNotNull( sphere, "sphere" );
-
-			Vector3 rayDir = ray.Direction;
-			//Adjust ray origin relative to sphere center
-			Vector3 rayOrig = ray.Origin - sphere.Center;
-			Real radius = sphere.Radius;
-
-			// check origin inside first
-			if ( ( rayOrig.LengthSquared <= radius * radius ) && discardInside )
-			{
-				return new IntersectResult( true, 0 );
-			}
-
-			// mmm...sweet quadratics
-			// Build coeffs which can be used with std quadratic solver
-			// ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
-			Real a = rayDir.Dot( rayDir );
-			Real b = 2 * rayOrig.Dot( rayDir );
-			Real c = rayOrig.Dot( rayOrig ) - ( radius * radius );
-
-			// calc determinant
-			Real d = ( b * b ) - ( 4 * a * c );
-
-			if ( d < 0 )
-			{
-				// no intersection
-				return new IntersectResult( false, 0 );
-			}
-			else
-			{
-				// BTW, if d=0 there is one intersection, if d > 0 there are 2
-				// But we only want the closest one, so that's ok, just use the 
-				// '-' version of the solver
-				Real t = ( -b - Sqrt( d ) ) / ( 2 * a );
-
-				if ( t < 0 )
-				{
-					t = ( -b + Sqrt( d ) ) / ( 2 * a );
-				}
-
-				return new IntersectResult( true, t );
-			}
-		}
-
-		/// <summary>
-		///		Ray/Plane intersection test.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="plane"></param>
-		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
-		public static IntersectResult Intersects( Ray ray, Plane plane )
-		{
-			Contract.RequiresNotNull( ray, "ray" );
-
-			Real denom = plane.Normal.Dot( ray.Direction );
-
-			if ( Abs( denom ) < Real.Epsilon )
-			{
-				// Parellel
-				return new IntersectResult( false, 0 );
-			}
-			else
-			{
-				Real nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-				Real t = -( nom / denom );
-				return new IntersectResult( t >= 0, t );
-			}
-		}
-
-		/// <summary>
-		///		Sphere/Box intersection test.
-		/// </summary>
-		/// <param name="sphere"></param>
-		/// <param name="box"></param>
-		/// <returns>True if there was an intersection, false otherwise.</returns>
-		public static bool Intersects( Sphere sphere, AxisAlignedBox box )
-		{
-			Contract.RequiresNotNull( sphere, "sphere" );
-			Contract.RequiresNotNull( box, "box" );
-
-			if ( box.IsNull )
-			{
-				return false;
-			}
-
-			// Use splitting planes
-			Vector3 center = sphere.Center;
-			Real radius = sphere.Radius;
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
-
-			// just test facing planes, early fail if sphere is totally outside
-			if ( center.x < min.x && min.x - center.x > radius )
-			{
-				return false;
-			}
-			if ( center.x > max.x && center.x - max.x > radius )
-			{
-				return false;
-			}
-
-			if ( center.y < min.y && min.y - center.y > radius )
-			{
-				return false;
-			}
-			if ( center.y > max.y && center.y - max.y > radius )
-			{
-				return false;
-			}
-
-			if ( center.z < min.z && min.z - center.z > radius )
-			{
-				return false;
-			}
-			if ( center.z > max.z && center.z - max.z > radius )
-			{
-				return false;
-			}
-
-			// Must intersect
-			return true;
-		}
-
-		/// <summary>
-		///		Plane/Box intersection test.
-		/// </summary>
-		/// <param name="plane"></param>
-		/// <param name="box"></param>
-		/// <returns>True if there was an intersection, false otherwise.</returns>
-		public static bool Intersects( Plane plane, AxisAlignedBox box )
-		{
-			Contract.RequiresNotNull( box, "box" );
-
-			if ( box.IsNull )
-			{
-				return false;
-			}
-
-			// Get corners of the box
-			Vector3[] corners = box.Corners;
-
-			// Test which side of the plane the corners are
-			// Intersection occurs when at least one corner is on the 
-			// opposite side to another
-			PlaneSide lastSide = plane.GetSide( corners[ 0 ] );
-
-			for ( int corner = 1; corner < 8; corner++ )
-			{
-				if ( plane.GetSide( corners[ corner ] ) != lastSide )
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		///		Sphere/Plane intersection test.
-		/// </summary>
-		/// <param name="sphere"></param>
-		/// <param name="plane"></param>
-		/// <returns>True if there was an intersection, false otherwise.</returns>
-		public static bool Intersects( Sphere sphere, Plane plane )
-		{
-			Contract.RequiresNotNull( sphere, "sphere" );
-
-			return Abs( plane.Normal.Dot( sphere.Center ) ) <= sphere.Radius;
-		}
-
-		/// <summary>
-		/// </summary>
-		public static Tuple<bool, Real, Real> Intersect( Ray ray, AxisAlignedBox box )
-		{
-			if ( box.IsNull )
-			{
-				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-			}
-
-			if ( box.IsInfinite )
-			{
-				return new Tuple<bool, Real, Real>( true, Real.NaN, Real.PositiveInfinity );
-			}
-
-			Vector3 min = box.Minimum;
-			Vector3 max = box.Maximum;
-			Vector3 rayorig = ray.origin;
-			Vector3 rayDir = ray.Direction;
-
-			Vector3 absDir = Vector3.Zero;
-			absDir[ 0 ] = Abs( rayDir[ 0 ] );
-			absDir[ 1 ] = Abs( rayDir[ 1 ] );
-			absDir[ 2 ] = Abs( rayDir[ 2 ] );
-
-			// Sort the axis, ensure check minimise floating error axis first
-			int imax = 0, imid = 1, imin = 2;
-			if ( absDir[ 0 ] < absDir[ 2 ] )
-			{
-				imax = 2;
-				imin = 0;
-			}
-			if ( absDir[ 1 ] < absDir[ imin ] )
-			{
-				imid = imin;
-				imin = 1;
-			}
-			else if ( absDir[ 1 ] > absDir[ imax ] )
-			{
-				imid = imax;
-				imax = 1;
-			}
-
-			Real start = 0, end = Real.PositiveInfinity;
-			// Check each axis in turn
-
-			if ( !CalcAxis( imax, rayDir, rayorig, min, max, ref end, ref start ) )
-			{
-				return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-			}
-
-			if ( absDir[ imid ] < Real.Epsilon )
-			{
-				// Parallel with middle and minimise axis, check bounds only
-				if ( rayorig[ imid ] < min[ imid ] || rayorig[ imid ] > max[ imid ] || rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
-				{
-					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-				}
-			}
-			else
-			{
-				if ( !CalcAxis( imid, rayDir, rayorig, min, max, ref end, ref start ) )
-				{
-					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-				}
-
-				if ( absDir[ imin ] < Real.Epsilon )
-				{
-					// Parallel with minimise axis, check bounds only
-					if ( rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
-					{
-						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-					}
-				}
-				else
-				{
-					if ( !CalcAxis( imin, rayDir, rayorig, min, max, ref end, ref start ) )
-					{
-						return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
-					}
-				}
-			}
-			return new Tuple<bool, Real, Real>( true, start, end );
-		}
-
-		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end, ref Real start )
-		{
-			Real denom = 1 / raydir[ i ];
-			Real newstart = ( min[ i ] - rayorig[ i ] ) * denom;
-			Real newend = ( max[ i ] - rayorig[ i ] ) * denom;
-			if ( newstart > newend )
-			{
-				Swap( ref newstart, ref newend );
-			}
-			if ( newstart > end || newend < start )
-			{
-				return false;
-			}
-			if ( newstart > start )
-			{
-				start = newstart;
-			}
-			if ( newend < end )
-			{
-				end = newend;
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		///    Ray/PlaneBoundedVolume intersection test.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="volume"></param>
-		/// <returns>Struct that contains a bool (hit?) and distance.</returns>
-		public static IntersectResult Intersects( Ray ray, PlaneBoundedVolume volume )
-		{
-			Contract.RequiresNotNull( ray, "ray" );
-			Contract.RequiresNotNull( volume, "volume" );
-
-			PlaneList planes = volume.planes;
-
-			Real maxExtDist = 0.0f;
-			Real minIntDist = Real.PositiveInfinity;
-
-			Real dist, denom, nom;
-
-			for ( int i = 0; i < planes.Count; i++ )
-			{
-				Plane plane = planes[ i ];
-
-				denom = plane.Normal.Dot( ray.Direction );
-				if ( Abs( denom ) < Real.Epsilon )
-				{
-					// Parallel
-					if ( plane.GetSide( ray.Origin ) == volume.outside )
-					{
-						return new IntersectResult( false, 0 );
-					}
-
-					continue;
-				}
-
-				nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-				dist = -( nom / denom );
-
-				if ( volume.outside == PlaneSide.Negative )
-				{
-					nom = -nom;
-				}
-
-				if ( dist > 0.0f )
-				{
-					if ( nom > 0.0f )
-					{
-						if ( maxExtDist < dist )
-						{
-							maxExtDist = dist;
-						}
-					}
-					else
-					{
-						if ( minIntDist > dist )
-						{
-							minIntDist = dist;
-						}
-					}
-				}
-				else
-				{
-					//Ray points away from plane
-					if ( volume.outside == PlaneSide.Negative )
-					{
-						denom = -denom;
-					}
-
-					if ( denom > 0.0f )
-					{
-						return new IntersectResult( false, 0 );
-					}
-				}
-			}
-
-			if ( maxExtDist > minIntDist )
-			{
-				return new IntersectResult( false, 0 );
-			}
-
-			return new IntersectResult( true, maxExtDist );
-		}
-
-		#endregion Intersection Methods
 	}
 
 	#region Return result structures
@@ -1545,16 +1541,16 @@ namespace Axiom.Math
 		#region Fields
 
 		/// <summary>
+		///		Did the intersection test result in a hit?
+		/// </summary>
+		public bool Hit;
+
+		/// <summary>
 		///		If Hit was true, this will hold a query specific distance value.
 		///		i.e. for a Ray-Box test, the distance will be the distance from the start point
 		///		of the ray to the point of intersection.
 		/// </summary>
 		public Real Distance;
-
-		/// <summary>
-		///		Did the intersection test result in a hit?
-		/// </summary>
-		public bool Hit;
 
 		#endregion Fields
 

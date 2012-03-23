@@ -35,6 +35,8 @@
 
 #region Namespace Declarations
 
+using System.Collections.Generic;
+
 using Axiom.Collections;
 using Axiom.Configuration;
 

@@ -53,22 +53,9 @@ namespace Axiom.Scripting.Compiler.AST
 		public string Target;
 
 		public ImportAbstractNode()
-			: base( null ) { }
+			: base( null ) {}
 
 		#region AbstractNode Implementation
-
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Target;
-			}
-			set
-			{
-				this.Target = value;
-			}
-		}
 
 		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
@@ -76,9 +63,22 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new ImportAbstractNode();
 			node.File = File;
 			node.Line = Line;
-			node.Target = this.Target;
-			node.Source = this.Source;
+			node.Target = Target;
+			node.Source = Source;
 			return node;
+		}
+
+		/// <see cref="AbstractNode.Value"/>
+		public override string Value
+		{
+			get
+			{
+				return Target;
+			}
+			set
+			{
+				Target = value;
+			}
 		}
 
 		#endregion AbstractNode Implementation

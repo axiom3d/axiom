@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-				return this.language;
+				return language;
 			}
 		}
 

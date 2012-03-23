@@ -37,6 +37,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -49,6 +52,12 @@ namespace Axiom.SceneManagers.Bsp.Collections
 	public class ShaderPassCollection : List<ShaderPass>
 	{
 		#region Constructors
+
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public ShaderPassCollection()
+			: base() {}
 
 		/// <summary>
 		///		Constructor that takes a parent object to, and calls the base class constructor to 

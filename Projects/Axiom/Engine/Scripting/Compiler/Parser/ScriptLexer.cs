@@ -48,6 +48,19 @@ namespace Axiom.Scripting.Compiler.Parser
 {
 	public class ScriptLexer
 	{
+		private enum ScriptState
+		{
+			Ready,
+			Comment,
+			MultiComment,
+			Word,
+			Quote,
+			Var,
+			PossibleComment
+		}
+
+		public ScriptLexer() {}
+
 		/// <summary>
 		/// Tokenizes the given input and returns the list of tokens found
 		/// </summary>
@@ -62,11 +75,11 @@ namespace Axiom.Scripting.Compiler.Parser
 
 			var lexeme = new StringBuilder();
 			uint line = 1, lastQuote = 0;
-			ScriptState state = ScriptState.Ready;
+			var state = ScriptState.Ready;
 
 			var tokens = new List<ScriptToken>();
 
-			for ( int index = 0; index < str.Length; index++ )
+			for ( var index = 0; index < str.Length; index++ )
 			{
 				lastChar = c;
 				c = str[ index ];
@@ -78,7 +91,7 @@ namespace Axiom.Scripting.Compiler.Parser
 
 				switch ( state )
 				{
-					#region Ready
+						#region Ready
 
 					case ScriptState.Ready:
 						if ( c == slash && lastChar == slash )
@@ -124,9 +137,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion Ready
+						#endregion Ready
 
-					#region Comment
+						#region Comment
 
 					case ScriptState.Comment:
 						// This newline happens to be ignored automatically
@@ -136,9 +149,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion Comment
+						#endregion Comment
 
-					#region MultiComment
+						#region MultiComment
 
 					case ScriptState.MultiComment:
 						if ( c == slash && lastChar == star )
@@ -147,9 +160,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion MultiComment
+						#endregion MultiComment
 
-					#region PossibleComment
+						#region PossibleComment
 
 					case ScriptState.PossibleComment:
 						if ( c == slash && lastChar == slash )
@@ -170,9 +183,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion PossibleComment
+						#endregion PossibleComment
 
-					#region Word
+						#region Word
 
 					case ScriptState.Word:
 						if ( IsNewline( c ) )
@@ -200,9 +213,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion Word
+						#endregion Word
 
-					#region Quote
+						#region Quote
 
 					case ScriptState.Quote:
 						if ( c != backslash )
@@ -234,9 +247,9 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion Quote
+						#endregion Quote
 
-					#region Var
+						#region Var
 
 					case ScriptState.Var:
 						if ( IsNewline( c ) )
@@ -264,7 +277,7 @@ namespace Axiom.Scripting.Compiler.Parser
 						}
 						break;
 
-					#endregion Var
+						#endregion Var
 				}
 
 				// Separate check for newlines just to track line numbers
@@ -303,7 +316,7 @@ namespace Axiom.Scripting.Compiler.Parser
 			token.lexeme = lexeme.ToString();
 			token.line = line;
 			token.file = source;
-			bool ignore = false;
+			var ignore = false;
 
 			// Check the user token map first
 			if ( lexeme.Length == 1 && lexeme[ 0 ] == newline )
@@ -358,20 +371,5 @@ namespace Axiom.Scripting.Compiler.Parser
 		{
 			return c == '\n';
 		}
-
-		#region Nested type: ScriptState
-
-		private enum ScriptState
-		{
-			Ready,
-			Comment,
-			MultiComment,
-			Word,
-			Quote,
-			Var,
-			PossibleComment
-		}
-
-		#endregion
 	}
 }

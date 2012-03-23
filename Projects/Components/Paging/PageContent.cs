@@ -56,7 +56,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent.Manager;
+				return mParent.Manager;
 			}
 		}
 
@@ -65,7 +65,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mParent.SceneManager;
+				return mParent.SceneManager;
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.mCreator.Name;
+				return mCreator.Name;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PageContent( IPageContentFactory creator )
 		{
-			this.mCreator = creator;
+			mCreator = creator;
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void NotifyAttached( PageContentCollection parent )
 		{
-			this.mParent = parent;
+			mParent = parent;
 		}
 
 		/// <summary>
@@ -105,19 +105,19 @@ namespace Axiom.Components.Paging
 		/// Called when the frame starts.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameStart( Real timeSinceLastFrame ) { }
+		public virtual void FrameStart( Real timeSinceLastFrame ) {}
 
 		/// <summary>
 		/// Called when the frame ends.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameEnd( Real timeElapsed ) { }
+		public virtual void FrameEnd( Real timeElapsed ) {}
 
 		/// <summary>
 		/// Notify a section of the current camera.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void NotifyCamera( Camera camera ) { }
+		public virtual void NotifyCamera( Camera camera ) {}
 
 		/// <summary>
 		/// Prepare data - may be called in the background
