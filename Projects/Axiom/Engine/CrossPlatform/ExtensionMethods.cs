@@ -8,6 +8,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition;
+using System.Diagnostics;
+
 #if !(XBOX || XBOX360)
 
 #endif
