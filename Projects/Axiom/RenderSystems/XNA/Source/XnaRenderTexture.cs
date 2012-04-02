@@ -55,6 +55,7 @@ namespace Axiom.RenderSystems.Xna
         public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
             : base( buffer, 0 )
         {
+			base.name = name;
         }
 
         public void Rebind( XnaHardwarePixelBuffer buffer )
