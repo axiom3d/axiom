@@ -168,6 +168,10 @@
       <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
       <Name>Axiom.Xna.x86</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Axiom\Platforms\Axiom.Platforms.Xna\Axiom.Platforms.Xna.x86.csproj">
+      <Project>{8F0D1665-F1F5-43DA-8C44-A073594B2FA1}</Project>
+      <Name>Axiom.Platforms.Xna.x86</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.x86.csproj">
       <Project>{05004B16-CAC1-45B7-A88A-DB56C1DD24B8}</Project>
       <Name>Axiom.RenderSystems.Xna.x86</Name>

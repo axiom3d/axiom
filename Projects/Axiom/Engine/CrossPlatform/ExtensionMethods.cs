@@ -2,19 +2,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+#if !(XBOX || XBOX360)
 using System.Linq.Expressions;
+#endif
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
-
-#if !(XBOX || XBOX360)
-
-#endif
 
 #endregion Namespace Declarations
 
@@ -62,7 +61,7 @@ namespace Axiom.Core
 			var loc = folder ?? Assembly.GetExecutingAssembly().Location;
 			loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
 			return Neighbors( from file in Directory.GetFiles( loc, filter ?? "*.dll" )
-			                  select file );
+							  select file );
 #endif
 		}
 
@@ -101,10 +100,10 @@ namespace Axiom.Core
 #if WINDOWS_PHONE || SILVERLIGHT
 				var catalogs = new AggregateCatalog(NeighborsCatalog(folder, filter).ToArray());
 #else
-                var catalogs = new DirectoryCatalog( folder ?? Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ), filter ?? "*.dll" );
+				var catalogs = new DirectoryCatalog( folder ?? Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ), filter ?? "*.dll" );
 #endif
-                var container = new CompositionContainer( catalogs );
-                container.ComposeParts( obj );
+				var container = new CompositionContainer( catalogs );
+				container.ComposeParts( obj );
 			}
 			catch (ReflectionTypeLoadException e)
 			{
@@ -117,6 +116,7 @@ namespace Axiom.Core
 	public static class ExtensionMethods
 	{
 #if XBOX || XBOX360
+		/*
 		public static int RemoveAll<T>(this List<T> list, Predicate<T> match)
 		{
 			var count = list.Count;
@@ -127,6 +127,7 @@ namespace Axiom.Core
 				else currentIdx++;
 			return currentIdx;
 		}
+		*/
 #endif
 
 #if WINDOWS_PHONE
@@ -144,37 +145,37 @@ namespace Axiom.Core
 		public static int Size( this Type type, FieldInfo field )
 		{
 #if SILVERLIGHT || WINDOWS_PHONE
-            if ( type.IsPrimitive )
-            {
-                if ( type == typeof( byte ) || type == typeof( SByte ) || type == typeof( bool ) )
-                    return 1;
+			if ( type.IsPrimitive )
+			{
+				if ( type == typeof( byte ) || type == typeof( SByte ) || type == typeof( bool ) )
+					return 1;
 
-                if ( type == typeof( short ) || type == typeof( ushort ) || type == typeof( char ) )
-                    return 2;
+				if ( type == typeof( short ) || type == typeof( ushort ) || type == typeof( char ) )
+					return 2;
 
-                if ( type == typeof( int ) || type == typeof( uint ) || type == typeof( float ) )
-                    return 4;
+				if ( type == typeof( int ) || type == typeof( uint ) || type == typeof( float ) )
+					return 4;
 
-                if ( type == typeof( long ) || type == typeof( ulong ) || type == typeof( double ) || type == typeof( IntPtr ) || type == typeof( UIntPtr ) )
-                    return 8;
-            }
-            else
-            {
-                if ( type.IsValueType )
-                    return ( from fld in
-                                 type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
-                             select fld.FieldType.Size( fld ) ).Sum();
+				if ( type == typeof( long ) || type == typeof( ulong ) || type == typeof( double ) || type == typeof( IntPtr ) || type == typeof( UIntPtr ) )
+					return 8;
+			}
+			else
+			{
+				if ( type.IsValueType )
+					return ( from fld in
+								 type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic )
+							 select fld.FieldType.Size( fld ) ).Sum();
 
-                if ( field != null )
-                {
-                    var attributes = field.GetCustomAttributes( typeof( MarshalAsAttribute ), false );
-                    var marshal = (MarshalAsAttribute)attributes[ 0 ];
-                    if ( type.IsArray )
-                        return marshal.SizeConst * type.GetElementType().Size();
-                    if ( type == typeof( string ) )
-                        return marshal.SizeConst;
-                }
-            }
+				if ( field != null )
+				{
+					var attributes = field.GetCustomAttributes( typeof( MarshalAsAttribute ), false );
+					var marshal = (MarshalAsAttribute)attributes[ 0 ];
+					if ( type.IsArray )
+						return marshal.SizeConst * type.GetElementType().Size();
+					if ( type == typeof( string ) )
+						return marshal.SizeConst;
+				}
+			}
 #endif
 			return Marshal.SizeOf( type );
 		}
@@ -255,9 +256,9 @@ namespace Axiom.Core
 				{
 					var name = fields[ i ].Name;
 					delegates.Add( new Field
-					               {
-					               	Get = type.FieldGet( name ), Set = type.FieldSet( name )
-					               } );
+								   {
+									Get = type.FieldGet( name ), Set = type.FieldSet( name )
+								   } );
 				}
 				fastFields.Add( type, reflectors = delegates.ToArray() );
 			}
@@ -601,7 +602,7 @@ namespace System
 	{
 		namespace Composition
 		{
-#if !NET_40 || (XBOX || XBOX360)
+#if (XBOX || XBOX360)
 			[AttributeUsage( AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false )]
 			public class ExportAttribute : Attribute
 			{

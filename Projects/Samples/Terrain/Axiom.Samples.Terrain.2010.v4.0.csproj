@@ -168,10 +168,6 @@
       <Project>{2CBDB2D9-F549-47E5-9BDB-CB2CBA0C9FAE}</Project>
       <Name>SharpInputSystem.DirectX.2010.v4.0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Components\Paging\Axiom.Components.Paging.2010.v4.0.csproj">
       <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
       <Name>Axiom.Components.Paging.2010.v4.0</Name>

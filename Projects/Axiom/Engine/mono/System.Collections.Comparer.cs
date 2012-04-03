@@ -43,64 +43,64 @@ namespace System.Collections
 	[ComVisible(true)]
 #endif
 
-    [Serializable]
-    public sealed class Comparer : IComparer, ISerializable
-    {
-        public static readonly Comparer Default = new Comparer();
+	[Serializable]
+	public sealed class Comparer : IComparer, ISerializable
+	{
+		public static readonly Comparer Default = new Comparer();
 		public static readonly Comparer DefaultInvariant = new Comparer(CultureInfo.InvariantCulture);
 
-        // This field was introduced for MS kompatibility. see bug #77701
-        private readonly CompareInfo m_compareInfo;
+		// This field was introduced for MS kompatibility. see bug #77701
+		private readonly CompareInfo m_compareInfo;
 
-        private Comparer()
-        {
-            //LAMESPEC: This seems to be encoded at runtime while CaseInsensitiveComparer does at creation
-        }
+		private Comparer()
+		{
+			//LAMESPEC: This seems to be encoded at runtime while CaseInsensitiveComparer does at creation
+		}
 
 		public Comparer(CultureInfo culture)
-        {
-            if (culture == null)
-                throw new ArgumentNullException("culture");
+		{
+			if (culture == null)
+				throw new ArgumentNullException("culture");
 
-            m_compareInfo = culture.CompareInfo;
-        }
+			m_compareInfo = culture.CompareInfo;
+		}
 
-        // IComparer
-        public int Compare(object a, object b)
-        {
-            if (a == b)
-                return 0;
-            else if (a == null)
-                return -1;
-            else if (b == null)
-                return 1;
+		// IComparer
+		public int Compare(object a, object b)
+		{
+			if (a == b)
+				return 0;
+			else if (a == null)
+				return -1;
+			else if (b == null)
+				return 1;
 
-            if (m_compareInfo != null)
-            {
-                var sa = a as string;
-                var sb = b as string;
-                if (sa != null && sb != null)
-                    return m_compareInfo.Compare(sa, sb);
-            }
+			if (m_compareInfo != null)
+			{
+				var sa = a as string;
+				var sb = b as string;
+				if (sa != null && sb != null)
+					return m_compareInfo.Compare(sa, sb);
+			}
 
-            if (a is IComparable)
-                return (a as IComparable).CompareTo(b);
-            else if (b is IComparable)
-                return -(b as IComparable).CompareTo(a);
+			if (a is IComparable)
+				return (a as IComparable).CompareTo(b);
+			else if (b is IComparable)
+				return -(b as IComparable).CompareTo(a);
 
-            throw new ArgumentException("Neither 'a' nor 'b' implements IComparable.");
-        }
+			throw new ArgumentException("Neither 'a' nor 'b' implements IComparable.");
+		}
 
-        // ISerializable
-        [SecurityPermission(SecurityAction.LinkDemand)] //, SerializationFormatter = true)]
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            if (info == null)
-                throw new ArgumentNullException("info");
+		// ISerializable
+		[SecurityPermission(SecurityAction.LinkDemand)] //, SerializationFormatter = true)]
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+				throw new ArgumentNullException("info");
 
-            info.AddValue("CompareInfo", m_compareInfo);
-        }
-    }
+			info.AddValue("CompareInfo", m_compareInfo);
+		}
+	}
 }
 
 #if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)

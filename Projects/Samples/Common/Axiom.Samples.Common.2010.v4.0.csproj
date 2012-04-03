@@ -200,10 +200,6 @@
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework.2010.v4.0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

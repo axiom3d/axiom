@@ -10,9 +10,9 @@
     <RootNamespace>Axiom.Demos.Browser.Xna</RootNamespace>
     <AssemblyName>Axiom.Demos.Xbox.CameraTrack</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCrossPlatformGroupID>0BB792C7-B8BE-4f95-98C4-81767070654D</XnaCrossPlatformGroupID>
@@ -164,6 +164,10 @@
     <ProjectReference Include="..\..\..\..\..\Axiom\Engine\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Axiom\Platforms\Axiom.Platforms.Xna\Axiom.Platforms.Xna.Xbox.csproj">
+      <Project>{CF16D195-DBA9-450D-975C-6EA9E62F1140}</Project>
+      <Name>Axiom.Platforms.Xna.Xbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Xbox.csproj">
       <Project>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</Project>

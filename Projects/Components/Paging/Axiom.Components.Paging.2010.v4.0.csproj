@@ -118,12 +118,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

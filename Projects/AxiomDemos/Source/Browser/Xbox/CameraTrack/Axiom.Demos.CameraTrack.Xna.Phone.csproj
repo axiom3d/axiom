@@ -135,6 +135,10 @@
       <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Axiom\Platforms\Axiom.Platforms.Xna\Axiom.Platforms.Xna.Phone.csproj">
+      <Project>{6DA09ED7-EEA6-4D3B-9DAC-EB703F4C315E}</Project>
+      <Name>Axiom.Platforms.Xna.Phone</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Phone.csproj">
       <Project>{A1909A31-E4E3-46EF-98AA-A407F0DE301F}</Project>
       <Name>Axiom.RenderSystems.Xna.Phone</Name>

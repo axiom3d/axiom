@@ -464,88 +464,85 @@ namespace Axiom.Media
 			}
 			else
 			{
-				unsafe
+				switch ( format )
 				{
-					switch ( format )
-					{
-						case PixelFormat.FLOAT32_R:
-							var floatdest = (ITypePointer<float>)dest;
-							floatdest[ 0 ] = r;
-							break;
+					case PixelFormat.FLOAT32_R:
+						var floatdest = (ITypePointer<float>)dest;
+						floatdest[ 0 ] = r;
+						break;
 
 
-						case PixelFormat.FLOAT32_GR:
-							floatdest = (ITypePointer<float>)dest;
-							floatdest[ 0 ] = g;
-							floatdest[ 1 ] = r;
-							break;
+					case PixelFormat.FLOAT32_GR:
+						floatdest = (ITypePointer<float>)dest;
+						floatdest[ 0 ] = g;
+						floatdest[ 1 ] = r;
+						break;
 
-						case PixelFormat.FLOAT32_RGB:
-							floatdest = (ITypePointer<float>)dest;
-							floatdest[ 0 ] = r;
-							floatdest[ 1 ] = g;
-							floatdest[ 2 ] = b;
-							break;
+					case PixelFormat.FLOAT32_RGB:
+						floatdest = (ITypePointer<float>)dest;
+						floatdest[ 0 ] = r;
+						floatdest[ 1 ] = g;
+						floatdest[ 2 ] = b;
+						break;
 
-						case PixelFormat.FLOAT32_RGBA:
-							floatdest = (ITypePointer<float>)dest;
-							floatdest[ 0 ] = r;
-							floatdest[ 1 ] = g;
-							floatdest[ 2 ] = b;
-							floatdest[ 3 ] = a;
-							break;
+					case PixelFormat.FLOAT32_RGBA:
+						floatdest = (ITypePointer<float>)dest;
+						floatdest[ 0 ] = r;
+						floatdest[ 1 ] = g;
+						floatdest[ 2 ] = b;
+						floatdest[ 3 ] = a;
+						break;
 
-						case PixelFormat.FLOAT16_R:
-							var ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
-							break;
+					case PixelFormat.FLOAT16_R:
+						var ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
+						break;
 
-						case PixelFormat.FLOAT16_GR:
-							ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = Bitwise.FloatToHalf( g );
-							ushortdest[ 1 ] = Bitwise.FloatToHalf( r );
-							break;
+					case PixelFormat.FLOAT16_GR:
+						ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = Bitwise.FloatToHalf( g );
+						ushortdest[ 1 ] = Bitwise.FloatToHalf( r );
+						break;
 
-						case PixelFormat.FLOAT16_RGB:
-							ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
-							ushortdest[ 1 ] = Bitwise.FloatToHalf( g );
-							ushortdest[ 2 ] = Bitwise.FloatToHalf( b );
-							break;
+					case PixelFormat.FLOAT16_RGB:
+						ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
+						ushortdest[ 1 ] = Bitwise.FloatToHalf( g );
+						ushortdest[ 2 ] = Bitwise.FloatToHalf( b );
+						break;
 
-						case PixelFormat.FLOAT16_RGBA:
-							ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
-							ushortdest[ 1 ] = Bitwise.FloatToHalf( g );
-							ushortdest[ 2 ] = Bitwise.FloatToHalf( b );
-							ushortdest[ 3 ] = Bitwise.FloatToHalf( a );
-							break;
+					case PixelFormat.FLOAT16_RGBA:
+						ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = Bitwise.FloatToHalf( r );
+						ushortdest[ 1 ] = Bitwise.FloatToHalf( g );
+						ushortdest[ 2 ] = Bitwise.FloatToHalf( b );
+						ushortdest[ 3 ] = Bitwise.FloatToHalf( a );
+						break;
 
-						case PixelFormat.SHORT_RGB:
-							ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
-							ushortdest[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
-							ushortdest[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
-							break;
+					case PixelFormat.SHORT_RGB:
+						ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
+						ushortdest[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
+						ushortdest[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
+						break;
 
-						case PixelFormat.SHORT_RGBA:
-							ushortdest = (ITypePointer<ushort>)dest;
-							ushortdest[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
-							ushortdest[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
-							ushortdest[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
-							ushortdest[ 3 ] = (ushort)Bitwise.FloatToFixed( a, 16 );
-							break;
+					case PixelFormat.SHORT_RGBA:
+						ushortdest = (ITypePointer<ushort>)dest;
+						ushortdest[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
+						ushortdest[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
+						ushortdest[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
+						ushortdest[ 3 ] = (ushort)Bitwise.FloatToFixed( a, 16 );
+						break;
 
-						case PixelFormat.BYTE_LA:
-							var bytedest = (ITypePointer<byte>)dest;
-							bytedest[ 0 ] = (byte)Bitwise.FloatToFixed( r, 8 );
-							bytedest[ 1 ] = (byte)Bitwise.FloatToFixed( a, 8 );
-							break;
+					case PixelFormat.BYTE_LA:
+						var bytedest = (ITypePointer<byte>)dest;
+						bytedest[ 0 ] = (byte)Bitwise.FloatToFixed( r, 8 );
+						bytedest[ 1 ] = (byte)Bitwise.FloatToFixed( a, 8 );
+						break;
 
-						default:
-							// Not yet supported
-							throw new AxiomException( "Pack to {0} not implemented, in PixelUtil.PackColor", format );
-					}
+					default:
+						// Not yet supported
+						throw new AxiomException( "Pack to {0} not implemented, in PixelUtil.PackColor", format );
 				}
 			}
 		}

@@ -160,10 +160,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.v4.0.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.2010.v4.0</Name>

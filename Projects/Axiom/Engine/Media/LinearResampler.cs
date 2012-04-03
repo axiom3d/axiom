@@ -126,11 +126,8 @@ namespace Axiom.Media
 
 		private void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, BufferBase src, PixelBox srcbox, int elemsize )
 		{
-			unsafe
-			{
-				var data = src + ( elemsize * ( ( x ) + ( y ) * srcbox.RowPitch + ( z ) * srcbox.SlicePitch ) );
-				dst = PixelConverter.UnpackColor( format, data );
-			}
+			var data = src + ( elemsize * ( ( x ) + ( y ) * srcbox.RowPitch + ( z ) * srcbox.SlicePitch ) );
+			dst = PixelConverter.UnpackColor( format, data );
 		}
 
 		#endregion Methods

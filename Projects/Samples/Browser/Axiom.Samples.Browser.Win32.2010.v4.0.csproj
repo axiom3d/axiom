@@ -136,10 +136,6 @@
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework.2010.v4.0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010.v4.0</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.v4.0.csproj">
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
       <Name>Axiom.Platforms.Win32.2010.v4.0</Name>

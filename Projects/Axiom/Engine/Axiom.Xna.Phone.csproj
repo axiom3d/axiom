@@ -49,21 +49,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Phone, Version=7.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Xna.Framework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.GamerServices">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Input.Touch">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
@@ -90,7 +75,6 @@
     <Compile Include="Core\ICopyable.cs" />
     <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
-    <Compile Include="FileSystem\TitleContainerArchive.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
@@ -119,7 +103,9 @@
     <Compile Include="mono\SortedList.cs" />
     <Compile Include="mono\SortedList~2.cs" />
     <Compile Include="mono\System.Collections.ArrayList.cs" />
+    <Compile Include="mono\System.Collections.Comparer.cs" />
     <Compile Include="mono\System.Collections.cs" />
+    <Compile Include="mono\System.Collections.Hashtable.cs" />
     <Compile Include="mono\System.cs" />
     <Compile Include="mono\System.Diagnostics.DefaultTraceListener.cs" />
     <Compile Include="mono\System.Diagnostics.Stopwatch.cs" />
