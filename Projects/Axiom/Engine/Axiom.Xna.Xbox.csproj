@@ -14,33 +14,14 @@
     <XnaCrossPlatformGroupID>bdeed62e-47de-419d-a233-2338a61a0ab4</XnaCrossPlatformGroupID>
     <XnaUpgrade>
     </XnaUpgrade>
+    <XnaOutputType>Library</XnaOutputType>
+    <XnaProfile>HiDef</XnaProfile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>4.0</OldToolsVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <XnaOutputType>Library</XnaOutputType>
-    <XnaProfile>HiDef</XnaProfile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
@@ -49,7 +30,7 @@
     <BaseAddress>285212672</BaseAddress>
     <Optimize>false</Optimize>
     <OutputPath>bin\Xbox\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360;XNA;NET_2_0;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XBOX;XBOX360;XNA;NET_40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -65,7 +46,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Xbox\Release</OutputPath>
     <DocumentationFile>bin\Xbox\Release\Axiom.XML</DocumentationFile>
-    <DefineConstants>TRACE;XBOX;XBOX360;NET_2_0;XNA;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;XBOX;XBOX360;XNA;NET_40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -79,6 +60,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Lib\Managed\CompactFramework\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -169,7 +151,6 @@
     <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
-    <Compile Include="FileSystem\TitleContainerArchive.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
     <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
@@ -193,7 +174,6 @@
     <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\NullCodec.cs" />
     <Compile Include="Media\PVRTCCodec.cs" />
-    <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ICloneable.cs" />
     <Compile Include="Core\ILodListener.cs" />
     <Compile Include="Core\IPlatformManager.cs" />
@@ -381,6 +361,18 @@
     <Compile Include="mono\Locale.cs" />
     <Compile Include="mono\SortedList.cs" />
     <Compile Include="mono\SortedList~2.cs" />
+    <Compile Include="mono\System.Collections.ArrayList.cs" />
+    <Compile Include="mono\System.Collections.Comparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="mono\System.Collections.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="mono\System.Collections.Hashtable.cs" />
+    <Compile Include="mono\System.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="mono\System.Runtime.Serialization.cs" />
     <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
@@ -460,48 +452,18 @@
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
+    <Compile Include="Core\WorkQueue\RequestID.cs" />
+    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
+    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Avatar">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.GamerServices">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Net">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Storage">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Video">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Xact">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -530,13 +492,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
-    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
-    <Compile Include="Core\WorkQueue\RequestID.cs" />
-    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
-    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" Condition="" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
 </Project>

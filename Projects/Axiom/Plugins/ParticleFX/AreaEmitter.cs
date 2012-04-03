@@ -95,7 +95,7 @@ namespace Axiom.ParticleFX
 			}
 		}
 
-		public float Width
+		new public float Width
 		{
 			get
 			{
@@ -108,7 +108,7 @@ namespace Axiom.ParticleFX
 			}
 		}
 
-		public float Height
+		new public float Height
 		{
 			get
 			{

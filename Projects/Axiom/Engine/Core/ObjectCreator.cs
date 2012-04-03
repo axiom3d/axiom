@@ -79,7 +79,7 @@ namespace Axiom.Core
 			try
 			{
 #if SILVERLIGHT
-                _assembly = Assembly.Load(assemblyFile);
+				_assembly = Assembly.Load(assemblyFile);
 #else
 				_assembly = Assembly.LoadFrom( assemblyFile );
 #endif
@@ -188,7 +188,7 @@ namespace Axiom.Core
 					{
 						Debug.WriteLine( String.Format( "Loading {0}", _assemblyFilename ) );
 #if SILVERLIGHT
-                        _assembly = Assembly.Load(_assemblyFilename);
+						_assembly = Assembly.Load(_assemblyFilename);
 #else
 						_assembly = Assembly.LoadFrom( _assemblyFilename );
 #endif

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -1160,10 +1160,6 @@
     <ProjectReference Include="..\..\Demos\Axiom.Demos.2010.v4.0.csproj">
       <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
       <Name>Axiom.Demos.2010.v4.0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
-      <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.2010.v4.0.csproj">
       <Project>{8DF7E00A-9001-4B2C-B1D8-7AEB4503233C}</Project>

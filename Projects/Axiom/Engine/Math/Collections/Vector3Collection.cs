@@ -629,10 +629,10 @@ namespace Axiom.Math.Collections
 			{
 #if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
 				throw new System.ArgumentOutOfRangeException( "Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i, "Specified argument was out of the range of valid values." );
-			}
 #else
                 throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
 #endif
+			}
 		}
 
 		private void EnsureCapacity( int min )

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -256,10 +256,6 @@
     <ProjectReference Include="..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\source\src\Tao.Platform.Windows\Tao.Platform.Windows.csproj">
       <Project>{228201EB-1A36-4E25-B59F-52255CBBE270}</Project>
       <Name>Tao.Platform.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\Axiom.2010.v4.0.csproj">
-      <Project>{777A71FF-3E56-4565-86EF-C62006F4A74B}</Project>
-      <Name>Axiom.2010.v4.0</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

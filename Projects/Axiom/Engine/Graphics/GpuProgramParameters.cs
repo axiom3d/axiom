@@ -564,9 +564,9 @@ namespace Axiom.Graphics
 		{
 			// TODO: optimize this in case of GC pressure problems
 			SetConstant( index, new[]
-			                    {
-			                    	f0, f1, f2, f3
-			                    } );
+								{
+									f0, f1, f2, f3
+								} );
 		}
 
 		/// <summary>
@@ -676,9 +676,9 @@ namespace Axiom.Graphics
 			// WriteRawConstants(physicalIndex, vec.ptr(), sz);
 
 			var arr = new float[]
-			          {
-			          	val.x, val.y, val.z, val.w
-			          };
+					  {
+						val.x, val.y, val.z, val.w
+					  };
 			_writeRawConstants( physicalIndex, arr, Utility.Min( count, 4 ) );
 		}
 
@@ -686,27 +686,27 @@ namespace Axiom.Graphics
 		public void WriteRawConstant( int physicalIndex, Real val )
 		{
 			_writeRawConstants( physicalIndex, new float[]
-			                                   {
-			                                   	val
-			                                   }, 1 );
+											   {
+												val
+											   }, 1 );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void WriteRawConstant( int physicalIndex, int val )
 		{
 			_writeRawConstants( physicalIndex, new[]
-			                                   {
-			                                   	val
-			                                   }, 1 );
+											   {
+												val
+											   }, 1 );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public void WriteRawConstant( int physicalIndex, Vector3 val )
 		{
 			var arr = new float[]
-			          {
-			          	val.x, val.y, val.z
-			          };
+					  {
+						val.x, val.y, val.z
+					  };
 			_writeRawConstants( physicalIndex, arr, 3 );
 		}
 
@@ -740,7 +740,7 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public void WriteRawConstant( int physicalIndex, ColorEx color, int count = 4 )
+		public void WriteRawConstant( int physicalIndex, ColorEx color, int count = 4 )
 #else
 		public void WriteRawConstant( int physicalIndex, ColorEx color, int count )
 #endif
@@ -1263,7 +1263,7 @@ namespace Axiom.Graphics
 		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public void SetAutoConstant( int index, AutoConstantType acType, int extraInfo = 0 )
+		public void SetAutoConstant( int index, AutoConstantType acType, int extraInfo = 0 )
 #else
 		public void SetAutoConstant( int index, AutoConstantType acType, int extraInfo )
 #endif
@@ -1496,7 +1496,7 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public void SetNamedConstant( string name, float[] val, int count, int multiple = 4 )
+		public void SetNamedConstant( string name, float[] val, int count, int multiple = 4 )
 #else
 		public void SetNamedConstant( string name, float[] val, int count, int multiple )
 #endif
@@ -1535,7 +1535,7 @@ namespace Axiom.Graphics
 
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public void SetNamedConstant( string name, int[] val, int count, int multiple = 4 )
+		public void SetNamedConstant( string name, int[] val, int count, int multiple = 4 )
 #else
 		public void SetNamedConstant( string name, int[] val, int count, int multiple )
 #endif

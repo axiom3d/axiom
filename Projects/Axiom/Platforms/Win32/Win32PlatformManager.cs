@@ -80,10 +80,6 @@ namespace Axiom.Platforms.Win32
 		/// <returns></returns>
 		public InputReader CreateInputReader()
 		{
-			if ( inputReader == null )
-			{
-				inputReader = new Win32InputReader();
-			}
 			return inputReader;
 		}
 

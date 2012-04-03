@@ -134,20 +134,14 @@ namespace Axiom.Core
 				this.logMgr.Write( info.ToString() );
 				this.logMgr.Write( "*-*-* Axiom Initializing" );
 
+#if !( ANDROID || IPHONE )
+				new PlatformManager();
+#endif
+
 				ArchiveManager.Instance.Initialize();
 				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
-				ArchiveManager.Instance.AddArchiveFactory( new IsolatedStorageArchiveFactory() );
-				ArchiveManager.Instance.AddArchiveFactory( new EmbeddedArchiveFactory() );
-#if WINDOWS_PHONE
-				ArchiveManager.Instance.AddArchiveFactory( new TitleContainerArchiveFactory() );
-#endif
-#if !(XBOX || XBOX360 )
-				ArchiveManager.Instance.AddArchiveFactory( new WebArchiveFactory() );
-#endif
-#if SILVERLIGHT
-				ArchiveManager.Instance.AddArchiveFactory( new XapArchiveFactory() );
-#endif
+
 				new ResourceGroupManager();
 				new CodecManager();
 				new HighLevelGpuProgramManager();
@@ -166,13 +160,13 @@ namespace Axiom.Core
 #if AXIOM_THREAD_SUPPORT
 
 #if !WINDOWS_PHONE
-                defaultQ.WorkerThreadCount = Environment.ProcessorCount;
+				defaultQ.WorkerThreadCount = Environment.ProcessorCount;
 #endif
-                // only allow workers to access rendersystem if threadsupport is 1
-                if ( Axiom.Configuration.Config.AxiomThreadLevel == 1 )
-                    defaultQ.WorkersCanAccessRenderSystem = true;
-                else
-                    defaultQ.WorkersCanAccessRenderSystem = false;
+				// only allow workers to access rendersystem if threadsupport is 1
+				if ( Axiom.Configuration.Config.AxiomThreadLevel == 1 )
+					defaultQ.WorkersCanAccessRenderSystem = true;
+				else
+					defaultQ.WorkersCanAccessRenderSystem = false;
 #endif
 				_workQueue = defaultQ;
 
@@ -184,9 +178,6 @@ namespace Axiom.Core
 				var mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
-#if !(XNA || ANDROID || IPHONE || WINDOWS_PHONE )
-				new PlatformManager();
-#endif
 
 				// create a new timer
 				this.timer = new Timer();

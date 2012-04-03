@@ -29,7 +29,6 @@ namespace Axiom.Platforms.OpenTK
 		/// <returns></returns>
 		public Axiom.Input.InputReader CreateInputReader()
 		{
-			inputReader = new OpenTKInputReader();
 			return inputReader;
 		}
 

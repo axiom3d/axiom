@@ -1,0 +1,91 @@
+<!-- Common Settings used by SharpDX projects -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <OutputType>Library</OutputType>
+    <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'  ">
+    <AxiomWin8>false</AxiomWin8>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Net40Debug' Or '$(Configuration)' == 'Net40Release'  ">
+    <AxiomWin8>false</AxiomWin8>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Win8Debug' Or '$(Configuration)' == 'Win8Release'  ">
+    <AxiomWin8>true</AxiomWin8>
+    <ImplicitlyExpandTargetFramework>true</ImplicitlyExpandTargetFramework>
+    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+  </PropertyGroup>
+  <PropertyGroup Condition="  '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'Win8Debug'  ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>TRACE;DEBUG;$(TargetFrameWorkDefine)</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="  '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release'  Or '$(Configuration)' == 'Win8Release'  ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DocumentationFile>bin\Release\$(TargetFrameworkVersion)\$(AssemblyName).xml</DocumentationFile>
+    <DefineConstants>TRACE;$(TargetFrameWorkDefine)</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Release|AnyCPU' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Debug|AnyCPU'">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Release|AnyCPU'">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' And '$(AxiomSign)' == 'true'">
+    <DefineConstants>TRACE;WinFormsInterop;AXIOM_SIGNED</DefineConstants>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)axiom.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+</Project>
