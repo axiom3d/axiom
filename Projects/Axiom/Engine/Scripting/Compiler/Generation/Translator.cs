@@ -60,7 +60,7 @@ namespace Axiom.Scripting.Compiler
 			/// <param name="nodeId">The Id of the node</param>
 			/// <param name="parentId">The Id of the node's parent (if any)</param>
 			[AxiomHelper( 0, 9 )]
-			internal abstract bool CheckFor( Keywords nodeId, Keywords parentId );
+			public abstract bool CheckFor( Keywords nodeId, Keywords parentId );
 
 			/// <summary>
 			/// This function translates the given node into Ogre resource(s).
