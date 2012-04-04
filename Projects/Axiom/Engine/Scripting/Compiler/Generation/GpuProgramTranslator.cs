@@ -75,7 +75,7 @@ namespace Axiom.Scripting.Compiler
 
 			/// <see cref="Translator.CheckFor"/>
 			[AxiomHelper( 0, 9 )]
-			internal override bool CheckFor( Keywords nodeId, Keywords parentId )
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
 			{
 				return nodeId == Keywords.ID_FRAGMENT_PROGRAM || nodeId == Keywords.ID_VERTEX_PROGRAM || nodeId == Keywords.ID_GEOMETRY_PROGRAM;
 			}

@@ -47,7 +47,7 @@ using System.Text;
 namespace Axiom.Scripting.Compiler
 {
 	/// This enum defines the integer ids for keywords this compiler handles
-	internal enum Keywords : uint
+	public enum Keywords : uint
 	{
 		ID_MATERIAL = 3,
 		ID_VERTEX_PROGRAM,
