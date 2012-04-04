@@ -133,7 +133,7 @@ namespace Axiom.Components.RTShaderSystem
                     }
                     else
                     {
-                        _processNode(compiler, obj.Children[i]);
+                        processNode(compiler, obj.Children[i]);
                     }
                 }
             }
@@ -187,7 +187,7 @@ namespace Axiom.Components.RTShaderSystem
                     }
                     else
                     {
-                        _processNode(compiler, obj.Children[i]);
+                        processNode(compiler, obj.Children[i]);
                     }
                 }
 

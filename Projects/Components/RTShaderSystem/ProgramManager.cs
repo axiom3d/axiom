@@ -323,8 +323,11 @@ namespace Axiom.Components.RTShaderSystem
                     //TODO
                    // gpuProgram.Source = sourceCodeStringStream;
                 }
+                Axiom.Collections.NameValuePairList gpuParams = new Collections.NameValuePairList();
+                gpuParams.Add("entry_point", shaderProgram.EntryPointFunction.Name);
+                gpuProgram.SetParameters(gpuParams);
 
-                gpuProgram.SetParam("entry_point", shaderProgram.EntryPointFunction.Name);
+                gpuParams.Clear();
 
                 // HLSL program requires specific target profile settings - we have to split the profile string.
                 if (language == "hlsl")
@@ -333,13 +336,16 @@ namespace Axiom.Components.RTShaderSystem
                     {
                         if (GpuProgramManager.Instance.IsSyntaxSupported(it))
                         {
-                            gpuProgram.SetParam("target", it);
+                            gpuParams.Add("target", it);
+                            gpuProgram.SetParameters(gpuParams);
+                            gpuParams.Clear();
                             break;
                         }
 
                     }
                 }
-                gpuProgram.SetParam("profiles", profiles);
+                gpuParams.Add("profiles", profiles);
+                gpuProgram.SetParameters(gpuParams);
                 gpuProgram.Load();
 
                 //Case an error occurred
