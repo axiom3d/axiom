@@ -50,7 +50,7 @@ namespace Axiom.Components.RTShaderSystem
 
             return string.Empty;
         }
-        internal override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.TextureUnitState texState, SGScriptTranslator translator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.TextureUnitState texState, SGScriptTranslator translator)
         {
 
             if (prop.Name == "layered_blend")

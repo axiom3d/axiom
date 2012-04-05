@@ -12,7 +12,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             get { return NormalMapLighting.SGXType; }
         }
-        internal override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
         {
             throw new NotImplementedException();
         }

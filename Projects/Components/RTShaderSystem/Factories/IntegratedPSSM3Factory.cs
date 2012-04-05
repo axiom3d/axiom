@@ -8,7 +8,7 @@ namespace Axiom.Components.RTShaderSystem
 {
     class IntegratedPSSM3Factory : SubRenderStateFactory
     {
-        internal override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
         {
             if (prop.Name == "integrated_pssm4")
             {
