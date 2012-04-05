@@ -11,7 +11,7 @@ namespace Axiom.Components.RTShaderSystem
     /// <summary>
     /// Uniform paramter class. Allows fast access to GPU parameter updates
     /// </summary>
-    class UniformParameter : Parameter
+    public class UniformParameter : Parameter
     {
         #region Fields
         bool isAutoConstantReal, isAutoConstantInt;

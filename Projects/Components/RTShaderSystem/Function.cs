@@ -6,7 +6,7 @@ using Axiom.Core;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    internal class Function : IDisposable
+    public class Function : IDisposable
     {
         #region Fields
         public enum FunctionType
@@ -200,7 +200,7 @@ namespace Axiom.Components.RTShaderSystem
         /// <param name="type">The type of the desired parameter</param>
         /// <returns>paramter instance in case of that resolve operation succeed</returns>
         /// <remarks>Pass -1 as index paraemter to craete a new pareamter with the desired semantic and type</remarks>
-        internal Parameter ResolveInputParameter(Parameter.SemanticType semantic, int index, Parameter.ContentType content, Graphics.GpuProgramParameters.GpuConstantType type)
+        public Parameter ResolveInputParameter(Parameter.SemanticType semantic, int index, Parameter.ContentType content, Graphics.GpuProgramParameters.GpuConstantType type)
         {
             Parameter param = null;
 
@@ -286,7 +286,7 @@ namespace Axiom.Components.RTShaderSystem
         /// <returns>paramter instance in case of that resolve operation succeed</returns>
         /// <remarks>Pass -1 as index paraemter to craete a new pareamter with the desired semantic and type</remarks>
 
-        internal Parameter ResolveOutputParameter(Parameter.SemanticType semantic, int index, Parameter.ContentType content, Graphics.GpuProgramParameters.GpuConstantType type)
+        public Parameter ResolveOutputParameter(Parameter.SemanticType semantic, int index, Parameter.ContentType content, Graphics.GpuProgramParameters.GpuConstantType type)
         {
             Parameter param = null;
 
@@ -360,7 +360,7 @@ namespace Axiom.Components.RTShaderSystem
             return param;
         }
 
-        internal Parameter ResolveLocalParameter(Parameter.SemanticType semanticType, int p, Parameter.ContentType contentType, Graphics.GpuProgramParameters.GpuConstantType gpuConstantType)
+        public Parameter ResolveLocalParameter(Parameter.SemanticType semanticType, int p, Parameter.ContentType contentType, Graphics.GpuProgramParameters.GpuConstantType gpuConstantType)
         {
             throw new NotImplementedException();
         }
@@ -371,7 +371,7 @@ namespace Axiom.Components.RTShaderSystem
         /// Add a function atom instance to this function
         /// </summary>
         /// <param name="atomInstance">The atom instance to add</param>
-        internal void AddAtomInstance(FunctionAtom atomInstance)
+        public void AddAtomInstance(FunctionAtom atomInstance)
         {
             atomInstances.Add(atomInstance);
         }

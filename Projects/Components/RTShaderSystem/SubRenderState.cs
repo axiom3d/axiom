@@ -51,16 +51,16 @@ namespace Axiom.Components.RTShaderSystem
             return true;
         }
 
-        internal virtual bool ResolveParameters(ProgramSet programSet)
+        protected virtual bool ResolveParameters(ProgramSet programSet)
         {
             return true;
         }
 
-        internal virtual bool ResolveDependencies(ProgramSet programSet)
+        protected virtual bool ResolveDependencies(ProgramSet programSet)
         {
             return true;
         }
-        internal virtual bool AddFunctionInvocations(ProgramSet programSet)
+        protected virtual bool AddFunctionInvocations(ProgramSet programSet)
         {
             return true;
         }
@@ -84,11 +84,11 @@ namespace Axiom.Components.RTShaderSystem
         }
         
 
-        internal virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
+        protected virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
         {
             return null;
         }
-        internal virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, TextureUnitState texState, SGScriptTranslator translator)
+        protected virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, TextureUnitState texState, SGScriptTranslator translator)
         {
             return null;
         }

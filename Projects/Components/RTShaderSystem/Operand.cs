@@ -8,7 +8,7 @@ namespace Axiom.Components.RTShaderSystem
     /// <summary>
     /// Represents a function operand (its the combination of a parameter the in/out semantic and the used fields
     /// </summary>
-    class Operand
+    public class Operand
     {
          public enum OpSemantic
         {

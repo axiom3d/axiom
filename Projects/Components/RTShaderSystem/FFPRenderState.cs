@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPRenderState
+    public class FFPRenderState
     {
         public enum FFPVertexShaderStage
         {

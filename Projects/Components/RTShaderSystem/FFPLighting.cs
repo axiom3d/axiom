@@ -8,7 +8,7 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPLighting : SubRenderState
+    public class FFPLighting : SubRenderState
     {
         class LightParams
         {

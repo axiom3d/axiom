@@ -6,7 +6,7 @@ using Axiom.Core;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPColor : SubRenderState
+    public class FFPColor : SubRenderState
     {
         public enum StageFlags
         {

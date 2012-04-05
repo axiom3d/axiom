@@ -7,7 +7,7 @@ using Axiom.Graphics;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class IntegratedPSSM3 : SubRenderState
+    public class IntegratedPSSM3 : SubRenderState
     {
         class ShadowTextureParams
         {

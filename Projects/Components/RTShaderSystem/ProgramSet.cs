@@ -6,7 +6,7 @@ using Axiom.Graphics;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    internal class ProgramSet : IDisposable
+    public class ProgramSet : IDisposable
     {
 
         Program vsCpuProgram, psCpuProgram;
