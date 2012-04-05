@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    abstract class FunctionAtom : IDisposable
+    public abstract class FunctionAtom : IDisposable
     {
         protected int groupExecutionOrder;
         protected int internalExecutionOrder;

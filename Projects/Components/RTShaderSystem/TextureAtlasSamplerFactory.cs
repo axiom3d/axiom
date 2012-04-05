@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class TextureAtlasAttib
+    public class TextureAtlasAttib
     {
         public IndexPositionMode positionMode = IndexPositionMode.Relative;
         public int positionOffset = 1;
@@ -48,7 +48,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             get { return TextureAtlasSampler.SGXType; }
         }
-        internal override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
         {
             return null;
         }

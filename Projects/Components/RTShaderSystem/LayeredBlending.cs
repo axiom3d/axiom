@@ -167,7 +167,7 @@ namespace Axiom.Components.RTShaderSystem
             return (sourceMod != SourceModifier.Invalid);
         }
 
-        internal override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters(ProgramSet programSet)
         {
             //resolve parameter for normal texturing procedures
             bool isSuccess = base.ResolveParameters(programSet);
@@ -195,7 +195,7 @@ namespace Axiom.Components.RTShaderSystem
 
             return isSuccess;
         }
-        internal override bool ResolveDependencies(ProgramSet programSet)
+        protected override bool ResolveDependencies(ProgramSet programSet)
         {
            base.ResolveDependencies(programSet);
            Program psProgram = programSet.CpuFragmentProgram;

@@ -709,7 +709,7 @@ namespace Axiom.Components.RTShaderSystem
             return param;
         }
     }
-    struct AutoShaderParameter
+    public struct AutoShaderParameter
     {
         public string Name;
         public Axiom.Graphics.GpuProgramParameters.AutoConstantType AutoType;

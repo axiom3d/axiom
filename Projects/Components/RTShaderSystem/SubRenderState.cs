@@ -84,11 +84,11 @@ namespace Axiom.Components.RTShaderSystem
         }
         
 
-        protected virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
+        public virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
         {
             return null;
         }
-        protected virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, TextureUnitState texState, SGScriptTranslator translator)
+        public virtual SubRenderState CreateInstance(ScriptCompiler compiler, PropertyAbstractNode prop, TextureUnitState texState, SGScriptTranslator translator)
         {
             return null;
         }

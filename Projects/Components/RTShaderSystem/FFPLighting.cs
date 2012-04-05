@@ -267,7 +267,7 @@ namespace Axiom.Components.RTShaderSystem
                     lightCount[2]++;
             }
         }
-        internal override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters(ProgramSet programSet)
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Function vsMain = vsProgram.EntryPointFunction;
@@ -456,7 +456,7 @@ namespace Axiom.Components.RTShaderSystem
             }
             return true;
         }
-        internal override bool ResolveDependencies(ProgramSet programSet)
+        protected override bool ResolveDependencies(ProgramSet programSet)
         {
             Program vsProgram = programSet.CpuVertexProgram;
             vsProgram.AddDependency(FFPRenderState.FFPLibCommon);
@@ -464,7 +464,7 @@ namespace Axiom.Components.RTShaderSystem
 
             return true;
         }
-        internal override bool AddFunctionInvocations(ProgramSet programSet)
+        protected override bool AddFunctionInvocations(ProgramSet programSet)
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Function vsMain = vsProgram.EntryPointFunction;
