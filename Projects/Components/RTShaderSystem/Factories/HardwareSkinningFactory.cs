@@ -22,7 +22,7 @@ namespace Axiom.Components.RTShaderSystem
 
         public HardwareSkinningFactory()
         { }
-        internal override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
         {
             if (prop.Name == "hardware_skinning")
             {
