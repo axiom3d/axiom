@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 11.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1EAB961C-47EC-4015-B61E-E672AE1C82A1}"
 EndProject
@@ -180,6 +181,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX11.2010", "Axiom\RenderSystems\DirectX11\Axiom.RenderSystems.DirectX11.2010.csproj", "{6703DF9E-AD0A-41B8-A863-E564CC9966E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Components.RTShaderSystem", "Components\RTShaderSystem\Axiom.Components.RTShaderSystem.csproj", "{07760495-D15D-43B1-A303-14FC40EDF541}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.ShaderSystem", "Axiom.Samples.ShaderSystem\Axiom.Samples.ShaderSystem.csproj", "{823CAB48-D145-466F-95C5-82B57FDC4737}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1319,6 +1324,66 @@ Global
 		{6703DF9E-AD0A-41B8-A863-E564CC9966E0}.Win8Release|Mixed Platforms.ActiveCfg = Win8Release|Any CPU
 		{6703DF9E-AD0A-41B8-A863-E564CC9966E0}.Win8Release|Mixed Platforms.Build.0 = Win8Release|Any CPU
 		{6703DF9E-AD0A-41B8-A863-E564CC9966E0}.Win8Release|x86.ActiveCfg = Win8Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Debug|x86.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Release|Any CPU.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Net40Release|x86.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Release|x86.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Debug|x86.ActiveCfg = Debug|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Release|Any CPU.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{07760495-D15D-43B1-A303-14FC40EDF541}.Win8Release|x86.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Debug|x86.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Release|Any CPU.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Net40Release|x86.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Release|Any CPU.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Release|x86.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Debug|x86.ActiveCfg = Debug|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|Any CPU.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1362,14 +1427,16 @@ Global
 		{B8A08085-7E36-475E-BA03-43A3B4593B89} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{B99D3D2B-0DF1-43D3-8542-04B3AD5BFAE2} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{5EF4FD98-8D4F-4441-A6C3-F75930A36618} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
+		{823CAB48-D145-466F-95C5-82B57FDC4737} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {1DA4A67D-7B3A-4E4F-9854-D9C7FC67FF81}
 		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF} = {1DA4A67D-7B3A-4E4F-9854-D9C7FC67FF81}
 		{79674E34-9EC2-4819-B47E-3DD75DFA4173} = {47B1A6E3-B79C-481B-9A52-10E561745651}
 		{89C3D207-913D-4BCB-BD6E-F8673E20D8EA} = {47B1A6E3-B79C-481B-9A52-10E561745651}
+		{07760495-D15D-43B1-A303-14FC40EDF541} = {47B1A6E3-B79C-481B-9A52-10E561745651}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
 		CodeStyleEnforcer_RulesLocation = 0
+		CodeStyleEnforcer_Active = -1
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = AxiomDemos\Source\Browser\CommandLine\Axiom.Demos.Browser.CommandLine.OpenTK.2010.csproj
