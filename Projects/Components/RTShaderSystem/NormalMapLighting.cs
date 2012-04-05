@@ -8,7 +8,7 @@ using Axiom.Core;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    enum NormalMapSpace
+    public enum NormalMapSpace
     {
         Tangent,
         Object
@@ -27,7 +27,7 @@ namespace Axiom.Components.RTShaderSystem
         public UniformParameter DiffuseColor;
         public UniformParameter SpecularColor;
     }
-    internal class NormalMapLighting : SubRenderState
+    public class NormalMapLighting : SubRenderState
     {
         #region Structs/Enums
        

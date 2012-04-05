@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPTransform : SubRenderState
+    public class FFPTransform : SubRenderState
     {
         public static string FFPType = "FFP_Transform";
 

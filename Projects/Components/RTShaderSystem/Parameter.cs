@@ -6,7 +6,7 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class Parameter
+    public class Parameter
     {
         public static Dictionary<Axiom.Graphics.GpuProgramParameters.AutoConstantType, AutoShaderParameter> AutoParameters
         {

@@ -9,12 +9,12 @@ namespace Axiom.Components.RTShaderSystem
 {
     class TextureAtlasMap : Dictionary<string, List<TextureAtlasRecord>>
     { }
-    struct TextureAtlasRecord
+    public struct TextureAtlasRecord
     {
         public float posU, posV, width, height;
-        string originalTextureName;
-        string atlasTextureName;
-        int indexInAtlas;
+        public string originalTextureName;
+        public string atlasTextureName;
+        public int indexInAtlas;
 
         public TextureAtlasRecord(string texOriginalName, string texAtlasName, float texPosU, float texPosV, float texWidth, float texHeight, int texIndexInAtlas)
         {
@@ -28,7 +28,7 @@ namespace Axiom.Components.RTShaderSystem
         }
     }
 
-    class TextureAtlasSampler : SubRenderState
+    public class TextureAtlasSampler : SubRenderState
     {
         #region Fields
         static int MaxTextures = 4;

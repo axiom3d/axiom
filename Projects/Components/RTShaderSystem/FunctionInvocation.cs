@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FunctionInvocation : FunctionAtom
+    public class FunctionInvocation : FunctionAtom
     {
         string functionName, returnType;
         List<Operand> operands;
@@ -90,19 +90,19 @@ namespace Axiom.Components.RTShaderSystem
         {
             get { return operands; }
         }
-        internal void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic)
+        public void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic)
         {
             this.PushOperand(parameter, opSemantic, (int)Operand.OpMask.All, 0);
         }
-        internal void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, int opMask)
+        public void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, int opMask)
         {
             this.PushOperand(parameter, opSemantic, opMask, 0);
         }
-        internal void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, Operand.OpMask opMask)
+        public void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, Operand.OpMask opMask)
         {
             this.PushOperand(parameter, opSemantic, (int)opMask, 0);
         }
-        internal void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, int opMask, int indirectionalLevel)
+        public void PushOperand(Parameter parameter, Operand.OpSemantic opSemantic, int opMask, int indirectionalLevel)
         {
             operands.Add(new Operand(parameter, opSemantic, opMask, indirectionalLevel));
         }

@@ -8,7 +8,7 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPTexturing : SubRenderState
+    public class FFPTexturing : SubRenderState
     {
         public class TextureUnitParams
         {

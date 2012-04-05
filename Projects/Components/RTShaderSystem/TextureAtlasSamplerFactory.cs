@@ -25,7 +25,7 @@ namespace Axiom.Components.RTShaderSystem
         Relative,
         Absolute
     }
-    class TextureAtlasSamplerFactory : SubRenderStateFactory
+    public class TextureAtlasSamplerFactory : SubRenderStateFactory
     {
         
 
@@ -222,7 +222,5 @@ namespace Axiom.Components.RTShaderSystem
         {
             get { return defaultAtlasAttrib; }
         }
-
-
     }
 }

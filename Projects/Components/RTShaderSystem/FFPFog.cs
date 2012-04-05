@@ -8,7 +8,7 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class FFPFog : SubRenderState
+    public class FFPFog : SubRenderState
     {
         public enum CalcMode
         {

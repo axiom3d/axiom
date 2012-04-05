@@ -7,7 +7,7 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class Program : IDisposable
+    public class Program : IDisposable
     {
         GpuProgramType type;
         List<UniformParameter> parameters;

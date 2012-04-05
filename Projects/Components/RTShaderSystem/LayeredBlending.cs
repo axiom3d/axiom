@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class LayeredBlending : FFPTexturing
+    public class LayeredBlending : FFPTexturing
     {
         #region TypeDefs
         public enum BlendMode
