@@ -78,7 +78,7 @@ namespace Axiom.Samples.ShaderSystem
         const string LayerblendButtonName = "ChangeLayerBlendType";
         const string ModifierValueSlider = "ModifierValueSlider";
         const string SampleMaterialGroup = "RTShaderSystemMaterialsGroup";
-        const string[] meshArray = new string[2] { MainEntityMesh, "knot.mesh" };
+        string[] meshArray = new string[2] { MainEntityMesh, "knot.mesh" };
 
 
         #endregion
@@ -280,7 +280,7 @@ namespace Axiom.Samples.ShaderSystem
         {
             Light light = SceneManager.GetLight(SpotLightName);
 
-            light.Position = Camera.DerivedPosition + Camera.DerivedUp * 20.0f);
+            light.Position = Camera.DerivedPosition + Camera.DerivedUp * 20.0f;
             light.Direction = Camera.DerivedDirection;
 
             if(pointLightNode != null)
@@ -336,7 +336,7 @@ namespace Axiom.Samples.ShaderSystem
             targetObjMatName.Caption = targetObjMaterialName;
             if (Viewport.MaterialScheme == ShaderGenerator.DefaultSchemeName)
             {
-                Material matMainEnt = MaterialManager.Instance.GetByName(targetObjMaterialName);
+                Material matMainEnt = (Material)MaterialManager.Instance.GetByName(targetObjMaterialName);
 
                 if (matMainEnt != null)
                 {
@@ -791,7 +791,7 @@ namespace Axiom.Samples.ShaderSystem
             }
             //Create per pixel lighting demo entity
             entity = SceneManager.CreateEntity("PerPixelEntity", "knot.mesh");
-            entity.MaterialName = "RTSS/PerPixel_SinglePass");
+            entity.MaterialName = "RTSS/PerPixel_SinglePass";
             childNode = SceneManager.RootSceneNode.CreateChildSceneNode();
             childNode.Position = new Vector3(300, 100, -100);
             childNode.AttachObject(entity);
@@ -870,7 +870,7 @@ namespace Axiom.Samples.ShaderSystem
             pointLightCheckBox = TrayManager.CreateCheckBox(TrayLocation.TopLeft, PointLightName, "Point Light", 220);
             spotLightCheckBox = TrayManager.CreateCheckBox(TrayLocation.TopLeft, SpotLightName, "Spot Light", 220);
             instancedViewportsCheckBox = TrayManager.CreateCheckBox(TrayLocation.TopLeft, InstancedViewportsName, "Instanced Viewports", 220);
-            addLotsOfModels = TrayManager.CreateCheckBox(, InstancedViewportsName, 220);
+            addLotsOfModels = TrayManager.CreateCheckBox(TrayLocation.TopLeft, InstancedViewportsName, "Add Lots of Models", 220);
 
             dirLightCheckBox.IsChecked = true;
             dirLightCheckBox.CheckChanged += new CheckChangedHandler(this.CheckBoxToggled);

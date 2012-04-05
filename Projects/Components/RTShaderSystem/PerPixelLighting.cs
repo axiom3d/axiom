@@ -262,7 +262,7 @@ namespace Axiom.Components.RTShaderSystem
                 }
             }
         }
-        internal override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters(ProgramSet programSet)
         {
             if (ResolveGlobalParameters(programSet) == false)
                 return false;
@@ -514,7 +514,7 @@ namespace Axiom.Components.RTShaderSystem
             return true;
         }
 
-        internal override bool ResolveDependencies(ProgramSet programSet)
+        protected override bool ResolveDependencies(ProgramSet programSet)
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
@@ -528,7 +528,7 @@ namespace Axiom.Components.RTShaderSystem
             return true;
             
         }
-        internal override bool AddFunctionInvocations(ProgramSet programSet)
+        protected override bool AddFunctionInvocations(ProgramSet programSet)
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;

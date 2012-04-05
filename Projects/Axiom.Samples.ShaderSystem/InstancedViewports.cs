@@ -244,7 +244,7 @@ namespace Axiom.Samples.ShaderSystem
         {
             get { return InstancedViewports.SGXType; }
         }
-        protected override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
         {
             SubRenderState subRenderState = CreateInstance();
             return subRenderState;

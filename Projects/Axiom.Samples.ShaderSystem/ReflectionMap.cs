@@ -63,6 +63,8 @@ namespace Axiom.Samples.ShaderSystem
                 textureUnit.SetCubicTextureName(reflectionMapTextureName, true);
             }
             reflectionMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
+
+            return true;
         }
         public override void 
             UpdateGpuProgramsParams(IRenderable rend, Pass pass, AutoParamDataSource source, Core.Collections.LightList lightList)
@@ -161,6 +163,8 @@ namespace Axiom.Samples.ShaderSystem
             psProgram.AddDependency(FFPRenderState.FFPLibCommon);
             psProgram.AddDependency(FFPRenderState.FFPLibTexturing);
             psProgram.AddDependency(SGXLibReflectionMap);
+
+            return true;
         }
         protected override bool AddFunctionInvocations(ProgramSet programSet)
         {
@@ -275,7 +279,7 @@ namespace Axiom.Samples.ShaderSystem
         {
             get { return ReflectionMap.SGXType; }
         }
-        protected override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, Scripting.Compiler.AST.PropertyAbstractNode prop, Pass pass, SGScriptTranslator stranslator)
         {
             if (prop.Name == "rtss_ext_reflection_map")
             {

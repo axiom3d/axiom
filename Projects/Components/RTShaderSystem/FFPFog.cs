@@ -136,7 +136,7 @@ namespace Axiom.Components.RTShaderSystem
         }
 
 
-        internal override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters(ProgramSet programSet)
         {
             if (fogMode == FogMode.None)
                 return true;
@@ -205,7 +205,7 @@ namespace Axiom.Components.RTShaderSystem
 
             return true;
         }
-        internal override bool ResolveDependencies(ProgramSet programSet)
+        protected override bool ResolveDependencies(ProgramSet programSet)
         {
             if (fogMode == FogMode.None)
                 return true;
@@ -223,7 +223,7 @@ namespace Axiom.Components.RTShaderSystem
 
             return true;
         }
-        internal override bool AddFunctionInvocations(ProgramSet programSet)
+        protected override bool AddFunctionInvocations(ProgramSet programSet)
         {
             if (fogMode == FogMode.None)
                 return true;

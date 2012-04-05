@@ -113,15 +113,15 @@ namespace Axiom.Components.RTShaderSystem
             }
             return true;
         }
-        internal override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters(ProgramSet programSet)
         {
             return activeTechnique.ResolveParameters(programSet);
         }
-        internal override bool ResolveDependencies(ProgramSet programSet)
+        protected override bool ResolveDependencies(ProgramSet programSet)
         {
             return activeTechnique.ResolveDependencies(programSet);
         }
-        internal override bool AddFunctionInvocations(ProgramSet programSet)
+        protected override bool AddFunctionInvocations(ProgramSet programSet)
         {
             return activeTechnique.AddFunctionInvocations(programSet);
         }
