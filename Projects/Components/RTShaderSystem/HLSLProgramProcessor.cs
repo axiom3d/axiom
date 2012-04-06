@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Components.RTShaderSystem
+﻿namespace Axiom.Components.RTShaderSystem
 {
-    class HLSLProgramProcessor : ProgramProcessor
+    internal class HLSLProgramProcessor : ProgramProcessor
     {
         public HLSLProgramProcessor()
-        { }
+        {
+        }
 
         public override string TargetLanguage
         {
-            get { return "hlsl"; }
+            get
+            {
+                return "hlsl";
+            }
         }
 
-        internal override bool PreCreateGpuPrograms(ProgramSet programSet)
+        internal override bool PreCreateGpuPrograms( ProgramSet programSet )
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
@@ -23,17 +22,20 @@ namespace Axiom.Components.RTShaderSystem
             Function psMain = psProgram.EntryPointFunction;
             bool success;
 
-            success = ProgramProcessor.CompactVsOutputs(vsMain, psMain);
-            if (success == false)
+            success = ProgramProcessor.CompactVsOutputs( vsMain, psMain );
+            if ( success == false )
+            {
                 return false;
+            }
 
             return true;
         }
-        internal override bool PostCreateGpuPrograms(ProgramSet programSet)
-        {
-            BindAutoParameters(programSet.CpuVertexProgram, programSet.GpuVertexProgram);
 
-            BindAutoParameters(programSet.CpuFragmentProgram, programSet.GpuFragmentProgram);
+        internal override bool PostCreateGpuPrograms( ProgramSet programSet )
+        {
+            BindAutoParameters( programSet.CpuVertexProgram, programSet.GpuVertexProgram );
+
+            BindAutoParameters( programSet.CpuFragmentProgram, programSet.GpuFragmentProgram );
 
             return true;
         }
