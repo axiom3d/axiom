@@ -1,25 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class NormalMapLightingFactory : SubRenderStateFactory
+    internal class NormalMapLightingFactory : SubRenderStateFactory
     {
         public override string Type
         {
-            get { return NormalMapLighting.SGXType; }
+            get
+            {
+                return NormalMapLighting.SGXType;
+            }
         }
-        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler, PropertyAbstractNode prop, Graphics.Pass pass, SGScriptTranslator stranslator)
+
+        public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
+                                                       PropertyAbstractNode prop, Graphics.Pass pass,
+                                                       SGScriptTranslator stranslator )
         {
             throw new NotImplementedException();
         }
-        public override void WriteInstance(Serialization.MaterialSerializer ser, SubRenderState subRenderState, Graphics.Pass srcPass, Graphics.Pass dstPass)
+
+        public override void WriteInstance( Serialization.MaterialSerializer ser, SubRenderState subRenderState,
+                                            Graphics.Pass srcPass, Graphics.Pass dstPass )
         {
             throw new NotImplementedException();
-            NormalMapLighting normalMapSubRenderState = (NormalMapLighting)subRenderState;
+            var normalMapSubRenderState = (NormalMapLighting)subRenderState;
 
             //ser.WriteAtrribute(4, "lighting_stage");
             //ser.WriteValue("normal_map");
@@ -35,7 +40,8 @@ namespace Axiom.Components.RTShaderSystem
             //}
             //ser.WriteValue(normalMapSubRenderState.TexCoordIndex.ToString());
         }
-       protected override SubRenderState CreateInstanceImpl()
+
+        protected override SubRenderState CreateInstanceImpl()
         {
             return new NormalMapLighting();
         }

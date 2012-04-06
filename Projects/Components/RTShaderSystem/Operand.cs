@@ -1,147 +1,165 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Components.RTShaderSystem
+﻿namespace Axiom.Components.RTShaderSystem
 {
     /// <summary>
-    /// Represents a function operand (its the combination of a parameter the in/out semantic and the used fields
+    ///   Represents a function operand (its the combination of a parameter the in/out semantic and the used fields
     /// </summary>
     public class Operand
     {
-         public enum OpSemantic
+        public enum OpSemantic
         {
             In,
             Out,
             InOut
         }
+
         //Used field mask
-         public enum OpMask
-         {
+        public enum OpMask
+        {
+            All = 1 << 0,
+            X = 1 << 1,
+            Y = 1 << 2,
+            Z = 1 << 3,
+            W = 1 << 4
+        }
 
-             All = 1 << 0,
-             X = 1 << 1,
-             Y = 1 << 2,
-             Z = 1 << 3,
-             W = 1 << 4
-         }
-         Parameter _parameter;
-         OpSemantic semantic;
-         int mask;
-         int _indirectionalLevel;
+        private readonly Parameter _parameter;
+        private readonly OpSemantic semantic;
+        private readonly int mask;
+        private readonly int _indirectionalLevel;
 
-         public Operand(Parameter parameter, OpSemantic opSemantic, int opMask, int indirectionalLevel)
-         {
-             _parameter = parameter;
-             semantic = opSemantic;
-             mask = opMask;
-             _indirectionalLevel = indirectionalLevel;
-         }
-         public Operand(Operand operand)
-             :this(operand._parameter, operand.semantic, operand.mask, operand._indirectionalLevel)
-         {
-         }
+        public Operand( Parameter parameter, OpSemantic opSemantic, int opMask, int indirectionalLevel )
+        {
+            _parameter = parameter;
+            semantic = opSemantic;
+            mask = opMask;
+            _indirectionalLevel = indirectionalLevel;
+        }
 
-         public Parameter Parameter
-         {
-             get { return _parameter; }
-         }
-         public bool HasFreeFields
-         {
-             get
+        public Operand( Operand operand )
+            : this( operand._parameter, operand.semantic, operand.mask, operand._indirectionalLevel )
+        {
+        }
+
+        public Parameter Parameter
+        {
+            get
             {
-             return ((mask & (int)OpMask.All) == 0 && ((mask & (int)OpMask.X) == 1 || (mask & (int)OpMask.Y) == 1 || (mask & (int)OpMask.Z) == 1 || (mask & (int)OpMask.W) == 1));
+                return _parameter;
             }
-         }
+        }
 
-         public int Mask
-         {
-             get { return mask; }
-         }
-         public OpSemantic Semantic
-         {
-             get { return semantic; }
-         }
-         public ushort IndirectionLevel
-         {
-             get { return IndirectionLevel; }
-         }
-         public override string ToString()
-         {
-             string retVal = _parameter.ToString();
-             if ((mask & (int)OpMask.All) == 1 || ((mask & (int)OpMask.X) == 1 && (mask & (int)OpMask.Z) == 1 && (mask & (int)OpMask.W) == 1))
-             {
-                 return retVal;
-             }
+        public bool HasFreeFields
+        {
+            get
+            {
+                return ( ( mask & (int)OpMask.All ) == 0 &&
+                         ( ( mask & (int)OpMask.X ) == 1 || ( mask & (int)OpMask.Y ) == 1 ||
+                           ( mask & (int)OpMask.Z ) == 1 || ( mask & (int)OpMask.W ) == 1 ) );
+            }
+        }
 
-             retVal += "." + GetMaskAsString(mask);
-             return retVal;
-         }
-         public static string GetMaskAsString(int mask)
-         {
-             string retVal = string.Empty;
-             if ((mask & (int)OpMask.All) == 0)
-             {
-                 if ((mask & (int)OpMask.X) == 1)
-                 {
-                     retVal += "x";
-                 }
-                 if ((mask & (int)OpMask.Y) == 1)
-                 {
-                     retVal += "y";
-                 }
-                 if ((mask & (int)OpMask.Z) == 1)
-                 {
-                     retVal += "z";
-                 }
-                 if ((mask & (int)OpMask.W) == 1)
-                 {
-                     retVal += "w";
-                 }
-             }
+        public int Mask
+        {
+            get
+            {
+                return mask;
+            }
+        }
 
-             return retVal;
-         }
-         public static int GetFloatCount(int mask)
-         {
-             int floatCount = 0;
-             while (mask != 0)
-             {
-                 if ((mask & (int)OpMask.X) != 0)
-                 {
-                     floatCount++;
-                 }
-                 mask = mask >> 1;
-             }
+        public OpSemantic Semantic
+        {
+            get
+            {
+                return semantic;
+            }
+        }
 
-             return floatCount;
-         }
-         public static Axiom.Graphics.GpuProgramParameters.GpuConstantType GetGpuConstantType(int mask)
-         {
-             int floatCount = GetFloatCount(mask);
-             Axiom.Graphics.GpuProgramParameters.GpuConstantType type;
+        public ushort IndirectionLevel
+        {
+            get
+            {
+                return IndirectionLevel;
+            }
+        }
 
-             switch (floatCount)
-             {
-                 case 1:
-                     type = Graphics.GpuProgramParameters.GpuConstantType.Float1;
-                     break;
-                 case 2:
-                     type = Graphics.GpuProgramParameters.GpuConstantType.Float2;
-                     break;
-                 case 3:
-                     type = Graphics.GpuProgramParameters.GpuConstantType.Float3;
-                     break;
-                 case 4:
-                     type = Graphics.GpuProgramParameters.GpuConstantType.Float4;
-                     break;
-                 default:
-                     type = Graphics.GpuProgramParameters.GpuConstantType.Unknown;
-                     break;
-             }
-             return type;
-         }
+        public override string ToString()
+        {
+            string retVal = _parameter.ToString();
+            if ( ( mask & (int)OpMask.All ) == 1 ||
+                 ( ( mask & (int)OpMask.X ) == 1 && ( mask & (int)OpMask.Z ) == 1 && ( mask & (int)OpMask.W ) == 1 ) )
+            {
+                return retVal;
+            }
 
+            retVal += "." + GetMaskAsString( mask );
+            return retVal;
+        }
+
+        public static string GetMaskAsString( int mask )
+        {
+            string retVal = string.Empty;
+            if ( ( mask & (int)OpMask.All ) == 0 )
+            {
+                if ( ( mask & (int)OpMask.X ) == 1 )
+                {
+                    retVal += "x";
+                }
+                if ( ( mask & (int)OpMask.Y ) == 1 )
+                {
+                    retVal += "y";
+                }
+                if ( ( mask & (int)OpMask.Z ) == 1 )
+                {
+                    retVal += "z";
+                }
+                if ( ( mask & (int)OpMask.W ) == 1 )
+                {
+                    retVal += "w";
+                }
+            }
+
+            return retVal;
+        }
+
+        public static int GetFloatCount( int mask )
+        {
+            int floatCount = 0;
+            while ( mask != 0 )
+            {
+                if ( ( mask & (int)OpMask.X ) != 0 )
+                {
+                    floatCount++;
+                }
+                mask = mask >> 1;
+            }
+
+            return floatCount;
+        }
+
+        public static Axiom.Graphics.GpuProgramParameters.GpuConstantType GetGpuConstantType( int mask )
+        {
+            int floatCount = GetFloatCount( mask );
+            Axiom.Graphics.GpuProgramParameters.GpuConstantType type;
+
+            switch ( floatCount )
+            {
+                case 1:
+                    type = Graphics.GpuProgramParameters.GpuConstantType.Float1;
+                    break;
+                case 2:
+                    type = Graphics.GpuProgramParameters.GpuConstantType.Float2;
+                    break;
+                case 3:
+                    type = Graphics.GpuProgramParameters.GpuConstantType.Float3;
+                    break;
+                case 4:
+                    type = Graphics.GpuProgramParameters.GpuConstantType.Float4;
+                    break;
+                default:
+                    type = Graphics.GpuProgramParameters.GpuConstantType.Unknown;
+                    break;
+            }
+            return type;
+        }
     }
 }
