@@ -112,7 +112,17 @@ namespace Axiom.Collections
 		{
 			( this as IDictionary<string, T> ).Remove( key );
 		}
+        public virtual bool TryGetValue(string key, out T val)
+        {
+            val = default(T);
+            if (this.ContainsKey(key))
+            {
+                val = this[key];
+                return true;
+            }
 
+            return false;
+        }
 		public virtual bool TryRemove( string key )
 		{
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
