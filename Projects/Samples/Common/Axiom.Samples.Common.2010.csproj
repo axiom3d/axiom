@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.Samples.Common</RootNamespace>
     <AssemblyName>Axiom.Samples.Common</AssemblyName>
+    <OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

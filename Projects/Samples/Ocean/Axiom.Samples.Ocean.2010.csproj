@@ -8,6 +8,7 @@
 		<OutputType>Library</OutputType>
 		<RootNamespace>Axiom.Samples.Ocean</RootNamespace>
 		<AssemblyName>Axiom.Samples.Ocean</AssemblyName>
+		<OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System" />

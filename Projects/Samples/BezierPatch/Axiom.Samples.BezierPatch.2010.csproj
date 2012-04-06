@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.Samples.BezierPatch</RootNamespace>
     <AssemblyName>Axiom.Samples.BezierPatch</AssemblyName>
+    <OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
