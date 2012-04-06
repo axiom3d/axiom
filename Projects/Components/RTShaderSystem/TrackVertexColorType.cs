@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Components.RTShaderSystem
+﻿namespace Axiom.Components.RTShaderSystem
 {
-    enum TrackVertexColorType
+    internal enum TrackVertexColorType
     {
         None,
         Diffuse,

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Components.RTShaderSystem
+﻿namespace Axiom.Components.RTShaderSystem
 {
-    class CGProgramProcessor : ProgramProcessor
+    internal class CGProgramProcessor : ProgramProcessor
     {
         public CGProgramProcessor()
-        { }
+        {
+        }
 
 
-        internal override bool PreCreateGpuPrograms(ProgramSet programSet)
+        internal override bool PreCreateGpuPrograms( ProgramSet programSet )
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
@@ -20,22 +16,29 @@ namespace Axiom.Components.RTShaderSystem
             Function fsMain = psProgram.EntryPointFunction;
             bool success;
 
-            success = ProgramProcessor.CompactVsOutputs(vsMain, fsMain);
-            if (success == false)
+            success = ProgramProcessor.CompactVsOutputs( vsMain, fsMain );
+            if ( success == false )
+            {
                 return false;
+            }
 
             return true;
         }
-        internal override bool PostCreateGpuPrograms(ProgramSet programSet)
+
+        internal override bool PostCreateGpuPrograms( ProgramSet programSet )
         {
-            BindAutoParameters(programSet.CpuVertexProgram, programSet.GpuVertexProgram);
-            BindAutoParameters(programSet.CpuFragmentProgram, programSet.GpuFragmentProgram);
+            BindAutoParameters( programSet.CpuVertexProgram, programSet.GpuVertexProgram );
+            BindAutoParameters( programSet.CpuFragmentProgram, programSet.GpuFragmentProgram );
 
             return true;
         }
+
         public override string TargetLanguage
         {
-            get { return "cg"; }
+            get
+            {
+                return "cg";
+            }
         }
     }
 }
