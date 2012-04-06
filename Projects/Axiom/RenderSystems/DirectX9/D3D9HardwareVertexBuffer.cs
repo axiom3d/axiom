@@ -337,8 +337,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Create the vertex buffer
 			try
 			{
-				bufferResources.VertexBuffer = new D3D9.VertexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), 0, // No FVF here, thank you.
-				                                                      ePool );
+				bufferResources.VertexBuffer = new D3D9.VertexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), 0, ePool );
 			}
 			catch ( Exception ex )
 			{

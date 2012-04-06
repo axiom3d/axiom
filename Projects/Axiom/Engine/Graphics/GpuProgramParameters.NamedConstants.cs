@@ -56,7 +56,7 @@ namespace Axiom.Graphics
 		/// will throw an exception.</param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound = false )
+		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound = false )
 #else
 		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound )
 #endif
