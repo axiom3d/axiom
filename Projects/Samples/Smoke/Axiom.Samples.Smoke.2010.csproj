@@ -8,6 +8,7 @@
 		<OutputType>Library</OutputType>
 		<RootNamespace>Axiom.Samples.Smoke</RootNamespace>
 		<AssemblyName>Axiom.Samples.Smoke</AssemblyName>
+		<OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System" />

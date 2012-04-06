@@ -8,6 +8,7 @@
 		<OutputType>Library</OutputType>
 		<RootNamespace>Axiom.Samples.Primitives</RootNamespace>
 		<AssemblyName>Axiom.Samples.Primitives</AssemblyName>
+		<OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System" />

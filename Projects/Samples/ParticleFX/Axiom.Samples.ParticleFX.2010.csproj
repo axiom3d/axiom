@@ -8,6 +8,7 @@
 		<OutputType>Library</OutputType>
 		<RootNamespace>Axiom.Samples.ParticleFX</RootNamespace>
 		<AssemblyName>Axiom.Samples.ParticleFX</AssemblyName>
+		<OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="System" />

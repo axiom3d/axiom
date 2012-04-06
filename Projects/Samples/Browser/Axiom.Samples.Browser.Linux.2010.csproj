@@ -7,22 +7,24 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Axiom.Samples.Browser</RootNamespace>
     <AssemblyName>Axiom.Samples.Browser</AssemblyName>
+    <OutputPath>$(SolutionDir)\Samples\bin\linux</OutputPath>
+    <ProjectGuid>{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpInputSystem.Core">
       <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' "  />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' " >
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
       <HintPath>$(SolutionDir)\..\Lib\Managed\XPlatform\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -43,6 +45,10 @@
     <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.2010.csproj">
+      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
+      <Name>Axiom.Platforms.OpenTK.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
