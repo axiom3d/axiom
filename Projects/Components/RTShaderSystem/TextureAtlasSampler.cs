@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Axiom.Graphics;
 using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    class TextureAtlasMap : Dictionary<string, List<TextureAtlasRecord>>
-    { }
+    internal class TextureAtlasMap : Dictionary<string, List<TextureAtlasRecord>>
+    {
+    }
+
     public struct TextureAtlasRecord
     {
         public float posU, posV, width, height;
@@ -16,70 +16,79 @@ namespace Axiom.Components.RTShaderSystem
         public string atlasTextureName;
         public int indexInAtlas;
 
-        public TextureAtlasRecord(string texOriginalName, string texAtlasName, float texPosU, float texPosV, float texWidth, float texHeight, int texIndexInAtlas)
+        public TextureAtlasRecord( string texOriginalName, string texAtlasName, float texPosU, float texPosV,
+                                   float texWidth, float texHeight, int texIndexInAtlas )
         {
-            this.originalTextureName = texOriginalName;
-            this.atlasTextureName = texAtlasName;
-            this.posU = texPosU;
-            this.posV = texPosV;
-            this.width = texWidth;
-            this.height = texHeight;
-            this.indexInAtlas = texIndexInAtlas;
+            originalTextureName = texOriginalName;
+            atlasTextureName = texAtlasName;
+            posU = texPosU;
+            posV = texPosV;
+            width = texWidth;
+            height = texHeight;
+            indexInAtlas = texIndexInAtlas;
         }
     }
 
     public class TextureAtlasSampler : SubRenderState
     {
         #region Fields
-        static int MaxTextures = 4;
-        public static int MaxSafeAtlasedTextuers = 250;
-        Parameter vsInpTextureTableIndex;
-        Axiom.Graphics.UVWAddressing[] textureAddressings = new Axiom.Graphics.UVWAddressing[TextureAtlasSampler.MaxTextures];
-        Parameter[] vsOutTextureDatas = new Parameter[TextureAtlasSampler.MaxTextures];
-        Parameter[] psInpTextureData = new Parameter[TextureAtlasSampler.MaxTextures];
-        
-        UniformParameter[] psTextureSizes = new UniformParameter[TextureAtlasSampler.MaxTextures];
-        UniformParameter[] vsTextureTable = new UniformParameter[TextureAtlasSampler.MaxTextures];
 
-        int atlasTexcoordPos;
-        List<List<TextureAtlasRecord>> atlasTableDatas = new List<List<TextureAtlasRecord>>();
-        bool[] isAtlasTextureUnits = new bool[TextureAtlasSampler.MaxTextures];
-        bool isTableDataUpdated;
-        bool autoAdjustPollPosition;
+        private static int MaxTextures = 4;
+        public static int MaxSafeAtlasedTextuers = 250;
+        private Parameter vsInpTextureTableIndex;
+
+        private readonly Axiom.Graphics.UVWAddressing[] textureAddressings =
+            new Axiom.Graphics.UVWAddressing[TextureAtlasSampler.MaxTextures];
+
+        private readonly Parameter[] vsOutTextureDatas = new Parameter[TextureAtlasSampler.MaxTextures];
+        private readonly Parameter[] psInpTextureData = new Parameter[TextureAtlasSampler.MaxTextures];
+
+        private readonly UniformParameter[] psTextureSizes = new UniformParameter[TextureAtlasSampler.MaxTextures];
+        private readonly UniformParameter[] vsTextureTable = new UniformParameter[TextureAtlasSampler.MaxTextures];
+
+        private int atlasTexcoordPos;
+        private readonly List<List<TextureAtlasRecord>> atlasTableDatas = new List<List<TextureAtlasRecord>>();
+        private readonly bool[] isAtlasTextureUnits = new bool[TextureAtlasSampler.MaxTextures];
+        private bool isTableDataUpdated;
+        private bool autoAdjustPollPosition;
 
         public static string SGXType = "SGX_TextureAtlasSampler";
 
-        static string SGXLibTextureAtlas = "SGXLib_TextureAtlas";
+        private static string SGXLibTextureAtlas = "SGXLib_TextureAtlas";
 
-        static string SGXFuncAtlasSampleAutoAdjust = "SGX_Atlas_Sample_Auto_Adjust";
-        static string SGXFuncAtlasSampleNormal = "SGX_Atlas_Sample_Normal";
+        private static string SGXFuncAtlasSampleAutoAdjust = "SGX_Atlas_Sample_Auto_Adjust";
+        private static string SGXFuncAtlasSampleNormal = "SGX_Atlas_Sample_Normal";
 
-        static string SGXFuncAtlasWrap = "SGX_Atlas_Wrap";
-        static string SGXFuncAtlasMirror = "SGX_Atlas_Mirror";
-        static string SGXFuncAtlasClamp = "SGX_Atlas_Clamp";
-        static string SGXFuncAtlasBorder = "SGX_Atlas_Border";
+        private static string SGXFuncAtlasWrap = "SGX_Atlas_Wrap";
+        private static string SGXFuncAtlasMirror = "SGX_Atlas_Mirror";
+        private static string SGXFuncAtlasClamp = "SGX_Atlas_Clamp";
+        private static string SGXFuncAtlasBorder = "SGX_Atlas_Border";
 
 
-        List<TextureAtlasRecord> blankAtlasTable;
-        string paramTexel = "texel_";
-        string RTAtlasKey = "RTAtlas"; 
+        private List<TextureAtlasRecord> blankAtlasTable;
+        private string paramTexel = "texel_";
+        private string RTAtlasKey = "RTAtlas";
+
         #endregion
 
         #region C'Tor
+
         public TextureAtlasSampler()
         {
             atlasTexcoordPos = 0;
             isTableDataUpdated = false;
             autoAdjustPollPosition = true;
 
-            for (int i = 0; i < TextureAtlasSampler.MaxTextures; i++)
+            for ( int i = 0; i < TextureAtlasSampler.MaxTextures; i++ )
             {
-                isAtlasTextureUnits[i] = false;
+                isAtlasTextureUnits[ i ] = false;
             }
         }
+
         #endregion
 
         #region Properties
+
         public override string Type
         {
             get
@@ -87,6 +96,7 @@ namespace Axiom.Components.RTShaderSystem
                 return "SGX_TextureAtlasSampler";
             }
         }
+
         public override int ExecutionOrder
         {
             get
@@ -94,93 +104,101 @@ namespace Axiom.Components.RTShaderSystem
                 //Return FFP_TEXTUREING + 25
                 throw new NotImplementedException();
             }
-        } 
+        }
+
         #endregion
 
         #region Methods
-        public override void UpdateGpuProgramsParams(IRenderable rend, Pass pass, AutoParamDataSource source, Core.Collections.LightList lightList)
+
+        public override void UpdateGpuProgramsParams( IRenderable rend, Pass pass, AutoParamDataSource source,
+                                                      Core.Collections.LightList lightList )
         {
-            if (isTableDataUpdated == false)
+            if ( isTableDataUpdated == false )
             {
                 isTableDataUpdated = true;
-                for (int j = 0; j < TextureAtlasSampler.MaxTextures; j++)
+                for ( int j = 0; j < TextureAtlasSampler.MaxTextures; j++ )
                 {
-                    if (isAtlasTextureUnits[j] == true)
+                    if ( isAtlasTextureUnits[ j ] == true )
                     {
                         //Update the information of the size of the atlas textures
                         //TODO: Replace -1, -1 with actual dimensions
-                        Axiom.Math.Tuple<int, int> texSizeInt = new Math.Tuple<int, int>(-1, -1);// = pass.GetTextureUnitState(j).Dimensions;
-                        Vector2 texSize = new Vector2(texSizeInt.First, texSizeInt.Second);
-                        psTextureSizes[j].SetGpuParameter(texSize);
+                        var texSizeInt = new Math.Tuple<int, int>( -1, -1 );
+                            // = pass.GetTextureUnitState(j).Dimensions;
+                        var texSize = new Vector2( texSizeInt.First, texSizeInt.Second );
+                        psTextureSizes[ j ].SetGpuParameter( texSize );
 
                         //Update the information of which texture exists where in the atlas
                         GpuProgramParameters vsGpuParams = pass.VertexProgramParameters;
-                        List<float> buffer = new List<float>(atlasTableDatas[j].Count * 4);
-                        for (int i = 0; i < atlasTableDatas[j].Count; i++)
+                        var buffer = new List<float>( atlasTableDatas[ j ].Count*4 );
+                        for ( int i = 0; i < atlasTableDatas[ j ].Count; i++ )
                         {
-                            buffer[i * 4] = atlasTableDatas[j][i].posU;
-                            buffer[i * 4 + 1] = atlasTableDatas[j][i].posV;
-                            buffer[i * 4 + 2] = (float)Axiom.Math.Utility.Log2((int)atlasTableDatas[j][i].width * (int)texSize.x);
-                            buffer[i * 4 + 3] = (float)Axiom.Math.Utility.Log2((int)atlasTableDatas[j][i].height * (int)texSize.y);
+                            buffer[ i*4 ] = atlasTableDatas[ j ][ i ].posU;
+                            buffer[ i*4 + 1 ] = atlasTableDatas[ j ][ i ].posV;
+                            buffer[ i*4 + 2 ] =
+                                (float)Axiom.Math.Utility.Log2( (int)atlasTableDatas[ j ][ i ].width*(int)texSize.x );
+                            buffer[ i*4 + 3 ] =
+                                (float)Axiom.Math.Utility.Log2( (int)atlasTableDatas[ j ][ i ].height*(int)texSize.y );
                         }
-                        vsGpuParams.SetNamedConstant(vsTextureTable[j].Name, buffer.ToArray(), atlasTableDatas[j].Count);
-
+                        vsGpuParams.SetNamedConstant( vsTextureTable[ j ].Name, buffer.ToArray(),
+                                                      atlasTableDatas[ j ].Count );
                     }
                 }
             }
         }
-        public override bool PreAddToRenderState(TargetRenderState targetRenderState, Pass srcPass, Pass dstPass)
+
+        public override bool PreAddToRenderState( TargetRenderState targetRenderState, Pass srcPass, Pass dstPass )
         {
             atlasTexcoordPos = 0;
             TextureAtlasSamplerFactory factory = TextureAtlasSamplerFactory.Instance;
 
             bool hasAtlas = false;
             int texCount = srcPass.TextureUnitStatesCount;
-            for (int i = 0; i < texCount; i++)
+            for ( int i = 0; i < texCount; i++ )
             {
-                TextureUnitState pState = srcPass.GetTextureUnitState(i);
+                TextureUnitState pState = srcPass.GetTextureUnitState( i );
 
-                var table = factory.GetTextureAtlasTable(pState.TextureName);
-                if (table != null)
+                var table = factory.GetTextureAtlasTable( pState.TextureName );
+                if ( table != null )
                 {
-                    if (table.Count > TextureAtlasSampler.MaxSafeAtlasedTextuers)
+                    if ( table.Count > TextureAtlasSampler.MaxSafeAtlasedTextuers )
                     {
-                        Axiom.Core.LogManager.Instance.Write("Warning: Compiling atlas texture has too many internally defined textures. Shader may fail to compile.");
+                        Axiom.Core.LogManager.Instance.Write(
+                            "Warning: Compiling atlas texture has too many internally defined textures. Shader may fail to compile." );
+                    }
+                    if ( i > TextureAtlasSampler.MaxTextures )
+                    {
+                        throw new Axiom.Core.AxiomException(
+                            "Texture atlas sub-render does not support more than TextureAtlasSampler.MaxTextures {0} atlas textures",
+                            TextureAtlasSampler.MaxTextures );
+                    }
+                    if ( pState.TextureType != TextureType.TwoD )
+                    {
+                        throw new Axiom.Core.AxiomException( "Texture atlas sub-render state only supports 2d textures." );
+                    }
 
-                    }
-                    if (i > TextureAtlasSampler.MaxTextures)
-                    {
-                        throw new Axiom.Core.AxiomException("Texture atlas sub-render does not support more than TextureAtlasSampler.MaxTextures {0} atlas textures", TextureAtlasSampler.MaxTextures);
-                    }
-                    if (pState.TextureType != TextureType.TwoD)
-                    {
-                        throw new Axiom.Core.AxiomException("Texture atlas sub-render state only supports 2d textures.");
-                    }
-
-                    atlasTableDatas[i] = table;
-                    textureAddressings[i] = pState.TextureAddressingMode;
-                    isAtlasTextureUnits[i] = true;
+                    atlasTableDatas[ i ] = table;
+                    textureAddressings[ i ] = pState.TextureAddressingMode;
+                    isAtlasTextureUnits[ i ] = true;
                     hasAtlas = true;
-
                 }
             }
 
             //Gather the materials atlas processing attributes
             //and calculate the position of the indexes
             TextureAtlasAttib attrib;
-            factory.HasMaterialAtlasingAttributes(srcPass.Parent.Parent, out attrib);
+            factory.HasMaterialAtlasingAttributes( srcPass.Parent.Parent, out attrib );
 
             autoAdjustPollPosition = attrib.autoBorderAdjust;
             atlasTexcoordPos = attrib.positionOffset;
-            if(attrib.positionMode == IndexPositionMode.Relative)
+            if ( attrib.positionMode == IndexPositionMode.Relative )
             {
-                atlasTexcoordPos += texCount -1;
+                atlasTexcoordPos += texCount - 1;
             }
 
             return hasAtlas;
         }
 
-        protected override bool ResolveParameters(ProgramSet programSet)
+        protected override bool ResolveParameters( ProgramSet programSet )
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
@@ -188,35 +206,47 @@ namespace Axiom.Components.RTShaderSystem
             Function psMain = psProgram.EntryPointFunction;
 
             //Define vertex shader parameters used to find the positon of the textures in the atlas
-            Parameter.ContentType indexContent = (Parameter.ContentType)((int)Parameter.ContentType.TextureCoordinate0 + atlasTexcoordPos);
+            var indexContent =
+                (Parameter.ContentType)( (int)Parameter.ContentType.TextureCoordinate0 + atlasTexcoordPos );
             Axiom.Graphics.GpuProgramParameters.GpuConstantType indexType = GpuProgramParameters.GpuConstantType.Float4;
 
-            vsInpTextureTableIndex = vsMain.ResolveInputParameter(Parameter.SemanticType.TextureCoordinates, atlasTexcoordPos, indexContent, indexType);
+            vsInpTextureTableIndex = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+                                                                   atlasTexcoordPos, indexContent, indexType );
 
             //Define parameters to carry the information on the location of the texture from the vertex to the pixel shader
-            for (int i = 0; i < TextureAtlasSampler.MaxTextures; i++)
+            for ( int i = 0; i < TextureAtlasSampler.MaxTextures; i++ )
             {
-                if (isAtlasTextureUnits[i] == true)
+                if ( isAtlasTextureUnits[ i ] == true )
                 {
-                    vsTextureTable[i] = vsProgram.ResolveParameter(GpuProgramParameters.GpuConstantType.Float4, -1, GpuProgramParameters.GpuParamVariability.Global, "AtlasData", atlasTableDatas[i].Count);
-                    vsOutTextureDatas[i] = vsMain.ResolveOutputParameter(Parameter.SemanticType.TextureCoordinates, -1, Parameter.ContentType.Unknown, GpuProgramParameters.GpuConstantType.Float4);
-                    psInpTextureData[i] = psMain.ResolveInputParameter(Parameter.SemanticType.TextureCoordinates, vsOutTextureDatas[i].Index, Parameter.ContentType.Unknown, GpuProgramParameters.GpuConstantType.Float4);
-                    psTextureSizes[i] = psProgram.ResolveParameter(GpuProgramParameters.GpuConstantType.Float2, -1, GpuProgramParameters.GpuParamVariability.PerObject, "AtlasSize");
-
+                    vsTextureTable[ i ] = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
+                                                                      GpuProgramParameters.GpuParamVariability.Global,
+                                                                      "AtlasData", atlasTableDatas[ i ].Count );
+                    vsOutTextureDatas[ i ] = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates,
+                                                                            -1, Parameter.ContentType.Unknown,
+                                                                            GpuProgramParameters.GpuConstantType.Float4 );
+                    psInpTextureData[ i ] = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+                                                                          vsOutTextureDatas[ i ].Index,
+                                                                          Parameter.ContentType.Unknown,
+                                                                          GpuProgramParameters.GpuConstantType.Float4 );
+                    psTextureSizes[ i ] = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float2, -1,
+                                                                      GpuProgramParameters.GpuParamVariability.PerObject,
+                                                                      "AtlasSize" );
                 }
             }
 
             return true;
         }
-        protected override bool ResolveDependencies(ProgramSet programSet)
+
+        protected override bool ResolveDependencies( ProgramSet programSet )
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
-            vsProgram.AddDependency(FFPRenderState.FFPLibCommon);
-            psProgram.AddDependency(SGXLibTextureAtlas);
+            vsProgram.AddDependency( FFPRenderState.FFPLibCommon );
+            psProgram.AddDependency( SGXLibTextureAtlas );
             return true;
         }
-        protected override bool AddFunctionInvocations(ProgramSet programSet)
+
+        protected override bool AddFunctionInvocations( ProgramSet programSet )
         {
             Program vsProgram = programSet.CpuVertexProgram;
             Program psProgram = programSet.CpuFragmentProgram;
@@ -224,15 +254,16 @@ namespace Axiom.Components.RTShaderSystem
             Function vsMain = vsProgram.EntryPointFunction;
             FunctionInvocation curFuncInvocation = null;
             //Calculate the position and size of the texture in the atlas in the vertex shader
-            int groupOrder = ((int)FFPRenderState.FFPVertexShaderStage.VSTexturing - (int)FFPRenderState.FFPVertexShaderStage.VSLighting) / 2;
+            int groupOrder = ( (int)FFPRenderState.FFPVertexShaderStage.VSTexturing -
+                               (int)FFPRenderState.FFPVertexShaderStage.VSLighting )/2;
             int internalCounter = 0;
 
-            for (int i = 0; i < TextureAtlasSampler.MaxTextures; i++)
+            for ( int i = 0; i < TextureAtlasSampler.MaxTextures; i++ )
             {
-                if (isAtlasTextureUnits[i] == true)
+                if ( isAtlasTextureUnits[ i ] == true )
                 {
                     Operand.OpMask textureIndexMask = Operand.OpMask.X;
-                    switch (i)
+                    switch ( i )
                     {
                         case 1:
                             textureIndexMask = Operand.OpMask.Y;
@@ -240,15 +271,17 @@ namespace Axiom.Components.RTShaderSystem
                         case 2:
                             textureIndexMask = Operand.OpMask.Z;
                             break;
-                        case 3: textureIndexMask = Operand.OpMask.W;
+                        case 3:
+                            textureIndexMask = Operand.OpMask.W;
                             break;
                     }
-                    curFuncInvocation = new FunctionInvocation(FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++);
-                    curFuncInvocation.PushOperand(vsTextureTable[i], Operand.OpSemantic.In);
-                    curFuncInvocation.PushOperand(vsInpTextureTableIndex, Operand.OpSemantic.In, (int)textureIndexMask, 1);
-                    curFuncInvocation.PushOperand(vsOutTextureDatas[i], Operand.OpSemantic.Out);
-                    vsMain.AddAtomInstance(curFuncInvocation);
-
+                    curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
+                                                                internalCounter++ );
+                    curFuncInvocation.PushOperand( vsTextureTable[ i ], Operand.OpSemantic.In );
+                    curFuncInvocation.PushOperand( vsInpTextureTableIndex, Operand.OpSemantic.In, (int)textureIndexMask,
+                                                   1 );
+                    curFuncInvocation.PushOperand( vsOutTextureDatas[ i ], Operand.OpSemantic.Out );
+                    vsMain.AddAtomInstance( curFuncInvocation );
                 }
             }
 
@@ -259,36 +292,43 @@ namespace Axiom.Components.RTShaderSystem
             var inpParams = psMain.InputParameters;
             var localParams = psMain.LocalParameters;
 
-            Parameter psAtlasTextureCoord = psMain.ResolveLocalParameter(Parameter.SemanticType.Unknown, -1, "atlasCoord", GpuProgramParameters.GpuConstantType.Float2);
+            Parameter psAtlasTextureCoord = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1,
+                                                                          "atlasCoord",
+                                                                          GpuProgramParameters.GpuConstantType.Float2 );
 
-            for (int j = 0; j < TextureAtlasSampler.MaxTextures; j++)
+            for ( int j = 0; j < TextureAtlasSampler.MaxTextures; j++ )
             {
-                if (isAtlasTextureUnits[j] == true)
+                if ( isAtlasTextureUnits[ j ] == true )
                 {
                     //Find the texture coordinates texel and sampler from the original FFPTexturing
-                    Parameter texcoord = Function.GetParameterByContent(inpParams, (Parameter.ContentType)((int)Parameter.ContentType.TextureCoordinate0 + j), GpuProgramParameters.GpuConstantType.Float2);
-                    Parameter texel = Function.GetParameterByName(localParams, paramTexel + j.ToString());
-                    UniformParameter sampler = psProgram.GetParameterByType(GpuProgramParameters.GpuConstantType.Sampler2D, j);
+                    Parameter texcoord = Function.GetParameterByContent( inpParams,
+                                                                         (Parameter.ContentType)
+                                                                         ( (int)Parameter.ContentType.TextureCoordinate0 +
+                                                                           j ),
+                                                                         GpuProgramParameters.GpuConstantType.Float2 );
+                    Parameter texel = Function.GetParameterByName( localParams, paramTexel + j.ToString() );
+                    UniformParameter sampler =
+                        psProgram.GetParameterByType( GpuProgramParameters.GpuConstantType.Sampler2D, j );
 
                     //TODO
-                    char addressUFuncName = ' ';// = GetAddressingFunctionName(textureAddressings[j].u);
-                    char addressVFuncName = ' ';// = GetAddressingFunctionName(textureAddressings[j].v);
+                    char addressUFuncName = ' '; // = GetAddressingFunctionName(textureAddressings[j].u);
+                    char addressVFuncName = ' '; // = GetAddressingFunctionName(textureAddressings[j].v);
 
                     //Create a function which will replace the texel with the texture texel
-                    if ((texcoord != null) && (texel != null) && (sampler != null) && (addressUFuncName != null) && (addressVFuncName != null))
+                    if ( ( texcoord != null ) && ( texel != null ) && ( sampler != null ) &&
+                         ( addressUFuncName != null ) && ( addressVFuncName != null ) )
                     {
                         throw new NotImplementedException();
                     }
-
                 }
             }
 
             return true;
         }
 
-        protected string GetAddressingFunctionName(TextureAddressing mode)
+        protected string GetAddressingFunctionName( TextureAddressing mode )
         {
-            switch (mode)
+            switch ( mode )
             {
                 case TextureAddressing.Border:
                     return TextureAtlasSampler.SGXFuncAtlasBorder;
@@ -301,7 +341,8 @@ namespace Axiom.Components.RTShaderSystem
                 default:
                     return null;
             }
-        } 
+        }
+
         #endregion
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Components.RTShaderSystem
+﻿namespace Axiom.Components.RTShaderSystem
 {
     public class FFPRenderState
     {
@@ -17,6 +12,7 @@ namespace Axiom.Components.RTShaderSystem
             VSFog = 500,
             VSPostProcess = 2000
         }
+
         public enum FFPFragmentShaderStage
         {
             PSPreProcess = 0,
@@ -27,6 +23,7 @@ namespace Axiom.Components.RTShaderSystem
             PSFog = 400,
             PSPostProcess = 500
         }
+
         public enum FFPShaderStage
         {
             PreProcess = 0,

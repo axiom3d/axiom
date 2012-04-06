@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Axiom.Components.RTShaderSystem
@@ -16,6 +13,7 @@ namespace Axiom.Components.RTShaderSystem
             groupExecutionOrder = -1;
             internalExecutionOrder = -1;
         }
+
         public int GroupExecutionOrder
         {
             get
@@ -23,6 +21,7 @@ namespace Axiom.Components.RTShaderSystem
                 return groupExecutionOrder;
             }
         }
+
         public int InternalExecutionOrder
         {
             get
@@ -30,12 +29,11 @@ namespace Axiom.Components.RTShaderSystem
                 return internalExecutionOrder;
             }
         }
-        public abstract void WriteSourceCode(StreamWriter stream, string targetLanguage);
 
-        public abstract string FunctionAtomType
-        {
-            get;
-        }
+        public abstract void WriteSourceCode( StreamWriter stream, string targetLanguage );
+
+        public abstract string FunctionAtomType { get; }
+
         public virtual void Dispose()
         {
         }
