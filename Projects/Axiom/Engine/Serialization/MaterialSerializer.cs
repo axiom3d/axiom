@@ -145,9 +145,9 @@ namespace Axiom.Serialization
 		protected bool InvokeParser( string line, AxiomCollection<MethodInfo> parsers )
 		{
 			var splitCmd = StringConverter.Split( line, new char[]
-			                                            {
-			                                            	' ', '\t'
-			                                            }, 2 );
+														{
+															' ', '\t'
+														}, 2 );
 
 			// find attribute parser
 			if ( parsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -167,9 +167,9 @@ namespace Axiom.Serialization
 				// i.e. (((MaterialAttributeParserHandler)parsers[splitCmd[0]]))(cmd, scriptContext);
 				//return handler( cmd, scriptContext );
 				return (bool)handler.Invoke( null, new object[]
-				                                   {
-				                                   	cmd, scriptContext
-				                                   } );
+												   {
+													cmd, scriptContext
+												   } );
 			}
 			else
 			{
@@ -258,9 +258,9 @@ namespace Axiom.Serialization
 					// routine when the parser is not found
 					// First, split line on first divisor only
 					var splitCmd = StringConverter.Split( scriptContext.defaultParamLines[ i ], new char[]
-					                                                                            {
-					                                                                            	' ', '\t'
-					                                                                            }, 2 );
+																								{
+																									' ', '\t'
+																								}, 2 );
 
 					// find attribute parser
 					if ( programDefaultParamAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -271,9 +271,9 @@ namespace Axiom.Serialization
 						var handler = (MethodInfo)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
 						// Use parser, make sure we have 2 params before using splitCmd[1]
 						handler.Invoke( null, new object[]
-						                      {
-						                      	cmd, scriptContext
-						                      } );
+											  {
+												cmd, scriptContext
+											  } );
 						//handler( cmd, scriptContext );
 					}
 				}
@@ -453,9 +453,9 @@ namespace Axiom.Serialization
 						// routine when the parser is not found
 						// First, split line on first divisor only
 						var splitCmd = StringConverter.Split( line, new char[]
-						                                            {
-						                                            	' ', '\t'
-						                                            }, 2 );
+																	{
+																		' ', '\t'
+																	}, 2 );
 
 						// find attribute parser
 						if ( programAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -466,9 +466,9 @@ namespace Axiom.Serialization
 							//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programAttribParsers[ splitCmd[ 0 ] ];
 							var handler = (MethodInfo)programAttribParsers[ splitCmd[ 0 ] ];
 							return (bool)handler.Invoke( null, new object[]
-							                                   {
-							                                   	cmd, scriptContext
-							                                   } );
+															   {
+																cmd, scriptContext
+															   } );
 							//return handler( cmd, scriptContext );
 						}
 						else
@@ -584,9 +584,9 @@ namespace Axiom.Serialization
 			// Lower case the command, but not the value incase it's relevant
 			// Split only up to first delimiter, program deals with the rest
 			var values = StringConverter.Split( parameters, new char[]
-			                                                {
-			                                                	' ', '\t'
-			                                                }, 2 );
+															{
+																' ', '\t'
+															}, 2 );
 
 			if ( values.Length != 2 )
 			{
@@ -607,9 +607,9 @@ namespace Axiom.Serialization
 			// syntax: material name : parentMaterialName
 			// check params for a colon after the first name and extract the parent name
 			var values = parameters.Split( new char[]
-			                               {
-			                               	':'
-			                               } );
+										   {
+											':'
+										   } );
 			Material basematerial = null;
 
 			// create a brand new material
@@ -664,9 +664,9 @@ namespace Axiom.Serialization
 
 			// get name and language code
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -698,9 +698,9 @@ namespace Axiom.Serialization
 
 			// get name and language code
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -731,9 +731,9 @@ namespace Axiom.Serialization
 
 			// get the technique name
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length > 0 && values[ 0 ].Length > 0 )
 			{
@@ -749,9 +749,9 @@ namespace Axiom.Serialization
 		{
 			// get the pass name
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			// if params is not empty then see if the pass name already exists
 			if ( values.Length > 0 && values[ 0 ].Length > 0 && context.technique.PassCount > 0 )
@@ -805,9 +805,9 @@ namespace Axiom.Serialization
 
 			// get the texture unit name
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 			if ( values.Length > 0 && values[ 0 ].Length > 0 )
 			{
 				context.textureUnit.Name = values[ 0 ];
@@ -831,9 +831,9 @@ namespace Axiom.Serialization
 
 			// get the texture alias
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 1 )
 			{
@@ -851,9 +851,9 @@ namespace Axiom.Serialization
 		{
 			// get the texture alias
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -896,9 +896,9 @@ namespace Axiom.Serialization
 			context.material.LodStrategy = LodStrategyManager.Instance.GetStrategy( DistanceLodStrategy.StrategyName );
 
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			var lodDistances = new LodValueList();
 
@@ -965,9 +965,9 @@ namespace Axiom.Serialization
 		protected static bool ParseAmbient( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			// must be 1, 3 or 4 parameters
 			if ( values.Length == 1 )
@@ -1058,9 +1058,9 @@ namespace Axiom.Serialization
 		protected static bool ParseDepthBias( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			var constantBias = float.Parse( values[ 0 ], CultureInfo.InvariantCulture );
 			var slopeScaleBias = 0.0f;
@@ -1136,9 +1136,9 @@ namespace Axiom.Serialization
 		protected static bool ParseDiffuse( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			// must be 1, 3 or 4 parameters
 			if ( values.Length == 1 )
@@ -1169,9 +1169,9 @@ namespace Axiom.Serialization
 		protected static bool ParseEmissive( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			// must be 1, 3 or 4 parameters
 			if ( values.Length == 1 )
@@ -1202,9 +1202,9 @@ namespace Axiom.Serialization
 		protected static bool ParseFogOverride( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.ToLower().Split( new char[]
-			                                         {
-			                                         	' ', '\t'
-			                                         } );
+													 {
+														' ', '\t'
+													 } );
 
 			if ( values[ 0 ] == "true" )
 			{
@@ -1249,9 +1249,9 @@ namespace Axiom.Serialization
 		protected static bool ParseIteration( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length < 1 || values.Length > 2 )
 			{
@@ -1326,9 +1326,9 @@ namespace Axiom.Serialization
 		protected static bool ParseSceneBlend( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.ToLower().Split( new char[]
-			                                         {
-			                                         	' ', '\t'
-			                                         } );
+													 {
+														' ', '\t'
+													 } );
 
 			switch ( values.Length )
 			{
@@ -1388,9 +1388,9 @@ namespace Axiom.Serialization
 		protected static bool ParseSeparateSceneBlend( string parameters, MaterialScriptContext context )
 		{
 			var vecparams = parameters.ToLower().Split( new char[]
-			                                            {
-			                                            	' ', '\t'
-			                                            } );
+														{
+															' ', '\t'
+														} );
 
 			// Should be 2 or 4 params
 			if ( vecparams.Length == 2 )
@@ -1495,9 +1495,9 @@ namespace Axiom.Serialization
 		protected static bool ParseSpecular( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 			// Must be 2, 4 or 5 parameters
 			if ( values.Length == 2 )
 			{
@@ -1720,9 +1720,9 @@ namespace Axiom.Serialization
 		protected static bool ParseAlphaOpEx( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.ToLower().Split( new char[]
-			                                         {
-			                                         	' ', '\t'
-			                                         } );
+													 {
+														' ', '\t'
+													 } );
 
 			if ( values.Length < 3 || values.Length > 6 )
 			{
@@ -1807,9 +1807,9 @@ namespace Axiom.Serialization
 		protected static bool ParseAlphaRejection( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -1838,9 +1838,9 @@ namespace Axiom.Serialization
 		protected static bool ParseAnimTexture( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length < 3 )
 			{
@@ -1898,9 +1898,9 @@ namespace Axiom.Serialization
 		protected static bool ParseColorOpFallback( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			// lookup the real enums equivalent to the script values
 			var srcVal = ScriptEnumAttribute.Lookup( values[ 0 ], typeof ( SceneBlendFactor ) );
@@ -1934,9 +1934,9 @@ namespace Axiom.Serialization
 		protected static bool ParseColorOpEx( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.ToLower().Split( new char[]
-			                                         {
-			                                         	' ', '\t'
-			                                         } );
+													 {
+														' ', '\t'
+													 } );
 
 			if ( values.Length < 3 || values.Length > 10 )
 			{
@@ -2040,9 +2040,9 @@ namespace Axiom.Serialization
 		protected static bool ParseCubicTexture( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			bool useUVW;
 			var uvw = values[ values.Length - 1 ].ToLower();
@@ -2112,9 +2112,9 @@ namespace Axiom.Serialization
 		protected static bool ParseFiltering( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.ToLower().Split( new char[]
-			                                         {
-			                                         	' ', '\t'
-			                                         } );
+													 {
+														' ', '\t'
+													 } );
 
 			if ( values.Length == 1 )
 			{
@@ -2177,9 +2177,9 @@ namespace Axiom.Serialization
 		protected static bool ParseScale( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -2197,9 +2197,9 @@ namespace Axiom.Serialization
 		protected static bool ParseScroll( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -2217,9 +2217,9 @@ namespace Axiom.Serialization
 		protected static bool ParseScrollAnim( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 )
 			{
@@ -2258,9 +2258,9 @@ namespace Axiom.Serialization
 		protected static bool ParseTexBorderColor( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 3 && values.Length != 4 )
 			{
@@ -2287,9 +2287,9 @@ namespace Axiom.Serialization
 		protected static bool ParseTexture( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length > 5 )
 			{
@@ -2380,9 +2380,9 @@ namespace Axiom.Serialization
 		protected static bool ParseWaveXForm( string parameters, MaterialScriptContext context )
 		{
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 6 )
 			{
@@ -2438,9 +2438,9 @@ namespace Axiom.Serialization
 			}
 
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length < 3 )
 			{
@@ -2467,9 +2467,9 @@ namespace Axiom.Serialization
 			}
 
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 && values.Length != 3 )
 			{
@@ -2496,9 +2496,9 @@ namespace Axiom.Serialization
 			}
 
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length < 3 )
 			{
@@ -2533,9 +2533,9 @@ namespace Axiom.Serialization
 			}
 
 			var values = parameters.Split( new char[]
-			                               {
-			                               	' ', '\t'
-			                               } );
+										   {
+											' ', '\t'
+										   } );
 
 			if ( values.Length != 2 && values.Length != 3 )
 			{
@@ -2941,7 +2941,7 @@ namespace Axiom.Serialization
 				LogParseError( context, "Bad auto gpu program param - Invalid param type '{0}', valid values are {1}.", parameters[ 1 ], legalValues );
 				return;
 			}
-             */
+			 */
 
 			///////////////////////////////
 

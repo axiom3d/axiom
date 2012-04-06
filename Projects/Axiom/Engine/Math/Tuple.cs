@@ -38,7 +38,7 @@ namespace Axiom.Math
 	/// <summary>
 	///	Represents two related values
 	/// </summary>
-	public struct Tuple<A, B> : IEquatable<Tuple<A, B>>
+	public class Tuple<A, B> : IEquatable<Tuple<A, B>>
 	{
 		#region Fields and Properties
 

@@ -183,7 +183,7 @@ namespace Axiom.Core
 		}
 
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
-        [System.ComponentModel.Composition.ImportMany( typeof( IPlugin ) )]
+		[System.ComponentModel.Composition.ImportMany( typeof( IPlugin ) )]
 		public IEnumerable<IPlugin> plugins { private get; set; }
 #endif
 
@@ -278,8 +278,8 @@ namespace Axiom.Core
 				if ( _plugins.Count > 0 )
 				{
 					var byTypePlugins = from p in _plugins
-					                    where p.GetType() == creator.CreatedType
-					                    select p;
+										where p.GetType() == creator.CreatedType
+										select p;
 
 					if ( byTypePlugins.Count() > 0 )
 					{

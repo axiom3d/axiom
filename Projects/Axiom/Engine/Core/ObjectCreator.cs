@@ -243,14 +243,12 @@ namespace Axiom.Core
 			{
 				LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
 			}
-
-#else
+#endif
 			catch( Exception ex )
 			{
 				LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
 				LogManager.Instance.Write("Loader Exceptions:");
 			}
-#endif
 
 			return types;
 		}
