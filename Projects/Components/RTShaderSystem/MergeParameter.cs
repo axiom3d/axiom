@@ -160,5 +160,15 @@ namespace Axiom.Components.RTShaderSystem
 
         #endregion
 
+
+        internal int GetDestinationParameterMask(int index)
+        {
+            return dstParameterMask[index];
+        }
+
+        internal int GetSourceParameterMask(int index)
+        {
+            return srcParameterMask[index];
+        }
     }
 }

@@ -353,9 +353,11 @@ namespace Axiom.Components.RTShaderSystem
                 return true;
             }
 
-            
+            public int GetHashCode(FunctionInvocation obj)
+            {
+                return obj.operands.Count;
+            }
         }
-
         public override string FunctionAtomType
         {
             get
