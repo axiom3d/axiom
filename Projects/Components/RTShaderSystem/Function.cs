@@ -221,7 +221,7 @@ namespace Axiom.Components.RTShaderSystem
         /// <param name="content"> The Content of the parameter </param>
         /// <param name="type"> The type of the desired parameter </param>
         /// <returns> paramter instance in case of that resolve operation succeed </returns>
-        internal Parameter ResolveLocalParamter( Parameter.SemanticType semantic, int index,
+        internal Parameter ResolveLocalParameter( Parameter.SemanticType semantic, int index,
                                                  Parameter.ContentType content,
                                                  Graphics.GpuProgramParameters.GpuConstantType type )
         {
@@ -427,13 +427,6 @@ namespace Axiom.Components.RTShaderSystem
             }
 
             return param;
-        }
-
-        public Parameter ResolveLocalParameter( Parameter.SemanticType semanticType, int p,
-                                                Parameter.ContentType contentType,
-                                                Graphics.GpuProgramParameters.GpuConstantType gpuConstantType )
-        {
-            throw new NotImplementedException();
         }
 
         public List<Parameter> LocalParameters { get; set; }

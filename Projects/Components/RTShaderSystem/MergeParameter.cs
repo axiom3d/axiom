@@ -97,6 +97,15 @@ namespace Axiom.Components.RTShaderSystem
         /// </summary>
         public void Clear()
         {
+            dstParameter = null;
+            for (int i = 0; i < 4; i++)
+            {
+                srcParameter[i] = null;
+                srcParameterMask[i] = 0;
+                dstParameterMask[i] = 0;
+            }
+            srcParameterCount = 0;
+            usedFloatcount = 0;
         }
 
         /// <summary>
@@ -107,7 +116,12 @@ namespace Axiom.Components.RTShaderSystem
         /// <returns> </returns>
         public Parameter GetDestinationParameter( int usage, int index )
         {
-            throw new NotImplementedException();
+            if (dstParameter == null)
+            {
+                CreateDestinationParamter(usage, index);
+            }
+
+            return dstParameter;
         }
 
         /// <summary>
@@ -117,18 +131,34 @@ namespace Axiom.Components.RTShaderSystem
         /// <param name="index"> </param>
         protected void CreateDestinationParamter( int usage, int index )
         {
+            Axiom.Graphics.GpuProgramParameters.GpuConstantType dstParamType = Graphics.GpuProgramParameters.GpuConstantType.Unknown;
+
+            switch (UsedFloatCount)
+            {
+                case 1:
+                    dstParamType = Graphics.GpuProgramParameters.GpuConstantType.Float1;
+                    break;
+                case 2:
+                    dstParamType = Graphics.GpuProgramParameters.GpuConstantType.Float2;
+                    break;
+                case 3:
+                    dstParamType = Graphics.GpuProgramParameters.GpuConstantType.Float3;
+                    break;
+                case 4: dstParamType = Graphics.GpuProgramParameters.GpuConstantType.Float4;
+                    break;
+            }
+
+            if (usage == (int)Operand.OpSemantic.In)
+            {
+                dstParameter = ParameterFactory.CreateInTexcoord(dstParamType, index, Parameter.ContentType.Unknown);
+            }
+            else
+            {
+                dstParameter = ParameterFactory.CreateOutTexcoord(dstParamType, index, Parameter.ContentType.Unknown);
+            }
         }
 
         #endregion
 
-        internal int GetSourceParameterMask( int p )
-        {
-            throw new NotImplementedException();
-        }
-
-        internal int GetDestinationParameterMask( int p )
-        {
-            throw new NotImplementedException();
-        }
     }
 }

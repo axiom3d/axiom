@@ -57,8 +57,8 @@ namespace Axiom.Components.RTShaderSystem
         private FilterOptions normalMapMinFilter;
         private FilterOptions normalMapMagFilter;
         private FilterOptions normalMapMipfilter;
-        private uint normalMapAnisotropy;
-        private readonly Real normalMapMipBias;
+        private int normalMapAnisotropy;
+        private Real normalMapMipBias;
         private NormalMapSpace normalMapSpace;
         private UniformParameter worldMatrix, worldInvRotMatrix, camPosWorldSpace;
         private Parameter vsInPosition, vsWorldPosition, vsOutView;
@@ -1184,7 +1184,7 @@ namespace Axiom.Components.RTShaderSystem
             normalMapTexture.TextureMipmapBias = normalMapMipBias;
             normalMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
 
-            SetTrackVertexColorType( srcPass.VertexColorTracking );
+            TrackVertexColorType = ( srcPass.VertexColorTracking );
 
             if ( srcPass.Shininess > 0 && srcPass.Specular != ColorEx.Black )
             {
@@ -1232,11 +1232,6 @@ namespace Axiom.Components.RTShaderSystem
 
             SetLightCount( lightCount );
             return true;
-        }
-
-        private void SetTrackVertexColorType( TrackVertexColor trackVertexColor )
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
@@ -1753,7 +1748,7 @@ namespace Axiom.Components.RTShaderSystem
             }
         }
 
-        public uint NormalMapAnisotropy
+        public int NormalMapAnisotropy
         {
             get
             {
@@ -1770,6 +1765,10 @@ namespace Axiom.Components.RTShaderSystem
             get
             {
                 return normalMapMipBias;
+            }
+            set
+            {
+                normalMapMipBias = value;
             }
         }
 

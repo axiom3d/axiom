@@ -299,9 +299,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             if ( _params != null )
             {
-                throw new NotImplementedException();
-
-                //_params.WriteRawConstant(physicalIndex, val, 2);
+                _params.WriteRawConstant(physicalIndex, new Vector4(val.x, val.y, 0, 0), 2);
             }
         }
 
@@ -333,8 +331,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             if ( _params != null )
             {
-                throw new NotImplementedException();
-                // _params.WriteRawConstant(physicalIndex, val, count * multiple);
+                _params.WriteRawConstant(physicalIndex, new Vector4(val, 0, 0, 0), count * multiple);
             }
         }
 
@@ -342,8 +339,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             if ( _params != null )
             {
-                throw new NotImplementedException();
-                //_params.WriteRawConstant(physicalIndex, val, count * multiple);
+                _params.WriteRawConstant(physicalIndex, val);
             }
         }
 
@@ -351,8 +347,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             if ( _params != null )
             {
-                throw new NotImplementedException();
-                //_params.WriteRawConstant(physicalIndex, val, count * multiple);
+                _params.WriteRawConstant(physicalIndex, val);
             }
         }
 
@@ -360,7 +355,10 @@ namespace Axiom.Components.RTShaderSystem
 
         internal void SetGpuParameter( Matrix3 matWorldInvRotation )
         {
-            throw new NotImplementedException();
+            if (_params != null)
+            {
+                //TODO
+            }
         }
     }
 }
