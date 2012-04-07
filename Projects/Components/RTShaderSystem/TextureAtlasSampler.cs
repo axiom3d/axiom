@@ -101,8 +101,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             get
             {
-                //Return FFP_TEXTUREING + 25
-                throw new NotImplementedException();
+                return (int)FFPRenderState.FFPShaderStage.Texturing + 25;
             }
         }
 
@@ -311,14 +310,34 @@ namespace Axiom.Components.RTShaderSystem
                         psProgram.GetParameterByType( GpuProgramParameters.GpuConstantType.Sampler2D, j );
 
                     //TODO
-                    char addressUFuncName = ' '; // = GetAddressingFunctionName(textureAddressings[j].u);
-                    char addressVFuncName = ' '; // = GetAddressingFunctionName(textureAddressings[j].v);
+                    string addressUFuncName =  GetAddressingFunctionName(textureAddressings[j].U);
+                    string addressVFuncName = GetAddressingFunctionName(textureAddressings[j].V);
 
                     //Create a function which will replace the texel with the texture texel
                     if ( ( texcoord != null ) && ( texel != null ) && ( sampler != null ) &&
                          ( addressUFuncName != null ) && ( addressVFuncName != null ) )
                     {
-                        throw new NotImplementedException();
+                        //calculate the U value due to addressing mode
+                        curFuncInvocation = new FunctionInvocation(addressUFuncName, groupOrder, internalCounter++);
+                        curFuncInvocation.PushOperand(texcoord, Operand.OpSemantic.In, Operand.OpMask.X);
+                        curFuncInvocation.PushOperand(psAtlasTextureCoord, Operand.OpSemantic.Out, Operand.OpMask.X);
+                        psMain.AddAtomInstance(curFuncInvocation);
+                        
+                        //calculate the V value due to addressing mode
+                        curFuncInvocation = new FunctionInvocation(addressVFuncName, groupOrder, internalCounter++);
+                        curFuncInvocation.PushOperand(texcoord, Operand.OpSemantic.In, Operand.OpMask.Y);
+                        curFuncInvocation.PushOperand(psAtlasTextureCoord, Operand.OpSemantic.Out, Operand.OpMask.Y);
+                        psMain.AddAtomInstance(curFuncInvocation);
+
+                        //sample the texel color
+                        curFuncInvocation = new FunctionInvocation(autoAdjustPollPosition ? SGXFuncAtlasSampleAutoAdjust : SGXFuncAtlasSampleNormal, groupOrder, internalCounter++);
+                        curFuncInvocation.PushOperand(sampler, Operand.OpSemantic.In);
+                        curFuncInvocation.PushOperand(texcoord, Operand.OpSemantic.In, (int)(Operand.OpMask.X | Operand.OpMask.Y));
+                        curFuncInvocation.PushOperand(psAtlasTextureCoord, Operand.OpSemantic.In);
+                        curFuncInvocation.PushOperand(psInpTextureData[j], Operand.OpSemantic.In);
+                        curFuncInvocation.PushOperand(psTextureSizes[j], Operand.OpSemantic.In);
+                        curFuncInvocation.PushOperand(texel, Operand.OpSemantic.Out);
+                        psMain.AddAtomInstance(curFuncInvocation);
                     }
                 }
             }

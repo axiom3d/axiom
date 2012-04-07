@@ -8,7 +8,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             get
             {
-                throw new NotImplementedException();
+                return FFPFog.FFPType;
             }
         }
 
@@ -66,7 +66,7 @@ namespace Axiom.Components.RTShaderSystem
 
         protected override SubRenderState CreateInstanceImpl()
         {
-            throw new NotImplementedException();
+            return new FFPFog();
         }
     }
 }

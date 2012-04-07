@@ -353,17 +353,14 @@ namespace Axiom.Components.RTShaderSystem
                 return true;
             }
 
-            public int GetHashCode( FunctionInvocation obj )
-            {
-                throw new NotImplementedException();
-            }
+            
         }
 
         public override string FunctionAtomType
         {
             get
             {
-                throw new NotImplementedException();
+                return "FunctionInvocation";
             }
         }
     }

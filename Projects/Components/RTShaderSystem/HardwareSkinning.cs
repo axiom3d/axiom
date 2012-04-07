@@ -192,7 +192,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             get
             {
-                throw new NotImplementedException();
+                return (int)FFPRenderState.FFPShaderStage.Transform;
             }
         }
     }

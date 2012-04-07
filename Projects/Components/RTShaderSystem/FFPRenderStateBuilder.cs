@@ -81,7 +81,7 @@ namespace Axiom.Components.RTShaderSystem
         {
             if ( subRenderStateOrder == -1 )
             {
-                throw new NotImplementedException( "Actual sub render type needs to be declared" );
+                throw new Exception( "Actual sub render type needs to be declared" );
             }
 
             SubRenderState subRenderState;
