@@ -1,9 +1,0 @@
--- In Lib dir, put portable managed assemblies in a "portable" dir, rather than keeping portable assemblies artificially separated by platform.  Adjust Dependencies include file accordingly.
--- rename AxiomDependencies.include to AxiomLibs.include and adjust all downstream build files accordingly.  (Not sure which name is clearer, but this change would match the renaming of the Dependencies folder to Lib
--- Modify build scripts to be directory independent, so the working directory doesn't have to match the folder they are in
--- Determine a consistent set of build actions that covers the typical use cases, create corresponding build scripts for Linux and Windows.
--- Update documentation (readme files) to reflect new build system changes
--- Note especially that all builds other than the engine are now uncoupled from the engine build, so expect engine assemblies to have been compiled and exist.  In other words, from a clean checkout, the build scripts to generate the axiom engine assemblies must be run first before any other builds will work properly.
--- Once everything settles down, update prebuild files to conform to new changes.
--- DANGER, DANGER!  One of the prebuild output formats is NAnt files, which can overwrite the hand-generated 'official' NAnt build files.  Don't run this particular prebuild target, and remove all build scripts which call it.
-
