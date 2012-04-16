@@ -353,16 +353,9 @@ namespace Axiom.Demos
 		/// <summary>
 		///
 		/// </summary>
-#if !AXIOM_SAFE_ONLY
-		private
-#endif
-			unsafe void UpdateNoise()
+		private void UpdateNoise()
 		{
-#if AXIOM_SAFE_ONLY
 			ITypePointer<float> sharedNormals = null;
-#else
-			float* sharedNormals = null;
-#endif
 
 			for ( int i = 0; i < clonedMesh.SubMeshCount; i++ )
 			{
@@ -401,11 +394,7 @@ namespace Axiom.Demos
 		/// <param name="orgdata"></param>
 		/// <param name="indexData"></param>
 		/// <param name="normals"></param>
-#if AXIOM_SAFE_ONLY
 		private void UpdateVertexDataNoiseAndNormals(VertexData dstData, VertexData orgData, IndexData indexData, ITypePointer<float> normals)
-#else
-		private unsafe void UpdateVertexDataNoiseAndNormals( VertexData dstData, VertexData orgData, IndexData indexData, float* normals )
-#endif
 		{
 			// destination vertex buffer
 			VertexElement dstPosElement = dstData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -486,11 +475,7 @@ namespace Axiom.Demos
 		/// </summary>
 		/// <param name="vertexData"></param>
 		/// <returns></returns>
-#if AXIOM_SAFE_ONLY
 		private ITypePointer<float> NormalsGetCleared(VertexData vertexData)
-#else
-		private unsafe float* NormalsGetCleared( VertexData vertexData )
-#endif
 		{
 			VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
@@ -510,11 +495,7 @@ namespace Axiom.Demos
 		/// </summary>
 		/// <param name="vertexData"></param>
 		/// <param name="normals"></param>
-#if AXIOM_SAFE_ONLY
 		private void NormalsSaveNormalized( VertexData vertexData, ITypePointer<float> normals )
-#else
-		private unsafe void NormalsSaveNormalized( VertexData vertexData, float* normals )
-#endif
 		{
 			VertexElement element = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( element.Source );
