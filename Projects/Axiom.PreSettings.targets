@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <OutputType>Library</OutputType>
     <FileAlignment>512</FileAlignment>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'  ">
@@ -58,27 +58,27 @@
     <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Debug|x86' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Release|x86' ">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Debug|x86'">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
     <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Release|x86'">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
     <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' And '$(AxiomSign)' == 'true'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' And '$(AxiomSign)' == 'true'">
     <DefineConstants>TRACE;WinFormsInterop;AXIOM_SIGNED</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)axiom.snk</AssemblyOriginatorKeyFile>

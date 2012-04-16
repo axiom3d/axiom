@@ -267,7 +267,6 @@ Global
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Debug|x86.ActiveCfg = Debug|x86
-		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Debug|x86.Build.0 = Debug|x86
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{6ABF16ED-5983-4988-8FDB-3D1650DE9766}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -308,7 +307,6 @@ Global
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Debug|x86.ActiveCfg = Debug|x86
-		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Debug|x86.Build.0 = Debug|x86
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{6DDC9C90-5EEB-433F-96BD-77DEFCFF5017}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -320,7 +318,6 @@ Global
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Debug|x86.ActiveCfg = Debug|x86
-		{BD67A467-44DB-4A63-976F-96DF36061753}.Debug|x86.Build.0 = Debug|x86
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{BD67A467-44DB-4A63-976F-96DF36061753}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -346,7 +343,6 @@ Global
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Debug|x86.ActiveCfg = Debug|x86
-		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Debug|x86.Build.0 = Debug|x86
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{E22BA5C3-59C1-46EF-B9E7-2A7030497A7A}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -358,7 +354,6 @@ Global
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Debug|x86.ActiveCfg = Debug|x86
-		{C1DF17F9-274E-46FE-B211-E30819889677}.Debug|x86.Build.0 = Debug|x86
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{C1DF17F9-274E-46FE-B211-E30819889677}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -411,7 +406,6 @@ Global
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Debug|x86.ActiveCfg = Debug|x86
-		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Debug|x86.Build.0 = Debug|x86
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{C739CD30-D8B0-4889-A000-DA5DD661E0B0}.Release|Mixed Platforms.Build.0 = Release|x86
@@ -568,7 +562,6 @@ Global
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Debug|Windows Phone.ActiveCfg = Debug|x86
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Debug|x86.ActiveCfg = Debug|x86
-		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Debug|x86.Build.0 = Debug|x86
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Debug|Xbox 360.ActiveCfg = Debug|x86
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{3DADBC6D-4756-44D5-8032-C65AE5812F82}.Release|Mixed Platforms.Build.0 = Release|x86
