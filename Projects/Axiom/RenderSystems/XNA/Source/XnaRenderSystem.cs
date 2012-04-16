@@ -766,6 +766,12 @@ namespace Axiom.RenderSystems.Xna
 					}
 					else
 					{
+					    var rtBinding = new RenderTargetBinding[back.Length];
+					    for( var index = 0; index < back.Length; index++)
+					    {
+					        rtBinding[index] = new RenderTargetBinding(back[index]);
+					    }
+                        _device.SetRenderTargets(rtBinding);
 					}
 					/*
 					XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget[ "XNAZBUFFER" ];
@@ -1498,10 +1504,10 @@ namespace Axiom.RenderSystems.Xna
 			//StateManager.RasterizerState.FillMode = XFG.FillMode.Solid;
 			StateManager.CommitState(_device);
 #if SILVERLIGHT
-            StateManager.ResetState(_device);
+			StateManager.ResetState(_device);
 #endif
 
-            Effect effectToUse;
+			Effect effectToUse;
 
 			if (useSkinnedEffect)
 			{
@@ -2212,12 +2218,12 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				_secondaryWindows.Add((XnaRenderWindow)window);
-            }
+			}
 
 #if !SILVERLIGHT // Can only work on _device inside the Draw callback
 			StateManager.ResetState( _device );
 #endif
-            return window;
+			return window;
 		}
 
 		#endregion
@@ -2580,23 +2586,23 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion
 
-        //#region CreateDepthBufferFor
+		//#region CreateDepthBufferFor
 
-        ///// <summary>
-        ///// Creates a DepthBuffer that can be attached to the specified RenderTarget
-        ///// </summary>
-        ///// <remarks>
-        ///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
-        ///// Caller is responsible for putting this buffer into the right pool, for
-        ///// attaching, and deleting it. Here's where API-specific magic happens.
-        ///// Don't call this directly unless you know what you're doing.
-        ///// </remarks>
-        //public override DepthBuffer CreateDepthBufferFor(Graphics.RenderTarget renderTarget)
-        //{
-        //    throw new NotImplementedException();
-        //}
+		///// <summary>
+		///// Creates a DepthBuffer that can be attached to the specified RenderTarget
+		///// </summary>
+		///// <remarks>
+		///// It doesn't attach anything, it just returns a pointer to a new DepthBuffer
+		///// Caller is responsible for putting this buffer into the right pool, for
+		///// attaching, and deleting it. Here's where API-specific magic happens.
+		///// Don't call this directly unless you know what you're doing.
+		///// </remarks>
+		//public override DepthBuffer CreateDepthBufferFor(Graphics.RenderTarget renderTarget)
+		//{
+		//    throw new NotImplementedException();
+		//}
 
-        //#endregion
+		//#endregion
 
 		#region SetConfigOption
 
@@ -3132,7 +3138,7 @@ namespace Axiom.RenderSystems.Xna
 #if !SILVERLIGHT
 					_device.GraphicsProfile == GraphicsProfile.Reach && 
 #endif
-                    !( (XnaTexture)texture ).IsPowerOfTwo )
+					!( (XnaTexture)texture ).IsPowerOfTwo )
 				{
 					state.AddressU = TextureAddressMode.Clamp;
 					state.AddressV = TextureAddressMode.Clamp;
@@ -3452,8 +3458,8 @@ namespace Axiom.RenderSystems.Xna
 			 */
 			//var texType = XnaHelper.Convert(texStageDesc[stage].texType);
 			//var texFilter = XnaHelper.Convert(type, filter, texType);
-            // Actually it combines min, mag & mip filters
-            var texFilter = XnaHelper.Convert(type, filter, StateManager.SamplerStates[stage].Filter);
+			// Actually it combines min, mag & mip filters
+			var texFilter = XnaHelper.Convert(type, filter, StateManager.SamplerStates[stage].Filter);
 			StateManager.SamplerStates[stage].Filter = texFilter;
 		}
 
