@@ -86,7 +86,6 @@
     <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\NullCodec.cs" />
     <Compile Include="Media\PVRTCCodec.cs" />
-    <Compile Include="mono\Comparer.cs" />
     <Compile Include="mono\ExpressionCompiler\Conversion.cs" />
     <Compile Include="mono\ExpressionCompiler\ExpressionCompiler.cs" />
     <Compile Include="mono\ExpressionCompiler\ExpressionHelper.cs" />
@@ -97,7 +96,6 @@
     <Compile Include="mono\ExpressionCompiler\Interpreter.cs" />
     <Compile Include="mono\ExpressionCompiler\Math.cs" />
     <Compile Include="mono\HashSet.cs" />
-    <Compile Include="mono\Hashtable.cs" />
     <Compile Include="mono\ICloneable.cs" />
     <Compile Include="mono\Locale.cs" />
     <Compile Include="mono\SortedList.cs" />
