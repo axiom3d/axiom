@@ -38,11 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.CrossPlatform;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -50,61 +48,85 @@ using Tao.OpenGl;
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
-	/// 	Summary description for GLHardwareIndexBuffer.
+	///   Summary description for GLHardwareIndexBuffer.
 	/// </summary>
 	public class GLHardwareIndexBuffer : HardwareIndexBuffer
 	{
-		#region Fields
+		/// <summary>
+		///   Saves the GL buffer ID for this buffer.
+		/// </summary>
+		private int _bufferId;
+
+		///<summary>
+		///  Gets the GL buffer ID for this buffer.
+		///</summary>
+		public int GLBufferID
+		{
+			get
+			{
+				return _bufferId;
+			}
+		}
 
 		/// <summary>
-		///     Saves the GL buffer ID for this buffer.
+		///   Constructor.
 		/// </summary>
-		private int bufferID;
-
-		#endregion Fields
-
-		#region Constructors
-
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="type">Index type (16 or 32 bit).</param>
-		/// <param name="numIndices">Number of indices in the buffer.</param>
-		/// <param name="usage">Usage flags.</param>
-		/// <param name="useShadowBuffer">Should this buffer be backed by a software shadow buffer?</param>
+		/// <param name="manager"> the HardwareBufferManager instance that created this buffer. </param>
+		/// <param name="type"> Index type (16 or 32 bit). </param>
+		/// <param name="numIndices"> Number of indices in the buffer. </param>
+		/// <param name="usage"> Usage flags. </param>
+		/// <param name="useShadowBuffer"> Should this buffer be backed by a software shadow buffer? </param>
 		public GLHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 			: base( manager, type, numIndices, usage, false, useShadowBuffer )
 		{
 			// generate the buffer
-			Gl.glGenBuffersARB( 1, out bufferID );
+			Gl.glGenBuffersARB( 1, out _bufferId );
 
-			if ( bufferID == 0 )
+			if ( _bufferId == 0 )
 			{
-				throw new Exception( "Cannot create GL index buffer" );
+				throw new Exception( "OGL: Cannot create GL index buffer" );
 			}
 
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
 
 			// initialize this buffer.  we dont have data yet tho
-			Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) ); // TAO 2.0
-			//Gl.glBufferDataARB(
-			//    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-			//    sizeInBytes,
-			//    IntPtr.Zero,
-			//    GLHelper.ConvertEnum( usage ) );
+			Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+			LogManager.Instance.Write( "OGL: Created IndexBuffer[{0}].", _bufferId );
 		}
 
-		#endregion Constructors
-
-		#region HardwareIndexBuffer Implementation
-
 		/// <summary>
-		///
+		///   Called to destroy this buffer.
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
+
+				try
+				{
+					Gl.glDeleteBuffersARB( 1, ref _bufferId );
+					LogManager.Instance.Write( "OGL: Deleted IndexBuffer[{0}].", _bufferId );
+				}
+				catch ( AccessViolationException ave )
+				{
+					LogManager.Instance.Write( "OGL: Failed to delete IndexBuffer[{0}].", _bufferId );
+				}
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		///<summary>
+		///</summary>
+		///<param name="offset"> </param>
+		///<param name="length"> </param>
+		///<param name="locking"> </param>
+		///<returns> </returns>
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			int access = 0;
@@ -115,7 +137,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// bind this buffer
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
 
 			if ( locking == BufferLocking.Discard )
 			{
@@ -133,7 +155,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( usage == BufferUsage.WriteOnly )
 				{
-					LogManager.Instance.Write( "Invalid attempt to lock a write-only vertex buffer as read-only." );
+					LogManager.Instance.Write( "OGL : Invalid attempt to lock a write-only vertex buffer as read-only." );
 				}
 
 				access = Gl.GL_READ_ONLY_ARB;
@@ -147,7 +169,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( ptr == IntPtr.Zero )
 			{
-				throw new Exception( "GL Vertex Buffer: Out of memory" );
+				throw new Exception( "OGL: Vertex Buffer: Out of memory" );
 			}
 
 			isLocked = true;
@@ -155,31 +177,29 @@ namespace Axiom.RenderSystems.OpenGL
 			return BufferBase.Wrap( new IntPtr( ptr.ToInt64() + offset ), length );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		protected override void UnlockImpl()
 		{
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
 
 			if ( Gl.glUnmapBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB ) == 0 )
 			{
-				throw new Exception( "Buffer data corrupted!" );
+				throw new Exception( "OGL: Buffer data corrupted!" );
 			}
 
 			isLocked = false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="src"></param>
-		/// <param name="discardWholeBuffer"></param>
+		///<summary>
+		///</summary>
+		///<param name="offset"> </param>
+		///<param name="length"> </param>
+		///<param name="src"> </param>
+		///<param name="discardWholeBuffer"> </param>
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
 
 			if ( useShadowBuffer )
 			{
@@ -195,28 +215,18 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( discardWholeBuffer )
 			{
-				Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) ); // TAO 2.0
-				//Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-				//    sizeInBytes,
-				//    IntPtr.Zero,
-				//    GLHelper.ConvertEnum( usage ) );
+				Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
 			}
 
-			Gl.glBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), src.Pin() ); // TAO 2.0
+			Gl.glBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), src.Pin() );
 			src.UnPin();
-			//Gl.glBufferSubDataARB(
-			//    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-			//    offset,
-			//    length,
-			//    src );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
+		///<summary>
+		///</summary>
+		///<param name="offset"> </param>
+		///<param name="length"> </param>
+		///<param name="dest"> </param>
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			if ( useShadowBuffer )
@@ -232,57 +242,10 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, bufferID );
-
-				Gl.glGetBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() ); // TAO 2.0
+				Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+				Gl.glGetBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() );
 				dest.UnPin();
-				//Gl.glGetBufferSubDataARB(
-				//    Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-				//    offset,
-				//    length,
-				//    dest );
 			}
 		}
-
-		/// <summary>
-		///     Called to destroy this buffer.
-		/// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources ) {}
-
-				try
-				{
-					Gl.glDeleteBuffersARB( 1, ref bufferID );
-				}
-				catch ( AccessViolationException ave )
-				{
-					LogManager.Instance.Write( "Failed to delete IndexBuffer[{0}].", bufferID );
-				}
-			}
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
-
-		#endregion HardwareIndexBuffer Implementation
-
-		#region Properties
-
-		/// <summary>
-		///		Gets the GL buffer ID for this buffer.
-		/// </summary>
-		public int GLBufferID
-		{
-			get
-			{
-				return bufferID;
-			}
-		}
-
-		#endregion Properties
 	}
 }
