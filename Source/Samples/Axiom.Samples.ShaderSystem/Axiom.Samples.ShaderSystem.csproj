@@ -23,7 +23,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
-      <HintPath>$(SolutionDir)\..\Lib\Managed\XPlatform\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -34,17 +34,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom.2010</Name>
+      <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Components\RTShaderSystem\Axiom.Components.RTShaderSystem.csproj">
+    <ProjectReference Include="..\..\Components\Axiom.Components.RTShaderSystem\Axiom.Components.RTShaderSystem.csproj">
       <Project>{07760495-D15D-43B1-A303-14FC40EDF541}</Project>
       <Name>Axiom.Components.RTShaderSystem</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Axiom.Samples.Common.2010.csproj">
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
-      <Name>Axiom.Samples.Common.2010</Name>
+      <Name>Axiom.Samples.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
