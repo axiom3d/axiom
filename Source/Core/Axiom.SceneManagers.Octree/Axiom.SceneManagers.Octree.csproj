@@ -58,9 +58,6 @@
       <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="axiom.scenemanager.octree.module" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
 </Project>

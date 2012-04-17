@@ -36,9 +36,6 @@
       <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="axiom.plugin.systemdrawingcodecs.module" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
 </Project>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" /> 
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -18,8 +18,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' "  />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' " >
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
       <HintPath>$(SolutionDir)\..\Lib\Managed\XPlatform\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -31,7 +31,6 @@
     <Compile Include="Core\WorkQueue\RequestID.cs" />
     <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
     <Compile Include="Core\WorkQueue\WorkQueue.cs" />
-    <None Include="axiom.module" />
     <Compile Include="Core\ICopyable.cs" />
     <Compile Include="CrossPlatform\Buffer.cs" />
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
