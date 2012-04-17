@@ -14,7 +14,7 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="Tao.DevIl">
-      <HintPath>$(SolutionDir)\..\Lib\Tao\2.1.0.0\bin\Tao.DevIl.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\Tao\2.1.0.0\Tao.DevIl.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
