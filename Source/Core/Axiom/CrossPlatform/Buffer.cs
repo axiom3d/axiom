@@ -8,7 +8,7 @@ using Axiom.Core;
 
 #endregion Namespace Declarations
 
-namespace Axiom.CrossPlatform
+namespace Axiom.Core
 {
 	public interface ITypePointer<T>
 	{

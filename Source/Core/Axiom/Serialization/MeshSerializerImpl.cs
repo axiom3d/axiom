@@ -44,7 +44,7 @@ using System.IO;
 
 using Axiom.Animating;
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 

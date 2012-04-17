@@ -42,7 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-using Axiom.CrossPlatform;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -51,12 +51,12 @@ namespace Axiom.Media
 	public static class BufferBaseExtensions
 	{
 #if AXIOM_SAFE_ONLY
-        public static ITypePointer<Col3b> ToCol3BPointer(this BufferBase buffer)
-        {
-            if (buffer is ITypePointer<Col3b>)
-                return buffer as ITypePointer<Col3b>;
-            return new ManagedBufferCol3b(buffer as ManagedBuffer);
-        }
+		public static ITypePointer<Col3b> ToCol3BPointer(this BufferBase buffer)
+		{
+			if (buffer is ITypePointer<Col3b>)
+				return buffer as ITypePointer<Col3b>;
+			return new ManagedBufferCol3b(buffer as ManagedBuffer);
+		}
 #else
 		public static unsafe Col3b* ToCol3BPointer( this BufferBase buffer )
 		{
@@ -77,9 +77,9 @@ namespace Axiom.Media
 				var buf = Buf;
 				index *= 3;
 				return new Col3b
-				       {
-				       	x = buf[ index += IdxPtr ], y = buf[ ++index ], z = buf[ ++index ]
-				       };
+					   {
+						x = buf[ index += IdxPtr ], y = buf[ ++index ], z = buf[ ++index ]
+					   };
 			}
 			set
 			{
@@ -210,9 +210,9 @@ namespace Axiom.Media
 					var inp = inputPtr[ offset ];
 
 					outputPtr[ offset ] = new Col3b
-					                      {
-					                      	x = (byte)( ( inp >> 16 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 0 ) & 0xFF ),
-					                      };
+										  {
+											x = (byte)( ( inp >> 16 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 0 ) & 0xFF ),
+										  };
 				}
 			}
 		}
@@ -231,9 +231,9 @@ namespace Axiom.Media
 					var inp = inputPtr[ offset ];
 
 					outputPtr[ offset ] = new Col3b
-					                      {
-					                      	x = (byte)( ( inp >> 0 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 16 ) & 0xFF ),
-					                      };
+										  {
+											x = (byte)( ( inp >> 0 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 16 ) & 0xFF ),
+										  };
 				}
 			}
 		}
@@ -584,8 +584,8 @@ namespace Axiom.Media
 					int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
@@ -610,8 +610,8 @@ namespace Axiom.Media
 					int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
@@ -635,8 +635,8 @@ namespace Axiom.Media
 					int xshift = 24, yshift = 16, zshift = 8, ashift = 0;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
@@ -680,8 +680,8 @@ namespace Axiom.Media
 					int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
@@ -705,8 +705,8 @@ namespace Axiom.Media
 					int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
@@ -730,8 +730,8 @@ namespace Axiom.Media
 					int xshift = 8, yshift = 16, zshift = 24, ashift = 0;
 
 #if AXIOM_BIG_ENDIAN
-				    outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
-                                          ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
+										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif

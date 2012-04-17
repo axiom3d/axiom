@@ -44,7 +44,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;

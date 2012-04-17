@@ -43,7 +43,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Collections;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -165,9 +165,9 @@ namespace Axiom.Core
 
 		// Template texcoord data
 		private float[] texData = new float[ 8 ]
-		                          {
-		                          	-0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f
-		                          };
+								  {
+									-0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f
+								  };
 
 		#endregion Fields
 
@@ -1347,7 +1347,7 @@ namespace Axiom.Core
 #if !AXIOM_SAFE_ONLY
 					unsafe
 #endif
-                    {
+					{
 						ushort* pIdx = (ushort*)idxPtr.ToPointer();
 						float* pTex = (float*)texPtr.ToPointer();
 

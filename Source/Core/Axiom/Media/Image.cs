@@ -42,7 +42,7 @@ using System.Diagnostics;
 using System.IO;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -623,9 +623,9 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2, "Original name was LoadDynamicImage" )]
 		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat,
 #if NET_40
-            bool autoDelete = false, int numFaces = 1, int numMipMaps = 0 )
+			bool autoDelete = false, int numFaces = 1, int numMipMaps = 0 )
 #else
-		                               bool autoDelete, int numFaces, int numMipMaps )
+									   bool autoDelete, int numFaces, int numMipMaps )
 #endif
 		{
 			// Set image metadata
@@ -695,7 +695,7 @@ namespace Axiom.Media
 		/// <param name="type"> The type of the image. Used to decide what decompression codec to use. Can be left blank if the stream data includes a header to identify the data. </param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public static Image FromStream( Stream stream, string type = "" )
+		public static Image FromStream( Stream stream, string type = "" )
 #else
 		public static Image FromStream( Stream stream, string type )
 #endif
@@ -736,10 +736,10 @@ namespace Axiom.Media
 
 			// copy the image data
 			var image = new Image
-			            {
-			            	height = data.height, width = data.width, depth = data.depth, size = data.size, numMipMaps = data.numMipMaps, flags = data.flags, // Get the format and compute the pixel size
-			            	format = data.format,
-			            };
+						{
+							height = data.height, width = data.width, depth = data.depth, size = data.size, numMipMaps = data.numMipMaps, flags = data.flags, // Get the format and compute the pixel size
+							format = data.format,
+						};
 
 			// stuff the image data into an array
 			var buffer = new byte[ decoded.Length ];

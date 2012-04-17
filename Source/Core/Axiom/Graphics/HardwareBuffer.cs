@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -381,7 +381,7 @@ namespace Axiom.Graphics
 		/// <param name="discardWholeBuffer">If true, will discard the entire contents of this buffer before copying.</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer = false )
+		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer = false )
 #else
 		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
 #endif

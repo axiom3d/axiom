@@ -42,7 +42,7 @@ using System.IO;
 using System.Text;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -119,13 +119,13 @@ namespace Axiom.Serialization
 					pointer[ i ] = reader.ReadByte();
 				}
 #else
-	            for ( var i = 0; i < count; i += 4 )
-	            {
-	                pointer[ i + 3 ] = reader.ReadByte();
-	                pointer[ i + 2 ] = reader.ReadByte();
-	                pointer[ i + 1 ] = reader.ReadByte();
-	                pointer[ i ] = reader.ReadByte();
-	            }
+				for ( var i = 0; i < count; i += 4 )
+				{
+					pointer[ i + 3 ] = reader.ReadByte();
+					pointer[ i + 2 ] = reader.ReadByte();
+					pointer[ i + 1 ] = reader.ReadByte();
+					pointer[ i ] = reader.ReadByte();
+				}
 #endif
 			}
 		}
@@ -590,11 +590,11 @@ namespace Axiom.Serialization
 			// get the chunk id
 			var id = ReadShort( reader );
 #if ( XBOX || XBOX360 )
-            if (id == 0)
-            {
-                reader.BaseStream.Position -= 2;
-                id = ReadShort(reader);
-            }
+			if (id == 0)
+			{
+				reader.BaseStream.Position -= 2;
+				id = ReadShort(reader);
+			}
 #endif
 			// read the length for this chunk
 			currentChunkLength = ReadInt( reader );

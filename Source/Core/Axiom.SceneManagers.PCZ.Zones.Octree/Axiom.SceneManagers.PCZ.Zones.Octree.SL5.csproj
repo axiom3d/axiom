@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{45FF3045-DD29-4F9D-B36B-80F08DFE8FD6}</ProjectGuid>
+    <ProjectGuid>{DF2663E8-5CCB-4D39-AE18-AA71F05157F5}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Axiom.Platform.Silverlight</RootNamespace>
-    <AssemblyName>Axiom.Platform.Silverlight</AssemblyName>
+    <RootNamespace>OctreeZone</RootNamespace>
+    <AssemblyName>Axiom.Plugins.OctreeZone</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
@@ -20,15 +20,17 @@
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
        to set the TargetFrameworkVersion to v3.5 -->
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,55 +56,37 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImageTools">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.Controls">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.Filtering">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Filtering.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.IO.Bmp">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Bmp.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.IO.Gif">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Gif.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.IO.Jpeg">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Jpeg.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.IO.Png">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Png.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageTools.Utils">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Utils.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Xna" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Browser" />
-    <Reference Include="zxing.Silverlight">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\zxing.Silverlight.dll</HintPath>
+    <Reference Include="System.Xml.Linq, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="XdotNet.mscorlib">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="XdotNet.System">
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BilinearResizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SilverlightCodecs.cs" />
-    <Compile Include="SilverlightInputReader.cs" />
-    <Compile Include="SilverlightPlatformManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.2010.SL5.csproj">
-      <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
-      <Name>Axiom.2010.SL5</Name>
-    </ProjectReference>
+    <Compile Include="ConfigFile.cs" />
+    <Compile Include="HeightmapTerrainZonePageSource.cs" />
+    <Compile Include="Octree.cs" />
+    <Compile Include="OctreeZone.cs" />
+    <Compile Include="OctreeZonePlugin.cs" />
+    <Compile Include="TerrainVertexProgram.cs" />
+    <Compile Include="TerrainZone.cs" />
+    <Compile Include="TerrainZoneOptions.cs" />
+    <Compile Include="TerrainZonePage.cs" />
+    <Compile Include="TerrainZonePageSource.cs" />
+    <Compile Include="TerrainZonePageSourceOptionList.cs" />
+    <Compile Include="TerrainZoneRenderable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>
@@ -119,4 +103,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\Axiom\Axiom.SL5.csproj">
+      <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
+      <Name>Axiom.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Axiom.SceneManagers.PCZ\Axiom.SceneManagers.PortalConnected.SL5.csproj">
+      <Project>{C9FFCF3D-BFF5-4701-8084-DD178E6A902F}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected.SL5</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

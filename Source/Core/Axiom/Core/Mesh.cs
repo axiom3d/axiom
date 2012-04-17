@@ -47,7 +47,7 @@ using System.Runtime.InteropServices;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.CrossPlatform;
+
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.Serialization;
@@ -2331,9 +2331,9 @@ namespace Axiom.Core
 #endif
 			{
 #if AXIOM_SAFE_ONLY
-                ITypePointer<float> pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
-                ITypePointer<float> pDestNorm = null, pDestTan = null, pDestBinorm = null;
-                ITypePointer<float> pBlendWeight;
+				ITypePointer<float> pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
+				ITypePointer<float> pDestNorm = null, pDestTan = null, pDestBinorm = null;
+				ITypePointer<float> pBlendWeight;
 #else
 				float* pSrcNorm = null, pSrcTan = null, pSrcBinorm = null;
 				float* pDestNorm = null, pDestTan = null, pDestBinorm = null;

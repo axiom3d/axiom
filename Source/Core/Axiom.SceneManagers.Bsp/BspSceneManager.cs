@@ -47,7 +47,7 @@ using System.Data;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Core.Collections;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.SceneManagers.Bsp.Collections;
@@ -196,7 +196,7 @@ namespace Axiom.SceneManagers.Bsp
 			this.renderOp.indexData.indexCount = 0;
 			// Create enough index space to render whole level
 			this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, // always 32-bit
-			                                                                                        this.level.NumIndexes, BufferUsage.DynamicWriteOnlyDiscardable, false );
+																									this.level.NumIndexes, BufferUsage.DynamicWriteOnlyDiscardable, false );
 
 			this.renderOp.operationType = OperationType.TriangleList;
 			this.renderOp.useIndices = true;
@@ -227,7 +227,7 @@ namespace Axiom.SceneManagers.Bsp
 			this.renderOp.indexData.indexCount = 0;
 			// Create enough index space to render whole level
 			this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, // always 32-bit
-			                                                                                        this.level.NumIndexes, BufferUsage.DynamicWriteOnlyDiscardable, false );
+																									this.level.NumIndexes, BufferUsage.DynamicWriteOnlyDiscardable, false );
 
 			this.renderOp.operationType = OperationType.TriangleList;
 			this.renderOp.useIndices = true;
@@ -846,7 +846,7 @@ namespace Axiom.SceneManagers.Bsp
 				var idxSize = level.Indexes.IndexSize;
 				var idxSrc = level.Indexes.Lock( idxStart * idxSize, numIdx * idxSize, BufferLocking.ReadOnly );
 #if SILVERLIGHT
-                var src = idxSrc.ToUShortPointer();
+				var src = idxSrc.ToUShortPointer();
 #else
 				var src = idxSrc.ToUIntPointer();
 #endif
@@ -887,9 +887,9 @@ namespace Axiom.SceneManagers.Bsp
 					for ( int i = 0; i <= maxIndex; i++ )
 					{
 						pTexLightMaps[ vertexStart + i ] = new TextureLightMap
-						                                   {
-						                                   	color = Root.Instance.RenderSystem.ConvertColor( colors[ i ] ), textureLightMap = texCoors[ i ]
-						                                   };
+														   {
+															color = Root.Instance.RenderSystem.ConvertColor( colors[ i ] ), textureLightMap = texCoors[ i ]
+														   };
 					}
 					pTexLightMapsBuf.UnPin();
 

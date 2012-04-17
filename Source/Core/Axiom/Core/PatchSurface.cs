@@ -42,7 +42,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;

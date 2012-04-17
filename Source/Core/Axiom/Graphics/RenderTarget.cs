@@ -38,7 +38,7 @@ using System.Diagnostics;
 
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Math;
 using Axiom.Media;
 using Axiom.Utilities;
@@ -769,7 +769,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public virtual Viewport AddViewport( Camera camera, float left = 0, float top = 0, float nwidth = 1.0f, float nheight = 1.0f, int zOrder = 0 )
+		public virtual Viewport AddViewport( Camera camera, float left = 0, float top = 0, float nwidth = 1.0f, float nheight = 1.0f, int zOrder = 0 )
 #else
 		public virtual Viewport AddViewport( Camera camera, float left, float top, float nwidth, float nheight, int zOrder )
 #endif
@@ -1189,7 +1189,7 @@ namespace Axiom.Graphics
 		///	</param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public virtual void Update( bool swapBuffers = true )
+		public virtual void Update( bool swapBuffers = true )
 #else
 		public virtual void Update( bool swapBuffers )
 #endif
@@ -1333,7 +1333,7 @@ namespace Axiom.Graphics
 		/// <param name="updateStatistics"></param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public virtual void UpdateAutoUpdatedViewports( bool updateStatistics = true )
+		public virtual void UpdateAutoUpdatedViewports( bool updateStatistics = true )
 #else
 		public virtual void UpdateAutoUpdatedViewports( bool updateStatistics )
 #endif
@@ -1475,7 +1475,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer = FrameBuffer.Auto );
+		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer = FrameBuffer.Auto );
 #else
 		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
 
@@ -1529,7 +1529,7 @@ namespace Axiom.Graphics
 		///</param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public virtual void SwapBuffers( bool waitForVSync = true ) { }
+		public virtual void SwapBuffers( bool waitForVSync = true ) { }
 #else
 		public virtual void SwapBuffers( bool waitForVSync ) {}
 

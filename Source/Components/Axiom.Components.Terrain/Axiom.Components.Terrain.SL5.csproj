@@ -99,9 +99,9 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.2010.SL5.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
-      <Name>Axiom.2010.SL5</Name>
+      <Name>Axiom.SL5</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
