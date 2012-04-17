@@ -44,7 +44,7 @@ using System.Diagnostics;
 
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Graphics.Collections;

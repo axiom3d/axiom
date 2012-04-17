@@ -42,7 +42,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations

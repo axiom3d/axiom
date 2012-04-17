@@ -1,72 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <BaseAddress>285212672</BaseAddress>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom</RootNamespace>
     <AssemblyName>Axiom</AssemblyName>
-    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
-    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <!-- This property group is only here to support building this project using the 
-       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
-       to set the TargetFrameworkVersion to v3.5 -->
-  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</OutputPath>
-    <IntermediateOutputPath>obj\$(Platform)$(TargetFrameworkVersion)$(Configuration)SL5\</IntermediateOutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
-    <NoStdLib>true</NoStdLib>
-    <NoConfig>true</NoConfig>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.ComponentModel.Composition.Initialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="System.Reactive">
-      <HintPath>..\..\..\..\..\Externals\RX\Binaries\Silverlight\v4.0\System.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Providers">
-      <HintPath>..\..\..\..\..\Externals\RX\Binaries\Silverlight\v4.0\System.Reactive.Providers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Threading">
-      <HintPath>..\..\..\..\..\Externals\RX\Binaries\Silverlight\v4.0\System.Reactive.Windows.Threading.dll</HintPath>
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'!='v3.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -76,20 +32,26 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="XdotNet.mscorlib">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.Core.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System.Drawing">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Drawing.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System.Xml">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.Xml.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.Xml.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\..\Dependencies\SharpZipLib.Silverlight\SharpZipLib.2010.SL5.csproj">
+      <Project>{8B7CF854-73A1-4882-B317-07625C13A425}</Project>
+      <Name>SharpZipLib.2010.SL5</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ICopyable.cs" />
@@ -171,7 +133,6 @@
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
     <Compile Include="FileSystem\Watcher.cs" />
-    <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Fonts\FreetypeWrapper.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
@@ -841,8 +802,10 @@
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
+    <Compile Include="CrossPlatform\ExtensionMethods.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v5.0\Microsoft.Silverlight.CSharp.targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
@@ -850,20 +813,4 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Lib\Managed\XPlatform\SharpZipLib.Silverlight\SharpZipLib.2010.SL5.csproj">
-      <Project>{8B7CF854-73A1-4882-B317-07625C13A425}</Project>
-      <Name>SharpZipLib.2010.SL5</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CrossPlatform\ExtensionMethods.cs" />
-  </ItemGroup>
 </Project>

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Utilities;
 
 #endregion Namespace Declarations

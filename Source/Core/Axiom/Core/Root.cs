@@ -134,12 +134,12 @@ namespace Axiom.Core
 				this.logMgr.Write( info.ToString() );
 				this.logMgr.Write( "*-*-* Axiom Initializing" );
 
-#if !( ANDROID || IPHONE )
 				new PlatformManager();
-#endif
 
 				ArchiveManager.Instance.Initialize();
+#if !SILVERLIGHT
 				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+#endif
 				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
 
 				new ResourceGroupManager();

@@ -42,7 +42,7 @@ using System;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -373,7 +373,7 @@ namespace Axiom.Graphics
 		///</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public virtual RenderTexture GetRenderTarget( int slice = 0 )
+		public virtual RenderTexture GetRenderTarget( int slice = 0 )
 #else
 		public virtual RenderTexture GetRenderTarget( int slice )
 #endif

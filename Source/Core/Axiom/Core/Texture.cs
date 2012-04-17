@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System.IO;
 using System.Text;
 
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -652,7 +652,7 @@ namespace Axiom.Core
 		/// <param name="loader">The loader.</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader = null )
+		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader = null )
 #else
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 #endif
@@ -730,9 +730,9 @@ namespace Axiom.Core
 				lock ( _loadingStatusMutex )
 				{
 					LoadImages( new Image[]
-					            {
-					            	image
-					            } );
+								{
+									image
+								} );
 				}
 			}
 			catch
@@ -1075,7 +1075,7 @@ namespace Axiom.Core
 		/// <param name="includeMipMaps">Whether to embed mipmaps in the image</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public virtual void ConvertToImage( out Image destImage, bool includeMipMaps = false )
+		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps = false )
 #else
 		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps )
 #endif
@@ -1136,7 +1136,7 @@ namespace Axiom.Core
 		/// <returns>A shared pointer to a hardware pixel buffer</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public abstract HardwarePixelBuffer GetBuffer( int face = 0, int mipmap = 0 );
+		public abstract HardwarePixelBuffer GetBuffer( int face = 0, int mipmap = 0 );
 #else
 		public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
 

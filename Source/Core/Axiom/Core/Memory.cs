@@ -36,7 +36,6 @@
 using System;
 using System.Collections.Generic;
 
-using Axiom.CrossPlatform;
 #if !AXIOM_SAFE_ONLY
 using System.Runtime.InteropServices;
 
@@ -88,7 +87,7 @@ namespace Axiom.Core
 		{
 			// TODO: Block copy would be faster, find a cross platform way to do it
 #if AXIOM_SAFE_ONLY
-            dest.Copy( src, srcOffset, destOffset, length );
+			dest.Copy( src, srcOffset, destOffset, length );
 #else
 			unsafe
 			{
@@ -143,22 +142,22 @@ namespace Axiom.Core
 		#region Pinned Object Access
 
 #if AXIOM_SAFE_ONLY
-        private static readonly Dictionary<object, ManagedBuffer> _pinnedReferences = new Dictionary<object, ManagedBuffer>();
+		private static readonly Dictionary<object, ManagedBuffer> _pinnedReferences = new Dictionary<object, ManagedBuffer>();
 
-        public static BufferBase PinObject( object obj )
-        {
-            ManagedBuffer handle;
-            if ( _pinnedReferences.ContainsKey( obj ) )
-            {
-                handle = _pinnedReferences[ obj ];
-            }
-            else
-            {
-                handle = obj is byte[] ? new ManagedBuffer( obj as byte[] ) : new ManagedBuffer( obj );
-                _pinnedReferences.Add( obj, handle );
-            }
-            return handle;
-        }
+		public static BufferBase PinObject( object obj )
+		{
+			ManagedBuffer handle;
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				handle = _pinnedReferences[ obj ];
+			}
+			else
+			{
+				handle = obj is byte[] ? new ManagedBuffer( obj as byte[] ) : new ManagedBuffer( obj );
+				_pinnedReferences.Add( obj, handle );
+			}
+			return handle;
+		}
 #else
 		private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
 
@@ -184,7 +183,7 @@ namespace Axiom.Core
 			{
 				var handle = _pinnedReferences[ obj ];
 #if AXIOM_SAFE_ONLY
-                handle.Dispose();
+				handle.Dispose();
 #else
 				handle.Free();
 #endif

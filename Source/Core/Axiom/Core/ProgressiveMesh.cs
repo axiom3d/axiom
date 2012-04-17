@@ -54,7 +54,7 @@ using System.Runtime.InteropServices;
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-using Axiom.CrossPlatform;
+
 using Axiom.Math;
 using Axiom.Serialization;
 using Axiom.Graphics;

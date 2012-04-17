@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.IO;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
@@ -131,7 +131,7 @@ namespace Axiom.Components.Terrain
 			mChannelOffset = (byte)( rgbaShift[ mChannel ] / 8 ); // /8 convert to bytes
 #if AXIOM_BIG_ENDIAN
 	// invert (dealing bytewise)
-            mChannelOffset = (byte)( PixelUtil.GetNumElemBytes( fmt ) - mChannelOffset - 1 );
+			mChannelOffset = (byte)( PixelUtil.GetNumElemBytes( fmt ) - mChannelOffset - 1 );
 #endif
 			Download();
 		}

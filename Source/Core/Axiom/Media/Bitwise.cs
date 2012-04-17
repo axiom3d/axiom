@@ -33,9 +33,9 @@
 
 #region Namespace Declarations
 
-using Axiom.CrossPlatform;
+using Axiom.Core;
 
-#endregion Namespace Declarations
+#endregion  Namespace Declarations
 
 namespace Axiom.Media
 {
@@ -223,9 +223,9 @@ namespace Axiom.Media
 					case 3:
 						var d = dest.ToBytePointer();
 #if AXIOM_BIG_ENDIAN
-                        d[ 0 ] = (byte)( ( value >> 16 ) & 0xFF );
-                        d[ 1 ] = (byte)( ( value >> 8 ) & 0xFF );
-                        d[ 2 ] = (byte)( value & 0xFF );
+						d[ 0 ] = (byte)( ( value >> 16 ) & 0xFF );
+						d[ 1 ] = (byte)( ( value >> 8 ) & 0xFF );
+						d[ 2 ] = (byte)( value & 0xFF );
 #else
 						d[ 2 ] = (byte)( ( value >> 16 ) & 0xFF );
 						d[ 1 ] = (byte)( ( value >> 8 ) & 0xFF );
@@ -261,9 +261,9 @@ namespace Axiom.Media
 					case 3:
 						var s = src.ToBytePointer();
 #if AXIOM_BIG_ENDIAN
-                        return (uint)( s[ 0 ] << 16 |
-                                       ( s[ 1 ] << 8 ) |
-                                       ( s[ 2 ] ) );
+						return (uint)( s[ 0 ] << 16 |
+									   ( s[ 1 ] << 8 ) |
+									   ( s[ 2 ] ) );
 #else
 						return (uint)( s[ 0 ] | ( s[ 1 ] << 8 ) | ( s[ 2 ] << 16 ) );
 #endif
@@ -282,9 +282,9 @@ namespace Axiom.Media
 		public static ushort FloatToHalf( float f )
 		{
 			return FloatToHalfI( new FourByte
-			                     {
-			                     	Float = f
-			                     }.UInt );
+								 {
+									Float = f
+								 }.UInt );
 		}
 
 		///<summary>
@@ -337,9 +337,9 @@ namespace Axiom.Media
 		public static float HalfToFloat( ushort y )
 		{
 			return new FourByte
-			       {
-			       	UInt = HalfToFloatI( y )
-			       }.Float;
+				   {
+					UInt = HalfToFloatI( y )
+				   }.Float;
 		}
 
 		///<summary>

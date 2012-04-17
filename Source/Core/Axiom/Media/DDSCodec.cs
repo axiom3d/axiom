@@ -37,7 +37,7 @@ using System;
 using System.IO;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Utilities;
@@ -610,7 +610,7 @@ namespace Axiom.Media
 					var testBits = PixelUtil.GetBitDepths( pf );
 
 					if ( testMasks[ 0 ] == rMask && testMasks[ 1 ] == gMask && testMasks[ 2 ] == bMask && // for alpha, deal with 'X8' formats by checking bit counts
-					     ( testMasks[ 3 ] == aMask || ( aMask == 0 && testBits[ 3 ] == 0 ) ) )
+						 ( testMasks[ 3 ] == aMask || ( aMask == 0 && testBits[ 3 ] == 0 ) ) )
 					{
 						return pf;
 					}
@@ -1092,11 +1092,11 @@ namespace Axiom.Media
 		private void _flipEndian( BufferBase pData, int size, int count )
 		{
 #if AXIOM_BIG_ENDIAN
-            for ( var index = 0; index < count; index++ )
-            {
-                using ( var data = pData + ( index * size ) )
-                    _flipEndian( data, size );
-            }
+			for ( var index = 0; index < count; index++ )
+			{
+				using ( var data = pData + ( index * size ) )
+					_flipEndian( data, size );
+			}
 #endif
 		}
 
@@ -1104,19 +1104,19 @@ namespace Axiom.Media
 		private void _flipEndian( BufferBase pData, int size )
 		{
 #if AXIOM_BIG_ENDIAN
-            byte swapByte;
+			byte swapByte;
 #if !AXIOM_SAFE_ONLY
-            unsafe
+			unsafe
 #endif
-            {
-                var ptr = pData.ToBytePointer();
-                for ( var byteIndex = 0; byteIndex < size / 2; byteIndex++ )
-                {
-                    swapByte = ptr[ byteIndex ];
-                    ptr[ byteIndex ] = ptr[ size - byteIndex - 1 ];
-                    ptr[ size - byteIndex - 1 ] = swapByte;
-                }
-            }
+			{
+				var ptr = pData.ToBytePointer();
+				for ( var byteIndex = 0; byteIndex < size / 2; byteIndex++ )
+				{
+					swapByte = ptr[ byteIndex ];
+					ptr[ byteIndex ] = ptr[ size - byteIndex - 1 ];
+					ptr[ size - byteIndex - 1 ] = swapByte;
+				}
+			}
 #endif
 		}
 

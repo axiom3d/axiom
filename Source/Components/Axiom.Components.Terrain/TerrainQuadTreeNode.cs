@@ -39,7 +39,7 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Core.Collections;
-using Axiom.CrossPlatform;
+
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Serialization;
