@@ -104,7 +104,7 @@
     <Reference Include="System.Xml.Serialization, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
     </ProjectReference>

@@ -158,11 +158,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Xna.x86.csproj">
       <Project>{7DB37793-DE53-428C-8C7D-E55CE1905FAE}</Project>
       <Name>Axiom.Framework.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.x86.csproj">
       <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
       <Name>Axiom.Xna.x86</Name>
     </ProjectReference>

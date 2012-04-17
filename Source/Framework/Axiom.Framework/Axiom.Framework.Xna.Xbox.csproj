@@ -9,9 +9,9 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Xbox 360</XnaPlatform>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <OutputPath>bin\Xbox\$(Configuration)</OutputPath>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -148,7 +148,7 @@
     <None Include="Resources\axiomlogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Axiom\Engine\Axiom.Xna.Xbox.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
     </ProjectReference>

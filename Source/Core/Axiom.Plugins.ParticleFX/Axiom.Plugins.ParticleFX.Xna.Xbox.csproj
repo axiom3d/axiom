@@ -31,15 +31,16 @@
     </UpgradeBackupLocation>
     <ProjectGuid>{BA9B1CA4-6329-4B02-AF47-B77749DFCBB7}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
     <XnaUpgrade>
     </XnaUpgrade>
-	<XnaCrossPlatformGroupID>c49fe649-14ec-4c61-929c-a612eb738214</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>c49fe649-14ec-4c61-929c-a612eb738214</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
     <XnaProfile>HiDef</XnaProfile>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -57,7 +58,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-	<NoStdLib>true</NoStdLib>
+    <NoStdLib>true</NoStdLib>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <DebugSymbols>true</DebugSymbols>
@@ -77,7 +78,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-	<NoStdLib>true</NoStdLib>
+    <NoStdLib>true</NoStdLib>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <DebugType>pdbonly</DebugType>
@@ -131,7 +132,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
     </ProjectReference>

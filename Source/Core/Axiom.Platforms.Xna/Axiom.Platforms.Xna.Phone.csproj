@@ -49,7 +49,7 @@
     <XnaCompressContent>false</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Phone.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Phone.csproj">
       <Project>{78836526-6139-41E4-B034-8189F602712B}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
