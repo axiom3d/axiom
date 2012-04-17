@@ -35,7 +35,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="SampleBrowser.cs" />
-    <None Include="axiom.samples.browser.module" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.csproj">
