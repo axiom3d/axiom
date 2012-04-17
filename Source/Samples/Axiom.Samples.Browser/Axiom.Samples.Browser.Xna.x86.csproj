@@ -135,19 +135,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Xna.x86.csproj">
       <Project>{7DB37793-DE53-428C-8C7D-E55CE1905FAE}</Project>
       <Name>Axiom.Framework.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.x86.csproj">
       <Project>{D2CCB2B6-58D6-4A99-AD88-98D8F97023A3}</Project>
       <Name>Axiom.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.Plugins.ParticleFX\Axiom.Plugins.ParticleFX.Xna.x86.csproj">
       <Project>{47D7447D-7B83-451C-B1EF-4CD276EB8E7F}</Project>
       <Name>Axiom.Plugins.ParticleFX.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.x86.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna\Axiom.RenderSystems.Xna.x86.csproj">
       <Project>{05004B16-CAC1-45B7-A88A-DB56C1DD24B8}</Project>
       <Name>Axiom.RenderSystems.Xna.x86</Name>
     </ProjectReference>
@@ -155,7 +155,7 @@
       <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Axiom.Samples.Common.Xna.x86.csproj">
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.Xna.x86.csproj">
       <Project>{46F5014B-369F-4035-8E18-A3DF0416DF09}</Project>
       <Name>Axiom.Samples.Common.Xna.x86</Name>
     </ProjectReference>

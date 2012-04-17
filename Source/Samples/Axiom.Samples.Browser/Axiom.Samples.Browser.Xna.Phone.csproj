@@ -113,7 +113,7 @@
     <Content Include="Resources\GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.Phone.csproj">
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Xna.Phone.csproj">
       <Project>{1322BDDF-1627-4F3C-98F6-B3121C326F3C}</Project>
       <Name>Axiom.Framework.Xna.Phone</Name>
     </ProjectReference>
@@ -121,11 +121,11 @@
       <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Phone.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna\Axiom.RenderSystems.Xna.Phone.csproj">
       <Project>{A1909A31-E4E3-46EF-98AA-A407F0DE301F}</Project>
       <Name>Axiom.RenderSystems.Xna.Phone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Axiom.Samples.Common.Xna.Phone.csproj">
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.Xna.Phone.csproj">
       <Project>{1AF381FE-64CF-45E5-BC1F-72F4D7D45820}</Project>
       <Name>Axiom.Samples.Common.Xna.Phone</Name>
     </ProjectReference>

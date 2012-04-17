@@ -42,7 +42,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Xbox.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
     </ProjectReference>

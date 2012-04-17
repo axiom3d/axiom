@@ -41,7 +41,7 @@
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
   </PropertyGroup>
-  <PropertyGroup Condition="  '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'SL5Debug'  Or '$(Configuration)' == 'Win8Debug'  ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'SL5Debug'  Or '$(Configuration)' == 'Win8Debug' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
     <DefineConstants>TRACE;DEBUG;$(TargetFrameWorkDefine)</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
@@ -52,7 +52,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="  '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release' Or '$(Configuration)' == 'SL5Release' Or '$(Configuration)' == 'Win8Release'  ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release' Or '$(Configuration)' == 'SL5Release' Or '$(Configuration)' == 'Win8Release' ">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
     <DocumentationFile>bin\Release\$(TargetFrameworkVersion)\$(AssemblyName).xml</DocumentationFile>
     <DefineConstants>TRACE;$(TargetFrameWorkDefine)</DefineConstants>

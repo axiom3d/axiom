@@ -85,23 +85,23 @@
     <Content Include="Resources\GameThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Axiom.Framework\Axiom.Framework.Xna.Xbox.csproj">
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Xna.Xbox.csproj">
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework.Xna.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.Xbox.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.Xna.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.Xbox.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna\Axiom.RenderSystems.Xna.Xbox.csproj">
       <Project>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</Project>
       <Name>Axiom.RenderSystems.Xna.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
       <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Axiom.Samples.Common.Xna.Xbox.csproj">
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.Xna.Xbox.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.Xna.Xbox</Name>
     </ProjectReference>
