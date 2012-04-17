@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EBD9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{47B1A6E3-B79C-481B-9A52-10E561745651}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32", "Core\Axiom.Platforms.Windows\Axiom.Platforms.Win32.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Windows", "Core\Axiom.Platforms.Windows\Axiom.Platforms.Windows.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Linux", "Core\Axiom.Platforms.Linux\Axiom.Platforms.Linux.csproj", "{081F78DE-8224-4CA6-BD34-8B7939CF21AB}"
 EndProject
