@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\Lib\Managed\CompactFramework\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="System" />
@@ -98,6 +98,7 @@
     <Compile Include="Controllers\IControllerFunction.cs" />
     <Compile Include="Controllers\IControllerValue.cs" />
     <Compile Include="Core\AbstractFactory~1.cs" />
+    <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\AxiomException.cs" />
     <Compile Include="Core\Billboard.cs" />
     <Compile Include="Core\BillboardChain.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Core\Collections\CameraCollection.cs" />
     <Compile Include="Core\Collections\Lists.cs" />
     <Compile Include="Core\Collections\MovableObjectCollection.cs" />
+    <Compile Include="Core\Collections\MultiMap.cs" />
     <Compile Include="Core\Collections\NodeCollection.cs" />
     <Compile Include="Core\Collections\SceneManagerCollection.cs" />
     <Compile Include="Core\Collections\SceneNodeCollection.cs" />
@@ -120,17 +122,18 @@
     <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs" />
     <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Frustum.cs" />
     <Compile Include="Core\IAbstractFactory~1.cs" />
-    <Compile Include="Core\IConfigurable.cs" />
+    <Compile Include="Core\ICopyable.cs" />
     <Compile Include="Core\ILodListener.cs" />
     <Compile Include="Core\INamable.cs" />
-    <Compile Include="Core\InstancedGeometry\InstancedGeometry.cs" />
     <Compile Include="Core\IPlatformManager.cs" />
     <Compile Include="Core\IPlugin.cs" />
     <Compile Include="Core\IShadowCameraSetup.cs" />
     <Compile Include="Core\ITimer.cs" />
     <Compile Include="Core\Light.cs" />
+    <Compile Include="Core\List~1Extensions.cs" />
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\Log.cs" />
@@ -146,6 +149,7 @@
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Node.cs" />
     <Compile Include="Core\ObjectCreator.cs" />
+    <Compile Include="Core\ObjectExtentions.cs" />
     <Compile Include="Core\ObjectTextDisplay.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PatchMesh.cs" />
@@ -166,6 +170,7 @@
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\SceneNode.cs" />
     <Compile Include="Core\SceneQuery.cs" />
+    <Compile Include="Core\ShadeOptions.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
     <Compile Include="Core\SpecialCaseRenderQueue.cs" />
@@ -183,6 +188,14 @@
     <Compile Include="Core\Viewport.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="Core\WireBoundingBox.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueue.cs" />
+    <Compile Include="Core\WorkQueue\DefaultWorkQueueBase.cs" />
+    <Compile Include="Core\WorkQueue\RequestID.cs" />
+    <Compile Include="Core\WorkQueue\ResourceBackgroundQueue.cs" />
+    <Compile Include="Core\WorkQueue\WorkQueue.cs" />
+    <Compile Include="CrossPlatform\Buffer.cs" />
+    <Compile Include="CrossPlatform\ExtensionMethods.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="FileSystem\Archive.cs" />
     <Compile Include="FileSystem\ArchiveManager.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
@@ -194,6 +207,7 @@
     <Compile Include="Graphics\AutoParamDataSource.cs" />
     <Compile Include="Graphics\BufferStream.cs" />
     <Compile Include="Graphics\Collections\ConfigOptionCollection.cs" />
+    <Compile Include="Graphics\Collections\ConfigOptionMap.cs" />
     <Compile Include="Graphics\Collections\Lists.cs" />
     <Compile Include="Graphics\Collections\RenderPriorityGroupList.cs" />
     <Compile Include="Graphics\Collections\RenderSystemCollection.cs" />
@@ -207,22 +221,35 @@
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
     <Compile Include="Graphics\CompositorScriptLoader.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
     <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\DepthBuffer.cs" />
+    <Compile Include="Graphics\DriverVersion.cs" />
     <Compile Include="Graphics\EdgeData.cs" />
     <Compile Include="Graphics\EdgeListBuilder.cs" />
     <Compile Include="Graphics\Enums.cs" />
     <Compile Include="Graphics\GpuProgram.cs" />
     <Compile Include="Graphics\GpuProgramManager.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstantEntry.cs" />
     <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.Update.cs" />
     <Compile Include="Graphics\GpuProgramParameters.cs" />
     <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinitionMap.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalBufferStruct.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuLogicalIndexUse.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuNamedConstantSerializer.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParameters.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuSharedParametersUsage.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.Lists.cs" />
     <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
-    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\GpuProgramUsage.cs" />
     <Compile Include="Graphics\HardwareBuffer.cs" />
     <Compile Include="Graphics\HardwareBufferManager.cs" />
+    <Compile Include="Graphics\HardwareBufferManagerBase.cs" />
     <Compile Include="Graphics\HardwareCaps.cs" />
     <Compile Include="Graphics\HardwareIndexBuffer.cs" />
     <Compile Include="Graphics\HardwareOcclusionQuery.cs" />
@@ -238,6 +265,7 @@
     <Compile Include="Graphics\MaterialManager.cs" />
     <Compile Include="Graphics\MovablePlane.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
+    <Compile Include="Graphics\NullProgram.cs" />
     <Compile Include="Graphics\Pass.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />
     <Compile Include="Graphics\Rectangle2D.cs" />
@@ -251,12 +279,12 @@
     <Compile Include="Graphics\RenderTarget.cs" />
     <Compile Include="Graphics\RenderTexture.cs" />
     <Compile Include="Graphics\RenderWindow.cs" />
+    <Compile Include="Graphics\RenderWindowDescription.cs" />
     <Compile Include="Graphics\RibbonTrail.cs" />
     <Compile Include="Graphics\ShadowCaster.cs" />
     <Compile Include="Graphics\ShadowRenderable.cs" />
     <Compile Include="Graphics\ShadowVolumeExtrudeProgram.cs" />
     <Compile Include="Graphics\SimpleRenderable.cs" />
-    <Compile Include="Graphics\SoftwareBufferManager.cs" />
     <Compile Include="Graphics\SpotShadowFadePng.cs" />
     <Compile Include="Graphics\StaticFaceGroup.cs" />
     <Compile Include="Graphics\Technique.cs" />
@@ -269,11 +297,6 @@
     <Compile Include="Graphics\VertexDeclaration.cs" />
     <Compile Include="Graphics\VertexElement.cs" />
     <Compile Include="Graphics\VertexIndexData.cs" />
-    <Compile Include="Input\Enums.cs" />
-    <Compile Include="Input\InputEventArgs.cs" />
-    <Compile Include="Input\InputReader.cs" />
-    <Compile Include="Input\KeyEventArgs.cs" />
-    <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Math\AxisAlignedBox.cs" />
     <Compile Include="Math\Collections\BaseCollection.cs" />
     <Compile Include="Math\Collections\Lists.cs" />
@@ -300,20 +323,23 @@
     <Compile Include="Math\Vector3.cs" />
     <Compile Include="Math\Vector4.cs" />
     <Compile Include="Media\Bitwise.cs" />
+    <Compile Include="Media\Codec.cs" />
     <Compile Include="Media\CodecManager.cs" />
     <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\Enums.cs" />
-    <Compile Include="Media\ICodec.cs" />
     <Compile Include="Media\Image.cs" />
     <Compile Include="Media\ImageCodec.cs" />
     <Compile Include="Media\LinearResampler.Byte.cs" />
     <Compile Include="Media\LinearResampler.cs" />
     <Compile Include="Media\LinearResampler.Float32.cs" />
     <Compile Include="Media\NearestResampler.cs" />
+    <Compile Include="Media\NullCodec.cs" />
     <Compile Include="Media\OptimizedPixelConversion.cs" />
     <Compile Include="Media\PixelBox.cs" />
     <Compile Include="Media\PixelConverter.cs" />
     <Compile Include="Media\PixelUtil.cs" />
+    <Compile Include="Media\PVRTCCodec.cs" />
+    <Compile Include="OgreVersionAttribute.cs" />
     <Compile Include="Overlays\Elements\BorderPanel.cs" />
     <Compile Include="Overlays\Elements\Factories.cs" />
     <Compile Include="Overlays\Elements\Panel.cs" />
@@ -346,16 +372,18 @@
     <Compile Include="Scripting\Compiler\AST\ImportAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\ObjectAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\AST\PropertyAbstractNode.cs" />
-    <Compile Include="Scripting\Compiler\AST\VariableAccessAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableGetAbstractNode.cs" />
+    <Compile Include="Scripting\Compiler\AST\VariableSetAbstractNode.cs" />
     <Compile Include="Scripting\Compiler\CompileError.cs" />
     <Compile Include="Scripting\Compiler\ConcreteNode.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorPassTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTargetTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\CompositorTechniqueTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassClearTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassStencilTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTargetPassTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\CompositionTechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\CompositorTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\GpuProgramParametersTranslator.cs" />
+    <Compile Include="Scripting\Compiler\Generation\GpuProgramSharedParametersTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\GpuProgramTranslator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\HighLevelGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\MaterialTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleAffectorTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\ParticleEmitterTranslator.cs" />
@@ -364,7 +392,6 @@
     <Compile Include="Scripting\Compiler\Generation\TechniqueTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\TextureUnitTranslator.cs" />
     <Compile Include="Scripting\Compiler\Generation\Translator.cs" />
-    <Compile Include="Scripting\Compiler\Generation\UnifiedGpuProgramTranslator.cs" />
     <Compile Include="Scripting\Compiler\Keywords.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptLexer.cs" />
     <Compile Include="Scripting\Compiler\Parser\ScriptParser.cs" />
@@ -392,11 +419,11 @@
     <Compile Include="Serialization\StreamSerializer.cs" />
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Overlays\Overlays.cd" />
-    <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

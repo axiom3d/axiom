@@ -51,7 +51,6 @@ using Axiom.FileSystem;
 using Axiom.Fonts;
 using Axiom.Media;
 using Axiom.Overlays;
-using Axiom.Input;
 using Axiom.ParticleSystems;
 using Axiom.Graphics;
 
