@@ -11,7 +11,7 @@
     <OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem.Core, Version=0.4.0.41681, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="SharpInputSystem.Core">
       <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
