@@ -10,79 +10,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Man
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26813F-4527-477E-8068-272E10CF5C37}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Droid", "Core\Axiom\Axiom.Droid.csproj", "{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDC63BED-5686-4A70-A0F7-C383CE74F536}"
-	ProjectSection(SolutionItems) = preProject
-		..\ChangeLog.txt = ..\ChangeLog.txt
-		..\Credits.txt = ..\Credits.txt
-		..\license.txt = ..\license.txt
-		..\readme.txt = ..\readme.txt
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGLES.Droid", "Core\Axiom.RenderSystems.OpenGLES\Axiom.RenderSystems.OpenGLES.Droid.csproj", "{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5326DA77-945E-47D4-B9D8-D2AF047D5D63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Android", "Core\Axiom.Platforms.Android\Axiom.Platforms.Android.csproj", "{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E8E2F297-B384-4311-B5C0-F6AB9354D91B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Droid", "Axiom\Engine\Axiom.Droid.csproj", "{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGLES.Droid", "Axiom\RenderSystems\OpenGLES\Axiom.RenderSystems.OpenGLES.Droid.csproj", "{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Droid", "AxiomDemos\Source\Demos\Axiom.Demos.Droid.csproj", "{2851B1D7-F1B1-4647-A952-20569116299A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.Droid", "AxiomDemos\Source\Browser\Droid\Axiom.Demos.Browser.Droid.csproj", "{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platform.Android", "Axiom\Platforms\Axiom.Platform.Android\Axiom.Platform.Android.csproj", "{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGLES2.Droid", "Core\Axiom.RenderSystems.OpenGLES2\Axiom.RenderSystems.OpenGLES2.Droid.csproj", "{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Mono-Debug|Any CPU = Mono-Debug|Any CPU
-		Mono-Release|Any CPU = Mono-Release|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
 		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2851B1D7-F1B1-4647-A952-20569116299A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Mono-Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Mono-Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Mono-Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Mono-Release|Any CPU.Build.0 = Release|Any CPU
 		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,16 +50,6 @@ Global
 		{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
 		{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF} = {676C7702-0B62-4E50-8211-EA5BC21A5DF5}
 		{ACCC3F1A-00B6-4E48-8DAC-DAF5A59616E6} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
-		{2851B1D7-F1B1-4647-A952-20569116299A} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
-		{E49D57EE-104A-4614-B4F4-23FAD6C9C10C} = {2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}
-		{E8E2F297-B384-4311-B5C0-F6AB9354D91B} = {5326DA77-945E-47D4-B9D8-D2AF047D5D63}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		CodeStyleEnforcer_Active = -1
-		CodeStyleEnforcer_RulesLocation = 0
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		version = 0.1
-		StartupItem = AxiomDemos\Source\Browser\CommandLine\Axiom.Demos.Browser.CommandLine.OpenTK.2010.csproj
+		{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B} = {FC473D51-36A2-4437-BC06-92A8E92374B7}
 	EndGlobalSection
 EndGlobal

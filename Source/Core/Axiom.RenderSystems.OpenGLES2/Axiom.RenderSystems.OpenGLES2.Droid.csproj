@@ -51,7 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Droid.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Droid.csproj">
       <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
       <Name>Axiom.Droid</Name>
     </ProjectReference>
