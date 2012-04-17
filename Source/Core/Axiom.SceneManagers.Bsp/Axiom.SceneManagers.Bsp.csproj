@@ -79,9 +79,6 @@
       <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="axiom.scenemanager.bsp.module" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
 </Project>

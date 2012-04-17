@@ -39,9 +39,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="axiom.plugin.octreezone.module" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Axiom\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>

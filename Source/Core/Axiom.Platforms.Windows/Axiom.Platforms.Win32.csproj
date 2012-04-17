@@ -38,7 +38,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="axiom.platform.win32.module" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />

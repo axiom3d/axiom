@@ -22,7 +22,6 @@
   <ItemGroup>
     <Compile Include="Capsule.cs" />
     <Compile Include="DefaultZone.cs" />
-    <None Include="axiom.scenemanager.pcz.module" />
     <Compile Include="MovableObjectFactory.cs" />
     <Compile Include="PCPlane.cs" />
     <Compile Include="PCZCamera.cs" />
