@@ -61,7 +61,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.ParticleFX", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.SphereMapping", "Samples\Axiom.Samples.SphereMapping\Axiom.Samples.SphereMapping.csproj", "{A4A4146B-AA5E-4262-8370-DFC148C423B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Media", "Samples\Axiom.Samples.Media\Axiom.Samples.Media.csproj", "{82D00A5B-1943-4DDF-859A-7552F75CBF1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Media", "Samples\media\Axiom.Samples.Media.csproj", "{82D00A5B-1943-4DDF-859A-7552F75CBF1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.VolumeTexture", "Samples\Axiom.Samples.VolumeTexture\Axiom.Samples.VolumeTexture.csproj", "{0EDB7324-39CB-4BED-866C-1340037CFD5A}"
 EndProject
