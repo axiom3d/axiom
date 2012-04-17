@@ -39,7 +39,6 @@ using Axiom.Graphics;
 using Axiom.Core;
 using Axiom.Utilities;
 using System.Runtime.InteropServices;
-using Axiom.CrossPlatform;
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2
