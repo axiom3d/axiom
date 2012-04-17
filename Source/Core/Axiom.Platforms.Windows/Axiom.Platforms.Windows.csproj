@@ -8,8 +8,8 @@
     <ProjectGuid>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</ProjectGuid>
     <BaseAddress>285212672</BaseAddress>
     <OutputType>Library</OutputType>
-    <RootNamespace>Axiom.Platforms.Win32</RootNamespace>
-    <AssemblyName>Axiom.Platforms.Win32</AssemblyName>
+    <RootNamespace>Axiom.Platforms.Windows</RootNamespace>
+    <AssemblyName>Axiom.Platforms.Windows</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -24,7 +24,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Win32PlatformManager.cs">
+    <Compile Include="WindowsPlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">

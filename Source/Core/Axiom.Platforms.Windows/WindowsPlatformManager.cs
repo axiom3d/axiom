@@ -46,41 +46,17 @@ using Axiom.Input;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Platforms.Win32
+namespace Axiom.Platforms.Windows
 {
 	/// <summary>
-	///		Platform management specialization for Microsoft Windows (r) platform.
+	///	Platform management specialization for Microsoft Windows (r) platform.
 	/// </summary>
 	[Export( typeof ( IPlatformManager ) )]
-	public class Win32PlatformManager : IPlatformManager
+	public class WindowsPlatformManager : IPlatformManager
 	{
-		#region Fields
-
-		/// <summary>
-		///		Reference to the current input reader.
-		/// </summary>
-		private InputReader inputReader;
-
-		#endregion Fields
-
-		#region Construction and Destruction
-
-		public Win32PlatformManager()
+		public WindowsPlatformManager()
 		{
-			LogManager.Instance.Write( "Win32 Platform Manager Loaded." );
-		}
-
-		#endregion Construction and Destruction
-
-		#region IPlatformManager Members
-
-		/// <summary>
-		///		Creates an InputReader implemented using Microsoft DirectInput (tm).
-		/// </summary>
-		/// <returns></returns>
-		public InputReader CreateInputReader()
-		{
-			return inputReader;
+			LogManager.Instance.Write( "Windows Platform Manager Loaded." );
 		}
 
 		/// <summary>
@@ -88,13 +64,8 @@ namespace Axiom.Platforms.Win32
 		/// </summary>
 		public void Dispose()
 		{
-			if ( inputReader != null )
-			{
-				inputReader.Dispose();
-			}
 			LogManager.Instance.Write( "Win32 Platform Manager Shutdown." );
 		}
 
-		#endregion IPlatformManager Members
 	}
 }

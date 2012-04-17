@@ -51,10 +51,5 @@ namespace Axiom.Core
 	/// </summary>
 	public interface IPlatformManager : IDisposable
 	{
-		/// <summary>
-		///		Creates a new input reader implementation specific to this platform.
-		/// </summary>
-		/// <returns></returns>
-		InputReader CreateInputReader();
 	}
 }
