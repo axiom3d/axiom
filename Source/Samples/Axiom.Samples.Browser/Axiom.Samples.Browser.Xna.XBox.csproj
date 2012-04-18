@@ -97,10 +97,6 @@
       <Project>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</Project>
       <Name>Axiom.RenderSystems.Xna.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
-      <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>
-      <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.Xna.Xbox.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
       <Name>Axiom.Samples.Common.Xna.Xbox</Name>

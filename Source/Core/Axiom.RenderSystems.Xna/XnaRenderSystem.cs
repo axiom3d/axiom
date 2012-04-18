@@ -57,7 +57,6 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.Media;
-using Axiom.RenderSystems.Xna.HLSL;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -766,12 +765,12 @@ namespace Axiom.RenderSystems.Xna
 					}
 					else
 					{
-					    var rtBinding = new RenderTargetBinding[back.Length];
-					    for( var index = 0; index < back.Length; index++)
-					    {
-					        rtBinding[index] = new RenderTargetBinding(back[index]);
-					    }
-                        _device.SetRenderTargets(rtBinding);
+						var rtBinding = new RenderTargetBinding[back.Length];
+						for( var index = 0; index < back.Length; index++)
+						{
+							rtBinding[index] = new RenderTargetBinding(back[index]);
+						}
+						_device.SetRenderTargets(rtBinding);
 					}
 					/*
 					XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget[ "XNAZBUFFER" ];
@@ -2296,7 +2295,7 @@ namespace Axiom.RenderSystems.Xna
 			RenderWindow renderWindow = null;
 
 			// register the HLSL program manager
-			HighLevelGpuProgramManager.Instance.AddFactory(new HLSLProgramFactory());
+			//HighLevelGpuProgramManager.Instance.AddFactory(new HLSLProgramFactory());
 
 			StateManager = new StateManagement();
 			if (autoCreateWindow)

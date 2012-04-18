@@ -127,7 +127,7 @@
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.SL5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.2010.SL5.csproj">
+    <ProjectReference Include="..\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.SL5.csproj">
       <Project>{DBC0EB79-D257-4991-A8B4-C96A8E559BEF}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.2010.SL5</Name>
     </ProjectReference>
