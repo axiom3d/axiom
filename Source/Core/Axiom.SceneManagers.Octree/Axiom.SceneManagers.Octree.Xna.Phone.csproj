@@ -68,7 +68,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\MEF-WP7\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Phone\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -113,12 +113,12 @@
     <Compile Include="TerrainSceneManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Phone.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Phone.csproj">
       <Project>{78836526-6139-41E4-B034-8189F602712B}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
