@@ -137,19 +137,16 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpInputSystem.Xna">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Phone\SharpInputSystem.Xna.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Xbox360\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
+    <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
-    <Reference Include="system.xml, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL" />
-    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
+    <Reference Include="system.xml" />
+    <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
   </ItemGroup>

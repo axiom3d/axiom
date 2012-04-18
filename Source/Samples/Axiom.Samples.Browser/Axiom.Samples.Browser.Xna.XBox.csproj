@@ -140,9 +140,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="SharpInputSystem, Version=0.3.0.24681, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharpInputSystem.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Xbox360\SharpInputSystem.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Xbox360\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.Xna">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Xbox360\SharpInputSystem.Xna.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

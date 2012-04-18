@@ -101,7 +101,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.x86.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.x86.csproj">
       <Name>Axiom.Xna.x86</Name>
     </ProjectReference>
   </ItemGroup>
@@ -132,7 +132,7 @@
     <Compile Include="TerrainSceneManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>

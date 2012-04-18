@@ -48,7 +48,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AxiomContentManager.cs" />
@@ -83,7 +83,7 @@
     <None Include="axiom.tool.xna.content.Xbox.module" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.Xna.Phone.csproj">
+    <ProjectReference Include="..\Axiom\Axiom.Xna.Phone.csproj">
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
   </ItemGroup>

@@ -136,7 +136,7 @@
     <Compile Include="TerrainSceneManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>

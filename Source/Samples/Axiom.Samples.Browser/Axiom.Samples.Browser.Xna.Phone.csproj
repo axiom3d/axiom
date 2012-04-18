@@ -73,10 +73,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Phone\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Phone\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="SharpInputSystem.Xna">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\Phone\SharpInputSystem.Xna.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Phone\SharpInputSystem.Xna.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -117,7 +117,7 @@
       <Project>{1322BDDF-1627-4F3C-98F6-B3121C326F3C}</Project>
       <Name>Axiom.Framework.Xna.Phone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Engine\Axiom.Xna.Phone.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.Phone.csproj">
       <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>
