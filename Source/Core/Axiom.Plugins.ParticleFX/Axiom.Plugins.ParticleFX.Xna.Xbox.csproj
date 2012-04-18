@@ -227,12 +227,9 @@
     <Compile Include="Factories\ScaleAffectorFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="axiom.plugin.particlefx.xbox.module" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

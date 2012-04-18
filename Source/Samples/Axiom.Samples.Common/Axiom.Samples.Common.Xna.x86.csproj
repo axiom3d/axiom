@@ -141,7 +141,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\x86\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>

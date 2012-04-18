@@ -68,7 +68,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\MEF-WP7\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>$(SolutionDir)..\Lib\MEF\Phone\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -175,7 +175,7 @@
     <Compile Include="Factories\ScaleAffectorFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>

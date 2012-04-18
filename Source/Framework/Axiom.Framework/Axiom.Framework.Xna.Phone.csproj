@@ -153,7 +153,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Axiom\Engine\Axiom.Xna.Phone.csproj">
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Xna.Phone.csproj">
       <Project>{412B03AE-B099-45AA-B1DB-7C902C190B31}</Project>
       <Name>Axiom.Xna.Phone</Name>
     </ProjectReference>

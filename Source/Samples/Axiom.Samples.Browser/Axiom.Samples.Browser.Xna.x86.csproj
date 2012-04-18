@@ -115,10 +115,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\x86\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="SharpInputSystem.Xna">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Xna\x86\SharpInputSystem.Xna.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\x86\SharpInputSystem.Xna.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -135,6 +135,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom.Platforms.Xna\Axiom.Platforms.Xna.x86.csproj">
+      <Project>{8F0D1665-F1F5-43DA-8C44-A073594B2FA1}</Project>
+      <Name>Axiom.Platforms.Xna.x86</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Xna.x86.csproj">
       <Project>{7DB37793-DE53-428C-8C7D-E55CE1905FAE}</Project>
       <Name>Axiom.Framework.Xna.x86</Name>
@@ -151,7 +155,7 @@
       <Project>{05004B16-CAC1-45B7-A88A-DB56C1DD24B8}</Project>
       <Name>Axiom.RenderSystems.Xna.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
       <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
     </ProjectReference>
