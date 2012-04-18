@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 #if !(XBOX || XBOX360)
+using Expression = System.Linq.Expressions.Expression;
 #endif
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -16,7 +17,6 @@ using System.Diagnostics;
 #if SILVERLIGHT
 using System.Windows;
 #endif
-using Expression = System.Linq.Expressions.Expression;
 
 #endregion Namespace Declarations
 
