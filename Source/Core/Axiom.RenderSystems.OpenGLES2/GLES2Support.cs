@@ -5,12 +5,13 @@ using System.Text;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Collections;
+using Axiom.Graphics.Collections;
 using GL = OpenTK.Graphics.ES20.GL;
 using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
-    class GLES2Support : IDisposable
+    public class GLES2Support : IDisposable
     {
         private string version, vendor;
         private string shaderCachePath, shaderLibraryPath;

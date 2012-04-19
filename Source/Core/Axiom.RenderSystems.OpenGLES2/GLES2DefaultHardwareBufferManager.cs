@@ -45,7 +45,9 @@ namespace Axiom.RenderSystems.OpenGLES2
     {
         private static GLES2DefaultHardwareBufferManager _instance = null;
         public GLES2DefaultHardwareBufferManager()
-           
+        {
+        }
+
         protected override void dispose(bool disposeManagedResources)
         {
             _instance = null;
@@ -60,10 +62,13 @@ namespace Axiom.RenderSystems.OpenGLES2
             
             return base.CreateIndexBuffer(type, numIndices, usage, useShadowBuffer);
         }
-        public RenderToVertexBuffer CreateRenderToVertexBuffer()
-        {
- 
-        }
+
+        //TODO: Requires RenderToVertexBuffer support
+        //public RenderToVertexBuffer CreateRenderToVertexBuffer()
+        //{
+        //
+        //}
+
         public GLES2DefaultHardwareBufferManager Instance
         {
             get

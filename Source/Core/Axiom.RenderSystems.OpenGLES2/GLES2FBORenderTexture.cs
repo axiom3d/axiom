@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Axiom.Graphics;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 namespace Axiom.RenderSystems.OpenGLES2
@@ -17,7 +18,7 @@ namespace Axiom.RenderSystems.OpenGLES2
     {
         private GLES2FrameBufferObject fb;
         static int PROBE_SIZE = 16;
-        static const GLenum[] stencilFormats = new GLenum[] 
+        static readonly GLenum[] stencilFormats = new GLenum[] 
         {
             GLenum.None,
             GLenum.StencilIndex1Oes,
@@ -25,7 +26,7 @@ namespace Axiom.RenderSystems.OpenGLES2
             GLenum.StencilIndex8,
            
         };
-        static const GLenum[] depthFormats = new GLenum[]
+        static readonly GLenum[] depthFormats = new GLenum[]
         {
             GLenum.None,
             GLenum.DepthComponent16,

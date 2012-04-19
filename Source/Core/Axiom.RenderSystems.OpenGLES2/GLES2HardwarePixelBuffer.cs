@@ -9,7 +9,7 @@ using GL = OpenTK.Graphics.ES20.GL;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
-    class GLES2HardwarePixelBuffer : HardwarePixelBuffer
+    public class GLES2HardwarePixelBuffer : HardwarePixelBuffer
     {
 
         protected PixelBox buffer;
@@ -161,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGLES2
                 {
                     //Just copy the bit that we need
                     //todo
-                    PixelUtil.BulkPixelConversion(buffer.GetSubVolume(srcBox, dst);
+                    //PixelConverter.BulkPixelConversion(buffer.GetSubVolume(srcBox, dst));
                 }
 
                 FreeBuffer();
@@ -537,7 +537,8 @@ namespace Axiom.RenderSystems.OpenGLES2
             return sliceTRT[slice];
         }
     }
-    class GLES2RenderBuffer : GLES2HardwarePixelBuffer
+
+    public class GLES2RenderBuffer : GLES2HardwarePixelBuffer
     {
         int renderBufferID;
 

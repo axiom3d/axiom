@@ -14,7 +14,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
     static class GLES2InternalShaders
     {
-        public static enum InternalShader
+        public enum InternalShader
         {
             ES2_LightingShader
         }
