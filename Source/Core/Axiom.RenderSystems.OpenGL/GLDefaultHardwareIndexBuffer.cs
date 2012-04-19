@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Axiom.CrossPlatform;
+using Axiom.Core;
 using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL

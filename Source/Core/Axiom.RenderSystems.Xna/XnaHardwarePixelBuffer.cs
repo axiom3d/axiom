@@ -79,10 +79,12 @@ namespace Axiom.RenderSystems.Xna
         ///</summary>
         protected RenderTarget2D fsaaSurface;
 
+#if !SILVERLIGHT
         ///<summary>
         ///    Volume abstracted by this buffer
         ///</summary>
         protected Texture3D volume;
+#endif
 
         protected TextureCube cube;
 
@@ -91,10 +93,12 @@ namespace Axiom.RenderSystems.Xna
         ///</summary>
         protected Texture2D tempSurface;
 
+#if !SILVERLIGHT
         ///<summary>
         ///    Temporary volume in main memory if direct locking of mVolume is not possible
         ///</summary>
         protected Texture3D tempVolume;
+#endif
 
         ///<summary>
         ///    Doing Mipmapping?
@@ -164,9 +168,11 @@ namespace Axiom.RenderSystems.Xna
         {
             device = null;
             surface = null;
-            volume = null;
             tempSurface = null;
+#if !SILVERLIGHT
+            volume = null;
             tempVolume = null;
+#endif
             doMipmapGen = false;
             HWMipmaps = false;
             mipTex = null;
@@ -182,8 +188,7 @@ namespace Axiom.RenderSystems.Xna
         ///<param name="usage"></param>
         ///<param name="useSystemMemory"></param>
         ///<param name="useShadowBuffer"></param>
-        public XnaHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage,
-                                       bool useSystemMemory, bool useShadowBuffer )
+        public XnaHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
             : base( width, height, depth, format, usage, useSystemMemory, useShadowBuffer )
         {
         }
@@ -254,7 +259,7 @@ namespace Axiom.RenderSystems.Xna
                 CreateRenderTextures( update );
         }
 
-
+#if !SILVERLIGHT
         ///<summary>
         ///    Call this to associate a Xna Texture3D with this pixel buffer
         ///</summary>
@@ -275,6 +280,7 @@ namespace Axiom.RenderSystems.Xna
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
                 CreateRenderTextures( update );
         }
+#endif
 
         ///<summary>
         ///    Create (or update) render textures for slices
@@ -440,15 +446,10 @@ namespace Axiom.RenderSystems.Xna
                 surface.SetData(mipLevel, XnaHelper.ToRectangle(_lockedBox), _bufferBytes, 0, _bufferBytes.Length);
             else if (cube != null)
                 cube.SetData(face, mipLevel, XnaHelper.ToRectangle(_lockedBox), _bufferBytes, 0, _bufferBytes.Length);
+#if !SILVERLIGHT
             else
-                volume.SetData( mipLevel,
-#if SILVERLIGHT
-                                XnaHelper.ToRectangle( _lockedBox ),
-#else
-                                _lockedBox.Left, _lockedBox.Top, _lockedBox.Right, 
-                                _lockedBox.Bottom, _lockedBox.Front, _lockedBox.Back,
+                volume.SetData( mipLevel, _lockedBox.Left, _lockedBox.Top, _lockedBox.Right, _lockedBox.Bottom, _lockedBox.Front, _lockedBox.Back, _bufferBytes, 0, _bufferBytes.Length );
 #endif
-                                _bufferBytes, 0, _bufferBytes.Length );
         }
 
         public override RenderTexture GetRenderTarget( int slice )

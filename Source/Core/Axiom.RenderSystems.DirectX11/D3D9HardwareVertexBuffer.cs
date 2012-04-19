@@ -37,7 +37,6 @@ using System;
 using System.Collections.Generic;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Utilities;

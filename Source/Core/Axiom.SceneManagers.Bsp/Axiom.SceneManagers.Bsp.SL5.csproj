@@ -66,10 +66,10 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="XdotNet.mscorlib">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,7 +120,7 @@
     <Compile Include="Collections\ShaderPassCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+    <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>

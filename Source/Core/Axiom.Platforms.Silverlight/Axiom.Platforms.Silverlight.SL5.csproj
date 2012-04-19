@@ -55,28 +55,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ImageTools">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.Controls">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Controls.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.Controls.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.Filtering">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Filtering.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.Filtering.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.IO.Bmp">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Bmp.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.IO.Bmp.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.IO.Gif">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Gif.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.IO.Gif.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.IO.Jpeg">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Jpeg.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.IO.Jpeg.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.IO.Png">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.IO.Png.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.IO.Png.dll</HintPath>
     </Reference>
     <Reference Include="ImageTools.Utils">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\ImageTools.Utils.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\ImageTools.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="zxing.Silverlight">
+      <HintPath>$(SolutionDir)\..\Lib\ImageTools\SL4\zxing.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -87,9 +90,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows.Browser" />
-    <Reference Include="zxing.Silverlight">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ImageTools\SL4\zxing.Silverlight.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BilinearResizer.cs" />

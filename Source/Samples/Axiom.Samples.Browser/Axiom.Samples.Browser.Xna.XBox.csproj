@@ -42,6 +42,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\Source\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <OutputPath>..\bin\Xbox\</OutputPath>
@@ -132,9 +134,8 @@
     <Reference Include="Microsoft.Xna.Framework.Xact">
       <Private>False</Private>
     </Reference>
-    <Reference Include="mscorlib, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
       <SpecificVersion>False</SpecificVersion>
@@ -144,24 +145,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Xbox360\SharpInputSystem.Xna.dll</HintPath>
     </Reference>
-    <Reference Include="System, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\System.Core.dll</HintPath>
+    <Reference Include="System">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Xml, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\System.Xml.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=1c9e259686f921e0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.1\References\Xbox360\System.Xml.Linq.dll</HintPath>
+    <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
+    <Reference Include="system.xml" />
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+    </Reference>
+
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Content\Content.contentproj">
@@ -204,4 +198,5 @@
     <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
 if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

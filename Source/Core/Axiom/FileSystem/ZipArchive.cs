@@ -51,7 +51,7 @@ using System.Windows;
 #endif
 using Axiom.Core;
 
-using ICSharpCode.SharpZipLib.Zip;
+using Ionic.Zip;
 
 #endregion Namespace Declarations
 
@@ -78,7 +78,7 @@ namespace Axiom.FileSystem
 		protected string _zipFile;
 
 		protected string _zipDir = "/";
-		protected ZipInputStream _zipStream;
+		protected ZipFile _zipStream;
 		protected List<FileInfo> _fileList = new List<FileInfo>();
 
 		#endregion Fields and Properties
@@ -111,18 +111,16 @@ namespace Axiom.FileSystem
 			}
 
 			Load();
-
-			var entry = _zipStream.GetNextEntry();
 			if ( pattern.Contains( "*" ) )
 			{
 				pattern = pattern.Replace( ".", Path.DirectorySeparatorChar + "." ).Replace( "*", ".*" );
 			}
 			var ex = new Regex( pattern );
 
-			while ( entry != null )
+			foreach (var entry in _zipStream)
 			{
 				// get the full path for the output file
-				var file = entry.Name;
+				var file = entry.FileName;
 				if ( ex.IsMatch( file ) )
 				{
 					if ( simpleList != null )
@@ -133,18 +131,17 @@ namespace Axiom.FileSystem
 					{
 						FileInfo fileInfo;
 						fileInfo.Archive = this;
-						fileInfo.Filename = entry.Name;
-						fileInfo.Basename = Path.GetFileName( entry.Name );
-						fileInfo.Path = Path.GetDirectoryName( entry.Name ) + Path.DirectorySeparatorChar;
+						fileInfo.Filename = entry.FileName;
+						fileInfo.Basename = Path.GetFileName( entry.FileName );
+						fileInfo.Path = Path.GetDirectoryName( entry.FileName ) + Path.DirectorySeparatorChar;
 						fileInfo.CompressedSize = entry.CompressedSize;
-						fileInfo.UncompressedSize = entry.Size;
-						fileInfo.ModifiedTime = entry.DateTime;
+						fileInfo.UncompressedSize = entry.UncompressedSize;
+						fileInfo.ModifiedTime = entry.CreationTime;
 						detailList.Add( fileInfo );
 					}
 				}
-
-				entry = _zipStream.GetNextEntry();
 			}
+
 		}
 
 		#endregion Utility Methods
@@ -179,7 +176,7 @@ namespace Axiom.FileSystem
 		/// </summary>
 		public override void Load()
 		{
-			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream.Available == 0 )
+			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream == null )
 			{
 				// read the open the zip archive
 				Stream fs = null;
@@ -200,8 +197,8 @@ namespace Axiom.FileSystem
 					_zipFile = Name.Replace( '/', '.' );
 
 					var assemblyContent = ( from assembly in AssemblyEx.Neighbors()
-					                        where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
-					                        select assembly ).FirstOrDefault();
+											where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
+											select assembly ).FirstOrDefault();
 					if ( assemblyContent != null )
 					{
 						fs = assemblyContent.GetManifestResourceStream( _zipFile );
@@ -234,7 +231,7 @@ namespace Axiom.FileSystem
 				fs.Position = 0;
 
 				// get a input stream from the zip file
-				_zipStream = new ZipInputStream( fs );
+				_zipStream = ZipFile.Read( fs );
 				//ZipEntry entry = _zipStream.GetNextEntry();
 				//Regex ex = new Regex( pattern );
 
@@ -266,7 +263,6 @@ namespace Axiom.FileSystem
 		{
 			if ( _zipStream != null )
 			{
-				_zipStream.Close();
 				_zipStream.Dispose();
 				_zipStream = null;
 			}
@@ -280,52 +276,20 @@ namespace Axiom.FileSystem
 		/// <returns></returns>
 		public override Stream Open( string filename, bool readOnly )
 		{
-			ZipEntry entry;
-
-			// we will put the decompressed data into a memory stream
-			var output = new MemoryStream();
-
 			Load();
 
-			// get the first entry 
-			entry = _zipStream.GetNextEntry();
-
-			// loop through all the entries until we find the requested one
-			while ( entry != null )
+			if (_zipStream.ContainsEntry( filename ) )
 			{
-				if ( entry.Name.ToLower() == filename.ToLower() )
-				{
-					break;
-				}
+				var entry = _zipStream[ filename ];
+				var output = new MemoryStream();
+				entry.Extract(output);
 
-				// look at the next file in the list
-				entry = _zipStream.GetNextEntry();
+				// reset the position to make sure it is at the beginning of the stream
+				output.Position = 0;
+				return output;
 			}
 
-			if ( entry == null )
-			{
-				return null;
-			}
-
-			// write the data to the output stream
-			var size = 2048;
-			var data = new byte[ 2048 ];
-			while ( true )
-			{
-				size = _zipStream.Read( data, 0, data.Length );
-				if ( size > 0 )
-				{
-					output.Write( data, 0, size );
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			// reset the position to make sure it is at the beginning of the stream
-			output.Position = 0;
-			return output;
+			return null;
 		}
 
 		/// <summary>

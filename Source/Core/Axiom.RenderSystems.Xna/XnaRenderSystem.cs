@@ -2253,7 +2253,11 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns>An API specific implementation of an occlusion query.</returns>
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
+#if !SILVERLIGHT
 			return new XnaHardwareOcclusionQuery(_device);
+#else
+		    throw new NotSupportedException("HardwareOcclusionQueries are not supported by Silverlight 5.");
+#endif
 		}
 
 		#endregion
@@ -3924,6 +3928,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public object GetService(Type serviceType)
 		{
+#if !SILVERLIGHT
 			if (serviceType == typeof(IGraphicsDeviceService))
 			{
 				foreach (var item in renderTargets)
@@ -3934,6 +3939,7 @@ namespace Axiom.RenderSystems.Xna
 						return service;
 					}
 				}
+#endif
 
 			return null;
 		}

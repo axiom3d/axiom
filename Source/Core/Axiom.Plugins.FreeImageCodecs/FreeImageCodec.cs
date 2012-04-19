@@ -38,7 +38,6 @@ using System.IO;
 using System.Text;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Media;
 
 using FI = FreeImageAPI;
