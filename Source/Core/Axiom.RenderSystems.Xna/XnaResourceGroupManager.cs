@@ -42,8 +42,8 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Media;
 using System.Windows.Media.Imaging;
-using Axiom.RenderSystems.Xna.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Axiom.RenderSystems.Xna.Content;
 
 #endregion Namespace Declarations
 

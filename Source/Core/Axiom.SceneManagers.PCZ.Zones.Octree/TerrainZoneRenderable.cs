@@ -43,7 +43,6 @@ using System.Diagnostics;
 
 using Axiom.Collections;
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -273,9 +272,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		public
+	unsafe
 #endif
-			unsafe void Initialize( int startx, int startz, Real[] pageHeightData )
+		public void Initialize(int startx, int startz, Real[] pageHeightData)
 		{
 			if ( mOptions.maxGeoMipMapLevel != 0 )
 			{
@@ -898,9 +897,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		public
+		unsafe
 #endif
-			unsafe void CalculateNormals()
+		public void CalculateNormals()
 		{
 			var norm = Vector3.Zero;
 
@@ -930,9 +929,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		public
+		unsafe
 #endif
-			unsafe void CalculateMinLevelDist2( Real C )
+			public void CalculateMinLevelDist2( Real C )
 		{
 			//level 0 has no delta.
 			mMinLevelDistSqr[ 0 ] = 0;
@@ -948,7 +947,7 @@ namespace OctreeZone
 				var higherstep = step >> 1;
 
 #if AXIOM_SAFE_ONLY
-                ITypePointer<float> pDeltas = null;
+				ITypePointer<float> pDeltas = null;
 #else
 				float* pDeltas = null;
 #endif
@@ -1380,9 +1379,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		public
+		unsafe
 #endif
-			unsafe IndexData GenerateTriListIndexes( uint stitchFlags )
+			public IndexData GenerateTriListIndexes( uint stitchFlags )
 		{
 			var numIndexes = 0;
 			var step = 1 << mRenderLevel;
@@ -1491,9 +1490,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		public
+		unsafe
 #endif
-			unsafe int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, BufferBase ppIdx )
+			public int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, BufferBase ppIdx )
 		{
 			Debug.Assert( loLOD > hiLOD, "TerrainZoneRenderable.StitchEdge" );
 			/*

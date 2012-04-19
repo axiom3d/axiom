@@ -46,6 +46,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ProjectGuid>{1AF381FE-64CF-45E5-BC1F-72F4D7D45820}</ProjectGuid>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\Source\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Windows Phone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +125,9 @@
     <Reference Include="SharpInputSystem.Core">
       <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Phone\SharpInputSystem.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Phone\SharpInputSystem.Xna.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -168,4 +173,5 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

@@ -85,10 +85,12 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		private TextureCube _cubeTexture;
 
+#if !SILVERLIGHT
 		/// <summary>
 		///     3D volume texture.
 		/// </summary>
 		private Texture3D _volumeTexture;
+#endif
 
 		/// <summary>
 		///     Render surface depth/stencil buffer.
@@ -186,7 +188,7 @@ namespace Axiom.RenderSystems.Xna
 				return _cubeTexture;
 			}
 		}
-
+#if !SILVERLIGHT
 		public Texture3D VolumeTexture
 		{
 			get
@@ -194,6 +196,7 @@ namespace Axiom.RenderSystems.Xna
 				return _volumeTexture;
 			}
 		}
+#endif
 
 		public DepthFormat DepthStencilFormat
 		{
@@ -203,14 +206,14 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-        public bool IsPowerOfTwo
-        {
-            [AxiomHelper( 0, 9 )]
-            get
-            {
-                return ( width & ( width - 1 ) ) == 0 && ( height & ( height - 1 ) ) == 0;
-            }
-        }
+		public bool IsPowerOfTwo
+		{
+			[AxiomHelper( 0, 9 )]
+			get
+			{
+				return ( width & ( width - 1 ) ) == 0 && ( height & ( height - 1 ) ) == 0;
+			}
+		}
 
 		//public XFG.DepthStencilBuffer DepthStencil
 		//{
@@ -379,6 +382,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 
 				case TextureType.ThreeD:
+#if !SILVERLIGHT
 					Debug.Assert( _volumeTexture != null, "texture must be intialized." );
 
 					// For all mipmaps, store surfaces as HardwarePixelBuffer
@@ -388,7 +392,9 @@ namespace Axiom.RenderSystems.Xna
 					{
 						GetSurfaceAtLevel( 0, mip ).Bind( _device, _volumeTexture, updateOldList );
 					}
-
+#else
+					throw new NotSupportedException("TextureType.ThreeD is not supported in Silverlight 5.");
+#endif
 					break;
 			}
 
@@ -476,11 +482,13 @@ namespace Axiom.RenderSystems.Xna
 				_cubeTexture = null;
 			}
 
+#if !SILVERLIGHT
 			if ( _volumeTexture != null )
 			{
 				_volumeTexture.Dispose();
 				_volumeTexture = null;
 			}
+#endif
 		}
 
 		private void ConstructCubeFaceNames( string name )
@@ -581,8 +589,8 @@ namespace Axiom.RenderSystems.Xna
 					image.Dispose();
 				}
 
-                if (stream != null)
-                    stream.Close();
+				if (stream != null)
+					stream.Close();
 			}
 #endif
 		}
@@ -642,6 +650,9 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		private void LoadVolumeTexture()
 		{
+#if SILVERLIGHT
+			throw new NotSupportedException("TextureType.ThreeD is not supported in Silverlight 5.");
+#else
 			Debug.Assert( TextureType == TextureType.ThreeD );
 			if ( Root.Instance.RenderSystem.ConfigOptions[ "Use Content Pipeline" ].Value == "Yes" )
 			{
@@ -650,25 +661,6 @@ namespace Axiom.RenderSystems.Xna
 				_texture = _volumeTexture;
 				internalResourcesCreated = true;
 			}
-#if !( XBOX || XBOX360 )
-			//TODO: XNA40 removed Texture3D.FromFile
-
-			//else
-			//{
-			//    Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
-			//    // load the cube texture from the image data stream directly
-			//    _volumeTexture = XFG.Texture3D.FromFile( _device, stream );
-
-			//    // store off a base reference
-			//    _texture = _volumeTexture;
-
-			//    // set src and dest attributes to the same, we can't know
-			//    stream.Position = 0;
-			//    SetSrcAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
-			//    SetFinalAttributes(_volumeTexture.Width, _volumeTexture.Height, _volumeTexture.Depth, XnaHelper.Convert(_volumeTexture.Format));
-			//    stream.Close();
-			//    internalResourcesCreated = true;
-			//}
 #endif
 		}
 
@@ -1017,10 +1009,12 @@ namespace Axiom.RenderSystems.Xna
 				{
 					_cubeTexture.Dispose();
 				}
+#if !SILVERLIGHT
 				if ( _volumeTexture != null )
 				{
 					_volumeTexture.Dispose();
 				}
+#endif
 			}
 		}
 

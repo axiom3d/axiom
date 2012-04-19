@@ -19,6 +19,9 @@
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip">
+      <HintPath>$(SolutionDir)\..\Lib\DotNetZip\sl\Ionic.Zip.Axiom.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'!='v3.5' " />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
@@ -46,12 +49,6 @@
     <Reference Include="XdotNet.System.Xml">
       <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.Xml.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\..\Dependencies\SharpZipLib.Silverlight\SharpZipLib.2010.SL5.csproj">
-      <Project>{8B7CF854-73A1-4882-B317-07625C13A425}</Project>
-      <Name>SharpZipLib.2010.SL5</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ICopyable.cs" />

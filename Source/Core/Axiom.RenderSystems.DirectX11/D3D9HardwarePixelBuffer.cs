@@ -39,7 +39,6 @@ using System.Diagnostics;
 using System.Linq;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Media;
 

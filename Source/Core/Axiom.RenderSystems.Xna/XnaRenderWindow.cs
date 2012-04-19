@@ -65,7 +65,10 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// The Xna implementation of the RenderWindow class.
 	/// </summary>
-	public class XnaRenderWindow : RenderWindow, IGraphicsDeviceService
+	public class XnaRenderWindow : RenderWindow
+#if !SILVERLIGHT
+        , IGraphicsDeviceService
+#endif
 	{
 		#region Fields and Properties
 

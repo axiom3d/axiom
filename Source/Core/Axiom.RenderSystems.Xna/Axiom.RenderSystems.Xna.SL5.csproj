@@ -20,6 +20,7 @@
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
@@ -55,6 +56,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Content, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Graphics" />
     <Reference Include="Microsoft.Xna.Framework.Graphics.Extensions, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework.Graphics.Shaders" />
@@ -66,70 +68,75 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Xna" />
     <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.Xna.Framework.Toolkit">
+      <HintPath>$(SolutionDir)\..\Lib\SilverlightToolkit\dec11\Microsoft.Xna.Framework.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="XdotNet.mscorlib">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.mscorlib.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System">
-      <HintPath>..\..\..\..\Lib\Managed\XPlatform\XdotNet\XdotNet.System.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.System.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AxiomContentManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DisplayMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\Driver.cs" />
-    <Compile Include="Source\DriverCollection.cs" />
-    <Compile Include="Source\ExtensionMethods.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionProgram.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionProgramsParameters.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\FixedFunctionState.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\GeneralFixedFunctionState.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\HLSLFixedFunctionProgram.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\HLSLShaderGenerator.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\Serializer.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\ShaderGenerator.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\ShaderManager.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\TextureLayerState.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\VertexBufferDeclaration.cs" />
-    <Compile Include="Source\FixedFunctionEmulation\VertexBufferElement.cs" />
-    <Compile Include="Source\HLSL\HLSLIncludeHandler.cs" />
-    <Compile Include="Source\HLSL\HLSLProgram.cs" />
-    <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
-    <Compile Include="Source\Plugin.cs" />
-    <Compile Include="Source\StateManagement.cs" />
-    <Compile Include="Source\VideoMode.cs" />
-    <Compile Include="Source\VideoModeCollection.cs" />
-    <Compile Include="Source\XnaCodec.cs" />
-    <Compile Include="Source\XnaGamerServices.cs" />
-    <Compile Include="Source\XnaGpuProgram.cs" />
-    <Compile Include="Source\XnaGpuProgramManager.cs" />
-    <Compile Include="Source\XnaHardwareBufferManager.cs" />
-    <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
-    <Compile Include="Source\XnaHardwareOcclusionQuery.cs" />
-    <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
-    <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
-    <Compile Include="Source\XnaHelper.cs" />
-    <Compile Include="Source\XnaMaterial.cs" />
-    <Compile Include="Source\XnaMaterialManager.cs" />
-    <Compile Include="Source\XnaPass.cs" />
-    <Compile Include="Source\XnaRenderSystem.Capabilities.cs" />
-    <Compile Include="Source\XnaRenderSystem.cs" />
-    <Compile Include="Source\XnaRenderTexture.cs" />
-    <Compile Include="Source\XnaRenderWindow.cs" />
-    <Compile Include="Source\XnaResourceGroupManager.cs" />
-    <Compile Include="Source\XnaTechnique.cs" />
-    <Compile Include="Source\XnaTexture.cs" />
-    <Compile Include="Source\XnaTextureManager.cs" />
-    <Compile Include="Source\XnaTextureStageDescription.cs" />
-    <Compile Include="Source\XnaTextureType.cs" />
-    <Compile Include="Source\XnaVertexDeclaration.cs" />
+    <Compile Include="Driver.cs" />
+    <Compile Include="DriverCollection.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="FixedFunctionEmulation\FixedFunctionProgram.cs" />
+    <Compile Include="FixedFunctionEmulation\FixedFunctionProgramsParameters.cs" />
+    <Compile Include="FixedFunctionEmulation\FixedFunctionState.cs" />
+    <Compile Include="FixedFunctionEmulation\GeneralFixedFunctionState.cs" />
+    <Compile Include="FixedFunctionEmulation\HLSLFixedFunctionProgram.cs" />
+    <Compile Include="FixedFunctionEmulation\HLSLShaderGenerator.cs" />
+    <Compile Include="FixedFunctionEmulation\Serializer.cs" />
+    <Compile Include="FixedFunctionEmulation\ShaderGenerator.cs" />
+    <Compile Include="FixedFunctionEmulation\ShaderManager.cs" />
+    <Compile Include="FixedFunctionEmulation\TextureLayerState.cs" />
+    <Compile Include="FixedFunctionEmulation\VertexBufferDeclaration.cs" />
+    <Compile Include="FixedFunctionEmulation\VertexBufferElement.cs" />
+    <Compile Include="HLSL\HLSLIncludeHandler.cs" />
+    <Compile Include="HLSL\HLSLProgram.cs" />
+    <Compile Include="HLSL\HLSLProgramFactory.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="StateManagement.cs" />
+    <Compile Include="VideoMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VideoModeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XnaCodec.cs" />
+    <Compile Include="XnaGpuProgram.cs" />
+    <Compile Include="XnaGpuProgramManager.cs" />
+    <Compile Include="XnaHardwareBufferManager.cs" />
+    <Compile Include="XnaHardwareIndexBuffer.cs" />
+    <Compile Include="XnaHardwarePixelBuffer.cs" />
+    <Compile Include="XnaHardwareVertexBuffer.cs" />
+    <Compile Include="XnaHelper.cs" />
+    <Compile Include="XnaMaterial.cs" />
+    <Compile Include="XnaMaterialManager.cs" />
+    <Compile Include="XnaPass.cs" />
+    <Compile Include="XnaRenderSystem.Capabilities.cs" />
+    <Compile Include="XnaRenderSystem.cs" />
+    <Compile Include="XnaRenderTexture.cs" />
+    <Compile Include="XnaRenderWindow.cs" />
+    <Compile Include="XnaResourceGroupManager.cs" />
+    <Compile Include="XnaTechnique.cs" />
+    <Compile Include="XnaTexture.cs" />
+    <Compile Include="XnaTextureManager.cs" />
+    <Compile Include="XnaTextureStageDescription.cs" />
+    <Compile Include="XnaTextureType.cs" />
+    <Compile Include="XnaVertexDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Axiom\Axiom.SL5.csproj">
       <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
       <Name>Axiom.SL5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.SL5.csproj">
-      <Project>{DBC0EB79-D257-4991-A8B4-C96A8E559BEF}</Project>
-      <Name>Axiom.RenderSystems.Xna.Content.2010.SL5</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

@@ -12,8 +12,8 @@
     <AssemblyName>Axiom</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>$(SolutionDir)\..\Lib\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="Ionic.Zip">
+      <HintPath>$(SolutionDir)\..\Lib\DotNetZip\x86\Ionic.Zip.Axiom.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

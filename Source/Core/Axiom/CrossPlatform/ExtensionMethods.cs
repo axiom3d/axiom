@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 #if !(XBOX || XBOX360)
+using System.Linq.Expressions;
+
 using Expression = System.Linq.Expressions.Expression;
 #endif
 using System.Reflection;

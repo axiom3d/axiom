@@ -36,7 +36,6 @@
 using System;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Media;
 
 using Tao.DevIl;

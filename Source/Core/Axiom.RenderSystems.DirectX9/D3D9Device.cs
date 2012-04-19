@@ -39,7 +39,6 @@ using System.Linq;
 using System.Threading;
 
 using Axiom.Core;
-using Axiom.CrossPlatform;
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.Helpers;
