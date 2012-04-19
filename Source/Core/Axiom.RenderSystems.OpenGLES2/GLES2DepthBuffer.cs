@@ -86,11 +86,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( _depthBuffer != null )
 			{
-                switch (_depthBuffer.GLFormat)
-                {
-                    case OpenTK.Graphics.ES20.All.DepthComponent16:
-                      
-                }
+				switch (_depthBuffer.GLFormat)
+				{
+					case OpenTK.Graphics.ES20.All.DepthComponent16:
+					  
+				}
 			}
 
 		}
@@ -104,12 +104,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 			return base.IsCompatible( renderTarget );
 		}
 
-        
-        public GLES2Context CreatorContext
-        { }
-        public GLES2RenderBuffer DepthBuffer
-        { }
-        public GLES2DepthBuffer StencilBuffer
-        { }
-    }
+
+		public GLES2Context CreatorContext { get; protected set; }
+		public GLES2RenderBuffer DepthBuffer { get; protected set; }
+		public GLES2DepthBuffer StencilBuffer { get; protected set; }
+	}
 }

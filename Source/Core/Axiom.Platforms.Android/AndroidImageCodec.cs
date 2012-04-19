@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -101,7 +102,15 @@ namespace Axiom.Platform.Android
 
 		#region ImageCodec Implementation
 
-		public override object Decode( System.IO.Stream input, System.IO.Stream output, params object[] args )
+		public override string Type
+		{
+			get
+			{
+				return _imageType;
+			}
+		}
+
+		public override Media.Codec.DecodeResult Decode(System.IO.Stream input)
 		{
 			ImageData data = new ImageData();
 
@@ -141,17 +150,16 @@ namespace Axiom.Platform.Android
 				// Start writing from bottom row, to effectively flip it in Y-axis
 				bitmap.GetPixels( pixels, pixels.Length - bitmap.Width, -bitmap.Width, 0, 0, bitmap.Width, bitmap.Height );
 
-				IntPtr sourcePtr = Memory.PinObject( pixels );
+				var sourcePtr = Memory.PinObject( pixels );
 				byte[] outputBytes = new byte[ bitmap.Width * bitmap.Height * Marshal.SizeOf( typeof( int ) ) ];
 
-				IntPtr destPtr = Memory.PinObject( outputBytes );
+				var destPtr = Memory.PinObject( outputBytes );
 
 				Memory.Copy( sourcePtr, destPtr, outputBytes.Length );
 
+				var output = new MemoryStream( outputBytes );				
 
-				output.Write( outputBytes, 0, outputBytes.Length );
-
-				return data;
+				return new DecodeResult( output, data );
 			}
 			finally
 			{
@@ -162,23 +170,20 @@ namespace Axiom.Platform.Android
 			}
 		}
 
-		public override void Encode( System.IO.Stream input, System.IO.Stream output, params object[] args )
+		public override System.IO.Stream Encode(System.IO.Stream input, Media.Codec.CodecData data)
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void EncodeToFile( System.IO.Stream input, string fileName, object codecData )
+		public override void EncodeToFile(System.IO.Stream input, string outFileName, Media.Codec.CodecData data)
 		{
 			throw new NotImplementedException();
 		}
 
 
-		public override string Type
+		public override string MagicNumberToFileExt(byte[] magicNumberBuf, int maxBytes)
 		{
-			get
-			{
-				return _imageType;
-			}
+			throw new NotImplementedException();
 		}
 
 		#endregion ImageCodec Implementation

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Axiom.Core;
 using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGLES2
@@ -15,7 +16,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         private IntPtr _scratchPtr;
         bool _scratchUploadOnUnlock;
 
-        public GLES2HardwareVertexBuffer(HardwareBufferManager manager, int vertexSize, int numVertices, dynamic usage, bool useShadowBuffer)
+        public GLES2HardwareVertexBuffer(HardwareBufferManager manager, int vertexSize, int numVertices,  BufferUsage usage, bool useShadowBuffer)
         { }
 
 

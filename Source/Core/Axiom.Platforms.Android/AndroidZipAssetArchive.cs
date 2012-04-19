@@ -49,7 +49,7 @@ using Android.Widget;
 
 using Axiom.FileSystem;
 using Android.Content.Res;
-using ICSharpCode.SharpZipLib.Zip;
+using Ionic.Zip;
 using System.IO;
 
 #endregion Namespace Declarations
@@ -86,7 +86,7 @@ namespace Axiom.Platform.Android
 				ms.Position = 0;
 
 				// get a input stream from the zip file
-				_zipStream = new ZipInputStream( ms );				
+				_zipStream = ZipFile.Read( ms );				
 			//}
 		}
 
