@@ -41,7 +41,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\sl\Debug\</OutputPath>
+    <OutputPath>bin\sl\</OutputPath>
     <DefineConstants>TRACE;DEBUG;SILVERLIGHT;NO_SFX;READ_ONLY</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
@@ -55,7 +55,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\sl\Release\</OutputPath>
+    <OutputPath>bin\sl\</OutputPath>
     <DefineConstants>TRACE;SILVERLIGHT;NO_SFX;READ_ONLY</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>

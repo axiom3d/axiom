@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox\Debug</OutputPath>
+    <OutputPath>bin\Xbox</OutputPath>
     <DefineConstants>TRACE;DEBUG;XBOX;XBOX360;NO_SFX;READ_ONLY;SILVERLIGHT;NETCF</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,8 +32,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
-    <DefineConstants>TRACE;XBOX;XBOX360;NO_SFX;READ_ONLY</DefineConstants>
+    <OutputPath>bin\Xbox</OutputPath>
+    <DefineConstants>TRACE;XBOX;XBOX360;NO_SFX;READ_ONLY;SILVERLIGHT;NETCF</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
