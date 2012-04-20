@@ -21,7 +21,7 @@
     <XnaWindowsPhoneManifestTemplate>Properties\WMAppManifest.xml</XnaWindowsPhoneManifestTemplate>
     <TileImage>
     </TileImage>
-    <TileTitle>Axiom.Samples.Browser.WindowsPhone._2010</TileTitle>
+    <TileTitle>Axiom.Samples.Browser.WindowsPhone</TileTitle>
     <SupportedCultures>
     </SupportedCultures>
     <ApplicationIcon>
