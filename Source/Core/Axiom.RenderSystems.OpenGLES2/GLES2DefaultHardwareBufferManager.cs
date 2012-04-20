@@ -41,7 +41,7 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
-    class GLES2DefaultHardwareBufferManager : HardwareBufferManager
+    class GLES2DefaultHardwareBufferManager : HardwareBufferManagerBase
     {
         private static GLES2DefaultHardwareBufferManager _instance = null;
         public GLES2DefaultHardwareBufferManager()
@@ -50,23 +50,25 @@ namespace Axiom.RenderSystems.OpenGLES2
 
         protected override void dispose(bool disposeManagedResources)
         {
-            _instance = null;
+            DestroyAllDeclarations();
+            DestroyAllBindings();
             base.dispose(disposeManagedResources);
         }
         public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer)
         {
-            return base.CreateVertexBuffer(vertexDeclaration, numVerts, usage, useShadowBuffer);
+            return new GLES2DefaultHardwareVertexBuffer(vertexDeclaration, numVerts, usage);
         }
         public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer)
         {
-            
-            return base.CreateIndexBuffer(type, numIndices, usage, useShadowBuffer);
+
+            return new GLES2DefaultHardwareIndexBuffer(type, numIndices, usage);
         }
 
-        //TODO: Requires RenderToVertexBuffer support
+        //Ogre throws an Exception saying RenderToVertexBuffer is not supported
+        //Which is good seeing as we don't have RenderToVertex buffer support either
         //public RenderToVertexBuffer CreateRenderToVertexBuffer()
         //{
-        //
+
         //}
 
         public GLES2DefaultHardwareBufferManager Instance
