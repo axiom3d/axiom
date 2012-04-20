@@ -36,26 +36,26 @@ namespace Axiom.Samples.Xna
 			//create and add Essential group
 			ResourceGroupManager.Instance.CreateResourceGroup( "Essential" );
 
-            string archType = "Folder";
+			string archType = "Folder";
 
 #if WINDOWS_PHONE
-            archType = "TitleContainer";
+			archType = "TitleContainer";
 #endif
 
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Programs", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Scripts", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Textures", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Fonts", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Overlays", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Thumbnails", archType, "Essential" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Icons", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Programs", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Scripts", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Materials/Textures", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Fonts", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/SdkTrays/Overlays", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Thumbnails", archType, "Essential" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Icons", archType, "Essential" );
 
 			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
 
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Programs", archType, "Popular" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Scripts", archType, "Popular" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Textures", archType, "Popular" );
-            ResourceGroupManager.Instance.AddResourceLocation( "Content/Models", archType, "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Programs", archType, "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Scripts", archType, "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Materials/Textures", archType, "Popular" );
+			ResourceGroupManager.Instance.AddResourceLocation( "Content/Models", archType, "Popular" );
 			ResourceGroupManager.Instance.AddResourceLocation( "Content/Particles", archType, "Popular" );
 		}
 

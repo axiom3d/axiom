@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.0">
-  <App xmlns="" ProductID="{d30b48dd-de5a-415e-98ce-6e2a7a3be701}" Title="Axiom.Samples.Browser.WindowsPhone._2010" RuntimeType="XNA" Version="1.0.0.0" Genre="Apps.Normal" Author="" Description="" Publisher="">
+  <App xmlns="" ProductID="{d30b48dd-de5a-415e-98ce-6e2a7a3be701}" Title="Axiom.Samples.Browser.WindowsPhone" RuntimeType="XNA" Version="1.0.0.0" Genre="Apps.Normal" Author="Axiom 3D Team" Description="Axiom 3D Samples for the Windows Phone" Publisher="Axiom 3D Team">
     <IconPath IsRelative="true" IsResource="false"></IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
@@ -19,7 +19,7 @@
       <DefaultTask Name="_default"/>
     </Tasks>
     <Tokens>
-      <PrimaryToken TokenID="Axiom.Samples.Browser.WindowsPhone._2010Token" TaskName="_default">
+      <PrimaryToken TokenID="Axiom.Samples.Browser.WindowsPhone.Token" TaskName="_default">
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false"></BackgroundImageURI>
           <Count>0</Count>
