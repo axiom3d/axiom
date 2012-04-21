@@ -51,6 +51,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
         protected override void LoadFromSource()
         {
+            //abstract override, nothing todo
         }
     }
 }

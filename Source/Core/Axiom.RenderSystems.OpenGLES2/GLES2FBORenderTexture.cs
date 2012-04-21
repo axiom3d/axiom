@@ -39,8 +39,8 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             fb.BindSurface(0, target);
 
-            Width = fb.Width;
-            Height = fb.Height;
+            width = fb.Width;
+            height = fb.Height;
         }
         public override object this[string attribute]
         {
@@ -60,7 +60,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         public override bool AttachDepthBuffer(DepthBuffer ndepthBuffer)
         {
             bool result;
-            result == base.AttachDepthBuffer(ndepthBuffer);
+            result = base.AttachDepthBuffer(ndepthBuffer);
             if (result)
             {
                 fb.AttachDepthBuffer(ndepthBuffer);
