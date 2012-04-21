@@ -1,0 +1,499 @@
+PATCH(P)                   POSIX Programmer's Manual                  PATCH(P)
+
+
+
+NAME
+       patch - apply changes to files
+
+SYNOPSIS
+       patch  [-blNR][ -c| -e| -n][-d dir][-D define][-i patch-
+       file]
+               [-o outfile][-p num][-r rejectfile][file]
+
+DESCRIPTION
+       The patch utility shall read a source (patch) file  con-
+       taining  any  of  the  three  forms of difference (diff)
+       listings produced by the diff utility (normal,  context,
+       or  in the style of ed) and apply those differences to a
+       file. By default, patch shall  read  from  the  standard
+       input.
+
+       The patch utility shall attempt to determine the type of
+       the diff listing, unless overruled by a -c,  -e,  or  -n
+       option.
+
+       If  the  patch  file contains more than one patch, patch
+       shall attempt to apply each of them as if they came from
+       separate  patch  files.  (In  this case, the application
+       shall ensure that the name of the patch file  is  deter-
+       minable for each diff listing.)
+
+OPTIONS
+       The  patch utility shall conform to the Base Definitions
+       volume of IEEE Std 1003.1-2001,  Section  12.2,  Utility
+       Syntax Guidelines.
+
+       The following options shall be supported:
+
+       -b     Save a copy of the original contents of each mod-
+              ified file, before the differences  are  applied,
+              in  a file of the same name with the suffix .orig
+              appended to it. If the file  already  exists,  it
+              shall  be  overwritten;  if  multiple patches are
+              applied to the same file, the .orig file shall be
+              written  only  for  the  first patch. When the -o
+              outfile option  is  also  specified,  file  .orig
+              shall  not  be  created  but,  if outfile already
+              exists, outfile .orig shall be created.
+
+       -c     Interpret the patch file as a context  difference
+              (the output of the utility diff when the -c or -C
+              options are specified).
+
+       -d  dir
+              Change the current directory to dir  before  pro-
+              cessing  as described in the EXTENDED DESCRIPTION
+              section.
+
+       -D  define
+              Mark changes with one of the following C  prepro-
+              cessor constructs:
+
+
+              #ifdef define
+              ...
+              #endif
+
+
+              #ifndef define
+              ...
+              #endif
+
+       optionally  combined  with  the C preprocessor construct
+       #else.  If the patched file is processed with the C pre-
+       processor, where the macro define is defined, the output
+       shall contain the changes from the  patch  file;  other-
+       wise, the output shall not contain the patches specified
+       in the patch file.
+
+       -e     Interpret the patch file as an ed script,  rather
+              than a diff script.
+
+       -i  patchfile
+              Read the patch information from the file named by
+              the pathname patchfile, rather than the  standard
+              input.
+
+       -l     (The  letter ell.) Cause any sequence of <blank>s
+              in the difference script to match any sequence of
+              <blank>s  in  the  input  file.  Other characters
+              shall be matched exactly.
+
+       -n     Interpret the script as a normal difference.
+
+       -N     Ignore patches where the differences have already
+              been  applied  to  the file; by default, already-
+              applied patches shall be rejected.
+
+       -o  outfile
+              Instead of modifying the files (specified by  the
+              file   operand   or   the   difference  listings)
+              directly, write a copy of the file referenced  by
+              each  patch,  with  the  appropriate  differences
+              applied, to outfile. Multiple patches for a  sin-
+              gle  file  shall  be  applied to the intermediate
+              versions of the  file  created  by  any  previous
+              patches,  and  shall result in multiple, concate-
+              nated versions of the file being written to  out-
+              file.
+
+       -p  num
+              For all pathnames in the patch file that indicate
+              the names of files  to  be  patched,  delete  num
+              pathname  components  from  the beginning of each
+              pathname. If the pathname in the  patch  file  is
+              absolute, any leading slashes shall be considered
+              the first component (that is, -p 1  shall  remove
+              the  leading  slashes).   Specifying  -p 0  shall
+              cause the full pathname to be used. If -p is  not
+              specified,  only the basename (the final pathname
+              component) shall be used.
+
+       -R     Reverse the sense of the patch script;  that  is,
+              assume  that  the  difference  script was created
+              from the new version to the old version.  The  -R
+              option cannot be used with ed scripts.  The patch
+              utility shall attempt to reverse each portion  of
+              the  script  before applying it. Rejected differ-
+              ences shall be saved in swapped format.  If  this
+              option  is  not specified, and until a portion of
+              the patch file  is  successfully  applied,  patch
+              attempts  to  apply  each portion in its reversed
+              sense as well as in  its  normal  sense.  If  the
+              attempt is successful, the user shall be prompted
+              to determine whether the -R option should be set.
+
+       -r  rejectfile
+              Override  the  default  reject  filename.  In the
+              default case, the reject file shall have the same
+              name  as  the  output  file, with the suffix .rej
+              appended to it; see Patch Application .
+
+
+OPERANDS
+       The following operand shall be supported:
+
+       file   A pathname of a file to patch.
+
+
+STDIN
+       See the INPUT FILES section.
+
+INPUT FILES
+       Input files shall be text files.
+
+ENVIRONMENT VARIABLES
+       The following environment  variables  shall  affect  the
+       execution of patch:
+
+       LANG   Provide a default value for the internationaliza-
+              tion variables that are unset or null.  (See  the
+              Base  Definitions volume of IEEE Std 1003.1-2001,
+              Section 8.2, Internationalization  Variables  for
+              the  precedence of internationalization variables
+              used to determine  the  values  of  locale  cate-
+              gories.)
+
+       LC_ALL If  set to a non-empty string value, override the
+              values  of  all  the  other  internationalization
+              variables.
+
+       LC_CTYPE
+              Determine  the  locale  for the interpretation of
+              sequences of bytes of  text  data  as  characters
+              (for  example,  single-byte  as opposed to multi-
+              byte characters in arguments and input files).
+
+       LC_MESSAGES
+              Determine the  locale  that  should  be  used  to
+              affect the format and contents of diagnostic mes-
+              sages written to standard error  and  informative
+              messages written to standard output.
+
+       NLSPATH
+              Determine  the  location  of message catalogs for
+              the processing of LC_MESSAGES .
+
+       LC_TIME
+              Determine the locale for recognizing  the  format
+              of file timestamps written by the diff utility in
+              a context-difference input file.
+
+
+ASYNCHRONOUS EVENTS
+       Default.
+
+STDOUT
+       Not used.
+
+STDERR
+       The standard error shall  be  used  for  diagnostic  and
+       informational messages.
+
+OUTPUT FILES
+       The  output of the patch utility, the save files ( .orig
+       suffixes), and the reject files ( .rej  suffixes)  shall
+       be text files.
+
+EXTENDED DESCRIPTION
+       A  patch file may contain patching instructions for more
+       than  one  file;  filenames  shall  be   determined   as
+       specified in Filename Determination . When the -b option
+       is specified, for each patched file, the original  shall
+       be  saved  in  a  file  of the same name with the suffix
+       .orig appended to it.
+
+       For each patched file, a reject file may also be created
+       as  noted  in Patch Application . In the absence of a -r
+       option, the name of this file shall be formed by append-
+       ing the suffix .rej to the original filename.
+
+   Patch File Format
+       The  patch  file  shall  contain  zero  or more lines of
+       header information followed by one or more patches. Each
+       patch shall contain zero or more lines of filename iden-
+       tification in the format produced by diff -c, and one or
+       more  sets  of diff output, which are customarily called
+       hunks.
+
+       The patch utility shall recognize the following  expres-
+       sion in the header information:
+
+       Index:  pathname
+
+              The file to be patched is named pathname.
+
+
+       If  all  lines  (including headers) within a patch begin
+       with the same leading sequence of  <blank>s,  the  patch
+       utility  shall  remove  this sequence before proceeding.
+       Within each patch, if the type of difference is context,
+       the  patch utility shall recognize the following expres-
+       sions:
+
+       *** filename timestamp
+
+              The patches arose from filename.
+
+       --- filename timestamp
+
+              The patches should be applied to filename.
+
+
+       Each hunk within a patch shall be  the  diff  output  to
+       change  a  line range within the original file. The line
+       numbers for successive hunks within a patch shall  occur
+       in ascending order.
+
+   Filename Determination
+       If no file operand is specified, patch shall perform the
+       following steps to determine the filename to use:
+
+        1. If the type of diff is context,  the  patch  utility
+           shall  delete  pathname  components (as specified by
+           the -p option) from the filename on the line  begin-
+           ning  with  "***"  ,  then test for the existence of
+           this file relative to the current directory (or  the
+           directory specified with the -d option). If the file
+           exists, the patch utility shall use this filename.
+
+
+        2. If the type of diff is context,  the  patch  utility
+           shall  delete  the pathname components (as specified
+           by the -p option) from  the  filename  on  the  line
+           beginning  with  "---" , then test for the existence
+           of this file relative to the current  directory  (or
+           the  directory specified with the -d option). If the
+           file exists, the patch utility shall use this  file-
+           name.
+
+
+        3. If  the header information contains a line beginning
+           with the string  Index:,  the  patch  utility  shall
+           delete  pathname  components (as specified by the -p
+           option) from this line, then test for the  existence
+           of  this  file relative to the current directory (or
+           the directory specified with the -d option).  If the
+           file  exists, the patch utility shall use this file-
+           name.
+
+
+        4. If an SCCS directory exists in  the  current  direc-
+           tory,  patch  shall  attempt  to  perform  a  get -e
+           SCCS/s. filename command  to  retrieve  an  editable
+           version  of  the file. If the file exists, the patch
+           utility shall use this filename.
+
+
+        5. The patch utility shall write a prompt  to  standard
+           output and request a filename interactively from the
+           controlling terminal (for example, /dev/tty).
+
+
+   Patch Application
+       If the -c, -e, or -n option is present, the patch  util-
+       ity  shall  interpret  information within each hunk as a
+       context difference, an ed difference, or a  normal  dif-
+       ference,  respectively.  In  the absence of any of these
+       options, the patch utility shall determine the  type  of
+       difference based on the format of information within the
+       hunk.
+
+       For each hunk, the patch utility shall begin  to  search
+       for  the  place to apply the patch at the line number at
+       the beginning of the hunk, plus or minus any offset used
+       in  applying  the  previous  hunk. If lines matching the
+       hunk context are not found, patch shall scan  both  for-
+       wards  and  backwards  at  least 1000 bytes for a set of
+       lines that match the hunk context.
+
+       If no such place is found and it is  a  context  differ-
+       ence,  then  another scan shall take place, ignoring the
+       first and last line of context. If that fails, the first
+       two  and  last two lines of context shall be ignored and
+       another scan shall be made.  Implementations may  search
+       more extensively for installation locations.
+
+       If  no  location  can  be found, the patch utility shall
+       append the hunk to the reject file.  The  rejected  hunk
+       shall be written in context-difference format regardless
+       of the format of the patch file. If the input was a nor-
+       mal  or ed-style difference, the reject file may contain
+       differences with zero lines of context.  The  line  num-
+       bers  on  the  hunks in the reject file may be different
+       from the line numbers in the patch file since they shall
+       reflect  the  approximate locations for the failed hunks
+       in the new file rather than the old one.
+
+       If the type of patch is an ed diff,  the  implementation
+       may  accomplish the patching by invoking the ed utility.
+
+EXIT STATUS
+       The following exit values shall be returned:
+
+        0     Successful completion.
+
+        1     One or more lines were written to a reject  file.
+
+       >1     An error occurred.
+
+
+CONSEQUENCES OF ERRORS
+       Patches  that  cannot  be  correctly  placed in the file
+       shall be written to a reject file.
+
+       The following sections are informative.
+
+APPLICATION USAGE
+       The -R option does not  work  with  ed  scripts  because
+       there  is  too  little  information  to  reconstruct the
+       reverse operation.
+
+       The -p option makes it possible  to  customize  a  patch
+       file to local user directory structures without manually
+       editing the patch file. For example, if the filename  in
+       the patch file was:
+
+
+              /curds/whey/src/blurfl/blurfl.c
+
+       Setting  -p 0 gives the entire pathname unmodified; -p 1
+       gives:
+
+
+              curds/whey/src/blurfl/blurfl.c
+
+       without the leading slash, -p 4 gives:
+
+
+              blurfl/blurfl.c
+
+       and not specifying -p at all gives:
+
+
+              blurfl.c .
+
+EXAMPLES
+       None.
+
+RATIONALE
+       Some of the functionality in historical patch  implemen-
+       tations was not specified. The following documents those
+       features present in historical implementations that have
+       not been specified.
+
+       A  deleted  piece  of  functionality was the '+' pseudo-
+       option allowing an additional set of options and a patch
+       file  operand to be given. This was seen as being insuf-
+       ficiently useful to standardize.
+
+       In historical implementations, if the  string  "Prereq:"
+       appeared  in  the header, the patch utility would search
+       for the corresponding version  information  (the  string
+       specified  in  the  header, delimited by <blank>s or the
+       beginning or end of a line or the file) anywhere in  the
+       original  file.  This  was deleted as too simplistic and
+       insufficiently trustworthy a mechanism  to  standardize.
+       For example, if:
+
+
+              Prereq: 1.2
+
+       were in the header, the presence of a delimited 1.2 any-
+       where in the file would satisfy the prerequisite.
+
+       The  following  options  were  dropped  from  historical
+       implementations  of  patch  as  insufficiently useful to
+       standardize:
+
+       -b     The -b option historically provided a method  for
+              changing  the  name  extension of the backup file
+              from the default .orig. This option has been mod-
+              ified    and   retained   in   this   volume   of
+              IEEE Std 1003.1-2001.
+
+       -F     The -F option specified the number of lines of  a
+              context diff to ignore when searching for a place
+              to install a patch.
+
+       -f     The -f option historically caused  patch  not  to
+              request additional information from the user.
+
+       -r     The  -r  option historically provided a method of
+              overriding the extension of the reject file  from
+              the default .rej.
+
+       -s     The  -s  option historically caused patch to work
+              silently unless an error occurred.
+
+       -x     The -x option historically set internal debugging
+              flags.
+
+
+       In  some  file  system  implementations, the saving of a
+       .orig file may produce unwanted results. In the case  of
+       12,  13, or 14-character filenames (on file systems sup-
+       porting 14-character maximum filenames), the .orig  file
+       overwrites  the  new  file.   The  reject  file may also
+       exceed this filename limit. It  was  suggested,  due  to
+       some historical practice, that a tilde ( '~' ) suffix be
+       used instead of .orig and some other  character  instead
+       of  the .rej suffix. This was rejected because it is not
+       obvious to the user which file is which.   The  suffixes
+       .orig and .rej are clearer and more understandable.
+
+       The  -b option has the opposite sense in some historical
+       implementations-do not save the .orig file. The  default
+       case  here is not to save the files, making patch behave
+       more consistently with the other standard utilities.
+
+       The -w option in early proposals was changed  to  -l  to
+       match historical practice.
+
+       The  -N  option  was included because without it, a non-
+       interactive application cannot reject previously applied
+       patches.  For example, if a user is piping the output of
+       diff into the patch utility, and the user only wants  to
+       patch  a  file to a newer version non-interactively, the
+       -N option is required.
+
+       Changes to the -l option description  were  proposed  to
+       allow  matching  across  <newline>s  in addition to just
+       <blank>s. Since this is  not  historical  practice,  and
+       since  some  ambiguities  could  result, it is suggested
+       that future developments in this  area  utilize  another
+       option letter, such as -L.
+
+FUTURE DIRECTIONS
+       None.
+
+SEE ALSO
+       ed , diff
+
+COPYRIGHT
+       Portions  of  this  text are reprinted and reproduced in
+       electronic form from  IEEE  Std  1003.1,  2003  Edition,
+       Standard  for Information Technology -- Portable Operat-
+       ing System Interface (POSIX), The Open Group Base Speci-
+       fications Issue 6, Copyright (C) 2001-2003 by the Insti-
+       tute of Electrical and Electronics  Engineers,  Inc  and
+       The  Open Group. In the event of any discrepancy between
+       this version and the original IEEE and  The  Open  Group
+       Standard,  the original IEEE and The Open Group Standard
+       is the referee document. The original  Standard  can  be
+       obtained        online        at        http://www.open-
+       group.org/unix/online.html .
+
+
+
+IEEE/The Open Group                  2003                             PATCH(P)
