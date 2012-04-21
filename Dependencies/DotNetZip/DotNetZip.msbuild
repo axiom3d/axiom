@@ -26,7 +26,7 @@
   </Target>
 
   <Target Name="Patch" >
-    <Exec Command="..\..\Tools\nPatch\bin\patch.exe --input=..\..\DotNetZip.Codeplex.patch -d .\DotNetZip.Codeplex\Zip" />
+    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\..\DotNetZip.Codeplex.patch -d .\DotNetZip.Codeplex\Zip" />
   </Target>
 
   <Target Name="Clean" >
