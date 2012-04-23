@@ -241,7 +241,12 @@ namespace Axiom.RenderSystems.OpenGLES2
             }
             if (pos != -1)
             {
-                ext = Name.Substring(pos);
+                baseName = Name.Substring(0, pos);
+                ext = Name.Substring(pos + 1);
+            }
+            else
+            {
+                baseName = Name;
             }
 
             List<Image> loadedImages = new List<Image>();

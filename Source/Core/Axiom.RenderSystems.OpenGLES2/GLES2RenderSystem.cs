@@ -714,15 +714,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 					currentContext.SetInitalized();
 			}
 
-			if (win.DepthBufferPool != DepthBuffer.PoolNoDepth)
+			if (win.DepthBufferPool != PoolId.NoDepth)
 			{
 				//Unlike D3D9, OGL doesn't allow sharing the main depth buffer, so keep them seperate.
 				//Only Copy does, but Copy means only one depth buffer...
 				GLES2Context windowContext = (GLES2Context)win["GLCONTEXT"];
-				GLES2DepthBuffer depthBuffer = new GLES2DepthBuffer(DepthBuffer.PoolDefault, this, windowContext,
+				GLES2DepthBuffer depthBuffer = new GLES2DepthBuffer(PoolId.Default, this, windowContext,
 					null, null, win.Width, win.Height, win.FSAA, 0, true);
 
-				depthBufferPool.Add(depthBuffer.PoolID, depthBuffer);
+				depthBufferPool.Add(depthBuffer.PoolId, depthBuffer);
 
 				win.AttachDepthBuffer(depthBuffer);
 
@@ -744,7 +744,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				// Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
 				// Find best depth & stencil format suited for the RT's format
 				int depthFormat, stencilFormat;
-				(rttManager as GLES2FBOManager).GetBestDepthStencil(fbo.Format, out depthFormat, out stencilFormat);
+				(rttManager as GLES2FBOManager).GetBestDepthStencil(fbo.Format, ref depthFormat, ref stencilFormat);
 
 				GLES2RenderBuffer depthBuffer = new GLES2RenderBuffer(depthFormat, fbo.Width, fbo.Height, fbo.FSAA);
 
@@ -1345,7 +1345,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					y = top;
 				else
 					y = targetHeight - bottom;
-				h = right - left;
+				w = right - left;
 				h = bottom - top;
 				GL.Scissor(x, y, w, h);
 			}
@@ -1939,7 +1939,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					if (glSupport.ConfigOptions.ContainsKey("Orientation"))
 					{
 						var opt = glSupport.ConfigOptions["Orientation"];
-						string val = opt.CurrentValue;
+                        string val = opt.Value;
 
 						if (val.Contains("Landscape"))
 						{
@@ -2138,8 +2138,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 					//Check the FBO's depth buffer status
 					GLES2DepthBuffer depthBuffer = value.DepthBuffer as GLES2DepthBuffer;
 
-					if (activeRenderTarget.DepthBufferPool != DepthBuffer.PoolNoDepth &&
-						(!depthBuffer || depthBuffer.GLContext != currentContext))
+					if (activeRenderTarget.DepthBufferPool != PoolId.NoDepth &&
+						(depthBuffer == null || depthBuffer.GLContext != currentContext))
 					{
 						//Depth is automatically managed and there is no depth buffer attached to this RT
 						// or the current context doens't match the one this depth buffer was created with

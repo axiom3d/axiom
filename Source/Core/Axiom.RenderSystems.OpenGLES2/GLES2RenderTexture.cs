@@ -25,7 +25,8 @@ namespace Axiom.RenderSystems.OpenGLES2
             this.zoffset = zoffset;
             this.numSamples = numSamples;
         }
-
+        public GLES2SurfaceDesc()
+        { }
     }
     
     class GLES2RenderTexture : RenderTexture
@@ -44,7 +45,9 @@ namespace Axiom.RenderSystems.OpenGLES2
             {
                 if (attribute == "TARGET")
                 {
-                    GLES2SurfaceDesc target = new GLES2SurfaceDesc((pixelBuffer as GLES2HardwarePixelBuffer), target.zoffset, 0);
+                    GLES2SurfaceDesc target = (GLES2SurfaceDesc)base[attribute];
+                    target.zoffset = this.zOffset;
+                    target.buffer = (GLES2HardwarePixelBuffer)this.pixelBuffer;
                     return target;
                 }
                 return base[attribute];
