@@ -17,23 +17,7 @@ namespace Axiom.RenderSystems.OpenGLES2
     class GLES2FBORenderTexture : GLES2RenderTexture
     {
         private GLES2FrameBufferObject fb;
-        static int PROBE_SIZE = 16;
-        static readonly GLenum[] stencilFormats = new GLenum[] 
-        {
-            GLenum.None,
-            GLenum.StencilIndex1Oes,
-            GLenum.StencilIndex4Oes,
-            GLenum.StencilIndex8,
-           
-        };
-        static readonly GLenum[] depthFormats = new GLenum[]
-        {
-            GLenum.None,
-            GLenum.DepthComponent16,
-            GLenum.DepthComponent24Oes, //Prefer 24 bit depth
-            GLenum.DepthComponent32Oes,
-            GLenum.Depth24Stencil8Oes //Packed depth /stencil
-        };
+        
         public GLES2FBORenderTexture(GLES2FBOManager manager, string name, GLES2SurfaceDesc target, bool writeGamma, int fsaa)
             :base(name, target, writeGamma, fsaa)
         {
@@ -46,6 +30,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             get
             {
+                
                 if (attribute == "FBO")
                 {
                     return fb;
