@@ -136,20 +136,19 @@ namespace Axiom.RenderSystems.OpenGLES2
             isLocked = false;
         }
 
-        public override void ReadData(int offset, int length, out BufferBase dest)
-        {
-            if (useShadowBuffer)
-            {
-                var srcData = shadowBuffer.Lock(offset, length, BufferLocking.ReadOnly);
-                dest = srcData;
-                shadowBuffer.Unlock();
-            }
-            else
-            {
-                throw new AxiomException("Read hardware buffer is not supported");
-            }
-        }
-
+        //public override void ReadData(int offset, int length, out BufferBase dest)
+        //{
+        //    if (useShadowBuffer)
+        //    {
+        //        var srcData = shadowBuffer.Lock(offset, length, BufferLocking.ReadOnly);
+        //        dest = srcData;
+        //        shadowBuffer.Unlock();
+        //    }
+        //    else
+        //    {
+        //        throw new AxiomException("Read hardware buffer is not supported");
+        //    }
+        //}
         public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
         {
             //Update the shadow buffer
@@ -202,6 +201,11 @@ namespace Axiom.RenderSystems.OpenGLES2
         public int GLBufferID
         {
             get { return _bufferID; }
+        }
+
+        public override void ReadData(int offset, int length, BufferBase dest)
+        {
+            throw new NotImplementedException();
         }
     }
 }
