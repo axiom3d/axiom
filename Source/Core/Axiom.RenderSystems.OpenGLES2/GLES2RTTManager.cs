@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGLES2
             depthFormat = GLenum.None;
             stencilFormat = GLenum.None;
         }
-        public Graphics.MultiRenderTarget CreateMultiRenderTarget(string name)
+        public virtual Graphics.MultiRenderTarget CreateMultiRenderTarget(string name)
         {
             //Ogre TODO: Check rendersystem capabilities before throwing the exception
             throw new Core.AxiomException("MultiRenderTarget is not supported");
