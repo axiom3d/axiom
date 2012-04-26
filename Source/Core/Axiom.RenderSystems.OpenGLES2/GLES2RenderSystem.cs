@@ -761,12 +761,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 			return retVal;
 		}
 
-		//TODO: replace object with actual type
-		public void GetDepthStencilFormatFor(OpenTK.Graphics.ColorFormat internalColorFormat, Android.Graphics.Format depthFormat, OpenTK.Graphics.ES20.OespackedDepthStencil stencilFormat)
-		{
-			rttManager.GetBestDepthStencil(internalColorFormat, depthFormat, stencilFormat);
+        public void GetDepthStencilFormatFor(GLenum internalColorFormat, ref GLenum depthFormat, ref GLenum stencilFormat)
+        {
 
-		}
+            rttManager.GetBestDepthStencil(internalColorFormat, ref depthFormat, ref stencilFormat);
+
+        }
 		public override MultiRenderTarget CreateMultiRenderTarget(string name)
 		{
 			MultiRenderTarget retVal = rttManager.CreateMultiRenderTarget(name);
