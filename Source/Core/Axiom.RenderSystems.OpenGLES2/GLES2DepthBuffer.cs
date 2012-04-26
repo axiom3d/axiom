@@ -89,11 +89,32 @@ namespace Axiom.RenderSystems.OpenGLES2
 				switch (_depthBuffer.GLFormat)
 				{
 					case OpenTK.Graphics.ES20.All.DepthComponent16:
+                        bitDepth = 16;
+                        break;
+                    case GLenum.DepthComponent24Oes:
+                    case GLenum.DepthComponent32Oes:
+                    case GLenum.Depth24Stencil8Oes: //Packed depth / stencil
+                        bitDepth = 32;
+                        break;
 					  
 				}
 			}
 
 		}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (_stencilBuffer != null && _stencilBuffer != _depthBuffer)
+            {
+                _stencilBuffer.Dispose();
+                _stencilBuffer = null;
+            }
+            if (_depthBuffer == null)
+            {
+                _depthBuffer.Dispose();
+                _depthBuffer = null;
+            }
+            base.dispose(disposeManagedResources);
+        }
 		/// <summary>
 		/// 
 		/// </summary>
@@ -101,12 +122,69 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// <returns></returns>
 		public override bool IsCompatible( RenderTarget renderTarget )
 		{
-			return base.IsCompatible( renderTarget );
+            bool retVal = false;
+
+            //Check standard stuff first.
+            if (_renderSystem.Capabilities.HasCapability(Capabilities.RTTDepthbufferResolutionLessEqual))
+            {
+                if (base.IsCompatible(renderTarget))
+                    return false;
+            }
+            else
+            {
+                if (this.Width != renderTarget.Width ||
+                    this.Height != renderTarget.Height ||
+                    this.Fsaa != renderTarget.FSAA)
+                    return false;
+            }
+            //Now check this is the appropriate format
+            GLES2FrameBufferObject fbo = null;
+            fbo = (GLES2FrameBufferObject)renderTarget["FBO"];
+
+            if (fbo == null)
+            {
+                GLES2Context windowContext = (GLES2Context)renderTarget["GLCONTEXT"];
+
+                //Non-FBO and FBO depth surfaces don't play along, only dummmies which match the same
+                //context
+                if (_depthBuffer == null && _stencilBuffer == null && _creatorContext == windowContext)
+                    retVal = true;
+            }
+            else
+            {
+                //Check this isn't a dummy non-FBO depth buffer with an FBO target, don't mix them.
+                //If you don't want depth buffer, use a Null Depth Buffer, not a dummy one.
+                if (_depthBuffer != null || _stencilBuffer != null)
+                {
+                    var internalFormat = fbo.Format;
+                    GLenum depthFormat, stencilFormat;
+                    _renderSystem.GetDepthStencilFormatFor(internalFormat, out depthFormat, out stencilFormat);
+
+                    bool bSameDepth = false;
+                    if (_depthBuffer != null)
+                    {
+                        bSameDepth |= _depthBuffer.GLFormat == depthFormat;
+                    }
+
+                    bool bSameStencil = false;
+                    if (_stencilBuffer == null || _stencilBuffer == _depthBuffer)
+                        bSameDepth = stencilFormat == GLenum.None;
+                    else
+                    {
+                        if (_stencilBuffer != null)
+                            bSameStencil = stencilFormat == _stencilBuffer.GLFormat;
+                    }
+
+                    retVal = bSameDepth && bSameStencil;
+                }
+            }
+
+            return retVal;
 		}
 
 
-		public GLES2Context CreatorContext { get; protected set; }
-		public GLES2RenderBuffer DepthBuffer { get; protected set; }
-		public GLES2DepthBuffer StencilBuffer { get; protected set; }
+        public GLES2Context GLContext { get { return _creatorContext; } }
+        public GLES2RenderBuffer DepthBuffer { get { return _depthBuffer; } }
+        public GLES2RenderBuffer StencilBuffer { get { return _stencilBuffer; } }
 	}
 }
