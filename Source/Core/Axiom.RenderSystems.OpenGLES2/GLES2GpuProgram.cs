@@ -21,6 +21,14 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             
         }
+        public virtual void BindProgram()
+        { }
+        public virtual void UnbindProgram()
+        { }
+        public virtual void BindProgramParamaters(GpuProgramParameters parms, uint mask)
+        { }
+        public virtual void BindProgramPassIterationParameters(GpuProgramManager parms)
+        { }
         protected override void dispose(bool disposeManagedResources)
         {
             //Have to call this here rather than in Resource destructor
@@ -48,7 +56,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             get { return _programID; }
         }
-
+        
         protected override void LoadFromSource()
         {
             //abstract override, nothing todo

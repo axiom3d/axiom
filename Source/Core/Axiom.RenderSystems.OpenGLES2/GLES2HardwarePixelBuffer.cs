@@ -24,6 +24,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         }
         protected override void dispose(bool disposeManagedResources)
         {
+            
             //Force free buffer
             buffer.Data = null;
             base.dispose(disposeManagedResources);

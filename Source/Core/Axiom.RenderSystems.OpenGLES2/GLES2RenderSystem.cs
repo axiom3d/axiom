@@ -42,7 +42,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		HardwareBufferManager hardwareBufferManager;
 		GLES2RTTManager rttManager;
 		OpenTK.Graphics.ES20.TextureUnit activeTextureUnit;
-		Dictionary<OpenTK.Graphics.ES20.BufferObjects, int> activeBufferMap;
+		Dictionary<GLenum, int> activeBufferMap;
 		bool glInitialized;
 		int discardBuffers;
 		GLenum polygonMode;
@@ -159,12 +159,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 		private bool ActivateGLTextureUnit(int unit)
 		{
-			if (activeTextureUnit != unit)
+			if ((int)activeTextureUnit != unit)
 			{
 				if (unit < Capabilities.TextureUnitCount)
 				{
 					GL.ActiveTexture(intToGLtextureUnit(unit));
-					activeTextureUnit = unit;
+					activeTextureUnit = (OpenTK.Graphics.ES20.TextureUnit)unit;
 					return true;
 				}
 				else if (unit == 0)
@@ -763,9 +763,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 
         public void GetDepthStencilFormatFor(GLenum internalColorFormat, ref GLenum depthFormat, ref GLenum stencilFormat)
         {
-
             rttManager.GetBestDepthStencil(internalColorFormat, ref depthFormat, ref stencilFormat);
-
+            
         }
 		public override MultiRenderTarget CreateMultiRenderTarget(string name)
 		{

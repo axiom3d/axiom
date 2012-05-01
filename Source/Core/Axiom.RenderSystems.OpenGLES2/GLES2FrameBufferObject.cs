@@ -275,9 +275,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			get { return _color[0].buffer.Height; }
 		}
-		public PixelFormat Format
+		public GLenum Format
 		{
-			get { return _color[0].buffer.Format; }
+            get { return _color[0].buffer.GLFormat; }
 		}
 		public int FSAA
 		{

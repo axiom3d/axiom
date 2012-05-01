@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGLES2
             //If none at all, return to default
             return PixelFormat.A8R8G8B8;
         }
-        public virtual void GetBestDepthStencil(OpenTK.Graphics.ColorFormat internalColorFormat, ref GLenum depthFormat, ref GLenum stencilFormat)
+        public virtual void GetBestDepthStencil(GLenum internalColorFormat, ref GLenum depthFormat, ref GLenum stencilFormat)
         {
             depthFormat = GLenum.None;
             stencilFormat = GLenum.None;
