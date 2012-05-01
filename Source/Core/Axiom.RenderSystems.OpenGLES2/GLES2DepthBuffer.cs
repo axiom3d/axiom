@@ -157,9 +157,8 @@ namespace Axiom.RenderSystems.OpenGLES2
                 if (_depthBuffer != null || _stencilBuffer != null)
                 {
                     var internalFormat = fbo.Format;
-                    GLenum depthFormat, stencilFormat;
-                    _renderSystem.GetDepthStencilFormatFor(internalFormat, out depthFormat, out stencilFormat);
-
+                    GLenum depthFormat = GLenum.None, stencilFormat = GLenum.None;
+                    _renderSystem.GetDepthStencilFormatFor(internalFormat, ref depthFormat, ref stencilFormat);
                     bool bSameDepth = false;
                     if (_depthBuffer != null)
                     {

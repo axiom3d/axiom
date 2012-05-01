@@ -203,8 +203,8 @@ namespace Axiom.RenderSystems.OpenGLES2
         /// <returns></returns>
         public static GLenum GetClosestGLInternalFormat(PixelFormat format, bool hwGamma)
         {
-            GLenum format = GetGLInternalFormat(format, hwGamma);
-            if (format == GLenum.None)
+            GLenum glformat = GetGLInternalFormat(format, hwGamma);
+            if (glformat == GLenum.None)
             {
                 if (hwGamma)
                 {
@@ -218,7 +218,7 @@ namespace Axiom.RenderSystems.OpenGLES2
             }
             else
             {
-                return format;
+                return glformat;
             }
         }
         /// <summary>
@@ -321,7 +321,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             var caps = Core.Root.Instance.RenderSystem.Capabilities;
             
-            if(caps.HasCapability(Graphics.Capabilities.NonPowerOf2Textures)
+            if(caps.HasCapability(Graphics.Capabilities.NonPowerOf2Textures))
             {
                 return value;
             }

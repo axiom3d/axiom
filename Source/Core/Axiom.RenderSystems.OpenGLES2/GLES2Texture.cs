@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
                 for (int mip = 0; mip < mipmapCount; mip++)
                 {
-                    size = PixelUtil.GetMemorySize(width, heigh, depth, Format);
+                    size = PixelUtil.GetMemorySize(width, height, depth, Format);
 
                     switch (textureType)
                     {

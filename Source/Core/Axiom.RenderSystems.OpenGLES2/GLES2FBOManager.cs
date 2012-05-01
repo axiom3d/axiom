@@ -169,7 +169,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             return new GLES2FBOMultiRenderTarget(this, name);
         }
-		public override void GetBestDepthStencil(OpenTK.Graphics.ColorFormat internalColorFormat, ref OpenTK.Graphics.ES20.All depthFormat, ref OpenTK.Graphics.ES20.All stencilFormat)
+		public override void GetBestDepthStencil(GLenum internalColorFormat, ref OpenTK.Graphics.ES20.All depthFormat, ref OpenTK.Graphics.ES20.All stencilFormat)
 		{
             FormatProperties prop = this.props[(int)internalColorFormat];
             int bestmode = 0;
@@ -298,8 +298,7 @@ namespace Axiom.RenderSystems.OpenGLES2
                     GL.TexParameter(target, GLenum.TextureWrapS, (int)GLenum.ClampToEdge);
                     GL.TexParameter(target, GLenum.TextureWrapT, (int)GLenum.ClampToEdge);
 
-                    GL.TexImage2D(target, 0, (int)fmt, PROBE_SIZE, PROBE_SIZE, 0, fmt, GLES2PixelUtil.GetGLOriginDataType((PixelFormat)x), 0);
-                    
+                    GL.TexImage2D(target, 0, (int)fmt, PROBE_SIZE, PROBE_SIZE, 0, fmt, GLES2PixelUtil.GetGLOriginDataType((PixelFormat)x), IntPtr.Zero);
                     GL.FramebufferTexture2D(GLenum.Framebuffer, GLenum.ColorAttachment0, target, tid, 0);
                 }
                 //Check status
@@ -357,7 +356,7 @@ namespace Axiom.RenderSystems.OpenGLES2
                     GL.DeleteTextures(1, ref tid);
             }
 
-            string fmtstring;
+            string fmtstring = string.Empty;
             for (int x = 0; x < (int)PixelFormat.Count; x++)
 			{
                 if(props[x].valid)

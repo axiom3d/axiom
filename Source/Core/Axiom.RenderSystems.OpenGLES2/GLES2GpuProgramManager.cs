@@ -9,7 +9,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
     class GLES2GpuProgramManager : GpuProgramManager
     {
-        private Dictionary<string, Type> _programMap;
+        private Dictionary<string, CreateGpuProgramDelegate> _programMap;
+        public delegate GpuProgram CreateGpuProgramDelegate(ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader,
+            GpuProgramType type, string syntaxCode);
 
         public GLES2GpuProgramManager()
         {
@@ -24,21 +26,31 @@ namespace Axiom.RenderSystems.OpenGLES2
         }
         protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Collections.NameValuePairList createParams)
         {
+            string paramSyntax = string.Empty;
+            string paramType = string.Empty;
+
             if (createParams == null || createParams.ContainsKey("syntax") == false || createParams.ContainsKey("type") == false)
             {
                 throw new AxiomException("You must supply 'syntax' and 'type' parameters");
             }
-            var syntax = createParams["syntax"];
-            
-            if (_programMap.ContainsKey(syntax) == false)
+            else
             {
-                //No factory, this is an unsupported syntax code, probably for another rendersystem
-                //Create a basic one, it doens't matter what it is since it won't be used
+                paramSyntax = createParams["syntax"];
+                paramType = createParams["type"];
+            }
+            CreateGpuProgramDelegate iter = null;
+            if(_programMap.ContainsKey(paramSyntax))
+            {
+                iter = _programMap[paramSyntax];
+            }
+            else
+            {
+                  // No factory, this is an unsupported syntax code, probably for another rendersystem
+            // Create a basic one, it doesn't matter what it is since it won't be used
                 return new GLES2GpuProgram(this, name, handle, group, isManual, loader);
             }
-
             GpuProgramType gpt;
-            if (syntax == "vertex_program")
+            if(paramType == "vertex_program")
             {
                 gpt = GpuProgramType.Vertex;
             }
@@ -47,24 +59,26 @@ namespace Axiom.RenderSystems.OpenGLES2
                 gpt = GpuProgramType.Fragment;
             }
 
-            Type gpuType = _programMap[syntax];
-
-            //todo: if gpuType == typeof(x) || typeof(y)...
+            return iter(this, name, handle, group, isManual, loader, gpt, paramSyntax);
 
         }
         protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
         {
+            CreateGpuProgramDelegate iter = null;
+
             if (_programMap.ContainsKey(syntaxCode) == false)
             {
                 //No factory, this is an unsupported syntax code, probably for another rendersystem
                 //Create a basic one, it doens't matter what it is since it won't be used
                 return new GLES2GpuProgram(this, name, handle, group, isManual, loader);
-           
             }
-            //todo: if gpuType == typeof(x) || typeof(y)...
-            
+            else
+            {
+                iter = _programMap[syntaxCode];
+            }
+            return iter(this, name, handle, group, isManual, loader, type, syntaxCode);
         }
-        public bool RegisterProgramFactory(string syntaxCode, GpuProgram createFN)
+        public bool RegisterProgramFactory(string syntaxCode, CreateGpuProgramDelegate createFN)
         {
             if (_programMap.ContainsKey(syntaxCode) == false)
             {
