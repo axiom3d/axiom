@@ -66,8 +66,13 @@
     <Compile Include="GLES2Support.cs" />
     <Compile Include="GLES2Texture.cs" />
     <Compile Include="GLES2TextureManager.cs" />
+    <Compile Include="GLSLES\GLSLESGpuProgram.cs" />
+    <Compile Include="GLSLES\GLSLESLinkProgramManager.cs" />
     <Compile Include="GLSLES\GLSLESPreprocessor.cs" />
     <Compile Include="GLSLES\GLSLESProgram.cs" />
+    <Compile Include="GLSLES\GLSLESProgramManagerCommon.cs" />
+    <Compile Include="GLSLES\GLSLESProgramPipeline.cs" />
+    <Compile Include="GLSLES\GLSLESProgramPipelineManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
