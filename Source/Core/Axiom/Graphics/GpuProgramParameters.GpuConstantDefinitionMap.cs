@@ -47,7 +47,7 @@ namespace Axiom.Graphics
 	public partial class GpuProgramParameters
 	{
 		/// <summary>
-		///   Named Gpu constant lookup table
+		/// Named Gpu constant lookup table
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public class GpuConstantDefinitionMap : Dictionary<string, GpuConstantDefinition>

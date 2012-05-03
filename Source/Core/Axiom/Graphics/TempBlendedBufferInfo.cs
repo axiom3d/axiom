@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
@@ -44,104 +45,104 @@ using System.Diagnostics;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Records the use of temporary blend buffers.
+	///     Records the use of temporary blend buffers.
 	/// </summary>
 	public class TempBlendedBufferInfo : IHardwareBufferLicensee
 	{
 		#region Fields
 
 		/// <summary>
-		///   Pre-blended position buffer.
+		///     Pre-blended position buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcPositionBuffer;
 
 		/// <summary>
-		///   Pre-blended normal buffer.
+		///     Pre-blended normal buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcNormalBuffer;
 
 		/// <summary>
-		///   Pre-blended tangent buffer.
+		///     Pre-blended tangent buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcTangentBuffer;
 
 		/// <summary>
-		///   Pre-blended binormal buffer.
+		///     Pre-blended binormal buffer.
 		/// </summary>
 		public HardwareVertexBuffer srcBinormalBuffer;
 
 		/// <summary>
-		///   Post-blended position buffer.
+		///     Post-blended position buffer.
 		/// </summary>
 		public HardwareVertexBuffer destPositionBuffer;
 
 		/// <summary>
-		///   Post-blended normal buffer.
+		///     Post-blended normal buffer.
 		/// </summary>
 		public HardwareVertexBuffer destNormalBuffer;
 
 		/// <summary>
-		///   Post-blended tangent buffer.
+		///     Post-blended tangent buffer.
 		/// </summary>
 		public HardwareVertexBuffer destTangentBuffer;
 
 		/// <summary>
-		///   Post-blended binormal buffer.
+		///     Post-blended binormal buffer.
 		/// </summary>
 		public HardwareVertexBuffer destBinormalBuffer;
 
 		/// <summary>
-		///   Both positions and normals are contained in the same buffer
+		///     Both positions and normals are contained in the same buffer
 		/// </summary>
 		public bool posNormalShareBuffer;
 
 		/// <summary>
-		///   Index at which the positions are bound in the buffer.
+		///     Index at which the positions are bound in the buffer.
 		/// </summary>
 		public short posBindIndex;
 
 		/// <summary>
-		///   Index at which the normals are bound in the buffer.
+		///     Index at which the normals are bound in the buffer.
 		/// </summary>
 		public short normBindIndex;
 
 		/// <summary>
-		///   Index at which the tangents are bound in the buffer.
+		///     Index at which the tangents are bound in the buffer.
 		/// </summary>
 		public short tanBindIndex;
 
 		/// <summary>
-		///   Index at which the binormals are bound in the buffer.
+		///     Index at which the binormals are bound in the buffer.
 		/// </summary>
 		public short binormBindIndex;
 
-		///<summary>
-		///  Should we bind the position buffer
-		///</summary>
+		/// <summary>
+		///		Should we bind the position buffer
+		/// </summary>
 		public bool bindPositions;
 
-		///<summary>
-		///  Should we bind the normals buffer
-		///</summary>
+		/// <summary>
+		///		Should we bind the normals buffer
+		/// </summary>
 		public bool bindNormals;
 
-		///<summary>
-		///  Should we bind the tangents buffer
-		///</summary>
+		/// <summary>
+		///		Should we bind the tangents buffer
+		/// </summary>
 		public bool bindTangents;
 
-		///<summary>
-		///  Should we bind the binormals buffer
-		///</summary>
+		/// <summary>
+		///		Should we bind the binormals buffer
+		/// </summary>
 		public bool bindBinormals;
 
 		#endregion Fields
 
 		#region Methods
 
-		///<summary>
-		///  Utility method, extract info from the given VertexData
-		///</summary>
+		/// <summary>
+		///		Utility method, extract info from the given VertexData
+		/// </summary>
 		public void ExtractFrom( VertexData sourceData )
 		{
 			// Release old buffer copies first
@@ -210,7 +211,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Utility method, checks out temporary copies of src into dest.
+		///     Utility method, checks out temporary copies of src into dest.
 		/// </summary>
 		public void CheckoutTempCopies( bool positions, bool normals, bool tangents, bool binormals )
 		{
@@ -221,31 +222,27 @@ namespace Axiom.Graphics
 
 			if ( bindPositions && destPositionBuffer == null )
 			{
-				destPositionBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcPositionBuffer,
-				                                                                              BufferLicenseRelease.Automatic, this );
+				destPositionBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcPositionBuffer, BufferLicenseRelease.Automatic, this );
 			}
 
 			if ( bindNormals && !posNormalShareBuffer && srcNormalBuffer != null && destNormalBuffer == null )
 			{
-				destNormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcNormalBuffer,
-				                                                                            BufferLicenseRelease.Automatic, this );
+				destNormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcNormalBuffer, BufferLicenseRelease.Automatic, this );
 			}
 
 			if ( bindTangents && srcTangentBuffer != null )
 			{
-				if ( tanBindIndex != posBindIndex && tanBindIndex != normBindIndex )
+				if ( this.tanBindIndex != this.posBindIndex && this.tanBindIndex != this.normBindIndex )
 				{
-					destTangentBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcTangentBuffer,
-					                                                                             BufferLicenseRelease.Automatic, this );
+					destTangentBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcTangentBuffer, BufferLicenseRelease.Automatic, this );
 				}
 			}
 
 			if ( bindNormals && srcBinormalBuffer != null )
 			{
-				if ( binormBindIndex != posBindIndex && binormBindIndex != normBindIndex && binormBindIndex != tanBindIndex )
+				if ( this.binormBindIndex != this.posBindIndex && this.binormBindIndex != this.normBindIndex && this.binormBindIndex != this.tanBindIndex )
 				{
-					destBinormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcBinormalBuffer,
-					                                                                              BufferLicenseRelease.Automatic, this );
+					destBinormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcBinormalBuffer, BufferLicenseRelease.Automatic, this );
 				}
 			}
 		}
@@ -256,7 +253,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Detect currently have buffer copies checked out and touch it
+		///     Detect currently have buffer copies checked out and touch it
 		/// </summary>
 		public bool BuffersCheckedOut( bool positions, bool normals )
 		{
@@ -280,10 +277,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Utility method, binds dest copies into a given VertexData.
+		///     Utility method, binds dest copies into a given VertexData.
 		/// </summary>
-		/// <param name="targetData"> VertexData object to bind the temp buffers into. </param>
-		/// <param name="suppressHardwareUpload"> </param>
+		/// <param name="targetData">VertexData object to bind the temp buffers into.</param>
+		/// <param name="suppressHardwareUpload"></param>
 		public void BindTempCopies( VertexData targetData, bool suppressHardwareUpload )
 		{
 			destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
@@ -320,9 +317,9 @@ namespace Axiom.Graphics
 		#region IHardwareBufferLicensee Members
 
 		/// <summary>
-		///   Implementation of LicenseExpired.
+		///     Implementation of LicenseExpired.
 		/// </summary>
-		/// <param name="buffer"> </param>
+		/// <param name="buffer"></param>
 		public void LicenseExpired( HardwareBuffer buffer )
 		{
 			if ( buffer == destPositionBuffer )

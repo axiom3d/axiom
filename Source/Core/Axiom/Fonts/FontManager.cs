@@ -38,7 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.IO;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
@@ -48,18 +50,20 @@ using Axiom.Scripting;
 namespace Axiom.Fonts
 {
 	/// <summary>
-	///   Manages Font resources, parsing .fontdef files and generally organizing them.
+	///    Manages Font resources, parsing .fontdef files and generally organizing them.
 	/// </summary>
+	/// 
 	/// <ogre name="FontManager">
-	///   <file name="OgreFontManager.h" revision="1.10" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreFontManager.cpp" revision="1.14" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre>
+	///     <file name="OgreFontManager.h"   revision="1.10" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFontManager.cpp" revision="1.14" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	/// 
 	public class FontManager : ResourceManager, ISingleton<FontManager>
 	{
 		#region ISingleton<FontManager> Implementation
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static FontManager Instance
 		{
@@ -70,9 +74,10 @@ namespace Axiom.Fonts
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="args"> </param>
-		/// <returns> </returns>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public bool Initialize( params object[] args )
 		{
 			return true;
@@ -83,7 +88,7 @@ namespace Axiom.Fonts
 		#region Constructors and Destructor
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public FontManager()
 			: base()
@@ -108,10 +113,10 @@ namespace Axiom.Fonts
 		#region Methods
 
 		/// <summary>
-		///   Parses an attribute of the font definitions.
+		///    Parses an attribute of the font definitions.
 		/// </summary>
-		/// <param name="line"> </param>
-		/// <param name="font"> </param>
+		/// <param name="line"></param>
+		/// <param name="font"></param>
 		protected void parseAttribute( string line, Font font )
 		{
 			var parms = line.Split( new char[]
@@ -163,8 +168,7 @@ namespace Axiom.Fonts
 					var glyph = parms[ 1 ][ 0 ];
 
 					// set the texcoords for this glyph
-					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ),
-					                        StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
+					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ), StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
 
 					break;
 
@@ -207,8 +211,7 @@ namespace Axiom.Fonts
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Font( this, name, handle, group, isManual, loader );
 		}
@@ -218,7 +221,7 @@ namespace Axiom.Fonts
 		#region IScriptLoader Implementation
 
 		/// <summary>
-		///   Parse a .fontdef script passed in as a chunk.
+		///    Parse a .fontdef script passed in as a chunk.
 		/// </summary>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
@@ -275,7 +278,7 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

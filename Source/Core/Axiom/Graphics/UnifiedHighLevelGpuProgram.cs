@@ -40,8 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Scripting;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -49,16 +51,29 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Specialization of HighLevelGpuProgram which just delegates its implementation to one other high level program, allowing a single program definition to represent one supported program from a number of options
+	/// Specialization of HighLevelGpuProgram which just delegates its implementation
+	/// to one other high level program, allowing a single program definition
+	/// to represent one supported program from a number of options
 	/// </summary>
 	/// <remarks>
-	///   Whilst you can use Technique to implement several ways to render an object depending on hardware support, if the only reason to need multiple paths is because of the high-level shader language supported, this can be cumbersome. For example you might want to implement the same shader in HLSL and GLSL for portability but apart from the implementation detail, the shaders do the same thing and take the same parameters. If the materials in question are complex, duplicating the techniques just to switch language is not optimal, so instead you can define high-level programs with a syntax of 'unified', and list the actual implementations in order of preference via repeated use of the 'delegate' parameter, which just points at another program name. The first one which has a supported syntax will be used.
+	/// Whilst you can use Technique to implement several ways to render an object
+	/// depending on hardware support, if the only reason to need multiple paths is
+	/// because of the high-level shader language supported, this can be 
+	/// cumbersome. For example you might want to implement the same shader 
+	/// in HLSL and	GLSL for portability but apart from the implementation detail,
+	/// the shaders do the same thing and take the same parameters. If the materials
+	/// in question are complex, duplicating the techniques just to switch language
+	/// is not optimal, so instead you can define high-level programs with a 
+	/// syntax of 'unified', and list the actual implementations in order of
+	/// preference via repeated use of the 'delegate' parameter, which just points
+	/// at another program name. The first one which has a supported syntax
+	/// will be used.
 	/// </remarks>
 	public class UnifiedHighLevelGpuProgram : HighLevelGpuProgram
 	{
 		#region Fields and Properties
 
-		private readonly List<String> _delegateNames = new List<string>();
+		private List<String> _delegateNames = new List<string>();
 
 		private HighLevelGpuProgram _chosenDelegate;
 
@@ -79,15 +94,10 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null )
-		{
-		}
+			: this( creator, name, handle, group, false, null ) {}
 
-		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group,
-		                                     bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader )
-		{
-		}
+		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( creator, name, handle, group, isManual, loader ) {}
 
 		#endregion Construction and Destruction
 
@@ -108,17 +118,15 @@ namespace Axiom.Graphics
 			}
 		}
 
-		protected virtual void buildConstantDefinitions()
-		{
-		}
+		protected virtual void buildConstantDefinitions() {}
 
 		/// <summary>
-		///   Adds a new delegate program to the list.
+		/// Adds a new delegate program to the list.
 		/// </summary>
 		/// <remarks>
-		///   Delegates are tested in order so earlier ones are preferred.
+		/// Delegates are tested in order so earlier ones are preferred.
 		/// </remarks>
-		/// <param name="delegateName"> </param>
+		/// <param name="delegateName"></param>
 		public void AddDelegateProgram( string delegateName )
 		{
 			_delegateNames.Add( delegateName );
@@ -127,7 +135,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Remove all delegate programs
+		/// Remove all delegate programs
 		/// </summary>
 		public void ClearDelegatePrograms()
 		{
@@ -347,8 +355,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle,
-		                                                    string group, bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}

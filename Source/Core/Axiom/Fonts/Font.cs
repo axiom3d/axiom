@@ -39,10 +39,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+
 using Axiom.Core;
+
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Media;
+
 using CodePoint = System.UInt32;
+using Image = Axiom.Media.Image;
 using ResourceHandle = System.UInt64;
 using UVRect = Axiom.Core.RectangleF;
 
@@ -50,32 +58,37 @@ using UVRect = Axiom.Core.RectangleF;
 
 namespace Axiom.Fonts
 {
-	///<summary>
-	///  Possible font sources for use in the engine.
-	///</summary>
+	/// <summary>
+	///		Possible font sources for use in the engine.
+	/// </summary>
 	public enum FontType
 	{
-		/// <summary>
-		///   System truetype fonts, as well as supplementary .ttf files.
-		/// </summary>
+		/// <summary>System truetype fonts, as well as supplementary .ttf files.</summary>
 		TrueType,
 
-		/// <summary>
-		///   Character image map created by an artist.
-		/// </summary>
+		/// <summary>Character image map created by an artist.</summary>
 		Image
 	}
 
-	///<summary>
-	///  This class is simply a way of getting a font texture into the engine and to easily retrieve the texture coordinates required to accurately render them. Fonts can either be loaded from precreated textures, or the texture can be generated using a truetype font. You can either create the texture manually in code, or you can use an XML font script to define it (probably more practical since you can reuse the definition more easily)
-	///</summary>
-	///<remarks>
-	///  This class extends both Resource and ManualResourceLoader since it is both a resource in it's own right, but it also provides the manual load implementation for the Texture it creates.
-	///</remarks>
-	///<ogre name="Font">
-	///  <file name="OgreFont.h" revision="1.14" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
-	///  <file name="OgreFont.cpp" revision="1.32.2.2" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
-	///</ogre>
+	/// <summary>
+	///		This class is simply a way of getting a font texture into the engine and
+	///		to easily retrieve the texture coordinates required to accurately render them.
+	///		Fonts can either be loaded from precreated textures, or the texture can be generated
+	///		using a truetype font. You can either create the texture manually in code, or you
+	///		can use an XML font script to define it (probably more practical since you can reuse
+	///		the definition more easily)
+	/// </summary>
+	/// <remarks>	
+	/// This class extends both Resource and ManualResourceLoader since it is
+	/// both a resource in it's own right, but it also provides the manual load
+	/// implementation for the Texture it creates.
+	/// </remarks>
+	/// 
+	/// <ogre name="Font">
+	///     <file name="OgreFont.h"   revision="1.14" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFont.cpp" revision="1.32.2.2" lastUpdated="5/22/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	/// 
 	public class Font : Resource, IManualResourceLoader
 	{
 		#region Internal Classes and Structures
@@ -110,7 +123,7 @@ namespace Axiom.Fonts
 		#region MaxBearingY
 
 		/// <summary>
-		///   Max distance to baseline of this (truetype) font
+		///  Max distance to baseline of this (truetype) font
 		/// </summary>
 		private int maxBearingY = 0;
 
@@ -119,12 +132,12 @@ namespace Axiom.Fonts
 		#region FontType Property
 
 		/// <summary>
-		///   Type of font, either imag based or TrueType.
+		///    Type of font, either imag based or TrueType.
 		/// </summary>
 		private FontType _fontType;
 
 		/// <summary>
-		///   Type of font.
+		///    Type of font.
 		/// </summary>
 		public FontType Type
 		{
@@ -143,39 +156,84 @@ namespace Axiom.Fonts
 		#region Source Property
 
 		/// <summary>
-		///   Source of the font (either an image name or a truetype font)
+		///    Source of the font (either an image name or a TrueType font).
 		/// </summary>
-		public string Source { get; set; }
+		private string _source;
+
+		/// <summary>
+		///    Source of the font (either an image name or a truetype font)
+		/// </summary>
+		public string Source
+		{
+			get
+			{
+				return _source;
+			}
+			set
+			{
+				_source = value;
+			}
+		}
 
 		#endregion Source Property
 
 		#region TrueTypeSize Property
 
 		/// <summary>
-		///   Size of the truetype font, in points.
+		///    Size of the truetype font, in points.
 		/// </summary>
-		public int TrueTypeSize { get; set; }
+		private int _ttfSize;
+
+		/// <summary>
+		///    Size of the truetype font, in points.
+		/// </summary>
+		public int TrueTypeSize
+		{
+			get
+			{
+				return _ttfSize;
+			}
+			set
+			{
+				_ttfSize = value;
+			}
+		}
 
 		#endregion TrueTypeSize Property
 
 		#region TrueTypeResolution Property
 
 		/// <summary>
-		///   Resolution (dpi) of truetype font.
+		///    Resolution (dpi) of truetype font.
 		/// </summary>
-		public int TrueTypeResolution { get; set; }
+		private int _ttfResolution;
+
+		/// <summary>
+		///    Resolution (dpi) of truetype font.
+		/// </summary>
+		public int TrueTypeResolution
+		{
+			get
+			{
+				return _ttfResolution;
+			}
+			set
+			{
+				_ttfResolution = value;
+			}
+		}
 
 		#endregion TrueTypeResolution Property
 
 		#region Material Property
 
 		/// <summary>
-		///   Material create for use on entities by this font.
+		///    Material create for use on entities by this font.
 		/// </summary>
 		private Material _material;
 
 		/// <summary>
-		///   Gets a reference to the material being used for this font.
+		///    Gets a reference to the material being used for this font.
 		/// </summary>
 		public Material Material
 		{
@@ -194,12 +252,12 @@ namespace Axiom.Fonts
 		#region texture Property
 
 		/// <summary>
-		///   Material create for use on entities by this font.
+		///    Material create for use on entities by this font.
 		/// </summary>
 		private Texture _texture;
 
 		/// <summary>
-		///   Gets a reference to the material being used for this font.
+		///    Gets a reference to the material being used for this font.
 		/// </summary>
 		protected Texture texture
 		{
@@ -218,18 +276,40 @@ namespace Axiom.Fonts
 		#region AntiAliasColor Property
 
 		/// <summary>
-		///   Sets whether or not the color of this font is antialiased as it is generated from a TrueType font.
+		///    For TrueType fonts only.
+		/// </summary>
+		private bool _antialiasColor;
+
+		/// <summary>
+		///    Sets whether or not the color of this font is antialiased as it is generated
+		///    from a TrueType font.
 		/// </summary>
 		/// <remarks>
-		///   This is valid only for a TrueType font. If you are planning on using alpha blending to draw your font, then it is a good idea to set this to false (which is the default), otherwise the darkening of the font will combine with the fading out of the alpha around the edges and make your font look thinner than it should. However, if you intend to blend your font using a color blending mode (add or modulate for example) then it's a good idea to set this to true, in order to soften your font edges.
+		///    This is valid only for a TrueType font. If you are planning on using 
+		///    alpha blending to draw your font, then it is a good idea to set this to
+		///    false (which is the default), otherwise the darkening of the font will combine
+		///    with the fading out of the alpha around the edges and make your font look thinner
+		///    than it should. However, if you intend to blend your font using a color blending
+		///    mode (add or modulate for example) then it's a good idea to set this to true, in
+		///    order to soften your font edges.
 		/// </remarks>
-		public bool AntialiasColor { get; set; }
+		public bool AntialiasColor
+		{
+			get
+			{
+				return _antialiasColor;
+			}
+			set
+			{
+				_antialiasColor = value;
+			}
+		}
 
 		#endregion AntiAliasColor Property
 
 		#region Glyphs Property
 
-		private readonly Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
+		private Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
 
 		public IDictionary<CodePoint, GlyphInfo> Glyphs
 		{
@@ -243,7 +323,19 @@ namespace Axiom.Fonts
 
 		#region showLines Property
 
-		protected bool showLines { get; set; }
+		private bool _showLines;
+
+		protected bool showLines
+		{
+			get
+			{
+				return _showLines;
+			}
+			set
+			{
+				_showLines = value;
+			}
+		}
 
 		#endregion showLines Property
 
@@ -253,19 +345,14 @@ namespace Axiom.Fonts
 
 		#region Constructors and Destructor
 
-		///<summary>
-		///  Constructor, should be called through FontManager.Create().
-		///</summary>
+		/// <summary>
+		///		Constructor, should be called through FontManager.Create().
+		/// </summary>
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null )
-		{
-		}
+			: this( parent, name, handle, group, false, null ) {}
 
-		public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		             IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-		}
+		public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader ) {}
 
 		#endregion Constructors and Destructor
 
@@ -287,9 +374,7 @@ namespace Axiom.Fonts
 			t.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
 		}
 
-		/// <summary>
-		///   Returns the size in pixels of a box that could contain the whole string.
-		/// </summary>
+		/// <summary>Returns the size in pixels of a box that could contain the whole string.</summary>
 		private Pair<int> StrBBox( string text, float char_height, RenderWindow window )
 		{
 			int height = 0, width = 0;
@@ -305,26 +390,26 @@ namespace Axiom.Fonts
 
 				// Calculate view-space width and height of char
 				vsY = char_height;
-				vsX = GetGlyphAspectRatio( text[ i ] )*char_height;
+				vsX = GetGlyphAspectRatio( text[ i ] ) * char_height;
 
-				width += (int)( vsX*w );
-				if ( vsY*h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+				width += (int)( vsX * w );
+				if ( vsY * h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
 				{
-					height += (int)( vsY*h );
+					height += (int)( vsY * h );
 				}
 			}
 
 			return new Pair<int>( height, width );
 		}
 
-		///<summary>
-		///  Retrieves the texture coordinates for the specifed character in this font.
-		///</summary>
-		///<param name="c"> </param>
-		///<param name="u1"> </param>
-		///<param name="u2"> </param>
-		///<param name="v1"> </param>
-		///<param name="v2"> </param>
+		/// <summary>
+		///		Retrieves the texture coordinates for the specifed character in this font.
+		/// </summary>
+		/// <param name="c"></param>
+		/// <param name="u1"></param>
+		/// <param name="u2"></param>
+		/// <param name="v1"></param>
+		/// <param name="v2"></param>
 		[Obsolete( "Use Glyphs property" )]
 		public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
@@ -343,39 +428,42 @@ namespace Axiom.Fonts
 		}
 
 		/// <summary>
-		///   Sets the texture coordinates of a glyph.
+		/// Sets the texture coordinates of a glyph.
 		/// </summary>
-		/// <param name="c"> </param>
-		/// <param name="u1"> </param>
-		/// <param name="v1"> </param>
-		/// <param name="u2"> </param>
-		/// <param name="v2"> </param>
+		/// <param name="c"></param>
+		/// <param name="u1"></param>
+		/// <param name="v1"></param>
+		/// <param name="u2"></param>
+		/// <param name="v2"></param>
 		/// <remarks>
-		///   You only need to call this if you're setting up a font loaded from a texture manually.
+		/// You only need to call this if you're setting up a font loaded from a texture manually.
 		/// </remarks>
 		[Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2 )
 		{
-			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 )/( v2 - v1 ) );
+			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
 		}
 
 		/// <summary>
-		///   Sets the texture coordinates of a glyph.
+		/// Sets the texture coordinates of a glyph.
 		/// </summary>
-		/// <param name="c"> </param>
-		/// <param name="u1"> </param>
-		/// <param name="v1"> </param>
-		/// <param name="u2"> </param>
-		/// <param name="v2"> </param>
-		/// <param name="aspect"> </param>
+		/// <param name="c"></param>
+		/// <param name="u1"></param>
+		/// <param name="v1"></param>
+		/// <param name="u2"></param>
+		/// <param name="v2"></param>
+		/// <param name="aspect"></param>
 		/// <remarks>
-		///   You only need to call this if you're setting up a font loaded from a texture manually. <para>Also sets the aspect ratio (width / height) of this character. textureAspect
-		///                                                                                            is the width/height of the texture (may be non-square)</para>
+		/// You only need to call this if you're setting up a font loaded from a texture manually.
+		/// <para>
+		/// Also sets the aspect ratio (width / height) of this character. textureAspect
+		/// is the width/height of the texture (may be non-square)
+		/// </para>
 		/// </remarks>
 		[Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
-			var glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect*( u2 - u1 )/( v2 - v1 ) );
+			var glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect * ( u2 - u1 ) / ( v2 - v1 ) );
 			if ( codePoints.ContainsKey( c ) )
 			{
 				codePoints[ c ] = glyph;
@@ -386,11 +474,11 @@ namespace Axiom.Fonts
 			}
 		}
 
-		///<summary>
-		///  Finds the aspect ratio of the specified character in this font.
-		///</summary>
-		///<param name="c"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Finds the aspect ratio of the specified character in this font.
+		/// </summary>
+		/// <param name="c"></param>
+		/// <returns></returns>
 		[Obsolete( "Use Glyphs property" )]
 		public float GetGlyphAspectRatio( char c )
 		{
@@ -499,7 +587,8 @@ namespace Axiom.Fonts
 		#region Implementation of IManualResourceLoader
 
 		/// <summary>
-		///   Implementation of ManualResourceLoader::loadResource, called when the Texture that this font creates needs to (re)load.
+		/// Implementation of ManualResourceLoader::loadResource, called
+		/// when the Texture that this font creates needs to (re)load.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void LoadResource( Resource res )
@@ -523,7 +612,7 @@ namespace Axiom.Fonts
 			// original DataStream in a MemoryDataStream
 			var fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group, true, this );
 
-			var ttfchunk = new byte[fileStream.Length];
+			var ttfchunk = new byte[ fileStream.Length ];
 			fileStream.Read( ttfchunk, 0, ttfchunk.Length );
 
 			//Load font
@@ -533,7 +622,7 @@ namespace Axiom.Fonts
 			}
 
 			// Convert our point size to freetype 26.6 fixed point format
-			var ftSize = _ttfSize*( 1 << 6 );
+			var ftSize = _ttfSize * ( 1 << 6 );
 
 			if ( FT.FT_Set_Char_Size( face, ftSize, 0, (uint)_ttfResolution, (uint)_ttfResolution ) != 0 )
 			{
@@ -560,9 +649,9 @@ namespace Axiom.Fonts
 					var rec = face.PtrToStructure<FT_FaceRec>();
 					var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
 
-					if ( ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
 					{
-						max_height = ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
+						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
 					}
 					if ( glyp.metrics.horiBearingY > maxBearingY )
 					{
@@ -577,7 +666,7 @@ namespace Axiom.Fonts
 			}
 
 			// Now work out how big our texture needs to be
-			var rawSize = ( max_width + char_space )*( ( max_height >> 6 ) + char_space )*glyphCount;
+			var rawSize = ( max_width + char_space ) * ( ( max_height >> 6 ) + char_space ) * glyphCount;
 
 			var tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -588,9 +677,9 @@ namespace Axiom.Fonts
 			// Would we benefit from using a non-square texture (2X width)
 			int finalWidth = 0, finalHeight = 0;
 
-			if ( roundUpSize*roundUpSize*0.5 >= rawSize )
+			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
 			{
-				finalHeight = (int)( roundUpSize*0.5 );
+				finalHeight = (int)( roundUpSize * 0.5 );
 			}
 			else
 			{
@@ -599,15 +688,14 @@ namespace Axiom.Fonts
 
 			finalWidth = roundUpSize;
 
-			var textureAspec = (Real)finalWidth/(Real)finalHeight;
+			var textureAspec = (Real)finalWidth / (Real)finalHeight;
 			var pixelBytes = 2;
-			var dataWidth = finalWidth*pixelBytes;
-			var dataSize = finalWidth*finalHeight*pixelBytes;
+			var dataWidth = finalWidth * pixelBytes;
+			var dataSize = finalWidth * finalHeight * pixelBytes;
 
-			LogManager.Instance.Write( "Font {0} using texture size {1}x{2}", _name, finalWidth.ToString(),
-			                           finalHeight.ToString() );
+			LogManager.Instance.Write( "Font {0} using texture size {1}x{2}", _name, finalWidth.ToString(), finalHeight.ToString() );
 
-			var imageData = new byte[dataSize];
+			var imageData = new byte[ dataSize ];
 			// Reset content (White, transparent)
 			for ( var i = 0; i < dataSize; i += pixelBytes )
 			{
@@ -657,7 +745,7 @@ namespace Axiom.Fonts
 					unsafe
 #endif
 					{
-						var buffer = BufferBase.Wrap( glyp.bitmap.buffer, glyp.bitmap.rows*glyp.bitmap.pitch );
+						var buffer = BufferBase.Wrap( glyp.bitmap.buffer, glyp.bitmap.rows * glyp.bitmap.pitch );
 						var bufferPtr = buffer.ToBytePointer();
 						var idx = 0;
 						var imageDataBuffer = BufferBase.Wrap( imageData );
@@ -668,7 +756,7 @@ namespace Axiom.Fonts
 						for ( var j = 0; j < glyp.bitmap.rows; j++ )
 						{
 							var row = j + m + y_bearing;
-							var pDest = ( row*dataWidth ) + ( l + x_bearing )*pixelBytes;
+							var pDest = ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes;
 							for ( var k = 0; k < glyp.bitmap.width; k++ )
 							{
 								if ( AntialiasColor )
@@ -690,11 +778,11 @@ namespace Axiom.Fonts
 						buffer.Dispose();
 						imageDataBuffer.Dispose();
 
-						SetGlyphTexCoords( (uint)cp, (Real)l/(Real)finalWidth, //u1
-						                   (Real)m/(Real)finalHeight, //v1
-						                   (Real)( l + ( glyp.advance.x >> 6 ) )/(Real)finalWidth, //u2
-						                   ( m + ( max_height >> 6 ) )/(Real)finalHeight, //v2
-						                   textureAspec );
+						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
+						                        (Real)m / (Real)finalHeight, //v1
+						                        (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
+						                        ( m + ( max_height >> 6 ) ) / (Real)finalHeight, //v2
+						                        textureAspec );
 
 						// Advance a column
 						l += ( advance + char_space );
@@ -715,7 +803,7 @@ namespace Axiom.Fonts
 			var tex = (Texture)res;
 			// Call internal _loadImages, not loadImage since that's external and 
 			// will determine load status etc again, and this is a manual loader inside load()
-			var images = new Image[1];
+			var images = new Image[ 1 ];
 			images[ 0 ] = img;
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );

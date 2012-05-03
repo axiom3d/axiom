@@ -42,11 +42,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+
 using Axiom.Core;
+using Axiom.Configuration;
 using Axiom.Media;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -54,17 +59,21 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	///<summary>
-	///  Class representing a Compositor object. Compositors provide the means to flexibly "composite" the final rendering result from multiple scene renders and intermediate operations like rendering fullscreen quads. This makes it possible to apply postfilter effects, HDRI postprocessing, and shadow effects to a Viewport.
+	///    Class representing a Compositor object. Compositors provide the means
+	///    to flexibly "composite" the final rendering result from multiple scene renders
+	///    and intermediate operations like rendering fullscreen quads. This makes
+	///    it possible to apply postfilter effects, HDRI postprocessing, and shadow
+	///    effects to a Viewport.
 	///</summary>
 	public class Compositor : Resource
 	{
 		#region Fields and Properties
 
 		protected List<CompositionTechnique> techniques;
-		private readonly ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
+		private ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
 
 		/// <summary>
-		///   List of all techniques
+		/// List of all techniques
 		/// </summary>
 		public IList<CompositionTechnique> Techniques
 		{
@@ -75,13 +84,15 @@ namespace Axiom.Graphics
 		}
 
 		protected List<CompositionTechnique> supportedTechniques;
-		private readonly ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
+		private ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
 
-		///<summary>
-		///  List of supported techniques
-		///</summary>
+		/// <summary>
+		/// List of supported techniques
+		/// </summary>
 		///<remarks>
-		///  The supported technique list is only available after this compositor has been compiled, which typically happens on loading it. Therefore, if this method returns an empty list, try calling <see>Compositor.Load</see> .
+		///    The supported technique list is only available after this compositor has been compiled,
+		///    which typically happens on loading it. Therefore, if this method returns
+		///    an empty list, try calling <see>Compositor.Load</see>.
 		///</remarks>
 		public IList<CompositionTechnique> SupportedTechniques
 		{
@@ -92,22 +103,23 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///  This is set if the techniques change and the supportedness of techniques has to be re-evaluated.
+		///     This is set if the techniques change and the supportedness of techniques has to be
+		///     re-evaluated.
 		///</summary>
 		protected bool compilationRequired;
 
 		/// <summary>
-		///   Store a list of textures we've created
+		/// Store a list of textures we've created
 		/// </summary>
 		protected Dictionary<string, Texture> globalTextures;
 
 		/// <summary>
-		///   Store a list of MRTs we've created
+		/// Store a list of MRTs we've created
 		/// </summary>
 		protected Dictionary<string, MultiRenderTarget> globalMRTs;
 
 		/// <summary>
-		///   Auto incrementing number for creating unique names.
+		///    Auto incrementing number for creating unique names.
 		/// </summary>
 		protected static int autoNumber;
 
@@ -115,8 +127,7 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                   IManualResourceLoader loader )
+		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			techniques = new List<CompositionTechnique>();
@@ -125,19 +136,22 @@ namespace Axiom.Graphics
 			readOnlySupportedTechniques = new ReadOnlyCollection<CompositionTechnique>( supportedTechniques );
 			globalTextures = new Dictionary<string, Texture>();
 			globalMRTs = new Dictionary<string, MultiRenderTarget>();
-			compilationRequired = true;
+			this.compilationRequired = true;
 		}
 
 		#endregion Constructors
 
 		#region Implementation of Resource
 
-		///<summary>
-		///  Overridden from Resource.
-		///</summary>
-		///<remarks>
-		///  By default, Materials are not loaded, and adding additional textures etc do not cause those textures to be loaded. When the <code>Load</code> method is called, all textures are loaded (if they are not already), GPU programs are created if applicable, and Controllers are instantiated. Once a material has been loaded, all changes made to it are immediately loaded too
-		///</remarks>
+		/// <summary>
+		///		Overridden from Resource.
+		/// </summary>
+		/// <remarks>
+		///		By default, Materials are not loaded, and adding additional textures etc do not cause those
+		///		textures to be loaded. When the <code>Load</code> method is called, all textures are loaded (if they
+		///		are not already), GPU programs are created if applicable, and Controllers are instantiated.
+		///		Once a material has been loaded, all changes made to it are immediately loaded too
+		/// </remarks>
 		protected override void load()
 		{
 			if ( !IsLoaded )
@@ -152,24 +166,25 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Unloads the material, frees resources etc. <see cref="Resource" />
-		///</summary>
+		/// <summary>
+		///		Unloads the material, frees resources etc.
+		///		<see cref="Resource"/>
+		/// </summary>
 		protected override void unload()
 		{
 			FreeGlobalTextures();
 		}
 
-		///<summary>
-		///  Disposes of any resources used by this object.
-		///</summary>
+		/// <summary>
+		///	    Disposes of any resources used by this object.
+		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					RemoveAllTechniques();
+					this.RemoveAllTechniques();
 
 					foreach ( var item in globalMRTs )
 					{
@@ -195,7 +210,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Overridden to ensure a recompile occurs if needed before use.
+		///    Overridden to ensure a recompile occurs if needed before use.
 		/// </summary>
 		public override void Touch()
 		{
@@ -213,7 +228,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		///<summary>
-		///  Create a new technique, and return a pointer to it.
+		/// Create a new technique, and return a pointer to it.
 		///</summary>
 		public CompositionTechnique CreateTechnique()
 		{
@@ -224,7 +239,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///  Remove a technique.
+		/// Remove a technique.
 		///</summary>
 		public void RemoveTechnique( int idx )
 		{
@@ -237,7 +252,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///  Remove all techniques.
+		///    Remove all techniques.
 		///</summary>
 		public void RemoveAllTechniques()
 		{
@@ -252,21 +267,24 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a reference to a supported technique for a given scheme.
+		/// Get a reference to a supported technique for a given scheme.
 		/// </summary>
-		/// <returns> the first supported technique with no specific scheme will be returned. </returns>
+		/// <returns>the first supported technique with no specific scheme will be returned.</returns>
 		public CompositionTechnique GetSupportedTechniqueByScheme()
 		{
 			return GetSupportedTechniqueByScheme( string.Empty );
 		}
 
 		/// <summary>
-		///   Get a reference to a supported technique for a given scheme.
+		/// Get a reference to a supported technique for a given scheme.
 		/// </summary>
-		/// <param name="schemeName"> The scheme name you are looking for. Blank means to look for techniques with no scheme associated </param>
-		/// <returns> </returns>
+		/// <param name="schemeName"> The scheme name you are looking for.
+		/// Blank means to look for techniques with no scheme associated
+		/// </param>
+		/// <returns></returns>
 		/// <remarks>
-		///   If there is no specific supported technique with this scheme name, then the first supported technique with no specific scheme will be returned.
+		/// If there is no specific supported technique with this scheme name,
+		/// then the first supported technique with no specific scheme will be returned.
 		/// </remarks>
 		public CompositionTechnique GetSupportedTechniqueByScheme( string schemeName )
 		{
@@ -289,11 +307,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get's the instance of a global texture.
+		/// Get's the instance of a global texture.
 		/// </summary>
-		/// <param name="name"> The name of the texture in the original compositor definition </param>
-		/// <param name="mrtIndex"> If name identifies a MRT, which texture attachment to retrieve </param>
-		/// <returns> The texture pointer, corresponds to a real texture </returns>
+		/// <param name="name">The name of the texture in the original compositor definition</param>
+		/// <param name="mrtIndex">If name identifies a MRT, which texture attachment to retrieve</param>
+		/// <returns>The texture pointer, corresponds to a real texture</returns>
 		public Texture GetTextureInstance( string name, int mrtIndex )
 		{
 			//Try simple texture
@@ -314,12 +332,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get's the render target for a given render texture name.
+		/// Get's the render target for a given render texture name.
 		/// </summary>
-		/// <param name="name"> name of the texture </param>
-		/// <returns> rendertarget </returns>
+		/// <param name="name">name of the texture</param>
+		/// <returns>rendertarget</returns>
 		/// <remarks>
-		///   You can use this to add listeners etc, but do not use it to update the targets manually or any other modifications, the compositor instance is in charge of this.
+		/// You can use this to add listeners etc, but do not use it to update the
+		/// targets manually or any other modifications, the compositor instance
+		/// is in charge of this.
 		/// </remarks>
 		public RenderTarget GetRenderTarget( string name )
 		{
@@ -340,18 +360,19 @@ namespace Axiom.Graphics
 			throw new AxiomException( "Non-existent global texture name." );
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="baseName"> </param>
-		///<param name="attachment"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="baseName"></param>
+		/// <param name="attachment"></param>
+		/// <returns></returns>
 		public string GetMRTLocalName( string baseName, int attachment )
 		{
 			return baseName + "/" + attachment.ToString();
 		}
 
 		///<summary>
-		///  Check supportedness of techniques.
+		///    Check supportedness of techniques.
 		///</summary>
 		protected void Compile()
 		{
@@ -383,7 +404,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Create global rendertextures.
+		/// Create global rendertextures.
 		/// </summary>
 		private void CreateGlobalTextures()
 		{
@@ -435,11 +456,7 @@ namespace Axiom.Graphics
 						foreach ( var p in def.PixelFormats )
 						{
 							var texName = string.Format( "{0}/{1}", MRTBaseName, atch.ToString() );
-							var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-							                                                TextureType.TwoD, def.Width, def.Height, 0, 0, p,
-							                                                TextureUsage.RenderTarget, null,
-							                                                def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ),
-							                                                def.Fsaa ? 1 : 0 );
+							var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
 
 							var rt = tex.GetBuffer().GetRenderTarget();
 							rt.IsAutoUpdated = false;
@@ -456,12 +473,7 @@ namespace Axiom.Graphics
 						// space in the name mixup the cegui in the compositor demo
 						// this is an auto generated name - so no spaces can't hart us.
 						texName = texName.Replace( " ", "_" );
-						var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
-						                                                TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ],
-						                                                TextureUsage.RenderTarget, null,
-						                                                def.HwGammaWrite &&
-						                                                !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ),
-						                                                def.Fsaa ? 1 : 0 );
+						var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
 
 						renderTarget = tex.GetBuffer().GetRenderTarget();
 						globalTextures.Add( def.Name, tex );
@@ -501,7 +513,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Destroy global rendertextures.
+		/// Destroy global rendertextures.
 		/// </summary>
 		private void FreeGlobalTextures()
 		{

@@ -45,6 +45,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Scripting;
@@ -55,9 +56,9 @@ namespace Axiom.Graphics
 {
 	internal static class CompositorScriptLoader
 	{
-		///<summary>
-		///  Enum to identify compositor sections.
-		///</summary>
+		/// <summary>
+		///		Enum to identify compositor sections.
+		/// </summary>
 		private enum CompositorScriptSection
 		{
 			None,
@@ -69,9 +70,9 @@ namespace Axiom.Graphics
 			Stencil
 		}
 
-		///<summary>
-		///  Struct for holding the script context while parsing.
-		///</summary>
+		/// <summary>
+		///		Struct for holding the script context while parsing.
+		/// </summary>
 		private class CompositorScriptContext
 		{
 			public CompositorScriptSection section = CompositorScriptSection.None;
@@ -157,8 +158,7 @@ namespace Axiom.Graphics
 										}
 										break;
 									default:
-										LogError( context, "After opening brace '{' of compositor definition, expected 'technique', but got '{0}'",
-										          token );
+										LogError( context, "After opening brace '{' of compositor definition, expected 'technique', but got '{0}'", token );
 										continue; // next line
 								}
 								break;

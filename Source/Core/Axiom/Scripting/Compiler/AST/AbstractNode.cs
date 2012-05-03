@@ -44,7 +44,7 @@ using System;
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	///   the types of the possible abstract nodes
+	/// the types of the possible abstract nodes
 	/// </summary>
 	public enum AbstractNodeType
 	{
@@ -58,7 +58,7 @@ namespace Axiom.Scripting.Compiler.AST
 	}
 
 	/// <summary>
-	///   base node type for the AST
+	/// base node type for the AST
 	/// </summary>
 	public abstract class AbstractNode : ICloneable
 	{
@@ -69,22 +69,22 @@ namespace Axiom.Scripting.Compiler.AST
 		public AbstractNode Parent;
 
 		/// <summary>
-		///   An holder for translation context data
+		/// An holder for translation context data
 		/// </summary>
 		public object Context;
 
 		/// <summary>
-		///   Constructor
+		/// Constructor
 		/// </summary>
-		/// <param name="parent"> the parent AbstractNode in the tree </param>
+		/// <param name="parent">the parent AbstractNode in the tree</param>
 		protected AbstractNode( AbstractNode parent )
 		{
-			Parent = parent;
-			Line = 0;
+			this.Parent = parent;
+			this.Line = 0;
 		}
 
 		/// <summary>
-		///   Returns a string value depending on the type of the AbstractNode.
+		/// Returns a string value depending on the type of the AbstractNode.
 		/// </summary>
 		public abstract string Value { get; set; }
 
@@ -96,9 +96,9 @@ namespace Axiom.Scripting.Compiler.AST
 		}
 
 		/// <summary>
-		///   Returns a new AbstractNode which is a replica of this one
+		/// Returns a new AbstractNode which is a replica of this one
 		/// </summary>
-		/// <returns> a new AbstractNode </returns>
+		/// <returns>a new AbstractNode</returns>
 		public abstract AbstractNode Clone();
 
 		#endregion ICloneable Implementation
@@ -107,7 +107,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override bool Equals( object obj )
 		{
-			return GetHashCode() == obj.GetHashCode();
+			return this.GetHashCode() == obj.GetHashCode();
 		}
 
 		public override int GetHashCode()

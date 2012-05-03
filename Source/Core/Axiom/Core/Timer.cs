@@ -36,30 +36,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	///<summary>
-	///  Encapsulates the functionality of the platform's highest resolution timer available.
-	///</summary>
-	///<remarks>
-	///  based on an vb.net implementation by createdbyx as posted in SourceForge Tracker #: [1612705]
-	///</remarks>
+	/// <summary>
+	///		Encapsulates the functionality of the platform's highest resolution timer available.
+	/// </summary>
+	/// <remarks>
+	/// based on an vb.net implementation by createdbyx as posted in SourceForge Tracker #: [1612705]
+	/// </remarks>
 	public class Timer : ITimer
 	{
 		#region Private Fields
 
-		private readonly Stopwatch _timer = new Stopwatch();
+		private Stopwatch _timer = new Stopwatch();
 
 		#endregion Private Fields
 
 		#region Methods
 
 		/// <summary>
-		///   Start this instance's timer.
+		/// Start this instance's timer.
 		/// </summary>
 		public void Start()
 		{
@@ -71,7 +73,8 @@ namespace Axiom.Core
 		#region Public Properties
 
 		/// <summary>
-		///   Gets a <see cref="System.Int64" /> representing the current tick count of the timer.
+		/// Gets a <see cref="System.Int64" /> representing the 
+		/// current tick count of the timer.
 		/// </summary>
 		public long Count
 		{
@@ -82,7 +85,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Gets a <see cref="System.Int64" /> representing the frequency of the counter in ticks-per-second.
+		/// Gets a <see cref="System.Int64" /> representing the 
+		/// frequency of the counter in ticks-per-second.
 		/// </summary>
 		public long Frequency
 		{
@@ -93,7 +97,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Gets a <see cref="System.Boolean" /> representing whether the timer has been started and is currently running.
+		/// Gets a <see cref="System.Boolean" /> representing whether the 
+		/// timer has been started and is currently running.
 		/// </summary>
 		public bool IsRunning
 		{
@@ -104,18 +109,20 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Gets a <see cref="System.Double" /> representing the resolution of the timer in seconds.
+		/// Gets a <see cref="System.Double" /> representing the 
+		/// resolution of the timer in seconds.
 		/// </summary>
 		public float Resolution
 		{
 			get
 			{
-				return ( (float)1.0/(float)Frequency );
+				return ( (float)1.0 / (float)Frequency );
 			}
 		}
 
 		/// <summary>
-		///   Gets a <see cref="System.Int64" /> representing the tick count at the start of the timer's run.
+		/// Gets a <see cref="System.Int64" /> representing the 
+		/// tick count at the start of the timer's run.
 		/// </summary>
 		public long StartCount
 		{
@@ -129,9 +136,9 @@ namespace Axiom.Core
 
 		#region ITimer Members
 
-		///<summary>
-		///  Reset this instance's timer.
-		///</summary>
+		/// <summary>
+		///		Reset this instance's timer.
+		/// </summary>
 		public void Reset()
 		{
 			// reset by restarting the timer
@@ -143,7 +150,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds/10;
+				return _timer.ElapsedMilliseconds / 10;
 			}
 		}
 

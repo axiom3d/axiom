@@ -37,12 +37,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Core;
+
 #endregion Namepsace Declarations
 
 namespace Axiom.Overlays.Elements
 {
 	/// <summary>
-	///   Summary description for BorderPanelFactory.
+	/// 	Summary description for BorderPanelFactory.
 	/// </summary>
 	public class BorderPanelFactory : IOverlayElementFactory
 	{
@@ -65,7 +69,7 @@ namespace Axiom.Overlays.Elements
 	}
 
 	/// <summary>
-	///   Summary description for PanelFactory.
+	/// 	Summary description for PanelFactory.
 	/// </summary>
 	public class PanelFactory : IOverlayElementFactory
 	{
@@ -88,7 +92,7 @@ namespace Axiom.Overlays.Elements
 	}
 
 	/// <summary>
-	///   Summary description for TextAreaFactory.
+	/// 	Summary description for TextAreaFactory.
 	/// </summary>
 	public class TextAreaFactory : IOverlayElementFactory
 	{

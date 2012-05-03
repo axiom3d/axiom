@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -44,20 +46,17 @@ using System.Collections.Generic;
 namespace Axiom.ParticleSystems.Collections
 {
 	/// <summary>
+	/// 
 	/// </summary>
-	public class EmitterList : List<ParticleEmitter>
-	{
-	}
+	public class EmitterList : List<ParticleEmitter> {}
 
 	/// <summary>
+	/// 
 	/// </summary>
-	public class AffectorList : List<ParticleAffector>
-	{
-	}
+	public class AffectorList : List<ParticleAffector> {}
 
 	/// <summary>
+	/// 
 	/// </summary>
-	public class ParticleList : List<Particle>
-	{
-	}
+	public class ParticleList : List<Particle> {}
 }

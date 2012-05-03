@@ -41,41 +41,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Axiom.Core;
-
+using System.Linq;
 #if SILVERLIGHT
 using System.Windows;
 #endif
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.FileSystem
 {
 	/// <summary>
-	///   Specialization of the Archive class to allow reading of files from filesystem folders / directories.
+	/// Specialization of the Archive class to allow reading of files from filesystem folders / directories.
 	/// </summary>
 	/// <ogre name="FileSystemArchive">
-	///   <file name="OgreFileSystem.h" revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	public class FileSystemArchive : Archive
 	{
 		#region Fields and Properties
 
-		/// <summary>
-		///   Base path; actually the same as Name, but for clarity
-		/// </summary>
+		/// <summary>Base path; actually the same as Name, but for clarity </summary>
 		protected string _basePath;
 
 		protected virtual string CurrentDirectory { get; set; }
 
-		/// <summary>
-		///   Directory stack of previous directories
-		/// </summary>
+		/// <summary>Directory stack of previous directories </summary>
 		private readonly Stack<string> _directoryStack = new Stack<string>();
 
 		/// <summary>
-		///   Is this archive capable of being monitored for additions, changes and deletions
+		/// Is this archive capable of being monitored for additions, changes and deletions
 		/// </summary>
 		public override bool IsMonitorable
 		{
@@ -120,26 +116,25 @@ namespace Axiom.FileSystem
 		}
 
 		/// <overloads>
-		///   <summary>
-		///     Utility method to retrieve all files in a directory matching pattern.
-		///   </summary>
-		///   <param name="pattern"> File pattern </param>
-		///   <param name="recursive"> Whether to cascade down directories </param>
-		///   <param name="simpleList"> Populated if retrieving a simple list </param>
-		///   <param name="detailList"> Populated if retrieving a detailed list </param>
+		/// <summary>
+		/// Utility method to retrieve all files in a directory matching pattern.
+		/// </summary>
+		/// <param name="pattern">File pattern</param>
+		/// <param name="recursive">Whether to cascade down directories</param>
+		/// <param name="simpleList">Populated if retrieving a simple list</param>
+		/// <param name="detailList">Populated if retrieving a detailed list</param>
 		/// </overloads>
 		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList )
 		{
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
 
-		/// <param name="detailList"> </param>
-		/// <param name="currentDir"> The current directory relative to the base of the archive, for file naming </param>
-		/// <param name="pattern"> </param>
-		/// <param name="recursive"> </param>
-		/// <param name="simpleList"> </param>
-		protected virtual void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
-		                                  string currentDir )
+		/// <param name="detailList"></param>
+		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <param name="simpleList"></param>
+		protected virtual void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
 			if ( pattern == "" )
 			{
@@ -150,7 +145,7 @@ namespace Axiom.FileSystem
 				currentDir = _basePath;
 			}
 
-			var files = getFiles( currentDir, pattern, recursive );
+			var files = this.getFiles( currentDir, pattern, recursive );
 
 			foreach ( var file in files )
 			{
@@ -175,16 +170,16 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
-		///   Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
 		/// </summary>
-		/// <param name="dir"> The directory to search. </param>
-		/// <param name="pattern"> The search string to match against the names of files in path. </param>
+		/// <param name="dir">The directory to search.</param>
+		/// <param name="pattern">The search string to match against the names of files in path.</param>
 		protected virtual string[] getFiles( string dir, string pattern, bool recurse )
 		{
 			string[] files;
 #if ( XBOX || XBOX360 || ANDROID || WINDOWS_PHONE )
 			if ( !recurse )
-			{
+			{				
 				files = Directory.GetFiles( dir, pattern );
 			}
 			else
@@ -200,20 +195,20 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
-		///   Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
+		/// Returns the names of all files in the specified directory that match the specified search pattern, performing a recursive search
 		/// </summary>
-		/// <param name="dir"> The directory to search. </param>
-		/// <param name="pattern"> The search string to match against the names of files in path. </param>
+		/// <param name="dir">The directory to search.</param>
+		/// <param name="pattern">The search string to match against the names of files in path.</param>
 		protected virtual string[] getFilesRecursively( string dir, string pattern )
 		{
-			var searchResults = new List<string>();
+			List<string> searchResults = new List<string>();
 #if !SILVERLIGHT
 			string[] folders = Directory.GetDirectories( dir );
 			string[] files = Directory.GetFiles( dir );
 
 			foreach ( string folder in folders )
 			{
-				searchResults.AddRange( getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
+				searchResults.AddRange( this.getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
 			}
 
 			foreach ( string file in files )
@@ -230,9 +225,7 @@ namespace Axiom.FileSystem
 			return searchResults.ToArray();
 		}
 
-		/// <summary>
-		///   Utility method to change the current directory
-		/// </summary>
+		/// <summary>Utility method to change the current directory </summary>
 		protected void changeDirectory( string dir )
 		{
 #if !(SILVERLIGHT || WINDOWS_PHONE )
@@ -242,9 +235,7 @@ namespace Axiom.FileSystem
 #endif
 		}
 
-		/// <summary>
-		///   Utility method to change directory and push the current directory onto a stack
-		/// </summary>
+		/// <summary>Utility method to change directory and push the current directory onto a stack </summary>
 		private void pushDirectory( string dir )
 		{
 			// get current directory and push it onto the stack
@@ -257,9 +248,7 @@ namespace Axiom.FileSystem
 			changeDirectory( dir );
 		}
 
-		/// <summary>
-		///   Utility method to pop a previous directory off the stack and change to it
-		/// </summary>
+		/// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
 		private void popDirectory()
 		{
 			if ( _directoryStack.Count == 0 )
@@ -279,9 +268,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructors
 
 		public FileSystemArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+			: base( name, archType ) {}
 
 		~FileSystemArchive()
 		{
@@ -316,8 +303,8 @@ namespace Axiom.FileSystem
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
 			                                		File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
 #else
-			                                     		File.Create( this._basePath + @"__testWrite.Axiom", 1 );
-			                                     		File.Delete( this._basePath + @"__testWrite.Axiom" );
+													File.Create( _basePath + @"__testWrite.Axiom", 1 );
+													File.Delete( _basePath + @"__testWrite.Axiom" );
 #endif
 			                                	}
 			                                	catch ( Exception )
@@ -374,9 +361,7 @@ namespace Axiom.FileSystem
 			                                	if ( File.Exists( _basePath + filename ) )
 			                                	{
 			                                		var fi = new System.IO.FileInfo( _basePath + filename );
-			                                		strm =
-			                                			(Stream)
-			                                			fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                		strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
 			                                	}
 			                                } );
 
@@ -420,11 +405,11 @@ namespace Axiom.FileSystem
 	}
 
 	/// <summary>
-	///   Specialization of IArchiveFactory for FileSystem files.
+	/// Specialization of IArchiveFactory for FileSystem files.
 	/// </summary>
 	/// <ogre name="FileSystemArchiveFactory">
-	///   <file name="OgreFileSystem.h" revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFileSystem.h"   revision="1.6.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFileSystem.cpp" revision="1.8" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	public class FileSystemArchiveFactory : ArchiveFactory
 	{

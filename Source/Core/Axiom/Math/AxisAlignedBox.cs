@@ -50,19 +50,24 @@ using System.Diagnostics;
 
 namespace Axiom.Math
 {
-	///<summary>
-	///  A 3D box aligned with the x/y/z axes.
-	///</summary>
-	///<remarks>
-	///  This class represents a simple box which is aligned with the axes. It stores 2 points as the extremeties of the box, one which is the minima of all 3 axes, and the other which is the maxima of all 3 axes. This class is typically used for an axis-aligned bounding box (AABB) for collision and visibility determination.
-	///</remarks>
+	/// <summary>
+	///		A 3D box aligned with the x/y/z axes.
+	/// </summary>
+	/// <remarks>
+	///		This class represents a simple box which is aligned with the
+	///	    axes. It stores 2 points as the extremeties of
+	///	    the box, one which is the minima of all 3 axes, and the other
+	///	    which is the maxima of all 3 axes. This class is typically used
+	///	    for an axis-aligned bounding box (AABB) for collision and
+	///	    visibility determination.
+	/// </remarks>
 	public sealed class AxisAlignedBox : ICloneable
 	{
 		#region Fields
 
 		internal Vector3 minVector;
 		internal Vector3 maxVector;
-		private readonly Vector3[] corners = new Vector3[8];
+		private Vector3[] corners = new Vector3[ 8 ];
 		private bool isNull;
 		private bool isInfinite;
 
@@ -94,10 +99,15 @@ namespace Axiom.Math
 		#region Public methods
 
 		/// <summary>
-		///   Transforms the box according to the matrix supplied.
+		/// Transforms the box according to the matrix supplied.
 		/// </summary>
 		/// <remarks>
-		///   By calling this method you get the axis-aligned box which surrounds the transformed version of this box. Therefore each corner of the box is transformed by the matrix, then the extents are mapped back onto the axes to produce another AABB. Useful when you have a local AABB for an object which is then transformed.
+		/// By calling this method you get the axis-aligned box which
+		/// surrounds the transformed version of this box. Therefore each
+		/// corner of the box is transformed by the matrix, then the
+		/// extents are mapped back onto the axes to produce another
+		/// AABB. Useful when you have a local AABB for an object which
+		/// is then transformed.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void Transform( Matrix4 matrix )
@@ -127,43 +137,49 @@ namespace Axiom.Math
 			// First corner 
 			// min min min
 			currentCorner = oldMin;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// min,min,max
 			currentCorner.z = oldMax.z;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// min max max
 			currentCorner.y = oldMax.y;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// min max min
 			currentCorner.z = oldMin.z;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// max max min
 			currentCorner.x = oldMax.x;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// max max max
 			currentCorner.z = oldMax.z;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// max min max
 			currentCorner.y = oldMin.y;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 
 			// max min min
 			currentCorner.z = oldMin.z;
-			Merge( matrix*currentCorner );
+			Merge( matrix * currentCorner );
 		}
 
 		/// <summary>
-		///   Transforms the box according to the affine matrix supplied.
+		/// Transforms the box according to the affine matrix supplied.
 		/// </summary>
 		/// <remarks>
-		///   By calling this method you get the axis-aligned box which surrounds the transformed version of this box. Therefore each corner of the box is transformed by the matrix, then the extents are mapped back onto the axes to produce another AABB. Useful when you have a local AABB for an object which is then transformed. @note The matrix must be an affine matrix. <see
-		///    cref="Matrix4.IsAffine" /> .
+		/// By calling this method you get the axis-aligned box which
+		/// surrounds the transformed version of this box. Therefore each
+		/// corner of the box is transformed by the matrix, then the
+		/// extents are mapped back onto the axes to produce another
+		/// AABB. Useful when you have a local AABB for an object which
+		/// is then transformed.
+		/// @note
+		/// The matrix must be an affine matrix. <see cref="Matrix4.IsAffine"/>.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void TransformAffine( Matrix4 m )
@@ -176,15 +192,11 @@ namespace Axiom.Math
 				return;
 			}
 
-			Vector3 centre = Center;
-			Vector3 halfSize = HalfSize;
+			Vector3 centre = this.Center;
+			Vector3 halfSize = this.HalfSize;
 
 			Vector3 newCentre = m.TransformAffine( centre );
-			var newHalfSize =
-				new Vector3(
-					Utility.Abs( m[ 0, 0 ] )*halfSize.x + Utility.Abs( m[ 0, 1 ] )*halfSize.y + Utility.Abs( m[ 0, 2 ] )*halfSize.z,
-					Utility.Abs( m[ 1, 0 ] )*halfSize.x + Utility.Abs( m[ 1, 1 ] )*halfSize.y + Utility.Abs( m[ 1, 2 ] )*halfSize.z,
-					Utility.Abs( m[ 2, 0 ] )*halfSize.x + Utility.Abs( m[ 2, 1 ] )*halfSize.y + Utility.Abs( m[ 2, 2 ] )*halfSize.z );
+			Vector3 newHalfSize = new Vector3( Utility.Abs( m[ 0, 0 ] ) * halfSize.x + Utility.Abs( m[ 0, 1 ] ) * halfSize.y + Utility.Abs( m[ 0, 2 ] ) * halfSize.z, Utility.Abs( m[ 1, 0 ] ) * halfSize.x + Utility.Abs( m[ 1, 1 ] ) * halfSize.y + Utility.Abs( m[ 1, 2 ] ) * halfSize.z, Utility.Abs( m[ 2, 0 ] ) * halfSize.x + Utility.Abs( m[ 2, 1 ] ) * halfSize.y + Utility.Abs( m[ 2, 2 ] ) * halfSize.z );
 
 			SetExtents( newCentre - newHalfSize, newCentre + newHalfSize );
 		}
@@ -219,11 +231,12 @@ namespace Axiom.Math
 			corners[ 7 ].z = maxVector.z;
 		}
 
-		///<summary>
-		///  Sets both Minimum and Maximum at once, so that UpdateCorners only needs to be called once as well.
-		///</summary>
-		///<param name="min"> </param>
-		///<param name="max"> </param>
+		/// <summary>
+		///		Sets both Minimum and Maximum at once, so that UpdateCorners only
+		///		needs to be called once as well.
+		/// </summary>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
 		public void SetExtents( Vector3 min, Vector3 max )
 		{
 			isNull = false;
@@ -236,32 +249,32 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///   Scales the size of the box by the supplied factor.
+		///    Scales the size of the box by the supplied factor.
 		/// </summary>
-		/// <param name="factor"> Factor of scaling to apply to the box. </param>
+		/// <param name="factor">Factor of scaling to apply to the box.</param>
 		public void Scale( Vector3 factor )
 		{
-			SetExtents( minVector*factor, maxVector*factor );
+			SetExtents( minVector * factor, maxVector * factor );
 		}
 
 		/// <summary>
-		///   Return new bounding box from the supplied dimensions.
+		///     Return new bounding box from the supplied dimensions.
 		/// </summary>
-		/// <param name="center"> Center of the new box </param>
-		/// <param name="size"> Entire size of the new box </param>
-		/// <returns> New bounding box </returns>
+		/// <param name="center">Center of the new box</param>
+		/// <param name="size">Entire size of the new box</param>
+		/// <returns>New bounding box</returns>
 		public static AxisAlignedBox FromDimensions( Vector3 center, Vector3 size )
 		{
-			var halfSize = .5f*size;
+			var halfSize = .5f * size;
 
 			return new AxisAlignedBox( center - halfSize, center + halfSize );
 		}
 
 
-		///<summary>
-		///  Allows for merging two boxes together (combining).
-		///</summary>
-		///<param name="box"> Source box. </param>
+		/// <summary>
+		///		Allows for merging two boxes together (combining).
+		/// </summary>
+		/// <param name="box">Source box.</param>
 		public void Merge( AxisAlignedBox box )
 		{
 			if ( box.IsNull )
@@ -271,13 +284,13 @@ namespace Axiom.Math
 			}
 			else if ( box.IsInfinite )
 			{
-				IsInfinite = true;
+				this.IsInfinite = true;
 			}
-			else if ( IsNull )
+			else if ( this.IsNull )
 			{
 				SetExtents( box.Minimum, box.Maximum );
 			}
-			else if ( !IsInfinite )
+			else if ( !this.IsInfinite )
 			{
 				minVector.Floor( box.Minimum );
 				maxVector.Ceil( box.Maximum );
@@ -286,10 +299,10 @@ namespace Axiom.Math
 			}
 		}
 
-		///<summary>
-		///  Extends the box to encompass the specified point (if needed).
-		///</summary>
-		///<param name="point"> </param>
+		/// <summary>
+		///		Extends the box to encompass the specified point (if needed).
+		/// </summary>
+		/// <param name="point"></param>
 		public void Merge( Vector3 point )
 		{
 			if ( isNull || isInfinite )
@@ -335,10 +348,10 @@ namespace Axiom.Math
 		#region Contain methods
 
 		/// <summary>
-		///   Tests whether the given point contained by this box.
+		/// Tests whether the given point contained by this box.
 		/// </summary>
-		/// <param name="v"> </param>
-		/// <returns> True if the vector is contained inside the box. </returns>
+		/// <param name="v"></param>
+		/// <returns>True if the vector is contained inside the box.</returns>
 		public bool Contains( Vector3 v )
 		{
 			if ( IsNull )
@@ -350,55 +363,54 @@ namespace Axiom.Math
 				return true;
 			}
 
-			return Minimum.x <= v.x && v.x <= Maximum.x && Minimum.y <= v.y && v.y <= Maximum.y && Minimum.z <= v.z &&
-			       v.z <= Maximum.z;
+			return Minimum.x <= v.x && v.x <= Maximum.x && Minimum.y <= v.y && v.y <= Maximum.y && Minimum.z <= v.z && v.z <= Maximum.z;
 		}
 
 		#endregion Contain methods
 
 		#region Intersection Methods
 
-		///<summary>
-		///  Returns whether or not this box intersects another.
-		///</summary>
-		///<param name="box2"> </param>
-		///<returns> True if the 2 boxes intersect, false otherwise. </returns>
+		/// <summary>
+		///		Returns whether or not this box intersects another.
+		/// </summary>
+		/// <param name="box2"></param>
+		/// <returns>True if the 2 boxes intersect, false otherwise.</returns>
 		public bool Intersects( AxisAlignedBox box2 )
 		{
 			// Early-fail for nulls
-			if ( IsNull || box2.IsNull )
+			if ( this.IsNull || box2.IsNull )
 			{
 				return false;
 			}
 
-			if ( IsInfinite || box2.IsInfinite )
+			if ( this.IsInfinite || box2.IsInfinite )
 			{
 				return true;
 			}
 
 			// Use up to 6 separating planes
-			if ( maxVector.x < box2.minVector.x )
+			if ( this.maxVector.x < box2.minVector.x )
 			{
 				return false;
 			}
-			if ( maxVector.y < box2.minVector.y )
+			if ( this.maxVector.y < box2.minVector.y )
 			{
 				return false;
 			}
-			if ( maxVector.z < box2.minVector.z )
+			if ( this.maxVector.z < box2.minVector.z )
 			{
 				return false;
 			}
 
-			if ( minVector.x > box2.maxVector.x )
+			if ( this.minVector.x > box2.maxVector.x )
 			{
 				return false;
 			}
-			if ( minVector.y > box2.maxVector.y )
+			if ( this.minVector.y > box2.maxVector.y )
 			{
 				return false;
 			}
-			if ( minVector.z > box2.maxVector.z )
+			if ( this.minVector.z > box2.maxVector.z )
 			{
 				return false;
 			}
@@ -407,39 +419,39 @@ namespace Axiom.Math
 			return true;
 		}
 
-		///<summary>
-		///  Tests whether this box intersects a sphere.
-		///</summary>
-		///<param name="sphere"> </param>
-		///<returns> True if the sphere intersects, false otherwise. </returns>
+		/// <summary>
+		///		Tests whether this box intersects a sphere.
+		/// </summary>
+		/// <param name="sphere"></param>
+		/// <returns>True if the sphere intersects, false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
 			return Utility.Intersects( sphere, this );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="plane"> </param>
-		/// <returns> True if the plane intersects, false otherwise. </returns>
+		/// <param name="plane"></param>
+		/// <returns>True if the plane intersects, false otherwise.</returns>
 		public bool Intersects( Plane plane )
 		{
 			return Utility.Intersects( plane, this );
 		}
 
-		///<summary>
-		///  Tests whether the vector point is within this box.
-		///</summary>
-		///<param name="vector"> </param>
-		///<returns> True if the vector is within this box, false otherwise. </returns>
+		/// <summary>
+		///		Tests whether the vector point is within this box.
+		/// </summary>
+		/// <param name="vector"></param>
+		/// <returns>True if the vector is within this box, false otherwise.</returns>
 		public bool Intersects( Vector3 vector )
 		{
-			return ( vector.x >= minVector.x && vector.x <= maxVector.x && vector.y >= minVector.y && vector.y <= maxVector.y &&
-			         vector.z >= minVector.z && vector.z <= maxVector.z );
+			return ( vector.x >= minVector.x && vector.x <= maxVector.x && vector.y >= minVector.y && vector.y <= maxVector.y && vector.z >= minVector.z && vector.z <= maxVector.z );
 		}
 
-		///<summary>
-		///  Calculate the area of intersection of this box and another
-		///</summary>
+		/// <summary>
+		///		Calculate the area of intersection of this box and another
+		/// </summary>
 		public AxisAlignedBox Intersection( AxisAlignedBox b2 )
 		{
 			if ( !Intersects( b2 ) )
@@ -524,12 +536,12 @@ namespace Axiom.Math
 					return Vector3.PositiveInfinity;
 				}
 
-				return ( Maximum - Minimum )*0.5f;
+				return ( Maximum - Minimum ) * 0.5f;
 			}
 		}
 
 		/// <summary>
-		///   Get/set the size of this bounding box.
+		///     Get/set the size of this bounding box.
 		/// </summary>
 		public Vector3 Size
 		{
@@ -540,7 +552,7 @@ namespace Axiom.Math
 			set
 			{
 				var center = Center;
-				var halfSize = .5f*value;
+				var halfSize = .5f * value;
 				minVector = center - halfSize;
 				maxVector = center + halfSize;
 				UpdateCorners();
@@ -548,26 +560,26 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///   Get/set the center point of this bounding box.
+		///    Get/set the center point of this bounding box.
 		/// </summary>
 		public Vector3 Center
 		{
 			get
 			{
-				return ( minVector + maxVector )*0.5f;
+				return ( minVector + maxVector ) * 0.5f;
 			}
 			set
 			{
-				var halfSize = .5f*Size;
+				var halfSize = .5f * Size;
 				minVector = value - halfSize;
 				maxVector = value + halfSize;
 				UpdateCorners();
 			}
 		}
 
-		///<summary>
-		///  Get/set the maximum corner of the box.
-		///</summary>
+		/// <summary>
+		///		Get/set the maximum corner of the box.
+		/// </summary>
 		public Vector3 Maximum
 		{
 			get
@@ -582,9 +594,9 @@ namespace Axiom.Math
 			}
 		}
 
-		///<summary>
-		///  Get/set the minimum corner of the box.
-		///</summary>
+		/// <summary>
+		///		Get/set the minimum corner of the box.
+		/// </summary>
 		public Vector3 Minimum
 		{
 			get
@@ -599,19 +611,31 @@ namespace Axiom.Math
 			}
 		}
 
-		///<summary>
-		///  Returns an array of 8 corner points, useful for collision vs. non-aligned objects.
-		///</summary>
-		///<remarks>
-		///  If the order of these corners is important, they are as follows: The 4 points of the minimum Z face (note that because we use right-handed coordinates, the minimum Z is at the 'back' of the box) starting with the minimum point of all, then anticlockwise around this face (if you are looking onto the face from outside the box). Then the 4 points of the maximum Z face, starting with maximum point of all, then anticlockwise around this face (looking onto the face from outside the box). Like this: <pre>1-----2
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      /|     /|
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      /  |   /  |
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      5-----4   |
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |   0-|--3
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |  /   |  /
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |/     |/
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      6-----7</pre>
-		///</remarks>
+		/// <summary>
+		///		Returns an array of 8 corner points, useful for
+		///		collision vs. non-aligned objects.
+		/// </summary>
+		/// <remarks>
+		///		If the order of these corners is important, they are as
+		///		follows: The 4 points of the minimum Z face (note that
+		///		because we use right-handed coordinates, the minimum Z is
+		///		at the 'back' of the box) starting with the minimum point of
+		///		all, then anticlockwise around this face (if you are looking
+		///		onto the face from outside the box). Then the 4 points of the
+		///		maximum Z face, starting with maximum point of all, then
+		///		anticlockwise around this face (looking onto the face from
+		///		outside the box). Like this:
+		///		<pre>
+		///			 1-----2
+		///		    /|     /|
+		///		  /  |   /  |
+		///		5-----4   |
+		///		|   0-|--3
+		///		|  /   |  /
+		///		|/     |/
+		///		6-----7
+		///		</pre>
+		/// </remarks>
 		public Vector3[] Corners
 		{
 			get
@@ -622,9 +646,9 @@ namespace Axiom.Math
 			}
 		}
 
-		///<summary>
-		///  Get/set the value of whether this box is null (i.e. not dimensions, etc).
-		///</summary>
+		/// <summary>
+		///		Get/set the value of whether this box is null (i.e. not dimensions, etc).
+		/// </summary>
 		public bool IsNull
 		{
 			get
@@ -642,7 +666,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///   Returns true if the box is infinite.
+		/// Returns true if the box is infinite.
 		/// </summary>
 		public bool IsInfinite
 		{
@@ -661,9 +685,9 @@ namespace Axiom.Math
 		}
 
 
-		///<summary>
-		///  Returns a null box
-		///</summary>
+		/// <summary>
+		///		Returns a null box
+		/// </summary>
 		public static AxisAlignedBox Null
 		{
 			get
@@ -677,7 +701,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///   Calculate the volume of this box
+		///     Calculate the volume of this box
 		/// </summary>
 		public Real Volume
 		{
@@ -694,7 +718,7 @@ namespace Axiom.Math
 				}
 
 				var diff = Maximum - Minimum;
-				return diff.x*diff.y*diff.z;
+				return diff.x * diff.y * diff.z;
 			}
 		}
 
@@ -704,42 +728,32 @@ namespace Axiom.Math
 
 		public static bool operator ==( AxisAlignedBox left, AxisAlignedBox right )
 		{
-			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
-			     ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) && ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return true;
 			}
 
-			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
-			          ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) || ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return false;
 			}
 
-			return ( left.corners[ 0 ] == right.corners[ 0 ] && left.corners[ 1 ] == right.corners[ 1 ] &&
-			         left.corners[ 2 ] == right.corners[ 2 ] && left.corners[ 3 ] == right.corners[ 3 ] &&
-			         left.corners[ 4 ] == right.corners[ 4 ] && left.corners[ 5 ] == right.corners[ 5 ] &&
-			         left.corners[ 6 ] == right.corners[ 6 ] && left.corners[ 7 ] == right.corners[ 7 ] );
+			return ( left.corners[ 0 ] == right.corners[ 0 ] && left.corners[ 1 ] == right.corners[ 1 ] && left.corners[ 2 ] == right.corners[ 2 ] && left.corners[ 3 ] == right.corners[ 3 ] && left.corners[ 4 ] == right.corners[ 4 ] && left.corners[ 5 ] == right.corners[ 5 ] && left.corners[ 6 ] == right.corners[ 6 ] && left.corners[ 7 ] == right.corners[ 7 ] );
 		}
 
 		public static bool operator !=( AxisAlignedBox left, AxisAlignedBox right )
 		{
-			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
-			     ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) && ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return false;
 			}
 
-			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
-			          ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) || ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return true;
 			}
 
-			return ( left.corners[ 0 ] != right.corners[ 0 ] || left.corners[ 1 ] != right.corners[ 1 ] ||
-			         left.corners[ 2 ] != right.corners[ 2 ] || left.corners[ 3 ] != right.corners[ 3 ] ||
-			         left.corners[ 4 ] != right.corners[ 4 ] || left.corners[ 5 ] != right.corners[ 5 ] ||
-			         left.corners[ 6 ] != right.corners[ 6 ] || left.corners[ 7 ] != right.corners[ 7 ] );
+			return ( left.corners[ 0 ] != right.corners[ 0 ] || left.corners[ 1 ] != right.corners[ 1 ] || left.corners[ 2 ] != right.corners[ 2 ] || left.corners[ 3 ] != right.corners[ 3 ] || left.corners[ 4 ] != right.corners[ 4 ] || left.corners[ 5 ] != right.corners[ 5 ] || left.corners[ 6 ] != right.corners[ 6 ] || left.corners[ 7 ] != right.corners[ 7 ] );
 		}
 
 		public override bool Equals( object obj )
@@ -754,14 +768,12 @@ namespace Axiom.Math
 				return 0;
 			}
 
-			return corners[ 0 ].GetHashCode() ^ corners[ 1 ].GetHashCode() ^ corners[ 2 ].GetHashCode() ^
-			       corners[ 3 ].GetHashCode() ^ corners[ 4 ].GetHashCode() ^ corners[ 5 ].GetHashCode() ^
-			       corners[ 6 ].GetHashCode() ^ corners[ 7 ].GetHashCode();
+			return corners[ 0 ].GetHashCode() ^ corners[ 1 ].GetHashCode() ^ corners[ 2 ].GetHashCode() ^ corners[ 3 ].GetHashCode() ^ corners[ 4 ].GetHashCode() ^ corners[ 5 ].GetHashCode() ^ corners[ 6 ].GetHashCode() ^ corners[ 7 ].GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return String.Format( "{0}:{1}", minVector, maxVector );
+			return String.Format( "{0}:{1}", this.minVector, this.maxVector );
 		}
 
 		#endregion

@@ -22,7 +22,9 @@
 
 #endregion License
 
+using System;
 using System.ComponentModel.Composition;
+
 using Axiom.Core;
 
 namespace Axiom.Samples.Bsp

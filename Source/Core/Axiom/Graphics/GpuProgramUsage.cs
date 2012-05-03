@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -44,22 +46,34 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   This class makes the usage of a vertex and fragment programs (low-level or high-level), with a given set of parameters, explicit.
+	/// 	This class makes the usage of a vertex and fragment programs (low-level or high-level), 
+	/// 	with a given set of parameters, explicit.
 	/// </summary>
 	/// <remarks>
-	///   Using a vertex or fragment program can get fairly complex; besides the fairly rudimentary process of binding a program to the GPU for rendering, managing usage has few complications, such as: <ul>
-	///                                                                                                                                                                                                     <li>Programs can be high level (e.g. Cg, GLSlang) or low level (assembler). Using
-	///                                                                                                                                                                                                       either should be relatively seamless, although high-level programs give you the advantage
-	///                                                                                                                                                                                                       of being able to use named parameters, instead of just indexed registers</li>
-	///                                                                                                                                                                                                     <li>Programs and parameters can be shared between multiple usages, in order to save
-	///                                                                                                                                                                                                       memory</li>
-	///                                                                                                                                                                                                     <li>When you define a user of a program, such as a material, you often want to be able to
-	///                                                                                                                                                                                                       set up the definition but not load / compile / assemble the program at that stage, because
-	///                                                                                                                                                                                                       it is not needed just yet. The program should be loaded when it is first needed, or
-	///                                                                                                                                                                                                       earlier if specifically requested. The program may not be defined at this time, you
-	///                                                                                                                                                                                                       may want to have scripts that can set up the definitions independent of the order in which
-	///                                                                                                                                                                                                       those scripts are loaded.</li>
-	///                                                                                                                                                                                                   </ul> This class packages up those details so you don't have to worry about them. For example, this class lets you define a high-level program and set up the parameters for it, without having loaded the program (which you normally could not do). When the program is loaded and compiled, this class will then validate the parameters you supplied earlier and turn them into runtime parameters. <p /> Just incase it wasn't clear from the above, this class provides linkage to both GpuProgram and HighLevelGpuProgram, despite its name.
+	/// 	Using a vertex or fragment program can get fairly complex; besides the fairly rudimentary
+	/// 	process of binding a program to the GPU for rendering, managing usage has few
+	/// 	complications, such as:
+	/// 	<ul>
+	/// 	<li>Programs can be high level (e.g. Cg, GLSlang) or low level (assembler). Using
+	/// 	either should be relatively seamless, although high-level programs give you the advantage
+	/// 	of being able to use named parameters, instead of just indexed registers</li>
+	/// 	<li>Programs and parameters can be shared between multiple usages, in order to save
+	/// 	memory</li>
+	/// 	<li>When you define a user of a program, such as a material, you often want to be able to
+	/// 	set up the definition but not load / compile / assemble the program at that stage, because
+	/// 	it is not needed just yet. The program should be loaded when it is first needed, or
+	/// 	earlier if specifically requested. The program may not be defined at this time, you
+	/// 	may want to have scripts that can set up the definitions independent of the order in which
+	/// 	those scripts are loaded.</li>
+	/// 	</ul>
+	/// 	This class packages up those details so you don't have to worry about them. For example,
+	/// 	this class lets you define a high-level program and set up the parameters for it, without
+	/// 	having loaded the program (which you normally could not do). When the program is loaded and
+	/// 	compiled, this class will then validate the parameters you supplied earlier and turn them
+	/// 	into runtime parameters.
+	/// 	<p/>
+	/// 	Just incase it wasn't clear from the above, this class provides linkage to both 
+	/// 	GpuProgram and HighLevelGpuProgram, despite its name.
 	/// </remarks>
 	public class GpuProgramUsage : DisposableObject, Resource.IListener
 	{
@@ -68,40 +82,45 @@ namespace Axiom.Graphics
 		#region type
 
 		/// <summary>
-		///   Type of program (vertex or fragment) this usage is being specified for.
+		///    Type of program (vertex or fragment) this usage is being specified for.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramType type;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramType type;
 
 		#endregion
 
 		#region parent
 
-		[OgreVersion( 1, 7, 2790 )] protected Pass parent;
+		[OgreVersion( 1, 7, 2790 )]
+		protected Pass parent;
 
 		#endregion
 
 		#region recreateParams
 
 		/// Whether to recreate parameters next load
-		[OgreVersion( 1, 7, 2790 )] private bool recreateParams;
+		[OgreVersion( 1, 7, 2790 )]
+		private bool recreateParams;
 
 		#endregion
 
 		#region program
 
 		/// <summary>
-		///   Reference to the program whose usage is being specified within this class.
+		///    Reference to the program whose usage is being specified within this class.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgram program;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgram program;
 
 		#endregion
 
 		#region parameters
 
 		/// <summary>
-		///   Low level GPU program parameters.
+		///    Low level GPU program parameters.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters parameters;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramParameters parameters;
 
 		#endregion
 
@@ -110,10 +129,10 @@ namespace Axiom.Graphics
 		#region Constructors
 
 		/// <summary>
-		///   Default constructor.
+		///    Default constructor.
 		/// </summary>
-		/// <param name="type"> Type of program to link to. </param>
-		/// <param name="parent"> </param>
+		/// <param name="type">Type of program to link to.</param>
+		/// <param name="parent"></param>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramUsage( GpuProgramType type, Pass parent )
 			: base()
@@ -124,7 +143,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Copy constructor
+		/// Copy constructor
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramUsage( GpuProgramUsage oth, Pass parent )
@@ -145,7 +164,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -166,7 +185,7 @@ namespace Axiom.Graphics
 		#region Load
 
 		/// <summary>
-		///   Load this usage (and ensure program is loaded).
+		///    Load this usage (and ensure program is loaded).
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		internal void Load()
@@ -181,8 +200,7 @@ namespace Axiom.Graphics
 			{
 				var myType = type.ToString();
 				var yourType = program.Type.ToString();
-				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
-				                          program.Name, yourType, myType );
+				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.", program.Name, yourType, myType );
 			}
 
 			// hackaround as Listener::loadingComplete is not in place, yet
@@ -197,7 +215,7 @@ namespace Axiom.Graphics
 		#region Unload
 
 		/// <summary>
-		///   Unload this usage.
+		///    Unload this usage.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		internal void Unload()
@@ -240,10 +258,17 @@ namespace Axiom.Graphics
 		#region SetProgramName
 
 		/// <summary>
-		///   Sets the name of the program to use.
+		/// Sets the name of the program to use.
 		/// </summary>
-		/// <param name="name"> The name of the program to use </param>
-		/// <param name="resetParams"> If true, this will create a fresh set of parameters from the new program being linked, so if you had previously set parameters you will have to set them again. If you set this to false, you must be absolutely sure that the parameters match perfectly, and in the case of named parameters refers to the indexes underlying them, not just the names. </param>
+		/// <param name="name">The name of the program to use</param>
+		/// <param name="resetParams">
+		/// If true, this will create a fresh set of parameters from the
+		/// new program being linked, so if you had previously set parameters
+		/// you will have to set them again. If you set this to false, you must
+		/// be absolutely sure that the parameters match perfectly, and in the
+		/// case of named parameters refers to the indexes underlying them, 
+		/// not just the names.
+		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
         public void SetProgramName( string name, bool resetParams = true )
@@ -277,7 +302,7 @@ namespace Axiom.Graphics
 		}
 
 #if !NET_40
-		/// <see cref="SetProgramName(string, bool)" />
+		/// <see cref="SetProgramName(string, bool)"/>
 		public void SetProgramName( string name )
 		{
 			SetProgramName( name, true );
@@ -289,7 +314,7 @@ namespace Axiom.Graphics
 		#region ProgramName
 
 		/// <summary>
-		///   Gets the name of the program we're trying to link to.
+		///    Gets the name of the program we're trying to link to.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public string ProgramName
@@ -305,10 +330,13 @@ namespace Axiom.Graphics
 		#region Program
 
 		/// <summary>
-		///   Gets the program this usage is linked to; only available after the usage has been validated either via enableValidation or by enabling validation on construction.
+		///    Gets the program this usage is linked to; only available after the usage has been
+		///    validated either via enableValidation or by enabling validation on construction.
 		/// </summary>
 		/// <remarks>
-		///   Note that this will create a fresh set of parameters from the new program being linked, so if you had previously set parameters you will have to set them again.
+		///    Note that this will create a fresh set of parameters from the
+		///    new program being linked, so if you had previously set parameters
+		///    you will have to set them again.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgram Program
@@ -331,7 +359,9 @@ namespace Axiom.Graphics
 		#region Parameters
 
 		/// <summary>
-		///   Gets/Sets the program parameters that should be used; because parameters can be shared between multiple usages for efficiency, this method is here for you to register externally created parameter objects.
+		///    Gets/Sets the program parameters that should be used; because parameters can be
+		///    shared between multiple usages for efficiency, this method is here for you
+		///    to register externally created parameter objects.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramParameters Parameters
@@ -356,7 +386,7 @@ namespace Axiom.Graphics
 		#region Type
 
 		/// <summary>
-		///   Gets the type of program we're trying to link to.
+		///    Gets the type of program we're trying to link to.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuProgramType Type

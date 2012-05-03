@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Scripting.Compiler.AST;
@@ -60,13 +61,13 @@ namespace Axiom.Scripting.Compiler
 
 			#region Translator Implementation
 
-			/// <see cref="Translator.CheckFor" />
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
+			/// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
 			{
 				return nodeId == Keywords.ID_TECHNIQUE && parentId == Keywords.ID_COMPOSITOR;
 			}
 
-			/// <see cref="Translator.Translate" />
+			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				var obj = (ObjectAbstractNode)node;
@@ -261,8 +262,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count != 3 )
 								{
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-									                   "texture_ref only supports 3 argument" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref only supports 3 argument" );
 								}
 								else
 								{
@@ -271,22 +271,19 @@ namespace Axiom.Scripting.Compiler
 									var it = getNodeAt( prop.Values, 0 );
 									if ( !getString( it, out texName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 1 );
 									if ( !getString( it, out refCompName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
 									it = getNodeAt( prop.Values, 2 );
 									if ( !getString( it, out refTexName ) )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "texture_ref must have 3 string arguments" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "texture_ref must have 3 string arguments" );
 									}
 
 									var refTexDef = _Technique.CreateTextureDefinition( texName );
@@ -307,8 +304,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "scheme only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scheme only supports 1 argument" );
 								}
 								else
 								{
@@ -321,8 +317,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "scheme must have 1 string argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scheme must have 1 string argument" );
 									}
 								}
 								break;
@@ -338,8 +333,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "compositor logic only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "compositor logic only supports 1 argument" );
 								}
 								else
 								{
@@ -352,8 +346,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "compositor logic must have 1 string argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "compositor logic must have 1 string argument" );
 									}
 								}
 								break;
@@ -361,8 +354,7 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_COMPOSITOR_LOGIC
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-								                   "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

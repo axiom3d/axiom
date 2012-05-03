@@ -41,30 +41,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+
 using Axiom.Core;
+using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	///<summary>
-	///  Object representing one pass or operation in a composition sequence. This provides a method to conviently interleave RenderSystem commands between Render Queues.
+	///    Object representing one pass or operation in a composition sequence. This provides a 
+	///    method to conviently interleave RenderSystem commands between Render Queues.
 	///</summary>
 	public class CompositionTargetPass : DisposableObject
 	{
 		#region Fields and Properties
 
 		///<summary>
-		///  Parent technique
+		///    Parent technique
 		///</summary>
 		protected CompositionTechnique parent;
 
 		#region Parent Property
 
 		/// <summary>
-		///   Gets Parent CompositionTechnique
+		/// Gets Parent CompositionTechnique
 		/// </summary>
 		public CompositionTechnique Parent
 		{
@@ -79,12 +85,12 @@ namespace Axiom.Graphics
 		#region InputMode Property
 
 		///<summary>
-		///  Input mode
+		///    Input mode
 		///</summary>
 		protected CompositorInputMode inputMode;
 
 		///<summary>
-		///  Input mode
+		///    Input mode
 		///</summary>
 		public CompositorInputMode InputMode
 		{
@@ -103,12 +109,12 @@ namespace Axiom.Graphics
 		#region OutputName Property
 
 		///<summary>
-		///  (local) output texture
+		///    (local) output texture
 		///</summary>
 		protected string outputName;
 
 		///<summary>
-		///  (local) output texture
+		///    (local) output texture
 		///</summary>
 		public string OutputName
 		{
@@ -127,12 +133,12 @@ namespace Axiom.Graphics
 		#region Passes Property
 
 		///<summary>
-		///  Passes
+		///    Passes
 		///</summary>
 		protected List<CompositionPass> passes;
 
 		///<summary>
-		///  Passes
+		///    Passes
 		///</summary>
 		public IList<CompositionPass> Passes
 		{
@@ -147,12 +153,14 @@ namespace Axiom.Graphics
 		#region OnlyInitial Property
 
 		///<summary>
-		///  This target pass is only executed initially after the effect has been enabled.
+		///    This target pass is only executed initially after the effect
+		///    has been enabled.
 		///</summary>
 		protected bool onlyInitial;
 
 		///<summary>
-		///  This target pass is only executed initially after the effect has been enabled.
+		///    This target pass is only executed initially after the effect
+		///    has been enabled.
 		///</summary>
 		public bool OnlyInitial
 		{
@@ -171,12 +179,12 @@ namespace Axiom.Graphics
 		#region VisibilityMask Property
 
 		///<summary>
-		///  Visibility mask for this render
+		///    Visibility mask for this render
 		///</summary>
 		protected ulong visibilityMask;
 
 		///<summary>
-		///  Visibility mask for this render
+		///    Visibility mask for this render
 		///</summary>
 		public ulong VisibilityMask
 		{
@@ -195,12 +203,12 @@ namespace Axiom.Graphics
 		#region LodBias Property
 
 		///<summary>
-		///  LOD bias of this render
+		///    LOD bias of this render
 		///</summary>
 		protected float lodBias;
 
 		///<summary>
-		///  LOD bias of this render
+		///    LOD bias of this render
 		///</summary>
 		public float LodBias
 		{
@@ -219,12 +227,12 @@ namespace Axiom.Graphics
 		#region MaterialScheme Property
 
 		///<summary>
-		///  Material scheme name
+		///    Material scheme name
 		///</summary>
 		protected string materialScheme;
 
 		///<summary>
-		///  Material scheme name
+		///    Material scheme name
 		///</summary>
 		public string MaterialScheme
 		{
@@ -243,14 +251,29 @@ namespace Axiom.Graphics
 		#region ShadowsEnabled Property
 
 		/// <summary>
-		///   Get's or Set's whether shadows are enabled in this target pass.
+		/// Shadows option
 		/// </summary>
-		public bool ShadowsEnabled { get; set; }
+		private bool shadowsEnabled;
+
+		/// <summary>
+		/// Get's or Set's  whether shadows are enabled in this target pass.
+		/// </summary>
+		public bool ShadowsEnabled
+		{
+			get
+			{
+				return this.shadowsEnabled;
+			}
+			set
+			{
+				this.shadowsEnabled = value;
+			}
+		}
 
 		#endregion ShadowsEnabled Property
 
 		///<summary>
-		///  Determine if this target pass is supported on the current rendering device.
+		///    Determine if this target pass is supported on the current rendering device. 
 		///</summary>
 		public bool IsSupported
 		{
@@ -281,7 +304,7 @@ namespace Axiom.Graphics
 			visibilityMask = 0xFFFFFFFF;
 			lodBias = 1.0f;
 			materialScheme = MaterialManager.DefaultSchemeName;
-			ShadowsEnabled = true;
+			this.shadowsEnabled = true;
 
 			if ( Root.Instance.RenderSystem != null )
 			{
@@ -294,7 +317,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		///<summary>
-		///  Create a new pass, and return a pointer to it.
+		///    Create a new pass, and return a pointer to it.
 		///</summary>
 		public CompositionPass CreatePass()
 		{

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
 		/// <summary>
-		///   This class records the usage of a set of shared parameters in a concrete set of GpuProgramParameters.
+		/// This class records the usage of a set of shared parameters in a concrete
+		/// set of GpuProgramParameters.
 		/// </summary>
 		public class GpuSharedParametersUsage
 		{
@@ -19,14 +22,15 @@ namespace Axiom.Graphics
 
 			#region _parameters
 
-			[OgreVersion( 1, 7, 2790 )] private readonly GpuProgramParameters _parameters;
+			[OgreVersion( 1, 7, 2790 )]
+			private readonly GpuProgramParameters _parameters;
 
 			#endregion
 
 			#region TargetParameters
 
 			/// <summary>
-			///   Get's the target Gpu program parameters.
+			/// Get's the target Gpu program parameters.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790, "TargetParams in OGRE" )]
 			public GpuProgramParameters TargetParameters
@@ -53,25 +57,27 @@ namespace Axiom.Graphics
 			#region CopyDataList
 
 			/// <summary>
-			///   list of physical mappings that we are going to bring in
+			/// list of physical mappings that we are going to bring in
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] protected List<CopyDataEntry> CopyDataList = new List<CopyDataEntry>();
+			[OgreVersion( 1, 7, 2790 )]
+			protected List<CopyDataEntry> CopyDataList = new List<CopyDataEntry>();
 
 			#endregion
 
 			#region CopyDataVersion
 
 			/// <summary>
-			///   Version of shared params we based the copydata on
+			/// Version of shared params we based the copydata on
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] protected uint CopyDataVersion;
+			[OgreVersion( 1, 7, 2790 )]
+			protected uint CopyDataVersion;
 
 			#endregion
 
 			#region RenderSystemData
 
 			/// <summary>
-			///   Optional data the rendersystem might want to store
+			/// Optional data the rendersystem might want to store
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public object RenderSystemData { get; set; }
@@ -81,7 +87,7 @@ namespace Axiom.Graphics
 			#region Name
 
 			/// <summary>
-			///   Get the name of the shared parameter set
+			/// Get the name of the shared parameter set
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public string Name
@@ -97,7 +103,7 @@ namespace Axiom.Graphics
 			#region constructor
 
 			/// <summary>
-			///   Default Constructor.
+			/// Default Constructor.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuSharedParametersUsage( GpuSharedParameters sharedParams, GpuProgramParameters gparams )
@@ -141,12 +147,15 @@ namespace Axiom.Graphics
 			#endregion
 
 			/// <summary>
-			///   Update the target parameters by copying the data from the shared parameters.
+			/// Update the target parameters by copying the data from the shared
+			/// parameters.
 			/// </summary>
-			/// <note>This method  may not actually be called if the RenderSystem
-			///   supports using shared parameters directly in their own shared buffer; in
-			///   which case the values should not be copied out of the shared area
-			///   into the individual parameter set, but bound separately.</note>
+			/// <note>
+			/// This method  may not actually be called if the RenderSystem
+			/// supports using shared parameters directly in their own shared buffer; in
+			/// which case the values should not be copied out of the shared area
+			/// into the individual parameter set, but bound separately.
+			/// </note>
 			public void CopySharedParamsToTargetParams()
 			{
 				// check copy data version
@@ -173,7 +182,7 @@ namespace Axiom.Graphics
 							{
 								for ( var col = 0; col < 4; ++col )
 								{
-									dst[ pDst + row*4 + col ] = src[ pSrc + col*4 + row ];
+									dst[ pDst + row * 4 + col ] = src[ pSrc + col * 4 + row ];
 								}
 							}
 						}
@@ -182,14 +191,14 @@ namespace Axiom.Graphics
 							if ( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
 							{
 								// simple copy
-								Array.Copy( src.Data, pSrc, dst.Data, pDst, e.DstDefinition.ElementSize*e.DstDefinition.ArraySize );
+								Array.Copy( src.Data, pSrc, dst.Data, pDst, e.DstDefinition.ElementSize * e.DstDefinition.ArraySize );
 							}
 							else
 							{
 								// target params may be padded to 4 elements, shared params are packed
-								System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize%4 == 0 );
-								var iterations = e.DstDefinition.ElementSize/4*e.DstDefinition.ArraySize;
-								var valsPerIteration = e.SrcDefinition.ElementSize/iterations;
+								System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize % 4 == 0 );
+								var iterations = e.DstDefinition.ElementSize / 4 * e.DstDefinition.ArraySize;
+								var valsPerIteration = e.SrcDefinition.ElementSize / iterations;
 								for ( var l = 0; l < iterations; ++l )
 								{
 									Array.Copy( src.Data, pSrc, dst.Data, pDst, valsPerIteration );
@@ -209,14 +218,14 @@ namespace Axiom.Graphics
 						if ( e.DstDefinition.ElementSize == e.SrcDefinition.ElementSize )
 						{
 							// simple copy
-							Array.Copy( src.Data, pSrc, dst.Data, pDst, e.DstDefinition.ElementSize*e.DstDefinition.ArraySize );
+							Array.Copy( src.Data, pSrc, dst.Data, pDst, e.DstDefinition.ElementSize * e.DstDefinition.ArraySize );
 						}
 						else
 						{
 							// target params may be padded to 4 elements, shared params are packed
-							System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize%4 == 0 );
-							var iterations = e.DstDefinition.ElementSize/4*e.DstDefinition.ArraySize;
-							var valsPerIteration = e.SrcDefinition.ElementSize/iterations;
+							System.Diagnostics.Debug.Assert( e.DstDefinition.ElementSize % 4 == 0 );
+							var iterations = e.DstDefinition.ElementSize / 4 * e.DstDefinition.ArraySize;
+							var valsPerIteration = e.SrcDefinition.ElementSize / iterations;
 							for ( var l = 0; l < iterations; ++l )
 							{
 								Array.Copy( src.Data, pSrc, dst.Data, pDst, valsPerIteration );
@@ -229,8 +238,6 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public class GpuSharedParametersUsageList : List<GpuSharedParametersUsage>
-		{
-		}
+		public class GpuSharedParametersUsageList : List<GpuSharedParametersUsage> {}
 	}
 }

@@ -36,15 +36,17 @@
 #region Namespace Declarations
 
 using System;
+
+using Axiom.Core;
 using Axiom.Collections;
 
 #endregion
 
 namespace Axiom.Core.Collections
 {
-	///<summary>
-	///  Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
-	///</summary>
+	/// <summary>
+	///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
+	/// </summary>
 #if !( XBOX || XBOX360 )
 	[Serializable]
 #endif
@@ -52,19 +54,19 @@ namespace Axiom.Core.Collections
 	{
 		#region Instance Methods
 
-		///<summary>
-		///  Adds a <see cref="Node" /> to the collection and uses its name automatically as key.
-		///</summary>
-		///<param name="item"> A <see cref="Node" /> to add to the collection. </param>
+		/// <summary>
+		///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
+		/// </summary>
+		/// <param name="item">A <see cref="Node"/> to add to the collection.</param>
 		public override void Add( Node item )
 		{
 			Add( item.Name, item );
 		}
 
 		/// <summary>
-		///   Removes the specified <see cref="Node" /> .
+		/// Removes the specified <see cref="Node"/>.
 		/// </summary>
-		/// <param name="item"> The <see cref="Node" /> to remove. </param>
+		/// <param name="item">The <see cref="Node"/> to remove.</param>
 		public void Remove( Node item )
 		{
 			base.Remove( item.Name );

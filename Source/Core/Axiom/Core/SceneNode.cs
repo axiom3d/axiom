@@ -38,34 +38,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections;
+
 using Axiom.Collections;
-using Axiom.Core.Collections;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+
+using System.Collections.Generic;
+
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	///<summary>
-	///  Represents a node in a scene graph.
-	///</summary>
-	///<remarks>
-	///  A SceneNode is a type of Node which is used to organize objects in a scene. It has the same hierarchical transformation properties of the generic Node class, but also adds the ability to attach world objects to the node, and stores hierarchical bounding volumes of the nodes in the tree. Child nodes are contained within the bounds of the parent, and so on down the tree, allowing for fast culling.
-	///</remarks>
+	/// <summary>
+	///		Represents a node in a scene graph.
+	/// </summary>
+	/// <remarks>
+	///		A SceneNode is a type of Node which is used to organize objects in a scene.
+	///		It has the same hierarchical transformation properties of the generic Node class,
+	///		but also adds the ability to attach world objects to the node, and stores hierarchical
+	///		bounding volumes of the nodes in the tree.
+	///		Child nodes are contained within the bounds of the parent, and so on down the
+	///		tree, allowing for fast culling.
+	/// </remarks>
 	public class SceneNode : Node
 	{
 		#region Fields
 
-		///<summary>
-		///  A collection of all objects attached to this scene node.
-		///</summary>
+		/// <summary>
+		///		A collection of all objects attached to this scene node.
+		///	</summary>
 		protected MovableObjectCollection objectList = new MovableObjectCollection();
 
 		/// <summary>
-		///   Gets the number of SceneObjects currently attached to this node.
+		///    Gets the number of SceneObjects currently attached to this node.
 		/// </summary>
 		public int ObjectCount
 		{
@@ -76,7 +85,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Gets the list of scene objects attached to this scene node
+		/// Gets the list of scene objects attached to this scene node
 		/// </summary>
 		public ICollection<MovableObject> Objects
 		{
@@ -86,18 +95,18 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Reference to the scene manager who created me.
-		///</summary>
+		/// <summary>
+		///		Reference to the scene manager who created me.
+		///	</summary>
 		protected SceneManager creator;
 
-		///<summary>
-		///  Renderable bounding box for this node.
-		///</summary>
+		/// <summary>
+		///		Renderable bounding box for this node.
+		///	</summary>
 		protected WireBoundingBox wireBox;
 
 		/// <summary>
-		///   Wireframe bounding box for this scenenode
+		/// Wireframe bounding box for this scenenode
 		/// </summary>
 		public WireBoundingBox WireBoundingBox
 		{
@@ -111,19 +120,19 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Whether or not to display this node's bounding box.
-		///</summary>
+		/// <summary>
+		///		Whether or not to display this node's bounding box.
+		///	</summary>
 		protected bool showBoundingBox;
 
-		///<summary>
-		///  Bounding box. Updated through Update.
-		///</summary>
+		/// <summary>
+		///		Bounding box. Updated through Update.
+		///	</summary>
 		protected AxisAlignedBox worldAABB = AxisAlignedBox.Null;
 
-		///<summary>
-		///  Word bounding sphere surrounding this node.
-		///</summary>
+		/// <summary>
+		///		Word bounding sphere surrounding this node.
+		/// </summary>
 		protected Sphere worldBoundingSphere = new Sphere();
 
 		public Sphere WorldBoundingSphere
@@ -135,47 +144,47 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   List of lights within range of this node.
+		///    List of lights within range of this node.
 		/// </summary>
 		protected LightList lightList = new LightList();
 
 		/// <summary>
-		///   Keeps track of whether the list of lights located near this node needs updating.
+		///    Keeps track of whether the list of lights located near this node needs updating.
 		/// </summary>
 		protected bool lightListDirty;
 
-		///<summary>
-		///  Where to yaw around a fixed axis.
-		///</summary>
+		/// <summary>
+		///		Where to yaw around a fixed axis.
+		/// </summary>
 		protected bool isYawFixed;
 
-		///<summary>
-		///  Fixed axis to yaw around.
-		///</summary>
+		/// <summary>
+		///		Fixed axis to yaw around.
+		/// </summary>
 		protected Vector3 yawFixedAxis;
 
-		///<summary>
-		///  Auto tracking target.
-		///</summary>
+		/// <summary>
+		///		Auto tracking target.
+		/// </summary>
 		protected SceneNode autoTrackTarget;
 
-		///<summary>
-		///  Tracking offset for fine tuning.
-		///</summary>
+		/// <summary>
+		///		Tracking offset for fine tuning.
+		/// </summary>
 		protected Vector3 autoTrackOffset = Vector3.Zero;
 
-		///<summary>
-		///  Local 'normal' direction vector.
-		///</summary>
+		/// <summary>
+		///		Local 'normal' direction vector.
+		/// </summary>
 		protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
 
-		///<summary>
-		///  Determines whether node and children are visible or not.
-		///</summary>
+		/// <summary>
+		///		Determines whether node and children are visible or not.
+		/// </summary>
 		protected bool visible = true;
 
 		/// <summary>
-		///   Is this node a current part of the scene graph?
+		/// Is this node a current part of the scene graph?
 		/// </summary>
 		protected bool isInSceneGraph;
 
@@ -183,13 +192,13 @@ namespace Axiom.Core
 
 		#region Construction and Destruction
 
-		///<summary>
-		///  Basic constructor. Takes a scene manager reference to record the creator.
-		///</summary>
-		///<remarks>
-		///  Can be created manually, but should be left the Create* Methods.
-		///</remarks>
-		///<param name="creator"> </param>
+		/// <summary>
+		///		Basic constructor.  Takes a scene manager reference to record the creator.
+		/// </summary>
+		/// <remarks>
+		///		Can be created manually, but should be left the Create* Methods.
+		/// </remarks>
+		/// <param name="creator"></param>
 		public SceneNode( SceneManager creator )
 			: base()
 		{
@@ -200,11 +209,11 @@ namespace Axiom.Core
 			lightListDirty = true;
 		}
 
-		///<summary>
-		///  Overloaded constructor. Takes a scene manager reference to record the creator, and a name for the node.
-		///</summary>
-		///<param name="creator"> </param>
-		///<param name="name"> </param>
+		/// <summary>
+		///		Overloaded constructor.  Takes a scene manager reference to record the creator, and a name for the node.
+		/// </summary>
+		/// <param name="creator"></param>
+		/// <param name="name"></param>
 		public SceneNode( SceneManager creator, string name )
 			: base( name )
 		{
@@ -242,9 +251,9 @@ namespace Axiom.Core
 
 		#region Properties
 
-		///<summary>
-		///  Gets/Sets whether or not to display the bounding box for this node.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets whether or not to display the bounding box for this node.
+		/// </summary>
 		public bool ShowBoundingBox
 		{
 			get
@@ -257,9 +266,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets a reference to the SceneManager that created this node.
-		///</summary>
+		/// <summary>
+		///		Gets a reference to the SceneManager that created this node.
+		/// </summary>
 		public SceneManager Creator
 		{
 			get
@@ -268,12 +277,13 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets the axis-aligned bounding box of this node (and hence all child nodes).
-		///</summary>
-		///<remarks>
-		///  Usage not recommended unless you are extending a SceneManager, because the bounding box returned from this method is only up to date after the SceneManager has called Update.
-		///</remarks>
+		/// <summary>
+		///		Gets the axis-aligned bounding box of this node (and hence all child nodes).
+		/// </summary>
+		/// <remarks>
+		///		Usage not recommended unless you are extending a SceneManager, because the bounding box returned
+		///		from this method is only up to date after the SceneManager has called Update.
+		/// </remarks>
 		public AxisAlignedBox WorldAABB
 		{
 			get
@@ -282,9 +292,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets the offset at which this node is tracking another node, if the node is auto tracking..
-		///</summary>
+		/// <summary>
+		///		Gets the offset at which this node is tracking another node, if the node is auto tracking..
+		/// </summary>
 		public Vector3 AutoTrackOffset
 		{
 			get
@@ -297,9 +307,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Get the auto tracking local direction for this node, if it is auto tracking.
-		///</summary>
+		/// <summary>
+		///		Get the auto tracking local direction for this node, if it is auto tracking.
+		/// </summary>
 		public Vector3 AutoTrackLocalDirection
 		{
 			get
@@ -312,9 +322,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets the SceneNode that this node is currently tracking, if any.
-		///</summary>
+		/// <summary>
+		///		Gets the SceneNode that this node is currently tracking, if any.
+		/// </summary>
 		public SceneNode AutoTrackTarget
 		{
 			get
@@ -331,46 +341,47 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Sets visibility for this node. If invisible, child nodes will be invisible, too.
-		///</summary>
+		/// <summary>
+		///		Sets visibility for this node. If invisible, child nodes will be invisible, too.
+		/// </summary>
 		public bool IsVisible
 		{
 			get
 			{
-				return visible;
+				return this.visible;
 			}
 			set
 			{
-				visible = value;
+				this.visible = value;
 			}
 		}
 
 		/// <summary>
-		///   Determines whether this node is in the scene graph, i.e. whether it's ultimate ancestor is the root scene node.
+		/// Determines whether this node is in the scene graph, i.e.
+		/// whether it's ultimate ancestor is the root scene node.
 		/// </summary>
 		public virtual bool IsInSceneGraph
 		{
 			get
 			{
-				return isInSceneGraph;
+				return this.isInSceneGraph;
 			}
 			protected set
 			{
-				if ( value != isInSceneGraph )
+				if ( value != this.isInSceneGraph )
 				{
-					isInSceneGraph = value;
+					this.isInSceneGraph = value;
 					// notify children
 					foreach ( var child in childNodes.Values )
 					{
-						( (SceneNode)child ).IsInSceneGraph = isInSceneGraph;
+						( (SceneNode)child ).IsInSceneGraph = this.isInSceneGraph;
 					}
 				}
 			}
 		}
 
 		/// <summary>
-		///   Only called by SceneManagers
+		/// Only called by SceneManagers
 		/// </summary>
 		public void SetAsRootNode()
 		{
@@ -404,16 +415,16 @@ namespace Axiom.Core
 		protected override void OnRename( string oldName )
 		{
 			//ensure that it is keyed to the name name in the Scene Manager that manages it
-			creator.RekeySceneNode( oldName, this );
+			this.creator.RekeySceneNode( oldName, this );
 		}
 
 		/// <summary>
-		///   Attaches a MovableObject to this scene node.
+		///    Attaches a MovableObject to this scene node.
 		/// </summary>
 		/// <remarks>
-		///   A MovableObject will not show up in the scene until it is attached to a SceneNode.
+		///    A MovableObject will not show up in the scene until it is attached to a SceneNode.
 		/// </remarks>
-		/// <param name="obj"> </param>
+		/// <param name="obj"></param>
 		public virtual void AttachObject( MovableObject obj )
 		{
 			Debug.Assert( obj != null, "obj != null" );
@@ -427,9 +438,9 @@ namespace Axiom.Core
 			NeedUpdate();
 		}
 
-		///<summary>
-		///  Need to clear list of child objects in addition to base class functionality.
-		///</summary>
+		/// <summary>
+		///		Need to clear list of child objects in addition to base class functionality.
+		/// </summary>
 		internal override void Clear()
 		{
 			base.Clear();
@@ -439,39 +450,39 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///   Creates a new name child node.
+		///    Creates a new name child node.
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		public virtual SceneNode CreateChildSceneNode( string name )
 		{
 			return CreateChildSceneNode( name, Vector3.Zero, Quaternion.Identity );
 		}
 
 		/// <summary>
-		///   Creates a new named child scene node.
+		///    Creates a new named child scene node.
 		/// </summary>
-		/// <param name="name"> Name of the node. </param>
-		/// <param name="translate"> A vector to specify the position relative to the parent. </param>
-		/// <returns> </returns>
+		/// <param name="name">Name of the node.</param>
+		/// <param name="translate">A vector to specify the position relative to the parent.</param>
+		/// <returns></returns>
 		public virtual SceneNode CreateChildSceneNode( string name, Vector3 translate )
 		{
 			return CreateChildSceneNode( name, translate, Quaternion.Identity );
 		}
 
 		/// <summary>
-		///   Creates a new named child scene node.
+		///    Creates a new named child scene node.
 		/// </summary>
-		/// <param name="name"> Name of the node. </param>
-		/// <param name="translate"> A vector to specify the position relative to the parent. </param>
-		/// <param name="rotate"> A quaternion to specify the orientation relative to the parent. </param>
-		/// <returns> </returns>
+		/// <param name="name">Name of the node.</param>
+		/// <param name="translate">A vector to specify the position relative to the parent.</param>
+		/// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
+		/// <returns></returns>
 		public virtual SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
 		{
 			return (SceneNode)CreateChild( name, translate, rotate );
 		}
 
 		/// <summary>
-		///   Creates a new child scene node.
+		///    Creates a new child scene node.
 		/// </summary>
 		public virtual SceneNode CreateChildSceneNode()
 		{
@@ -479,30 +490,30 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Creates a new child scene node.
+		///    Creates a new child scene node.
 		/// </summary>
-		/// <param name="translate"> A vector to specify the position relative to the parent. </param>
-		/// <returns> </returns>
+		/// <param name="translate">A vector to specify the position relative to the parent.</param>
+		/// <returns></returns>
 		public virtual SceneNode CreateChildSceneNode( Vector3 translate )
 		{
 			return CreateChildSceneNode( translate, Quaternion.Identity );
 		}
 
 		/// <summary>
-		///   Creates a new child scene node.
+		///    Creates a new child scene node.
 		/// </summary>
-		/// <param name="translate"> A vector to specify the position relative to the parent. </param>
-		/// <param name="rotate"> A quaternion to specify the orientation relative to the parent. </param>
-		/// <returns> </returns>
+		/// <param name="translate">A vector to specify the position relative to the parent.</param>
+		/// <param name="rotate">A quaternion to specify the orientation relative to the parent.</param>
+		/// <returns></returns>
 		public virtual SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
 		{
 			return (SceneNode)CreateChild( translate, rotate );
 		}
 
 		/// <summary>
-		///   Rekeys the scene object using its new Name
+		/// Rekeys the scene object using its new Name
 		/// </summary>
-		/// <param name="obj"> </param>
+		/// <param name="obj"></param>
 		public virtual void NotifyAttachedObjectNameChanged( MovableObject obj )
 		{
 			objectList.Remove( obj.Name );
@@ -510,10 +521,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Removes all currently attached SceneObjects from this SceneNode.
+		///    Removes all currently attached SceneObjects from this SceneNode.
 		/// </summary>
 		/// <remarks>
-		///   Bounds for this SceneNode are also updated.
+		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
 		public virtual void DetachAllObjects()
 		{
@@ -529,12 +540,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Removes the specifed object from this scene node.
+		///    Removes the specifed object from this scene node.
 		/// </summary>
 		/// <remarks>
-		///   Bounds for this SceneNode are also updated.
+		///    Bounds for this SceneNode are also updated.
 		/// </remarks>
-		/// <param name="obj"> Reference to the object to remove. </param>
+		/// <param name="obj">Reference to the object to remove.</param>
 		public virtual void DetachObject( MovableObject obj )
 		{
 			Debug.Assert( obj != null, "obj != null" );
@@ -549,29 +560,33 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Returns a movable object attached to this node by name. Node that this method is O(n), whereas the integer overload of this method is O(1). Use the integer version of this method if speed is important.
+		/// Returns a movable object attached to this node by name. Node that this method
+		/// is O(n), whereas the integer overload of this method is O(1). Use the integer
+		/// version of this method if speed is important.
 		/// </summary>
-		/// <param name="name"> The name of the object to return. </param>
-		/// <returns> MovableObject if found. Throws exception of not found. </returns>
+		/// <param name="name">The name of the object to return.</param>
+		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( string name )
 		{
-			if ( objectList.ContainsKey( name ) )
+			if ( this.objectList.ContainsKey( name ) )
 			{
-				return objectList[ name ];
+				return this.objectList[ name ];
 			}
 
 			throw new IndexOutOfRangeException( "Invalid key specified." );
 		}
 
 		/// <summary>
-		///   Returns a movable object attached to this node by index. Node that this method is O(n), whereas the string overload of this method is O(1). Use the string version of this method if speed is important.
+		/// Returns a movable object attached to this node by index. Node that this method
+		/// is O(n), whereas the string overload of this method is O(1). Use the string
+		/// version of this method if speed is important.
 		/// </summary>
-		/// <param name="index"> The index of the object to return. </param>
-		/// <returns> MovableObject if found. Throws exception of not found. </returns>
+		/// <param name="index">The index of the object to return.</param>
+		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( int index )
 		{
 			var i = 0;
-			foreach ( var mo in objectList.Values )
+			foreach ( var mo in this.objectList.Values )
 			{
 				if ( i == index )
 				{
@@ -583,42 +598,54 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   This method removes and destroys the child and all of its children.
+		/// This method removes and destroys the child and all of its children.
 		/// </summary>
-		/// <param name="name"> name of the node to remove and destroy </param>
+		/// <param name="name">name of the node to remove and destroy</param>
 		/// <remarks>
-		///   Unlike removeChild, which removes a single named child from this node but does not destroy it, this method destroys the child and all of it's children. <para>Use this if you wish to recursively destroy a node as well as
-		///                                                                                                                                                             detaching it from it's parent. Note that any objects attached to
-		///                                                                                                                                                             the nodes will be detached but will not themselves be destroyed.</para>
+		/// Unlike removeChild, which removes a single named child from this
+		/// node but does not destroy it, this method destroys the child
+		/// and all of it's children.
+		/// <para>
+		/// Use this if you wish to recursively destroy a node as well as
+		/// detaching it from it's parent. Note that any objects attached to
+		/// the nodes will be detached but will not themselves be destroyed.
+		/// </para>
 		/// </remarks>
 		public virtual void RemoveAndDestroyChild( String name )
 		{
-			var child = (SceneNode)GetChild( name );
+			var child = (SceneNode)this.GetChild( name );
 			RemoveAndDestroyChild( child );
 		}
 
 		/// <summary>
-		///   This method removes and destroys the child and all of its children.
+		/// This method removes and destroys the child and all of its children.
 		/// </summary>
-		/// <param name="sceneNode"> The node to remove and destroy </param>
+		/// <param name="sceneNode">The node to remove and destroy</param>
 		/// <remarks>
-		///   Unlike removeChild, which removes a single named child from this node but does not destroy it, this method destroys the child and all of it's children. <para>Use this if you wish to recursively destroy a node as well as
-		///                                                                                                                                                             detaching it from it's parent. Note that any objects attached to
-		///                                                                                                                                                             the nodes will be detached but will not themselves be destroyed.</para>
+		/// Unlike removeChild, which removes a single named child from this
+		/// node but does not destroy it, this method destroys the child
+		/// and all of it's children.
+		/// <para>
+		/// Use this if you wish to recursively destroy a node as well as
+		/// detaching it from it's parent. Note that any objects attached to
+		/// the nodes will be detached but will not themselves be destroyed.
+		/// </para>
 		/// </remarks>
 		public virtual void RemoveAndDestroyChild( SceneNode sceneNode )
 		{
 			sceneNode.RemoveAndDestroyAllChildren();
 
-			RemoveChild( sceneNode );
+			this.RemoveChild( sceneNode );
 			sceneNode.Creator.DestroySceneNode( sceneNode );
 		}
 
 		/// <summary>
-		///   Removes and destroys all children in the subtree of this node.
+		/// Removes and destroys all children in the subtree of this node.
 		/// </summary>
 		/// <remarks>
-		///   Use this to destroy all nodes found in the child subtree of this node and remove them from the scene graph. Note that all objects attached to the nodes will be detached but will not be destroyed.
+		/// Use this to destroy all nodes found in the child subtree of this node and remove
+		/// them from the scene graph. Note that all objects attached to the
+		/// nodes will be detached but will not be destroyed.
 		/// </remarks>
 		public virtual void RemoveAndDestroyAllChildren()
 		{
@@ -627,7 +654,7 @@ namespace Axiom.Core
 				sn.RemoveAndDestroyAllChildren();
 
 				// destroy but prevent removing from internal list yet
-				RemoveChild( sn, false );
+				this.RemoveChild( sn, false );
 				sn.Creator.DestroySceneNode( sn, false );
 			}
 
@@ -637,14 +664,15 @@ namespace Axiom.Core
 			NeedUpdate();
 		}
 
-		///<summary>
-		///  Internal method to update the Node.
-		///</summary>
-		///<remarks>
-		///  Updates this scene node and any relevant children to incorporate transforms etc. Don't call this yourself unless you are writing a SceneManager implementation.
-		///</remarks>
-		///<param name="updateChildren"> </param>
-		///<param name="hasParentChanged"> </param>
+		/// <summary>
+		///		Internal method to update the Node.
+		/// </summary>
+		/// <remarks>
+		///		Updates this scene node and any relevant children to incorporate transforms etc.
+		///		Don't call this yourself unless you are writing a SceneManager implementation.
+		/// </remarks>
+		/// <param name="updateChildren"></param>
+		/// <param name="hasParentChanged"></param>
 		protected internal override void Update( bool updateChildren, bool hasParentChanged )
 		{
 			// call base class method
@@ -656,52 +684,52 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		protected override void UpdateFromParent()
 		{
 			base.UpdateFromParent();
 
 			// Notify objects that it has been moved
-			foreach ( var currentObject in objectList.Values )
+			foreach ( var currentObject in this.objectList.Values )
 			{
 				currentObject.NotifyMoved();
 			}
 		}
 
-		///<summary>
-		///  Overloaded method.
-		///</summary>
-		///<param name="camera"> </param>
-		///<param name="queue"> </param>
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <param name="queue"></param>
 		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue )
 		{
 			// call overloaded method
 			FindVisibleObjects( camera, queue, true, false, false );
 		}
 
-		///<summary>
-		///  Overloaded method.
-		///</summary>
-		///<param name="camera"> </param>
-		///<param name="queue"> </param>
-		///<param name="includeChildren"> </param>
-		///<param name="displayNodes"> </param>
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <param name="queue"></param>
+		/// <param name="includeChildren"></param>
+		/// <param name="displayNodes"></param>
 		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes )
 		{
 			// call overloaded method
 			FindVisibleObjects( camera, queue, includeChildren, displayNodes, false );
 		}
 
-		///<summary>
-		///  Internal method which locates any visible objects attached to this node and adds them to the passed in queue.
-		///</summary>
-		///<param name="camera"> Active camera. </param>
-		///<param name="queue"> Queue to which these objects should be added. </param>
-		///<param name="includeChildren"> If true, cascades down to all children. </param>
-		///<param name="displayNodes"> Renders the local axes for the node. </param>
-		///<param name="onlyShadowCasters"> </param>
-		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes,
-		                                        bool onlyShadowCasters )
+		/// <summary>
+		///		Internal method which locates any visible objects attached to this node and adds them to the passed in queue.
+		/// </summary>
+		/// <param name="camera">Active camera.</param>
+		/// <param name="queue">Queue to which these objects should be added.</param>
+		/// <param name="includeChildren">If true, cascades down to all children.</param>
+		/// <param name="displayNodes">Renders the local axes for the node.</param>
+		/// <param name="onlyShadowCasters"></param>
+		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes, bool onlyShadowCasters )
 		{
 			// if we aren't visible, then quit now
 			// TODO: Make sure sphere is calculated properly for all objects, then switch to cull using that
@@ -760,17 +788,17 @@ namespace Axiom.Core
 
 		public override Node.DebugRenderable GetDebugRenderable()
 		{
-			var hs = worldAABB.HalfSize;
+			var hs = this.worldAABB.HalfSize;
 			var sz = Utility.Min( hs.x, hs.y );
 			sz = Utility.Min( sz, hs.z );
 			sz = Utility.Max( sz, (Real)1.0 );
 			return base.GetDebugRenderable( sz );
 		}
 
-		///<summary>
-		///  Adds this nodes bounding box (wireframe) to the RenderQueue.
-		///</summary>
-		///<param name="queue"> </param>
+		/// <summary>
+		///		Adds this nodes bounding box (wireframe) to the RenderQueue.
+		/// </summary>
+		/// <param name="queue"></param>
 		public void AddBoundingBoxToQueue( RenderQueue queue )
 		{
 			if ( wireBox == null )
@@ -783,14 +811,14 @@ namespace Axiom.Core
 			queue.AddRenderable( wireBox );
 		}
 
-		///<summary>
-		///  Tell the SceneNode to update the world bound info it stores.
-		///</summary>
+		/// <summary>
+		///		Tell the SceneNode to update the world bound info it stores.
+		/// </summary>
 		protected virtual void UpdateBounds()
 		{
 			// reset bounds
 			worldAABB.IsNull = true;
-			worldBoundingSphere.Center = DerivedPosition;
+			worldBoundingSphere.Center = this.DerivedPosition;
 			float radius = worldBoundingSphere.Radius = 0;
 
 			// update bounds from attached objects
@@ -812,36 +840,41 @@ namespace Axiom.Core
 			worldBoundingSphere.Radius = radius;
 		}
 
-		///<summary>
-		///  Tells the node whether to yaw around it's own local Y axis or a fixed axis of choice.
-		///</summary>
-		///<remarks>
-		///  This method allows you to change the yaw behavior of the node - by default, it yaws around it's own local Y axis when told to yaw with <see
-		///   cref="TransformSpace.Local" /> , this makes it yaw around a fixed axis. You only really need this when you're using auto tracking ( <see
-		///   cref="SetAutoTracking(bool)" /> , because when you're manually rotating a node you can specify the <see
-		///   cref="TransformSpace" /> in which you wish to work anyway.
-		///</remarks>
-		///<param name="useFixed"> If true, the axis passed in the second parameter will always be the yaw axis no matter what the node orientation. If false, the node returns to it's default behavior. </param>
-		///<param name="fixedAxis"> The axis to use if the first parameter is true. </param>
+		/// <summary>
+		///		Tells the node whether to yaw around it's own local Y axis or a fixed axis of choice.
+		/// </summary>
+		/// <remarks>
+		///		This method allows you to change the yaw behavior of the node - by default, it
+		///		yaws around it's own local Y axis when told to yaw with <see cref="TransformSpace.Local"/>,
+		///		this makes it yaw around a fixed axis.
+		///		You only really need this when you're using auto tracking (<see cref="SetAutoTracking(bool)"/>,
+		///		because when you're manually rotating a node you can specify the <see cref="TransformSpace"/>
+		///		in which you wish to work anyway.
+		/// </remarks>
+		/// <param name="useFixed">
+		///		If true, the axis passed in the second parameter will always be the yaw axis no
+		///		matter what the node orientation. If false, the node returns to it's default behavior.
+		/// </param>
+		/// <param name="fixedAxis">The axis to use if the first parameter is true.</param>
 		public void SetFixedYawAxis( bool useFixed, Vector3 fixedAxis )
 		{
 			isYawFixed = useFixed;
 			yawFixedAxis = fixedAxis;
 		}
 
-		///<summary>
-		///  Sets a default fixed yaw axis of Y.
-		///</summary>
-		///<param name="useFixed"> </param>
+		/// <summary>
+		///		Sets a default fixed yaw axis of Y.
+		/// </summary>
+		/// <param name="useFixed"></param>
 		public void SetFixedYawAxis( bool useFixed )
 		{
 			SetFixedYawAxis( useFixed, Vector3.UnitY );
 		}
 
-		///<summary>
-		///  Overridden to apply fixed yaw axis behavior.
-		///</summary>
-		///<param name="degrees"> </param>
+		/// <summary>
+		///		Overridden to apply fixed yaw axis behavior.
+		/// </summary>
+		/// <param name="degrees"></param>
 		public override void Yaw( float degrees )
 		{
 			Vector3 yAxis;
@@ -854,22 +887,24 @@ namespace Axiom.Core
 			else
 			{
 				// Rotate around local Y axis
-				yAxis = orientation*Vector3.UnitY;
+				yAxis = orientation * Vector3.UnitY;
 			}
 
 			Rotate( yAxis, degrees );
 		}
 
 
-		///<summary>
-		///  Points the local Z direction of this node at a point in space.
-		///</summary>
-		///<param name="target"> A vector specifying the look at point. </param>
-		///<param name="relativeTo"> The space in which the point resides. </param>
-		///<param name="localDirection"> The vector which normally describes the natural direction of the node, usually -Z. </param>
+		/// <summary>
+		///		Points the local Z direction of this node at a point in space.
+		/// </summary>
+		/// <param name="target">A vector specifying the look at point.</param>
+		/// <param name="relativeTo">The space in which the point resides.</param>
+		/// <param name="localDirection">
+		///		The vector which normally describes the natural direction of the node, usually -Z.
+		///	</param>
 		public void LookAt( Vector3 target, TransformSpace relativeTo, Vector3 localDirection )
 		{
-			SetDirection( target - DerivedPosition, relativeTo, localDirection );
+			SetDirection( target - this.DerivedPosition, relativeTo, localDirection );
 		}
 
 		public void LookAt( Vector3 target, TransformSpace relativeTo )
@@ -877,16 +912,31 @@ namespace Axiom.Core
 			LookAt( target, relativeTo, Vector3.NegativeUnitZ );
 		}
 
-		///<summary>
-		///  Enables / disables automatic tracking of another SceneNode.
-		///</summary>
-		///<remarks>
-		///  If you enable auto-tracking, this SceneNode will automatically rotate to point it's -Z at the target SceneNode every frame, no matter how it or the other SceneNode move. Note that by default the -Z points at the origin of the target SceneNode, if you want to tweak this, provide a vector in the 'offset' parameter and the target point will be adjusted.
-		///</remarks>
-		///<param name="enabled"> If true, tracking will be enabled and the 'target' cannot be null. If false tracking will be disabled and the current orientation will be maintained. </param>
-		///<param name="target"> Reference to the SceneNode to track. Can be null if and only if the enabled param is false. </param>
-		///<param name="localDirection"> The local vector considered to be the usual 'direction' of the node; normally the local -Z but can be another direction. </param>
-		///<param name="offset"> If supplied, this is the target point in local space of the target node instead of the origin of the target node. Good for fine tuning the look at point. </param>
+		/// <summary>
+		///		Enables / disables automatic tracking of another SceneNode.
+		/// </summary>
+		/// <remarks>
+		///		If you enable auto-tracking, this SceneNode will automatically rotate to
+		///		point it's -Z at the target SceneNode every frame, no matter how
+		///		it or the other SceneNode move. Note that by default the -Z points at the
+		///		origin of the target SceneNode, if you want to tweak this, provide a
+		///		vector in the 'offset' parameter and the target point will be adjusted.
+		/// </remarks>
+		/// <param name="enabled">
+		///		If true, tracking will be enabled and the 'target' cannot be null.
+		///		If false tracking will be disabled and the current orientation will be maintained.
+		/// </param>
+		/// <param name="target">
+		///		Reference to the SceneNode to track. Can be null if and only if the enabled param is false.
+		/// </param>
+		/// <param name="localDirection">
+		///		The local vector considered to be the usual 'direction'
+		///		of the node; normally the local -Z but can be another direction.
+		/// </param>
+		/// <param name="offset">
+		///		If supplied, this is the target point in local space of the target node
+		///		instead of the origin of the target node. Good for fine tuning the look at point.
+		/// </param>
 		public void SetAutoTracking( bool enabled, SceneNode target, Vector3 localDirection, Vector3 offset )
 		{
 			if ( enabled )
@@ -921,18 +971,22 @@ namespace Axiom.Core
 			SetAutoTracking( enabled, null, Vector3.NegativeUnitZ, Vector3.Zero );
 		}
 
-		///<summary>
-		///  Sets the node's direction vector ie it's local -z.
-		///</summary>
-		///<remarks>
-		///  Note that the 'up' vector for the orientation will automatically be recalculated based on the current 'up' vector (i.e. the roll will remain the same). If you need more control, use the <see
-		///   name="Orientation" /> property.
-		///</remarks>
-		///<param name="x"> The x component of the direction vector. </param>
-		///<param name="y"> The y component of the direction vector. </param>
-		///<param name="z"> The z component of the direction vector. </param>
-		///<param name="relativeTo"> The space in which this direction vector is expressed. </param>
-		///<param name="localDirectionVector"> The vector which normally describes the natural direction of the node, usually -Z. </param>
+		/// <summary>
+		///		Sets the node's direction vector ie it's local -z.
+		/// </summary>
+		/// <remarks>
+		///		Note that the 'up' vector for the orientation will automatically be
+		///		recalculated based on the current 'up' vector (i.e. the roll will
+		///		remain the same). If you need more control, use the <see name="Orientation"/>
+		///		property.
+		/// </remarks>
+		/// <param name="x">The x component of the direction vector.</param>
+		/// <param name="y">The y component of the direction vector.</param>
+		/// <param name="z">The z component of the direction vector.</param>
+		/// <param name="relativeTo">The space in which this direction vector is expressed.</param>
+		/// <param name="localDirectionVector">The vector which normally describes the natural direction
+		///		of the node, usually -Z.
+		///	</param>
 		public void SetDirection( Real x, Real y, Real z, TransformSpace relativeTo, Vector3 localDirectionVector )
 		{
 			Vector3 dir;
@@ -952,16 +1006,20 @@ namespace Axiom.Core
 			SetDirection( x, y, z, relativeTo, Vector3.NegativeUnitZ );
 		}
 
-		///<summary>
-		///  Sets the node's direction vector ie it's local -z.
-		///</summary>
-		///<remarks>
-		///  Note that the 'up' vector for the orientation will automatically be recalculated based on the current 'up' vector (i.e. the roll will remain the same). If you need more control, use the <see
-		///   name="Orientation" /> property.
-		///</remarks>
-		///<param name="vec"> The direction vector. </param>
-		///<param name="relativeTo"> The space in which this direction vector is expressed. </param>
-		///<param name="localDirection"> The vector which normally describes the natural direction of the node, usually -Z. </param>
+		/// <summary>
+		///		Sets the node's direction vector ie it's local -z.
+		/// </summary>
+		/// <remarks>
+		///		Note that the 'up' vector for the orientation will automatically be
+		///		recalculated based on the current 'up' vector (i.e. the roll will
+		///		remain the same). If you need more control, use the <see name="Orientation"/>
+		///		property.
+		/// </remarks>
+		/// <param name="vec">The direction vector.</param>
+		/// <param name="relativeTo">The space in which this direction vector is expressed.</param>
+		/// <param name="localDirection">The vector which normally describes the natural direction
+		///		of the node, usually -Z.
+		///	</param>
 		public void SetDirection( Vector3 vec, TransformSpace relativeTo, Vector3 localDirection )
 		{
 			// Do nothing if given a zero vector
@@ -980,7 +1038,7 @@ namespace Axiom.Core
 			else
 			{
 				var localToUnitZ = localDirection.GetRotationTo( Vector3.UnitZ );
-				zAdjustVec = localToUnitZ*vec;
+				zAdjustVec = localToUnitZ * vec;
 			}
 
 			zAdjustVec.Normalize();
@@ -1003,7 +1061,7 @@ namespace Axiom.Core
 
 				// Get axes from current quaternion
 				// get the vector components of the derived orientation vector
-				DerivedOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
+				this.DerivedOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
 
 				Quaternion rotationQuat;
 
@@ -1019,7 +1077,7 @@ namespace Axiom.Core
 					rotationQuat = zAxis.GetRotationTo( zAdjustVec );
 				}
 
-				targetOrientation = rotationQuat*orientation;
+				targetOrientation = rotationQuat * orientation;
 			}
 			//use Orientatin property to ensure call of NeedsUpdate
 			if ( relativeTo == TransformSpace.Local || parent != null )
@@ -1030,11 +1088,11 @@ namespace Axiom.Core
 			{
 				if ( relativeTo == TransformSpace.Parent )
 				{
-					Orientation = targetOrientation*parent.Orientation.Inverse();
+					Orientation = targetOrientation * parent.Orientation.Inverse();
 				}
 				else if ( relativeTo == TransformSpace.World )
 				{
-					Orientation = targetOrientation*parent.DerivedOrientation.Inverse();
+					Orientation = targetOrientation * parent.DerivedOrientation.Inverse();
 				}
 			}
 		}
@@ -1049,14 +1107,18 @@ namespace Axiom.Core
 			SetDirection( vec, relativeTo, Vector3.NegativeUnitZ );
 		}
 
-		///<summary>
-		///  Allows retrieval of the nearest lights to the center of this SceneNode.
-		///</summary>
-		///<remarks>
-		///  This method allows a list of lights, ordered by proximity to the center of this SceneNode, to be retrieved. Multiple access to this method when neither the node nor the lights have moved will result in the same list being returned without recalculation. Can be useful when implementing IRenderable.Lights.
-		///</remarks>
-		///<param name="radius"> Parameter to specify lights intersecting a given radius of this SceneNode's centre </param>
-		///<returns> </returns>
+		/// <summary>
+		///    Allows retrieval of the nearest lights to the center of this SceneNode.
+		/// </summary>
+		/// <remarks>
+		///    This method allows a list of lights, ordered by proximity to the center of
+		///    this SceneNode, to be retrieved. Multiple access to this method when neither
+		///    the node nor the lights have moved will result in the same list being returned
+		///    without recalculation. Can be useful when implementing IRenderable.Lights.
+		/// </remarks>
+		/// <param name="radius">Parameter to specify lights intersecting a given radius of
+		///		this SceneNode's centre</param>
+		/// <returns></returns>
 		public virtual LightList FindLights( float radius )
 		{
 			// TEMP FIX
@@ -1067,7 +1129,7 @@ namespace Axiom.Core
 			//if(lightListDirty) {
 			if ( creator != null )
 			{
-				creator.PopulateLightList( DerivedPosition, radius, lightList );
+				creator.PopulateLightList( this.DerivedPosition, radius, lightList );
 			}
 			else
 			{
@@ -1080,9 +1142,9 @@ namespace Axiom.Core
 			return lightList;
 		}
 
-		///<summary>
-		///  Internal method used to update auto-tracking scene nodes.
-		///</summary>
+		/// <summary>
+		///		Internal method used to update auto-tracking scene nodes.
+		/// </summary>
 		internal void AutoTrack()
 		{
 			if ( autoTrackTarget != null )
@@ -1098,18 +1160,20 @@ namespace Axiom.Core
 
 		#region Implementation of Node
 
-		///<summary>
-		///</summary>
-		///<returns> </returns>
+		/// <summary>
+		///
+		/// </summary>
+		/// <returns></returns>
 		protected override Node CreateChildImpl()
 		{
 			return creator.CreateSceneNode();
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="name"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
 			var newNode = creator.CreateSceneNode( name );

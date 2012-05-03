@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Globalization;
 
 #endregion Namespace Declarations
@@ -44,16 +45,14 @@ using System.Globalization;
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	///   This is an abstract node which cannot be broken down further
+	///  This is an abstract node which cannot be broken down further
 	/// </summary>
 	public class AtomAbstractNode : AbstractNode
 	{
 		#region Fields and Properties
 
-		private readonly CultureInfo _culture = new CultureInfo( "en-US" );
-
-		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite |
-		                                   NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
+		private CultureInfo _culture = new CultureInfo( "en-US" );
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
 
 
 		private bool _parsed = false;
@@ -92,9 +91,7 @@ namespace Axiom.Scripting.Compiler.AST
 		#endregion Fields and Properties
 
 		public AtomAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+			: base( parent ) {}
 
 		private void _parse()
 		{
@@ -104,18 +101,18 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone" />
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			var node = new AtomAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Id = Id;
+			node.Id = this.Id;
 			node._value = Value;
 			return node;
 		}
 
-		/// <see cref="AbstractNode.Value" />
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get

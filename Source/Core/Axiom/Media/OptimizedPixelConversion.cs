@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -67,9 +68,7 @@ namespace Axiom.Media
 	public class ManagedBufferCol3b : ManagedBuffer, ITypePointer<Col3b>
 	{
 		public ManagedBufferCol3b( ManagedBuffer buffer )
-			: base( buffer )
-		{
-		}
+			: base( buffer ) {}
 
 		Col3b ITypePointer<Col3b>.this[ int index ]
 		{
@@ -78,11 +77,9 @@ namespace Axiom.Media
 				var buf = Buf;
 				index *= 3;
 				return new Col3b
-				       {
-				       	x = buf[ index += IdxPtr ],
-				       	y = buf[ ++index ],
-				       	z = buf[ ++index ]
-				       };
+					   {
+						x = buf[ index += IdxPtr ], y = buf[ ++index ], z = buf[ ++index ]
+					   };
 			}
 			set
 			{
@@ -103,9 +100,9 @@ namespace Axiom.Media
 
 		public Col3b( uint a, uint b, uint c )
 		{
-			x = (byte)a;
-			y = (byte)b;
-			z = (byte)c;
+			this.x = (byte)a;
+			this.y = (byte)b;
+			this.z = (byte)c;
 		}
 	}
 
@@ -176,8 +173,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) |
-					                      ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 				}
 			}
 		}
@@ -214,11 +210,9 @@ namespace Axiom.Media
 					var inp = inputPtr[ offset ];
 
 					outputPtr[ offset ] = new Col3b
-					                      {
-					                      	x = (byte)( ( inp >> 16 ) & 0xFF ),
-					                      	y = (byte)( ( inp >> 8 ) & 0xFF ),
-					                      	z = (byte)( ( inp >> 0 ) & 0xFF ),
-					                      };
+										  {
+											x = (byte)( ( inp >> 16 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 0 ) & 0xFF ),
+										  };
 				}
 			}
 		}
@@ -237,11 +231,9 @@ namespace Axiom.Media
 					var inp = inputPtr[ offset ];
 
 					outputPtr[ offset ] = new Col3b
-					                      {
-					                      	x = (byte)( ( inp >> 0 ) & 0xFF ),
-					                      	y = (byte)( ( inp >> 8 ) & 0xFF ),
-					                      	z = (byte)( ( inp >> 16 ) & 0xFF ),
-					                      };
+										  {
+											x = (byte)( ( inp >> 0 ) & 0xFF ), y = (byte)( ( inp >> 8 ) & 0xFF ), z = (byte)( ( inp >> 16 ) & 0xFF ),
+										  };
 				}
 			}
 		}
@@ -317,8 +309,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) |
-					                      ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 				}
 			}
 		}
@@ -358,8 +349,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) |
-					                      ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 				}
 			}
 		}
@@ -453,8 +443,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) |
-					                      ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+					outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 				}
 			}
 		}
@@ -598,8 +587,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -625,8 +613,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -651,8 +638,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -697,8 +683,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | 
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -723,8 +708,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -749,8 +733,7 @@ namespace Axiom.Media
 					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) |
 										  ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) |
-					                      ( ( (uint)inp.z ) << xshift );
+					outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
 				}
 			}
@@ -825,8 +808,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) |
-					                      0x000000FF;
+					outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
 				}
 			}
 		}
@@ -920,8 +902,7 @@ namespace Axiom.Media
 					var outputPtr = output.ToUIntPointer();
 					var inp = inputPtr[ offset ];
 
-					outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) |
-					                      0x000000FF;
+					outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
 				}
 			}
 		}
@@ -937,14 +918,14 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return ( (int)_srcFormat << 8 ) + (int)_dstFormat;
+					return ( (int)this._srcFormat << 8 ) + (int)this._dstFormat;
 				}
 			}
 
 			public PixelConverterAttribute( PixelFormat srcFormat, PixelFormat dstFormat )
 			{
-				_srcFormat = srcFormat;
-				_dstFormat = dstFormat;
+				this._srcFormat = srcFormat;
+				this._dstFormat = dstFormat;
 			}
 		}
 
@@ -991,8 +972,8 @@ namespace Axiom.Media
 							{
 								pixelConverter.Convert( srcptr, dstptr, x );
 							}
-							srcptr.Ptr += src.RowPitch*PixelUtil.GetNumElemBytes( src.Format );
-							dstptr.Ptr += dst.RowPitch*PixelUtil.GetNumElemBytes( dst.Format );
+							srcptr.Ptr += src.RowPitch * PixelUtil.GetNumElemBytes( src.Format );
+							dstptr.Ptr += dst.RowPitch * PixelUtil.GetNumElemBytes( dst.Format );
 						}
 						srcptr.Ptr += srcSliceSkip;
 						dstptr.Ptr += dstSliceSkip;

@@ -37,50 +37,66 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Controllers
 {
-	///<summary>
-	///  Instances of this class 'control' the value of another object in the system.
-	///</summary>
-	///<remarks>
-	///  Controller classes are used to manage the values of object automatically based on the value of some input. For example, a Controller could animate a texture by controlling the current frame of the texture based on time, or a different Controller could change the color of a material used for a spaceship shield mesh based on the remaining shield power level of the ship. <p /> The Controller is an intentionally abstract concept - it can generate values based on input and a function, which can either be one of the standard ones supplied, or a function can be 'plugged in' for custom behavior - see the <see
-	///   cref="IControllerFunction&lt;T&gt;" /> class for details. Both the input and output values are via <see
-	///   cref="IControllerValue&lt;T&gt;" /> objects, meaning that any value can be both input and output of the controller. <p /> While this is very flexible, it can be a little bit confusing so to make it simpler the most often used controller setups are available by calling methods on the ControllerManager object.
-	///</remarks>
+	/// <summary>
+	///		Instances of this class 'control' the value of another object in the system.
+	///	</summary>
+	///	 <remarks>
+	///		Controller classes are used to manage the values of object automatically based
+	///		on the value of some input. For example, a Controller could animate a texture
+	///		by controlling the current frame of the texture based on time, or a different Controller
+	///		could change the color of a material used for a spaceship shield mesh based on the remaining
+	///		shield power level of the ship.
+	///		<p/>
+	///		The Controller is an intentionally abstract concept - it can generate values
+	///		based on input and a function, which can either be one of the standard ones
+	///		supplied, or a function can be 'plugged in' for custom behavior - see the <see cref="IControllerFunction&lt;T&gt;"/> class for details.
+	///		Both the input and output values are via <see cref="IControllerValue&lt;T&gt;"/> objects, meaning that any value can be both
+	///		input and output of the controller.
+	///		<p/>
+	///		While this is very flexible, it can be a little bit confusing so to make it simpler the most often used
+	///		controller setups are available by calling methods on the ControllerManager object.
+	/// </remarks>
 	public class Controller<T>
 	{
 		#region Member variables
 
 		/// <summary>
+		/// 
 		/// </summary>
 		protected IControllerValue<T> source;
 
 		/// <summary>
+		/// 
 		/// </summary>
 		protected IControllerValue<T> destination;
 
-		///<summary>
-		///  Local reference to the function to be used for this controller.
-		///</summary>
+		/// <summary>
+		///		Local reference to the function to be used for this controller.
+		/// </summary>
 		protected IControllerFunction<T> function;
 
-		///<summary>
-		///  States whether or not this controller is enabled.
-		///</summary>
+		/// <summary>
+		///		States whether or not this controller is enabled.
+		/// </summary>
 		protected bool isEnabled;
 
 		#endregion
 
 		#region Constructors
 
-		///<summary>
-		///  Main constructor. Should not be used directly, rather a controller should be created using the ControllerManager so it can keep track of them.
-		///</summary>
-		///<param name="source"> </param>
-		///<param name="destination"> </param>
-		///<param name="function"> </param>
+		/// <summary>
+		///		Main constructor.  Should not be used directly, rather a controller should be created using the
+		///		ControllerManager so it can keep track of them.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="destination"></param>
+		/// <param name="function"></param>
 		internal Controller( IControllerValue<T> source, IControllerValue<T> destination, IControllerFunction<T> function )
 		{
 			this.source = source;
@@ -95,9 +111,10 @@ namespace Axiom.Controllers
 
 		#region Methods
 
-		///<summary>
-		///  Called to update the destination value for this controller. Will be called during the render loop by ControllerManager.
-		///</summary>
+		/// <summary>
+		///		Called to update the destination value for this controller.  Will be called during
+		///		the render loop by ControllerManager.
+		/// </summary>
 		public void Update()
 		{
 			// if we are enabled, set the destination value based on the return value of the
@@ -112,9 +129,9 @@ namespace Axiom.Controllers
 
 		#region Properties
 
-		///<summary>
-		///  The value that returns the source data for this controller.
-		///</summary>
+		/// <summary>
+		///		The value that returns the source data for this controller.
+		/// </summary>
 		public IControllerValue<T> Source
 		{
 			get
@@ -127,9 +144,9 @@ namespace Axiom.Controllers
 			}
 		}
 
-		///<summary>
-		///  The object the sets the destination objects value.
-		///</summary>
+		/// <summary>
+		///		The object the sets the destination objects value.
+		/// </summary>
 		public IControllerValue<T> Destination
 		{
 			get
@@ -142,9 +159,9 @@ namespace Axiom.Controllers
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets the eference to the function to be used for this controller.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets the eference to the function to be used for this controller.
+		/// </summary>
 		public IControllerFunction<T> Function
 		{
 			get
@@ -157,9 +174,9 @@ namespace Axiom.Controllers
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets whether this controller is active or not.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets whether this controller is active or not.
+		/// </summary>
 		public bool IsEnabled
 		{
 			get

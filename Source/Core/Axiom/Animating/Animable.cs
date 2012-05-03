@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -47,7 +48,7 @@ using Axiom.Math;
 namespace Axiom.Animating
 {
 	/// <summary>
-	///   The type of the value being animated
+	/// The type of the value being animated
 	/// </summary>
 	[OgreVersion( 1, 7, 2, "Original name was ValueType" )]
 	public enum AnimableType
@@ -63,6 +64,28 @@ namespace Axiom.Animating
 		Degree
 	}
 
+	/// <summary>
+	///     Defines an object property which is animable, ie may be keyframed.
+	/// </summary>
+	/// <remarks>
+	///     Animable properties are those which can be altered over time by a 
+	///     predefined keyframe sequence. They may be set directly, or they may
+	///     be modified from their existing state (common if multiple animations
+	///     are expected to apply at once). Implementors of this interface are
+	///     expected to override the 'setValue', 'setCurrentStateAsBaseValue' and 
+	///     'ApplyDeltaValue' methods appropriate to the type in question, and to 
+	///     initialise the type.
+	///     
+	///     AnimableValue instances are accessible through any class which extends
+	///     AnimableObject in order to expose it's animable properties.
+	///     
+	///     This class is an instance of the Adapter pattern, since it generalises
+	///     access to a particular property. Whilst it could have been templated
+	///     such that the type which was being referenced was compiled in, this would
+	///     make it more difficult to aggregated generically, and since animations
+	///     are often comprised of multiple properties it helps to be able to deal
+	///     with all values through a single class.
+	///</remarks>
 #if CSHARP_30
 	public abstract class AnimableValue<T> where T : struct
 	{
@@ -140,19 +163,6 @@ namespace Axiom.Animating
 	}
 
 #endif
-
-	///<summary>
-	/// Defines an object property which is animable, ie may be keyframed.
-	///</summary>
-	///<remarks>
-	/// Animable properties are those which can be altered over time by a predefined keyframe sequence. They may be set directly, or they may be 
-	/// modified from their existing state (common if multiple animations are expected to apply at once). Implementors of this interface are 
-	/// expected to override the 'setValue', 'setCurrentStateAsBaseValue' and 'ApplyDeltaValue' methods appropriate to the type in question, and 
-	/// to initialise the type. AnimableValue instances are accessible through any class which extends AnimableObject in order to expose it's 
-	/// animable properties. This class is an instance of the Adapter pattern, since it generalises access to a particular property. Whilst it 
-	/// could have been templated such that the type which was being referenced was compiled in, this would make it more difficult to aggregated 
-	/// generically, and since animations are often comprised of multiple properties it helps to be able to deal with all values through a single class.
-	///</remarks>
 	public abstract class AnimableValue
 	{
 		protected AnimableType type;
@@ -287,49 +297,49 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( int val )
 		{
 			throw new AxiomException( "Animable SetValue to int not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Real val )
 		{
 			throw new AxiomException( "Animable SetValue to float not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Vector2 val )
 		{
 			throw new AxiomException( "Animable SetValue to Vector2 not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Vector3 val )
 		{
 			throw new AxiomException( "Animable SetValue to Vector3 not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Vector4 val )
 		{
 			throw new AxiomException( "Animable SetValue to Vector4 not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Quaternion val )
 		{
 			throw new AxiomException( "Animable SetValue to Quaternion not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( ColorEx val )
 		{
 			throw new AxiomException( "Animable SetValue to ColorEx not implemented" );
 		}
 
-		/// Set value
+		/// Set value 
 		public virtual void SetValue( Object val )
 		{
 			switch ( type )
@@ -358,49 +368,49 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( int val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to int not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Real val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to float not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector2 val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to Vector2 not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector3 val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to Vector3 not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Vector4 val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to Vector4 not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Quaternion val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to Quaternion not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( ColorEx val )
 		{
 			throw new AxiomException( "Animable ApplyDeltaValue to ColorEx not implemented" );
 		}
 
-		/// Apply the specified delta
+		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Object val )
 		{
 			switch ( type )
@@ -436,34 +446,31 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					var i1 = (int)k1;
 					var i2 = (int)k2;
-					return (Object)(int)( i1 + ( i2 - i1 )*time );
+					return (Object)(int)( i1 + ( i2 - i1 ) * time );
 				case AnimableType.Real:
 					var f1 = (float)k1;
 					var f2 = (float)k2;
-					return (Object)( f1 + ( f2 - f1 )*time );
+					return (Object)( f1 + ( f2 - f1 ) * time );
 				case AnimableType.Vector2:
 					var v21 = (Vector2)k1;
 					var v22 = (Vector2)k2;
-					return (Object)( v21 + ( v22 - v21 )*time );
+					return (Object)( v21 + ( v22 - v21 ) * time );
 				case AnimableType.Vector3:
 					var v31 = (Vector3)k1;
 					var v32 = (Vector3)k2;
-					return (Object)( v31 + ( v32 - v31 )*time );
+					return (Object)( v31 + ( v32 - v31 ) * time );
 				case AnimableType.Vector4:
 					var v41 = (Vector4)k1;
 					var v42 = (Vector4)k2;
-					return (Object)( v41 + ( v42 - v41 )*time );
+					return (Object)( v41 + ( v42 - v41 ) * time );
 				case AnimableType.Quaternion:
 					var q1 = (Quaternion)k1;
 					var q2 = (Quaternion)k2;
-					return (Object)( q1 + ( q2 + ( -1*q1 ) )*time );
+					return (Object)( q1 + ( q2 + ( -1 * q1 ) ) * time );
 				case AnimableType.ColorEx:
 					var c1 = (ColorEx)k1;
 					var c2 = (ColorEx)k2;
-					return
-						(Object)
-						( new ColorEx( c1.a + ( c2.a - c1.a )*time, c1.r + ( c2.r - c1.r )*time, c1.g + ( c2.g - c1.g )*time,
-						               c1.b + ( c2.b - c1.b )*time ) );
+					return (Object)( new ColorEx( c1.a + ( c2.a - c1.a ) * time, c1.r + ( c2.r - c1.r ) * time, c1.g + ( c2.g - c1.g ) * time, c1.b + ( c2.b - c1.b ) * time ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
@@ -473,25 +480,25 @@ namespace Axiom.Animating
 			switch ( type )
 			{
 				case AnimableType.Int:
-					return (Object)(int)( ( (int)k )*v );
+					return (Object)(int)( ( (int)k ) * v );
 				case AnimableType.Real:
 					var f = (Real)k;
-					return (Object)( f*v );
+					return (Object)( f * v );
 				case AnimableType.Vector2:
 					var v2 = (Vector2)k;
-					return (Object)( v2*v );
+					return (Object)( v2 * v );
 				case AnimableType.Vector3:
 					var v3 = (Vector3)k;
-					return (Object)( v3*v );
+					return (Object)( v3 * v );
 				case AnimableType.Vector4:
 					var v4 = (Vector4)k;
-					return (Object)( v4*v );
+					return (Object)( v4 * v );
 				case AnimableType.Quaternion:
 					var q = (Quaternion)k;
-					return (Object)( q*v );
+					return (Object)( q * v );
 				case AnimableType.ColorEx:
 					var c = (ColorEx)k;
-					return (Object)( new ColorEx( c.a*v, c.r*v, c.g*v, c.b*v ) );
+					return (Object)( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
@@ -502,24 +509,26 @@ namespace Axiom.Animating
 	}
 
 	/// <summary>
-	///   Defines an interface to classes which have one or more AnimableValue instances to expose.
+	/// Defines an interface to classes which have one or more AnimableValue instances to expose.
 	/// </summary>
 	public interface IAnimableObject
 	{
 		#region Methods
 
-		///<summary>
-		///  Create an AnimableValue for the attribute with the given name, or throws an exception if this object doesn't support creating them.
-		///</summary>
+		/// <summary>
+		///		Create an AnimableValue for the attribute with the given name, or 
+		///     throws an exception if this object doesn't support creating them.
+		/// </summary>
 		AnimableValue CreateAnimableValue( string valueName );
 
 		#endregion Methods
 
 		#region Properties
 
-		///<summary>
-		///  Return the names of all the AnimableValue names supported by this object. This can return the null list if there are none.
-		///</summary>
+		/// <summary>
+		///		Return the names of all the AnimableValue names supported by this object.
+		///     This can return the null list if there are none.
+		/// </summary>
 		string[] AnimableValueNames { get; }
 
 		#endregion Properties

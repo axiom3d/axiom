@@ -38,9 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -48,25 +50,31 @@ using Axiom.Math;
 
 namespace Axiom.Graphics
 {
-	///<summary>
-	///  Records the state of all the vertex buffer bindings required to provide a vertex declaration with the input data it needs for the vertex elements.
-	///</summary>
-	///<remarks>
-	///  Why do we have this binding list rather than just have VertexElement referring to the vertex buffers direct? Well, in the underlying APIs, binding the vertex buffers to an index (or 'stream') is the way that vertex data is linked, so this structure better reflects the realities of that. In addition, by separating the vertex declaration from the list of vertex buffer bindings, it becomes possible to reuse bindings between declarations and vice versa, giving opportunities to reduce the state changes required to perform rendering.
-	///</remarks>
+	/// <summary>
+	///		Records the state of all the vertex buffer bindings required to provide a vertex declaration
+	///		with the input data it needs for the vertex elements.
+	///	 </summary>
+	///	 <remarks>
+	///		Why do we have this binding list rather than just have VertexElement referring to the
+	///		vertex buffers direct? Well, in the underlying APIs, binding the vertex buffers to an
+	///		index (or 'stream') is the way that vertex data is linked, so this structure better
+	///		reflects the realities of that. In addition, by separating the vertex declaration from
+	///		the list of vertex buffer bindings, it becomes possible to reuse bindings between declarations
+	///		and vice versa, giving opportunities to reduce the state changes required to perform rendering.
+	/// </remarks>
 	public class VertexBufferBinding : DisposableObject
 	{
 		#region Fields & Properties
 
-		///<summary>
-		///  Defines the vertex buffer bindings used as source for vertex declarations.
-		///</summary>
+		/// <summary>
+		///		Defines the vertex buffer bindings used as source for vertex declarations.
+		/// </summary>
 		protected Dictionary<short, HardwareVertexBuffer> bindingMap = new Dictionary<short, HardwareVertexBuffer>();
 
-		///<summary>
-		///  Gets an enumerator to iterate through the buffer bindings.
-		///</summary>
-		///TODO: Change this to strongly typed later on
+		/// <summary>
+		///		Gets an enumerator to iterate through the buffer bindings.
+		/// </summary>
+		/// TODO: Change this to strongly typed later on
 		public virtual Dictionary<short, HardwareVertexBuffer> Bindings
 		{
 			get
@@ -75,9 +83,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Gets the number of bindings.
-		///</summary>
+		/// <summary>
+		///		Gets the number of bindings.
+		/// </summary>
 		public int BindingCount
 		{
 			get
@@ -86,17 +94,18 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  The highest index in use for this binding.
-		///</summary>
+		/// <summary>
+		///		The highest index in use for this binding.
+		/// </summary>
 		protected short highIndex;
 
-		///<summary>
-		///  Gets the highest index which has already been set, plus 1.
-		///</summary>
-		///<remarks>
-		///  This is to assist in binding the vertex buffers such that there are not gaps in the list.
-		///</remarks>
+		/// <summary>
+		///		Gets the highest index which has already been set, plus 1.
+		/// </summary>
+		/// <remarks>
+		///		This is to assist in binding the vertex buffers such that there are
+		///		not gaps in the list.
+		/// </remarks>
 		public virtual short NextIndex
 		{
 			get
@@ -122,24 +131,28 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		///<summary>
-		///  Set a binding, associating a vertex buffer with a given index.
-		///</summary>
-		///<remarks>
-		///  If the index is already associated with a vertex buffer, the association will be replaced. This may cause the old buffer to be destroyed if nothing else is referring to it. You should assign bindings from 0 and not leave gaps, although you can bind them in any order.
-		///</remarks>
-		///<param name="index"> Index at which to bind the buffer. </param>
-		///<param name="buffer"> Vertex buffer to bind. </param>
+		/// <summary>
+		///		Set a binding, associating a vertex buffer with a given index.
+		/// </summary>
+		/// <remarks>
+		///		If the index is already associated with a vertex buffer,
+		///		the association will be replaced. This may cause the old buffer
+		///		to be destroyed if nothing else is referring to it.
+		///		You should assign bindings from 0 and not leave gaps, although you can
+		///		bind them in any order.
+		/// </remarks>
+		/// <param name="index">Index at which to bind the buffer.</param>
+		/// <param name="buffer">Vertex buffer to bind.</param>
 		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
 			bindingMap[ index ] = buffer;
 			highIndex = (short)Utility.Max( highIndex, index + 1 );
 		}
 
-		///<summary>
-		///  Removes an existing binding.
-		///</summary>
-		///<param name="index"> Index of the buffer binding to remove. </param>
+		/// <summary>
+		///		Removes an existing binding.
+		/// </summary>
+		/// <param name="index">Index of the buffer binding to remove.</param>
 		public virtual void UnsetBinding( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
@@ -147,19 +160,19 @@ namespace Axiom.Graphics
 			bindingMap.Remove( index );
 		}
 
-		///<summary>
-		///  Removes all current buffer bindings.
-		///</summary>
+		/// <summary>
+		///		Removes all current buffer bindings.
+		/// </summary>
 		public virtual void UnsetAllBindings()
 		{
 			bindingMap.Clear();
 		}
 
-		///<summary>
-		///  Gets the buffer bound to the given source index.
-		///</summary>
-		///<param name="index"> Index of the binding to retreive the buffer for. </param>
-		///<returns> Buffer at the specified index. </returns>
+		/// <summary>
+		///		Gets the buffer bound to the given source index.
+		/// </summary>
+		/// <param name="index">Index of the binding to retreive the buffer for.</param>
+		/// <returns>Buffer at the specified index.</returns>
 		public virtual HardwareVertexBuffer GetBuffer( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
@@ -180,8 +193,9 @@ namespace Axiom.Graphics
 		#region IDisposable Implementation
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"> </param>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -189,7 +203,7 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( bindingMap != null )
+					if ( this.bindingMap != null )
 					{
 						foreach ( var item in bindingMap.Values )
 						{

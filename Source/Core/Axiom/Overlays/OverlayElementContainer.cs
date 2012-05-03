@@ -37,10 +37,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
+using System.Collections;
 using System.Diagnostics;
-using Axiom.Graphics;
+
+using Axiom.Core;
 using Axiom.Math;
+using Axiom.Graphics;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -56,10 +61,16 @@ using Axiom.Math;
 namespace Axiom.Overlays
 {
 	/// <summary>
-	///   A 2D element which contains other OverlayElement instances.
+	/// 	A 2D element which contains other OverlayElement instances.
 	/// </summary>
 	/// <remarks>
-	///   This is a specialization of OverlayElement for 2D elements that contain other elements. These are also the smallest elements that can be attached directly to an Overlay. <p /> OverlayElementContainers should be managed using OverlayElementManager. This class is responsible for instantiating elements, and also for accepting new types of element from plugins etc.
+	/// 	This is a specialization of OverlayElement for 2D elements that contain other
+	/// 	elements. These are also the smallest elements that can be attached directly
+	/// 	to an Overlay.
+	/// 	<p/>
+	/// 	OverlayElementContainers should be managed using OverlayElementManager. This class is responsible for
+	/// 	instantiating elements, and also for accepting new types of element
+	/// 	from plugins etc.
 	/// </remarks>
 	public abstract class OverlayElementContainer : OverlayElement
 	{
@@ -70,7 +81,7 @@ namespace Axiom.Overlays
 		protected bool childrenProcessEvents;
 
 		/// <summary>
-		///   Gets the children OverlayElements as a Key-Value collection
+		/// Gets the children OverlayElements as a Key-Value collection
 		/// </summary>
 		public IDictionary<string, OverlayElement> Children
 		{
@@ -85,9 +96,9 @@ namespace Axiom.Overlays
 		#region Constructors
 
 		/// <summary>
-		///   Don't use directly, create through GuiManager.CreateElement.
+		///    Don't use directly, create through GuiManager.CreateElement.
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		protected internal OverlayElementContainer( string name )
 			: base( name )
 		{
@@ -112,11 +123,12 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"> </param>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -146,9 +158,9 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Adds another OverlayElement to this container.
+		///    Adds another OverlayElement to this container.
 		/// </summary>
-		/// <param name="element"> </param>
+		/// <param name="element"></param>
 		public virtual void AddChild( OverlayElement element )
 		{
 			if ( element.IsContainer )
@@ -162,13 +174,12 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Adds another OverlayElement to this container.
+		///    Adds another OverlayElement to this container.
 		/// </summary>
-		/// <param name="element"> </param>
+		/// <param name="element"></param>
 		public virtual void AddChildElement( OverlayElement element )
 		{
-			Debug.Assert( !children.ContainsKey( element.Name ),
-			              string.Format( "Child with name '{0}' already defined.", element.Name ) );
+			Debug.Assert( !children.ContainsKey( element.Name ), string.Format( "Child with name '{0}' already defined.", element.Name ) );
 
 			// add to lookup table and list
 			children.Add( element.Name, element );
@@ -181,9 +192,9 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Add a nested container to this container.
+		///    Add a nested container to this container.
 		/// </summary>
-		/// <param name="container"> </param>
+		/// <param name="container"></param>
 		public virtual void AddChildContainer( OverlayElementContainer container )
 		{
 			// add this container to the main child list first
@@ -195,9 +206,9 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Removes a child element by its name
+		/// Removes a child element by its name
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		public virtual void RemoveChild( string name )
 		{
 			var element = GetChild( name );
@@ -212,9 +223,9 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the named child of this container.
+		///    Gets the named child of this container.
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		public virtual OverlayElement GetChild( string name )
 		{
 			Debug.Assert( children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
@@ -223,7 +234,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Tell the object and its children to recalculate their positions.
+		///    Tell the object and its children to recalculate their positions.
 		/// </summary>
 		public override void PositionsOutOfDate()
 		{
@@ -315,7 +326,7 @@ namespace Axiom.Overlays
 
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			UpdateRenderQueue( queue, true );
+			this.UpdateRenderQueue( queue, true );
 		}
 
 		public override OverlayElement FindElementAt( float x, float y )
@@ -355,7 +366,7 @@ namespace Axiom.Overlays
 		#region Properties
 
 		/// <summary>
-		///   This is most certainly a container.
+		///    This is most certainly a container.
 		/// </summary>
 		public override bool IsContainer
 		{
@@ -366,7 +377,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Should this container pass events to their children
+		///   Should this container pass events to their children 
 		/// </summary>
 		public bool IsChildrenProcessEvents
 		{
@@ -392,8 +403,7 @@ namespace Axiom.Overlays
 				{
 					if ( oldChildElement.IsCloneable )
 					{
-						var newChildElement = OverlayManager.Instance.Elements.CreateElement( oldChildElement.GetType().Name,
-						                                                                      Name + "/" + oldChildElement.Name );
+						var newChildElement = OverlayManager.Instance.Elements.CreateElement( oldChildElement.GetType().Name, Name + "/" + oldChildElement.Name );
 						newChildElement.CopyFromTemplate( oldChildElement );
 						AddChild( (OverlayElement)newChildElement );
 					}

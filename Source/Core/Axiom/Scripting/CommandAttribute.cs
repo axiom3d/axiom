@@ -44,7 +44,7 @@ using System;
 namespace Axiom.Scripting
 {
 	/// <summary>
-	///   Summary description for CommandAttribute.
+	/// 	Summary description for CommandAttribute.
 	/// </summary>
 	[AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
 	public sealed class CommandAttribute : Attribute
@@ -52,30 +52,30 @@ namespace Axiom.Scripting
 		#region Fields
 
 		/// <summary>
-		///   Name of the command the target class will be registered to handle.
+		///    Name of the command the target class will be registered to handle.
 		/// </summary>
-		private readonly string name;
+		private string name;
 
 		/// <summary>
-		///   Description of what this command does.
+		///    Description of what this command does.
 		/// </summary>
-		private readonly string description;
+		private string description;
 
 		/// <summary>
-		///   Target type this class is meant to handle commands for.
+		///    Target type this class is meant to handle commands for.
 		/// </summary>
-		private readonly Type target;
+		private Type target;
 
 		#endregion Fields
 
 		#region Constructors
 
 		/// <summary>
-		///   Constructor.
+		///    Constructor.
 		/// </summary>
-		/// <param name="name"> </param>
-		/// <param name="description"> </param>
-		/// <param name="target"> </param>
+		/// <param name="name"></param>
+		/// <param name="description"></param>
+		/// <param name="target"></param>
 		public CommandAttribute( string name, string description, Type target )
 		{
 			this.name = name;
@@ -84,10 +84,10 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		///   Constructor.
+		///    Constructor.
 		/// </summary>
-		/// <param name="name"> </param>
-		/// <param name="description"> </param>
+		/// <param name="name"></param>
+		/// <param name="description"></param>
 		public CommandAttribute( string name, string description )
 		{
 			this.name = name;
@@ -95,9 +95,9 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		///   Constructor.
+		///    Constructor.
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		public CommandAttribute( string name )
 		{
 			this.name = name;
@@ -108,7 +108,7 @@ namespace Axiom.Scripting
 		#region Properties
 
 		/// <summary>
-		///   Name of this command.
+		///    Name of this command.
 		/// </summary>
 		public string Name
 		{
@@ -119,7 +119,7 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		///   Optional description of what this command does.
+		///    Optional description of what this command does.
 		/// </summary>
 		public string Description
 		{
@@ -130,7 +130,7 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		///   Optional target to specify what object type this command affects.
+		///    Optional target to specify what object type this command affects.
 		/// </summary>
 		public Type Target
 		{

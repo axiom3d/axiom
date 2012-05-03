@@ -67,7 +67,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static int GetNumElemBits( PixelFormat format )
 		{
-			return GetNumElemBytes( format )*8;
+			return GetNumElemBytes( format ) * 8;
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static int[] GetBitDepths( PixelFormat format )
 		{
-			var rgba = new int[4];
+			var rgba = new int[ 4 ];
 			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rbits;
 			rgba[ 1 ] = des.gbits;
@@ -97,7 +97,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static uint[] GetBitMasks( PixelFormat format )
 		{
-			var rgba = new uint[4];
+			var rgba = new uint[ 4 ];
 			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rmask;
 			rgba[ 1 ] = des.gmask;
@@ -115,7 +115,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static byte[] GetBitShifts( PixelFormat format )
 		{
-			var rgba = new byte[4];
+			var rgba = new byte[ 4 ];
 			var des = PixelConverter.GetDescriptionFor( format );
 			rgba[ 0 ] = des.rshift;
 			rgba[ 1 ] = des.gshift;
@@ -144,13 +144,13 @@ namespace Axiom.Media
 				switch ( format )
 				{
 					case PixelFormat.DXT1:
-						return ( ( width + 3 )/4 )*( ( height + 3 )/4 )*8*depth;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 8 * depth;
 
 					case PixelFormat.DXT2:
 					case PixelFormat.DXT3:
 					case PixelFormat.DXT4:
 					case PixelFormat.DXT5:
-						return ( ( width + 3 )/4 )*( ( height + 3 )/4 )*16*depth;
+						return ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * 16 * depth;
 
 						// Size calculations from the PVRTC OpenGL extension spec
 						// http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
@@ -158,12 +158,12 @@ namespace Axiom.Media
 					case PixelFormat.PVRTC_RGB2:
 					case PixelFormat.PVRTC_RGBA2:
 						Contract.Requires( depth == 1 );
-						return ( Utility.Max( width, 16 )*Utility.Max( height, 8 )*2 + 7 )/8;
+						return ( Utility.Max( width, 16 ) * Utility.Max( height, 8 ) * 2 + 7 ) / 8;
 
 					case PixelFormat.PVRTC_RGB4:
 					case PixelFormat.PVRTC_RGBA4:
 						Contract.Requires( depth == 1 );
-						return ( Utility.Max( width, 8 )*Utility.Max( height, 8 )*4 + 7 )/8;
+						return ( Utility.Max( width, 8 ) * Utility.Max( height, 8 ) * 4 + 7 ) / 8;
 
 					default:
 						throw new AxiomException( "Invalid compressed pixel format" );
@@ -171,7 +171,7 @@ namespace Axiom.Media
 			}
 			else
 			{
-				return width*height*depth*GetNumElemBytes( format );
+				return width * height * depth * GetNumElemBytes( format );
 			}
 		}
 

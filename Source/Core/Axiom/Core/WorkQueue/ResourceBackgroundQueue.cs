@@ -35,7 +35,9 @@
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Collections;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -43,32 +45,49 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Encapsulates the result of a background queue request
+	/// Encapsulates the result of a background queue request
 	/// </summary>
 	public struct BackgroundProcessResult
 	{
 		/// <summary>
-		///   Whether an error occurred
+		/// Whether an error occurred
 		/// </summary>
 		public bool Error;
 
 		/// <summary>
-		///   Any messages from the process
+		/// Any messages from the process
 		/// </summary>
 		public string Message;
 	};
 
 	/// <summary>
-	///   This class is used to perform Resource operations in a background thread.
+	/// This class is used to perform Resource operations in a
+	/// background thread.
 	/// </summary>
 	/// <remarks>
-	///   All these requests are now queued via Root::getWorkQueue in order to share the thread pool amongst all background tasks. You should therefore refer to that class for configuring the behaviour of the threads themselves, this class merely provides an interface that is specific to resource loading around this common functionality. @par The general approach here is that on requesting a background resource process, your request is placed on a queue ready for the background thread to be picked up, and you will get a 'ticket' back, identifying the request. Your call will then return and your thread can proceed, knowing that at some point in the background the operation will be performed. In it's own thread, the resource operation will be performed, and once finished the ticket will be marked as complete. You can check the status of tickets by calling isProcessComplete() from your queueing thread. Note, no locks are required here anymore because all of the parallelisation is now contained in WorkQueue - this class is entirely single-threaded
+	/// All these requests are now queued via Root::getWorkQueue in order
+	/// to share the thread pool amongst all background tasks. You should therefore
+	/// refer to that class for configuring the behaviour of the threads
+	/// themselves, this class merely provides an interface that is specific
+	/// to resource loading around this common functionality.
+	/// @par
+	/// The general approach here is that on requesting a background resource
+	/// process, your request is placed on a queue ready for the background
+	/// thread to be picked up, and you will get a 'ticket' back, identifying
+	/// the request. Your call will then return and your thread can
+	/// proceed, knowing that at some point in the background the operation will 
+	/// be performed. In it's own thread, the resource operation will be 
+	/// performed, and once finished the ticket will be marked as complete. 
+	/// You can check the status of tickets by calling isProcessComplete() 
+	/// from your queueing thread.
+	/// 
+	/// Note, no locks are required here anymore because all of the parallelisation
+	/// is now contained in WorkQueue - this class is entirely single-threaded
 	/// </remarks>
-	public class ResourceBackgroundQueue
-		: DisposableObject, ISingleton<ResourceBackgroundQueue>, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
+	public class ResourceBackgroundQueue : DisposableObject, ISingleton<ResourceBackgroundQueue>, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
 	{
 		/// <summary>
-		///   Enumerates the type of requests
+		/// Enumerates the type of requests
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected enum RequestType
@@ -84,15 +103,18 @@ namespace Axiom.Core
 		};
 
 		/// <summary>
-		///   This delegate lets you get notifications of completed background processes instead of having to poll ticket statuses.
+		/// This delegate lets you get notifications of completed background
+		/// processes instead of having to poll ticket statuses.
 		/// </summary>
 		/// <remarks>
-		///   For simplicity, this callback is not issued direct from the background loading thread, it is queued to be sent from the main thread so that you don't have to be concerned about thread safety.
+		/// For simplicity, this callback is not issued direct from the background
+		/// loading thread, it is queued to be sent from the main thread
+		/// so that you don't have to be concerned about thread safety.
 		/// </remarks>
 		public delegate void OnOperationCompleted( RequestID ticket, BackgroundProcessResult result );
 
 		/// <summary>
-		///   Encapsulates a queued request for the background queue
+		/// Encapsulates a queued request for the background queue
 		/// </summary>
 		protected struct ResourceRequest
 		{
@@ -109,7 +131,7 @@ namespace Axiom.Core
 		};
 
 		/// <summary>
-		///   Struct that holds details of queued notifications
+		/// Struct that holds details of queued notifications
 		/// </summary>
 		protected struct ResourceResponse
 		{
@@ -118,8 +140,8 @@ namespace Axiom.Core
 
 			public ResourceResponse( Resource r, ResourceRequest req )
 			{
-				Resource = r;
-				Request = req;
+				this.Resource = r;
+				this.Request = req;
 			}
 		};
 
@@ -138,7 +160,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "~ResourceBackgroundQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -152,10 +174,10 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///   Shut down the background queue system.
+		/// Shut down the background queue system.
 		/// </summary>
 		/// <remarks>
-		///   Called automatically by Root.Shutdown.
+		/// Called automatically by Root.Shutdown.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void ShutDown()
@@ -167,12 +189,14 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Initialise a resource group in the background.
+		/// Initialise a resource group in the background.
 		/// </summary>
-		/// <param name="name"> The name of the resource group to initialise </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
-		/// <see cref="ResourceGroupManager.InitializeResourceGroup" />
+		/// <param name="name">The name of the resource group to initialise</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
+		/// <see cref="ResourceGroupManager.InitializeResourceGroup"/>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID InitializeResourceGroup( string name, OnOperationCompleted listener = null )
@@ -195,19 +219,22 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.InitializeResourceGroup( string, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.InitializeResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID InitializeResourceGroup( string name )
 		{
-			return InitializeResourceGroup( name, null );
+			return this.InitializeResourceGroup( name, null );
 		}
 #endif
 
 		/// <summary>
-		///   Initialise all resource groups which are yet to be initialised in the background.
+		/// Initialise all resource groups which are yet to be initialised in 
+		/// the background.
 		/// </summary>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
-		/// <see cref="ResourceGroupManager.InitializeAllResourceGroups" />
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
+		/// <see cref="ResourceGroupManager.InitializeAllResourceGroups"/>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID InitializeAllResourceGroups( OnOperationCompleted listener = null )
@@ -229,20 +256,22 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.InitializeAllResourceGroups( OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.InitializeAllResourceGroups( OnOperationCompleted )"/>
 		public RequestID InitializeAllResourceGroups()
 		{
-			return InitializeAllResourceGroups( null );
+			return this.InitializeAllResourceGroups( null );
 		}
 #endif
 
 		/// <summary>
-		///   Prepares a resource group in the background.
+		/// Prepares a resource group in the background.
 		/// </summary>
-		/// <param name="name"> The name of the resource group to prepare </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
-		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string)" />
+		/// <param name="name">The name of the resource group to prepare</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
+		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string)"/>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID PrepareResourceGroup( string name, OnOperationCompleted listener = null )
@@ -265,20 +294,22 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.PrepareResourceGroup( string, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.PrepareResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID PrepareResourceGroup( string name )
 		{
-			return PrepareResourceGroup( name, null );
+			return this.PrepareResourceGroup( name, null );
 		}
 #endif
 
 		/// <summary>
-		///   Loads a resource group in the background.
+		/// Loads a resource group in the background.
 		/// </summary>
-		/// <param name="name"> The name of the resource group to load </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
-		/// <see cref="ResourceGroupManager.LoadResourceGroup(string)" />
+		/// <param name="name">The name of the resource group to load</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
+		/// <see cref="ResourceGroupManager.LoadResourceGroup(string)"/>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID LoadResourceGroup( string name, OnOperationCompleted listener = null )
@@ -301,32 +332,37 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.LoadResourceGroup( string, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.LoadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID LoadResourceGroup( string name )
 		{
-			return LoadResourceGroup( name, null );
+			return this.LoadResourceGroup( name, null );
 		}
 #endif
 
 		/// <summary>
-		///   Prepare a single resource in the background.
+		/// Prepare a single resource in the background.
 		/// </summary>
-		/// <param name="resType"> The type of the resource (from ResourceManager.ResourceType) </param>
-		/// <param name="name"> The name of the Resource </param>
-		/// <param name="group"> The resource group to which this resource will belong </param>
-		/// <param name="isManual"> Is the resource to be manually loaded? If so, you should provide a value for the loader parameter </param>
-		/// <param name="loader"> The manual loader which is to perform the required actions when this resource is loaded; only applicable when you specify true for the previous parameter. NOTE: must be thread safe!! </param>
-		/// <param name="loadParams"> Optional pointer to a list of name/value pairs containing loading parameters for this type of resource. Remember that this must have a lifespan longer than the return of this call! </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
+		/// <param name="resType">The type of the resource (from ResourceManager.ResourceType)</param>
+		/// <param name="name">The name of the Resource</param>
+		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">Is the resource to be manually loaded? If so, you should
+		/// provide a value for the loader parameter</param>
+		/// <param name="loader">The manual loader which is to perform the required actions
+		/// when this resource is loaded; only applicable when you specify true
+		/// for the previous parameter. NOTE: must be thread safe!!</param>
+		/// <param name="loadParams">Optional pointer to a list of name/value pairs 
+		/// containing loading parameters for this type of resource. Remember 
+		/// that this must have a lifespan longer than the return of this call!</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID Prepare( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Prepare( string resType, string name, string group, bool isManual,
-		                                  IManualResourceLoader loader, NameValuePairList loadParams,
-		                                  OnOperationCompleted listener )
+		public virtual RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
@@ -351,54 +387,55 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see
-		///   cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group )
 		{
-			return Prepare( resType, name, group, false, null, null, null );
+			return this.Prepare( resType, name, group, false, null, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual )
 		{
-			return Prepare( resType, name, group, isManual, null, null, null );
+			return this.Prepare( resType, name, group, isManual, null, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return Prepare( resType, name, group, isManual, loader, null, null );
+			return this.Prepare( resType, name, group, isManual, loader, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
-		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-		                          NameValuePairList loadParams )
+		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
+		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return Prepare( resType, name, group, isManual, loader, loadParams, null );
+			return this.Prepare( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
 		/// <summary>
-		///   Load a single resource in the background.
+		/// Load a single resource in the background.
 		/// </summary>
-		/// <param name="resType"> The type of the resource (from ResourceManager.ResourceType) </param>
-		/// <param name="name"> The name of the Resource </param>
-		/// <param name="group"> The resource group to which this resource will belong </param>
-		/// <param name="isManual"> Is the resource to be manually loaded? If so, you should provide a value for the loader parameter </param>
-		/// <param name="loader"> The manual loader which is to perform the required actions when this resource is loaded; only applicable when you specify true for the previous parameter. NOTE: must be thread safe!! </param>
-		/// <param name="loadParams"> Optional pointer to a list of name/value pairs containing loading parameters for this type of resource. Remember that this must have a lifespan longer than the return of this call! </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
+		/// <param name="resType">The type of the resource (from ResourceManager.ResourceType)</param>
+		/// <param name="name">The name of the Resource</param>
+		/// <param name="group">The resource group to which this resource will belong</param>
+		/// <param name="isManual">Is the resource to be manually loaded? If so, you should
+		/// provide a value for the loader parameter</param>
+		/// <param name="loader">The manual loader which is to perform the required actions
+		/// when this resource is loaded; only applicable when you specify true
+		/// for the previous parameter. NOTE: must be thread safe!!</param>
+		/// <param name="loadParams">Optional pointer to a list of name/value pairs 
+		/// containing loading parameters for this type of resource. Remember 
+		/// that this must have a lifespan longer than the return of this call!</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID Load( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-		                               NameValuePairList loadParams, OnOperationCompleted listener )
+		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
@@ -423,43 +460,40 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see
-		///   cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group )
 		{
-			return Load( resType, name, group, false, null, null, null );
+			return this.Load( resType, name, group, false, null, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual )
 		{
-			return Load( resType, name, group, isManual, null, null, null );
+			return this.Load( resType, name, group, isManual, null, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return Load( resType, name, group, isManual, loader, null, null );
+			return this.Load( resType, name, group, isManual, loader, null, null );
 		}
 
-		/// <see
-		///   cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )" />
-		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
-		                       NameValuePairList loadParams )
+		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
+		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
-			return Load( resType, name, group, isManual, loader, loadParams, null );
+			return this.Load( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
 		/// <summary>
-		///   Unload a single resource in the background.
+		/// Unload a single resource in the background.
 		/// </summary>
-		/// <param name="resType"> The type of the resource (from ResourceManager.ResourceType) </param>
-		/// <param name="name"> The name of the Resource </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
+		/// <param name="resType">The type of the resource (from ResourceManager.ResourceType)</param>
+		/// <param name="name">The name of the Resource</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID Unload( string resType, string name, OnOperationCompleted listener = null )
@@ -484,20 +518,22 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.Unload( string, string, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Unload( string, string, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, string name )
 		{
-			return Unload( resType, name, null );
+			return this.Unload( resType, name, null );
 		}
 #endif
 
 		/// <summary>
-		///   Unload a single resource in the background.
+		/// Unload a single resource in the background.
 		/// </summary>
-		/// <param name="resType"> The type of the resource (from ResourceManager.ResourceType) </param>
-		/// <param name="handle"> Handle to the resource </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
+		/// <param name="resType">The type of the resource (from ResourceManager.ResourceType)</param>
+		/// <param name="handle">Handle to the resource</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID Unload( string resType, ResourceHandle handle, OnOperationCompleted listener = null )
@@ -522,20 +558,22 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.Unload( string, ResourceHandle, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.Unload( string, ResourceHandle, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, ResourceHandle handle )
 		{
-			return Unload( resType, handle, null );
+			return this.Unload( resType, handle, null );
 		}
 #endif
 
 		/// <summary>
-		///   Unloads a resource group in the background.
+		/// Unloads a resource group in the background.
 		/// </summary>
-		/// <param name="name"> The name of the resource group to load </param>
-		/// <param name="listener"> Optional callback interface, take note of warnings in the header and only use if you understand them. </param>
-		/// <returns> Ticket identifying the request, use isProcessComplete() to determine if completed if not using listener </returns>
-		/// <see cref="ResourceGroupManager.UnloadResourceGroup(string)" />
+		/// <param name="name">The name of the resource group to load</param>
+		/// <param name="listener">Optional callback interface, take note of warnings in 
+		/// the header and only use if you understand them.</param>
+		/// <returns>Ticket identifying the request, use isProcessComplete() to 
+		/// determine if completed if not using listener</returns>
+		/// <see cref="ResourceGroupManager.UnloadResourceGroup(string)"/>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RequestID UnloadResourceGroup( string name, OnOperationCompleted listener = null )
@@ -558,21 +596,27 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="ResourceBackgroundQueue.UnloadResourceGroup( string, OnOperationCompleted )" />
+		/// <see cref="ResourceBackgroundQueue.UnloadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID UnloadResourceGroup( string name )
 		{
-			return UnloadResourceGroup( name, null );
+			return this.UnloadResourceGroup( name, null );
 		}
 #endif
 
 		/// <summary>
-		///   Returns whether a previously queued process has completed or not.
+		/// Returns whether a previously queued process has completed or not.
 		/// </summary>
 		/// <remarks>
-		///   This method of checking that a background process has completed is the 'polling' approach. Each queued method takes an optional listener parameter to allow you to register a callback instead, which is arguably more efficient. @note Tickets are not stored once complete so do not accumulate over time. This is why a non-existent ticket will return 'true'.
+		/// This method of checking that a background process has completed is
+		/// the 'polling' approach. Each queued method takes an optional listener
+		/// parameter to allow you to register a callback instead, which is
+		/// arguably more efficient.
+		/// @note
+		/// Tickets are not stored once complete so do not accumulate over time.
+		/// This is why a non-existent ticket will return 'true'.
 		/// </remarks>
-		/// <param name="ticket"> The ticket which was returned when the process was queued </param>
-		/// <returns> true if process has completed (or if the ticket is unrecognised), false otherwise </returns>
+		/// <param name="ticket">The ticket which was returned when the process was queued</param>
+		/// <returns>true if process has completed (or if the ticket is unrecognised), false otherwise</returns>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual bool IsProcessComplete( RequestID ticket )
 		{
@@ -580,7 +624,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Aborts background process.
+		/// Aborts background process.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void AbortRequest( RequestID ticket )
@@ -603,12 +647,12 @@ namespace Axiom.Core
 		#region ISingleton<ResourceBackgroundQueue> Members
 
 		/// <summary>
-		///   Singleton instance of this class.
+		/// Singleton instance of this class.
 		/// </summary>
 		protected static ResourceBackgroundQueue instance;
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		/// Gets the singleton instance of this class.
 		/// </summary>
 		public static ResourceBackgroundQueue Instance
 		{
@@ -619,10 +663,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Initialise the background queue system.
+		/// Initialise the background queue system.
 		/// </summary>
 		/// <remarks>
-		///   Called automatically by Root.Initialize.
+		/// Called automatically by Root.Initialize.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public bool Initialize( params object[] args )
@@ -639,18 +683,18 @@ namespace Axiom.Core
 
 		#region IRequestHandler Members
 
-		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest" />
+		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
 			return true;
 		}
 
-		/// <see cref="WorkQueue.IRequestHandler.HandleRequest" />
+		/// <see cref="WorkQueue.IRequestHandler.HandleRequest"/>
 		[OgreVersion( 1, 7, 2 )]
 		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			var resreq = (ResourceRequest)req.Data;
+			ResourceRequest resreq = (ResourceRequest)req.Data;
 
 			if ( req.Aborted )
 			{
@@ -661,7 +705,7 @@ namespace Axiom.Core
 				}
 
 				resreq.Result.Error = false;
-				var resresp = new ResourceResponse( null, resreq );
+				ResourceResponse resresp = new ResourceResponse( null, resreq );
 				return new WorkQueue.Response( req, true, resresp );
 			}
 
@@ -698,8 +742,7 @@ namespace Axiom.Core
 
 					case RequestType.PrepareResource:
 						rm = ResourceGroupManager.Instance.ResourceManagers[ resreq.ResourceType ];
-						resource = rm.Prepare( resreq.ResourceName, resreq.GroupName, resreq.IsManual, resreq.Loader, resreq.LoadParams,
-						                       true );
+						resource = rm.Prepare( resreq.ResourceName, resreq.GroupName, resreq.IsManual, resreq.Loader, resreq.LoadParams, true );
 						break;
 
 					case RequestType.LoadResource:
@@ -736,7 +779,7 @@ namespace Axiom.Core
 				resreq.Result.Message = e.Message;
 
 				//return error response
-				var resresp = new ResourceResponse( resource, resreq );
+				ResourceResponse resresp = new ResourceResponse( resource, resreq );
 				return new WorkQueue.Response( req, false, resresp, e.Message );
 			}
 
@@ -748,7 +791,7 @@ namespace Axiom.Core
 			}
 
 			resreq.Result.Error = false;
-			var resp = new ResourceResponse( resource, resreq );
+			ResourceResponse resp = new ResourceResponse( resource, resreq );
 			return new WorkQueue.Response( req, true, resp );
 		}
 
@@ -756,14 +799,14 @@ namespace Axiom.Core
 
 		#region IResponseHandler Members
 
-		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse" />
+		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			return true;
 		}
 
-		/// <see cref="WorkQueue.IResponseHandler.HandleResponse" />
+		/// <see cref="WorkQueue.IResponseHandler.HandleResponse"/>
 		[OgreVersion( 1, 7, 2 )]
 		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
@@ -775,7 +818,7 @@ namespace Axiom.Core
 
 			if ( res.Succeeded )
 			{
-				var resresp = (ResourceResponse)res.Data;
+				ResourceResponse resresp = (ResourceResponse)res.Data;
 				// Complete full loading in main thread if semithreading
 				ResourceRequest req = resresp.Request;
 

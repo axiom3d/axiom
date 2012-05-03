@@ -37,9 +37,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.IO;
-using Axiom.Animating;
+using System.Text;
+
 using Axiom.Core;
+using Axiom.Animating;
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -47,7 +50,7 @@ using Axiom.Math;
 namespace Axiom.Serialization
 {
 	/// <summary>
-	///   Summary description for OgreSkeletonSerializer.
+	/// 	Summary description for OgreSkeletonSerializer.
 	/// </summary>
 	public class OgreSkeletonSerializer : Serializer
 	{
@@ -103,8 +106,7 @@ namespace Axiom.Serialization
 						break;
 
 					default:
-						LogManager.Instance.Write(
-							"Can only parse bones, parents, and animations at the top level during skeleton loading." );
+						LogManager.Instance.Write( "Can only parse bones, parents, and animations at the top level during skeleton loading." );
 						LogManager.Instance.Write( "Unexpected chunk: " + chunkID.ToString() );
 						break;
 				} // switch
@@ -120,7 +122,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads animation information from the file.
+		///    Reads animation information from the file.
 		/// </summary>
 		protected void ReadAnimation( BinaryReader reader )
 		{
@@ -157,7 +159,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads an animation track.
+		///    Reads an animation track.
 		/// </summary>
 		protected void ReadAnimationTrack( BinaryReader reader, Animation anim )
 		{
@@ -194,7 +196,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads bone information from the file.
+		///    Reads bone information from the file.
 		/// </summary>
 		protected void ReadBone( BinaryReader reader )
 		{
@@ -216,7 +218,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads bone information from the file.
+		///    Reads bone information from the file.
 		/// </summary>
 		protected void ReadBoneParent( BinaryReader reader )
 		{
@@ -239,7 +241,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads an animation track section.
+		///    Reads an animation track section.
 		/// </summary>
 		protected void ReadKeyFrame( BinaryReader reader, NodeAnimationTrack track )
 		{
@@ -269,7 +271,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///   Reads bone information from the file.
+		///    Reads bone information from the file.
 		/// </summary>
 		protected void ReadAttachmentPoint( BinaryReader reader )
 		{
@@ -445,7 +447,7 @@ namespace Axiom.Serialization
 	}
 
 	/// <summary>
-	///   Chunk ID's that can be found within the Ogre .skeleton format.
+	///    Chunk ID's that can be found within the Ogre .skeleton format.
 	/// </summary>
 	public enum SkeletonChunkID
 	{

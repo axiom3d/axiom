@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -53,23 +54,33 @@ namespace Axiom.Core
 	// All properties in Ogre were nonvirtual except RenderQueueSequence,
 	// which has been changed to nonvirtual.
 
-	///<summary>
-	///  Summary description for Viewport. An abstraction of a viewport, i.e. a rendering region on a render target.
-	///</summary>
-	///<remarks>
-	///  A viewport is the meeting of a camera and a rendering surface - the camera renders the scene from a viewpoint, and places its results into some subset of a rendering target, which may be the whole surface or just a part of the surface. Each viewport has a single camera as source and a single target as destination. A camera only has 1 viewport, but a render target may have several. A viewport also has a Z-order, i.e. if there is more than one viewport on a single render target and they overlap, one must obscure the other in some predetermined way.
-	///</remarks>
+	/// <summary>
+	///		Summary description for Viewport.
+	///		An abstraction of a viewport, i.e. a rendering region on a render
+	///		target.
+	///	</summary>
+	///	<remarks>
+	///		A viewport is the meeting of a camera and a rendering surface -
+	///		the camera renders the scene from a viewpoint, and places its
+	///		results into some subset of a rendering target, which may be the
+	///		whole surface or just a part of the surface. Each viewport has a
+	///		single camera as source and a single target as destination. A
+	///		camera only has 1 viewport, but a render target may have several.
+	///		A viewport also has a Z-order, i.e. if there is more than one
+	///		viewport on a single render target and they overlap, one must
+	///		obscure the other in some predetermined way.
+	///	</remarks>
 	public sealed class Viewport : DisposableObject
 	{
 		#region events
 
 		/// <summary>
-		///   Delegate for Viewport update events.
+		///    Delegate for Viewport update events.
 		/// </summary>
 		public delegate void ViewportEventHandler( ViewportEventArgs e );
 
 		/// <summary>
-		///   Event arguments for render target updates.
+		///    Event arguments for render target updates.
 		/// </summary>
 		public class ViewportEventArgs : EventArgs
 		{
@@ -82,20 +93,20 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Notification of when a new camera is set to target listening Viewport.
+		/// Notification of when a new camera is set to target listening Viewport.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Merged from Listener subclass" )]
 		public event ViewportEventHandler ViewportCameraChanged;
 
 		/// <summary>
-		///   Notification of when target listening Viewport's dimensions changed.
+		/// Notification of when target listening Viewport's dimensions changed.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Merged from Listener subclass" )]
 		public event ViewportEventHandler ViewportDimensionsChanged;
 
 #pragma warning disable 67
 		/// <summary>
-		///   Notification of when target listening Viewport's is destroyed.
+		/// Notification of when target listening Viewport's is destroyed.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Merged from Listener subclass; This aint ever fired within Ogre" )]
 		public event ViewportEventHandler ViewportDestroyed;
@@ -107,11 +118,12 @@ namespace Axiom.Core
 
 		#region Camera Property
 
-		[OgreVersion( 1, 7, 2790 )] private Camera _camera;
+		[OgreVersion( 1, 7, 2790 )]
+		private Camera _camera;
 
-		///<summary>
-		///  Retrieves a reference to the camera for this viewport.
-		///</summary>
+		/// <summary>
+		///		Retrieves a reference to the camera for this viewport.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public Camera Camera
 		{
@@ -136,7 +148,7 @@ namespace Axiom.Core
 					// update aspect ratio of new camera if needed.
 					if ( value.AutoAspectRatio )
 					{
-						value.AspectRatio = ( (Real)ActualWidth/ActualHeight );
+						value.AspectRatio = ( (Real)ActualWidth / ActualHeight );
 					}
 #if !AXIOM_NO_VIEWPORT_ORIENTATIONMODE
 					value.OrientationMode = OrientationMode;
@@ -155,9 +167,9 @@ namespace Axiom.Core
 
 		#region Target Property
 
-		///<summary>
-		///  Retrieves a reference to the render target for this viewport.
-		///</summary>
+		/// <summary>
+		///		Retrieves a reference to the render target for this viewport.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public RenderTarget Target { get; protected set; }
 
@@ -165,9 +177,9 @@ namespace Axiom.Core
 
 		#region Top (Relative [0.0, 1.0]) Property
 
-		///<summary>
-		///  Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
-		///</summary>
+		/// <summary>
+		///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790, "getter returns float rather than Real" )]
 		public float Top { get; protected set; }
 
@@ -175,9 +187,9 @@ namespace Axiom.Core
 
 		#region Left (Relative [0.0, 1.0]) Property
 
-		///<summary>
-		///  Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
-		///</summary>
+		/// <summary>
+		///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790, "getter returns float rather than Real" )]
 		public float Left { get; protected set; }
 
@@ -185,9 +197,9 @@ namespace Axiom.Core
 
 		#region Width (Relative [0.0, 1.0]) Property
 
-		///<summary>
-		///  Gets the relative width of the viewport, a value between 0.0 and 1.0.
-		///</summary>
+		/// <summary>
+		///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790, "getter returns float rather than Real" )]
 		public float Width { get; protected set; }
 
@@ -195,9 +207,9 @@ namespace Axiom.Core
 
 		#region Height (Relative [0.0, 1.0]) Property
 
-		///<summary>
-		///  Gets the relative height of the viewport, a value between 0.0 and 1.0.
-		///</summary>
+		/// <summary>
+		///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790, "getter returns float rather than Real" )]
 		public float Height { get; protected set; }
 
@@ -205,9 +217,9 @@ namespace Axiom.Core
 
 		#region ActualTop (In Pixels) Property
 
-		///<summary>
-		///  Gets the actual top edge of the viewport, a value in pixels.
-		///</summary>
+		/// <summary>
+		///		Gets the actual top edge of the viewport, a value in pixels.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int ActualTop { get; protected set; }
 
@@ -215,9 +227,9 @@ namespace Axiom.Core
 
 		#region ActualLeft (In Pixels) Property
 
-		///<summary>
-		///  Gets the actual left edge of the viewport, a value in pixels.
-		///</summary>
+		/// <summary>
+		///		Gets the actual left edge of the viewport, a value in pixels.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int ActualLeft { get; protected set; }
 
@@ -225,9 +237,9 @@ namespace Axiom.Core
 
 		#region ActualWidth (In Pixels) Property
 
-		///<summary>
-		///  Gets the actual width of the viewport, a value in pixels.
-		///</summary>
+		/// <summary>
+		///		Gets the actual width of the viewport, a value in pixels.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int ActualWidth { get; protected set; }
 
@@ -235,9 +247,9 @@ namespace Axiom.Core
 
 		#region ActualHeight (In Pixels) Property
 
-		///<summary>
-		///  Gets the actual height of the viewport, a value in pixels.
-		///</summary>
+		/// <summary>
+		///		Gets the actual height of the viewport, a value in pixels.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int ActualHeight { get; protected set; }
 
@@ -245,9 +257,9 @@ namespace Axiom.Core
 
 		#region ZOrder Property
 
-		///<summary>
-		///  Gets the ZOrder of this viewport.
-		///</summary>
+		/// <summary>
+		///		Gets the ZOrder of this viewport.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int ZOrder { get; protected set; }
 
@@ -256,8 +268,8 @@ namespace Axiom.Core
 		#region IsAutoUpdated Property
 
 		/// <summary>
-		///   Gets/Sets whether this viewport is automatically updated if Axioms's rendering loop or <see
-		///    cref="RenderTarget.Update(bool)" /> is being used.
+		/// Gets/Sets whether this viewport is automatically updated if 
+		/// Axioms's rendering loop or <see cref="RenderTarget.Update(bool)"/> is being used.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public bool IsAutoUpdated { get; set; }
@@ -266,9 +278,9 @@ namespace Axiom.Core
 
 		#region BackgroundColor Property
 
-		///<summary>
-		///  Gets/Sets the background color which will be used to clear the screen every frame.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets the background color which will be used to clear the screen every frame.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public ColorEx BackgroundColor { get; set; }
 
@@ -276,9 +288,9 @@ namespace Axiom.Core
 
 		#region IsUpdated Property
 
-		///<summary>
-		///  Gets/Sets the IsUpdated value.
-		///</summary>
+		/// <summary>
+		///	Gets/Sets the IsUpdated value.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public bool IsUpdated { get; protected set; }
 
@@ -286,12 +298,17 @@ namespace Axiom.Core
 
 		#region ShowOverlays Property
 
-		///<summary>
-		///  Tells this viewport whether it should display Overlay objects.
-		///</summary>
-		///<remarks>
-		///  Overlay objects are layers which appear on top of the scene. They are created via SceneManager.CreateOverlay and every viewport displays these by default. However, you probably don't want this if you're using multiple viewports, because one of them is probably a picture-in-picture which is not supposed to have overlays of it's own. In this case you can turn off overlays on this viewport by calling this method.
-		///</remarks>
+		/// <summary>
+		///		Tells this viewport whether it should display Overlay objects.
+		///	</summary>
+		///	<remarks>
+		///		Overlay objects are layers which appear on top of the scene. They are created via
+		///		SceneManager.CreateOverlay and every viewport displays these by default.
+		///		However, you probably don't want this if you're using multiple viewports,
+		///		because one of them is probably a picture-in-picture which is not supposed to
+		///		have overlays of it's own. In this case you can turn off overlays on this viewport
+		///		by calling this method.
+		/// </remarks>
 		[OgreVersion( 1, 7, 2790, "OverlaysEnabled in Ogre" )]
 		public bool ShowOverlays { get; set; }
 
@@ -300,10 +317,15 @@ namespace Axiom.Core
 		#region ShowSkies Property
 
 		/// <summary>
-		///   Tells this viewport whether it should display skies.
+		/// Tells this viewport whether it should display skies.
 		/// </summary>
 		/// <remarks>
-		///   Skies are layers which appear on background of the scene. They are created via SceneManager.SetSkyBox, SceneManager.SetSkyPlane and SceneManager.SetSkyDome and every viewport displays these by default. However, you probably don't want this if you're using multiple viewports, because one of them is probably a picture-in-picture which is not supposed to have skies of it's own. In this case you can turn off skies on this viewport by calling this method.
+		/// Skies are layers which appear on background of the scene. They are created via
+		/// SceneManager.SetSkyBox, SceneManager.SetSkyPlane and SceneManager.SetSkyDome and
+		/// every viewport displays these by default. However, you probably don't want this if
+		/// you're using multiple viewports, because one of them is probably a picture-in-picture
+		/// which is not supposed to have skies of it's own. In this case you can turn off skies
+		/// on this viewport by calling this method.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790, "SkiesEnabled in Ogre" )]
 		public bool ShowSkies { get; set; }
@@ -313,10 +335,13 @@ namespace Axiom.Core
 		#region ShowShadows Property
 
 		/// <summary>
-		///   Tells this viewport whether it should display shadows.
+		/// Tells this viewport whether it should display shadows.
 		/// </summary>
 		/// <remarks>
-		///   This setting enables you to disable shadow rendering for a given viewport. The global shadow technique set on SceneManager still controls the type and nature of shadows, but this flag can override the setting so that no shadows are rendered for a given viewport to save processing time where they are not required.
+		/// This setting enables you to disable shadow rendering for a given viewport. The global
+		/// shadow technique set on SceneManager still controls the type and nature of shadows,
+		/// but this flag can override the setting so that no shadows are rendered for a given
+		/// viewport to save processing time where they are not required.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790, "ShadowsEnabled in Ogre" )]
 		public bool ShowShadows { get; set; }
@@ -326,10 +351,13 @@ namespace Axiom.Core
 		#region MaterialScheme Property
 
 		/// <summary>
-		///   the material scheme which the viewport should use.
+		/// the material scheme which the viewport should use.
 		/// </summary>
 		/// <remarks>
-		///   This allows you to tell the system to use a particular material scheme when rendering this viewport, which can involve using different techniques to render your materials. <see>Technique.SchemeName</see>
+		/// This allows you to tell the system to use a particular
+		/// material scheme when rendering this viewport, which can
+		/// involve using different techniques to render your materials.
+		/// <see>Technique.SchemeName</see>
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public string MaterialScheme { get; set; }
@@ -339,11 +367,14 @@ namespace Axiom.Core
 		#region VisibilityMask Property
 
 		/// <summary>
-		///   a per-viewport visibility mask.
+		/// a per-viewport visibility mask.
 		/// </summary>
 		/// <remarks>
-		///   The visibility mask is a way to exclude objects from rendering for a given viewport. For each object in the frustum, a check is made between this mask and the objects visibility flags <see
-		///    cref="MovableObject.VisibilityFlags" /> , and if a binary 'and' returns zero, the object will not be rendered.
+		/// The visibility mask is a way to exclude objects from rendering for
+		/// a given viewport. For each object in the frustum, a check is made
+		/// between this mask and the objects visibility flags
+		/// <see cref="MovableObject.VisibilityFlags"/> , and if a binary 'and'
+		/// returns zero, the object will not be rendered.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public uint VisibilityMask { get; set; }
@@ -422,13 +453,18 @@ namespace Axiom.Core
 
 		#region RenderQueueSequence Properties Property
 
-		[OgreVersion( 1, 7, 2790, "Protected in Ogre" )] private string _rqSequenceName;
+		[OgreVersion( 1, 7, 2790, "Protected in Ogre" )]
+		private string _rqSequenceName;
 
 		/// <summary>
-		///   The name of the render queue invocation sequence for this target.
+		/// The name of the render queue invocation sequence for this target.
 		/// </summary>
 		/// <remarks>
-		///   RenderQueueInvocationSequence instances are managed through Root. By setting this, you are indicating that you wish this RenderTarget to be updated using a custom sequence of render queue invocations, with potentially customised ordering and render state options. You should create the named sequence through Root first, then set the name here.
+		/// RenderQueueInvocationSequence instances are managed through Root. By
+		/// setting this, you are indicating that you wish this RenderTarget to
+		/// be updated using a custom sequence of render queue invocations, with
+		/// potentially customised ordering and render state options. You should
+		/// create the named sequence through Root first, then set the name here.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790, "Virtual in Ogre" )]
 		public string RenderQueueInvocationSequenceName
@@ -453,7 +489,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   the invocation sequence - will return null if using standard
+		/// the invocation sequence - will return null if using standard
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public RenderQueueInvocationSequence RenderQueueInvocationSequence { get; protected set; }
@@ -463,7 +499,7 @@ namespace Axiom.Core
 		#region ClearDepth
 
 		/// <summary>
-		///   Gets the default depth buffer value to which the viewport is cleared.
+		/// Gets the default depth buffer value to which the viewport is cleared.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "DepthClear in Ogre" )]
 		public Real ClearDepth { get; set; }
@@ -472,12 +508,16 @@ namespace Axiom.Core
 
 		#region ClearEveryFrame
 
-		///<summary>
-		///  Determines whether to clear the viewport before rendering.
-		///</summary>
-		///<remarks>
-		///  If you expecting every pixel on the viewport to be redrawn every frame, you can save a little time by not clearing the viewport before every frame. Do so by setting this property to false.
-		///</remarks>
+		/// <summary>
+		///		Determines whether to clear the viewport before rendering.
+		/// </summary>
+		/// <remarks>
+		///		If you expecting every pixel on the viewport to be redrawn
+		///		every frame, you can save a little time by not clearing the
+		///		viewport before every frame. Do so by setting this property
+		///		to false.
+		///	</remarks>
+		///	
 		[OgreVersion( 1, 7, 2790 )]
 		public bool ClearEveryFrame { get; protected set; }
 
@@ -486,7 +526,7 @@ namespace Axiom.Core
 		#region ClearBuffers
 
 		/// <summary>
-		///   Gets the buffers to clear every frame
+		/// Gets the buffers to clear every frame
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public FrameBufferType ClearBuffers { get; protected set; }
@@ -497,22 +537,23 @@ namespace Axiom.Core
 
 		#region Constructor
 
-		///<summary>
-		///  The constructor. Dimensions of the viewport are expressed as a pecentage between 0 and 100. This allows the dimensions to apply irrespective of changes in the target's size: e.g. to fill the whole area, values of 0,0,100,100 are appropriate.
-		///</summary>
-		///<param name="camera"> Reference to the camera to be the source for the image. </param>
-		///<param name="target"> Reference to the render target to be the destination for the rendering. </param>
-		///<param name="left"> Left </param>
-		///<param name="top"> Top </param>
-		///<param name="width"> Width </param>
-		///<param name="height"> Height </param>
-		///<param name="zOrder"> Relative Z-order on the target. Lower = further to the front. </param>
+		/// <summary>
+		///		The constructor. Dimensions of the viewport are expressed as a pecentage between
+		///		0 and 100. This allows the dimensions to apply irrespective of
+		///		changes in the target's size: e.g. to fill the whole area,
+		///		values of 0,0,100,100 are appropriate.
+		/// </summary>
+		/// <param name="camera">Reference to the camera to be the source for the image.</param>
+		/// <param name="target">Reference to the render target to be the destination for the rendering.</param>
+		/// <param name="left">Left</param>
+		/// <param name="top">Top</param>
+		/// <param name="width">Width</param>
+		/// <param name="height">Height</param>
+		/// <param name="zOrder">Relative Z-order on the target. Lower = further to the front.</param>
 		public Viewport( Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder )
 			: base()
 		{
-			LogManager.Instance.Write(
-				"Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
-				camera.Name, left, top, width, height, zOrder );
+			LogManager.Instance.Write( "Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}", camera.Name, left, top, width, height, zOrder );
 
 			Camera = camera;
 			Target = target;
@@ -560,22 +601,23 @@ namespace Axiom.Core
 
 		#region UpdateDimensions
 
-		///<summary>
-		///  Notifies the viewport of a possible change in dimensions.
-		///</summary>
-		///<remarks>
-		///  Used by the target to update the viewport's dimensions (usually the result of a change in target size).
-		///</remarks>
+		/// <summary>
+		///		Notifies the viewport of a possible change in dimensions.
+		/// </summary>
+		///	<remarks>
+		///		Used by the target to update the viewport's dimensions
+		///		(usually the result of a change in target size).
+		///	</remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public void UpdateDimensions()
 		{
 			var height = (Real)Target.Height;
 			var width = (Real)Target.Width;
 
-			ActualLeft = (int)( Left*width );
-			ActualTop = (int)( Top*height );
-			ActualWidth = (int)( Width*width );
-			ActualHeight = (int)( Height*height );
+			ActualLeft = (int)( Left * width );
+			ActualTop = (int)( Top * height );
+			ActualWidth = (int)( Width * width );
+			ActualHeight = (int)( Height * height );
 
 			// This will check if  the cameras getAutoAspectRation() property is set.
 			// If it's true its aspect ratio is fit to the current viewport
@@ -587,13 +629,12 @@ namespace Axiom.Core
 			{
 				if ( Camera.AutoAspectRatio )
 				{
-					Camera.AspectRatio = (Real)ActualWidth/ActualHeight;
+					Camera.AspectRatio = (Real)ActualWidth / ActualHeight;
 				}
 				Camera.OrientationMode = OrientationMode;
 			}
 
-			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}",
-			                           Camera.Name, ActualLeft, ActualTop, ActualWidth, ActualHeight, Camera.AspectRatio );
+			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}", Camera.Name, ActualLeft, ActualTop, ActualWidth, ActualHeight, Camera.AspectRatio );
 
 			IsUpdated = true;
 
@@ -608,12 +649,13 @@ namespace Axiom.Core
 		#region SetClearEveryFrame
 
 		/// <summary>
-		///   Determines whether to clear the viewport before rendering.
+		/// Determines whether to clear the viewport before rendering.
 		/// </summary>
 		/// <remarks>
-		///   You can use this method to set which buffers are cleared (if any) before rendering every frame.
+		/// You can use this method to set which buffers are cleared
+		/// (if any) before rendering every frame.
 		/// </remarks>
-		/// <param name="inClear"> Whether or not to clear any buffers </param>
+		/// <param name="inClear">Whether or not to clear any buffers</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetClearEveryFrame( bool inClear )
 		{
@@ -621,13 +663,18 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Determines whether to clear the viewport before rendering.
+		/// Determines whether to clear the viewport before rendering.
 		/// </summary>
 		/// <remarks>
-		///   You can use this method to set which buffers are cleared (if any) before rendering every frame.
+		/// You can use this method to set which buffers are cleared
+		/// (if any) before rendering every frame.
 		/// </remarks>
-		/// <param name="inClear"> Whether or not to clear any buffers </param>
-		/// <param name="inBuffers"> One or more values from FrameBufferType denoting which buffers to clear, if clear is set to true. Note you should not clear the stencil buffer here unless you know what you're doing. </param>
+		/// <param name="inClear">Whether or not to clear any buffers</param>
+		/// <param name="inBuffers">
+		/// One or more values from FrameBufferType denoting
+		/// which buffers to clear, if clear is set to true. Note you should
+		/// not clear the stencil buffer here unless you know what you're doing.
+		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetClearEveryFrame( bool inClear, FrameBufferType inBuffers )
 		{
@@ -639,9 +686,10 @@ namespace Axiom.Core
 
 		#region Update
 
-		///<summary>
-		///  Instructs the viewport to updates its contents from the viewpoint of the current camera.
-		///</summary>
+		/// <summary>
+		///		Instructs the viewport to updates its contents from the viewpoint of
+		///		the current camera.
+		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public void Update()
 		{
@@ -656,16 +704,19 @@ namespace Axiom.Core
 		#region Clear
 
 		/// <summary>
-		///   Instructs the viewport to clear itself, without performing an update.
+		/// Instructs the viewport to clear itself, without performing an update.
 		/// </summary>
 		/// <remarks>
-		///   You would not normally call this method when updating the viewport, since the viewport usually clears itself when updating anyway <see
-		///    cref="Viewport.ClearEveryFrame" /> . However, if you wish you have the option of manually clearing the frame buffer (or elements of it) using this method.
+		/// You would not normally call this method when updating the viewport, 
+		/// since the viewport usually clears itself when updating anyway
+		/// <see cref="Viewport.ClearEveryFrame"/>. However, if you wish you have the
+		/// option of manually clearing the frame buffer (or elements of it)
+		/// using this method.
 		/// </remarks>
-		/// <param name="buffers"> Bitmask identifying which buffer elements to clear </param>
-		/// <param name="col"> The color value to clear to, if <see cref="FrameBufferType.Color" /> is included </param>
-		/// <param name="depth"> The depth value to clear to, if <see cref="FrameBufferType.Depth" /> is included </param>
-		/// <param name="stencil"> The stencil value to clear to, if <see cref="FrameBufferType.Stencil" /> is included </param>
+		/// <param name="buffers">Bitmask identifying which buffer elements to clear</param>
+		/// <param name="col">The color value to clear to, if <see cref="FrameBufferType.Color"/> is included</param>
+		/// <param name="depth">The depth value to clear to, if  <see cref="FrameBufferType.Depth"/> is included</param>
+		/// <param name="stencil">The stencil value to clear to, if <see cref="FrameBufferType.Stencil"/> is included</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void Clear( FrameBufferType buffers, ColorEx col, Real depth, ushort stencil )
 		{
@@ -698,16 +749,18 @@ namespace Axiom.Core
 
 		#region SetDimensions
 
-		///<summary>
-		///  Allows setting the dimensions of the viewport (after creation).
-		///</summary>
-		///<remarks>
-		///  Dimensions relative to the size of the target, represented as real values between 0 and 1. i.e. the full target area is 0, 0, 1, 1.
-		///</remarks>
-		///<param name="left"> Left edge of the viewport ([0.0, 1.0]). </param>
-		///<param name="top"> Top edge of the viewport ([0.0, 1.0]). </param>
-		///<param name="width"> Width of the viewport ([0.0, 1.0]). </param>
-		///<param name="height"> Height of the viewport ([0.0, 1.0]). </param>
+		/// <summary>
+		///		Allows setting the dimensions of the viewport (after creation).
+		/// </summary>
+		/// <remarks>
+		///		Dimensions relative to the size of the target,
+		///		represented as real values between 0 and 1. i.e. the full
+		///		target area is 0, 0, 1, 1.
+		/// </remarks>
+		/// <param name="left">Left edge of the viewport ([0.0, 1.0]).</param>
+		/// <param name="top">Top edge of the viewport ([0.0, 1.0]).</param>
+		/// <param name="width">Width of the viewport ([0.0, 1.0]).</param>
+		/// <param name="height">Height of the viewport ([0.0, 1.0]).</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetDimensions( Real left, Real top, Real width, Real height )
 		{
@@ -724,7 +777,7 @@ namespace Axiom.Core
 		#region SetOrientationMode
 
 		/// <summary>
-		///   Set the orientation mode of the viewport.
+		/// Set the orientation mode of the viewport.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetOrientationMode( OrientationMode orientationMode )
@@ -733,7 +786,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Set the orientation mode of the viewport.
+		/// Set the orientation mode of the viewport.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetOrientationMode( OrientationMode orientationMode, bool setDefault )
@@ -784,8 +837,7 @@ namespace Axiom.Core
 
 
 		[OgreVersion( 1, 7, 2790 )]
-		public void PointOrientedToScreen( Real orientedX, Real orientedY, OrientationMode orientationMode, out Real screenX,
-		                                   out Real screenY )
+		public void PointOrientedToScreen( Real orientedX, Real orientedY, OrientationMode orientationMode, out Real screenX, out Real screenY )
 		{
 			var orX = orientedX;
 			var orY = orientedY;
@@ -814,13 +866,13 @@ namespace Axiom.Core
 
 		#region GetActualDimensions
 
-		///<summary>
-		///  Access to actual dimensions (based on target size).
-		///</summary>
-		///<param name="left"> Left edge of the viewport (in pixels). </param>
-		///<param name="top"> Top edge of the viewport (in pixels). </param>
-		///<param name="width"> Width of the viewport (in pixels). </param>
-		///<param name="height"> Height of the viewport (in pixels). </param>
+		/// <summary>
+		///		Access to actual dimensions (based on target size).
+		/// </summary>
+		/// <param name="left">Left edge of the viewport (in pixels).</param>
+		/// <param name="top">Top edge of the viewport (in pixels).</param>
+		/// <param name="width">Width of the viewport (in pixels).</param>
+		/// <param name="height">Height of the viewport (in pixels).</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void GetActualDimensions( out int left, out int top, out int width, out int height )
 		{

@@ -38,8 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.Core;
+
 using Axiom.Math;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -55,33 +56,27 @@ using Axiom.Math;
 namespace Axiom.Animating
 {
 	/// <summary>
-	///   A bone in a skeleton.
+	///    A bone in a skeleton.
 	/// </summary>
 	/// <remarks>
-	///   See Skeleton for more information about the principles behind skeletal animation. This class is a node in the joint hierarchy. Mesh vertices also have assignments to bones to define how they move in relation to the skeleton.
+	///    See Skeleton for more information about the principles behind skeletal animation.
+	///    This class is a node in the joint hierarchy. Mesh vertices also have assignments
+	///    to bones to define how they move in relation to the skeleton.
 	/// </remarks>
 	public class Bone : Node
 	{
 		#region Fields
 
-		/// <summary>
-		///   Numeric handle of this bone.
-		/// </summary>
+		/// <summary>Numeric handle of this bone.</summary>
 		protected ushort handle;
 
-		/// <summary>
-		///   Bones set as manuallyControlled are not reseted in Skeleton.Reset().
-		/// </summary>
+		/// <summary>Bones set as manuallyControlled are not reseted in Skeleton.Reset().</summary>
 		protected bool isManuallyControlled;
 
-		/// <summary>
-		///   The skeleton that created this bone.
-		/// </summary>
+		/// <summary>The skeleton that created this bone.</summary>
 		protected Skeleton creator;
 
-		/// <summary>
-		///   The inverse derived transform of the bone in the binding pose.
-		/// </summary>
+		/// <summary>The inverse derived transform of the bone in the binding pose.</summary>
 		protected Matrix4 bindDerivedInverseTransform;
 
 		#endregion Fields
@@ -89,24 +84,24 @@ namespace Axiom.Animating
 		#region Constructors
 
 		/// <summary>
-		///   Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
+		///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
 		/// </summary>
 		public Bone( ushort handle, Skeleton creator )
 			: base()
 		{
 			this.handle = handle;
-			isManuallyControlled = false;
+			this.isManuallyControlled = false;
 			this.creator = creator;
 		}
 
 		/// <summary>
-		///   Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
+		///    Constructor, not to be used directly (use Bone.CreateChild or Skeleton.CreateBone)
 		/// </summary>
 		public Bone( string name, ushort handle, Skeleton creator )
 			: base( name )
 		{
 			this.handle = handle;
-			isManuallyControlled = false;
+			this.isManuallyControlled = false;
 			this.creator = creator;
 		}
 
@@ -115,56 +110,58 @@ namespace Axiom.Animating
 		#region Methods
 
 		/// <summary>
-		///   Creates a new Bone as a child of this bone.
+		///    Creates a new Bone as a child of this bone.
 		/// </summary>
-		/// <returns> </returns>
+		/// <returns></returns>
 		protected override Node CreateChildImpl()
 		{
 			return creator.CreateBone();
 		}
 
 		/// <summary>
-		///   Creates a new Bone as a child of this bone.
+		///    Creates a new Bone as a child of this bone.
 		/// </summary>
-		/// <param name="name"> Name of the bone to create. </param>
-		/// <returns> </returns>
+		/// <param name="name">Name of the bone to create.</param>
+		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
 			return creator.CreateBone( name );
 		}
 
 		/// <summary>
-		///   Overloaded method. Passes in Zero and Identity for the last 2 params.
+		///    Overloaded method.  Passes in Zero and Identity for the last 2 params.
 		/// </summary>
-		/// <param name="handle"> The numeric handle to give the new bone; must be unique within the Skeleton. </param>
-		/// <returns> </returns>
+		/// <param name="handle">The numeric handle to give the new bone; must be unique within the Skeleton.</param>
+		/// <returns></returns>
 		public Bone CreateChild( ushort handle )
 		{
 			return CreateChild( handle, Vector3.Zero, Quaternion.Identity );
 		}
 
 		/// <summary>
-		///   Creates a new Bone as a child of this bone.
+		///    Creates a new Bone as a child of this bone.
 		/// </summary>
-		/// <param name="handle"> The numeric handle to give the new bone; must be unique within the Skeleton. </param>
-		/// <param name="translate"> Initial translation offset of child relative to parent. </param>
-		/// <param name="rotate"> Initial rotation relative to parent. </param>
-		/// <returns> </returns>
+		/// <param name="handle">The numeric handle to give the new bone; must be unique within the Skeleton.</param>
+		/// <param name="translate">Initial translation offset of child relative to parent.</param>
+		/// <param name="rotate">Initial rotation relative to parent.</param>
+		/// <returns></returns>
 		public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
 		{
 			var bone = creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
-			AddChild( bone );
+			this.AddChild( bone );
 
 			return bone;
 		}
 
 		/// <summary>
-		///   Resets the position and orientation of this Bone to the original binding position.
+		///    Resets the position and orientation of this Bone to the original binding position.
 		/// </summary>
 		/// <remarks>
-		///   Bones are bound to the mesh in a binding pose. They are then modified from this position during animation. This method returns the bone to it's original position and orientation.
+		///    Bones are bound to the mesh in a binding pose. They are then modified from this
+		///    position during animation. This method returns the bone to it's original position and
+		///    orientation.
 		/// </remarks>
 		public void Reset()
 		{
@@ -172,23 +169,24 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Sets the current position / orientation to be the 'binding pose' ie the layout in which bones were originally bound to a mesh.
+		///    Sets the current position / orientation to be the 'binding pose' ie the layout in which 
+		///    bones were originally bound to a mesh.
 		/// </summary>
 		public void SetBindingPose()
 		{
 			SetInitialState();
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
-			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref bindDerivedInverseTransform );
+			MakeInverseTransform( this.DerivedPosition, Vector3.UnitScale, this.DerivedOrientation, ref bindDerivedInverseTransform );
 		}
 
 		#endregion
 
 		#region Properties
 
-		///<summary>
-		///  Determines whether this bone is controlled at runtime.
-		///</summary>
+		/// <summary>
+		///		Determines whether this bone is controlled at runtime.
+		/// </summary>
 		public bool IsManuallyControlled
 		{
 			get
@@ -202,7 +200,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Gets the inverse transform which takes bone space to origin from the binding pose.
+		///    Gets the inverse transform which takes bone space to origin from the binding pose. 
 		/// </summary>
 		public Matrix4 BindDerivedInverseTransform
 		{
@@ -213,7 +211,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Gets the numeric handle of this bone.
+		///    Gets the numeric handle of this bone.
 		/// </summary>
 		public ushort Handle
 		{
@@ -226,21 +224,23 @@ namespace Axiom.Animating
 		#endregion
 	}
 
-	///<summary>
-	///  Records the assignment of a single vertex to a single bone with the corresponding weight.
-	///</summary>
-	///<remarks>
-	///  This simple struct simply holds a vertex index, bone index and weight representing the assignment of a vertex to a bone for skeletal animation. There may be many of these per vertex if blended vertex assignments are allowed. This is a class because we need it as a reference type to allow for modification in places where we would only have a copy of the data if it were a struct.
-	///</remarks>
+	/// <summary>
+	///		Records the assignment of a single vertex to a single bone with the corresponding weight.
+	///	 </summary>
+	///	 <remarks>
+	///		This simple struct simply holds a vertex index, bone index and weight representing the
+	///		assignment of a vertex to a bone for skeletal animation. There may be many of these
+	///		per vertex if blended vertex assignments are allowed.
+	///		This is a class because we need it as a reference type to allow for modification
+	///		in places where we would only have a copy of the data if it were a struct. 
+	/// </remarks>
 	public class VertexBoneAssignment : IComparable
 	{
 		public int vertexIndex;
 		public ushort boneIndex;
 		public float weight;
 
-		public VertexBoneAssignment()
-		{
-		}
+		public VertexBoneAssignment() {}
 
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{
@@ -286,12 +286,10 @@ namespace Axiom.Animating
 
 	public class VertexBoneAssignmentWeightComparer : System.Collections.Generic.IComparer<VertexBoneAssignment>
 	{
-		/// <summary>
-		///   Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.
-		/// </summary>
-		/// <returns> Value Condition Less than zero x is less than y. Zero x equals y. Greater than zero x is greater than y. </returns>
-		/// <param name="yVba"> Second object to compare. </param>
-		/// <param name="xVba"> First object to compare. </param>
+		/// <summary>Compares two objects and returns a value indicating whether one is less than, equal to or greater than the other.</summary>
+		/// <returns>Value Condition Less than zero x is less than y. Zero x equals y. Greater than zero x is greater than y. </returns>
+		/// <param name="yVba">Second object to compare. </param>
+		/// <param name="xVba">First object to compare. </param>
 		/// <filterpriority>2</filterpriority>
 		public int Compare( VertexBoneAssignment xVba, VertexBoneAssignment yVba )
 		{

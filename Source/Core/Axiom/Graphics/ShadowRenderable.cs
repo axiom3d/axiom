@@ -38,42 +38,53 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	///<summary>
-	///  Class which represents the renderable aspects of a set of shadow volume faces.
-	///</summary>
-	///<remarks>
-	///  Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each using their own geometry), it will take more than one <see
-	///   cref="ShadowRenderable" /> to render the shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of vertex buffers (not necessarily one buffer, but the positions for the entire geometry should come from one buffer if possible)
-	///</remarks>
+	/// <summary>
+	///		Class which represents the renderable aspects of a set of shadow volume faces.
+	/// </summary>
+	/// <remarks>
+	///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
+	///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the
+	///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
+	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
+	///		should come from one buffer if possible)
+	/// </remarks>
 	public abstract class ShadowRenderable : DisposableObject, IRenderable
 	{
 		#region Fields and Properties
 
 		protected Material material;
 
-		///<summary>
-		///  Used only if IsLightCapSeparate == true.
-		///</summary>
+		/// <summary>
+		///		Used only if IsLightCapSeparate == true.
+		/// </summary>
 		protected ShadowRenderable lightCap;
 
 		protected LightList dummyLightList = new LightList();
 		protected List<Vector4> customParams = new List<Vector4>();
 
-		///<summary>
-		///  Does this renderable require a separate light cap?
-		///</summary>
-		///<remarks>
-		///  If possible, the light cap (when required) should be contained in the usual geometry of the shadow renderable. However, if for some reason the normal depth function (less than) could cause artefacts, then a separate light cap with a depth function of 'always fail' can be used instead. The primary example of this is when there are floating point inaccuracies caused by calculating the shadow geometry separately from the real geometry.
-		///</remarks>
+		/// <summary>
+		///		Does this renderable require a separate light cap?
+		/// </summary>
+		/// <remarks>
+		///		If possible, the light cap (when required) should be contained in the
+		///		usual geometry of the shadow renderable. However, if for some reason
+		///		the normal depth function (less than) could cause artefacts, then a
+		///		separate light cap with a depth function of 'always fail' can be used
+		///		instead. The primary example of this is when there are floating point
+		///		inaccuracies caused by calculating the shadow geometry separately from
+		///		the real geometry.
+		/// </remarks>
 		public bool IsLightCapSeperate
 		{
 			get
@@ -82,9 +93,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Get the light cap version of this renderable.
-		///</summary>
+		/// <summary>
+		///		Get the light cap version of this renderable.
+		/// </summary>
 		public ShadowRenderable LightCapRenderable
 		{
 			get
@@ -93,9 +104,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Should this ShadowRenderable be treated as visible?
-		///</summary>
+		/// <summary>
+		///		Should this ShadowRenderable be treated as visible?
+		/// </summary>
 		public virtual bool IsVisible
 		{
 			get
@@ -110,19 +121,19 @@ namespace Axiom.Graphics
 
 		protected ShadowRenderable()
 		{
-			renderOperation = new RenderOperation();
-			renderOperation.useIndices = true;
-			renderOperation.operationType = OperationType.TriangleList;
+			this.renderOperation = new RenderOperation();
+			this.renderOperation.useIndices = true;
+			this.renderOperation.operationType = OperationType.TriangleList;
 		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
 
-		///<summary>
-		///  Gets the internal render operation for setup.
-		///</summary>
-		///<returns> </returns>
+		/// <summary>
+		///		Gets the internal render operation for setup.
+		/// </summary>
+		/// <returns></returns>
 		public RenderOperation GetRenderOperationForUpdate()
 		{
 			return renderOperation;
@@ -140,12 +151,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets the material to use for this shadow renderable.
-		///</summary>
-		///<remarks>
-		///  Should be set by the caller before adding to a render queue.
-		///</remarks>
+		/// <summary>
+		///		Gets/Sets the material to use for this shadow renderable.
+		/// </summary>
+		/// <remarks>
+		///		Should be set by the caller before adding to a render queue.
+		/// </remarks>
 		public Material Material
 		{
 			get
@@ -162,16 +173,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return Material.GetBestTechnique();
+				return this.Material.GetBestTechnique();
 			}
 		}
 
 		protected RenderOperation renderOperation;
 
-		///<summary>
-		///  Gets the render operation for this shadow renderable.
-		///</summary>
-		///<param name="value"> </param>
+		/// <summary>
+		///		Gets the render operation for this shadow renderable.
+		/// </summary>
+		/// <param name="value"></param>
 		public RenderOperation RenderOperation
 		{
 			get
@@ -272,38 +283,55 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
-		///<summary>
-		///  Class level dispose method
-		///</summary>
-		///<remarks>
-		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
-		///</remarks>
-		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
 						renderOperation = null;
 					}
 
-					if ( material != null )
+					if ( this.material != null )
 					{
-						if ( !material.IsDisposed )
+						if ( !this.material.IsDisposed )
 						{
-							material.Dispose();
+							this.material.Dispose();
 						}
 
-						material = null;
+						this.material = null;
 					}
 				}
 

@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -51,12 +52,12 @@ namespace Axiom.Core
 	}
 
 	/// <summary>
-	///   A generic singleton
+	/// A generic singleton
 	/// </summary>
 	/// <remarks>
-	///   Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
+	/// Although this class will allow it, don't try to do this: Singleton&lt; interface &gt;
 	/// </remarks>
-	/// <typeparam name="T"> a class </typeparam>
+	/// <typeparam name="T">a class</typeparam>
 	public abstract class Singleton<T> : IDisposable
 		where T : class, new()
 	{
@@ -64,9 +65,7 @@ namespace Axiom.Core
 		{
 			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
 			{
-				throw new Exception(
-					String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.",
-					               GetType().Name ) );
+				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
 			}
 		}
 
@@ -106,10 +105,7 @@ namespace Axiom.Core
 		private class SingletonFactory
 		{
 			internal static object singletonLock = new object();
-
-			static SingletonFactory()
-			{
-			}
+			static SingletonFactory() {}
 
 			internal static T instance = new T();
 		}
@@ -119,28 +115,55 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
-		public static void Reinitialize()
-		{
-		}
+		public static void Reinitialize() {}
 
 		#region IDisposable Implementation
 
 		#region isDisposed Property
 
+		private bool _disposed = false;
+
 		/// <summary>
-		///   Determines if this instance has been disposed of already.
+		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed { get; set; }
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
 
 		#endregion isDisposed Property
 
-		///<summary>
-		///  Class level dispose method
-		///</summary>
-		///<remarks>
-		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
-		///</remarks>
-		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected virtual void dispose( bool disposeManagedResources )
 		{
 			if ( !isDisposed )

@@ -35,9 +35,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 #if !AXIOM_SAFE_ONLY
+using System.Runtime.InteropServices;
 
 #endif
 
@@ -57,32 +57,32 @@ namespace Axiom.Core
 		}
 	};
 
-	///<summary>
-	///  Utility class for dealing with memory.
-	///</summary>
+	/// <summary>
+	///	Utility class for dealing with memory.
+	/// </summary>
 	public static class Memory
 	{
 		#region Copy Method
 
-		///<summary>
-		///  Method for copying data from one IntPtr to another.
-		///</summary>
-		///<param name="src"> Source pointer. </param>
-		///<param name="dest"> Destination pointer. </param>
-		///<param name="length"> Length of data (in bytes) to copy. </param>
+		/// <summary>
+		///	Method for copying data from one IntPtr to another.
+		/// </summary>
+		/// <param name="src">Source pointer.</param>
+		/// <param name="dest">Destination pointer.</param>
+		/// <param name="length">Length of data (in bytes) to copy.</param>
 		public static void Copy( BufferBase src, BufferBase dest, int length )
 		{
 			Copy( src, dest, 0, 0, length );
 		}
 
-		///<summary>
-		///  Method for copying data from one IntPtr to another.
-		///</summary>
-		///<param name="src"> Source pointer. </param>
-		///<param name="dest"> Destination pointer. </param>
-		///<param name="srcOffset"> Offset at which to copy from the source pointer. </param>
-		///<param name="destOffset"> Offset at which to begin copying to the destination pointer. </param>
-		///<param name="length"> Length of data (in bytes) to copy. </param>
+		/// <summary>
+		///	Method for copying data from one IntPtr to another.
+		/// </summary>
+		/// <param name="src">Source pointer.</param>
+		/// <param name="dest">Destination pointer.</param>
+		/// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
+		/// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
+		/// <param name="length">Length of data (in bytes) to copy.</param>
 		public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
 		{
 			// TODO: Block copy would be faster, find a cross platform way to do it
@@ -105,14 +105,15 @@ namespace Axiom.Core
 		#endregion Copy Method
 
 		/// <summary>
-		///   Sets buffers to a specified value
+		/// Sets buffers to a specified value
 		/// </summary>
 		/// <remarks>
-		///   Sets the first length values of dest to the value "c". Make sure that the destination buffer has enough room for at least length characters.
+		/// Sets the first length values of dest to the value "c".
+		/// Make sure that the destination buffer has enough room for at least length characters.
 		/// </remarks>
-		/// <param name="dest"> Destination pointer. </param>
-		/// <param name="c"> Value to set. </param>
-		/// <param name="length"> Number of bytes to set. </param>
+		/// <param name="dest">Destination pointer.</param>
+		/// <param name="c">Value to set.</param>
+		/// <param name="length">Number of bytes to set.</param>
 		public static void Set( BufferBase dest, byte c, int length )
 		{
 #if !AXIOM_SAFE_ONLY

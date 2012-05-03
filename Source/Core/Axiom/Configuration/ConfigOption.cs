@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Collections;
 using Axiom.Graphics;
 
@@ -47,27 +51,23 @@ namespace Axiom.Configuration
 	public class ConfigOption : ConfigOption<string>
 	{
 		public ConfigOption( string name, string value, bool immutable )
-			: base( name, value, immutable )
-		{
-		}
+			: base( name, value, immutable ) {}
 	}
 
 	/// <summary>
-	///   Packages the details of a configuration option.
+	/// Packages the details of a configuration option.
 	/// </summary>
-	/// <remarks>
-	///   Used for <see cref="RenderSystem.ConfigOptions" /> . If immutable is true, this option must be disabled for modifying.
-	/// </remarks>
+	/// <remarks>Used for <see cref="RenderSystem.ConfigOptions" />. If immutable is true, this option must be disabled for modifying.</remarks>
 	public class ConfigOption<T>
 	{
 		//RenderSystem _parent;
 
 		#region Name Property
 
-		private readonly string _name;
+		private string _name;
 
 		/// <summary>
-		///   The name for the Configuration Option
+		/// The name for the Configuration Option
 		/// </summary>
 		public string Name
 		{
@@ -84,7 +84,7 @@ namespace Axiom.Configuration
 		private T _value;
 
 		/// <summary>
-		///   The value of the Configuration Option
+		/// The value of the Configuration Option
 		/// </summary>
 		public T Value
 		{
@@ -106,10 +106,10 @@ namespace Axiom.Configuration
 
 		#region PossibleValues Property
 
-		private readonly ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
+		private ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
 
 		/// <summary>
-		///   A list of the possible values for this Configuration Option
+		/// A list of the possible values for this Configuration Option
 		/// </summary>
 		public ConfigOptionValuesCollection<T> PossibleValues
 		{
@@ -126,7 +126,7 @@ namespace Axiom.Configuration
 		private bool _immutable;
 
 		/// <summary>
-		///   Indicates if this option can be modified.
+		/// Indicates if this option can be modified.
 		/// </summary>
 		public bool Immutable
 		{
@@ -167,11 +167,9 @@ namespace Axiom.Configuration
 
 		public override string ToString()
 		{
-			return string.Format( "{0} : {1}", Name, Value );
+			return string.Format( "{0} : {1}", this.Name, this.Value );
 		}
 
-		public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int, ValueType>
-		{
-		}
+		public class ConfigOptionValuesCollection<ValueType> : AxiomSortedCollection<int, ValueType> {}
 	}
 }

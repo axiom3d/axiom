@@ -38,52 +38,63 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Diagnostics;
+
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
+using Axiom.Math.Collections;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   General utility class for building edge lists for geometry.
+	///     General utility class for building edge lists for geometry.
 	/// </summary>
 	/// <remarks>
-	///   You can add multiple sets of vertex and index data to build an edge list. Edges will be built between the various sets as well as within sets; this allows you to use a model which is built from multiple SubMeshes each using separate index and (optionally) vertex data and still get the same connectivity information. It's important to note that the indexes for the edge will be constrained to a single vertex buffer though (this is required in order to render the edge).
+	///     You can add multiple sets of vertex and index data to build an edge list. 
+	///     Edges will be built between the various sets as well as within sets; this allows 
+	///     you to use a model which is built from multiple SubMeshes each using 
+	///     separate index and (optionally) vertex data and still get the same connectivity 
+	///     information. It's important to note that the indexes for the edge will be constrained
+	///     to a single vertex buffer though (this is required in order to render the edge).
 	/// </remarks>
 	public class EdgeListBuilder : AnyBuilder
 	{
 		#region Fields
 
-		///<summary>
-		///  List of common vertices.
-		///</summary>
+		/// <summary>
+		///		List of common vertices.
+		/// </summary>
 		protected CommonVertexList vertices = new CommonVertexList();
 
-		///<summary>
-		///  Underlying edge data to use for building.
-		///</summary>
+		/// <summary>
+		///		Underlying edge data to use for building.
+		/// </summary>
 		protected EdgeData edgeData = new EdgeData();
 
-		///<summary>
-		///  Unique edges, used to detect whether there are too many triangles on an edge
-		///</summary>
+		/// <summary>
+		///		Unique edges, used to detect whether there are too many triangles on an edge
+		/// </summary>
 		protected UniqueEdgeList uniqueEdges = new UniqueEdgeList();
 
-		///<summary>
-		///  Do we weld common vertices at all?
-		///</summary>
+		/// <summary>
+		///		Do we weld common vertices at all?
+		/// </summary>
 		protected bool weldVertices;
 
-		///<summary>
-		///  Should we treat coincident vertices from different vertex sets as one?
-		///</summary>
+		/// <summary>
+		///		Should we treat coincident vertices from different vertex sets as one?
+		/// </summary>
 		protected bool weldVerticesAcrossVertexSets;
 
-		///<summary>
-		///  Should we treat coincident vertices referenced from different index sets as one?
-		///</summary>
+		/// <summary>
+		///		Should we treat coincident vertices referenced from different index sets as one?
+		/// </summary>
 		protected bool weldVerticesAcrossIndexSets;
 
 		#endregion Fields
@@ -91,9 +102,9 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///   Builds the edge information based on the information built up so far.
+		///     Builds the edge information based on the information built up so far.
 		/// </summary>
-		/// <returns> All edge data from the vertex/index data recognized by the builder. </returns>
+		/// <returns>All edge data from the vertex/index data recognized by the builder.</returns>
 		public EdgeData Build()
 		{
 			/* Ok, here's the algorithm:
@@ -278,9 +289,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="indexSet"> </param>
-		/// <param name="vertexSet"> </param>
+		/// <param name="indexSet"></param>
+		/// <param name="vertexSet"></param>
 		protected void BuildTrianglesEdges( int indexSet, int vertexSet )
 		{
 			var indexData = (IndexData)indexDataList[ indexSet ];
@@ -291,7 +303,7 @@ namespace Axiom.Graphics
 			switch ( opType )
 			{
 				case OperationType.TriangleList:
-					iterations = indexData.indexCount/3;
+					iterations = indexData.indexCount / 3;
 					break;
 
 				case OperationType.TriangleFan:
@@ -332,8 +344,8 @@ namespace Axiom.Graphics
 					tri.indexSet = indexSet;
 					tri.vertexSet = vertexSet;
 
-					var index = new int[3];
-					var v = new Vector3[3];
+					var index = new int[ 3 ];
+					var v = new Vector3[ 3 ];
 
 					for ( var i = 0; i < 3; i++ )
 					{
@@ -380,7 +392,7 @@ namespace Axiom.Graphics
 						tri.vertIndex[ i ] = index[ i ];
 
 						// Retrieve the vertex position
-						var pVertex = pBaseVertex + ( index[ i ]*posBuffer.VertexSize );
+						var pVertex = pBaseVertex + ( index[ i ] * posBuffer.VertexSize );
 						var pReal = ( pVertex + posElem.Offset ).ToFloatPointer();
 
 						v[ i ].x = pReal[ 0 ];
@@ -402,18 +414,15 @@ namespace Axiom.Graphics
 						// create edges from common list
 						if ( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 0 ], tri.vertIndex[ 1 ], tri.sharedVertIndex[ 0 ],
-							            tri.sharedVertIndex[ 1 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 0 ], tri.vertIndex[ 1 ], tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
 						}
 						if ( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 1 ], tri.vertIndex[ 2 ], tri.sharedVertIndex[ 1 ],
-							            tri.sharedVertIndex[ 2 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 1 ], tri.vertIndex[ 2 ], tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
 						}
 						if ( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 2 ], tri.vertIndex[ 0 ], tri.sharedVertIndex[ 2 ],
-							            tri.sharedVertIndex[ 0 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 2 ], tri.vertIndex[ 0 ], tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
 						}
 					}
 					catch ( Exception ex )
@@ -435,15 +444,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     
 		/// </summary>
-		/// <param name="vertexSet"> </param>
-		/// <param name="triangleIndex"> </param>
-		/// <param name="vertexIndex0"> </param>
-		/// <param name="vertexIndex1"> </param>
-		/// <param name="sharedVertIndex0"> </param>
-		/// <param name="sharedVertIndex1"> </param>
-		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0,
-		                           int sharedVertIndex1 )
+		/// <param name="vertexSet"></param>
+		/// <param name="triangleIndex"></param>
+		/// <param name="vertexIndex0"></param>
+		/// <param name="vertexIndex1"></param>
+		/// <param name="sharedVertIndex0"></param>
+		/// <param name="sharedVertIndex1"></param>
+		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0, int sharedVertIndex1 )
 		{
 			var vertPair = new UniqueEdge();
 			vertPair.vertexIndex1 = sharedVertIndex0;
@@ -471,6 +480,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     
 		/// </summary>
 		protected void ConnectEdges()
 		{
@@ -516,10 +526,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+		///     
 		/// </summary>
-		/// <param name="sharedIndex1"> </param>
-		/// <param name="sharedIndex2"> </param>
-		/// <returns> </returns>
+		/// <param name="sharedIndex1"></param>
+		/// <param name="sharedIndex2"></param>
+		/// <returns></returns>
 		protected EdgeData.Edge FindEdge( int sharedIndex1, int sharedIndex2 )
 		{
 			// Iterate over the existing edges
@@ -542,22 +553,17 @@ namespace Axiom.Graphics
 			return null;
 		}
 
-		///<summary>
-		///  Finds an existing common vertex, or inserts a new one.
-		///</summary>
-		///<returns> </returns>
+		/// <summary>
+		///		Finds an existing common vertex, or inserts a new one.
+		/// </summary>
+		/// <returns></returns>
 		protected int FindOrCreateCommonVertex( Vector3 vec, int vertexSet, int indexSet, int originalIndex )
 		{
 			for ( var index = 0; index < vertices.Count; index++ )
 			{
 				var commonVec = (CommonVertex)vertices[ index ];
 
-				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-				     Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
-				     Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
-				     ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
-				     ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
-				     ( commonVec.originalIndex == originalIndex || weldVertices ) )
+				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) && Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) && Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) && ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) && ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) && ( commonVec.originalIndex == originalIndex || weldVertices ) )
 				{
 					return index;
 				}
@@ -621,8 +627,7 @@ namespace Axiom.Graphics
 			{
 				var iData = (IndexData)indexDataList[ i ];
 				log.Write( "." );
-				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})", i, iData.indexCount,
-				           indexDataVertexDataSetList[ i ] );
+				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})", i, iData.indexCount, indexDataVertexDataSetList[ i ] );
 
 				var idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
 
@@ -635,7 +640,7 @@ namespace Axiom.Graphics
 					var p32Idx = idxPtr.ToIntPointer();
 					var p16Idx = idxPtr.ToShortPointer();
 
-					for ( j = 0; j < iData.indexCount/3; j++ )
+					for ( j = 0; j < iData.indexCount / 3; j++ )
 					{
 						if ( iData.indexBuffer.Type == IndexType.Size32 )
 						{
@@ -658,8 +663,7 @@ namespace Axiom.Graphics
 				{
 					var c = (CommonVertex)vertices[ i ];
 
-					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", i, c.vertexSet, c.index,
-					           c.position );
+					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", i, c.vertexSet, c.index, c.position );
 				}
 			}
 		}
@@ -669,32 +673,35 @@ namespace Axiom.Graphics
 		#region Structs
 
 		/// <summary>
-		///   A vertex can actually represent several vertices in the final model, because vertices along texture seams etc will have been duplicated. In order to properly evaluate the surface properties, a single common vertex is used for these duplicates, and the faces hold the detail of the duplicated vertices.
+		///     A vertex can actually represent several vertices in the final model, because
+		///     vertices along texture seams etc will have been duplicated. In order to properly
+		///     evaluate the surface properties, a single common vertex is used for these duplicates,
+		///     and the faces hold the detail of the duplicated vertices.
 		/// </summary>
 		public struct CommonVertex
 		{
 			/// <summary>
-			///   Location of point in euclidean space.
+			///     Location of point in euclidean space.
 			/// </summary>
 			public Vector3 position;
 
 			/// <summary>
-			///   Place of vertex in original vertex set.
+			///     Place of vertex in original vertex set.
 			/// </summary>
 			public int index;
 
 			/// <summary>
-			///   The vertex set this came from.
+			///      The vertex set this came from.
 			/// </summary>
 			public int vertexSet;
 
 			/// <summary>
-			///   The index set this was referenced (first) from.
+			///     The index set this was referenced (first) from.
 			/// </summary>
 			public int indexSet;
 
 			/// <summary>
-			///   Place of vertex in original vertex set.
+			///     Place of vertex in original vertex set.
 			/// </summary>
 			public int originalIndex;
 		}
@@ -705,13 +712,9 @@ namespace Axiom.Graphics
 			public int vertexIndex2;
 		}
 
-		public class CommonVertexList : List<CommonVertex>
-		{
-		}
+		public class CommonVertexList : List<CommonVertex> {}
 
-		public class UniqueEdgeList : List<UniqueEdge>
-		{
-		}
+		public class UniqueEdgeList : List<UniqueEdge> {}
 
 		#endregion Structs
 	}

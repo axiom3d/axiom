@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+
 using Axiom.Core;
 using Axiom.Scripting.Compiler.AST;
 using Axiom.Scripting.Compiler.Parser;
@@ -50,7 +51,9 @@ using Axiom.Scripting.Compiler.Parser;
 namespace Axiom.Scripting.Compiler
 {
 	/// <summary>
-	///   This is the main class for the compiler. It calls the parser and processes the CST into an AST and then uses translators to translate the AST into the final resources.
+	/// This is the main class for the compiler. It calls the parser
+	/// and processes the CST into an AST and then uses translators
+	/// to translate the AST into the final resources.
 	/// </summary>
 	public partial class ScriptCompiler
 	{
@@ -65,7 +68,7 @@ namespace Axiom.Scripting.Compiler
 			ID_NO = 2
 		};
 
-		private readonly List<CompileError> _errors = new List<CompileError>();
+		private List<CompileError> _errors = new List<CompileError>();
 
 		private String _resourceGroup;
 
@@ -77,7 +80,7 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
-		private readonly Dictionary<string, string> _environment = new Dictionary<string, string>();
+		private Dictionary<string, string> _environment = new Dictionary<string, string>();
 
 		public Dictionary<string, string> Environment
 		{
@@ -87,7 +90,7 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
-		private readonly Dictionary<string, uint> _keywordMap = new Dictionary<string, uint>();
+		private Dictionary<string, uint> _keywordMap = new Dictionary<string, uint>();
 
 		public Dictionary<string, uint> KeywordMap
 		{
@@ -98,37 +101,49 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   The set of imported scripts to avoid circular dependencies
+		/// The set of imported scripts to avoid circular dependencies
 		/// </summary>
-		private readonly Dictionary<string, IList<AbstractNode>> _imports = new Dictionary<string, IList<AbstractNode>>();
+		private Dictionary<string, IList<AbstractNode>> _imports = new Dictionary<string, IList<AbstractNode>>();
 
 		/// <summary>
-		///   This holds the target objects for each script to be imported
+		/// This holds the target objects for each script to be imported
 		/// </summary>
-		private readonly Dictionary<string, string> _importRequests = new Dictionary<string, string>();
+		private Dictionary<string, string> _importRequests = new Dictionary<string, string>();
 
 		/// <summary>
-		///   This stores the imports of the scripts, so they are separated and can be treated specially
+		/// This stores the imports of the scripts, so they are separated and can be treated specially
 		/// </summary>
-		private readonly List<AbstractNode> _importTable = new List<AbstractNode>();
+		private List<AbstractNode> _importTable = new List<AbstractNode>();
 
-		public ScriptCompilerListener Listener { get; set; }
+		private ScriptCompilerListener _listener;
+
+		public ScriptCompilerListener Listener
+		{
+			get
+			{
+				return _listener;
+			}
+			set
+			{
+				_listener = value;
+			}
+		}
 
 		#region Events
 
-		/// <see cref="ScriptCompilerManager.OnImportFile" />
+		/// <see cref="ScriptCompilerManager.OnImportFile"/>
 		public event ScriptCompilerManager.ImportFileHandler OnImportFile;
 
-		/// <see cref="ScriptCompilerManager.OnPreConversion" />
+		/// <see cref="ScriptCompilerManager.OnPreConversion"/>
 		public event ScriptCompilerManager.PreConversionHandler OnPreConversion;
 
-		/// <see cref="ScriptCompilerManager.OnPostConversion" />
+		/// <see cref="ScriptCompilerManager.OnPostConversion"/>
 		public event ScriptCompilerManager.PostConversionHandler OnPostConversion;
 
-		/// <see cref="ScriptCompilerManager.OnCompileError" />
+		/// <see cref="ScriptCompilerManager.OnCompileError"/>
 		public event ScriptCompilerManager.CompilerErrorHandler OnCompileError;
 
-		/// <see cref="ScriptCompilerManager.OnCompilerEvent" />
+		/// <see cref="ScriptCompilerManager.OnCompilerEvent"/>
 		public event ScriptCompilerManager.TransationEventHandler OnCompilerEvent;
 
 		#endregion Events
@@ -136,20 +151,20 @@ namespace Axiom.Scripting.Compiler
 		public ScriptCompiler()
 		{
 			InitializeWordMap();
-			OnPreConversion = null;
-			OnPostConversion = null;
-			OnImportFile = null;
-			OnCompileError = null;
-			OnCompilerEvent = null;
+			this.OnPreConversion = null;
+			this.OnPostConversion = null;
+			this.OnImportFile = null;
+			this.OnCompileError = null;
+			this.OnCompilerEvent = null;
 		}
 
 		/// <summary>
-		///   Takes in a string of script code and compiles it into resources
+		/// Takes in a string of script code and compiles it into resources
 		/// </summary>
-		/// <param name="script"> The script code </param>
-		/// <param name="source"> The source of the script code (e.g. a script file) </param>
-		/// <param name="group"> The resource group to place the compiled resources into </param>
-		/// <returns> </returns>
+		/// <param name="script">The script code</param>
+		/// <param name="source">The source of the script code (e.g. a script file)</param>
+		/// <param name="group">The resource group to place the compiled resources into</param>
+		/// <returns></returns>
 		public bool Compile( String script, String source, String group )
 		{
 			var lexer = new ScriptLexer();
@@ -159,33 +174,33 @@ namespace Axiom.Scripting.Compiler
 			return Compile( nodes, group );
 		}
 
-		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)" />
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group )
 		{
-			return Compile( nodes, group, true, true, true );
+			return this.Compile( nodes, group, true, true, true );
 		}
 
-		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)" />
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports )
 		{
-			return Compile( nodes, group, doImports, true, true );
+			return this.Compile( nodes, group, doImports, true, true );
 		}
 
-		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)" />
+		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports, bool doObjects )
 		{
-			return Compile( nodes, group, doImports, doObjects, true );
+			return this.Compile( nodes, group, doImports, doObjects, true );
 		}
 
 		/// <summary>
-		///   Compiles the given abstract syntax tree
+		/// Compiles the given abstract syntax tree
 		/// </summary>
-		/// <param name="nodes"> </param>
-		/// <param name="group"> </param>
-		/// <param name="doImports"> </param>
-		/// <param name="doObjects"> </param>
-		/// <param name="doVariables"> </param>
-		/// <returns> </returns>
+		/// <param name="nodes"></param>
+		/// <param name="group"></param>
+		/// <param name="doImports"></param>
+		/// <param name="doObjects"></param>
+		/// <param name="doVariables"></param>
+		/// <returns></returns>
 		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports, bool doObjects, bool doVariables )
 		{
 			// Save the group
@@ -236,11 +251,11 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Compiles resources from the given concrete node list
+		/// Compiles resources from the given concrete node list
 		/// </summary>
-		/// <param name="nodes"> The list of nodes to compile </param>
-		/// <param name="group"> The resource group to place the compiled resources into </param>
-		/// <returns> </returns>
+		/// <param name="nodes">The list of nodes to compile</param>
+		/// <param name="group">The resource group to place the compiled resources into</param>
+		/// <returns></returns>
 		private bool Compile( IList<ConcreteNode> nodes, string group )
 		{
 			// Save the group
@@ -252,9 +267,9 @@ namespace Axiom.Scripting.Compiler
 			// Clear the environment
 			_environment.Clear();
 
-			if ( OnPreConversion != null )
+			if ( this.OnPreConversion != null )
 			{
-				OnPreConversion( this, nodes );
+				this.OnPreConversion( this, nodes );
 			}
 
 			// Convert our nodes to an AST
@@ -267,7 +282,7 @@ namespace Axiom.Scripting.Compiler
 			_processVariables( ref ast );
 
 			// Allows early bail-out through the listener
-			if ( OnPostConversion != null && !OnPostConversion( this, ast ) )
+			if ( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
 			{
 				return _errors.Count == 0;
 			}
@@ -298,29 +313,27 @@ namespace Axiom.Scripting.Compiler
 
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
-			AddError( code, file, line, string.Empty );
+			this.AddError( code, file, line, string.Empty );
 		}
 
 		/// <summary>
-		///   Adds the given error to the compiler's list of errors
+		/// Adds the given error to the compiler's list of errors
 		/// </summary>
-		/// <param name="code"> </param>
-		/// <param name="file"> </param>
-		/// <param name="line"> </param>
-		/// <param name="msg"> </param>
+		/// <param name="code"></param>
+		/// <param name="file"></param>
+		/// <param name="line"></param>
+		/// <param name="msg"></param>
 		internal void AddError( CompileErrorCode code, string file, uint line, string msg )
 		{
 			var error = new CompileError( code, file, line, msg );
 
-			if ( OnCompileError != null )
+			if ( this.OnCompileError != null )
 			{
-				OnCompileError( this, error );
+				this.OnCompileError( this, error );
 			}
 			else
 			{
-				var str = string.Format( "Compiler error: {0} in {1}({2})",
-				                         ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof ( CompileErrorCode ) ), file,
-				                         line );
+				var str = string.Format( "Compiler error: {0} in {1}({2})", ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof ( CompileErrorCode ) ), file, line );
 
 				if ( !string.IsNullOrEmpty( msg ) )
 				{
@@ -333,7 +346,7 @@ namespace Axiom.Scripting.Compiler
 			_errors.Add( error );
 		}
 
-		/// <see cref="ScriptCompiler._fireEvent(ref ScriptCompilerEvent, out object)" />
+		/// <see cref="ScriptCompiler._fireEvent(ref ScriptCompilerEvent, out object)"/>
 		internal bool _fireEvent( ref ScriptCompilerEvent evt )
 		{
 			object o;
@@ -341,18 +354,18 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Internal method for firing the handleEvent method
+		/// Internal method for firing the handleEvent method
 		/// </summary>
-		/// <param name="evt"> </param>
-		/// <param name="retVal"> </param>
-		/// <returns> </returns>
+		/// <param name="evt"></param>
+		/// <param name="retVal"></param>
+		/// <returns></returns>
 		internal bool _fireEvent( ref ScriptCompilerEvent evt, out object retVal )
 		{
 			retVal = null;
 
-			if ( OnCompilerEvent != null )
+			if ( this.OnCompilerEvent != null )
 			{
-				return OnCompilerEvent( this, ref evt, out retVal );
+				return this.OnCompilerEvent( this, ref evt, out retVal );
 			}
 
 			return false;
@@ -366,11 +379,11 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Returns true if the given class is name excluded
+		/// Returns true if the given class is name excluded
 		/// </summary>
-		/// <param name="cls"> </param>
-		/// <param name="parent"> </param>
-		/// <returns> </returns>
+		/// <param name="cls"></param>
+		/// <param name="parent"></param>
+		/// <returns></returns>
 		private bool _isNameExcluded( string cls, AbstractNode parent )
 		{
 			// Run past the listener
@@ -437,9 +450,9 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   This built-in function processes import nodes
+		/// This built-in function processes import nodes
 		/// </summary>
-		/// <param name="nodes"> </param>
+		/// <param name="nodes"></param>
 		private void _processImports( ref IList<AbstractNode> nodes )
 		{
 			// We only need to iterate over the top-level of nodes
@@ -525,9 +538,9 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Handles processing the variables
+		/// Handles processing the variables
 		/// </summary>
-		/// <param name="nodes"> </param>
+		/// <param name="nodes"></param>
 		private void _processVariables( ref IList<AbstractNode> nodes )
 		{
 			for ( var i = 0; i < nodes.Count; ++i )
@@ -624,10 +637,10 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Handles object inheritance and variable expansion
+		/// Handles object inheritance and variable expansion
 		/// </summary>
-		/// <param name="nodes"> </param>
-		/// <param name="top"> </param>
+		/// <param name="nodes"></param>
+		/// <param name="top"></param>
 		private void _processObjects( ref IList<AbstractNode> nodes, IList<AbstractNode> top )
 		{
 			foreach ( var node in nodes )
@@ -675,18 +688,18 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Loads the requested script and converts it to an AST
+		/// Loads the requested script and converts it to an AST
 		/// </summary>
-		/// <param name="name"> </param>
-		/// <returns> </returns>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		private IList<AbstractNode> _loadImportPath( string name )
 		{
 			IList<AbstractNode> retval = null;
 			IList<ConcreteNode> nodes = null;
 
-			if ( OnImportFile != null )
+			if ( this.OnImportFile != null )
 			{
-				OnImportFile( this, name );
+				this.OnImportFile( this, name );
 			}
 
 			if ( nodes != null && ResourceGroupManager.Instance != null )
@@ -716,11 +729,11 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		///   Returns the abstract nodes from the given tree which represent the target
+		/// Returns the abstract nodes from the given tree which represent the target
 		/// </summary>
-		/// <param name="nodes"> </param>
-		/// <param name="target"> </param>
-		/// <returns> </returns>
+		/// <param name="nodes"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
 		private List<AbstractNode> _locateTarget( IList<AbstractNode> nodes, string target )
 		{
 			AbstractNode iter = null;
@@ -811,9 +824,7 @@ namespace Axiom.Scripting.Compiler
 						{
 							var temp = (ObjectAbstractNode)overrides[ j ].Key;
 							// Consider a match a node that has a wildcard and matches an input name
-							var wildcardMatch = nodeHasWildcard &&
-							                    ( ( new Regex( node.Name ) ).IsMatch( temp.Name ) ||
-							                      ( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
+							var wildcardMatch = nodeHasWildcard && ( ( new Regex( node.Name ) ).IsMatch( temp.Name ) || ( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
 
 							if ( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
 							{
@@ -830,8 +841,7 @@ namespace Axiom.Scripting.Compiler
 										currentNode = (ObjectAbstractNode)dest.Children[ currentIterator ];
 										currentNode.Name = temp.Name; //make the regex match its matcher
 									}
-									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key,
-									                                                               dest.Children[ currentIterator ] );
+									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, dest.Children[ currentIterator ] );
 									// Store the max override index for this matched pair
 									overrideIndex = j;
 									overrideIndex = maxOverrideIndex = System.Math.Max( overrideIndex, maxOverrideIndex );

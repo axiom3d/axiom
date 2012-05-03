@@ -38,23 +38,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+using System.Windows;
+
+
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	///<summary>
-	///  Class which manages the platform settings required to run.
-	///</summary>
+	/// <summary>
+	///		Class which manages the platform settings required to run.
+	/// </summary>
 	public sealed class PlatformManager
 	{
 		/// <summary>
-		///   Gets if the operating system that this is running on is Windows (as opposed to a Unix-based one such as Linux or Mac OS X)
+		/// Gets if the operating system that this is running on is Windows (as opposed to a Unix-based one such as Linux or Mac OS X)
 		/// </summary>
 		/// <remarks>
-		///   The Windows version strings start with "Microsoft Windows" followed by CE, NT, or 98 and the version number, however Microsoft Win32S is used with the 32-bit simulation layer on 16-bit systems so we should just check for the presence of Microsoft Unix-based operating systems start with Unix The Environment.OSVersion.Platform is 128 for Unix-based platforms (an additional enum value added that by the name Unix), however under .NET 2.0 Unix is supposed to be 3 but may still be 128 under Mono Additionally, GNU Portable .NET likely doesn't provide this same value, so just check for the presence of Windows in the string name
+		/// The Windows version strings start with "Microsoft Windows" followed by CE, NT, or 98 and the version number,
+		/// however Microsoft Win32S is used with the 32-bit simulation layer on 16-bit systems so we should just check for the presence of Microsoft
+		/// Unix-based operating systems start with Unix
+		/// The Environment.OSVersion.Platform is 128 for Unix-based platforms (an additional enum value added that by the name Unix),
+		/// however under .NET 2.0 Unix is supposed to be 3 but may still be 128 under Mono
+		/// Additionally, GNU Portable .NET likely doesn't provide this same value, so just check for the presence of Windows in the string name
 		/// </remarks>
 		public static bool IsWindowsOS
 		{
@@ -69,7 +82,7 @@ namespace Axiom.Core
 		#region Singleton implementation
 
 		/// <summary>
-		///   Singleton instance of this class.
+		///     Singleton instance of this class.
 		/// </summary>
 		private static IPlatformManager instance;
 
@@ -79,7 +92,7 @@ namespace Axiom.Core
 #endif
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PlatformManager()
 		{
@@ -181,13 +194,12 @@ namespace Axiom.Core
 			// All else fails, yell loudly
 			if ( instance == null )
 			{
-				throw new PluginException(
-					"The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
 			}
 		}
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static IPlatformManager Instance
 		{

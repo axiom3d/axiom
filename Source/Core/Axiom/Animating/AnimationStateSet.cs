@@ -41,32 +41,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
+using Axiom.Collections;
+using Axiom.Core;
+using Axiom.Controllers;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Animating
 {
-	///<summary>
-	///  Represents the state of an animation and the weight of it's influence.
-	///</summary>
-	///<remarks>
-	///  Other classes can hold instances of this class to store the state of any animations they are using. This class implements the IControllerValue interface to enable automatic update of animation state through controllers.
-	///</remarks>
+	/// <summary>
+	///		Represents the state of an animation and the weight of it's influence. 
+	/// </summary>
+	/// <remarks>
+	///		Other classes can hold instances of this class to store the state of any animations
+	///		they are using.
+	///		This class implements the IControllerValue interface to enable automatic update of
+	///		animation state through controllers.
+	/// </remarks>
 	public class AnimationStateSet : IEnumerable<KeyValuePair<string, AnimationState>>
 	{
 		#region Protected Fields
 
-		///<summary>
-		///  Mapping from string to AnimationState
-		///</summary>
+		/// <summary>
+		///		Mapping from string to AnimationState
+		/// </summary>
 		protected Dictionary<string, AnimationState> stateSet = new Dictionary<string, AnimationState>();
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///		
+		/// </summary>
 		protected int dirtyFrameNumber;
 
-		///<summary>
-		///  A list of enabled animation states
-		///</summary>
+		/// <summary>
+		///		A list of enabled animation states
+		/// </summary>
 		protected List<AnimationState> enabledAnimationStates = new List<AnimationState>();
 
 		#endregion Protected Fields
@@ -75,7 +83,7 @@ namespace Axiom.Animating
 
 		public AnimationStateSet()
 		{
-			dirtyFrameNumber = int.MaxValue;
+			this.dirtyFrameNumber = int.MaxValue;
 		}
 
 		#endregion Constructors
@@ -83,7 +91,7 @@ namespace Axiom.Animating
 		#region Properties
 
 		/// <summary>
-		///   Get the latest animation state been altered frame number
+		///     Get the latest animation state been altered frame number
 		/// </summary>
 		public int DirtyFrameNumber
 		{
@@ -98,7 +106,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Get the dictionary of states
+		///     Get the dictionary of states
 		/// </summary>
 		public Dictionary<string, AnimationState> AllAnimationStates
 		{
@@ -109,7 +117,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Get the list of enabled animation states
+		///     Get the list of enabled animation states
 		/// </summary>
 		public List<AnimationState> EnabledAnimationStates
 		{
@@ -132,7 +140,7 @@ namespace Axiom.Animating
 		#region Methods
 
 		/// <summary>
-		///   Create a copy of the AnimationStateSet instance.
+		///     Create a copy of the AnimationStateSet instance. 
 		/// </summary>
 		public AnimationStateSet Clone()
 		{
@@ -152,30 +160,29 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Create a new AnimationState instance.
+		///     Create a new AnimationState instance. 
 		/// </summary>
-		/// <param name="name"> The name of the animation </param>
-		/// <param name="time"> Starting time position </param>
-		/// <param name="length"> Length of the animation to play </param>
+		/// <param name="name"> The name of the animation</param>
+		/// <param name="time"> Starting time position</param>
+		/// <param name="length"> Length of the animation to play</param>
 		public AnimationState CreateAnimationState( string name, float time, float length )
 		{
 			return CreateAnimationState( name, time, length, 1.0f, false );
 		}
 
 		/// <summary>
-		///   Create a new AnimationState instance.
+		///     Create a new AnimationState instance. 
 		/// </summary>
-		/// <param name="name"> The name of the animation </param>
-		/// <param name="time"> Starting time position </param>
-		/// <param name="length"> Length of the animation to play </param>
-		/// <param name="weight"> Weight to apply the animation with </param>
-		/// <param name="enabled"> Whether the animation is enabled </param>
+		/// <param name="name"> The name of the animation</param>
+		/// <param name="time"> Starting time position</param>
+		/// <param name="length"> Length of the animation to play</param>
+		/// <param name="weight"> Weight to apply the animation with</param>
+		/// <param name="enabled"> Whether the animation is enabled</param>
 		public AnimationState CreateAnimationState( string name, float time, float length, float weight, bool enabled )
 		{
 			if ( stateSet.ContainsKey( name ) )
 			{
-				throw new Exception( "State for animation named '" + name + "' already exists, " +
-				                     "in AnimationStateSet.CreateAnimationState" );
+				throw new Exception( "State for animation named '" + name + "' already exists, " + "in AnimationStateSet.CreateAnimationState" );
 			}
 			var newState = new AnimationState( name, this, time, length, weight, enabled );
 			stateSet[ name ] = newState;
@@ -183,20 +190,19 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Get an animation state by the name of the animation
+		///     Get an animation state by the name of the animation
 		/// </summary>
 		public AnimationState GetAnimationState( string name )
 		{
 			if ( !stateSet.ContainsKey( name ) )
 			{
-				throw new Exception( "No state found for animation named '" + name + "', " +
-				                     "in AnimationStateSet.CreateAnimationState" );
+				throw new Exception( "No state found for animation named '" + name + "', " + "in AnimationStateSet.CreateAnimationState" );
 			}
 			return stateSet[ name ];
 		}
 
 		/// <summary>
-		///   Tests if state for the named animation is present
+		///     Tests if state for the named animation is present
 		/// </summary>
 		public bool HasAnimationState( string name )
 		{
@@ -204,7 +210,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Remove animation state with the given name
+		///     Remove animation state with the given name
 		/// </summary>
 		public void RemoveAnimationState( string name )
 		{
@@ -216,7 +222,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Remove all animation states
+		///     Remove all animation states
 		/// </summary>
 		public void RemoveAllAnimationStates()
 		{
@@ -225,7 +231,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Copy the state of any matching animation states from this to another
+		///     Copy the state of any matching animation states from this to another
 		/// </summary>
 		public void CopyMatchingState( AnimationStateSet target )
 		{
@@ -234,8 +240,7 @@ namespace Axiom.Animating
 				AnimationState result;
 				if ( !stateSet.TryGetValue( pair.Key, out result ) )
 				{
-					throw new Exception( "No animation entry found named '" + pair.Key + "', in " +
-					                     "AnimationStateSet.CopyMatchingState" );
+					throw new Exception( "No animation entry found named '" + pair.Key + "', in " + "AnimationStateSet.CopyMatchingState" );
 				}
 				else
 				{
@@ -254,7 +259,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Set the dirty flag and dirty frame number on this state set
+		///     Set the dirty flag and dirty frame number on this state set
 		/// </summary>
 		public void NotifyDirty()
 		{
@@ -262,7 +267,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///   Internal method respond to enable/disable an animation state
+		///     Internal method respond to enable/disable an animation state
 		/// </summary>
 		public void NotifyAnimationStateEnabled( AnimationState target, bool enabled )
 		{

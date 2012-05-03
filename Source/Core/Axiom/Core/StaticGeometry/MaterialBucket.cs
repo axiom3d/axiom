@@ -38,9 +38,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
+
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -49,7 +55,8 @@ namespace Axiom.Core
 	public partial class StaticGeometry
 	{
 		/// <summary>
-		///   A MaterialBucket is a collection of smaller buckets with the same Material (and implicitly the same LOD).
+		/// A MaterialBucket is a collection of smaller buckets with the same 
+		/// Material (and implicitly the same LOD).
 		/// </summary>
 		public class MaterialBucket : DisposableObject
 		{
@@ -167,8 +174,7 @@ namespace Axiom.Core
 					currentGeometryMap[ formatString ] = gbucket;
 					if ( !gbucket.Assign( qgeom ) )
 					{
-						throw new AxiomException( "Somehow we couldn't fit the requested geometry even in a " +
-						                          "brand new GeometryBucket!! Must be a bug, please report." );
+						throw new AxiomException( "Somehow we couldn't fit the requested geometry even in a " + "brand new GeometryBucket!! Must be a bug, please report." );
 					}
 				}
 			}
@@ -227,11 +233,11 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			///   Dispose the geometry buckets
+			///     Dispose the geometry buckets
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !IsDisposed )
+				if ( !this.IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
@@ -249,14 +255,14 @@ namespace Axiom.Core
 						}
 
 
-						if ( material != null )
+						if ( this.material != null )
 						{
-							if ( !material.IsDisposed )
+							if ( !this.material.IsDisposed )
 							{
-								material.Dispose();
+								this.material.Dispose();
 							}
 
-							material = null;
+							this.material = null;
 						}
 					}
 				}

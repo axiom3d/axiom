@@ -42,9 +42,9 @@ namespace Axiom.Core
 	public static class ObjectExtentions
 	{
 		/// <summary>
-		///   Helper method to safe dispose an object.
+		/// Helper method to safe dispose an object.
 		/// </summary>
-		/// <param name="disposable"> The object being disposed </param>
+		/// <param name="disposable">The object being disposed</param>
 		[AxiomHelper( 0, 9 )]
 		public static void SafeDispose( this object disposable )
 		{

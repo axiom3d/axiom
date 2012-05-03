@@ -44,18 +44,14 @@ using System;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Summary description for AxiomException.
+	/// Summary description for AxiomException.
 	/// </summary>
 	public class AxiomException : Exception
 	{
 		public AxiomException( string message, params object[] args )
-			: base( string.Format( message, args ) )
-		{
-		}
+			: base( string.Format( message, args ) ) {}
 
 		public AxiomException( string message, Exception innerException, params object[] args )
-			: base( string.Format( message, args ), innerException )
-		{
-		}
+			: base( string.Format( message, args ), innerException ) {}
 	}
 }

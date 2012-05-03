@@ -38,7 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Core;
+
 
 #endregion Namespace Declarations
 
@@ -64,9 +66,9 @@ namespace Axiom.Media
 
 			// sx_48,sy_48,sz_48 represent current position in source
 			// using 16/48-bit fixed precision, incremented by steps
-			var stepx = ( (UInt64)src.Width << 48 )/(UInt64)dst.Width;
-			var stepy = ( (UInt64)src.Height << 48 )/(UInt64)dst.Height;
-			var stepz = ( (UInt64)src.Depth << 48 )/(UInt64)dst.Depth;
+			var stepx = ( (UInt64)src.Width << 48 ) / (UInt64)dst.Width;
+			var stepy = ( (UInt64)src.Height << 48 ) / (UInt64)dst.Height;
+			var stepz = ( (UInt64)src.Depth << 48 ) / (UInt64)dst.Depth;
 			// temp is 16/16 bit fixed precision, used to adjust a source
 			// coordinate (x, y, or z) backwards by half a pixel so that the
 			// integer bits represent the first sample (eg, sx1) and the
@@ -81,7 +83,7 @@ namespace Axiom.Media
 				temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
 				var sz1 = (int)( temp >> 16 );
 				var sz2 = System.Math.Min( sz1 + 1, src.Depth - 1 );
-				var szf = ( temp & 0xFFFF )/65536f;
+				var szf = ( temp & 0xFFFF ) / 65536f;
 
 				var sy_48 = ( stepy >> 1 ) - 1;
 				for ( var y = dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
@@ -90,7 +92,7 @@ namespace Axiom.Media
 					temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
 					var sy1 = (int)( temp >> 16 ); // src x #1
 					var sy2 = System.Math.Min( sy1 + 1, src.Height - 1 ); // src x #2
-					var syf = ( temp & 0xFFFF )/65536f; // weight of #2
+					var syf = ( temp & 0xFFFF ) / 65536f; // weight of #2
 
 					var sx_48 = ( stepx >> 1 ) - 1;
 					for ( var x = dst.Left; x < dst.Right; x++, sx_48 += stepx )
@@ -99,7 +101,7 @@ namespace Axiom.Media
 						temp = ( temp > 0x8000 ) ? temp - 0x8000 : 0;
 						var sx1 = (int)( temp >> 16 ); // src x #1
 						var sx2 = System.Math.Min( sx1 + 1, src.Width - 1 ); // src x #2
-						var sxf = ( temp & 0xFFFF )/65536f; // weight of #2
+						var sxf = ( temp & 0xFFFF ) / 65536f; // weight of #2
 						ColorEx x1y1z1 = ColorEx.White, x2y1z1 = ColorEx.White, x1y2z1 = ColorEx.White, x2y2z1 = ColorEx.White;
 						ColorEx x1y1z2 = ColorEx.White, x2y1z2 = ColorEx.White, x1y2z2 = ColorEx.White, x2y2z2 = ColorEx.White;
 						Unpack( ref x1y1z1, sx1, sy1, sz1, src.Format, src.Data, src, srcelemsize );
@@ -111,24 +113,20 @@ namespace Axiom.Media
 						Unpack( ref x1y2z2, sx1, sy2, sz2, src.Format, src.Data, src, srcelemsize );
 						Unpack( ref x2y2z2, sx2, sy2, sz2, src.Format, src.Data, src, srcelemsize );
 
-						var accum = x1y1z1*( ( 1.0f - sxf )*( 1.0f - syf )*( 1.0f - szf ) ) + x2y1z1*( sxf*( 1.0f - syf )*( 1.0f - szf ) ) +
-						            x1y2z1*( ( 1.0f - sxf )*syf*( 1.0f - szf ) ) + x2y2z1*( sxf*syf*( 1.0f - szf ) ) +
-						            x1y1z2*( ( 1.0f - sxf )*( 1.0f - syf )*szf ) + x2y1z2*( sxf*( 1.0f - syf )*szf ) +
-						            x1y2z2*( ( 1.0f - sxf )*syf*szf ) + x2y2z2*( sxf*syf*szf );
+						var accum = x1y1z1 * ( ( 1.0f - sxf ) * ( 1.0f - syf ) * ( 1.0f - szf ) ) + x2y1z1 * ( sxf * ( 1.0f - syf ) * ( 1.0f - szf ) ) + x1y2z1 * ( ( 1.0f - sxf ) * syf * ( 1.0f - szf ) ) + x2y2z1 * ( sxf * syf * ( 1.0f - szf ) ) + x1y1z2 * ( ( 1.0f - sxf ) * ( 1.0f - syf ) * szf ) + x2y1z2 * ( sxf * ( 1.0f - syf ) * szf ) + x1y2z2 * ( ( 1.0f - sxf ) * syf * szf ) + x2y2z2 * ( sxf * syf * szf );
 
 						PixelConverter.PackColor( accum, dst.Format, dst.Data + dstOffset );
 						dstOffset += dstelemsize;
 					}
-					dstOffset += dstelemsize*dst.RowSkip;
+					dstOffset += dstelemsize * dst.RowSkip;
 				}
-				dstOffset += dstelemsize*dst.SliceSkip;
+				dstOffset += dstelemsize * dst.SliceSkip;
 			}
 		}
 
-		private void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, BufferBase src, PixelBox srcbox,
-		                     int elemsize )
+		private void Unpack( ref ColorEx dst, int x, int y, int z, PixelFormat format, BufferBase src, PixelBox srcbox, int elemsize )
 		{
-			var data = src + ( elemsize*( ( x ) + ( y )*srcbox.RowPitch + ( z )*srcbox.SlicePitch ) );
+			var data = src + ( elemsize * ( ( x ) + ( y ) * srcbox.RowPitch + ( z ) * srcbox.SlicePitch ) );
 			dst = PixelConverter.UnpackColor( format, data );
 		}
 

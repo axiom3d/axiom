@@ -38,7 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -46,26 +49,26 @@ using Axiom.Collections;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Summary description for LogManager.
+	/// Summary description for LogManager.
 	/// </summary>
 	public sealed class LogManager : Singleton<LogManager>
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		///   List of logs created by the log manager.
+		///     List of logs created by the log manager.
 		/// </summary>
-		private readonly AxiomCollection<Log> logList = new AxiomCollection<Log>();
+		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
 
 		/// <summary>
-		///   The default log to which output is done.
+		///     The default log to which output is done.
 		/// </summary>
 		private Log defaultLog;
 
 		/// <summary>
-		///   Gets/Sets the default log to use for writing.
+		///     Gets/Sets the default log to use for writing.
 		/// </summary>
-		/// <value> </value>
+		/// <value></value>
 		public Log DefaultLog
 		{
 			get
@@ -84,7 +87,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Sets the level of detail of the default log.
+		///     Sets the level of detail of the default log.
 		/// </summary>
 		public LoggingLevel LogDetail
 		{
@@ -103,33 +106,47 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///   Creates a new log with the given name.
+		///     Creates a new log with the given name.
 		/// </summary>
-		/// <param name="name"> Name to give to the log, i.e. "Axiom.log" </param>
-		/// <returns> A newly created Log object, opened and ready to go. </returns>
+		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
+		/// <returns>A newly created Log object, opened and ready to go.</returns>
 		public Log CreateLog( string name )
 		{
 			return CreateLog( name, false, true );
 		}
 
 		/// <summary>
-		///   Creates a new log with the given name.
+		///     Creates a new log with the given name.
 		/// </summary>
-		/// <param name="name"> Name to give to the log, i.e. "Axiom.log" </param>
-		/// <param name="isDefaultLog"> If true, this is the default log output will be sent to if the generic logging methods on this class are used. The first log created is always the default log unless this parameter is set. </param>
-		/// <returns> A newly created Log object, opened and ready to go. </returns>
+		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
+		/// <param name="isDefaultLog">
+		///     If true, this is the default log output will be
+		///     sent to if the generic logging methods on this class are
+		///     used. The first log created is always the default log unless
+		///     this parameter is set.
+		/// </param>
+		/// <returns>A newly created Log object, opened and ready to go.</returns>
 		public Log CreateLog( string name, bool isDefaultLog )
 		{
 			return CreateLog( name, isDefaultLog, true );
 		}
 
 		/// <summary>
-		///   Creates a new log with the given name.
+		///     Creates a new log with the given name.
 		/// </summary>
-		/// <param name="name"> Name to give to the log, i.e. "Axiom.log" </param>
-		/// <param name="isDefaultLog"> If true, this is the default log output will be sent to if the generic logging methods on this class are used. The first log created is always the default log unless this parameter is set. </param>
-		/// <param name="debuggerOutput"> If true, output to this log will also be routed to <see cref="System.Diagnostics.Debug" /> Not only will this show the messages into the debugger, but also allows you to hook into it using a custom TraceListener to receive message notification wherever you want. </param>
-		/// <returns> A newly created Log object, opened and ready to go. </returns>
+		/// <param name="name">Name to give to the log, i.e. "Axiom.log"</param>
+		/// <param name="isDefaultLog">
+		///     If true, this is the default log output will be
+		///     sent to if the generic logging methods on this class are
+		///     used. The first log created is always the default log unless
+		///     this parameter is set.
+		/// </param>
+		/// <param name="debuggerOutput">
+		///     If true, output to this log will also be routed to <see cref="System.Diagnostics.Debug"/>
+		///     Not only will this show the messages into the debugger, but also allows you to hook into
+		///     it using a custom TraceListener to receive message notification wherever you want.
+		/// </param>
+		/// <returns>A newly created Log object, opened and ready to go.</returns>
 		public Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
 		{
 			var newLog = new Log( name, debuggerOutput );
@@ -150,10 +167,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Retrieves a log managed by this class.
+		///     Retrieves a log managed by this class.
 		/// </summary>
-		/// <param name="name"> Name of the log to retrieve. </param>
-		/// <returns> Log with the specified name. </returns>
+		/// <param name="name">Name of the log to retrieve.</param>
+		/// <returns>Log with the specified name.</returns>
 		public Log GetLog( string name )
 		{
 			if ( logList[ name ] == null )
@@ -165,39 +182,48 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Write a message to the log.
+		///     Write a message to the log.
 		/// </summary>
 		/// <remarks>
-		///   Message is written with a LogMessageLevel of Normal, and debug output is not written.
+		///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
 		/// </remarks>
-		/// <param name="message"> Message to write, which can include string formatting tokens. </param>
-		/// <param name="substitutions"> When message includes string formatting tokens, these are the values to inject into the formatted string. </param>
+		/// <param name="message">Message to write, which can include string formatting tokens.</param>
+		/// <param name="substitutions">
+		///     When message includes string formatting tokens, these are the values to
+		///     inject into the formatted string.
+		/// </param>
 		public void Write( string message, params object[] substitutions )
 		{
 			Write( LogMessageLevel.Normal, false, message, substitutions );
 		}
 
 		/// <summary>
-		///   Write a message to the log.
+		///     Write a message to the log.
 		/// </summary>
 		/// <remarks>
-		///   Message is written with a LogMessageLevel of Normal, and debug output is not written.
+		///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
 		/// </remarks>
-		/// <param name="maskDebug"> If true, debug output will not be written. </param>
-		/// <param name="message"> Message to write, which can include string formatting tokens. </param>
-		/// <param name="substitutions"> When message includes string formatting tokens, these are the values to inject into the formatted string. </param>
+		/// <param name="maskDebug">If true, debug output will not be written.</param>
+		/// <param name="message">Message to write, which can include string formatting tokens.</param>
+		/// <param name="substitutions">
+		///     When message includes string formatting tokens, these are the values to
+		///     inject into the formatted string.
+		/// </param>
 		public void Write( bool maskDebug, string message, params object[] substitutions )
 		{
 			Write( LogMessageLevel.Normal, maskDebug, message, substitutions );
 		}
 
 		/// <summary>
-		///   Write a message to the log.
+		///     Write a message to the log.
 		/// </summary>
-		/// <param name="level"> Importance of this logged message. </param>
-		/// <param name="maskDebug"> If true, debug output will not be written. </param>
-		/// <param name="message"> Message to write, which can include string formatting tokens. </param>
-		/// <param name="substitutions"> When message includes string formatting tokens, these are the values to inject into the formatted string. </param>
+		/// <param name="level">Importance of this logged message.</param>
+		/// <param name="maskDebug">If true, debug output will not be written.</param>
+		/// <param name="message">Message to write, which can include string formatting tokens.</param>
+		/// <param name="substitutions">
+		///     When message includes string formatting tokens, these are the values to
+		///     inject into the formatted string.
+		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
 			DefaultLog.Write( level, maskDebug, message, substitutions );

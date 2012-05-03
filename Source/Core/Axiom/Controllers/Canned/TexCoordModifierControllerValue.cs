@@ -45,7 +45,7 @@ using Axiom.Math;
 namespace Axiom.Controllers.Canned
 {
 	/// <summary>
-	///   Summary description for TexCoordModifierControllerValue.
+	/// Summary description for TexCoordModifierControllerValue.
 	/// </summary>
 	public class TexCoordModifierControllerValue : IControllerValue<Real>
 	{
@@ -66,23 +66,20 @@ namespace Axiom.Controllers.Canned
 		}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU )
-			: this( texUnit, scrollU, false )
-		{
-		}
+			: this( texUnit, scrollU, false ) {}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
 		{
 			this.texUnit = texUnit;
-			transU = scrollU;
-			transV = scrollV;
+			this.transU = scrollU;
+			this.transV = scrollV;
 		}
 
-		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV,
-		                                        bool rotate )
+		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV, bool rotate )
 		{
 			this.texUnit = texUnit;
-			transU = scrollU;
-			transV = scrollV;
+			this.transU = scrollU;
+			this.transV = scrollV;
 			this.scaleU = scaleU;
 			this.scaleV = scaleV;
 			this.rotate = rotate;
@@ -136,7 +133,7 @@ namespace Axiom.Controllers.Canned
 					}
 					else
 					{
-						texUnit.SetTextureScaleU( 1/-value );
+						texUnit.SetTextureScaleU( 1 / -value );
 					}
 				}
 
@@ -148,13 +145,13 @@ namespace Axiom.Controllers.Canned
 					}
 					else
 					{
-						texUnit.SetTextureScaleV( 1/-value );
+						texUnit.SetTextureScaleV( 1 / -value );
 					}
 				}
 
 				if ( rotate )
 				{
-					texUnit.SetTextureRotate( value*360 );
+					texUnit.SetTextureRotate( value * 360 );
 				}
 			}
 		}

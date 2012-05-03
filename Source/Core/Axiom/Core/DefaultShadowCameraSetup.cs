@@ -45,20 +45,20 @@ using Axiom.Math;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Implements default shadow camera setup
+	/// Implements default shadow camera setup
 	/// </summary>
 	/// <remarks>
-	///   This implements the default shadow camera setup algorithm. This is what might be referred to as "normal" shadow mapping.
+	/// This implements the default shadow camera setup algorithm.  This is what might
+	/// be referred to as "normal" shadow mapping.
 	/// </remarks>
 	public class DefaultShadowCameraSetup : IShadowCameraSetup
 	{
 		/// <summary>
-		///   Gets a default implementation of a ShadowCamera.
+		/// Gets a default implementation of a ShadowCamera.
 		/// </summary>
-		/// <see cref="IShadowCameraSetup.GetShadowCamera" />
+		/// <see cref="IShadowCameraSetup.GetShadowCamera"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void GetShadowCamera( SceneManager sceneManager, Camera camera, Viewport viewport, Light light,
-		                             Camera textureCamera, int iteration )
+		public void GetShadowCamera( SceneManager sceneManager, Camera camera, Viewport viewport, Light light, Camera textureCamera, int iteration )
 		{
 			Vector3 pos, dir;
 			Quaternion q;
@@ -75,9 +75,9 @@ namespace Axiom.Core
 			if ( shadowDist == 0.0f )
 			{
 				// need a shadow distance, make one up
-				shadowDist = camera.Near*300;
+				shadowDist = camera.Near * 300;
 			}
-			var shadowOffset = shadowDist*sceneManager.ShadowDirectionalLightTextureOffset;
+			var shadowOffset = shadowDist * sceneManager.ShadowDirectionalLightTextureOffset;
 
 			// Directional lights
 			if ( light.Type == LightType.Directional )
@@ -86,12 +86,12 @@ namespace Axiom.Core
 				// Set ortho projection
 				textureCamera.ProjectionType = Projection.Orthographic;
 				// set ortho window so that texture covers far dist
-				textureCamera.SetOrthoWindow( shadowDist*2, shadowDist*2 );
+				textureCamera.SetOrthoWindow( shadowDist * 2, shadowDist * 2 );
 
 				// Calculate look at position
 				// We want to look at a spot shadowOffset away from near plane
 				// 0.5 is a litle too close for angles
-				var target = camera.DerivedPosition + ( camera.DerivedDirection*shadowOffset );
+				var target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
 
 				// Calculate direction, which same as directional light direction
 				dir = -light.DerivedDirection; // backwards since point down -z
@@ -100,7 +100,7 @@ namespace Axiom.Core
 				// Calculate position
 				// We want to be in the -ve direction of the light direction
 				// far enough to project for the dir light extrusion distance
-				pos = target + dir*sceneManager.ShadowDirectionalLightExtrusionDistance;
+				pos = target + dir * sceneManager.ShadowDirectionalLightExtrusionDistance;
 
 				// Round local x/y position based on a world-space texel; this helps to reduce
 				// jittering caused by the projection moving with the camera
@@ -109,7 +109,7 @@ namespace Axiom.Core
 				//~ pos.x -= fmod(pos.x, worldTexelSize);
 				//~ pos.y -= fmod(pos.y, worldTexelSize);
 				//~ pos.z -= fmod(pos.z, worldTexelSize);
-				var worldTexelSize = ( shadowDist*2 )/textureCamera.Viewport.ActualWidth;
+				var worldTexelSize = ( shadowDist * 2 ) / textureCamera.Viewport.ActualWidth;
 
 				//get texCam orientation
 
@@ -129,14 +129,14 @@ namespace Axiom.Core
 				q = Quaternion.FromAxes( left, up, dir );
 
 				//convert world space camera position into light space
-				var lightSpacePos = q.Inverse()*pos;
+				var lightSpacePos = q.Inverse() * pos;
 
 				//snap to nearest texel
-				lightSpacePos.x -= lightSpacePos.x%worldTexelSize; //fmod(lightSpacePos.x, worldTexelSize);
-				lightSpacePos.y -= lightSpacePos.y%worldTexelSize; //fmod(lightSpacePos.y, worldTexelSize);
+				lightSpacePos.x -= lightSpacePos.x % worldTexelSize; //fmod(lightSpacePos.x, worldTexelSize);
+				lightSpacePos.y -= lightSpacePos.y % worldTexelSize; //fmod(lightSpacePos.y, worldTexelSize);
 
 				//convert back to world space
-				pos = q*lightSpacePos;
+				pos = q * lightSpacePos;
 			}
 				// Spotlight
 			else if ( light.Type == LightType.Spotlight )
@@ -144,7 +144,7 @@ namespace Axiom.Core
 				// Set perspective projection
 				textureCamera.ProjectionType = Projection.Perspective;
 				// set FOV slightly larger than the spotlight range to ensure coverage
-				var fovy = light.SpotlightOuterAngle*1.2;
+				var fovy = light.SpotlightOuterAngle * 1.2;
 
 				// limit angle
 				if ( fovy.InDegrees > 175 )
@@ -171,7 +171,7 @@ namespace Axiom.Core
 				// Calculate look at position
 				// We want to look at a spot shadowOffset away from near plane
 				// 0.5 is a litle too close for angles
-				var target = camera.DerivedPosition + ( camera.DerivedDirection*shadowOffset );
+				var target = camera.DerivedPosition + ( camera.DerivedDirection * shadowOffset );
 
 				// Calculate position, which same as point light position
 				pos = light.GetDerivedPosition();

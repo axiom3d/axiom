@@ -38,7 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -46,47 +49,50 @@ using Axiom.Core;
 namespace Axiom.FileSystem
 {
 	/// <summary>
-	///   This class manages the available ArchiveFactory plugins.
+	///  This class manages the available ArchiveFactory plugins.
 	/// </summary>
 	/// <ogre name="ArchiveManager">
-	///   <file name="OgreArchiveManager.h" revision="1.8.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreArchiveManager.cpp" revision="1.14.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre>
+	///     <file name="OgreArchiveManager.h"   revision="1.8.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreArchiveManager.cpp" revision="1.14.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
 	public sealed class ArchiveManager : Singleton<ArchiveManager>
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		///   The list of factories
+		/// The list of factories
 		/// </summary>
-		private readonly Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
+		private Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
 
-		private readonly Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
+		private Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
 
 		#endregion
 
 		#region Constructor
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		/// Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		public ArchiveManager()
-		{
-		}
+		public ArchiveManager() {}
 
 		#endregion Constructor
 
 		#region Methods
 
 		/// <summary>
-		///   Opens an archive for file reading.
+		/// Opens an archive for file reading.
 		/// </summary>
 		/// <remarks>
-		///   The archives are created using class factories within extension libraries.
+		/// The archives are created using class factories within
+		/// extension libraries.
 		/// </remarks>
-		/// <param name="filename"> The filename that will be opened </param>
-		/// <param name="archiveType"> The library that contains the data-handling code </param>
-		/// <returns> If the function succeeds, a valid pointer to an Archive object is returned. <para /> If the function fails, an exception is thrown. </returns>
+		/// <param name="filename">The filename that will be opened</param>
+		/// <param name="archiveType">The library that contains the data-handling code</param>
+		/// <returns>
+		/// If the function succeeds, a valid pointer to an Archive object is returned.
+		/// <para/>
+		/// If the function fails, an exception is thrown.
+		/// </returns>
 		public Archive Load( string filename, string archiveType )
 		{
 			Archive arch = null;
@@ -109,24 +115,24 @@ namespace Axiom.FileSystem
 		#region Unload Method
 
 		/// <summary>
-		///   Unloads an archive.
-		/// </summary>
-		/// <remarks>
-		///   You must ensure that this archive is not being used before removing it.
-		/// </remarks>
-		/// <param name="arch"> The Archive to unload </param>
+		///  Unloads an archive.
+		///  </summary>
+		///  <remarks>
+		/// You must ensure that this archive is not being used before removing it.
+		///  </remarks>
+		/// <param name="arch">The Archive to unload</param>
 		public void Unload( Archive arch )
 		{
 			Unload( arch.Name );
 		}
 
 		/// <summary>
-		///   Unloads an archive.
-		/// </summary>
-		/// <remarks>
-		///   You must ensure that this archive is not being used before removing it.
-		/// </remarks>
-		/// <param name="filename"> The Archive to unload </param>
+		///  Unloads an archive.
+		///  </summary>
+		///  <remarks>
+		/// You must ensure that this archive is not being used before removing it.
+		///  </remarks>
+		/// <param name="filename">The Archive to unload</param>
 		public void Unload( string filename )
 		{
 			var arch = _archives[ filename ];
@@ -148,9 +154,9 @@ namespace Axiom.FileSystem
 		#endregion Unload Method
 
 		/// <summary>
-		///   Add an archive factory to the list
+		/// Add an archive factory to the list
 		/// </summary>
-		/// <param name="factory"> The factory itself </param>
+		/// <param name="factory">The factory itself</param>
 		public void AddArchiveFactory( ArchiveFactory factory )
 		{
 			if ( _factories.ContainsKey( factory.Type ) == true )
@@ -167,7 +173,7 @@ namespace Axiom.FileSystem
 		#region Singleton<ArchiveManager> Implementation
 
 		/// <summary>
-		///   Called when the engine is shutting down.
+		///     Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{

@@ -36,14 +36,16 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
+
 using Axiom.Core;
+using Axiom.Collections;
 
 #endregion
 
 namespace Axiom.Collections
 {
 	/// <summary>
-	///   Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
+	/// Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
 	/// </summary>
 	public class MovableObjectCollection : AxiomCollection<MovableObject>
 	{
@@ -74,9 +76,7 @@ namespace Axiom.Collections
 	}
 
 	/// <summary>
-	///   Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
+	/// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
 	/// </summary>
-	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
-	{
-	}
+	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory> {}
 }

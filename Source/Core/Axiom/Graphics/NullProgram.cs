@@ -37,7 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Core;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -47,31 +50,20 @@ namespace Axiom.Graphics
 	public class NullProgram : HighLevelGpuProgram
 	{
 		internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null )
-		{
-		}
+			: this( creator, name, handle, group, false, null ) {}
 
 		[OgreVersion( 1, 7, 2790 )]
-		internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual,
-		                      IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader )
-		{
-		}
+		internal NullProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( creator, name, handle, group, isManual, loader ) {}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void LoadFromSource()
-		{
-		}
+		protected override void LoadFromSource() {}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void CreateLowLevelImpl()
-		{
-		}
+		protected override void CreateLowLevelImpl() {}
 
 		[OgreVersion( 1, 7, 2790, "might be unload()?" )]
-		protected override void UnloadHighLevelImpl()
-		{
-		}
+		protected override void UnloadHighLevelImpl() {}
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void PopulateParameterNames( GpuProgramParameters parms )
@@ -82,12 +74,10 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void BuildConstantDefinitions()
-		{
-		}
+		protected override void BuildConstantDefinitions() {}
 
 		/// <summary>
-		///   Overridden from GpuProgram - never supported
+		/// Overridden from GpuProgram - never supported
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public override bool IsSupported
@@ -102,7 +92,7 @@ namespace Axiom.Graphics
 	public class NullProgramFactory : HighLevelGpuProgramFactory
 	{
 		/// <summary>
-		///   Get the name of the language this factory creates programs for
+		/// Get the name of the language this factory creates programs for
 		/// </summary>
 		public override string Language
 		{
@@ -112,8 +102,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group,
-		                                                    bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new NullProgram( creator, name, handle, group, isManual, loader );
 		}

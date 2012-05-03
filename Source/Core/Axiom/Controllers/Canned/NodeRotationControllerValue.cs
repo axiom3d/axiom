@@ -45,14 +45,14 @@ using Axiom.Math;
 namespace Axiom.Controllers.Canned
 {
 	/// <summary>
-	///   Summary description for NodeRotationControllerValue.
+	/// Summary description for NodeRotationControllerValue.
 	/// </summary>
 	public class NodeRotationControllerValue : IControllerValue<Real>
 	{
 		// commented out (read access only private)
 		//private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
-		private readonly Node node;
-		private readonly Vector3 axis;
+		private Node node;
+		private Vector3 axis;
 
 		public NodeRotationControllerValue( Node node, Vector3 axis )
 		{
