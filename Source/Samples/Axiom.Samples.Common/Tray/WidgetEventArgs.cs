@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Axiom.Math;
 
 namespace Axiom.Samples

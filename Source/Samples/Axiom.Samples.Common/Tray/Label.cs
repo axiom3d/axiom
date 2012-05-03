@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
@@ -58,11 +57,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.textArea.Text;
+				return textArea.Text;
 			}
 			set
 			{
-				this.textArea.Text = value;
+				textArea.Text = value;
 			}
 		}
 
@@ -88,16 +87,16 @@ namespace Axiom.Samples
 		public Label( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Label", "BorderPanel", name );
-			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
-			this.textArea.Text = caption;
-			this.Caption = caption;
+			textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
+			textArea.Text = caption;
+			Caption = caption;
 			if ( width <= 0 )
 			{
-				this.isFitToTray = true;
+				isFitToTray = true;
 			}
 			else
 			{
-				this.isFitToTray = false;
+				isFitToTray = false;
 				element.Width = width;
 			}
 		}

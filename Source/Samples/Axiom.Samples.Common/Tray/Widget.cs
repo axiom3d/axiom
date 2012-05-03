@@ -24,12 +24,10 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Fonts;
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
-
 using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
 
 namespace Axiom.Samples
@@ -119,7 +117,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.trayLoc;
+				return trayLoc;
 			}
 		}
 
@@ -130,7 +128,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.element.IsVisible;
+				return element.IsVisible;
 			}
 		}
 
@@ -143,9 +141,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public Widget()
 		{
-			this.trayLoc = TrayLocation.None;
-			this.element = null;
-			this.listener = null;
+			trayLoc = TrayLocation.None;
+			element = null;
+			listener = null;
 		}
 
 		#endregion construction
@@ -159,10 +157,10 @@ namespace Axiom.Samples
 		/// <param name="element"></param>
 		public static void NukeOverlayElement( OverlayElement element )
 		{
-			OverlayElementContainer container = element as OverlayElementContainer;
+			var container = element as OverlayElementContainer;
 			if ( container != null )
 			{
-				List<OverlayElement> toDelete = new List<OverlayElement>();
+				var toDelete = new List<OverlayElement>();
 				foreach ( OverlayElement child in container.Children.Values )
 				{
 					toDelete.Add( child );
@@ -205,12 +203,13 @@ namespace Axiom.Samples
 		public static bool IsCursorOver( OverlayElement element, Vector2 cursorPos, Real voidBorder )
 		{
 			OverlayManager om = OverlayManager.Instance;
-			int l = (int)( element.DerivedLeft * om.ViewportWidth );
-			int t = (int)( element.DerivedTop * om.ViewportHeight );
+			var l = (int)( element.DerivedLeft*om.ViewportWidth );
+			var t = (int)( element.DerivedTop*om.ViewportHeight );
 			int r = l + (int)element.Width;
 			int b = t + (int)element.Height;
 
-			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder && cursorPos.y >= t + voidBorder && cursorPos.y <= b - voidBorder );
+			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder && cursorPos.y >= t + voidBorder &&
+			         cursorPos.y <= b - voidBorder );
 		}
 
 		/// <summary>
@@ -223,7 +222,8 @@ namespace Axiom.Samples
 		public static Vector2 CursorOffset( OverlayElement element, Vector2 cursorPos )
 		{
 			OverlayManager om = OverlayManager.Instance;
-			return new Vector2( cursorPos.x - ( element.DerivedLeft * om.ViewportWidth + element.Width / 2 ), cursorPos.y - ( element.DerivedTop * om.ViewportHeight + element.Height / 2 ) );
+			return new Vector2( cursorPos.x - ( element.DerivedLeft*om.ViewportWidth + element.Width/2 ),
+			                    cursorPos.y - ( element.DerivedTop*om.ViewportHeight + element.Height/2 ) );
 		}
 
 		/// <summary>
@@ -234,7 +234,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public static Real GetCaptionWidth( String caption, TextArea area )
 		{
-			Font font = (Font)FontManager.Instance.GetByName( area.FontName );
+			var font = (Font)FontManager.Instance.GetByName( area.FontName );
 			String current = caption;
 			Real lineWidth = 0;
 
@@ -249,7 +249,7 @@ namespace Axiom.Samples
 					}
 					else
 					{
-						lineWidth += font.GetGlyphAspectRatio( ' ' ) * area.CharHeight;
+						lineWidth += font.GetGlyphAspectRatio( ' ' )*area.CharHeight;
 					}
 				}
 				else if ( current[ i ] == '\n' )
@@ -259,7 +259,7 @@ namespace Axiom.Samples
 					// use glyph information to calculate line width
 				else
 				{
-					lineWidth += font.GetGlyphAspectRatio( current[ i ] ) * area.CharHeight;
+					lineWidth += font.GetGlyphAspectRatio( current[ i ] )*area.CharHeight;
 				}
 			}
 
@@ -274,7 +274,7 @@ namespace Axiom.Samples
 		/// <param name="maxWidth"></param>
 		public static void FitCaptionToArea( String caption, TextArea area, Real maxWidth )
 		{
-			Font f = (Font)FontManager.Instance.GetByName( area.FontName );
+			var f = (Font)FontManager.Instance.GetByName( area.FontName );
 			String s = caption;
 
 			int nl = s.IndexOf( '\n' );
@@ -293,7 +293,7 @@ namespace Axiom.Samples
 				}
 				else
 				{
-					width += f.GetGlyphAspectRatio( s[ i ] ) * area.CharHeight;
+					width += f.GetGlyphAspectRatio( s[ i ] )*area.CharHeight;
 				}
 				if ( width > maxWidth )
 				{
@@ -314,11 +314,11 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Cleanup()
 		{
-			if ( this.element != null )
+			if ( element != null )
 			{
-				NukeOverlayElement( this.element );
+				NukeOverlayElement( element );
 			}
-			this.element = null;
+			element = null;
 		}
 
 		/// <summary>
@@ -326,7 +326,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Hide()
 		{
-			this.element.Hide();
+			element.Hide();
 		}
 
 		/// <summary>
@@ -334,7 +334,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Show()
 		{
-			this.element.Show();
+			element.Show();
 		}
 
 		#endregion

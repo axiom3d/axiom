@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Overlays;
@@ -112,11 +111,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.valueTextArea.Text;
+				return valueTextArea.Text;
 			}
 			set
 			{
-				this.valueTextArea.Text = value;
+				valueTextArea.Text = value;
 			}
 		}
 
@@ -146,10 +145,10 @@ namespace Axiom.Samples
 			}
 			set
 			{
-				this.textArea.Text = value;
-				if ( this.isFitToContents )
+				textArea.Text = value;
+				if ( isFitToContents )
 				{
-					element.Width = GetCaptionWidth( value, this.textArea ) + this.valueTextArea.Parent.Width + this.track.Width + 26;
+					element.Width = GetCaptionWidth( value, textArea ) + valueTextArea.Parent.Width + track.Width + 26;
 				}
 			}
 		}
@@ -169,42 +168,43 @@ namespace Axiom.Samples
 		/// <param name="minValue"></param>
 		/// <param name="maxValue"></param>
 		/// <param name="snaps"></param>
-		public Slider( String name, String caption, Real width, Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		public Slider( String name, String caption, Real width, Real trackWidth, Real valueBoxWidth, Real minValue,
+		               Real maxValue, int snaps )
 		{
-			this.isDragging = false;
-			this.isFitToContents = false;
+			isDragging = false;
+			isFitToContents = false;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Slider", "BorderPanel", name );
 			element.Width = width;
-			OverlayElementContainer c = (OverlayElementContainer)element;
-			this.textArea = (TextArea)c.Children[ Name + "/SliderCaption" ];
-			OverlayElementContainer valueBox = (OverlayElementContainer)c.Children[ Name + "/SliderValueBox" ];
+			var c = (OverlayElementContainer)element;
+			textArea = (TextArea)c.Children[ Name + "/SliderCaption" ];
+			var valueBox = (OverlayElementContainer)c.Children[ Name + "/SliderValueBox" ];
 			valueBox.Width = valueBoxWidth;
 			valueBox.Left = -( valueBoxWidth + 5 );
-			this.valueTextArea = (TextArea)valueBox.Children[ valueBox.Name + "/SliderValueText" ];
-			this.track = (BorderPanel)c.Children[ Name + "/SliderTrack" ];
-			this.handle = (Panel)this.track.Children[ this.track.Name + "/SliderHandle" ];
+			valueTextArea = (TextArea)valueBox.Children[ valueBox.Name + "/SliderValueText" ];
+			track = (BorderPanel)c.Children[ Name + "/SliderTrack" ];
+			handle = (Panel)track.Children[ track.Name + "/SliderHandle" ];
 
 			if ( trackWidth <= 0 ) // tall style
 			{
-				this.track.Width = width - 16;
+				track.Width = width - 16;
 			}
 			else // long style
 			{
 				if ( width <= 0 )
 				{
-					this.isFitToContents = true;
+					isFitToContents = true;
 				}
 				element.Height = 34;
-				this.textArea.Top = 10;
+				textArea.Top = 10;
 				valueBox.Top = 2;
-				this.track.Top = -23;
-				this.track.Width = trackWidth;
-				this.track.HorizontalAlignment = HorizontalAlignment.Right;
-				this.track.Left = -( trackWidth + valueBoxWidth + 5 );
+				track.Top = -23;
+				track.Width = trackWidth;
+				track.HorizontalAlignment = HorizontalAlignment.Right;
+				track.Left = -( trackWidth + valueBoxWidth + 5 );
 			}
 
-			this.Caption = caption;
-			this.SetRange( minValue, maxValue, snaps, false );
+			Caption = caption;
+			SetRange( minValue, maxValue, snaps, false );
 		}
 
 		#endregion
@@ -236,23 +236,23 @@ namespace Axiom.Samples
 
 			if ( snaps <= 1 || this.minValue >= this.maxValue )
 			{
-				this.interval = 0;
-				this.handle.Hide();
-				this.value = minValue;
+				interval = 0;
+				handle.Hide();
+				value = minValue;
 				if ( snaps == 1 )
 				{
-					this.valueTextArea.Text = this.minValue.ToString();
+					valueTextArea.Text = this.minValue.ToString();
 				}
 				else
 				{
-					this.valueTextArea.Text = "";
+					valueTextArea.Text = "";
 				}
 			}
 			else
 			{
-				this.handle.Show();
-				this.interval = ( maxValue - minValue ) / ( snaps - 1 );
-				this.SetValue( minValue, notifyListener );
+				handle.Show();
+				interval = ( maxValue - minValue )/( snaps - 1 );
+				SetValue( minValue, notifyListener );
 			}
 		}
 
@@ -263,14 +263,14 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void SetValue( Real value, bool notifyListener )
 		{
-			if ( this.interval == 0 )
+			if ( interval == 0 )
 			{
 				return;
 			}
 
-			this.value = Math.Utility.Clamp<Real>( value, this.maxValue, this.minValue );
+			this.value = Math.Utility.Clamp<Real>( value, maxValue, minValue );
 
-			this.ValueCaption = this.value.ToString();
+			ValueCaption = this.value.ToString();
 
 			if ( listener != null && notifyListener )
 			{
@@ -278,9 +278,9 @@ namespace Axiom.Samples
 			}
 			OnSliderMoved( this, this );
 
-			if ( !this.isDragging )
+			if ( !isDragging )
 			{
-				this.handle.Left = (int)( ( this.value - this.minValue ) / ( this.maxValue - this.minValue ) * ( this.track.Width - this.handle.Width ) );
+				handle.Left = (int)( ( this.value - minValue )/( maxValue - minValue )*( track.Width - handle.Width ) );
 			}
 		}
 
@@ -290,25 +290,25 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( !this.handle.IsVisible )
+			if ( !handle.IsVisible )
 			{
 				return;
 			}
 
-			Vector2 co = Widget.CursorOffset( this.handle, cursorPos );
+			Vector2 co = Widget.CursorOffset( handle, cursorPos );
 
 			if ( co.LengthSquared <= 81 )
 			{
-				this.isDragging = true;
-				this.dragOffset = co.x;
+				isDragging = true;
+				dragOffset = co.x;
 			}
-			else if ( Widget.IsCursorOver( this.track, cursorPos ) )
+			else if ( Widget.IsCursorOver( track, cursorPos ) )
 			{
-				Real newLeft = this.handle.Left + co.x;
-				Real rightBoundary = this.track.Width - this.handle.Width;
+				Real newLeft = handle.Left + co.x;
+				Real rightBoundary = track.Width - handle.Width;
 
-				this.handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
-				Value = this.GetSnappedValue( newLeft / rightBoundary );
+				handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
+				Value = GetSnappedValue( newLeft/rightBoundary );
 			}
 
 			base.OnCursorPressed( cursorPos );
@@ -320,10 +320,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorReleased( Vector2 cursorPos )
 		{
-			if ( this.isDragging )
+			if ( isDragging )
 			{
-				this.isDragging = false;
-				this.handle.Left = (int)( ( this.value - this.minValue ) / ( this.maxValue - this.minValue ) * ( this.track.Width - this.handle.Width ) );
+				isDragging = false;
+				handle.Left = (int)( ( value - minValue )/( maxValue - minValue )*( track.Width - handle.Width ) );
 			}
 
 			base.OnCursorReleased( cursorPos );
@@ -335,14 +335,14 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( this.isDragging )
+			if ( isDragging )
 			{
-				Vector2 co = Widget.CursorOffset( this.handle, cursorPos );
-				Real newLeft = this.handle.Left + co.x - this.dragOffset;
-				Real rightBoundary = this.track.Width - this.handle.Width;
+				Vector2 co = Widget.CursorOffset( handle, cursorPos );
+				Real newLeft = handle.Left + co.x - dragOffset;
+				Real rightBoundary = track.Width - handle.Width;
 
-				this.handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
-				Value = this.GetSnappedValue( newLeft / rightBoundary );
+				handle.Left = Math.Utility.Clamp<Real>( newLeft, rightBoundary, 0 );
+				Value = GetSnappedValue( newLeft/rightBoundary );
 			}
 
 			base.OnCursorMoved( cursorPos );
@@ -364,7 +364,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			this.isDragging = false;
+			isDragging = false;
 			base.OnLostFocus();
 		}
 
@@ -377,8 +377,8 @@ namespace Axiom.Samples
 		protected Real GetSnappedValue( Real percentage )
 		{
 			percentage = Math.Utility.Clamp<Real>( percentage, 1, 0 );
-			int whichMarker = (int)( percentage * ( this.maxValue - this.minValue ) / this.interval + 0.5 );
-			return whichMarker * this.interval + this.minValue;
+			var whichMarker = (int)( percentage*( maxValue - minValue )/interval + 0.5 );
+			return whichMarker*interval + minValue;
 		}
 
 		#endregion

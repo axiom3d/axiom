@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Overlays;
@@ -75,14 +74,14 @@ namespace Axiom.Samples
 			}
 			set
 			{
-				this.names = value;
-				this.values.Clear();
+				names = value;
+				values.Clear();
 				for ( int i = 0; i < value.Count; i++ )
 				{
-					this.values.Add( "" );
+					values.Add( "" );
 				}
-				element.Height = this.namesArea.Top * 2 + this.names.Count * this.namesArea.CharHeight;
-				this.UpdateText();
+				element.Height = namesArea.Top*2 + names.Count*namesArea.CharHeight;
+				UpdateText();
 			}
 		}
 
@@ -113,11 +112,11 @@ namespace Axiom.Samples
 		public ParamsPanel( String name, Real width, int lines )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ParamsPanel", "BorderPanel", name );
-			OverlayElementContainer c = (OverlayElementContainer)element;
-			this.namesArea = (TextArea)c.Children[ Name + "/ParamsPanelNames" ];
-			this.valuesArea = (TextArea)c.Children[ Name + "/ParamsPanelValues" ];
+			var c = (OverlayElementContainer)element;
+			namesArea = (TextArea)c.Children[ Name + "/ParamsPanelNames" ];
+			valuesArea = (TextArea)c.Children[ Name + "/ParamsPanelValues" ];
 			element.Width = width;
-			element.Height = this.namesArea.Top * 2 + lines * this.namesArea.CharHeight;
+			element.Height = namesArea.Top*2 + lines*namesArea.CharHeight;
 			values = new List<string>();
 		}
 
@@ -128,12 +127,12 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( String paramName, String paramValue )
 		{
-			for ( int i = 0; i < this.names.Count; i++ )
+			for ( int i = 0; i < names.Count; i++ )
 			{
-				if ( this.names[ i ] == paramName )
+				if ( names[ i ] == paramName )
 				{
-					this.values[ i ] = paramValue;
-					this.UpdateText();
+					values[ i ] = paramValue;
+					UpdateText();
 					return;
 				}
 			}
@@ -149,20 +148,20 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( int index, String paramValue )
 		{
-			if ( index < 0 || index >= this.names.Count )
+			if ( index < 0 || index >= names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
 			}
-			if ( this.values.Count < index )
+			if ( values.Count < index )
 			{
-				this.values.Insert( index, paramValue );
+				values.Insert( index, paramValue );
 			}
 			else
 			{
-				this.values[ index ] = paramValue;
+				values[ index ] = paramValue;
 			}
-			this.UpdateText();
+			UpdateText();
 		}
 
 		/// <summary>
@@ -172,11 +171,11 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( String paramName )
 		{
-			for ( int i = 0; i < this.names.Count; i++ )
+			for ( int i = 0; i < names.Count; i++ )
 			{
-				if ( this.names[ i ] == paramName )
+				if ( names[ i ] == paramName )
 				{
-					return this.values[ i ];
+					return values[ i ];
 				}
 			}
 
@@ -191,13 +190,13 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( int index )
 		{
-			if ( index < 0 || index >= this.names.Count )
+			if ( index < 0 || index >= names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
 			}
 
-			return this.values[ index ];
+			return values[ index ];
 		}
 
 		/// <summary>
@@ -205,17 +204,17 @@ namespace Axiom.Samples
 		/// </summary>
 		protected void UpdateText()
 		{
-			StringBuilder namesDS = new StringBuilder();
-			StringBuilder valuesDS = new StringBuilder();
+			var namesDS = new StringBuilder();
+			var valuesDS = new StringBuilder();
 
-			for ( int i = 0; i < this.names.Count; i++ )
+			for ( int i = 0; i < names.Count; i++ )
 			{
-				namesDS.Append( this.names[ i ] + ":\n" );
-				valuesDS.Append( this.values[ i ] + "\n" );
+				namesDS.Append( names[ i ] + ":\n" );
+				valuesDS.Append( values[ i ] + "\n" );
 			}
 
-			this.namesArea.Text = namesDS.ToString();
-			this.valuesArea.Text = valuesDS.ToString();
+			namesArea.Text = namesDS.ToString();
+			valuesArea.Text = valuesDS.ToString();
 		}
 	}
 }
