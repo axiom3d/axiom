@@ -37,11 +37,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.RenderSystems.DirectX9.Helpers;
-
 using Capabilities = SharpDX.Direct3D9.Capabilities;
 using D3D9 = SharpDX.Direct3D9;
 using D3D9RenderWindowList = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.D3D9RenderWindow>;
@@ -57,15 +55,13 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region _renderDevices
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly List<D3D9Device> _renderDevices = new List<D3D9Device>();
+		[OgreVersion( 1, 7, 2790 )] private readonly List<D3D9Device> _renderDevices = new List<D3D9Device>();
 
 		#endregion _renderDevices
 
 		#region ActiveDevice
 
-		[OgreVersion( 1, 7, 2790 )]
-		private D3D9Device _activeDevice;
+		[OgreVersion( 1, 7, 2790 )] private D3D9Device _activeDevice;
 
 		public D3D9Device ActiveDevice
 		{
@@ -114,8 +110,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region ActiveRenderTargetDevice
 
-		[OgreVersion( 1, 7, 2790 )]
-		private D3D9Device _activeRenderWindowDevice;
+		[OgreVersion( 1, 7, 2790 )] private D3D9Device _activeRenderWindowDevice;
 
 		public D3D9Device ActiveRenderTargetDevice
 		{
@@ -171,7 +166,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790, "~D3D9DeviceManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -284,14 +279,18 @@ namespace Axiom.RenderSystems.DirectX9
 					if ( osVersionInfo.Version.Major <= 5 && renderWindow.IsVSync )
 					{
 						bTryUsingMultiheadDevice = false;
-						LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes horizontal line when used in XP + VSync combination" );
+						LogManager.Instance.Write(
+							"D3D9 : Multi head disabled. It causes horizontal line when used in XP + VSync combination" );
 					}
 
 					// Vista and SP1 or SP2 - multi-head device can not be reset - it causes memory corruption.
-					if ( osVersionInfo.Version.Major == 6 && ( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) || osVersionInfo.ServicePack.Contains( "Service Pack 2" ) ) )
+					if ( osVersionInfo.Version.Major == 6 &&
+					     ( osVersionInfo.ServicePack.Contains( "Service Pack 1" ) ||
+					       osVersionInfo.ServicePack.Contains( "Service Pack 2" ) ) )
 					{
 						bTryUsingMultiheadDevice = false;
-						LogManager.Instance.Write( "D3D9 : Multi head disabled. It causes application run time crashes when used in Vista + SP 1 or 2 combination" );
+						LogManager.Instance.Write(
+							"D3D9 : Multi head disabled. It causes application run time crashes when used in Vista + SP 1 or 2 combination" );
 					}
 				}
 
@@ -475,7 +474,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// No matching device found -> create new one.
 			if ( renderDevice == null )
 			{
-				renderDevice = new D3D9Device( this, nAdapterOrdinal, direct3D9.GetAdapterMonitor( nAdapterOrdinal ), devType, extraFlags );
+				renderDevice = new D3D9Device( this, nAdapterOrdinal, direct3D9.GetAdapterMonitor( nAdapterOrdinal ), devType,
+				                               extraFlags );
 				_renderDevices.Add( renderDevice );
 				if ( _activeDevice == null )
 				{

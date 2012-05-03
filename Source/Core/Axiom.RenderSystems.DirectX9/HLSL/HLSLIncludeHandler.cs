@@ -34,9 +34,7 @@
 #region Namespace Declarations
 
 using System.IO;
-
 using Axiom.Core;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -49,14 +47,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		public System.IDisposable Shadow
 		{
-			get
-			{
-				throw new System.NotImplementedException();
-			}
-			set
-			{
-				throw new System.NotImplementedException();
-			}
+			get; set;
 		}
 
 
@@ -64,12 +55,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		public HLSLIncludeHandler( Resource sourceProgram )
 			: base()
 		{
-			this.program = sourceProgram;
+			program = sourceProgram;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed && disposeManagedResources )
+			if ( !IsDisposed && disposeManagedResources )
 			{
 				program.SafeDispose();
 				program = null;
@@ -80,12 +71,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		public void Open( D3D9.IncludeType type, string fileName, out Stream fileStream )
 		{
-			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, program.Group, true, program );
 		}
 
 		public Stream Open( D3D9.IncludeType type, string fileName, Stream parentStream )
 		{
-			return ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
+			return ResourceGroupManager.Instance.OpenResource( fileName, program.Group, true, program );
 		}
 
 		public void Close( Stream fileStream )

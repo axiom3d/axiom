@@ -56,12 +56,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManagerBase()
-			: base() {}
+			: base()
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManagerBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -79,7 +81,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateVertexBuffer(VertexDeclaration, int, BufferUsage, bool)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
+		                                                         BufferUsage usage, bool useShadowBuffer )
 		{
 			Contract.Requires( numVerts > 0 );
 
@@ -114,7 +117,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateIndexBuffer(IndexType, int, BufferUsage, bool)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+		                                                       bool useShadowBuffer )
 		{
 			Contract.Requires( numIndices > 0 );
 
@@ -173,12 +177,14 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManager()
-			: base( new D3D9HardwareBufferManagerBase() ) {}
+			: base( new D3D9HardwareBufferManagerBase() )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

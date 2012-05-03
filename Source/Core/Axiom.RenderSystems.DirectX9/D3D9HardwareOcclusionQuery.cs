@@ -34,10 +34,8 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -65,7 +63,7 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		private Dictionary<D3D9.Device, D3D9.Query> _mapDeviceToQuery = new Dictionary<D3D9.Device, D3D9.Query>();
+		private readonly Dictionary<D3D9.Device, D3D9.Query> _mapDeviceToQuery = new Dictionary<D3D9.Device, D3D9.Query>();
 
 		#endregion Fields
 
@@ -84,7 +82,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareOcclusionQuery" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -178,7 +176,7 @@ namespace Axiom.RenderSystems.DirectX9
 					try
 					{
 						pixels = pOccQuery.GetData<int>( true );
-						this.LastFragmentCount = pixels;
+						LastFragmentCount = pixels;
 						NumOfFragments = pixels;
 						break;
 					}
@@ -186,7 +184,7 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
 						{
-							this.LastFragmentCount = NumOfFragments = 0;
+							LastFragmentCount = NumOfFragments = 0;
 							pOccQuery.SafeDispose();
 							break;
 						}
@@ -198,7 +196,7 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// we already stored result from last frames.
-				NumOfFragments = this.LastFragmentCount;
+				NumOfFragments = LastFragmentCount;
 			}
 
 			return true;
@@ -229,7 +227,7 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				var pixels = pOccQuery.GetData<int>( false );
-				this.LastFragmentCount = pixels;
+				LastFragmentCount = pixels;
 				isQueryResultStillOutstanding = false;
 
 				return false;
@@ -238,7 +236,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( ex.ResultCode == D3D9.ResultCode.DeviceLost )
 				{
-					this.LastFragmentCount = 100000;
+					LastFragmentCount = 100000;
 					pOccQuery.SafeDispose();
 				}
 
@@ -278,7 +276,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device ) {}
+		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
@@ -296,7 +296,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceReset( D3D9.Device d3d9Device ) {}
+		public void NotifyOnDeviceReset( D3D9.Device d3d9Device )
+		{
+		}
 
 		#endregion ID3D9Resource Members
 	};
