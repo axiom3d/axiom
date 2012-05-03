@@ -105,19 +105,25 @@ namespace Axiom.Components.Paging
 		/// Called when the frame starts.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameStart( Real timeSinceLastFrame ) {}
+		public virtual void FrameStart( Real timeSinceLastFrame )
+		{
+		}
 
 		/// <summary>
 		/// Called when the frame ends.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameEnd( Real timeElapsed ) {}
+		public virtual void FrameEnd( Real timeElapsed )
+		{
+		}
 
 		/// <summary>
 		/// Notify a section of the current camera.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void NotifyCamera( Camera camera ) {}
+		public virtual void NotifyCamera( Camera camera )
+		{
+		}
 
 		/// <summary>
 		/// Prepare data - may be called in the background

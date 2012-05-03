@@ -4,150 +4,150 @@ using Axiom.Graphics;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    internal class GLSLProgramProcessor : ProgramProcessor
-    {
-        private List<string> libraryPrograms;
+	internal class GLSLProgramProcessor : ProgramProcessor
+	{
+		private List<string> libraryPrograms;
 
-        public GLSLProgramProcessor()
-        {
-        }
+		public GLSLProgramProcessor()
+		{
+		}
 
 
-        public override void Dispose()
-        {
-            for ( int i = 0; i < libraryPrograms.Count; i++ )
-            {
-                HighLevelGpuProgramManager.Instance.Remove( libraryPrograms[ i ] );
-            }
-            libraryPrograms.Clear();
-        }
+		public override void Dispose()
+		{
+			for ( int i = 0; i < libraryPrograms.Count; i++ )
+			{
+				HighLevelGpuProgramManager.Instance.Remove( libraryPrograms[ i ] );
+			}
+			libraryPrograms.Clear();
+		}
 
-        internal override bool PreCreateGpuPrograms( ProgramSet programSet )
-        {
-            Program vsProgram = programSet.CpuVertexProgram;
-            Program fsProgram = programSet.CpuFragmentProgram;
-            Function vsMain = vsProgram.EntryPointFunction;
-            Function fsMain = fsProgram.EntryPointFunction;
-            bool success;
+		internal override bool PreCreateGpuPrograms( ProgramSet programSet )
+		{
+			Program vsProgram = programSet.CpuVertexProgram;
+			Program fsProgram = programSet.CpuFragmentProgram;
+			Function vsMain = vsProgram.EntryPointFunction;
+			Function fsMain = fsProgram.EntryPointFunction;
+			bool success;
 
-            //compact vertex shader outputs.
-            success = ProgramProcessor.CompactVsOutputs( vsMain, fsMain );
-            if ( success == false )
-            {
-                return false;
-            }
+			//compact vertex shader outputs.
+			success = ProgramProcessor.CompactVsOutputs( vsMain, fsMain );
+			if ( success == false )
+			{
+				return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        internal override bool PostCreateGpuPrograms( ProgramSet programSet )
-        {
-            Program vsCpuProgram = programSet.CpuVertexProgram;
-            Program fsCpuProgram = programSet.CpuFragmentProgram;
-            GpuProgram vsGpuProgram = programSet.GpuVertexProgram;
-            GpuProgram fsGpuProgram = programSet.GpuFragmentProgram;
+		internal override bool PostCreateGpuPrograms( ProgramSet programSet )
+		{
+			Program vsCpuProgram = programSet.CpuVertexProgram;
+			Program fsCpuProgram = programSet.CpuFragmentProgram;
+			GpuProgram vsGpuProgram = programSet.GpuVertexProgram;
+			GpuProgram fsGpuProgram = programSet.GpuFragmentProgram;
 
-            BindSubShaders( vsCpuProgram, vsGpuProgram );
+			BindSubShaders( vsCpuProgram, vsGpuProgram );
 
-            BindSubShaders( fsCpuProgram, fsGpuProgram );
+			BindSubShaders( fsCpuProgram, fsGpuProgram );
 
-            BindAutoParameters( programSet.CpuVertexProgram, programSet.GpuVertexProgram );
+			BindAutoParameters( programSet.CpuVertexProgram, programSet.GpuVertexProgram );
 
-            BindAutoParameters( programSet.CpuFragmentProgram, programSet.GpuFragmentProgram );
+			BindAutoParameters( programSet.CpuFragmentProgram, programSet.GpuFragmentProgram );
 
-            BindTextureSampler( vsCpuProgram, vsGpuProgram );
+			BindTextureSampler( vsCpuProgram, vsGpuProgram );
 
-            BindTextureSampler( fsCpuProgram, fsGpuProgram );
+			BindTextureSampler( fsCpuProgram, fsGpuProgram );
 
-            return true;
-        }
+			return true;
+		}
 
-        private void BindTextureSampler( Program cpuProgram, GpuProgram gpuProgram )
-        {
-            var gpuParams = gpuProgram.DefaultParameters;
-            var progParams = cpuProgram.Parameters;
+		private void BindTextureSampler( Program cpuProgram, GpuProgram gpuProgram )
+		{
+			var gpuParams = gpuProgram.DefaultParameters;
+			var progParams = cpuProgram.Parameters;
 
-            //Bind the samplers
-            foreach ( var curParam in progParams )
-            {
-                if ( curParam.IsSampler )
-                {
-                    gpuParams.SetNamedConstant( curParam.Name, curParam.Index );
-                }
-            }
-        }
+			//Bind the samplers
+			foreach ( var curParam in progParams )
+			{
+				if ( curParam.IsSampler )
+				{
+					gpuParams.SetNamedConstant( curParam.Name, curParam.Index );
+				}
+			}
+		}
 
-        private void BindSubShaders( Program program, GpuProgram gpuProgram )
-        {
-            if ( program.DependencyCount > 0 )
-            {
-                // Get all attached shaders so we do not attach shaders twice.
-                // maybe GLSLProgram should take care of that ( prevent add duplicate shaders )
-                string attachedShaders = string.Empty; //TODO: gpuProgram.GetParameter("attach");
-                string subSharedDef = string.Empty;
+		private void BindSubShaders( Program program, GpuProgram gpuProgram )
+		{
+			if ( program.DependencyCount > 0 )
+			{
+				// Get all attached shaders so we do not attach shaders twice.
+				// maybe GLSLProgram should take care of that ( prevent add duplicate shaders )
+				string attachedShaders = string.Empty; //TODO: gpuProgram.GetParameter("attach");
+				string subSharedDef = string.Empty;
 
-                for ( int i = 0; i < program.DependencyCount; i++ )
-                {
-                    // Here we append _VS and _FS to the library shaders (so max each lib shader
-                    // is compiled twice once as vertex and once as fragment shader)
+				for ( int i = 0; i < program.DependencyCount; i++ )
+				{
+					// Here we append _VS and _FS to the library shaders (so max each lib shader
+					// is compiled twice once as vertex and once as fragment shader)
 
-                    string subShaderName = program.GetDependency( i );
-                    if ( program.Type == GpuProgramType.Vertex )
-                    {
-                        subShaderName += "_VS";
-                    }
-                    else
-                    {
-                        subShaderName += "_FS";
-                    }
+					string subShaderName = program.GetDependency( i );
+					if ( program.Type == GpuProgramType.Vertex )
+					{
+						subShaderName += "_VS";
+					}
+					else
+					{
+						subShaderName += "_FS";
+					}
 
-                    //Check if the library shader already compiled
-                    if ( !HighLevelGpuProgramManager.Instance.ResourceExists( subShaderName ) )
-                    {
-                        //Create the library shader
-                        HighLevelGpuProgram subGpuProgram =
-                            HighLevelGpuProgramManager.Instance.CreateProgram( subShaderName,
-                                                                               ResourceGroupManager.
-                                                                                   DefaultResourceGroupName,
-                                                                               TargetLanguage, program.Type );
+					//Check if the library shader already compiled
+					if ( !HighLevelGpuProgramManager.Instance.ResourceExists( subShaderName ) )
+					{
+						//Create the library shader
+						HighLevelGpuProgram subGpuProgram =
+							HighLevelGpuProgramManager.Instance.CreateProgram( subShaderName,
+							                                                   ResourceGroupManager.
+							                                                   	DefaultResourceGroupName,
+							                                                   TargetLanguage, program.Type );
 
-                        //Set the source name
-                        string sourceName = program.GetDependency( i ) + "." + TargetLanguage;
-                        subGpuProgram.SourceFile = sourceName;
+						//Set the source name
+						string sourceName = program.GetDependency( i ) + "." + TargetLanguage;
+						subGpuProgram.SourceFile = sourceName;
 
-                        //If we have compiler errors than stop processing
-                        if ( subGpuProgram.HasCompileError )
-                        {
-                            throw new AxiomException( "Could not compile shader library from the source file: " +
-                                                      sourceName );
-                        }
+						//If we have compiler errors than stop processing
+						if ( subGpuProgram.HasCompileError )
+						{
+							throw new AxiomException( "Could not compile shader library from the source file: " +
+							                          sourceName );
+						}
 
-                        libraryPrograms.Add( subShaderName );
-                    }
+						libraryPrograms.Add( subShaderName );
+					}
 
-                    //Check if the lib shader already attached to this shader
-                    if ( attachedShaders.Contains( subShaderName ) )
-                    {
-                        subSharedDef += subShaderName + " ";
-                    }
-                }
+					//Check if the lib shader already attached to this shader
+					if ( attachedShaders.Contains( subShaderName ) )
+					{
+						subSharedDef += subShaderName + " ";
+					}
+				}
 
-                //Check if we have something to attach
-                if ( subSharedDef.Length > 0 )
-                {
-                    var nvpl = new Axiom.Collections.NameValuePairList();
-                    nvpl.Add( "attach", subSharedDef );
-                    gpuProgram.SetParameters( nvpl );
-                }
-            }
-        }
+				//Check if we have something to attach
+				if ( subSharedDef.Length > 0 )
+				{
+					var nvpl = new Axiom.Collections.NameValuePairList();
+					nvpl.Add( "attach", subSharedDef );
+					gpuProgram.SetParameters( nvpl );
+				}
+			}
+		}
 
-        public override string TargetLanguage
-        {
-            get
-            {
-                return "glsl";
-            }
-        }
-    }
+		public override string TargetLanguage
+		{
+			get
+			{
+				return "glsl";
+			}
+		}
+	}
 }

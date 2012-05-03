@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -86,12 +85,14 @@ namespace Axiom.Components.Paging
 
 		[OgreVersion( 1, 7, 2 )]
 		public SimplePageContentCollection( SimplePageContentCollectionFactory creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~SimplePageContentCollection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

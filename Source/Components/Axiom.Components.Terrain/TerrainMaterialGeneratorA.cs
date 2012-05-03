@@ -35,7 +35,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
@@ -367,7 +366,8 @@ namespace Axiom.Components.Terrain
 					//blend maps
 					uint maxLayers = GetMaxLayers( terrain );
 
-					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ), terrain.GetBlendTextureCount() );
+					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ),
+					                                     terrain.GetBlendTextureCount() );
 					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
 					for ( uint i = 0; i < numBlendTextures; ++i )
 					{
@@ -428,7 +428,7 @@ namespace Axiom.Components.Terrain
 				if ( mCompositeMapEnabled )
 				{
 					AddTechnique( mat, terrain, TechniqueType.LowLod );
-					LodValueList lodValues = new LodValueList();
+					var lodValues = new LodValueList();
 					lodValues.Add( 3000 ); //TerrainGlobalOptions.CompositeMapDistance);
 					mat.SetLodLevels( lodValues );
 					Technique lowLodTechnique = mat.GetTechnique( 1 );
@@ -487,7 +487,7 @@ namespace Axiom.Components.Terrain
 				// TODO shadowmaps
 
 				// each layer needs 2.25 units (1xdiffusespec, 1xnormalheight, 0.25xblend)
-				return (byte)( freeTextureUnits / 2.25f );
+				return (byte)( freeTextureUnits/2.25f );
 			}
 
 			/// <summary>
@@ -682,7 +682,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="source"></param>
-				protected virtual void GenerateVertexProgramSource( SM2Profile prof, Terrain terrain, TechniqueType tt, ref string source )
+				protected virtual void GenerateVertexProgramSource( SM2Profile prof, Terrain terrain, TechniqueType tt,
+				                                                    ref string source )
 				{
 					GenerateVpHeader( prof, terrain, tt, ref source );
 
@@ -707,7 +708,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="source"></param>
-				protected virtual void GenerateFragmetProgramSource( SM2Profile prof, Terrain terrain, TechniqueType tt, ref string source )
+				protected virtual void GenerateFragmetProgramSource( SM2Profile prof, Terrain terrain, TechniqueType tt,
+				                                                     ref string source )
 				{
 					GenerateFpHeader( prof, terrain, tt, ref source );
 
@@ -750,7 +752,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="source"></param>
-				protected abstract void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source );
+				protected abstract void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source );
 
 				/// <summary>
 				/// 
@@ -759,7 +762,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="source"></param>
-				protected abstract void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source );
+				protected abstract void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source );
 
 				/// <summary>
 				/// 
@@ -792,7 +796,8 @@ namespace Axiom.Components.Terrain
 					gparams.IgnoreMissingParameters = true;
 					gparams.SetNamedAutoConstant( "worldMatrix", GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
 					gparams.SetNamedAutoConstant( "viewProjMatrix", GpuProgramParameters.AutoConstantType.ViewProjMatrix, 0 );
-					gparams.SetNamedAutoConstant( "lodMorph", GpuProgramParameters.AutoConstantType.Custom, Terrain.LOD_MORPH_CUSTOM_PARAM );
+					gparams.SetNamedAutoConstant( "lodMorph", GpuProgramParameters.AutoConstantType.Custom,
+					                              Terrain.LOD_MORPH_CUSTOM_PARAM );
 					gparams.SetNamedAutoConstant( "fogParams", GpuProgramParameters.AutoConstantType.FogParams, 0 );
 				}
 
@@ -825,19 +830,23 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="gpuparams"></param>
-				public virtual void UpdateVpParams( SM2Profile prof, Terrain terrain, TechniqueType tt, GpuProgramParameters gpuparams )
+				public virtual void UpdateVpParams( SM2Profile prof, Terrain terrain, TechniqueType tt,
+				                                    GpuProgramParameters gpuparams )
 				{
 					gpuparams.IgnoreMissingParameters = true;
 					uint maxLayers = prof.GetMaxLayers( terrain );
 					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
-					uint numUVMul = numLayers / 4;
-					if ( numUVMul % 4 == 0 )
+					uint numUVMul = numLayers/4;
+					if ( numUVMul%4 == 0 )
 					{
 						++numUVMul;
 					}
 					for ( uint i = 0; i < numUVMul; ++i )
 					{
-						Vector4 uvMul = new Vector4( terrain.GetLayerUVMultiplier( (byte)( i * 4 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 1 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 2 ) ), terrain.GetLayerUVMultiplier( (byte)( i * 4 + 3 ) ) );
+						var uvMul = new Vector4( terrain.GetLayerUVMultiplier( (byte)( i*4 ) ),
+						                         terrain.GetLayerUVMultiplier( (byte)( i*4 + 1 ) ),
+						                         terrain.GetLayerUVMultiplier( (byte)( i*4 + 2 ) ),
+						                         terrain.GetLayerUVMultiplier( (byte)( i*4 + 3 ) ) );
 #if true
 						gpuparams.SetNamedConstant( "uvMul" + i.ToString(), uvMul );
 #endif
@@ -851,11 +860,12 @@ namespace Axiom.Components.Terrain
 				/// <param name="terrain"></param>
 				/// <param name="tt"></param>
 				/// <param name="gpuparams"></param>
-				public virtual void UpdateFpParams( SM2Profile prof, Terrain terrain, TechniqueType tt, GpuProgramParameters gpuparams )
+				public virtual void UpdateFpParams( SM2Profile prof, Terrain terrain, TechniqueType tt,
+				                                    GpuProgramParameters gpuparams )
 				{
 					gpuparams.IgnoreMissingParameters = true;
 					// TODO - parameterise this?
-					Vector4 scaleBiasSpecular = new Vector4( 0.03f, -0.04f, 32, 1 );
+					var scaleBiasSpecular = new Vector4( 0.03f, -0.04f, 32, 1 );
 					gpuparams.SetNamedConstant( "scaleBiasSpecular", scaleBiasSpecular );
 				}
 
@@ -865,7 +875,7 @@ namespace Axiom.Components.Terrain
 				/// <param name="idx"></param>
 				public virtual string GetChannel( uint idx )
 				{
-					uint rem = idx % 4;
+					uint rem = idx%4;
 					switch ( rem )
 					{
 						case 0:
@@ -898,7 +908,7 @@ namespace Axiom.Components.Terrain
 				{
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "cg", GpuProgramType.Vertex );
@@ -928,7 +938,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetFragmentProgramName( prof, terrain, tt );
 
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "cg", GpuProgramType.Fragment );
@@ -970,13 +980,14 @@ namespace Axiom.Components.Terrain
 						source += "float2 delta  : TEXCOORD1,\n"; // lodDelta, lodThreshold
 					}
 
-					source += "uniform float4x4 worldMatrix,\n" + "uniform float4x4 viewProjMatrix,\n" + "uniform float2   lodMorph,\n"; // morph amount, morph LOD target
+					source += "uniform float4x4 worldMatrix,\n" + "uniform float4x4 viewProjMatrix,\n" + "uniform float2   lodMorph,\n";
+						// morph amount, morph LOD target
 
 					// uv multipliers
 					uint maxLayers = prof.GetMaxLayers( terrain );
 					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
-					uint numUVMutipliers = ( numLayers / 4 );
-					if ( numLayers % 4 != 0 )
+					uint numUVMutipliers = ( numLayers/4 );
+					if ( numLayers%4 != 0 )
 					{
 						++numUVMutipliers;
 					}
@@ -989,8 +1000,8 @@ namespace Axiom.Components.Terrain
 					source += "out float4 oPos : POSITION,\n" + "out float2 oUV : TEXCOORD0, \n" + "out float4 oPosObj : TEXCOORD1 \n";
 
 					// layer UV's premultiplied, packed as xy/zw
-					uint numUVSets = numLayers / 2;
-					if ( numLayers % 2 != 0 )
+					uint numUVSets = numLayers/2;
+					if ( numLayers%2 != 0 )
 					{
 						++numUVSets;
 					}
@@ -1054,8 +1065,8 @@ namespace Axiom.Components.Terrain
 					{
 						for ( uint i = 0; i < numUVSets; ++i )
 						{
-							uint layer = i * 2;
-							uint uvMulIdx = layer / 4;
+							uint layer = i*2;
+							uint uvMulIdx = layer/4;
 
 							source += "	oUV" + i + ".xy = " + " uv.xy * uvMul" + uvMulIdx + "." + GetChannel( layer ) + ";\n";
 							source += "	oUV" + i + ".zw = " + " uv.xy * uvMul" + uvMulIdx + "." + GetChannel( layer + 1 ) + ";\n";
@@ -1073,15 +1084,17 @@ namespace Axiom.Components.Terrain
 				protected override void GenerateFpHeader( SM2Profile prof, Terrain terrain, TechniqueType tt, ref string source )
 				{
 					// Main header
-					source +=// helpers
-						"float4 expand(float4 v)\n" + "{ \n" + "	return v * 2 - 1;\n" + "}\n\n\n" + "float4 main_fp(\n" + "float2 uv : TEXCOORD0,\n" + "float4 position : TEXCOORD1,\n";
+					source += // helpers
+						"float4 expand(float4 v)\n" + "{ \n" + "	return v * 2 - 1;\n" + "}\n\n\n" + "float4 main_fp(\n" +
+						"float2 uv : TEXCOORD0,\n" + "float4 position : TEXCOORD1,\n";
 
 					// UV's premultiplied, packed as xy/zw
 					uint maxLayers = prof.GetMaxLayers( terrain );
-					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ), terrain.GetBlendTextureCount() );
+					uint numBlendTextures = Utility.Min( terrain.GetBlendTextureCount( (byte)maxLayers ),
+					                                     terrain.GetBlendTextureCount() );
 					uint numLayers = Utility.Min( maxLayers, (uint)terrain.LayerCount );
-					uint numUVSets = numLayers / 2;
-					if ( numLayers % 2 != 0 )
+					uint numUVSets = numLayers/2;
+					if ( numLayers%2 != 0 )
 					{
 						++numUVSets;
 					}
@@ -1099,9 +1112,10 @@ namespace Axiom.Components.Terrain
 						source += "float2 lodInfo : TEXCOORD" + texCoordSet++ + ", \n";
 					}
 
-					source +=// Only 1 light supported in this version
+					source += // Only 1 light supported in this version
 						// deferred shading profile / generator later, ok? :)
-						"uniform float4 ambient,\n" + "uniform float4 lightPosObjSpace,\n" + "uniform float3 lightDiffuseColor,\n" + "uniform float3 lightSpecularColor,\n" + "uniform float3 eyePosObjSpace,\n" +// pack scale, bias and specular
+						"uniform float4 ambient,\n" + "uniform float4 lightPosObjSpace,\n" + "uniform float3 lightDiffuseColor,\n" +
+						"uniform float3 lightSpecularColor,\n" + "uniform float3 eyePosObjSpace,\n" + // pack scale, bias and specular
 						"uniform float4 scaleBiasSpecular,\n";
 
 					if ( tt == TechniqueType.LowLod )
@@ -1136,16 +1150,17 @@ namespace Axiom.Components.Terrain
 						}
 					}
 
-					source += ") : COLOR\n" + "{\n" + "	float4 outputCol;\n" + "	float shadow = 1.0;\n" +// base colour
+					source += ") : COLOR\n" + "{\n" + "	float4 outputCol;\n" + "	float shadow = 1.0;\n" + // base colour
 					          "	outputCol = float4(0,0,0,1);\n";
 
 					if ( tt != TechniqueType.LowLod )
 					{
-						source +=// global normal
+						source += // global normal
 							"	float3 normal = expand(tex2D(globalNormal, uv)).rgb;\n";
 					}
 
-					source += "	float3 lightDir = \n" + "		lightPosObjSpace.xyz -  (position.xyz * lightPosObjSpace.w);\n" + "	float3 eyeDir = eyePosObjSpace - position.xyz;\n" +// set up accumulation areas
+					source += "	float3 lightDir = \n" + "		lightPosObjSpace.xyz -  (position.xyz * lightPosObjSpace.w);\n" +
+					          "	float3 eyeDir = eyePosObjSpace - position.xyz;\n" + // set up accumulation areas
 					          "	float3 diffuse = float3(0,0,0);\n" + "	float specular = 0;\n";
 
 					if ( tt == TechniqueType.LowLod )
@@ -1215,7 +1230,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="tt"></param>
 				/// <param name="layer"></param>
 				/// <param name="source"></param>
-				protected override void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source )
+				protected override void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source )
 				{
 					// nothing to do
 				}
@@ -1228,11 +1244,12 @@ namespace Axiom.Components.Terrain
 				/// <param name="tt"></param>
 				/// <param name="layer"></param>
 				/// <param name="source"></param>
-				protected override void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source )
+				protected override void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source )
 				{
-					uint uvIdx = layer / 2;
-					string uvChannels = layer % 2 != 0 ? ".zw" : ".xy";
-					uint blendIdx = ( layer - 1 ) / 4;
+					uint uvIdx = layer/2;
+					string uvChannels = layer%2 != 0 ? ".zw" : ".xy";
+					uint blendIdx = ( layer - 1 )/4;
 
 					// generate UV
 					source += "	float2 uv" + layer + " = layerUV" + uvIdx + uvChannels + ";\n";
@@ -1243,7 +1260,8 @@ namespace Axiom.Components.Terrain
 						if ( prof.IsLayerParallaxMappingEnabled && tt != TechniqueType.RenderCompositeMap )
 						{
 							// modify UV - note we have to sample an extra time
-							source += "	displacement = tex2D(normtex" + layer + ", uv" + layer + ").a\n" + "		* scaleBiasSpecular.x + scaleBiasSpecular.y;\n";
+							source += "	displacement = tex2D(normtex" + layer + ", uv" + layer + ").a\n" +
+							          "		* scaleBiasSpecular.x + scaleBiasSpecular.y;\n";
 							source += "	uv" + layer + " += TSeyeDir.xy * displacement;\n";
 						}
 
@@ -1275,10 +1293,12 @@ namespace Axiom.Components.Terrain
 					}
 					else
 					{
-						source += "	diffuse = lerp(diffuse, diffuseSpecTex" + layer + ".rgb, blendTexVal" + blendIdx + "." + GetChannel( layer - 1 ) + ");\n";
+						source += "	diffuse = lerp(diffuse, diffuseSpecTex" + layer + ".rgb, blendTexVal" + blendIdx + "." +
+						          GetChannel( layer - 1 ) + ");\n";
 						if ( prof.IsLayerSpecularMappingEnabled )
 						{
-							source += "	specular = lerp(specular, diffuseSpecTex" + layer + ".a, blendTexVal" + blendIdx + "." + GetChannel( layer - 1 ) + ");\n";
+							source += "	specular = lerp(specular, diffuseSpecTex" + layer + ".a, blendTexVal" + blendIdx + "." +
+							          GetChannel( layer - 1 ) + ");\n";
 						}
 					}
 				}
@@ -1372,7 +1392,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
 
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "hlsl", GpuProgramType.Vertex );
@@ -1402,7 +1422,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetFragmentProgramName( prof, terrain, tt );
 
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "hlsl", GpuProgramType.Fragment );
@@ -1454,7 +1474,7 @@ namespace Axiom.Components.Terrain
 							break;
 					}
 
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 					if ( ret == null )
 					{
 						ret = mgr.CreateProgram( progName, ResourceGroupManager.DefaultResourceGroupName, "glsl", GpuProgramType.Vertex );
@@ -1479,7 +1499,7 @@ namespace Axiom.Components.Terrain
 					HighLevelGpuProgramManager mgr = HighLevelGpuProgramManager.Instance;
 					string progName = GetVertexProgramName( prof, terrain, tt );
 
-					HighLevelGpuProgram ret = (HighLevelGpuProgram)mgr.GetByName( progName );
+					var ret = (HighLevelGpuProgram)mgr.GetByName( progName );
 
 					if ( ret == null )
 					{
@@ -1537,7 +1557,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="tt"></param>
 				/// <param name="layer"></param>
 				/// <param name="source"></param>
-				protected override void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source )
+				protected override void GenerateVpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source )
 				{
 					//not implemted yet
 				}
@@ -1550,7 +1571,8 @@ namespace Axiom.Components.Terrain
 				/// <param name="tt"></param>
 				/// <param name="layer"></param>
 				/// <param name="source"></param>
-				protected override void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer, ref string source )
+				protected override void GenerateFpLayer( SM2Profile prof, Terrain terrain, TechniqueType tt, uint layer,
+				                                         ref string source )
 				{
 					//not implemted yet
 				}

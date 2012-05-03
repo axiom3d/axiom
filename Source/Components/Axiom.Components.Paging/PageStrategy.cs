@@ -86,13 +86,17 @@ namespace Axiom.Components.Paging
 		/// Called when the frame starts
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameStart( Real timeSinceLastFrame, PagedWorldSection section ) {}
+		public virtual void FrameStart( Real timeSinceLastFrame, PagedWorldSection section )
+		{
+		}
 
 		/// <summary>
 		/// Called when the frame ends
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void FrameEnd( Real timeElapsed, PagedWorldSection section ) {}
+		public virtual void FrameEnd( Real timeElapsed, PagedWorldSection section )
+		{
+		}
 
 		/// <summary>
 		/// Called when a camera is used for any kind of rendering.
@@ -104,7 +108,9 @@ namespace Axiom.Components.Paging
 		/// rely on this pointer remaining valid permanently because no notification 
 		/// will be given when the camera is destroyed.</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void NotifyCamera( Camera cam, PagedWorldSection section ) {}
+		public virtual void NotifyCamera( Camera cam, PagedWorldSection section )
+		{
+		}
 
 		/// <summary>
 		/// Create a PageStrategyData instance containing the data specific to this

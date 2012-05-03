@@ -4,361 +4,361 @@ using Axiom.Math;
 
 namespace Axiom.Components.RTShaderSystem
 {
-    /// <summary>
-    ///   Uniform paramter class. Allows fast access to GPU parameter updates
-    /// </summary>
-    public class UniformParameter : Parameter
-    {
-        #region Fields
+	/// <summary>
+	///   Uniform paramter class. Allows fast access to GPU parameter updates
+	/// </summary>
+	public class UniformParameter : Parameter
+	{
+		#region Fields
 
-        private readonly bool isAutoConstantReal;
-        private readonly bool isAutoConstantInt;
-        private readonly Axiom.Graphics.GpuProgramParameters.AutoConstantType autoConstantType;
-        private readonly int autoConstantIntData;
-        private readonly Real autoConstantRealData;
-        private readonly int variability;
-        private GpuProgramParameters _params;
-        private int physicalIndex;
+		private readonly bool isAutoConstantReal;
+		private readonly bool isAutoConstantInt;
+		private readonly Axiom.Graphics.GpuProgramParameters.AutoConstantType autoConstantType;
+		private readonly int autoConstantIntData;
+		private readonly Real autoConstantRealData;
+		private readonly int variability;
+		private GpuProgramParameters _params;
+		private int physicalIndex;
 
-        #endregion
+		#endregion
 
-        #region C'Tors
+		#region C'Tors
 
-        public UniformParameter( GpuProgramParameters.GpuConstantType type, string name, SemanticType semantic,
-                                 int index, ContentType content, int variability, int size )
-            : base( type, name, semantic, index, content, size )
-        {
-            isAutoConstantInt = false;
-            isAutoConstantReal = false;
-            autoConstantIntData = 0;
-            this.variability = variability;
-            _params = null;
-            physicalIndex = -1;
-        }
+		public UniformParameter( GpuProgramParameters.GpuConstantType type, string name, SemanticType semantic,
+		                         int index, ContentType content, int variability, int size )
+			: base( type, name, semantic, index, content, size )
+		{
+			isAutoConstantInt = false;
+			isAutoConstantReal = false;
+			autoConstantIntData = 0;
+			this.variability = variability;
+			_params = null;
+			physicalIndex = -1;
+		}
 
-        public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, Real autoConstantData, int size )
-            : base(
-                Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
-                SemanticType.Unknown, -1, Parameter.ContentType.Unknown, size )
-        {
-            AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
-            _name = parameterDef.Name;
-            if ( autoConstantData != 0.0 )
-            {
-                _name += autoConstantData.ToString();
-                //replace possible illegal point character in name
-                _name = _name.Replace( '.', '_' );
-            }
-            _type = parameterDef.Type;
-            _semantic = SemanticType.Unknown;
-            _index = -1;
-            _content = Parameter.ContentType.Unknown;
-            isAutoConstantReal = true;
-            isAutoConstantInt = false;
-            this.autoConstantType = autoConstantType;
-            autoConstantRealData = autoConstantData;
-            variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-            _params = null;
-            physicalIndex = -1;
-            _size = size;
-        }
+		public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, Real autoConstantData, int size )
+			: base(
+				Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
+				SemanticType.Unknown, -1, Parameter.ContentType.Unknown, size )
+		{
+			AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
+			_name = parameterDef.Name;
+			if ( autoConstantData != 0.0 )
+			{
+				_name += autoConstantData.ToString();
+				//replace possible illegal point character in name
+				_name = _name.Replace( '.', '_' );
+			}
+			_type = parameterDef.Type;
+			_semantic = SemanticType.Unknown;
+			_index = -1;
+			_content = Parameter.ContentType.Unknown;
+			isAutoConstantReal = true;
+			isAutoConstantInt = false;
+			this.autoConstantType = autoConstantType;
+			autoConstantRealData = autoConstantData;
+			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			_params = null;
+			physicalIndex = -1;
+			_size = size;
+		}
 
-        public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, Real autoConstantData, int size,
-                                 GpuProgramParameters.GpuConstantType type )
-            : base(
-                Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
-                SemanticType.Unknown, -1, ContentType.Unknown, size )
-        {
-            AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
-            _name = parameterDef.Name;
-            if ( autoConstantData != 0.0 )
-            {
-                _name += autoConstantData.ToString();
-                //replace possible illegal point character in name
-                _name = _name.Replace( '.', '_' );
-            }
-            _type = type;
-            _semantic = SemanticType.Unknown;
-            _index = -1;
-            _content = Parameter.ContentType.Unknown;
-            isAutoConstantReal = true;
-            isAutoConstantInt = false;
-            this.autoConstantType = autoConstantType;
-            autoConstantRealData = autoConstantData;
-            variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-            _params = null;
-            physicalIndex = -1;
-            _size = size;
-        }
+		public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, Real autoConstantData, int size,
+		                         GpuProgramParameters.GpuConstantType type )
+			: base(
+				Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
+				SemanticType.Unknown, -1, ContentType.Unknown, size )
+		{
+			AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
+			_name = parameterDef.Name;
+			if ( autoConstantData != 0.0 )
+			{
+				_name += autoConstantData.ToString();
+				//replace possible illegal point character in name
+				_name = _name.Replace( '.', '_' );
+			}
+			_type = type;
+			_semantic = SemanticType.Unknown;
+			_index = -1;
+			_content = Parameter.ContentType.Unknown;
+			isAutoConstantReal = true;
+			isAutoConstantInt = false;
+			this.autoConstantType = autoConstantType;
+			autoConstantRealData = autoConstantData;
+			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			_params = null;
+			physicalIndex = -1;
+			_size = size;
+		}
 
-        public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, int autoConstantData, int size )
-            : base(
-                Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
-                SemanticType.Unknown, -1, ContentType.Unknown, size )
-        {
-            AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
+		public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, int autoConstantData, int size )
+			: base(
+				Parameter.AutoParameters[ autoConstantType ].Type, Parameter.AutoParameters[ autoConstantType ].Name,
+				SemanticType.Unknown, -1, ContentType.Unknown, size )
+		{
+			AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoConstantType ];
 
-            _name = parameterDef.Name;
-            if ( autoConstantData != 0 )
-            {
-                _name += autoConstantData.ToString();
-            }
-            _type = parameterDef.Type;
-            _semantic = SemanticType.Unknown;
-            _index = -1;
-            _content = Parameter.ContentType.Unknown;
-            isAutoConstantInt = true;
-            isAutoConstantReal = false;
-            this.autoConstantType = autoConstantType;
-            autoConstantIntData = autoConstantData;
-            variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-            _params = null;
-            physicalIndex = -1;
-            _size = size;
-        }
+			_name = parameterDef.Name;
+			if ( autoConstantData != 0 )
+			{
+				_name += autoConstantData.ToString();
+			}
+			_type = parameterDef.Type;
+			_semantic = SemanticType.Unknown;
+			_index = -1;
+			_content = Parameter.ContentType.Unknown;
+			isAutoConstantInt = true;
+			isAutoConstantReal = false;
+			this.autoConstantType = autoConstantType;
+			autoConstantIntData = autoConstantData;
+			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			_params = null;
+			physicalIndex = -1;
+			_size = size;
+		}
 
-        public UniformParameter( GpuProgramParameters.AutoConstantType autoType, int autoConstantData, int size,
-                                 GpuProgramParameters.GpuConstantType type )
-            : base(
-                Parameter.AutoParameters[ autoType ].Type, Parameter.AutoParameters[ autoType ].Name,
-                SemanticType.Unknown, -1, ContentType.Unknown, size )
-        {
-            AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoType ];
+		public UniformParameter( GpuProgramParameters.AutoConstantType autoType, int autoConstantData, int size,
+		                         GpuProgramParameters.GpuConstantType type )
+			: base(
+				Parameter.AutoParameters[ autoType ].Type, Parameter.AutoParameters[ autoType ].Name,
+				SemanticType.Unknown, -1, ContentType.Unknown, size )
+		{
+			AutoShaderParameter parameterDef = Parameter.AutoParameters[ autoType ];
 
-            _name = parameterDef.Name;
-            if ( autoConstantData != 0 )
-            {
-                _name += autoConstantData.ToString();
-            }
-            _type = type;
-            _semantic = SemanticType.Unknown;
-            _index = -1;
-            _content = Parameter.ContentType.Unknown;
-            isAutoConstantInt = true;
-            isAutoConstantReal = false;
-            autoConstantType = autoType;
-            autoConstantIntData = autoConstantData;
-            variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-            _params = null;
-            physicalIndex = -1;
-            _size = size;
-        }
+			_name = parameterDef.Name;
+			if ( autoConstantData != 0 )
+			{
+				_name += autoConstantData.ToString();
+			}
+			_type = type;
+			_semantic = SemanticType.Unknown;
+			_index = -1;
+			_content = Parameter.ContentType.Unknown;
+			isAutoConstantInt = true;
+			isAutoConstantReal = false;
+			autoConstantType = autoType;
+			autoConstantIntData = autoConstantData;
+			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			_params = null;
+			physicalIndex = -1;
+			_size = size;
+		}
 
-        public UniformParameter()
-        {
-            // TODO: Complete member initialization
-        }
+		public UniformParameter()
+		{
+			// TODO: Complete member initialization
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        public int AutoConstantIntData
-        {
-            get
-            {
-                return autoConstantIntData;
-            }
-        }
+		public int AutoConstantIntData
+		{
+			get
+			{
+				return autoConstantIntData;
+			}
+		}
 
-        public Real AutoConstantRealData
-        {
-            get
-            {
-                return autoConstantRealData;
-            }
-        }
+		public Real AutoConstantRealData
+		{
+			get
+			{
+				return autoConstantRealData;
+			}
+		}
 
-        public bool IsFloat
-        {
-            get
-            {
-                switch ( _type )
-                {
-                    case GpuProgramParameters.GpuConstantType.Int1:
-                    case GpuProgramParameters.GpuConstantType.Int2:
-                    case GpuProgramParameters.GpuConstantType.Int3:
-                    case GpuProgramParameters.GpuConstantType.Int4:
-                    case GpuProgramParameters.GpuConstantType.Sampler1D:
-                    case GpuProgramParameters.GpuConstantType.Sampler1DShadow:
-                    case GpuProgramParameters.GpuConstantType.Sampler2D:
-                    case GpuProgramParameters.GpuConstantType.Sampler2DShadow:
-                    case GpuProgramParameters.GpuConstantType.Sampler3D:
-                    case GpuProgramParameters.GpuConstantType.SamplerCube:
-                        return false;
-                    default:
-                        return true;
-                }
-            }
-        }
+		public bool IsFloat
+		{
+			get
+			{
+				switch ( _type )
+				{
+					case GpuProgramParameters.GpuConstantType.Int1:
+					case GpuProgramParameters.GpuConstantType.Int2:
+					case GpuProgramParameters.GpuConstantType.Int3:
+					case GpuProgramParameters.GpuConstantType.Int4:
+					case GpuProgramParameters.GpuConstantType.Sampler1D:
+					case GpuProgramParameters.GpuConstantType.Sampler1DShadow:
+					case GpuProgramParameters.GpuConstantType.Sampler2D:
+					case GpuProgramParameters.GpuConstantType.Sampler2DShadow:
+					case GpuProgramParameters.GpuConstantType.Sampler3D:
+					case GpuProgramParameters.GpuConstantType.SamplerCube:
+						return false;
+					default:
+						return true;
+				}
+			}
+		}
 
-        public bool IsSampler
-        {
-            get
-            {
-                switch ( _type )
-                {
-                    case GpuProgramParameters.GpuConstantType.Sampler1D:
-                    case GpuProgramParameters.GpuConstantType.Sampler1DShadow:
-                    case GpuProgramParameters.GpuConstantType.Sampler2D:
-                    case GpuProgramParameters.GpuConstantType.Sampler2DShadow:
-                    case GpuProgramParameters.GpuConstantType.Sampler3D:
-                    case GpuProgramParameters.GpuConstantType.SamplerCube:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
+		public bool IsSampler
+		{
+			get
+			{
+				switch ( _type )
+				{
+					case GpuProgramParameters.GpuConstantType.Sampler1D:
+					case GpuProgramParameters.GpuConstantType.Sampler1DShadow:
+					case GpuProgramParameters.GpuConstantType.Sampler2D:
+					case GpuProgramParameters.GpuConstantType.Sampler2DShadow:
+					case GpuProgramParameters.GpuConstantType.Sampler3D:
+					case GpuProgramParameters.GpuConstantType.SamplerCube:
+						return true;
+					default:
+						return false;
+				}
+			}
+		}
 
-        public bool IsAutoConstantParameter
-        {
-            get
-            {
-                return isAutoConstantInt || isAutoConstantReal;
-            }
-        }
+		public bool IsAutoConstantParameter
+		{
+			get
+			{
+				return isAutoConstantInt || isAutoConstantReal;
+			}
+		}
 
-        public bool IsAutoConstantIntParameter
-        {
-            get
-            {
-                return isAutoConstantInt;
-            }
-        }
+		public bool IsAutoConstantIntParameter
+		{
+			get
+			{
+				return isAutoConstantInt;
+			}
+		}
 
-        public bool IsAutoConstantRealParameter
-        {
-            get
-            {
-                return isAutoConstantReal;
-            }
-        }
+		public bool IsAutoConstantRealParameter
+		{
+			get
+			{
+				return isAutoConstantReal;
+			}
+		}
 
-        public GpuProgramParameters.AutoConstantType AutoConstantType
-        {
-            get
-            {
-                return autoConstantType;
-            }
-        }
+		public GpuProgramParameters.AutoConstantType AutoConstantType
+		{
+			get
+			{
+				return autoConstantType;
+			}
+		}
 
-        public int Variablity
-        {
-            get
-            {
-                return variability;
-            }
-        }
+		public int Variablity
+		{
+			get
+			{
+				return variability;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        public void Bind( GpuProgramParameters gpuParams )
-        {
-            if ( gpuParams != null )
-            {
-                Axiom.Graphics.GpuProgramParameters.GpuConstantDefinition def =
-                    gpuParams.FindNamedConstantDefinition( _name );
+		public void Bind( GpuProgramParameters gpuParams )
+		{
+			if ( gpuParams != null )
+			{
+				Axiom.Graphics.GpuProgramParameters.GpuConstantDefinition def =
+					gpuParams.FindNamedConstantDefinition( _name );
 
-                if ( def != null )
-                {
-                    _params = gpuParams;
-                    physicalIndex = def.PhysicalIndex;
-                }
-            }
-        }
+				if ( def != null )
+				{
+					_params = gpuParams;
+					physicalIndex = def.PhysicalIndex;
+				}
+			}
+		}
 
-        public void SetGpuParameter( int val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant( physicalIndex, val );
-            }
-        }
+		public void SetGpuParameter( int val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        public void SetGpuParameter( Real val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant( physicalIndex, val );
-            }
-        }
+		public void SetGpuParameter( Real val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        public void SetGpuParameter( Axiom.Core.ColorEx val )
-        {
-            if ( _params != null )
-            {
-                //TODO: check if correct 3 argument "count"
-                _params.WriteRawConstant( physicalIndex, val, 4 );
-            }
-        }
+		public void SetGpuParameter( Axiom.Core.ColorEx val )
+		{
+			if ( _params != null )
+			{
+				//TODO: check if correct 3 argument "count"
+				_params.WriteRawConstant( physicalIndex, val, 4 );
+			}
+		}
 
-        public void SetGpuParameter( Vector2 val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant(physicalIndex, new Vector4(val.x, val.y, 0, 0), 2);
-            }
-        }
+		public void SetGpuParameter( Vector2 val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, new Vector4( val.x, val.y, 0, 0 ), 2 );
+			}
+		}
 
-        public void SetGpuParameter( Vector3 val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant( physicalIndex, val );
-            }
-        }
+		public void SetGpuParameter( Vector3 val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        public void SetGpuParameter( Vector4 val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant( physicalIndex, val );
-            }
-        }
+		public void SetGpuParameter( Vector4 val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        public void SetGpuParameter( Matrix4 val )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant( physicalIndex, val, 16 );
-            }
-        }
+		public void SetGpuParameter( Matrix4 val )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val, 16 );
+			}
+		}
 
-        public void SetGpuParameter( float val, int count, int multiple )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant(physicalIndex, new Vector4(val, 0, 0, 0), count * multiple);
-            }
-        }
+		public void SetGpuParameter( float val, int count, int multiple )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, new Vector4( val, 0, 0, 0 ), count*multiple );
+			}
+		}
 
-        public void SetGpuParameter( double val, int count, int multiple )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant(physicalIndex, val);
-            }
-        }
+		public void SetGpuParameter( double val, int count, int multiple )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        public void SetGpuParameter( int val, int count, int multiple )
-        {
-            if ( _params != null )
-            {
-                _params.WriteRawConstant(physicalIndex, val);
-            }
-        }
+		public void SetGpuParameter( int val, int count, int multiple )
+		{
+			if ( _params != null )
+			{
+				_params.WriteRawConstant( physicalIndex, val );
+			}
+		}
 
-        #endregion
+		#endregion
 
-        internal void SetGpuParameter( Matrix3 matWorldInvRotation )
-        {
-            if (_params != null)
-            {
-                //TODO
-            }
-        }
-    }
+		internal void SetGpuParameter( Matrix3 matWorldInvRotation )
+		{
+			if ( _params != null )
+			{
+				//TODO
+			}
+		}
+	}
 }

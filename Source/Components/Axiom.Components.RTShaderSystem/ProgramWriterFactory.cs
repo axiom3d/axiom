@@ -2,18 +2,18 @@
 
 namespace Axiom.Components.RTShaderSystem
 {
-    internal abstract class ProgramWriterFactory : IDisposable
-    {
-        public ProgramWriterFactory()
-        {
-        }
+	internal abstract class ProgramWriterFactory : IDisposable
+	{
+		public ProgramWriterFactory()
+		{
+		}
 
-        public abstract string TargetLanguage { get; }
+		public abstract string TargetLanguage { get; }
 
-        internal abstract ProgramWriter Create();
+		internal abstract ProgramWriter Create();
 
-        public virtual void Dispose()
-        {
-        }
-    }
+		public virtual void Dispose()
+		{
+		}
+	}
 }

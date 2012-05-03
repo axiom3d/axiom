@@ -35,7 +35,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Serialization;
 
@@ -56,8 +55,13 @@ namespace Axiom.Components.Paging
 	{
 		protected Dictionary<string, PagedWorld> mWorlds = new Dictionary<string, PagedWorld>();
 		protected Dictionary<string, PageStrategy> mStrategies = new Dictionary<string, PageStrategy>();
-		protected Dictionary<string, IPageContentCollectionFactory> mContentCollectionFactories = new Dictionary<string, IPageContentCollectionFactory>();
-		protected Dictionary<string, PagedWorldSectionFactory> mWorldSectionFactories = new Dictionary<string, PagedWorldSectionFactory>();
+
+		protected Dictionary<string, IPageContentCollectionFactory> mContentCollectionFactories =
+			new Dictionary<string, IPageContentCollectionFactory>();
+
+		protected Dictionary<string, PagedWorldSectionFactory> mWorldSectionFactories =
+			new Dictionary<string, PagedWorldSectionFactory>();
+
 		protected Dictionary<string, IPageContentFactory> mContentFactories = new Dictionary<string, IPageContentFactory>();
 		protected NameGenerator<PagedWorld> mWorldNameGenerator = new NameGenerator<PagedWorld>( "World" );
 		protected PageProvider mPageProvider;
@@ -217,7 +221,7 @@ namespace Axiom.Components.Paging
 			: base()
 		{
 			mPageResourceGroup = ResourceGroupManager.DefaultResourceGroupName;
-			this.ArePagingOperationsEnabled = true;
+			ArePagingOperationsEnabled = true;
 
 			mEventRouter = new EventRouter();
 			mEventRouter.pManager = this;
@@ -234,7 +238,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~PageManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -290,7 +294,7 @@ namespace Axiom.Components.Paging
 				throw new AxiomException( "World named '{0}' allready exists! PageManager.CreateWorld", theName );
 			}
 
-			PagedWorld ret = new PagedWorld( theName, this );
+			var ret = new PagedWorld( theName, this );
 			mWorlds.Add( theName, ret );
 
 			return ret;
@@ -323,7 +327,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyWorld( PagedWorld world )
 		{
-			this.DestroyWorld( world.Name );
+			DestroyWorld( world.Name );
 		}
 
 		/// <summary>
@@ -518,7 +522,8 @@ namespace Axiom.Components.Paging
 			IPageContentCollectionFactory fact = GetContentCollectionFactory( typeName );
 			if ( fact == null )
 			{
-				throw new AxiomException( "{0} is not the of a valid PageContentCollectionFactory! PageManager.CreateContentCollection", typeName );
+				throw new AxiomException(
+					"{0} is not the of a valid PageContentCollectionFactory! PageManager.CreateContentCollection", typeName );
 			}
 
 			return fact.CreateInstance();
@@ -668,10 +673,11 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateWorldSection( string typeName, string name, PagedWorld parent, SceneManager sm )
 		{
-			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( typeName );
+			PagedWorldSectionFactory fact = GetWorldSectionFactory( typeName );
 			if ( fact == null )
 			{
-				throw new AxiomException( "{0} is not the name of a valid PagedWorldSectionFactory PageManager.CreateWorldSection", typeName );
+				throw new AxiomException( "{0} is not the name of a valid PagedWorldSectionFactory PageManager.CreateWorldSection",
+				                          typeName );
 			}
 
 			return fact.CreateInstance( name, parent, sm );
@@ -683,7 +689,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DestroyWorldSection( ref PagedWorldSection coll )
 		{
-			PagedWorldSectionFactory fact = this.GetWorldSectionFactory( coll.Type );
+			PagedWorldSectionFactory fact = GetWorldSectionFactory( coll.Type );
 			if ( fact != null )
 			{
 				fact.DestroyInstance( ref coll );
@@ -953,7 +959,9 @@ namespace Axiom.Components.Paging
 			}
 
 			[OgreVersion( 1, 7, 2 )]
-			public void OnPreRenderScene( Camera.CameraEventArgs e ) {}
+			public void OnPreRenderScene( Camera.CameraEventArgs e )
+			{
+			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void OnCameraDestroyed( Camera.CameraEventArgs e )

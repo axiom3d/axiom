@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -280,7 +279,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~PagedWorldSection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -308,7 +307,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetStrategy( string stratName )
 		{
-			this.Strategy = this.Manager.GetStrategy( stratName );
+			Strategy = Manager.GetStrategy( stratName );
 		}
 
 		/// <summary>
@@ -318,7 +317,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetSceneManager( string smName )
 		{
-			this.SceneManager = Root.Instance.GetSceneManager( smName );
+			SceneManager = Root.Instance.GetSceneManager( smName );
 		}
 
 		/// <summary>
@@ -349,7 +348,7 @@ namespace Axiom.Components.Paging
 			{
 				sm = Root.Instance.CreateSceneManager( smType, smInstanceName );
 			}
-			this.SceneManager = sm;
+			SceneManager = sm;
 			//page strategy name
 			string stratName = string.Empty;
 			stream.Read( out stratName );
@@ -358,7 +357,8 @@ namespace Axiom.Components.Paging
 			bool strategyDataOk = mStrategyData.Load( stream );
 			if ( !strategyDataOk )
 			{
-				LogManager.Instance.Write( "Error: PageStrategyData for section '{0}' was not loaded correctly, check file contens", mName );
+				LogManager.Instance.Write(
+					"Error: PageStrategyData for section '{0}' was not loaded correctly, check file contens", mName );
 			}
 
 			// Load any data specific to a subtype of this class
@@ -373,10 +373,14 @@ namespace Axiom.Components.Paging
 		/// Load data specific to a subtype of this class (if any)
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		protected virtual void LoadSubtypeData( StreamSerializer stream ) {}
+		protected virtual void LoadSubtypeData( StreamSerializer stream )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2 )]
-		protected virtual void SaveSubtypeData( StreamSerializer stream ) {}
+		protected virtual void SaveSubtypeData( StreamSerializer stream )
+		{
+		}
 
 		/// <summary>
 		/// Save this section to a stream
@@ -476,7 +480,7 @@ namespace Axiom.Components.Paging
 
 			if ( !mPages.ContainsKey( pageID ) )
 			{
-				Page page = new Page( pageID, this );
+				var page = new Page( pageID, this );
 				page.Load( forceSynchronous );
 				mPages.Add( pageID, page );
 			}
@@ -719,7 +723,7 @@ namespace Axiom.Components.Paging
 		public virtual void FrameEnd( Real timeElapsed )
 		{
 			mStrategy.FrameEnd( timeElapsed, this );
-			PageID[] ids = new PageID[ mPages.Count ];
+			var ids = new PageID[mPages.Count];
 			mPages.Keys.CopyTo( ids, 0 );
 
 			for ( int i = 0; i < mPages.Count; ++i )
@@ -732,7 +736,7 @@ namespace Axiom.Components.Paging
 					UnloadPage( p );
 
 					// update indices since unloading will invalidate it
-					ids = new PageID[ mPages.Count ];
+					ids = new PageID[mPages.Count];
 					mPages.Keys.CopyTo( ids, 0 );
 
 					// pre-decrement since unloading will remove it
@@ -810,7 +814,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "PagedWorldSection({0}, world:{1})", mName, this.World.Name );
+			return string.Format( "PagedWorldSection({0}, world:{1})", mName, World.Name );
 		}
 	};
 

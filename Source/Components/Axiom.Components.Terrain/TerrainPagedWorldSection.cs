@@ -100,7 +100,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return (Grid2PageStrategy)this.Strategy;
+				return (Grid2PageStrategy)Strategy;
 			}
 		}
 
@@ -123,13 +123,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.LoadRadius;
+				return GridStrategyData.LoadRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.LoadRadius = value;
+				GridStrategyData.LoadRadius = value;
 			}
 		}
 
@@ -141,13 +141,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.HoldRadius;
+				return GridStrategyData.HoldRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.HoldRadius = value;
+				GridStrategyData.HoldRadius = value;
 			}
 		}
 
@@ -159,13 +159,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.CellRangeMinX;
+				return GridStrategyData.CellRangeMinX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.CellRangeMinX = value;
+				GridStrategyData.CellRangeMinX = value;
 			}
 		}
 
@@ -177,13 +177,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.CellRangeMinY;
+				return GridStrategyData.CellRangeMinY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.CellRangeMinY = value;
+				GridStrategyData.CellRangeMinY = value;
 			}
 		}
 
@@ -195,13 +195,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.CellRangeMaxX;
+				return GridStrategyData.CellRangeMaxX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.CellRangeMaxX = value;
+				GridStrategyData.CellRangeMaxX = value;
 			}
 		}
 
@@ -213,13 +213,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GridStrategyData.CellRangeMaxY;
+				return GridStrategyData.CellRangeMaxY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.GridStrategyData.CellRangeMaxY = value;
+				GridStrategyData.CellRangeMaxY = value;
 			}
 		}
 
@@ -234,13 +234,13 @@ namespace Axiom.Components.Terrain
 			: base( name, parent, sm )
 		{
 			// we always use a grid strategy
-			this.Strategy = parent.Manager.GetStrategy( "Grid2D" );
+			Strategy = parent.Manager.GetStrategy( "Grid2D" );
 		}
 
 		[OgreVersion( 1, 7, 2, "~TerrainPagedWorldSection" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -290,20 +290,20 @@ namespace Axiom.Components.Terrain
 			switch ( terrainGroup.Alignment )
 			{
 				case Alignment.Align_X_Y:
-					this.GridStrategyData.Mode = Grid2Mode.G2D_X_Y;
+					GridStrategyData.Mode = Grid2Mode.G2D_X_Y;
 					break;
 
 				case Alignment.Align_X_Z:
-					this.GridStrategyData.Mode = Grid2Mode.G2D_X_Z;
+					GridStrategyData.Mode = Grid2Mode.G2D_X_Z;
 					break;
 
 				case Alignment.Align_Y_Z:
-					this.GridStrategyData.Mode = Grid2Mode.G2D_Y_Z;
+					GridStrategyData.Mode = Grid2Mode.G2D_Y_Z;
 					break;
 			}
 
-			this.GridStrategyData.Origin = terrainGroup.Origin;
-			this.GridStrategyData.CellSize = terrainGroup.TerrainWorldSize;
+			GridStrategyData.Origin = terrainGroup.Origin;
+			GridStrategyData.CellSize = terrainGroup.TerrainWorldSize;
 		}
 
 		/// <summary>
@@ -312,7 +312,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetPageRange( int minX, int minY, int maxX, int maxY )
 		{
-			this.GridStrategyData.SetCellRange( minX, minY, maxX, maxY );
+			GridStrategyData.SetCellRange( minX, minY, maxX, maxY );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -321,7 +321,7 @@ namespace Axiom.Components.Terrain
 			// we load the TerrainGroup information from here
 			if ( terrainGroup == null )
 			{
-				terrainGroup = new TerrainGroup( this.SceneManager );
+				terrainGroup = new TerrainGroup( SceneManager );
 			}
 
 			terrainGroup.LoadGroupDefinition( ref ser );

@@ -44,8 +44,7 @@ namespace Axiom.Components.Paging
 	/// </summary>
 	public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
 	{
-		[OgreVersion( 1, 7, 2 )]
-		public static string FACTORY_NAME = "Simple";
+		[OgreVersion( 1, 7, 2 )] public static string FACTORY_NAME = "Simple";
 
 		public string Name
 		{

@@ -26,9 +26,7 @@
 
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
@@ -119,16 +117,16 @@ namespace Axiom.Components.Terrain
 		{
 			mParent = parent;
 			mLayerIdx = layerIdx;
-			mChannel = (byte)( ( mLayerIdx - 1 ) % 4 );
+			mChannel = (byte)( ( mLayerIdx - 1 )%4 );
 			mDirty = false;
 			mBuffer = buf;
-			mData = new float[ mBuffer.Width * mBuffer.Height * sizeof ( float ) ];
+			mData = new float[mBuffer.Width*mBuffer.Height*sizeof ( float )];
 
 			// we know which of RGBA we need to look at, now find it in the format
 			// because we can't guarantee what precise format the RS gives us
 			PixelFormat fmt = mBuffer.Format;
 			var rgbaShift = PixelUtil.GetBitShifts( fmt );
-			mChannelOffset = (byte)( rgbaShift[ mChannel ] / 8 ); // /8 convert to bytes
+			mChannelOffset = (byte)( rgbaShift[ mChannel ]/8 ); // /8 convert to bytes
 #if AXIOM_BIG_ENDIAN
 	// invert (dealing bytewise)
 			mChannelOffset = (byte)( PixelUtil.GetNumElemBytes( fmt ) - mChannelOffset - 1 );
@@ -173,8 +171,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertUVToImageSpace( Real x, Real y, ref int outX, ref int outY )
 		{
-			outX = (int)( x * ( mBuffer.Width - 1 ) );
-			outY = (int)( y * ( mBuffer.Height - 1 ) );
+			outX = (int)( x*( mBuffer.Width - 1 ) );
+			outY = (int)( y*( mBuffer.Height - 1 ) );
 		}
 
 		/// <summary>
@@ -183,8 +181,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertImageToUVSpace( int x, int y, ref Real outX, ref Real outY )
 		{
-			outX = x / (Real)( mBuffer.Width - 1 );
-			outY = y / (Real)( mBuffer.Height - 1 );
+			outX = x/(Real)( mBuffer.Width - 1 );
+			outY = y/(Real)( mBuffer.Height - 1 );
 		}
 
 		/// <summary>
@@ -214,7 +212,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public float GetBlendValue( int x, int y )
 		{
-			return mData[ y * mBuffer.Width + x ];
+			return mData[ y*mBuffer.Width + x ];
 		}
 
 		/// <summary>
@@ -226,7 +224,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void SetBlendValue( int x, int y, float val )
 		{
-			mData[ y * mBuffer.Width + x ] = val;
+			mData[ y*mBuffer.Width + x ] = val;
 			DirtyRect( new Rectangle( x, y, x + 1, y + 1 ) );
 		}
 
@@ -278,7 +276,7 @@ namespace Axiom.Components.Terrain
 			{
 				using ( var mDataBuf = BufferBase.Wrap( mData ) )
 				{
-					var pSrcBase = mDataBuf + ( mDirtyBox.Top * mBuffer.Width + mDirtyBox.Left );
+					var pSrcBase = mDataBuf + ( mDirtyBox.Top*mBuffer.Width + mDirtyBox.Left );
 					var pDstBase = mBuffer.Lock( mDirtyBox, BufferLocking.Normal ).Data;
 					pDstBase += mChannelOffset;
 					var dstInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
@@ -289,11 +287,11 @@ namespace Axiom.Components.Terrain
 					{
 						for ( int y = 0; y < mDirtyBox.Height; ++y )
 						{
-							var pSrc = ( pSrcBase + ( y * mBuffer.Width ) * sizeof ( float ) ).ToFloatPointer();
-							var pDst = pDstBase + ( y * mBuffer.Width * dstInc );
+							var pSrc = ( pSrcBase + ( y*mBuffer.Width )*sizeof ( float ) ).ToFloatPointer();
+							var pDst = pDstBase + ( y*mBuffer.Width*dstInc );
 							for ( int x = 0; x < mDirtyBox.Width; ++x )
 							{
-								pDst.ToBytePointer()[ 0 ] = (byte)( pSrc[ x ] * 255 );
+								pDst.ToBytePointer()[ 0 ] = (byte)( pSrc[ x ]*255 );
 								pDst += dstInc;
 							}
 						}
@@ -306,11 +304,11 @@ namespace Axiom.Components.Terrain
 				// make sure composite map is updated
 				// mDirtyBox is in image space, convert to terrain units
 				var compositeMapRect = new Rectangle();
-				var blendToTerrain = (float)mParent.Size / (float)mBuffer.Width;
-				compositeMapRect.Left = (long)( mDirtyBox.Left * blendToTerrain );
-				compositeMapRect.Right = (long)( mDirtyBox.Right * blendToTerrain + 1 );
-				compositeMapRect.Top = (long)( ( mBuffer.Height - mDirtyBox.Bottom ) * blendToTerrain );
-				compositeMapRect.Bottom = (long)( ( mBuffer.Height - mDirtyBox.Top ) * blendToTerrain + 1 );
+				var blendToTerrain = (float)mParent.Size/(float)mBuffer.Width;
+				compositeMapRect.Left = (long)( mDirtyBox.Left*blendToTerrain );
+				compositeMapRect.Right = (long)( mDirtyBox.Right*blendToTerrain + 1 );
+				compositeMapRect.Top = (long)( ( mBuffer.Height - mDirtyBox.Bottom )*blendToTerrain );
+				compositeMapRect.Bottom = (long)( ( mBuffer.Height - mDirtyBox.Top )*blendToTerrain + 1 );
 				mParent.DirtyCompositeMapRect( compositeMapRect );
 				mParent.UpdateCompositeMapWithDelay();
 			}
@@ -337,7 +335,7 @@ namespace Axiom.Components.Terrain
 			if ( srcBox.Width != dstBox.Width || srcBox.Height != dstBox.Height )
 			{
 				// we need to rescale src to dst size first (also confvert format)
-				var tmpData = new float[ dstBox.Width * dstBox.Height ];
+				var tmpData = new float[dstBox.Width*dstBox.Height];
 				srcBox = new PixelBox( dstBox.Width, dstBox.Height, 1, PixelFormat.L8, BufferBase.Wrap( tmpData ) );
 				Image.Scale( src, srcBox );
 			}
@@ -423,7 +421,7 @@ namespace Axiom.Components.Terrain
 					{
 						for ( var x = box.Left; x < box.Right; ++x )
 						{
-							pDstPtr[ pDstIdx++ ] = (float)( ( pSrc[ pSrcIdx ] ) / 255.0f );
+							pDstPtr[ pDstIdx++ ] = (float)( ( pSrc[ pSrcIdx ] )/255.0f );
 							pSrcIdx += srcInc;
 						}
 					}
